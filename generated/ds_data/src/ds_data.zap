@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 17 operations — 9 with a generated method,
-#   8 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 17 operations — 17 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   47 structs (28 @derive(Json)), 7 enums, 7 error variants.
-#   4 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   6 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -131,8 +131,9 @@ struct AddGroupMemberResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) SS: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SS: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributeValue:
     Optional[bool] BOOL
     Optional[int64] N
@@ -208,8 +209,9 @@ struct DescribeGroupRequest:
     Optional[str] Realm
     str SAMAccountName
 
-# no @derive(Json): member(s) OtherAttributes: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OtherAttributes: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeGroupResult:
     Optional[str] DirectoryId
     Optional[str] DistinguishedName
@@ -228,8 +230,9 @@ struct DescribeUserRequest:
     Optional[str] Realm
     str SAMAccountName
 
-# no @derive(Json): member(s) OtherAttributes: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OtherAttributes: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeUserResult:
     Optional[str] DirectoryId
     Optional[str] DistinguishedName
@@ -260,8 +263,9 @@ struct DisableUserResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) OtherAttributes: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OtherAttributes: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Group:
     Optional[str] DistinguishedName
     Optional[GroupScope] GroupScope
@@ -291,8 +295,9 @@ struct ListGroupMembersRequest:
     Optional[str] Realm
     str SAMAccountName
 
-# no @derive(Json): member(s) Members: list[Member] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Members: list[Member] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupMembersResult:
     Optional[str] DirectoryId
     Optional[str] MemberRealm
@@ -310,8 +315,9 @@ struct ListGroupsForMemberRequest:
     Optional[str] Realm
     str SAMAccountName
 
-# no @derive(Json): member(s) Groups: list[GroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[GroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupsForMemberResult:
     Optional[str] DirectoryId
     Optional[list[GroupSummary]] Groups
@@ -327,8 +333,9 @@ struct ListGroupsRequest:
     Optional[str] NextToken
     Optional[str] Realm
 
-# no @derive(Json): member(s) Groups: list[GroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[GroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupsResult:
     Optional[str] DirectoryId
     Optional[list[GroupSummary]] Groups
@@ -343,8 +350,9 @@ struct ListUsersRequest:
     Optional[str] NextToken
     Optional[str] Realm
 
-# no @derive(Json): member(s) Users: list[UserSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Users: list[UserSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUsersResult:
     Optional[str] DirectoryId
     Optional[str] NextToken
@@ -385,8 +393,9 @@ struct SearchGroupsRequest:
     list[str] SearchAttributes
     str SearchString
 
-# no @derive(Json): member(s) Groups: list[Group] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[Group] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchGroupsResult:
     Optional[str] DirectoryId
     Optional[list[Group]] Groups
@@ -403,8 +412,9 @@ struct SearchUsersRequest:
     list[str] SearchAttributes
     str SearchString
 
-# no @derive(Json): member(s) Users: list[User] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Users: list[User] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchUsersResult:
     Optional[str] DirectoryId
     Optional[str] NextToken
@@ -449,8 +459,9 @@ struct UpdateUserResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) OtherAttributes: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OtherAttributes: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct User:
     Optional[str] DistinguishedName
     Optional[str] EmailAddress
@@ -509,23 +520,6 @@ def ds_data_error_from_code(str code) -> Directory_Service_DataError:
     return Directory_Service_DataError.Unknown(code=code)
 
 # --- client ----------------------------------------------------------------
-
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CreateGroup (document member `OtherAttributes: dict[str, AttributeValue]` is not serializable by derive)
-#   CreateUser (document member `OtherAttributes: dict[str, AttributeValue]` is not serializable by derive)
-#   DescribeGroup (document member `OtherAttributes: list[str]` is not serializable by derive)
-#   DescribeUser (document member `OtherAttributes: list[str]` is not serializable by derive)
-#   SearchGroups (document member `SearchAttributes: list[str]` is not serializable by derive)
-#   SearchUsers (document member `SearchAttributes: list[str]` is not serializable by derive)
-#   UpdateGroup (document member `OtherAttributes: dict[str, AttributeValue]` is not serializable by derive)
-#   UpdateUser (document member `OtherAttributes: dict[str, AttributeValue]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   SearchGroups (operation not generated)
-#   SearchUsers (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -596,6 +590,56 @@ struct RemoveGroupMemberDocument:
     str MemberName
     Optional[str] MemberRealm
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def ds_data_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def ds_data_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def ds_data_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AttributeValue to a compact JSON object (declaration order).
+def attribute_value_to_json(AttributeValue v) -> str:
+    list[str] parts = []
+    if v.BOOL.is_some():
+        auto u0 = v.BOOL.unwrap()
+        parts.append("\"BOOL\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.N.is_some():
+        auto u1 = v.N.unwrap()
+        parts.append("\"N\":" + str(u1))
+    if v.S.is_some():
+        auto u2 = v.S.unwrap()
+        parts.append("\"S\":" + ds_data_json_str(u2))
+    if v.SS.is_some():
+        auto u3 = v.SS.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(ds_data_json_str(x4))
+        parts.append("\"SS\":" + ds_data_json_arr(e4))
+    return ds_data_json_obj(parts)
+
 # A bound Directory_Service_Data client: credentials + region, threaded into every operation.
 struct Directory_Service_DataClient:
     core.Credentials creds
@@ -610,6 +654,63 @@ struct Directory_Service_DataClient:
         auto b = binding.HttpBinding(method="POST", path_template="/GroupMemberships/AddGroupMember", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AddGroupMemberDocument(ClientToken=input.ClientToken, GroupName=input.GroupName, MemberName=input.MemberName, MemberRealm=input.MemberRealm)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, ds_data_service(), self.region, host)
+
+    # CreateGroup  POST /Groups/CreateGroup
+    # errors: AccessDeniedException, ConflictException, DirectoryUnavailableException, InternalServerException, ThrottlingException, ValidationException
+    def create_group(self, CreateGroupRequest input) -> str:
+        auto host = endpoints.regional_host(ds_data_service(), self.region)
+        dict[str, str] query = {}
+        query["DirectoryId"] = input.DirectoryId
+        auto b = binding.HttpBinding(method="POST", path_template="/Groups/CreateGroup", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + ds_data_json_str(u0))
+        if input.GroupScope.is_some():
+            auto u1 = input.GroupScope.unwrap()
+            parts.append("\"GroupScope\":" + u1.to_json())
+        if input.GroupType.is_some():
+            auto u2 = input.GroupType.unwrap()
+            parts.append("\"GroupType\":" + u2.to_json())
+        if input.OtherAttributes.is_some():
+            auto u3 = input.OtherAttributes.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(ds_data_json_str(k4) + ":" + attribute_value_to_json(u3[k4]))
+            parts.append("\"OtherAttributes\":" + ds_data_json_obj(m4))
+        parts.append("\"SAMAccountName\":" + ds_data_json_str(input.SAMAccountName))
+        auto bp = restjson.rest_json_document(b, ds_data_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ds_data_service(), self.region, host)
+
+    # CreateUser  POST /Users/CreateUser
+    # errors: AccessDeniedException, ConflictException, DirectoryUnavailableException, InternalServerException, ThrottlingException, ValidationException
+    def create_user(self, CreateUserRequest input) -> str:
+        auto host = endpoints.regional_host(ds_data_service(), self.region)
+        dict[str, str] query = {}
+        query["DirectoryId"] = input.DirectoryId
+        auto b = binding.HttpBinding(method="POST", path_template="/Users/CreateUser", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + ds_data_json_str(u0))
+        if input.EmailAddress.is_some():
+            auto u1 = input.EmailAddress.unwrap()
+            parts.append("\"EmailAddress\":" + ds_data_json_str(u1))
+        if input.GivenName.is_some():
+            auto u2 = input.GivenName.unwrap()
+            parts.append("\"GivenName\":" + ds_data_json_str(u2))
+        if input.OtherAttributes.is_some():
+            auto u3 = input.OtherAttributes.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(ds_data_json_str(k4) + ":" + attribute_value_to_json(u3[k4]))
+            parts.append("\"OtherAttributes\":" + ds_data_json_obj(m4))
+        parts.append("\"SAMAccountName\":" + ds_data_json_str(input.SAMAccountName))
+        if input.Surname.is_some():
+            auto u5 = input.Surname.unwrap()
+            parts.append("\"Surname\":" + ds_data_json_str(u5))
+        auto bp = restjson.rest_json_document(b, ds_data_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, ds_data_service(), self.region, host)
 
     # DeleteGroup  POST /Groups/DeleteGroup
@@ -632,6 +733,48 @@ struct Directory_Service_DataClient:
         auto b = binding.HttpBinding(method="POST", path_template="/Users/DeleteUser", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteUserDocument(ClientToken=input.ClientToken, SAMAccountName=input.SAMAccountName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, ds_data_service(), self.region, host)
+
+    # DescribeGroup  POST /Groups/DescribeGroup
+    # errors: AccessDeniedException, DirectoryUnavailableException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def describe_group(self, DescribeGroupRequest input) -> str:
+        auto host = endpoints.regional_host(ds_data_service(), self.region)
+        dict[str, str] query = {}
+        query["DirectoryId"] = input.DirectoryId
+        auto b = binding.HttpBinding(method="POST", path_template="/Groups/DescribeGroup", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.OtherAttributes.is_some():
+            auto u0 = input.OtherAttributes.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(ds_data_json_str(x1))
+            parts.append("\"OtherAttributes\":" + ds_data_json_arr(e1))
+        if input.Realm.is_some():
+            auto u2 = input.Realm.unwrap()
+            parts.append("\"Realm\":" + ds_data_json_str(u2))
+        parts.append("\"SAMAccountName\":" + ds_data_json_str(input.SAMAccountName))
+        auto bp = restjson.rest_json_document(b, ds_data_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ds_data_service(), self.region, host)
+
+    # DescribeUser  POST /Users/DescribeUser
+    # errors: AccessDeniedException, DirectoryUnavailableException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def describe_user(self, DescribeUserRequest input) -> str:
+        auto host = endpoints.regional_host(ds_data_service(), self.region)
+        dict[str, str] query = {}
+        query["DirectoryId"] = input.DirectoryId
+        auto b = binding.HttpBinding(method="POST", path_template="/Users/DescribeUser", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.OtherAttributes.is_some():
+            auto u0 = input.OtherAttributes.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(ds_data_json_str(x1))
+            parts.append("\"OtherAttributes\":" + ds_data_json_arr(e1))
+        if input.Realm.is_some():
+            auto u2 = input.Realm.unwrap()
+            parts.append("\"Realm\":" + ds_data_json_str(u2))
+        parts.append("\"SAMAccountName\":" + ds_data_json_str(input.SAMAccountName))
+        auto bp = restjson.rest_json_document(b, ds_data_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, ds_data_service(), self.region, host)
 
     # DisableUser  POST /Users/DisableUser
@@ -700,6 +843,119 @@ struct Directory_Service_DataClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ds_data_service(), self.region, host)
 
+    # SearchGroups  POST /Groups/SearchGroups
+    # errors: AccessDeniedException, DirectoryUnavailableException, InternalServerException, ThrottlingException, ValidationException
+    def search_groups(self, SearchGroupsRequest input) -> str:
+        auto host = endpoints.regional_host(ds_data_service(), self.region)
+        dict[str, str] query = {}
+        query["DirectoryId"] = input.DirectoryId
+        auto b = binding.HttpBinding(method="POST", path_template="/Groups/SearchGroups", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.MaxResults.is_some():
+            auto u0 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + ds_data_json_str(u1))
+        if input.Realm.is_some():
+            auto u2 = input.Realm.unwrap()
+            parts.append("\"Realm\":" + ds_data_json_str(u2))
+        list[str] e3 = []
+        for x3 in input.SearchAttributes:
+            e3.append(ds_data_json_str(x3))
+        parts.append("\"SearchAttributes\":" + ds_data_json_arr(e3))
+        parts.append("\"SearchString\":" + ds_data_json_str(input.SearchString))
+        auto bp = restjson.rest_json_document(b, ds_data_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ds_data_service(), self.region, host)
+
+    # SearchUsers  POST /Users/SearchUsers
+    # errors: AccessDeniedException, DirectoryUnavailableException, InternalServerException, ThrottlingException, ValidationException
+    def search_users(self, SearchUsersRequest input) -> str:
+        auto host = endpoints.regional_host(ds_data_service(), self.region)
+        dict[str, str] query = {}
+        query["DirectoryId"] = input.DirectoryId
+        auto b = binding.HttpBinding(method="POST", path_template="/Users/SearchUsers", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.MaxResults.is_some():
+            auto u0 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + ds_data_json_str(u1))
+        if input.Realm.is_some():
+            auto u2 = input.Realm.unwrap()
+            parts.append("\"Realm\":" + ds_data_json_str(u2))
+        list[str] e3 = []
+        for x3 in input.SearchAttributes:
+            e3.append(ds_data_json_str(x3))
+        parts.append("\"SearchAttributes\":" + ds_data_json_arr(e3))
+        parts.append("\"SearchString\":" + ds_data_json_str(input.SearchString))
+        auto bp = restjson.rest_json_document(b, ds_data_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ds_data_service(), self.region, host)
+
+    # UpdateGroup  POST /Groups/UpdateGroup
+    # errors: AccessDeniedException, ConflictException, DirectoryUnavailableException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_group(self, UpdateGroupRequest input) -> str:
+        auto host = endpoints.regional_host(ds_data_service(), self.region)
+        dict[str, str] query = {}
+        query["DirectoryId"] = input.DirectoryId
+        auto b = binding.HttpBinding(method="POST", path_template="/Groups/UpdateGroup", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + ds_data_json_str(u0))
+        if input.GroupScope.is_some():
+            auto u1 = input.GroupScope.unwrap()
+            parts.append("\"GroupScope\":" + u1.to_json())
+        if input.GroupType.is_some():
+            auto u2 = input.GroupType.unwrap()
+            parts.append("\"GroupType\":" + u2.to_json())
+        if input.OtherAttributes.is_some():
+            auto u3 = input.OtherAttributes.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(ds_data_json_str(k4) + ":" + attribute_value_to_json(u3[k4]))
+            parts.append("\"OtherAttributes\":" + ds_data_json_obj(m4))
+        parts.append("\"SAMAccountName\":" + ds_data_json_str(input.SAMAccountName))
+        if input.UpdateType.is_some():
+            auto u5 = input.UpdateType.unwrap()
+            parts.append("\"UpdateType\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, ds_data_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ds_data_service(), self.region, host)
+
+    # UpdateUser  POST /Users/UpdateUser
+    # errors: AccessDeniedException, ConflictException, DirectoryUnavailableException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_user(self, UpdateUserRequest input) -> str:
+        auto host = endpoints.regional_host(ds_data_service(), self.region)
+        dict[str, str] query = {}
+        query["DirectoryId"] = input.DirectoryId
+        auto b = binding.HttpBinding(method="POST", path_template="/Users/UpdateUser", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + ds_data_json_str(u0))
+        if input.EmailAddress.is_some():
+            auto u1 = input.EmailAddress.unwrap()
+            parts.append("\"EmailAddress\":" + ds_data_json_str(u1))
+        if input.GivenName.is_some():
+            auto u2 = input.GivenName.unwrap()
+            parts.append("\"GivenName\":" + ds_data_json_str(u2))
+        if input.OtherAttributes.is_some():
+            auto u3 = input.OtherAttributes.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(ds_data_json_str(k4) + ":" + attribute_value_to_json(u3[k4]))
+            parts.append("\"OtherAttributes\":" + ds_data_json_obj(m4))
+        parts.append("\"SAMAccountName\":" + ds_data_json_str(input.SAMAccountName))
+        if input.Surname.is_some():
+            auto u5 = input.Surname.unwrap()
+            parts.append("\"Surname\":" + ds_data_json_str(u5))
+        if input.UpdateType.is_some():
+            auto u6 = input.UpdateType.unwrap()
+            parts.append("\"UpdateType\":" + u6.to_json())
+        auto bp = restjson.rest_json_document(b, ds_data_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ds_data_service(), self.region, host)
+
     # Paginator for ListGroupMembers — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: Members).
     def paginate_list_group_members(self, ListGroupMembersRequest input):
@@ -745,6 +1001,32 @@ struct Directory_Service_DataClient:
         auto host = endpoints.regional_host(ds_data_service(), self.region)
         while True:
             auto raw = self.list_users(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchGroups — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Groups).
+    def paginate_search_groups(self, SearchGroupsRequest input):
+        auto host = endpoints.regional_host(ds_data_service(), self.region)
+        while True:
+            auto raw = self.search_groups(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchUsers — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Users).
+    def paginate_search_users(self, SearchUsersRequest input):
+        auto host = endpoints.regional_host(ds_data_service(), self.region)
+        while True:
+            auto raw = self.search_users(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

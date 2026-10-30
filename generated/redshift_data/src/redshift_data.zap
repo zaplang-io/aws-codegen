@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 12 operations — 10 with a generated method,
-#   2 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 12 operations — 12 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   42 structs (28 @derive(Json)), 5 enums, 10 error variants.
 #   8 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -99,8 +99,9 @@ struct BatchExecuteStatementException:
     str Message
     str StatementId
 
-# no @derive(Json): member(s) Sqls: list[str], Parameters: list[SqlParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sqls: list[str], Parameters: list[SqlParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchExecuteStatementInput:
     list[str] Sqls
     Optional[str] ClusterIdentifier
@@ -118,8 +119,9 @@ struct BatchExecuteStatementInput:
     Optional[ExecutionMode] ExecutionMode
     Optional[int64] WaitTimeSeconds
 
-# no @derive(Json): member(s) DbGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DbGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchExecuteStatementOutput:
     Optional[str] Id
     Optional[DateTime] CreatedAt
@@ -167,8 +169,9 @@ struct DescribeStatementRequest:
     str Id
     Optional[int64] WaitTimeSeconds
 
-# no @derive(Json): member(s) QueryParameters: list[SqlParameter], SubStatements: list[SubStatementData] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QueryParameters: list[SqlParameter], SubStatements: list[SubStatementData] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeStatementResponse:
     str Id
     Optional[str] SecretArn
@@ -207,8 +210,9 @@ struct DescribeTableRequest:
     Optional[int64] MaxResults
     Optional[str] WorkgroupName
 
-# no @derive(Json): member(s) ColumnList: list[ColumnMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnList: list[ColumnMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTableResponse:
     Optional[str] TableName
     Optional[list[ColumnMetadata]] ColumnList
@@ -219,8 +223,9 @@ struct ExecuteStatementException:
     str Message
     str StatementId
 
-# no @derive(Json): member(s) Parameters: list[SqlParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: list[SqlParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecuteStatementInput:
     str Sql
     Optional[str] ClusterIdentifier
@@ -237,8 +242,9 @@ struct ExecuteStatementInput:
     Optional[str] SessionId
     Optional[int64] WaitTimeSeconds
 
-# no @derive(Json): member(s) DbGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DbGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecuteStatementOutput:
     Optional[str] Id
     Optional[DateTime] CreatedAt
@@ -268,8 +274,9 @@ struct GetStatementResultRequest:
     Optional[str] NextToken
     Optional[int64] WaitTimeSeconds
 
-# no @derive(Json): member(s) Records: list[list[Field]], ColumnMetadata: list[ColumnMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Records: list[list[Field]], ColumnMetadata: list[ColumnMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetStatementResultResponse:
     list[list[Field]] Records
     Optional[list[ColumnMetadata]] ColumnMetadata
@@ -282,8 +289,9 @@ struct GetStatementResultV2Request:
     Optional[str] NextToken
     Optional[int64] WaitTimeSeconds
 
-# no @derive(Json): member(s) Records: list[QueryRecords], ColumnMetadata: list[ColumnMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Records: list[QueryRecords], ColumnMetadata: list[ColumnMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetStatementResultV2Response:
     list[QueryRecords] Records
     Optional[list[ColumnMetadata]] ColumnMetadata
@@ -305,8 +313,9 @@ struct ListDatabasesRequest:
     Optional[int64] MaxResults
     Optional[str] WorkgroupName
 
-# no @derive(Json): member(s) Databases: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Databases: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatabasesResponse:
     Optional[list[str]] Databases
     Optional[str] NextToken
@@ -323,8 +332,9 @@ struct ListSchemasRequest:
     Optional[int64] MaxResults
     Optional[str] WorkgroupName
 
-# no @derive(Json): member(s) Schemas: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Schemas: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSchemasResponse:
     Optional[list[str]] Schemas
     Optional[str] NextToken
@@ -340,8 +350,9 @@ struct ListSessionsRequest:
     Optional[str] WorkgroupName
     Optional[str] Database
 
-# no @derive(Json): member(s) Sessions: list[SessionData] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sessions: list[SessionData] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSessionsResponse:
     list[SessionData] Sessions
     Optional[str] NextToken
@@ -357,8 +368,9 @@ struct ListStatementsRequest:
     Optional[str] ClusterIdentifier
     Optional[str] WorkgroupName
 
-# no @derive(Json): member(s) Statements: list[StatementData] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Statements: list[StatementData] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStatementsResponse:
     list[StatementData] Statements
     Optional[str] NextToken
@@ -376,8 +388,9 @@ struct ListTablesRequest:
     Optional[int64] MaxResults
     Optional[str] WorkgroupName
 
-# no @derive(Json): member(s) Tables: list[TableMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tables: list[TableMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTablesResponse:
     Optional[list[TableMember]] Tables
     Optional[str] NextToken
@@ -414,8 +427,9 @@ struct SqlParameter:
     str name
     str value
 
-# no @derive(Json): member(s) QueryStrings: list[str], QueryParameters: list[SqlParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QueryStrings: list[str], QueryParameters: list[SqlParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StatementData:
     str Id
     Optional[str] QueryString
@@ -498,15 +512,148 @@ def redshift_data_error_from_code(str code) -> Redshift_DataError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   BatchExecuteStatement (input BatchExecuteStatementInput)
-#   ExecuteStatement (input ExecuteStatementInput)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def redshift_data_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def redshift_data_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def redshift_data_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize BatchExecuteStatementInput to a compact JSON object (declaration order).
+def batch_execute_statement_input_to_json(BatchExecuteStatementInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Sqls:
+        e0.append(redshift_data_json_str(x0))
+    parts.append("\"Sqls\":" + redshift_data_json_arr(e0))
+    if v.ClusterIdentifier.is_some():
+        auto u1 = v.ClusterIdentifier.unwrap()
+        parts.append("\"ClusterIdentifier\":" + redshift_data_json_str(u1))
+    if v.SecretArn.is_some():
+        auto u2 = v.SecretArn.unwrap()
+        parts.append("\"SecretArn\":" + redshift_data_json_str(u2))
+    if v.DbUser.is_some():
+        auto u3 = v.DbUser.unwrap()
+        parts.append("\"DbUser\":" + redshift_data_json_str(u3))
+    if v.Database.is_some():
+        auto u4 = v.Database.unwrap()
+        parts.append("\"Database\":" + redshift_data_json_str(u4))
+    if v.WithEvent.is_some():
+        auto u5 = v.WithEvent.unwrap()
+        parts.append("\"WithEvent\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.StatementName.is_some():
+        auto u6 = v.StatementName.unwrap()
+        parts.append("\"StatementName\":" + redshift_data_json_str(u6))
+    if v.Parameters.is_some():
+        auto u7 = v.Parameters.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"Parameters\":" + redshift_data_json_arr(e8))
+    if v.WorkgroupName.is_some():
+        auto u9 = v.WorkgroupName.unwrap()
+        parts.append("\"WorkgroupName\":" + redshift_data_json_str(u9))
+    if v.ClientToken.is_some():
+        auto u10 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + redshift_data_json_str(u10))
+    if v.ResultFormat.is_some():
+        auto u11 = v.ResultFormat.unwrap()
+        parts.append("\"ResultFormat\":" + u11.to_json())
+    if v.SessionKeepAliveSeconds.is_some():
+        auto u12 = v.SessionKeepAliveSeconds.unwrap()
+        parts.append("\"SessionKeepAliveSeconds\":" + str(u12))
+    if v.SessionId.is_some():
+        auto u13 = v.SessionId.unwrap()
+        parts.append("\"SessionId\":" + redshift_data_json_str(u13))
+    if v.ExecutionMode.is_some():
+        auto u14 = v.ExecutionMode.unwrap()
+        parts.append("\"ExecutionMode\":" + u14.to_json())
+    if v.WaitTimeSeconds.is_some():
+        auto u15 = v.WaitTimeSeconds.unwrap()
+        parts.append("\"WaitTimeSeconds\":" + str(u15))
+    return redshift_data_json_obj(parts)
+
+# Serialize ExecuteStatementInput to a compact JSON object (declaration order).
+def execute_statement_input_to_json(ExecuteStatementInput v) -> str:
+    list[str] parts = []
+    parts.append("\"Sql\":" + redshift_data_json_str(v.Sql))
+    if v.ClusterIdentifier.is_some():
+        auto u0 = v.ClusterIdentifier.unwrap()
+        parts.append("\"ClusterIdentifier\":" + redshift_data_json_str(u0))
+    if v.SecretArn.is_some():
+        auto u1 = v.SecretArn.unwrap()
+        parts.append("\"SecretArn\":" + redshift_data_json_str(u1))
+    if v.DbUser.is_some():
+        auto u2 = v.DbUser.unwrap()
+        parts.append("\"DbUser\":" + redshift_data_json_str(u2))
+    if v.Database.is_some():
+        auto u3 = v.Database.unwrap()
+        parts.append("\"Database\":" + redshift_data_json_str(u3))
+    if v.WithEvent.is_some():
+        auto u4 = v.WithEvent.unwrap()
+        parts.append("\"WithEvent\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.StatementName.is_some():
+        auto u5 = v.StatementName.unwrap()
+        parts.append("\"StatementName\":" + redshift_data_json_str(u5))
+    if v.Parameters.is_some():
+        auto u6 = v.Parameters.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Parameters\":" + redshift_data_json_arr(e7))
+    if v.WorkgroupName.is_some():
+        auto u8 = v.WorkgroupName.unwrap()
+        parts.append("\"WorkgroupName\":" + redshift_data_json_str(u8))
+    if v.ClientToken.is_some():
+        auto u9 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + redshift_data_json_str(u9))
+    if v.ResultFormat.is_some():
+        auto u10 = v.ResultFormat.unwrap()
+        parts.append("\"ResultFormat\":" + u10.to_json())
+    if v.SessionKeepAliveSeconds.is_some():
+        auto u11 = v.SessionKeepAliveSeconds.unwrap()
+        parts.append("\"SessionKeepAliveSeconds\":" + str(u11))
+    if v.SessionId.is_some():
+        auto u12 = v.SessionId.unwrap()
+        parts.append("\"SessionId\":" + redshift_data_json_str(u12))
+    if v.WaitTimeSeconds.is_some():
+        auto u13 = v.WaitTimeSeconds.unwrap()
+        parts.append("\"WaitTimeSeconds\":" + str(u13))
+    return redshift_data_json_obj(parts)
 
 # A bound Redshift_Data client: credentials + region, threaded into every operation.
 struct Redshift_DataClient:
     core.Credentials creds
     str region
+
+    # BatchExecuteStatement
+    # errors: ActiveSessionsExceededException, ActiveStatementsExceededException, BatchExecuteStatementException, InternalServerException, ResourceNotFoundException, ValidationException
+    def batch_execute_statement(self, BatchExecuteStatementInput input) -> str:
+        auto body = batch_execute_statement_input_to_json(input)
+        return awsjson.awsjson_request_now(redshift_data_protocol(), self.creds, self.region, "BatchExecuteStatement", body)
 
     # CancelStatement
     # errors: DatabaseConnectionException, InternalServerException, QueryTimeoutException, ResourceNotFoundException, ValidationException
@@ -525,6 +672,12 @@ struct Redshift_DataClient:
     def describe_table(self, DescribeTableRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(redshift_data_protocol(), self.creds, self.region, "DescribeTable", body)
+
+    # ExecuteStatement
+    # errors: ActiveSessionsExceededException, ActiveStatementsExceededException, ExecuteStatementException, InternalServerException, ResourceNotFoundException, ValidationException
+    def execute_statement(self, ExecuteStatementInput input) -> str:
+        auto body = execute_statement_input_to_json(input)
+        return awsjson.awsjson_request_now(redshift_data_protocol(), self.creds, self.region, "ExecuteStatement", body)
 
     # GetStatementResult
     # errors: ActiveWaitingRequestsExceededException, InternalServerException, ResourceNotFoundException, ValidationException

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 3 operations — 0 with a generated method,
-#   3 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 3 operations — 3 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   11 structs (3 @derive(Json)), 0 enums, 2 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -49,8 +49,9 @@ struct GetActionRecommendationsRequest:
     Optional[str] filterArn
     Optional[dict[str, str]] filterValues
 
-# no @derive(Json): member(s) actionList: list[PredictedAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actionList: list[PredictedAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetActionRecommendationsResponse:
     Optional[list[PredictedAction]] actionList
     Optional[str] recommendationId
@@ -66,8 +67,9 @@ struct GetPersonalizedRankingRequest:
     Optional[dict[str, str]] filterValues
     Optional[dict[str, list[str]]] metadataColumns
 
-# no @derive(Json): member(s) personalizedRanking: list[PredictedItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) personalizedRanking: list[PredictedItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPersonalizedRankingResponse:
     Optional[list[PredictedItem]] personalizedRanking
     Optional[str] recommendationId
@@ -86,8 +88,9 @@ struct GetRecommendationsRequest:
     Optional[list[Promotion]] promotions
     Optional[dict[str, list[str]]] metadataColumns
 
-# no @derive(Json): member(s) itemList: list[PredictedItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) itemList: list[PredictedItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecommendationsResponse:
     Optional[list[PredictedItem]] itemList
     Optional[str] recommendationId
@@ -101,8 +104,9 @@ struct PredictedAction:
     Optional[str] actionId
     Optional[float64] score
 
-# no @derive(Json): member(s) metadata: dict[str, str], reason: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadata: dict[str, str], reason: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PredictedItem:
     Optional[str] itemId
     Optional[float64] score
@@ -110,8 +114,9 @@ struct PredictedItem:
     Optional[dict[str, str]] metadata
     Optional[list[str]] reason
 
-# no @derive(Json): member(s) filterValues: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filterValues: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Promotion:
     Optional[str] name
     Optional[int64] percentPromotedItems
@@ -142,19 +147,181 @@ def personalize_runtime_error_from_code(str code) -> Personalize_RuntimeError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   GetActionRecommendations (document member `filterValues: dict[str, str]` is not serializable by derive)
-#   GetPersonalizedRanking (document member `inputList: list[str]` is not serializable by derive)
-#   GetRecommendations (document member `context: dict[str, str]` is not serializable by derive)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def personalize_runtime_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def personalize_runtime_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def personalize_runtime_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize Promotion to a compact JSON object (declaration order).
+def promotion_to_json(Promotion v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + personalize_runtime_json_str(u0))
+    if v.percentPromotedItems.is_some():
+        auto u1 = v.percentPromotedItems.unwrap()
+        parts.append("\"percentPromotedItems\":" + str(u1))
+    if v.filterArn.is_some():
+        auto u2 = v.filterArn.unwrap()
+        parts.append("\"filterArn\":" + personalize_runtime_json_str(u2))
+    if v.filterValues.is_some():
+        auto u3 = v.filterValues.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(personalize_runtime_json_str(k4) + ":" + personalize_runtime_json_str(u3[k4]))
+        parts.append("\"filterValues\":" + personalize_runtime_json_obj(m4))
+    return personalize_runtime_json_obj(parts)
 
 # A bound Personalize_Runtime client: credentials + region, threaded into every operation.
 struct Personalize_RuntimeClient:
     core.Credentials creds
     str region
 
-    # no bindable operations were generated for this service in v0
+    # GetActionRecommendations  POST /action-recommendations
+    # errors: InvalidInputException, ResourceNotFoundException
+    def get_action_recommendations(self, GetActionRecommendationsRequest input) -> str:
+        auto host = endpoints.regional_host(personalize_runtime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/action-recommendations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.campaignArn.is_some():
+            auto u0 = input.campaignArn.unwrap()
+            parts.append("\"campaignArn\":" + personalize_runtime_json_str(u0))
+        if input.userId.is_some():
+            auto u1 = input.userId.unwrap()
+            parts.append("\"userId\":" + personalize_runtime_json_str(u1))
+        if input.numResults.is_some():
+            auto u2 = input.numResults.unwrap()
+            parts.append("\"numResults\":" + str(u2))
+        if input.filterArn.is_some():
+            auto u3 = input.filterArn.unwrap()
+            parts.append("\"filterArn\":" + personalize_runtime_json_str(u3))
+        if input.filterValues.is_some():
+            auto u4 = input.filterValues.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(personalize_runtime_json_str(k5) + ":" + personalize_runtime_json_str(u4[k5]))
+            parts.append("\"filterValues\":" + personalize_runtime_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, personalize_runtime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, personalize_runtime_service(), self.region, host)
+
+    # GetPersonalizedRanking  POST /personalize-ranking
+    # errors: InvalidInputException, ResourceNotFoundException
+    def get_personalized_ranking(self, GetPersonalizedRankingRequest input) -> str:
+        auto host = endpoints.regional_host(personalize_runtime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/personalize-ranking", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"campaignArn\":" + personalize_runtime_json_str(input.campaignArn))
+        list[str] e0 = []
+        for x0 in input.inputList:
+            e0.append(personalize_runtime_json_str(x0))
+        parts.append("\"inputList\":" + personalize_runtime_json_arr(e0))
+        parts.append("\"userId\":" + personalize_runtime_json_str(input.userId))
+        if input.context.is_some():
+            auto u1 = input.context.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(personalize_runtime_json_str(k2) + ":" + personalize_runtime_json_str(u1[k2]))
+            parts.append("\"context\":" + personalize_runtime_json_obj(m2))
+        if input.filterArn.is_some():
+            auto u3 = input.filterArn.unwrap()
+            parts.append("\"filterArn\":" + personalize_runtime_json_str(u3))
+        if input.filterValues.is_some():
+            auto u4 = input.filterValues.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(personalize_runtime_json_str(k5) + ":" + personalize_runtime_json_str(u4[k5]))
+            parts.append("\"filterValues\":" + personalize_runtime_json_obj(m5))
+        if input.metadataColumns.is_some():
+            auto u6 = input.metadataColumns.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                list[str] e8 = []
+                for x8 in u6[k7]:
+                    e8.append(personalize_runtime_json_str(x8))
+                m7.append(personalize_runtime_json_str(k7) + ":" + personalize_runtime_json_arr(e8))
+            parts.append("\"metadataColumns\":" + personalize_runtime_json_obj(m7))
+        auto bp = restjson.rest_json_document(b, personalize_runtime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, personalize_runtime_service(), self.region, host)
+
+    # GetRecommendations  POST /recommendations
+    # errors: InvalidInputException, ResourceNotFoundException
+    def get_recommendations(self, GetRecommendationsRequest input) -> str:
+        auto host = endpoints.regional_host(personalize_runtime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/recommendations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.campaignArn.is_some():
+            auto u0 = input.campaignArn.unwrap()
+            parts.append("\"campaignArn\":" + personalize_runtime_json_str(u0))
+        if input.itemId.is_some():
+            auto u1 = input.itemId.unwrap()
+            parts.append("\"itemId\":" + personalize_runtime_json_str(u1))
+        if input.userId.is_some():
+            auto u2 = input.userId.unwrap()
+            parts.append("\"userId\":" + personalize_runtime_json_str(u2))
+        if input.numResults.is_some():
+            auto u3 = input.numResults.unwrap()
+            parts.append("\"numResults\":" + str(u3))
+        if input.context.is_some():
+            auto u4 = input.context.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(personalize_runtime_json_str(k5) + ":" + personalize_runtime_json_str(u4[k5]))
+            parts.append("\"context\":" + personalize_runtime_json_obj(m5))
+        if input.filterArn.is_some():
+            auto u6 = input.filterArn.unwrap()
+            parts.append("\"filterArn\":" + personalize_runtime_json_str(u6))
+        if input.filterValues.is_some():
+            auto u7 = input.filterValues.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(personalize_runtime_json_str(k8) + ":" + personalize_runtime_json_str(u7[k8]))
+            parts.append("\"filterValues\":" + personalize_runtime_json_obj(m8))
+        if input.recommenderArn.is_some():
+            auto u9 = input.recommenderArn.unwrap()
+            parts.append("\"recommenderArn\":" + personalize_runtime_json_str(u9))
+        if input.promotions.is_some():
+            auto u10 = input.promotions.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(promotion_to_json(x11))
+            parts.append("\"promotions\":" + personalize_runtime_json_arr(e11))
+        if input.metadataColumns.is_some():
+            auto u12 = input.metadataColumns.unwrap()
+            list[str] m13 = []
+            for k13 in sorted(u12.keys()):
+                list[str] e14 = []
+                for x14 in u12[k13]:
+                    e14.append(personalize_runtime_json_str(x14))
+                m13.append(personalize_runtime_json_str(k13) + ":" + personalize_runtime_json_arr(e14))
+            parts.append("\"metadataColumns\":" + personalize_runtime_json_obj(m13))
+        auto bp = restjson.rest_json_document(b, personalize_runtime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, personalize_runtime_service(), self.region, host)
+
 # Construct a Personalize_RuntimeClient bound to credentials + region.
 def personalize_runtime_client(core.Credentials creds, str region) -> Personalize_RuntimeClient:
     return Personalize_RuntimeClient(creds=creds, region=region)

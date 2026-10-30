@@ -108,12 +108,16 @@ fn paginator_contract_shape() {
     assert!(src.contains("input.ExclusiveStartTableName = Optional.Some(np.token)"));
     assert!(src.contains("yield page"));
     assert!(src.contains("if not np.has_more:"));
-    // Query/Scan are paginated in the model but their input is not derivable, so
-    // they are documented as skipped rather than emitted wrong.
+    // Query/Scan now serialize their AttributeValue-map input via explicit
+    // serializers (zaplang-io/zap#424), so the operations themselves generate;
+    // but their paginator token `ExclusiveStartKey` is a map, not a string
+    // field, so the paginator is still documented as skipped (never emitted).
+    assert!(src.contains("def query(self, QueryInput input) -> str:"));
+    assert!(src.contains("def scan(self, ScanInput input) -> str:"));
     assert!(!src.contains("def paginate_query("));
     assert!(!src.contains("def paginate_scan("));
-    assert!(src.contains("Query (input not derivable"));
-    assert!(src.contains("Scan (input not derivable"));
+    assert!(src.contains("Query (input_token ExclusiveStartKey is not a string field)"));
+    assert!(src.contains("Scan (input_token ExclusiveStartKey is not a string field)"));
 }
 
 #[test]

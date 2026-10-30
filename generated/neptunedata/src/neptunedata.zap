@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 48 operations — 35 with a generated method,
-#   13 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 48 operations — 39 with a generated method,
+#   9 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   157 structs (127 @derive(Json)), 12 enums, 37 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -366,8 +366,9 @@ struct Document:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) edgeProperties: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) edgeProperties: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EdgeStructure:
     Optional[int64] count
     Optional[list[str]] edgeProperties
@@ -455,8 +456,9 @@ struct FailureByQueryException:
 struct FastResetToken:
     Optional[str] token
 
-# no @derive(Json): member(s) labMode: dict[str, str], features: dict[str, Document], settings: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) labMode: dict[str, str], features: dict[str, Document], settings: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEngineStatusOutput:
     Optional[str] status
     Optional[str] startTime
@@ -549,8 +551,9 @@ struct GetMLModelTrainingJobInput:
     str id
     Optional[str] neptuneIamRoleArn
 
-# no @derive(Json): member(s) mlModels: list[MlConfigDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mlModels: list[MlConfigDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMLModelTrainingJobOutput:
     Optional[str] status
     Optional[str] id
@@ -565,8 +568,9 @@ struct GetMLModelTransformJobInput:
     str id
     Optional[str] neptuneIamRoleArn
 
-# no @derive(Json): member(s) models: list[MlConfigDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) models: list[MlConfigDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMLModelTransformJobOutput:
     Optional[str] status
     Optional[str] id
@@ -600,8 +604,9 @@ struct GetPropertygraphStreamInput:
     Optional[int64] opNum
     Optional[str] encoding
 
-# no @derive(Json): member(s) lastEventId: dict[str, str], records: list[PropertygraphRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lastEventId: dict[str, str], records: list[PropertygraphRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPropertygraphStreamOutput:
     dict[str, str] lastEventId
     int64 lastTrxTimestampInMillis
@@ -615,8 +620,9 @@ struct GetPropertygraphSummaryInput:
     # wire string of the GraphSummaryType enum (querystring binding)
     Optional[str] mode
 
-# no @derive(Json): member(s) payload: PropertygraphSummaryValueMap not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) payload: PropertygraphSummaryValueMap not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPropertygraphSummaryOutput:
     Optional[int64] statusCode
     Optional[PropertygraphSummaryValueMap] payload
@@ -627,8 +633,9 @@ struct GetRDFGraphSummaryInput:
     # wire string of the GraphSummaryType enum (querystring binding)
     Optional[str] mode
 
-# no @derive(Json): member(s) payload: RDFGraphSummaryValueMap not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) payload: RDFGraphSummaryValueMap not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRDFGraphSummaryOutput:
     Optional[int64] statusCode
     Optional[RDFGraphSummaryValueMap] payload
@@ -648,8 +655,9 @@ struct GetSparqlStreamInput:
     Optional[int64] opNum
     Optional[str] encoding
 
-# no @derive(Json): member(s) lastEventId: dict[str, str], records: list[SparqlRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lastEventId: dict[str, str], records: list[SparqlRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSparqlStreamOutput:
     dict[str, str] lastEventId
     int64 lastTrxTimestampInMillis
@@ -715,15 +723,17 @@ struct InvalidParameterException:
 struct ListGremlinQueriesInput:
     Optional[bool] includeWaiting
 
-# no @derive(Json): member(s) queries: list[GremlinQueryStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) queries: list[GremlinQueryStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGremlinQueriesOutput:
     Optional[int64] acceptedQueryCount
     Optional[int64] runningQueryCount
     Optional[list[GremlinQueryStatus]] queries
 
-# no @derive(Json): member(s) rebuildIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rebuildIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIndexRebuildsOutput:
     list[str] rebuildIds
 
@@ -733,8 +743,9 @@ struct ListLoaderJobsInput:
     Optional[int64] limit
     Optional[bool] includeQueuedLoads
 
-# no @derive(Json): member(s) payload: LoaderIdResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) payload: LoaderIdResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLoaderJobsOutput:
     str status
     LoaderIdResult payload
@@ -745,8 +756,9 @@ struct ListMLDataProcessingJobsInput:
     Optional[int64] maxItems
     Optional[str] neptuneIamRoleArn
 
-# no @derive(Json): member(s) ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMLDataProcessingJobsOutput:
     Optional[list[str]] ids
 
@@ -756,8 +768,9 @@ struct ListMLEndpointsInput:
     Optional[int64] maxItems
     Optional[str] neptuneIamRoleArn
 
-# no @derive(Json): member(s) ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMLEndpointsOutput:
     Optional[list[str]] ids
 
@@ -767,8 +780,9 @@ struct ListMLModelTrainingJobsInput:
     Optional[int64] maxItems
     Optional[str] neptuneIamRoleArn
 
-# no @derive(Json): member(s) ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMLModelTrainingJobsOutput:
     Optional[list[str]] ids
 
@@ -778,8 +792,9 @@ struct ListMLModelTransformJobsInput:
     Optional[int64] maxItems
     Optional[str] neptuneIamRoleArn
 
-# no @derive(Json): member(s) ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMLModelTransformJobsOutput:
     Optional[list[str]] ids
 
@@ -788,8 +803,9 @@ struct ListMLModelTransformJobsOutput:
 struct ListOpenCypherQueriesInput:
     Optional[bool] includeWaiting
 
-# no @derive(Json): member(s) queries: list[GremlinQueryStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) queries: list[GremlinQueryStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOpenCypherQueriesOutput:
     Optional[int64] acceptedQueryCount
     Optional[int64] runningQueryCount
@@ -801,8 +817,9 @@ struct LoadUrlAccessDeniedException:
     str requestId
     str code
 
-# no @derive(Json): member(s) loadIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) loadIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LoaderIdResult:
     Optional[list[str]] loadIds
 
@@ -870,8 +887,9 @@ struct MlResourceDefinition:
     Optional[str] failureReason
     Optional[str] cloudwatchLogUrl
 
-# no @derive(Json): member(s) nodeProperties: list[str], distinctOutgoingEdgeLabels: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodeProperties: list[str], distinctOutgoingEdgeLabels: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NodeStructure:
     Optional[int64] count
     Optional[list[str]] nodeProperties
@@ -898,8 +916,9 @@ struct PropertygraphData:
     Optional[str] from
     Optional[str] to
 
-# no @derive(Json): member(s) eventId: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventId: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PropertygraphRecord:
     int64 commitTimestampInMillis
     dict[str, str] eventId
@@ -907,8 +926,9 @@ struct PropertygraphRecord:
     str op
     Optional[bool] isLastOp
 
-# no @derive(Json): member(s) nodeLabels: list[str], edgeLabels: list[str], nodeProperties: list[dict[str, int64]], edgeProperties: list[dict[str, int64]], nodeStructures: list[NodeStructure], edgeStructures: list[EdgeStructure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodeLabels: list[str], edgeLabels: list[str], nodeProperties: list[dict[str, int64]], edgeProperties: list[dict[str, int64]], nodeStructures: list[NodeStructure], edgeStructures: list[EdgeStructure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PropertygraphSummary:
     Optional[int64] numNodes
     Optional[int64] numEdges
@@ -925,8 +945,9 @@ struct PropertygraphSummary:
     Optional[list[NodeStructure]] nodeStructures
     Optional[list[EdgeStructure]] edgeStructures
 
-# no @derive(Json): member(s) graphSummary: PropertygraphSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) graphSummary: PropertygraphSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PropertygraphSummaryValueMap:
     Optional[str] version
     Optional[DateTime] lastStatisticsComputationTime
@@ -974,8 +995,9 @@ struct QueryTooLargeException:
     str requestId
     str code
 
-# no @derive(Json): member(s) classes: list[str], predicates: list[dict[str, int64]], subjectStructures: list[SubjectStructure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) classes: list[str], predicates: list[dict[str, int64]], subjectStructures: list[SubjectStructure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RDFGraphSummary:
     Optional[int64] numDistinctSubjects
     Optional[int64] numDistinctPredicates
@@ -985,8 +1007,9 @@ struct RDFGraphSummary:
     Optional[list[dict[str, int64]]] predicates
     Optional[list[SubjectStructure]] subjectStructures
 
-# no @derive(Json): member(s) graphSummary: RDFGraphSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) graphSummary: RDFGraphSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RDFGraphSummaryValueMap:
     Optional[str] version
     Optional[DateTime] lastStatisticsComputationTime
@@ -1024,8 +1047,9 @@ struct ServerShutdownException:
 struct SparqlData:
     str stmt
 
-# no @derive(Json): member(s) eventId: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventId: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SparqlRecord:
     int64 commitTimestampInMillis
     dict[str, str] eventId
@@ -1070,8 +1094,9 @@ struct StartLoaderJobInput:
     Optional[bool] userProvidedEdgeIds
     Optional[bool] edgeOnlyLoad
 
-# no @derive(Json): member(s) payload: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) payload: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartLoaderJobOutput:
     str status
     dict[str, str] payload
@@ -1186,8 +1211,9 @@ struct StreamRecordsNotFoundException:
     str requestId
     str code
 
-# no @derive(Json): member(s) predicates: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) predicates: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubjectStructure:
     Optional[int64] count
     Optional[list[str]] predicates
@@ -1364,10 +1390,6 @@ def neptune_db_error_from_code(str code) -> neptunedataError:
 #   ListGremlinQueries (httpQuery `includeWaiting` has unsupported type bool)
 #   ListLoaderJobs (httpQuery `includeQueuedLoads` has unsupported type bool)
 #   ListOpenCypherQueries (httpQuery `includeWaiting` has unsupported type bool)
-#   StartLoaderJob (document member `parserConfiguration: dict[str, str]` is not serializable by derive)
-#   StartMLDataProcessingJob (document member `subnets: list[str]` is not serializable by derive)
-#   StartMLModelTrainingJob (document member `subnets: list[str]` is not serializable by derive)
-#   StartMLModelTransformJob (document member `subnets: list[str]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1798,6 +1820,228 @@ struct neptunedataClient:
         auto b = binding.HttpBinding(method="POST", path_template="/storage/indexes/rebuilds", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartIndexRebuildDocument(clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, neptune_db_service(), self.region, host)
+
+    # StartLoaderJob  POST /loader
+    # errors: BadRequestException, BulkLoadIdNotFoundException, ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InternalFailureException, InvalidArgumentException, InvalidParameterException, LoadUrlAccessDeniedException, MissingParameterException, PreconditionsFailedException, S3Exception, TooManyRequestsException, UnsupportedOperationException
+    def start_loader_job(self, StartLoaderJobInput input) -> str:
+        auto host = endpoints.regional_host(neptune_db_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/loader", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"source\":" + neptune_db_json_str(input.source))
+        parts.append("\"format\":" + input.format.to_json())
+        parts.append("\"region\":" + input.s3BucketRegion.to_json())
+        parts.append("\"iamRoleArn\":" + neptune_db_json_str(input.iamRoleArn))
+        if input.mode.is_some():
+            auto u0 = input.mode.unwrap()
+            parts.append("\"mode\":" + u0.to_json())
+        if input.failOnError.is_some():
+            auto u1 = input.failOnError.unwrap()
+            parts.append("\"failOnError\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.parallelism.is_some():
+            auto u2 = input.parallelism.unwrap()
+            parts.append("\"parallelism\":" + u2.to_json())
+        if input.parserConfiguration.is_some():
+            auto u3 = input.parserConfiguration.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(neptune_db_json_str(k4) + ":" + neptune_db_json_str(u3[k4]))
+            parts.append("\"parserConfiguration\":" + neptune_db_json_obj(m4))
+        if input.updateSingleCardinalityProperties.is_some():
+            auto u5 = input.updateSingleCardinalityProperties.unwrap()
+            parts.append("\"updateSingleCardinalityProperties\":" + json.dumps(JsonValue.Bool(u5)))
+        if input.queueRequest.is_some():
+            auto u6 = input.queueRequest.unwrap()
+            parts.append("\"queueRequest\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.dependencies.is_some():
+            auto u7 = input.dependencies.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(neptune_db_json_str(x8))
+            parts.append("\"dependencies\":" + neptune_db_json_arr(e8))
+        if input.userProvidedEdgeIds.is_some():
+            auto u9 = input.userProvidedEdgeIds.unwrap()
+            parts.append("\"userProvidedEdgeIds\":" + json.dumps(JsonValue.Bool(u9)))
+        if input.edgeOnlyLoad.is_some():
+            auto u10 = input.edgeOnlyLoad.unwrap()
+            parts.append("\"edgeOnlyLoad\":" + json.dumps(JsonValue.Bool(u10)))
+        auto bp = restjson.rest_json_document(b, neptune_db_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, neptune_db_service(), self.region, host)
+
+    # StartMLDataProcessingJob  POST /ml/dataprocessing
+    # errors: BadRequestException, ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InvalidArgumentException, InvalidParameterException, MLResourceNotFoundException, MissingParameterException, PreconditionsFailedException, TooManyRequestsException, UnsupportedOperationException
+    def start_ml_data_processing_job(self, StartMLDataProcessingJobInput input) -> str:
+        auto host = endpoints.regional_host(neptune_db_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ml/dataprocessing", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.id.is_some():
+            auto u0 = input.id.unwrap()
+            parts.append("\"id\":" + neptune_db_json_str(u0))
+        if input.previousDataProcessingJobId.is_some():
+            auto u1 = input.previousDataProcessingJobId.unwrap()
+            parts.append("\"previousDataProcessingJobId\":" + neptune_db_json_str(u1))
+        parts.append("\"inputDataS3Location\":" + neptune_db_json_str(input.inputDataS3Location))
+        parts.append("\"processedDataS3Location\":" + neptune_db_json_str(input.processedDataS3Location))
+        if input.sagemakerIamRoleArn.is_some():
+            auto u2 = input.sagemakerIamRoleArn.unwrap()
+            parts.append("\"sagemakerIamRoleArn\":" + neptune_db_json_str(u2))
+        if input.neptuneIamRoleArn.is_some():
+            auto u3 = input.neptuneIamRoleArn.unwrap()
+            parts.append("\"neptuneIamRoleArn\":" + neptune_db_json_str(u3))
+        if input.processingInstanceType.is_some():
+            auto u4 = input.processingInstanceType.unwrap()
+            parts.append("\"processingInstanceType\":" + neptune_db_json_str(u4))
+        if input.processingInstanceVolumeSizeInGB.is_some():
+            auto u5 = input.processingInstanceVolumeSizeInGB.unwrap()
+            parts.append("\"processingInstanceVolumeSizeInGB\":" + str(u5))
+        if input.processingTimeOutInSeconds.is_some():
+            auto u6 = input.processingTimeOutInSeconds.unwrap()
+            parts.append("\"processingTimeOutInSeconds\":" + str(u6))
+        if input.modelType.is_some():
+            auto u7 = input.modelType.unwrap()
+            parts.append("\"modelType\":" + neptune_db_json_str(u7))
+        if input.configFileName.is_some():
+            auto u8 = input.configFileName.unwrap()
+            parts.append("\"configFileName\":" + neptune_db_json_str(u8))
+        if input.subnets.is_some():
+            auto u9 = input.subnets.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(neptune_db_json_str(x10))
+            parts.append("\"subnets\":" + neptune_db_json_arr(e10))
+        if input.securityGroupIds.is_some():
+            auto u11 = input.securityGroupIds.unwrap()
+            list[str] e12 = []
+            for x12 in u11:
+                e12.append(neptune_db_json_str(x12))
+            parts.append("\"securityGroupIds\":" + neptune_db_json_arr(e12))
+        if input.volumeEncryptionKMSKey.is_some():
+            auto u13 = input.volumeEncryptionKMSKey.unwrap()
+            parts.append("\"volumeEncryptionKMSKey\":" + neptune_db_json_str(u13))
+        if input.s3OutputEncryptionKMSKey.is_some():
+            auto u14 = input.s3OutputEncryptionKMSKey.unwrap()
+            parts.append("\"s3OutputEncryptionKMSKey\":" + neptune_db_json_str(u14))
+        auto bp = restjson.rest_json_document(b, neptune_db_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, neptune_db_service(), self.region, host)
+
+    # StartMLModelTrainingJob  POST /ml/modeltraining
+    # errors: BadRequestException, ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InvalidArgumentException, InvalidParameterException, MLResourceNotFoundException, MissingParameterException, PreconditionsFailedException, TooManyRequestsException, UnsupportedOperationException
+    def start_ml_model_training_job(self, StartMLModelTrainingJobInput input) -> str:
+        auto host = endpoints.regional_host(neptune_db_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ml/modeltraining", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.id.is_some():
+            auto u0 = input.id.unwrap()
+            parts.append("\"id\":" + neptune_db_json_str(u0))
+        if input.previousModelTrainingJobId.is_some():
+            auto u1 = input.previousModelTrainingJobId.unwrap()
+            parts.append("\"previousModelTrainingJobId\":" + neptune_db_json_str(u1))
+        parts.append("\"dataProcessingJobId\":" + neptune_db_json_str(input.dataProcessingJobId))
+        parts.append("\"trainModelS3Location\":" + neptune_db_json_str(input.trainModelS3Location))
+        if input.sagemakerIamRoleArn.is_some():
+            auto u2 = input.sagemakerIamRoleArn.unwrap()
+            parts.append("\"sagemakerIamRoleArn\":" + neptune_db_json_str(u2))
+        if input.neptuneIamRoleArn.is_some():
+            auto u3 = input.neptuneIamRoleArn.unwrap()
+            parts.append("\"neptuneIamRoleArn\":" + neptune_db_json_str(u3))
+        if input.baseProcessingInstanceType.is_some():
+            auto u4 = input.baseProcessingInstanceType.unwrap()
+            parts.append("\"baseProcessingInstanceType\":" + neptune_db_json_str(u4))
+        if input.trainingInstanceType.is_some():
+            auto u5 = input.trainingInstanceType.unwrap()
+            parts.append("\"trainingInstanceType\":" + neptune_db_json_str(u5))
+        if input.trainingInstanceVolumeSizeInGB.is_some():
+            auto u6 = input.trainingInstanceVolumeSizeInGB.unwrap()
+            parts.append("\"trainingInstanceVolumeSizeInGB\":" + str(u6))
+        if input.trainingTimeOutInSeconds.is_some():
+            auto u7 = input.trainingTimeOutInSeconds.unwrap()
+            parts.append("\"trainingTimeOutInSeconds\":" + str(u7))
+        if input.maxHPONumberOfTrainingJobs.is_some():
+            auto u8 = input.maxHPONumberOfTrainingJobs.unwrap()
+            parts.append("\"maxHPONumberOfTrainingJobs\":" + str(u8))
+        if input.maxHPOParallelTrainingJobs.is_some():
+            auto u9 = input.maxHPOParallelTrainingJobs.unwrap()
+            parts.append("\"maxHPOParallelTrainingJobs\":" + str(u9))
+        if input.subnets.is_some():
+            auto u10 = input.subnets.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(neptune_db_json_str(x11))
+            parts.append("\"subnets\":" + neptune_db_json_arr(e11))
+        if input.securityGroupIds.is_some():
+            auto u12 = input.securityGroupIds.unwrap()
+            list[str] e13 = []
+            for x13 in u12:
+                e13.append(neptune_db_json_str(x13))
+            parts.append("\"securityGroupIds\":" + neptune_db_json_arr(e13))
+        if input.volumeEncryptionKMSKey.is_some():
+            auto u14 = input.volumeEncryptionKMSKey.unwrap()
+            parts.append("\"volumeEncryptionKMSKey\":" + neptune_db_json_str(u14))
+        if input.s3OutputEncryptionKMSKey.is_some():
+            auto u15 = input.s3OutputEncryptionKMSKey.unwrap()
+            parts.append("\"s3OutputEncryptionKMSKey\":" + neptune_db_json_str(u15))
+        if input.enableManagedSpotTraining.is_some():
+            auto u16 = input.enableManagedSpotTraining.unwrap()
+            parts.append("\"enableManagedSpotTraining\":" + json.dumps(JsonValue.Bool(u16)))
+        if input.customModelTrainingParameters.is_some():
+            auto u17 = input.customModelTrainingParameters.unwrap()
+            parts.append("\"customModelTrainingParameters\":" + u17.to_json())
+        auto bp = restjson.rest_json_document(b, neptune_db_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, neptune_db_service(), self.region, host)
+
+    # StartMLModelTransformJob  POST /ml/modeltransform
+    # errors: BadRequestException, ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InvalidArgumentException, InvalidParameterException, MLResourceNotFoundException, MissingParameterException, PreconditionsFailedException, TooManyRequestsException, UnsupportedOperationException
+    def start_ml_model_transform_job(self, StartMLModelTransformJobInput input) -> str:
+        auto host = endpoints.regional_host(neptune_db_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ml/modeltransform", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.id.is_some():
+            auto u0 = input.id.unwrap()
+            parts.append("\"id\":" + neptune_db_json_str(u0))
+        if input.dataProcessingJobId.is_some():
+            auto u1 = input.dataProcessingJobId.unwrap()
+            parts.append("\"dataProcessingJobId\":" + neptune_db_json_str(u1))
+        if input.mlModelTrainingJobId.is_some():
+            auto u2 = input.mlModelTrainingJobId.unwrap()
+            parts.append("\"mlModelTrainingJobId\":" + neptune_db_json_str(u2))
+        if input.trainingJobName.is_some():
+            auto u3 = input.trainingJobName.unwrap()
+            parts.append("\"trainingJobName\":" + neptune_db_json_str(u3))
+        parts.append("\"modelTransformOutputS3Location\":" + neptune_db_json_str(input.modelTransformOutputS3Location))
+        if input.sagemakerIamRoleArn.is_some():
+            auto u4 = input.sagemakerIamRoleArn.unwrap()
+            parts.append("\"sagemakerIamRoleArn\":" + neptune_db_json_str(u4))
+        if input.neptuneIamRoleArn.is_some():
+            auto u5 = input.neptuneIamRoleArn.unwrap()
+            parts.append("\"neptuneIamRoleArn\":" + neptune_db_json_str(u5))
+        if input.customModelTransformParameters.is_some():
+            auto u6 = input.customModelTransformParameters.unwrap()
+            parts.append("\"customModelTransformParameters\":" + u6.to_json())
+        if input.baseProcessingInstanceType.is_some():
+            auto u7 = input.baseProcessingInstanceType.unwrap()
+            parts.append("\"baseProcessingInstanceType\":" + neptune_db_json_str(u7))
+        if input.baseProcessingInstanceVolumeSizeInGB.is_some():
+            auto u8 = input.baseProcessingInstanceVolumeSizeInGB.unwrap()
+            parts.append("\"baseProcessingInstanceVolumeSizeInGB\":" + str(u8))
+        if input.subnets.is_some():
+            auto u9 = input.subnets.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(neptune_db_json_str(x10))
+            parts.append("\"subnets\":" + neptune_db_json_arr(e10))
+        if input.securityGroupIds.is_some():
+            auto u11 = input.securityGroupIds.unwrap()
+            list[str] e12 = []
+            for x12 in u11:
+                e12.append(neptune_db_json_str(x12))
+            parts.append("\"securityGroupIds\":" + neptune_db_json_arr(e12))
+        if input.volumeEncryptionKMSKey.is_some():
+            auto u13 = input.volumeEncryptionKMSKey.unwrap()
+            parts.append("\"volumeEncryptionKMSKey\":" + neptune_db_json_str(u13))
+        if input.s3OutputEncryptionKMSKey.is_some():
+            auto u14 = input.s3OutputEncryptionKMSKey.unwrap()
+            parts.append("\"s3OutputEncryptionKMSKey\":" + neptune_db_json_str(u14))
+        auto bp = restjson.rest_json_document(b, neptune_db_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, neptune_db_service(), self.region, host)
 
 # Construct a neptunedataClient bound to credentials + region.

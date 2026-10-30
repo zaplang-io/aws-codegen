@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 75 operations — 48 with a generated method,
-#   27 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 75 operations — 75 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   325 structs (207 @derive(Json)), 44 enums, 23 error variants.
-#   5 paginators generated (4 paginated ops skipped) from paginators-1.json.
+#   9 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -477,8 +477,9 @@ struct AgeRange:
 struct Asset:
     Optional[GroundTruthManifest] GroundTruthManifest
 
-# no @derive(Json): member(s) FaceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FaceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateFacesRequest:
     str CollectionId
     str UserId
@@ -486,8 +487,9 @@ struct AssociateFacesRequest:
     Optional[float64] UserMatchThreshold
     Optional[str] ClientRequestToken
 
-# no @derive(Json): member(s) AssociatedFaces: list[AssociatedFace], UnsuccessfulFaceAssociations: list[UnsuccessfulFaceAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociatedFaces: list[AssociatedFace], UnsuccessfulFaceAssociations: list[UnsuccessfulFaceAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateFacesResponse:
     Optional[list[AssociatedFace]] AssociatedFaces
     Optional[list[UnsuccessfulFaceAssociation]] UnsuccessfulFaceAssociations
@@ -527,8 +529,9 @@ struct BoundingBox:
     Optional[float64] Left
     Optional[float64] Top
 
-# no @derive(Json): member(s) Urls: list[str], Face: ComparedFace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Urls: list[str], Face: ComparedFace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Celebrity:
     Optional[list[str]] Urls
     Optional[str] Name
@@ -537,8 +540,9 @@ struct Celebrity:
     Optional[float64] MatchConfidence
     Optional[KnownGender] KnownGender
 
-# no @derive(Json): member(s) Urls: list[str], Face: FaceDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Urls: list[str], Face: FaceDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CelebrityDetail:
     Optional[list[str]] Urls
     Optional[str] Name
@@ -548,8 +552,9 @@ struct CelebrityDetail:
     Optional[FaceDetail] Face
     Optional[KnownGender] KnownGender
 
-# no @derive(Json): member(s) Celebrity: CelebrityDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Celebrity: CelebrityDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CelebrityRecognition:
     Optional[int64] Timestamp
     Optional[CelebrityDetail] Celebrity
@@ -564,8 +569,9 @@ struct ChallengePreference:
     ChallengeType Type
     Optional[Versions] Versions
 
-# no @derive(Json): member(s) Face: ComparedFace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Face: ComparedFace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CompareFacesMatch:
     Optional[float64] Similarity
     Optional[ComparedFace] Face
@@ -577,8 +583,9 @@ struct CompareFacesRequest:
     Optional[float64] SimilarityThreshold
     Optional[QualityFilter] QualityFilter
 
-# no @derive(Json): member(s) FaceMatches: list[CompareFacesMatch], UnmatchedFaces: list[ComparedFace] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FaceMatches: list[CompareFacesMatch], UnmatchedFaces: list[ComparedFace] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CompareFacesResponse:
     Optional[ComparedSourceImageFace] SourceImageFace
     Optional[list[CompareFacesMatch]] FaceMatches
@@ -586,8 +593,9 @@ struct CompareFacesResponse:
     Optional[OrientationCorrection] SourceImageOrientationCorrection
     Optional[OrientationCorrection] TargetImageOrientationCorrection
 
-# no @derive(Json): member(s) Landmarks: list[Landmark], Emotions: list[Emotion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Landmarks: list[Landmark], Emotions: list[Emotion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComparedFace:
     Optional[BoundingBox] BoundingBox
     Optional[float64] Confidence
@@ -607,20 +615,23 @@ struct ConflictException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Labels: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Labels: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectedHomeSettings:
     list[str] Labels
     Optional[float64] MinConfidence
 
-# no @derive(Json): member(s) Labels: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Labels: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectedHomeSettingsForUpdate:
     Optional[list[str]] Labels
     Optional[float64] MinConfidence
 
-# no @derive(Json): member(s) ContentTypes: list[ContentType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContentTypes: list[ContentType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContentModerationDetection:
     Optional[int64] Timestamp
     Optional[ModerationLabel] ModerationLabel
@@ -634,8 +645,9 @@ struct ContentType:
     Optional[float64] Confidence
     Optional[str] Name
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CopyProjectVersionRequest:
     str SourceProjectArn
     str SourceProjectVersionArn
@@ -654,8 +666,9 @@ struct CoversBodyPart:
     Optional[float64] Confidence
     Optional[bool] Value
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCollectionRequest:
     str CollectionId
     Optional[dict[str, str]] Tags
@@ -666,8 +679,9 @@ struct CreateCollectionResponse:
     Optional[str] CollectionArn
     Optional[str] FaceModelVersion
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDatasetRequest:
     Optional[DatasetSource] DatasetSource
     DatasetType DatasetType
@@ -678,15 +692,17 @@ struct CreateDatasetRequest:
 struct CreateDatasetResponse:
     Optional[str] DatasetArn
 
-# no @derive(Json): member(s) Settings: CreateFaceLivenessSessionRequestSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Settings: CreateFaceLivenessSessionRequestSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFaceLivenessSessionRequest:
     Optional[str] KmsKeyId
     Optional[CreateFaceLivenessSessionRequestSettings] Settings
     Optional[str] ClientRequestToken
 
-# no @derive(Json): member(s) ChallengePreferences: list[ChallengePreference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChallengePreferences: list[ChallengePreference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFaceLivenessSessionRequestSettings:
     Optional[LivenessOutputConfig] OutputConfig
     Optional[int64] AuditImagesLimit
@@ -696,8 +712,9 @@ struct CreateFaceLivenessSessionRequestSettings:
 struct CreateFaceLivenessSessionResponse:
     str SessionId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProjectRequest:
     str ProjectName
     Optional[CustomizationFeature] Feature
@@ -708,8 +725,9 @@ struct CreateProjectRequest:
 struct CreateProjectResponse:
     Optional[str] ProjectArn
 
-# no @derive(Json): member(s) TrainingData: TrainingData, TestingData: TestingData, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrainingData: TrainingData, TestingData: TestingData, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProjectVersionRequest:
     str ProjectArn
     str VersionName
@@ -725,8 +743,9 @@ struct CreateProjectVersionRequest:
 struct CreateProjectVersionResponse:
     Optional[str] ProjectVersionArn
 
-# no @derive(Json): member(s) Settings: StreamProcessorSettings, Tags: dict[str, str], RegionsOfInterest: list[RegionOfInterest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Settings: StreamProcessorSettings, Tags: dict[str, str], RegionsOfInterest: list[RegionOfInterest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateStreamProcessorRequest:
     StreamProcessorInput Input
     StreamProcessorOutput Output
@@ -754,8 +773,9 @@ struct CreateUserResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Geometry: Geometry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Geometry: Geometry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomLabel:
     Optional[str] Name
     Optional[float64] Confidence
@@ -830,14 +850,16 @@ struct DeleteDatasetResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) FaceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FaceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteFacesRequest:
     str CollectionId
     list[str] FaceIds
 
-# no @derive(Json): member(s) DeletedFaces: list[str], UnsuccessfulFaceDeletions: list[UnsuccessfulFaceDeletion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeletedFaces: list[str], UnsuccessfulFaceDeletions: list[UnsuccessfulFaceDeletion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteFacesResponse:
     Optional[list[str]] DeletedFaces
     Optional[list[UnsuccessfulFaceDeletion]] UnsuccessfulFaceDeletions
@@ -909,30 +931,34 @@ struct DescribeDatasetRequest:
 struct DescribeDatasetResponse:
     Optional[DatasetDescription] DatasetDescription
 
-# no @derive(Json): member(s) VersionNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VersionNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProjectVersionsRequest:
     str ProjectArn
     Optional[list[str]] VersionNames
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ProjectVersionDescriptions: list[ProjectVersionDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProjectVersionDescriptions: list[ProjectVersionDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProjectVersionsResponse:
     Optional[list[ProjectVersionDescription]] ProjectVersionDescriptions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ProjectNames: list[str], Features: list[CustomizationFeature] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProjectNames: list[str], Features: list[CustomizationFeature] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProjectsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[list[str]] ProjectNames
     Optional[list[CustomizationFeature]] Features
 
-# no @derive(Json): member(s) ProjectDescriptions: list[ProjectDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProjectDescriptions: list[ProjectDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProjectsResponse:
     Optional[list[ProjectDescription]] ProjectDescriptions
     Optional[str] NextToken
@@ -941,8 +967,9 @@ struct DescribeProjectsResponse:
 struct DescribeStreamProcessorRequest:
     str Name
 
-# no @derive(Json): member(s) Settings: StreamProcessorSettings, RegionsOfInterest: list[RegionOfInterest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Settings: StreamProcessorSettings, RegionsOfInterest: list[RegionOfInterest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeStreamProcessorResponse:
     Optional[str] Name
     Optional[str] StreamProcessorArn
@@ -966,37 +993,43 @@ struct DetectCustomLabelsRequest:
     Optional[int64] MaxResults
     Optional[float64] MinConfidence
 
-# no @derive(Json): member(s) CustomLabels: list[CustomLabel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomLabels: list[CustomLabel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectCustomLabelsResponse:
     Optional[list[CustomLabel]] CustomLabels
 
-# no @derive(Json): member(s) Attributes: list[Attribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[Attribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectFacesRequest:
     Image Image
     Optional[list[Attribute]] Attributes
 
-# no @derive(Json): member(s) FaceDetails: list[FaceDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FaceDetails: list[FaceDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectFacesResponse:
     Optional[list[FaceDetail]] FaceDetails
     Optional[OrientationCorrection] OrientationCorrection
 
-# no @derive(Json): member(s) DominantColors: list[DominantColor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DominantColors: list[DominantColor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectLabelsImageBackground:
     Optional[DetectLabelsImageQuality] Quality
     Optional[list[DominantColor]] DominantColors
 
-# no @derive(Json): member(s) DominantColors: list[DominantColor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DominantColors: list[DominantColor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectLabelsImageForeground:
     Optional[DetectLabelsImageQuality] Quality
     Optional[list[DominantColor]] DominantColors
 
-# no @derive(Json): member(s) DominantColors: list[DominantColor], Foreground: DetectLabelsImageForeground, Background: DetectLabelsImageBackground not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DominantColors: list[DominantColor], Foreground: DetectLabelsImageForeground, Background: DetectLabelsImageBackground not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectLabelsImageProperties:
     Optional[DetectLabelsImageQuality] Quality
     Optional[list[DominantColor]] DominantColors
@@ -1013,8 +1046,9 @@ struct DetectLabelsImageQuality:
     Optional[float64] Sharpness
     Optional[float64] Contrast
 
-# no @derive(Json): member(s) Features: list[DetectLabelsFeatureName], Settings: DetectLabelsSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Features: list[DetectLabelsFeatureName], Settings: DetectLabelsSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectLabelsRequest:
     Image Image
     Optional[int64] MaxLabels
@@ -1022,30 +1056,34 @@ struct DetectLabelsRequest:
     Optional[list[DetectLabelsFeatureName]] Features
     Optional[DetectLabelsSettings] Settings
 
-# no @derive(Json): member(s) Labels: list[Label], ImageProperties: DetectLabelsImageProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Labels: list[Label], ImageProperties: DetectLabelsImageProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectLabelsResponse:
     Optional[list[Label]] Labels
     Optional[OrientationCorrection] OrientationCorrection
     Optional[str] LabelModelVersion
     Optional[DetectLabelsImageProperties] ImageProperties
 
-# no @derive(Json): member(s) GeneralLabels: GeneralLabelsSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GeneralLabels: GeneralLabelsSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectLabelsSettings:
     Optional[GeneralLabelsSettings] GeneralLabels
     Optional[DetectLabelsImagePropertiesSettings] ImageProperties
 
-# no @derive(Json): member(s) HumanLoopConfig: HumanLoopConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HumanLoopConfig: HumanLoopConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectModerationLabelsRequest:
     Image Image
     Optional[float64] MinConfidence
     Optional[HumanLoopConfig] HumanLoopConfig
     Optional[str] ProjectVersion
 
-# no @derive(Json): member(s) ModerationLabels: list[ModerationLabel], HumanLoopActivationOutput: HumanLoopActivationOutput, ContentTypes: list[ContentType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModerationLabels: list[ModerationLabel], HumanLoopActivationOutput: HumanLoopActivationOutput, ContentTypes: list[ContentType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectModerationLabelsResponse:
     Optional[list[ModerationLabel]] ModerationLabels
     Optional[str] ModerationModelVersion
@@ -1053,33 +1091,38 @@ struct DetectModerationLabelsResponse:
     Optional[str] ProjectVersion
     Optional[list[ContentType]] ContentTypes
 
-# no @derive(Json): member(s) SummarizationAttributes: ProtectiveEquipmentSummarizationAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SummarizationAttributes: ProtectiveEquipmentSummarizationAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectProtectiveEquipmentRequest:
     Image Image
     Optional[ProtectiveEquipmentSummarizationAttributes] SummarizationAttributes
 
-# no @derive(Json): member(s) Persons: list[ProtectiveEquipmentPerson], Summary: ProtectiveEquipmentSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Persons: list[ProtectiveEquipmentPerson], Summary: ProtectiveEquipmentSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectProtectiveEquipmentResponse:
     Optional[str] ProtectiveEquipmentModelVersion
     Optional[list[ProtectiveEquipmentPerson]] Persons
     Optional[ProtectiveEquipmentSummary] Summary
 
-# no @derive(Json): member(s) RegionsOfInterest: list[RegionOfInterest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegionsOfInterest: list[RegionOfInterest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectTextFilters:
     Optional[DetectionFilter] WordFilter
     Optional[list[RegionOfInterest]] RegionsOfInterest
 
-# no @derive(Json): member(s) Filters: DetectTextFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: DetectTextFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectTextRequest:
     Image Image
     Optional[DetectTextFilters] Filters
 
-# no @derive(Json): member(s) TextDetections: list[TextDetection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TextDetections: list[TextDetection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectTextResponse:
     Optional[list[TextDetection]] TextDetections
     Optional[str] TextModelVersion
@@ -1090,16 +1133,18 @@ struct DetectionFilter:
     Optional[float64] MinBoundingBoxHeight
     Optional[float64] MinBoundingBoxWidth
 
-# no @derive(Json): member(s) FaceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FaceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateFacesRequest:
     str CollectionId
     str UserId
     Optional[str] ClientRequestToken
     list[str] FaceIds
 
-# no @derive(Json): member(s) DisassociatedFaces: list[DisassociatedFace], UnsuccessfulFaceDisassociations: list[UnsuccessfulFaceDisassociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DisassociatedFaces: list[DisassociatedFace], UnsuccessfulFaceDisassociations: list[UnsuccessfulFaceDisassociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateFacesResponse:
     Optional[list[DisassociatedFace]] DisassociatedFaces
     Optional[list[UnsuccessfulFaceDisassociation]] UnsuccessfulFaceDisassociations
@@ -1113,8 +1158,9 @@ struct DisassociatedFace:
 struct DistributeDataset:
     str Arn
 
-# no @derive(Json): member(s) Datasets: list[DistributeDataset] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Datasets: list[DistributeDataset] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DistributeDatasetEntriesRequest:
     list[DistributeDataset] Datasets
 
@@ -1176,8 +1222,9 @@ struct Face:
     Optional[str] IndexFacesModelVersion
     Optional[str] UserId
 
-# no @derive(Json): member(s) Emotions: list[Emotion], Landmarks: list[Landmark] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Emotions: list[Emotion], Landmarks: list[Landmark] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FaceDetail:
     Optional[BoundingBox] BoundingBox
     Optional[AgeRange] AgeRange
@@ -1197,8 +1244,9 @@ struct FaceDetail:
     Optional[FaceOccluded] FaceOccluded
     Optional[EyeDirection] EyeDirection
 
-# no @derive(Json): member(s) Face: FaceDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Face: FaceDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FaceDetection:
     Optional[int64] Timestamp
     Optional[FaceDetail] Face
@@ -1213,8 +1261,9 @@ struct FaceOccluded:
     Optional[bool] Value
     Optional[float64] Confidence
 
-# no @derive(Json): member(s) FaceDetail: FaceDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FaceDetail: FaceDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FaceRecord:
     Optional[Face] Face
     Optional[FaceDetail] FaceDetail
@@ -1234,16 +1283,18 @@ struct Gender:
     Optional[GenderType] Value
     Optional[float64] Confidence
 
-# no @derive(Json): member(s) LabelInclusionFilters: list[str], LabelExclusionFilters: list[str], LabelCategoryInclusionFilters: list[str], LabelCategoryExclusionFilters: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LabelInclusionFilters: list[str], LabelExclusionFilters: list[str], LabelCategoryInclusionFilters: list[str], LabelCategoryExclusionFilters: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeneralLabelsSettings:
     Optional[list[str]] LabelInclusionFilters
     Optional[list[str]] LabelExclusionFilters
     Optional[list[str]] LabelCategoryInclusionFilters
     Optional[list[str]] LabelCategoryExclusionFilters
 
-# no @derive(Json): member(s) Polygon: list[Point] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Polygon: list[Point] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Geometry:
     Optional[BoundingBox] BoundingBox
     Optional[list[Point]] Polygon
@@ -1252,8 +1303,9 @@ struct Geometry:
 struct GetCelebrityInfoRequest:
     str Id
 
-# no @derive(Json): member(s) Urls: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Urls: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCelebrityInfoResponse:
     Optional[list[str]] Urls
     Optional[str] Name
@@ -1266,8 +1318,9 @@ struct GetCelebrityRecognitionRequest:
     Optional[str] NextToken
     Optional[CelebrityRecognitionSortBy] SortBy
 
-# no @derive(Json): member(s) Celebrities: list[CelebrityRecognition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Celebrities: list[CelebrityRecognition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCelebrityRecognitionResponse:
     Optional[VideoJobStatus] JobStatus
     Optional[str] StatusMessage
@@ -1291,8 +1344,9 @@ struct GetContentModerationRequestMetadata:
     Optional[ContentModerationSortBy] SortBy
     Optional[ContentModerationAggregateBy] AggregateBy
 
-# no @derive(Json): member(s) ModerationLabels: list[ContentModerationDetection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModerationLabels: list[ContentModerationDetection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetContentModerationResponse:
     Optional[VideoJobStatus] JobStatus
     Optional[str] StatusMessage
@@ -1311,8 +1365,9 @@ struct GetFaceDetectionRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Faces: list[FaceDetection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Faces: list[FaceDetection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFaceDetectionResponse:
     Optional[VideoJobStatus] JobStatus
     Optional[str] StatusMessage
@@ -1327,8 +1382,9 @@ struct GetFaceDetectionResponse:
 struct GetFaceLivenessSessionResultsRequest:
     str SessionId
 
-# no @derive(Json): member(s) AuditImages: list[AuditImage], Feedback: list[FeedbackItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuditImages: list[AuditImage], Feedback: list[FeedbackItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFaceLivenessSessionResultsResponse:
     str SessionId
     LivenessSessionStatus Status
@@ -1346,8 +1402,9 @@ struct GetFaceSearchRequest:
     Optional[str] NextToken
     Optional[FaceSearchSortBy] SortBy
 
-# no @derive(Json): member(s) Persons: list[PersonMatch] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Persons: list[PersonMatch] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFaceSearchResponse:
     Optional[VideoJobStatus] JobStatus
     Optional[str] StatusMessage
@@ -1371,8 +1428,9 @@ struct GetLabelDetectionRequestMetadata:
     Optional[LabelDetectionSortBy] SortBy
     Optional[LabelDetectionAggregateBy] AggregateBy
 
-# no @derive(Json): member(s) Labels: list[LabelDetection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Labels: list[LabelDetection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLabelDetectionResponse:
     Optional[VideoJobStatus] JobStatus
     Optional[str] StatusMessage
@@ -1411,8 +1469,9 @@ struct GetPersonTrackingRequest:
     Optional[str] NextToken
     Optional[PersonTrackingSortBy] SortBy
 
-# no @derive(Json): member(s) Persons: list[PersonDetection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Persons: list[PersonDetection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPersonTrackingResponse:
     Optional[VideoJobStatus] JobStatus
     Optional[str] StatusMessage
@@ -1429,8 +1488,9 @@ struct GetSegmentDetectionRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) VideoMetadata: list[VideoMetadata], AudioMetadata: list[AudioMetadata], Segments: list[SegmentDetection], SelectedSegmentTypes: list[SegmentTypeInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VideoMetadata: list[VideoMetadata], AudioMetadata: list[AudioMetadata], Segments: list[SegmentDetection], SelectedSegmentTypes: list[SegmentTypeInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSegmentDetectionResponse:
     Optional[VideoJobStatus] JobStatus
     Optional[str] StatusMessage
@@ -1449,8 +1509,9 @@ struct GetTextDetectionRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TextDetections: list[TextDetectionResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TextDetections: list[TextDetectionResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTextDetectionResponse:
     Optional[VideoJobStatus] JobStatus
     Optional[str] StatusMessage
@@ -1466,22 +1527,25 @@ struct GetTextDetectionResponse:
 struct GroundTruthManifest:
     Optional[S3Object] S3Object
 
-# no @derive(Json): member(s) HumanLoopActivationReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HumanLoopActivationReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HumanLoopActivationOutput:
     Optional[str] HumanLoopArn
     Optional[list[str]] HumanLoopActivationReasons
     Optional[str] HumanLoopActivationConditionsEvaluationResults
 
-# no @derive(Json): member(s) DataAttributes: HumanLoopDataAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataAttributes: HumanLoopDataAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HumanLoopConfig:
     str HumanLoopName
     str FlowDefinitionArn
     Optional[HumanLoopDataAttributes] DataAttributes
 
-# no @derive(Json): member(s) ContentClassifiers: list[ContentClassifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContentClassifiers: list[ContentClassifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HumanLoopDataAttributes:
     Optional[list[ContentClassifier]] ContentClassifiers
 
@@ -1511,8 +1575,9 @@ struct ImageTooLargeException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) DetectionAttributes: list[Attribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DetectionAttributes: list[Attribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IndexFacesRequest:
     str CollectionId
     Image Image
@@ -1521,16 +1586,18 @@ struct IndexFacesRequest:
     Optional[int64] MaxFaces
     Optional[QualityFilter] QualityFilter
 
-# no @derive(Json): member(s) FaceRecords: list[FaceRecord], UnindexedFaces: list[UnindexedFace] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FaceRecords: list[FaceRecord], UnindexedFaces: list[UnindexedFace] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IndexFacesResponse:
     Optional[list[FaceRecord]] FaceRecords
     Optional[OrientationCorrection] OrientationCorrection
     Optional[str] FaceModelVersion
     Optional[list[UnindexedFace]] UnindexedFaces
 
-# no @derive(Json): member(s) DominantColors: list[DominantColor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DominantColors: list[DominantColor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Instance:
     Optional[BoundingBox] BoundingBox
     Optional[float64] Confidence
@@ -1588,8 +1655,9 @@ struct KinesisVideoStreamStartSelector:
 struct KnownGender:
     Optional[KnownGenderType] Type
 
-# no @derive(Json): member(s) Instances: list[Instance], Parents: list[Parent], Aliases: list[LabelAlias], Categories: list[LabelCategory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Instances: list[Instance], Parents: list[Parent], Aliases: list[LabelAlias], Categories: list[LabelCategory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Label:
     Optional[str] Name
     Optional[float64] Confidence
@@ -1606,8 +1674,9 @@ struct LabelAlias:
 struct LabelCategory:
     Optional[str] Name
 
-# no @derive(Json): member(s) Label: Label not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Label: Label not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LabelDetection:
     Optional[int64] Timestamp
     Optional[Label] Label
@@ -1615,8 +1684,9 @@ struct LabelDetection:
     Optional[int64] EndTimestampMillis
     Optional[int64] DurationMillis
 
-# no @derive(Json): member(s) GeneralLabels: GeneralLabelsSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GeneralLabels: GeneralLabelsSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LabelDetectionSettings:
     Optional[GeneralLabelsSettings] GeneralLabels
 
@@ -1636,15 +1706,17 @@ struct ListCollectionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) CollectionIds: list[str], FaceModelVersions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CollectionIds: list[str], FaceModelVersions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCollectionsResponse:
     Optional[list[str]] CollectionIds
     Optional[str] NextToken
     Optional[list[str]] FaceModelVersions
 
-# no @derive(Json): member(s) ContainsLabels: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContainsLabels: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatasetEntriesRequest:
     str DatasetArn
     Optional[list[str]] ContainsLabels
@@ -1654,8 +1726,9 @@ struct ListDatasetEntriesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DatasetEntries: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatasetEntries: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatasetEntriesResponse:
     Optional[list[str]] DatasetEntries
     Optional[str] NextToken
@@ -1666,14 +1739,16 @@ struct ListDatasetLabelsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DatasetLabelDescriptions: list[DatasetLabelDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatasetLabelDescriptions: list[DatasetLabelDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatasetLabelsResponse:
     Optional[list[DatasetLabelDescription]] DatasetLabelDescriptions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) FaceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FaceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFacesRequest:
     str CollectionId
     Optional[str] NextToken
@@ -1681,8 +1756,9 @@ struct ListFacesRequest:
     Optional[str] UserId
     Optional[list[str]] FaceIds
 
-# no @derive(Json): member(s) Faces: list[Face] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Faces: list[Face] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFacesResponse:
     Optional[list[Face]] Faces
     Optional[str] NextToken
@@ -1693,8 +1769,9 @@ struct ListMediaAnalysisJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) MediaAnalysisJobs: list[MediaAnalysisJobDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaAnalysisJobs: list[MediaAnalysisJobDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMediaAnalysisJobsResponse:
     Optional[str] NextToken
     list[MediaAnalysisJobDescription] MediaAnalysisJobs
@@ -1705,8 +1782,9 @@ struct ListProjectPoliciesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ProjectPolicies: list[ProjectPolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProjectPolicies: list[ProjectPolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProjectPoliciesResponse:
     Optional[list[ProjectPolicy]] ProjectPolicies
     Optional[str] NextToken
@@ -1716,8 +1794,9 @@ struct ListStreamProcessorsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) StreamProcessors: list[StreamProcessor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StreamProcessors: list[StreamProcessor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStreamProcessorsResponse:
     Optional[str] NextToken
     Optional[list[StreamProcessor]] StreamProcessors
@@ -1726,8 +1805,9 @@ struct ListStreamProcessorsResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -1737,8 +1817,9 @@ struct ListUsersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Users: list[User] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Users: list[User] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUsersResponse:
     Optional[list[User]] Users
     Optional[str] NextToken
@@ -1840,21 +1921,24 @@ struct OutputConfig:
 struct Parent:
     Optional[str] Name
 
-# no @derive(Json): member(s) Face: FaceDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Face: FaceDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PersonDetail:
     Optional[int64] Index
     Optional[BoundingBox] BoundingBox
     Optional[FaceDetail] Face
 
-# no @derive(Json): member(s) Person: PersonDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Person: PersonDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PersonDetection:
     Optional[int64] Timestamp
     Optional[PersonDetail] Person
 
-# no @derive(Json): member(s) Person: PersonDetail, FaceMatches: list[FaceMatch] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Person: PersonDetail, FaceMatches: list[FaceMatch] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PersonMatch:
     Optional[int64] Timestamp
     Optional[PersonDetail] Person
@@ -1871,8 +1955,9 @@ struct Pose:
     Optional[float64] Yaw
     Optional[float64] Pitch
 
-# no @derive(Json): member(s) Datasets: list[DatasetMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Datasets: list[DatasetMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProjectDescription:
     Optional[str] ProjectArn
     Optional[DateTime] CreationTimestamp
@@ -1890,8 +1975,9 @@ struct ProjectPolicy:
     Optional[DateTime] CreationTimestamp
     Optional[DateTime] LastUpdatedTimestamp
 
-# no @derive(Json): member(s) TrainingDataResult: TrainingDataResult, TestingDataResult: TestingDataResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrainingDataResult: TrainingDataResult, TestingDataResult: TestingDataResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProjectVersionDescription:
     Optional[str] ProjectVersionArn
     Optional[DateTime] CreationTimestamp
@@ -1913,29 +1999,33 @@ struct ProjectVersionDescription:
     Optional[str] BaseModelVersion
     Optional[CustomizationFeatureConfig] FeatureConfig
 
-# no @derive(Json): member(s) EquipmentDetections: list[EquipmentDetection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EquipmentDetections: list[EquipmentDetection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectiveEquipmentBodyPart:
     Optional[BodyPart] Name
     Optional[float64] Confidence
     Optional[list[EquipmentDetection]] EquipmentDetections
 
-# no @derive(Json): member(s) BodyParts: list[ProtectiveEquipmentBodyPart] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BodyParts: list[ProtectiveEquipmentBodyPart] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectiveEquipmentPerson:
     Optional[list[ProtectiveEquipmentBodyPart]] BodyParts
     Optional[BoundingBox] BoundingBox
     Optional[float64] Confidence
     Optional[int64] Id
 
-# no @derive(Json): member(s) RequiredEquipmentTypes: list[ProtectiveEquipmentType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequiredEquipmentTypes: list[ProtectiveEquipmentType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectiveEquipmentSummarizationAttributes:
     float64 MinConfidence
     list[ProtectiveEquipmentType] RequiredEquipmentTypes
 
-# no @derive(Json): member(s) PersonsWithRequiredEquipment: list[int64], PersonsWithoutRequiredEquipment: list[int64], PersonsIndeterminate: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PersonsWithRequiredEquipment: list[int64], PersonsWithoutRequiredEquipment: list[int64], PersonsIndeterminate: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtectiveEquipmentSummary:
     Optional[list[int64]] PersonsWithRequiredEquipment
     Optional[list[int64]] PersonsWithoutRequiredEquipment
@@ -1961,15 +2051,17 @@ struct PutProjectPolicyResponse:
 struct RecognizeCelebritiesRequest:
     Image Image
 
-# no @derive(Json): member(s) CelebrityFaces: list[Celebrity], UnrecognizedFaces: list[ComparedFace] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CelebrityFaces: list[Celebrity], UnrecognizedFaces: list[ComparedFace] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecognizeCelebritiesResponse:
     Optional[list[Celebrity]] CelebrityFaces
     Optional[list[ComparedFace]] UnrecognizedFaces
     Optional[OrientationCorrection] OrientationCorrection
 
-# no @derive(Json): member(s) Polygon: list[Point] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Polygon: list[Point] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegionOfInterest:
     Optional[BoundingBox] BoundingBox
     Optional[list[Point]] Polygon
@@ -2013,8 +2105,9 @@ struct SearchFacesByImageRequest:
     Optional[float64] FaceMatchThreshold
     Optional[QualityFilter] QualityFilter
 
-# no @derive(Json): member(s) FaceMatches: list[FaceMatch] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FaceMatches: list[FaceMatch] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchFacesByImageResponse:
     Optional[BoundingBox] SearchedFaceBoundingBox
     Optional[float64] SearchedFaceConfidence
@@ -2028,8 +2121,9 @@ struct SearchFacesRequest:
     Optional[int64] MaxFaces
     Optional[float64] FaceMatchThreshold
 
-# no @derive(Json): member(s) FaceMatches: list[FaceMatch] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FaceMatches: list[FaceMatch] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchFacesResponse:
     Optional[str] SearchedFaceId
     Optional[list[FaceMatch]] FaceMatches
@@ -2043,8 +2137,9 @@ struct SearchUsersByImageRequest:
     Optional[int64] MaxUsers
     Optional[QualityFilter] QualityFilter
 
-# no @derive(Json): member(s) UserMatches: list[UserMatch], SearchedFace: SearchedFaceDetails, UnsearchedFaces: list[UnsearchedFace] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserMatches: list[UserMatch], SearchedFace: SearchedFaceDetails, UnsearchedFaces: list[UnsearchedFace] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchUsersByImageResponse:
     Optional[list[UserMatch]] UserMatches
     Optional[str] FaceModelVersion
@@ -2059,8 +2154,9 @@ struct SearchUsersRequest:
     Optional[float64] UserMatchThreshold
     Optional[int64] MaxUsers
 
-# no @derive(Json): member(s) UserMatches: list[UserMatch] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserMatches: list[UserMatch] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchUsersResponse:
     Optional[list[UserMatch]] UserMatches
     Optional[str] FaceModelVersion
@@ -2071,8 +2167,9 @@ struct SearchUsersResponse:
 struct SearchedFace:
     Optional[str] FaceId
 
-# no @derive(Json): member(s) FaceDetail: FaceDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FaceDetail: FaceDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchedFaceDetails:
     Optional[FaceDetail] FaceDetail
 
@@ -2172,8 +2269,9 @@ struct StartFaceSearchRequest:
 struct StartFaceSearchResponse:
     Optional[str] JobId
 
-# no @derive(Json): member(s) Features: list[str], Settings: LabelDetectionSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Features: list[str], Settings: LabelDetectionSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartLabelDetectionRequest:
     Video Video
     Optional[str] ClientRequestToken
@@ -2226,8 +2324,9 @@ struct StartSegmentDetectionFilters:
     Optional[StartTechnicalCueDetectionFilter] TechnicalCueFilter
     Optional[StartShotDetectionFilter] ShotFilter
 
-# no @derive(Json): member(s) SegmentTypes: list[SegmentType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SegmentTypes: list[SegmentType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartSegmentDetectionRequest:
     Video Video
     Optional[str] ClientRequestToken
@@ -2259,14 +2358,16 @@ struct StartTechnicalCueDetectionFilter:
     Optional[float64] MinSegmentConfidence
     Optional[BlackFrame] BlackFrame
 
-# no @derive(Json): member(s) RegionsOfInterest: list[RegionOfInterest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegionsOfInterest: list[RegionOfInterest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartTextDetectionFilters:
     Optional[DetectionFilter] WordFilter
     Optional[list[RegionOfInterest]] RegionsOfInterest
 
-# no @derive(Json): member(s) Filters: StartTextDetectionFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: StartTextDetectionFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartTextDetectionRequest:
     Video Video
     Optional[str] ClientRequestToken
@@ -2325,14 +2426,16 @@ struct StreamProcessorOutput:
     Optional[KinesisDataStream] KinesisDataStream
     Optional[S3Destination] S3Destination
 
-# no @derive(Json): member(s) ConnectedHome: ConnectedHomeSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectedHome: ConnectedHomeSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StreamProcessorSettings:
     Optional[FaceSearchSettings] FaceSearch
     Optional[ConnectedHomeSettings] ConnectedHome
 
-# no @derive(Json): member(s) ConnectedHomeForUpdate: ConnectedHomeSettingsForUpdate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectedHomeForUpdate: ConnectedHomeSettingsForUpdate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StreamProcessorSettingsForUpdate:
     Optional[ConnectedHomeSettingsForUpdate] ConnectedHomeForUpdate
 
@@ -2345,8 +2448,9 @@ struct Sunglasses:
     Optional[bool] Value
     Optional[float64] Confidence
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     dict[str, str] Tags
@@ -2361,21 +2465,24 @@ struct TechnicalCueSegment:
     Optional[TechnicalCueType] Type
     Optional[float64] Confidence
 
-# no @derive(Json): member(s) Assets: list[Asset] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Assets: list[Asset] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestingData:
     Optional[list[Asset]] Assets
     Optional[bool] AutoCreate
 
-# no @derive(Json): member(s) Input: TestingData, Output: TestingData, Validation: ValidationData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Input: TestingData, Output: TestingData, Validation: ValidationData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestingDataResult:
     Optional[TestingData] Input
     Optional[TestingData] Output
     Optional[ValidationData] Validation
 
-# no @derive(Json): member(s) Geometry: Geometry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Geometry: Geometry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TextDetection:
     Optional[str] DetectedText
     Optional[TextTypes] Type
@@ -2384,8 +2491,9 @@ struct TextDetection:
     Optional[float64] Confidence
     Optional[Geometry] Geometry
 
-# no @derive(Json): member(s) TextDetection: TextDetection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TextDetection: TextDetection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TextDetectionResult:
     Optional[int64] Timestamp
     Optional[TextDetection] TextDetection
@@ -2395,54 +2503,62 @@ struct ThrottlingException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Assets: list[Asset] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Assets: list[Asset] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrainingData:
     Optional[list[Asset]] Assets
 
-# no @derive(Json): member(s) Input: TrainingData, Output: TrainingData, Validation: ValidationData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Input: TrainingData, Output: TrainingData, Validation: ValidationData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrainingDataResult:
     Optional[TrainingData] Input
     Optional[TrainingData] Output
     Optional[ValidationData] Validation
 
-# no @derive(Json): member(s) Reasons: list[Reason], FaceDetail: FaceDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Reasons: list[Reason], FaceDetail: FaceDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UnindexedFace:
     Optional[list[Reason]] Reasons
     Optional[FaceDetail] FaceDetail
 
-# no @derive(Json): member(s) FaceDetails: FaceDetail, Reasons: list[UnsearchedFaceReason] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FaceDetails: FaceDetail, Reasons: list[UnsearchedFaceReason] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UnsearchedFace:
     Optional[FaceDetail] FaceDetails
     Optional[list[UnsearchedFaceReason]] Reasons
 
-# no @derive(Json): member(s) Reasons: list[UnsuccessfulFaceAssociationReason] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Reasons: list[UnsuccessfulFaceAssociationReason] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UnsuccessfulFaceAssociation:
     Optional[str] FaceId
     Optional[str] UserId
     Optional[float64] Confidence
     Optional[list[UnsuccessfulFaceAssociationReason]] Reasons
 
-# no @derive(Json): member(s) Reasons: list[UnsuccessfulFaceDeletionReason] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Reasons: list[UnsuccessfulFaceDeletionReason] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UnsuccessfulFaceDeletion:
     Optional[str] FaceId
     Optional[str] UserId
     Optional[list[UnsuccessfulFaceDeletionReason]] Reasons
 
-# no @derive(Json): member(s) Reasons: list[UnsuccessfulFaceDisassociationReason] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Reasons: list[UnsuccessfulFaceDisassociationReason] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UnsuccessfulFaceDisassociation:
     Optional[str] FaceId
     Optional[str] UserId
     Optional[list[UnsuccessfulFaceDisassociationReason]] Reasons
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] TagKeys
@@ -2462,8 +2578,9 @@ struct UpdateDatasetEntriesResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) SettingsForUpdate: StreamProcessorSettingsForUpdate, RegionsOfInterestForUpdate: list[RegionOfInterest], ParametersToDelete: list[StreamProcessorParameterToDelete] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SettingsForUpdate: StreamProcessorSettingsForUpdate, RegionsOfInterestForUpdate: list[RegionOfInterest], ParametersToDelete: list[StreamProcessorParameterToDelete] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateStreamProcessorRequest:
     str Name
     Optional[StreamProcessorSettingsForUpdate] SettingsForUpdate
@@ -2486,8 +2603,9 @@ struct UserMatch:
     Optional[float64] Similarity
     Optional[MatchedUser] User
 
-# no @derive(Json): member(s) Assets: list[Asset] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Assets: list[Asset] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationData:
     Optional[list[Asset]] Assets
 
@@ -2597,53 +2715,779 @@ def rekognition_error_from_code(str code) -> RekognitionError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AssociateFaces (input AssociateFacesRequest)
-#   CopyProjectVersion (input CopyProjectVersionRequest)
-#   CreateCollection (input CreateCollectionRequest)
-#   CreateDataset (input CreateDatasetRequest)
-#   CreateFaceLivenessSession (input CreateFaceLivenessSessionRequest)
-#   CreateProject (input CreateProjectRequest)
-#   CreateProjectVersion (input CreateProjectVersionRequest)
-#   CreateStreamProcessor (input CreateStreamProcessorRequest)
-#   DeleteFaces (input DeleteFacesRequest)
-#   DescribeProjectVersions (input DescribeProjectVersionsRequest)
-#   DescribeProjects (input DescribeProjectsRequest)
-#   DetectFaces (input DetectFacesRequest)
-#   DetectLabels (input DetectLabelsRequest)
-#   DetectModerationLabels (input DetectModerationLabelsRequest)
-#   DetectProtectiveEquipment (input DetectProtectiveEquipmentRequest)
-#   DetectText (input DetectTextRequest)
-#   DisassociateFaces (input DisassociateFacesRequest)
-#   DistributeDatasetEntries (input DistributeDatasetEntriesRequest)
-#   IndexFaces (input IndexFacesRequest)
-#   ListDatasetEntries (input ListDatasetEntriesRequest)
-#   ListFaces (input ListFacesRequest)
-#   StartLabelDetection (input StartLabelDetectionRequest)
-#   StartSegmentDetection (input StartSegmentDetectionRequest)
-#   StartTextDetection (input StartTextDetectionRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateStreamProcessor (input UpdateStreamProcessorRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def rekognition_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   DescribeProjectVersions (input not derivable (no generated method))
-#   DescribeProjects (input not derivable (no generated method))
-#   ListDatasetEntries (input not derivable (no generated method))
-#   ListFaces (input not derivable (no generated method))
+def rekognition_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def rekognition_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AssociateFacesRequest to a compact JSON object (declaration order).
+def associate_faces_request_to_json(AssociateFacesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CollectionId\":" + rekognition_json_str(v.CollectionId))
+    parts.append("\"UserId\":" + rekognition_json_str(v.UserId))
+    list[str] e0 = []
+    for x0 in v.FaceIds:
+        e0.append(rekognition_json_str(x0))
+    parts.append("\"FaceIds\":" + rekognition_json_arr(e0))
+    if v.UserMatchThreshold.is_some():
+        auto u1 = v.UserMatchThreshold.unwrap()
+        parts.append("\"UserMatchThreshold\":" + str(u1))
+    if v.ClientRequestToken.is_some():
+        auto u2 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + rekognition_json_str(u2))
+    return rekognition_json_obj(parts)
+
+# Serialize ConnectedHomeSettings to a compact JSON object (declaration order).
+def connected_home_settings_to_json(ConnectedHomeSettings v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Labels:
+        e0.append(rekognition_json_str(x0))
+    parts.append("\"Labels\":" + rekognition_json_arr(e0))
+    if v.MinConfidence.is_some():
+        auto u1 = v.MinConfidence.unwrap()
+        parts.append("\"MinConfidence\":" + str(u1))
+    return rekognition_json_obj(parts)
+
+# Serialize ConnectedHomeSettingsForUpdate to a compact JSON object (declaration order).
+def connected_home_settings_for_update_to_json(ConnectedHomeSettingsForUpdate v) -> str:
+    list[str] parts = []
+    if v.Labels.is_some():
+        auto u0 = v.Labels.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(rekognition_json_str(x1))
+        parts.append("\"Labels\":" + rekognition_json_arr(e1))
+    if v.MinConfidence.is_some():
+        auto u2 = v.MinConfidence.unwrap()
+        parts.append("\"MinConfidence\":" + str(u2))
+    return rekognition_json_obj(parts)
+
+# Serialize CopyProjectVersionRequest to a compact JSON object (declaration order).
+def copy_project_version_request_to_json(CopyProjectVersionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SourceProjectArn\":" + rekognition_json_str(v.SourceProjectArn))
+    parts.append("\"SourceProjectVersionArn\":" + rekognition_json_str(v.SourceProjectVersionArn))
+    parts.append("\"DestinationProjectArn\":" + rekognition_json_str(v.DestinationProjectArn))
+    parts.append("\"VersionName\":" + rekognition_json_str(v.VersionName))
+    parts.append("\"OutputConfig\":" + v.OutputConfig.to_json())
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(rekognition_json_str(k1) + ":" + rekognition_json_str(u0[k1]))
+        parts.append("\"Tags\":" + rekognition_json_obj(m1))
+    if v.KmsKeyId.is_some():
+        auto u2 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + rekognition_json_str(u2))
+    return rekognition_json_obj(parts)
+
+# Serialize CreateCollectionRequest to a compact JSON object (declaration order).
+def create_collection_request_to_json(CreateCollectionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CollectionId\":" + rekognition_json_str(v.CollectionId))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(rekognition_json_str(k1) + ":" + rekognition_json_str(u0[k1]))
+        parts.append("\"Tags\":" + rekognition_json_obj(m1))
+    return rekognition_json_obj(parts)
+
+# Serialize CreateDatasetRequest to a compact JSON object (declaration order).
+def create_dataset_request_to_json(CreateDatasetRequest v) -> str:
+    list[str] parts = []
+    if v.DatasetSource.is_some():
+        auto u0 = v.DatasetSource.unwrap()
+        parts.append("\"DatasetSource\":" + u0.to_json())
+    parts.append("\"DatasetType\":" + v.DatasetType.to_json())
+    parts.append("\"ProjectArn\":" + rekognition_json_str(v.ProjectArn))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(rekognition_json_str(k2) + ":" + rekognition_json_str(u1[k2]))
+        parts.append("\"Tags\":" + rekognition_json_obj(m2))
+    return rekognition_json_obj(parts)
+
+# Serialize CreateFaceLivenessSessionRequest to a compact JSON object (declaration order).
+def create_face_liveness_session_request_to_json(CreateFaceLivenessSessionRequest v) -> str:
+    list[str] parts = []
+    if v.KmsKeyId.is_some():
+        auto u0 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + rekognition_json_str(u0))
+    if v.Settings.is_some():
+        auto u1 = v.Settings.unwrap()
+        parts.append("\"Settings\":" + create_face_liveness_session_request_settings_to_json(u1))
+    if v.ClientRequestToken.is_some():
+        auto u2 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + rekognition_json_str(u2))
+    return rekognition_json_obj(parts)
+
+# Serialize CreateFaceLivenessSessionRequestSettings to a compact JSON object (declaration order).
+def create_face_liveness_session_request_settings_to_json(CreateFaceLivenessSessionRequestSettings v) -> str:
+    list[str] parts = []
+    if v.OutputConfig.is_some():
+        auto u0 = v.OutputConfig.unwrap()
+        parts.append("\"OutputConfig\":" + u0.to_json())
+    if v.AuditImagesLimit.is_some():
+        auto u1 = v.AuditImagesLimit.unwrap()
+        parts.append("\"AuditImagesLimit\":" + str(u1))
+    if v.ChallengePreferences.is_some():
+        auto u2 = v.ChallengePreferences.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ChallengePreferences\":" + rekognition_json_arr(e3))
+    return rekognition_json_obj(parts)
+
+# Serialize CreateProjectRequest to a compact JSON object (declaration order).
+def create_project_request_to_json(CreateProjectRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ProjectName\":" + rekognition_json_str(v.ProjectName))
+    if v.Feature.is_some():
+        auto u0 = v.Feature.unwrap()
+        parts.append("\"Feature\":" + u0.to_json())
+    if v.AutoUpdate.is_some():
+        auto u1 = v.AutoUpdate.unwrap()
+        parts.append("\"AutoUpdate\":" + u1.to_json())
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(rekognition_json_str(k3) + ":" + rekognition_json_str(u2[k3]))
+        parts.append("\"Tags\":" + rekognition_json_obj(m3))
+    return rekognition_json_obj(parts)
+
+# Serialize CreateProjectVersionRequest to a compact JSON object (declaration order).
+def create_project_version_request_to_json(CreateProjectVersionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ProjectArn\":" + rekognition_json_str(v.ProjectArn))
+    parts.append("\"VersionName\":" + rekognition_json_str(v.VersionName))
+    parts.append("\"OutputConfig\":" + v.OutputConfig.to_json())
+    if v.TrainingData.is_some():
+        auto u0 = v.TrainingData.unwrap()
+        parts.append("\"TrainingData\":" + training_data_to_json(u0))
+    if v.TestingData.is_some():
+        auto u1 = v.TestingData.unwrap()
+        parts.append("\"TestingData\":" + testing_data_to_json(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(rekognition_json_str(k3) + ":" + rekognition_json_str(u2[k3]))
+        parts.append("\"Tags\":" + rekognition_json_obj(m3))
+    if v.KmsKeyId.is_some():
+        auto u4 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + rekognition_json_str(u4))
+    if v.VersionDescription.is_some():
+        auto u5 = v.VersionDescription.unwrap()
+        parts.append("\"VersionDescription\":" + rekognition_json_str(u5))
+    if v.FeatureConfig.is_some():
+        auto u6 = v.FeatureConfig.unwrap()
+        parts.append("\"FeatureConfig\":" + u6.to_json())
+    return rekognition_json_obj(parts)
+
+# Serialize CreateStreamProcessorRequest to a compact JSON object (declaration order).
+def create_stream_processor_request_to_json(CreateStreamProcessorRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Input\":" + v.Input.to_json())
+    parts.append("\"Output\":" + v.Output.to_json())
+    parts.append("\"Name\":" + rekognition_json_str(v.Name))
+    parts.append("\"Settings\":" + stream_processor_settings_to_json(v.Settings))
+    parts.append("\"RoleArn\":" + rekognition_json_str(v.RoleArn))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(rekognition_json_str(k1) + ":" + rekognition_json_str(u0[k1]))
+        parts.append("\"Tags\":" + rekognition_json_obj(m1))
+    if v.NotificationChannel.is_some():
+        auto u2 = v.NotificationChannel.unwrap()
+        parts.append("\"NotificationChannel\":" + u2.to_json())
+    if v.KmsKeyId.is_some():
+        auto u3 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + rekognition_json_str(u3))
+    if v.RegionsOfInterest.is_some():
+        auto u4 = v.RegionsOfInterest.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(region_of_interest_to_json(x5))
+        parts.append("\"RegionsOfInterest\":" + rekognition_json_arr(e5))
+    if v.DataSharingPreference.is_some():
+        auto u6 = v.DataSharingPreference.unwrap()
+        parts.append("\"DataSharingPreference\":" + u6.to_json())
+    return rekognition_json_obj(parts)
+
+# Serialize DeleteFacesRequest to a compact JSON object (declaration order).
+def delete_faces_request_to_json(DeleteFacesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CollectionId\":" + rekognition_json_str(v.CollectionId))
+    list[str] e0 = []
+    for x0 in v.FaceIds:
+        e0.append(rekognition_json_str(x0))
+    parts.append("\"FaceIds\":" + rekognition_json_arr(e0))
+    return rekognition_json_obj(parts)
+
+# Serialize DescribeProjectVersionsRequest to a compact JSON object (declaration order).
+def describe_project_versions_request_to_json(DescribeProjectVersionsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ProjectArn\":" + rekognition_json_str(v.ProjectArn))
+    if v.VersionNames.is_some():
+        auto u0 = v.VersionNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(rekognition_json_str(x1))
+        parts.append("\"VersionNames\":" + rekognition_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + rekognition_json_str(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    return rekognition_json_obj(parts)
+
+# Serialize DescribeProjectsRequest to a compact JSON object (declaration order).
+def describe_projects_request_to_json(DescribeProjectsRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + rekognition_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.ProjectNames.is_some():
+        auto u2 = v.ProjectNames.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(rekognition_json_str(x3))
+        parts.append("\"ProjectNames\":" + rekognition_json_arr(e3))
+    if v.Features.is_some():
+        auto u4 = v.Features.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Features\":" + rekognition_json_arr(e5))
+    return rekognition_json_obj(parts)
+
+# Serialize DetectFacesRequest to a compact JSON object (declaration order).
+def detect_faces_request_to_json(DetectFacesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Image\":" + v.Image.to_json())
+    if v.Attributes.is_some():
+        auto u0 = v.Attributes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Attributes\":" + rekognition_json_arr(e1))
+    return rekognition_json_obj(parts)
+
+# Serialize DetectLabelsRequest to a compact JSON object (declaration order).
+def detect_labels_request_to_json(DetectLabelsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Image\":" + v.Image.to_json())
+    if v.MaxLabels.is_some():
+        auto u0 = v.MaxLabels.unwrap()
+        parts.append("\"MaxLabels\":" + str(u0))
+    if v.MinConfidence.is_some():
+        auto u1 = v.MinConfidence.unwrap()
+        parts.append("\"MinConfidence\":" + str(u1))
+    if v.Features.is_some():
+        auto u2 = v.Features.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Features\":" + rekognition_json_arr(e3))
+    if v.Settings.is_some():
+        auto u4 = v.Settings.unwrap()
+        parts.append("\"Settings\":" + detect_labels_settings_to_json(u4))
+    return rekognition_json_obj(parts)
+
+# Serialize DetectLabelsSettings to a compact JSON object (declaration order).
+def detect_labels_settings_to_json(DetectLabelsSettings v) -> str:
+    list[str] parts = []
+    if v.GeneralLabels.is_some():
+        auto u0 = v.GeneralLabels.unwrap()
+        parts.append("\"GeneralLabels\":" + general_labels_settings_to_json(u0))
+    if v.ImageProperties.is_some():
+        auto u1 = v.ImageProperties.unwrap()
+        parts.append("\"ImageProperties\":" + u1.to_json())
+    return rekognition_json_obj(parts)
+
+# Serialize DetectModerationLabelsRequest to a compact JSON object (declaration order).
+def detect_moderation_labels_request_to_json(DetectModerationLabelsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Image\":" + v.Image.to_json())
+    if v.MinConfidence.is_some():
+        auto u0 = v.MinConfidence.unwrap()
+        parts.append("\"MinConfidence\":" + str(u0))
+    if v.HumanLoopConfig.is_some():
+        auto u1 = v.HumanLoopConfig.unwrap()
+        parts.append("\"HumanLoopConfig\":" + human_loop_config_to_json(u1))
+    if v.ProjectVersion.is_some():
+        auto u2 = v.ProjectVersion.unwrap()
+        parts.append("\"ProjectVersion\":" + rekognition_json_str(u2))
+    return rekognition_json_obj(parts)
+
+# Serialize DetectProtectiveEquipmentRequest to a compact JSON object (declaration order).
+def detect_protective_equipment_request_to_json(DetectProtectiveEquipmentRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Image\":" + v.Image.to_json())
+    if v.SummarizationAttributes.is_some():
+        auto u0 = v.SummarizationAttributes.unwrap()
+        parts.append("\"SummarizationAttributes\":" + protective_equipment_summarization_attributes_to_json(u0))
+    return rekognition_json_obj(parts)
+
+# Serialize DetectTextFilters to a compact JSON object (declaration order).
+def detect_text_filters_to_json(DetectTextFilters v) -> str:
+    list[str] parts = []
+    if v.WordFilter.is_some():
+        auto u0 = v.WordFilter.unwrap()
+        parts.append("\"WordFilter\":" + u0.to_json())
+    if v.RegionsOfInterest.is_some():
+        auto u1 = v.RegionsOfInterest.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(region_of_interest_to_json(x2))
+        parts.append("\"RegionsOfInterest\":" + rekognition_json_arr(e2))
+    return rekognition_json_obj(parts)
+
+# Serialize DetectTextRequest to a compact JSON object (declaration order).
+def detect_text_request_to_json(DetectTextRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Image\":" + v.Image.to_json())
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        parts.append("\"Filters\":" + detect_text_filters_to_json(u0))
+    return rekognition_json_obj(parts)
+
+# Serialize DisassociateFacesRequest to a compact JSON object (declaration order).
+def disassociate_faces_request_to_json(DisassociateFacesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CollectionId\":" + rekognition_json_str(v.CollectionId))
+    parts.append("\"UserId\":" + rekognition_json_str(v.UserId))
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + rekognition_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.FaceIds:
+        e1.append(rekognition_json_str(x1))
+    parts.append("\"FaceIds\":" + rekognition_json_arr(e1))
+    return rekognition_json_obj(parts)
+
+# Serialize DistributeDatasetEntriesRequest to a compact JSON object (declaration order).
+def distribute_dataset_entries_request_to_json(DistributeDatasetEntriesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Datasets:
+        e0.append(x0.to_json())
+    parts.append("\"Datasets\":" + rekognition_json_arr(e0))
+    return rekognition_json_obj(parts)
+
+# Serialize GeneralLabelsSettings to a compact JSON object (declaration order).
+def general_labels_settings_to_json(GeneralLabelsSettings v) -> str:
+    list[str] parts = []
+    if v.LabelInclusionFilters.is_some():
+        auto u0 = v.LabelInclusionFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(rekognition_json_str(x1))
+        parts.append("\"LabelInclusionFilters\":" + rekognition_json_arr(e1))
+    if v.LabelExclusionFilters.is_some():
+        auto u2 = v.LabelExclusionFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(rekognition_json_str(x3))
+        parts.append("\"LabelExclusionFilters\":" + rekognition_json_arr(e3))
+    if v.LabelCategoryInclusionFilters.is_some():
+        auto u4 = v.LabelCategoryInclusionFilters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(rekognition_json_str(x5))
+        parts.append("\"LabelCategoryInclusionFilters\":" + rekognition_json_arr(e5))
+    if v.LabelCategoryExclusionFilters.is_some():
+        auto u6 = v.LabelCategoryExclusionFilters.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(rekognition_json_str(x7))
+        parts.append("\"LabelCategoryExclusionFilters\":" + rekognition_json_arr(e7))
+    return rekognition_json_obj(parts)
+
+# Serialize HumanLoopConfig to a compact JSON object (declaration order).
+def human_loop_config_to_json(HumanLoopConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"HumanLoopName\":" + rekognition_json_str(v.HumanLoopName))
+    parts.append("\"FlowDefinitionArn\":" + rekognition_json_str(v.FlowDefinitionArn))
+    if v.DataAttributes.is_some():
+        auto u0 = v.DataAttributes.unwrap()
+        parts.append("\"DataAttributes\":" + human_loop_data_attributes_to_json(u0))
+    return rekognition_json_obj(parts)
+
+# Serialize HumanLoopDataAttributes to a compact JSON object (declaration order).
+def human_loop_data_attributes_to_json(HumanLoopDataAttributes v) -> str:
+    list[str] parts = []
+    if v.ContentClassifiers.is_some():
+        auto u0 = v.ContentClassifiers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ContentClassifiers\":" + rekognition_json_arr(e1))
+    return rekognition_json_obj(parts)
+
+# Serialize IndexFacesRequest to a compact JSON object (declaration order).
+def index_faces_request_to_json(IndexFacesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CollectionId\":" + rekognition_json_str(v.CollectionId))
+    parts.append("\"Image\":" + v.Image.to_json())
+    if v.ExternalImageId.is_some():
+        auto u0 = v.ExternalImageId.unwrap()
+        parts.append("\"ExternalImageId\":" + rekognition_json_str(u0))
+    if v.DetectionAttributes.is_some():
+        auto u1 = v.DetectionAttributes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"DetectionAttributes\":" + rekognition_json_arr(e2))
+    if v.MaxFaces.is_some():
+        auto u3 = v.MaxFaces.unwrap()
+        parts.append("\"MaxFaces\":" + str(u3))
+    if v.QualityFilter.is_some():
+        auto u4 = v.QualityFilter.unwrap()
+        parts.append("\"QualityFilter\":" + u4.to_json())
+    return rekognition_json_obj(parts)
+
+# Serialize LabelDetectionSettings to a compact JSON object (declaration order).
+def label_detection_settings_to_json(LabelDetectionSettings v) -> str:
+    list[str] parts = []
+    if v.GeneralLabels.is_some():
+        auto u0 = v.GeneralLabels.unwrap()
+        parts.append("\"GeneralLabels\":" + general_labels_settings_to_json(u0))
+    return rekognition_json_obj(parts)
+
+# Serialize ListDatasetEntriesRequest to a compact JSON object (declaration order).
+def list_dataset_entries_request_to_json(ListDatasetEntriesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DatasetArn\":" + rekognition_json_str(v.DatasetArn))
+    if v.ContainsLabels.is_some():
+        auto u0 = v.ContainsLabels.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(rekognition_json_str(x1))
+        parts.append("\"ContainsLabels\":" + rekognition_json_arr(e1))
+    if v.Labeled.is_some():
+        auto u2 = v.Labeled.unwrap()
+        parts.append("\"Labeled\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.SourceRefContains.is_some():
+        auto u3 = v.SourceRefContains.unwrap()
+        parts.append("\"SourceRefContains\":" + rekognition_json_str(u3))
+    if v.HasErrors.is_some():
+        auto u4 = v.HasErrors.unwrap()
+        parts.append("\"HasErrors\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.NextToken.is_some():
+        auto u5 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + rekognition_json_str(u5))
+    if v.MaxResults.is_some():
+        auto u6 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u6))
+    return rekognition_json_obj(parts)
+
+# Serialize ListFacesRequest to a compact JSON object (declaration order).
+def list_faces_request_to_json(ListFacesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CollectionId\":" + rekognition_json_str(v.CollectionId))
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + rekognition_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.UserId.is_some():
+        auto u2 = v.UserId.unwrap()
+        parts.append("\"UserId\":" + rekognition_json_str(u2))
+    if v.FaceIds.is_some():
+        auto u3 = v.FaceIds.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(rekognition_json_str(x4))
+        parts.append("\"FaceIds\":" + rekognition_json_arr(e4))
+    return rekognition_json_obj(parts)
+
+# Serialize ProtectiveEquipmentSummarizationAttributes to a compact JSON object (declaration order).
+def protective_equipment_summarization_attributes_to_json(ProtectiveEquipmentSummarizationAttributes v) -> str:
+    list[str] parts = []
+    parts.append("\"MinConfidence\":" + str(v.MinConfidence))
+    list[str] e0 = []
+    for x0 in v.RequiredEquipmentTypes:
+        e0.append(x0.to_json())
+    parts.append("\"RequiredEquipmentTypes\":" + rekognition_json_arr(e0))
+    return rekognition_json_obj(parts)
+
+# Serialize RegionOfInterest to a compact JSON object (declaration order).
+def region_of_interest_to_json(RegionOfInterest v) -> str:
+    list[str] parts = []
+    if v.BoundingBox.is_some():
+        auto u0 = v.BoundingBox.unwrap()
+        parts.append("\"BoundingBox\":" + u0.to_json())
+    if v.Polygon.is_some():
+        auto u1 = v.Polygon.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Polygon\":" + rekognition_json_arr(e2))
+    return rekognition_json_obj(parts)
+
+# Serialize StartLabelDetectionRequest to a compact JSON object (declaration order).
+def start_label_detection_request_to_json(StartLabelDetectionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Video\":" + v.Video.to_json())
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + rekognition_json_str(u0))
+    if v.MinConfidence.is_some():
+        auto u1 = v.MinConfidence.unwrap()
+        parts.append("\"MinConfidence\":" + str(u1))
+    if v.NotificationChannel.is_some():
+        auto u2 = v.NotificationChannel.unwrap()
+        parts.append("\"NotificationChannel\":" + u2.to_json())
+    if v.JobTag.is_some():
+        auto u3 = v.JobTag.unwrap()
+        parts.append("\"JobTag\":" + rekognition_json_str(u3))
+    if v.Features.is_some():
+        auto u4 = v.Features.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(rekognition_json_str(x5))
+        parts.append("\"Features\":" + rekognition_json_arr(e5))
+    if v.Settings.is_some():
+        auto u6 = v.Settings.unwrap()
+        parts.append("\"Settings\":" + label_detection_settings_to_json(u6))
+    return rekognition_json_obj(parts)
+
+# Serialize StartSegmentDetectionRequest to a compact JSON object (declaration order).
+def start_segment_detection_request_to_json(StartSegmentDetectionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Video\":" + v.Video.to_json())
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + rekognition_json_str(u0))
+    if v.NotificationChannel.is_some():
+        auto u1 = v.NotificationChannel.unwrap()
+        parts.append("\"NotificationChannel\":" + u1.to_json())
+    if v.JobTag.is_some():
+        auto u2 = v.JobTag.unwrap()
+        parts.append("\"JobTag\":" + rekognition_json_str(u2))
+    if v.Filters.is_some():
+        auto u3 = v.Filters.unwrap()
+        parts.append("\"Filters\":" + u3.to_json())
+    list[str] e4 = []
+    for x4 in v.SegmentTypes:
+        e4.append(x4.to_json())
+    parts.append("\"SegmentTypes\":" + rekognition_json_arr(e4))
+    return rekognition_json_obj(parts)
+
+# Serialize StartTextDetectionFilters to a compact JSON object (declaration order).
+def start_text_detection_filters_to_json(StartTextDetectionFilters v) -> str:
+    list[str] parts = []
+    if v.WordFilter.is_some():
+        auto u0 = v.WordFilter.unwrap()
+        parts.append("\"WordFilter\":" + u0.to_json())
+    if v.RegionsOfInterest.is_some():
+        auto u1 = v.RegionsOfInterest.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(region_of_interest_to_json(x2))
+        parts.append("\"RegionsOfInterest\":" + rekognition_json_arr(e2))
+    return rekognition_json_obj(parts)
+
+# Serialize StartTextDetectionRequest to a compact JSON object (declaration order).
+def start_text_detection_request_to_json(StartTextDetectionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Video\":" + v.Video.to_json())
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + rekognition_json_str(u0))
+    if v.NotificationChannel.is_some():
+        auto u1 = v.NotificationChannel.unwrap()
+        parts.append("\"NotificationChannel\":" + u1.to_json())
+    if v.JobTag.is_some():
+        auto u2 = v.JobTag.unwrap()
+        parts.append("\"JobTag\":" + rekognition_json_str(u2))
+    if v.Filters.is_some():
+        auto u3 = v.Filters.unwrap()
+        parts.append("\"Filters\":" + start_text_detection_filters_to_json(u3))
+    return rekognition_json_obj(parts)
+
+# Serialize StreamProcessorSettings to a compact JSON object (declaration order).
+def stream_processor_settings_to_json(StreamProcessorSettings v) -> str:
+    list[str] parts = []
+    if v.FaceSearch.is_some():
+        auto u0 = v.FaceSearch.unwrap()
+        parts.append("\"FaceSearch\":" + u0.to_json())
+    if v.ConnectedHome.is_some():
+        auto u1 = v.ConnectedHome.unwrap()
+        parts.append("\"ConnectedHome\":" + connected_home_settings_to_json(u1))
+    return rekognition_json_obj(parts)
+
+# Serialize StreamProcessorSettingsForUpdate to a compact JSON object (declaration order).
+def stream_processor_settings_for_update_to_json(StreamProcessorSettingsForUpdate v) -> str:
+    list[str] parts = []
+    if v.ConnectedHomeForUpdate.is_some():
+        auto u0 = v.ConnectedHomeForUpdate.unwrap()
+        parts.append("\"ConnectedHomeForUpdate\":" + connected_home_settings_for_update_to_json(u0))
+    return rekognition_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + rekognition_json_str(v.ResourceArn))
+    list[str] m0 = []
+    for k0 in sorted(v.Tags.keys()):
+        m0.append(rekognition_json_str(k0) + ":" + rekognition_json_str(v.Tags[k0]))
+    parts.append("\"Tags\":" + rekognition_json_obj(m0))
+    return rekognition_json_obj(parts)
+
+# Serialize TestingData to a compact JSON object (declaration order).
+def testing_data_to_json(TestingData v) -> str:
+    list[str] parts = []
+    if v.Assets.is_some():
+        auto u0 = v.Assets.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Assets\":" + rekognition_json_arr(e1))
+    if v.AutoCreate.is_some():
+        auto u2 = v.AutoCreate.unwrap()
+        parts.append("\"AutoCreate\":" + json.dumps(JsonValue.Bool(u2)))
+    return rekognition_json_obj(parts)
+
+# Serialize TrainingData to a compact JSON object (declaration order).
+def training_data_to_json(TrainingData v) -> str:
+    list[str] parts = []
+    if v.Assets.is_some():
+        auto u0 = v.Assets.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Assets\":" + rekognition_json_arr(e1))
+    return rekognition_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + rekognition_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(rekognition_json_str(x0))
+    parts.append("\"TagKeys\":" + rekognition_json_arr(e0))
+    return rekognition_json_obj(parts)
+
+# Serialize UpdateStreamProcessorRequest to a compact JSON object (declaration order).
+def update_stream_processor_request_to_json(UpdateStreamProcessorRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + rekognition_json_str(v.Name))
+    if v.SettingsForUpdate.is_some():
+        auto u0 = v.SettingsForUpdate.unwrap()
+        parts.append("\"SettingsForUpdate\":" + stream_processor_settings_for_update_to_json(u0))
+    if v.RegionsOfInterestForUpdate.is_some():
+        auto u1 = v.RegionsOfInterestForUpdate.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(region_of_interest_to_json(x2))
+        parts.append("\"RegionsOfInterestForUpdate\":" + rekognition_json_arr(e2))
+    if v.DataSharingPreferenceForUpdate.is_some():
+        auto u3 = v.DataSharingPreferenceForUpdate.unwrap()
+        parts.append("\"DataSharingPreferenceForUpdate\":" + u3.to_json())
+    if v.ParametersToDelete.is_some():
+        auto u4 = v.ParametersToDelete.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"ParametersToDelete\":" + rekognition_json_arr(e5))
+    return rekognition_json_obj(parts)
 
 # A bound Rekognition client: credentials + region, threaded into every operation.
 struct RekognitionClient:
     core.Credentials creds
     str region
 
+    # AssociateFaces
+    # errors: AccessDeniedException, ConflictException, IdempotentParameterMismatchException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def associate_faces(self, AssociateFacesRequest input) -> str:
+        auto body = associate_faces_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "AssociateFaces", body)
+
     # CompareFaces
     # errors: AccessDeniedException, ImageTooLargeException, InternalServerError, InvalidImageFormatException, InvalidParameterException, InvalidS3ObjectException, ProvisionedThroughputExceededException, ThrottlingException
     def compare_faces(self, CompareFacesRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "CompareFaces", body)
+
+    # CopyProjectVersion
+    # errors: AccessDeniedException, InternalServerError, InvalidParameterException, LimitExceededException, ProvisionedThroughputExceededException, ResourceInUseException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def copy_project_version(self, CopyProjectVersionRequest input) -> str:
+        auto body = copy_project_version_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "CopyProjectVersion", body)
+
+    # CreateCollection
+    # errors: AccessDeniedException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceAlreadyExistsException, ServiceQuotaExceededException, ThrottlingException
+    def create_collection(self, CreateCollectionRequest input) -> str:
+        auto body = create_collection_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "CreateCollection", body)
+
+    # CreateDataset
+    # errors: AccessDeniedException, InternalServerError, InvalidParameterException, InvalidS3ObjectException, LimitExceededException, ProvisionedThroughputExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, ThrottlingException
+    def create_dataset(self, CreateDatasetRequest input) -> str:
+        auto body = create_dataset_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "CreateDataset", body)
+
+    # CreateFaceLivenessSession
+    # errors: AccessDeniedException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ThrottlingException
+    def create_face_liveness_session(self, CreateFaceLivenessSessionRequest input) -> str:
+        auto body = create_face_liveness_session_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "CreateFaceLivenessSession", body)
+
+    # CreateProject
+    # errors: AccessDeniedException, InternalServerError, InvalidParameterException, LimitExceededException, ProvisionedThroughputExceededException, ResourceInUseException, ThrottlingException
+    def create_project(self, CreateProjectRequest input) -> str:
+        auto body = create_project_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "CreateProject", body)
+
+    # CreateProjectVersion
+    # errors: AccessDeniedException, InternalServerError, InvalidParameterException, LimitExceededException, ProvisionedThroughputExceededException, ResourceInUseException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def create_project_version(self, CreateProjectVersionRequest input) -> str:
+        auto body = create_project_version_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "CreateProjectVersion", body)
+
+    # CreateStreamProcessor
+    # errors: AccessDeniedException, InternalServerError, InvalidParameterException, LimitExceededException, ProvisionedThroughputExceededException, ResourceInUseException, ServiceQuotaExceededException, ThrottlingException
+    def create_stream_processor(self, CreateStreamProcessorRequest input) -> str:
+        auto body = create_stream_processor_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "CreateStreamProcessor", body)
 
     # CreateUser
     # errors: AccessDeniedException, ConflictException, IdempotentParameterMismatchException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
@@ -2662,6 +3506,12 @@ struct RekognitionClient:
     def delete_dataset(self, DeleteDatasetRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "DeleteDataset", body)
+
+    # DeleteFaces
+    # errors: AccessDeniedException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ThrottlingException
+    def delete_faces(self, DeleteFacesRequest input) -> str:
+        auto body = delete_faces_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "DeleteFaces", body)
 
     # DeleteProject
     # errors: AccessDeniedException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceInUseException, ResourceNotFoundException, ThrottlingException
@@ -2705,6 +3555,18 @@ struct RekognitionClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "DescribeDataset", body)
 
+    # DescribeProjectVersions
+    # errors: AccessDeniedException, InternalServerError, InvalidPaginationTokenException, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ThrottlingException
+    def describe_project_versions(self, DescribeProjectVersionsRequest input) -> str:
+        auto body = describe_project_versions_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "DescribeProjectVersions", body)
+
+    # DescribeProjects
+    # errors: AccessDeniedException, InternalServerError, InvalidPaginationTokenException, InvalidParameterException, ProvisionedThroughputExceededException, ThrottlingException
+    def describe_projects(self, DescribeProjectsRequest input) -> str:
+        auto body = describe_projects_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "DescribeProjects", body)
+
     # DescribeStreamProcessor
     # errors: AccessDeniedException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ThrottlingException
     def describe_stream_processor(self, DescribeStreamProcessorRequest input) -> str:
@@ -2716,6 +3578,48 @@ struct RekognitionClient:
     def detect_custom_labels(self, DetectCustomLabelsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "DetectCustomLabels", body)
+
+    # DetectFaces
+    # errors: AccessDeniedException, ImageTooLargeException, InternalServerError, InvalidImageFormatException, InvalidParameterException, InvalidS3ObjectException, ProvisionedThroughputExceededException, ThrottlingException
+    def detect_faces(self, DetectFacesRequest input) -> str:
+        auto body = detect_faces_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "DetectFaces", body)
+
+    # DetectLabels
+    # errors: AccessDeniedException, ImageTooLargeException, InternalServerError, InvalidImageFormatException, InvalidParameterException, InvalidS3ObjectException, ProvisionedThroughputExceededException, ThrottlingException
+    def detect_labels(self, DetectLabelsRequest input) -> str:
+        auto body = detect_labels_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "DetectLabels", body)
+
+    # DetectModerationLabels
+    # errors: AccessDeniedException, HumanLoopQuotaExceededException, ImageTooLargeException, InternalServerError, InvalidImageFormatException, InvalidParameterException, InvalidS3ObjectException, ProvisionedThroughputExceededException, ResourceNotFoundException, ResourceNotReadyException, ThrottlingException
+    def detect_moderation_labels(self, DetectModerationLabelsRequest input) -> str:
+        auto body = detect_moderation_labels_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "DetectModerationLabels", body)
+
+    # DetectProtectiveEquipment
+    # errors: AccessDeniedException, ImageTooLargeException, InternalServerError, InvalidImageFormatException, InvalidParameterException, InvalidS3ObjectException, ProvisionedThroughputExceededException, ThrottlingException
+    def detect_protective_equipment(self, DetectProtectiveEquipmentRequest input) -> str:
+        auto body = detect_protective_equipment_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "DetectProtectiveEquipment", body)
+
+    # DetectText
+    # errors: AccessDeniedException, ImageTooLargeException, InternalServerError, InvalidImageFormatException, InvalidParameterException, InvalidS3ObjectException, ProvisionedThroughputExceededException, ThrottlingException
+    def detect_text(self, DetectTextRequest input) -> str:
+        auto body = detect_text_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "DetectText", body)
+
+    # DisassociateFaces
+    # errors: AccessDeniedException, ConflictException, IdempotentParameterMismatchException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ThrottlingException
+    def disassociate_faces(self, DisassociateFacesRequest input) -> str:
+        auto body = disassociate_faces_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "DisassociateFaces", body)
+
+    # DistributeDatasetEntries
+    # errors: AccessDeniedException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ResourceNotReadyException, ThrottlingException
+    def distribute_dataset_entries(self, DistributeDatasetEntriesRequest input) -> str:
+        auto body = distribute_dataset_entries_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "DistributeDatasetEntries", body)
 
     # GetCelebrityInfo
     # errors: AccessDeniedException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ThrottlingException
@@ -2783,17 +3687,35 @@ struct RekognitionClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "GetTextDetection", body)
 
+    # IndexFaces
+    # errors: AccessDeniedException, ImageTooLargeException, InternalServerError, InvalidImageFormatException, InvalidParameterException, InvalidS3ObjectException, ProvisionedThroughputExceededException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def index_faces(self, IndexFacesRequest input) -> str:
+        auto body = index_faces_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "IndexFaces", body)
+
     # ListCollections
     # errors: AccessDeniedException, InternalServerError, InvalidPaginationTokenException, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ThrottlingException
     def list_collections(self, ListCollectionsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "ListCollections", body)
 
+    # ListDatasetEntries
+    # errors: AccessDeniedException, InternalServerError, InvalidPaginationTokenException, InvalidParameterException, ProvisionedThroughputExceededException, ResourceInUseException, ResourceNotFoundException, ResourceNotReadyException, ThrottlingException
+    def list_dataset_entries(self, ListDatasetEntriesRequest input) -> str:
+        auto body = list_dataset_entries_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "ListDatasetEntries", body)
+
     # ListDatasetLabels
     # errors: AccessDeniedException, InternalServerError, InvalidPaginationTokenException, InvalidParameterException, ProvisionedThroughputExceededException, ResourceInUseException, ResourceNotFoundException, ResourceNotReadyException, ThrottlingException
     def list_dataset_labels(self, ListDatasetLabelsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "ListDatasetLabels", body)
+
+    # ListFaces
+    # errors: AccessDeniedException, InternalServerError, InvalidPaginationTokenException, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ThrottlingException
+    def list_faces(self, ListFacesRequest input) -> str:
+        auto body = list_faces_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "ListFaces", body)
 
     # ListMediaAnalysisJobs
     # errors: AccessDeniedException, InternalServerError, InvalidPaginationTokenException, InvalidParameterException, ProvisionedThroughputExceededException, ThrottlingException
@@ -2885,6 +3807,12 @@ struct RekognitionClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "StartFaceSearch", body)
 
+    # StartLabelDetection
+    # errors: AccessDeniedException, IdempotentParameterMismatchException, InternalServerError, InvalidParameterException, InvalidS3ObjectException, LimitExceededException, ProvisionedThroughputExceededException, ThrottlingException, VideoTooLargeException
+    def start_label_detection(self, StartLabelDetectionRequest input) -> str:
+        auto body = start_label_detection_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "StartLabelDetection", body)
+
     # StartMediaAnalysisJob
     # errors: AccessDeniedException, IdempotentParameterMismatchException, InternalServerError, InvalidManifestException, InvalidParameterException, InvalidS3ObjectException, LimitExceededException, ProvisionedThroughputExceededException, ResourceNotFoundException, ResourceNotReadyException, ThrottlingException
     def start_media_analysis_job(self, StartMediaAnalysisJobRequest input) -> str:
@@ -2903,11 +3831,23 @@ struct RekognitionClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "StartProjectVersion", body)
 
+    # StartSegmentDetection
+    # errors: AccessDeniedException, IdempotentParameterMismatchException, InternalServerError, InvalidParameterException, InvalidS3ObjectException, LimitExceededException, ProvisionedThroughputExceededException, ThrottlingException, VideoTooLargeException
+    def start_segment_detection(self, StartSegmentDetectionRequest input) -> str:
+        auto body = start_segment_detection_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "StartSegmentDetection", body)
+
     # StartStreamProcessor
     # errors: AccessDeniedException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceInUseException, ResourceNotFoundException, ThrottlingException
     def start_stream_processor(self, StartStreamProcessorRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "StartStreamProcessor", body)
+
+    # StartTextDetection
+    # errors: AccessDeniedException, IdempotentParameterMismatchException, InternalServerError, InvalidParameterException, InvalidS3ObjectException, LimitExceededException, ProvisionedThroughputExceededException, ThrottlingException, VideoTooLargeException
+    def start_text_detection(self, StartTextDetectionRequest input) -> str:
+        auto body = start_text_detection_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "StartTextDetection", body)
 
     # StopProjectVersion
     # errors: AccessDeniedException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceInUseException, ResourceNotFoundException, ThrottlingException
@@ -2921,11 +3861,57 @@ struct RekognitionClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "StopStreamProcessor", body)
 
+    # TagResource
+    # errors: AccessDeniedException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ThrottlingException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "UntagResource", body)
+
     # UpdateDatasetEntries
     # errors: AccessDeniedException, InternalServerError, InvalidParameterException, LimitExceededException, ProvisionedThroughputExceededException, ResourceInUseException, ResourceNotFoundException, ThrottlingException
     def update_dataset_entries(self, UpdateDatasetEntriesRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "UpdateDatasetEntries", body)
+
+    # UpdateStreamProcessor
+    # errors: AccessDeniedException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceInUseException, ResourceNotFoundException, ThrottlingException
+    def update_stream_processor(self, UpdateStreamProcessorRequest input) -> str:
+        auto body = update_stream_processor_request_to_json(input)
+        return awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "UpdateStreamProcessor", body)
+
+    # Paginator for DescribeProjectVersions — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ProjectVersionDescriptions).
+    def paginate_describe_project_versions(self, DescribeProjectVersionsRequest input):
+        auto host = endpoints.regional_host(rekognition_protocol().service, self.region)
+        while True:
+            auto body = describe_project_versions_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "DescribeProjectVersions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeProjects — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ProjectDescriptions).
+    def paginate_describe_projects(self, DescribeProjectsRequest input):
+        auto host = endpoints.regional_host(rekognition_protocol().service, self.region)
+        while True:
+            auto body = describe_projects_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "DescribeProjects", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
     # Paginator for ListCollections — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: CollectionIds, FaceModelVersions).
@@ -2941,6 +3927,20 @@ struct RekognitionClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListDatasetEntries — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: DatasetEntries).
+    def paginate_list_dataset_entries(self, ListDatasetEntriesRequest input):
+        auto host = endpoints.regional_host(rekognition_protocol().service, self.region)
+        while True:
+            auto body = list_dataset_entries_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "ListDatasetEntries", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListDatasetLabels — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: DatasetLabelDescriptions).
     def paginate_list_dataset_labels(self, ListDatasetLabelsRequest input):
@@ -2948,6 +3948,20 @@ struct RekognitionClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "ListDatasetLabels", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListFaces — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Faces).
+    def paginate_list_faces(self, ListFacesRequest input):
+        auto host = endpoints.regional_host(rekognition_protocol().service, self.region)
+        while True:
+            auto body = list_faces_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(rekognition_protocol(), self.creds, self.region, "ListFaces", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

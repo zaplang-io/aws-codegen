@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 62 operations — 52 with a generated method,
-#   10 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 62 operations — 62 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   156 structs (118 @derive(Json)), 17 enums, 11 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -202,8 +202,9 @@ struct AccessDeniedException:
     Optional[ErrorCode] Code
     Optional[str] Message
 
-# no @derive(Json): member(s) SupportedLicenses: list[License], SigninDelegateGroups: list[SigninDelegateGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupportedLicenses: list[License], SigninDelegateGroups: list[SigninDelegateGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Account:
     str AwsAccountId
     str AccountId
@@ -260,8 +261,9 @@ struct BatchCreateRoomMembershipRequest:
     str RoomId
     list[MembershipItem] MembershipItemList
 
-# no @derive(Json): member(s) Errors: list[MemberError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[MemberError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateRoomMembershipResponse:
     Optional[list[MemberError]] Errors
 
@@ -270,8 +272,9 @@ struct BatchCreateRoomMembershipResponse:
 struct BatchDeletePhoneNumberRequest:
     list[str] PhoneNumberIds
 
-# no @derive(Json): member(s) PhoneNumberErrors: list[PhoneNumberError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumberErrors: list[PhoneNumberError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeletePhoneNumberResponse:
     Optional[list[PhoneNumberError]] PhoneNumberErrors
 
@@ -281,8 +284,9 @@ struct BatchSuspendUserRequest:
     str AccountId
     list[str] UserIdList
 
-# no @derive(Json): member(s) UserErrors: list[UserError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserErrors: list[UserError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchSuspendUserResponse:
     Optional[list[UserError]] UserErrors
 
@@ -292,8 +296,9 @@ struct BatchUnsuspendUserRequest:
     str AccountId
     list[str] UserIdList
 
-# no @derive(Json): member(s) UserErrors: list[UserError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserErrors: list[UserError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUnsuspendUserResponse:
     Optional[list[UserError]] UserErrors
 
@@ -302,8 +307,9 @@ struct BatchUnsuspendUserResponse:
 struct BatchUpdatePhoneNumberRequest:
     list[UpdatePhoneNumberRequestItem] UpdatePhoneNumberRequestItems
 
-# no @derive(Json): member(s) PhoneNumberErrors: list[PhoneNumberError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumberErrors: list[PhoneNumberError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdatePhoneNumberResponse:
     Optional[list[PhoneNumberError]] PhoneNumberErrors
 
@@ -313,8 +319,9 @@ struct BatchUpdateUserRequest:
     str AccountId
     list[UpdateUserRequestItem] UpdateUserRequestItems
 
-# no @derive(Json): member(s) UserErrors: list[UserError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserErrors: list[UserError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateUserResponse:
     Optional[list[UserError]] UserErrors
 
@@ -350,8 +357,9 @@ struct ConversationRetentionSettings:
 struct CreateAccountRequest:
     str Name
 
-# no @derive(Json): member(s) Account: Account not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Account: Account not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAccountResponse:
     Optional[Account] Account
 
@@ -384,8 +392,9 @@ struct CreatePhoneNumberOrderRequest:
     PhoneNumberProductType ProductType
     list[str] E164PhoneNumbers
 
-# no @derive(Json): member(s) PhoneNumberOrder: PhoneNumberOrder not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumberOrder: PhoneNumberOrder not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePhoneNumberOrderResponse:
     Optional[PhoneNumberOrder] PhoneNumberOrder
 
@@ -496,8 +505,9 @@ struct ForbiddenException:
 struct GetAccountRequest:
     str AccountId
 
-# no @derive(Json): member(s) Account: Account not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Account: Account not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAccountResponse:
     Optional[Account] Account
 
@@ -540,8 +550,9 @@ struct GetGlobalSettingsResponse:
 struct GetPhoneNumberOrderRequest:
     str PhoneNumberOrderId
 
-# no @derive(Json): member(s) PhoneNumberOrder: PhoneNumberOrder not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumberOrder: PhoneNumberOrder not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPhoneNumberOrderResponse:
     Optional[PhoneNumberOrder] PhoneNumberOrder
 
@@ -550,8 +561,9 @@ struct GetPhoneNumberOrderResponse:
 struct GetPhoneNumberRequest:
     str PhoneNumberId
 
-# no @derive(Json): member(s) PhoneNumber: PhoneNumber not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumber: PhoneNumber not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPhoneNumberResponse:
     Optional[PhoneNumber] PhoneNumber
 
@@ -616,8 +628,9 @@ struct InviteUsersRequest:
     list[str] UserEmailList
     Optional[UserType] UserType
 
-# no @derive(Json): member(s) Invites: list[Invite] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Invites: list[Invite] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InviteUsersResponse:
     Optional[list[Invite]] Invites
 
@@ -629,8 +642,9 @@ struct ListAccountsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Accounts: list[Account] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Accounts: list[Account] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccountsResponse:
     Optional[list[Account]] Accounts
     Optional[str] NextToken
@@ -642,8 +656,9 @@ struct ListBotsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Bots: list[Bot] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Bots: list[Bot] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBotsResponse:
     Optional[list[Bot]] Bots
     Optional[str] NextToken
@@ -654,8 +669,9 @@ struct ListPhoneNumberOrdersRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) PhoneNumberOrders: list[PhoneNumberOrder] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumberOrders: list[PhoneNumberOrder] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPhoneNumberOrdersResponse:
     Optional[list[PhoneNumberOrder]] PhoneNumberOrders
     Optional[str] NextToken
@@ -673,8 +689,9 @@ struct ListPhoneNumbersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PhoneNumbers: list[PhoneNumber] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumbers: list[PhoneNumber] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPhoneNumbersResponse:
     Optional[list[PhoneNumber]] PhoneNumbers
     Optional[str] NextToken
@@ -687,8 +704,9 @@ struct ListRoomMembershipsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RoomMemberships: list[RoomMembership] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RoomMemberships: list[RoomMembership] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRoomMembershipsResponse:
     Optional[list[RoomMembership]] RoomMemberships
     Optional[str] NextToken
@@ -701,8 +719,9 @@ struct ListRoomsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Rooms: list[Room] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rooms: list[Room] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRoomsResponse:
     Optional[list[Room]] Rooms
     Optional[str] NextToken
@@ -713,8 +732,9 @@ struct ListSupportedPhoneNumberCountriesRequest:
     # wire string of the PhoneNumberProductType enum (querystring binding)
     str ProductType
 
-# no @derive(Json): member(s) PhoneNumberCountries: list[PhoneNumberCountry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumberCountries: list[PhoneNumberCountry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSupportedPhoneNumberCountriesResponse:
     Optional[list[PhoneNumberCountry]] PhoneNumberCountries
 
@@ -728,8 +748,9 @@ struct ListUsersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Users: list[User] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Users: list[User] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUsersResponse:
     Optional[list[User]] Users
     Optional[str] NextToken
@@ -774,8 +795,9 @@ struct OrderedPhoneNumber:
     Optional[str] E164PhoneNumber
     Optional[OrderedPhoneNumberStatus] Status
 
-# no @derive(Json): member(s) Associations: list[PhoneNumberAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Associations: list[PhoneNumberAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PhoneNumber:
     Optional[str] PhoneNumberId
     Optional[str] E164PhoneNumber
@@ -807,8 +829,9 @@ struct PhoneNumberCapabilities:
     Optional[bool] InboundMMS
     Optional[bool] OutboundMMS
 
-# no @derive(Json): member(s) SupportedPhoneNumberTypes: list[PhoneNumberType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupportedPhoneNumberTypes: list[PhoneNumberType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PhoneNumberCountry:
     Optional[str] CountryCode
     Optional[list[PhoneNumberType]] SupportedPhoneNumberTypes
@@ -819,8 +842,9 @@ struct PhoneNumberError:
     Optional[ErrorCode] ErrorCode
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) OrderedPhoneNumbers: list[OrderedPhoneNumber] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrderedPhoneNumbers: list[OrderedPhoneNumber] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PhoneNumberOrder:
     Optional[str] PhoneNumberOrderId
     Optional[PhoneNumberProductType] ProductType
@@ -907,8 +931,9 @@ struct ResourceLimitExceededException:
 struct RestorePhoneNumberRequest:
     str PhoneNumberId
 
-# no @derive(Json): member(s) PhoneNumber: PhoneNumber not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumber: PhoneNumber not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestorePhoneNumberResponse:
     Optional[PhoneNumber] PhoneNumber
 
@@ -954,8 +979,9 @@ struct SearchAvailablePhoneNumbersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) E164PhoneNumbers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) E164PhoneNumbers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchAvailablePhoneNumbersResponse:
     Optional[list[str]] E164PhoneNumbers
     Optional[str] NextToken
@@ -1002,8 +1028,9 @@ struct UpdateAccountRequest:
     Optional[str] Name
     Optional[License] DefaultLicense
 
-# no @derive(Json): member(s) Account: Account not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Account: Account not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAccountResponse:
     Optional[Account] Account
 
@@ -1048,8 +1075,9 @@ struct UpdatePhoneNumberRequestItem:
     Optional[PhoneNumberProductType] ProductType
     Optional[str] CallingName
 
-# no @derive(Json): member(s) PhoneNumber: PhoneNumber not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumber: PhoneNumber not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePhoneNumberResponse:
     Optional[PhoneNumber] PhoneNumber
 
@@ -1187,20 +1215,6 @@ def chime_error_from_code(str code) -> ChimeError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   AssociateSigninDelegateGroupsWithAccount (document member `SigninDelegateGroups: list[SigninDelegateGroup]` is not serializable by derive)
-#   BatchCreateRoomMembership (document member `MembershipItemList: list[MembershipItem]` is not serializable by derive)
-#   BatchDeletePhoneNumber (document member `PhoneNumberIds: list[str]` is not serializable by derive)
-#   BatchSuspendUser (document member `UserIdList: list[str]` is not serializable by derive)
-#   BatchUnsuspendUser (document member `UserIdList: list[str]` is not serializable by derive)
-#   BatchUpdatePhoneNumber (document member `UpdatePhoneNumberRequestItems: list[UpdatePhoneNumberRequestItem]` is not serializable by derive)
-#   BatchUpdateUser (document member `UpdateUserRequestItems: list[UpdateUserRequestItem]` is not serializable by derive)
-#   CreatePhoneNumberOrder (document member `E164PhoneNumbers: list[str]` is not serializable by derive)
-#   DisassociateSigninDelegateGroupsFromAccount (document member `GroupNames: list[str]` is not serializable by derive)
-#   InviteUsers (document member `UserEmailList: list[str]` is not serializable by derive)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1329,6 +1343,108 @@ struct ChimeClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
 
+    # AssociateSigninDelegateGroupsWithAccount  POST /accounts/{accountId}?operation=associate-signin-delegate-groups
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def associate_signin_delegate_groups_with_account(self, AssociateSigninDelegateGroupsWithAccountRequest input) -> str:
+        auto host = endpoints.regional_host(chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["accountId"] = input.AccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}?operation=associate-signin-delegate-groups", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.SigninDelegateGroups:
+            e0.append(x0.to_json())
+        parts.append("\"SigninDelegateGroups\":" + chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
+
+    # BatchCreateRoomMembership  POST /accounts/{accountId}/rooms/{roomId}/memberships?operation=batch-create
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def batch_create_room_membership(self, BatchCreateRoomMembershipRequest input) -> str:
+        auto host = endpoints.regional_host(chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["accountId"] = input.AccountId
+        labels["roomId"] = input.RoomId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/rooms/{roomId}/memberships?operation=batch-create", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.MembershipItemList:
+            e0.append(x0.to_json())
+        parts.append("\"MembershipItemList\":" + chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
+
+    # BatchDeletePhoneNumber  POST /phone-numbers?operation=batch-delete
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def batch_delete_phone_number(self, BatchDeletePhoneNumberRequest input) -> str:
+        auto host = endpoints.regional_host(chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/phone-numbers?operation=batch-delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.PhoneNumberIds:
+            e0.append(chime_json_str(x0))
+        parts.append("\"PhoneNumberIds\":" + chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
+
+    # BatchSuspendUser  POST /accounts/{accountId}/users?operation=suspend
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def batch_suspend_user(self, BatchSuspendUserRequest input) -> str:
+        auto host = endpoints.regional_host(chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["accountId"] = input.AccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users?operation=suspend", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.UserIdList:
+            e0.append(chime_json_str(x0))
+        parts.append("\"UserIdList\":" + chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
+
+    # BatchUnsuspendUser  POST /accounts/{accountId}/users?operation=unsuspend
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def batch_unsuspend_user(self, BatchUnsuspendUserRequest input) -> str:
+        auto host = endpoints.regional_host(chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["accountId"] = input.AccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users?operation=unsuspend", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.UserIdList:
+            e0.append(chime_json_str(x0))
+        parts.append("\"UserIdList\":" + chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
+
+    # BatchUpdatePhoneNumber  POST /phone-numbers?operation=batch-update
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def batch_update_phone_number(self, BatchUpdatePhoneNumberRequest input) -> str:
+        auto host = endpoints.regional_host(chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/phone-numbers?operation=batch-update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.UpdatePhoneNumberRequestItems:
+            e0.append(x0.to_json())
+        parts.append("\"UpdatePhoneNumberRequestItems\":" + chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
+
+    # BatchUpdateUser  POST /accounts/{accountId}/users
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def batch_update_user(self, BatchUpdateUserRequest input) -> str:
+        auto host = endpoints.regional_host(chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["accountId"] = input.AccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.UpdateUserRequestItems:
+            e0.append(x0.to_json())
+        parts.append("\"UpdateUserRequestItems\":" + chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
+
     # CreateAccount  POST /accounts
     # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def create_account(self, CreateAccountRequest input) -> str:
@@ -1358,6 +1474,20 @@ struct ChimeClient:
         auto b = binding.HttpBinding(method="POST", path_template="/meetings/{meetingId}/dial-outs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateMeetingDialOutDocument(FromPhoneNumber=input.FromPhoneNumber, ToPhoneNumber=input.ToPhoneNumber, JoinToken=input.JoinToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
+
+    # CreatePhoneNumberOrder  POST /phone-number-orders
+    # errors: AccessDeniedException, BadRequestException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def create_phone_number_order(self, CreatePhoneNumberOrderRequest input) -> str:
+        auto host = endpoints.regional_host(chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/phone-number-orders", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ProductType\":" + input.ProductType.to_json())
+        list[str] e0 = []
+        for x0 in input.E164PhoneNumbers:
+            e0.append(chime_json_str(x0))
+        parts.append("\"E164PhoneNumbers\":" + chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, chime_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
 
     # CreateRoom  POST /accounts/{accountId}/rooms
@@ -1452,6 +1582,21 @@ struct ChimeClient:
         labels["userId"] = input.UserId
         auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users/{userId}?operation=disassociate-phone-number", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
+
+    # DisassociateSigninDelegateGroupsFromAccount  POST /accounts/{accountId}?operation=disassociate-signin-delegate-groups
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def disassociate_signin_delegate_groups_from_account(self, DisassociateSigninDelegateGroupsFromAccountRequest input) -> str:
+        auto host = endpoints.regional_host(chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["accountId"] = input.AccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}?operation=disassociate-signin-delegate-groups", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.GroupNames:
+            e0.append(chime_json_str(x0))
+        parts.append("\"GroupNames\":" + chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
 
     # GetAccount  GET /accounts/{accountId}
     # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
@@ -1561,6 +1706,24 @@ struct ChimeClient:
         labels["userId"] = input.UserId
         auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}/users/{userId}/settings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
+
+    # InviteUsers  POST /accounts/{accountId}/users?operation=add
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def invite_users(self, InviteUsersRequest input) -> str:
+        auto host = endpoints.regional_host(chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["accountId"] = input.AccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users?operation=add", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.UserEmailList:
+            e0.append(chime_json_str(x0))
+        parts.append("\"UserEmailList\":" + chime_json_arr(e0))
+        if input.UserType.is_some():
+            auto u1 = input.UserType.unwrap()
+            parts.append("\"UserType\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
 
     # ListAccounts  GET /accounts
     # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException

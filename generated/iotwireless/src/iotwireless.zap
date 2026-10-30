@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 112 operations — 87 with a generated method,
-#   25 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 112 operations — 111 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   367 structs (280 @derive(Json)), 38 enums, 7 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The IoT_Wireless rest-json protocol: SigV4 service "iotwireless" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -503,8 +504,9 @@ struct AssociateWirelessGatewayWithThingResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Frequencies: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Frequencies: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Beaconing:
     Optional[int64] DataRate
     Optional[list[int64]] Frequencies
@@ -531,8 +533,9 @@ struct CdmaNmrObj:
     Optional[int64] PilotPower
     Optional[int64] BaseStationId
 
-# no @derive(Json): member(s) CdmaNmr: list[CdmaNmrObj] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CdmaNmr: list[CdmaNmrObj] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CdmaObj:
     int64 SystemId
     int64 NetworkId
@@ -544,8 +547,9 @@ struct CdmaObj:
     Optional[float64] BaseLng
     Optional[list[CdmaNmrObj]] CdmaNmr
 
-# no @derive(Json): member(s) Gsm: list[GsmObj], Wcdma: list[WcdmaObj], Tdscdma: list[TdscdmaObj], Lte: list[LteObj], Cdma: list[CdmaObj] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Gsm: list[GsmObj], Wcdma: list[WcdmaObj], Tdscdma: list[TdscdmaObj], Lte: list[LteObj], Cdma: list[CdmaObj] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CellTowers:
     Optional[list[GsmObj]] Gsm
     Optional[list[WcdmaObj]] Wcdma
@@ -975,8 +979,9 @@ struct DisassociateWirelessGatewayFromThingResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) LoRaWAN: LoRaWANSendDataToDevice not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LoRaWAN: LoRaWANSendDataToDevice not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DownlinkQueueMessage:
     Optional[str] MessageId
     Optional[int64] TransmitMode
@@ -998,8 +1003,9 @@ struct EventNotificationItemConfigurations:
     Optional[ConnectionStatusEventConfiguration] ConnectionStatus
     Optional[MessageDeliveryStatusEventConfiguration] MessageDeliveryStatus
 
-# no @derive(Json): member(s) Applications: list[ApplicationConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Applications: list[ApplicationConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FPorts:
     Optional[int64] Fuota
     Optional[int64] Multicast
@@ -1018,8 +1024,9 @@ struct FuotaTaskEventLogOption:
     str Event
     LogLevel LogLevel
 
-# no @derive(Json): member(s) Events: list[FuotaTaskEventLogOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Events: list[FuotaTaskEventLogOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FuotaTaskLogOption:
     str Type
     LogLevel LogLevel
@@ -1049,8 +1056,9 @@ struct GetDestinationResponse:
 struct GetDeviceProfileRequest:
     str Id
 
-# no @derive(Json): member(s) LoRaWAN: LoRaWANDeviceProfile, Sidewalk: SidewalkGetDeviceProfile not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LoRaWAN: LoRaWANDeviceProfile, Sidewalk: SidewalkGetDeviceProfile not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeviceProfileResponse:
     Optional[str] Arn
     Optional[str] Name
@@ -1099,8 +1107,9 @@ struct GetLogLevelsByResourceTypesRequest:
     # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) WirelessGatewayLogOptions: list[WirelessGatewayLogOption], WirelessDeviceLogOptions: list[WirelessDeviceLogOption], FuotaTaskLogOptions: list[FuotaTaskLogOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WirelessGatewayLogOptions: list[WirelessGatewayLogOption], WirelessDeviceLogOptions: list[WirelessDeviceLogOption], FuotaTaskLogOptions: list[FuotaTaskLogOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLogLevelsByResourceTypesResponse:
     Optional[LogLevel] DefaultLogLevel
     Optional[list[WirelessGatewayLogOption]] WirelessGatewayLogOptions
@@ -1122,8 +1131,9 @@ struct GetMetricConfigurationResponse:
 struct GetMetricsRequest:
     Optional[list[SummaryMetricQuery]] SummaryMetricQueries
 
-# no @derive(Json): member(s) SummaryMetricQueryResults: list[SummaryMetricQueryResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SummaryMetricQueryResults: list[SummaryMetricQueryResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMetricsResponse:
     Optional[list[SummaryMetricQueryResult]] SummaryMetricQueryResults
 
@@ -1132,8 +1142,9 @@ struct GetMetricsResponse:
 struct GetMulticastGroupRequest:
     str Id
 
-# no @derive(Json): member(s) LoRaWAN: LoRaWANMulticastGet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LoRaWAN: LoRaWANMulticastGet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMulticastGroupResponse:
     Optional[str] Arn
     Optional[str] Id
@@ -1157,8 +1168,9 @@ struct GetMulticastGroupSessionResponse:
 struct GetNetworkAnalyzerConfigurationRequest:
     str ConfigurationName
 
-# no @derive(Json): member(s) WirelessDevices: list[str], WirelessGateways: list[str], MulticastGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WirelessDevices: list[str], WirelessGateways: list[str], MulticastGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetNetworkAnalyzerConfigurationResponse:
     Optional[TraceContent] TraceContent
     Optional[list[str]] WirelessDevices
@@ -1213,8 +1225,9 @@ struct GetPositionRequest:
     # wire string of the PositionResourceType enum (querystring binding)
     str ResourceType
 
-# no @derive(Json): member(s) Position: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Position: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPositionResponse:
     Optional[list[float64]] Position
     Optional[Accuracy] Accuracy
@@ -1289,8 +1302,9 @@ struct GetServiceProfileResponse:
 struct GetWirelessDeviceImportTaskRequest:
     str Id
 
-# no @derive(Json): member(s) Sidewalk: SidewalkGetStartImportInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sidewalk: SidewalkGetStartImportInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWirelessDeviceImportTaskResponse:
     Optional[str] Id
     Optional[str] Arn
@@ -1312,8 +1326,9 @@ struct GetWirelessDeviceRequest:
     # wire string of the WirelessDeviceIdType enum (querystring binding)
     str IdentifierType
 
-# no @derive(Json): member(s) LoRaWAN: LoRaWANDevice, Sidewalk: SidewalkDevice not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LoRaWAN: LoRaWANDevice, Sidewalk: SidewalkDevice not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWirelessDeviceResponse:
     Optional[WirelessDeviceType] Type
     Optional[str] Name
@@ -1332,8 +1347,9 @@ struct GetWirelessDeviceResponse:
 struct GetWirelessDeviceStatisticsRequest:
     str WirelessDeviceId
 
-# no @derive(Json): member(s) LoRaWAN: LoRaWANDeviceMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LoRaWAN: LoRaWANDeviceMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWirelessDeviceStatisticsResponse:
     Optional[str] WirelessDeviceId
     Optional[str] LastUplinkReceivedAt
@@ -1366,8 +1382,9 @@ struct GetWirelessGatewayRequest:
     # wire string of the WirelessGatewayIdType enum (querystring binding)
     str IdentifierType
 
-# no @derive(Json): member(s) LoRaWAN: LoRaWANGateway not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LoRaWAN: LoRaWANGateway not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWirelessGatewayResponse:
     Optional[str] Name
     Optional[str] Id
@@ -1418,8 +1435,9 @@ struct GlobalIdentity:
     int64 Lac
     int64 GeranCid
 
-# no @derive(Json): member(s) AssistPosition: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssistPosition: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Gnss:
     str Payload
     Optional[float64] CaptureTime
@@ -1433,8 +1451,9 @@ struct GnssCapture:
     str Payload
     Optional[float64] CaptureTime
 
-# no @derive(Json): member(s) Captures: list[GnssCapture], AssistPosition: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Captures: list[GnssCapture], AssistPosition: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GnssMultiFrame:
     list[GnssCapture] Captures
     Optional[float64] CaptureTimeAccuracy
@@ -1454,8 +1473,9 @@ struct GsmNmrObj:
     Optional[int64] RxLevel
     Optional[GlobalIdentity] GlobalIdentity
 
-# no @derive(Json): member(s) GsmNmr: list[GsmNmrObj] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GsmNmr: list[GsmNmrObj] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GsmObj:
     int64 Mcc
     int64 Mnc
@@ -1501,8 +1521,9 @@ struct ListDestinationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) DestinationList: list[Destinations] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DestinationList: list[Destinations] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDestinationsResponse:
     Optional[str] NextToken
     Optional[list[Destinations]] DestinationList
@@ -1515,8 +1536,9 @@ struct ListDeviceProfilesRequest:
     # wire string of the DeviceProfileType enum (querystring binding)
     Optional[str] DeviceProfileType
 
-# no @derive(Json): member(s) DeviceProfileList: list[DeviceProfile] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeviceProfileList: list[DeviceProfile] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeviceProfilesResponse:
     Optional[str] NextToken
     Optional[list[DeviceProfile]] DeviceProfileList
@@ -1530,8 +1552,9 @@ struct ListDevicesForWirelessDeviceImportTaskRequest:
     # wire string of the OnboardStatus enum (querystring binding)
     Optional[str] Status
 
-# no @derive(Json): member(s) ImportedWirelessDeviceList: list[ImportedWirelessDevice] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ImportedWirelessDeviceList: list[ImportedWirelessDevice] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDevicesForWirelessDeviceImportTaskResponse:
     Optional[str] NextToken
     Optional[str] DestinationName
@@ -1547,8 +1570,9 @@ struct ListEventConfigurationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) EventConfigurationsList: list[EventConfigurationItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventConfigurationsList: list[EventConfigurationItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventConfigurationsResponse:
     Optional[str] NextToken
     Optional[list[EventConfigurationItem]] EventConfigurationsList
@@ -1559,8 +1583,9 @@ struct ListFuotaTasksRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) FuotaTaskList: list[FuotaTask] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FuotaTaskList: list[FuotaTask] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFuotaTasksResponse:
     Optional[str] NextToken
     Optional[list[FuotaTask]] FuotaTaskList
@@ -1572,8 +1597,9 @@ struct ListMulticastGroupsByFuotaTaskRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) MulticastGroupList: list[MulticastGroupByFuotaTask] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MulticastGroupList: list[MulticastGroupByFuotaTask] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMulticastGroupsByFuotaTaskResponse:
     Optional[str] NextToken
     Optional[list[MulticastGroupByFuotaTask]] MulticastGroupList
@@ -1584,8 +1610,9 @@ struct ListMulticastGroupsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) MulticastGroupList: list[MulticastGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MulticastGroupList: list[MulticastGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMulticastGroupsResponse:
     Optional[str] NextToken
     Optional[list[MulticastGroup]] MulticastGroupList
@@ -1596,8 +1623,9 @@ struct ListNetworkAnalyzerConfigurationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) NetworkAnalyzerConfigurationList: list[NetworkAnalyzerConfigurations] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkAnalyzerConfigurationList: list[NetworkAnalyzerConfigurations] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkAnalyzerConfigurationsResponse:
     Optional[str] NextToken
     Optional[list[NetworkAnalyzerConfigurations]] NetworkAnalyzerConfigurationList
@@ -1608,8 +1636,9 @@ struct ListPartnerAccountsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Sidewalk: list[SidewalkAccountInfoWithFingerprint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sidewalk: list[SidewalkAccountInfoWithFingerprint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPartnerAccountsResponse:
     Optional[str] NextToken
     Optional[list[SidewalkAccountInfoWithFingerprint]] Sidewalk
@@ -1622,8 +1651,9 @@ struct ListPositionConfigurationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PositionConfigurationList: list[PositionConfigurationItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PositionConfigurationList: list[PositionConfigurationItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPositionConfigurationsResponse:
     Optional[list[PositionConfigurationItem]] PositionConfigurationList
     Optional[str] NextToken
@@ -1637,8 +1667,9 @@ struct ListQueuedMessagesRequest:
     # wire string of the WirelessDeviceType enum (querystring binding)
     Optional[str] WirelessDeviceType
 
-# no @derive(Json): member(s) DownlinkQueueMessagesList: list[DownlinkQueueMessage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DownlinkQueueMessagesList: list[DownlinkQueueMessage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListQueuedMessagesResponse:
     Optional[str] NextToken
     Optional[list[DownlinkQueueMessage]] DownlinkQueueMessagesList
@@ -1649,8 +1680,9 @@ struct ListServiceProfilesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ServiceProfileList: list[ServiceProfile] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceProfileList: list[ServiceProfile] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceProfilesResponse:
     Optional[str] NextToken
     Optional[list[ServiceProfile]] ServiceProfileList
@@ -1660,8 +1692,9 @@ struct ListServiceProfilesResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -1671,8 +1704,9 @@ struct ListWirelessDeviceImportTasksRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) WirelessDeviceImportTaskList: list[WirelessDeviceImportTask] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WirelessDeviceImportTaskList: list[WirelessDeviceImportTask] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWirelessDeviceImportTasksResponse:
     Optional[str] NextToken
     Optional[list[WirelessDeviceImportTask]] WirelessDeviceImportTaskList
@@ -1690,8 +1724,9 @@ struct ListWirelessDevicesRequest:
     Optional[str] FuotaTaskId
     Optional[str] MulticastGroupId
 
-# no @derive(Json): member(s) WirelessDeviceList: list[WirelessDeviceStatistics] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WirelessDeviceList: list[WirelessDeviceStatistics] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWirelessDevicesResponse:
     Optional[str] NextToken
     Optional[list[WirelessDeviceStatistics]] WirelessDeviceList
@@ -1703,8 +1738,9 @@ struct ListWirelessGatewayTaskDefinitionsRequest:
     Optional[str] NextToken
     Optional[str] TaskDefinitionType
 
-# no @derive(Json): member(s) TaskDefinitions: list[UpdateWirelessGatewayTaskEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskDefinitions: list[UpdateWirelessGatewayTaskEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWirelessGatewayTaskDefinitionsResponse:
     Optional[str] NextToken
     Optional[list[UpdateWirelessGatewayTaskEntry]] TaskDefinitions
@@ -1715,8 +1751,9 @@ struct ListWirelessGatewaysRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) WirelessGatewayList: list[WirelessGatewayStatistics] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WirelessGatewayList: list[WirelessGatewayStatistics] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWirelessGatewaysResponse:
     Optional[str] NextToken
     Optional[list[WirelessGatewayStatistics]] WirelessGatewayList
@@ -1729,8 +1766,9 @@ struct LoRaWANConnectionStatusEventNotificationConfigurations:
 struct LoRaWANConnectionStatusResourceTypeEventConfiguration:
     Optional[EventNotificationTopicStatus] WirelessGatewayEventTopic
 
-# no @derive(Json): member(s) FPorts: FPorts not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FPorts: FPorts not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LoRaWANDevice:
     Optional[str] DevEui
     Optional[str] DeviceProfileId
@@ -1741,8 +1779,9 @@ struct LoRaWANDevice:
     Optional[AbpV1_0_x] AbpV1_0_x
     Optional[FPorts] FPorts
 
-# no @derive(Json): member(s) Gateways: list[LoRaWANGatewayMetadata], PublicGateways: list[LoRaWANPublicGatewayMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Gateways: list[LoRaWANGatewayMetadata], PublicGateways: list[LoRaWANPublicGatewayMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LoRaWANDeviceMetadata:
     Optional[str] DevEui
     Optional[int64] FPort
@@ -1752,8 +1791,9 @@ struct LoRaWANDeviceMetadata:
     Optional[list[LoRaWANGatewayMetadata]] Gateways
     Optional[list[LoRaWANPublicGatewayMetadata]] PublicGateways
 
-# no @derive(Json): member(s) FactoryPresetFreqsList: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FactoryPresetFreqsList: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LoRaWANDeviceProfile:
     Optional[bool] SupportsClassB
     Optional[int64] ClassBTimeout
@@ -1785,8 +1825,9 @@ struct LoRaWANFuotaTaskGetInfo:
     @json(timestamp="iso8601")
     Optional[DateTime] StartTime
 
-# no @derive(Json): member(s) JoinEuiFilters: list[list[str]], NetIdFilters: list[str], SubBands: list[int64], Beaconing: Beaconing not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JoinEuiFilters: list[list[str]], NetIdFilters: list[str], SubBands: list[int64], Beaconing: Beaconing not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LoRaWANGateway:
     Optional[str] GatewayEui
     Optional[str] RfRegion
@@ -1850,16 +1891,18 @@ struct LoRaWANJoinResourceTypeEventConfiguration:
 struct LoRaWANListDevice:
     Optional[str] DevEui
 
-# no @derive(Json): member(s) ParticipatingGateways: ParticipatingGatewaysMulticast not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParticipatingGateways: ParticipatingGatewaysMulticast not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LoRaWANMulticast:
     Optional[SupportedRfRegion] RfRegion
     Optional[DlClass] DlClass
     Optional[ParticipatingGatewaysMulticast] ParticipatingGateways
     Optional[DefaultSessionParametersMulticast] DefaultSessionParameters
 
-# no @derive(Json): member(s) ParticipatingGateways: ParticipatingGatewaysMulticast not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParticipatingGateways: ParticipatingGatewaysMulticast not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LoRaWANMulticastGet:
     Optional[SupportedRfRegion] RfRegion
     Optional[DlClass] DlClass
@@ -1890,8 +1933,9 @@ struct LoRaWANPublicGatewayMetadata:
     Optional[str] RfRegion
     Optional[bool] DlAllowed
 
-# no @derive(Json): member(s) ParticipatingGateways: ParticipatingGateways not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParticipatingGateways: ParticipatingGateways not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LoRaWANSendDataToDevice:
     Optional[int64] FPort
     Optional[ParticipatingGateways] ParticipatingGateways
@@ -1913,8 +1957,9 @@ struct LoRaWANStartFuotaTask:
     @json(timestamp="iso8601")
     Optional[DateTime] StartTime
 
-# no @derive(Json): member(s) FPorts: UpdateFPorts not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FPorts: UpdateFPorts not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LoRaWANUpdateDevice:
     Optional[str] DeviceProfileId
     Optional[str] ServiceProfileId
@@ -1947,8 +1992,9 @@ struct LteNmrObj:
     Optional[int64] Rsrp
     Optional[float64] Rsrq
 
-# no @derive(Json): member(s) LteNmr: list[LteNmrObj] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LteNmr: list[LteNmrObj] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LteObj:
     int64 Mcc
     int64 Mnc
@@ -2011,15 +2057,17 @@ struct OtaaV1_1:
     Optional[str] NwkKey
     Optional[str] JoinEui
 
-# no @derive(Json): member(s) GatewayList: list[GatewayListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GatewayList: list[GatewayListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParticipatingGateways:
     DownlinkMode DownlinkMode
     list[GatewayListItem] GatewayList
     int64 TransmissionInterval
 
-# no @derive(Json): member(s) GatewayList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GatewayList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParticipatingGatewaysMulticast:
     Optional[list[str]] GatewayList
     Optional[int64] TransmissionInterval
@@ -2183,8 +2231,9 @@ struct SidewalkCreateWirelessDevice:
     Optional[SidewalkPositioning] Positioning
     Optional[str] SidewalkManufacturingSn
 
-# no @derive(Json): member(s) DeviceCertificates: list[CertificateList], PrivateKeys: list[CertificateList] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeviceCertificates: list[CertificateList], PrivateKeys: list[CertificateList] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SidewalkDevice:
     Optional[str] AmazonId
     Optional[str] SidewalkId
@@ -2207,22 +2256,25 @@ struct SidewalkDeviceMetadata:
 struct SidewalkEventNotificationConfigurations:
     Optional[EventNotificationTopicStatus] AmazonIdEventTopic
 
-# no @derive(Json): member(s) DakCertificateMetadata: list[DakCertificateMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DakCertificateMetadata: list[DakCertificateMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SidewalkGetDeviceProfile:
     Optional[str] ApplicationServerPublicKey
     Optional[bool] QualificationStatus
     Optional[list[DakCertificateMetadata]] DakCertificateMetadata
 
-# no @derive(Json): member(s) DeviceCreationFileList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeviceCreationFileList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SidewalkGetStartImportInfo:
     Optional[list[str]] DeviceCreationFileList
     Optional[str] Role
     Optional[SidewalkPositioning] Positioning
 
-# no @derive(Json): member(s) DeviceCertificates: list[CertificateList] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeviceCertificates: list[CertificateList] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SidewalkListDevice:
     Optional[str] AmazonId
     Optional[str] SidewalkId
@@ -2352,8 +2404,9 @@ struct StartWirelessDeviceImportTaskResponse:
 struct SummaryMetricConfiguration:
     Optional[SummaryMetricConfigurationStatus] Status
 
-# no @derive(Json): member(s) Dimensions: list[Dimension] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: list[Dimension] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SummaryMetricQuery:
     Optional[str] QueryId
     Optional[MetricName] MetricName
@@ -2362,8 +2415,9 @@ struct SummaryMetricQuery:
     Optional[DateTime] StartTimestamp
     Optional[DateTime] EndTimestamp
 
-# no @derive(Json): member(s) Dimensions: list[Dimension], Timestamps: list[DateTime], Values: list[MetricQueryValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: list[Dimension], Timestamps: list[DateTime], Values: list[MetricQueryValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SummaryMetricQueryResult:
     Optional[str] QueryId
     Optional[MetricQueryStatus] QueryStatus
@@ -2406,8 +2460,9 @@ struct TdscdmaNmrObj:
     Optional[int64] Rscp
     Optional[int64] PathLoss
 
-# no @derive(Json): member(s) TdscdmaNmr: list[TdscdmaNmrObj] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TdscdmaNmr: list[TdscdmaNmrObj] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TdscdmaObj:
     int64 Mcc
     int64 Mnc
@@ -2490,8 +2545,9 @@ struct UpdateEventConfigurationByResourceTypesResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Applications: list[ApplicationConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Applications: list[ApplicationConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFPorts:
     Optional[Positioning] Positioning
     Optional[list[ApplicationConfig]] Applications
@@ -2696,8 +2752,9 @@ struct WcdmaNmrObj:
     Optional[int64] Rscp
     Optional[int64] PathLoss
 
-# no @derive(Json): member(s) WcdmaNmr: list[WcdmaNmrObj] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WcdmaNmr: list[WcdmaNmrObj] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WcdmaObj:
     int64 Mcc
     int64 Mnc
@@ -2722,8 +2779,9 @@ struct WirelessDeviceEventLogOption:
     WirelessDeviceEvent Event
     LogLevel LogLevel
 
-# no @derive(Json): member(s) Sidewalk: SidewalkGetStartImportInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sidewalk: SidewalkGetStartImportInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WirelessDeviceImportTask:
     Optional[str] Id
     Optional[str] Arn
@@ -2738,15 +2796,17 @@ struct WirelessDeviceImportTask:
     Optional[int64] OnboardedImportedDeviceCount
     Optional[int64] FailedImportedDeviceCount
 
-# no @derive(Json): member(s) Events: list[WirelessDeviceEventLogOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Events: list[WirelessDeviceEventLogOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WirelessDeviceLogOption:
     WirelessDeviceType Type
     LogLevel LogLevel
     Optional[list[WirelessDeviceEventLogOption]] Events
 
-# no @derive(Json): member(s) Sidewalk: SidewalkListDevice not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sidewalk: SidewalkListDevice not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WirelessDeviceStatistics:
     Optional[str] Arn
     Optional[str] Id
@@ -2766,15 +2826,17 @@ struct WirelessGatewayEventLogOption:
     WirelessGatewayEvent Event
     LogLevel LogLevel
 
-# no @derive(Json): member(s) Events: list[WirelessGatewayEventLogOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Events: list[WirelessGatewayEventLogOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WirelessGatewayLogOption:
     str Type
     LogLevel LogLevel
     Optional[list[WirelessGatewayEventLogOption]] Events
 
-# no @derive(Json): member(s) LoRaWAN: LoRaWANGateway not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LoRaWAN: LoRaWANGateway not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WirelessGatewayStatistics:
     Optional[str] Arn
     Optional[str] Id
@@ -2783,8 +2845,9 @@ struct WirelessGatewayStatistics:
     Optional[LoRaWANGateway] LoRaWAN
     Optional[str] LastUplinkReceivedAt
 
-# no @derive(Json): member(s) LoRaWAN: LoRaWANSendDataToDevice not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LoRaWAN: LoRaWANSendDataToDevice not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WirelessMetadata:
     Optional[LoRaWANSendDataToDevice] LoRaWAN
     Optional[SidewalkSendDataToDevice] Sidewalk
@@ -2827,31 +2890,7 @@ def api_iotwireless_error_from_code(str code) -> IoT_WirelessError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AssociateAwsAccountWithPartnerAccount (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateDestination (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateDeviceProfile (document member `LoRaWAN: LoRaWANDeviceProfile` is not serializable by derive)
-#   CreateFuotaTask (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateMulticastGroup (document member `LoRaWAN: LoRaWANMulticast` is not serializable by derive)
-#   CreateNetworkAnalyzerConfiguration (document member `WirelessDevices: list[str]` is not serializable by derive)
-#   CreateServiceProfile (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateWirelessDevice (document member `LoRaWAN: LoRaWANDevice` is not serializable by derive)
-#   CreateWirelessGateway (document member `LoRaWAN: LoRaWANGateway` is not serializable by derive)
-#   CreateWirelessGatewayTaskDefinition (document member `Tags: list[Tag]` is not serializable by derive)
-#   GetMetrics (document member `SummaryMetricQueries: list[SummaryMetricQuery]` is not serializable by derive)
-#   GetPositionEstimate (document member `WiFiAccessPoints: list[WiFiAccessPoint]` is not serializable by derive)
-#   SendDataToWirelessDevice (document member `WirelessMetadata: WirelessMetadata` is not serializable by derive)
-#   StartBulkAssociateWirelessDeviceWithMulticastGroup (document member `Tags: list[Tag]` is not serializable by derive)
-#   StartBulkDisassociateWirelessDeviceFromMulticastGroup (document member `Tags: list[Tag]` is not serializable by derive)
-#   StartSingleWirelessDeviceImportTask (document member `Tags: list[Tag]` is not serializable by derive)
-#   StartWirelessDeviceImportTask (document member `Tags: list[Tag]` is not serializable by derive)
-#   TagResource (document member `Tags: list[Tag]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateLogLevelsByResourceTypes (document member `FuotaTaskLogOptions: list[FuotaTaskLogOption]` is not serializable by derive)
-#   UpdateMulticastGroup (document member `LoRaWAN: LoRaWANMulticast` is not serializable by derive)
-#   UpdateNetworkAnalyzerConfiguration (document member `WirelessDevicesToAdd: list[str]` is not serializable by derive)
-#   UpdatePosition (document member `Position: list[float64]` is not serializable by derive)
-#   UpdateWirelessDevice (document member `LoRaWAN: LoRaWANUpdateDevice` is not serializable by derive)
-#   UpdateWirelessGateway (document member `JoinEuiFilters: list[list[str]]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -2972,10 +3011,614 @@ struct UpdateWirelessDeviceImportTaskDocument:
     # document members of UpdateWirelessDeviceImportTask
     SidewalkUpdateImportInfo Sidewalk
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def api_iotwireless_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def api_iotwireless_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def api_iotwireless_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize Beaconing to a compact JSON object (declaration order).
+def beaconing_to_json(Beaconing v) -> str:
+    list[str] parts = []
+    if v.DataRate.is_some():
+        auto u0 = v.DataRate.unwrap()
+        parts.append("\"DataRate\":" + str(u0))
+    if v.Frequencies.is_some():
+        auto u1 = v.Frequencies.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(str(x2))
+        parts.append("\"Frequencies\":" + api_iotwireless_json_arr(e2))
+    return api_iotwireless_json_obj(parts)
+
+# Serialize CdmaObj to a compact JSON object (declaration order).
+def cdma_obj_to_json(CdmaObj v) -> str:
+    list[str] parts = []
+    parts.append("\"SystemId\":" + str(v.SystemId))
+    parts.append("\"NetworkId\":" + str(v.NetworkId))
+    parts.append("\"BaseStationId\":" + str(v.BaseStationId))
+    if v.RegistrationZone.is_some():
+        auto u0 = v.RegistrationZone.unwrap()
+        parts.append("\"RegistrationZone\":" + str(u0))
+    if v.CdmaLocalId.is_some():
+        auto u1 = v.CdmaLocalId.unwrap()
+        parts.append("\"CdmaLocalId\":" + u1.to_json())
+    if v.PilotPower.is_some():
+        auto u2 = v.PilotPower.unwrap()
+        parts.append("\"PilotPower\":" + str(u2))
+    if v.BaseLat.is_some():
+        auto u3 = v.BaseLat.unwrap()
+        parts.append("\"BaseLat\":" + str(u3))
+    if v.BaseLng.is_some():
+        auto u4 = v.BaseLng.unwrap()
+        parts.append("\"BaseLng\":" + str(u4))
+    if v.CdmaNmr.is_some():
+        auto u5 = v.CdmaNmr.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"CdmaNmr\":" + api_iotwireless_json_arr(e6))
+    return api_iotwireless_json_obj(parts)
+
+# Serialize CellTowers to a compact JSON object (declaration order).
+def cell_towers_to_json(CellTowers v) -> str:
+    list[str] parts = []
+    if v.Gsm.is_some():
+        auto u0 = v.Gsm.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(gsm_obj_to_json(x1))
+        parts.append("\"Gsm\":" + api_iotwireless_json_arr(e1))
+    if v.Wcdma.is_some():
+        auto u2 = v.Wcdma.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(wcdma_obj_to_json(x3))
+        parts.append("\"Wcdma\":" + api_iotwireless_json_arr(e3))
+    if v.Tdscdma.is_some():
+        auto u4 = v.Tdscdma.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(tdscdma_obj_to_json(x5))
+        parts.append("\"Tdscdma\":" + api_iotwireless_json_arr(e5))
+    if v.Lte.is_some():
+        auto u6 = v.Lte.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(lte_obj_to_json(x7))
+        parts.append("\"Lte\":" + api_iotwireless_json_arr(e7))
+    if v.Cdma.is_some():
+        auto u8 = v.Cdma.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(cdma_obj_to_json(x9))
+        parts.append("\"Cdma\":" + api_iotwireless_json_arr(e9))
+    return api_iotwireless_json_obj(parts)
+
+# Serialize FPorts to a compact JSON object (declaration order).
+def f_ports_to_json(FPorts v) -> str:
+    list[str] parts = []
+    if v.Fuota.is_some():
+        auto u0 = v.Fuota.unwrap()
+        parts.append("\"Fuota\":" + str(u0))
+    if v.Multicast.is_some():
+        auto u1 = v.Multicast.unwrap()
+        parts.append("\"Multicast\":" + str(u1))
+    if v.ClockSync.is_some():
+        auto u2 = v.ClockSync.unwrap()
+        parts.append("\"ClockSync\":" + str(u2))
+    if v.Positioning.is_some():
+        auto u3 = v.Positioning.unwrap()
+        parts.append("\"Positioning\":" + u3.to_json())
+    if v.Applications.is_some():
+        auto u4 = v.Applications.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Applications\":" + api_iotwireless_json_arr(e5))
+    return api_iotwireless_json_obj(parts)
+
+# Serialize FuotaTaskLogOption to a compact JSON object (declaration order).
+def fuota_task_log_option_to_json(FuotaTaskLogOption v) -> str:
+    list[str] parts = []
+    parts.append("\"Type\":" + api_iotwireless_json_str(v.Type))
+    parts.append("\"LogLevel\":" + v.LogLevel.to_json())
+    if v.Events.is_some():
+        auto u0 = v.Events.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Events\":" + api_iotwireless_json_arr(e1))
+    return api_iotwireless_json_obj(parts)
+
+# Serialize Gnss to a compact JSON object (declaration order).
+def gnss_to_json(Gnss v) -> str:
+    list[str] parts = []
+    parts.append("\"Payload\":" + api_iotwireless_json_str(v.Payload))
+    if v.CaptureTime.is_some():
+        auto u0 = v.CaptureTime.unwrap()
+        parts.append("\"CaptureTime\":" + str(u0))
+    if v.CaptureTimeAccuracy.is_some():
+        auto u1 = v.CaptureTimeAccuracy.unwrap()
+        parts.append("\"CaptureTimeAccuracy\":" + str(u1))
+    if v.AssistPosition.is_some():
+        auto u2 = v.AssistPosition.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(str(x3))
+        parts.append("\"AssistPosition\":" + api_iotwireless_json_arr(e3))
+    if v.AssistAltitude.is_some():
+        auto u4 = v.AssistAltitude.unwrap()
+        parts.append("\"AssistAltitude\":" + str(u4))
+    if v.Use2DSolver.is_some():
+        auto u5 = v.Use2DSolver.unwrap()
+        parts.append("\"Use2DSolver\":" + json.dumps(JsonValue.Bool(u5)))
+    return api_iotwireless_json_obj(parts)
+
+# Serialize GnssMultiFrame to a compact JSON object (declaration order).
+def gnss_multi_frame_to_json(GnssMultiFrame v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Captures:
+        e0.append(x0.to_json())
+    parts.append("\"Captures\":" + api_iotwireless_json_arr(e0))
+    if v.CaptureTimeAccuracy.is_some():
+        auto u1 = v.CaptureTimeAccuracy.unwrap()
+        parts.append("\"CaptureTimeAccuracy\":" + str(u1))
+    if v.AssistPosition.is_some():
+        auto u2 = v.AssistPosition.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(str(x3))
+        parts.append("\"AssistPosition\":" + api_iotwireless_json_arr(e3))
+    if v.AssistAltitude.is_some():
+        auto u4 = v.AssistAltitude.unwrap()
+        parts.append("\"AssistAltitude\":" + str(u4))
+    if v.Use2DSolver.is_some():
+        auto u5 = v.Use2DSolver.unwrap()
+        parts.append("\"Use2DSolver\":" + json.dumps(JsonValue.Bool(u5)))
+    return api_iotwireless_json_obj(parts)
+
+# Serialize GsmObj to a compact JSON object (declaration order).
+def gsm_obj_to_json(GsmObj v) -> str:
+    list[str] parts = []
+    parts.append("\"Mcc\":" + str(v.Mcc))
+    parts.append("\"Mnc\":" + str(v.Mnc))
+    parts.append("\"Lac\":" + str(v.Lac))
+    parts.append("\"GeranCid\":" + str(v.GeranCid))
+    if v.GsmLocalId.is_some():
+        auto u0 = v.GsmLocalId.unwrap()
+        parts.append("\"GsmLocalId\":" + u0.to_json())
+    if v.GsmTimingAdvance.is_some():
+        auto u1 = v.GsmTimingAdvance.unwrap()
+        parts.append("\"GsmTimingAdvance\":" + str(u1))
+    if v.RxLevel.is_some():
+        auto u2 = v.RxLevel.unwrap()
+        parts.append("\"RxLevel\":" + str(u2))
+    if v.GsmNmr.is_some():
+        auto u3 = v.GsmNmr.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"GsmNmr\":" + api_iotwireless_json_arr(e4))
+    return api_iotwireless_json_obj(parts)
+
+# Serialize LoRaWANDevice to a compact JSON object (declaration order).
+def lo_ra_wan_device_to_json(LoRaWANDevice v) -> str:
+    list[str] parts = []
+    if v.DevEui.is_some():
+        auto u0 = v.DevEui.unwrap()
+        parts.append("\"DevEui\":" + api_iotwireless_json_str(u0))
+    if v.DeviceProfileId.is_some():
+        auto u1 = v.DeviceProfileId.unwrap()
+        parts.append("\"DeviceProfileId\":" + api_iotwireless_json_str(u1))
+    if v.ServiceProfileId.is_some():
+        auto u2 = v.ServiceProfileId.unwrap()
+        parts.append("\"ServiceProfileId\":" + api_iotwireless_json_str(u2))
+    if v.OtaaV1_1.is_some():
+        auto u3 = v.OtaaV1_1.unwrap()
+        parts.append("\"OtaaV1_1\":" + u3.to_json())
+    if v.OtaaV1_0_x.is_some():
+        auto u4 = v.OtaaV1_0_x.unwrap()
+        parts.append("\"OtaaV1_0_x\":" + u4.to_json())
+    if v.AbpV1_1.is_some():
+        auto u5 = v.AbpV1_1.unwrap()
+        parts.append("\"AbpV1_1\":" + u5.to_json())
+    if v.AbpV1_0_x.is_some():
+        auto u6 = v.AbpV1_0_x.unwrap()
+        parts.append("\"AbpV1_0_x\":" + u6.to_json())
+    if v.FPorts.is_some():
+        auto u7 = v.FPorts.unwrap()
+        parts.append("\"FPorts\":" + f_ports_to_json(u7))
+    return api_iotwireless_json_obj(parts)
+
+# Serialize LoRaWANDeviceProfile to a compact JSON object (declaration order).
+def lo_ra_wan_device_profile_to_json(LoRaWANDeviceProfile v) -> str:
+    list[str] parts = []
+    if v.SupportsClassB.is_some():
+        auto u0 = v.SupportsClassB.unwrap()
+        parts.append("\"SupportsClassB\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.ClassBTimeout.is_some():
+        auto u1 = v.ClassBTimeout.unwrap()
+        parts.append("\"ClassBTimeout\":" + str(u1))
+    if v.PingSlotPeriod.is_some():
+        auto u2 = v.PingSlotPeriod.unwrap()
+        parts.append("\"PingSlotPeriod\":" + str(u2))
+    if v.PingSlotDr.is_some():
+        auto u3 = v.PingSlotDr.unwrap()
+        parts.append("\"PingSlotDr\":" + str(u3))
+    if v.PingSlotFreq.is_some():
+        auto u4 = v.PingSlotFreq.unwrap()
+        parts.append("\"PingSlotFreq\":" + str(u4))
+    if v.SupportsClassC.is_some():
+        auto u5 = v.SupportsClassC.unwrap()
+        parts.append("\"SupportsClassC\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.ClassCTimeout.is_some():
+        auto u6 = v.ClassCTimeout.unwrap()
+        parts.append("\"ClassCTimeout\":" + str(u6))
+    if v.MacVersion.is_some():
+        auto u7 = v.MacVersion.unwrap()
+        parts.append("\"MacVersion\":" + api_iotwireless_json_str(u7))
+    if v.RegParamsRevision.is_some():
+        auto u8 = v.RegParamsRevision.unwrap()
+        parts.append("\"RegParamsRevision\":" + api_iotwireless_json_str(u8))
+    if v.RxDelay1.is_some():
+        auto u9 = v.RxDelay1.unwrap()
+        parts.append("\"RxDelay1\":" + str(u9))
+    if v.RxDrOffset1.is_some():
+        auto u10 = v.RxDrOffset1.unwrap()
+        parts.append("\"RxDrOffset1\":" + str(u10))
+    if v.RxDataRate2.is_some():
+        auto u11 = v.RxDataRate2.unwrap()
+        parts.append("\"RxDataRate2\":" + str(u11))
+    if v.RxFreq2.is_some():
+        auto u12 = v.RxFreq2.unwrap()
+        parts.append("\"RxFreq2\":" + str(u12))
+    if v.FactoryPresetFreqsList.is_some():
+        auto u13 = v.FactoryPresetFreqsList.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(str(x14))
+        parts.append("\"FactoryPresetFreqsList\":" + api_iotwireless_json_arr(e14))
+    if v.MaxEirp.is_some():
+        auto u15 = v.MaxEirp.unwrap()
+        parts.append("\"MaxEirp\":" + str(u15))
+    if v.MaxDutyCycle.is_some():
+        auto u16 = v.MaxDutyCycle.unwrap()
+        parts.append("\"MaxDutyCycle\":" + str(u16))
+    if v.RfRegion.is_some():
+        auto u17 = v.RfRegion.unwrap()
+        parts.append("\"RfRegion\":" + api_iotwireless_json_str(u17))
+    if v.SupportsJoin.is_some():
+        auto u18 = v.SupportsJoin.unwrap()
+        parts.append("\"SupportsJoin\":" + json.dumps(JsonValue.Bool(u18)))
+    if v.Supports32BitFCnt.is_some():
+        auto u19 = v.Supports32BitFCnt.unwrap()
+        parts.append("\"Supports32BitFCnt\":" + json.dumps(JsonValue.Bool(u19)))
+    return api_iotwireless_json_obj(parts)
+
+# Serialize LoRaWANGateway to a compact JSON object (declaration order).
+def lo_ra_wan_gateway_to_json(LoRaWANGateway v) -> str:
+    list[str] parts = []
+    if v.GatewayEui.is_some():
+        auto u0 = v.GatewayEui.unwrap()
+        parts.append("\"GatewayEui\":" + api_iotwireless_json_str(u0))
+    if v.RfRegion.is_some():
+        auto u1 = v.RfRegion.unwrap()
+        parts.append("\"RfRegion\":" + api_iotwireless_json_str(u1))
+    if v.JoinEuiFilters.is_some():
+        auto u2 = v.JoinEuiFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            list[str] e4 = []
+            for x4 in x3:
+                e4.append(api_iotwireless_json_str(x4))
+            e3.append(api_iotwireless_json_arr(e4))
+        parts.append("\"JoinEuiFilters\":" + api_iotwireless_json_arr(e3))
+    if v.NetIdFilters.is_some():
+        auto u5 = v.NetIdFilters.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(api_iotwireless_json_str(x6))
+        parts.append("\"NetIdFilters\":" + api_iotwireless_json_arr(e6))
+    if v.SubBands.is_some():
+        auto u7 = v.SubBands.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(str(x8))
+        parts.append("\"SubBands\":" + api_iotwireless_json_arr(e8))
+    if v.Beaconing.is_some():
+        auto u9 = v.Beaconing.unwrap()
+        parts.append("\"Beaconing\":" + beaconing_to_json(u9))
+    if v.MaxEirp.is_some():
+        auto u10 = v.MaxEirp.unwrap()
+        parts.append("\"MaxEirp\":" + str(u10))
+    return api_iotwireless_json_obj(parts)
+
+# Serialize LoRaWANMulticast to a compact JSON object (declaration order).
+def lo_ra_wan_multicast_to_json(LoRaWANMulticast v) -> str:
+    list[str] parts = []
+    if v.RfRegion.is_some():
+        auto u0 = v.RfRegion.unwrap()
+        parts.append("\"RfRegion\":" + u0.to_json())
+    if v.DlClass.is_some():
+        auto u1 = v.DlClass.unwrap()
+        parts.append("\"DlClass\":" + u1.to_json())
+    if v.ParticipatingGateways.is_some():
+        auto u2 = v.ParticipatingGateways.unwrap()
+        parts.append("\"ParticipatingGateways\":" + participating_gateways_multicast_to_json(u2))
+    if v.DefaultSessionParameters.is_some():
+        auto u3 = v.DefaultSessionParameters.unwrap()
+        parts.append("\"DefaultSessionParameters\":" + u3.to_json())
+    return api_iotwireless_json_obj(parts)
+
+# Serialize LoRaWANSendDataToDevice to a compact JSON object (declaration order).
+def lo_ra_wan_send_data_to_device_to_json(LoRaWANSendDataToDevice v) -> str:
+    list[str] parts = []
+    if v.FPort.is_some():
+        auto u0 = v.FPort.unwrap()
+        parts.append("\"FPort\":" + str(u0))
+    if v.ParticipatingGateways.is_some():
+        auto u1 = v.ParticipatingGateways.unwrap()
+        parts.append("\"ParticipatingGateways\":" + participating_gateways_to_json(u1))
+    return api_iotwireless_json_obj(parts)
+
+# Serialize LoRaWANUpdateDevice to a compact JSON object (declaration order).
+def lo_ra_wan_update_device_to_json(LoRaWANUpdateDevice v) -> str:
+    list[str] parts = []
+    if v.DeviceProfileId.is_some():
+        auto u0 = v.DeviceProfileId.unwrap()
+        parts.append("\"DeviceProfileId\":" + api_iotwireless_json_str(u0))
+    if v.ServiceProfileId.is_some():
+        auto u1 = v.ServiceProfileId.unwrap()
+        parts.append("\"ServiceProfileId\":" + api_iotwireless_json_str(u1))
+    if v.AbpV1_1.is_some():
+        auto u2 = v.AbpV1_1.unwrap()
+        parts.append("\"AbpV1_1\":" + u2.to_json())
+    if v.AbpV1_0_x.is_some():
+        auto u3 = v.AbpV1_0_x.unwrap()
+        parts.append("\"AbpV1_0_x\":" + u3.to_json())
+    if v.FPorts.is_some():
+        auto u4 = v.FPorts.unwrap()
+        parts.append("\"FPorts\":" + update_f_ports_to_json(u4))
+    return api_iotwireless_json_obj(parts)
+
+# Serialize LteObj to a compact JSON object (declaration order).
+def lte_obj_to_json(LteObj v) -> str:
+    list[str] parts = []
+    parts.append("\"Mcc\":" + str(v.Mcc))
+    parts.append("\"Mnc\":" + str(v.Mnc))
+    parts.append("\"EutranCid\":" + str(v.EutranCid))
+    if v.Tac.is_some():
+        auto u0 = v.Tac.unwrap()
+        parts.append("\"Tac\":" + str(u0))
+    if v.LteLocalId.is_some():
+        auto u1 = v.LteLocalId.unwrap()
+        parts.append("\"LteLocalId\":" + u1.to_json())
+    if v.LteTimingAdvance.is_some():
+        auto u2 = v.LteTimingAdvance.unwrap()
+        parts.append("\"LteTimingAdvance\":" + str(u2))
+    if v.Rsrp.is_some():
+        auto u3 = v.Rsrp.unwrap()
+        parts.append("\"Rsrp\":" + str(u3))
+    if v.Rsrq.is_some():
+        auto u4 = v.Rsrq.unwrap()
+        parts.append("\"Rsrq\":" + str(u4))
+    if v.NrCapable.is_some():
+        auto u5 = v.NrCapable.unwrap()
+        parts.append("\"NrCapable\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.LteNmr.is_some():
+        auto u6 = v.LteNmr.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"LteNmr\":" + api_iotwireless_json_arr(e7))
+    return api_iotwireless_json_obj(parts)
+
+# Serialize ParticipatingGateways to a compact JSON object (declaration order).
+def participating_gateways_to_json(ParticipatingGateways v) -> str:
+    list[str] parts = []
+    parts.append("\"DownlinkMode\":" + v.DownlinkMode.to_json())
+    list[str] e0 = []
+    for x0 in v.GatewayList:
+        e0.append(x0.to_json())
+    parts.append("\"GatewayList\":" + api_iotwireless_json_arr(e0))
+    parts.append("\"TransmissionInterval\":" + str(v.TransmissionInterval))
+    return api_iotwireless_json_obj(parts)
+
+# Serialize ParticipatingGatewaysMulticast to a compact JSON object (declaration order).
+def participating_gateways_multicast_to_json(ParticipatingGatewaysMulticast v) -> str:
+    list[str] parts = []
+    if v.GatewayList.is_some():
+        auto u0 = v.GatewayList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_iotwireless_json_str(x1))
+        parts.append("\"GatewayList\":" + api_iotwireless_json_arr(e1))
+    if v.TransmissionInterval.is_some():
+        auto u2 = v.TransmissionInterval.unwrap()
+        parts.append("\"TransmissionInterval\":" + str(u2))
+    return api_iotwireless_json_obj(parts)
+
+# Serialize SummaryMetricQuery to a compact JSON object (declaration order).
+def summary_metric_query_to_json(SummaryMetricQuery v) -> str:
+    list[str] parts = []
+    if v.QueryId.is_some():
+        auto u0 = v.QueryId.unwrap()
+        parts.append("\"QueryId\":" + api_iotwireless_json_str(u0))
+    if v.MetricName.is_some():
+        auto u1 = v.MetricName.unwrap()
+        parts.append("\"MetricName\":" + u1.to_json())
+    if v.Dimensions.is_some():
+        auto u2 = v.Dimensions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Dimensions\":" + api_iotwireless_json_arr(e3))
+    if v.AggregationPeriod.is_some():
+        auto u4 = v.AggregationPeriod.unwrap()
+        parts.append("\"AggregationPeriod\":" + u4.to_json())
+    if v.StartTimestamp.is_some():
+        auto u5 = v.StartTimestamp.unwrap()
+        parts.append("\"StartTimestamp\":" + str(datetime.to_timestamp(u5)))
+    if v.EndTimestamp.is_some():
+        auto u6 = v.EndTimestamp.unwrap()
+        parts.append("\"EndTimestamp\":" + str(datetime.to_timestamp(u6)))
+    return api_iotwireless_json_obj(parts)
+
+# Serialize TdscdmaObj to a compact JSON object (declaration order).
+def tdscdma_obj_to_json(TdscdmaObj v) -> str:
+    list[str] parts = []
+    parts.append("\"Mcc\":" + str(v.Mcc))
+    parts.append("\"Mnc\":" + str(v.Mnc))
+    if v.Lac.is_some():
+        auto u0 = v.Lac.unwrap()
+        parts.append("\"Lac\":" + str(u0))
+    parts.append("\"UtranCid\":" + str(v.UtranCid))
+    if v.TdscdmaLocalId.is_some():
+        auto u1 = v.TdscdmaLocalId.unwrap()
+        parts.append("\"TdscdmaLocalId\":" + u1.to_json())
+    if v.TdscdmaTimingAdvance.is_some():
+        auto u2 = v.TdscdmaTimingAdvance.unwrap()
+        parts.append("\"TdscdmaTimingAdvance\":" + str(u2))
+    if v.Rscp.is_some():
+        auto u3 = v.Rscp.unwrap()
+        parts.append("\"Rscp\":" + str(u3))
+    if v.PathLoss.is_some():
+        auto u4 = v.PathLoss.unwrap()
+        parts.append("\"PathLoss\":" + str(u4))
+    if v.TdscdmaNmr.is_some():
+        auto u5 = v.TdscdmaNmr.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"TdscdmaNmr\":" + api_iotwireless_json_arr(e6))
+    return api_iotwireless_json_obj(parts)
+
+# Serialize UpdateFPorts to a compact JSON object (declaration order).
+def update_f_ports_to_json(UpdateFPorts v) -> str:
+    list[str] parts = []
+    if v.Positioning.is_some():
+        auto u0 = v.Positioning.unwrap()
+        parts.append("\"Positioning\":" + u0.to_json())
+    if v.Applications.is_some():
+        auto u1 = v.Applications.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Applications\":" + api_iotwireless_json_arr(e2))
+    return api_iotwireless_json_obj(parts)
+
+# Serialize WcdmaObj to a compact JSON object (declaration order).
+def wcdma_obj_to_json(WcdmaObj v) -> str:
+    list[str] parts = []
+    parts.append("\"Mcc\":" + str(v.Mcc))
+    parts.append("\"Mnc\":" + str(v.Mnc))
+    if v.Lac.is_some():
+        auto u0 = v.Lac.unwrap()
+        parts.append("\"Lac\":" + str(u0))
+    parts.append("\"UtranCid\":" + str(v.UtranCid))
+    if v.WcdmaLocalId.is_some():
+        auto u1 = v.WcdmaLocalId.unwrap()
+        parts.append("\"WcdmaLocalId\":" + u1.to_json())
+    if v.Rscp.is_some():
+        auto u2 = v.Rscp.unwrap()
+        parts.append("\"Rscp\":" + str(u2))
+    if v.PathLoss.is_some():
+        auto u3 = v.PathLoss.unwrap()
+        parts.append("\"PathLoss\":" + str(u3))
+    if v.WcdmaNmr.is_some():
+        auto u4 = v.WcdmaNmr.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"WcdmaNmr\":" + api_iotwireless_json_arr(e5))
+    return api_iotwireless_json_obj(parts)
+
+# Serialize WirelessDeviceLogOption to a compact JSON object (declaration order).
+def wireless_device_log_option_to_json(WirelessDeviceLogOption v) -> str:
+    list[str] parts = []
+    parts.append("\"Type\":" + v.Type.to_json())
+    parts.append("\"LogLevel\":" + v.LogLevel.to_json())
+    if v.Events.is_some():
+        auto u0 = v.Events.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Events\":" + api_iotwireless_json_arr(e1))
+    return api_iotwireless_json_obj(parts)
+
+# Serialize WirelessGatewayLogOption to a compact JSON object (declaration order).
+def wireless_gateway_log_option_to_json(WirelessGatewayLogOption v) -> str:
+    list[str] parts = []
+    parts.append("\"Type\":" + api_iotwireless_json_str(v.Type))
+    parts.append("\"LogLevel\":" + v.LogLevel.to_json())
+    if v.Events.is_some():
+        auto u0 = v.Events.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Events\":" + api_iotwireless_json_arr(e1))
+    return api_iotwireless_json_obj(parts)
+
+# Serialize WirelessMetadata to a compact JSON object (declaration order).
+def wireless_metadata_to_json(WirelessMetadata v) -> str:
+    list[str] parts = []
+    if v.LoRaWAN.is_some():
+        auto u0 = v.LoRaWAN.unwrap()
+        parts.append("\"LoRaWAN\":" + lo_ra_wan_send_data_to_device_to_json(u0))
+    if v.Sidewalk.is_some():
+        auto u1 = v.Sidewalk.unwrap()
+        parts.append("\"Sidewalk\":" + u1.to_json())
+    return api_iotwireless_json_obj(parts)
+
 # A bound IoT_Wireless client: credentials + region, threaded into every operation.
 struct IoT_WirelessClient:
     core.Credentials creds
     str region
+
+    # AssociateAwsAccountWithPartnerAccount  POST /partner-accounts
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def associate_aws_account_with_partner_account(self, AssociateAwsAccountWithPartnerAccountRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/partner-accounts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Sidewalk\":" + input.Sidewalk.to_json())
+        if input.ClientRequestToken.is_some():
+            auto u0 = input.ClientRequestToken.unwrap()
+            parts.append("\"ClientRequestToken\":" + api_iotwireless_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Tags\":" + api_iotwireless_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, api_iotwireless_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
 
     # AssociateMulticastGroupWithFuotaTask  PUT /fuota-tasks/{Id}/multicast-group
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -3052,6 +3695,251 @@ struct IoT_WirelessClient:
         auto b = binding.HttpBinding(method="DELETE", path_template="/multicast-groups/{Id}/session", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
+    # CreateDestination  POST /destinations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_destination(self, CreateDestinationRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/destinations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + api_iotwireless_json_str(input.Name))
+        parts.append("\"ExpressionType\":" + input.ExpressionType.to_json())
+        parts.append("\"Expression\":" + api_iotwireless_json_str(input.Expression))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + api_iotwireless_json_str(u0))
+        parts.append("\"RoleArn\":" + api_iotwireless_json_str(input.RoleArn))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Tags\":" + api_iotwireless_json_arr(e2))
+        if input.ClientRequestToken.is_some():
+            auto u3 = input.ClientRequestToken.unwrap()
+            parts.append("\"ClientRequestToken\":" + api_iotwireless_json_str(u3))
+        auto bp = restjson.rest_json_document(b, api_iotwireless_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
+
+    # CreateDeviceProfile  POST /device-profiles
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def create_device_profile(self, CreateDeviceProfileRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/device-profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + api_iotwireless_json_str(u0))
+        if input.LoRaWAN.is_some():
+            auto u1 = input.LoRaWAN.unwrap()
+            parts.append("\"LoRaWAN\":" + lo_ra_wan_device_profile_to_json(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"Tags\":" + api_iotwireless_json_arr(e3))
+        if input.ClientRequestToken.is_some():
+            auto u4 = input.ClientRequestToken.unwrap()
+            parts.append("\"ClientRequestToken\":" + api_iotwireless_json_str(u4))
+        if input.Sidewalk.is_some():
+            auto u5 = input.Sidewalk.unwrap()
+            parts.append("\"Sidewalk\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, api_iotwireless_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
+
+    # CreateFuotaTask  POST /fuota-tasks
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_fuota_task(self, CreateFuotaTaskRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/fuota-tasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + api_iotwireless_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + api_iotwireless_json_str(u1))
+        if input.ClientRequestToken.is_some():
+            auto u2 = input.ClientRequestToken.unwrap()
+            parts.append("\"ClientRequestToken\":" + api_iotwireless_json_str(u2))
+        if input.LoRaWAN.is_some():
+            auto u3 = input.LoRaWAN.unwrap()
+            parts.append("\"LoRaWAN\":" + u3.to_json())
+        parts.append("\"FirmwareUpdateImage\":" + api_iotwireless_json_str(input.FirmwareUpdateImage))
+        parts.append("\"FirmwareUpdateRole\":" + api_iotwireless_json_str(input.FirmwareUpdateRole))
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"Tags\":" + api_iotwireless_json_arr(e5))
+        if input.RedundancyPercent.is_some():
+            auto u6 = input.RedundancyPercent.unwrap()
+            parts.append("\"RedundancyPercent\":" + str(u6))
+        if input.FragmentSizeBytes.is_some():
+            auto u7 = input.FragmentSizeBytes.unwrap()
+            parts.append("\"FragmentSizeBytes\":" + str(u7))
+        if input.FragmentIntervalMS.is_some():
+            auto u8 = input.FragmentIntervalMS.unwrap()
+            parts.append("\"FragmentIntervalMS\":" + str(u8))
+        if input.Descriptor.is_some():
+            auto u9 = input.Descriptor.unwrap()
+            parts.append("\"Descriptor\":" + api_iotwireless_json_str(u9))
+        auto bp = restjson.rest_json_document(b, api_iotwireless_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
+
+    # CreateMulticastGroup  POST /multicast-groups
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_multicast_group(self, CreateMulticastGroupRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/multicast-groups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + api_iotwireless_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + api_iotwireless_json_str(u1))
+        if input.ClientRequestToken.is_some():
+            auto u2 = input.ClientRequestToken.unwrap()
+            parts.append("\"ClientRequestToken\":" + api_iotwireless_json_str(u2))
+        parts.append("\"LoRaWAN\":" + lo_ra_wan_multicast_to_json(input.LoRaWAN))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"Tags\":" + api_iotwireless_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, api_iotwireless_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
+
+    # CreateNetworkAnalyzerConfiguration  POST /network-analyzer-configurations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_network_analyzer_configuration(self, CreateNetworkAnalyzerConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/network-analyzer-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + api_iotwireless_json_str(input.Name))
+        if input.TraceContent.is_some():
+            auto u0 = input.TraceContent.unwrap()
+            parts.append("\"TraceContent\":" + u0.to_json())
+        if input.WirelessDevices.is_some():
+            auto u1 = input.WirelessDevices.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(api_iotwireless_json_str(x2))
+            parts.append("\"WirelessDevices\":" + api_iotwireless_json_arr(e2))
+        if input.WirelessGateways.is_some():
+            auto u3 = input.WirelessGateways.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(api_iotwireless_json_str(x4))
+            parts.append("\"WirelessGateways\":" + api_iotwireless_json_arr(e4))
+        if input.Description.is_some():
+            auto u5 = input.Description.unwrap()
+            parts.append("\"Description\":" + api_iotwireless_json_str(u5))
+        if input.Tags.is_some():
+            auto u6 = input.Tags.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"Tags\":" + api_iotwireless_json_arr(e7))
+        if input.ClientRequestToken.is_some():
+            auto u8 = input.ClientRequestToken.unwrap()
+            parts.append("\"ClientRequestToken\":" + api_iotwireless_json_str(u8))
+        if input.MulticastGroups.is_some():
+            auto u9 = input.MulticastGroups.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(api_iotwireless_json_str(x10))
+            parts.append("\"MulticastGroups\":" + api_iotwireless_json_arr(e10))
+        auto bp = restjson.rest_json_document(b, api_iotwireless_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
+
+    # CreateServiceProfile  POST /service-profiles
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def create_service_profile(self, CreateServiceProfileRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/service-profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + api_iotwireless_json_str(u0))
+        if input.LoRaWAN.is_some():
+            auto u1 = input.LoRaWAN.unwrap()
+            parts.append("\"LoRaWAN\":" + u1.to_json())
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"Tags\":" + api_iotwireless_json_arr(e3))
+        if input.ClientRequestToken.is_some():
+            auto u4 = input.ClientRequestToken.unwrap()
+            parts.append("\"ClientRequestToken\":" + api_iotwireless_json_str(u4))
+        auto bp = restjson.rest_json_document(b, api_iotwireless_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
+
+    # CreateWirelessDevice  POST /wireless-devices
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_wireless_device(self, CreateWirelessDeviceRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/wireless-devices", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Type\":" + input.Type.to_json())
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + api_iotwireless_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + api_iotwireless_json_str(u1))
+        parts.append("\"DestinationName\":" + api_iotwireless_json_str(input.DestinationName))
+        if input.ClientRequestToken.is_some():
+            auto u2 = input.ClientRequestToken.unwrap()
+            parts.append("\"ClientRequestToken\":" + api_iotwireless_json_str(u2))
+        if input.LoRaWAN.is_some():
+            auto u3 = input.LoRaWAN.unwrap()
+            parts.append("\"LoRaWAN\":" + lo_ra_wan_device_to_json(u3))
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"Tags\":" + api_iotwireless_json_arr(e5))
+        if input.Positioning.is_some():
+            auto u6 = input.Positioning.unwrap()
+            parts.append("\"Positioning\":" + u6.to_json())
+        if input.Sidewalk.is_some():
+            auto u7 = input.Sidewalk.unwrap()
+            parts.append("\"Sidewalk\":" + u7.to_json())
+        auto bp = restjson.rest_json_document(b, api_iotwireless_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
+
+    # CreateWirelessGateway  POST /wireless-gateways
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def create_wireless_gateway(self, CreateWirelessGatewayRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/wireless-gateways", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + api_iotwireless_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + api_iotwireless_json_str(u1))
+        parts.append("\"LoRaWAN\":" + lo_ra_wan_gateway_to_json(input.LoRaWAN))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"Tags\":" + api_iotwireless_json_arr(e3))
+        if input.ClientRequestToken.is_some():
+            auto u4 = input.ClientRequestToken.unwrap()
+            parts.append("\"ClientRequestToken\":" + api_iotwireless_json_str(u4))
+        auto bp = restjson.rest_json_document(b, api_iotwireless_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
+
     # CreateWirelessGatewayTask  POST /wireless-gateways/{Id}/tasks
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_wireless_gateway_task(self, CreateWirelessGatewayTaskRequest input) -> str:
@@ -3061,6 +3949,31 @@ struct IoT_WirelessClient:
         auto b = binding.HttpBinding(method="POST", path_template="/wireless-gateways/{Id}/tasks", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateWirelessGatewayTaskDocument(WirelessGatewayTaskDefinitionId=input.WirelessGatewayTaskDefinitionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
+
+    # CreateWirelessGatewayTaskDefinition  POST /wireless-gateway-task-definitions
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_wireless_gateway_task_definition(self, CreateWirelessGatewayTaskDefinitionRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/wireless-gateway-task-definitions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"AutoCreateTasks\":" + json.dumps(JsonValue.Bool(input.AutoCreateTasks)))
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + api_iotwireless_json_str(u0))
+        if input.Update.is_some():
+            auto u1 = input.Update.unwrap()
+            parts.append("\"Update\":" + u1.to_json())
+        if input.ClientRequestToken.is_some():
+            auto u2 = input.ClientRequestToken.unwrap()
+            parts.append("\"ClientRequestToken\":" + api_iotwireless_json_str(u2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"Tags\":" + api_iotwireless_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, api_iotwireless_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
 
     # DeleteDestination  DELETE /destinations/{Name}
@@ -3303,6 +4216,21 @@ struct IoT_WirelessClient:
         auto b = binding.HttpBinding(method="GET", path_template="/metric-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
+    # GetMetrics  POST /metrics
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_metrics(self, GetMetricsRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/metrics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.SummaryMetricQueries.is_some():
+            auto u0 = input.SummaryMetricQueries.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(summary_metric_query_to_json(x1))
+            parts.append("\"SummaryMetricQueries\":" + api_iotwireless_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, api_iotwireless_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
+
     # GetMulticastGroup  GET /multicast-groups/{Id}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_multicast_group(self, GetMulticastGroupRequest input) -> str:
@@ -3362,6 +4290,39 @@ struct IoT_WirelessClient:
         query["resourceType"] = input.ResourceType
         auto b = binding.HttpBinding(method="GET", path_template="/position-configurations/{ResourceIdentifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
+
+    # GetPositionEstimate  POST /position-estimate
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_position_estimate(self, GetPositionEstimateRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/position-estimate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.WiFiAccessPoints.is_some():
+            auto u0 = input.WiFiAccessPoints.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"WiFiAccessPoints\":" + api_iotwireless_json_arr(e1))
+        if input.CellTowers.is_some():
+            auto u2 = input.CellTowers.unwrap()
+            parts.append("\"CellTowers\":" + cell_towers_to_json(u2))
+        if input.Ip.is_some():
+            auto u3 = input.Ip.unwrap()
+            parts.append("\"Ip\":" + u3.to_json())
+        if input.Gnss.is_some():
+            auto u4 = input.Gnss.unwrap()
+            parts.append("\"Gnss\":" + gnss_to_json(u4))
+        if input.GnssMultiFrame.is_some():
+            auto u5 = input.GnssMultiFrame.unwrap()
+            parts.append("\"GnssMultiFrame\":" + gnss_multi_frame_to_json(u5))
+        if input.Timestamp.is_some():
+            auto u6 = input.Timestamp.unwrap()
+            parts.append("\"Timestamp\":" + str(datetime.to_timestamp(u6)))
+        if input.AdvancedConfiguration.is_some():
+            auto u7 = input.AdvancedConfiguration.unwrap()
+            parts.append("\"AdvancedConfiguration\":" + u7.to_json())
+        auto bp = restjson.rest_json_document(b, api_iotwireless_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
 
     # GetResourceEventConfiguration  GET /event-configurations/{Identifier}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -3786,6 +4747,62 @@ struct IoT_WirelessClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
 
+    # SendDataToWirelessDevice  POST /wireless-devices/{Id}/data
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def send_data_to_wireless_device(self, SendDataToWirelessDeviceRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.Id
+        auto b = binding.HttpBinding(method="POST", path_template="/wireless-devices/{Id}/data", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"TransmitMode\":" + str(input.TransmitMode))
+        parts.append("\"PayloadData\":" + api_iotwireless_json_str(input.PayloadData))
+        if input.WirelessMetadata.is_some():
+            auto u0 = input.WirelessMetadata.unwrap()
+            parts.append("\"WirelessMetadata\":" + wireless_metadata_to_json(u0))
+        auto bp = restjson.rest_json_document(b, api_iotwireless_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
+
+    # StartBulkAssociateWirelessDeviceWithMulticastGroup  PATCH /multicast-groups/{Id}/bulk
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def start_bulk_associate_wireless_device_with_multicast_group(self, StartBulkAssociateWirelessDeviceWithMulticastGroupRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.Id
+        auto b = binding.HttpBinding(method="PATCH", path_template="/multicast-groups/{Id}/bulk", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.QueryString.is_some():
+            auto u0 = input.QueryString.unwrap()
+            parts.append("\"QueryString\":" + api_iotwireless_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Tags\":" + api_iotwireless_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, api_iotwireless_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
+
+    # StartBulkDisassociateWirelessDeviceFromMulticastGroup  POST /multicast-groups/{Id}/bulk
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def start_bulk_disassociate_wireless_device_from_multicast_group(self, StartBulkDisassociateWirelessDeviceFromMulticastGroupRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.Id
+        auto b = binding.HttpBinding(method="POST", path_template="/multicast-groups/{Id}/bulk", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.QueryString.is_some():
+            auto u0 = input.QueryString.unwrap()
+            parts.append("\"QueryString\":" + api_iotwireless_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Tags\":" + api_iotwireless_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, api_iotwireless_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
+
     # StartFuotaTask  PUT /fuota-tasks/{Id}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_fuota_task(self, StartFuotaTaskRequest input) -> str:
@@ -3806,6 +4823,70 @@ struct IoT_WirelessClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/multicast-groups/{Id}/session", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartMulticastGroupSessionDocument(LoRaWAN=input.LoRaWAN)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
+
+    # StartSingleWirelessDeviceImportTask  POST /wireless_single_device_import_task
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def start_single_wireless_device_import_task(self, StartSingleWirelessDeviceImportTaskRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/wireless_single_device_import_task", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"DestinationName\":" + api_iotwireless_json_str(input.DestinationName))
+        if input.ClientRequestToken.is_some():
+            auto u0 = input.ClientRequestToken.unwrap()
+            parts.append("\"ClientRequestToken\":" + api_iotwireless_json_str(u0))
+        if input.DeviceName.is_some():
+            auto u1 = input.DeviceName.unwrap()
+            parts.append("\"DeviceName\":" + api_iotwireless_json_str(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"Tags\":" + api_iotwireless_json_arr(e3))
+        if input.Positioning.is_some():
+            auto u4 = input.Positioning.unwrap()
+            parts.append("\"Positioning\":" + u4.to_json())
+        parts.append("\"Sidewalk\":" + input.Sidewalk.to_json())
+        auto bp = restjson.rest_json_document(b, api_iotwireless_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
+
+    # StartWirelessDeviceImportTask  POST /wireless_device_import_task
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def start_wireless_device_import_task(self, StartWirelessDeviceImportTaskRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/wireless_device_import_task", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"DestinationName\":" + api_iotwireless_json_str(input.DestinationName))
+        if input.ClientRequestToken.is_some():
+            auto u0 = input.ClientRequestToken.unwrap()
+            parts.append("\"ClientRequestToken\":" + api_iotwireless_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Tags\":" + api_iotwireless_json_arr(e2))
+        if input.Positioning.is_some():
+            auto u3 = input.Positioning.unwrap()
+            parts.append("\"Positioning\":" + u3.to_json())
+        parts.append("\"Sidewalk\":" + input.Sidewalk.to_json())
+        auto bp = restjson.rest_json_document(b, api_iotwireless_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
+
+    # TagResource  POST /tags
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, TooManyTagsException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        dict[str, str] query = {}
+        query["resourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Tags:
+            e0.append(x0.to_json())
+        parts.append("\"Tags\":" + api_iotwireless_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, api_iotwireless_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
 
     # TestWirelessDevice  POST /wireless-devices/{Id}/test
@@ -3848,6 +4929,36 @@ struct IoT_WirelessClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
 
+    # UpdateLogLevelsByResourceTypes  POST /log-levels
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_log_levels_by_resource_types(self, UpdateLogLevelsByResourceTypesRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/log-levels", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.DefaultLogLevel.is_some():
+            auto u0 = input.DefaultLogLevel.unwrap()
+            parts.append("\"DefaultLogLevel\":" + u0.to_json())
+        if input.FuotaTaskLogOptions.is_some():
+            auto u1 = input.FuotaTaskLogOptions.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(fuota_task_log_option_to_json(x2))
+            parts.append("\"FuotaTaskLogOptions\":" + api_iotwireless_json_arr(e2))
+        if input.WirelessDeviceLogOptions.is_some():
+            auto u3 = input.WirelessDeviceLogOptions.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(wireless_device_log_option_to_json(x4))
+            parts.append("\"WirelessDeviceLogOptions\":" + api_iotwireless_json_arr(e4))
+        if input.WirelessGatewayLogOptions.is_some():
+            auto u5 = input.WirelessGatewayLogOptions.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(wireless_gateway_log_option_to_json(x6))
+            parts.append("\"WirelessGatewayLogOptions\":" + api_iotwireless_json_arr(e6))
+        auto bp = restjson.rest_json_document(b, api_iotwireless_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
+
     # UpdateMetricConfiguration  PUT /metric-configuration
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_metric_configuration(self, UpdateMetricConfigurationRequest input) -> str:
@@ -3855,6 +4966,79 @@ struct IoT_WirelessClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/metric-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateMetricConfigurationDocument(SummaryMetric=input.SummaryMetric)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
+
+    # UpdateMulticastGroup  PATCH /multicast-groups/{Id}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_multicast_group(self, UpdateMulticastGroupRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.Id
+        auto b = binding.HttpBinding(method="PATCH", path_template="/multicast-groups/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + api_iotwireless_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + api_iotwireless_json_str(u1))
+        if input.LoRaWAN.is_some():
+            auto u2 = input.LoRaWAN.unwrap()
+            parts.append("\"LoRaWAN\":" + lo_ra_wan_multicast_to_json(u2))
+        auto bp = restjson.rest_json_document(b, api_iotwireless_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
+
+    # UpdateNetworkAnalyzerConfiguration  PATCH /network-analyzer-configurations/{ConfigurationName}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_network_analyzer_configuration(self, UpdateNetworkAnalyzerConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ConfigurationName"] = input.ConfigurationName
+        auto b = binding.HttpBinding(method="PATCH", path_template="/network-analyzer-configurations/{ConfigurationName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.TraceContent.is_some():
+            auto u0 = input.TraceContent.unwrap()
+            parts.append("\"TraceContent\":" + u0.to_json())
+        if input.WirelessDevicesToAdd.is_some():
+            auto u1 = input.WirelessDevicesToAdd.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(api_iotwireless_json_str(x2))
+            parts.append("\"WirelessDevicesToAdd\":" + api_iotwireless_json_arr(e2))
+        if input.WirelessDevicesToRemove.is_some():
+            auto u3 = input.WirelessDevicesToRemove.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(api_iotwireless_json_str(x4))
+            parts.append("\"WirelessDevicesToRemove\":" + api_iotwireless_json_arr(e4))
+        if input.WirelessGatewaysToAdd.is_some():
+            auto u5 = input.WirelessGatewaysToAdd.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(api_iotwireless_json_str(x6))
+            parts.append("\"WirelessGatewaysToAdd\":" + api_iotwireless_json_arr(e6))
+        if input.WirelessGatewaysToRemove.is_some():
+            auto u7 = input.WirelessGatewaysToRemove.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(api_iotwireless_json_str(x8))
+            parts.append("\"WirelessGatewaysToRemove\":" + api_iotwireless_json_arr(e8))
+        if input.Description.is_some():
+            auto u9 = input.Description.unwrap()
+            parts.append("\"Description\":" + api_iotwireless_json_str(u9))
+        if input.MulticastGroupsToAdd.is_some():
+            auto u10 = input.MulticastGroupsToAdd.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(api_iotwireless_json_str(x11))
+            parts.append("\"MulticastGroupsToAdd\":" + api_iotwireless_json_arr(e11))
+        if input.MulticastGroupsToRemove.is_some():
+            auto u12 = input.MulticastGroupsToRemove.unwrap()
+            list[str] e13 = []
+            for x13 in u12:
+                e13.append(api_iotwireless_json_str(x13))
+            parts.append("\"MulticastGroupsToRemove\":" + api_iotwireless_json_arr(e13))
+        auto bp = restjson.rest_json_document(b, api_iotwireless_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
 
     # UpdatePartnerAccount  PATCH /partner-accounts/{PartnerAccountId}
@@ -3868,6 +5052,23 @@ struct IoT_WirelessClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/partner-accounts/{PartnerAccountId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePartnerAccountDocument(Sidewalk=input.Sidewalk)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
+
+    # UpdatePosition  PATCH /positions/{ResourceIdentifier}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_position(self, UpdatePositionRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceIdentifier"] = input.ResourceIdentifier
+        dict[str, str] query = {}
+        query["resourceType"] = input.ResourceType
+        auto b = binding.HttpBinding(method="PATCH", path_template="/positions/{ResourceIdentifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Position:
+            e0.append(str(x0))
+        parts.append("\"Position\":" + api_iotwireless_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, api_iotwireless_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
 
     # UpdateResourceEventConfiguration  PATCH /event-configurations/{Identifier}
@@ -3897,6 +5098,35 @@ struct IoT_WirelessClient:
         auto bp = restjson.rest_json_raw_payload(b, str(input.GeoJsonPayload.unwrap_or(bytes())), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
 
+    # UpdateWirelessDevice  PATCH /wireless-devices/{Id}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_wireless_device(self, UpdateWirelessDeviceRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.Id
+        auto b = binding.HttpBinding(method="PATCH", path_template="/wireless-devices/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.DestinationName.is_some():
+            auto u0 = input.DestinationName.unwrap()
+            parts.append("\"DestinationName\":" + api_iotwireless_json_str(u0))
+        if input.Name.is_some():
+            auto u1 = input.Name.unwrap()
+            parts.append("\"Name\":" + api_iotwireless_json_str(u1))
+        if input.Description.is_some():
+            auto u2 = input.Description.unwrap()
+            parts.append("\"Description\":" + api_iotwireless_json_str(u2))
+        if input.LoRaWAN.is_some():
+            auto u3 = input.LoRaWAN.unwrap()
+            parts.append("\"LoRaWAN\":" + lo_ra_wan_update_device_to_json(u3))
+        if input.Positioning.is_some():
+            auto u4 = input.Positioning.unwrap()
+            parts.append("\"Positioning\":" + u4.to_json())
+        if input.Sidewalk.is_some():
+            auto u5 = input.Sidewalk.unwrap()
+            parts.append("\"Sidewalk\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, api_iotwireless_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
+
     # UpdateWirelessDeviceImportTask  PATCH /wireless_device_import_task/{Id}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_wireless_device_import_task(self, UpdateWirelessDeviceImportTaskRequest input) -> str:
@@ -3906,6 +5136,41 @@ struct IoT_WirelessClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/wireless_device_import_task/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateWirelessDeviceImportTaskDocument(Sidewalk=input.Sidewalk)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
+
+    # UpdateWirelessGateway  PATCH /wireless-gateways/{Id}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_wireless_gateway(self, UpdateWirelessGatewayRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.Id
+        auto b = binding.HttpBinding(method="PATCH", path_template="/wireless-gateways/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + api_iotwireless_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + api_iotwireless_json_str(u1))
+        if input.JoinEuiFilters.is_some():
+            auto u2 = input.JoinEuiFilters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                list[str] e4 = []
+                for x4 in x3:
+                    e4.append(api_iotwireless_json_str(x4))
+                e3.append(api_iotwireless_json_arr(e4))
+            parts.append("\"JoinEuiFilters\":" + api_iotwireless_json_arr(e3))
+        if input.NetIdFilters.is_some():
+            auto u5 = input.NetIdFilters.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(api_iotwireless_json_str(x6))
+            parts.append("\"NetIdFilters\":" + api_iotwireless_json_arr(e6))
+        if input.MaxEirp.is_some():
+            auto u7 = input.MaxEirp.unwrap()
+            parts.append("\"MaxEirp\":" + str(u7))
+        auto bp = restjson.rest_json_document(b, api_iotwireless_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
 
 # Construct a IoT_WirelessClient bound to credentials + region.

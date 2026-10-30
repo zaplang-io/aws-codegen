@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 115 operations — 78 with a generated method,
-#   37 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 115 operations — 110 with a generated method,
+#   5 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   380 structs (205 @derive(Json)), 65 enums, 5 error variants.
 #   14 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -765,14 +765,16 @@ struct AddProfileKeyRequest:
     list[str] Values
     str DomainName
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddProfileKeyResponse:
     Optional[str] KeyName
     Optional[list[str]] Values
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdditionalSearchKey:
     str KeyName
     list[str] Values
@@ -790,8 +792,9 @@ struct Address:
     Optional[str] Country
     Optional[str] PostalCode
 
-# no @derive(Json): member(s) City: ProfileDimension, Country: ProfileDimension, County: ProfileDimension, PostalCode: ProfileDimension, Province: ProfileDimension, State: ProfileDimension not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) City: ProfileDimension, Country: ProfileDimension, County: ProfileDimension, PostalCode: ProfileDimension, Province: ProfileDimension, State: ProfileDimension not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddressDimension:
     Optional[ProfileDimension] City
     Optional[ProfileDimension] Country
@@ -800,8 +803,9 @@ struct AddressDimension:
     Optional[ProfileDimension] Province
     Optional[ProfileDimension] State
 
-# no @derive(Json): member(s) FlowDefinition: FlowDefinition, Batches: list[Batch] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FlowDefinition: FlowDefinition, Batches: list[Batch] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AppflowIntegration:
     FlowDefinition FlowDefinition
     Optional[list[Batch]] Batches
@@ -847,14 +851,16 @@ struct AssociatedSegment:
     Optional[EventSubscriptionSegmentStatus] Status
     Optional[str] Message
 
-# no @derive(Json): member(s) Attributes: list[AttributeItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[AttributeItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributeDetails:
     list[AttributeItem] Attributes
     str Expression
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributeDimension:
     AttributeDimensionType DimensionType
     list[str] Values
@@ -863,8 +869,9 @@ struct AttributeDimension:
 struct AttributeItem:
     str Name
 
-# no @derive(Json): member(s) Address: list[str], PhoneNumber: list[str], EmailAddress: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Address: list[str], PhoneNumber: list[str], EmailAddress: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributeTypesSelector:
     AttributeMatchingModel AttributeMatchingModel
     Optional[list[str]] Address
@@ -875,8 +882,9 @@ struct AttributeTypesSelector:
 struct AttributeValueItem:
     Optional[str] Value
 
-# no @derive(Json): member(s) Consolidation: Consolidation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Consolidation: Consolidation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoMerging:
     bool Enabled
     Optional[Consolidation] Consolidation
@@ -906,8 +914,9 @@ struct BatchGetCalculatedAttributeForProfileRequest:
     list[str] ProfileIds
     Optional[ConditionOverrides] ConditionOverrides
 
-# no @derive(Json): member(s) Errors: list[BatchGetCalculatedAttributeForProfileError], CalculatedAttributeValues: list[CalculatedAttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[BatchGetCalculatedAttributeForProfileError], CalculatedAttributeValues: list[CalculatedAttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetCalculatedAttributeForProfileResponse:
     Optional[list[BatchGetCalculatedAttributeForProfileError]] Errors
     Optional[list[CalculatedAttributeValue]] CalculatedAttributeValues
@@ -925,8 +934,9 @@ struct BatchGetProfileRequest:
     str DomainName
     list[str] ProfileIds
 
-# no @derive(Json): member(s) Errors: list[BatchGetProfileError], Profiles: list[Profile] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[BatchGetProfileError], Profiles: list[Profile] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetProfileResponse:
     Optional[list[BatchGetProfileError]] Errors
     Optional[list[Profile]] Profiles
@@ -949,8 +959,9 @@ struct BatchPutProfileObjectRequestItem:
     str Id
     str Object
 
-# no @derive(Json): member(s) Successful: list[BatchPutProfileObjectResponseItem], Failed: list[BatchPutProfileObjectErrorItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Successful: list[BatchPutProfileObjectResponseItem], Failed: list[BatchPutProfileObjectErrorItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchPutProfileObjectResponse:
     Optional[list[BatchPutProfileObjectResponseItem]] Successful
     Optional[list[BatchPutProfileObjectErrorItem]] Failed
@@ -960,8 +971,9 @@ struct BatchPutProfileObjectResponseItem:
     str Id
     str ProfileObjectUniqueKey
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CalculatedAttributeDimension:
     AttributeDimensionType DimensionType
     list[str] Values
@@ -976,8 +988,9 @@ struct CalculatedAttributeValue:
     Optional[str] Value
     Optional[DateTime] LastObjectTimestamp
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CatalogItem:
     Optional[str] Id
     Optional[str] Name
@@ -1016,8 +1029,9 @@ struct ConnectorOperator:
     Optional[ServiceNowConnectorOperator] ServiceNow
     Optional[ZendeskConnectorOperator] Zendesk
 
-# no @derive(Json): member(s) MatchingAttributesList: list[list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchingAttributesList: list[list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Consolidation:
     list[list[str]] MatchingAttributesList
 
@@ -1042,8 +1056,9 @@ struct CreateCalculatedAttributeDefinitionRequest:
     Optional[bool] UseHistoricalData
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) AttributeDetails: AttributeDetails, Filter: Filter, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeDetails: AttributeDetails, Filter: Filter, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCalculatedAttributeDefinitionResponse:
     Optional[str] CalculatedAttributeName
     Optional[str] DisplayName
@@ -1071,8 +1086,9 @@ struct CreateDomainLayoutRequest:
     str Layout
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDomainLayoutResponse:
     str LayoutDefinitionName
     str Description
@@ -1097,8 +1113,9 @@ struct CreateDomainRequest:
     Optional[DataStoreRequest] DataStore
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Matching: MatchingResponse, RuleBasedMatching: RuleBasedMatchingResponse, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Matching: MatchingResponse, RuleBasedMatching: RuleBasedMatchingResponse, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDomainResponse:
     str DomainName
     int64 DefaultExpirationDays
@@ -1119,8 +1136,9 @@ struct CreateEventStreamRequest:
     str EventStreamName
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEventStreamResponse:
     str EventStreamArn
     Optional[dict[str, str]] Tags
@@ -1137,8 +1155,9 @@ struct CreateEventTriggerRequest:
     Optional[EventTriggerLimits] EventTriggerLimits
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) EventTriggerConditions: list[EventTriggerCondition], EventTriggerLimits: EventTriggerLimits, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventTriggerConditions: list[EventTriggerCondition], EventTriggerLimits: EventTriggerLimits, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEventTriggerResponse:
     Optional[str] EventTriggerName
     Optional[str] ObjectTypeName
@@ -1209,8 +1228,9 @@ struct CreateRecommenderFilterRequest:
     Optional[str] Description
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRecommenderFilterResponse:
     str RecommenderFilterArn
     Optional[dict[str, str]] Tags
@@ -1226,8 +1246,9 @@ struct CreateRecommenderRequest:
     Optional[str] RecommenderSchemaName
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRecommenderResponse:
     str RecommenderArn
     Optional[dict[str, str]] Tags
@@ -1240,8 +1261,9 @@ struct CreateRecommenderSchemaRequest:
     dict[str, list[RecommenderSchemaField]] Fields
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Fields: dict[str, list[RecommenderSchemaField]], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fields: dict[str, list[RecommenderSchemaField]], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRecommenderSchemaResponse:
     str RecommenderSchemaArn
     str RecommenderSchemaName
@@ -1262,8 +1284,9 @@ struct CreateSegmentDefinitionRequest:
     Optional[SegmentSort] SegmentSort
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSegmentDefinitionResponse:
     str SegmentDefinitionName
     Optional[str] DisplayName
@@ -1321,8 +1344,9 @@ struct DataStoreResponse:
     Optional[bool] Enabled
     Optional[Readiness] Readiness
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DateDimension:
     DateDimensionType DimensionType
     list[str] Values
@@ -1518,20 +1542,23 @@ struct DetectProfileObjectTypeRequest:
     list[str] Objects
     str DomainName
 
-# no @derive(Json): member(s) DetectedProfileObjectTypes: list[DetectedProfileObjectType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DetectedProfileObjectTypes: list[DetectedProfileObjectType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectProfileObjectTypeResponse:
     Optional[list[DetectedProfileObjectType]] DetectedProfileObjectTypes
 
-# no @derive(Json): member(s) Fields: dict[str, ObjectTypeField], Keys: dict[str, list[ObjectTypeKey]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fields: dict[str, ObjectTypeField], Keys: dict[str, list[ObjectTypeKey]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectedProfileObjectType:
     Optional[str] SourceLastUpdatedTimestampFormat
     Optional[dict[str, ObjectTypeField]] Fields
     Optional[dict[str, list[ObjectTypeKey]]] Keys
 
-# no @derive(Json): member(s) ProfileAttributes: ProfileAttributes, CalculatedAttributes: dict[str, CalculatedAttributeDimension] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProfileAttributes: ProfileAttributes, CalculatedAttributes: dict[str, CalculatedAttributeDimension] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Dimension:
     Optional[ProfileAttributes] ProfileAttributes
     Optional[dict[str, CalculatedAttributeDimension]] CalculatedAttributes
@@ -1551,8 +1578,9 @@ struct DiversityColumn:
     DiversityCapType CapType
     str Target
 
-# no @derive(Json): member(s) DiversityColumns: list[DiversityColumn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DiversityColumns: list[DiversityColumn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DiversityConfig:
     Optional[list[DiversityColumn]] DiversityColumns
 
@@ -1563,8 +1591,9 @@ struct DomainObjectTypeField:
     Optional[ContentType] ContentType
     Optional[FeatureType] FeatureType
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DomainObjectTypesListItem:
     str ObjectTypeName
     Optional[str] Description
@@ -1579,8 +1608,9 @@ struct DomainStats:
     Optional[int64] ObjectCount
     Optional[int64] TotalSize
 
-# no @derive(Json): member(s) Phone: list[ContactPreference], Email: list[ContactPreference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Phone: list[ContactPreference], Email: list[ContactPreference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EngagementPreferences:
     Optional[list[ContactPreference]] Phone
     Optional[list[ContactPreference]] Email
@@ -1598,8 +1628,9 @@ struct EventStreamDestinationDetails:
     Optional[DateTime] UnhealthySince
     Optional[str] Message
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventStreamSummary:
     str DomainName
     str EventStreamName
@@ -1609,25 +1640,29 @@ struct EventStreamSummary:
     Optional[DestinationSummary] DestinationSummary
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) EventTriggerDimensions: list[EventTriggerDimension] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventTriggerDimensions: list[EventTriggerDimension] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventTriggerCondition:
     list[EventTriggerDimension] EventTriggerDimensions
     EventTriggerLogicalOperator LogicalOperator
 
-# no @derive(Json): member(s) ObjectAttributes: list[ObjectAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ObjectAttributes: list[ObjectAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventTriggerDimension:
     list[ObjectAttribute] ObjectAttributes
 
-# no @derive(Json): member(s) Periods: list[Period] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Periods: list[Period] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventTriggerLimits:
     Optional[int64] EventExpiration
     Optional[list[Period]] Periods
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventTriggerSummaryItem:
     Optional[str] ObjectTypeName
     Optional[str] EventTriggerName
@@ -1636,8 +1671,9 @@ struct EventTriggerSummaryItem:
     Optional[DateTime] LastUpdatedAt
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) EventParametersList: list[EventParameters] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventParametersList: list[EventParameters] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventsConfig:
     list[EventParameters] EventParametersList
 
@@ -1649,14 +1685,16 @@ struct ExportingConfig:
 struct ExportingLocation:
     Optional[S3ExportingLocation] S3Exporting
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExtraLengthValueProfileDimension:
     StringDimensionType DimensionType
     list[str] Values
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FieldSourceProfileIds:
     Optional[str] AccountNumber
     Optional[str] AdditionalInformation
@@ -1682,31 +1720,36 @@ struct FieldSourceProfileIds:
     Optional[str] ProfileType
     Optional[str] EngagementPreferences
 
-# no @derive(Json): member(s) Groups: list[FilterGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[FilterGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filter:
     Include Include
     list[FilterGroup] Groups
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterAttributeDimension:
     FilterDimensionType DimensionType
     list[str] Values
 
-# no @derive(Json): member(s) Attributes: dict[str, FilterAttributeDimension] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, FilterAttributeDimension] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterDimension:
     dict[str, FilterAttributeDimension] Attributes
 
-# no @derive(Json): member(s) Dimensions: list[FilterDimension] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: list[FilterDimension] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterGroup:
     Type Type
     list[FilterDimension] Dimensions
 
-# no @derive(Json): member(s) Tasks: list[Task] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tasks: list[Task] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FlowDefinition:
     Optional[str] Description
     str FlowName
@@ -1715,8 +1758,9 @@ struct FlowDefinition:
     list[Task] Tasks
     TriggerConfig TriggerConfig
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FoundByKeyValue:
     Optional[str] KeyName
     Optional[list[str]] Values
@@ -1742,8 +1786,9 @@ struct GetCalculatedAttributeDefinitionRequest:
     str DomainName
     str CalculatedAttributeName
 
-# no @derive(Json): member(s) Filter: Filter, AttributeDetails: AttributeDetails, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filter: Filter, AttributeDetails: AttributeDetails, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCalculatedAttributeDefinitionResponse:
     Optional[str] CalculatedAttributeName
     Optional[str] DisplayName
@@ -1780,8 +1825,9 @@ struct GetDomainLayoutRequest:
     str DomainName
     str LayoutDefinitionName
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDomainLayoutResponse:
     str LayoutDefinitionName
     str Description
@@ -1800,8 +1846,9 @@ struct GetDomainObjectTypeRequest:
     str DomainName
     str ObjectTypeName
 
-# no @derive(Json): member(s) Fields: dict[str, DomainObjectTypeField], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fields: dict[str, DomainObjectTypeField], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDomainObjectTypeResponse:
     str ObjectTypeName
     Optional[str] Description
@@ -1816,8 +1863,9 @@ struct GetDomainObjectTypeResponse:
 struct GetDomainRequest:
     str DomainName
 
-# no @derive(Json): member(s) Matching: MatchingResponse, RuleBasedMatching: RuleBasedMatchingResponse, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Matching: MatchingResponse, RuleBasedMatching: RuleBasedMatchingResponse, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDomainResponse:
     str DomainName
     Optional[int64] DefaultExpirationDays
@@ -1837,8 +1885,9 @@ struct GetEventStreamRequest:
     str DomainName
     str EventStreamName
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEventStreamResponse:
     str DomainName
     str EventStreamArn
@@ -1854,8 +1903,9 @@ struct GetEventTriggerRequest:
     str DomainName
     str EventTriggerName
 
-# no @derive(Json): member(s) EventTriggerConditions: list[EventTriggerCondition], EventTriggerLimits: EventTriggerLimits, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventTriggerConditions: list[EventTriggerCondition], EventTriggerLimits: EventTriggerLimits, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEventTriggerResponse:
     Optional[str] EventTriggerName
     Optional[str] ObjectTypeName
@@ -1873,8 +1923,9 @@ struct GetIdentityResolutionJobRequest:
     str DomainName
     str JobId
 
-# no @derive(Json): member(s) AutoMerging: AutoMerging not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AutoMerging: AutoMerging not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIdentityResolutionJobResponse:
     Optional[str] DomainName
     Optional[str] JobId
@@ -1894,8 +1945,9 @@ struct GetIntegrationRequest:
     str DomainName
     str Uri
 
-# no @derive(Json): member(s) Tags: dict[str, str], ObjectTypeNames: dict[str, str], EventTriggerNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str], ObjectTypeNames: dict[str, str], EventTriggerNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIntegrationResponse:
     str DomainName
     str Uri
@@ -1917,8 +1969,9 @@ struct GetMatchesRequest:
     Optional[int64] MaxResults
     str DomainName
 
-# no @derive(Json): member(s) Matches: list[MatchItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Matches: list[MatchItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMatchesResponse:
     Optional[str] NextToken
     Optional[DateTime] MatchGenerationDate
@@ -1977,8 +2030,9 @@ struct GetProfileObjectTypeRequest:
     str DomainName
     str ObjectTypeName
 
-# no @derive(Json): member(s) Fields: dict[str, ObjectTypeField], Keys: dict[str, list[ObjectTypeKey]], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fields: dict[str, ObjectTypeField], Keys: dict[str, list[ObjectTypeKey]], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProfileObjectTypeResponse:
     str ObjectTypeName
     str Description
@@ -2001,8 +2055,9 @@ struct GetProfileObjectTypeResponse:
 struct GetProfileObjectTypeTemplateRequest:
     str TemplateId
 
-# no @derive(Json): member(s) Fields: dict[str, ObjectTypeField], Keys: dict[str, list[ObjectTypeKey]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fields: dict[str, ObjectTypeField], Keys: dict[str, list[ObjectTypeKey]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProfileObjectTypeTemplateResponse:
     Optional[str] TemplateId
     Optional[str] SourceName
@@ -2026,8 +2081,9 @@ struct GetProfileRecommendationsRequest:
     Optional[MetadataConfig] MetadataConfig
     Optional[RecommendationDiversityConfig] DiversityConfig
 
-# no @derive(Json): member(s) Recommendations: list[Recommendation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Recommendations: list[Recommendation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProfileRecommendationsResponse:
     Optional[list[Recommendation]] Recommendations
 
@@ -2037,8 +2093,9 @@ struct GetRecommenderFilterRequest:
     str DomainName
     str RecommenderFilterName
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecommenderFilterResponse:
     str RecommenderFilterName
     str RecommenderFilterExpression
@@ -2056,8 +2113,9 @@ struct GetRecommenderRequest:
     str RecommenderName
     Optional[int64] TrainingMetricsCount
 
-# no @derive(Json): member(s) RecommenderConfig: RecommenderConfig, LatestRecommenderUpdate: RecommenderUpdate, TrainingMetrics: list[TrainingMetrics], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecommenderConfig: RecommenderConfig, LatestRecommenderUpdate: RecommenderUpdate, TrainingMetrics: list[TrainingMetrics], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecommenderResponse:
     str RecommenderName
     RecommenderRecipeName RecommenderRecipeName
@@ -2079,8 +2137,9 @@ struct GetRecommenderSchemaRequest:
     str DomainName
     str RecommenderSchemaName
 
-# no @derive(Json): member(s) Fields: dict[str, list[RecommenderSchemaField]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fields: dict[str, list[RecommenderSchemaField]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecommenderSchemaResponse:
     str RecommenderSchemaName
     dict[str, list[RecommenderSchemaField]] Fields
@@ -2093,8 +2152,9 @@ struct GetSegmentDefinitionRequest:
     str DomainName
     str SegmentDefinitionName
 
-# no @derive(Json): member(s) SegmentGroups: SegmentGroup, SegmentSort: SegmentSort, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SegmentGroups: SegmentGroup, SegmentSort: SegmentSort, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSegmentDefinitionResponse:
     Optional[str] SegmentDefinitionName
     Optional[str] DisplayName
@@ -2129,8 +2189,9 @@ struct GetSegmentMembershipRequest:
     str SegmentDefinitionName
     list[str] ProfileIds
 
-# no @derive(Json): member(s) Profiles: list[ProfileQueryResult], Failures: list[ProfileQueryFailures] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Profiles: list[ProfileQueryResult], Failures: list[ProfileQueryFailures] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSegmentMembershipResponse:
     Optional[str] SegmentDefinitionName
     Optional[list[ProfileQueryResult]] Profiles
@@ -2179,8 +2240,9 @@ struct GetSimilarProfilesRequest:
     str SearchKey
     str SearchValue
 
-# no @derive(Json): member(s) ProfileIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProfileIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSimilarProfilesResponse:
     Optional[list[str]] ProfileIds
     Optional[str] MatchId
@@ -2194,8 +2256,9 @@ struct GetSimilarProfilesResponse:
 struct GetStreamForSegmentsRequest:
     str DomainName
 
-# no @derive(Json): member(s) AssociatedSegments: list[AssociatedSegment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociatedSegments: list[AssociatedSegment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetStreamForSegmentsResponse:
     Optional[DateTime] AssociatedAt
     Optional[list[AssociatedSegment]] AssociatedSegments
@@ -2224,8 +2287,9 @@ struct GetUploadJobRequest:
     str DomainName
     str JobId
 
-# no @derive(Json): member(s) Fields: dict[str, ObjectTypeField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fields: dict[str, ObjectTypeField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUploadJobResponse:
     Optional[str] JobId
     Optional[str] DisplayName
@@ -2263,16 +2327,18 @@ struct GetWorkflowStepsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Items: list[WorkflowStepItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[WorkflowStepItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWorkflowStepsResponse:
     Optional[str] WorkflowId
     Optional[str] WorkflowType
     Optional[list[WorkflowStepItem]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Dimensions: list[Dimension], SourceSegments: list[SourceSegment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: list[Dimension], SourceSegments: list[SourceSegment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Group:
     Optional[list[Dimension]] Dimensions
     Optional[list[SourceSegment]] SourceSegments
@@ -2298,8 +2364,9 @@ struct IncrementalPullConfig:
 struct InferenceConfig:
     Optional[int64] MinProvisionedTPS
 
-# no @derive(Json): member(s) AppflowIntegration: AppflowIntegration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AppflowIntegration: AppflowIntegration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntegrationConfig:
     Optional[AppflowIntegration] AppflowIntegration
 
@@ -2318,8 +2385,9 @@ struct JobStats:
     Optional[int64] NumberOfMatchesFound
     Optional[int64] NumberOfMergesDone
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LayoutItem:
     str LayoutDefinitionName
     str Description
@@ -2338,14 +2406,16 @@ struct ListAccountIntegrationsRequest:
     Optional[int64] MaxResults
     Optional[bool] IncludeHidden
 
-# no @derive(Json): member(s) Items: list[ListIntegrationItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ListIntegrationItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccountIntegrationsResponse:
     Optional[list[ListIntegrationItem]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCalculatedAttributeDefinitionItem:
     Optional[str] CalculatedAttributeName
     Optional[str] DisplayName
@@ -2363,8 +2433,9 @@ struct ListCalculatedAttributeDefinitionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Items: list[ListCalculatedAttributeDefinitionItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ListCalculatedAttributeDefinitionItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCalculatedAttributeDefinitionsResponse:
     Optional[list[ListCalculatedAttributeDefinitionItem]] Items
     Optional[str] NextToken
@@ -2385,14 +2456,16 @@ struct ListCalculatedAttributesForProfileRequest:
     str DomainName
     str ProfileId
 
-# no @derive(Json): member(s) Items: list[ListCalculatedAttributeForProfileItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ListCalculatedAttributeForProfileItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCalculatedAttributesForProfileResponse:
     Optional[list[ListCalculatedAttributeForProfileItem]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDomainItem:
     str DomainName
     DateTime CreatedAt
@@ -2406,8 +2479,9 @@ struct ListDomainLayoutsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Items: list[LayoutItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[LayoutItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDomainLayoutsResponse:
     Optional[list[LayoutItem]] Items
     Optional[str] NextToken
@@ -2419,8 +2493,9 @@ struct ListDomainObjectTypesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[DomainObjectTypesListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[DomainObjectTypesListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDomainObjectTypesResponse:
     Optional[list[DomainObjectTypesListItem]] Items
     Optional[str] NextToken
@@ -2431,8 +2506,9 @@ struct ListDomainsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Items: list[ListDomainItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ListDomainItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDomainsResponse:
     Optional[list[ListDomainItem]] Items
     Optional[str] NextToken
@@ -2444,8 +2520,9 @@ struct ListEventStreamsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Items: list[EventStreamSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[EventStreamSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventStreamsResponse:
     Optional[list[EventStreamSummary]] Items
     Optional[str] NextToken
@@ -2457,8 +2534,9 @@ struct ListEventTriggersRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Items: list[EventTriggerSummaryItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[EventTriggerSummaryItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventTriggersResponse:
     Optional[list[EventTriggerSummaryItem]] Items
     Optional[str] NextToken
@@ -2470,14 +2548,16 @@ struct ListIdentityResolutionJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) IdentityResolutionJobsList: list[IdentityResolutionJob] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentityResolutionJobsList: list[IdentityResolutionJob] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIdentityResolutionJobsResponse:
     Optional[list[IdentityResolutionJob]] IdentityResolutionJobsList
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: dict[str, str], ObjectTypeNames: dict[str, str], EventTriggerNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str], ObjectTypeNames: dict[str, str], EventTriggerNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIntegrationItem:
     str DomainName
     str Uri
@@ -2500,8 +2580,9 @@ struct ListIntegrationsRequest:
     Optional[int64] MaxResults
     Optional[bool] IncludeHidden
 
-# no @derive(Json): member(s) Items: list[ListIntegrationItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ListIntegrationItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIntegrationsResponse:
     Optional[list[ListIntegrationItem]] Items
     Optional[str] NextToken
@@ -2525,8 +2606,9 @@ struct ListObjectTypeAttributeValuesRequest:
     str ObjectTypeName
     str AttributeName
 
-# no @derive(Json): member(s) Items: list[ListObjectTypeAttributeValuesItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ListObjectTypeAttributeValuesItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListObjectTypeAttributeValuesResponse:
     Optional[list[ListObjectTypeAttributeValuesItem]] Items
     Optional[str] NextToken
@@ -2539,8 +2621,9 @@ struct ListObjectTypeAttributesRequest:
     str DomainName
     str ObjectTypeName
 
-# no @derive(Json): member(s) Items: list[ListObjectTypeAttributeItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ListObjectTypeAttributeItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListObjectTypeAttributesResponse:
     Optional[list[ListObjectTypeAttributeItem]] Items
     Optional[str] NextToken
@@ -2556,14 +2639,16 @@ struct ListProfileHistoryRecordsRequest:
     Optional[ActionType] ActionType
     Optional[str] PerformedBy
 
-# no @derive(Json): member(s) ProfileHistoryRecords: list[ProfileHistoryRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProfileHistoryRecords: list[ProfileHistoryRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProfileHistoryRecordsResponse:
     Optional[list[ProfileHistoryRecord]] ProfileHistoryRecords
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProfileObjectTypeItem:
     str ObjectTypeName
     str Description
@@ -2586,8 +2671,9 @@ struct ListProfileObjectTypeTemplatesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Items: list[ListProfileObjectTypeTemplateItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ListProfileObjectTypeTemplateItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProfileObjectTypeTemplatesResponse:
     Optional[list[ListProfileObjectTypeTemplateItem]] Items
     Optional[str] NextToken
@@ -2599,8 +2685,9 @@ struct ListProfileObjectTypesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Items: list[ListProfileObjectTypeItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ListProfileObjectTypeItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProfileObjectTypesResponse:
     Optional[list[ListProfileObjectTypeItem]] Items
     Optional[str] NextToken
@@ -2621,8 +2708,9 @@ struct ListProfileObjectsRequest:
     str ProfileId
     Optional[ObjectFilter] ObjectFilter
 
-# no @derive(Json): member(s) Items: list[ListProfileObjectsItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ListProfileObjectsItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProfileObjectsResponse:
     Optional[list[ListProfileObjectsItem]] Items
     Optional[str] NextToken
@@ -2634,8 +2722,9 @@ struct ListRecommenderFiltersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RecommenderFilters: list[RecommenderFilterSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecommenderFilters: list[RecommenderFilterSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecommenderFiltersResponse:
     Optional[str] NextToken
     Optional[list[RecommenderFilterSummary]] RecommenderFilters
@@ -2646,8 +2735,9 @@ struct ListRecommenderRecipesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RecommenderRecipes: list[RecommenderRecipe] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecommenderRecipes: list[RecommenderRecipe] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecommenderRecipesResponse:
     Optional[str] NextToken
     Optional[list[RecommenderRecipe]] RecommenderRecipes
@@ -2659,8 +2749,9 @@ struct ListRecommenderSchemasRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RecommenderSchemas: list[RecommenderSchemaSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecommenderSchemas: list[RecommenderSchemaSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecommenderSchemasResponse:
     Optional[str] NextToken
     Optional[list[RecommenderSchemaSummary]] RecommenderSchemas
@@ -2672,8 +2763,9 @@ struct ListRecommendersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Recommenders: list[RecommenderSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Recommenders: list[RecommenderSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecommendersResponse:
     Optional[str] NextToken
     Optional[list[RecommenderSummary]] Recommenders
@@ -2685,8 +2777,9 @@ struct ListRuleBasedMatchesRequest:
     Optional[int64] MaxResults
     str DomainName
 
-# no @derive(Json): member(s) MatchIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRuleBasedMatchesResponse:
     Optional[list[str]] MatchIds
     Optional[str] NextToken
@@ -2698,8 +2791,9 @@ struct ListSegmentDefinitionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[SegmentDefinitionItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[SegmentDefinitionItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSegmentDefinitionsResponse:
     Optional[str] NextToken
     Optional[list[SegmentDefinitionItem]] Items
@@ -2712,8 +2806,9 @@ struct ListSegmentSubscriptionEventsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Events: list[SubscriptionEventItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Events: list[SubscriptionEventItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSegmentSubscriptionEventsResponse:
     Optional[list[SubscriptionEventItem]] Events
     Optional[str] NextToken
@@ -2723,8 +2818,9 @@ struct ListSegmentSubscriptionEventsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -2735,8 +2831,9 @@ struct ListUploadJobsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[UploadJobItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[UploadJobItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUploadJobsResponse:
     Optional[str] NextToken
     Optional[list[UploadJobItem]] Items
@@ -2761,8 +2858,9 @@ struct ListWorkflowsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Items: list[ListWorkflowsItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ListWorkflowsItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkflowsResponse:
     Optional[list[ListWorkflowsItem]] Items
     Optional[str] NextToken
@@ -2771,31 +2869,35 @@ struct ListWorkflowsResponse:
 struct MarketoSourceProperties:
     str Object
 
-# no @derive(Json): member(s) ProfileIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProfileIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MatchItem:
     Optional[str] MatchId
     Optional[list[str]] ProfileIds
     Optional[float64] ConfidenceScore
 
-# no @derive(Json): member(s) AutoMerging: AutoMerging not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AutoMerging: AutoMerging not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MatchingRequest:
     bool Enabled
     Optional[JobSchedule] JobSchedule
     Optional[AutoMerging] AutoMerging
     Optional[ExportingConfig] ExportingConfig
 
-# no @derive(Json): member(s) AutoMerging: AutoMerging not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AutoMerging: AutoMerging not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MatchingResponse:
     Optional[bool] Enabled
     Optional[JobSchedule] JobSchedule
     Optional[AutoMerging] AutoMerging
     Optional[ExportingConfig] ExportingConfig
 
-# no @derive(Json): member(s) Rule: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rule: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MatchingRule:
     list[str] Rule
 
@@ -2811,21 +2913,24 @@ struct MergeProfilesRequest:
 struct MergeProfilesResponse:
     Optional[str] Message
 
-# no @derive(Json): member(s) MetadataColumns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetadataColumns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetadataConfig:
     Optional[list[str]] MetadataColumns
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ObjectAttribute:
     Optional[str] Source
     Optional[str] FieldName
     ComparisonOperator ComparisonOperator
     list[str] Values
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ObjectFilter:
     str KeyName
     list[str] Values
@@ -2836,8 +2941,9 @@ struct ObjectTypeField:
     Optional[str] Target
     Optional[FieldContentType] ContentType
 
-# no @derive(Json): member(s) StandardIdentifiers: list[StandardIdentifier], FieldNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StandardIdentifiers: list[StandardIdentifier], FieldNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ObjectTypeKey:
     Optional[list[StandardIdentifier]] StandardIdentifiers
     Optional[list[str]] FieldNames
@@ -2849,8 +2955,9 @@ struct Period:
     Optional[int64] MaxInvocationsPerProfile
     Optional[bool] Unlimited
 
-# no @derive(Json): member(s) Attributes: dict[str, str], FoundByItems: list[FoundByKeyValue], EngagementPreferences: EngagementPreferences not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, str], FoundByItems: list[FoundByKeyValue], EngagementPreferences: EngagementPreferences not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Profile:
     Optional[str] ProfileId
     Optional[str] AccountNumber
@@ -2886,16 +2993,18 @@ struct ProfileAttributeValuesRequest:
     str DomainName
     str AttributeName
 
-# no @derive(Json): member(s) Items: list[AttributeValueItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[AttributeValueItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProfileAttributeValuesResponse:
     Optional[str] DomainName
     Optional[str] AttributeName
     Optional[list[AttributeValueItem]] Items
     Optional[int64] StatusCode
 
-# no @derive(Json): member(s) AccountNumber: ProfileDimension, AdditionalInformation: ExtraLengthValueProfileDimension, FirstName: ProfileDimension, LastName: ProfileDimension, MiddleName: ProfileDimension, GenderString: ProfileDimension, PartyTypeString: ProfileDimension, BirthDate: DateDimension, PhoneNumber: ProfileDimension, BusinessName: ProfileDimension, BusinessPhoneNumber: ProfileDimension, HomePhoneNumber: ProfileDimension, MobilePhoneNumber: ProfileDimension, EmailAddress: ProfileDimension, PersonalEmailAddress: ProfileDimension, BusinessEmailAddress: ProfileDimension, Address: AddressDimension, ShippingAddress: AddressDimension, MailingAddress: AddressDimension, BillingAddress: AddressDimension, Attributes: dict[str, AttributeDimension], ProfileType: ProfileTypeDimension not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountNumber: ProfileDimension, AdditionalInformation: ExtraLengthValueProfileDimension, FirstName: ProfileDimension, LastName: ProfileDimension, MiddleName: ProfileDimension, GenderString: ProfileDimension, PartyTypeString: ProfileDimension, BirthDate: DateDimension, PhoneNumber: ProfileDimension, BusinessName: ProfileDimension, BusinessPhoneNumber: ProfileDimension, HomePhoneNumber: ProfileDimension, MobilePhoneNumber: ProfileDimension, EmailAddress: ProfileDimension, PersonalEmailAddress: ProfileDimension, BusinessEmailAddress: ProfileDimension, Address: AddressDimension, ShippingAddress: AddressDimension, MailingAddress: AddressDimension, BillingAddress: AddressDimension, Attributes: dict[str, AttributeDimension], ProfileType: ProfileTypeDimension not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProfileAttributes:
     Optional[ProfileDimension] AccountNumber
     Optional[ExtraLengthValueProfileDimension] AdditionalInformation
@@ -2920,8 +3029,9 @@ struct ProfileAttributes:
     Optional[dict[str, AttributeDimension]] Attributes
     Optional[ProfileTypeDimension] ProfileType
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProfileDimension:
     StringDimensionType DimensionType
     list[str] Values
@@ -2942,15 +3052,17 @@ struct ProfileQueryFailures:
     str Message
     Optional[int64] Status
 
-# no @derive(Json): member(s) Profile: Profile not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Profile: Profile not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProfileQueryResult:
     str ProfileId
     QueryResult QueryResult
     Optional[Profile] Profile
 
-# no @derive(Json): member(s) Values: list[ProfileType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[ProfileType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProfileTypeDimension:
     ProfileTypeDimensionType DimensionType
     list[ProfileType] Values
@@ -2965,8 +3077,9 @@ struct PutDomainObjectTypeRequest:
     dict[str, DomainObjectTypeField] Fields
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Fields: dict[str, DomainObjectTypeField], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fields: dict[str, DomainObjectTypeField], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutDomainObjectTypeResponse:
     Optional[str] ObjectTypeName
     Optional[str] Description
@@ -2989,8 +3102,9 @@ struct PutIntegrationRequest:
     Optional[list[str]] EventTriggerNames
     Optional[Scope] Scope
 
-# no @derive(Json): member(s) Tags: dict[str, str], ObjectTypeNames: dict[str, str], EventTriggerNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str], ObjectTypeNames: dict[str, str], EventTriggerNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutIntegrationResponse:
     str DomainName
     str Uri
@@ -3033,8 +3147,9 @@ struct PutProfileObjectTypeRequest:
     Optional[dict[str, list[ObjectTypeKey]]] Keys
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Fields: dict[str, ObjectTypeField], Keys: dict[str, list[ObjectTypeKey]], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fields: dict[str, ObjectTypeField], Keys: dict[str, list[ObjectTypeKey]], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutProfileObjectTypeResponse:
     str ObjectTypeName
     str Description
@@ -3084,32 +3199,37 @@ struct Readiness:
     Optional[int64] ProgressPercentage
     Optional[str] Message
 
-# no @derive(Json): member(s) CatalogItem: CatalogItem not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CatalogItem: CatalogItem not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Recommendation:
     Optional[CatalogItem] CatalogItem
     Optional[float64] Score
 
-# no @derive(Json): member(s) Values: dict[str, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: dict[str, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationDiversityConfig:
     bool Enabled
     Optional[dict[str, int64]] Values
 
-# no @derive(Json): member(s) Columns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Columns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationMetadata:
     Optional[list[str]] Columns
 
-# no @derive(Json): member(s) Filters: list[RecommenderFilter], PromotionalFilters: list[RecommenderPromotionalFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[RecommenderFilter], PromotionalFilters: list[RecommenderPromotionalFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Recommender:
     str Name
     Optional[list[RecommenderFilter]] Filters
     Optional[list[RecommenderPromotionalFilter]] PromotionalFilters
 
-# no @derive(Json): member(s) EventsConfig: EventsConfig, IncludedColumns: dict[str, list[str]], ExcludedColumns: dict[str, list[str]], DiversityConfig: DiversityConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventsConfig: EventsConfig, IncludedColumns: dict[str, list[str]], ExcludedColumns: dict[str, list[str]], DiversityConfig: DiversityConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommenderConfig:
     Optional[EventsConfig] EventsConfig
     Optional[int64] TrainingFrequency
@@ -3118,14 +3238,16 @@ struct RecommenderConfig:
     Optional[dict[str, list[str]]] ExcludedColumns
     Optional[DiversityConfig] DiversityConfig
 
-# no @derive(Json): member(s) Values: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommenderFilter:
     Optional[str] Name
     Optional[dict[str, str]] Values
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommenderFilterSummary:
     Optional[str] RecommenderFilterName
     Optional[str] RecommenderSchemaName
@@ -3136,8 +3258,9 @@ struct RecommenderFilterSummary:
     Optional[str] FailureReason
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Values: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommenderPromotionalFilter:
     Optional[str] Name
     Optional[dict[str, str]] Values
@@ -3155,16 +3278,18 @@ struct RecommenderSchemaField:
     Optional[ContentType] ContentType
     Optional[FeatureType] FeatureType
 
-# no @derive(Json): member(s) Fields: dict[str, list[RecommenderSchemaField]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fields: dict[str, list[RecommenderSchemaField]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommenderSchemaSummary:
     str RecommenderSchemaName
     dict[str, list[RecommenderSchemaField]] Fields
     DateTime CreatedAt
     RecommenderSchemaStatus Status
 
-# no @derive(Json): member(s) RecommenderConfig: RecommenderConfig, Tags: dict[str, str], LatestRecommenderUpdate: RecommenderUpdate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecommenderConfig: RecommenderConfig, Tags: dict[str, str], LatestRecommenderUpdate: RecommenderUpdate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommenderSummary:
     Optional[str] RecommenderName
     Optional[RecommenderRecipeName] RecipeName
@@ -3178,8 +3303,9 @@ struct RecommenderSummary:
     Optional[str] FailureReason
     Optional[RecommenderUpdate] LatestRecommenderUpdate
 
-# no @derive(Json): member(s) RecommenderConfig: RecommenderConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecommenderConfig: RecommenderConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommenderUpdate:
     Optional[RecommenderConfig] RecommenderConfig
     Optional[RecommenderStatus] Status
@@ -3198,8 +3324,9 @@ struct ResultsSummary:
     Optional[int64] CreatedRecords
     Optional[int64] FailedRecords
 
-# no @derive(Json): member(s) MatchingRules: list[MatchingRule], AttributeTypesSelector: AttributeTypesSelector not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchingRules: list[MatchingRule], AttributeTypesSelector: AttributeTypesSelector not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleBasedMatchingRequest:
     bool Enabled
     Optional[list[MatchingRule]] MatchingRules
@@ -3209,8 +3336,9 @@ struct RuleBasedMatchingRequest:
     Optional[ConflictResolution] ConflictResolution
     Optional[ExportingConfig] ExportingConfig
 
-# no @derive(Json): member(s) MatchingRules: list[MatchingRule], AttributeTypesSelector: AttributeTypesSelector not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchingRules: list[MatchingRule], AttributeTypesSelector: AttributeTypesSelector not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleBasedMatchingResponse:
     Optional[bool] Enabled
     Optional[list[MatchingRule]] MatchingRules
@@ -3273,8 +3401,9 @@ struct SearchProfilesRequest:
     Optional[list[AdditionalSearchKey]] AdditionalSearchKeys
     Optional[logicalOperator] LogicalOperator
 
-# no @derive(Json): member(s) Items: list[Profile] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[Profile] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchProfilesResponse:
     Optional[list[Profile]] Items
     Optional[str] NextToken
@@ -3292,14 +3421,16 @@ struct SearchRecommendationsRequest:
     Optional[RecommendationMetadata] Metadata
     Optional[int64] MaxRecommendations
 
-# no @derive(Json): member(s) Recommendations: list[Recommendation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Recommendations: list[Recommendation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchRecommendationsResponse:
     Optional[str] ProfileId
     Optional[list[Recommendation]] Recommendations
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SegmentDefinitionItem:
     Optional[str] SegmentDefinitionName
     Optional[str] DisplayName
@@ -3309,20 +3440,23 @@ struct SegmentDefinitionItem:
     Optional[dict[str, str]] Tags
     Optional[SegmentType] SegmentType
 
-# no @derive(Json): member(s) Groups: list[Group] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[Group] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SegmentGroup:
     Optional[list[Group]] Groups
     Optional[IncludeOptions] Include
 
-# no @derive(Json): member(s) Groups: list[Group] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[Group] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SegmentGroupStructure:
     Optional[list[Group]] Groups
     Optional[IncludeOptions] Include
 
-# no @derive(Json): member(s) Attributes: list[SortAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[SortAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SegmentSort:
     list[SortAttribute] Attributes
 
@@ -3418,8 +3552,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) SourceFields: list[str], TaskProperties: dict[OperatorPropertiesKeys, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceFields: list[str], TaskProperties: dict[OperatorPropertiesKeys, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Task:
     Optional[ConnectorOperator] ConnectorOperator
     Optional[str] DestinationField
@@ -3436,8 +3571,9 @@ struct Threshold:
 struct ThrottlingException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Metrics: dict[TrainingMetricName, float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metrics: dict[TrainingMetricName, float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrainingMetrics:
     Optional[DateTime] Time
     Optional[dict[TrainingMetricName, float64]] Metrics
@@ -3485,8 +3621,9 @@ struct UpdateCalculatedAttributeDefinitionRequest:
     Optional[str] Description
     Optional[Conditions] Conditions
 
-# no @derive(Json): member(s) AttributeDetails: AttributeDetails, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeDetails: AttributeDetails, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCalculatedAttributeDefinitionResponse:
     Optional[str] CalculatedAttributeName
     Optional[str] DisplayName
@@ -3512,8 +3649,9 @@ struct UpdateDomainLayoutRequest:
     Optional[str] LayoutType
     Optional[str] Layout
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDomainLayoutResponse:
     Optional[str] LayoutDefinitionName
     Optional[str] Description
@@ -3538,8 +3676,9 @@ struct UpdateDomainRequest:
     Optional[DataStoreRequest] DataStore
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Matching: MatchingResponse, RuleBasedMatching: RuleBasedMatchingResponse, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Matching: MatchingResponse, RuleBasedMatching: RuleBasedMatchingResponse, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDomainResponse:
     str DomainName
     Optional[int64] DefaultExpirationDays
@@ -3563,8 +3702,9 @@ struct UpdateEventTriggerRequest:
     Optional[str] SegmentFilter
     Optional[EventTriggerLimits] EventTriggerLimits
 
-# no @derive(Json): member(s) EventTriggerConditions: list[EventTriggerCondition], EventTriggerLimits: EventTriggerLimits, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventTriggerConditions: list[EventTriggerCondition], EventTriggerLimits: EventTriggerLimits, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEventTriggerResponse:
     Optional[str] EventTriggerName
     Optional[str] ObjectTypeName
@@ -3687,43 +3827,11 @@ def profile_error_from_code(str code) -> Customer_ProfilesError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AddProfileKey (document member `Values: list[str]` is not serializable by derive)
-#   BatchGetCalculatedAttributeForProfile (document member `ProfileIds: list[str]` is not serializable by derive)
-#   BatchGetProfile (document member `ProfileIds: list[str]` is not serializable by derive)
-#   BatchPutProfileObject (document member `Items: list[BatchPutProfileObjectRequestItem]` is not serializable by derive)
-#   CreateCalculatedAttributeDefinition (document member `AttributeDetails: AttributeDetails` is not serializable by derive)
-#   CreateDomain (document member `Matching: MatchingRequest` is not serializable by derive)
-#   CreateDomainLayout (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateEventStream (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateEventTrigger (document member `EventTriggerConditions: list[EventTriggerCondition]` is not serializable by derive)
-#   CreateIntegrationWorkflow (document member `IntegrationConfig: IntegrationConfig` is not serializable by derive)
-#   CreateProfile (document member `Attributes: dict[str, str]` is not serializable by derive)
-#   CreateRecommender (document member `RecommenderConfig: RecommenderConfig` is not serializable by derive)
-#   CreateRecommenderFilter (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateRecommenderSchema (document member `Fields: dict[str, list[RecommenderSchemaField]]` is not serializable by derive)
-#   CreateSegmentDefinition (document member `SegmentGroups: SegmentGroup` is not serializable by derive)
-#   CreateSegmentEstimate (document member `SegmentQuery: SegmentGroupStructure` is not serializable by derive)
-#   CreateUploadJob (document member `Fields: dict[str, ObjectTypeField]` is not serializable by derive)
-#   DeleteProfileKey (document member `Values: list[str]` is not serializable by derive)
-#   DetectProfileObjectType (document member `Objects: list[str]` is not serializable by derive)
-#   GetAutoMergingPreview (document member `Consolidation: Consolidation` is not serializable by derive)
-#   GetProfileRecommendations (document member `Context: dict[str, str]` is not serializable by derive)
-#   GetSegmentMembership (document member `ProfileIds: list[str]` is not serializable by derive)
+#   CreateIntegrationWorkflow (document member `IntegrationConfig: IntegrationConfig` is not serializable)
 #   ListAccountIntegrations (httpQuery `IncludeHidden` has unsupported type bool)
 #   ListIntegrations (httpQuery `IncludeHidden` has unsupported type bool)
-#   ListProfileObjects (document member `ObjectFilter: ObjectFilter` is not serializable by derive)
-#   MergeProfiles (document member `ProfileIdsToBeMerged: list[str]` is not serializable by derive)
-#   PutDomainObjectType (document member `Fields: dict[str, DomainObjectTypeField]` is not serializable by derive)
-#   PutIntegration (document member `ObjectTypeNames: dict[str, str]` is not serializable by derive)
-#   PutProfileObjectType (document member `Fields: dict[str, ObjectTypeField]` is not serializable by derive)
-#   SearchProfiles (document member `Values: list[str]` is not serializable by derive)
-#   SearchRecommendations (document member `KeyValues: list[str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
+#   PutIntegration (document member `FlowDefinition: FlowDefinition` is not serializable)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateDomain (document member `Matching: MatchingRequest` is not serializable by derive)
-#   UpdateEventTrigger (document member `EventTriggerConditions: list[EventTriggerCondition]` is not serializable by derive)
-#   UpdateProfile (document member `Attributes: dict[str, str]` is not serializable by derive)
-#   UpdateRecommender (document member `RecommenderConfig: RecommenderConfig` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -3814,10 +3922,763 @@ struct UpdateDomainLayoutDocument:
     Optional[str] LayoutType
     Optional[str] Layout
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def profile_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def profile_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def profile_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AdditionalSearchKey to a compact JSON object (declaration order).
+def additional_search_key_to_json(AdditionalSearchKey v) -> str:
+    list[str] parts = []
+    parts.append("\"KeyName\":" + profile_json_str(v.KeyName))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(profile_json_str(x0))
+    parts.append("\"Values\":" + profile_json_arr(e0))
+    return profile_json_obj(parts)
+
+# Serialize AddressDimension to a compact JSON object (declaration order).
+def address_dimension_to_json(AddressDimension v) -> str:
+    list[str] parts = []
+    if v.City.is_some():
+        auto u0 = v.City.unwrap()
+        parts.append("\"City\":" + profile_dimension_to_json(u0))
+    if v.Country.is_some():
+        auto u1 = v.Country.unwrap()
+        parts.append("\"Country\":" + profile_dimension_to_json(u1))
+    if v.County.is_some():
+        auto u2 = v.County.unwrap()
+        parts.append("\"County\":" + profile_dimension_to_json(u2))
+    if v.PostalCode.is_some():
+        auto u3 = v.PostalCode.unwrap()
+        parts.append("\"PostalCode\":" + profile_dimension_to_json(u3))
+    if v.Province.is_some():
+        auto u4 = v.Province.unwrap()
+        parts.append("\"Province\":" + profile_dimension_to_json(u4))
+    if v.State.is_some():
+        auto u5 = v.State.unwrap()
+        parts.append("\"State\":" + profile_dimension_to_json(u5))
+    return profile_json_obj(parts)
+
+# Serialize AttributeDetails to a compact JSON object (declaration order).
+def attribute_details_to_json(AttributeDetails v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Attributes:
+        e0.append(x0.to_json())
+    parts.append("\"Attributes\":" + profile_json_arr(e0))
+    parts.append("\"Expression\":" + profile_json_str(v.Expression))
+    return profile_json_obj(parts)
+
+# Serialize AttributeDimension to a compact JSON object (declaration order).
+def attribute_dimension_to_json(AttributeDimension v) -> str:
+    list[str] parts = []
+    parts.append("\"DimensionType\":" + v.DimensionType.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(profile_json_str(x0))
+    parts.append("\"Values\":" + profile_json_arr(e0))
+    return profile_json_obj(parts)
+
+# Serialize AttributeTypesSelector to a compact JSON object (declaration order).
+def attribute_types_selector_to_json(AttributeTypesSelector v) -> str:
+    list[str] parts = []
+    parts.append("\"AttributeMatchingModel\":" + v.AttributeMatchingModel.to_json())
+    if v.Address.is_some():
+        auto u0 = v.Address.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(profile_json_str(x1))
+        parts.append("\"Address\":" + profile_json_arr(e1))
+    if v.PhoneNumber.is_some():
+        auto u2 = v.PhoneNumber.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(profile_json_str(x3))
+        parts.append("\"PhoneNumber\":" + profile_json_arr(e3))
+    if v.EmailAddress.is_some():
+        auto u4 = v.EmailAddress.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(profile_json_str(x5))
+        parts.append("\"EmailAddress\":" + profile_json_arr(e5))
+    return profile_json_obj(parts)
+
+# Serialize AutoMerging to a compact JSON object (declaration order).
+def auto_merging_to_json(AutoMerging v) -> str:
+    list[str] parts = []
+    parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(v.Enabled)))
+    if v.Consolidation.is_some():
+        auto u0 = v.Consolidation.unwrap()
+        parts.append("\"Consolidation\":" + consolidation_to_json(u0))
+    if v.ConflictResolution.is_some():
+        auto u1 = v.ConflictResolution.unwrap()
+        parts.append("\"ConflictResolution\":" + u1.to_json())
+    if v.MinAllowedConfidenceScoreForMerging.is_some():
+        auto u2 = v.MinAllowedConfidenceScoreForMerging.unwrap()
+        parts.append("\"MinAllowedConfidenceScoreForMerging\":" + str(u2))
+    return profile_json_obj(parts)
+
+# Serialize CalculatedAttributeDimension to a compact JSON object (declaration order).
+def calculated_attribute_dimension_to_json(CalculatedAttributeDimension v) -> str:
+    list[str] parts = []
+    parts.append("\"DimensionType\":" + v.DimensionType.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(profile_json_str(x0))
+    parts.append("\"Values\":" + profile_json_arr(e0))
+    if v.ConditionOverrides.is_some():
+        auto u1 = v.ConditionOverrides.unwrap()
+        parts.append("\"ConditionOverrides\":" + u1.to_json())
+    return profile_json_obj(parts)
+
+# Serialize Consolidation to a compact JSON object (declaration order).
+def consolidation_to_json(Consolidation v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.MatchingAttributesList:
+        list[str] e1 = []
+        for x1 in x0:
+            e1.append(profile_json_str(x1))
+        e0.append(profile_json_arr(e1))
+    parts.append("\"MatchingAttributesList\":" + profile_json_arr(e0))
+    return profile_json_obj(parts)
+
+# Serialize DateDimension to a compact JSON object (declaration order).
+def date_dimension_to_json(DateDimension v) -> str:
+    list[str] parts = []
+    parts.append("\"DimensionType\":" + v.DimensionType.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(profile_json_str(x0))
+    parts.append("\"Values\":" + profile_json_arr(e0))
+    return profile_json_obj(parts)
+
+# Serialize Dimension to a compact JSON object (declaration order).
+def dimension_to_json(Dimension v) -> str:
+    list[str] parts = []
+    if v.ProfileAttributes.is_some():
+        auto u0 = v.ProfileAttributes.unwrap()
+        parts.append("\"ProfileAttributes\":" + profile_attributes_to_json(u0))
+    if v.CalculatedAttributes.is_some():
+        auto u1 = v.CalculatedAttributes.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(profile_json_str(k2) + ":" + calculated_attribute_dimension_to_json(u1[k2]))
+        parts.append("\"CalculatedAttributes\":" + profile_json_obj(m2))
+    return profile_json_obj(parts)
+
+# Serialize DiversityConfig to a compact JSON object (declaration order).
+def diversity_config_to_json(DiversityConfig v) -> str:
+    list[str] parts = []
+    if v.DiversityColumns.is_some():
+        auto u0 = v.DiversityColumns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"DiversityColumns\":" + profile_json_arr(e1))
+    return profile_json_obj(parts)
+
+# Serialize EngagementPreferences to a compact JSON object (declaration order).
+def engagement_preferences_to_json(EngagementPreferences v) -> str:
+    list[str] parts = []
+    if v.Phone.is_some():
+        auto u0 = v.Phone.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Phone\":" + profile_json_arr(e1))
+    if v.Email.is_some():
+        auto u2 = v.Email.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Email\":" + profile_json_arr(e3))
+    return profile_json_obj(parts)
+
+# Serialize EventTriggerCondition to a compact JSON object (declaration order).
+def event_trigger_condition_to_json(EventTriggerCondition v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.EventTriggerDimensions:
+        e0.append(event_trigger_dimension_to_json(x0))
+    parts.append("\"EventTriggerDimensions\":" + profile_json_arr(e0))
+    parts.append("\"LogicalOperator\":" + v.LogicalOperator.to_json())
+    return profile_json_obj(parts)
+
+# Serialize EventTriggerDimension to a compact JSON object (declaration order).
+def event_trigger_dimension_to_json(EventTriggerDimension v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ObjectAttributes:
+        e0.append(object_attribute_to_json(x0))
+    parts.append("\"ObjectAttributes\":" + profile_json_arr(e0))
+    return profile_json_obj(parts)
+
+# Serialize EventTriggerLimits to a compact JSON object (declaration order).
+def event_trigger_limits_to_json(EventTriggerLimits v) -> str:
+    list[str] parts = []
+    if v.EventExpiration.is_some():
+        auto u0 = v.EventExpiration.unwrap()
+        parts.append("\"EventExpiration\":" + str(u0))
+    if v.Periods.is_some():
+        auto u1 = v.Periods.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Periods\":" + profile_json_arr(e2))
+    return profile_json_obj(parts)
+
+# Serialize EventsConfig to a compact JSON object (declaration order).
+def events_config_to_json(EventsConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.EventParametersList:
+        e0.append(x0.to_json())
+    parts.append("\"EventParametersList\":" + profile_json_arr(e0))
+    return profile_json_obj(parts)
+
+# Serialize ExtraLengthValueProfileDimension to a compact JSON object (declaration order).
+def extra_length_value_profile_dimension_to_json(ExtraLengthValueProfileDimension v) -> str:
+    list[str] parts = []
+    parts.append("\"DimensionType\":" + v.DimensionType.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(profile_json_str(x0))
+    parts.append("\"Values\":" + profile_json_arr(e0))
+    return profile_json_obj(parts)
+
+# Serialize FieldSourceProfileIds to a compact JSON object (declaration order).
+def field_source_profile_ids_to_json(FieldSourceProfileIds v) -> str:
+    list[str] parts = []
+    if v.AccountNumber.is_some():
+        auto u0 = v.AccountNumber.unwrap()
+        parts.append("\"AccountNumber\":" + profile_json_str(u0))
+    if v.AdditionalInformation.is_some():
+        auto u1 = v.AdditionalInformation.unwrap()
+        parts.append("\"AdditionalInformation\":" + profile_json_str(u1))
+    if v.PartyType.is_some():
+        auto u2 = v.PartyType.unwrap()
+        parts.append("\"PartyType\":" + profile_json_str(u2))
+    if v.BusinessName.is_some():
+        auto u3 = v.BusinessName.unwrap()
+        parts.append("\"BusinessName\":" + profile_json_str(u3))
+    if v.FirstName.is_some():
+        auto u4 = v.FirstName.unwrap()
+        parts.append("\"FirstName\":" + profile_json_str(u4))
+    if v.MiddleName.is_some():
+        auto u5 = v.MiddleName.unwrap()
+        parts.append("\"MiddleName\":" + profile_json_str(u5))
+    if v.LastName.is_some():
+        auto u6 = v.LastName.unwrap()
+        parts.append("\"LastName\":" + profile_json_str(u6))
+    if v.BirthDate.is_some():
+        auto u7 = v.BirthDate.unwrap()
+        parts.append("\"BirthDate\":" + profile_json_str(u7))
+    if v.Gender.is_some():
+        auto u8 = v.Gender.unwrap()
+        parts.append("\"Gender\":" + profile_json_str(u8))
+    if v.PhoneNumber.is_some():
+        auto u9 = v.PhoneNumber.unwrap()
+        parts.append("\"PhoneNumber\":" + profile_json_str(u9))
+    if v.MobilePhoneNumber.is_some():
+        auto u10 = v.MobilePhoneNumber.unwrap()
+        parts.append("\"MobilePhoneNumber\":" + profile_json_str(u10))
+    if v.HomePhoneNumber.is_some():
+        auto u11 = v.HomePhoneNumber.unwrap()
+        parts.append("\"HomePhoneNumber\":" + profile_json_str(u11))
+    if v.BusinessPhoneNumber.is_some():
+        auto u12 = v.BusinessPhoneNumber.unwrap()
+        parts.append("\"BusinessPhoneNumber\":" + profile_json_str(u12))
+    if v.EmailAddress.is_some():
+        auto u13 = v.EmailAddress.unwrap()
+        parts.append("\"EmailAddress\":" + profile_json_str(u13))
+    if v.PersonalEmailAddress.is_some():
+        auto u14 = v.PersonalEmailAddress.unwrap()
+        parts.append("\"PersonalEmailAddress\":" + profile_json_str(u14))
+    if v.BusinessEmailAddress.is_some():
+        auto u15 = v.BusinessEmailAddress.unwrap()
+        parts.append("\"BusinessEmailAddress\":" + profile_json_str(u15))
+    if v.Address.is_some():
+        auto u16 = v.Address.unwrap()
+        parts.append("\"Address\":" + profile_json_str(u16))
+    if v.ShippingAddress.is_some():
+        auto u17 = v.ShippingAddress.unwrap()
+        parts.append("\"ShippingAddress\":" + profile_json_str(u17))
+    if v.MailingAddress.is_some():
+        auto u18 = v.MailingAddress.unwrap()
+        parts.append("\"MailingAddress\":" + profile_json_str(u18))
+    if v.BillingAddress.is_some():
+        auto u19 = v.BillingAddress.unwrap()
+        parts.append("\"BillingAddress\":" + profile_json_str(u19))
+    if v.Attributes.is_some():
+        auto u20 = v.Attributes.unwrap()
+        list[str] m21 = []
+        for k21 in sorted(u20.keys()):
+            m21.append(profile_json_str(k21) + ":" + profile_json_str(u20[k21]))
+        parts.append("\"Attributes\":" + profile_json_obj(m21))
+    if v.ProfileType.is_some():
+        auto u22 = v.ProfileType.unwrap()
+        parts.append("\"ProfileType\":" + profile_json_str(u22))
+    if v.EngagementPreferences.is_some():
+        auto u23 = v.EngagementPreferences.unwrap()
+        parts.append("\"EngagementPreferences\":" + profile_json_str(u23))
+    return profile_json_obj(parts)
+
+# Serialize Filter to a compact JSON object (declaration order).
+def filter_to_json(Filter v) -> str:
+    list[str] parts = []
+    parts.append("\"Include\":" + v.Include.to_json())
+    list[str] e0 = []
+    for x0 in v.Groups:
+        e0.append(filter_group_to_json(x0))
+    parts.append("\"Groups\":" + profile_json_arr(e0))
+    return profile_json_obj(parts)
+
+# Serialize FilterAttributeDimension to a compact JSON object (declaration order).
+def filter_attribute_dimension_to_json(FilterAttributeDimension v) -> str:
+    list[str] parts = []
+    parts.append("\"DimensionType\":" + v.DimensionType.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(profile_json_str(x0))
+    parts.append("\"Values\":" + profile_json_arr(e0))
+    return profile_json_obj(parts)
+
+# Serialize FilterDimension to a compact JSON object (declaration order).
+def filter_dimension_to_json(FilterDimension v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.Attributes.keys()):
+        m0.append(profile_json_str(k0) + ":" + filter_attribute_dimension_to_json(v.Attributes[k0]))
+    parts.append("\"Attributes\":" + profile_json_obj(m0))
+    return profile_json_obj(parts)
+
+# Serialize FilterGroup to a compact JSON object (declaration order).
+def filter_group_to_json(FilterGroup v) -> str:
+    list[str] parts = []
+    parts.append("\"Type\":" + v.Type.to_json())
+    list[str] e0 = []
+    for x0 in v.Dimensions:
+        e0.append(filter_dimension_to_json(x0))
+    parts.append("\"Dimensions\":" + profile_json_arr(e0))
+    return profile_json_obj(parts)
+
+# Serialize Group to a compact JSON object (declaration order).
+def group_to_json(Group v) -> str:
+    list[str] parts = []
+    if v.Dimensions.is_some():
+        auto u0 = v.Dimensions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(dimension_to_json(x1))
+        parts.append("\"Dimensions\":" + profile_json_arr(e1))
+    if v.SourceSegments.is_some():
+        auto u2 = v.SourceSegments.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"SourceSegments\":" + profile_json_arr(e3))
+    if v.SourceType.is_some():
+        auto u4 = v.SourceType.unwrap()
+        parts.append("\"SourceType\":" + u4.to_json())
+    if v.Type.is_some():
+        auto u5 = v.Type.unwrap()
+        parts.append("\"Type\":" + u5.to_json())
+    return profile_json_obj(parts)
+
+# Serialize MatchingRequest to a compact JSON object (declaration order).
+def matching_request_to_json(MatchingRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(v.Enabled)))
+    if v.JobSchedule.is_some():
+        auto u0 = v.JobSchedule.unwrap()
+        parts.append("\"JobSchedule\":" + u0.to_json())
+    if v.AutoMerging.is_some():
+        auto u1 = v.AutoMerging.unwrap()
+        parts.append("\"AutoMerging\":" + auto_merging_to_json(u1))
+    if v.ExportingConfig.is_some():
+        auto u2 = v.ExportingConfig.unwrap()
+        parts.append("\"ExportingConfig\":" + u2.to_json())
+    return profile_json_obj(parts)
+
+# Serialize MatchingRule to a compact JSON object (declaration order).
+def matching_rule_to_json(MatchingRule v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Rule:
+        e0.append(profile_json_str(x0))
+    parts.append("\"Rule\":" + profile_json_arr(e0))
+    return profile_json_obj(parts)
+
+# Serialize MetadataConfig to a compact JSON object (declaration order).
+def metadata_config_to_json(MetadataConfig v) -> str:
+    list[str] parts = []
+    if v.MetadataColumns.is_some():
+        auto u0 = v.MetadataColumns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(profile_json_str(x1))
+        parts.append("\"MetadataColumns\":" + profile_json_arr(e1))
+    return profile_json_obj(parts)
+
+# Serialize ObjectAttribute to a compact JSON object (declaration order).
+def object_attribute_to_json(ObjectAttribute v) -> str:
+    list[str] parts = []
+    if v.Source.is_some():
+        auto u0 = v.Source.unwrap()
+        parts.append("\"Source\":" + profile_json_str(u0))
+    if v.FieldName.is_some():
+        auto u1 = v.FieldName.unwrap()
+        parts.append("\"FieldName\":" + profile_json_str(u1))
+    parts.append("\"ComparisonOperator\":" + v.ComparisonOperator.to_json())
+    list[str] e2 = []
+    for x2 in v.Values:
+        e2.append(profile_json_str(x2))
+    parts.append("\"Values\":" + profile_json_arr(e2))
+    return profile_json_obj(parts)
+
+# Serialize ObjectFilter to a compact JSON object (declaration order).
+def object_filter_to_json(ObjectFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"KeyName\":" + profile_json_str(v.KeyName))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(profile_json_str(x0))
+    parts.append("\"Values\":" + profile_json_arr(e0))
+    return profile_json_obj(parts)
+
+# Serialize ObjectTypeKey to a compact JSON object (declaration order).
+def object_type_key_to_json(ObjectTypeKey v) -> str:
+    list[str] parts = []
+    if v.StandardIdentifiers.is_some():
+        auto u0 = v.StandardIdentifiers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"StandardIdentifiers\":" + profile_json_arr(e1))
+    if v.FieldNames.is_some():
+        auto u2 = v.FieldNames.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(profile_json_str(x3))
+        parts.append("\"FieldNames\":" + profile_json_arr(e3))
+    return profile_json_obj(parts)
+
+# Serialize ProfileAttributes to a compact JSON object (declaration order).
+def profile_attributes_to_json(ProfileAttributes v) -> str:
+    list[str] parts = []
+    if v.AccountNumber.is_some():
+        auto u0 = v.AccountNumber.unwrap()
+        parts.append("\"AccountNumber\":" + profile_dimension_to_json(u0))
+    if v.AdditionalInformation.is_some():
+        auto u1 = v.AdditionalInformation.unwrap()
+        parts.append("\"AdditionalInformation\":" + extra_length_value_profile_dimension_to_json(u1))
+    if v.FirstName.is_some():
+        auto u2 = v.FirstName.unwrap()
+        parts.append("\"FirstName\":" + profile_dimension_to_json(u2))
+    if v.LastName.is_some():
+        auto u3 = v.LastName.unwrap()
+        parts.append("\"LastName\":" + profile_dimension_to_json(u3))
+    if v.MiddleName.is_some():
+        auto u4 = v.MiddleName.unwrap()
+        parts.append("\"MiddleName\":" + profile_dimension_to_json(u4))
+    if v.GenderString.is_some():
+        auto u5 = v.GenderString.unwrap()
+        parts.append("\"GenderString\":" + profile_dimension_to_json(u5))
+    if v.PartyTypeString.is_some():
+        auto u6 = v.PartyTypeString.unwrap()
+        parts.append("\"PartyTypeString\":" + profile_dimension_to_json(u6))
+    if v.BirthDate.is_some():
+        auto u7 = v.BirthDate.unwrap()
+        parts.append("\"BirthDate\":" + date_dimension_to_json(u7))
+    if v.PhoneNumber.is_some():
+        auto u8 = v.PhoneNumber.unwrap()
+        parts.append("\"PhoneNumber\":" + profile_dimension_to_json(u8))
+    if v.BusinessName.is_some():
+        auto u9 = v.BusinessName.unwrap()
+        parts.append("\"BusinessName\":" + profile_dimension_to_json(u9))
+    if v.BusinessPhoneNumber.is_some():
+        auto u10 = v.BusinessPhoneNumber.unwrap()
+        parts.append("\"BusinessPhoneNumber\":" + profile_dimension_to_json(u10))
+    if v.HomePhoneNumber.is_some():
+        auto u11 = v.HomePhoneNumber.unwrap()
+        parts.append("\"HomePhoneNumber\":" + profile_dimension_to_json(u11))
+    if v.MobilePhoneNumber.is_some():
+        auto u12 = v.MobilePhoneNumber.unwrap()
+        parts.append("\"MobilePhoneNumber\":" + profile_dimension_to_json(u12))
+    if v.EmailAddress.is_some():
+        auto u13 = v.EmailAddress.unwrap()
+        parts.append("\"EmailAddress\":" + profile_dimension_to_json(u13))
+    if v.PersonalEmailAddress.is_some():
+        auto u14 = v.PersonalEmailAddress.unwrap()
+        parts.append("\"PersonalEmailAddress\":" + profile_dimension_to_json(u14))
+    if v.BusinessEmailAddress.is_some():
+        auto u15 = v.BusinessEmailAddress.unwrap()
+        parts.append("\"BusinessEmailAddress\":" + profile_dimension_to_json(u15))
+    if v.Address.is_some():
+        auto u16 = v.Address.unwrap()
+        parts.append("\"Address\":" + address_dimension_to_json(u16))
+    if v.ShippingAddress.is_some():
+        auto u17 = v.ShippingAddress.unwrap()
+        parts.append("\"ShippingAddress\":" + address_dimension_to_json(u17))
+    if v.MailingAddress.is_some():
+        auto u18 = v.MailingAddress.unwrap()
+        parts.append("\"MailingAddress\":" + address_dimension_to_json(u18))
+    if v.BillingAddress.is_some():
+        auto u19 = v.BillingAddress.unwrap()
+        parts.append("\"BillingAddress\":" + address_dimension_to_json(u19))
+    if v.Attributes.is_some():
+        auto u20 = v.Attributes.unwrap()
+        list[str] m21 = []
+        for k21 in sorted(u20.keys()):
+            m21.append(profile_json_str(k21) + ":" + attribute_dimension_to_json(u20[k21]))
+        parts.append("\"Attributes\":" + profile_json_obj(m21))
+    if v.ProfileType.is_some():
+        auto u22 = v.ProfileType.unwrap()
+        parts.append("\"ProfileType\":" + profile_type_dimension_to_json(u22))
+    return profile_json_obj(parts)
+
+# Serialize ProfileDimension to a compact JSON object (declaration order).
+def profile_dimension_to_json(ProfileDimension v) -> str:
+    list[str] parts = []
+    parts.append("\"DimensionType\":" + v.DimensionType.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(profile_json_str(x0))
+    parts.append("\"Values\":" + profile_json_arr(e0))
+    return profile_json_obj(parts)
+
+# Serialize ProfileTypeDimension to a compact JSON object (declaration order).
+def profile_type_dimension_to_json(ProfileTypeDimension v) -> str:
+    list[str] parts = []
+    parts.append("\"DimensionType\":" + v.DimensionType.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(x0.to_json())
+    parts.append("\"Values\":" + profile_json_arr(e0))
+    return profile_json_obj(parts)
+
+# Serialize RecommendationDiversityConfig to a compact JSON object (declaration order).
+def recommendation_diversity_config_to_json(RecommendationDiversityConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(v.Enabled)))
+    if v.Values.is_some():
+        auto u0 = v.Values.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(profile_json_str(k1) + ":" + str(u0[k1]))
+        parts.append("\"Values\":" + profile_json_obj(m1))
+    return profile_json_obj(parts)
+
+# Serialize RecommendationMetadata to a compact JSON object (declaration order).
+def recommendation_metadata_to_json(RecommendationMetadata v) -> str:
+    list[str] parts = []
+    if v.Columns.is_some():
+        auto u0 = v.Columns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(profile_json_str(x1))
+        parts.append("\"Columns\":" + profile_json_arr(e1))
+    return profile_json_obj(parts)
+
+# Serialize Recommender to a compact JSON object (declaration order).
+def recommender_to_json(Recommender v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + profile_json_str(v.Name))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(recommender_filter_to_json(x1))
+        parts.append("\"Filters\":" + profile_json_arr(e1))
+    if v.PromotionalFilters.is_some():
+        auto u2 = v.PromotionalFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(recommender_promotional_filter_to_json(x3))
+        parts.append("\"PromotionalFilters\":" + profile_json_arr(e3))
+    return profile_json_obj(parts)
+
+# Serialize RecommenderConfig to a compact JSON object (declaration order).
+def recommender_config_to_json(RecommenderConfig v) -> str:
+    list[str] parts = []
+    if v.EventsConfig.is_some():
+        auto u0 = v.EventsConfig.unwrap()
+        parts.append("\"EventsConfig\":" + events_config_to_json(u0))
+    if v.TrainingFrequency.is_some():
+        auto u1 = v.TrainingFrequency.unwrap()
+        parts.append("\"TrainingFrequency\":" + str(u1))
+    if v.InferenceConfig.is_some():
+        auto u2 = v.InferenceConfig.unwrap()
+        parts.append("\"InferenceConfig\":" + u2.to_json())
+    if v.IncludedColumns.is_some():
+        auto u3 = v.IncludedColumns.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            list[str] e5 = []
+            for x5 in u3[k4]:
+                e5.append(profile_json_str(x5))
+            m4.append(profile_json_str(k4) + ":" + profile_json_arr(e5))
+        parts.append("\"IncludedColumns\":" + profile_json_obj(m4))
+    if v.ExcludedColumns.is_some():
+        auto u6 = v.ExcludedColumns.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            list[str] e8 = []
+            for x8 in u6[k7]:
+                e8.append(profile_json_str(x8))
+            m7.append(profile_json_str(k7) + ":" + profile_json_arr(e8))
+        parts.append("\"ExcludedColumns\":" + profile_json_obj(m7))
+    if v.DiversityConfig.is_some():
+        auto u9 = v.DiversityConfig.unwrap()
+        parts.append("\"DiversityConfig\":" + diversity_config_to_json(u9))
+    return profile_json_obj(parts)
+
+# Serialize RecommenderFilter to a compact JSON object (declaration order).
+def recommender_filter_to_json(RecommenderFilter v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + profile_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(profile_json_str(k2) + ":" + profile_json_str(u1[k2]))
+        parts.append("\"Values\":" + profile_json_obj(m2))
+    return profile_json_obj(parts)
+
+# Serialize RecommenderPromotionalFilter to a compact JSON object (declaration order).
+def recommender_promotional_filter_to_json(RecommenderPromotionalFilter v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + profile_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(profile_json_str(k2) + ":" + profile_json_str(u1[k2]))
+        parts.append("\"Values\":" + profile_json_obj(m2))
+    if v.PromotionName.is_some():
+        auto u3 = v.PromotionName.unwrap()
+        parts.append("\"PromotionName\":" + profile_json_str(u3))
+    if v.PercentPromotedItems.is_some():
+        auto u4 = v.PercentPromotedItems.unwrap()
+        parts.append("\"PercentPromotedItems\":" + str(u4))
+    return profile_json_obj(parts)
+
+# Serialize RuleBasedMatchingRequest to a compact JSON object (declaration order).
+def rule_based_matching_request_to_json(RuleBasedMatchingRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(v.Enabled)))
+    if v.MatchingRules.is_some():
+        auto u0 = v.MatchingRules.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(matching_rule_to_json(x1))
+        parts.append("\"MatchingRules\":" + profile_json_arr(e1))
+    if v.MaxAllowedRuleLevelForMerging.is_some():
+        auto u2 = v.MaxAllowedRuleLevelForMerging.unwrap()
+        parts.append("\"MaxAllowedRuleLevelForMerging\":" + str(u2))
+    if v.MaxAllowedRuleLevelForMatching.is_some():
+        auto u3 = v.MaxAllowedRuleLevelForMatching.unwrap()
+        parts.append("\"MaxAllowedRuleLevelForMatching\":" + str(u3))
+    if v.AttributeTypesSelector.is_some():
+        auto u4 = v.AttributeTypesSelector.unwrap()
+        parts.append("\"AttributeTypesSelector\":" + attribute_types_selector_to_json(u4))
+    if v.ConflictResolution.is_some():
+        auto u5 = v.ConflictResolution.unwrap()
+        parts.append("\"ConflictResolution\":" + u5.to_json())
+    if v.ExportingConfig.is_some():
+        auto u6 = v.ExportingConfig.unwrap()
+        parts.append("\"ExportingConfig\":" + u6.to_json())
+    return profile_json_obj(parts)
+
+# Serialize SegmentGroup to a compact JSON object (declaration order).
+def segment_group_to_json(SegmentGroup v) -> str:
+    list[str] parts = []
+    if v.Groups.is_some():
+        auto u0 = v.Groups.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(group_to_json(x1))
+        parts.append("\"Groups\":" + profile_json_arr(e1))
+    if v.Include.is_some():
+        auto u2 = v.Include.unwrap()
+        parts.append("\"Include\":" + u2.to_json())
+    return profile_json_obj(parts)
+
+# Serialize SegmentGroupStructure to a compact JSON object (declaration order).
+def segment_group_structure_to_json(SegmentGroupStructure v) -> str:
+    list[str] parts = []
+    if v.Groups.is_some():
+        auto u0 = v.Groups.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(group_to_json(x1))
+        parts.append("\"Groups\":" + profile_json_arr(e1))
+    if v.Include.is_some():
+        auto u2 = v.Include.unwrap()
+        parts.append("\"Include\":" + u2.to_json())
+    return profile_json_obj(parts)
+
+# Serialize SegmentSort to a compact JSON object (declaration order).
+def segment_sort_to_json(SegmentSort v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Attributes:
+        e0.append(x0.to_json())
+    parts.append("\"Attributes\":" + profile_json_arr(e0))
+    return profile_json_obj(parts)
+
 # A bound Customer_Profiles client: credentials + region, threaded into every operation.
 struct Customer_ProfilesClient:
     core.Credentials creds
     str region
+
+    # AddProfileKey  POST /domains/{DomainName}/profiles/keys
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def add_profile_key(self, AddProfileKeyRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles/keys", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ProfileId\":" + profile_json_str(input.ProfileId))
+        parts.append("\"KeyName\":" + profile_json_str(input.KeyName))
+        list[str] e0 = []
+        for x0 in input.Values:
+            e0.append(profile_json_str(x0))
+        parts.append("\"Values\":" + profile_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
 
     # AssociateStreamForSegments  POST /domains/{DomainName}/segment-streams
     # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
@@ -3830,6 +4691,415 @@ struct Customer_ProfilesClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
 
+    # BatchGetCalculatedAttributeForProfile  POST /domains/{DomainName}/calculated-attributes/{CalculatedAttributeName}/batch-get-for-profiles
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def batch_get_calculated_attribute_for_profile(self, BatchGetCalculatedAttributeForProfileRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["CalculatedAttributeName"] = input.CalculatedAttributeName
+        labels["DomainName"] = input.DomainName
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/calculated-attributes/{CalculatedAttributeName}/batch-get-for-profiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.ProfileIds:
+            e0.append(profile_json_str(x0))
+        parts.append("\"ProfileIds\":" + profile_json_arr(e0))
+        if input.ConditionOverrides.is_some():
+            auto u1 = input.ConditionOverrides.unwrap()
+            parts.append("\"ConditionOverrides\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
+    # BatchGetProfile  POST /domains/{DomainName}/batch-get-profiles
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def batch_get_profile(self, BatchGetProfileRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/batch-get-profiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.ProfileIds:
+            e0.append(profile_json_str(x0))
+        parts.append("\"ProfileIds\":" + profile_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
+    # BatchPutProfileObject  PUT /domains/{DomainName}/profiles/objects/batch-put-profile-object
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def batch_put_profile_object(self, BatchPutProfileObjectRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/profiles/objects/batch-put-profile-object", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ObjectTypeName\":" + profile_json_str(input.ObjectTypeName))
+        list[str] e0 = []
+        for x0 in input.Items:
+            e0.append(x0.to_json())
+        parts.append("\"Items\":" + profile_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
+    # CreateCalculatedAttributeDefinition  POST /domains/{DomainName}/calculated-attributes/{CalculatedAttributeName}
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def create_calculated_attribute_definition(self, CreateCalculatedAttributeDefinitionRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        labels["CalculatedAttributeName"] = input.CalculatedAttributeName
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/calculated-attributes/{CalculatedAttributeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.DisplayName.is_some():
+            auto u0 = input.DisplayName.unwrap()
+            parts.append("\"DisplayName\":" + profile_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + profile_json_str(u1))
+        parts.append("\"AttributeDetails\":" + attribute_details_to_json(input.AttributeDetails))
+        if input.Conditions.is_some():
+            auto u2 = input.Conditions.unwrap()
+            parts.append("\"Conditions\":" + u2.to_json())
+        if input.Filter.is_some():
+            auto u3 = input.Filter.unwrap()
+            parts.append("\"Filter\":" + filter_to_json(u3))
+        parts.append("\"Statistic\":" + input.Statistic.to_json())
+        if input.UseHistoricalData.is_some():
+            auto u4 = input.UseHistoricalData.unwrap()
+            parts.append("\"UseHistoricalData\":" + json.dumps(JsonValue.Bool(u4)))
+        if input.Tags.is_some():
+            auto u5 = input.Tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(profile_json_str(k6) + ":" + profile_json_str(u5[k6]))
+            parts.append("\"Tags\":" + profile_json_obj(m6))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
+    # CreateDomain  POST /domains/{DomainName}
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def create_domain(self, CreateDomainRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"DefaultExpirationDays\":" + str(input.DefaultExpirationDays))
+        if input.DefaultEncryptionKey.is_some():
+            auto u0 = input.DefaultEncryptionKey.unwrap()
+            parts.append("\"DefaultEncryptionKey\":" + profile_json_str(u0))
+        if input.DeadLetterQueueUrl.is_some():
+            auto u1 = input.DeadLetterQueueUrl.unwrap()
+            parts.append("\"DeadLetterQueueUrl\":" + profile_json_str(u1))
+        if input.Matching.is_some():
+            auto u2 = input.Matching.unwrap()
+            parts.append("\"Matching\":" + matching_request_to_json(u2))
+        if input.RuleBasedMatching.is_some():
+            auto u3 = input.RuleBasedMatching.unwrap()
+            parts.append("\"RuleBasedMatching\":" + rule_based_matching_request_to_json(u3))
+        if input.DataStore.is_some():
+            auto u4 = input.DataStore.unwrap()
+            parts.append("\"DataStore\":" + u4.to_json())
+        if input.Tags.is_some():
+            auto u5 = input.Tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(profile_json_str(k6) + ":" + profile_json_str(u5[k6]))
+            parts.append("\"Tags\":" + profile_json_obj(m6))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
+    # CreateDomainLayout  POST /domains/{DomainName}/layouts/{LayoutDefinitionName}
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def create_domain_layout(self, CreateDomainLayoutRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        labels["LayoutDefinitionName"] = input.LayoutDefinitionName
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/layouts/{LayoutDefinitionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Description\":" + profile_json_str(input.Description))
+        parts.append("\"DisplayName\":" + profile_json_str(input.DisplayName))
+        if input.IsDefault.is_some():
+            auto u0 = input.IsDefault.unwrap()
+            parts.append("\"IsDefault\":" + json.dumps(JsonValue.Bool(u0)))
+        parts.append("\"LayoutType\":" + profile_json_str(input.LayoutType))
+        parts.append("\"Layout\":" + profile_json_str(input.Layout))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(profile_json_str(k2) + ":" + profile_json_str(u1[k2]))
+            parts.append("\"Tags\":" + profile_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
+    # CreateEventStream  POST /domains/{DomainName}/event-streams/{EventStreamName}
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def create_event_stream(self, CreateEventStreamRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        labels["EventStreamName"] = input.EventStreamName
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/event-streams/{EventStreamName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Uri\":" + profile_json_str(input.Uri))
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(profile_json_str(k1) + ":" + profile_json_str(u0[k1]))
+            parts.append("\"Tags\":" + profile_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
+    # CreateEventTrigger  POST /domains/{DomainName}/event-triggers/{EventTriggerName}
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def create_event_trigger(self, CreateEventTriggerRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        labels["EventTriggerName"] = input.EventTriggerName
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/event-triggers/{EventTriggerName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ObjectTypeName\":" + profile_json_str(input.ObjectTypeName))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + profile_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.EventTriggerConditions:
+            e1.append(event_trigger_condition_to_json(x1))
+        parts.append("\"EventTriggerConditions\":" + profile_json_arr(e1))
+        if input.SegmentFilter.is_some():
+            auto u2 = input.SegmentFilter.unwrap()
+            parts.append("\"SegmentFilter\":" + profile_json_str(u2))
+        if input.EventTriggerLimits.is_some():
+            auto u3 = input.EventTriggerLimits.unwrap()
+            parts.append("\"EventTriggerLimits\":" + event_trigger_limits_to_json(u3))
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(profile_json_str(k5) + ":" + profile_json_str(u4[k5]))
+            parts.append("\"Tags\":" + profile_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
+    # CreateProfile  POST /domains/{DomainName}/profiles
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def create_profile(self, CreateProfileRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AccountNumber.is_some():
+            auto u0 = input.AccountNumber.unwrap()
+            parts.append("\"AccountNumber\":" + profile_json_str(u0))
+        if input.AdditionalInformation.is_some():
+            auto u1 = input.AdditionalInformation.unwrap()
+            parts.append("\"AdditionalInformation\":" + profile_json_str(u1))
+        if input.PartyType.is_some():
+            auto u2 = input.PartyType.unwrap()
+            parts.append("\"PartyType\":" + u2.to_json())
+        if input.BusinessName.is_some():
+            auto u3 = input.BusinessName.unwrap()
+            parts.append("\"BusinessName\":" + profile_json_str(u3))
+        if input.FirstName.is_some():
+            auto u4 = input.FirstName.unwrap()
+            parts.append("\"FirstName\":" + profile_json_str(u4))
+        if input.MiddleName.is_some():
+            auto u5 = input.MiddleName.unwrap()
+            parts.append("\"MiddleName\":" + profile_json_str(u5))
+        if input.LastName.is_some():
+            auto u6 = input.LastName.unwrap()
+            parts.append("\"LastName\":" + profile_json_str(u6))
+        if input.BirthDate.is_some():
+            auto u7 = input.BirthDate.unwrap()
+            parts.append("\"BirthDate\":" + profile_json_str(u7))
+        if input.Gender.is_some():
+            auto u8 = input.Gender.unwrap()
+            parts.append("\"Gender\":" + u8.to_json())
+        if input.PhoneNumber.is_some():
+            auto u9 = input.PhoneNumber.unwrap()
+            parts.append("\"PhoneNumber\":" + profile_json_str(u9))
+        if input.MobilePhoneNumber.is_some():
+            auto u10 = input.MobilePhoneNumber.unwrap()
+            parts.append("\"MobilePhoneNumber\":" + profile_json_str(u10))
+        if input.HomePhoneNumber.is_some():
+            auto u11 = input.HomePhoneNumber.unwrap()
+            parts.append("\"HomePhoneNumber\":" + profile_json_str(u11))
+        if input.BusinessPhoneNumber.is_some():
+            auto u12 = input.BusinessPhoneNumber.unwrap()
+            parts.append("\"BusinessPhoneNumber\":" + profile_json_str(u12))
+        if input.EmailAddress.is_some():
+            auto u13 = input.EmailAddress.unwrap()
+            parts.append("\"EmailAddress\":" + profile_json_str(u13))
+        if input.PersonalEmailAddress.is_some():
+            auto u14 = input.PersonalEmailAddress.unwrap()
+            parts.append("\"PersonalEmailAddress\":" + profile_json_str(u14))
+        if input.BusinessEmailAddress.is_some():
+            auto u15 = input.BusinessEmailAddress.unwrap()
+            parts.append("\"BusinessEmailAddress\":" + profile_json_str(u15))
+        if input.Address.is_some():
+            auto u16 = input.Address.unwrap()
+            parts.append("\"Address\":" + u16.to_json())
+        if input.ShippingAddress.is_some():
+            auto u17 = input.ShippingAddress.unwrap()
+            parts.append("\"ShippingAddress\":" + u17.to_json())
+        if input.MailingAddress.is_some():
+            auto u18 = input.MailingAddress.unwrap()
+            parts.append("\"MailingAddress\":" + u18.to_json())
+        if input.BillingAddress.is_some():
+            auto u19 = input.BillingAddress.unwrap()
+            parts.append("\"BillingAddress\":" + u19.to_json())
+        if input.Attributes.is_some():
+            auto u20 = input.Attributes.unwrap()
+            list[str] m21 = []
+            for k21 in sorted(u20.keys()):
+                m21.append(profile_json_str(k21) + ":" + profile_json_str(u20[k21]))
+            parts.append("\"Attributes\":" + profile_json_obj(m21))
+        if input.PartyTypeString.is_some():
+            auto u22 = input.PartyTypeString.unwrap()
+            parts.append("\"PartyTypeString\":" + profile_json_str(u22))
+        if input.GenderString.is_some():
+            auto u23 = input.GenderString.unwrap()
+            parts.append("\"GenderString\":" + profile_json_str(u23))
+        if input.ProfileType.is_some():
+            auto u24 = input.ProfileType.unwrap()
+            parts.append("\"ProfileType\":" + u24.to_json())
+        if input.EngagementPreferences.is_some():
+            auto u25 = input.EngagementPreferences.unwrap()
+            parts.append("\"EngagementPreferences\":" + engagement_preferences_to_json(u25))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
+    # CreateRecommender  POST /domains/{DomainName}/recommenders/{RecommenderName}
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def create_recommender(self, CreateRecommenderRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        labels["RecommenderName"] = input.RecommenderName
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/recommenders/{RecommenderName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"RecommenderRecipeName\":" + input.RecommenderRecipeName.to_json())
+        if input.RecommenderConfig.is_some():
+            auto u0 = input.RecommenderConfig.unwrap()
+            parts.append("\"RecommenderConfig\":" + recommender_config_to_json(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + profile_json_str(u1))
+        if input.RecommenderSchemaName.is_some():
+            auto u2 = input.RecommenderSchemaName.unwrap()
+            parts.append("\"RecommenderSchemaName\":" + profile_json_str(u2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(profile_json_str(k4) + ":" + profile_json_str(u3[k4]))
+            parts.append("\"Tags\":" + profile_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
+    # CreateRecommenderFilter  POST /domains/{DomainName}/recommender-filters/{RecommenderFilterName}
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def create_recommender_filter(self, CreateRecommenderFilterRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        labels["RecommenderFilterName"] = input.RecommenderFilterName
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/recommender-filters/{RecommenderFilterName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"RecommenderFilterExpression\":" + profile_json_str(input.RecommenderFilterExpression))
+        if input.RecommenderSchemaName.is_some():
+            auto u0 = input.RecommenderSchemaName.unwrap()
+            parts.append("\"RecommenderSchemaName\":" + profile_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + profile_json_str(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(profile_json_str(k3) + ":" + profile_json_str(u2[k3]))
+            parts.append("\"Tags\":" + profile_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
+    # CreateRecommenderSchema  POST /domains/{DomainName}/recommender-schemas/{RecommenderSchemaName}
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def create_recommender_schema(self, CreateRecommenderSchemaRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        labels["RecommenderSchemaName"] = input.RecommenderSchemaName
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/recommender-schemas/{RecommenderSchemaName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Fields.keys()):
+            list[str] e1 = []
+            for x1 in input.Fields[k0]:
+                e1.append(x1.to_json())
+            m0.append(profile_json_str(k0) + ":" + profile_json_arr(e1))
+        parts.append("\"Fields\":" + profile_json_obj(m0))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(profile_json_str(k3) + ":" + profile_json_str(u2[k3]))
+            parts.append("\"Tags\":" + profile_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
+    # CreateSegmentDefinition  POST /domains/{DomainName}/segment-definitions/{SegmentDefinitionName}
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def create_segment_definition(self, CreateSegmentDefinitionRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        labels["SegmentDefinitionName"] = input.SegmentDefinitionName
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"DisplayName\":" + profile_json_str(input.DisplayName))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + profile_json_str(u0))
+        if input.SegmentGroups.is_some():
+            auto u1 = input.SegmentGroups.unwrap()
+            parts.append("\"SegmentGroups\":" + segment_group_to_json(u1))
+        if input.SegmentSqlQuery.is_some():
+            auto u2 = input.SegmentSqlQuery.unwrap()
+            parts.append("\"SegmentSqlQuery\":" + profile_json_str(u2))
+        if input.SegmentSort.is_some():
+            auto u3 = input.SegmentSort.unwrap()
+            parts.append("\"SegmentSort\":" + segment_sort_to_json(u3))
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(profile_json_str(k5) + ":" + profile_json_str(u4[k5]))
+            parts.append("\"Tags\":" + profile_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
+    # CreateSegmentEstimate  POST /domains/{DomainName}/segment-estimates
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def create_segment_estimate(self, CreateSegmentEstimateRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/segment-estimates", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.SegmentQuery.is_some():
+            auto u0 = input.SegmentQuery.unwrap()
+            parts.append("\"SegmentQuery\":" + segment_group_structure_to_json(u0))
+        if input.SegmentSqlQuery.is_some():
+            auto u1 = input.SegmentSqlQuery.unwrap()
+            parts.append("\"SegmentSqlQuery\":" + profile_json_str(u1))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
     # CreateSegmentSnapshot  POST /domains/{DomainName}/segments/{SegmentDefinitionName}/snapshots
     # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def create_segment_snapshot(self, CreateSegmentSnapshotRequest input) -> str:
@@ -3840,6 +5110,26 @@ struct Customer_ProfilesClient:
         auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/segments/{SegmentDefinitionName}/snapshots", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateSegmentSnapshotDocument(DataFormat=input.DataFormat, EncryptionKey=input.EncryptionKey, RoleArn=input.RoleArn, DestinationUri=input.DestinationUri)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
+    # CreateUploadJob  POST /domains/{DomainName}/upload-jobs
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def create_upload_job(self, CreateUploadJobRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/upload-jobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"DisplayName\":" + profile_json_str(input.DisplayName))
+        list[str] m0 = []
+        for k0 in sorted(input.Fields.keys()):
+            m0.append(profile_json_str(k0) + ":" + input.Fields[k0].to_json())
+        parts.append("\"Fields\":" + profile_json_obj(m0))
+        parts.append("\"UniqueKey\":" + profile_json_str(input.UniqueKey))
+        if input.DataExpiry.is_some():
+            auto u1 = input.DataExpiry.unwrap()
+            parts.append("\"DataExpiry\":" + str(u1))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
 
     # DeleteCalculatedAttributeDefinition  DELETE /domains/{DomainName}/calculated-attributes/{CalculatedAttributeName}
@@ -3923,6 +5213,23 @@ struct Customer_ProfilesClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
 
+    # DeleteProfileKey  POST /domains/{DomainName}/profiles/keys/delete
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def delete_profile_key(self, DeleteProfileKeyRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles/keys/delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ProfileId\":" + profile_json_str(input.ProfileId))
+        parts.append("\"KeyName\":" + profile_json_str(input.KeyName))
+        list[str] e0 = []
+        for x0 in input.Values:
+            e0.append(profile_json_str(x0))
+        parts.append("\"Values\":" + profile_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
     # DeleteProfileObject  POST /domains/{DomainName}/profiles/objects/delete
     # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def delete_profile_object(self, DeleteProfileObjectRequest input) -> str:
@@ -4004,6 +5311,21 @@ struct Customer_ProfilesClient:
         auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/workflows/{WorkflowId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
+    # DetectProfileObjectType  POST /domains/{DomainName}/detect/object-types
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def detect_profile_object_type(self, DetectProfileObjectTypeRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/detect/object-types", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Objects:
+            e0.append(profile_json_str(x0))
+        parts.append("\"Objects\":" + profile_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
     # DisassociateStreamForSegments  DELETE /domains/{DomainName}/segment-streams
     # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def disassociate_stream_for_segments(self, DisassociateStreamForSegmentsRequest input) -> str:
@@ -4012,6 +5334,22 @@ struct Customer_ProfilesClient:
         labels["DomainName"] = input.DomainName
         auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/segment-streams", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
+
+    # GetAutoMergingPreview  POST /domains/{DomainName}/identity-resolution-jobs/auto-merging-preview
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def get_auto_merging_preview(self, GetAutoMergingPreviewRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/identity-resolution-jobs/auto-merging-preview", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Consolidation\":" + consolidation_to_json(input.Consolidation))
+        parts.append("\"ConflictResolution\":" + input.ConflictResolution.to_json())
+        if input.MinAllowedConfidenceScoreForMerging.is_some():
+            auto u0 = input.MinAllowedConfidenceScoreForMerging.unwrap()
+            parts.append("\"MinAllowedConfidenceScoreForMerging\":" + str(u0))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
 
     # GetCalculatedAttributeDefinition  GET /domains/{DomainName}/calculated-attributes/{CalculatedAttributeName}
     # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
@@ -4159,6 +5497,52 @@ struct Customer_ProfilesClient:
         auto b = binding.HttpBinding(method="GET", path_template="/templates/{TemplateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
+    # GetProfileRecommendations  POST /domains/{DomainName}/profiles/{ProfileId}/recommendations
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def get_profile_recommendations(self, GetProfileRecommendationsRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        labels["ProfileId"] = input.ProfileId
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles/{ProfileId}/recommendations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"RecommenderName\":" + profile_json_str(input.RecommenderName))
+        if input.Context.is_some():
+            auto u0 = input.Context.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(profile_json_str(k1) + ":" + profile_json_str(u0[k1]))
+            parts.append("\"Context\":" + profile_json_obj(m1))
+        if input.RecommenderFilters.is_some():
+            auto u2 = input.RecommenderFilters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(recommender_filter_to_json(x3))
+            parts.append("\"RecommenderFilters\":" + profile_json_arr(e3))
+        if input.RecommenderPromotionalFilters.is_some():
+            auto u4 = input.RecommenderPromotionalFilters.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(recommender_promotional_filter_to_json(x5))
+            parts.append("\"RecommenderPromotionalFilters\":" + profile_json_arr(e5))
+        if input.CandidateIds.is_some():
+            auto u6 = input.CandidateIds.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(profile_json_str(x7))
+            parts.append("\"CandidateIds\":" + profile_json_arr(e7))
+        if input.MaxResults.is_some():
+            auto u8 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u8))
+        if input.MetadataConfig.is_some():
+            auto u9 = input.MetadataConfig.unwrap()
+            parts.append("\"MetadataConfig\":" + metadata_config_to_json(u9))
+        if input.DiversityConfig.is_some():
+            auto u10 = input.DiversityConfig.unwrap()
+            parts.append("\"DiversityConfig\":" + recommendation_diversity_config_to_json(u10))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
     # GetRecommender  GET /domains/{DomainName}/recommenders/{RecommenderName}
     # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def get_recommender(self, GetRecommenderRequest input) -> str:
@@ -4211,6 +5595,22 @@ struct Customer_ProfilesClient:
         labels["EstimateId"] = input.EstimateId
         auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/segment-estimates/{EstimateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
+
+    # GetSegmentMembership  POST /domains/{DomainName}/segments/{SegmentDefinitionName}/membership
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def get_segment_membership(self, GetSegmentMembershipRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        labels["SegmentDefinitionName"] = input.SegmentDefinitionName
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/segments/{SegmentDefinitionName}/membership", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.ProfileIds:
+            e0.append(profile_json_str(x0))
+        parts.append("\"ProfileIds\":" + profile_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
 
     # GetSegmentSnapshot  GET /domains/{DomainName}/segments/{SegmentDefinitionName}/snapshots/{SnapshotId}
     # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
@@ -4497,6 +5897,27 @@ struct Customer_ProfilesClient:
         auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/object-types", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
+    # ListProfileObjects  POST /domains/{DomainName}/profiles/objects
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def list_profile_objects(self, ListProfileObjectsRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["next-token"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["max-results"] = str(input.MaxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles/objects", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ObjectTypeName\":" + profile_json_str(input.ObjectTypeName))
+        parts.append("\"ProfileId\":" + profile_json_str(input.ProfileId))
+        if input.ObjectFilter.is_some():
+            auto u0 = input.ObjectFilter.unwrap()
+            parts.append("\"ObjectFilter\":" + object_filter_to_json(u0))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
     # ListRecommenderFilters  GET /domains/{DomainName}/recommender-filters
     # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def list_recommender_filters(self, ListRecommenderFiltersRequest input) -> str:
@@ -4633,6 +6054,53 @@ struct Customer_ProfilesClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
 
+    # MergeProfiles  POST /domains/{DomainName}/profiles/objects/merge
+    # errors: BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def merge_profiles(self, MergeProfilesRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles/objects/merge", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"MainProfileId\":" + profile_json_str(input.MainProfileId))
+        list[str] e0 = []
+        for x0 in input.ProfileIdsToBeMerged:
+            e0.append(profile_json_str(x0))
+        parts.append("\"ProfileIdsToBeMerged\":" + profile_json_arr(e0))
+        if input.FieldSourceProfileIds.is_some():
+            auto u1 = input.FieldSourceProfileIds.unwrap()
+            parts.append("\"FieldSourceProfileIds\":" + field_source_profile_ids_to_json(u1))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
+    # PutDomainObjectType  PUT /domains/{DomainName}/domain-object-types/{ObjectTypeName}
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def put_domain_object_type(self, PutDomainObjectTypeRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        labels["ObjectTypeName"] = input.ObjectTypeName
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/domain-object-types/{ObjectTypeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + profile_json_str(u0))
+        if input.EncryptionKey.is_some():
+            auto u1 = input.EncryptionKey.unwrap()
+            parts.append("\"EncryptionKey\":" + profile_json_str(u1))
+        list[str] m2 = []
+        for k2 in sorted(input.Fields.keys()):
+            m2.append(profile_json_str(k2) + ":" + input.Fields[k2].to_json())
+        parts.append("\"Fields\":" + profile_json_obj(m2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(profile_json_str(k4) + ":" + profile_json_str(u3[k4]))
+            parts.append("\"Tags\":" + profile_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
     # PutProfileObject  PUT /domains/{DomainName}/profiles/objects
     # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def put_profile_object(self, PutProfileObjectRequest input) -> str:
@@ -4642,6 +6110,61 @@ struct Customer_ProfilesClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/profiles/objects", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutProfileObjectDocument(ObjectTypeName=input.ObjectTypeName, Object=input.Object)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
+    # PutProfileObjectType  PUT /domains/{DomainName}/object-types/{ObjectTypeName}
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def put_profile_object_type(self, PutProfileObjectTypeRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        labels["ObjectTypeName"] = input.ObjectTypeName
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/object-types/{ObjectTypeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Description\":" + profile_json_str(input.Description))
+        if input.TemplateId.is_some():
+            auto u0 = input.TemplateId.unwrap()
+            parts.append("\"TemplateId\":" + profile_json_str(u0))
+        if input.ExpirationDays.is_some():
+            auto u1 = input.ExpirationDays.unwrap()
+            parts.append("\"ExpirationDays\":" + str(u1))
+        if input.EncryptionKey.is_some():
+            auto u2 = input.EncryptionKey.unwrap()
+            parts.append("\"EncryptionKey\":" + profile_json_str(u2))
+        if input.AllowProfileCreation.is_some():
+            auto u3 = input.AllowProfileCreation.unwrap()
+            parts.append("\"AllowProfileCreation\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.SourceLastUpdatedTimestampFormat.is_some():
+            auto u4 = input.SourceLastUpdatedTimestampFormat.unwrap()
+            parts.append("\"SourceLastUpdatedTimestampFormat\":" + profile_json_str(u4))
+        if input.MaxProfileObjectCount.is_some():
+            auto u5 = input.MaxProfileObjectCount.unwrap()
+            parts.append("\"MaxProfileObjectCount\":" + str(u5))
+        if input.SourcePriority.is_some():
+            auto u6 = input.SourcePriority.unwrap()
+            parts.append("\"SourcePriority\":" + str(u6))
+        if input.Fields.is_some():
+            auto u7 = input.Fields.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(profile_json_str(k8) + ":" + u7[k8].to_json())
+            parts.append("\"Fields\":" + profile_json_obj(m8))
+        if input.Keys.is_some():
+            auto u9 = input.Keys.unwrap()
+            list[str] m10 = []
+            for k10 in sorted(u9.keys()):
+                list[str] e11 = []
+                for x11 in u9[k10]:
+                    e11.append(object_type_key_to_json(x11))
+                m10.append(profile_json_str(k10) + ":" + profile_json_arr(e11))
+            parts.append("\"Keys\":" + profile_json_obj(m10))
+        if input.Tags.is_some():
+            auto u12 = input.Tags.unwrap()
+            list[str] m13 = []
+            for k13 in sorted(u12.keys()):
+                m13.append(profile_json_str(k13) + ":" + profile_json_str(u12[k13]))
+            parts.append("\"Tags\":" + profile_json_obj(m13))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
 
     # PutSegmentSubscription  PUT /domains/{DomainName}/segment-definitions/{SegmentDefinitionName}/subscriptions
@@ -4654,6 +6177,74 @@ struct Customer_ProfilesClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}/subscriptions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutSegmentSubscriptionDocument(ScheduleConfiguration=input.ScheduleConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
+    # SearchProfiles  POST /domains/{DomainName}/profiles/search
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def search_profiles(self, SearchProfilesRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["next-token"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["max-results"] = str(input.MaxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles/search", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"KeyName\":" + profile_json_str(input.KeyName))
+        list[str] e0 = []
+        for x0 in input.Values:
+            e0.append(profile_json_str(x0))
+        parts.append("\"Values\":" + profile_json_arr(e0))
+        if input.AdditionalSearchKeys.is_some():
+            auto u1 = input.AdditionalSearchKeys.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(additional_search_key_to_json(x2))
+            parts.append("\"AdditionalSearchKeys\":" + profile_json_arr(e2))
+        if input.LogicalOperator.is_some():
+            auto u3 = input.LogicalOperator.unwrap()
+            parts.append("\"LogicalOperator\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
+    # SearchRecommendations  POST /domains/{DomainName}/recommendations
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def search_recommendations(self, SearchRecommendationsRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/recommendations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"KeyName\":" + profile_json_str(input.KeyName))
+        list[str] e0 = []
+        for x0 in input.KeyValues:
+            e0.append(profile_json_str(x0))
+        parts.append("\"KeyValues\":" + profile_json_arr(e0))
+        parts.append("\"Recommender\":" + recommender_to_json(input.Recommender))
+        if input.CandidateIds.is_some():
+            auto u1 = input.CandidateIds.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(profile_json_str(x2))
+            parts.append("\"CandidateIds\":" + profile_json_arr(e2))
+        if input.Context.is_some():
+            auto u3 = input.Context.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(profile_json_str(k4) + ":" + profile_json_str(u3[k4]))
+            parts.append("\"Context\":" + profile_json_obj(m4))
+        if input.Diversity.is_some():
+            auto u5 = input.Diversity.unwrap()
+            parts.append("\"Diversity\":" + recommendation_diversity_config_to_json(u5))
+        if input.Metadata.is_some():
+            auto u6 = input.Metadata.unwrap()
+            parts.append("\"Metadata\":" + recommendation_metadata_to_json(u6))
+        if input.MaxRecommendations.is_some():
+            auto u7 = input.MaxRecommendations.unwrap()
+            parts.append("\"MaxRecommendations\":" + str(u7))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
 
     # StartRecommender  PUT /domains/{DomainName}/recommenders/{RecommenderName}/start
@@ -4696,6 +6287,21 @@ struct Customer_ProfilesClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/upload-jobs/{JobId}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
+    # TagResource  POST /tags/{resourceArn}
+    # errors: BadRequestException, InternalServerException, ResourceNotFoundException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(profile_json_str(k0) + ":" + profile_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + profile_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
     # UpdateCalculatedAttributeDefinition  PUT /domains/{DomainName}/calculated-attributes/{CalculatedAttributeName}
     # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def update_calculated_attribute_definition(self, UpdateCalculatedAttributeDefinitionRequest input) -> str:
@@ -4708,6 +6314,41 @@ struct Customer_ProfilesClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
 
+    # UpdateDomain  PUT /domains/{DomainName}
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def update_domain(self, UpdateDomainRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.DefaultExpirationDays.is_some():
+            auto u0 = input.DefaultExpirationDays.unwrap()
+            parts.append("\"DefaultExpirationDays\":" + str(u0))
+        if input.DefaultEncryptionKey.is_some():
+            auto u1 = input.DefaultEncryptionKey.unwrap()
+            parts.append("\"DefaultEncryptionKey\":" + profile_json_str(u1))
+        if input.DeadLetterQueueUrl.is_some():
+            auto u2 = input.DeadLetterQueueUrl.unwrap()
+            parts.append("\"DeadLetterQueueUrl\":" + profile_json_str(u2))
+        if input.Matching.is_some():
+            auto u3 = input.Matching.unwrap()
+            parts.append("\"Matching\":" + matching_request_to_json(u3))
+        if input.RuleBasedMatching.is_some():
+            auto u4 = input.RuleBasedMatching.unwrap()
+            parts.append("\"RuleBasedMatching\":" + rule_based_matching_request_to_json(u4))
+        if input.DataStore.is_some():
+            auto u5 = input.DataStore.unwrap()
+            parts.append("\"DataStore\":" + u5.to_json())
+        if input.Tags.is_some():
+            auto u6 = input.Tags.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(profile_json_str(k7) + ":" + profile_json_str(u6[k7]))
+            parts.append("\"Tags\":" + profile_json_obj(m7))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
     # UpdateDomainLayout  PUT /domains/{DomainName}/layouts/{LayoutDefinitionName}
     # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def update_domain_layout(self, UpdateDomainLayoutRequest input) -> str:
@@ -4718,6 +6359,147 @@ struct Customer_ProfilesClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/layouts/{LayoutDefinitionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDomainLayoutDocument(Description=input.Description, DisplayName=input.DisplayName, IsDefault=input.IsDefault, LayoutType=input.LayoutType, Layout=input.Layout)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
+    # UpdateEventTrigger  PUT /domains/{DomainName}/event-triggers/{EventTriggerName}
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def update_event_trigger(self, UpdateEventTriggerRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        labels["EventTriggerName"] = input.EventTriggerName
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/event-triggers/{EventTriggerName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ObjectTypeName.is_some():
+            auto u0 = input.ObjectTypeName.unwrap()
+            parts.append("\"ObjectTypeName\":" + profile_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + profile_json_str(u1))
+        if input.EventTriggerConditions.is_some():
+            auto u2 = input.EventTriggerConditions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(event_trigger_condition_to_json(x3))
+            parts.append("\"EventTriggerConditions\":" + profile_json_arr(e3))
+        if input.SegmentFilter.is_some():
+            auto u4 = input.SegmentFilter.unwrap()
+            parts.append("\"SegmentFilter\":" + profile_json_str(u4))
+        if input.EventTriggerLimits.is_some():
+            auto u5 = input.EventTriggerLimits.unwrap()
+            parts.append("\"EventTriggerLimits\":" + event_trigger_limits_to_json(u5))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
+    # UpdateProfile  PUT /domains/{DomainName}/profiles
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def update_profile(self, UpdateProfileRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/profiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ProfileId\":" + profile_json_str(input.ProfileId))
+        if input.AdditionalInformation.is_some():
+            auto u0 = input.AdditionalInformation.unwrap()
+            parts.append("\"AdditionalInformation\":" + profile_json_str(u0))
+        if input.AccountNumber.is_some():
+            auto u1 = input.AccountNumber.unwrap()
+            parts.append("\"AccountNumber\":" + profile_json_str(u1))
+        if input.PartyType.is_some():
+            auto u2 = input.PartyType.unwrap()
+            parts.append("\"PartyType\":" + u2.to_json())
+        if input.BusinessName.is_some():
+            auto u3 = input.BusinessName.unwrap()
+            parts.append("\"BusinessName\":" + profile_json_str(u3))
+        if input.FirstName.is_some():
+            auto u4 = input.FirstName.unwrap()
+            parts.append("\"FirstName\":" + profile_json_str(u4))
+        if input.MiddleName.is_some():
+            auto u5 = input.MiddleName.unwrap()
+            parts.append("\"MiddleName\":" + profile_json_str(u5))
+        if input.LastName.is_some():
+            auto u6 = input.LastName.unwrap()
+            parts.append("\"LastName\":" + profile_json_str(u6))
+        if input.BirthDate.is_some():
+            auto u7 = input.BirthDate.unwrap()
+            parts.append("\"BirthDate\":" + profile_json_str(u7))
+        if input.Gender.is_some():
+            auto u8 = input.Gender.unwrap()
+            parts.append("\"Gender\":" + u8.to_json())
+        if input.PhoneNumber.is_some():
+            auto u9 = input.PhoneNumber.unwrap()
+            parts.append("\"PhoneNumber\":" + profile_json_str(u9))
+        if input.MobilePhoneNumber.is_some():
+            auto u10 = input.MobilePhoneNumber.unwrap()
+            parts.append("\"MobilePhoneNumber\":" + profile_json_str(u10))
+        if input.HomePhoneNumber.is_some():
+            auto u11 = input.HomePhoneNumber.unwrap()
+            parts.append("\"HomePhoneNumber\":" + profile_json_str(u11))
+        if input.BusinessPhoneNumber.is_some():
+            auto u12 = input.BusinessPhoneNumber.unwrap()
+            parts.append("\"BusinessPhoneNumber\":" + profile_json_str(u12))
+        if input.EmailAddress.is_some():
+            auto u13 = input.EmailAddress.unwrap()
+            parts.append("\"EmailAddress\":" + profile_json_str(u13))
+        if input.PersonalEmailAddress.is_some():
+            auto u14 = input.PersonalEmailAddress.unwrap()
+            parts.append("\"PersonalEmailAddress\":" + profile_json_str(u14))
+        if input.BusinessEmailAddress.is_some():
+            auto u15 = input.BusinessEmailAddress.unwrap()
+            parts.append("\"BusinessEmailAddress\":" + profile_json_str(u15))
+        if input.Address.is_some():
+            auto u16 = input.Address.unwrap()
+            parts.append("\"Address\":" + u16.to_json())
+        if input.ShippingAddress.is_some():
+            auto u17 = input.ShippingAddress.unwrap()
+            parts.append("\"ShippingAddress\":" + u17.to_json())
+        if input.MailingAddress.is_some():
+            auto u18 = input.MailingAddress.unwrap()
+            parts.append("\"MailingAddress\":" + u18.to_json())
+        if input.BillingAddress.is_some():
+            auto u19 = input.BillingAddress.unwrap()
+            parts.append("\"BillingAddress\":" + u19.to_json())
+        if input.Attributes.is_some():
+            auto u20 = input.Attributes.unwrap()
+            list[str] m21 = []
+            for k21 in sorted(u20.keys()):
+                m21.append(profile_json_str(k21) + ":" + profile_json_str(u20[k21]))
+            parts.append("\"Attributes\":" + profile_json_obj(m21))
+        if input.PartyTypeString.is_some():
+            auto u22 = input.PartyTypeString.unwrap()
+            parts.append("\"PartyTypeString\":" + profile_json_str(u22))
+        if input.GenderString.is_some():
+            auto u23 = input.GenderString.unwrap()
+            parts.append("\"GenderString\":" + profile_json_str(u23))
+        if input.ProfileType.is_some():
+            auto u24 = input.ProfileType.unwrap()
+            parts.append("\"ProfileType\":" + u24.to_json())
+        if input.EngagementPreferences.is_some():
+            auto u25 = input.EngagementPreferences.unwrap()
+            parts.append("\"EngagementPreferences\":" + engagement_preferences_to_json(u25))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
+
+    # UpdateRecommender  PATCH /domains/{DomainName}/recommenders/{RecommenderName}
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def update_recommender(self, UpdateRecommenderRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        labels["RecommenderName"] = input.RecommenderName
+        auto b = binding.HttpBinding(method="PATCH", path_template="/domains/{DomainName}/recommenders/{RecommenderName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + profile_json_str(u0))
+        if input.RecommenderConfig.is_some():
+            auto u1 = input.RecommenderConfig.unwrap()
+            parts.append("\"RecommenderConfig\":" + recommender_config_to_json(u1))
+        if input.RecommenderVersionName.is_some():
+            auto u2 = input.RecommenderVersionName.unwrap()
+            parts.append("\"RecommenderVersionName\":" + profile_json_str(u2))
+        auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
 
     # Paginator for GetSimilarProfiles — yields each Response page, threading the

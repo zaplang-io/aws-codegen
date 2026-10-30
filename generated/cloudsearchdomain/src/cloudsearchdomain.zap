@@ -16,12 +16,12 @@
 # Response.
 #
 # Coverage (rest-json): 3 operations — 2 with a generated method,
-#   1 skipped (a member type is not yet bindable/serializable by derive).
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   18 structs (11 @derive(Json)), 2 enums, 2 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -63,8 +63,9 @@ struct Bucket:
     Optional[str] value
     Optional[int64] count
 
-# no @derive(Json): member(s) buckets: list[Bucket] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) buckets: list[Bucket] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BucketInfo:
     Optional[list[Bucket]] buckets
 
@@ -88,16 +89,18 @@ struct FieldStats:
     Optional[str] mean
     Optional[float64] stddev
 
-# no @derive(Json): member(s) fields: dict[str, list[str]], exprs: dict[str, str], highlights: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: dict[str, list[str]], exprs: dict[str, str], highlights: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Hit:
     Optional[str] id
     Optional[dict[str, list[str]]] fields
     Optional[dict[str, str]] exprs
     Optional[dict[str, str]] highlights
 
-# no @derive(Json): member(s) hit: list[Hit] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) hit: list[Hit] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Hits:
     Optional[int64] found
     Optional[int64] start
@@ -128,8 +131,9 @@ struct SearchRequest:
     Optional[int64] start
     Optional[str] stats
 
-# no @derive(Json): member(s) hits: Hits, facets: dict[str, BucketInfo], stats: dict[str, FieldStats] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) hits: Hits, facets: dict[str, BucketInfo], stats: dict[str, FieldStats] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchResponse:
     Optional[SearchStatus] status
     Optional[Hits] hits
@@ -141,8 +145,9 @@ struct SearchStatus:
     Optional[int64] timems
     Optional[str] rid
 
-# no @derive(Json): member(s) suggestions: list[SuggestionMatch] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) suggestions: list[SuggestionMatch] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SuggestModel:
     Optional[str] query
     Optional[int64] found
@@ -155,8 +160,9 @@ struct SuggestRequest:
     str suggester
     Optional[int64] size
 
-# no @derive(Json): member(s) suggest: SuggestModel not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) suggest: SuggestModel not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SuggestResponse:
     Optional[SuggestStatus] status
     Optional[SuggestModel] suggest
@@ -179,8 +185,9 @@ struct UploadDocumentsRequest:
     # wire string of the ContentType enum (header binding)
     str contentType
 
-# no @derive(Json): member(s) warnings: list[DocumentServiceWarning] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) warnings: list[DocumentServiceWarning] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UploadDocumentsResponse:
     Optional[str] status
     Optional[int64] adds

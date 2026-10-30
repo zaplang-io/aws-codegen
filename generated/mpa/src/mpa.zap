@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 22 operations — 15 with a generated method,
-#   7 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 22 operations — 22 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   75 structs (56 @derive(Json)), 15 enums, 9 error variants.
-#   5 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   6 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -275,8 +275,9 @@ struct Filter:
 struct GetApprovalTeamRequest:
     str Arn
 
-# no @derive(Json): member(s) Approvers: list[GetApprovalTeamResponseApprover], Policies: list[PolicyReference], PendingUpdate: PendingUpdate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Approvers: list[GetApprovalTeamResponseApprover], Policies: list[PolicyReference], PendingUpdate: PendingUpdate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetApprovalTeamResponse:
     Optional[DateTime] CreationTime
     Optional[ApprovalStrategyResponse] ApprovalStrategy
@@ -294,8 +295,9 @@ struct GetApprovalTeamResponse:
     Optional[DateTime] LastUpdateTime
     Optional[PendingUpdate] PendingUpdate
 
-# no @derive(Json): member(s) MfaMethods: list[MfaMethod] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MfaMethods: list[MfaMethod] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetApprovalTeamResponseApprover:
     Optional[str] ApproverId
     Optional[DateTime] ResponseTime
@@ -352,8 +354,9 @@ struct GetResourcePolicyResponse:
 struct GetSessionRequest:
     str SessionArn
 
-# no @derive(Json): member(s) Metadata: dict[str, str], ApproverResponses: list[GetSessionResponseApproverResponse], AdditionalSecurityRequirements: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metadata: dict[str, str], ApproverResponses: list[GetSessionResponseApproverResponse], AdditionalSecurityRequirements: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSessionResponse:
     Optional[str] SessionArn
     Optional[str] ApprovalTeamArn
@@ -443,8 +446,9 @@ struct ListApprovalTeamsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ApprovalTeams: list[ListApprovalTeamsResponseApprovalTeam] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApprovalTeams: list[ListApprovalTeamsResponseApprovalTeam] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApprovalTeamsResponse:
     Optional[str] NextToken
     Optional[list[ListApprovalTeamsResponseApprovalTeam]] ApprovalTeams
@@ -468,8 +472,9 @@ struct ListIdentitySourcesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) IdentitySources: list[IdentitySourceForList] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentitySources: list[IdentitySourceForList] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIdentitySourcesResponse:
     Optional[str] NextToken
     Optional[list[IdentitySourceForList]] IdentitySources
@@ -480,8 +485,9 @@ struct ListPoliciesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Policies: list[Policy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Policies: list[Policy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPoliciesResponse:
     Optional[str] NextToken
     Optional[list[Policy]] Policies
@@ -493,8 +499,9 @@ struct ListPolicyVersionsRequest:
     Optional[str] NextToken
     str PolicyArn
 
-# no @derive(Json): member(s) PolicyVersions: list[PolicyVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PolicyVersions: list[PolicyVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPolicyVersionsResponse:
     Optional[str] NextToken
     Optional[list[PolicyVersionSummary]] PolicyVersions
@@ -506,8 +513,9 @@ struct ListResourcePoliciesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ResourcePolicies: list[ListResourcePoliciesResponseResourcePolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourcePolicies: list[ListResourcePoliciesResponseResourcePolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourcePoliciesResponse:
     Optional[str] NextToken
     Optional[list[ListResourcePoliciesResponseResourcePolicy]] ResourcePolicies
@@ -526,14 +534,16 @@ struct ListSessionsRequest:
     Optional[str] NextToken
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) Sessions: list[ListSessionsResponseSession] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sessions: list[ListSessionsResponseSession] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSessionsResponse:
     Optional[str] NextToken
     Optional[list[ListSessionsResponseSession]] Sessions
 
-# no @derive(Json): member(s) AdditionalSecurityRequirements: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalSecurityRequirements: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSessionsResponseSession:
     Optional[str] SessionArn
     Optional[str] ApprovalTeamName
@@ -559,8 +569,9 @@ struct ListSessionsResponseSession:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -573,8 +584,9 @@ struct MfaMethod:
 struct MofNApprovalStrategy:
     int64 MinApprovalsRequired
 
-# no @derive(Json): member(s) Approvers: list[GetApprovalTeamResponseApprover] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Approvers: list[GetApprovalTeamResponseApprover] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PendingUpdate:
     Optional[str] VersionId
     Optional[str] Description
@@ -746,21 +758,6 @@ def mpa_error_from_code(str code) -> MPAError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CreateApprovalTeam (document member `Approvers: list[ApprovalTeamRequestApprover]` is not serializable by derive)
-#   CreateIdentitySource (document member `Tags: dict[str, str]` is not serializable by derive)
-#   ListSessions (document member `Filters: list[Filter]` is not serializable by derive)
-#   StartApprovalTeamBaseline (document member `ApproverIds: list[str]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
-#   UntagResource (document member `TagKeys: list[str]` is not serializable by derive)
-#   UpdateApprovalTeam (document member `Approvers: list[ApprovalTeamRequestApprover]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListSessions (operation not generated)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -789,6 +786,54 @@ struct MPAClient:
         labels["SessionArn"] = input.SessionArn
         auto b = binding.HttpBinding(method="PUT", path_template="/sessions/{SessionArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mpa_service(), self.region, host)
+
+    # CreateApprovalTeam  POST /approval-teams
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_approval_team(self, CreateApprovalTeamRequest input) -> str:
+        auto host = endpoints.regional_host(mpa_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/approval-teams", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + mpa_json_str(u0))
+        parts.append("\"ApprovalStrategy\":" + input.ApprovalStrategy.to_json())
+        list[str] e1 = []
+        for x1 in input.Approvers:
+            e1.append(x1.to_json())
+        parts.append("\"Approvers\":" + mpa_json_arr(e1))
+        parts.append("\"Description\":" + mpa_json_str(input.Description))
+        list[str] e2 = []
+        for x2 in input.Policies:
+            e2.append(x2.to_json())
+        parts.append("\"Policies\":" + mpa_json_arr(e2))
+        parts.append("\"Name\":" + mpa_json_str(input.Name))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(mpa_json_str(k4) + ":" + mpa_json_str(u3[k4]))
+            parts.append("\"Tags\":" + mpa_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, mpa_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mpa_service(), self.region, host)
+
+    # CreateIdentitySource  POST /identity-sources
+    # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_identity_source(self, CreateIdentitySourceRequest input) -> str:
+        auto host = endpoints.regional_host(mpa_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/identity-sources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"IdentitySourceParameters\":" + input.IdentitySourceParameters.to_json())
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + mpa_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(mpa_json_str(k2) + ":" + mpa_json_str(u1[k2]))
+            parts.append("\"Tags\":" + mpa_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, mpa_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mpa_service(), self.region, host)
 
     # DeleteIdentitySource  DELETE /identity-sources/{IdentitySourceArn}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
@@ -918,6 +963,29 @@ struct MPAClient:
         auto b = binding.HttpBinding(method="POST", path_template="/resource-policies/{ResourceArn}/?List", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mpa_service(), self.region, host)
 
+    # ListSessions  POST /approval-teams/{ApprovalTeamArn}/sessions/?List
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_sessions(self, ListSessionsRequest input) -> str:
+        auto host = endpoints.regional_host(mpa_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ApprovalTeamArn"] = input.ApprovalTeamArn
+        auto b = binding.HttpBinding(method="POST", path_template="/approval-teams/{ApprovalTeamArn}/sessions/?List", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.MaxResults.is_some():
+            auto u0 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + mpa_json_str(u1))
+        if input.Filters.is_some():
+            auto u2 = input.Filters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"Filters\":" + mpa_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, mpa_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mpa_service(), self.region, host)
+
     # ListTagsForResource  GET /tags/{ResourceArn}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
@@ -936,6 +1004,82 @@ struct MPAClient:
         auto b = binding.HttpBinding(method="POST", path_template="/approval-teams/{Arn}?Delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartActiveApprovalTeamDeletionDocument(PendingWindowDays=input.PendingWindowDays)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, mpa_service(), self.region, host)
+
+    # StartApprovalTeamBaseline  POST /approval-teams/{Arn}/baseline
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def start_approval_team_baseline(self, StartApprovalTeamBaselineRequest input) -> str:
+        auto host = endpoints.regional_host(mpa_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Arn"] = input.Arn
+        auto b = binding.HttpBinding(method="POST", path_template="/approval-teams/{Arn}/baseline", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ApproverIds.is_some():
+            auto u0 = input.ApproverIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(mpa_json_str(x1))
+            parts.append("\"ApproverIds\":" + mpa_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, mpa_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mpa_service(), self.region, host)
+
+    # TagResource  PUT /tags/{ResourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, TooManyTagsException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(mpa_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(mpa_json_str(k0) + ":" + mpa_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + mpa_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, mpa_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mpa_service(), self.region, host)
+
+    # UntagResource  POST /tags/{ResourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(mpa_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.TagKeys:
+            e0.append(mpa_json_str(x0))
+        parts.append("\"TagKeys\":" + mpa_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, mpa_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mpa_service(), self.region, host)
+
+    # UpdateApprovalTeam  PATCH /approval-teams/{Arn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_approval_team(self, UpdateApprovalTeamRequest input) -> str:
+        auto host = endpoints.regional_host(mpa_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Arn"] = input.Arn
+        auto b = binding.HttpBinding(method="PATCH", path_template="/approval-teams/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ApprovalStrategy.is_some():
+            auto u0 = input.ApprovalStrategy.unwrap()
+            parts.append("\"ApprovalStrategy\":" + u0.to_json())
+        if input.Approvers.is_some():
+            auto u1 = input.Approvers.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Approvers\":" + mpa_json_arr(e2))
+        if input.Description.is_some():
+            auto u3 = input.Description.unwrap()
+            parts.append("\"Description\":" + mpa_json_str(u3))
+        if input.UpdateActions.is_some():
+            auto u4 = input.UpdateActions.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(mpa_json_str(x5))
+            parts.append("\"UpdateActions\":" + mpa_json_arr(e5))
+        auto bp = restjson.rest_json_document(b, mpa_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mpa_service(), self.region, host)
 
     # Paginator for ListApprovalTeams — yields each Response page, threading the
@@ -996,6 +1140,19 @@ struct MPAClient:
         auto host = endpoints.regional_host(mpa_service(), self.region)
         while True:
             auto raw = self.list_resource_policies(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListSessions — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Sessions).
+    def paginate_list_sessions(self, ListSessionsRequest input):
+        auto host = endpoints.regional_host(mpa_service(), self.region)
+        while True:
+            auto raw = self.list_sessions(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

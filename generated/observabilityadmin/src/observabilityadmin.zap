@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 45 operations — 28 with a generated method,
-#   17 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 45 operations — 43 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   128 structs (76 @derive(Json)), 27 enums, 8 error variants.
-#   5 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   6 paginators generated (2 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -296,14 +296,16 @@ struct AccessDeniedException:
 struct ActionCondition:
     Optional[Action] Action
 
-# no @derive(Json): member(s) FieldSelectors: list[AdvancedFieldSelector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldSelectors: list[AdvancedFieldSelector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdvancedEventSelector:
     Optional[str] Name
     list[AdvancedFieldSelector] FieldSelectors
 
-# no @derive(Json): member(s) Equals: list[str], StartsWith: list[str], EndsWith: list[str], NotEquals: list[str], NotStartsWith: list[str], NotEndsWith: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Equals: list[str], StartsWith: list[str], EndsWith: list[str], NotEquals: list[str], NotStartsWith: list[str], NotEndsWith: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdvancedFieldSelector:
     str Field
     Optional[list[str]] Equals
@@ -313,8 +315,9 @@ struct AdvancedFieldSelector:
     Optional[list[str]] NotStartsWith
     Optional[list[str]] NotEndsWith
 
-# no @derive(Json): member(s) Source: CentralizationRuleSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Source: CentralizationRuleSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CentralizationRule:
     CentralizationRuleSource Source
     CentralizationRuleDestination Destination
@@ -326,8 +329,9 @@ struct CentralizationRuleDestination:
     Optional[DestinationLogsConfiguration] DestinationLogsConfiguration
     Optional[DestinationMetricsConfiguration] DestinationMetricsConfiguration
 
-# no @derive(Json): member(s) Regions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Regions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CentralizationRuleSource:
     list[str] Regions
     Optional[str] Scope
@@ -351,8 +355,9 @@ struct CentralizationRuleSummary:
     Optional[str] DestinationAccountId
     Optional[str] DestinationRegion
 
-# no @derive(Json): member(s) AdvancedEventSelectors: list[AdvancedEventSelector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdvancedEventSelectors: list[AdvancedEventSelector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudtrailParameters:
     list[AdvancedEventSelector] AdvancedEventSelectors
 
@@ -361,8 +366,9 @@ struct Condition:
     Optional[ActionCondition] ActionCondition
     Optional[LabelNameCondition] LabelNameCondition
 
-# no @derive(Json): member(s) Sources: list[Source], DataSources: list[DataSource], Processors: list[str], Sinks: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sources: list[Source], DataSources: list[DataSource], Processors: list[str], Sinks: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationSummary:
     Optional[list[Source]] Sources
     Optional[list[DataSource]] DataSources
@@ -520,8 +526,9 @@ struct FieldToMatch:
     Optional[str] QueryString
     Optional[str] Method
 
-# no @derive(Json): member(s) Conditions: list[Condition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Conditions: list[Condition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filter:
     Optional[FilterBehavior] Behavior
     Optional[FilterRequirement] Requirement
@@ -532,8 +539,9 @@ struct Filter:
 struct GetCentralizationRuleForOrganizationInput:
     str RuleIdentifier
 
-# no @derive(Json): member(s) CentralizationRule: CentralizationRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CentralizationRule: CentralizationRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCentralizationRuleForOrganizationOutput:
     Optional[str] RuleName
     Optional[str] RuleArn
@@ -579,16 +587,18 @@ struct GetTelemetryEnrichmentStatusOutput:
     Optional[TelemetryEnrichmentStatus] Status
     Optional[str] AwsResourceExplorerManagedViewArn
 
-# no @derive(Json): member(s) RegionStatuses: list[RegionStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegionStatuses: list[RegionStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTelemetryEvaluationStatusForOrganizationOutput:
     Optional[Status] Status
     Optional[str] FailureReason
     Optional[str] HomeRegion
     Optional[list[RegionStatus]] RegionStatuses
 
-# no @derive(Json): member(s) RegionStatuses: list[RegionStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegionStatuses: list[RegionStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTelemetryEvaluationStatusOutput:
     Optional[Status] Status
     Optional[str] FailureReason
@@ -600,8 +610,9 @@ struct GetTelemetryEvaluationStatusOutput:
 struct GetTelemetryPipelineInput:
     str PipelineIdentifier
 
-# no @derive(Json): member(s) Pipeline: TelemetryPipeline not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Pipeline: TelemetryPipeline not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTelemetryPipelineOutput:
     Optional[TelemetryPipeline] Pipeline
 
@@ -610,8 +621,9 @@ struct GetTelemetryPipelineOutput:
 struct GetTelemetryRuleForOrganizationInput:
     str RuleIdentifier
 
-# no @derive(Json): member(s) TelemetryRule: TelemetryRule, RegionStatuses: list[RegionStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TelemetryRule: TelemetryRule, RegionStatuses: list[RegionStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTelemetryRuleForOrganizationOutput:
     Optional[str] RuleName
     Optional[str] RuleArn
@@ -627,8 +639,9 @@ struct GetTelemetryRuleForOrganizationOutput:
 struct GetTelemetryRuleInput:
     str RuleIdentifier
 
-# no @derive(Json): member(s) TelemetryRule: TelemetryRule, RegionStatuses: list[RegionStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TelemetryRule: TelemetryRule, RegionStatuses: list[RegionStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTelemetryRuleOutput:
     Optional[str] RuleName
     Optional[str] RuleArn
@@ -666,8 +679,9 @@ struct ListCentralizationRulesForOrganizationInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CentralizationRuleSummaries: list[CentralizationRuleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CentralizationRuleSummaries: list[CentralizationRuleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCentralizationRulesForOrganizationOutput:
     Optional[list[CentralizationRuleSummary]] CentralizationRuleSummaries
     Optional[str] NextToken
@@ -678,8 +692,9 @@ struct ListDatasetIntegrationsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) DatasetIntegrationSummaries: list[DatasetIntegrationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatasetIntegrationSummaries: list[DatasetIntegrationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatasetIntegrationsOutput:
     list[DatasetIntegrationSummary] DatasetIntegrationSummaries
     Optional[str] NextToken
@@ -695,8 +710,9 @@ struct ListResourceTelemetryForOrganizationInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TelemetryConfigurations: list[TelemetryConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TelemetryConfigurations: list[TelemetryConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceTelemetryForOrganizationOutput:
     Optional[list[TelemetryConfiguration]] TelemetryConfigurations
     Optional[str] NextToken
@@ -711,8 +727,9 @@ struct ListResourceTelemetryInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TelemetryConfigurations: list[TelemetryConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TelemetryConfigurations: list[TelemetryConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceTelemetryOutput:
     Optional[list[TelemetryConfiguration]] TelemetryConfigurations
     Optional[str] NextToken
@@ -723,8 +740,9 @@ struct ListS3TableIntegrationsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) IntegrationSummaries: list[IntegrationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IntegrationSummaries: list[IntegrationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListS3TableIntegrationsOutput:
     Optional[list[IntegrationSummary]] IntegrationSummaries
     Optional[str] NextToken
@@ -734,8 +752,9 @@ struct ListS3TableIntegrationsOutput:
 struct ListTagsForResourceInput:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     dict[str, str] Tags
 
@@ -745,8 +764,9 @@ struct ListTelemetryPipelinesInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PipelineSummaries: list[TelemetryPipelineSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PipelineSummaries: list[TelemetryPipelineSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTelemetryPipelinesOutput:
     Optional[list[TelemetryPipelineSummary]] PipelineSummaries
     Optional[str] NextToken
@@ -760,8 +780,9 @@ struct ListTelemetryRulesForOrganizationInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TelemetryRuleSummaries: list[TelemetryRuleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TelemetryRuleSummaries: list[TelemetryRuleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTelemetryRulesForOrganizationOutput:
     Optional[list[TelemetryRuleSummary]] TelemetryRuleSummaries
     Optional[str] NextToken
@@ -773,14 +794,16 @@ struct ListTelemetryRulesInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TelemetryRuleSummaries: list[TelemetryRuleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TelemetryRuleSummaries: list[TelemetryRuleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTelemetryRulesOutput:
     Optional[list[TelemetryRuleSummary]] TelemetryRuleSummaries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) LogTypes: list[LogType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LogTypes: list[LogType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LogDeliveryParameters:
     Optional[list[LogType]] LogTypes
 
@@ -788,8 +811,9 @@ struct LogDeliveryParameters:
 struct LogGroupNameConfiguration:
     str LogGroupNamePattern
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LoggingFilter:
     Optional[list[Filter]] Filters
     Optional[FilterBehavior] DefaultBehavior
@@ -905,8 +929,9 @@ struct TagResourceInput:
     str ResourceARN
     dict[str, str] Tags
 
-# no @derive(Json): member(s) TelemetryConfigurationState: dict[TelemetryType, TelemetryState], ResourceTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TelemetryConfigurationState: dict[TelemetryType, TelemetryState], ResourceTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TelemetryConfiguration:
     Optional[str] AccountIdentifier
     Optional[dict[TelemetryType, TelemetryState]] TelemetryConfigurationState
@@ -916,8 +941,9 @@ struct TelemetryConfiguration:
     Optional[int64] LastUpdateTimeStamp
     Optional[TelemetrySourceType] TelemetrySourceType
 
-# no @derive(Json): member(s) CloudtrailParameters: CloudtrailParameters, WAFLoggingParameters: WAFLoggingParameters, LogDeliveryParameters: LogDeliveryParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudtrailParameters: CloudtrailParameters, WAFLoggingParameters: WAFLoggingParameters, LogDeliveryParameters: LogDeliveryParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TelemetryDestinationConfiguration:
     Optional[str] DestinationType
     Optional[str] DestinationPattern
@@ -930,8 +956,9 @@ struct TelemetryDestinationConfiguration:
     Optional[MskMonitoringParameters] MskMonitoringParameters
     Optional[str] KmsKeyArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TelemetryPipeline:
     Optional[int64] CreatedTimeStamp
     Optional[int64] LastUpdateTimeStamp
@@ -950,8 +977,9 @@ struct TelemetryPipelineConfiguration:
 struct TelemetryPipelineStatusReason:
     Optional[str] Description
 
-# no @derive(Json): member(s) Tags: dict[str, str], ConfigurationSummary: ConfigurationSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str], ConfigurationSummary: ConfigurationSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TelemetryPipelineSummary:
     Optional[int64] CreatedTimeStamp
     Optional[int64] LastUpdateTimeStamp
@@ -961,8 +989,9 @@ struct TelemetryPipelineSummary:
     Optional[dict[str, str]] Tags
     Optional[ConfigurationSummary] ConfigurationSummary
 
-# no @derive(Json): member(s) TelemetrySourceTypes: list[TelemetrySourceType], DestinationConfiguration: TelemetryDestinationConfiguration, Regions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TelemetrySourceTypes: list[TelemetrySourceType], DestinationConfiguration: TelemetryDestinationConfiguration, Regions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TelemetryRule:
     Optional[ResourceType] ResourceType
     TelemetryType TelemetryType
@@ -974,8 +1003,9 @@ struct TelemetryRule:
     Optional[list[str]] Regions
     Optional[bool] AllRegions
 
-# no @derive(Json): member(s) TelemetrySourceTypes: list[TelemetrySourceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TelemetrySourceTypes: list[TelemetrySourceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TelemetryRuleSummary:
     Optional[str] RuleName
     Optional[str] RuleArn
@@ -992,8 +1022,9 @@ struct TestTelemetryPipelineInput:
     TelemetryPipelineConfiguration Configuration
     Optional[SignalType] SignalType
 
-# no @derive(Json): member(s) Results: list[PipelineOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[PipelineOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestTelemetryPipelineOutput:
     Optional[list[PipelineOutput]] Results
 
@@ -1072,26 +1103,30 @@ struct VPCFlowLogParameters:
 struct ValidateTelemetryPipelineConfigurationInput:
     TelemetryPipelineConfiguration Configuration
 
-# no @derive(Json): member(s) Errors: list[ValidationError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[ValidationError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidateTelemetryPipelineConfigurationOutput:
     Optional[list[ValidationError]] Errors
 
-# no @derive(Json): member(s) FieldMap: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldMap: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationError:
     Optional[str] Message
     Optional[str] Reason
     Optional[dict[str, str]] FieldMap
 
-# no @derive(Json): member(s) Errors: list[ValidationError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[ValidationError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     Optional[str] Message
     Optional[list[ValidationError]] Errors
 
-# no @derive(Json): member(s) RedactedFields: list[FieldToMatch], LoggingFilter: LoggingFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RedactedFields: list[FieldToMatch], LoggingFilter: LoggingFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WAFLoggingParameters:
     Optional[list[FieldToMatch]] RedactedFields
     Optional[LoggingFilter] LoggingFilter
@@ -1138,29 +1173,13 @@ def observabilityadmin_error_from_code(str code) -> ObservabilityAdminError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateCentralizationRuleForOrganization (document member `Rule: CentralizationRule` is not serializable by derive)
-#   CreateDatasetIntegration (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateS3TableIntegration (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateTelemetryPipeline (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateTelemetryRule (document member `Rule: TelemetryRule` is not serializable by derive)
-#   CreateTelemetryRuleForOrganization (document member `Rule: TelemetryRule` is not serializable by derive)
-#   ListResourceTelemetry (document member `ResourceTypes: list[ResourceType]` is not serializable by derive)
-#   ListResourceTelemetryForOrganization (document member `AccountIdentifiers: list[str]` is not serializable by derive)
-#   ListTelemetryRulesForOrganization (document member `SourceAccountIds: list[str]` is not serializable by derive)
-#   StartTelemetryEvaluation (document member `Regions: list[str]` is not serializable by derive)
-#   StartTelemetryEvaluationForOrganization (document member `Regions: list[str]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
-#   TestTelemetryPipeline (document member `Records: list[Record]` is not serializable by derive)
-#   UntagResource (document member `TagKeys: list[str]` is not serializable by derive)
-#   UpdateCentralizationRuleForOrganization (document member `Rule: CentralizationRule` is not serializable by derive)
-#   UpdateTelemetryRule (document member `Rule: TelemetryRule` is not serializable by derive)
-#   UpdateTelemetryRuleForOrganization (document member `Rule: TelemetryRule` is not serializable by derive)
+#   ListResourceTelemetry (document member `TelemetryConfigurationState: dict[TelemetryType, TelemetryState]` is not serializable)
+#   ListResourceTelemetryForOrganization (document member `TelemetryConfigurationState: dict[TelemetryType, TelemetryState]` is not serializable)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
 #   ListResourceTelemetry (operation not generated)
 #   ListResourceTelemetryForOrganization (operation not generated)
-#   ListTelemetryRulesForOrganization (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1280,10 +1299,362 @@ struct ValidateTelemetryPipelineConfigurationDocument:
     # document members of ValidateTelemetryPipelineConfiguration
     TelemetryPipelineConfiguration Configuration
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def observabilityadmin_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def observabilityadmin_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def observabilityadmin_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AdvancedEventSelector to a compact JSON object (declaration order).
+def advanced_event_selector_to_json(AdvancedEventSelector v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + observabilityadmin_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.FieldSelectors:
+        e1.append(advanced_field_selector_to_json(x1))
+    parts.append("\"FieldSelectors\":" + observabilityadmin_json_arr(e1))
+    return observabilityadmin_json_obj(parts)
+
+# Serialize AdvancedFieldSelector to a compact JSON object (declaration order).
+def advanced_field_selector_to_json(AdvancedFieldSelector v) -> str:
+    list[str] parts = []
+    parts.append("\"Field\":" + observabilityadmin_json_str(v.Field))
+    if v.Equals.is_some():
+        auto u0 = v.Equals.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(observabilityadmin_json_str(x1))
+        parts.append("\"Equals\":" + observabilityadmin_json_arr(e1))
+    if v.StartsWith.is_some():
+        auto u2 = v.StartsWith.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(observabilityadmin_json_str(x3))
+        parts.append("\"StartsWith\":" + observabilityadmin_json_arr(e3))
+    if v.EndsWith.is_some():
+        auto u4 = v.EndsWith.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(observabilityadmin_json_str(x5))
+        parts.append("\"EndsWith\":" + observabilityadmin_json_arr(e5))
+    if v.NotEquals.is_some():
+        auto u6 = v.NotEquals.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(observabilityadmin_json_str(x7))
+        parts.append("\"NotEquals\":" + observabilityadmin_json_arr(e7))
+    if v.NotStartsWith.is_some():
+        auto u8 = v.NotStartsWith.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(observabilityadmin_json_str(x9))
+        parts.append("\"NotStartsWith\":" + observabilityadmin_json_arr(e9))
+    if v.NotEndsWith.is_some():
+        auto u10 = v.NotEndsWith.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(observabilityadmin_json_str(x11))
+        parts.append("\"NotEndsWith\":" + observabilityadmin_json_arr(e11))
+    return observabilityadmin_json_obj(parts)
+
+# Serialize CentralizationRule to a compact JSON object (declaration order).
+def centralization_rule_to_json(CentralizationRule v) -> str:
+    list[str] parts = []
+    parts.append("\"Source\":" + centralization_rule_source_to_json(v.Source))
+    parts.append("\"Destination\":" + v.Destination.to_json())
+    return observabilityadmin_json_obj(parts)
+
+# Serialize CentralizationRuleSource to a compact JSON object (declaration order).
+def centralization_rule_source_to_json(CentralizationRuleSource v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Regions:
+        e0.append(observabilityadmin_json_str(x0))
+    parts.append("\"Regions\":" + observabilityadmin_json_arr(e0))
+    if v.Scope.is_some():
+        auto u1 = v.Scope.unwrap()
+        parts.append("\"Scope\":" + observabilityadmin_json_str(u1))
+    if v.SourceLogsConfiguration.is_some():
+        auto u2 = v.SourceLogsConfiguration.unwrap()
+        parts.append("\"SourceLogsConfiguration\":" + u2.to_json())
+    if v.SourceMetricsConfiguration.is_some():
+        auto u3 = v.SourceMetricsConfiguration.unwrap()
+        parts.append("\"SourceMetricsConfiguration\":" + u3.to_json())
+    if v.SourceContextGraphConfiguration.is_some():
+        auto u4 = v.SourceContextGraphConfiguration.unwrap()
+        parts.append("\"SourceContextGraphConfiguration\":" + u4.to_json())
+    return observabilityadmin_json_obj(parts)
+
+# Serialize CloudtrailParameters to a compact JSON object (declaration order).
+def cloudtrail_parameters_to_json(CloudtrailParameters v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AdvancedEventSelectors:
+        e0.append(advanced_event_selector_to_json(x0))
+    parts.append("\"AdvancedEventSelectors\":" + observabilityadmin_json_arr(e0))
+    return observabilityadmin_json_obj(parts)
+
+# Serialize Filter to a compact JSON object (declaration order).
+def filter_to_json(Filter v) -> str:
+    list[str] parts = []
+    if v.Behavior.is_some():
+        auto u0 = v.Behavior.unwrap()
+        parts.append("\"Behavior\":" + u0.to_json())
+    if v.Requirement.is_some():
+        auto u1 = v.Requirement.unwrap()
+        parts.append("\"Requirement\":" + u1.to_json())
+    if v.Conditions.is_some():
+        auto u2 = v.Conditions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Conditions\":" + observabilityadmin_json_arr(e3))
+    return observabilityadmin_json_obj(parts)
+
+# Serialize LogDeliveryParameters to a compact JSON object (declaration order).
+def log_delivery_parameters_to_json(LogDeliveryParameters v) -> str:
+    list[str] parts = []
+    if v.LogTypes.is_some():
+        auto u0 = v.LogTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"LogTypes\":" + observabilityadmin_json_arr(e1))
+    return observabilityadmin_json_obj(parts)
+
+# Serialize LoggingFilter to a compact JSON object (declaration order).
+def logging_filter_to_json(LoggingFilter v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + observabilityadmin_json_arr(e1))
+    if v.DefaultBehavior.is_some():
+        auto u2 = v.DefaultBehavior.unwrap()
+        parts.append("\"DefaultBehavior\":" + u2.to_json())
+    return observabilityadmin_json_obj(parts)
+
+# Serialize TelemetryDestinationConfiguration to a compact JSON object (declaration order).
+def telemetry_destination_configuration_to_json(TelemetryDestinationConfiguration v) -> str:
+    list[str] parts = []
+    if v.DestinationType.is_some():
+        auto u0 = v.DestinationType.unwrap()
+        parts.append("\"DestinationType\":" + observabilityadmin_json_str(u0))
+    if v.DestinationPattern.is_some():
+        auto u1 = v.DestinationPattern.unwrap()
+        parts.append("\"DestinationPattern\":" + observabilityadmin_json_str(u1))
+    if v.RetentionInDays.is_some():
+        auto u2 = v.RetentionInDays.unwrap()
+        parts.append("\"RetentionInDays\":" + str(u2))
+    if v.VPCFlowLogParameters.is_some():
+        auto u3 = v.VPCFlowLogParameters.unwrap()
+        parts.append("\"VPCFlowLogParameters\":" + u3.to_json())
+    if v.CloudtrailParameters.is_some():
+        auto u4 = v.CloudtrailParameters.unwrap()
+        parts.append("\"CloudtrailParameters\":" + cloudtrail_parameters_to_json(u4))
+    if v.ELBLoadBalancerLoggingParameters.is_some():
+        auto u5 = v.ELBLoadBalancerLoggingParameters.unwrap()
+        parts.append("\"ELBLoadBalancerLoggingParameters\":" + u5.to_json())
+    if v.WAFLoggingParameters.is_some():
+        auto u6 = v.WAFLoggingParameters.unwrap()
+        parts.append("\"WAFLoggingParameters\":" + waf_logging_parameters_to_json(u6))
+    if v.LogDeliveryParameters.is_some():
+        auto u7 = v.LogDeliveryParameters.unwrap()
+        parts.append("\"LogDeliveryParameters\":" + log_delivery_parameters_to_json(u7))
+    if v.MskMonitoringParameters.is_some():
+        auto u8 = v.MskMonitoringParameters.unwrap()
+        parts.append("\"MskMonitoringParameters\":" + u8.to_json())
+    if v.KmsKeyArn.is_some():
+        auto u9 = v.KmsKeyArn.unwrap()
+        parts.append("\"KmsKeyArn\":" + observabilityadmin_json_str(u9))
+    return observabilityadmin_json_obj(parts)
+
+# Serialize TelemetryRule to a compact JSON object (declaration order).
+def telemetry_rule_to_json(TelemetryRule v) -> str:
+    list[str] parts = []
+    if v.ResourceType.is_some():
+        auto u0 = v.ResourceType.unwrap()
+        parts.append("\"ResourceType\":" + u0.to_json())
+    parts.append("\"TelemetryType\":" + v.TelemetryType.to_json())
+    if v.TelemetrySourceTypes.is_some():
+        auto u1 = v.TelemetrySourceTypes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"TelemetrySourceTypes\":" + observabilityadmin_json_arr(e2))
+    if v.DestinationConfiguration.is_some():
+        auto u3 = v.DestinationConfiguration.unwrap()
+        parts.append("\"DestinationConfiguration\":" + telemetry_destination_configuration_to_json(u3))
+    if v.Scope.is_some():
+        auto u4 = v.Scope.unwrap()
+        parts.append("\"Scope\":" + observabilityadmin_json_str(u4))
+    if v.SelectionCriteria.is_some():
+        auto u5 = v.SelectionCriteria.unwrap()
+        parts.append("\"SelectionCriteria\":" + observabilityadmin_json_str(u5))
+    if v.AllowFieldUpdates.is_some():
+        auto u6 = v.AllowFieldUpdates.unwrap()
+        parts.append("\"AllowFieldUpdates\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.Regions.is_some():
+        auto u7 = v.Regions.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(observabilityadmin_json_str(x8))
+        parts.append("\"Regions\":" + observabilityadmin_json_arr(e8))
+    if v.AllRegions.is_some():
+        auto u9 = v.AllRegions.unwrap()
+        parts.append("\"AllRegions\":" + json.dumps(JsonValue.Bool(u9)))
+    return observabilityadmin_json_obj(parts)
+
+# Serialize WAFLoggingParameters to a compact JSON object (declaration order).
+def waf_logging_parameters_to_json(WAFLoggingParameters v) -> str:
+    list[str] parts = []
+    if v.RedactedFields.is_some():
+        auto u0 = v.RedactedFields.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"RedactedFields\":" + observabilityadmin_json_arr(e1))
+    if v.LoggingFilter.is_some():
+        auto u2 = v.LoggingFilter.unwrap()
+        parts.append("\"LoggingFilter\":" + logging_filter_to_json(u2))
+    if v.LogType.is_some():
+        auto u3 = v.LogType.unwrap()
+        parts.append("\"LogType\":" + observabilityadmin_json_str(u3))
+    return observabilityadmin_json_obj(parts)
+
 # A bound ObservabilityAdmin client: credentials + region, threaded into every operation.
 struct ObservabilityAdminClient:
     core.Credentials creds
     str region
+
+    # CreateCentralizationRuleForOrganization  POST /CreateCentralizationRuleForOrganization
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, TooManyRequestsException, ValidationException
+    def create_centralization_rule_for_organization(self, CreateCentralizationRuleForOrganizationInput input) -> str:
+        auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateCentralizationRuleForOrganization", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"RuleName\":" + observabilityadmin_json_str(input.RuleName))
+        parts.append("\"Rule\":" + centralization_rule_to_json(input.Rule))
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(observabilityadmin_json_str(k1) + ":" + observabilityadmin_json_str(u0[k1]))
+            parts.append("\"Tags\":" + observabilityadmin_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, observabilityadmin_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
+
+    # CreateDatasetIntegration  POST /CreateDatasetIntegration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, TooManyRequestsException, ValidationException
+    def create_dataset_integration(self, CreateDatasetIntegrationInput input) -> str:
+        auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateDatasetIntegration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"RoleArn\":" + observabilityadmin_json_str(input.RoleArn))
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(observabilityadmin_json_str(k1) + ":" + observabilityadmin_json_str(u0[k1]))
+            parts.append("\"Tags\":" + observabilityadmin_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, observabilityadmin_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
+
+    # CreateS3TableIntegration  POST /CreateS3TableIntegration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, TooManyRequestsException, ValidationException
+    def create_s3_table_integration(self, CreateS3TableIntegrationInput input) -> str:
+        auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateS3TableIntegration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Encryption\":" + input.Encryption.to_json())
+        parts.append("\"RoleArn\":" + observabilityadmin_json_str(input.RoleArn))
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(observabilityadmin_json_str(k1) + ":" + observabilityadmin_json_str(u0[k1]))
+            parts.append("\"Tags\":" + observabilityadmin_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, observabilityadmin_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
+
+    # CreateTelemetryPipeline  POST /CreateTelemetryPipeline
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, TooManyRequestsException, ValidationException
+    def create_telemetry_pipeline(self, CreateTelemetryPipelineInput input) -> str:
+        auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateTelemetryPipeline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + observabilityadmin_json_str(input.Name))
+        parts.append("\"Configuration\":" + input.Configuration.to_json())
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(observabilityadmin_json_str(k1) + ":" + observabilityadmin_json_str(u0[k1]))
+            parts.append("\"Tags\":" + observabilityadmin_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, observabilityadmin_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
+
+    # CreateTelemetryRule  POST /CreateTelemetryRule
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, TooManyRequestsException, ValidationException
+    def create_telemetry_rule(self, CreateTelemetryRuleInput input) -> str:
+        auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateTelemetryRule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"RuleName\":" + observabilityadmin_json_str(input.RuleName))
+        parts.append("\"Rule\":" + telemetry_rule_to_json(input.Rule))
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(observabilityadmin_json_str(k1) + ":" + observabilityadmin_json_str(u0[k1]))
+            parts.append("\"Tags\":" + observabilityadmin_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, observabilityadmin_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
+
+    # CreateTelemetryRuleForOrganization  POST /CreateTelemetryRuleForOrganization
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, TooManyRequestsException, ValidationException
+    def create_telemetry_rule_for_organization(self, CreateTelemetryRuleForOrganizationInput input) -> str:
+        auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateTelemetryRuleForOrganization", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"RuleName\":" + observabilityadmin_json_str(input.RuleName))
+        parts.append("\"Rule\":" + telemetry_rule_to_json(input.Rule))
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(observabilityadmin_json_str(k1) + ":" + observabilityadmin_json_str(u0[k1]))
+            parts.append("\"Tags\":" + observabilityadmin_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, observabilityadmin_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
 
     # DeleteCentralizationRuleForOrganization  POST /DeleteCentralizationRuleForOrganization
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
@@ -1468,12 +1839,78 @@ struct ObservabilityAdminClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
 
+    # ListTelemetryRulesForOrganization  POST /ListTelemetryRulesForOrganization
+    # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
+    def list_telemetry_rules_for_organization(self, ListTelemetryRulesForOrganizationInput input) -> str:
+        auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListTelemetryRulesForOrganization", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.RuleNamePrefix.is_some():
+            auto u0 = input.RuleNamePrefix.unwrap()
+            parts.append("\"RuleNamePrefix\":" + observabilityadmin_json_str(u0))
+        if input.SourceAccountIds.is_some():
+            auto u1 = input.SourceAccountIds.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(observabilityadmin_json_str(x2))
+            parts.append("\"SourceAccountIds\":" + observabilityadmin_json_arr(e2))
+        if input.SourceOrganizationUnitIds.is_some():
+            auto u3 = input.SourceOrganizationUnitIds.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(observabilityadmin_json_str(x4))
+            parts.append("\"SourceOrganizationUnitIds\":" + observabilityadmin_json_arr(e4))
+        if input.MaxResults.is_some():
+            auto u5 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u5))
+        if input.NextToken.is_some():
+            auto u6 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + observabilityadmin_json_str(u6))
+        auto bp = restjson.rest_json_document(b, observabilityadmin_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
+
     # StartTelemetryEnrichment  POST /StartTelemetryEnrichment
     # errors: AccessDeniedException, ConflictException, InternalServerException, TooManyRequestsException
     def start_telemetry_enrichment(self) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
         auto b = binding.HttpBinding(method="POST", path_template="/StartTelemetryEnrichment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, observabilityadmin_service(), self.region, host)
+
+    # StartTelemetryEvaluation  POST /StartTelemetryEvaluation
+    # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
+    def start_telemetry_evaluation(self, StartTelemetryEvaluationInput input) -> str:
+        auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/StartTelemetryEvaluation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Regions.is_some():
+            auto u0 = input.Regions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(observabilityadmin_json_str(x1))
+            parts.append("\"Regions\":" + observabilityadmin_json_arr(e1))
+        if input.AllRegions.is_some():
+            auto u2 = input.AllRegions.unwrap()
+            parts.append("\"AllRegions\":" + json.dumps(JsonValue.Bool(u2)))
+        auto bp = restjson.rest_json_document(b, observabilityadmin_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
+
+    # StartTelemetryEvaluationForOrganization  POST /StartTelemetryEvaluationForOrganization
+    # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
+    def start_telemetry_evaluation_for_organization(self, StartTelemetryEvaluationForOrganizationInput input) -> str:
+        auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/StartTelemetryEvaluationForOrganization", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Regions.is_some():
+            auto u0 = input.Regions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(observabilityadmin_json_str(x1))
+            parts.append("\"Regions\":" + observabilityadmin_json_arr(e1))
+        if input.AllRegions.is_some():
+            auto u2 = input.AllRegions.unwrap()
+            parts.append("\"AllRegions\":" + json.dumps(JsonValue.Bool(u2)))
+        auto bp = restjson.rest_json_document(b, observabilityadmin_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
 
     # StopTelemetryEnrichment  POST /StopTelemetryEnrichment
     # errors: AccessDeniedException, ConflictException, InternalServerException, TooManyRequestsException
@@ -1496,6 +1933,62 @@ struct ObservabilityAdminClient:
         auto b = binding.HttpBinding(method="POST", path_template="/StopTelemetryEvaluationForOrganization", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, observabilityadmin_service(), self.region, host)
 
+    # TagResource  POST /TagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, TooManyRequestsException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/TagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceARN\":" + observabilityadmin_json_str(input.ResourceARN))
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(observabilityadmin_json_str(k0) + ":" + observabilityadmin_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + observabilityadmin_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, observabilityadmin_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
+
+    # TestTelemetryPipeline  POST /TestTelemetryPipeline
+    # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
+    def test_telemetry_pipeline(self, TestTelemetryPipelineInput input) -> str:
+        auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/TestTelemetryPipeline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Records:
+            e0.append(x0.to_json())
+        parts.append("\"Records\":" + observabilityadmin_json_arr(e0))
+        parts.append("\"Configuration\":" + input.Configuration.to_json())
+        if input.SignalType.is_some():
+            auto u1 = input.SignalType.unwrap()
+            parts.append("\"SignalType\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, observabilityadmin_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
+
+    # UntagResource  POST /UntagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UntagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceARN\":" + observabilityadmin_json_str(input.ResourceARN))
+        list[str] e0 = []
+        for x0 in input.TagKeys:
+            e0.append(observabilityadmin_json_str(x0))
+        parts.append("\"TagKeys\":" + observabilityadmin_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, observabilityadmin_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
+
+    # UpdateCentralizationRuleForOrganization  POST /UpdateCentralizationRuleForOrganization
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, TooManyRequestsException, ValidationException
+    def update_centralization_rule_for_organization(self, UpdateCentralizationRuleForOrganizationInput input) -> str:
+        auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateCentralizationRuleForOrganization", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"RuleIdentifier\":" + observabilityadmin_json_str(input.RuleIdentifier))
+        parts.append("\"Rule\":" + centralization_rule_to_json(input.Rule))
+        auto bp = restjson.rest_json_document(b, observabilityadmin_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
+
     # UpdateDatasetIntegration  POST /UpdateDatasetIntegration
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def update_dataset_integration(self, UpdateDatasetIntegrationInput input) -> str:
@@ -1512,6 +2005,28 @@ struct ObservabilityAdminClient:
         auto b = binding.HttpBinding(method="POST", path_template="/UpdateTelemetryPipeline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateTelemetryPipelineDocument(PipelineIdentifier=input.PipelineIdentifier, Configuration=input.Configuration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
+
+    # UpdateTelemetryRule  POST /UpdateTelemetryRule
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, TooManyRequestsException, ValidationException
+    def update_telemetry_rule(self, UpdateTelemetryRuleInput input) -> str:
+        auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateTelemetryRule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"RuleIdentifier\":" + observabilityadmin_json_str(input.RuleIdentifier))
+        parts.append("\"Rule\":" + telemetry_rule_to_json(input.Rule))
+        auto bp = restjson.rest_json_document(b, observabilityadmin_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
+
+    # UpdateTelemetryRuleForOrganization  POST /UpdateTelemetryRuleForOrganization
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, TooManyRequestsException, ValidationException
+    def update_telemetry_rule_for_organization(self, UpdateTelemetryRuleForOrganizationInput input) -> str:
+        auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateTelemetryRuleForOrganization", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"RuleIdentifier\":" + observabilityadmin_json_str(input.RuleIdentifier))
+        parts.append("\"Rule\":" + telemetry_rule_to_json(input.Rule))
+        auto bp = restjson.rest_json_document(b, observabilityadmin_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
 
     # ValidateTelemetryPipelineConfiguration  POST /ValidateTelemetryPipelineConfiguration
@@ -1581,6 +2096,19 @@ struct ObservabilityAdminClient:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
         while True:
             auto raw = self.list_telemetry_rules(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListTelemetryRulesForOrganization — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: TelemetryRuleSummaries).
+    def paginate_list_telemetry_rules_for_organization(self, ListTelemetryRulesForOrganizationInput input):
+        auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
+        while True:
+            auto raw = self.list_telemetry_rules_for_organization(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

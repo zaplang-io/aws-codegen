@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 22 operations — 13 with a generated method,
-#   9 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 22 operations — 20 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   90 structs (57 @derive(Json)), 11 enums, 11 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import base64
 
 # The synthetics rest-json protocol: SigV4 service "synthetics" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -143,8 +144,9 @@ enum RunType:
 struct AccessDeniedException:
     Optional[str] Message
 
-# no @derive(Json): member(s) VpcConfig: VpcConfigInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfig: VpcConfigInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddReplicaLocationInput:
     str Location
     Optional[VpcConfigInput] VpcConfig
@@ -173,8 +175,9 @@ struct AssociateResourceResponse:
 struct BadRequestException:
     Optional[str] Message
 
-# no @derive(Json): member(s) IgnoreCoordinates: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IgnoreCoordinates: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BaseScreenshot:
     str ScreenshotName
     Optional[list[str]] IgnoreCoordinates
@@ -183,8 +186,9 @@ struct BaseScreenshot:
 struct BrowserConfig:
     Optional[BrowserType] BrowserType
 
-# no @derive(Json): member(s) Code: CanaryCodeOutput, VpcConfig: VpcConfigOutput, VisualReference: VisualReferenceOutput, BrowserConfigs: list[BrowserConfig], EngineConfigs: list[EngineConfig], VisualReferences: list[VisualReferenceOutput], MultiLocationConfig: MultiLocationConfig, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Code: CanaryCodeOutput, VpcConfig: VpcConfigOutput, VisualReference: VisualReferenceOutput, BrowserConfigs: list[BrowserConfig], EngineConfigs: list[EngineConfig], VisualReferences: list[VisualReferenceOutput], MultiLocationConfig: MultiLocationConfig, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Canary:
     Optional[str] Id
     Optional[str] Name
@@ -211,8 +215,9 @@ struct Canary:
     Optional[str] KmsKeyArn
     Optional[DryRunConfigOutput] DryRunConfig
 
-# no @derive(Json): member(s) BlueprintTypes: list[str], Dependencies: list[Dependency] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BlueprintTypes: list[str], Dependencies: list[Dependency] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CanaryCodeInput:
     Optional[str] S3Bucket
     Optional[str] S3Key
@@ -222,8 +227,9 @@ struct CanaryCodeInput:
     Optional[list[str]] BlueprintTypes
     Optional[list[Dependency]] Dependencies
 
-# no @derive(Json): member(s) BlueprintTypes: list[str], Dependencies: list[Dependency] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BlueprintTypes: list[str], Dependencies: list[Dependency] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CanaryCodeOutput:
     Optional[str] SourceLocationArn
     Optional[str] Handler
@@ -252,8 +258,9 @@ struct CanaryRun:
     Optional[BrowserType] BrowserType
     Optional[str] Location
 
-# no @derive(Json): member(s) EnvironmentVariables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnvironmentVariables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CanaryRunConfigInput:
     Optional[int64] TimeoutInSeconds
     Optional[int64] MemoryInMB
@@ -331,8 +338,9 @@ struct CreateCanaryRequest:
     Optional[ArtifactConfigInput] ArtifactConfig
     Optional[str] KmsKeyArn
 
-# no @derive(Json): member(s) Canary: Canary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Canary: Canary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCanaryResponse:
     Optional[Canary] Canary
 
@@ -342,8 +350,9 @@ struct CreateGroupRequest:
     str Name
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Group: Group not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Group: Group not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateGroupResponse:
     Optional[Group] Group
 
@@ -381,8 +390,9 @@ struct DescribeCanariesLastRunRequest:
     Optional[list[str]] Names
     Optional[BrowserType] BrowserType
 
-# no @derive(Json): member(s) CanariesLastRun: list[CanaryLastRun] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CanariesLastRun: list[CanaryLastRun] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCanariesLastRunResponse:
     Optional[list[CanaryLastRun]] CanariesLastRun
     Optional[str] NextToken
@@ -394,8 +404,9 @@ struct DescribeCanariesRequest:
     Optional[int64] MaxResults
     Optional[list[str]] Names
 
-# no @derive(Json): member(s) Canaries: list[Canary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Canaries: list[Canary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCanariesResponse:
     Optional[list[Canary]] Canaries
     Optional[str] NextToken
@@ -406,8 +417,9 @@ struct DescribeRuntimeVersionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) RuntimeVersions: list[RuntimeVersion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuntimeVersions: list[RuntimeVersion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRuntimeVersionsResponse:
     Optional[list[RuntimeVersion]] RuntimeVersions
     Optional[str] NextToken
@@ -439,8 +451,9 @@ struct GetCanaryRequest:
     str Name
     Optional[str] DryRunId
 
-# no @derive(Json): member(s) Canary: Canary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Canary: Canary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCanaryResponse:
     Optional[Canary] Canary
 
@@ -453,8 +466,9 @@ struct GetCanaryRunsRequest:
     Optional[str] DryRunId
     Optional[RunType] RunType
 
-# no @derive(Json): member(s) CanaryRuns: list[CanaryRun] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CanaryRuns: list[CanaryRun] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCanaryRunsResponse:
     Optional[list[CanaryRun]] CanaryRuns
     Optional[str] NextToken
@@ -464,13 +478,15 @@ struct GetCanaryRunsResponse:
 struct GetGroupRequest:
     str GroupIdentifier
 
-# no @derive(Json): member(s) Group: Group not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Group: Group not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetGroupResponse:
     Optional[Group] Group
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Group:
     Optional[str] Id
     Optional[str] Name
@@ -500,8 +516,9 @@ struct ListAssociatedGroupsRequest:
     Optional[int64] MaxResults
     str ResourceArn
 
-# no @derive(Json): member(s) Groups: list[GroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[GroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssociatedGroupsResponse:
     Optional[list[GroupSummary]] Groups
     Optional[str] NextToken
@@ -513,8 +530,9 @@ struct ListGroupResourcesRequest:
     Optional[int64] MaxResults
     str GroupIdentifier
 
-# no @derive(Json): member(s) Resources: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resources: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupResourcesResponse:
     Optional[list[str]] Resources
     Optional[str] NextToken
@@ -525,8 +543,9 @@ struct ListGroupsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Groups: list[GroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[GroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupsResponse:
     Optional[list[GroupSummary]] Groups
     Optional[str] NextToken
@@ -536,13 +555,15 @@ struct ListGroupsResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Replicas: list[Replica] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Replicas: list[Replica] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MultiLocationConfig:
     Optional[LocationType] LocationType
     Optional[str] PrimaryLocation
@@ -553,8 +574,9 @@ struct MultiLocationConfig:
 struct NotFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) VpcConfig: VpcConfigOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfig: VpcConfigOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Replica:
     Optional[str] Location
     Optional[ReplicationStatus] ReplicationStatus
@@ -700,29 +722,33 @@ struct UpdateCanaryResponse:
 struct ValidationException:
     Optional[str] Message
 
-# no @derive(Json): member(s) BaseScreenshots: list[BaseScreenshot] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BaseScreenshots: list[BaseScreenshot] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VisualReferenceInput:
     Optional[list[BaseScreenshot]] BaseScreenshots
     str BaseCanaryRunId
     Optional[BrowserType] BrowserType
 
-# no @derive(Json): member(s) BaseScreenshots: list[BaseScreenshot] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BaseScreenshots: list[BaseScreenshot] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VisualReferenceOutput:
     Optional[list[BaseScreenshot]] BaseScreenshots
     Optional[str] BaseCanaryRunId
     Optional[BrowserType] BrowserType
 
-# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfigInput:
     Optional[list[str]] SubnetIds
     Optional[list[str]] SecurityGroupIds
     Optional[bool] Ipv6AllowedForDualStack
 
-# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfigOutput:
     Optional[str] VpcId
     Optional[list[str]] SubnetIds
@@ -779,15 +805,8 @@ def synthetics_error_from_code(str code) -> syntheticsError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateCanary (document member `Code: CanaryCodeInput` is not serializable by derive)
-#   CreateGroup (document member `Tags: dict[str, str]` is not serializable by derive)
 #   DeleteCanary (httpQuery `DeleteLambda` has unsupported type bool)
-#   DescribeCanaries (document member `Names: list[str]` is not serializable by derive)
-#   DescribeCanariesLastRun (document member `Names: list[str]` is not serializable by derive)
-#   StartCanaryDryRun (document member `Code: CanaryCodeInput` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateCanary (document member `Code: CanaryCodeInput` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -834,6 +853,150 @@ struct ListGroupsDocument:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def synthetics_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def synthetics_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def synthetics_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AddReplicaLocationInput to a compact JSON object (declaration order).
+def add_replica_location_input_to_json(AddReplicaLocationInput v) -> str:
+    list[str] parts = []
+    parts.append("\"Location\":" + synthetics_json_str(v.Location))
+    if v.VpcConfig.is_some():
+        auto u0 = v.VpcConfig.unwrap()
+        parts.append("\"VpcConfig\":" + vpc_config_input_to_json(u0))
+    if v.KmsKeyArn.is_some():
+        auto u1 = v.KmsKeyArn.unwrap()
+        parts.append("\"KmsKeyArn\":" + synthetics_json_str(u1))
+    return synthetics_json_obj(parts)
+
+# Serialize BaseScreenshot to a compact JSON object (declaration order).
+def base_screenshot_to_json(BaseScreenshot v) -> str:
+    list[str] parts = []
+    parts.append("\"ScreenshotName\":" + synthetics_json_str(v.ScreenshotName))
+    if v.IgnoreCoordinates.is_some():
+        auto u0 = v.IgnoreCoordinates.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(synthetics_json_str(x1))
+        parts.append("\"IgnoreCoordinates\":" + synthetics_json_arr(e1))
+    return synthetics_json_obj(parts)
+
+# Serialize CanaryCodeInput to a compact JSON object (declaration order).
+def canary_code_input_to_json(CanaryCodeInput v) -> str:
+    list[str] parts = []
+    if v.S3Bucket.is_some():
+        auto u0 = v.S3Bucket.unwrap()
+        parts.append("\"S3Bucket\":" + synthetics_json_str(u0))
+    if v.S3Key.is_some():
+        auto u1 = v.S3Key.unwrap()
+        parts.append("\"S3Key\":" + synthetics_json_str(u1))
+    if v.S3Version.is_some():
+        auto u2 = v.S3Version.unwrap()
+        parts.append("\"S3Version\":" + synthetics_json_str(u2))
+    if v.ZipFile.is_some():
+        auto u3 = v.ZipFile.unwrap()
+        parts.append("\"ZipFile\":" + synthetics_json_str(base64.encode(u3)))
+    if v.Handler.is_some():
+        auto u4 = v.Handler.unwrap()
+        parts.append("\"Handler\":" + synthetics_json_str(u4))
+    if v.BlueprintTypes.is_some():
+        auto u5 = v.BlueprintTypes.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(synthetics_json_str(x6))
+        parts.append("\"BlueprintTypes\":" + synthetics_json_arr(e6))
+    if v.Dependencies.is_some():
+        auto u7 = v.Dependencies.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"Dependencies\":" + synthetics_json_arr(e8))
+    return synthetics_json_obj(parts)
+
+# Serialize CanaryRunConfigInput to a compact JSON object (declaration order).
+def canary_run_config_input_to_json(CanaryRunConfigInput v) -> str:
+    list[str] parts = []
+    if v.TimeoutInSeconds.is_some():
+        auto u0 = v.TimeoutInSeconds.unwrap()
+        parts.append("\"TimeoutInSeconds\":" + str(u0))
+    if v.MemoryInMB.is_some():
+        auto u1 = v.MemoryInMB.unwrap()
+        parts.append("\"MemoryInMB\":" + str(u1))
+    if v.ActiveTracing.is_some():
+        auto u2 = v.ActiveTracing.unwrap()
+        parts.append("\"ActiveTracing\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.EnvironmentVariables.is_some():
+        auto u3 = v.EnvironmentVariables.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(synthetics_json_str(k4) + ":" + synthetics_json_str(u3[k4]))
+        parts.append("\"EnvironmentVariables\":" + synthetics_json_obj(m4))
+    if v.EphemeralStorage.is_some():
+        auto u5 = v.EphemeralStorage.unwrap()
+        parts.append("\"EphemeralStorage\":" + str(u5))
+    return synthetics_json_obj(parts)
+
+# Serialize VisualReferenceInput to a compact JSON object (declaration order).
+def visual_reference_input_to_json(VisualReferenceInput v) -> str:
+    list[str] parts = []
+    if v.BaseScreenshots.is_some():
+        auto u0 = v.BaseScreenshots.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(base_screenshot_to_json(x1))
+        parts.append("\"BaseScreenshots\":" + synthetics_json_arr(e1))
+    parts.append("\"BaseCanaryRunId\":" + synthetics_json_str(v.BaseCanaryRunId))
+    if v.BrowserType.is_some():
+        auto u2 = v.BrowserType.unwrap()
+        parts.append("\"BrowserType\":" + u2.to_json())
+    return synthetics_json_obj(parts)
+
+# Serialize VpcConfigInput to a compact JSON object (declaration order).
+def vpc_config_input_to_json(VpcConfigInput v) -> str:
+    list[str] parts = []
+    if v.SubnetIds.is_some():
+        auto u0 = v.SubnetIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(synthetics_json_str(x1))
+        parts.append("\"SubnetIds\":" + synthetics_json_arr(e1))
+    if v.SecurityGroupIds.is_some():
+        auto u2 = v.SecurityGroupIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(synthetics_json_str(x3))
+        parts.append("\"SecurityGroupIds\":" + synthetics_json_arr(e3))
+    if v.Ipv6AllowedForDualStack.is_some():
+        auto u4 = v.Ipv6AllowedForDualStack.unwrap()
+        parts.append("\"Ipv6AllowedForDualStack\":" + json.dumps(JsonValue.Bool(u4)))
+    return synthetics_json_obj(parts)
+
 # A bound synthetics client: credentials + region, threaded into every operation.
 struct syntheticsClient:
     core.Credentials creds
@@ -850,6 +1013,82 @@ struct syntheticsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, synthetics_service(), self.region, host)
 
+    # CreateCanary  POST /canary
+    # errors: InternalServerException, RequestEntityTooLargeException, ValidationException
+    def create_canary(self, CreateCanaryRequest input) -> str:
+        auto host = endpoints.regional_host(synthetics_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/canary", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + synthetics_json_str(input.Name))
+        parts.append("\"Code\":" + canary_code_input_to_json(input.Code))
+        parts.append("\"ArtifactS3Location\":" + synthetics_json_str(input.ArtifactS3Location))
+        parts.append("\"ExecutionRoleArn\":" + synthetics_json_str(input.ExecutionRoleArn))
+        parts.append("\"Schedule\":" + input.Schedule.to_json())
+        if input.RunConfig.is_some():
+            auto u0 = input.RunConfig.unwrap()
+            parts.append("\"RunConfig\":" + canary_run_config_input_to_json(u0))
+        if input.SuccessRetentionPeriodInDays.is_some():
+            auto u1 = input.SuccessRetentionPeriodInDays.unwrap()
+            parts.append("\"SuccessRetentionPeriodInDays\":" + str(u1))
+        if input.FailureRetentionPeriodInDays.is_some():
+            auto u2 = input.FailureRetentionPeriodInDays.unwrap()
+            parts.append("\"FailureRetentionPeriodInDays\":" + str(u2))
+        parts.append("\"RuntimeVersion\":" + synthetics_json_str(input.RuntimeVersion))
+        if input.VpcConfig.is_some():
+            auto u3 = input.VpcConfig.unwrap()
+            parts.append("\"VpcConfig\":" + vpc_config_input_to_json(u3))
+        if input.ResourcesToReplicateTags.is_some():
+            auto u4 = input.ResourcesToReplicateTags.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(synthetics_json_str(x5))
+            parts.append("\"ResourcesToReplicateTags\":" + synthetics_json_arr(e5))
+        if input.ProvisionedResourceCleanup.is_some():
+            auto u6 = input.ProvisionedResourceCleanup.unwrap()
+            parts.append("\"ProvisionedResourceCleanup\":" + u6.to_json())
+        if input.BrowserConfigs.is_some():
+            auto u7 = input.BrowserConfigs.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"BrowserConfigs\":" + synthetics_json_arr(e8))
+        if input.AddReplicaLocations.is_some():
+            auto u9 = input.AddReplicaLocations.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(add_replica_location_input_to_json(x10))
+            parts.append("\"AddReplicaLocations\":" + synthetics_json_arr(e10))
+        if input.Tags.is_some():
+            auto u11 = input.Tags.unwrap()
+            list[str] m12 = []
+            for k12 in sorted(u11.keys()):
+                m12.append(synthetics_json_str(k12) + ":" + synthetics_json_str(u11[k12]))
+            parts.append("\"Tags\":" + synthetics_json_obj(m12))
+        if input.ArtifactConfig.is_some():
+            auto u13 = input.ArtifactConfig.unwrap()
+            parts.append("\"ArtifactConfig\":" + u13.to_json())
+        if input.KmsKeyArn.is_some():
+            auto u14 = input.KmsKeyArn.unwrap()
+            parts.append("\"KmsKeyArn\":" + synthetics_json_str(u14))
+        auto bp = restjson.rest_json_document(b, synthetics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, synthetics_service(), self.region, host)
+
+    # CreateGroup  POST /group
+    # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ValidationException
+    def create_group(self, CreateGroupRequest input) -> str:
+        auto host = endpoints.regional_host(synthetics_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/group", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + synthetics_json_str(input.Name))
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(synthetics_json_str(k1) + ":" + synthetics_json_str(u0[k1]))
+            parts.append("\"Tags\":" + synthetics_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, synthetics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, synthetics_service(), self.region, host)
+
     # DeleteGroup  DELETE /group/{groupIdentifier}
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def delete_group(self, DeleteGroupRequest input) -> str:
@@ -858,6 +1097,51 @@ struct syntheticsClient:
         labels["groupIdentifier"] = input.GroupIdentifier
         auto b = binding.HttpBinding(method="DELETE", path_template="/group/{groupIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, synthetics_service(), self.region, host)
+
+    # DescribeCanaries  POST /canaries
+    # errors: InternalServerException, ValidationException
+    def describe_canaries(self, DescribeCanariesRequest input) -> str:
+        auto host = endpoints.regional_host(synthetics_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/canaries", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + synthetics_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.Names.is_some():
+            auto u2 = input.Names.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(synthetics_json_str(x3))
+            parts.append("\"Names\":" + synthetics_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, synthetics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, synthetics_service(), self.region, host)
+
+    # DescribeCanariesLastRun  POST /canaries/last-run
+    # errors: InternalServerException, ValidationException
+    def describe_canaries_last_run(self, DescribeCanariesLastRunRequest input) -> str:
+        auto host = endpoints.regional_host(synthetics_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/canaries/last-run", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + synthetics_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.Names.is_some():
+            auto u2 = input.Names.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(synthetics_json_str(x3))
+            parts.append("\"Names\":" + synthetics_json_arr(e3))
+        if input.BrowserType.is_some():
+            auto u4 = input.BrowserType.unwrap()
+            parts.append("\"BrowserType\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, synthetics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, synthetics_service(), self.region, host)
 
     # DescribeRuntimeVersions  POST /runtime-versions
     # errors: InternalServerException, ValidationException
@@ -960,6 +1244,62 @@ struct syntheticsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/canary/{name}/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, synthetics_service(), self.region, host)
 
+    # StartCanaryDryRun  POST /canary/{name}/dry-run/start
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
+    def start_canary_dry_run(self, StartCanaryDryRunRequest input) -> str:
+        auto host = endpoints.regional_host(synthetics_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Name
+        auto b = binding.HttpBinding(method="POST", path_template="/canary/{name}/dry-run/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Code.is_some():
+            auto u0 = input.Code.unwrap()
+            parts.append("\"Code\":" + canary_code_input_to_json(u0))
+        if input.RuntimeVersion.is_some():
+            auto u1 = input.RuntimeVersion.unwrap()
+            parts.append("\"RuntimeVersion\":" + synthetics_json_str(u1))
+        if input.RunConfig.is_some():
+            auto u2 = input.RunConfig.unwrap()
+            parts.append("\"RunConfig\":" + canary_run_config_input_to_json(u2))
+        if input.VpcConfig.is_some():
+            auto u3 = input.VpcConfig.unwrap()
+            parts.append("\"VpcConfig\":" + vpc_config_input_to_json(u3))
+        if input.ExecutionRoleArn.is_some():
+            auto u4 = input.ExecutionRoleArn.unwrap()
+            parts.append("\"ExecutionRoleArn\":" + synthetics_json_str(u4))
+        if input.SuccessRetentionPeriodInDays.is_some():
+            auto u5 = input.SuccessRetentionPeriodInDays.unwrap()
+            parts.append("\"SuccessRetentionPeriodInDays\":" + str(u5))
+        if input.FailureRetentionPeriodInDays.is_some():
+            auto u6 = input.FailureRetentionPeriodInDays.unwrap()
+            parts.append("\"FailureRetentionPeriodInDays\":" + str(u6))
+        if input.VisualReference.is_some():
+            auto u7 = input.VisualReference.unwrap()
+            parts.append("\"VisualReference\":" + visual_reference_input_to_json(u7))
+        if input.ArtifactS3Location.is_some():
+            auto u8 = input.ArtifactS3Location.unwrap()
+            parts.append("\"ArtifactS3Location\":" + synthetics_json_str(u8))
+        if input.ArtifactConfig.is_some():
+            auto u9 = input.ArtifactConfig.unwrap()
+            parts.append("\"ArtifactConfig\":" + u9.to_json())
+        if input.ProvisionedResourceCleanup.is_some():
+            auto u10 = input.ProvisionedResourceCleanup.unwrap()
+            parts.append("\"ProvisionedResourceCleanup\":" + u10.to_json())
+        if input.BrowserConfigs.is_some():
+            auto u11 = input.BrowserConfigs.unwrap()
+            list[str] e12 = []
+            for x12 in u11:
+                e12.append(x12.to_json())
+            parts.append("\"BrowserConfigs\":" + synthetics_json_arr(e12))
+        if input.VisualReferences.is_some():
+            auto u13 = input.VisualReferences.unwrap()
+            list[str] e14 = []
+            for x14 in u13:
+                e14.append(visual_reference_input_to_json(x14))
+            parts.append("\"VisualReferences\":" + synthetics_json_arr(e14))
+        auto bp = restjson.rest_json_document(b, synthetics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, synthetics_service(), self.region, host)
+
     # StopCanary  POST /canary/{name}/stop
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def stop_canary(self, StopCanaryRequest input) -> str:
@@ -968,6 +1308,98 @@ struct syntheticsClient:
         labels["name"] = input.Name
         auto b = binding.HttpBinding(method="POST", path_template="/canary/{name}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, synthetics_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: BadRequestException, ConflictException, InternalFailureException, NotFoundException, TooManyRequestsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(synthetics_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(synthetics_json_str(k0) + ":" + synthetics_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + synthetics_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, synthetics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, synthetics_service(), self.region, host)
+
+    # UpdateCanary  PATCH /canary/{name}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, RequestEntityTooLargeException, ResourceNotFoundException, ValidationException
+    def update_canary(self, UpdateCanaryRequest input) -> str:
+        auto host = endpoints.regional_host(synthetics_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Name
+        auto b = binding.HttpBinding(method="PATCH", path_template="/canary/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Code.is_some():
+            auto u0 = input.Code.unwrap()
+            parts.append("\"Code\":" + canary_code_input_to_json(u0))
+        if input.ExecutionRoleArn.is_some():
+            auto u1 = input.ExecutionRoleArn.unwrap()
+            parts.append("\"ExecutionRoleArn\":" + synthetics_json_str(u1))
+        if input.RuntimeVersion.is_some():
+            auto u2 = input.RuntimeVersion.unwrap()
+            parts.append("\"RuntimeVersion\":" + synthetics_json_str(u2))
+        if input.Schedule.is_some():
+            auto u3 = input.Schedule.unwrap()
+            parts.append("\"Schedule\":" + u3.to_json())
+        if input.RunConfig.is_some():
+            auto u4 = input.RunConfig.unwrap()
+            parts.append("\"RunConfig\":" + canary_run_config_input_to_json(u4))
+        if input.SuccessRetentionPeriodInDays.is_some():
+            auto u5 = input.SuccessRetentionPeriodInDays.unwrap()
+            parts.append("\"SuccessRetentionPeriodInDays\":" + str(u5))
+        if input.FailureRetentionPeriodInDays.is_some():
+            auto u6 = input.FailureRetentionPeriodInDays.unwrap()
+            parts.append("\"FailureRetentionPeriodInDays\":" + str(u6))
+        if input.VpcConfig.is_some():
+            auto u7 = input.VpcConfig.unwrap()
+            parts.append("\"VpcConfig\":" + vpc_config_input_to_json(u7))
+        if input.VisualReference.is_some():
+            auto u8 = input.VisualReference.unwrap()
+            parts.append("\"VisualReference\":" + visual_reference_input_to_json(u8))
+        if input.ArtifactS3Location.is_some():
+            auto u9 = input.ArtifactS3Location.unwrap()
+            parts.append("\"ArtifactS3Location\":" + synthetics_json_str(u9))
+        if input.ArtifactConfig.is_some():
+            auto u10 = input.ArtifactConfig.unwrap()
+            parts.append("\"ArtifactConfig\":" + u10.to_json())
+        if input.ProvisionedResourceCleanup.is_some():
+            auto u11 = input.ProvisionedResourceCleanup.unwrap()
+            parts.append("\"ProvisionedResourceCleanup\":" + u11.to_json())
+        if input.DryRunId.is_some():
+            auto u12 = input.DryRunId.unwrap()
+            parts.append("\"DryRunId\":" + synthetics_json_str(u12))
+        if input.VisualReferences.is_some():
+            auto u13 = input.VisualReferences.unwrap()
+            list[str] e14 = []
+            for x14 in u13:
+                e14.append(visual_reference_input_to_json(x14))
+            parts.append("\"VisualReferences\":" + synthetics_json_arr(e14))
+        if input.BrowserConfigs.is_some():
+            auto u15 = input.BrowserConfigs.unwrap()
+            list[str] e16 = []
+            for x16 in u15:
+                e16.append(x16.to_json())
+            parts.append("\"BrowserConfigs\":" + synthetics_json_arr(e16))
+        if input.AddReplicaLocations.is_some():
+            auto u17 = input.AddReplicaLocations.unwrap()
+            list[str] e18 = []
+            for x18 in u17:
+                e18.append(add_replica_location_input_to_json(x18))
+            parts.append("\"AddReplicaLocations\":" + synthetics_json_arr(e18))
+        if input.RemoveReplicaLocations.is_some():
+            auto u19 = input.RemoveReplicaLocations.unwrap()
+            list[str] e20 = []
+            for x20 in u19:
+                e20.append(synthetics_json_str(x20))
+            parts.append("\"RemoveReplicaLocations\":" + synthetics_json_arr(e20))
+        if input.KmsKeyArn.is_some():
+            auto u21 = input.KmsKeyArn.unwrap()
+            parts.append("\"KmsKeyArn\":" + synthetics_json_str(u21))
+        auto bp = restjson.rest_json_document(b, synthetics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, synthetics_service(), self.region, host)
 
 # Construct a syntheticsClient bound to credentials + region.
 def synthetics_client(core.Credentials creds, str region) -> syntheticsClient:

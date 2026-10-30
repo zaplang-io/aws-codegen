@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 53 operations — 29 with a generated method,
-#   24 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 53 operations — 53 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   151 structs (103 @derive(Json)), 40 enums, 2 error variants.
-#   3 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import base64
 
 # The DataSync awsJson protocol: version 1.1, API id "FmrsService".
 def datasync_protocol() -> awsjson.AwsJson:
@@ -387,8 +388,9 @@ struct CmkSecretConfig:
     Optional[str] SecretArn
     Optional[str] KmsKeyArn
 
-# no @derive(Json): member(s) Tags: list[TagListEntry], SubnetArns: list[str], SecurityGroupArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[TagListEntry], SubnetArns: list[str], SecurityGroupArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAgentRequest:
     str ActivationKey
     Optional[str] AgentName
@@ -401,8 +403,9 @@ struct CreateAgentRequest:
 struct CreateAgentResponse:
     Optional[str] AgentArn
 
-# no @derive(Json): member(s) AgentArns: list[str], Tags: list[TagListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentArns: list[str], Tags: list[TagListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLocationAzureBlobRequest:
     str ContainerUrl
     AzureBlobAuthenticationType AuthenticationType
@@ -419,8 +422,9 @@ struct CreateLocationAzureBlobRequest:
 struct CreateLocationAzureBlobResponse:
     Optional[str] LocationArn
 
-# no @derive(Json): member(s) Ec2Config: Ec2Config, Tags: list[TagListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Ec2Config: Ec2Config, Tags: list[TagListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLocationEfsRequest:
     Optional[str] Subdirectory
     str EfsFilesystemArn
@@ -434,8 +438,9 @@ struct CreateLocationEfsRequest:
 struct CreateLocationEfsResponse:
     Optional[str] LocationArn
 
-# no @derive(Json): member(s) SecurityGroupArns: list[str], Tags: list[TagListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupArns: list[str], Tags: list[TagListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLocationFsxLustreRequest:
     str FsxFilesystemArn
     list[str] SecurityGroupArns
@@ -446,8 +451,9 @@ struct CreateLocationFsxLustreRequest:
 struct CreateLocationFsxLustreResponse:
     Optional[str] LocationArn
 
-# no @derive(Json): member(s) SecurityGroupArns: list[str], Tags: list[TagListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupArns: list[str], Tags: list[TagListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLocationFsxOntapRequest:
     FsxProtocol Protocol
     list[str] SecurityGroupArns
@@ -459,8 +465,9 @@ struct CreateLocationFsxOntapRequest:
 struct CreateLocationFsxOntapResponse:
     Optional[str] LocationArn
 
-# no @derive(Json): member(s) SecurityGroupArns: list[str], Tags: list[TagListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupArns: list[str], Tags: list[TagListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLocationFsxOpenZfsRequest:
     str FsxFilesystemArn
     FsxProtocol Protocol
@@ -472,8 +479,9 @@ struct CreateLocationFsxOpenZfsRequest:
 struct CreateLocationFsxOpenZfsResponse:
     Optional[str] LocationArn
 
-# no @derive(Json): member(s) SecurityGroupArns: list[str], Tags: list[TagListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupArns: list[str], Tags: list[TagListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLocationFsxWindowsRequest:
     Optional[str] Subdirectory
     str FsxFilesystemArn
@@ -489,8 +497,9 @@ struct CreateLocationFsxWindowsRequest:
 struct CreateLocationFsxWindowsResponse:
     Optional[str] LocationArn
 
-# no @derive(Json): member(s) NameNodes: list[HdfsNameNode], AgentArns: list[str], Tags: list[TagListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NameNodes: list[HdfsNameNode], AgentArns: list[str], Tags: list[TagListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLocationHdfsRequest:
     Optional[str] Subdirectory
     list[HdfsNameNode] NameNodes
@@ -512,8 +521,9 @@ struct CreateLocationHdfsRequest:
 struct CreateLocationHdfsResponse:
     Optional[str] LocationArn
 
-# no @derive(Json): member(s) OnPremConfig: OnPremConfig, Tags: list[TagListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OnPremConfig: OnPremConfig, Tags: list[TagListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLocationNfsRequest:
     str Subdirectory
     str ServerHostname
@@ -525,8 +535,9 @@ struct CreateLocationNfsRequest:
 struct CreateLocationNfsResponse:
     Optional[str] LocationArn
 
-# no @derive(Json): member(s) AgentArns: list[str], Tags: list[TagListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentArns: list[str], Tags: list[TagListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLocationObjectStorageRequest:
     str ServerHostname
     Optional[int64] ServerPort
@@ -545,8 +556,9 @@ struct CreateLocationObjectStorageRequest:
 struct CreateLocationObjectStorageResponse:
     Optional[str] LocationArn
 
-# no @derive(Json): member(s) AgentArns: list[str], Tags: list[TagListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentArns: list[str], Tags: list[TagListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLocationS3Request:
     Optional[str] Subdirectory
     str S3BucketArn
@@ -559,8 +571,9 @@ struct CreateLocationS3Request:
 struct CreateLocationS3Response:
     Optional[str] LocationArn
 
-# no @derive(Json): member(s) AgentArns: list[str], Tags: list[TagListEntry], DnsIpAddresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentArns: list[str], Tags: list[TagListEntry], DnsIpAddresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLocationSmbRequest:
     str Subdirectory
     str ServerHostname
@@ -582,8 +595,9 @@ struct CreateLocationSmbRequest:
 struct CreateLocationSmbResponse:
     Optional[str] LocationArn
 
-# no @derive(Json): member(s) Excludes: list[FilterRule], Tags: list[TagListEntry], Includes: list[FilterRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Excludes: list[FilterRule], Tags: list[TagListEntry], Includes: list[FilterRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTaskRequest:
     str SourceLocationArn
     str DestinationLocationArn
@@ -638,8 +652,9 @@ struct DeleteTaskResponse:
 struct DescribeAgentRequest:
     str AgentArn
 
-# no @derive(Json): member(s) PrivateLinkConfig: PrivateLinkConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrivateLinkConfig: PrivateLinkConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAgentResponse:
     Optional[str] AgentArn
     Optional[str] Name
@@ -654,8 +669,9 @@ struct DescribeAgentResponse:
 struct DescribeLocationAzureBlobRequest:
     str LocationArn
 
-# no @derive(Json): member(s) AgentArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLocationAzureBlobResponse:
     Optional[str] LocationArn
     Optional[str] LocationUri
@@ -672,8 +688,9 @@ struct DescribeLocationAzureBlobResponse:
 struct DescribeLocationEfsRequest:
     str LocationArn
 
-# no @derive(Json): member(s) Ec2Config: Ec2Config not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Ec2Config: Ec2Config not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLocationEfsResponse:
     Optional[str] LocationArn
     Optional[str] LocationUri
@@ -687,8 +704,9 @@ struct DescribeLocationEfsResponse:
 struct DescribeLocationFsxLustreRequest:
     str LocationArn
 
-# no @derive(Json): member(s) SecurityGroupArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLocationFsxLustreResponse:
     Optional[str] LocationArn
     Optional[str] LocationUri
@@ -699,8 +717,9 @@ struct DescribeLocationFsxLustreResponse:
 struct DescribeLocationFsxOntapRequest:
     str LocationArn
 
-# no @derive(Json): member(s) SecurityGroupArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLocationFsxOntapResponse:
     Optional[DateTime] CreationTime
     Optional[str] LocationArn
@@ -714,8 +733,9 @@ struct DescribeLocationFsxOntapResponse:
 struct DescribeLocationFsxOpenZfsRequest:
     str LocationArn
 
-# no @derive(Json): member(s) SecurityGroupArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLocationFsxOpenZfsResponse:
     Optional[str] LocationArn
     Optional[str] LocationUri
@@ -727,8 +747,9 @@ struct DescribeLocationFsxOpenZfsResponse:
 struct DescribeLocationFsxWindowsRequest:
     str LocationArn
 
-# no @derive(Json): member(s) SecurityGroupArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLocationFsxWindowsResponse:
     Optional[str] LocationArn
     Optional[str] LocationUri
@@ -744,8 +765,9 @@ struct DescribeLocationFsxWindowsResponse:
 struct DescribeLocationHdfsRequest:
     str LocationArn
 
-# no @derive(Json): member(s) NameNodes: list[HdfsNameNode], AgentArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NameNodes: list[HdfsNameNode], AgentArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLocationHdfsResponse:
     Optional[str] LocationArn
     Optional[str] LocationUri
@@ -767,8 +789,9 @@ struct DescribeLocationHdfsResponse:
 struct DescribeLocationNfsRequest:
     str LocationArn
 
-# no @derive(Json): member(s) OnPremConfig: OnPremConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OnPremConfig: OnPremConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLocationNfsResponse:
     Optional[str] LocationArn
     Optional[str] LocationUri
@@ -780,8 +803,9 @@ struct DescribeLocationNfsResponse:
 struct DescribeLocationObjectStorageRequest:
     str LocationArn
 
-# no @derive(Json): member(s) AgentArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLocationObjectStorageResponse:
     Optional[str] LocationArn
     Optional[str] LocationUri
@@ -799,8 +823,9 @@ struct DescribeLocationObjectStorageResponse:
 struct DescribeLocationS3Request:
     str LocationArn
 
-# no @derive(Json): member(s) AgentArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLocationS3Response:
     Optional[str] LocationArn
     Optional[str] LocationUri
@@ -813,8 +838,9 @@ struct DescribeLocationS3Response:
 struct DescribeLocationSmbRequest:
     str LocationArn
 
-# no @derive(Json): member(s) AgentArns: list[str], DnsIpAddresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentArns: list[str], DnsIpAddresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLocationSmbResponse:
     Optional[str] LocationArn
     Optional[str] LocationUri
@@ -834,8 +860,9 @@ struct DescribeLocationSmbResponse:
 struct DescribeTaskExecutionRequest:
     str TaskExecutionArn
 
-# no @derive(Json): member(s) Excludes: list[FilterRule], Includes: list[FilterRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Excludes: list[FilterRule], Includes: list[FilterRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTaskExecutionResponse:
     Optional[str] TaskExecutionArn
     Optional[TaskExecutionStatus] Status
@@ -877,8 +904,9 @@ struct DescribeTaskExecutionResponse:
 struct DescribeTaskRequest:
     str TaskArn
 
-# no @derive(Json): member(s) SourceNetworkInterfaceArns: list[str], DestinationNetworkInterfaceArns: list[str], Excludes: list[FilterRule], Includes: list[FilterRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceNetworkInterfaceArns: list[str], DestinationNetworkInterfaceArns: list[str], Excludes: list[FilterRule], Includes: list[FilterRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTaskResponse:
     Optional[str] TaskArn
     Optional[TaskStatus] Status
@@ -901,8 +929,9 @@ struct DescribeTaskResponse:
     Optional[TaskScheduleDetails] ScheduleDetails
     Optional[TaskMode] TaskMode
 
-# no @derive(Json): member(s) SecurityGroupArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Ec2Config:
     str SubnetArn
     list[str] SecurityGroupArns
@@ -966,21 +995,24 @@ struct ListAgentsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Agents: list[AgentListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Agents: list[AgentListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAgentsResponse:
     Optional[list[AgentListEntry]] Agents
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[LocationFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[LocationFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLocationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
     Optional[list[LocationFilter]] Filters
 
-# no @derive(Json): member(s) Locations: list[LocationListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Locations: list[LocationListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLocationsResponse:
     Optional[list[LocationListEntry]] Locations
     Optional[str] NextToken
@@ -991,8 +1023,9 @@ struct ListTagsForResourceRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: list[TagListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[TagListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[TagListEntry]] Tags
     Optional[str] NextToken
@@ -1003,27 +1036,31 @@ struct ListTaskExecutionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TaskExecutions: list[TaskExecutionListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskExecutions: list[TaskExecutionListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTaskExecutionsResponse:
     Optional[list[TaskExecutionListEntry]] TaskExecutions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[TaskFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[TaskFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTasksRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
     Optional[list[TaskFilter]] Filters
 
-# no @derive(Json): member(s) Tasks: list[TaskListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tasks: list[TaskListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTasksResponse:
     Optional[list[TaskListEntry]] Tasks
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LocationFilter:
     LocationFilterName Name
     list[str] Values
@@ -1048,8 +1085,9 @@ struct ManifestConfig:
 struct NfsMountOptions:
     Optional[NfsVersion] Version
 
-# no @derive(Json): member(s) AgentArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OnPremConfig:
     list[str] AgentArns
 
@@ -1076,8 +1114,9 @@ struct Options:
 struct Platform:
     Optional[str] Version
 
-# no @derive(Json): member(s) SubnetArns: list[str], SecurityGroupArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetArns: list[str], SecurityGroupArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivateLinkConfig:
     Optional[str] VpcEndpointId
     Optional[str] PrivateLinkEndpoint
@@ -1135,8 +1174,9 @@ struct SmbMountOptions:
 struct SourceManifestConfig:
     S3ManifestConfig S3
 
-# no @derive(Json): member(s) Includes: list[FilterRule], Excludes: list[FilterRule], Tags: list[TagListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Includes: list[FilterRule], Excludes: list[FilterRule], Tags: list[TagListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartTaskExecutionRequest:
     str TaskArn
     Optional[Options] OverrideOptions
@@ -1155,8 +1195,9 @@ struct TagListEntry:
     str Key
     Optional[str] Value
 
-# no @derive(Json): member(s) Tags: list[TagListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[TagListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[TagListEntry] Tags
@@ -1209,8 +1250,9 @@ struct TaskExecutionResultDetail:
     Optional[str] ErrorCode
     Optional[str] ErrorDetail
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaskFilter:
     TaskFilterName Name
     list[str] Values
@@ -1242,8 +1284,9 @@ struct TaskScheduleDetails:
     Optional[str] DisabledReason
     Optional[ScheduleDisabledBy] DisabledBy
 
-# no @derive(Json): member(s) Keys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Keys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] Keys
@@ -1263,8 +1306,9 @@ struct UpdateAgentResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) AgentArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateLocationAzureBlobRequest:
     str LocationArn
     Optional[str] Subdirectory
@@ -1341,8 +1385,9 @@ struct UpdateLocationFsxWindowsResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) NameNodes: list[HdfsNameNode], AgentArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NameNodes: list[HdfsNameNode], AgentArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateLocationHdfsRequest:
     str LocationArn
     Optional[str] Subdirectory
@@ -1365,8 +1410,9 @@ struct UpdateLocationHdfsResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) OnPremConfig: OnPremConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OnPremConfig: OnPremConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateLocationNfsRequest:
     str LocationArn
     Optional[str] Subdirectory
@@ -1379,8 +1425,9 @@ struct UpdateLocationNfsResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) AgentArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateLocationObjectStorageRequest:
     str LocationArn
     Optional[int64] ServerPort
@@ -1411,8 +1458,9 @@ struct UpdateLocationS3Response:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) AgentArns: list[str], DnsIpAddresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentArns: list[str], DnsIpAddresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateLocationSmbRequest:
     str LocationArn
     Optional[str] Subdirectory
@@ -1445,8 +1493,9 @@ struct UpdateTaskExecutionResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Excludes: list[FilterRule], Includes: list[FilterRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Excludes: list[FilterRule], Includes: list[FilterRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTaskRequest:
     str TaskArn
     Optional[Options] Options
@@ -1482,37 +1531,817 @@ def datasync_error_from_code(str code) -> DataSyncError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateAgent (input CreateAgentRequest)
-#   CreateLocationAzureBlob (input CreateLocationAzureBlobRequest)
-#   CreateLocationEfs (input CreateLocationEfsRequest)
-#   CreateLocationFsxLustre (input CreateLocationFsxLustreRequest)
-#   CreateLocationFsxOntap (input CreateLocationFsxOntapRequest)
-#   CreateLocationFsxOpenZfs (input CreateLocationFsxOpenZfsRequest)
-#   CreateLocationFsxWindows (input CreateLocationFsxWindowsRequest)
-#   CreateLocationHdfs (input CreateLocationHdfsRequest)
-#   CreateLocationNfs (input CreateLocationNfsRequest)
-#   CreateLocationObjectStorage (input CreateLocationObjectStorageRequest)
-#   CreateLocationS3 (input CreateLocationS3Request)
-#   CreateLocationSmb (input CreateLocationSmbRequest)
-#   CreateTask (input CreateTaskRequest)
-#   ListLocations (input ListLocationsRequest)
-#   ListTasks (input ListTasksRequest)
-#   StartTaskExecution (input StartTaskExecutionRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateLocationAzureBlob (input UpdateLocationAzureBlobRequest)
-#   UpdateLocationHdfs (input UpdateLocationHdfsRequest)
-#   UpdateLocationNfs (input UpdateLocationNfsRequest)
-#   UpdateLocationObjectStorage (input UpdateLocationObjectStorageRequest)
-#   UpdateLocationSmb (input UpdateLocationSmbRequest)
-#   UpdateTask (input UpdateTaskRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def datasync_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListLocations (input not derivable (no generated method))
-#   ListTasks (input not derivable (no generated method))
+def datasync_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def datasync_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateAgentRequest to a compact JSON object (declaration order).
+def create_agent_request_to_json(CreateAgentRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ActivationKey\":" + datasync_json_str(v.ActivationKey))
+    if v.AgentName.is_some():
+        auto u0 = v.AgentName.unwrap()
+        parts.append("\"AgentName\":" + datasync_json_str(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + datasync_json_arr(e2))
+    if v.VpcEndpointId.is_some():
+        auto u3 = v.VpcEndpointId.unwrap()
+        parts.append("\"VpcEndpointId\":" + datasync_json_str(u3))
+    if v.SubnetArns.is_some():
+        auto u4 = v.SubnetArns.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(datasync_json_str(x5))
+        parts.append("\"SubnetArns\":" + datasync_json_arr(e5))
+    if v.SecurityGroupArns.is_some():
+        auto u6 = v.SecurityGroupArns.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(datasync_json_str(x7))
+        parts.append("\"SecurityGroupArns\":" + datasync_json_arr(e7))
+    return datasync_json_obj(parts)
+
+# Serialize CreateLocationAzureBlobRequest to a compact JSON object (declaration order).
+def create_location_azure_blob_request_to_json(CreateLocationAzureBlobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ContainerUrl\":" + datasync_json_str(v.ContainerUrl))
+    parts.append("\"AuthenticationType\":" + v.AuthenticationType.to_json())
+    if v.SasConfiguration.is_some():
+        auto u0 = v.SasConfiguration.unwrap()
+        parts.append("\"SasConfiguration\":" + u0.to_json())
+    if v.BlobType.is_some():
+        auto u1 = v.BlobType.unwrap()
+        parts.append("\"BlobType\":" + datasync_json_str(u1))
+    if v.AccessTier.is_some():
+        auto u2 = v.AccessTier.unwrap()
+        parts.append("\"AccessTier\":" + u2.to_json())
+    if v.Subdirectory.is_some():
+        auto u3 = v.Subdirectory.unwrap()
+        parts.append("\"Subdirectory\":" + datasync_json_str(u3))
+    if v.AgentArns.is_some():
+        auto u4 = v.AgentArns.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(datasync_json_str(x5))
+        parts.append("\"AgentArns\":" + datasync_json_arr(e5))
+    if v.Tags.is_some():
+        auto u6 = v.Tags.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Tags\":" + datasync_json_arr(e7))
+    if v.CmkSecretConfig.is_some():
+        auto u8 = v.CmkSecretConfig.unwrap()
+        parts.append("\"CmkSecretConfig\":" + u8.to_json())
+    if v.CustomSecretConfig.is_some():
+        auto u9 = v.CustomSecretConfig.unwrap()
+        parts.append("\"CustomSecretConfig\":" + u9.to_json())
+    return datasync_json_obj(parts)
+
+# Serialize CreateLocationEfsRequest to a compact JSON object (declaration order).
+def create_location_efs_request_to_json(CreateLocationEfsRequest v) -> str:
+    list[str] parts = []
+    if v.Subdirectory.is_some():
+        auto u0 = v.Subdirectory.unwrap()
+        parts.append("\"Subdirectory\":" + datasync_json_str(u0))
+    parts.append("\"EfsFilesystemArn\":" + datasync_json_str(v.EfsFilesystemArn))
+    parts.append("\"Ec2Config\":" + ec2_config_to_json(v.Ec2Config))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + datasync_json_arr(e2))
+    if v.AccessPointArn.is_some():
+        auto u3 = v.AccessPointArn.unwrap()
+        parts.append("\"AccessPointArn\":" + datasync_json_str(u3))
+    if v.FileSystemAccessRoleArn.is_some():
+        auto u4 = v.FileSystemAccessRoleArn.unwrap()
+        parts.append("\"FileSystemAccessRoleArn\":" + datasync_json_str(u4))
+    if v.InTransitEncryption.is_some():
+        auto u5 = v.InTransitEncryption.unwrap()
+        parts.append("\"InTransitEncryption\":" + u5.to_json())
+    return datasync_json_obj(parts)
+
+# Serialize CreateLocationFsxLustreRequest to a compact JSON object (declaration order).
+def create_location_fsx_lustre_request_to_json(CreateLocationFsxLustreRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"FsxFilesystemArn\":" + datasync_json_str(v.FsxFilesystemArn))
+    list[str] e0 = []
+    for x0 in v.SecurityGroupArns:
+        e0.append(datasync_json_str(x0))
+    parts.append("\"SecurityGroupArns\":" + datasync_json_arr(e0))
+    if v.Subdirectory.is_some():
+        auto u1 = v.Subdirectory.unwrap()
+        parts.append("\"Subdirectory\":" + datasync_json_str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + datasync_json_arr(e3))
+    return datasync_json_obj(parts)
+
+# Serialize CreateLocationFsxOntapRequest to a compact JSON object (declaration order).
+def create_location_fsx_ontap_request_to_json(CreateLocationFsxOntapRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Protocol\":" + v.Protocol.to_json())
+    list[str] e0 = []
+    for x0 in v.SecurityGroupArns:
+        e0.append(datasync_json_str(x0))
+    parts.append("\"SecurityGroupArns\":" + datasync_json_arr(e0))
+    parts.append("\"StorageVirtualMachineArn\":" + datasync_json_str(v.StorageVirtualMachineArn))
+    if v.Subdirectory.is_some():
+        auto u1 = v.Subdirectory.unwrap()
+        parts.append("\"Subdirectory\":" + datasync_json_str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + datasync_json_arr(e3))
+    return datasync_json_obj(parts)
+
+# Serialize CreateLocationFsxOpenZfsRequest to a compact JSON object (declaration order).
+def create_location_fsx_open_zfs_request_to_json(CreateLocationFsxOpenZfsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"FsxFilesystemArn\":" + datasync_json_str(v.FsxFilesystemArn))
+    parts.append("\"Protocol\":" + v.Protocol.to_json())
+    list[str] e0 = []
+    for x0 in v.SecurityGroupArns:
+        e0.append(datasync_json_str(x0))
+    parts.append("\"SecurityGroupArns\":" + datasync_json_arr(e0))
+    if v.Subdirectory.is_some():
+        auto u1 = v.Subdirectory.unwrap()
+        parts.append("\"Subdirectory\":" + datasync_json_str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + datasync_json_arr(e3))
+    return datasync_json_obj(parts)
+
+# Serialize CreateLocationFsxWindowsRequest to a compact JSON object (declaration order).
+def create_location_fsx_windows_request_to_json(CreateLocationFsxWindowsRequest v) -> str:
+    list[str] parts = []
+    if v.Subdirectory.is_some():
+        auto u0 = v.Subdirectory.unwrap()
+        parts.append("\"Subdirectory\":" + datasync_json_str(u0))
+    parts.append("\"FsxFilesystemArn\":" + datasync_json_str(v.FsxFilesystemArn))
+    list[str] e1 = []
+    for x1 in v.SecurityGroupArns:
+        e1.append(datasync_json_str(x1))
+    parts.append("\"SecurityGroupArns\":" + datasync_json_arr(e1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + datasync_json_arr(e3))
+    parts.append("\"User\":" + datasync_json_str(v.User))
+    if v.Domain.is_some():
+        auto u4 = v.Domain.unwrap()
+        parts.append("\"Domain\":" + datasync_json_str(u4))
+    if v.Password.is_some():
+        auto u5 = v.Password.unwrap()
+        parts.append("\"Password\":" + datasync_json_str(u5))
+    if v.CmkSecretConfig.is_some():
+        auto u6 = v.CmkSecretConfig.unwrap()
+        parts.append("\"CmkSecretConfig\":" + u6.to_json())
+    if v.CustomSecretConfig.is_some():
+        auto u7 = v.CustomSecretConfig.unwrap()
+        parts.append("\"CustomSecretConfig\":" + u7.to_json())
+    return datasync_json_obj(parts)
+
+# Serialize CreateLocationHdfsRequest to a compact JSON object (declaration order).
+def create_location_hdfs_request_to_json(CreateLocationHdfsRequest v) -> str:
+    list[str] parts = []
+    if v.Subdirectory.is_some():
+        auto u0 = v.Subdirectory.unwrap()
+        parts.append("\"Subdirectory\":" + datasync_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.NameNodes:
+        e1.append(x1.to_json())
+    parts.append("\"NameNodes\":" + datasync_json_arr(e1))
+    if v.BlockSize.is_some():
+        auto u2 = v.BlockSize.unwrap()
+        parts.append("\"BlockSize\":" + str(u2))
+    if v.ReplicationFactor.is_some():
+        auto u3 = v.ReplicationFactor.unwrap()
+        parts.append("\"ReplicationFactor\":" + str(u3))
+    if v.KmsKeyProviderUri.is_some():
+        auto u4 = v.KmsKeyProviderUri.unwrap()
+        parts.append("\"KmsKeyProviderUri\":" + datasync_json_str(u4))
+    if v.QopConfiguration.is_some():
+        auto u5 = v.QopConfiguration.unwrap()
+        parts.append("\"QopConfiguration\":" + u5.to_json())
+    parts.append("\"AuthenticationType\":" + v.AuthenticationType.to_json())
+    if v.SimpleUser.is_some():
+        auto u6 = v.SimpleUser.unwrap()
+        parts.append("\"SimpleUser\":" + datasync_json_str(u6))
+    if v.KerberosPrincipal.is_some():
+        auto u7 = v.KerberosPrincipal.unwrap()
+        parts.append("\"KerberosPrincipal\":" + datasync_json_str(u7))
+    if v.KerberosKeytab.is_some():
+        auto u8 = v.KerberosKeytab.unwrap()
+        parts.append("\"KerberosKeytab\":" + datasync_json_str(base64.encode(u8)))
+    if v.KerberosKrb5Conf.is_some():
+        auto u9 = v.KerberosKrb5Conf.unwrap()
+        parts.append("\"KerberosKrb5Conf\":" + datasync_json_str(base64.encode(u9)))
+    list[str] e10 = []
+    for x10 in v.AgentArns:
+        e10.append(datasync_json_str(x10))
+    parts.append("\"AgentArns\":" + datasync_json_arr(e10))
+    if v.Tags.is_some():
+        auto u11 = v.Tags.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"Tags\":" + datasync_json_arr(e12))
+    if v.CmkSecretConfig.is_some():
+        auto u13 = v.CmkSecretConfig.unwrap()
+        parts.append("\"CmkSecretConfig\":" + u13.to_json())
+    if v.CustomSecretConfig.is_some():
+        auto u14 = v.CustomSecretConfig.unwrap()
+        parts.append("\"CustomSecretConfig\":" + u14.to_json())
+    return datasync_json_obj(parts)
+
+# Serialize CreateLocationNfsRequest to a compact JSON object (declaration order).
+def create_location_nfs_request_to_json(CreateLocationNfsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Subdirectory\":" + datasync_json_str(v.Subdirectory))
+    parts.append("\"ServerHostname\":" + datasync_json_str(v.ServerHostname))
+    parts.append("\"OnPremConfig\":" + on_prem_config_to_json(v.OnPremConfig))
+    if v.MountOptions.is_some():
+        auto u0 = v.MountOptions.unwrap()
+        parts.append("\"MountOptions\":" + u0.to_json())
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + datasync_json_arr(e2))
+    return datasync_json_obj(parts)
+
+# Serialize CreateLocationObjectStorageRequest to a compact JSON object (declaration order).
+def create_location_object_storage_request_to_json(CreateLocationObjectStorageRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ServerHostname\":" + datasync_json_str(v.ServerHostname))
+    if v.ServerPort.is_some():
+        auto u0 = v.ServerPort.unwrap()
+        parts.append("\"ServerPort\":" + str(u0))
+    if v.ServerProtocol.is_some():
+        auto u1 = v.ServerProtocol.unwrap()
+        parts.append("\"ServerProtocol\":" + u1.to_json())
+    if v.Subdirectory.is_some():
+        auto u2 = v.Subdirectory.unwrap()
+        parts.append("\"Subdirectory\":" + datasync_json_str(u2))
+    parts.append("\"BucketName\":" + datasync_json_str(v.BucketName))
+    if v.AccessKey.is_some():
+        auto u3 = v.AccessKey.unwrap()
+        parts.append("\"AccessKey\":" + datasync_json_str(u3))
+    if v.SecretKey.is_some():
+        auto u4 = v.SecretKey.unwrap()
+        parts.append("\"SecretKey\":" + datasync_json_str(u4))
+    if v.AgentArns.is_some():
+        auto u5 = v.AgentArns.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(datasync_json_str(x6))
+        parts.append("\"AgentArns\":" + datasync_json_arr(e6))
+    if v.Tags.is_some():
+        auto u7 = v.Tags.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"Tags\":" + datasync_json_arr(e8))
+    if v.ServerCertificate.is_some():
+        auto u9 = v.ServerCertificate.unwrap()
+        parts.append("\"ServerCertificate\":" + datasync_json_str(base64.encode(u9)))
+    if v.CmkSecretConfig.is_some():
+        auto u10 = v.CmkSecretConfig.unwrap()
+        parts.append("\"CmkSecretConfig\":" + u10.to_json())
+    if v.CustomSecretConfig.is_some():
+        auto u11 = v.CustomSecretConfig.unwrap()
+        parts.append("\"CustomSecretConfig\":" + u11.to_json())
+    return datasync_json_obj(parts)
+
+# Serialize CreateLocationS3Request to a compact JSON object (declaration order).
+def create_location_s3_request_to_json(CreateLocationS3Request v) -> str:
+    list[str] parts = []
+    if v.Subdirectory.is_some():
+        auto u0 = v.Subdirectory.unwrap()
+        parts.append("\"Subdirectory\":" + datasync_json_str(u0))
+    parts.append("\"S3BucketArn\":" + datasync_json_str(v.S3BucketArn))
+    if v.S3StorageClass.is_some():
+        auto u1 = v.S3StorageClass.unwrap()
+        parts.append("\"S3StorageClass\":" + u1.to_json())
+    parts.append("\"S3Config\":" + v.S3Config.to_json())
+    if v.AgentArns.is_some():
+        auto u2 = v.AgentArns.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(datasync_json_str(x3))
+        parts.append("\"AgentArns\":" + datasync_json_arr(e3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + datasync_json_arr(e5))
+    return datasync_json_obj(parts)
+
+# Serialize CreateLocationSmbRequest to a compact JSON object (declaration order).
+def create_location_smb_request_to_json(CreateLocationSmbRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Subdirectory\":" + datasync_json_str(v.Subdirectory))
+    parts.append("\"ServerHostname\":" + datasync_json_str(v.ServerHostname))
+    if v.User.is_some():
+        auto u0 = v.User.unwrap()
+        parts.append("\"User\":" + datasync_json_str(u0))
+    if v.Domain.is_some():
+        auto u1 = v.Domain.unwrap()
+        parts.append("\"Domain\":" + datasync_json_str(u1))
+    if v.Password.is_some():
+        auto u2 = v.Password.unwrap()
+        parts.append("\"Password\":" + datasync_json_str(u2))
+    if v.CmkSecretConfig.is_some():
+        auto u3 = v.CmkSecretConfig.unwrap()
+        parts.append("\"CmkSecretConfig\":" + u3.to_json())
+    if v.CustomSecretConfig.is_some():
+        auto u4 = v.CustomSecretConfig.unwrap()
+        parts.append("\"CustomSecretConfig\":" + u4.to_json())
+    list[str] e5 = []
+    for x5 in v.AgentArns:
+        e5.append(datasync_json_str(x5))
+    parts.append("\"AgentArns\":" + datasync_json_arr(e5))
+    if v.MountOptions.is_some():
+        auto u6 = v.MountOptions.unwrap()
+        parts.append("\"MountOptions\":" + u6.to_json())
+    if v.Tags.is_some():
+        auto u7 = v.Tags.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"Tags\":" + datasync_json_arr(e8))
+    if v.AuthenticationType.is_some():
+        auto u9 = v.AuthenticationType.unwrap()
+        parts.append("\"AuthenticationType\":" + u9.to_json())
+    if v.DnsIpAddresses.is_some():
+        auto u10 = v.DnsIpAddresses.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(datasync_json_str(x11))
+        parts.append("\"DnsIpAddresses\":" + datasync_json_arr(e11))
+    if v.KerberosPrincipal.is_some():
+        auto u12 = v.KerberosPrincipal.unwrap()
+        parts.append("\"KerberosPrincipal\":" + datasync_json_str(u12))
+    if v.KerberosKeytab.is_some():
+        auto u13 = v.KerberosKeytab.unwrap()
+        parts.append("\"KerberosKeytab\":" + datasync_json_str(base64.encode(u13)))
+    if v.KerberosKrb5Conf.is_some():
+        auto u14 = v.KerberosKrb5Conf.unwrap()
+        parts.append("\"KerberosKrb5Conf\":" + datasync_json_str(base64.encode(u14)))
+    return datasync_json_obj(parts)
+
+# Serialize CreateTaskRequest to a compact JSON object (declaration order).
+def create_task_request_to_json(CreateTaskRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SourceLocationArn\":" + datasync_json_str(v.SourceLocationArn))
+    parts.append("\"DestinationLocationArn\":" + datasync_json_str(v.DestinationLocationArn))
+    if v.CloudWatchLogGroupArn.is_some():
+        auto u0 = v.CloudWatchLogGroupArn.unwrap()
+        parts.append("\"CloudWatchLogGroupArn\":" + datasync_json_str(u0))
+    if v.Name.is_some():
+        auto u1 = v.Name.unwrap()
+        parts.append("\"Name\":" + datasync_json_str(u1))
+    if v.Options.is_some():
+        auto u2 = v.Options.unwrap()
+        parts.append("\"Options\":" + u2.to_json())
+    if v.Excludes.is_some():
+        auto u3 = v.Excludes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Excludes\":" + datasync_json_arr(e4))
+    if v.Schedule.is_some():
+        auto u5 = v.Schedule.unwrap()
+        parts.append("\"Schedule\":" + u5.to_json())
+    if v.Tags.is_some():
+        auto u6 = v.Tags.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Tags\":" + datasync_json_arr(e7))
+    if v.Includes.is_some():
+        auto u8 = v.Includes.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"Includes\":" + datasync_json_arr(e9))
+    if v.ManifestConfig.is_some():
+        auto u10 = v.ManifestConfig.unwrap()
+        parts.append("\"ManifestConfig\":" + u10.to_json())
+    if v.TaskReportConfig.is_some():
+        auto u11 = v.TaskReportConfig.unwrap()
+        parts.append("\"TaskReportConfig\":" + u11.to_json())
+    if v.TaskMode.is_some():
+        auto u12 = v.TaskMode.unwrap()
+        parts.append("\"TaskMode\":" + u12.to_json())
+    return datasync_json_obj(parts)
+
+# Serialize Ec2Config to a compact JSON object (declaration order).
+def ec2_config_to_json(Ec2Config v) -> str:
+    list[str] parts = []
+    parts.append("\"SubnetArn\":" + datasync_json_str(v.SubnetArn))
+    list[str] e0 = []
+    for x0 in v.SecurityGroupArns:
+        e0.append(datasync_json_str(x0))
+    parts.append("\"SecurityGroupArns\":" + datasync_json_arr(e0))
+    return datasync_json_obj(parts)
+
+# Serialize ListLocationsRequest to a compact JSON object (declaration order).
+def list_locations_request_to_json(ListLocationsRequest v) -> str:
+    list[str] parts = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + datasync_json_str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(location_filter_to_json(x3))
+        parts.append("\"Filters\":" + datasync_json_arr(e3))
+    return datasync_json_obj(parts)
+
+# Serialize ListTasksRequest to a compact JSON object (declaration order).
+def list_tasks_request_to_json(ListTasksRequest v) -> str:
+    list[str] parts = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + datasync_json_str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(task_filter_to_json(x3))
+        parts.append("\"Filters\":" + datasync_json_arr(e3))
+    return datasync_json_obj(parts)
+
+# Serialize LocationFilter to a compact JSON object (declaration order).
+def location_filter_to_json(LocationFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(datasync_json_str(x0))
+    parts.append("\"Values\":" + datasync_json_arr(e0))
+    parts.append("\"Operator\":" + v.Operator.to_json())
+    return datasync_json_obj(parts)
+
+# Serialize OnPremConfig to a compact JSON object (declaration order).
+def on_prem_config_to_json(OnPremConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AgentArns:
+        e0.append(datasync_json_str(x0))
+    parts.append("\"AgentArns\":" + datasync_json_arr(e0))
+    return datasync_json_obj(parts)
+
+# Serialize StartTaskExecutionRequest to a compact JSON object (declaration order).
+def start_task_execution_request_to_json(StartTaskExecutionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TaskArn\":" + datasync_json_str(v.TaskArn))
+    if v.OverrideOptions.is_some():
+        auto u0 = v.OverrideOptions.unwrap()
+        parts.append("\"OverrideOptions\":" + u0.to_json())
+    if v.Includes.is_some():
+        auto u1 = v.Includes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Includes\":" + datasync_json_arr(e2))
+    if v.Excludes.is_some():
+        auto u3 = v.Excludes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Excludes\":" + datasync_json_arr(e4))
+    if v.ManifestConfig.is_some():
+        auto u5 = v.ManifestConfig.unwrap()
+        parts.append("\"ManifestConfig\":" + u5.to_json())
+    if v.TaskReportConfig.is_some():
+        auto u6 = v.TaskReportConfig.unwrap()
+        parts.append("\"TaskReportConfig\":" + u6.to_json())
+    if v.Tags.is_some():
+        auto u7 = v.Tags.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"Tags\":" + datasync_json_arr(e8))
+    return datasync_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + datasync_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + datasync_json_arr(e0))
+    return datasync_json_obj(parts)
+
+# Serialize TaskFilter to a compact JSON object (declaration order).
+def task_filter_to_json(TaskFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(datasync_json_str(x0))
+    parts.append("\"Values\":" + datasync_json_arr(e0))
+    parts.append("\"Operator\":" + v.Operator.to_json())
+    return datasync_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + datasync_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.Keys:
+        e0.append(datasync_json_str(x0))
+    parts.append("\"Keys\":" + datasync_json_arr(e0))
+    return datasync_json_obj(parts)
+
+# Serialize UpdateLocationAzureBlobRequest to a compact JSON object (declaration order).
+def update_location_azure_blob_request_to_json(UpdateLocationAzureBlobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"LocationArn\":" + datasync_json_str(v.LocationArn))
+    if v.Subdirectory.is_some():
+        auto u0 = v.Subdirectory.unwrap()
+        parts.append("\"Subdirectory\":" + datasync_json_str(u0))
+    if v.AuthenticationType.is_some():
+        auto u1 = v.AuthenticationType.unwrap()
+        parts.append("\"AuthenticationType\":" + u1.to_json())
+    if v.SasConfiguration.is_some():
+        auto u2 = v.SasConfiguration.unwrap()
+        parts.append("\"SasConfiguration\":" + u2.to_json())
+    if v.BlobType.is_some():
+        auto u3 = v.BlobType.unwrap()
+        parts.append("\"BlobType\":" + datasync_json_str(u3))
+    if v.AccessTier.is_some():
+        auto u4 = v.AccessTier.unwrap()
+        parts.append("\"AccessTier\":" + u4.to_json())
+    if v.AgentArns.is_some():
+        auto u5 = v.AgentArns.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(datasync_json_str(x6))
+        parts.append("\"AgentArns\":" + datasync_json_arr(e6))
+    if v.CmkSecretConfig.is_some():
+        auto u7 = v.CmkSecretConfig.unwrap()
+        parts.append("\"CmkSecretConfig\":" + u7.to_json())
+    if v.CustomSecretConfig.is_some():
+        auto u8 = v.CustomSecretConfig.unwrap()
+        parts.append("\"CustomSecretConfig\":" + u8.to_json())
+    return datasync_json_obj(parts)
+
+# Serialize UpdateLocationHdfsRequest to a compact JSON object (declaration order).
+def update_location_hdfs_request_to_json(UpdateLocationHdfsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"LocationArn\":" + datasync_json_str(v.LocationArn))
+    if v.Subdirectory.is_some():
+        auto u0 = v.Subdirectory.unwrap()
+        parts.append("\"Subdirectory\":" + datasync_json_str(u0))
+    if v.NameNodes.is_some():
+        auto u1 = v.NameNodes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"NameNodes\":" + datasync_json_arr(e2))
+    if v.BlockSize.is_some():
+        auto u3 = v.BlockSize.unwrap()
+        parts.append("\"BlockSize\":" + str(u3))
+    if v.ReplicationFactor.is_some():
+        auto u4 = v.ReplicationFactor.unwrap()
+        parts.append("\"ReplicationFactor\":" + str(u4))
+    if v.KmsKeyProviderUri.is_some():
+        auto u5 = v.KmsKeyProviderUri.unwrap()
+        parts.append("\"KmsKeyProviderUri\":" + datasync_json_str(u5))
+    if v.QopConfiguration.is_some():
+        auto u6 = v.QopConfiguration.unwrap()
+        parts.append("\"QopConfiguration\":" + u6.to_json())
+    if v.AuthenticationType.is_some():
+        auto u7 = v.AuthenticationType.unwrap()
+        parts.append("\"AuthenticationType\":" + u7.to_json())
+    if v.SimpleUser.is_some():
+        auto u8 = v.SimpleUser.unwrap()
+        parts.append("\"SimpleUser\":" + datasync_json_str(u8))
+    if v.KerberosPrincipal.is_some():
+        auto u9 = v.KerberosPrincipal.unwrap()
+        parts.append("\"KerberosPrincipal\":" + datasync_json_str(u9))
+    if v.KerberosKeytab.is_some():
+        auto u10 = v.KerberosKeytab.unwrap()
+        parts.append("\"KerberosKeytab\":" + datasync_json_str(base64.encode(u10)))
+    if v.KerberosKrb5Conf.is_some():
+        auto u11 = v.KerberosKrb5Conf.unwrap()
+        parts.append("\"KerberosKrb5Conf\":" + datasync_json_str(base64.encode(u11)))
+    if v.AgentArns.is_some():
+        auto u12 = v.AgentArns.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(datasync_json_str(x13))
+        parts.append("\"AgentArns\":" + datasync_json_arr(e13))
+    if v.CmkSecretConfig.is_some():
+        auto u14 = v.CmkSecretConfig.unwrap()
+        parts.append("\"CmkSecretConfig\":" + u14.to_json())
+    if v.CustomSecretConfig.is_some():
+        auto u15 = v.CustomSecretConfig.unwrap()
+        parts.append("\"CustomSecretConfig\":" + u15.to_json())
+    return datasync_json_obj(parts)
+
+# Serialize UpdateLocationNfsRequest to a compact JSON object (declaration order).
+def update_location_nfs_request_to_json(UpdateLocationNfsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"LocationArn\":" + datasync_json_str(v.LocationArn))
+    if v.Subdirectory.is_some():
+        auto u0 = v.Subdirectory.unwrap()
+        parts.append("\"Subdirectory\":" + datasync_json_str(u0))
+    if v.ServerHostname.is_some():
+        auto u1 = v.ServerHostname.unwrap()
+        parts.append("\"ServerHostname\":" + datasync_json_str(u1))
+    if v.OnPremConfig.is_some():
+        auto u2 = v.OnPremConfig.unwrap()
+        parts.append("\"OnPremConfig\":" + on_prem_config_to_json(u2))
+    if v.MountOptions.is_some():
+        auto u3 = v.MountOptions.unwrap()
+        parts.append("\"MountOptions\":" + u3.to_json())
+    return datasync_json_obj(parts)
+
+# Serialize UpdateLocationObjectStorageRequest to a compact JSON object (declaration order).
+def update_location_object_storage_request_to_json(UpdateLocationObjectStorageRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"LocationArn\":" + datasync_json_str(v.LocationArn))
+    if v.ServerPort.is_some():
+        auto u0 = v.ServerPort.unwrap()
+        parts.append("\"ServerPort\":" + str(u0))
+    if v.ServerProtocol.is_some():
+        auto u1 = v.ServerProtocol.unwrap()
+        parts.append("\"ServerProtocol\":" + u1.to_json())
+    if v.Subdirectory.is_some():
+        auto u2 = v.Subdirectory.unwrap()
+        parts.append("\"Subdirectory\":" + datasync_json_str(u2))
+    if v.ServerHostname.is_some():
+        auto u3 = v.ServerHostname.unwrap()
+        parts.append("\"ServerHostname\":" + datasync_json_str(u3))
+    if v.AccessKey.is_some():
+        auto u4 = v.AccessKey.unwrap()
+        parts.append("\"AccessKey\":" + datasync_json_str(u4))
+    if v.SecretKey.is_some():
+        auto u5 = v.SecretKey.unwrap()
+        parts.append("\"SecretKey\":" + datasync_json_str(u5))
+    if v.AgentArns.is_some():
+        auto u6 = v.AgentArns.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(datasync_json_str(x7))
+        parts.append("\"AgentArns\":" + datasync_json_arr(e7))
+    if v.ServerCertificate.is_some():
+        auto u8 = v.ServerCertificate.unwrap()
+        parts.append("\"ServerCertificate\":" + datasync_json_str(base64.encode(u8)))
+    if v.CmkSecretConfig.is_some():
+        auto u9 = v.CmkSecretConfig.unwrap()
+        parts.append("\"CmkSecretConfig\":" + u9.to_json())
+    if v.CustomSecretConfig.is_some():
+        auto u10 = v.CustomSecretConfig.unwrap()
+        parts.append("\"CustomSecretConfig\":" + u10.to_json())
+    return datasync_json_obj(parts)
+
+# Serialize UpdateLocationSmbRequest to a compact JSON object (declaration order).
+def update_location_smb_request_to_json(UpdateLocationSmbRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"LocationArn\":" + datasync_json_str(v.LocationArn))
+    if v.Subdirectory.is_some():
+        auto u0 = v.Subdirectory.unwrap()
+        parts.append("\"Subdirectory\":" + datasync_json_str(u0))
+    if v.ServerHostname.is_some():
+        auto u1 = v.ServerHostname.unwrap()
+        parts.append("\"ServerHostname\":" + datasync_json_str(u1))
+    if v.User.is_some():
+        auto u2 = v.User.unwrap()
+        parts.append("\"User\":" + datasync_json_str(u2))
+    if v.Domain.is_some():
+        auto u3 = v.Domain.unwrap()
+        parts.append("\"Domain\":" + datasync_json_str(u3))
+    if v.Password.is_some():
+        auto u4 = v.Password.unwrap()
+        parts.append("\"Password\":" + datasync_json_str(u4))
+    if v.CmkSecretConfig.is_some():
+        auto u5 = v.CmkSecretConfig.unwrap()
+        parts.append("\"CmkSecretConfig\":" + u5.to_json())
+    if v.CustomSecretConfig.is_some():
+        auto u6 = v.CustomSecretConfig.unwrap()
+        parts.append("\"CustomSecretConfig\":" + u6.to_json())
+    if v.AgentArns.is_some():
+        auto u7 = v.AgentArns.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(datasync_json_str(x8))
+        parts.append("\"AgentArns\":" + datasync_json_arr(e8))
+    if v.MountOptions.is_some():
+        auto u9 = v.MountOptions.unwrap()
+        parts.append("\"MountOptions\":" + u9.to_json())
+    if v.AuthenticationType.is_some():
+        auto u10 = v.AuthenticationType.unwrap()
+        parts.append("\"AuthenticationType\":" + u10.to_json())
+    if v.DnsIpAddresses.is_some():
+        auto u11 = v.DnsIpAddresses.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(datasync_json_str(x12))
+        parts.append("\"DnsIpAddresses\":" + datasync_json_arr(e12))
+    if v.KerberosPrincipal.is_some():
+        auto u13 = v.KerberosPrincipal.unwrap()
+        parts.append("\"KerberosPrincipal\":" + datasync_json_str(u13))
+    if v.KerberosKeytab.is_some():
+        auto u14 = v.KerberosKeytab.unwrap()
+        parts.append("\"KerberosKeytab\":" + datasync_json_str(base64.encode(u14)))
+    if v.KerberosKrb5Conf.is_some():
+        auto u15 = v.KerberosKrb5Conf.unwrap()
+        parts.append("\"KerberosKrb5Conf\":" + datasync_json_str(base64.encode(u15)))
+    return datasync_json_obj(parts)
+
+# Serialize UpdateTaskRequest to a compact JSON object (declaration order).
+def update_task_request_to_json(UpdateTaskRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TaskArn\":" + datasync_json_str(v.TaskArn))
+    if v.Options.is_some():
+        auto u0 = v.Options.unwrap()
+        parts.append("\"Options\":" + u0.to_json())
+    if v.Excludes.is_some():
+        auto u1 = v.Excludes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Excludes\":" + datasync_json_arr(e2))
+    if v.Schedule.is_some():
+        auto u3 = v.Schedule.unwrap()
+        parts.append("\"Schedule\":" + u3.to_json())
+    if v.Name.is_some():
+        auto u4 = v.Name.unwrap()
+        parts.append("\"Name\":" + datasync_json_str(u4))
+    if v.CloudWatchLogGroupArn.is_some():
+        auto u5 = v.CloudWatchLogGroupArn.unwrap()
+        parts.append("\"CloudWatchLogGroupArn\":" + datasync_json_str(u5))
+    if v.Includes.is_some():
+        auto u6 = v.Includes.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Includes\":" + datasync_json_arr(e7))
+    if v.ManifestConfig.is_some():
+        auto u8 = v.ManifestConfig.unwrap()
+        parts.append("\"ManifestConfig\":" + u8.to_json())
+    if v.TaskReportConfig.is_some():
+        auto u9 = v.TaskReportConfig.unwrap()
+        parts.append("\"TaskReportConfig\":" + u9.to_json())
+    return datasync_json_obj(parts)
 
 # A bound DataSync client: credentials + region, threaded into every operation.
 struct DataSyncClient:
@@ -1524,6 +2353,84 @@ struct DataSyncClient:
     def cancel_task_execution(self, CancelTaskExecutionRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CancelTaskExecution", body)
+
+    # CreateAgent
+    # errors: InternalException, InvalidRequestException
+    def create_agent(self, CreateAgentRequest input) -> str:
+        auto body = create_agent_request_to_json(input)
+        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateAgent", body)
+
+    # CreateLocationAzureBlob
+    # errors: InternalException, InvalidRequestException
+    def create_location_azure_blob(self, CreateLocationAzureBlobRequest input) -> str:
+        auto body = create_location_azure_blob_request_to_json(input)
+        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateLocationAzureBlob", body)
+
+    # CreateLocationEfs
+    # errors: InternalException, InvalidRequestException
+    def create_location_efs(self, CreateLocationEfsRequest input) -> str:
+        auto body = create_location_efs_request_to_json(input)
+        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateLocationEfs", body)
+
+    # CreateLocationFsxLustre
+    # errors: InternalException, InvalidRequestException
+    def create_location_fsx_lustre(self, CreateLocationFsxLustreRequest input) -> str:
+        auto body = create_location_fsx_lustre_request_to_json(input)
+        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateLocationFsxLustre", body)
+
+    # CreateLocationFsxOntap
+    # errors: InternalException, InvalidRequestException
+    def create_location_fsx_ontap(self, CreateLocationFsxOntapRequest input) -> str:
+        auto body = create_location_fsx_ontap_request_to_json(input)
+        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateLocationFsxOntap", body)
+
+    # CreateLocationFsxOpenZfs
+    # errors: InternalException, InvalidRequestException
+    def create_location_fsx_open_zfs(self, CreateLocationFsxOpenZfsRequest input) -> str:
+        auto body = create_location_fsx_open_zfs_request_to_json(input)
+        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateLocationFsxOpenZfs", body)
+
+    # CreateLocationFsxWindows
+    # errors: InternalException, InvalidRequestException
+    def create_location_fsx_windows(self, CreateLocationFsxWindowsRequest input) -> str:
+        auto body = create_location_fsx_windows_request_to_json(input)
+        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateLocationFsxWindows", body)
+
+    # CreateLocationHdfs
+    # errors: InternalException, InvalidRequestException
+    def create_location_hdfs(self, CreateLocationHdfsRequest input) -> str:
+        auto body = create_location_hdfs_request_to_json(input)
+        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateLocationHdfs", body)
+
+    # CreateLocationNfs
+    # errors: InternalException, InvalidRequestException
+    def create_location_nfs(self, CreateLocationNfsRequest input) -> str:
+        auto body = create_location_nfs_request_to_json(input)
+        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateLocationNfs", body)
+
+    # CreateLocationObjectStorage
+    # errors: InternalException, InvalidRequestException
+    def create_location_object_storage(self, CreateLocationObjectStorageRequest input) -> str:
+        auto body = create_location_object_storage_request_to_json(input)
+        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateLocationObjectStorage", body)
+
+    # CreateLocationS3
+    # errors: InternalException, InvalidRequestException
+    def create_location_s3(self, CreateLocationS3Request input) -> str:
+        auto body = create_location_s3_request_to_json(input)
+        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateLocationS3", body)
+
+    # CreateLocationSmb
+    # errors: InternalException, InvalidRequestException
+    def create_location_smb(self, CreateLocationSmbRequest input) -> str:
+        auto body = create_location_smb_request_to_json(input)
+        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateLocationSmb", body)
+
+    # CreateTask
+    # errors: InternalException, InvalidRequestException
+    def create_task(self, CreateTaskRequest input) -> str:
+        auto body = create_task_request_to_json(input)
+        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "CreateTask", body)
 
     # DeleteAgent
     # errors: InternalException, InvalidRequestException
@@ -1633,6 +2540,12 @@ struct DataSyncClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "ListAgents", body)
 
+    # ListLocations
+    # errors: InternalException, InvalidRequestException
+    def list_locations(self, ListLocationsRequest input) -> str:
+        auto body = list_locations_request_to_json(input)
+        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "ListLocations", body)
+
     # ListTagsForResource
     # errors: InternalException, InvalidRequestException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
@@ -1645,11 +2558,41 @@ struct DataSyncClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "ListTaskExecutions", body)
 
+    # ListTasks
+    # errors: InternalException, InvalidRequestException
+    def list_tasks(self, ListTasksRequest input) -> str:
+        auto body = list_tasks_request_to_json(input)
+        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "ListTasks", body)
+
+    # StartTaskExecution
+    # errors: InternalException, InvalidRequestException
+    def start_task_execution(self, StartTaskExecutionRequest input) -> str:
+        auto body = start_task_execution_request_to_json(input)
+        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "StartTaskExecution", body)
+
+    # TagResource
+    # errors: InternalException, InvalidRequestException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: InternalException, InvalidRequestException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UntagResource", body)
+
     # UpdateAgent
     # errors: InternalException, InvalidRequestException
     def update_agent(self, UpdateAgentRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UpdateAgent", body)
+
+    # UpdateLocationAzureBlob
+    # errors: InternalException, InvalidRequestException
+    def update_location_azure_blob(self, UpdateLocationAzureBlobRequest input) -> str:
+        auto body = update_location_azure_blob_request_to_json(input)
+        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UpdateLocationAzureBlob", body)
 
     # UpdateLocationEfs
     # errors: InternalException, InvalidRequestException
@@ -1681,11 +2624,41 @@ struct DataSyncClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UpdateLocationFsxWindows", body)
 
+    # UpdateLocationHdfs
+    # errors: InternalException, InvalidRequestException
+    def update_location_hdfs(self, UpdateLocationHdfsRequest input) -> str:
+        auto body = update_location_hdfs_request_to_json(input)
+        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UpdateLocationHdfs", body)
+
+    # UpdateLocationNfs
+    # errors: InternalException, InvalidRequestException
+    def update_location_nfs(self, UpdateLocationNfsRequest input) -> str:
+        auto body = update_location_nfs_request_to_json(input)
+        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UpdateLocationNfs", body)
+
+    # UpdateLocationObjectStorage
+    # errors: InternalException, InvalidRequestException
+    def update_location_object_storage(self, UpdateLocationObjectStorageRequest input) -> str:
+        auto body = update_location_object_storage_request_to_json(input)
+        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UpdateLocationObjectStorage", body)
+
     # UpdateLocationS3
     # errors: InternalException, InvalidRequestException
     def update_location_s3(self, UpdateLocationS3Request input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UpdateLocationS3", body)
+
+    # UpdateLocationSmb
+    # errors: InternalException, InvalidRequestException
+    def update_location_smb(self, UpdateLocationSmbRequest input) -> str:
+        auto body = update_location_smb_request_to_json(input)
+        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UpdateLocationSmb", body)
+
+    # UpdateTask
+    # errors: InternalException, InvalidRequestException
+    def update_task(self, UpdateTaskRequest input) -> str:
+        auto body = update_task_request_to_json(input)
+        return awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "UpdateTask", body)
 
     # UpdateTaskExecution
     # errors: InternalException, InvalidRequestException
@@ -1700,6 +2673,20 @@ struct DataSyncClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "ListAgents", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListLocations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Locations).
+    def paginate_list_locations(self, ListLocationsRequest input):
+        auto host = endpoints.regional_host(datasync_protocol().service, self.region)
+        while True:
+            auto body = list_locations_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "ListLocations", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")
@@ -1728,6 +2715,20 @@ struct DataSyncClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "ListTaskExecutions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListTasks — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Tasks).
+    def paginate_list_tasks(self, ListTasksRequest input):
+        auto host = endpoints.regional_host(datasync_protocol().service, self.region)
+        while True:
+            auto body = list_tasks_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(datasync_protocol(), self.creds, self.region, "ListTasks", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

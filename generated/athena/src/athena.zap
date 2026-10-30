@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 70 operations — 57 with a generated method,
-#   13 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 70 operations — 70 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   215 structs (152 @derive(Json)), 15 enums, 6 error variants.
 #   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -201,8 +201,9 @@ enum WorkGroupState:
 struct AclConfiguration:
     str S3AclOption
 
-# no @derive(Json): member(s) SupportedDPUSizes: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupportedDPUSizes: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationDPUSizes:
     Optional[str] ApplicationRuntimeId
     Optional[list[int64]] SupportedDPUSizes
@@ -214,36 +215,42 @@ struct AthenaError:
     Optional[bool] Retryable
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) NamedQueryIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NamedQueryIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetNamedQueryInput:
     list[str] NamedQueryIds
 
-# no @derive(Json): member(s) NamedQueries: list[NamedQuery], UnprocessedNamedQueryIds: list[UnprocessedNamedQueryId] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NamedQueries: list[NamedQuery], UnprocessedNamedQueryIds: list[UnprocessedNamedQueryId] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetNamedQueryOutput:
     Optional[list[NamedQuery]] NamedQueries
     Optional[list[UnprocessedNamedQueryId]] UnprocessedNamedQueryIds
 
-# no @derive(Json): member(s) PreparedStatementNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PreparedStatementNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetPreparedStatementInput:
     list[str] PreparedStatementNames
     str WorkGroup
 
-# no @derive(Json): member(s) PreparedStatements: list[PreparedStatement], UnprocessedPreparedStatementNames: list[UnprocessedPreparedStatementName] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PreparedStatements: list[PreparedStatement], UnprocessedPreparedStatementNames: list[UnprocessedPreparedStatementName] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetPreparedStatementOutput:
     Optional[list[PreparedStatement]] PreparedStatements
     Optional[list[UnprocessedPreparedStatementName]] UnprocessedPreparedStatementNames
 
-# no @derive(Json): member(s) QueryExecutionIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QueryExecutionIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetQueryExecutionInput:
     list[str] QueryExecutionIds
 
-# no @derive(Json): member(s) QueryExecutions: list[QueryExecution], UnprocessedQueryExecutionIds: list[UnprocessedQueryExecutionId] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QueryExecutions: list[QueryExecution], UnprocessedQueryExecutionIds: list[UnprocessedQueryExecutionId] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetQueryExecutionOutput:
     Optional[list[QueryExecution]] QueryExecutions
     Optional[list[UnprocessedQueryExecutionId]] UnprocessedQueryExecutionIds
@@ -293,13 +300,15 @@ struct CapacityAllocation:
     DateTime RequestTime
     Optional[DateTime] RequestCompletionTime
 
-# no @derive(Json): member(s) WorkGroupNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkGroupNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CapacityAssignment:
     Optional[list[str]] WorkGroupNames
 
-# no @derive(Json): member(s) CapacityAssignments: list[CapacityAssignment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CapacityAssignments: list[CapacityAssignment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CapacityAssignmentConfiguration:
     Optional[str] CapacityReservationName
     Optional[list[CapacityAssignment]] CapacityAssignments
@@ -314,14 +323,16 @@ struct CapacityReservation:
     Optional[DateTime] LastSuccessfulAllocationTime
     DateTime CreationTime
 
-# no @derive(Json): member(s) Properties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Classification:
     Optional[str] Name
     Optional[dict[str, str]] Properties
 
-# no @derive(Json): member(s) LogTypes: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LogTypes: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudWatchLoggingConfiguration:
     bool Enabled
     Optional[str] LogGroup
@@ -347,8 +358,9 @@ struct ColumnInfo:
     Optional[ColumnNullable] Nullable
     Optional[bool] CaseSensitive
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCapacityReservationInput:
     int64 TargetDpus
     str Name
@@ -359,8 +371,9 @@ struct CreateCapacityReservationOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Parameters: dict[str, str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDataCatalogInput:
     str Name
     DataCatalogType Type
@@ -368,8 +381,9 @@ struct CreateDataCatalogInput:
     Optional[dict[str, str]] Parameters
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) DataCatalog: DataCatalog not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataCatalog: DataCatalog not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDataCatalogOutput:
     Optional[DataCatalog] DataCatalog
 
@@ -418,8 +432,9 @@ struct CreatePresignedNotebookUrlResponse:
     str AuthToken
     int64 AuthTokenExpirationTime
 
-# no @derive(Json): member(s) Configuration: WorkGroupConfiguration, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: WorkGroupConfiguration, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWorkGroupInput:
     str Name
     Optional[WorkGroupConfiguration] Configuration
@@ -435,8 +450,9 @@ struct CreateWorkGroupOutput:
 struct CustomerContentEncryptionConfiguration:
     str KmsKey
 
-# no @derive(Json): member(s) Parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataCatalog:
     str Name
     Optional[str] Description
@@ -454,8 +470,9 @@ struct DataCatalogSummary:
     Optional[ConnectionType] ConnectionType
     Optional[str] Error
 
-# no @derive(Json): member(s) Parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Database:
     str Name
     Optional[str] Description
@@ -479,8 +496,9 @@ struct DeleteDataCatalogInput:
     str Name
     Optional[bool] DeleteCatalogOnly
 
-# no @derive(Json): member(s) DataCatalog: DataCatalog not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataCatalog: DataCatalog not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteDataCatalogOutput:
     Optional[DataCatalog] DataCatalog
 
@@ -527,8 +545,9 @@ struct EncryptionConfiguration:
     EncryptionOption EncryptionOption
     Optional[str] KmsKey
 
-# no @derive(Json): member(s) AdditionalConfigs: dict[str, str], SparkProperties: dict[str, str], Classifications: list[Classification] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalConfigs: dict[str, str], SparkProperties: dict[str, str], Classifications: list[Classification] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EngineConfiguration:
     Optional[int64] CoordinatorDpuSize
     Optional[int64] MaxConcurrentDpus
@@ -599,8 +618,9 @@ struct GetCalculationExecutionStatusResponse:
 struct GetCapacityAssignmentConfigurationInput:
     str CapacityReservationName
 
-# no @derive(Json): member(s) CapacityAssignmentConfiguration: CapacityAssignmentConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CapacityAssignmentConfiguration: CapacityAssignmentConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCapacityAssignmentConfigurationOutput:
     CapacityAssignmentConfiguration CapacityAssignmentConfiguration
 
@@ -617,8 +637,9 @@ struct GetDataCatalogInput:
     str Name
     Optional[str] WorkGroup
 
-# no @derive(Json): member(s) DataCatalog: DataCatalog not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataCatalog: DataCatalog not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataCatalogOutput:
     Optional[DataCatalog] DataCatalog
 
@@ -628,8 +649,9 @@ struct GetDatabaseInput:
     str DatabaseName
     Optional[str] WorkGroup
 
-# no @derive(Json): member(s) Database: Database not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Database: Database not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDatabaseOutput:
     Optional[Database] Database
 
@@ -662,8 +684,9 @@ struct GetPreparedStatementOutput:
 struct GetQueryExecutionInput:
     str QueryExecutionId
 
-# no @derive(Json): member(s) QueryExecution: QueryExecution not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QueryExecution: QueryExecution not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetQueryExecutionOutput:
     Optional[QueryExecution] QueryExecution
 
@@ -674,8 +697,9 @@ struct GetQueryResultsInput:
     Optional[int64] MaxResults
     Optional[QueryResultType] QueryResultType
 
-# no @derive(Json): member(s) ResultSet: ResultSet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResultSet: ResultSet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetQueryResultsOutput:
     Optional[int64] UpdateCount
     Optional[ResultSet] ResultSet
@@ -685,8 +709,9 @@ struct GetQueryResultsOutput:
 struct GetQueryRuntimeStatisticsInput:
     str QueryExecutionId
 
-# no @derive(Json): member(s) QueryRuntimeStatistics: QueryRuntimeStatistics not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QueryRuntimeStatistics: QueryRuntimeStatistics not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetQueryRuntimeStatisticsOutput:
     Optional[QueryRuntimeStatistics] QueryRuntimeStatistics
 
@@ -712,8 +737,9 @@ struct GetSessionEndpointResponse:
 struct GetSessionRequest:
     str SessionId
 
-# no @derive(Json): member(s) EngineConfiguration: EngineConfiguration, MonitoringConfiguration: MonitoringConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EngineConfiguration: EngineConfiguration, MonitoringConfiguration: MonitoringConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSessionResponse:
     Optional[str] SessionId
     Optional[str] Description
@@ -742,8 +768,9 @@ struct GetTableMetadataInput:
     str TableName
     Optional[str] WorkGroup
 
-# no @derive(Json): member(s) TableMetadata: TableMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableMetadata: TableMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTableMetadataOutput:
     Optional[TableMetadata] TableMetadata
 
@@ -751,8 +778,9 @@ struct GetTableMetadataOutput:
 struct GetWorkGroupInput:
     str WorkGroup
 
-# no @derive(Json): member(s) WorkGroup: WorkGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkGroup: WorkGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWorkGroupOutput:
     Optional[WorkGroup] WorkGroup
 
@@ -788,8 +816,9 @@ struct ListApplicationDPUSizesInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ApplicationDPUSizes: list[ApplicationDPUSizes] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationDPUSizes: list[ApplicationDPUSizes] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationDPUSizesOutput:
     Optional[list[ApplicationDPUSizes]] ApplicationDPUSizes
     Optional[str] NextToken
@@ -801,8 +830,9 @@ struct ListCalculationExecutionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Calculations: list[CalculationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Calculations: list[CalculationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCalculationExecutionsResponse:
     Optional[str] NextToken
     Optional[list[CalculationSummary]] Calculations
@@ -812,8 +842,9 @@ struct ListCapacityReservationsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) CapacityReservations: list[CapacityReservation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CapacityReservations: list[CapacityReservation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCapacityReservationsOutput:
     Optional[str] NextToken
     list[CapacityReservation] CapacityReservations
@@ -824,8 +855,9 @@ struct ListDataCatalogsInput:
     Optional[int64] MaxResults
     Optional[str] WorkGroup
 
-# no @derive(Json): member(s) DataCatalogsSummary: list[DataCatalogSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataCatalogsSummary: list[DataCatalogSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataCatalogsOutput:
     Optional[list[DataCatalogSummary]] DataCatalogsSummary
     Optional[str] NextToken
@@ -837,8 +869,9 @@ struct ListDatabasesInput:
     Optional[int64] MaxResults
     Optional[str] WorkGroup
 
-# no @derive(Json): member(s) DatabaseList: list[Database] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatabaseList: list[Database] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatabasesOutput:
     Optional[list[Database]] DatabaseList
     Optional[str] NextToken
@@ -848,8 +881,9 @@ struct ListEngineVersionsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) EngineVersions: list[EngineVersion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EngineVersions: list[EngineVersion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEngineVersionsOutput:
     Optional[list[EngineVersion]] EngineVersions
     Optional[str] NextToken
@@ -861,8 +895,9 @@ struct ListExecutorsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ExecutorsSummary: list[ExecutorsSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExecutorsSummary: list[ExecutorsSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExecutorsResponse:
     str SessionId
     Optional[str] NextToken
@@ -874,8 +909,9 @@ struct ListNamedQueriesInput:
     Optional[int64] MaxResults
     Optional[str] WorkGroup
 
-# no @derive(Json): member(s) NamedQueryIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NamedQueryIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNamedQueriesOutput:
     Optional[list[str]] NamedQueryIds
     Optional[str] NextToken
@@ -887,8 +923,9 @@ struct ListNotebookMetadataInput:
     Optional[int64] MaxResults
     str WorkGroup
 
-# no @derive(Json): member(s) NotebookMetadataList: list[NotebookMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NotebookMetadataList: list[NotebookMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNotebookMetadataOutput:
     Optional[str] NextToken
     Optional[list[NotebookMetadata]] NotebookMetadataList
@@ -899,8 +936,9 @@ struct ListNotebookSessionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) NotebookSessionsList: list[NotebookSessionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NotebookSessionsList: list[NotebookSessionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNotebookSessionsResponse:
     list[NotebookSessionSummary] NotebookSessionsList
     Optional[str] NextToken
@@ -911,8 +949,9 @@ struct ListPreparedStatementsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) PreparedStatements: list[PreparedStatementSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PreparedStatements: list[PreparedStatementSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPreparedStatementsOutput:
     Optional[list[PreparedStatementSummary]] PreparedStatements
     Optional[str] NextToken
@@ -923,8 +962,9 @@ struct ListQueryExecutionsInput:
     Optional[int64] MaxResults
     Optional[str] WorkGroup
 
-# no @derive(Json): member(s) QueryExecutionIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QueryExecutionIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListQueryExecutionsOutput:
     Optional[list[str]] QueryExecutionIds
     Optional[str] NextToken
@@ -936,8 +976,9 @@ struct ListSessionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Sessions: list[SessionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sessions: list[SessionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSessionsResponse:
     Optional[str] NextToken
     Optional[list[SessionSummary]] Sessions
@@ -951,8 +992,9 @@ struct ListTableMetadataInput:
     Optional[int64] MaxResults
     Optional[str] WorkGroup
 
-# no @derive(Json): member(s) TableMetadataList: list[TableMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableMetadataList: list[TableMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTableMetadataOutput:
     Optional[list[TableMetadata]] TableMetadataList
     Optional[str] NextToken
@@ -963,8 +1005,9 @@ struct ListTagsForResourceInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[list[Tag]] Tags
     Optional[str] NextToken
@@ -974,8 +1017,9 @@ struct ListWorkGroupsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) WorkGroups: list[WorkGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkGroups: list[WorkGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkGroupsOutput:
     Optional[list[WorkGroupSummary]] WorkGroups
     Optional[str] NextToken
@@ -1004,8 +1048,9 @@ struct ManagedQueryResultsEncryptionConfiguration:
 struct MetadataException:
     Optional[str] Message
 
-# no @derive(Json): member(s) CloudWatchLoggingConfiguration: CloudWatchLoggingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchLoggingConfiguration: CloudWatchLoggingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MonitoringConfiguration:
     Optional[CloudWatchLoggingConfiguration] CloudWatchLoggingConfiguration
     Optional[ManagedLoggingConfiguration] ManagedLoggingConfiguration
@@ -1047,8 +1092,9 @@ struct PreparedStatementSummary:
     Optional[str] StatementName
     Optional[DateTime] LastModifiedTime
 
-# no @derive(Json): member(s) CapacityAssignments: list[CapacityAssignment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CapacityAssignments: list[CapacityAssignment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutCapacityAssignmentConfigurationInput:
     str CapacityReservationName
     list[CapacityAssignment] CapacityAssignments
@@ -1058,8 +1104,9 @@ struct PutCapacityAssignmentConfigurationOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ExecutionParameters: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExecutionParameters: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryExecution:
     Optional[str] QueryExecutionId
     Optional[str] Query
@@ -1108,8 +1155,9 @@ struct QueryResultsS3AccessGrantsConfiguration:
     Optional[bool] CreateUserLevelPrefix
     str AuthenticationType
 
-# no @derive(Json): member(s) OutputStage: QueryStage not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OutputStage: QueryStage not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryRuntimeStatistics:
     Optional[QueryRuntimeStatisticsTimeline] Timeline
     Optional[QueryRuntimeStatisticsRows] Rows
@@ -1131,8 +1179,9 @@ struct QueryRuntimeStatisticsTimeline:
     Optional[int64] ServiceProcessingTimeInMillis
     Optional[int64] TotalExecutionTimeInMillis
 
-# no @derive(Json): member(s) QueryStagePlan: QueryStagePlanNode, SubStages: list[QueryStage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QueryStagePlan: QueryStagePlanNode, SubStages: list[QueryStage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryStage:
     Optional[int64] StageId
     Optional[str] State
@@ -1144,8 +1193,9 @@ struct QueryStage:
     Optional[QueryStagePlanNode] QueryStagePlan
     Optional[list[QueryStage]] SubStages
 
-# no @derive(Json): member(s) Children: list[QueryStagePlanNode], RemoteSources: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Children: list[QueryStagePlanNode], RemoteSources: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryStagePlanNode:
     Optional[str] Name
     Optional[str] Identifier
@@ -1188,19 +1238,22 @@ struct ResultReuseConfiguration:
 struct ResultReuseInformation:
     bool ReusedPreviousResult
 
-# no @derive(Json): member(s) Rows: list[Row], ResultSetMetadata: ResultSetMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rows: list[Row], ResultSetMetadata: ResultSetMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResultSet:
     Optional[list[Row]] Rows
     Optional[ResultSetMetadata] ResultSetMetadata
 
-# no @derive(Json): member(s) ColumnInfo: list[ColumnInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnInfo: list[ColumnInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResultSetMetadata:
     Optional[list[ColumnInfo]] ColumnInfo
 
-# no @derive(Json): member(s) Data: list[Datum] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Data: list[Datum] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Row:
     Optional[list[Datum]] Data
 
@@ -1256,8 +1309,9 @@ struct StartCalculationExecutionResponse:
     Optional[str] CalculationExecutionId
     Optional[CalculationExecutionState] State
 
-# no @derive(Json): member(s) ExecutionParameters: list[str], EngineConfiguration: EngineConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExecutionParameters: list[str], EngineConfiguration: EngineConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartQueryExecutionInput:
     str QueryString
     Optional[str] ClientRequestToken
@@ -1272,8 +1326,9 @@ struct StartQueryExecutionInput:
 struct StartQueryExecutionOutput:
     Optional[str] QueryExecutionId
 
-# no @derive(Json): member(s) EngineConfiguration: EngineConfiguration, MonitoringConfiguration: MonitoringConfiguration, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EngineConfiguration: EngineConfiguration, MonitoringConfiguration: MonitoringConfiguration, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartSessionRequest:
     Optional[str] Description
     str WorkGroup
@@ -1308,8 +1363,9 @@ struct StopQueryExecutionOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Columns: list[Column], PartitionKeys: list[Column], Parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Columns: list[Column], PartitionKeys: list[Column], Parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableMetadata:
     str Name
     Optional[DateTime] CreateTime
@@ -1324,8 +1380,9 @@ struct Tag:
     Optional[str] Key
     Optional[str] Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceInput:
     str ResourceARN
     list[Tag] Tags
@@ -1366,8 +1423,9 @@ struct UnprocessedQueryExecutionId:
     Optional[str] ErrorCode
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceInput:
     str ResourceARN
     list[str] TagKeys
@@ -1387,8 +1445,9 @@ struct UpdateCapacityReservationOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDataCatalogInput:
     str Name
     DataCatalogType Type
@@ -1448,8 +1507,9 @@ struct UpdatePreparedStatementOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ConfigurationUpdates: WorkGroupConfigurationUpdates not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationUpdates: WorkGroupConfigurationUpdates not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateWorkGroupInput:
     str WorkGroup
     Optional[str] Description
@@ -1461,8 +1521,9 @@ struct UpdateWorkGroupOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Configuration: WorkGroupConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: WorkGroupConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkGroup:
     str Name
     Optional[WorkGroupState] State
@@ -1471,8 +1532,9 @@ struct WorkGroup:
     Optional[DateTime] CreationTime
     Optional[str] IdentityCenterApplicationArn
 
-# no @derive(Json): member(s) MonitoringConfiguration: MonitoringConfiguration, EngineConfiguration: EngineConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MonitoringConfiguration: MonitoringConfiguration, EngineConfiguration: EngineConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkGroupConfiguration:
     Optional[ResultConfiguration] ResultConfiguration
     Optional[ManagedQueryResultsConfiguration] ManagedQueryResultsConfiguration
@@ -1490,8 +1552,9 @@ struct WorkGroupConfiguration:
     Optional[IdentityCenterConfiguration] IdentityCenterConfiguration
     Optional[QueryResultsS3AccessGrantsConfiguration] QueryResultsS3AccessGrantsConfiguration
 
-# no @derive(Json): member(s) MonitoringConfiguration: MonitoringConfiguration, EngineConfiguration: EngineConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MonitoringConfiguration: MonitoringConfiguration, EngineConfiguration: EngineConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkGroupConfigurationUpdates:
     Optional[bool] EnforceWorkGroupConfiguration
     Optional[ResultConfigurationUpdates] ResultConfigurationUpdates
@@ -1550,32 +1613,477 @@ def athena_error_from_code(str code) -> AthenaError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   BatchGetNamedQuery (input BatchGetNamedQueryInput)
-#   BatchGetPreparedStatement (input BatchGetPreparedStatementInput)
-#   BatchGetQueryExecution (input BatchGetQueryExecutionInput)
-#   CreateCapacityReservation (input CreateCapacityReservationInput)
-#   CreateDataCatalog (input CreateDataCatalogInput)
-#   CreateWorkGroup (input CreateWorkGroupInput)
-#   PutCapacityAssignmentConfiguration (input PutCapacityAssignmentConfigurationInput)
-#   StartQueryExecution (input StartQueryExecutionInput)
-#   StartSession (input StartSessionRequest)
-#   TagResource (input TagResourceInput)
-#   UntagResource (input UntagResourceInput)
-#   UpdateDataCatalog (input UpdateDataCatalogInput)
-#   UpdateWorkGroup (input UpdateWorkGroupInput)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def athena_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def athena_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def athena_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize BatchGetNamedQueryInput to a compact JSON object (declaration order).
+def batch_get_named_query_input_to_json(BatchGetNamedQueryInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.NamedQueryIds:
+        e0.append(athena_json_str(x0))
+    parts.append("\"NamedQueryIds\":" + athena_json_arr(e0))
+    return athena_json_obj(parts)
+
+# Serialize BatchGetPreparedStatementInput to a compact JSON object (declaration order).
+def batch_get_prepared_statement_input_to_json(BatchGetPreparedStatementInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.PreparedStatementNames:
+        e0.append(athena_json_str(x0))
+    parts.append("\"PreparedStatementNames\":" + athena_json_arr(e0))
+    parts.append("\"WorkGroup\":" + athena_json_str(v.WorkGroup))
+    return athena_json_obj(parts)
+
+# Serialize BatchGetQueryExecutionInput to a compact JSON object (declaration order).
+def batch_get_query_execution_input_to_json(BatchGetQueryExecutionInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.QueryExecutionIds:
+        e0.append(athena_json_str(x0))
+    parts.append("\"QueryExecutionIds\":" + athena_json_arr(e0))
+    return athena_json_obj(parts)
+
+# Serialize CapacityAssignment to a compact JSON object (declaration order).
+def capacity_assignment_to_json(CapacityAssignment v) -> str:
+    list[str] parts = []
+    if v.WorkGroupNames.is_some():
+        auto u0 = v.WorkGroupNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(athena_json_str(x1))
+        parts.append("\"WorkGroupNames\":" + athena_json_arr(e1))
+    return athena_json_obj(parts)
+
+# Serialize Classification to a compact JSON object (declaration order).
+def classification_to_json(Classification v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + athena_json_str(u0))
+    if v.Properties.is_some():
+        auto u1 = v.Properties.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(athena_json_str(k2) + ":" + athena_json_str(u1[k2]))
+        parts.append("\"Properties\":" + athena_json_obj(m2))
+    return athena_json_obj(parts)
+
+# Serialize CloudWatchLoggingConfiguration to a compact JSON object (declaration order).
+def cloud_watch_logging_configuration_to_json(CloudWatchLoggingConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(v.Enabled)))
+    if v.LogGroup.is_some():
+        auto u0 = v.LogGroup.unwrap()
+        parts.append("\"LogGroup\":" + athena_json_str(u0))
+    if v.LogStreamNamePrefix.is_some():
+        auto u1 = v.LogStreamNamePrefix.unwrap()
+        parts.append("\"LogStreamNamePrefix\":" + athena_json_str(u1))
+    if v.LogTypes.is_some():
+        auto u2 = v.LogTypes.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            list[str] e4 = []
+            for x4 in u2[k3]:
+                e4.append(athena_json_str(x4))
+            m3.append(athena_json_str(k3) + ":" + athena_json_arr(e4))
+        parts.append("\"LogTypes\":" + athena_json_obj(m3))
+    return athena_json_obj(parts)
+
+# Serialize CreateCapacityReservationInput to a compact JSON object (declaration order).
+def create_capacity_reservation_input_to_json(CreateCapacityReservationInput v) -> str:
+    list[str] parts = []
+    parts.append("\"TargetDpus\":" + str(v.TargetDpus))
+    parts.append("\"Name\":" + athena_json_str(v.Name))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + athena_json_arr(e1))
+    return athena_json_obj(parts)
+
+# Serialize CreateDataCatalogInput to a compact JSON object (declaration order).
+def create_data_catalog_input_to_json(CreateDataCatalogInput v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + athena_json_str(v.Name))
+    parts.append("\"Type\":" + v.Type.to_json())
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + athena_json_str(u0))
+    if v.Parameters.is_some():
+        auto u1 = v.Parameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(athena_json_str(k2) + ":" + athena_json_str(u1[k2]))
+        parts.append("\"Parameters\":" + athena_json_obj(m2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + athena_json_arr(e4))
+    return athena_json_obj(parts)
+
+# Serialize CreateWorkGroupInput to a compact JSON object (declaration order).
+def create_work_group_input_to_json(CreateWorkGroupInput v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + athena_json_str(v.Name))
+    if v.Configuration.is_some():
+        auto u0 = v.Configuration.unwrap()
+        parts.append("\"Configuration\":" + work_group_configuration_to_json(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + athena_json_str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + athena_json_arr(e3))
+    return athena_json_obj(parts)
+
+# Serialize EngineConfiguration to a compact JSON object (declaration order).
+def engine_configuration_to_json(EngineConfiguration v) -> str:
+    list[str] parts = []
+    if v.CoordinatorDpuSize.is_some():
+        auto u0 = v.CoordinatorDpuSize.unwrap()
+        parts.append("\"CoordinatorDpuSize\":" + str(u0))
+    if v.MaxConcurrentDpus.is_some():
+        auto u1 = v.MaxConcurrentDpus.unwrap()
+        parts.append("\"MaxConcurrentDpus\":" + str(u1))
+    if v.DefaultExecutorDpuSize.is_some():
+        auto u2 = v.DefaultExecutorDpuSize.unwrap()
+        parts.append("\"DefaultExecutorDpuSize\":" + str(u2))
+    if v.AdditionalConfigs.is_some():
+        auto u3 = v.AdditionalConfigs.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(athena_json_str(k4) + ":" + athena_json_str(u3[k4]))
+        parts.append("\"AdditionalConfigs\":" + athena_json_obj(m4))
+    if v.SparkProperties.is_some():
+        auto u5 = v.SparkProperties.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(athena_json_str(k6) + ":" + athena_json_str(u5[k6]))
+        parts.append("\"SparkProperties\":" + athena_json_obj(m6))
+    if v.Classifications.is_some():
+        auto u7 = v.Classifications.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(classification_to_json(x8))
+        parts.append("\"Classifications\":" + athena_json_arr(e8))
+    return athena_json_obj(parts)
+
+# Serialize MonitoringConfiguration to a compact JSON object (declaration order).
+def monitoring_configuration_to_json(MonitoringConfiguration v) -> str:
+    list[str] parts = []
+    if v.CloudWatchLoggingConfiguration.is_some():
+        auto u0 = v.CloudWatchLoggingConfiguration.unwrap()
+        parts.append("\"CloudWatchLoggingConfiguration\":" + cloud_watch_logging_configuration_to_json(u0))
+    if v.ManagedLoggingConfiguration.is_some():
+        auto u1 = v.ManagedLoggingConfiguration.unwrap()
+        parts.append("\"ManagedLoggingConfiguration\":" + u1.to_json())
+    if v.S3LoggingConfiguration.is_some():
+        auto u2 = v.S3LoggingConfiguration.unwrap()
+        parts.append("\"S3LoggingConfiguration\":" + u2.to_json())
+    return athena_json_obj(parts)
+
+# Serialize PutCapacityAssignmentConfigurationInput to a compact JSON object (declaration order).
+def put_capacity_assignment_configuration_input_to_json(PutCapacityAssignmentConfigurationInput v) -> str:
+    list[str] parts = []
+    parts.append("\"CapacityReservationName\":" + athena_json_str(v.CapacityReservationName))
+    list[str] e0 = []
+    for x0 in v.CapacityAssignments:
+        e0.append(capacity_assignment_to_json(x0))
+    parts.append("\"CapacityAssignments\":" + athena_json_arr(e0))
+    return athena_json_obj(parts)
+
+# Serialize StartQueryExecutionInput to a compact JSON object (declaration order).
+def start_query_execution_input_to_json(StartQueryExecutionInput v) -> str:
+    list[str] parts = []
+    parts.append("\"QueryString\":" + athena_json_str(v.QueryString))
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + athena_json_str(u0))
+    if v.QueryExecutionContext.is_some():
+        auto u1 = v.QueryExecutionContext.unwrap()
+        parts.append("\"QueryExecutionContext\":" + u1.to_json())
+    if v.ResultConfiguration.is_some():
+        auto u2 = v.ResultConfiguration.unwrap()
+        parts.append("\"ResultConfiguration\":" + u2.to_json())
+    if v.WorkGroup.is_some():
+        auto u3 = v.WorkGroup.unwrap()
+        parts.append("\"WorkGroup\":" + athena_json_str(u3))
+    if v.ExecutionParameters.is_some():
+        auto u4 = v.ExecutionParameters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(athena_json_str(x5))
+        parts.append("\"ExecutionParameters\":" + athena_json_arr(e5))
+    if v.ResultReuseConfiguration.is_some():
+        auto u6 = v.ResultReuseConfiguration.unwrap()
+        parts.append("\"ResultReuseConfiguration\":" + u6.to_json())
+    if v.EngineConfiguration.is_some():
+        auto u7 = v.EngineConfiguration.unwrap()
+        parts.append("\"EngineConfiguration\":" + engine_configuration_to_json(u7))
+    return athena_json_obj(parts)
+
+# Serialize StartSessionRequest to a compact JSON object (declaration order).
+def start_session_request_to_json(StartSessionRequest v) -> str:
+    list[str] parts = []
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + athena_json_str(u0))
+    parts.append("\"WorkGroup\":" + athena_json_str(v.WorkGroup))
+    parts.append("\"EngineConfiguration\":" + engine_configuration_to_json(v.EngineConfiguration))
+    if v.ExecutionRole.is_some():
+        auto u1 = v.ExecutionRole.unwrap()
+        parts.append("\"ExecutionRole\":" + athena_json_str(u1))
+    if v.MonitoringConfiguration.is_some():
+        auto u2 = v.MonitoringConfiguration.unwrap()
+        parts.append("\"MonitoringConfiguration\":" + monitoring_configuration_to_json(u2))
+    if v.NotebookVersion.is_some():
+        auto u3 = v.NotebookVersion.unwrap()
+        parts.append("\"NotebookVersion\":" + athena_json_str(u3))
+    if v.SessionIdleTimeoutInMinutes.is_some():
+        auto u4 = v.SessionIdleTimeoutInMinutes.unwrap()
+        parts.append("\"SessionIdleTimeoutInMinutes\":" + str(u4))
+    if v.ClientRequestToken.is_some():
+        auto u5 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + athena_json_str(u5))
+    if v.Tags.is_some():
+        auto u6 = v.Tags.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Tags\":" + athena_json_arr(e7))
+    if v.CopyWorkGroupTags.is_some():
+        auto u8 = v.CopyWorkGroupTags.unwrap()
+        parts.append("\"CopyWorkGroupTags\":" + json.dumps(JsonValue.Bool(u8)))
+    return athena_json_obj(parts)
+
+# Serialize TagResourceInput to a compact JSON object (declaration order).
+def tag_resource_input_to_json(TagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + athena_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + athena_json_arr(e0))
+    return athena_json_obj(parts)
+
+# Serialize UntagResourceInput to a compact JSON object (declaration order).
+def untag_resource_input_to_json(UntagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + athena_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(athena_json_str(x0))
+    parts.append("\"TagKeys\":" + athena_json_arr(e0))
+    return athena_json_obj(parts)
+
+# Serialize UpdateDataCatalogInput to a compact JSON object (declaration order).
+def update_data_catalog_input_to_json(UpdateDataCatalogInput v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + athena_json_str(v.Name))
+    parts.append("\"Type\":" + v.Type.to_json())
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + athena_json_str(u0))
+    if v.Parameters.is_some():
+        auto u1 = v.Parameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(athena_json_str(k2) + ":" + athena_json_str(u1[k2]))
+        parts.append("\"Parameters\":" + athena_json_obj(m2))
+    return athena_json_obj(parts)
+
+# Serialize UpdateWorkGroupInput to a compact JSON object (declaration order).
+def update_work_group_input_to_json(UpdateWorkGroupInput v) -> str:
+    list[str] parts = []
+    parts.append("\"WorkGroup\":" + athena_json_str(v.WorkGroup))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + athena_json_str(u0))
+    if v.ConfigurationUpdates.is_some():
+        auto u1 = v.ConfigurationUpdates.unwrap()
+        parts.append("\"ConfigurationUpdates\":" + work_group_configuration_updates_to_json(u1))
+    if v.State.is_some():
+        auto u2 = v.State.unwrap()
+        parts.append("\"State\":" + u2.to_json())
+    return athena_json_obj(parts)
+
+# Serialize WorkGroupConfiguration to a compact JSON object (declaration order).
+def work_group_configuration_to_json(WorkGroupConfiguration v) -> str:
+    list[str] parts = []
+    if v.ResultConfiguration.is_some():
+        auto u0 = v.ResultConfiguration.unwrap()
+        parts.append("\"ResultConfiguration\":" + u0.to_json())
+    if v.ManagedQueryResultsConfiguration.is_some():
+        auto u1 = v.ManagedQueryResultsConfiguration.unwrap()
+        parts.append("\"ManagedQueryResultsConfiguration\":" + u1.to_json())
+    if v.EnforceWorkGroupConfiguration.is_some():
+        auto u2 = v.EnforceWorkGroupConfiguration.unwrap()
+        parts.append("\"EnforceWorkGroupConfiguration\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.PublishCloudWatchMetricsEnabled.is_some():
+        auto u3 = v.PublishCloudWatchMetricsEnabled.unwrap()
+        parts.append("\"PublishCloudWatchMetricsEnabled\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.BytesScannedCutoffPerQuery.is_some():
+        auto u4 = v.BytesScannedCutoffPerQuery.unwrap()
+        parts.append("\"BytesScannedCutoffPerQuery\":" + str(u4))
+    if v.RequesterPaysEnabled.is_some():
+        auto u5 = v.RequesterPaysEnabled.unwrap()
+        parts.append("\"RequesterPaysEnabled\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.EngineVersion.is_some():
+        auto u6 = v.EngineVersion.unwrap()
+        parts.append("\"EngineVersion\":" + u6.to_json())
+    if v.AdditionalConfiguration.is_some():
+        auto u7 = v.AdditionalConfiguration.unwrap()
+        parts.append("\"AdditionalConfiguration\":" + athena_json_str(u7))
+    if v.ExecutionRole.is_some():
+        auto u8 = v.ExecutionRole.unwrap()
+        parts.append("\"ExecutionRole\":" + athena_json_str(u8))
+    if v.MonitoringConfiguration.is_some():
+        auto u9 = v.MonitoringConfiguration.unwrap()
+        parts.append("\"MonitoringConfiguration\":" + monitoring_configuration_to_json(u9))
+    if v.EngineConfiguration.is_some():
+        auto u10 = v.EngineConfiguration.unwrap()
+        parts.append("\"EngineConfiguration\":" + engine_configuration_to_json(u10))
+    if v.CustomerContentEncryptionConfiguration.is_some():
+        auto u11 = v.CustomerContentEncryptionConfiguration.unwrap()
+        parts.append("\"CustomerContentEncryptionConfiguration\":" + u11.to_json())
+    if v.EnableMinimumEncryptionConfiguration.is_some():
+        auto u12 = v.EnableMinimumEncryptionConfiguration.unwrap()
+        parts.append("\"EnableMinimumEncryptionConfiguration\":" + json.dumps(JsonValue.Bool(u12)))
+    if v.IdentityCenterConfiguration.is_some():
+        auto u13 = v.IdentityCenterConfiguration.unwrap()
+        parts.append("\"IdentityCenterConfiguration\":" + u13.to_json())
+    if v.QueryResultsS3AccessGrantsConfiguration.is_some():
+        auto u14 = v.QueryResultsS3AccessGrantsConfiguration.unwrap()
+        parts.append("\"QueryResultsS3AccessGrantsConfiguration\":" + u14.to_json())
+    return athena_json_obj(parts)
+
+# Serialize WorkGroupConfigurationUpdates to a compact JSON object (declaration order).
+def work_group_configuration_updates_to_json(WorkGroupConfigurationUpdates v) -> str:
+    list[str] parts = []
+    if v.EnforceWorkGroupConfiguration.is_some():
+        auto u0 = v.EnforceWorkGroupConfiguration.unwrap()
+        parts.append("\"EnforceWorkGroupConfiguration\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.ResultConfigurationUpdates.is_some():
+        auto u1 = v.ResultConfigurationUpdates.unwrap()
+        parts.append("\"ResultConfigurationUpdates\":" + u1.to_json())
+    if v.ManagedQueryResultsConfigurationUpdates.is_some():
+        auto u2 = v.ManagedQueryResultsConfigurationUpdates.unwrap()
+        parts.append("\"ManagedQueryResultsConfigurationUpdates\":" + u2.to_json())
+    if v.PublishCloudWatchMetricsEnabled.is_some():
+        auto u3 = v.PublishCloudWatchMetricsEnabled.unwrap()
+        parts.append("\"PublishCloudWatchMetricsEnabled\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.BytesScannedCutoffPerQuery.is_some():
+        auto u4 = v.BytesScannedCutoffPerQuery.unwrap()
+        parts.append("\"BytesScannedCutoffPerQuery\":" + str(u4))
+    if v.RemoveBytesScannedCutoffPerQuery.is_some():
+        auto u5 = v.RemoveBytesScannedCutoffPerQuery.unwrap()
+        parts.append("\"RemoveBytesScannedCutoffPerQuery\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.RequesterPaysEnabled.is_some():
+        auto u6 = v.RequesterPaysEnabled.unwrap()
+        parts.append("\"RequesterPaysEnabled\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.EngineVersion.is_some():
+        auto u7 = v.EngineVersion.unwrap()
+        parts.append("\"EngineVersion\":" + u7.to_json())
+    if v.RemoveCustomerContentEncryptionConfiguration.is_some():
+        auto u8 = v.RemoveCustomerContentEncryptionConfiguration.unwrap()
+        parts.append("\"RemoveCustomerContentEncryptionConfiguration\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.AdditionalConfiguration.is_some():
+        auto u9 = v.AdditionalConfiguration.unwrap()
+        parts.append("\"AdditionalConfiguration\":" + athena_json_str(u9))
+    if v.ExecutionRole.is_some():
+        auto u10 = v.ExecutionRole.unwrap()
+        parts.append("\"ExecutionRole\":" + athena_json_str(u10))
+    if v.CustomerContentEncryptionConfiguration.is_some():
+        auto u11 = v.CustomerContentEncryptionConfiguration.unwrap()
+        parts.append("\"CustomerContentEncryptionConfiguration\":" + u11.to_json())
+    if v.EnableMinimumEncryptionConfiguration.is_some():
+        auto u12 = v.EnableMinimumEncryptionConfiguration.unwrap()
+        parts.append("\"EnableMinimumEncryptionConfiguration\":" + json.dumps(JsonValue.Bool(u12)))
+    if v.QueryResultsS3AccessGrantsConfiguration.is_some():
+        auto u13 = v.QueryResultsS3AccessGrantsConfiguration.unwrap()
+        parts.append("\"QueryResultsS3AccessGrantsConfiguration\":" + u13.to_json())
+    if v.MonitoringConfiguration.is_some():
+        auto u14 = v.MonitoringConfiguration.unwrap()
+        parts.append("\"MonitoringConfiguration\":" + monitoring_configuration_to_json(u14))
+    if v.EngineConfiguration.is_some():
+        auto u15 = v.EngineConfiguration.unwrap()
+        parts.append("\"EngineConfiguration\":" + engine_configuration_to_json(u15))
+    return athena_json_obj(parts)
 
 # A bound Athena client: credentials + region, threaded into every operation.
 struct AthenaClient:
     core.Credentials creds
     str region
 
+    # BatchGetNamedQuery
+    # errors: InternalServerException, InvalidRequestException
+    def batch_get_named_query(self, BatchGetNamedQueryInput input) -> str:
+        auto body = batch_get_named_query_input_to_json(input)
+        return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "BatchGetNamedQuery", body)
+
+    # BatchGetPreparedStatement
+    # errors: InternalServerException, InvalidRequestException
+    def batch_get_prepared_statement(self, BatchGetPreparedStatementInput input) -> str:
+        auto body = batch_get_prepared_statement_input_to_json(input)
+        return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "BatchGetPreparedStatement", body)
+
+    # BatchGetQueryExecution
+    # errors: InternalServerException, InvalidRequestException
+    def batch_get_query_execution(self, BatchGetQueryExecutionInput input) -> str:
+        auto body = batch_get_query_execution_input_to_json(input)
+        return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "BatchGetQueryExecution", body)
+
     # CancelCapacityReservation
     # errors: InternalServerException, InvalidRequestException
     def cancel_capacity_reservation(self, CancelCapacityReservationInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "CancelCapacityReservation", body)
+
+    # CreateCapacityReservation
+    # errors: InternalServerException, InvalidRequestException
+    def create_capacity_reservation(self, CreateCapacityReservationInput input) -> str:
+        auto body = create_capacity_reservation_input_to_json(input)
+        return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "CreateCapacityReservation", body)
+
+    # CreateDataCatalog
+    # errors: InternalServerException, InvalidRequestException
+    def create_data_catalog(self, CreateDataCatalogInput input) -> str:
+        auto body = create_data_catalog_input_to_json(input)
+        return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "CreateDataCatalog", body)
 
     # CreateNamedQuery
     # errors: InternalServerException, InvalidRequestException
@@ -1600,6 +2108,12 @@ struct AthenaClient:
     def create_presigned_notebook_url(self, CreatePresignedNotebookUrlRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "CreatePresignedNotebookUrl", body)
+
+    # CreateWorkGroup
+    # errors: InternalServerException, InvalidRequestException
+    def create_work_group(self, CreateWorkGroupInput input) -> str:
+        auto body = create_work_group_input_to_json(input)
+        return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "CreateWorkGroup", body)
 
     # DeleteCapacityReservation
     # errors: InternalServerException, InvalidRequestException
@@ -1859,11 +2373,29 @@ struct AthenaClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "ListWorkGroups", body)
 
+    # PutCapacityAssignmentConfiguration
+    # errors: InternalServerException, InvalidRequestException
+    def put_capacity_assignment_configuration(self, PutCapacityAssignmentConfigurationInput input) -> str:
+        auto body = put_capacity_assignment_configuration_input_to_json(input)
+        return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "PutCapacityAssignmentConfiguration", body)
+
     # StartCalculationExecution
     # errors: InternalServerException, InvalidRequestException, ResourceNotFoundException
     def start_calculation_execution(self, StartCalculationExecutionRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "StartCalculationExecution", body)
+
+    # StartQueryExecution
+    # errors: InternalServerException, InvalidRequestException, TooManyRequestsException
+    def start_query_execution(self, StartQueryExecutionInput input) -> str:
+        auto body = start_query_execution_input_to_json(input)
+        return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "StartQueryExecution", body)
+
+    # StartSession
+    # errors: InternalServerException, InvalidRequestException, ResourceNotFoundException, SessionAlreadyExistsException, TooManyRequestsException
+    def start_session(self, StartSessionRequest input) -> str:
+        auto body = start_session_request_to_json(input)
+        return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "StartSession", body)
 
     # StopCalculationExecution
     # errors: InternalServerException, InvalidRequestException, ResourceNotFoundException
@@ -1877,17 +2409,35 @@ struct AthenaClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "StopQueryExecution", body)
 
+    # TagResource
+    # errors: InternalServerException, InvalidRequestException, ResourceNotFoundException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto body = tag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "TagResource", body)
+
     # TerminateSession
     # errors: InternalServerException, InvalidRequestException, ResourceNotFoundException
     def terminate_session(self, TerminateSessionRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "TerminateSession", body)
 
+    # UntagResource
+    # errors: InternalServerException, InvalidRequestException, ResourceNotFoundException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto body = untag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "UntagResource", body)
+
     # UpdateCapacityReservation
     # errors: InternalServerException, InvalidRequestException
     def update_capacity_reservation(self, UpdateCapacityReservationInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "UpdateCapacityReservation", body)
+
+    # UpdateDataCatalog
+    # errors: InternalServerException, InvalidRequestException
+    def update_data_catalog(self, UpdateDataCatalogInput input) -> str:
+        auto body = update_data_catalog_input_to_json(input)
+        return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "UpdateDataCatalog", body)
 
     # UpdateNamedQuery
     # errors: InternalServerException, InvalidRequestException
@@ -1912,6 +2462,12 @@ struct AthenaClient:
     def update_prepared_statement(self, UpdatePreparedStatementInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "UpdatePreparedStatement", body)
+
+    # UpdateWorkGroup
+    # errors: InternalServerException, InvalidRequestException
+    def update_work_group(self, UpdateWorkGroupInput input) -> str:
+        auto body = update_work_group_input_to_json(input)
+        return awsjson.awsjson_request_now(athena_protocol(), self.creds, self.region, "UpdateWorkGroup", body)
 
     # Paginator for GetQueryResults — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: ResultSet.Rows).

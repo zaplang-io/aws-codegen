@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 37 operations — 26 with a generated method,
-#   11 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 37 operations — 33 with a generated method,
+#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   130 structs (85 @derive(Json)), 16 enums, 9 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The ConnectCampaignsV2 rest-json protocol: SigV4 service "connect-campaigns" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -204,8 +205,9 @@ struct AnswerMachineDetectionConfig:
     bool enableAnswerMachineDetection
     Optional[bool] awaitAnswerMachinePrompt
 
-# no @derive(Json): member(s) channelSubtypeConfig: ChannelSubtypeConfig, communicationTimeConfig: CommunicationTimeConfig, communicationLimitsOverride: CommunicationLimitsConfig, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) channelSubtypeConfig: ChannelSubtypeConfig, communicationTimeConfig: CommunicationTimeConfig, communicationLimitsOverride: CommunicationLimitsConfig, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Campaign:
     str id
     str arn
@@ -225,8 +227,9 @@ struct Campaign:
 struct CampaignFilters:
     Optional[InstanceIdFilter] instanceIdFilter
 
-# no @derive(Json): member(s) channelSubtypes: list[ChannelSubtype] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) channelSubtypes: list[ChannelSubtype] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CampaignSummary:
     str id
     str arn
@@ -242,16 +245,18 @@ struct CampaignSummary:
 struct ChannelContext:
     Optional[WebNotificationContext] webNotificationContext
 
-# no @derive(Json): member(s) telephony: TelephonyChannelSubtypeConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) telephony: TelephonyChannelSubtypeConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChannelSubtypeConfig:
     Optional[TelephonyChannelSubtypeConfig] telephony
     Optional[SmsChannelSubtypeConfig] sms
     Optional[EmailChannelSubtypeConfig] email
     Optional[WhatsAppChannelSubtypeConfig] whatsApp
 
-# no @derive(Json): member(s) telephony: TelephonyChannelSubtypeParameters, sms: SmsChannelSubtypeParameters, email: EmailChannelSubtypeParameters, whatsApp: WhatsAppChannelSubtypeParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) telephony: TelephonyChannelSubtypeParameters, sms: SmsChannelSubtypeParameters, email: EmailChannelSubtypeParameters, whatsApp: WhatsAppChannelSubtypeParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChannelSubtypeParameters:
     Optional[TelephonyChannelSubtypeParameters] telephony
     Optional[SmsChannelSubtypeParameters] sms
@@ -264,19 +269,22 @@ struct CommunicationLimit:
     int64 frequency
     str unit
 
-# no @derive(Json): member(s) communicationLimitsList: list[CommunicationLimit] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) communicationLimitsList: list[CommunicationLimit] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CommunicationLimits:
     Optional[list[CommunicationLimit]] communicationLimitsList
 
-# no @derive(Json): member(s) allChannelSubtypes: CommunicationLimits not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allChannelSubtypes: CommunicationLimits not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CommunicationLimitsConfig:
     Optional[CommunicationLimits] allChannelSubtypes
     Optional[InstanceLimitsHandling] instanceLimitsHandling
 
-# no @derive(Json): member(s) localTimeZoneConfig: LocalTimeZoneConfig, telephony: TimeWindow, sms: TimeWindow, email: TimeWindow, whatsApp: TimeWindow not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) localTimeZoneConfig: LocalTimeZoneConfig, telephony: TimeWindow, sms: TimeWindow, email: TimeWindow, whatsApp: TimeWindow not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CommunicationTimeConfig:
     LocalTimeZoneConfig localTimeZoneConfig
     Optional[TimeWindow] telephony
@@ -304,15 +312,17 @@ struct CreateCampaignRequest:
     Optional[CommunicationLimitsConfig] communicationLimitsOverride
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCampaignResponse:
     Optional[str] id
     Optional[str] arn
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) objectTypeNames: dict[EventType, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) objectTypeNames: dict[EventType, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomerProfilesIntegrationConfig:
     str domainArn
     dict[EventType, str] objectTypeNames
@@ -321,8 +331,9 @@ struct CustomerProfilesIntegrationConfig:
 struct CustomerProfilesIntegrationIdentifier:
     str domainArn
 
-# no @derive(Json): member(s) objectTypeNames: dict[EventType, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) objectTypeNames: dict[EventType, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomerProfilesIntegrationSummary:
     str domainArn
     dict[EventType, str] objectTypeNames
@@ -380,8 +391,9 @@ struct DeleteInstanceOnboardingJobRequest:
 struct DescribeCampaignRequest:
     str id
 
-# no @derive(Json): member(s) campaign: Campaign not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) campaign: Campaign not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCampaignResponse:
     Optional[Campaign] campaign
 
@@ -391,8 +403,9 @@ struct EmailChannelSubtypeConfig:
     EmailOutboundMode outboundMode
     EmailOutboundConfig defaultOutboundConfig
 
-# no @derive(Json): member(s) templateParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) templateParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EmailChannelSubtypeParameters:
     str destinationEmailAddress
     Optional[str] connectSourceEmailAddress
@@ -451,8 +464,9 @@ struct FailedRequest:
 struct GetCampaignStateBatchRequest:
     list[str] campaignIds
 
-# no @derive(Json): member(s) successfulRequests: list[SuccessfulCampaignStateResponse], failedRequests: list[FailedCampaignStateResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successfulRequests: list[SuccessfulCampaignStateResponse], failedRequests: list[FailedCampaignStateResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCampaignStateBatchResponse:
     Optional[list[SuccessfulCampaignStateResponse]] successfulRequests
     Optional[list[FailedCampaignStateResponse]] failedRequests
@@ -480,8 +494,9 @@ struct GetConnectInstanceConfigResponse:
 struct GetInstanceCommunicationLimitsRequest:
     str connectInstanceId
 
-# no @derive(Json): member(s) communicationLimitsConfig: InstanceCommunicationLimitsConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) communicationLimitsConfig: InstanceCommunicationLimitsConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInstanceCommunicationLimitsResponse:
     Optional[InstanceCommunicationLimitsConfig] communicationLimitsConfig
 
@@ -494,8 +509,9 @@ struct GetInstanceOnboardingJobStatusRequest:
 struct GetInstanceOnboardingJobStatusResponse:
     Optional[InstanceOnboardingJobStatus] connectInstanceOnboardingJobStatus
 
-# no @derive(Json): member(s) allChannelSubtypes: CommunicationLimits not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allChannelSubtypes: CommunicationLimits not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceCommunicationLimitsConfig:
     Optional[CommunicationLimits] allChannelSubtypes
 
@@ -516,8 +532,9 @@ struct InstanceOnboardingJobStatus:
     InstanceOnboardingJobStatusCode status
     Optional[InstanceOnboardingJobFailureCode] failureCode
 
-# no @derive(Json): member(s) customerProfiles: CustomerProfilesIntegrationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customerProfiles: CustomerProfilesIntegrationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntegrationConfig:
     Optional[CustomerProfilesIntegrationConfig] customerProfiles
     Optional[QConnectIntegrationConfig] qConnect
@@ -531,8 +548,9 @@ struct IntegrationIdentifier:
     # wire name "lambda" differs from field; derive rename is a #346 follow-up
     Optional[LambdaIntegrationIdentifier] lambda_
 
-# no @derive(Json): member(s) customerProfiles: CustomerProfilesIntegrationSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customerProfiles: CustomerProfilesIntegrationSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntegrationSummary:
     Optional[CustomerProfilesIntegrationSummary] customerProfiles
     Optional[QConnectIntegrationSummary] qConnect
@@ -574,8 +592,9 @@ struct ListCampaignsRequest:
     Optional[str] nextToken
     Optional[CampaignFilters] filters
 
-# no @derive(Json): member(s) campaignSummaryList: list[CampaignSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) campaignSummaryList: list[CampaignSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCampaignsResponse:
     Optional[str] nextToken
     Optional[list[CampaignSummary]] campaignSummaryList
@@ -587,8 +606,9 @@ struct ListConnectInstanceIntegrationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) integrationSummaryList: list[IntegrationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) integrationSummaryList: list[IntegrationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectInstanceIntegrationsResponse:
     Optional[str] nextToken
     Optional[list[IntegrationSummary]] integrationSummaryList
@@ -598,25 +618,29 @@ struct ListConnectInstanceIntegrationsResponse:
 struct ListTagsForResourceRequest:
     str arn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) localTimeZoneDetection: list[LocalTimeZoneDetectionType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) localTimeZoneDetection: list[LocalTimeZoneDetectionType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LocalTimeZoneConfig:
     Optional[str] defaultTimeZone
     Optional[list[LocalTimeZoneDetectionType]] localTimeZoneDetection
     Optional[LocalTimeZoneDetectionScope] localTimeZoneDetectionScope
 
-# no @derive(Json): member(s) dailyHours: dict[DayOfWeek, list[TimeRange]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dailyHours: dict[DayOfWeek, list[TimeRange]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenHours:
     Optional[dict[DayOfWeek, list[TimeRange]]] dailyHours
 
-# no @derive(Json): member(s) channelSubtypeParameters: ChannelSubtypeParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) channelSubtypeParameters: ChannelSubtypeParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OutboundRequest:
     str clientToken
     DateTime expirationTime
@@ -631,14 +655,16 @@ struct PacingStrategy:
 struct PauseCampaignRequest:
     str id
 
-# no @derive(Json): member(s) pacingStrategies: list[PacingStrategy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pacingStrategies: list[PacingStrategy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PredictiveConfig:
     float64 bandwidthAllocation
     Optional[list[PacingStrategy]] pacingStrategies
 
-# no @derive(Json): member(s) agentActions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentActions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PreviewConfig:
     float64 bandwidthAllocation
     TimeoutConfig timeoutConfig
@@ -674,8 +700,9 @@ struct PutOutboundRequestBatchRequest:
     str id
     list[OutboundRequest] outboundRequests
 
-# no @derive(Json): member(s) successfulRequests: list[SuccessfulRequest], failedRequests: list[FailedRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successfulRequests: list[SuccessfulRequest], failedRequests: list[FailedRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutOutboundRequestBatchResponse:
     Optional[list[SuccessfulRequest]] successfulRequests
     Optional[list[FailedRequest]] failedRequests
@@ -686,8 +713,9 @@ struct PutProfileOutboundRequestBatchRequest:
     str id
     list[ProfileOutboundRequest] profileOutboundRequests
 
-# no @derive(Json): member(s) successfulRequests: list[SuccessfulProfileOutboundRequest], failedRequests: list[FailedProfileOutboundRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successfulRequests: list[SuccessfulProfileOutboundRequest], failedRequests: list[FailedProfileOutboundRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutProfileOutboundRequestBatchResponse:
     Optional[list[SuccessfulProfileOutboundRequest]] successfulRequests
     Optional[list[FailedProfileOutboundRequest]] failedRequests
@@ -715,8 +743,9 @@ struct RestrictedPeriod:
     str startDate
     str endDate
 
-# no @derive(Json): member(s) restrictedPeriodList: list[RestrictedPeriod] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) restrictedPeriodList: list[RestrictedPeriod] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestrictedPeriods:
     Optional[list[RestrictedPeriod]] restrictedPeriodList
 
@@ -744,8 +773,9 @@ struct SmsChannelSubtypeConfig:
     SmsOutboundMode outboundMode
     SmsOutboundConfig defaultOutboundConfig
 
-# no @derive(Json): member(s) templateParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) templateParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SmsChannelSubtypeParameters:
     str destinationPhoneNumber
     Optional[str] connectSourcePhoneNumberArn
@@ -807,16 +837,18 @@ struct TagResourceRequest:
     str arn
     dict[str, str] tags
 
-# no @derive(Json): member(s) outboundMode: TelephonyOutboundMode not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outboundMode: TelephonyOutboundMode not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TelephonyChannelSubtypeConfig:
     Optional[float64] capacity
     Optional[str] connectQueueId
     TelephonyOutboundMode outboundMode
     TelephonyOutboundConfig defaultOutboundConfig
 
-# no @derive(Json): member(s) attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TelephonyChannelSubtypeParameters:
     str destinationPhoneNumber
     dict[str, str] attributes
@@ -831,8 +863,9 @@ struct TelephonyOutboundConfig:
     Optional[AnswerMachineDetectionConfig] answerMachineDetectionConfig
     Optional[int64] ringTimeout
 
-# no @derive(Json): member(s) predictive: PredictiveConfig, preview: PreviewConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) predictive: PredictiveConfig, preview: PreviewConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TelephonyOutboundMode:
     Optional[ProgressiveConfig] progressive
     Optional[PredictiveConfig] predictive
@@ -849,8 +882,9 @@ struct TimeRange:
     str startTime
     str endTime
 
-# no @derive(Json): member(s) openHours: OpenHours, restrictedPeriods: RestrictedPeriods not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) openHours: OpenHours, restrictedPeriods: RestrictedPeriods not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TimeWindow:
     OpenHours openHours
     Optional[RestrictedPeriods] restrictedPeriods
@@ -929,8 +963,9 @@ struct WhatsAppChannelSubtypeConfig:
     WhatsAppOutboundMode outboundMode
     WhatsAppOutboundConfig defaultOutboundConfig
 
-# no @derive(Json): member(s) templateParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) templateParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WhatsAppChannelSubtypeParameters:
     str destinationPhoneNumber
     Optional[str] connectSourcePhoneNumberArn
@@ -990,17 +1025,10 @@ def connect_campaigns_error_from_code(str code) -> ConnectCampaignsV2Error:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateCampaign (document member `channelSubtypeConfig: ChannelSubtypeConfig` is not serializable by derive)
-#   GetCampaignStateBatch (document member `campaignIds: list[str]` is not serializable by derive)
-#   PutConnectInstanceIntegration (document member `integrationConfig: IntegrationConfig` is not serializable by derive)
-#   PutInstanceCommunicationLimits (document member `communicationLimitsConfig: InstanceCommunicationLimitsConfig` is not serializable by derive)
-#   PutOutboundRequestBatch (document member `outboundRequests: list[OutboundRequest]` is not serializable by derive)
-#   PutProfileOutboundRequestBatch (document member `profileOutboundRequests: list[ProfileOutboundRequest]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
+#   CreateCampaign (document member `communicationTimeConfig: CommunicationTimeConfig` is not serializable)
+#   PutConnectInstanceIntegration (document member `integrationConfig: IntegrationConfig` is not serializable)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateCampaignChannelSubtypeConfig (document member `channelSubtypeConfig: ChannelSubtypeConfig` is not serializable by derive)
-#   UpdateCampaignCommunicationLimits (document member `communicationLimitsOverride: CommunicationLimitsConfig` is not serializable by derive)
-#   UpdateCampaignCommunicationTime (document member `communicationTimeConfig: CommunicationTimeConfig` is not serializable by derive)
+#   UpdateCampaignCommunicationTime (document member `communicationTimeConfig: CommunicationTimeConfig` is not serializable)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1046,6 +1074,234 @@ struct UpdateCampaignScheduleDocument:
 struct UpdateCampaignSourceDocument:
     # document members of UpdateCampaignSource
     Source source
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def connect_campaigns_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def connect_campaigns_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def connect_campaigns_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# A timestamp as an ISO-8601 JSON string (`@json(timestamp="iso8601")`).
+def connect_campaigns_json_ts_iso(DateTime dt) -> str:
+    return "\"" + datetime.strftime(dt, "%Y-%m-%dT%H:%M:%SZ") + "\""
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ChannelSubtypeConfig to a compact JSON object (declaration order).
+def channel_subtype_config_to_json(ChannelSubtypeConfig v) -> str:
+    list[str] parts = []
+    if v.telephony.is_some():
+        auto u0 = v.telephony.unwrap()
+        parts.append("\"telephony\":" + telephony_channel_subtype_config_to_json(u0))
+    if v.sms.is_some():
+        auto u1 = v.sms.unwrap()
+        parts.append("\"sms\":" + u1.to_json())
+    if v.email.is_some():
+        auto u2 = v.email.unwrap()
+        parts.append("\"email\":" + u2.to_json())
+    if v.whatsApp.is_some():
+        auto u3 = v.whatsApp.unwrap()
+        parts.append("\"whatsApp\":" + u3.to_json())
+    return connect_campaigns_json_obj(parts)
+
+# Serialize ChannelSubtypeParameters to a compact JSON object (declaration order).
+def channel_subtype_parameters_to_json(ChannelSubtypeParameters v) -> str:
+    list[str] parts = []
+    if v.telephony.is_some():
+        auto u0 = v.telephony.unwrap()
+        parts.append("\"telephony\":" + telephony_channel_subtype_parameters_to_json(u0))
+    if v.sms.is_some():
+        auto u1 = v.sms.unwrap()
+        parts.append("\"sms\":" + sms_channel_subtype_parameters_to_json(u1))
+    if v.email.is_some():
+        auto u2 = v.email.unwrap()
+        parts.append("\"email\":" + email_channel_subtype_parameters_to_json(u2))
+    if v.whatsApp.is_some():
+        auto u3 = v.whatsApp.unwrap()
+        parts.append("\"whatsApp\":" + whats_app_channel_subtype_parameters_to_json(u3))
+    return connect_campaigns_json_obj(parts)
+
+# Serialize CommunicationLimits to a compact JSON object (declaration order).
+def communication_limits_to_json(CommunicationLimits v) -> str:
+    list[str] parts = []
+    if v.communicationLimitsList.is_some():
+        auto u0 = v.communicationLimitsList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"communicationLimitsList\":" + connect_campaigns_json_arr(e1))
+    return connect_campaigns_json_obj(parts)
+
+# Serialize CommunicationLimitsConfig to a compact JSON object (declaration order).
+def communication_limits_config_to_json(CommunicationLimitsConfig v) -> str:
+    list[str] parts = []
+    if v.allChannelSubtypes.is_some():
+        auto u0 = v.allChannelSubtypes.unwrap()
+        parts.append("\"allChannelSubtypes\":" + communication_limits_to_json(u0))
+    if v.instanceLimitsHandling.is_some():
+        auto u1 = v.instanceLimitsHandling.unwrap()
+        parts.append("\"instanceLimitsHandling\":" + u1.to_json())
+    return connect_campaigns_json_obj(parts)
+
+# Serialize EmailChannelSubtypeParameters to a compact JSON object (declaration order).
+def email_channel_subtype_parameters_to_json(EmailChannelSubtypeParameters v) -> str:
+    list[str] parts = []
+    parts.append("\"destinationEmailAddress\":" + connect_campaigns_json_str(v.destinationEmailAddress))
+    if v.connectSourceEmailAddress.is_some():
+        auto u0 = v.connectSourceEmailAddress.unwrap()
+        parts.append("\"connectSourceEmailAddress\":" + connect_campaigns_json_str(u0))
+    if v.templateArn.is_some():
+        auto u1 = v.templateArn.unwrap()
+        parts.append("\"templateArn\":" + connect_campaigns_json_str(u1))
+    list[str] m2 = []
+    for k2 in sorted(v.templateParameters.keys()):
+        m2.append(connect_campaigns_json_str(k2) + ":" + connect_campaigns_json_str(v.templateParameters[k2]))
+    parts.append("\"templateParameters\":" + connect_campaigns_json_obj(m2))
+    return connect_campaigns_json_obj(parts)
+
+# Serialize InstanceCommunicationLimitsConfig to a compact JSON object (declaration order).
+def instance_communication_limits_config_to_json(InstanceCommunicationLimitsConfig v) -> str:
+    list[str] parts = []
+    if v.allChannelSubtypes.is_some():
+        auto u0 = v.allChannelSubtypes.unwrap()
+        parts.append("\"allChannelSubtypes\":" + communication_limits_to_json(u0))
+    return connect_campaigns_json_obj(parts)
+
+# Serialize OutboundRequest to a compact JSON object (declaration order).
+def outbound_request_to_json(OutboundRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"clientToken\":" + connect_campaigns_json_str(v.clientToken))
+    parts.append("\"expirationTime\":" + connect_campaigns_json_ts_iso(v.expirationTime))
+    parts.append("\"channelSubtypeParameters\":" + channel_subtype_parameters_to_json(v.channelSubtypeParameters))
+    return connect_campaigns_json_obj(parts)
+
+# Serialize PredictiveConfig to a compact JSON object (declaration order).
+def predictive_config_to_json(PredictiveConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"bandwidthAllocation\":" + str(v.bandwidthAllocation))
+    if v.pacingStrategies.is_some():
+        auto u0 = v.pacingStrategies.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"pacingStrategies\":" + connect_campaigns_json_arr(e1))
+    return connect_campaigns_json_obj(parts)
+
+# Serialize PreviewConfig to a compact JSON object (declaration order).
+def preview_config_to_json(PreviewConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"bandwidthAllocation\":" + str(v.bandwidthAllocation))
+    parts.append("\"timeoutConfig\":" + v.timeoutConfig.to_json())
+    if v.agentActions.is_some():
+        auto u0 = v.agentActions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(connect_campaigns_json_str(x1))
+        parts.append("\"agentActions\":" + connect_campaigns_json_arr(e1))
+    return connect_campaigns_json_obj(parts)
+
+# Serialize SmsChannelSubtypeParameters to a compact JSON object (declaration order).
+def sms_channel_subtype_parameters_to_json(SmsChannelSubtypeParameters v) -> str:
+    list[str] parts = []
+    parts.append("\"destinationPhoneNumber\":" + connect_campaigns_json_str(v.destinationPhoneNumber))
+    if v.connectSourcePhoneNumberArn.is_some():
+        auto u0 = v.connectSourcePhoneNumberArn.unwrap()
+        parts.append("\"connectSourcePhoneNumberArn\":" + connect_campaigns_json_str(u0))
+    if v.templateArn.is_some():
+        auto u1 = v.templateArn.unwrap()
+        parts.append("\"templateArn\":" + connect_campaigns_json_str(u1))
+    list[str] m2 = []
+    for k2 in sorted(v.templateParameters.keys()):
+        m2.append(connect_campaigns_json_str(k2) + ":" + connect_campaigns_json_str(v.templateParameters[k2]))
+    parts.append("\"templateParameters\":" + connect_campaigns_json_obj(m2))
+    return connect_campaigns_json_obj(parts)
+
+# Serialize TelephonyChannelSubtypeConfig to a compact JSON object (declaration order).
+def telephony_channel_subtype_config_to_json(TelephonyChannelSubtypeConfig v) -> str:
+    list[str] parts = []
+    if v.capacity.is_some():
+        auto u0 = v.capacity.unwrap()
+        parts.append("\"capacity\":" + str(u0))
+    if v.connectQueueId.is_some():
+        auto u1 = v.connectQueueId.unwrap()
+        parts.append("\"connectQueueId\":" + connect_campaigns_json_str(u1))
+    parts.append("\"outboundMode\":" + telephony_outbound_mode_to_json(v.outboundMode))
+    parts.append("\"defaultOutboundConfig\":" + v.defaultOutboundConfig.to_json())
+    return connect_campaigns_json_obj(parts)
+
+# Serialize TelephonyChannelSubtypeParameters to a compact JSON object (declaration order).
+def telephony_channel_subtype_parameters_to_json(TelephonyChannelSubtypeParameters v) -> str:
+    list[str] parts = []
+    parts.append("\"destinationPhoneNumber\":" + connect_campaigns_json_str(v.destinationPhoneNumber))
+    list[str] m0 = []
+    for k0 in sorted(v.attributes.keys()):
+        m0.append(connect_campaigns_json_str(k0) + ":" + connect_campaigns_json_str(v.attributes[k0]))
+    parts.append("\"attributes\":" + connect_campaigns_json_obj(m0))
+    if v.connectSourcePhoneNumber.is_some():
+        auto u1 = v.connectSourcePhoneNumber.unwrap()
+        parts.append("\"connectSourcePhoneNumber\":" + connect_campaigns_json_str(u1))
+    if v.answerMachineDetectionConfig.is_some():
+        auto u2 = v.answerMachineDetectionConfig.unwrap()
+        parts.append("\"answerMachineDetectionConfig\":" + u2.to_json())
+    if v.ringTimeout.is_some():
+        auto u3 = v.ringTimeout.unwrap()
+        parts.append("\"ringTimeout\":" + str(u3))
+    return connect_campaigns_json_obj(parts)
+
+# Serialize TelephonyOutboundMode to a compact JSON object (declaration order).
+def telephony_outbound_mode_to_json(TelephonyOutboundMode v) -> str:
+    list[str] parts = []
+    if v.progressive.is_some():
+        auto u0 = v.progressive.unwrap()
+        parts.append("\"progressive\":" + u0.to_json())
+    if v.predictive.is_some():
+        auto u1 = v.predictive.unwrap()
+        parts.append("\"predictive\":" + predictive_config_to_json(u1))
+    if v.agentless.is_some():
+        auto u2 = v.agentless.unwrap()
+        parts.append("\"agentless\":" + u2.to_json())
+    if v.preview.is_some():
+        auto u3 = v.preview.unwrap()
+        parts.append("\"preview\":" + preview_config_to_json(u3))
+    return connect_campaigns_json_obj(parts)
+
+# Serialize WhatsAppChannelSubtypeParameters to a compact JSON object (declaration order).
+def whats_app_channel_subtype_parameters_to_json(WhatsAppChannelSubtypeParameters v) -> str:
+    list[str] parts = []
+    parts.append("\"destinationPhoneNumber\":" + connect_campaigns_json_str(v.destinationPhoneNumber))
+    if v.connectSourcePhoneNumberArn.is_some():
+        auto u0 = v.connectSourcePhoneNumberArn.unwrap()
+        parts.append("\"connectSourcePhoneNumberArn\":" + connect_campaigns_json_str(u0))
+    if v.templateArn.is_some():
+        auto u1 = v.templateArn.unwrap()
+        parts.append("\"templateArn\":" + connect_campaigns_json_str(u1))
+    list[str] m2 = []
+    for k2 in sorted(v.templateParameters.keys()):
+        m2.append(connect_campaigns_json_str(k2) + ":" + connect_campaigns_json_str(v.templateParameters[k2]))
+    parts.append("\"templateParameters\":" + connect_campaigns_json_obj(m2))
+    return connect_campaigns_json_obj(parts)
 
 # A bound ConnectCampaignsV2 client: credentials + region, threaded into every operation.
 struct ConnectCampaignsV2Client:
@@ -1153,6 +1409,19 @@ struct ConnectCampaignsV2Client:
         auto b = binding.HttpBinding(method="GET", path_template="/v2/campaigns/{id}/state", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
 
+    # GetCampaignStateBatch  POST /v2/campaigns-state
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def get_campaign_state_batch(self, GetCampaignStateBatchRequest input) -> str:
+        auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns-state", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.campaignIds:
+            e0.append(connect_campaigns_json_str(x0))
+        parts.append("\"campaignIds\":" + connect_campaigns_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, connect_campaigns_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_campaigns_service(), self.region, host)
+
     # GetConnectInstanceConfig  GET /v2/connect-instance/{connectInstanceId}/config
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
     def get_connect_instance_config(self, GetConnectInstanceConfigRequest input) -> str:
@@ -1221,6 +1490,48 @@ struct ConnectCampaignsV2Client:
         auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/pause", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
 
+    # PutInstanceCommunicationLimits  PUT /v2/connect-instance/{connectInstanceId}/communication-limits
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
+    def put_instance_communication_limits(self, PutInstanceCommunicationLimitsRequest input) -> str:
+        auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
+        dict[str, str] labels = {}
+        labels["connectInstanceId"] = input.connectInstanceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/connect-instance/{connectInstanceId}/communication-limits", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"communicationLimitsConfig\":" + instance_communication_limits_config_to_json(input.communicationLimitsConfig))
+        auto bp = restjson.rest_json_document(b, connect_campaigns_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_campaigns_service(), self.region, host)
+
+    # PutOutboundRequestBatch  PUT /v2/campaigns/{id}/outbound-requests
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidCampaignStateException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def put_outbound_request_batch(self, PutOutboundRequestBatchRequest input) -> str:
+        auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.id
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/campaigns/{id}/outbound-requests", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.outboundRequests:
+            e0.append(outbound_request_to_json(x0))
+        parts.append("\"outboundRequests\":" + connect_campaigns_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, connect_campaigns_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_campaigns_service(), self.region, host)
+
+    # PutProfileOutboundRequestBatch  PUT /v2/campaigns/{id}/profile-outbound-requests
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidCampaignStateException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def put_profile_outbound_request_batch(self, PutProfileOutboundRequestBatchRequest input) -> str:
+        auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.id
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/campaigns/{id}/profile-outbound-requests", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.profileOutboundRequests:
+            e0.append(x0.to_json())
+        parts.append("\"profileOutboundRequests\":" + connect_campaigns_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, connect_campaigns_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_campaigns_service(), self.region, host)
+
     # ResumeCampaign  POST /v2/campaigns/{id}/resume
     # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidCampaignStateException, ResourceNotFoundException, ThrottlingException, ValidationException
     def resume_campaign(self, ResumeCampaignRequest input) -> str:
@@ -1258,6 +1569,45 @@ struct ConnectCampaignsV2Client:
         labels["id"] = input.id
         auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
+
+    # TagResource  POST /v2/tags/{arn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
+        dict[str, str] labels = {}
+        labels["arn"] = input.arn
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/tags/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(connect_campaigns_json_str(k0) + ":" + connect_campaigns_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + connect_campaigns_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, connect_campaigns_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_campaigns_service(), self.region, host)
+
+    # UpdateCampaignChannelSubtypeConfig  POST /v2/campaigns/{id}/channel-subtype-config
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
+    def update_campaign_channel_subtype_config(self, UpdateCampaignChannelSubtypeConfigRequest input) -> str:
+        auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.id
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/channel-subtype-config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"channelSubtypeConfig\":" + channel_subtype_config_to_json(input.channelSubtypeConfig))
+        auto bp = restjson.rest_json_document(b, connect_campaigns_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_campaigns_service(), self.region, host)
+
+    # UpdateCampaignCommunicationLimits  POST /v2/campaigns/{id}/communication-limits
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidCampaignStateException, ResourceNotFoundException, ValidationException
+    def update_campaign_communication_limits(self, UpdateCampaignCommunicationLimitsRequest input) -> str:
+        auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.id
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/communication-limits", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"communicationLimitsOverride\":" + communication_limits_config_to_json(input.communicationLimitsOverride))
+        auto bp = restjson.rest_json_document(b, connect_campaigns_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_campaigns_service(), self.region, host)
 
     # UpdateCampaignEntryLimits  POST /v2/campaigns/{id}/entry-limits
     # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidCampaignStateException, ResourceNotFoundException, ValidationException

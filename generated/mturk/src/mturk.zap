@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 39 operations — 31 with a generated method,
-#   8 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 39 operations — 39 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   98 structs (68 @derive(Json)), 13 enums, 2 error variants.
-#   8 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   9 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -223,8 +223,9 @@ struct CreateAdditionalAssignmentsForHITResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) QualificationRequirements: list[QualificationRequirement], AssignmentReviewPolicy: ReviewPolicy, HITReviewPolicy: ReviewPolicy, HITLayoutParameters: list[HITLayoutParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QualificationRequirements: list[QualificationRequirement], AssignmentReviewPolicy: ReviewPolicy, HITReviewPolicy: ReviewPolicy, HITLayoutParameters: list[HITLayoutParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateHITRequest:
     Optional[int64] MaxAssignments
     Optional[int64] AutoApprovalDelayInSeconds
@@ -243,13 +244,15 @@ struct CreateHITRequest:
     Optional[str] HITLayoutId
     Optional[list[HITLayoutParameter]] HITLayoutParameters
 
-# no @derive(Json): member(s) HIT: HIT not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HIT: HIT not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateHITResponse:
     Optional[HIT] HIT
 
-# no @derive(Json): member(s) QualificationRequirements: list[QualificationRequirement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QualificationRequirements: list[QualificationRequirement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateHITTypeRequest:
     Optional[int64] AutoApprovalDelayInSeconds
     int64 AssignmentDurationInSeconds
@@ -263,8 +266,9 @@ struct CreateHITTypeRequest:
 struct CreateHITTypeResponse:
     Optional[str] HITTypeId
 
-# no @derive(Json): member(s) AssignmentReviewPolicy: ReviewPolicy, HITReviewPolicy: ReviewPolicy, HITLayoutParameters: list[HITLayoutParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssignmentReviewPolicy: ReviewPolicy, HITReviewPolicy: ReviewPolicy, HITLayoutParameters: list[HITLayoutParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateHITWithHITTypeRequest:
     str HITTypeId
     Optional[int64] MaxAssignments
@@ -277,8 +281,9 @@ struct CreateHITWithHITTypeRequest:
     Optional[str] HITLayoutId
     Optional[list[HITLayoutParameter]] HITLayoutParameters
 
-# no @derive(Json): member(s) HIT: HIT not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HIT: HIT not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateHITWithHITTypeResponse:
     Optional[HIT] HIT
 
@@ -362,8 +367,9 @@ struct GetAccountBalanceResponse:
 struct GetAssignmentRequest:
     str AssignmentId
 
-# no @derive(Json): member(s) HIT: HIT not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HIT: HIT not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAssignmentResponse:
     Optional[Assignment] Assignment
     Optional[HIT] HIT
@@ -381,8 +387,9 @@ struct GetFileUploadURLResponse:
 struct GetHITRequest:
     str HITId
 
-# no @derive(Json): member(s) HIT: HIT not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HIT: HIT not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetHITResponse:
     Optional[HIT] HIT
 
@@ -403,8 +410,9 @@ struct GetQualificationTypeRequest:
 struct GetQualificationTypeResponse:
     Optional[QualificationType] QualificationType
 
-# no @derive(Json): member(s) QualificationRequirements: list[QualificationRequirement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QualificationRequirements: list[QualificationRequirement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HIT:
     Optional[str] HITId
     Optional[str] HITTypeId
@@ -433,16 +441,18 @@ struct HITLayoutParameter:
     str Name
     str Value
 
-# no @derive(Json): member(s) AssignmentStatuses: list[AssignmentStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssignmentStatuses: list[AssignmentStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssignmentsForHITRequest:
     str HITId
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[list[AssignmentStatus]] AssignmentStatuses
 
-# no @derive(Json): member(s) Assignments: list[Assignment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Assignments: list[Assignment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssignmentsForHITResponse:
     Optional[str] NextToken
     Optional[int64] NumResults
@@ -455,8 +465,9 @@ struct ListBonusPaymentsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) BonusPayments: list[BonusPayment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BonusPayments: list[BonusPayment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBonusPaymentsResponse:
     Optional[int64] NumResults
     Optional[str] NextToken
@@ -468,8 +479,9 @@ struct ListHITsForQualificationTypeRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) HITs: list[HIT] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HITs: list[HIT] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListHITsForQualificationTypeResponse:
     Optional[str] NextToken
     Optional[int64] NumResults
@@ -480,8 +492,9 @@ struct ListHITsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) HITs: list[HIT] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HITs: list[HIT] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListHITsResponse:
     Optional[str] NextToken
     Optional[int64] NumResults
@@ -493,8 +506,9 @@ struct ListQualificationRequestsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) QualificationRequests: list[QualificationRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QualificationRequests: list[QualificationRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListQualificationRequestsResponse:
     Optional[int64] NumResults
     Optional[str] NextToken
@@ -508,15 +522,17 @@ struct ListQualificationTypesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) QualificationTypes: list[QualificationType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QualificationTypes: list[QualificationType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListQualificationTypesResponse:
     Optional[int64] NumResults
     Optional[str] NextToken
     Optional[list[QualificationType]] QualificationTypes
 
-# no @derive(Json): member(s) PolicyLevels: list[ReviewPolicyLevel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PolicyLevels: list[ReviewPolicyLevel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReviewPolicyResultsForHITRequest:
     str HITId
     Optional[list[ReviewPolicyLevel]] PolicyLevels
@@ -525,8 +541,9 @@ struct ListReviewPolicyResultsForHITRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AssignmentReviewPolicy: ReviewPolicy, HITReviewPolicy: ReviewPolicy, AssignmentReviewReport: ReviewReport, HITReviewReport: ReviewReport not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssignmentReviewPolicy: ReviewPolicy, HITReviewPolicy: ReviewPolicy, AssignmentReviewReport: ReviewReport, HITReviewReport: ReviewReport not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReviewPolicyResultsForHITResponse:
     Optional[str] HITId
     Optional[ReviewPolicy] AssignmentReviewPolicy
@@ -542,8 +559,9 @@ struct ListReviewableHITsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) HITs: list[HIT] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HITs: list[HIT] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReviewableHITsResponse:
     Optional[str] NextToken
     Optional[int64] NumResults
@@ -554,8 +572,9 @@ struct ListWorkerBlocksRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) WorkerBlocks: list[WorkerBlock] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkerBlocks: list[WorkerBlock] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkerBlocksResponse:
     Optional[str] NextToken
     Optional[int64] NumResults
@@ -568,8 +587,9 @@ struct ListWorkersWithQualificationTypeRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Qualifications: list[Qualification] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Qualifications: list[Qualification] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkersWithQualificationTypeResponse:
     Optional[str] NextToken
     Optional[int64] NumResults
@@ -580,8 +600,9 @@ struct Locale:
     str Country
     Optional[str] Subdivision
 
-# no @derive(Json): member(s) EventTypes: list[EventType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventTypes: list[EventType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotificationSpecification:
     str Destination
     NotificationTransport Transport
@@ -594,26 +615,30 @@ struct NotifyWorkersFailureStatus:
     Optional[str] NotifyWorkersFailureMessage
     Optional[str] WorkerId
 
-# no @derive(Json): member(s) WorkerIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkerIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotifyWorkersRequest:
     str Subject
     str MessageText
     list[str] WorkerIds
 
-# no @derive(Json): member(s) NotifyWorkersFailureStatuses: list[NotifyWorkersFailureStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NotifyWorkersFailureStatuses: list[NotifyWorkersFailureStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotifyWorkersResponse:
     Optional[list[NotifyWorkersFailureStatus]] NotifyWorkersFailureStatuses
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParameterMapEntry:
     Optional[str] Key
     Optional[list[str]] Values
 
-# no @derive(Json): member(s) Values: list[str], MapEntries: list[ParameterMapEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str], MapEntries: list[ParameterMapEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PolicyParameter:
     Optional[str] Key
     Optional[list[str]] Values
@@ -637,8 +662,9 @@ struct QualificationRequest:
     Optional[str] Answer
     Optional[DateTime] SubmitTime
 
-# no @derive(Json): member(s) IntegerValues: list[int64], LocaleValues: list[Locale] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IntegerValues: list[int64], LocaleValues: list[Locale] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QualificationRequirement:
     str QualificationTypeId
     Comparator Comparator
@@ -699,14 +725,16 @@ struct ReviewActionDetail:
     Optional[str] Result
     Optional[str] ErrorCode
 
-# no @derive(Json): member(s) Parameters: list[PolicyParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: list[PolicyParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReviewPolicy:
     str PolicyName
     Optional[list[PolicyParameter]] Parameters
 
-# no @derive(Json): member(s) ReviewResults: list[ReviewResultDetail], ReviewActions: list[ReviewActionDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReviewResults: list[ReviewResultDetail], ReviewActions: list[ReviewActionDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReviewReport:
     Optional[list[ReviewResultDetail]] ReviewResults
     Optional[list[ReviewActionDetail]] ReviewActions
@@ -733,8 +761,9 @@ struct SendBonusResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Notification: NotificationSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Notification: NotificationSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendTestEventNotificationRequest:
     NotificationSpecification Notification
     EventType TestEventType
@@ -779,8 +808,9 @@ struct UpdateHITTypeOfHITResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Notification: NotificationSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Notification: NotificationSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateNotificationSettingsRequest:
     str HITTypeId
     Optional[NotificationSpecification] Notification
@@ -831,20 +861,294 @@ def mturk_requester_error_from_code(str code) -> MTurkError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateHIT (input CreateHITRequest)
-#   CreateHITType (input CreateHITTypeRequest)
-#   CreateHITWithHITType (input CreateHITWithHITTypeRequest)
-#   ListAssignmentsForHIT (input ListAssignmentsForHITRequest)
-#   ListReviewPolicyResultsForHIT (input ListReviewPolicyResultsForHITRequest)
-#   NotifyWorkers (input NotifyWorkersRequest)
-#   SendTestEventNotification (input SendTestEventNotificationRequest)
-#   UpdateNotificationSettings (input UpdateNotificationSettingsRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def mturk_requester_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListAssignmentsForHIT (input not derivable (no generated method))
+def mturk_requester_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def mturk_requester_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateHITRequest to a compact JSON object (declaration order).
+def create_hit_request_to_json(CreateHITRequest v) -> str:
+    list[str] parts = []
+    if v.MaxAssignments.is_some():
+        auto u0 = v.MaxAssignments.unwrap()
+        parts.append("\"MaxAssignments\":" + str(u0))
+    if v.AutoApprovalDelayInSeconds.is_some():
+        auto u1 = v.AutoApprovalDelayInSeconds.unwrap()
+        parts.append("\"AutoApprovalDelayInSeconds\":" + str(u1))
+    parts.append("\"LifetimeInSeconds\":" + str(v.LifetimeInSeconds))
+    parts.append("\"AssignmentDurationInSeconds\":" + str(v.AssignmentDurationInSeconds))
+    parts.append("\"Reward\":" + mturk_requester_json_str(v.Reward))
+    parts.append("\"Title\":" + mturk_requester_json_str(v.Title))
+    if v.Keywords.is_some():
+        auto u2 = v.Keywords.unwrap()
+        parts.append("\"Keywords\":" + mturk_requester_json_str(u2))
+    parts.append("\"Description\":" + mturk_requester_json_str(v.Description))
+    if v.Question.is_some():
+        auto u3 = v.Question.unwrap()
+        parts.append("\"Question\":" + mturk_requester_json_str(u3))
+    if v.RequesterAnnotation.is_some():
+        auto u4 = v.RequesterAnnotation.unwrap()
+        parts.append("\"RequesterAnnotation\":" + mturk_requester_json_str(u4))
+    if v.QualificationRequirements.is_some():
+        auto u5 = v.QualificationRequirements.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(qualification_requirement_to_json(x6))
+        parts.append("\"QualificationRequirements\":" + mturk_requester_json_arr(e6))
+    if v.UniqueRequestToken.is_some():
+        auto u7 = v.UniqueRequestToken.unwrap()
+        parts.append("\"UniqueRequestToken\":" + mturk_requester_json_str(u7))
+    if v.AssignmentReviewPolicy.is_some():
+        auto u8 = v.AssignmentReviewPolicy.unwrap()
+        parts.append("\"AssignmentReviewPolicy\":" + review_policy_to_json(u8))
+    if v.HITReviewPolicy.is_some():
+        auto u9 = v.HITReviewPolicy.unwrap()
+        parts.append("\"HITReviewPolicy\":" + review_policy_to_json(u9))
+    if v.HITLayoutId.is_some():
+        auto u10 = v.HITLayoutId.unwrap()
+        parts.append("\"HITLayoutId\":" + mturk_requester_json_str(u10))
+    if v.HITLayoutParameters.is_some():
+        auto u11 = v.HITLayoutParameters.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"HITLayoutParameters\":" + mturk_requester_json_arr(e12))
+    return mturk_requester_json_obj(parts)
+
+# Serialize CreateHITTypeRequest to a compact JSON object (declaration order).
+def create_hit_type_request_to_json(CreateHITTypeRequest v) -> str:
+    list[str] parts = []
+    if v.AutoApprovalDelayInSeconds.is_some():
+        auto u0 = v.AutoApprovalDelayInSeconds.unwrap()
+        parts.append("\"AutoApprovalDelayInSeconds\":" + str(u0))
+    parts.append("\"AssignmentDurationInSeconds\":" + str(v.AssignmentDurationInSeconds))
+    parts.append("\"Reward\":" + mturk_requester_json_str(v.Reward))
+    parts.append("\"Title\":" + mturk_requester_json_str(v.Title))
+    if v.Keywords.is_some():
+        auto u1 = v.Keywords.unwrap()
+        parts.append("\"Keywords\":" + mturk_requester_json_str(u1))
+    parts.append("\"Description\":" + mturk_requester_json_str(v.Description))
+    if v.QualificationRequirements.is_some():
+        auto u2 = v.QualificationRequirements.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(qualification_requirement_to_json(x3))
+        parts.append("\"QualificationRequirements\":" + mturk_requester_json_arr(e3))
+    return mturk_requester_json_obj(parts)
+
+# Serialize CreateHITWithHITTypeRequest to a compact JSON object (declaration order).
+def create_hit_with_hit_type_request_to_json(CreateHITWithHITTypeRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"HITTypeId\":" + mturk_requester_json_str(v.HITTypeId))
+    if v.MaxAssignments.is_some():
+        auto u0 = v.MaxAssignments.unwrap()
+        parts.append("\"MaxAssignments\":" + str(u0))
+    parts.append("\"LifetimeInSeconds\":" + str(v.LifetimeInSeconds))
+    if v.Question.is_some():
+        auto u1 = v.Question.unwrap()
+        parts.append("\"Question\":" + mturk_requester_json_str(u1))
+    if v.RequesterAnnotation.is_some():
+        auto u2 = v.RequesterAnnotation.unwrap()
+        parts.append("\"RequesterAnnotation\":" + mturk_requester_json_str(u2))
+    if v.UniqueRequestToken.is_some():
+        auto u3 = v.UniqueRequestToken.unwrap()
+        parts.append("\"UniqueRequestToken\":" + mturk_requester_json_str(u3))
+    if v.AssignmentReviewPolicy.is_some():
+        auto u4 = v.AssignmentReviewPolicy.unwrap()
+        parts.append("\"AssignmentReviewPolicy\":" + review_policy_to_json(u4))
+    if v.HITReviewPolicy.is_some():
+        auto u5 = v.HITReviewPolicy.unwrap()
+        parts.append("\"HITReviewPolicy\":" + review_policy_to_json(u5))
+    if v.HITLayoutId.is_some():
+        auto u6 = v.HITLayoutId.unwrap()
+        parts.append("\"HITLayoutId\":" + mturk_requester_json_str(u6))
+    if v.HITLayoutParameters.is_some():
+        auto u7 = v.HITLayoutParameters.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"HITLayoutParameters\":" + mturk_requester_json_arr(e8))
+    return mturk_requester_json_obj(parts)
+
+# Serialize ListAssignmentsForHITRequest to a compact JSON object (declaration order).
+def list_assignments_for_hit_request_to_json(ListAssignmentsForHITRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"HITId\":" + mturk_requester_json_str(v.HITId))
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + mturk_requester_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.AssignmentStatuses.is_some():
+        auto u2 = v.AssignmentStatuses.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"AssignmentStatuses\":" + mturk_requester_json_arr(e3))
+    return mturk_requester_json_obj(parts)
+
+# Serialize ListReviewPolicyResultsForHITRequest to a compact JSON object (declaration order).
+def list_review_policy_results_for_hit_request_to_json(ListReviewPolicyResultsForHITRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"HITId\":" + mturk_requester_json_str(v.HITId))
+    if v.PolicyLevels.is_some():
+        auto u0 = v.PolicyLevels.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"PolicyLevels\":" + mturk_requester_json_arr(e1))
+    if v.RetrieveActions.is_some():
+        auto u2 = v.RetrieveActions.unwrap()
+        parts.append("\"RetrieveActions\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.RetrieveResults.is_some():
+        auto u3 = v.RetrieveResults.unwrap()
+        parts.append("\"RetrieveResults\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + mturk_requester_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    return mturk_requester_json_obj(parts)
+
+# Serialize NotificationSpecification to a compact JSON object (declaration order).
+def notification_specification_to_json(NotificationSpecification v) -> str:
+    list[str] parts = []
+    parts.append("\"Destination\":" + mturk_requester_json_str(v.Destination))
+    parts.append("\"Transport\":" + v.Transport.to_json())
+    parts.append("\"Version\":" + mturk_requester_json_str(v.Version))
+    list[str] e0 = []
+    for x0 in v.EventTypes:
+        e0.append(x0.to_json())
+    parts.append("\"EventTypes\":" + mturk_requester_json_arr(e0))
+    return mturk_requester_json_obj(parts)
+
+# Serialize NotifyWorkersRequest to a compact JSON object (declaration order).
+def notify_workers_request_to_json(NotifyWorkersRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Subject\":" + mturk_requester_json_str(v.Subject))
+    parts.append("\"MessageText\":" + mturk_requester_json_str(v.MessageText))
+    list[str] e0 = []
+    for x0 in v.WorkerIds:
+        e0.append(mturk_requester_json_str(x0))
+    parts.append("\"WorkerIds\":" + mturk_requester_json_arr(e0))
+    return mturk_requester_json_obj(parts)
+
+# Serialize ParameterMapEntry to a compact JSON object (declaration order).
+def parameter_map_entry_to_json(ParameterMapEntry v) -> str:
+    list[str] parts = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        parts.append("\"Key\":" + mturk_requester_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(mturk_requester_json_str(x2))
+        parts.append("\"Values\":" + mturk_requester_json_arr(e2))
+    return mturk_requester_json_obj(parts)
+
+# Serialize PolicyParameter to a compact JSON object (declaration order).
+def policy_parameter_to_json(PolicyParameter v) -> str:
+    list[str] parts = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        parts.append("\"Key\":" + mturk_requester_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(mturk_requester_json_str(x2))
+        parts.append("\"Values\":" + mturk_requester_json_arr(e2))
+    if v.MapEntries.is_some():
+        auto u3 = v.MapEntries.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(parameter_map_entry_to_json(x4))
+        parts.append("\"MapEntries\":" + mturk_requester_json_arr(e4))
+    return mturk_requester_json_obj(parts)
+
+# Serialize QualificationRequirement to a compact JSON object (declaration order).
+def qualification_requirement_to_json(QualificationRequirement v) -> str:
+    list[str] parts = []
+    parts.append("\"QualificationTypeId\":" + mturk_requester_json_str(v.QualificationTypeId))
+    parts.append("\"Comparator\":" + v.Comparator.to_json())
+    if v.IntegerValues.is_some():
+        auto u0 = v.IntegerValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"IntegerValues\":" + mturk_requester_json_arr(e1))
+    if v.LocaleValues.is_some():
+        auto u2 = v.LocaleValues.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"LocaleValues\":" + mturk_requester_json_arr(e3))
+    if v.RequiredToPreview.is_some():
+        auto u4 = v.RequiredToPreview.unwrap()
+        parts.append("\"RequiredToPreview\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.ActionsGuarded.is_some():
+        auto u5 = v.ActionsGuarded.unwrap()
+        parts.append("\"ActionsGuarded\":" + u5.to_json())
+    return mturk_requester_json_obj(parts)
+
+# Serialize ReviewPolicy to a compact JSON object (declaration order).
+def review_policy_to_json(ReviewPolicy v) -> str:
+    list[str] parts = []
+    parts.append("\"PolicyName\":" + mturk_requester_json_str(v.PolicyName))
+    if v.Parameters.is_some():
+        auto u0 = v.Parameters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(policy_parameter_to_json(x1))
+        parts.append("\"Parameters\":" + mturk_requester_json_arr(e1))
+    return mturk_requester_json_obj(parts)
+
+# Serialize SendTestEventNotificationRequest to a compact JSON object (declaration order).
+def send_test_event_notification_request_to_json(SendTestEventNotificationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Notification\":" + notification_specification_to_json(v.Notification))
+    parts.append("\"TestEventType\":" + v.TestEventType.to_json())
+    return mturk_requester_json_obj(parts)
+
+# Serialize UpdateNotificationSettingsRequest to a compact JSON object (declaration order).
+def update_notification_settings_request_to_json(UpdateNotificationSettingsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"HITTypeId\":" + mturk_requester_json_str(v.HITTypeId))
+    if v.Notification.is_some():
+        auto u0 = v.Notification.unwrap()
+        parts.append("\"Notification\":" + notification_specification_to_json(u0))
+    if v.Active.is_some():
+        auto u1 = v.Active.unwrap()
+        parts.append("\"Active\":" + json.dumps(JsonValue.Bool(u1)))
+    return mturk_requester_json_obj(parts)
 
 # A bound MTurk client: credentials + region, threaded into every operation.
 struct MTurkClient:
@@ -874,6 +1178,24 @@ struct MTurkClient:
     def create_additional_assignments_for_hit(self, CreateAdditionalAssignmentsForHITRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(mturk_requester_protocol(), self.creds, self.region, "CreateAdditionalAssignmentsForHIT", body)
+
+    # CreateHIT
+    # errors: RequestError, ServiceFault
+    def create_hit(self, CreateHITRequest input) -> str:
+        auto body = create_hit_request_to_json(input)
+        return awsjson.awsjson_request_now(mturk_requester_protocol(), self.creds, self.region, "CreateHIT", body)
+
+    # CreateHITType
+    # errors: RequestError, ServiceFault
+    def create_hit_type(self, CreateHITTypeRequest input) -> str:
+        auto body = create_hit_type_request_to_json(input)
+        return awsjson.awsjson_request_now(mturk_requester_protocol(), self.creds, self.region, "CreateHITType", body)
+
+    # CreateHITWithHITType
+    # errors: RequestError, ServiceFault
+    def create_hit_with_hit_type(self, CreateHITWithHITTypeRequest input) -> str:
+        auto body = create_hit_with_hit_type_request_to_json(input)
+        return awsjson.awsjson_request_now(mturk_requester_protocol(), self.creds, self.region, "CreateHITWithHITType", body)
 
     # CreateQualificationType
     # errors: RequestError, ServiceFault
@@ -947,6 +1269,12 @@ struct MTurkClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(mturk_requester_protocol(), self.creds, self.region, "GetQualificationType", body)
 
+    # ListAssignmentsForHIT
+    # errors: RequestError, ServiceFault
+    def list_assignments_for_hit(self, ListAssignmentsForHITRequest input) -> str:
+        auto body = list_assignments_for_hit_request_to_json(input)
+        return awsjson.awsjson_request_now(mturk_requester_protocol(), self.creds, self.region, "ListAssignmentsForHIT", body)
+
     # ListBonusPayments
     # errors: RequestError, ServiceFault
     def list_bonus_payments(self, ListBonusPaymentsRequest input) -> str:
@@ -977,6 +1305,12 @@ struct MTurkClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(mturk_requester_protocol(), self.creds, self.region, "ListQualificationTypes", body)
 
+    # ListReviewPolicyResultsForHIT
+    # errors: RequestError, ServiceFault
+    def list_review_policy_results_for_hit(self, ListReviewPolicyResultsForHITRequest input) -> str:
+        auto body = list_review_policy_results_for_hit_request_to_json(input)
+        return awsjson.awsjson_request_now(mturk_requester_protocol(), self.creds, self.region, "ListReviewPolicyResultsForHIT", body)
+
     # ListReviewableHITs
     # errors: RequestError, ServiceFault
     def list_reviewable_hi_ts(self, ListReviewableHITsRequest input) -> str:
@@ -994,6 +1328,12 @@ struct MTurkClient:
     def list_workers_with_qualification_type(self, ListWorkersWithQualificationTypeRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(mturk_requester_protocol(), self.creds, self.region, "ListWorkersWithQualificationType", body)
+
+    # NotifyWorkers
+    # errors: RequestError, ServiceFault
+    def notify_workers(self, NotifyWorkersRequest input) -> str:
+        auto body = notify_workers_request_to_json(input)
+        return awsjson.awsjson_request_now(mturk_requester_protocol(), self.creds, self.region, "NotifyWorkers", body)
 
     # RejectAssignment
     # errors: RequestError, ServiceFault
@@ -1013,6 +1353,12 @@ struct MTurkClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(mturk_requester_protocol(), self.creds, self.region, "SendBonus", body)
 
+    # SendTestEventNotification
+    # errors: RequestError, ServiceFault
+    def send_test_event_notification(self, SendTestEventNotificationRequest input) -> str:
+        auto body = send_test_event_notification_request_to_json(input)
+        return awsjson.awsjson_request_now(mturk_requester_protocol(), self.creds, self.region, "SendTestEventNotification", body)
+
     # UpdateExpirationForHIT
     # errors: RequestError, ServiceFault
     def update_expiration_for_hit(self, UpdateExpirationForHITRequest input) -> str:
@@ -1031,11 +1377,31 @@ struct MTurkClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(mturk_requester_protocol(), self.creds, self.region, "UpdateHITTypeOfHIT", body)
 
+    # UpdateNotificationSettings
+    # errors: RequestError, ServiceFault
+    def update_notification_settings(self, UpdateNotificationSettingsRequest input) -> str:
+        auto body = update_notification_settings_request_to_json(input)
+        return awsjson.awsjson_request_now(mturk_requester_protocol(), self.creds, self.region, "UpdateNotificationSettings", body)
+
     # UpdateQualificationType
     # errors: RequestError, ServiceFault
     def update_qualification_type(self, UpdateQualificationTypeRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(mturk_requester_protocol(), self.creds, self.region, "UpdateQualificationType", body)
+
+    # Paginator for ListAssignmentsForHIT — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Assignments).
+    def paginate_list_assignments_for_hit(self, ListAssignmentsForHITRequest input):
+        auto host = endpoints.regional_host(mturk_requester_protocol().service, self.region)
+        while True:
+            auto body = list_assignments_for_hit_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(mturk_requester_protocol(), self.creds, self.region, "ListAssignmentsForHIT", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
     # Paginator for ListBonusPayments — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: BonusPayments).

@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 152 operations — 68 with a generated method,
-#   84 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 152 operations — 152 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   621 structs (356 @derive(Json)), 93 enums, 140 error variants.
-#   12 paginators generated (40 paginated ops skipped) from paginators-1.json.
+#   52 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import datetime
 
 # The SSM awsJson protocol: version 1.1, API id "AmazonSSM".
 def ssm_protocol() -> awsjson.AwsJson:
@@ -1007,8 +1008,9 @@ struct AccountSharingInfo:
     Optional[str] AccountId
     Optional[str] SharedDocumentVersion
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Activation:
     Optional[str] ActivationId
     Optional[str] Description
@@ -1021,8 +1023,9 @@ struct Activation:
     Optional[DateTime] CreatedDate
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddTagsToResourceRequest:
     ResourceTypeForTagging ResourceType
     str ResourceId
@@ -1037,8 +1040,9 @@ struct AddTagsToResourceResult:
 struct Alarm:
     str Name
 
-# no @derive(Json): member(s) Alarms: list[Alarm] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Alarms: list[Alarm] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AlarmConfiguration:
     Optional[bool] IgnorePollAlarmFailure
     list[Alarm] Alarms
@@ -1068,8 +1072,9 @@ struct AssociatedInstances:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Targets: list[Target], Overview: AssociationOverview, TargetMaps: list[dict[str, list[str]]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: list[Target], Overview: AssociationOverview, TargetMaps: list[dict[str, list[str]]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Association:
     Optional[str] Name
     Optional[str] InstanceId
@@ -1090,8 +1095,9 @@ struct AssociationAlreadyExists:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Overview: AssociationOverview, Parameters: dict[str, list[str]], Targets: list[Target], CalendarNames: list[str], TargetLocations: list[TargetLocation], TargetMaps: list[dict[str, list[str]]], AlarmConfiguration: AlarmConfiguration, TriggeredAlarms: list[AlarmStateInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Overview: AssociationOverview, Parameters: dict[str, list[str]], Targets: list[Target], CalendarNames: list[str], TargetLocations: list[TargetLocation], TargetMaps: list[dict[str, list[str]]], AlarmConfiguration: AlarmConfiguration, TriggeredAlarms: list[AlarmStateInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociationDescription:
     Optional[str] Name
     Optional[str] InstanceId
@@ -1128,8 +1134,9 @@ struct AssociationDescription:
 struct AssociationDoesNotExist:
     Optional[str] Message
 
-# no @derive(Json): member(s) AlarmConfiguration: AlarmConfiguration, TriggeredAlarms: list[AlarmStateInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AlarmConfiguration: AlarmConfiguration, TriggeredAlarms: list[AlarmStateInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociationExecution:
     Optional[str] AssociationId
     Optional[str] AssociationVersion
@@ -1179,8 +1186,9 @@ struct AssociationLimitExceeded:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) AssociationStatusAggregatedCount: dict[str, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociationStatusAggregatedCount: dict[str, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociationOverview:
     Optional[str] Status
     Optional[str] DetailedStatus
@@ -1193,8 +1201,9 @@ struct AssociationStatus:
     str Message
     Optional[str] AdditionalInfo
 
-# no @derive(Json): member(s) Parameters: dict[str, list[str]], Targets: list[Target], CalendarNames: list[str], TargetLocations: list[TargetLocation], TargetMaps: list[dict[str, list[str]]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, list[str]], Targets: list[Target], CalendarNames: list[str], TargetLocations: list[TargetLocation], TargetMaps: list[dict[str, list[str]]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociationVersionInfo:
     Optional[str] AssociationId
     Optional[str] AssociationVersion
@@ -1234,8 +1243,9 @@ struct AttachmentContent:
 struct AttachmentInformation:
     Optional[str] Name
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttachmentsSource:
     Optional[AttachmentsSourceKey] Key
     Optional[list[str]] Values
@@ -1253,8 +1263,9 @@ struct AutomationDefinitionNotFoundException:
 struct AutomationDefinitionVersionNotFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) StepExecutions: list[StepExecution], Parameters: dict[str, list[str]], Outputs: dict[str, list[str]], Targets: list[Target], TargetMaps: list[dict[str, list[str]]], ResolvedTargets: ResolvedTargets, TargetLocations: list[TargetLocation], AlarmConfiguration: AlarmConfiguration, TriggeredAlarms: list[AlarmStateInformation], Runbooks: list[Runbook], Variables: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StepExecutions: list[StepExecution], Parameters: dict[str, list[str]], Outputs: dict[str, list[str]], Targets: list[Target], TargetMaps: list[dict[str, list[str]]], ResolvedTargets: ResolvedTargets, TargetLocations: list[TargetLocation], AlarmConfiguration: AlarmConfiguration, TriggeredAlarms: list[AlarmStateInformation], Runbooks: list[Runbook], Variables: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomationExecution:
     Optional[str] AutomationExecutionId
     Optional[str] DocumentName
@@ -1293,14 +1304,16 @@ struct AutomationExecution:
     Optional[str] ChangeRequestName
     Optional[dict[str, list[str]]] Variables
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomationExecutionFilter:
     AutomationExecutionFilterKey Key
     list[str] Values
 
-# no @derive(Json): member(s) Parameters: dict[str, list[str]], Targets: list[Target], TargetMaps: list[dict[str, list[str]]], TargetLocations: list[TargetLocation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, list[str]], Targets: list[Target], TargetMaps: list[dict[str, list[str]]], TargetLocations: list[TargetLocation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomationExecutionInputs:
     Optional[dict[str, list[str]]] Parameters
     Optional[str] TargetParameterName
@@ -1313,8 +1326,9 @@ struct AutomationExecutionInputs:
 struct AutomationExecutionLimitExceededException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Outputs: dict[str, list[str]], Targets: list[Target], TargetMaps: list[dict[str, list[str]]], ResolvedTargets: ResolvedTargets, AlarmConfiguration: AlarmConfiguration, TriggeredAlarms: list[AlarmStateInformation], Runbooks: list[Runbook] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Outputs: dict[str, list[str]], Targets: list[Target], TargetMaps: list[dict[str, list[str]]], ResolvedTargets: ResolvedTargets, AlarmConfiguration: AlarmConfiguration, TriggeredAlarms: list[AlarmStateInformation], Runbooks: list[Runbook] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomationExecutionMetadata:
     Optional[str] AutomationExecutionId
     Optional[str] DocumentName
@@ -1353,8 +1367,9 @@ struct AutomationExecutionMetadata:
 struct AutomationExecutionNotFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) StepPreviews: dict[ImpactType, int64], Regions: list[str], TargetPreviews: list[TargetPreview] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StepPreviews: dict[ImpactType, int64], Regions: list[str], TargetPreviews: list[TargetPreview] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomationExecutionPreview:
     Optional[dict[ImpactType, int64]] StepPreviews
     Optional[list[str]] Regions
@@ -1365,8 +1380,9 @@ struct AutomationExecutionPreview:
 struct AutomationStepNotFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Targets: ConfigurationTargets not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: ConfigurationTargets not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AzureConfiguration:
     str TenantId
     Optional[str] TenantDisplayName
@@ -1379,8 +1395,9 @@ struct AzureSubscription:
     str Id
     Optional[str] DisplayName
 
-# no @derive(Json): member(s) GlobalFilters: PatchFilterGroup, ApprovalRules: PatchRuleGroup, ApprovedPatches: list[str], RejectedPatches: list[str], Sources: list[PatchSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalFilters: PatchFilterGroup, ApprovalRules: PatchRuleGroup, ApprovedPatches: list[str], RejectedPatches: list[str], Sources: list[PatchSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BaselineOverride:
     Optional[OperatingSystem] OperatingSystem
     Optional[PatchFilterGroup] GlobalFilters
@@ -1393,8 +1410,9 @@ struct BaselineOverride:
     Optional[list[PatchSource]] Sources
     Optional[PatchComplianceStatus] AvailableSecurityUpdatesComplianceStatus
 
-# no @derive(Json): member(s) InstanceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CancelCommandRequest:
     str CommandId
     Optional[list[str]] InstanceIds
@@ -1412,13 +1430,15 @@ struct CancelMaintenanceWindowExecutionRequest:
 struct CancelMaintenanceWindowExecutionResult:
     Optional[str] WindowExecutionId
 
-# no @derive(Json): member(s) AzureConfiguration: AzureConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AzureConfiguration: AzureConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudConnectorConfiguration:
     Optional[AzureConfiguration] AzureConfiguration
 
-# no @derive(Json): member(s) FilterValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudConnectorFilter:
     Optional[CloudConnectorFilterKey] FilterKey
     Optional[list[str]] FilterValues
@@ -1437,8 +1457,9 @@ struct CloudWatchOutputConfig:
     Optional[str] CloudWatchLogGroupName
     Optional[bool] CloudWatchOutputEnabled
 
-# no @derive(Json): member(s) Parameters: dict[str, list[str]], InstanceIds: list[str], Targets: list[Target], NotificationConfig: NotificationConfig, AlarmConfiguration: AlarmConfiguration, TriggeredAlarms: list[AlarmStateInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, list[str]], InstanceIds: list[str], Targets: list[Target], NotificationConfig: NotificationConfig, AlarmConfiguration: AlarmConfiguration, TriggeredAlarms: list[AlarmStateInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Command:
     Optional[str] CommandId
     Optional[str] DocumentName
@@ -1472,8 +1493,9 @@ struct CommandFilter:
     CommandFilterKey key
     str value
 
-# no @derive(Json): member(s) CommandPlugins: list[CommandPlugin], NotificationConfig: NotificationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CommandPlugins: list[CommandPlugin], NotificationConfig: NotificationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CommandInvocation:
     Optional[str] CommandId
     Optional[str] InstanceId
@@ -1513,8 +1535,9 @@ struct ComplianceExecutionSummary:
     Optional[str] ExecutionId
     Optional[str] ExecutionType
 
-# no @derive(Json): member(s) Details: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Details: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComplianceItem:
     Optional[str] ComplianceType
     Optional[str] ResourceType
@@ -1526,8 +1549,9 @@ struct ComplianceItem:
     Optional[ComplianceExecutionSummary] ExecutionSummary
     Optional[dict[str, str]] Details
 
-# no @derive(Json): member(s) Details: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Details: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComplianceItemEntry:
     Optional[str] Id
     Optional[str] Title
@@ -1535,8 +1559,9 @@ struct ComplianceItemEntry:
     ComplianceStatus Status
     Optional[dict[str, str]] Details
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComplianceStringFilter:
     Optional[str] Key
     Optional[list[str]] Values
@@ -1557,8 +1582,9 @@ struct CompliantSummary:
     Optional[int64] CompliantCount
     Optional[SeveritySummary] SeveritySummary
 
-# no @derive(Json): member(s) Subscriptions: list[AzureSubscription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subscriptions: list[AzureSubscription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationTargets:
     Optional[list[AzureSubscription]] Subscriptions
 
@@ -1566,8 +1592,9 @@ struct ConfigurationTargets:
 struct ConflictException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Tags: list[Tag], RegistrationMetadata: list[RegistrationMetadataItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], RegistrationMetadata: list[RegistrationMetadataItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateActivationRequest:
     Optional[str] Description
     Optional[str] DefaultInstanceName
@@ -1582,14 +1609,16 @@ struct CreateActivationResult:
     Optional[str] ActivationId
     Optional[str] ActivationCode
 
-# no @derive(Json): member(s) Entries: list[CreateAssociationBatchRequestEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entries: list[CreateAssociationBatchRequestEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAssociationBatchRequest:
     list[CreateAssociationBatchRequestEntry] Entries
     Optional[str] AssociationDispatchAssumeRole
 
-# no @derive(Json): member(s) Parameters: dict[str, list[str]], Targets: list[Target], CalendarNames: list[str], TargetLocations: list[TargetLocation], TargetMaps: list[dict[str, list[str]]], AlarmConfiguration: AlarmConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, list[str]], Targets: list[Target], CalendarNames: list[str], TargetLocations: list[TargetLocation], TargetMaps: list[dict[str, list[str]]], AlarmConfiguration: AlarmConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAssociationBatchRequestEntry:
     str Name
     Optional[str] InstanceId
@@ -1612,14 +1641,16 @@ struct CreateAssociationBatchRequestEntry:
     Optional[list[dict[str, list[str]]]] TargetMaps
     Optional[AlarmConfiguration] AlarmConfiguration
 
-# no @derive(Json): member(s) Successful: list[AssociationDescription], Failed: list[FailedCreateAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Successful: list[AssociationDescription], Failed: list[FailedCreateAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAssociationBatchResult:
     Optional[list[AssociationDescription]] Successful
     Optional[list[FailedCreateAssociation]] Failed
 
-# no @derive(Json): member(s) Parameters: dict[str, list[str]], Targets: list[Target], CalendarNames: list[str], TargetLocations: list[TargetLocation], TargetMaps: list[dict[str, list[str]]], Tags: list[Tag], AlarmConfiguration: AlarmConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, list[str]], Targets: list[Target], CalendarNames: list[str], TargetLocations: list[TargetLocation], TargetMaps: list[dict[str, list[str]]], Tags: list[Tag], AlarmConfiguration: AlarmConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAssociationRequest:
     str Name
     Optional[str] DocumentVersion
@@ -1644,13 +1675,15 @@ struct CreateAssociationRequest:
     Optional[AlarmConfiguration] AlarmConfiguration
     Optional[str] AssociationDispatchAssumeRole
 
-# no @derive(Json): member(s) AssociationDescription: AssociationDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociationDescription: AssociationDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAssociationResult:
     Optional[AssociationDescription] AssociationDescription
 
-# no @derive(Json): member(s) Configuration: CloudConnectorConfiguration, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: CloudConnectorConfiguration, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCloudConnectorRequest:
     str DisplayName
     str RoleArn
@@ -1663,8 +1696,9 @@ struct CreateCloudConnectorRequest:
 struct CreateCloudConnectorResult:
     Optional[str] CloudConnectorId
 
-# no @derive(Json): member(s) Requires: list[DocumentRequires], Attachments: list[AttachmentsSource], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Requires: list[DocumentRequires], Attachments: list[AttachmentsSource], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDocumentRequest:
     str Content
     Optional[list[DocumentRequires]] Requires
@@ -1677,13 +1711,15 @@ struct CreateDocumentRequest:
     Optional[str] TargetType
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) DocumentDescription: DocumentDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentDescription: DocumentDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDocumentResult:
     Optional[DocumentDescription] DocumentDescription
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMaintenanceWindowRequest:
     str Name
     Optional[str] Description
@@ -1702,8 +1738,9 @@ struct CreateMaintenanceWindowRequest:
 struct CreateMaintenanceWindowResult:
     Optional[str] WindowId
 
-# no @derive(Json): member(s) OperationalData: dict[str, OpsItemDataValue], Notifications: list[OpsItemNotification], RelatedOpsItems: list[RelatedOpsItem], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OperationalData: dict[str, OpsItemDataValue], Notifications: list[OpsItemNotification], RelatedOpsItems: list[RelatedOpsItem], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateOpsItemRequest:
     str Description
     Optional[str] OpsItemType
@@ -1727,8 +1764,9 @@ struct CreateOpsItemResponse:
     Optional[str] OpsItemId
     Optional[str] OpsItemArn
 
-# no @derive(Json): member(s) Metadata: dict[str, MetadataValue], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metadata: dict[str, MetadataValue], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateOpsMetadataRequest:
     str ResourceId
     Optional[dict[str, MetadataValue]] Metadata
@@ -1738,8 +1776,9 @@ struct CreateOpsMetadataRequest:
 struct CreateOpsMetadataResult:
     Optional[str] OpsMetadataArn
 
-# no @derive(Json): member(s) GlobalFilters: PatchFilterGroup, ApprovalRules: PatchRuleGroup, ApprovedPatches: list[str], RejectedPatches: list[str], Sources: list[PatchSource], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalFilters: PatchFilterGroup, ApprovalRules: PatchRuleGroup, ApprovedPatches: list[str], RejectedPatches: list[str], Sources: list[PatchSource], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePatchBaselineRequest:
     Optional[OperatingSystem] OperatingSystem
     str Name
@@ -1760,8 +1799,9 @@ struct CreatePatchBaselineRequest:
 struct CreatePatchBaselineResult:
     Optional[str] BaselineId
 
-# no @derive(Json): member(s) SyncSource: ResourceDataSyncSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SyncSource: ResourceDataSyncSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateResourceDataSyncRequest:
     str SyncName
     Optional[ResourceDataSyncS3Destination] S3Destination
@@ -1831,8 +1871,9 @@ struct DeleteInventoryRequest:
     Optional[bool] DryRun
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) DeletionSummary: InventoryDeletionSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeletionSummary: InventoryDeletionSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteInventoryResult:
     Optional[str] DeletionId
     Optional[str] TypeName
@@ -1873,13 +1914,15 @@ struct DeleteParameterResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Names: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Names: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteParametersRequest:
     list[str] Names
 
-# no @derive(Json): member(s) DeletedParameters: list[str], InvalidParameters: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeletedParameters: list[str], InvalidParameters: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteParametersResult:
     Optional[list[str]] DeletedParameters
     Optional[list[str]] InvalidParameters
@@ -1954,27 +1997,31 @@ struct DeregisterTaskFromMaintenanceWindowResult:
     Optional[str] WindowId
     Optional[str] WindowTaskId
 
-# no @derive(Json): member(s) FilterValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeActivationsFilter:
     Optional[DescribeActivationsFilterKeys] FilterKey
     Optional[list[str]] FilterValues
 
-# no @derive(Json): member(s) Filters: list[DescribeActivationsFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[DescribeActivationsFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeActivationsRequest:
     Optional[list[DescribeActivationsFilter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ActivationList: list[Activation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActivationList: list[Activation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeActivationsResult:
     Optional[list[Activation]] ActivationList
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[AssociationExecutionTargetsFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[AssociationExecutionTargetsFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAssociationExecutionTargetsRequest:
     str AssociationId
     str ExecutionId
@@ -1982,22 +2029,25 @@ struct DescribeAssociationExecutionTargetsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AssociationExecutionTargets: list[AssociationExecutionTarget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociationExecutionTargets: list[AssociationExecutionTarget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAssociationExecutionTargetsResult:
     Optional[list[AssociationExecutionTarget]] AssociationExecutionTargets
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[AssociationExecutionFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[AssociationExecutionFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAssociationExecutionsRequest:
     str AssociationId
     Optional[list[AssociationExecutionFilter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AssociationExecutions: list[AssociationExecution] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociationExecutions: list[AssociationExecution] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAssociationExecutionsResult:
     Optional[list[AssociationExecution]] AssociationExecutions
     Optional[str] NextToken
@@ -2009,26 +2059,30 @@ struct DescribeAssociationRequest:
     Optional[str] AssociationId
     Optional[str] AssociationVersion
 
-# no @derive(Json): member(s) AssociationDescription: AssociationDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociationDescription: AssociationDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAssociationResult:
     Optional[AssociationDescription] AssociationDescription
 
-# no @derive(Json): member(s) Filters: list[AutomationExecutionFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[AutomationExecutionFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAutomationExecutionsRequest:
     Optional[list[AutomationExecutionFilter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AutomationExecutionMetadataList: list[AutomationExecutionMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AutomationExecutionMetadataList: list[AutomationExecutionMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAutomationExecutionsResult:
     Optional[list[AutomationExecutionMetadata]] AutomationExecutionMetadataList
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[StepExecutionFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[StepExecutionFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAutomationStepExecutionsRequest:
     str AutomationExecutionId
     Optional[list[StepExecutionFilter]] Filters
@@ -2036,21 +2090,24 @@ struct DescribeAutomationStepExecutionsRequest:
     Optional[int64] MaxResults
     Optional[bool] ReverseOrder
 
-# no @derive(Json): member(s) StepExecutions: list[StepExecution] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StepExecutions: list[StepExecution] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAutomationStepExecutionsResult:
     Optional[list[StepExecution]] StepExecutions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[PatchOrchestratorFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[PatchOrchestratorFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAvailablePatchesRequest:
     Optional[list[PatchOrchestratorFilter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Patches: list[Patch] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Patches: list[Patch] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAvailablePatchesResult:
     Optional[list[Patch]] Patches
     Optional[str] NextToken
@@ -2062,8 +2119,9 @@ struct DescribeDocumentPermissionRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AccountIds: list[str], AccountSharingInfoList: list[AccountSharingInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountIds: list[str], AccountSharingInfoList: list[AccountSharingInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDocumentPermissionResponse:
     Optional[list[str]] AccountIds
     Optional[list[AccountSharingInfo]] AccountSharingInfoList
@@ -2075,8 +2133,9 @@ struct DescribeDocumentRequest:
     Optional[str] DocumentVersion
     Optional[str] VersionName
 
-# no @derive(Json): member(s) Document: DocumentDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Document: DocumentDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDocumentResult:
     Optional[DocumentDescription] Document
 
@@ -2086,8 +2145,9 @@ struct DescribeEffectiveInstanceAssociationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Associations: list[InstanceAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Associations: list[InstanceAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEffectiveInstanceAssociationsResult:
     Optional[list[InstanceAssociation]] Associations
     Optional[str] NextToken
@@ -2098,8 +2158,9 @@ struct DescribeEffectivePatchesForPatchBaselineRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) EffectivePatches: list[EffectivePatch] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EffectivePatches: list[EffectivePatch] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEffectivePatchesForPatchBaselineResult:
     Optional[list[EffectivePatch]] EffectivePatches
     Optional[str] NextToken
@@ -2110,77 +2171,88 @@ struct DescribeInstanceAssociationsStatusRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) InstanceAssociationStatusInfos: list[InstanceAssociationStatusInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceAssociationStatusInfos: list[InstanceAssociationStatusInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInstanceAssociationsStatusResult:
     Optional[list[InstanceAssociationStatusInfo]] InstanceAssociationStatusInfos
     Optional[str] NextToken
 
-# no @derive(Json): member(s) InstanceInformationFilterList: list[InstanceInformationFilter], Filters: list[InstanceInformationStringFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceInformationFilterList: list[InstanceInformationFilter], Filters: list[InstanceInformationStringFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInstanceInformationRequest:
     Optional[list[InstanceInformationFilter]] InstanceInformationFilterList
     Optional[list[InstanceInformationStringFilter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) InstanceInformationList: list[InstanceInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceInformationList: list[InstanceInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInstanceInformationResult:
     Optional[list[InstanceInformation]] InstanceInformationList
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[InstancePatchStateFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[InstancePatchStateFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInstancePatchStatesForPatchGroupRequest:
     str PatchGroup
     Optional[list[InstancePatchStateFilter]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) InstancePatchStates: list[InstancePatchState] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstancePatchStates: list[InstancePatchState] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInstancePatchStatesForPatchGroupResult:
     Optional[list[InstancePatchState]] InstancePatchStates
     Optional[str] NextToken
 
-# no @derive(Json): member(s) InstanceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInstancePatchStatesRequest:
     list[str] InstanceIds
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) InstancePatchStates: list[InstancePatchState] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstancePatchStates: list[InstancePatchState] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInstancePatchStatesResult:
     Optional[list[InstancePatchState]] InstancePatchStates
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[PatchOrchestratorFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[PatchOrchestratorFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInstancePatchesRequest:
     str InstanceId
     Optional[list[PatchOrchestratorFilter]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Patches: list[PatchComplianceData] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Patches: list[PatchComplianceData] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInstancePatchesResult:
     Optional[list[PatchComplianceData]] Patches
     Optional[str] NextToken
 
-# no @derive(Json): member(s) InstancePropertyFilterList: list[InstancePropertyFilter], FiltersWithOperator: list[InstancePropertyStringFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstancePropertyFilterList: list[InstancePropertyFilter], FiltersWithOperator: list[InstancePropertyStringFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInstancePropertiesRequest:
     Optional[list[InstancePropertyFilter]] InstancePropertyFilterList
     Optional[list[InstancePropertyStringFilter]] FiltersWithOperator
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) InstanceProperties: list[InstanceProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceProperties: list[InstanceProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInstancePropertiesResult:
     Optional[list[InstanceProperty]] InstanceProperties
     Optional[str] NextToken
@@ -2191,14 +2263,16 @@ struct DescribeInventoryDeletionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) InventoryDeletions: list[InventoryDeletionStatusItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InventoryDeletions: list[InventoryDeletionStatusItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInventoryDeletionsResult:
     Optional[list[InventoryDeletionStatusItem]] InventoryDeletions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[MaintenanceWindowFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[MaintenanceWindowFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMaintenanceWindowExecutionTaskInvocationsRequest:
     str WindowExecutionId
     str TaskId
@@ -2206,42 +2280,48 @@ struct DescribeMaintenanceWindowExecutionTaskInvocationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) WindowExecutionTaskInvocationIdentities: list[MaintenanceWindowExecutionTaskInvocationIdentity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WindowExecutionTaskInvocationIdentities: list[MaintenanceWindowExecutionTaskInvocationIdentity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMaintenanceWindowExecutionTaskInvocationsResult:
     Optional[list[MaintenanceWindowExecutionTaskInvocationIdentity]] WindowExecutionTaskInvocationIdentities
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[MaintenanceWindowFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[MaintenanceWindowFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMaintenanceWindowExecutionTasksRequest:
     str WindowExecutionId
     Optional[list[MaintenanceWindowFilter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) WindowExecutionTaskIdentities: list[MaintenanceWindowExecutionTaskIdentity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WindowExecutionTaskIdentities: list[MaintenanceWindowExecutionTaskIdentity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMaintenanceWindowExecutionTasksResult:
     Optional[list[MaintenanceWindowExecutionTaskIdentity]] WindowExecutionTaskIdentities
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[MaintenanceWindowFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[MaintenanceWindowFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMaintenanceWindowExecutionsRequest:
     str WindowId
     Optional[list[MaintenanceWindowFilter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) WindowExecutions: list[MaintenanceWindowExecution] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WindowExecutions: list[MaintenanceWindowExecution] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMaintenanceWindowExecutionsResult:
     Optional[list[MaintenanceWindowExecution]] WindowExecutions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Targets: list[Target], Filters: list[PatchOrchestratorFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: list[Target], Filters: list[PatchOrchestratorFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMaintenanceWindowScheduleRequest:
     Optional[str] WindowId
     Optional[list[Target]] Targets
@@ -2250,82 +2330,94 @@ struct DescribeMaintenanceWindowScheduleRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ScheduledWindowExecutions: list[ScheduledWindowExecution] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScheduledWindowExecutions: list[ScheduledWindowExecution] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMaintenanceWindowScheduleResult:
     Optional[list[ScheduledWindowExecution]] ScheduledWindowExecutions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[MaintenanceWindowFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[MaintenanceWindowFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMaintenanceWindowTargetsRequest:
     str WindowId
     Optional[list[MaintenanceWindowFilter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Targets: list[MaintenanceWindowTarget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: list[MaintenanceWindowTarget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMaintenanceWindowTargetsResult:
     Optional[list[MaintenanceWindowTarget]] Targets
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[MaintenanceWindowFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[MaintenanceWindowFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMaintenanceWindowTasksRequest:
     str WindowId
     Optional[list[MaintenanceWindowFilter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tasks: list[MaintenanceWindowTask] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tasks: list[MaintenanceWindowTask] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMaintenanceWindowTasksResult:
     Optional[list[MaintenanceWindowTask]] Tasks
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Targets: list[Target] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: list[Target] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMaintenanceWindowsForTargetRequest:
     list[Target] Targets
     MaintenanceWindowResourceType ResourceType
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) WindowIdentities: list[MaintenanceWindowIdentityForTarget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WindowIdentities: list[MaintenanceWindowIdentityForTarget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMaintenanceWindowsForTargetResult:
     Optional[list[MaintenanceWindowIdentityForTarget]] WindowIdentities
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[MaintenanceWindowFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[MaintenanceWindowFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMaintenanceWindowsRequest:
     Optional[list[MaintenanceWindowFilter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) WindowIdentities: list[MaintenanceWindowIdentity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WindowIdentities: list[MaintenanceWindowIdentity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMaintenanceWindowsResult:
     Optional[list[MaintenanceWindowIdentity]] WindowIdentities
     Optional[str] NextToken
 
-# no @derive(Json): member(s) OpsItemFilters: list[OpsItemFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OpsItemFilters: list[OpsItemFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeOpsItemsRequest:
     Optional[list[OpsItemFilter]] OpsItemFilters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) OpsItemSummaries: list[OpsItemSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OpsItemSummaries: list[OpsItemSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeOpsItemsResponse:
     Optional[str] NextToken
     Optional[list[OpsItemSummary]] OpsItemSummaries
 
-# no @derive(Json): member(s) Filters: list[ParametersFilter], ParameterFilters: list[ParameterStringFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[ParametersFilter], ParameterFilters: list[ParameterStringFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeParametersRequest:
     Optional[list[ParametersFilter]] Filters
     Optional[list[ParameterStringFilter]] ParameterFilters
@@ -2333,21 +2425,24 @@ struct DescribeParametersRequest:
     Optional[str] NextToken
     Optional[bool] Shared
 
-# no @derive(Json): member(s) Parameters: list[ParameterMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: list[ParameterMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeParametersResult:
     Optional[list[ParameterMetadata]] Parameters
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[PatchOrchestratorFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[PatchOrchestratorFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePatchBaselinesRequest:
     Optional[list[PatchOrchestratorFilter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) BaselineIdentities: list[PatchBaselineIdentity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BaselineIdentities: list[PatchBaselineIdentity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePatchBaselinesResult:
     Optional[list[PatchBaselineIdentity]] BaselineIdentities
     Optional[str] NextToken
@@ -2372,15 +2467,17 @@ struct DescribePatchGroupStateResult:
     Optional[int64] InstancesWithOtherNonCompliantPatches
     Optional[int64] InstancesWithAvailableSecurityUpdates
 
-# no @derive(Json): member(s) Filters: list[PatchOrchestratorFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[PatchOrchestratorFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePatchGroupsRequest:
     Optional[int64] MaxResults
     Optional[list[PatchOrchestratorFilter]] Filters
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Mappings: list[PatchGroupPatchBaselineMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Mappings: list[PatchGroupPatchBaselineMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePatchGroupsResult:
     Optional[list[PatchGroupPatchBaselineMapping]] Mappings
     Optional[str] NextToken
@@ -2393,22 +2490,25 @@ struct DescribePatchPropertiesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Properties: list[dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: list[dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePatchPropertiesResult:
     Optional[list[dict[str, str]]] Properties
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[SessionFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[SessionFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSessionsRequest:
     SessionState State
     Optional[int64] MaxResults
     Optional[str] NextToken
     Optional[list[SessionFilter]] Filters
 
-# no @derive(Json): member(s) Sessions: list[Session] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sessions: list[Session] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSessionsResponse:
     Optional[list[Session]] Sessions
     Optional[str] NextToken
@@ -2433,8 +2533,9 @@ struct DocumentDefaultVersionDescription:
     Optional[str] DefaultVersion
     Optional[str] DefaultVersionName
 
-# no @derive(Json): member(s) Parameters: list[DocumentParameter], PlatformTypes: list[PlatformType], Tags: list[Tag], AttachmentsInformation: list[AttachmentInformation], Requires: list[DocumentRequires], ReviewInformation: list[ReviewInformation], Category: list[str], CategoryEnum: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: list[DocumentParameter], PlatformTypes: list[PlatformType], Tags: list[Tag], AttachmentsInformation: list[AttachmentInformation], Requires: list[DocumentRequires], ReviewInformation: list[ReviewInformation], Category: list[str], CategoryEnum: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentDescription:
     Optional[str] Sha1
     Optional[str] Hash
@@ -2472,8 +2573,9 @@ struct DocumentFilter:
     DocumentFilterKey key
     str value
 
-# no @derive(Json): member(s) PlatformTypes: list[PlatformType], Tags: list[Tag], Requires: list[DocumentRequires] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PlatformTypes: list[PlatformType], Tags: list[Tag], Requires: list[DocumentRequires] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentIdentifier:
     Optional[str] Name
     Optional[DateTime] CreatedDate
@@ -2491,8 +2593,9 @@ struct DocumentIdentifier:
     Optional[ReviewStatus] ReviewStatus
     Optional[str] Author
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentKeyValuesFilter:
     Optional[str] Key
     Optional[list[str]] Values
@@ -2501,8 +2604,9 @@ struct DocumentKeyValuesFilter:
 struct DocumentLimitExceeded:
     Optional[str] Message
 
-# no @derive(Json): member(s) ReviewerResponse: list[DocumentReviewerResponseSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReviewerResponse: list[DocumentReviewerResponseSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentMetadataResponseInfo:
     Optional[list[DocumentReviewerResponseSource]] ReviewerResponse
 
@@ -2529,8 +2633,9 @@ struct DocumentReviewCommentSource:
     Optional[str] Type
     Optional[str] Content
 
-# no @derive(Json): member(s) Comment: list[DocumentReviewCommentSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Comment: list[DocumentReviewCommentSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentReviewerResponseSource:
     Optional[DateTime] CreateTime
     Optional[DateTime] UpdatedTime
@@ -2538,8 +2643,9 @@ struct DocumentReviewerResponseSource:
     Optional[list[DocumentReviewCommentSource]] Comment
     Optional[str] Reviewer
 
-# no @derive(Json): member(s) Comment: list[DocumentReviewCommentSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Comment: list[DocumentReviewCommentSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentReviews:
     DocumentReviewAction Action
     Optional[list[DocumentReviewCommentSource]] Comment
@@ -2578,31 +2684,36 @@ struct DuplicateInstanceId:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Patch: Patch not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Patch: Patch not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EffectivePatch:
     Optional[Patch] Patch
     Optional[PatchStatus] PatchStatus
 
-# no @derive(Json): member(s) Automation: AutomationExecutionInputs not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Automation: AutomationExecutionInputs not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecutionInputs:
     Optional[AutomationExecutionInputs] Automation
 
-# no @derive(Json): member(s) Automation: AutomationExecutionPreview not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Automation: AutomationExecutionPreview not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecutionPreview:
     Optional[AutomationExecutionPreview] Automation
 
-# no @derive(Json): member(s) Entry: CreateAssociationBatchRequestEntry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entry: CreateAssociationBatchRequestEntry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FailedCreateAssociation:
     Optional[CreateAssociationBatchRequestEntry] Entry
     Optional[str] Message
     Optional[Fault] Fault
 
-# no @derive(Json): member(s) Details: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Details: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FailureDetails:
     Optional[str] FailureStage
     Optional[str] FailureType
@@ -2625,13 +2736,15 @@ struct GetAccessTokenResponse:
 struct GetAutomationExecutionRequest:
     str AutomationExecutionId
 
-# no @derive(Json): member(s) AutomationExecution: AutomationExecution not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AutomationExecution: AutomationExecution not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAutomationExecutionResult:
     Optional[AutomationExecution] AutomationExecution
 
-# no @derive(Json): member(s) CalendarNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CalendarNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCalendarStateRequest:
     list[str] CalendarNames
     Optional[str] AtTime
@@ -2646,8 +2759,9 @@ struct GetCalendarStateResponse:
 struct GetCloudConnectorRequest:
     str CloudConnectorId
 
-# no @derive(Json): member(s) Configuration: CloudConnectorConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: CloudConnectorConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCloudConnectorResult:
     Optional[str] CloudConnectorArn
     Optional[str] DisplayName
@@ -2702,8 +2816,9 @@ struct GetDefaultPatchBaselineResult:
     Optional[str] BaselineId
     Optional[OperatingSystem] OperatingSystem
 
-# no @derive(Json): member(s) BaselineOverride: BaselineOverride not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BaselineOverride: BaselineOverride not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeployablePatchSnapshotForInstanceRequest:
     str InstanceId
     str SnapshotId
@@ -2724,8 +2839,9 @@ struct GetDocumentRequest:
     Optional[str] DocumentVersion
     Optional[DocumentFormat] DocumentFormat
 
-# no @derive(Json): member(s) Requires: list[DocumentRequires], AttachmentsContent: list[AttachmentContent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Requires: list[DocumentRequires], AttachmentsContent: list[AttachmentContent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDocumentResult:
     Optional[str] Name
     Optional[DateTime] CreatedDate
@@ -2745,8 +2861,9 @@ struct GetDocumentResult:
 struct GetExecutionPreviewRequest:
     str ExecutionPreviewId
 
-# no @derive(Json): member(s) ExecutionPreview: ExecutionPreview not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExecutionPreview: ExecutionPreview not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetExecutionPreviewResponse:
     Optional[str] ExecutionPreviewId
     Optional[DateTime] EndedAt
@@ -2754,8 +2871,9 @@ struct GetExecutionPreviewResponse:
     Optional[str] StatusMessage
     Optional[ExecutionPreview] ExecutionPreview
 
-# no @derive(Json): member(s) Filters: list[InventoryFilter], Aggregators: list[InventoryAggregator], ResultAttributes: list[ResultAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[InventoryFilter], Aggregators: list[InventoryAggregator], ResultAttributes: list[ResultAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInventoryRequest:
     Optional[list[InventoryFilter]] Filters
     Optional[list[InventoryAggregator]] Aggregators
@@ -2763,8 +2881,9 @@ struct GetInventoryRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Entities: list[InventoryResultEntity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entities: list[InventoryResultEntity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInventoryResult:
     Optional[list[InventoryResultEntity]] Entities
     Optional[str] NextToken
@@ -2777,8 +2896,9 @@ struct GetInventorySchemaRequest:
     Optional[bool] Aggregator
     Optional[bool] SubType
 
-# no @derive(Json): member(s) Schemas: list[InventoryItemSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Schemas: list[InventoryItemSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInventorySchemaResult:
     Optional[list[InventoryItemSchema]] Schemas
     Optional[str] NextToken
@@ -2787,8 +2907,9 @@ struct GetInventorySchemaResult:
 struct GetMaintenanceWindowExecutionRequest:
     str WindowExecutionId
 
-# no @derive(Json): member(s) TaskIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMaintenanceWindowExecutionResult:
     Optional[str] WindowExecutionId
     Optional[list[str]] TaskIds
@@ -2823,8 +2944,9 @@ struct GetMaintenanceWindowExecutionTaskRequest:
     str WindowExecutionId
     str TaskId
 
-# no @derive(Json): member(s) TaskParameters: list[dict[str, MaintenanceWindowTaskParameterValueExpression]], AlarmConfiguration: AlarmConfiguration, TriggeredAlarms: list[AlarmStateInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskParameters: list[dict[str, MaintenanceWindowTaskParameterValueExpression]], AlarmConfiguration: AlarmConfiguration, TriggeredAlarms: list[AlarmStateInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMaintenanceWindowExecutionTaskResult:
     Optional[str] WindowExecutionId
     Optional[str] TaskExecutionId
@@ -2869,8 +2991,9 @@ struct GetMaintenanceWindowTaskRequest:
     str WindowId
     str WindowTaskId
 
-# no @derive(Json): member(s) Targets: list[Target], TaskParameters: dict[str, MaintenanceWindowTaskParameterValueExpression], TaskInvocationParameters: MaintenanceWindowTaskInvocationParameters, AlarmConfiguration: AlarmConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: list[Target], TaskParameters: dict[str, MaintenanceWindowTaskParameterValueExpression], TaskInvocationParameters: MaintenanceWindowTaskInvocationParameters, AlarmConfiguration: AlarmConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMaintenanceWindowTaskResult:
     Optional[str] WindowId
     Optional[str] WindowTaskId
@@ -2894,8 +3017,9 @@ struct GetOpsItemRequest:
     str OpsItemId
     Optional[str] OpsItemArn
 
-# no @derive(Json): member(s) OpsItem: OpsItem not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OpsItem: OpsItem not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOpsItemResponse:
     Optional[OpsItem] OpsItem
 
@@ -2905,15 +3029,17 @@ struct GetOpsMetadataRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Metadata: dict[str, MetadataValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metadata: dict[str, MetadataValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOpsMetadataResult:
     Optional[str] ResourceId
     Optional[dict[str, MetadataValue]] Metadata
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[OpsFilter], Aggregators: list[OpsAggregator], ResultAttributes: list[OpsResultAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[OpsFilter], Aggregators: list[OpsAggregator], ResultAttributes: list[OpsResultAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOpsSummaryRequest:
     Optional[str] SyncName
     Optional[list[OpsFilter]] Filters
@@ -2922,8 +3048,9 @@ struct GetOpsSummaryRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Entities: list[OpsEntity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entities: list[OpsEntity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOpsSummaryResult:
     Optional[list[OpsEntity]] Entities
     Optional[str] NextToken
@@ -2935,8 +3062,9 @@ struct GetParameterHistoryRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Parameters: list[ParameterHistory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: list[ParameterHistory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetParameterHistoryResult:
     Optional[list[ParameterHistory]] Parameters
     Optional[str] NextToken
@@ -2950,8 +3078,9 @@ struct GetParameterRequest:
 struct GetParameterResult:
     Optional[Parameter] Parameter
 
-# no @derive(Json): member(s) ParameterFilters: list[ParameterStringFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParameterFilters: list[ParameterStringFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetParametersByPathRequest:
     str Path
     Optional[bool] Recursive
@@ -2960,20 +3089,23 @@ struct GetParametersByPathRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Parameters: list[Parameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: list[Parameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetParametersByPathResult:
     Optional[list[Parameter]] Parameters
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Names: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Names: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetParametersRequest:
     list[str] Names
     Optional[bool] WithDecryption
 
-# no @derive(Json): member(s) Parameters: list[Parameter], InvalidParameters: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: list[Parameter], InvalidParameters: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetParametersResult:
     Optional[list[Parameter]] Parameters
     Optional[list[str]] InvalidParameters
@@ -2993,8 +3125,9 @@ struct GetPatchBaselineForPatchGroupResult:
 struct GetPatchBaselineRequest:
     str BaselineId
 
-# no @derive(Json): member(s) GlobalFilters: PatchFilterGroup, ApprovalRules: PatchRuleGroup, ApprovedPatches: list[str], RejectedPatches: list[str], PatchGroups: list[str], Sources: list[PatchSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalFilters: PatchFilterGroup, ApprovalRules: PatchRuleGroup, ApprovedPatches: list[str], RejectedPatches: list[str], PatchGroups: list[str], Sources: list[PatchSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPatchBaselineResult:
     Optional[str] BaselineId
     Optional[str] Name
@@ -3019,8 +3152,9 @@ struct GetResourcePoliciesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Policies: list[GetResourcePoliciesResponseEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Policies: list[GetResourcePoliciesResponseEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourcePoliciesResponse:
     Optional[str] NextToken
     Optional[list[GetResourcePoliciesResponseEntry]] Policies
@@ -3055,8 +3189,9 @@ struct IdempotentParameterMismatch:
 struct IncompatiblePolicyException:
     Optional[str] message
 
-# no @derive(Json): member(s) InstanceAssociationStatusAggregatedCount: dict[str, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceAssociationStatusAggregatedCount: dict[str, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceAggregatedAssociationOverview:
     Optional[str] DetailedStatus
     Optional[dict[str, int64]] InstanceAssociationStatusAggregatedCount
@@ -3110,8 +3245,9 @@ struct InstanceInfo:
     Optional[str] AvailabilityZone
     Optional[str] AvailabilityZoneId
 
-# no @derive(Json): member(s) AssociationOverview: InstanceAggregatedAssociationOverview not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociationOverview: InstanceAggregatedAssociationOverview not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceInformation:
     Optional[str] InstanceId
     Optional[PingStatus] PingStatus
@@ -3136,14 +3272,16 @@ struct InstanceInformation:
     Optional[SourceType] SourceType
     Optional[str] SourceLocation
 
-# no @derive(Json): member(s) valueSet: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) valueSet: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceInformationFilter:
     InstanceInformationFilterKey key
     list[str] valueSet
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceInformationStringFilter:
     str Key
     list[str] Values
@@ -3174,15 +3312,17 @@ struct InstancePatchState:
     Optional[int64] SecurityNonCompliantCount
     Optional[int64] OtherNonCompliantCount
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstancePatchStateFilter:
     str Key
     list[str] Values
     InstancePatchStateOperatorType Type
 
-# no @derive(Json): member(s) AssociationOverview: InstanceAggregatedAssociationOverview not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociationOverview: InstanceAggregatedAssociationOverview not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceProperty:
     Optional[str] Name
     Optional[str] InstanceId
@@ -3213,14 +3353,16 @@ struct InstanceProperty:
     Optional[str] SourceLocation
     Optional[str] AvailabilityZone
 
-# no @derive(Json): member(s) valueSet: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) valueSet: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstancePropertyFilter:
     InstancePropertyFilterKey key
     list[str] valueSet
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstancePropertyStringFilter:
     str Key
     list[str] Values
@@ -3438,15 +3580,17 @@ struct InvalidTypeNameException:
 struct InvalidUpdate:
     Optional[str] Message
 
-# no @derive(Json): member(s) Aggregators: list[InventoryAggregator], Groups: list[InventoryGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Aggregators: list[InventoryAggregator], Groups: list[InventoryGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InventoryAggregator:
     Optional[str] Expression
     Optional[list[InventoryAggregator]] Aggregators
     Optional[list[InventoryGroup]] Groups
 
-# no @derive(Json): member(s) DeletionSummary: InventoryDeletionSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeletionSummary: InventoryDeletionSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InventoryDeletionStatusItem:
     Optional[str] DeletionId
     Optional[str] TypeName
@@ -3456,8 +3600,9 @@ struct InventoryDeletionStatusItem:
     Optional[InventoryDeletionSummary] DeletionSummary
     Optional[DateTime] LastStatusUpdateTime
 
-# no @derive(Json): member(s) SummaryItems: list[InventoryDeletionSummaryItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SummaryItems: list[InventoryDeletionSummaryItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InventoryDeletionSummary:
     Optional[int64] TotalCount
     Optional[int64] RemainingCount
@@ -3469,21 +3614,24 @@ struct InventoryDeletionSummaryItem:
     Optional[int64] Count
     Optional[int64] RemainingCount
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InventoryFilter:
     str Key
     list[str] Values
     Optional[InventoryQueryOperatorType] Type
 
-# no @derive(Json): member(s) Filters: list[InventoryFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[InventoryFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InventoryGroup:
     str Name
     list[InventoryFilter] Filters
 
-# no @derive(Json): member(s) Content: list[dict[str, str]], Context: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Content: list[dict[str, str]], Context: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InventoryItem:
     str TypeName
     str SchemaVersion
@@ -3497,22 +3645,25 @@ struct InventoryItemAttribute:
     str Name
     InventoryAttributeDataType DataType
 
-# no @derive(Json): member(s) Attributes: list[InventoryItemAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[InventoryItemAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InventoryItemSchema:
     str TypeName
     Optional[str] Version
     list[InventoryItemAttribute] Attributes
     Optional[str] DisplayName
 
-# no @derive(Json): member(s) Data: dict[str, InventoryResultItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Data: dict[str, InventoryResultItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InventoryResultEntity:
     Optional[str] Id
     Optional[dict[str, InventoryResultItem]] Data
 
-# no @derive(Json): member(s) Content: list[dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Content: list[dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InventoryResultItem:
     str TypeName
     str SchemaVersion
@@ -3535,15 +3686,17 @@ struct ItemSizeLimitExceededException:
     Optional[str] TypeName
     Optional[str] Message
 
-# no @derive(Json): member(s) Labels: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Labels: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LabelParameterVersionRequest:
     str Name
     Optional[int64] ParameterVersion
     list[str] Labels
 
-# no @derive(Json): member(s) InvalidLabels: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InvalidLabels: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LabelParameterVersionResult:
     Optional[list[str]] InvalidLabels
     Optional[int64] ParameterVersion
@@ -3554,40 +3707,46 @@ struct ListAssociationVersionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AssociationVersions: list[AssociationVersionInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociationVersions: list[AssociationVersionInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssociationVersionsResult:
     Optional[list[AssociationVersionInfo]] AssociationVersions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AssociationFilterList: list[AssociationFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociationFilterList: list[AssociationFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssociationsRequest:
     Optional[list[AssociationFilter]] AssociationFilterList
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Associations: list[Association] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Associations: list[Association] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssociationsResult:
     Optional[list[Association]] Associations
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[CloudConnectorFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[CloudConnectorFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCloudConnectorsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
     Optional[list[CloudConnectorFilter]] Filters
 
-# no @derive(Json): member(s) CloudConnectors: list[CloudConnectorSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudConnectors: list[CloudConnectorSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCloudConnectorsResult:
     Optional[list[CloudConnectorSummary]] CloudConnectors
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[CommandFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[CommandFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCommandInvocationsRequest:
     Optional[str] CommandId
     Optional[str] InstanceId
@@ -3596,14 +3755,16 @@ struct ListCommandInvocationsRequest:
     Optional[list[CommandFilter]] Filters
     Optional[bool] Details
 
-# no @derive(Json): member(s) CommandInvocations: list[CommandInvocation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CommandInvocations: list[CommandInvocation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCommandInvocationsResult:
     Optional[list[CommandInvocation]] CommandInvocations
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[CommandFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[CommandFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCommandsRequest:
     Optional[str] CommandId
     Optional[str] InstanceId
@@ -3611,14 +3772,16 @@ struct ListCommandsRequest:
     Optional[str] NextToken
     Optional[list[CommandFilter]] Filters
 
-# no @derive(Json): member(s) Commands: list[Command] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Commands: list[Command] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCommandsResult:
     Optional[list[Command]] Commands
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[ComplianceStringFilter], ResourceIds: list[str], ResourceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[ComplianceStringFilter], ResourceIds: list[str], ResourceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListComplianceItemsRequest:
     Optional[list[ComplianceStringFilter]] Filters
     Optional[list[str]] ResourceIds
@@ -3626,21 +3789,24 @@ struct ListComplianceItemsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ComplianceItems: list[ComplianceItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ComplianceItems: list[ComplianceItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListComplianceItemsResult:
     Optional[list[ComplianceItem]] ComplianceItems
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[ComplianceStringFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[ComplianceStringFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListComplianceSummariesRequest:
     Optional[list[ComplianceStringFilter]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ComplianceSummaryItems: list[ComplianceSummaryItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ComplianceSummaryItems: list[ComplianceSummaryItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListComplianceSummariesResult:
     Optional[list[ComplianceSummaryItem]] ComplianceSummaryItems
     Optional[str] NextToken
@@ -3653,8 +3819,9 @@ struct ListDocumentMetadataHistoryRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Metadata: DocumentMetadataResponseInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metadata: DocumentMetadataResponseInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDocumentMetadataHistoryResponse:
     Optional[str] Name
     Optional[str] DocumentVersion
@@ -3668,28 +3835,32 @@ struct ListDocumentVersionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) DocumentVersions: list[DocumentVersionInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentVersions: list[DocumentVersionInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDocumentVersionsResult:
     Optional[list[DocumentVersionInfo]] DocumentVersions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) DocumentFilterList: list[DocumentFilter], Filters: list[DocumentKeyValuesFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentFilterList: list[DocumentFilter], Filters: list[DocumentKeyValuesFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDocumentsRequest:
     Optional[list[DocumentFilter]] DocumentFilterList
     Optional[list[DocumentKeyValuesFilter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) DocumentIdentifiers: list[DocumentIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentIdentifiers: list[DocumentIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDocumentsResult:
     Optional[list[DocumentIdentifier]] DocumentIdentifiers
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[InventoryFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[InventoryFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInventoryEntriesRequest:
     str InstanceId
     str TypeName
@@ -3697,8 +3868,9 @@ struct ListInventoryEntriesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Entries: list[dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entries: list[dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInventoryEntriesResult:
     Optional[str] TypeName
     Optional[str] InstanceId
@@ -3707,22 +3879,25 @@ struct ListInventoryEntriesResult:
     Optional[list[dict[str, str]]] Entries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[NodeFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[NodeFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNodesRequest:
     Optional[str] SyncName
     Optional[list[NodeFilter]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Nodes: list[Node] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Nodes: list[Node] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNodesResult:
     Optional[list[Node]] Nodes
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[NodeFilter], Aggregators: list[NodeAggregator] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[NodeFilter], Aggregators: list[NodeAggregator] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNodesSummaryRequest:
     Optional[str] SyncName
     Optional[list[NodeFilter]] Filters
@@ -3730,61 +3905,70 @@ struct ListNodesSummaryRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Summary: list[dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Summary: list[dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNodesSummaryResult:
     Optional[list[dict[str, str]]] Summary
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[OpsItemEventFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[OpsItemEventFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOpsItemEventsRequest:
     Optional[list[OpsItemEventFilter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Summaries: list[OpsItemEventSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Summaries: list[OpsItemEventSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOpsItemEventsResponse:
     Optional[str] NextToken
     Optional[list[OpsItemEventSummary]] Summaries
 
-# no @derive(Json): member(s) Filters: list[OpsItemRelatedItemsFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[OpsItemRelatedItemsFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOpsItemRelatedItemsRequest:
     Optional[str] OpsItemId
     Optional[list[OpsItemRelatedItemsFilter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Summaries: list[OpsItemRelatedItemSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Summaries: list[OpsItemRelatedItemSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOpsItemRelatedItemsResponse:
     Optional[str] NextToken
     Optional[list[OpsItemRelatedItemSummary]] Summaries
 
-# no @derive(Json): member(s) Filters: list[OpsMetadataFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[OpsMetadataFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOpsMetadataRequest:
     Optional[list[OpsMetadataFilter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) OpsMetadataList: list[OpsMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OpsMetadataList: list[OpsMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOpsMetadataResult:
     Optional[list[OpsMetadata]] OpsMetadataList
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[ComplianceStringFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[ComplianceStringFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceComplianceSummariesRequest:
     Optional[list[ComplianceStringFilter]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ResourceComplianceSummaryItems: list[ResourceComplianceSummaryItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceComplianceSummaryItems: list[ResourceComplianceSummaryItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceComplianceSummariesResult:
     Optional[list[ResourceComplianceSummaryItem]] ResourceComplianceSummaryItems
     Optional[str] NextToken
@@ -3795,8 +3979,9 @@ struct ListResourceDataSyncRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ResourceDataSyncItems: list[ResourceDataSyncItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceDataSyncItems: list[ResourceDataSyncItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceDataSyncResult:
     Optional[list[ResourceDataSyncItem]] ResourceDataSyncItems
     Optional[str] NextToken
@@ -3806,8 +3991,9 @@ struct ListTagsForResourceRequest:
     ResourceTypeForTagging ResourceType
     str ResourceId
 
-# no @derive(Json): member(s) TagList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResult:
     Optional[list[Tag]] TagList
 
@@ -3817,8 +4003,9 @@ struct LoggingInfo:
     Optional[str] S3KeyPrefix
     str S3Region
 
-# no @derive(Json): member(s) Parameters: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MaintenanceWindowAutomationParameters:
     Optional[str] DocumentVersion
     Optional[dict[str, list[str]]] Parameters
@@ -3832,8 +4019,9 @@ struct MaintenanceWindowExecution:
     Optional[DateTime] StartTime
     Optional[DateTime] EndTime
 
-# no @derive(Json): member(s) AlarmConfiguration: AlarmConfiguration, TriggeredAlarms: list[AlarmStateInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AlarmConfiguration: AlarmConfiguration, TriggeredAlarms: list[AlarmStateInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MaintenanceWindowExecutionTaskIdentity:
     Optional[str] WindowExecutionId
     Optional[str] TaskExecutionId
@@ -3861,8 +4049,9 @@ struct MaintenanceWindowExecutionTaskInvocationIdentity:
     Optional[str] OwnerInformation
     Optional[str] WindowTargetId
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MaintenanceWindowFilter:
     Optional[str] Key
     Optional[list[str]] Values
@@ -3893,8 +4082,9 @@ struct MaintenanceWindowLambdaParameters:
     Optional[str] Qualifier
     Optional[bytes] Payload
 
-# no @derive(Json): member(s) NotificationConfig: NotificationConfig, Parameters: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NotificationConfig: NotificationConfig, Parameters: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MaintenanceWindowRunCommandParameters:
     Optional[str] Comment
     Optional[CloudWatchOutputConfig] CloudWatchOutputConfig
@@ -3913,8 +4103,9 @@ struct MaintenanceWindowStepFunctionsParameters:
     Optional[str] Input
     Optional[str] Name
 
-# no @derive(Json): member(s) Targets: list[Target] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: list[Target] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MaintenanceWindowTarget:
     Optional[str] WindowId
     Optional[str] WindowTargetId
@@ -3924,8 +4115,9 @@ struct MaintenanceWindowTarget:
     Optional[str] Name
     Optional[str] Description
 
-# no @derive(Json): member(s) Targets: list[Target], TaskParameters: dict[str, MaintenanceWindowTaskParameterValueExpression], AlarmConfiguration: AlarmConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: list[Target], TaskParameters: dict[str, MaintenanceWindowTaskParameterValueExpression], AlarmConfiguration: AlarmConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MaintenanceWindowTask:
     Optional[str] WindowId
     Optional[str] WindowTaskId
@@ -3943,16 +4135,18 @@ struct MaintenanceWindowTask:
     Optional[MaintenanceWindowTaskCutoffBehavior] CutoffBehavior
     Optional[AlarmConfiguration] AlarmConfiguration
 
-# no @derive(Json): member(s) RunCommand: MaintenanceWindowRunCommandParameters, Automation: MaintenanceWindowAutomationParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RunCommand: MaintenanceWindowRunCommandParameters, Automation: MaintenanceWindowAutomationParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MaintenanceWindowTaskInvocationParameters:
     Optional[MaintenanceWindowRunCommandParameters] RunCommand
     Optional[MaintenanceWindowAutomationParameters] Automation
     Optional[MaintenanceWindowStepFunctionsParameters] StepFunctions
     Optional[MaintenanceWindowLambdaParameters] Lambda
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MaintenanceWindowTaskParameterValueExpression:
     Optional[list[str]] Values
 
@@ -3968,8 +4162,9 @@ struct MaxDocumentSizeExceeded:
 struct MetadataValue:
     Optional[str] Value
 
-# no @derive(Json): member(s) AccountIdsToAdd: list[str], AccountIdsToRemove: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountIdsToAdd: list[str], AccountIdsToRemove: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyDocumentPermissionRequest:
     str Name
     str PermissionType
@@ -3994,16 +4189,18 @@ struct Node:
     Optional[str] Region
     Optional[NodeType] NodeType
 
-# no @derive(Json): member(s) Aggregators: list[NodeAggregator] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Aggregators: list[NodeAggregator] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NodeAggregator:
     str AggregatorType
     str TypeName
     NodeAttributeName AttributeName
     Optional[list[NodeAggregator]] Aggregators
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NodeFilter:
     NodeFilterKey Key
     list[str] Values
@@ -4024,15 +4221,17 @@ struct NonCompliantSummary:
     Optional[int64] NonCompliantCount
     Optional[SeveritySummary] SeveritySummary
 
-# no @derive(Json): member(s) NotificationEvents: list[NotificationEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NotificationEvents: list[NotificationEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotificationConfig:
     Optional[str] NotificationArn
     Optional[list[NotificationEvent]] NotificationEvents
     Optional[NotificationType] NotificationType
 
-# no @derive(Json): member(s) Values: dict[str, str], Filters: list[OpsFilter], Aggregators: list[OpsAggregator] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: dict[str, str], Filters: list[OpsFilter], Aggregators: list[OpsAggregator] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpsAggregator:
     Optional[str] AggregatorType
     Optional[str] TypeName
@@ -4041,27 +4240,31 @@ struct OpsAggregator:
     Optional[list[OpsFilter]] Filters
     Optional[list[OpsAggregator]] Aggregators
 
-# no @derive(Json): member(s) Data: dict[str, OpsEntityItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Data: dict[str, OpsEntityItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpsEntity:
     Optional[str] Id
     Optional[dict[str, OpsEntityItem]] Data
 
-# no @derive(Json): member(s) Content: list[dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Content: list[dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpsEntityItem:
     Optional[str] CaptureTime
     Optional[list[dict[str, str]]] Content
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpsFilter:
     str Key
     list[str] Values
     Optional[OpsFilterOperatorType] Type
 
-# no @derive(Json): member(s) Notifications: list[OpsItemNotification], RelatedOpsItems: list[RelatedOpsItem], OperationalData: dict[str, OpsItemDataValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Notifications: list[OpsItemNotification], RelatedOpsItems: list[RelatedOpsItem], OperationalData: dict[str, OpsItemDataValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpsItem:
     Optional[str] CreatedBy
     Optional[str] OpsItemType
@@ -4104,8 +4307,9 @@ struct OpsItemDataValue:
     Optional[str] Value
     Optional[OpsItemDataType] Type
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpsItemEventFilter:
     str Key
     list[str] Values
@@ -4121,8 +4325,9 @@ struct OpsItemEventSummary:
     Optional[OpsItemIdentity] CreatedBy
     Optional[DateTime] CreatedTime
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpsItemFilter:
     OpsItemFilterKey Key
     list[str] Values
@@ -4132,14 +4337,16 @@ struct OpsItemFilter:
 struct OpsItemIdentity:
     Optional[str] Arn
 
-# no @derive(Json): member(s) ParameterNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParameterNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpsItemInvalidParameterException:
     Optional[list[str]] ParameterNames
     Optional[str] Message
 
-# no @derive(Json): member(s) ResourceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpsItemLimitExceededException:
     Optional[list[str]] ResourceTypes
     Optional[int64] Limit
@@ -4176,15 +4383,17 @@ struct OpsItemRelatedItemSummary:
     Optional[OpsItemIdentity] LastModifiedBy
     Optional[DateTime] LastModifiedTime
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpsItemRelatedItemsFilter:
     OpsItemRelatedItemsFilterKey Key
     list[str] Values
     str Operator
 
-# no @derive(Json): member(s) OperationalData: dict[str, OpsItemDataValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OperationalData: dict[str, OpsItemDataValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpsItemSummary:
     Optional[str] CreatedBy
     Optional[DateTime] CreatedTime
@@ -4216,8 +4425,9 @@ struct OpsMetadata:
 struct OpsMetadataAlreadyExistsException:
     Optional[str] message
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpsMetadataFilter:
     str Key
     list[str] Values
@@ -4267,8 +4477,9 @@ struct Parameter:
 struct ParameterAlreadyExists:
     Optional[str] message
 
-# no @derive(Json): member(s) Labels: list[str], Policies: list[ParameterInlinePolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Labels: list[str], Policies: list[ParameterInlinePolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParameterHistory:
     Optional[str] Name
     Optional[ParameterType] Type
@@ -4298,8 +4509,9 @@ struct ParameterLimitExceeded:
 struct ParameterMaxVersionLimitExceeded:
     Optional[str] message
 
-# no @derive(Json): member(s) Policies: list[ParameterInlinePolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Policies: list[ParameterInlinePolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParameterMetadata:
     Optional[str] Name
     Optional[str] ARN
@@ -4322,8 +4534,9 @@ struct ParameterNotFound:
 struct ParameterPatternMismatchException:
     Optional[str] message
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParameterStringFilter:
     str Key
     Optional[str] Option
@@ -4337,8 +4550,9 @@ struct ParameterVersionLabelLimitExceeded:
 struct ParameterVersionNotFound:
     Optional[str] message
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParametersFilter:
     ParametersFilterKey Key
     list[str] Values
@@ -4351,8 +4565,9 @@ struct ParentStepDetails:
     Optional[int64] Iteration
     Optional[str] IteratorValue
 
-# no @derive(Json): member(s) AdvisoryIds: list[str], BugzillaIds: list[str], CVEIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdvisoryIds: list[str], BugzillaIds: list[str], CVEIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Patch:
     Optional[str] Id
     Optional[DateTime] ReleaseDate
@@ -4396,14 +4611,16 @@ struct PatchComplianceData:
     DateTime InstalledTime
     Optional[str] CVEIds
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PatchFilter:
     PatchFilterKey Key
     list[str] Values
 
-# no @derive(Json): member(s) PatchFilters: list[PatchFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PatchFilters: list[PatchFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PatchFilterGroup:
     list[PatchFilter] PatchFilters
 
@@ -4412,14 +4629,16 @@ struct PatchGroupPatchBaselineMapping:
     Optional[str] PatchGroup
     Optional[PatchBaselineIdentity] BaselineIdentity
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PatchOrchestratorFilter:
     Optional[str] Key
     Optional[list[str]] Values
 
-# no @derive(Json): member(s) PatchFilterGroup: PatchFilterGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PatchFilterGroup: PatchFilterGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PatchRule:
     PatchFilterGroup PatchFilterGroup
     Optional[PatchComplianceLevel] ComplianceLevel
@@ -4427,13 +4646,15 @@ struct PatchRule:
     Optional[str] ApproveUntilDate
     Optional[bool] EnableNonSecurity
 
-# no @derive(Json): member(s) PatchRules: list[PatchRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PatchRules: list[PatchRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PatchRuleGroup:
     list[PatchRule] PatchRules
 
-# no @derive(Json): member(s) Products: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Products: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PatchSource:
     str Name
     list[str] Products
@@ -4457,8 +4678,9 @@ struct ProgressCounters:
     Optional[int64] CancelledSteps
     Optional[int64] TimedOutSteps
 
-# no @derive(Json): member(s) Items: list[ComplianceItemEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ComplianceItemEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutComplianceItemsRequest:
     str ResourceId
     str ResourceType
@@ -4473,8 +4695,9 @@ struct PutComplianceItemsResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Items: list[InventoryItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[InventoryItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutInventoryRequest:
     str InstanceId
     list[InventoryItem] Items
@@ -4483,8 +4706,9 @@ struct PutInventoryRequest:
 struct PutInventoryResult:
     Optional[str] Message
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutParameterRequest:
     str Name
     Optional[str] Description
@@ -4533,8 +4757,9 @@ struct RegisterPatchBaselineForPatchGroupResult:
     Optional[str] BaselineId
     Optional[str] PatchGroup
 
-# no @derive(Json): member(s) Targets: list[Target] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: list[Target] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterTargetWithMaintenanceWindowRequest:
     str WindowId
     MaintenanceWindowResourceType ResourceType
@@ -4548,8 +4773,9 @@ struct RegisterTargetWithMaintenanceWindowRequest:
 struct RegisterTargetWithMaintenanceWindowResult:
     Optional[str] WindowTargetId
 
-# no @derive(Json): member(s) Targets: list[Target], TaskParameters: dict[str, MaintenanceWindowTaskParameterValueExpression], TaskInvocationParameters: MaintenanceWindowTaskInvocationParameters, AlarmConfiguration: AlarmConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: list[Target], TaskParameters: dict[str, MaintenanceWindowTaskParameterValueExpression], TaskInvocationParameters: MaintenanceWindowTaskInvocationParameters, AlarmConfiguration: AlarmConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterTaskWithMaintenanceWindowRequest:
     str WindowId
     Optional[list[Target]] Targets
@@ -4581,8 +4807,9 @@ struct RegistrationMetadataItem:
 struct RelatedOpsItem:
     str OpsItemId
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveTagsFromResourceRequest:
     ResourceTypeForTagging ResourceType
     str ResourceId
@@ -4601,8 +4828,9 @@ struct ResetServiceSettingRequest:
 struct ResetServiceSettingResult:
     Optional[ServiceSetting] ServiceSetting
 
-# no @derive(Json): member(s) ParameterValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParameterValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResolvedTargets:
     Optional[list[str]] ParameterValues
     Optional[bool] Truncated
@@ -4622,8 +4850,9 @@ struct ResourceComplianceSummaryItem:
 struct ResourceDataSyncAlreadyExistsException:
     Optional[str] SyncName
 
-# no @derive(Json): member(s) OrganizationalUnits: list[ResourceDataSyncOrganizationalUnit] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrganizationalUnits: list[ResourceDataSyncOrganizationalUnit] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceDataSyncAwsOrganizationsSource:
     str OrganizationSourceType
     Optional[list[ResourceDataSyncOrganizationalUnit]] OrganizationalUnits
@@ -4644,8 +4873,9 @@ struct ResourceDataSyncDestinationDataSharing:
 struct ResourceDataSyncInvalidConfigurationException:
     Optional[str] Message
 
-# no @derive(Json): member(s) SyncSource: ResourceDataSyncSourceWithState not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SyncSource: ResourceDataSyncSourceWithState not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceDataSyncItem:
     Optional[str] SyncName
     Optional[str] SyncType
@@ -4677,8 +4907,9 @@ struct ResourceDataSyncS3Destination:
     Optional[str] AWSKMSKeyARN
     Optional[ResourceDataSyncDestinationDataSharing] DestinationDataSharing
 
-# no @derive(Json): member(s) AwsOrganizationsSource: ResourceDataSyncAwsOrganizationsSource, SourceRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AwsOrganizationsSource: ResourceDataSyncAwsOrganizationsSource, SourceRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceDataSyncSource:
     str SourceType
     Optional[ResourceDataSyncAwsOrganizationsSource] AwsOrganizationsSource
@@ -4686,8 +4917,9 @@ struct ResourceDataSyncSource:
     Optional[bool] IncludeFutureRegions
     Optional[bool] EnableAllOpsDataSources
 
-# no @derive(Json): member(s) AwsOrganizationsSource: ResourceDataSyncAwsOrganizationsSource, SourceRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AwsOrganizationsSource: ResourceDataSyncAwsOrganizationsSource, SourceRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceDataSyncSourceWithState:
     Optional[str] SourceType
     Optional[ResourceDataSyncAwsOrganizationsSource] AwsOrganizationsSource
@@ -4712,8 +4944,9 @@ struct ResourceNotFoundException:
 struct ResourcePolicyConflictException:
     Optional[str] Message
 
-# no @derive(Json): member(s) ParameterNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParameterNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourcePolicyInvalidParameterException:
     Optional[list[str]] ParameterNames
     Optional[str] Message
@@ -4748,8 +4981,9 @@ struct ReviewInformation:
     Optional[ReviewStatus] Status
     Optional[str] Reviewer
 
-# no @derive(Json): member(s) Parameters: dict[str, list[str]], Targets: list[Target], TargetMaps: list[dict[str, list[str]]], TargetLocations: list[TargetLocation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, list[str]], Targets: list[Target], TargetMaps: list[dict[str, list[str]]], TargetLocations: list[TargetLocation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Runbook:
     str DocumentName
     Optional[str] DocumentVersion
@@ -4777,8 +5011,9 @@ struct ScheduledWindowExecution:
     Optional[str] Name
     Optional[str] ExecutionTime
 
-# no @derive(Json): member(s) Payload: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Payload: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendAutomationSignalRequest:
     str AutomationExecutionId
     SignalType SignalType
@@ -4789,8 +5024,9 @@ struct SendAutomationSignalResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) InstanceIds: list[str], Targets: list[Target], Parameters: dict[str, list[str]], NotificationConfig: NotificationConfig, AlarmConfiguration: AlarmConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceIds: list[str], Targets: list[Target], Parameters: dict[str, list[str]], NotificationConfig: NotificationConfig, AlarmConfiguration: AlarmConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendCommandRequest:
     Optional[list[str]] InstanceIds
     Optional[list[Target]] Targets
@@ -4811,8 +5047,9 @@ struct SendCommandRequest:
     Optional[CloudWatchOutputConfig] CloudWatchOutputConfig
     Optional[AlarmConfiguration] AlarmConfiguration
 
-# no @derive(Json): member(s) Command: Command not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Command: Command not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendCommandResult:
     Optional[Command] Command
 
@@ -4871,8 +5108,9 @@ struct SeveritySummary:
     Optional[int64] InformationalCount
     Optional[int64] UnspecifiedCount
 
-# no @derive(Json): member(s) Targets: list[Target], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: list[Target], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartAccessRequestRequest:
     str Reason
     list[Target] Targets
@@ -4882,8 +5120,9 @@ struct StartAccessRequestRequest:
 struct StartAccessRequestResponse:
     Optional[str] AccessRequestId
 
-# no @derive(Json): member(s) AssociationIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociationIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartAssociationsOnceRequest:
     list[str] AssociationIds
 
@@ -4892,8 +5131,9 @@ struct StartAssociationsOnceResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Parameters: dict[str, list[str]], Targets: list[Target], TargetMaps: list[dict[str, list[str]]], TargetLocations: list[TargetLocation], Tags: list[Tag], AlarmConfiguration: AlarmConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, list[str]], Targets: list[Target], TargetMaps: list[dict[str, list[str]]], TargetLocations: list[TargetLocation], Tags: list[Tag], AlarmConfiguration: AlarmConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartAutomationExecutionRequest:
     str DocumentName
     Optional[str] DocumentVersion
@@ -4914,8 +5154,9 @@ struct StartAutomationExecutionRequest:
 struct StartAutomationExecutionResult:
     Optional[str] AutomationExecutionId
 
-# no @derive(Json): member(s) Parameters: dict[str, list[str]], Runbooks: list[Runbook], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, list[str]], Runbooks: list[Runbook], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartChangeRequestExecutionRequest:
     Optional[DateTime] ScheduledTime
     str DocumentName
@@ -4933,8 +5174,9 @@ struct StartChangeRequestExecutionRequest:
 struct StartChangeRequestExecutionResult:
     Optional[str] AutomationExecutionId
 
-# no @derive(Json): member(s) ExecutionInputs: ExecutionInputs not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExecutionInputs: ExecutionInputs not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartExecutionPreviewRequest:
     str DocumentName
     Optional[str] DocumentVersion
@@ -4944,8 +5186,9 @@ struct StartExecutionPreviewRequest:
 struct StartExecutionPreviewResponse:
     Optional[str] ExecutionPreviewId
 
-# no @derive(Json): member(s) Parameters: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartSessionRequest:
     str Target
     Optional[str] DocumentName
@@ -4963,8 +5206,9 @@ struct StatusUnchanged:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Inputs: dict[str, str], Outputs: dict[str, list[str]], FailureDetails: FailureDetails, OverriddenParameters: dict[str, list[str]], ValidNextSteps: list[str], Targets: list[Target], TargetLocation: TargetLocation, TriggeredAlarms: list[AlarmStateInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: dict[str, str], Outputs: dict[str, list[str]], FailureDetails: FailureDetails, OverriddenParameters: dict[str, list[str]], ValidNextSteps: list[str], Targets: list[Target], TargetLocation: TargetLocation, TriggeredAlarms: list[AlarmStateInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StepExecution:
     Optional[str] StepName
     Optional[str] Action
@@ -4992,8 +5236,9 @@ struct StepExecution:
     Optional[list[AlarmStateInformation]] TriggeredAlarms
     Optional[ParentStepDetails] ParentStepDetails
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StepExecutionFilter:
     StepExecutionFilterKey Key
     list[str] Values
@@ -5017,8 +5262,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Target:
     Optional[str] Key
     Optional[list[str]] Values
@@ -5027,8 +5273,9 @@ struct Target:
 struct TargetInUseException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Accounts: list[str], Regions: list[str], TargetLocationAlarmConfiguration: AlarmConfiguration, ExcludeAccounts: list[str], Targets: list[Target] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Accounts: list[str], Regions: list[str], TargetLocationAlarmConfiguration: AlarmConfiguration, ExcludeAccounts: list[str], Targets: list[Target] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TargetLocation:
     Optional[list[str]] Accounts
     Optional[list[str]] Regions
@@ -5078,15 +5325,17 @@ struct TooManyUpdates:
 struct TotalSizeLimitExceededException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Labels: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Labels: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UnlabelParameterVersionRequest:
     str Name
     int64 ParameterVersion
     list[str] Labels
 
-# no @derive(Json): member(s) RemovedLabels: list[str], InvalidLabels: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RemovedLabels: list[str], InvalidLabels: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UnlabelParameterVersionResult:
     Optional[list[str]] RemovedLabels
     Optional[list[str]] InvalidLabels
@@ -5124,8 +5373,9 @@ struct UnsupportedParameterType:
 struct UnsupportedPlatformType:
     Optional[str] Message
 
-# no @derive(Json): member(s) Parameters: dict[str, list[str]], Targets: list[Target], CalendarNames: list[str], TargetLocations: list[TargetLocation], TargetMaps: list[dict[str, list[str]]], AlarmConfiguration: AlarmConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, list[str]], Targets: list[Target], CalendarNames: list[str], TargetLocations: list[TargetLocation], TargetMaps: list[dict[str, list[str]]], AlarmConfiguration: AlarmConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAssociationRequest:
     str AssociationId
     Optional[dict[str, list[str]]] Parameters
@@ -5150,8 +5400,9 @@ struct UpdateAssociationRequest:
     Optional[AlarmConfiguration] AlarmConfiguration
     Optional[str] AssociationDispatchAssumeRole
 
-# no @derive(Json): member(s) AssociationDescription: AssociationDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociationDescription: AssociationDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAssociationResult:
     Optional[AssociationDescription] AssociationDescription
 
@@ -5161,13 +5412,15 @@ struct UpdateAssociationStatusRequest:
     str InstanceId
     AssociationStatus AssociationStatus
 
-# no @derive(Json): member(s) AssociationDescription: AssociationDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociationDescription: AssociationDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAssociationStatusResult:
     Optional[AssociationDescription] AssociationDescription
 
-# no @derive(Json): member(s) Configuration: CloudConnectorConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: CloudConnectorConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCloudConnectorRequest:
     str CloudConnectorId
     Optional[str] DisplayName
@@ -5187,8 +5440,9 @@ struct UpdateDocumentDefaultVersionRequest:
 struct UpdateDocumentDefaultVersionResult:
     Optional[DocumentDefaultVersionDescription] Description
 
-# no @derive(Json): member(s) DocumentReviews: DocumentReviews not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentReviews: DocumentReviews not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDocumentMetadataRequest:
     str Name
     Optional[str] DocumentVersion
@@ -5199,8 +5453,9 @@ struct UpdateDocumentMetadataResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Attachments: list[AttachmentsSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attachments: list[AttachmentsSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDocumentRequest:
     str Content
     Optional[list[AttachmentsSource]] Attachments
@@ -5211,8 +5466,9 @@ struct UpdateDocumentRequest:
     Optional[DocumentFormat] DocumentFormat
     Optional[str] TargetType
 
-# no @derive(Json): member(s) DocumentDescription: DocumentDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentDescription: DocumentDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDocumentResult:
     Optional[DocumentDescription] DocumentDescription
 
@@ -5247,8 +5503,9 @@ struct UpdateMaintenanceWindowResult:
     Optional[bool] AllowUnassociatedTargets
     Optional[bool] Enabled
 
-# no @derive(Json): member(s) Targets: list[Target] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: list[Target] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMaintenanceWindowTargetRequest:
     str WindowId
     str WindowTargetId
@@ -5258,8 +5515,9 @@ struct UpdateMaintenanceWindowTargetRequest:
     Optional[str] Description
     Optional[bool] Replace
 
-# no @derive(Json): member(s) Targets: list[Target] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: list[Target] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMaintenanceWindowTargetResult:
     Optional[str] WindowId
     Optional[str] WindowTargetId
@@ -5268,8 +5526,9 @@ struct UpdateMaintenanceWindowTargetResult:
     Optional[str] Name
     Optional[str] Description
 
-# no @derive(Json): member(s) Targets: list[Target], TaskParameters: dict[str, MaintenanceWindowTaskParameterValueExpression], TaskInvocationParameters: MaintenanceWindowTaskInvocationParameters, AlarmConfiguration: AlarmConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: list[Target], TaskParameters: dict[str, MaintenanceWindowTaskParameterValueExpression], TaskInvocationParameters: MaintenanceWindowTaskInvocationParameters, AlarmConfiguration: AlarmConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMaintenanceWindowTaskRequest:
     str WindowId
     str WindowTaskId
@@ -5288,8 +5547,9 @@ struct UpdateMaintenanceWindowTaskRequest:
     Optional[MaintenanceWindowTaskCutoffBehavior] CutoffBehavior
     Optional[AlarmConfiguration] AlarmConfiguration
 
-# no @derive(Json): member(s) Targets: list[Target], TaskParameters: dict[str, MaintenanceWindowTaskParameterValueExpression], TaskInvocationParameters: MaintenanceWindowTaskInvocationParameters, AlarmConfiguration: AlarmConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: list[Target], TaskParameters: dict[str, MaintenanceWindowTaskParameterValueExpression], TaskInvocationParameters: MaintenanceWindowTaskInvocationParameters, AlarmConfiguration: AlarmConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMaintenanceWindowTaskResult:
     Optional[str] WindowId
     Optional[str] WindowTaskId
@@ -5317,8 +5577,9 @@ struct UpdateManagedInstanceRoleResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) OperationalData: dict[str, OpsItemDataValue], OperationalDataToDelete: list[str], Notifications: list[OpsItemNotification], RelatedOpsItems: list[RelatedOpsItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OperationalData: dict[str, OpsItemDataValue], OperationalDataToDelete: list[str], Notifications: list[OpsItemNotification], RelatedOpsItems: list[RelatedOpsItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateOpsItemRequest:
     Optional[str] Description
     Optional[dict[str, OpsItemDataValue]] OperationalData
@@ -5342,8 +5603,9 @@ struct UpdateOpsItemResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) MetadataToUpdate: dict[str, MetadataValue], KeysToDelete: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetadataToUpdate: dict[str, MetadataValue], KeysToDelete: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateOpsMetadataRequest:
     str OpsMetadataArn
     Optional[dict[str, MetadataValue]] MetadataToUpdate
@@ -5353,8 +5615,9 @@ struct UpdateOpsMetadataRequest:
 struct UpdateOpsMetadataResult:
     Optional[str] OpsMetadataArn
 
-# no @derive(Json): member(s) GlobalFilters: PatchFilterGroup, ApprovalRules: PatchRuleGroup, ApprovedPatches: list[str], RejectedPatches: list[str], Sources: list[PatchSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalFilters: PatchFilterGroup, ApprovalRules: PatchRuleGroup, ApprovedPatches: list[str], RejectedPatches: list[str], Sources: list[PatchSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePatchBaselineRequest:
     str BaselineId
     Optional[str] Name
@@ -5370,8 +5633,9 @@ struct UpdatePatchBaselineRequest:
     Optional[PatchComplianceStatus] AvailableSecurityUpdatesComplianceStatus
     Optional[bool] Replace
 
-# no @derive(Json): member(s) GlobalFilters: PatchFilterGroup, ApprovalRules: PatchRuleGroup, ApprovedPatches: list[str], RejectedPatches: list[str], Sources: list[PatchSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalFilters: PatchFilterGroup, ApprovalRules: PatchRuleGroup, ApprovedPatches: list[str], RejectedPatches: list[str], Sources: list[PatchSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePatchBaselineResult:
     Optional[str] BaselineId
     Optional[str] Name
@@ -5389,8 +5653,9 @@ struct UpdatePatchBaselineResult:
     Optional[list[PatchSource]] Sources
     Optional[PatchComplianceStatus] AvailableSecurityUpdatesComplianceStatus
 
-# no @derive(Json): member(s) SyncSource: ResourceDataSyncSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SyncSource: ResourceDataSyncSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateResourceDataSyncRequest:
     str SyncName
     str SyncType
@@ -5417,8 +5682,9 @@ struct ValidateCloudConnectorRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ValidationFindings: list[ValidationFinding] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValidationFindings: list[ValidationFinding] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidateCloudConnectorResult:
     Optional[list[ValidationFinding]] ValidationFindings
     Optional[str] NextToken
@@ -5874,140 +6140,3099 @@ def ssm_error_from_code(str code) -> SSMError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AddTagsToResource (input AddTagsToResourceRequest)
-#   CancelCommand (input CancelCommandRequest)
-#   CreateActivation (input CreateActivationRequest)
-#   CreateAssociation (input CreateAssociationRequest)
-#   CreateAssociationBatch (input CreateAssociationBatchRequest)
-#   CreateCloudConnector (input CreateCloudConnectorRequest)
-#   CreateDocument (input CreateDocumentRequest)
-#   CreateMaintenanceWindow (input CreateMaintenanceWindowRequest)
-#   CreateOpsItem (input CreateOpsItemRequest)
-#   CreateOpsMetadata (input CreateOpsMetadataRequest)
-#   CreatePatchBaseline (input CreatePatchBaselineRequest)
-#   CreateResourceDataSync (input CreateResourceDataSyncRequest)
-#   DeleteParameters (input DeleteParametersRequest)
-#   DescribeActivations (input DescribeActivationsRequest)
-#   DescribeAssociationExecutionTargets (input DescribeAssociationExecutionTargetsRequest)
-#   DescribeAssociationExecutions (input DescribeAssociationExecutionsRequest)
-#   DescribeAutomationExecutions (input DescribeAutomationExecutionsRequest)
-#   DescribeAutomationStepExecutions (input DescribeAutomationStepExecutionsRequest)
-#   DescribeAvailablePatches (input DescribeAvailablePatchesRequest)
-#   DescribeInstanceInformation (input DescribeInstanceInformationRequest)
-#   DescribeInstancePatchStates (input DescribeInstancePatchStatesRequest)
-#   DescribeInstancePatchStatesForPatchGroup (input DescribeInstancePatchStatesForPatchGroupRequest)
-#   DescribeInstancePatches (input DescribeInstancePatchesRequest)
-#   DescribeInstanceProperties (input DescribeInstancePropertiesRequest)
-#   DescribeMaintenanceWindowExecutionTaskInvocations (input DescribeMaintenanceWindowExecutionTaskInvocationsRequest)
-#   DescribeMaintenanceWindowExecutionTasks (input DescribeMaintenanceWindowExecutionTasksRequest)
-#   DescribeMaintenanceWindowExecutions (input DescribeMaintenanceWindowExecutionsRequest)
-#   DescribeMaintenanceWindowSchedule (input DescribeMaintenanceWindowScheduleRequest)
-#   DescribeMaintenanceWindowTargets (input DescribeMaintenanceWindowTargetsRequest)
-#   DescribeMaintenanceWindowTasks (input DescribeMaintenanceWindowTasksRequest)
-#   DescribeMaintenanceWindows (input DescribeMaintenanceWindowsRequest)
-#   DescribeMaintenanceWindowsForTarget (input DescribeMaintenanceWindowsForTargetRequest)
-#   DescribeOpsItems (input DescribeOpsItemsRequest)
-#   DescribeParameters (input DescribeParametersRequest)
-#   DescribePatchBaselines (input DescribePatchBaselinesRequest)
-#   DescribePatchGroups (input DescribePatchGroupsRequest)
-#   DescribeSessions (input DescribeSessionsRequest)
-#   GetCalendarState (input GetCalendarStateRequest)
-#   GetDeployablePatchSnapshotForInstance (input GetDeployablePatchSnapshotForInstanceRequest)
-#   GetInventory (input GetInventoryRequest)
-#   GetOpsSummary (input GetOpsSummaryRequest)
-#   GetParameters (input GetParametersRequest)
-#   GetParametersByPath (input GetParametersByPathRequest)
-#   LabelParameterVersion (input LabelParameterVersionRequest)
-#   ListAssociations (input ListAssociationsRequest)
-#   ListCloudConnectors (input ListCloudConnectorsRequest)
-#   ListCommandInvocations (input ListCommandInvocationsRequest)
-#   ListCommands (input ListCommandsRequest)
-#   ListComplianceItems (input ListComplianceItemsRequest)
-#   ListComplianceSummaries (input ListComplianceSummariesRequest)
-#   ListDocuments (input ListDocumentsRequest)
-#   ListInventoryEntries (input ListInventoryEntriesRequest)
-#   ListNodes (input ListNodesRequest)
-#   ListNodesSummary (input ListNodesSummaryRequest)
-#   ListOpsItemEvents (input ListOpsItemEventsRequest)
-#   ListOpsItemRelatedItems (input ListOpsItemRelatedItemsRequest)
-#   ListOpsMetadata (input ListOpsMetadataRequest)
-#   ListResourceComplianceSummaries (input ListResourceComplianceSummariesRequest)
-#   ModifyDocumentPermission (input ModifyDocumentPermissionRequest)
-#   PutComplianceItems (input PutComplianceItemsRequest)
-#   PutInventory (input PutInventoryRequest)
-#   PutParameter (input PutParameterRequest)
-#   RegisterTargetWithMaintenanceWindow (input RegisterTargetWithMaintenanceWindowRequest)
-#   RegisterTaskWithMaintenanceWindow (input RegisterTaskWithMaintenanceWindowRequest)
-#   RemoveTagsFromResource (input RemoveTagsFromResourceRequest)
-#   SendAutomationSignal (input SendAutomationSignalRequest)
-#   SendCommand (input SendCommandRequest)
-#   StartAccessRequest (input StartAccessRequestRequest)
-#   StartAssociationsOnce (input StartAssociationsOnceRequest)
-#   StartAutomationExecution (input StartAutomationExecutionRequest)
-#   StartChangeRequestExecution (input StartChangeRequestExecutionRequest)
-#   StartExecutionPreview (input StartExecutionPreviewRequest)
-#   StartSession (input StartSessionRequest)
-#   UnlabelParameterVersion (input UnlabelParameterVersionRequest)
-#   UpdateAssociation (input UpdateAssociationRequest)
-#   UpdateCloudConnector (input UpdateCloudConnectorRequest)
-#   UpdateDocument (input UpdateDocumentRequest)
-#   UpdateDocumentMetadata (input UpdateDocumentMetadataRequest)
-#   UpdateMaintenanceWindowTarget (input UpdateMaintenanceWindowTargetRequest)
-#   UpdateMaintenanceWindowTask (input UpdateMaintenanceWindowTaskRequest)
-#   UpdateOpsItem (input UpdateOpsItemRequest)
-#   UpdateOpsMetadata (input UpdateOpsMetadataRequest)
-#   UpdatePatchBaseline (input UpdatePatchBaselineRequest)
-#   UpdateResourceDataSync (input UpdateResourceDataSyncRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def ssm_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   DescribeActivations (input not derivable (no generated method))
-#   DescribeAssociationExecutionTargets (input not derivable (no generated method))
-#   DescribeAssociationExecutions (input not derivable (no generated method))
-#   DescribeAutomationExecutions (input not derivable (no generated method))
-#   DescribeAutomationStepExecutions (input not derivable (no generated method))
-#   DescribeAvailablePatches (input not derivable (no generated method))
-#   DescribeInstanceInformation (input not derivable (no generated method))
-#   DescribeInstancePatchStates (input not derivable (no generated method))
-#   DescribeInstancePatchStatesForPatchGroup (input not derivable (no generated method))
-#   DescribeInstancePatches (input not derivable (no generated method))
-#   DescribeInstanceProperties (input not derivable (no generated method))
-#   DescribeMaintenanceWindowExecutionTaskInvocations (input not derivable (no generated method))
-#   DescribeMaintenanceWindowExecutionTasks (input not derivable (no generated method))
-#   DescribeMaintenanceWindowExecutions (input not derivable (no generated method))
-#   DescribeMaintenanceWindowSchedule (input not derivable (no generated method))
-#   DescribeMaintenanceWindowTargets (input not derivable (no generated method))
-#   DescribeMaintenanceWindowTasks (input not derivable (no generated method))
-#   DescribeMaintenanceWindows (input not derivable (no generated method))
-#   DescribeMaintenanceWindowsForTarget (input not derivable (no generated method))
-#   DescribeOpsItems (input not derivable (no generated method))
-#   DescribeParameters (input not derivable (no generated method))
-#   DescribePatchBaselines (input not derivable (no generated method))
-#   DescribePatchGroups (input not derivable (no generated method))
-#   DescribeSessions (input not derivable (no generated method))
-#   GetInventory (input not derivable (no generated method))
-#   GetOpsSummary (input not derivable (no generated method))
-#   GetParametersByPath (input not derivable (no generated method))
-#   ListAssociations (input not derivable (no generated method))
-#   ListCloudConnectors (input not derivable (no generated method))
-#   ListCommandInvocations (input not derivable (no generated method))
-#   ListCommands (input not derivable (no generated method))
-#   ListComplianceItems (input not derivable (no generated method))
-#   ListComplianceSummaries (input not derivable (no generated method))
-#   ListDocuments (input not derivable (no generated method))
-#   ListNodes (input not derivable (no generated method))
-#   ListNodesSummary (input not derivable (no generated method))
-#   ListOpsItemEvents (input not derivable (no generated method))
-#   ListOpsItemRelatedItems (input not derivable (no generated method))
-#   ListOpsMetadata (input not derivable (no generated method))
-#   ListResourceComplianceSummaries (input not derivable (no generated method))
+def ssm_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def ssm_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AddTagsToResourceRequest to a compact JSON object (declaration order).
+def add_tags_to_resource_request_to_json(AddTagsToResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceType\":" + v.ResourceType.to_json())
+    parts.append("\"ResourceId\":" + ssm_json_str(v.ResourceId))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + ssm_json_arr(e0))
+    return ssm_json_obj(parts)
+
+# Serialize AlarmConfiguration to a compact JSON object (declaration order).
+def alarm_configuration_to_json(AlarmConfiguration v) -> str:
+    list[str] parts = []
+    if v.IgnorePollAlarmFailure.is_some():
+        auto u0 = v.IgnorePollAlarmFailure.unwrap()
+        parts.append("\"IgnorePollAlarmFailure\":" + json.dumps(JsonValue.Bool(u0)))
+    list[str] e1 = []
+    for x1 in v.Alarms:
+        e1.append(x1.to_json())
+    parts.append("\"Alarms\":" + ssm_json_arr(e1))
+    return ssm_json_obj(parts)
+
+# Serialize AttachmentsSource to a compact JSON object (declaration order).
+def attachments_source_to_json(AttachmentsSource v) -> str:
+    list[str] parts = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        parts.append("\"Key\":" + u0.to_json())
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ssm_json_str(x2))
+        parts.append("\"Values\":" + ssm_json_arr(e2))
+    if v.Name.is_some():
+        auto u3 = v.Name.unwrap()
+        parts.append("\"Name\":" + ssm_json_str(u3))
+    return ssm_json_obj(parts)
+
+# Serialize AutomationExecutionFilter to a compact JSON object (declaration order).
+def automation_execution_filter_to_json(AutomationExecutionFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + v.Key.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(ssm_json_str(x0))
+    parts.append("\"Values\":" + ssm_json_arr(e0))
+    return ssm_json_obj(parts)
+
+# Serialize AutomationExecutionInputs to a compact JSON object (declaration order).
+def automation_execution_inputs_to_json(AutomationExecutionInputs v) -> str:
+    list[str] parts = []
+    if v.Parameters.is_some():
+        auto u0 = v.Parameters.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            list[str] e2 = []
+            for x2 in u0[k1]:
+                e2.append(ssm_json_str(x2))
+            m1.append(ssm_json_str(k1) + ":" + ssm_json_arr(e2))
+        parts.append("\"Parameters\":" + ssm_json_obj(m1))
+    if v.TargetParameterName.is_some():
+        auto u3 = v.TargetParameterName.unwrap()
+        parts.append("\"TargetParameterName\":" + ssm_json_str(u3))
+    if v.Targets.is_some():
+        auto u4 = v.Targets.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(target_to_json(x5))
+        parts.append("\"Targets\":" + ssm_json_arr(e5))
+    if v.TargetMaps.is_some():
+        auto u6 = v.TargetMaps.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            list[str] m8 = []
+            for k8 in sorted(x7.keys()):
+                list[str] e9 = []
+                for x9 in x7[k8]:
+                    e9.append(ssm_json_str(x9))
+                m8.append(ssm_json_str(k8) + ":" + ssm_json_arr(e9))
+            e7.append(ssm_json_obj(m8))
+        parts.append("\"TargetMaps\":" + ssm_json_arr(e7))
+    if v.TargetLocations.is_some():
+        auto u10 = v.TargetLocations.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(target_location_to_json(x11))
+        parts.append("\"TargetLocations\":" + ssm_json_arr(e11))
+    if v.TargetLocationsURL.is_some():
+        auto u12 = v.TargetLocationsURL.unwrap()
+        parts.append("\"TargetLocationsURL\":" + ssm_json_str(u12))
+    return ssm_json_obj(parts)
+
+# Serialize AzureConfiguration to a compact JSON object (declaration order).
+def azure_configuration_to_json(AzureConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"TenantId\":" + ssm_json_str(v.TenantId))
+    if v.TenantDisplayName.is_some():
+        auto u0 = v.TenantDisplayName.unwrap()
+        parts.append("\"TenantDisplayName\":" + ssm_json_str(u0))
+    parts.append("\"ApplicationId\":" + ssm_json_str(v.ApplicationId))
+    if v.ApplicationDisplayName.is_some():
+        auto u1 = v.ApplicationDisplayName.unwrap()
+        parts.append("\"ApplicationDisplayName\":" + ssm_json_str(u1))
+    if v.Targets.is_some():
+        auto u2 = v.Targets.unwrap()
+        parts.append("\"Targets\":" + configuration_targets_to_json(u2))
+    return ssm_json_obj(parts)
+
+# Serialize BaselineOverride to a compact JSON object (declaration order).
+def baseline_override_to_json(BaselineOverride v) -> str:
+    list[str] parts = []
+    if v.OperatingSystem.is_some():
+        auto u0 = v.OperatingSystem.unwrap()
+        parts.append("\"OperatingSystem\":" + u0.to_json())
+    if v.GlobalFilters.is_some():
+        auto u1 = v.GlobalFilters.unwrap()
+        parts.append("\"GlobalFilters\":" + patch_filter_group_to_json(u1))
+    if v.ApprovalRules.is_some():
+        auto u2 = v.ApprovalRules.unwrap()
+        parts.append("\"ApprovalRules\":" + patch_rule_group_to_json(u2))
+    if v.ApprovedPatches.is_some():
+        auto u3 = v.ApprovedPatches.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(ssm_json_str(x4))
+        parts.append("\"ApprovedPatches\":" + ssm_json_arr(e4))
+    if v.ApprovedPatchesComplianceLevel.is_some():
+        auto u5 = v.ApprovedPatchesComplianceLevel.unwrap()
+        parts.append("\"ApprovedPatchesComplianceLevel\":" + u5.to_json())
+    if v.RejectedPatches.is_some():
+        auto u6 = v.RejectedPatches.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(ssm_json_str(x7))
+        parts.append("\"RejectedPatches\":" + ssm_json_arr(e7))
+    if v.RejectedPatchesAction.is_some():
+        auto u8 = v.RejectedPatchesAction.unwrap()
+        parts.append("\"RejectedPatchesAction\":" + u8.to_json())
+    if v.ApprovedPatchesEnableNonSecurity.is_some():
+        auto u9 = v.ApprovedPatchesEnableNonSecurity.unwrap()
+        parts.append("\"ApprovedPatchesEnableNonSecurity\":" + json.dumps(JsonValue.Bool(u9)))
+    if v.Sources.is_some():
+        auto u10 = v.Sources.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(patch_source_to_json(x11))
+        parts.append("\"Sources\":" + ssm_json_arr(e11))
+    if v.AvailableSecurityUpdatesComplianceStatus.is_some():
+        auto u12 = v.AvailableSecurityUpdatesComplianceStatus.unwrap()
+        parts.append("\"AvailableSecurityUpdatesComplianceStatus\":" + u12.to_json())
+    return ssm_json_obj(parts)
+
+# Serialize CancelCommandRequest to a compact JSON object (declaration order).
+def cancel_command_request_to_json(CancelCommandRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CommandId\":" + ssm_json_str(v.CommandId))
+    if v.InstanceIds.is_some():
+        auto u0 = v.InstanceIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ssm_json_str(x1))
+        parts.append("\"InstanceIds\":" + ssm_json_arr(e1))
+    return ssm_json_obj(parts)
+
+# Serialize CloudConnectorConfiguration to a compact JSON object (declaration order).
+def cloud_connector_configuration_to_json(CloudConnectorConfiguration v) -> str:
+    list[str] parts = []
+    if v.AzureConfiguration.is_some():
+        auto u0 = v.AzureConfiguration.unwrap()
+        parts.append("\"AzureConfiguration\":" + azure_configuration_to_json(u0))
+    return ssm_json_obj(parts)
+
+# Serialize CloudConnectorFilter to a compact JSON object (declaration order).
+def cloud_connector_filter_to_json(CloudConnectorFilter v) -> str:
+    list[str] parts = []
+    if v.FilterKey.is_some():
+        auto u0 = v.FilterKey.unwrap()
+        parts.append("\"FilterKey\":" + u0.to_json())
+    if v.FilterValues.is_some():
+        auto u1 = v.FilterValues.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ssm_json_str(x2))
+        parts.append("\"FilterValues\":" + ssm_json_arr(e2))
+    return ssm_json_obj(parts)
+
+# Serialize ComplianceItemEntry to a compact JSON object (declaration order).
+def compliance_item_entry_to_json(ComplianceItemEntry v) -> str:
+    list[str] parts = []
+    if v.Id.is_some():
+        auto u0 = v.Id.unwrap()
+        parts.append("\"Id\":" + ssm_json_str(u0))
+    if v.Title.is_some():
+        auto u1 = v.Title.unwrap()
+        parts.append("\"Title\":" + ssm_json_str(u1))
+    parts.append("\"Severity\":" + v.Severity.to_json())
+    parts.append("\"Status\":" + v.Status.to_json())
+    if v.Details.is_some():
+        auto u2 = v.Details.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(ssm_json_str(k3) + ":" + ssm_json_str(u2[k3]))
+        parts.append("\"Details\":" + ssm_json_obj(m3))
+    return ssm_json_obj(parts)
+
+# Serialize ComplianceStringFilter to a compact JSON object (declaration order).
+def compliance_string_filter_to_json(ComplianceStringFilter v) -> str:
+    list[str] parts = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        parts.append("\"Key\":" + ssm_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ssm_json_str(x2))
+        parts.append("\"Values\":" + ssm_json_arr(e2))
+    if v.Type.is_some():
+        auto u3 = v.Type.unwrap()
+        parts.append("\"Type\":" + u3.to_json())
+    return ssm_json_obj(parts)
+
+# Serialize ConfigurationTargets to a compact JSON object (declaration order).
+def configuration_targets_to_json(ConfigurationTargets v) -> str:
+    list[str] parts = []
+    if v.Subscriptions.is_some():
+        auto u0 = v.Subscriptions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Subscriptions\":" + ssm_json_arr(e1))
+    return ssm_json_obj(parts)
+
+# Serialize CreateActivationRequest to a compact JSON object (declaration order).
+def create_activation_request_to_json(CreateActivationRequest v) -> str:
+    list[str] parts = []
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + ssm_json_str(u0))
+    if v.DefaultInstanceName.is_some():
+        auto u1 = v.DefaultInstanceName.unwrap()
+        parts.append("\"DefaultInstanceName\":" + ssm_json_str(u1))
+    parts.append("\"IamRole\":" + ssm_json_str(v.IamRole))
+    if v.RegistrationLimit.is_some():
+        auto u2 = v.RegistrationLimit.unwrap()
+        parts.append("\"RegistrationLimit\":" + str(u2))
+    if v.ExpirationDate.is_some():
+        auto u3 = v.ExpirationDate.unwrap()
+        parts.append("\"ExpirationDate\":" + str(datetime.to_timestamp(u3)))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + ssm_json_arr(e5))
+    if v.RegistrationMetadata.is_some():
+        auto u6 = v.RegistrationMetadata.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"RegistrationMetadata\":" + ssm_json_arr(e7))
+    return ssm_json_obj(parts)
+
+# Serialize CreateAssociationBatchRequest to a compact JSON object (declaration order).
+def create_association_batch_request_to_json(CreateAssociationBatchRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Entries:
+        e0.append(create_association_batch_request_entry_to_json(x0))
+    parts.append("\"Entries\":" + ssm_json_arr(e0))
+    if v.AssociationDispatchAssumeRole.is_some():
+        auto u1 = v.AssociationDispatchAssumeRole.unwrap()
+        parts.append("\"AssociationDispatchAssumeRole\":" + ssm_json_str(u1))
+    return ssm_json_obj(parts)
+
+# Serialize CreateAssociationBatchRequestEntry to a compact JSON object (declaration order).
+def create_association_batch_request_entry_to_json(CreateAssociationBatchRequestEntry v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + ssm_json_str(v.Name))
+    if v.InstanceId.is_some():
+        auto u0 = v.InstanceId.unwrap()
+        parts.append("\"InstanceId\":" + ssm_json_str(u0))
+    if v.Parameters.is_some():
+        auto u1 = v.Parameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            list[str] e3 = []
+            for x3 in u1[k2]:
+                e3.append(ssm_json_str(x3))
+            m2.append(ssm_json_str(k2) + ":" + ssm_json_arr(e3))
+        parts.append("\"Parameters\":" + ssm_json_obj(m2))
+    if v.AutomationTargetParameterName.is_some():
+        auto u4 = v.AutomationTargetParameterName.unwrap()
+        parts.append("\"AutomationTargetParameterName\":" + ssm_json_str(u4))
+    if v.DocumentVersion.is_some():
+        auto u5 = v.DocumentVersion.unwrap()
+        parts.append("\"DocumentVersion\":" + ssm_json_str(u5))
+    if v.Targets.is_some():
+        auto u6 = v.Targets.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(target_to_json(x7))
+        parts.append("\"Targets\":" + ssm_json_arr(e7))
+    if v.ScheduleExpression.is_some():
+        auto u8 = v.ScheduleExpression.unwrap()
+        parts.append("\"ScheduleExpression\":" + ssm_json_str(u8))
+    if v.OutputLocation.is_some():
+        auto u9 = v.OutputLocation.unwrap()
+        parts.append("\"OutputLocation\":" + u9.to_json())
+    if v.AssociationName.is_some():
+        auto u10 = v.AssociationName.unwrap()
+        parts.append("\"AssociationName\":" + ssm_json_str(u10))
+    if v.MaxErrors.is_some():
+        auto u11 = v.MaxErrors.unwrap()
+        parts.append("\"MaxErrors\":" + ssm_json_str(u11))
+    if v.MaxConcurrency.is_some():
+        auto u12 = v.MaxConcurrency.unwrap()
+        parts.append("\"MaxConcurrency\":" + ssm_json_str(u12))
+    if v.ComplianceSeverity.is_some():
+        auto u13 = v.ComplianceSeverity.unwrap()
+        parts.append("\"ComplianceSeverity\":" + u13.to_json())
+    if v.SyncCompliance.is_some():
+        auto u14 = v.SyncCompliance.unwrap()
+        parts.append("\"SyncCompliance\":" + u14.to_json())
+    if v.ApplyOnlyAtCronInterval.is_some():
+        auto u15 = v.ApplyOnlyAtCronInterval.unwrap()
+        parts.append("\"ApplyOnlyAtCronInterval\":" + json.dumps(JsonValue.Bool(u15)))
+    if v.CalendarNames.is_some():
+        auto u16 = v.CalendarNames.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(ssm_json_str(x17))
+        parts.append("\"CalendarNames\":" + ssm_json_arr(e17))
+    if v.TargetLocations.is_some():
+        auto u18 = v.TargetLocations.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(target_location_to_json(x19))
+        parts.append("\"TargetLocations\":" + ssm_json_arr(e19))
+    if v.ScheduleOffset.is_some():
+        auto u20 = v.ScheduleOffset.unwrap()
+        parts.append("\"ScheduleOffset\":" + str(u20))
+    if v.Duration.is_some():
+        auto u21 = v.Duration.unwrap()
+        parts.append("\"Duration\":" + str(u21))
+    if v.TargetMaps.is_some():
+        auto u22 = v.TargetMaps.unwrap()
+        list[str] e23 = []
+        for x23 in u22:
+            list[str] m24 = []
+            for k24 in sorted(x23.keys()):
+                list[str] e25 = []
+                for x25 in x23[k24]:
+                    e25.append(ssm_json_str(x25))
+                m24.append(ssm_json_str(k24) + ":" + ssm_json_arr(e25))
+            e23.append(ssm_json_obj(m24))
+        parts.append("\"TargetMaps\":" + ssm_json_arr(e23))
+    if v.AlarmConfiguration.is_some():
+        auto u26 = v.AlarmConfiguration.unwrap()
+        parts.append("\"AlarmConfiguration\":" + alarm_configuration_to_json(u26))
+    return ssm_json_obj(parts)
+
+# Serialize CreateAssociationRequest to a compact JSON object (declaration order).
+def create_association_request_to_json(CreateAssociationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + ssm_json_str(v.Name))
+    if v.DocumentVersion.is_some():
+        auto u0 = v.DocumentVersion.unwrap()
+        parts.append("\"DocumentVersion\":" + ssm_json_str(u0))
+    if v.InstanceId.is_some():
+        auto u1 = v.InstanceId.unwrap()
+        parts.append("\"InstanceId\":" + ssm_json_str(u1))
+    if v.Parameters.is_some():
+        auto u2 = v.Parameters.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            list[str] e4 = []
+            for x4 in u2[k3]:
+                e4.append(ssm_json_str(x4))
+            m3.append(ssm_json_str(k3) + ":" + ssm_json_arr(e4))
+        parts.append("\"Parameters\":" + ssm_json_obj(m3))
+    if v.Targets.is_some():
+        auto u5 = v.Targets.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(target_to_json(x6))
+        parts.append("\"Targets\":" + ssm_json_arr(e6))
+    if v.ScheduleExpression.is_some():
+        auto u7 = v.ScheduleExpression.unwrap()
+        parts.append("\"ScheduleExpression\":" + ssm_json_str(u7))
+    if v.OutputLocation.is_some():
+        auto u8 = v.OutputLocation.unwrap()
+        parts.append("\"OutputLocation\":" + u8.to_json())
+    if v.AssociationName.is_some():
+        auto u9 = v.AssociationName.unwrap()
+        parts.append("\"AssociationName\":" + ssm_json_str(u9))
+    if v.AutomationTargetParameterName.is_some():
+        auto u10 = v.AutomationTargetParameterName.unwrap()
+        parts.append("\"AutomationTargetParameterName\":" + ssm_json_str(u10))
+    if v.MaxErrors.is_some():
+        auto u11 = v.MaxErrors.unwrap()
+        parts.append("\"MaxErrors\":" + ssm_json_str(u11))
+    if v.MaxConcurrency.is_some():
+        auto u12 = v.MaxConcurrency.unwrap()
+        parts.append("\"MaxConcurrency\":" + ssm_json_str(u12))
+    if v.ComplianceSeverity.is_some():
+        auto u13 = v.ComplianceSeverity.unwrap()
+        parts.append("\"ComplianceSeverity\":" + u13.to_json())
+    if v.SyncCompliance.is_some():
+        auto u14 = v.SyncCompliance.unwrap()
+        parts.append("\"SyncCompliance\":" + u14.to_json())
+    if v.ApplyOnlyAtCronInterval.is_some():
+        auto u15 = v.ApplyOnlyAtCronInterval.unwrap()
+        parts.append("\"ApplyOnlyAtCronInterval\":" + json.dumps(JsonValue.Bool(u15)))
+    if v.CalendarNames.is_some():
+        auto u16 = v.CalendarNames.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(ssm_json_str(x17))
+        parts.append("\"CalendarNames\":" + ssm_json_arr(e17))
+    if v.TargetLocations.is_some():
+        auto u18 = v.TargetLocations.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(target_location_to_json(x19))
+        parts.append("\"TargetLocations\":" + ssm_json_arr(e19))
+    if v.ScheduleOffset.is_some():
+        auto u20 = v.ScheduleOffset.unwrap()
+        parts.append("\"ScheduleOffset\":" + str(u20))
+    if v.Duration.is_some():
+        auto u21 = v.Duration.unwrap()
+        parts.append("\"Duration\":" + str(u21))
+    if v.TargetMaps.is_some():
+        auto u22 = v.TargetMaps.unwrap()
+        list[str] e23 = []
+        for x23 in u22:
+            list[str] m24 = []
+            for k24 in sorted(x23.keys()):
+                list[str] e25 = []
+                for x25 in x23[k24]:
+                    e25.append(ssm_json_str(x25))
+                m24.append(ssm_json_str(k24) + ":" + ssm_json_arr(e25))
+            e23.append(ssm_json_obj(m24))
+        parts.append("\"TargetMaps\":" + ssm_json_arr(e23))
+    if v.Tags.is_some():
+        auto u26 = v.Tags.unwrap()
+        list[str] e27 = []
+        for x27 in u26:
+            e27.append(x27.to_json())
+        parts.append("\"Tags\":" + ssm_json_arr(e27))
+    if v.AlarmConfiguration.is_some():
+        auto u28 = v.AlarmConfiguration.unwrap()
+        parts.append("\"AlarmConfiguration\":" + alarm_configuration_to_json(u28))
+    if v.AssociationDispatchAssumeRole.is_some():
+        auto u29 = v.AssociationDispatchAssumeRole.unwrap()
+        parts.append("\"AssociationDispatchAssumeRole\":" + ssm_json_str(u29))
+    return ssm_json_obj(parts)
+
+# Serialize CreateCloudConnectorRequest to a compact JSON object (declaration order).
+def create_cloud_connector_request_to_json(CreateCloudConnectorRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DisplayName\":" + ssm_json_str(v.DisplayName))
+    parts.append("\"RoleArn\":" + ssm_json_str(v.RoleArn))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + ssm_json_str(u0))
+    parts.append("\"Configuration\":" + cloud_connector_configuration_to_json(v.Configuration))
+    parts.append("\"ConfigConnectorArn\":" + ssm_json_str(v.ConfigConnectorArn))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + ssm_json_arr(e2))
+    return ssm_json_obj(parts)
+
+# Serialize CreateDocumentRequest to a compact JSON object (declaration order).
+def create_document_request_to_json(CreateDocumentRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Content\":" + ssm_json_str(v.Content))
+    if v.Requires.is_some():
+        auto u0 = v.Requires.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Requires\":" + ssm_json_arr(e1))
+    if v.Attachments.is_some():
+        auto u2 = v.Attachments.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(attachments_source_to_json(x3))
+        parts.append("\"Attachments\":" + ssm_json_arr(e3))
+    parts.append("\"Name\":" + ssm_json_str(v.Name))
+    if v.DisplayName.is_some():
+        auto u4 = v.DisplayName.unwrap()
+        parts.append("\"DisplayName\":" + ssm_json_str(u4))
+    if v.VersionName.is_some():
+        auto u5 = v.VersionName.unwrap()
+        parts.append("\"VersionName\":" + ssm_json_str(u5))
+    if v.DocumentType.is_some():
+        auto u6 = v.DocumentType.unwrap()
+        parts.append("\"DocumentType\":" + u6.to_json())
+    if v.DocumentFormat.is_some():
+        auto u7 = v.DocumentFormat.unwrap()
+        parts.append("\"DocumentFormat\":" + u7.to_json())
+    if v.TargetType.is_some():
+        auto u8 = v.TargetType.unwrap()
+        parts.append("\"TargetType\":" + ssm_json_str(u8))
+    if v.Tags.is_some():
+        auto u9 = v.Tags.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"Tags\":" + ssm_json_arr(e10))
+    return ssm_json_obj(parts)
+
+# Serialize CreateMaintenanceWindowRequest to a compact JSON object (declaration order).
+def create_maintenance_window_request_to_json(CreateMaintenanceWindowRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + ssm_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + ssm_json_str(u0))
+    if v.StartDate.is_some():
+        auto u1 = v.StartDate.unwrap()
+        parts.append("\"StartDate\":" + ssm_json_str(u1))
+    if v.EndDate.is_some():
+        auto u2 = v.EndDate.unwrap()
+        parts.append("\"EndDate\":" + ssm_json_str(u2))
+    parts.append("\"Schedule\":" + ssm_json_str(v.Schedule))
+    if v.ScheduleTimezone.is_some():
+        auto u3 = v.ScheduleTimezone.unwrap()
+        parts.append("\"ScheduleTimezone\":" + ssm_json_str(u3))
+    if v.ScheduleOffset.is_some():
+        auto u4 = v.ScheduleOffset.unwrap()
+        parts.append("\"ScheduleOffset\":" + str(u4))
+    parts.append("\"Duration\":" + str(v.Duration))
+    parts.append("\"Cutoff\":" + str(v.Cutoff))
+    parts.append("\"AllowUnassociatedTargets\":" + json.dumps(JsonValue.Bool(v.AllowUnassociatedTargets)))
+    if v.ClientToken.is_some():
+        auto u5 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + ssm_json_str(u5))
+    if v.Tags.is_some():
+        auto u6 = v.Tags.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Tags\":" + ssm_json_arr(e7))
+    return ssm_json_obj(parts)
+
+# Serialize CreateOpsItemRequest to a compact JSON object (declaration order).
+def create_ops_item_request_to_json(CreateOpsItemRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Description\":" + ssm_json_str(v.Description))
+    if v.OpsItemType.is_some():
+        auto u0 = v.OpsItemType.unwrap()
+        parts.append("\"OpsItemType\":" + ssm_json_str(u0))
+    if v.OperationalData.is_some():
+        auto u1 = v.OperationalData.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(ssm_json_str(k2) + ":" + u1[k2].to_json())
+        parts.append("\"OperationalData\":" + ssm_json_obj(m2))
+    if v.Notifications.is_some():
+        auto u3 = v.Notifications.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Notifications\":" + ssm_json_arr(e4))
+    if v.Priority.is_some():
+        auto u5 = v.Priority.unwrap()
+        parts.append("\"Priority\":" + str(u5))
+    if v.RelatedOpsItems.is_some():
+        auto u6 = v.RelatedOpsItems.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"RelatedOpsItems\":" + ssm_json_arr(e7))
+    parts.append("\"Source\":" + ssm_json_str(v.Source))
+    parts.append("\"Title\":" + ssm_json_str(v.Title))
+    if v.Tags.is_some():
+        auto u8 = v.Tags.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"Tags\":" + ssm_json_arr(e9))
+    if v.Category.is_some():
+        auto u10 = v.Category.unwrap()
+        parts.append("\"Category\":" + ssm_json_str(u10))
+    if v.Severity.is_some():
+        auto u11 = v.Severity.unwrap()
+        parts.append("\"Severity\":" + ssm_json_str(u11))
+    if v.ActualStartTime.is_some():
+        auto u12 = v.ActualStartTime.unwrap()
+        parts.append("\"ActualStartTime\":" + str(datetime.to_timestamp(u12)))
+    if v.ActualEndTime.is_some():
+        auto u13 = v.ActualEndTime.unwrap()
+        parts.append("\"ActualEndTime\":" + str(datetime.to_timestamp(u13)))
+    if v.PlannedStartTime.is_some():
+        auto u14 = v.PlannedStartTime.unwrap()
+        parts.append("\"PlannedStartTime\":" + str(datetime.to_timestamp(u14)))
+    if v.PlannedEndTime.is_some():
+        auto u15 = v.PlannedEndTime.unwrap()
+        parts.append("\"PlannedEndTime\":" + str(datetime.to_timestamp(u15)))
+    if v.AccountId.is_some():
+        auto u16 = v.AccountId.unwrap()
+        parts.append("\"AccountId\":" + ssm_json_str(u16))
+    return ssm_json_obj(parts)
+
+# Serialize CreateOpsMetadataRequest to a compact JSON object (declaration order).
+def create_ops_metadata_request_to_json(CreateOpsMetadataRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceId\":" + ssm_json_str(v.ResourceId))
+    if v.Metadata.is_some():
+        auto u0 = v.Metadata.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(ssm_json_str(k1) + ":" + u0[k1].to_json())
+        parts.append("\"Metadata\":" + ssm_json_obj(m1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + ssm_json_arr(e3))
+    return ssm_json_obj(parts)
+
+# Serialize CreatePatchBaselineRequest to a compact JSON object (declaration order).
+def create_patch_baseline_request_to_json(CreatePatchBaselineRequest v) -> str:
+    list[str] parts = []
+    if v.OperatingSystem.is_some():
+        auto u0 = v.OperatingSystem.unwrap()
+        parts.append("\"OperatingSystem\":" + u0.to_json())
+    parts.append("\"Name\":" + ssm_json_str(v.Name))
+    if v.GlobalFilters.is_some():
+        auto u1 = v.GlobalFilters.unwrap()
+        parts.append("\"GlobalFilters\":" + patch_filter_group_to_json(u1))
+    if v.ApprovalRules.is_some():
+        auto u2 = v.ApprovalRules.unwrap()
+        parts.append("\"ApprovalRules\":" + patch_rule_group_to_json(u2))
+    if v.ApprovedPatches.is_some():
+        auto u3 = v.ApprovedPatches.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(ssm_json_str(x4))
+        parts.append("\"ApprovedPatches\":" + ssm_json_arr(e4))
+    if v.ApprovedPatchesComplianceLevel.is_some():
+        auto u5 = v.ApprovedPatchesComplianceLevel.unwrap()
+        parts.append("\"ApprovedPatchesComplianceLevel\":" + u5.to_json())
+    if v.ApprovedPatchesEnableNonSecurity.is_some():
+        auto u6 = v.ApprovedPatchesEnableNonSecurity.unwrap()
+        parts.append("\"ApprovedPatchesEnableNonSecurity\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.RejectedPatches.is_some():
+        auto u7 = v.RejectedPatches.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(ssm_json_str(x8))
+        parts.append("\"RejectedPatches\":" + ssm_json_arr(e8))
+    if v.RejectedPatchesAction.is_some():
+        auto u9 = v.RejectedPatchesAction.unwrap()
+        parts.append("\"RejectedPatchesAction\":" + u9.to_json())
+    if v.Description.is_some():
+        auto u10 = v.Description.unwrap()
+        parts.append("\"Description\":" + ssm_json_str(u10))
+    if v.Sources.is_some():
+        auto u11 = v.Sources.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(patch_source_to_json(x12))
+        parts.append("\"Sources\":" + ssm_json_arr(e12))
+    if v.AvailableSecurityUpdatesComplianceStatus.is_some():
+        auto u13 = v.AvailableSecurityUpdatesComplianceStatus.unwrap()
+        parts.append("\"AvailableSecurityUpdatesComplianceStatus\":" + u13.to_json())
+    if v.ClientToken.is_some():
+        auto u14 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + ssm_json_str(u14))
+    if v.Tags.is_some():
+        auto u15 = v.Tags.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(x16.to_json())
+        parts.append("\"Tags\":" + ssm_json_arr(e16))
+    return ssm_json_obj(parts)
+
+# Serialize CreateResourceDataSyncRequest to a compact JSON object (declaration order).
+def create_resource_data_sync_request_to_json(CreateResourceDataSyncRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SyncName\":" + ssm_json_str(v.SyncName))
+    if v.S3Destination.is_some():
+        auto u0 = v.S3Destination.unwrap()
+        parts.append("\"S3Destination\":" + u0.to_json())
+    if v.SyncType.is_some():
+        auto u1 = v.SyncType.unwrap()
+        parts.append("\"SyncType\":" + ssm_json_str(u1))
+    if v.SyncSource.is_some():
+        auto u2 = v.SyncSource.unwrap()
+        parts.append("\"SyncSource\":" + resource_data_sync_source_to_json(u2))
+    return ssm_json_obj(parts)
+
+# Serialize DeleteParametersRequest to a compact JSON object (declaration order).
+def delete_parameters_request_to_json(DeleteParametersRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Names:
+        e0.append(ssm_json_str(x0))
+    parts.append("\"Names\":" + ssm_json_arr(e0))
+    return ssm_json_obj(parts)
+
+# Serialize DescribeActivationsFilter to a compact JSON object (declaration order).
+def describe_activations_filter_to_json(DescribeActivationsFilter v) -> str:
+    list[str] parts = []
+    if v.FilterKey.is_some():
+        auto u0 = v.FilterKey.unwrap()
+        parts.append("\"FilterKey\":" + u0.to_json())
+    if v.FilterValues.is_some():
+        auto u1 = v.FilterValues.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ssm_json_str(x2))
+        parts.append("\"FilterValues\":" + ssm_json_arr(e2))
+    return ssm_json_obj(parts)
+
+# Serialize DescribeActivationsRequest to a compact JSON object (declaration order).
+def describe_activations_request_to_json(DescribeActivationsRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(describe_activations_filter_to_json(x1))
+        parts.append("\"Filters\":" + ssm_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u3))
+    return ssm_json_obj(parts)
+
+# Serialize DescribeAssociationExecutionTargetsRequest to a compact JSON object (declaration order).
+def describe_association_execution_targets_request_to_json(DescribeAssociationExecutionTargetsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AssociationId\":" + ssm_json_str(v.AssociationId))
+    parts.append("\"ExecutionId\":" + ssm_json_str(v.ExecutionId))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Filters\":" + ssm_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u3))
+    return ssm_json_obj(parts)
+
+# Serialize DescribeAssociationExecutionsRequest to a compact JSON object (declaration order).
+def describe_association_executions_request_to_json(DescribeAssociationExecutionsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AssociationId\":" + ssm_json_str(v.AssociationId))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Filters\":" + ssm_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u3))
+    return ssm_json_obj(parts)
+
+# Serialize DescribeAutomationExecutionsRequest to a compact JSON object (declaration order).
+def describe_automation_executions_request_to_json(DescribeAutomationExecutionsRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(automation_execution_filter_to_json(x1))
+        parts.append("\"Filters\":" + ssm_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u3))
+    return ssm_json_obj(parts)
+
+# Serialize DescribeAutomationStepExecutionsRequest to a compact JSON object (declaration order).
+def describe_automation_step_executions_request_to_json(DescribeAutomationStepExecutionsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AutomationExecutionId\":" + ssm_json_str(v.AutomationExecutionId))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(step_execution_filter_to_json(x1))
+        parts.append("\"Filters\":" + ssm_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    if v.ReverseOrder.is_some():
+        auto u4 = v.ReverseOrder.unwrap()
+        parts.append("\"ReverseOrder\":" + json.dumps(JsonValue.Bool(u4)))
+    return ssm_json_obj(parts)
+
+# Serialize DescribeAvailablePatchesRequest to a compact JSON object (declaration order).
+def describe_available_patches_request_to_json(DescribeAvailablePatchesRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(patch_orchestrator_filter_to_json(x1))
+        parts.append("\"Filters\":" + ssm_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u3))
+    return ssm_json_obj(parts)
+
+# Serialize DescribeInstanceInformationRequest to a compact JSON object (declaration order).
+def describe_instance_information_request_to_json(DescribeInstanceInformationRequest v) -> str:
+    list[str] parts = []
+    if v.InstanceInformationFilterList.is_some():
+        auto u0 = v.InstanceInformationFilterList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(instance_information_filter_to_json(x1))
+        parts.append("\"InstanceInformationFilterList\":" + ssm_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(instance_information_string_filter_to_json(x3))
+        parts.append("\"Filters\":" + ssm_json_arr(e3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    if v.NextToken.is_some():
+        auto u5 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u5))
+    return ssm_json_obj(parts)
+
+# Serialize DescribeInstancePatchStatesForPatchGroupRequest to a compact JSON object (declaration order).
+def describe_instance_patch_states_for_patch_group_request_to_json(DescribeInstancePatchStatesForPatchGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"PatchGroup\":" + ssm_json_str(v.PatchGroup))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(instance_patch_state_filter_to_json(x1))
+        parts.append("\"Filters\":" + ssm_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    return ssm_json_obj(parts)
+
+# Serialize DescribeInstancePatchStatesRequest to a compact JSON object (declaration order).
+def describe_instance_patch_states_request_to_json(DescribeInstancePatchStatesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.InstanceIds:
+        e0.append(ssm_json_str(x0))
+    parts.append("\"InstanceIds\":" + ssm_json_arr(e0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    return ssm_json_obj(parts)
+
+# Serialize DescribeInstancePatchesRequest to a compact JSON object (declaration order).
+def describe_instance_patches_request_to_json(DescribeInstancePatchesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"InstanceId\":" + ssm_json_str(v.InstanceId))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(patch_orchestrator_filter_to_json(x1))
+        parts.append("\"Filters\":" + ssm_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    return ssm_json_obj(parts)
+
+# Serialize DescribeInstancePropertiesRequest to a compact JSON object (declaration order).
+def describe_instance_properties_request_to_json(DescribeInstancePropertiesRequest v) -> str:
+    list[str] parts = []
+    if v.InstancePropertyFilterList.is_some():
+        auto u0 = v.InstancePropertyFilterList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(instance_property_filter_to_json(x1))
+        parts.append("\"InstancePropertyFilterList\":" + ssm_json_arr(e1))
+    if v.FiltersWithOperator.is_some():
+        auto u2 = v.FiltersWithOperator.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(instance_property_string_filter_to_json(x3))
+        parts.append("\"FiltersWithOperator\":" + ssm_json_arr(e3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    if v.NextToken.is_some():
+        auto u5 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u5))
+    return ssm_json_obj(parts)
+
+# Serialize DescribeMaintenanceWindowExecutionTaskInvocationsRequest to a compact JSON object (declaration order).
+def describe_maintenance_window_execution_task_invocations_request_to_json(DescribeMaintenanceWindowExecutionTaskInvocationsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"WindowExecutionId\":" + ssm_json_str(v.WindowExecutionId))
+    parts.append("\"TaskId\":" + ssm_json_str(v.TaskId))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(maintenance_window_filter_to_json(x1))
+        parts.append("\"Filters\":" + ssm_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u3))
+    return ssm_json_obj(parts)
+
+# Serialize DescribeMaintenanceWindowExecutionTasksRequest to a compact JSON object (declaration order).
+def describe_maintenance_window_execution_tasks_request_to_json(DescribeMaintenanceWindowExecutionTasksRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"WindowExecutionId\":" + ssm_json_str(v.WindowExecutionId))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(maintenance_window_filter_to_json(x1))
+        parts.append("\"Filters\":" + ssm_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u3))
+    return ssm_json_obj(parts)
+
+# Serialize DescribeMaintenanceWindowExecutionsRequest to a compact JSON object (declaration order).
+def describe_maintenance_window_executions_request_to_json(DescribeMaintenanceWindowExecutionsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"WindowId\":" + ssm_json_str(v.WindowId))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(maintenance_window_filter_to_json(x1))
+        parts.append("\"Filters\":" + ssm_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u3))
+    return ssm_json_obj(parts)
+
+# Serialize DescribeMaintenanceWindowScheduleRequest to a compact JSON object (declaration order).
+def describe_maintenance_window_schedule_request_to_json(DescribeMaintenanceWindowScheduleRequest v) -> str:
+    list[str] parts = []
+    if v.WindowId.is_some():
+        auto u0 = v.WindowId.unwrap()
+        parts.append("\"WindowId\":" + ssm_json_str(u0))
+    if v.Targets.is_some():
+        auto u1 = v.Targets.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(target_to_json(x2))
+        parts.append("\"Targets\":" + ssm_json_arr(e2))
+    if v.ResourceType.is_some():
+        auto u3 = v.ResourceType.unwrap()
+        parts.append("\"ResourceType\":" + u3.to_json())
+    if v.Filters.is_some():
+        auto u4 = v.Filters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(patch_orchestrator_filter_to_json(x5))
+        parts.append("\"Filters\":" + ssm_json_arr(e5))
+    if v.MaxResults.is_some():
+        auto u6 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u6))
+    if v.NextToken.is_some():
+        auto u7 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u7))
+    return ssm_json_obj(parts)
+
+# Serialize DescribeMaintenanceWindowTargetsRequest to a compact JSON object (declaration order).
+def describe_maintenance_window_targets_request_to_json(DescribeMaintenanceWindowTargetsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"WindowId\":" + ssm_json_str(v.WindowId))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(maintenance_window_filter_to_json(x1))
+        parts.append("\"Filters\":" + ssm_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u3))
+    return ssm_json_obj(parts)
+
+# Serialize DescribeMaintenanceWindowTasksRequest to a compact JSON object (declaration order).
+def describe_maintenance_window_tasks_request_to_json(DescribeMaintenanceWindowTasksRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"WindowId\":" + ssm_json_str(v.WindowId))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(maintenance_window_filter_to_json(x1))
+        parts.append("\"Filters\":" + ssm_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u3))
+    return ssm_json_obj(parts)
+
+# Serialize DescribeMaintenanceWindowsForTargetRequest to a compact JSON object (declaration order).
+def describe_maintenance_windows_for_target_request_to_json(DescribeMaintenanceWindowsForTargetRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Targets:
+        e0.append(target_to_json(x0))
+    parts.append("\"Targets\":" + ssm_json_arr(e0))
+    parts.append("\"ResourceType\":" + v.ResourceType.to_json())
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u2))
+    return ssm_json_obj(parts)
+
+# Serialize DescribeMaintenanceWindowsRequest to a compact JSON object (declaration order).
+def describe_maintenance_windows_request_to_json(DescribeMaintenanceWindowsRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(maintenance_window_filter_to_json(x1))
+        parts.append("\"Filters\":" + ssm_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u3))
+    return ssm_json_obj(parts)
+
+# Serialize DescribeOpsItemsRequest to a compact JSON object (declaration order).
+def describe_ops_items_request_to_json(DescribeOpsItemsRequest v) -> str:
+    list[str] parts = []
+    if v.OpsItemFilters.is_some():
+        auto u0 = v.OpsItemFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ops_item_filter_to_json(x1))
+        parts.append("\"OpsItemFilters\":" + ssm_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u3))
+    return ssm_json_obj(parts)
+
+# Serialize DescribeParametersRequest to a compact JSON object (declaration order).
+def describe_parameters_request_to_json(DescribeParametersRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(parameters_filter_to_json(x1))
+        parts.append("\"Filters\":" + ssm_json_arr(e1))
+    if v.ParameterFilters.is_some():
+        auto u2 = v.ParameterFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(parameter_string_filter_to_json(x3))
+        parts.append("\"ParameterFilters\":" + ssm_json_arr(e3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    if v.NextToken.is_some():
+        auto u5 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u5))
+    if v.Shared.is_some():
+        auto u6 = v.Shared.unwrap()
+        parts.append("\"Shared\":" + json.dumps(JsonValue.Bool(u6)))
+    return ssm_json_obj(parts)
+
+# Serialize DescribePatchBaselinesRequest to a compact JSON object (declaration order).
+def describe_patch_baselines_request_to_json(DescribePatchBaselinesRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(patch_orchestrator_filter_to_json(x1))
+        parts.append("\"Filters\":" + ssm_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u3))
+    return ssm_json_obj(parts)
+
+# Serialize DescribePatchGroupsRequest to a compact JSON object (declaration order).
+def describe_patch_groups_request_to_json(DescribePatchGroupsRequest v) -> str:
+    list[str] parts = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.Filters.is_some():
+        auto u1 = v.Filters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(patch_orchestrator_filter_to_json(x2))
+        parts.append("\"Filters\":" + ssm_json_arr(e2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u3))
+    return ssm_json_obj(parts)
+
+# Serialize DescribeSessionsRequest to a compact JSON object (declaration order).
+def describe_sessions_request_to_json(DescribeSessionsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"State\":" + v.State.to_json())
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Filters\":" + ssm_json_arr(e3))
+    return ssm_json_obj(parts)
+
+# Serialize DocumentKeyValuesFilter to a compact JSON object (declaration order).
+def document_key_values_filter_to_json(DocumentKeyValuesFilter v) -> str:
+    list[str] parts = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        parts.append("\"Key\":" + ssm_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ssm_json_str(x2))
+        parts.append("\"Values\":" + ssm_json_arr(e2))
+    return ssm_json_obj(parts)
+
+# Serialize DocumentReviews to a compact JSON object (declaration order).
+def document_reviews_to_json(DocumentReviews v) -> str:
+    list[str] parts = []
+    parts.append("\"Action\":" + v.Action.to_json())
+    if v.Comment.is_some():
+        auto u0 = v.Comment.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Comment\":" + ssm_json_arr(e1))
+    return ssm_json_obj(parts)
+
+# Serialize ExecutionInputs to a compact JSON object (declaration order).
+def execution_inputs_to_json(ExecutionInputs v) -> str:
+    list[str] parts = []
+    if v.Automation.is_some():
+        auto u0 = v.Automation.unwrap()
+        parts.append("\"Automation\":" + automation_execution_inputs_to_json(u0))
+    return ssm_json_obj(parts)
+
+# Serialize GetCalendarStateRequest to a compact JSON object (declaration order).
+def get_calendar_state_request_to_json(GetCalendarStateRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.CalendarNames:
+        e0.append(ssm_json_str(x0))
+    parts.append("\"CalendarNames\":" + ssm_json_arr(e0))
+    if v.AtTime.is_some():
+        auto u1 = v.AtTime.unwrap()
+        parts.append("\"AtTime\":" + ssm_json_str(u1))
+    return ssm_json_obj(parts)
+
+# Serialize GetDeployablePatchSnapshotForInstanceRequest to a compact JSON object (declaration order).
+def get_deployable_patch_snapshot_for_instance_request_to_json(GetDeployablePatchSnapshotForInstanceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"InstanceId\":" + ssm_json_str(v.InstanceId))
+    parts.append("\"SnapshotId\":" + ssm_json_str(v.SnapshotId))
+    if v.BaselineOverride.is_some():
+        auto u0 = v.BaselineOverride.unwrap()
+        parts.append("\"BaselineOverride\":" + baseline_override_to_json(u0))
+    if v.UseS3DualStackEndpoint.is_some():
+        auto u1 = v.UseS3DualStackEndpoint.unwrap()
+        parts.append("\"UseS3DualStackEndpoint\":" + json.dumps(JsonValue.Bool(u1)))
+    return ssm_json_obj(parts)
+
+# Serialize GetInventoryRequest to a compact JSON object (declaration order).
+def get_inventory_request_to_json(GetInventoryRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(inventory_filter_to_json(x1))
+        parts.append("\"Filters\":" + ssm_json_arr(e1))
+    if v.Aggregators.is_some():
+        auto u2 = v.Aggregators.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(inventory_aggregator_to_json(x3))
+        parts.append("\"Aggregators\":" + ssm_json_arr(e3))
+    if v.ResultAttributes.is_some():
+        auto u4 = v.ResultAttributes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"ResultAttributes\":" + ssm_json_arr(e5))
+    if v.NextToken.is_some():
+        auto u6 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u6))
+    if v.MaxResults.is_some():
+        auto u7 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u7))
+    return ssm_json_obj(parts)
+
+# Serialize GetOpsSummaryRequest to a compact JSON object (declaration order).
+def get_ops_summary_request_to_json(GetOpsSummaryRequest v) -> str:
+    list[str] parts = []
+    if v.SyncName.is_some():
+        auto u0 = v.SyncName.unwrap()
+        parts.append("\"SyncName\":" + ssm_json_str(u0))
+    if v.Filters.is_some():
+        auto u1 = v.Filters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ops_filter_to_json(x2))
+        parts.append("\"Filters\":" + ssm_json_arr(e2))
+    if v.Aggregators.is_some():
+        auto u3 = v.Aggregators.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(ops_aggregator_to_json(x4))
+        parts.append("\"Aggregators\":" + ssm_json_arr(e4))
+    if v.ResultAttributes.is_some():
+        auto u5 = v.ResultAttributes.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"ResultAttributes\":" + ssm_json_arr(e6))
+    if v.NextToken.is_some():
+        auto u7 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u7))
+    if v.MaxResults.is_some():
+        auto u8 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u8))
+    return ssm_json_obj(parts)
+
+# Serialize GetParametersByPathRequest to a compact JSON object (declaration order).
+def get_parameters_by_path_request_to_json(GetParametersByPathRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Path\":" + ssm_json_str(v.Path))
+    if v.Recursive.is_some():
+        auto u0 = v.Recursive.unwrap()
+        parts.append("\"Recursive\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.ParameterFilters.is_some():
+        auto u1 = v.ParameterFilters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(parameter_string_filter_to_json(x2))
+        parts.append("\"ParameterFilters\":" + ssm_json_arr(e2))
+    if v.WithDecryption.is_some():
+        auto u3 = v.WithDecryption.unwrap()
+        parts.append("\"WithDecryption\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    if v.NextToken.is_some():
+        auto u5 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u5))
+    return ssm_json_obj(parts)
+
+# Serialize GetParametersRequest to a compact JSON object (declaration order).
+def get_parameters_request_to_json(GetParametersRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Names:
+        e0.append(ssm_json_str(x0))
+    parts.append("\"Names\":" + ssm_json_arr(e0))
+    if v.WithDecryption.is_some():
+        auto u1 = v.WithDecryption.unwrap()
+        parts.append("\"WithDecryption\":" + json.dumps(JsonValue.Bool(u1)))
+    return ssm_json_obj(parts)
+
+# Serialize InstanceInformationFilter to a compact JSON object (declaration order).
+def instance_information_filter_to_json(InstanceInformationFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"key\":" + v.key.to_json())
+    list[str] e0 = []
+    for x0 in v.valueSet:
+        e0.append(ssm_json_str(x0))
+    parts.append("\"valueSet\":" + ssm_json_arr(e0))
+    return ssm_json_obj(parts)
+
+# Serialize InstanceInformationStringFilter to a compact JSON object (declaration order).
+def instance_information_string_filter_to_json(InstanceInformationStringFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + ssm_json_str(v.Key))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(ssm_json_str(x0))
+    parts.append("\"Values\":" + ssm_json_arr(e0))
+    return ssm_json_obj(parts)
+
+# Serialize InstancePatchStateFilter to a compact JSON object (declaration order).
+def instance_patch_state_filter_to_json(InstancePatchStateFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + ssm_json_str(v.Key))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(ssm_json_str(x0))
+    parts.append("\"Values\":" + ssm_json_arr(e0))
+    parts.append("\"Type\":" + v.Type.to_json())
+    return ssm_json_obj(parts)
+
+# Serialize InstancePropertyFilter to a compact JSON object (declaration order).
+def instance_property_filter_to_json(InstancePropertyFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"key\":" + v.key.to_json())
+    list[str] e0 = []
+    for x0 in v.valueSet:
+        e0.append(ssm_json_str(x0))
+    parts.append("\"valueSet\":" + ssm_json_arr(e0))
+    return ssm_json_obj(parts)
+
+# Serialize InstancePropertyStringFilter to a compact JSON object (declaration order).
+def instance_property_string_filter_to_json(InstancePropertyStringFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + ssm_json_str(v.Key))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(ssm_json_str(x0))
+    parts.append("\"Values\":" + ssm_json_arr(e0))
+    if v.Operator.is_some():
+        auto u1 = v.Operator.unwrap()
+        parts.append("\"Operator\":" + u1.to_json())
+    return ssm_json_obj(parts)
+
+# Serialize InventoryAggregator to a compact JSON object (declaration order).
+def inventory_aggregator_to_json(InventoryAggregator v) -> str:
+    list[str] parts = []
+    if v.Expression.is_some():
+        auto u0 = v.Expression.unwrap()
+        parts.append("\"Expression\":" + ssm_json_str(u0))
+    if v.Aggregators.is_some():
+        auto u1 = v.Aggregators.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(inventory_aggregator_to_json(x2))
+        parts.append("\"Aggregators\":" + ssm_json_arr(e2))
+    if v.Groups.is_some():
+        auto u3 = v.Groups.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(inventory_group_to_json(x4))
+        parts.append("\"Groups\":" + ssm_json_arr(e4))
+    return ssm_json_obj(parts)
+
+# Serialize InventoryFilter to a compact JSON object (declaration order).
+def inventory_filter_to_json(InventoryFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + ssm_json_str(v.Key))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(ssm_json_str(x0))
+    parts.append("\"Values\":" + ssm_json_arr(e0))
+    if v.Type.is_some():
+        auto u1 = v.Type.unwrap()
+        parts.append("\"Type\":" + u1.to_json())
+    return ssm_json_obj(parts)
+
+# Serialize InventoryGroup to a compact JSON object (declaration order).
+def inventory_group_to_json(InventoryGroup v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + ssm_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.Filters:
+        e0.append(inventory_filter_to_json(x0))
+    parts.append("\"Filters\":" + ssm_json_arr(e0))
+    return ssm_json_obj(parts)
+
+# Serialize InventoryItem to a compact JSON object (declaration order).
+def inventory_item_to_json(InventoryItem v) -> str:
+    list[str] parts = []
+    parts.append("\"TypeName\":" + ssm_json_str(v.TypeName))
+    parts.append("\"SchemaVersion\":" + ssm_json_str(v.SchemaVersion))
+    parts.append("\"CaptureTime\":" + ssm_json_str(v.CaptureTime))
+    if v.ContentHash.is_some():
+        auto u0 = v.ContentHash.unwrap()
+        parts.append("\"ContentHash\":" + ssm_json_str(u0))
+    if v.Content.is_some():
+        auto u1 = v.Content.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            list[str] m3 = []
+            for k3 in sorted(x2.keys()):
+                m3.append(ssm_json_str(k3) + ":" + ssm_json_str(x2[k3]))
+            e2.append(ssm_json_obj(m3))
+        parts.append("\"Content\":" + ssm_json_arr(e2))
+    if v.Context.is_some():
+        auto u4 = v.Context.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(ssm_json_str(k5) + ":" + ssm_json_str(u4[k5]))
+        parts.append("\"Context\":" + ssm_json_obj(m5))
+    return ssm_json_obj(parts)
+
+# Serialize LabelParameterVersionRequest to a compact JSON object (declaration order).
+def label_parameter_version_request_to_json(LabelParameterVersionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + ssm_json_str(v.Name))
+    if v.ParameterVersion.is_some():
+        auto u0 = v.ParameterVersion.unwrap()
+        parts.append("\"ParameterVersion\":" + str(u0))
+    list[str] e1 = []
+    for x1 in v.Labels:
+        e1.append(ssm_json_str(x1))
+    parts.append("\"Labels\":" + ssm_json_arr(e1))
+    return ssm_json_obj(parts)
+
+# Serialize ListAssociationsRequest to a compact JSON object (declaration order).
+def list_associations_request_to_json(ListAssociationsRequest v) -> str:
+    list[str] parts = []
+    if v.AssociationFilterList.is_some():
+        auto u0 = v.AssociationFilterList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AssociationFilterList\":" + ssm_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u3))
+    return ssm_json_obj(parts)
+
+# Serialize ListCloudConnectorsRequest to a compact JSON object (declaration order).
+def list_cloud_connectors_request_to_json(ListCloudConnectorsRequest v) -> str:
+    list[str] parts = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(cloud_connector_filter_to_json(x3))
+        parts.append("\"Filters\":" + ssm_json_arr(e3))
+    return ssm_json_obj(parts)
+
+# Serialize ListCommandInvocationsRequest to a compact JSON object (declaration order).
+def list_command_invocations_request_to_json(ListCommandInvocationsRequest v) -> str:
+    list[str] parts = []
+    if v.CommandId.is_some():
+        auto u0 = v.CommandId.unwrap()
+        parts.append("\"CommandId\":" + ssm_json_str(u0))
+    if v.InstanceId.is_some():
+        auto u1 = v.InstanceId.unwrap()
+        parts.append("\"InstanceId\":" + ssm_json_str(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u3))
+    if v.Filters.is_some():
+        auto u4 = v.Filters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Filters\":" + ssm_json_arr(e5))
+    if v.Details.is_some():
+        auto u6 = v.Details.unwrap()
+        parts.append("\"Details\":" + json.dumps(JsonValue.Bool(u6)))
+    return ssm_json_obj(parts)
+
+# Serialize ListCommandsRequest to a compact JSON object (declaration order).
+def list_commands_request_to_json(ListCommandsRequest v) -> str:
+    list[str] parts = []
+    if v.CommandId.is_some():
+        auto u0 = v.CommandId.unwrap()
+        parts.append("\"CommandId\":" + ssm_json_str(u0))
+    if v.InstanceId.is_some():
+        auto u1 = v.InstanceId.unwrap()
+        parts.append("\"InstanceId\":" + ssm_json_str(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u3))
+    if v.Filters.is_some():
+        auto u4 = v.Filters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Filters\":" + ssm_json_arr(e5))
+    return ssm_json_obj(parts)
+
+# Serialize ListComplianceItemsRequest to a compact JSON object (declaration order).
+def list_compliance_items_request_to_json(ListComplianceItemsRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(compliance_string_filter_to_json(x1))
+        parts.append("\"Filters\":" + ssm_json_arr(e1))
+    if v.ResourceIds.is_some():
+        auto u2 = v.ResourceIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(ssm_json_str(x3))
+        parts.append("\"ResourceIds\":" + ssm_json_arr(e3))
+    if v.ResourceTypes.is_some():
+        auto u4 = v.ResourceTypes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(ssm_json_str(x5))
+        parts.append("\"ResourceTypes\":" + ssm_json_arr(e5))
+    if v.NextToken.is_some():
+        auto u6 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u6))
+    if v.MaxResults.is_some():
+        auto u7 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u7))
+    return ssm_json_obj(parts)
+
+# Serialize ListComplianceSummariesRequest to a compact JSON object (declaration order).
+def list_compliance_summaries_request_to_json(ListComplianceSummariesRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(compliance_string_filter_to_json(x1))
+        parts.append("\"Filters\":" + ssm_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    return ssm_json_obj(parts)
+
+# Serialize ListDocumentsRequest to a compact JSON object (declaration order).
+def list_documents_request_to_json(ListDocumentsRequest v) -> str:
+    list[str] parts = []
+    if v.DocumentFilterList.is_some():
+        auto u0 = v.DocumentFilterList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"DocumentFilterList\":" + ssm_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(document_key_values_filter_to_json(x3))
+        parts.append("\"Filters\":" + ssm_json_arr(e3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    if v.NextToken.is_some():
+        auto u5 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u5))
+    return ssm_json_obj(parts)
+
+# Serialize ListInventoryEntriesRequest to a compact JSON object (declaration order).
+def list_inventory_entries_request_to_json(ListInventoryEntriesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"InstanceId\":" + ssm_json_str(v.InstanceId))
+    parts.append("\"TypeName\":" + ssm_json_str(v.TypeName))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(inventory_filter_to_json(x1))
+        parts.append("\"Filters\":" + ssm_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    return ssm_json_obj(parts)
+
+# Serialize ListNodesRequest to a compact JSON object (declaration order).
+def list_nodes_request_to_json(ListNodesRequest v) -> str:
+    list[str] parts = []
+    if v.SyncName.is_some():
+        auto u0 = v.SyncName.unwrap()
+        parts.append("\"SyncName\":" + ssm_json_str(u0))
+    if v.Filters.is_some():
+        auto u1 = v.Filters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(node_filter_to_json(x2))
+        parts.append("\"Filters\":" + ssm_json_arr(e2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    return ssm_json_obj(parts)
+
+# Serialize ListNodesSummaryRequest to a compact JSON object (declaration order).
+def list_nodes_summary_request_to_json(ListNodesSummaryRequest v) -> str:
+    list[str] parts = []
+    if v.SyncName.is_some():
+        auto u0 = v.SyncName.unwrap()
+        parts.append("\"SyncName\":" + ssm_json_str(u0))
+    if v.Filters.is_some():
+        auto u1 = v.Filters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(node_filter_to_json(x2))
+        parts.append("\"Filters\":" + ssm_json_arr(e2))
+    list[str] e3 = []
+    for x3 in v.Aggregators:
+        e3.append(node_aggregator_to_json(x3))
+    parts.append("\"Aggregators\":" + ssm_json_arr(e3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    return ssm_json_obj(parts)
+
+# Serialize ListOpsItemEventsRequest to a compact JSON object (declaration order).
+def list_ops_item_events_request_to_json(ListOpsItemEventsRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ops_item_event_filter_to_json(x1))
+        parts.append("\"Filters\":" + ssm_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u3))
+    return ssm_json_obj(parts)
+
+# Serialize ListOpsItemRelatedItemsRequest to a compact JSON object (declaration order).
+def list_ops_item_related_items_request_to_json(ListOpsItemRelatedItemsRequest v) -> str:
+    list[str] parts = []
+    if v.OpsItemId.is_some():
+        auto u0 = v.OpsItemId.unwrap()
+        parts.append("\"OpsItemId\":" + ssm_json_str(u0))
+    if v.Filters.is_some():
+        auto u1 = v.Filters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ops_item_related_items_filter_to_json(x2))
+        parts.append("\"Filters\":" + ssm_json_arr(e2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u4))
+    return ssm_json_obj(parts)
+
+# Serialize ListOpsMetadataRequest to a compact JSON object (declaration order).
+def list_ops_metadata_request_to_json(ListOpsMetadataRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ops_metadata_filter_to_json(x1))
+        parts.append("\"Filters\":" + ssm_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u3))
+    return ssm_json_obj(parts)
+
+# Serialize ListResourceComplianceSummariesRequest to a compact JSON object (declaration order).
+def list_resource_compliance_summaries_request_to_json(ListResourceComplianceSummariesRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(compliance_string_filter_to_json(x1))
+        parts.append("\"Filters\":" + ssm_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + ssm_json_str(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    return ssm_json_obj(parts)
+
+# Serialize MaintenanceWindowAutomationParameters to a compact JSON object (declaration order).
+def maintenance_window_automation_parameters_to_json(MaintenanceWindowAutomationParameters v) -> str:
+    list[str] parts = []
+    if v.DocumentVersion.is_some():
+        auto u0 = v.DocumentVersion.unwrap()
+        parts.append("\"DocumentVersion\":" + ssm_json_str(u0))
+    if v.Parameters.is_some():
+        auto u1 = v.Parameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            list[str] e3 = []
+            for x3 in u1[k2]:
+                e3.append(ssm_json_str(x3))
+            m2.append(ssm_json_str(k2) + ":" + ssm_json_arr(e3))
+        parts.append("\"Parameters\":" + ssm_json_obj(m2))
+    return ssm_json_obj(parts)
+
+# Serialize MaintenanceWindowFilter to a compact JSON object (declaration order).
+def maintenance_window_filter_to_json(MaintenanceWindowFilter v) -> str:
+    list[str] parts = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        parts.append("\"Key\":" + ssm_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ssm_json_str(x2))
+        parts.append("\"Values\":" + ssm_json_arr(e2))
+    return ssm_json_obj(parts)
+
+# Serialize MaintenanceWindowRunCommandParameters to a compact JSON object (declaration order).
+def maintenance_window_run_command_parameters_to_json(MaintenanceWindowRunCommandParameters v) -> str:
+    list[str] parts = []
+    if v.Comment.is_some():
+        auto u0 = v.Comment.unwrap()
+        parts.append("\"Comment\":" + ssm_json_str(u0))
+    if v.CloudWatchOutputConfig.is_some():
+        auto u1 = v.CloudWatchOutputConfig.unwrap()
+        parts.append("\"CloudWatchOutputConfig\":" + u1.to_json())
+    if v.DocumentHash.is_some():
+        auto u2 = v.DocumentHash.unwrap()
+        parts.append("\"DocumentHash\":" + ssm_json_str(u2))
+    if v.DocumentHashType.is_some():
+        auto u3 = v.DocumentHashType.unwrap()
+        parts.append("\"DocumentHashType\":" + u3.to_json())
+    if v.DocumentVersion.is_some():
+        auto u4 = v.DocumentVersion.unwrap()
+        parts.append("\"DocumentVersion\":" + ssm_json_str(u4))
+    if v.NotificationConfig.is_some():
+        auto u5 = v.NotificationConfig.unwrap()
+        parts.append("\"NotificationConfig\":" + notification_config_to_json(u5))
+    if v.OutputS3BucketName.is_some():
+        auto u6 = v.OutputS3BucketName.unwrap()
+        parts.append("\"OutputS3BucketName\":" + ssm_json_str(u6))
+    if v.OutputS3KeyPrefix.is_some():
+        auto u7 = v.OutputS3KeyPrefix.unwrap()
+        parts.append("\"OutputS3KeyPrefix\":" + ssm_json_str(u7))
+    if v.Parameters.is_some():
+        auto u8 = v.Parameters.unwrap()
+        list[str] m9 = []
+        for k9 in sorted(u8.keys()):
+            list[str] e10 = []
+            for x10 in u8[k9]:
+                e10.append(ssm_json_str(x10))
+            m9.append(ssm_json_str(k9) + ":" + ssm_json_arr(e10))
+        parts.append("\"Parameters\":" + ssm_json_obj(m9))
+    if v.ServiceRoleArn.is_some():
+        auto u11 = v.ServiceRoleArn.unwrap()
+        parts.append("\"ServiceRoleArn\":" + ssm_json_str(u11))
+    if v.TimeoutSeconds.is_some():
+        auto u12 = v.TimeoutSeconds.unwrap()
+        parts.append("\"TimeoutSeconds\":" + str(u12))
+    return ssm_json_obj(parts)
+
+# Serialize MaintenanceWindowTaskInvocationParameters to a compact JSON object (declaration order).
+def maintenance_window_task_invocation_parameters_to_json(MaintenanceWindowTaskInvocationParameters v) -> str:
+    list[str] parts = []
+    if v.RunCommand.is_some():
+        auto u0 = v.RunCommand.unwrap()
+        parts.append("\"RunCommand\":" + maintenance_window_run_command_parameters_to_json(u0))
+    if v.Automation.is_some():
+        auto u1 = v.Automation.unwrap()
+        parts.append("\"Automation\":" + maintenance_window_automation_parameters_to_json(u1))
+    if v.StepFunctions.is_some():
+        auto u2 = v.StepFunctions.unwrap()
+        parts.append("\"StepFunctions\":" + u2.to_json())
+    if v.Lambda.is_some():
+        auto u3 = v.Lambda.unwrap()
+        parts.append("\"Lambda\":" + u3.to_json())
+    return ssm_json_obj(parts)
+
+# Serialize MaintenanceWindowTaskParameterValueExpression to a compact JSON object (declaration order).
+def maintenance_window_task_parameter_value_expression_to_json(MaintenanceWindowTaskParameterValueExpression v) -> str:
+    list[str] parts = []
+    if v.Values.is_some():
+        auto u0 = v.Values.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ssm_json_str(x1))
+        parts.append("\"Values\":" + ssm_json_arr(e1))
+    return ssm_json_obj(parts)
+
+# Serialize ModifyDocumentPermissionRequest to a compact JSON object (declaration order).
+def modify_document_permission_request_to_json(ModifyDocumentPermissionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + ssm_json_str(v.Name))
+    parts.append("\"PermissionType\":" + ssm_json_str(v.PermissionType))
+    if v.AccountIdsToAdd.is_some():
+        auto u0 = v.AccountIdsToAdd.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ssm_json_str(x1))
+        parts.append("\"AccountIdsToAdd\":" + ssm_json_arr(e1))
+    if v.AccountIdsToRemove.is_some():
+        auto u2 = v.AccountIdsToRemove.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(ssm_json_str(x3))
+        parts.append("\"AccountIdsToRemove\":" + ssm_json_arr(e3))
+    if v.SharedDocumentVersion.is_some():
+        auto u4 = v.SharedDocumentVersion.unwrap()
+        parts.append("\"SharedDocumentVersion\":" + ssm_json_str(u4))
+    return ssm_json_obj(parts)
+
+# Serialize NodeAggregator to a compact JSON object (declaration order).
+def node_aggregator_to_json(NodeAggregator v) -> str:
+    list[str] parts = []
+    parts.append("\"AggregatorType\":" + ssm_json_str(v.AggregatorType))
+    parts.append("\"TypeName\":" + ssm_json_str(v.TypeName))
+    parts.append("\"AttributeName\":" + v.AttributeName.to_json())
+    if v.Aggregators.is_some():
+        auto u0 = v.Aggregators.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(node_aggregator_to_json(x1))
+        parts.append("\"Aggregators\":" + ssm_json_arr(e1))
+    return ssm_json_obj(parts)
+
+# Serialize NodeFilter to a compact JSON object (declaration order).
+def node_filter_to_json(NodeFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + v.Key.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(ssm_json_str(x0))
+    parts.append("\"Values\":" + ssm_json_arr(e0))
+    if v.Type.is_some():
+        auto u1 = v.Type.unwrap()
+        parts.append("\"Type\":" + u1.to_json())
+    return ssm_json_obj(parts)
+
+# Serialize NotificationConfig to a compact JSON object (declaration order).
+def notification_config_to_json(NotificationConfig v) -> str:
+    list[str] parts = []
+    if v.NotificationArn.is_some():
+        auto u0 = v.NotificationArn.unwrap()
+        parts.append("\"NotificationArn\":" + ssm_json_str(u0))
+    if v.NotificationEvents.is_some():
+        auto u1 = v.NotificationEvents.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"NotificationEvents\":" + ssm_json_arr(e2))
+    if v.NotificationType.is_some():
+        auto u3 = v.NotificationType.unwrap()
+        parts.append("\"NotificationType\":" + u3.to_json())
+    return ssm_json_obj(parts)
+
+# Serialize OpsAggregator to a compact JSON object (declaration order).
+def ops_aggregator_to_json(OpsAggregator v) -> str:
+    list[str] parts = []
+    if v.AggregatorType.is_some():
+        auto u0 = v.AggregatorType.unwrap()
+        parts.append("\"AggregatorType\":" + ssm_json_str(u0))
+    if v.TypeName.is_some():
+        auto u1 = v.TypeName.unwrap()
+        parts.append("\"TypeName\":" + ssm_json_str(u1))
+    if v.AttributeName.is_some():
+        auto u2 = v.AttributeName.unwrap()
+        parts.append("\"AttributeName\":" + ssm_json_str(u2))
+    if v.Values.is_some():
+        auto u3 = v.Values.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(ssm_json_str(k4) + ":" + ssm_json_str(u3[k4]))
+        parts.append("\"Values\":" + ssm_json_obj(m4))
+    if v.Filters.is_some():
+        auto u5 = v.Filters.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(ops_filter_to_json(x6))
+        parts.append("\"Filters\":" + ssm_json_arr(e6))
+    if v.Aggregators.is_some():
+        auto u7 = v.Aggregators.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(ops_aggregator_to_json(x8))
+        parts.append("\"Aggregators\":" + ssm_json_arr(e8))
+    return ssm_json_obj(parts)
+
+# Serialize OpsFilter to a compact JSON object (declaration order).
+def ops_filter_to_json(OpsFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + ssm_json_str(v.Key))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(ssm_json_str(x0))
+    parts.append("\"Values\":" + ssm_json_arr(e0))
+    if v.Type.is_some():
+        auto u1 = v.Type.unwrap()
+        parts.append("\"Type\":" + u1.to_json())
+    return ssm_json_obj(parts)
+
+# Serialize OpsItemEventFilter to a compact JSON object (declaration order).
+def ops_item_event_filter_to_json(OpsItemEventFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + ssm_json_str(v.Key))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(ssm_json_str(x0))
+    parts.append("\"Values\":" + ssm_json_arr(e0))
+    parts.append("\"Operator\":" + ssm_json_str(v.Operator))
+    return ssm_json_obj(parts)
+
+# Serialize OpsItemFilter to a compact JSON object (declaration order).
+def ops_item_filter_to_json(OpsItemFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + v.Key.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(ssm_json_str(x0))
+    parts.append("\"Values\":" + ssm_json_arr(e0))
+    parts.append("\"Operator\":" + v.Operator.to_json())
+    return ssm_json_obj(parts)
+
+# Serialize OpsItemRelatedItemsFilter to a compact JSON object (declaration order).
+def ops_item_related_items_filter_to_json(OpsItemRelatedItemsFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + v.Key.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(ssm_json_str(x0))
+    parts.append("\"Values\":" + ssm_json_arr(e0))
+    parts.append("\"Operator\":" + ssm_json_str(v.Operator))
+    return ssm_json_obj(parts)
+
+# Serialize OpsMetadataFilter to a compact JSON object (declaration order).
+def ops_metadata_filter_to_json(OpsMetadataFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + ssm_json_str(v.Key))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(ssm_json_str(x0))
+    parts.append("\"Values\":" + ssm_json_arr(e0))
+    return ssm_json_obj(parts)
+
+# Serialize ParameterStringFilter to a compact JSON object (declaration order).
+def parameter_string_filter_to_json(ParameterStringFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + ssm_json_str(v.Key))
+    if v.Option.is_some():
+        auto u0 = v.Option.unwrap()
+        parts.append("\"Option\":" + ssm_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ssm_json_str(x2))
+        parts.append("\"Values\":" + ssm_json_arr(e2))
+    return ssm_json_obj(parts)
+
+# Serialize ParametersFilter to a compact JSON object (declaration order).
+def parameters_filter_to_json(ParametersFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + v.Key.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(ssm_json_str(x0))
+    parts.append("\"Values\":" + ssm_json_arr(e0))
+    return ssm_json_obj(parts)
+
+# Serialize PatchFilter to a compact JSON object (declaration order).
+def patch_filter_to_json(PatchFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + v.Key.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(ssm_json_str(x0))
+    parts.append("\"Values\":" + ssm_json_arr(e0))
+    return ssm_json_obj(parts)
+
+# Serialize PatchFilterGroup to a compact JSON object (declaration order).
+def patch_filter_group_to_json(PatchFilterGroup v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.PatchFilters:
+        e0.append(patch_filter_to_json(x0))
+    parts.append("\"PatchFilters\":" + ssm_json_arr(e0))
+    return ssm_json_obj(parts)
+
+# Serialize PatchOrchestratorFilter to a compact JSON object (declaration order).
+def patch_orchestrator_filter_to_json(PatchOrchestratorFilter v) -> str:
+    list[str] parts = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        parts.append("\"Key\":" + ssm_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ssm_json_str(x2))
+        parts.append("\"Values\":" + ssm_json_arr(e2))
+    return ssm_json_obj(parts)
+
+# Serialize PatchRule to a compact JSON object (declaration order).
+def patch_rule_to_json(PatchRule v) -> str:
+    list[str] parts = []
+    parts.append("\"PatchFilterGroup\":" + patch_filter_group_to_json(v.PatchFilterGroup))
+    if v.ComplianceLevel.is_some():
+        auto u0 = v.ComplianceLevel.unwrap()
+        parts.append("\"ComplianceLevel\":" + u0.to_json())
+    if v.ApproveAfterDays.is_some():
+        auto u1 = v.ApproveAfterDays.unwrap()
+        parts.append("\"ApproveAfterDays\":" + str(u1))
+    if v.ApproveUntilDate.is_some():
+        auto u2 = v.ApproveUntilDate.unwrap()
+        parts.append("\"ApproveUntilDate\":" + ssm_json_str(u2))
+    if v.EnableNonSecurity.is_some():
+        auto u3 = v.EnableNonSecurity.unwrap()
+        parts.append("\"EnableNonSecurity\":" + json.dumps(JsonValue.Bool(u3)))
+    return ssm_json_obj(parts)
+
+# Serialize PatchRuleGroup to a compact JSON object (declaration order).
+def patch_rule_group_to_json(PatchRuleGroup v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.PatchRules:
+        e0.append(patch_rule_to_json(x0))
+    parts.append("\"PatchRules\":" + ssm_json_arr(e0))
+    return ssm_json_obj(parts)
+
+# Serialize PatchSource to a compact JSON object (declaration order).
+def patch_source_to_json(PatchSource v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + ssm_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.Products:
+        e0.append(ssm_json_str(x0))
+    parts.append("\"Products\":" + ssm_json_arr(e0))
+    parts.append("\"Configuration\":" + ssm_json_str(v.Configuration))
+    return ssm_json_obj(parts)
+
+# Serialize PutComplianceItemsRequest to a compact JSON object (declaration order).
+def put_compliance_items_request_to_json(PutComplianceItemsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceId\":" + ssm_json_str(v.ResourceId))
+    parts.append("\"ResourceType\":" + ssm_json_str(v.ResourceType))
+    parts.append("\"ComplianceType\":" + ssm_json_str(v.ComplianceType))
+    parts.append("\"ExecutionSummary\":" + v.ExecutionSummary.to_json())
+    list[str] e0 = []
+    for x0 in v.Items:
+        e0.append(compliance_item_entry_to_json(x0))
+    parts.append("\"Items\":" + ssm_json_arr(e0))
+    if v.ItemContentHash.is_some():
+        auto u1 = v.ItemContentHash.unwrap()
+        parts.append("\"ItemContentHash\":" + ssm_json_str(u1))
+    if v.UploadType.is_some():
+        auto u2 = v.UploadType.unwrap()
+        parts.append("\"UploadType\":" + u2.to_json())
+    return ssm_json_obj(parts)
+
+# Serialize PutInventoryRequest to a compact JSON object (declaration order).
+def put_inventory_request_to_json(PutInventoryRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"InstanceId\":" + ssm_json_str(v.InstanceId))
+    list[str] e0 = []
+    for x0 in v.Items:
+        e0.append(inventory_item_to_json(x0))
+    parts.append("\"Items\":" + ssm_json_arr(e0))
+    return ssm_json_obj(parts)
+
+# Serialize PutParameterRequest to a compact JSON object (declaration order).
+def put_parameter_request_to_json(PutParameterRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + ssm_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + ssm_json_str(u0))
+    parts.append("\"Value\":" + ssm_json_str(v.Value))
+    if v.Type.is_some():
+        auto u1 = v.Type.unwrap()
+        parts.append("\"Type\":" + u1.to_json())
+    if v.KeyId.is_some():
+        auto u2 = v.KeyId.unwrap()
+        parts.append("\"KeyId\":" + ssm_json_str(u2))
+    if v.Overwrite.is_some():
+        auto u3 = v.Overwrite.unwrap()
+        parts.append("\"Overwrite\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.AllowedPattern.is_some():
+        auto u4 = v.AllowedPattern.unwrap()
+        parts.append("\"AllowedPattern\":" + ssm_json_str(u4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + ssm_json_arr(e6))
+    if v.Tier.is_some():
+        auto u7 = v.Tier.unwrap()
+        parts.append("\"Tier\":" + u7.to_json())
+    if v.Policies.is_some():
+        auto u8 = v.Policies.unwrap()
+        parts.append("\"Policies\":" + ssm_json_str(u8))
+    if v.DataType.is_some():
+        auto u9 = v.DataType.unwrap()
+        parts.append("\"DataType\":" + ssm_json_str(u9))
+    return ssm_json_obj(parts)
+
+# Serialize RegisterTargetWithMaintenanceWindowRequest to a compact JSON object (declaration order).
+def register_target_with_maintenance_window_request_to_json(RegisterTargetWithMaintenanceWindowRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"WindowId\":" + ssm_json_str(v.WindowId))
+    parts.append("\"ResourceType\":" + v.ResourceType.to_json())
+    list[str] e0 = []
+    for x0 in v.Targets:
+        e0.append(target_to_json(x0))
+    parts.append("\"Targets\":" + ssm_json_arr(e0))
+    if v.OwnerInformation.is_some():
+        auto u1 = v.OwnerInformation.unwrap()
+        parts.append("\"OwnerInformation\":" + ssm_json_str(u1))
+    if v.Name.is_some():
+        auto u2 = v.Name.unwrap()
+        parts.append("\"Name\":" + ssm_json_str(u2))
+    if v.Description.is_some():
+        auto u3 = v.Description.unwrap()
+        parts.append("\"Description\":" + ssm_json_str(u3))
+    if v.ClientToken.is_some():
+        auto u4 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + ssm_json_str(u4))
+    return ssm_json_obj(parts)
+
+# Serialize RegisterTaskWithMaintenanceWindowRequest to a compact JSON object (declaration order).
+def register_task_with_maintenance_window_request_to_json(RegisterTaskWithMaintenanceWindowRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"WindowId\":" + ssm_json_str(v.WindowId))
+    if v.Targets.is_some():
+        auto u0 = v.Targets.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(target_to_json(x1))
+        parts.append("\"Targets\":" + ssm_json_arr(e1))
+    parts.append("\"TaskArn\":" + ssm_json_str(v.TaskArn))
+    if v.ServiceRoleArn.is_some():
+        auto u2 = v.ServiceRoleArn.unwrap()
+        parts.append("\"ServiceRoleArn\":" + ssm_json_str(u2))
+    parts.append("\"TaskType\":" + v.TaskType.to_json())
+    if v.TaskParameters.is_some():
+        auto u3 = v.TaskParameters.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(ssm_json_str(k4) + ":" + maintenance_window_task_parameter_value_expression_to_json(u3[k4]))
+        parts.append("\"TaskParameters\":" + ssm_json_obj(m4))
+    if v.TaskInvocationParameters.is_some():
+        auto u5 = v.TaskInvocationParameters.unwrap()
+        parts.append("\"TaskInvocationParameters\":" + maintenance_window_task_invocation_parameters_to_json(u5))
+    if v.Priority.is_some():
+        auto u6 = v.Priority.unwrap()
+        parts.append("\"Priority\":" + str(u6))
+    if v.MaxConcurrency.is_some():
+        auto u7 = v.MaxConcurrency.unwrap()
+        parts.append("\"MaxConcurrency\":" + ssm_json_str(u7))
+    if v.MaxErrors.is_some():
+        auto u8 = v.MaxErrors.unwrap()
+        parts.append("\"MaxErrors\":" + ssm_json_str(u8))
+    if v.LoggingInfo.is_some():
+        auto u9 = v.LoggingInfo.unwrap()
+        parts.append("\"LoggingInfo\":" + u9.to_json())
+    if v.Name.is_some():
+        auto u10 = v.Name.unwrap()
+        parts.append("\"Name\":" + ssm_json_str(u10))
+    if v.Description.is_some():
+        auto u11 = v.Description.unwrap()
+        parts.append("\"Description\":" + ssm_json_str(u11))
+    if v.ClientToken.is_some():
+        auto u12 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + ssm_json_str(u12))
+    if v.CutoffBehavior.is_some():
+        auto u13 = v.CutoffBehavior.unwrap()
+        parts.append("\"CutoffBehavior\":" + u13.to_json())
+    if v.AlarmConfiguration.is_some():
+        auto u14 = v.AlarmConfiguration.unwrap()
+        parts.append("\"AlarmConfiguration\":" + alarm_configuration_to_json(u14))
+    return ssm_json_obj(parts)
+
+# Serialize RemoveTagsFromResourceRequest to a compact JSON object (declaration order).
+def remove_tags_from_resource_request_to_json(RemoveTagsFromResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceType\":" + v.ResourceType.to_json())
+    parts.append("\"ResourceId\":" + ssm_json_str(v.ResourceId))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(ssm_json_str(x0))
+    parts.append("\"TagKeys\":" + ssm_json_arr(e0))
+    return ssm_json_obj(parts)
+
+# Serialize ResourceDataSyncAwsOrganizationsSource to a compact JSON object (declaration order).
+def resource_data_sync_aws_organizations_source_to_json(ResourceDataSyncAwsOrganizationsSource v) -> str:
+    list[str] parts = []
+    parts.append("\"OrganizationSourceType\":" + ssm_json_str(v.OrganizationSourceType))
+    if v.OrganizationalUnits.is_some():
+        auto u0 = v.OrganizationalUnits.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"OrganizationalUnits\":" + ssm_json_arr(e1))
+    return ssm_json_obj(parts)
+
+# Serialize ResourceDataSyncSource to a compact JSON object (declaration order).
+def resource_data_sync_source_to_json(ResourceDataSyncSource v) -> str:
+    list[str] parts = []
+    parts.append("\"SourceType\":" + ssm_json_str(v.SourceType))
+    if v.AwsOrganizationsSource.is_some():
+        auto u0 = v.AwsOrganizationsSource.unwrap()
+        parts.append("\"AwsOrganizationsSource\":" + resource_data_sync_aws_organizations_source_to_json(u0))
+    list[str] e1 = []
+    for x1 in v.SourceRegions:
+        e1.append(ssm_json_str(x1))
+    parts.append("\"SourceRegions\":" + ssm_json_arr(e1))
+    if v.IncludeFutureRegions.is_some():
+        auto u2 = v.IncludeFutureRegions.unwrap()
+        parts.append("\"IncludeFutureRegions\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.EnableAllOpsDataSources.is_some():
+        auto u3 = v.EnableAllOpsDataSources.unwrap()
+        parts.append("\"EnableAllOpsDataSources\":" + json.dumps(JsonValue.Bool(u3)))
+    return ssm_json_obj(parts)
+
+# Serialize Runbook to a compact JSON object (declaration order).
+def runbook_to_json(Runbook v) -> str:
+    list[str] parts = []
+    parts.append("\"DocumentName\":" + ssm_json_str(v.DocumentName))
+    if v.DocumentVersion.is_some():
+        auto u0 = v.DocumentVersion.unwrap()
+        parts.append("\"DocumentVersion\":" + ssm_json_str(u0))
+    if v.Parameters.is_some():
+        auto u1 = v.Parameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            list[str] e3 = []
+            for x3 in u1[k2]:
+                e3.append(ssm_json_str(x3))
+            m2.append(ssm_json_str(k2) + ":" + ssm_json_arr(e3))
+        parts.append("\"Parameters\":" + ssm_json_obj(m2))
+    if v.TargetParameterName.is_some():
+        auto u4 = v.TargetParameterName.unwrap()
+        parts.append("\"TargetParameterName\":" + ssm_json_str(u4))
+    if v.Targets.is_some():
+        auto u5 = v.Targets.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(target_to_json(x6))
+        parts.append("\"Targets\":" + ssm_json_arr(e6))
+    if v.TargetMaps.is_some():
+        auto u7 = v.TargetMaps.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            list[str] m9 = []
+            for k9 in sorted(x8.keys()):
+                list[str] e10 = []
+                for x10 in x8[k9]:
+                    e10.append(ssm_json_str(x10))
+                m9.append(ssm_json_str(k9) + ":" + ssm_json_arr(e10))
+            e8.append(ssm_json_obj(m9))
+        parts.append("\"TargetMaps\":" + ssm_json_arr(e8))
+    if v.MaxConcurrency.is_some():
+        auto u11 = v.MaxConcurrency.unwrap()
+        parts.append("\"MaxConcurrency\":" + ssm_json_str(u11))
+    if v.MaxErrors.is_some():
+        auto u12 = v.MaxErrors.unwrap()
+        parts.append("\"MaxErrors\":" + ssm_json_str(u12))
+    if v.TargetLocations.is_some():
+        auto u13 = v.TargetLocations.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(target_location_to_json(x14))
+        parts.append("\"TargetLocations\":" + ssm_json_arr(e14))
+    return ssm_json_obj(parts)
+
+# Serialize SendAutomationSignalRequest to a compact JSON object (declaration order).
+def send_automation_signal_request_to_json(SendAutomationSignalRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AutomationExecutionId\":" + ssm_json_str(v.AutomationExecutionId))
+    parts.append("\"SignalType\":" + v.SignalType.to_json())
+    if v.Payload.is_some():
+        auto u0 = v.Payload.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            list[str] e2 = []
+            for x2 in u0[k1]:
+                e2.append(ssm_json_str(x2))
+            m1.append(ssm_json_str(k1) + ":" + ssm_json_arr(e2))
+        parts.append("\"Payload\":" + ssm_json_obj(m1))
+    return ssm_json_obj(parts)
+
+# Serialize SendCommandRequest to a compact JSON object (declaration order).
+def send_command_request_to_json(SendCommandRequest v) -> str:
+    list[str] parts = []
+    if v.InstanceIds.is_some():
+        auto u0 = v.InstanceIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ssm_json_str(x1))
+        parts.append("\"InstanceIds\":" + ssm_json_arr(e1))
+    if v.Targets.is_some():
+        auto u2 = v.Targets.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(target_to_json(x3))
+        parts.append("\"Targets\":" + ssm_json_arr(e3))
+    parts.append("\"DocumentName\":" + ssm_json_str(v.DocumentName))
+    if v.DocumentVersion.is_some():
+        auto u4 = v.DocumentVersion.unwrap()
+        parts.append("\"DocumentVersion\":" + ssm_json_str(u4))
+    if v.DocumentHash.is_some():
+        auto u5 = v.DocumentHash.unwrap()
+        parts.append("\"DocumentHash\":" + ssm_json_str(u5))
+    if v.DocumentHashType.is_some():
+        auto u6 = v.DocumentHashType.unwrap()
+        parts.append("\"DocumentHashType\":" + u6.to_json())
+    if v.TimeoutSeconds.is_some():
+        auto u7 = v.TimeoutSeconds.unwrap()
+        parts.append("\"TimeoutSeconds\":" + str(u7))
+    if v.Comment.is_some():
+        auto u8 = v.Comment.unwrap()
+        parts.append("\"Comment\":" + ssm_json_str(u8))
+    if v.Parameters.is_some():
+        auto u9 = v.Parameters.unwrap()
+        list[str] m10 = []
+        for k10 in sorted(u9.keys()):
+            list[str] e11 = []
+            for x11 in u9[k10]:
+                e11.append(ssm_json_str(x11))
+            m10.append(ssm_json_str(k10) + ":" + ssm_json_arr(e11))
+        parts.append("\"Parameters\":" + ssm_json_obj(m10))
+    if v.OutputS3Region.is_some():
+        auto u12 = v.OutputS3Region.unwrap()
+        parts.append("\"OutputS3Region\":" + ssm_json_str(u12))
+    if v.OutputS3BucketName.is_some():
+        auto u13 = v.OutputS3BucketName.unwrap()
+        parts.append("\"OutputS3BucketName\":" + ssm_json_str(u13))
+    if v.OutputS3KeyPrefix.is_some():
+        auto u14 = v.OutputS3KeyPrefix.unwrap()
+        parts.append("\"OutputS3KeyPrefix\":" + ssm_json_str(u14))
+    if v.MaxConcurrency.is_some():
+        auto u15 = v.MaxConcurrency.unwrap()
+        parts.append("\"MaxConcurrency\":" + ssm_json_str(u15))
+    if v.MaxErrors.is_some():
+        auto u16 = v.MaxErrors.unwrap()
+        parts.append("\"MaxErrors\":" + ssm_json_str(u16))
+    if v.ServiceRoleArn.is_some():
+        auto u17 = v.ServiceRoleArn.unwrap()
+        parts.append("\"ServiceRoleArn\":" + ssm_json_str(u17))
+    if v.NotificationConfig.is_some():
+        auto u18 = v.NotificationConfig.unwrap()
+        parts.append("\"NotificationConfig\":" + notification_config_to_json(u18))
+    if v.CloudWatchOutputConfig.is_some():
+        auto u19 = v.CloudWatchOutputConfig.unwrap()
+        parts.append("\"CloudWatchOutputConfig\":" + u19.to_json())
+    if v.AlarmConfiguration.is_some():
+        auto u20 = v.AlarmConfiguration.unwrap()
+        parts.append("\"AlarmConfiguration\":" + alarm_configuration_to_json(u20))
+    return ssm_json_obj(parts)
+
+# Serialize StartAccessRequestRequest to a compact JSON object (declaration order).
+def start_access_request_request_to_json(StartAccessRequestRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Reason\":" + ssm_json_str(v.Reason))
+    list[str] e0 = []
+    for x0 in v.Targets:
+        e0.append(target_to_json(x0))
+    parts.append("\"Targets\":" + ssm_json_arr(e0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + ssm_json_arr(e2))
+    return ssm_json_obj(parts)
+
+# Serialize StartAssociationsOnceRequest to a compact JSON object (declaration order).
+def start_associations_once_request_to_json(StartAssociationsOnceRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AssociationIds:
+        e0.append(ssm_json_str(x0))
+    parts.append("\"AssociationIds\":" + ssm_json_arr(e0))
+    return ssm_json_obj(parts)
+
+# Serialize StartAutomationExecutionRequest to a compact JSON object (declaration order).
+def start_automation_execution_request_to_json(StartAutomationExecutionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DocumentName\":" + ssm_json_str(v.DocumentName))
+    if v.DocumentVersion.is_some():
+        auto u0 = v.DocumentVersion.unwrap()
+        parts.append("\"DocumentVersion\":" + ssm_json_str(u0))
+    if v.Parameters.is_some():
+        auto u1 = v.Parameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            list[str] e3 = []
+            for x3 in u1[k2]:
+                e3.append(ssm_json_str(x3))
+            m2.append(ssm_json_str(k2) + ":" + ssm_json_arr(e3))
+        parts.append("\"Parameters\":" + ssm_json_obj(m2))
+    if v.ClientToken.is_some():
+        auto u4 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + ssm_json_str(u4))
+    if v.Mode.is_some():
+        auto u5 = v.Mode.unwrap()
+        parts.append("\"Mode\":" + u5.to_json())
+    if v.TargetParameterName.is_some():
+        auto u6 = v.TargetParameterName.unwrap()
+        parts.append("\"TargetParameterName\":" + ssm_json_str(u6))
+    if v.Targets.is_some():
+        auto u7 = v.Targets.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(target_to_json(x8))
+        parts.append("\"Targets\":" + ssm_json_arr(e8))
+    if v.TargetMaps.is_some():
+        auto u9 = v.TargetMaps.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            list[str] m11 = []
+            for k11 in sorted(x10.keys()):
+                list[str] e12 = []
+                for x12 in x10[k11]:
+                    e12.append(ssm_json_str(x12))
+                m11.append(ssm_json_str(k11) + ":" + ssm_json_arr(e12))
+            e10.append(ssm_json_obj(m11))
+        parts.append("\"TargetMaps\":" + ssm_json_arr(e10))
+    if v.MaxConcurrency.is_some():
+        auto u13 = v.MaxConcurrency.unwrap()
+        parts.append("\"MaxConcurrency\":" + ssm_json_str(u13))
+    if v.MaxErrors.is_some():
+        auto u14 = v.MaxErrors.unwrap()
+        parts.append("\"MaxErrors\":" + ssm_json_str(u14))
+    if v.TargetLocations.is_some():
+        auto u15 = v.TargetLocations.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(target_location_to_json(x16))
+        parts.append("\"TargetLocations\":" + ssm_json_arr(e16))
+    if v.Tags.is_some():
+        auto u17 = v.Tags.unwrap()
+        list[str] e18 = []
+        for x18 in u17:
+            e18.append(x18.to_json())
+        parts.append("\"Tags\":" + ssm_json_arr(e18))
+    if v.AlarmConfiguration.is_some():
+        auto u19 = v.AlarmConfiguration.unwrap()
+        parts.append("\"AlarmConfiguration\":" + alarm_configuration_to_json(u19))
+    if v.TargetLocationsURL.is_some():
+        auto u20 = v.TargetLocationsURL.unwrap()
+        parts.append("\"TargetLocationsURL\":" + ssm_json_str(u20))
+    return ssm_json_obj(parts)
+
+# Serialize StartChangeRequestExecutionRequest to a compact JSON object (declaration order).
+def start_change_request_execution_request_to_json(StartChangeRequestExecutionRequest v) -> str:
+    list[str] parts = []
+    if v.ScheduledTime.is_some():
+        auto u0 = v.ScheduledTime.unwrap()
+        parts.append("\"ScheduledTime\":" + str(datetime.to_timestamp(u0)))
+    parts.append("\"DocumentName\":" + ssm_json_str(v.DocumentName))
+    if v.DocumentVersion.is_some():
+        auto u1 = v.DocumentVersion.unwrap()
+        parts.append("\"DocumentVersion\":" + ssm_json_str(u1))
+    if v.Parameters.is_some():
+        auto u2 = v.Parameters.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            list[str] e4 = []
+            for x4 in u2[k3]:
+                e4.append(ssm_json_str(x4))
+            m3.append(ssm_json_str(k3) + ":" + ssm_json_arr(e4))
+        parts.append("\"Parameters\":" + ssm_json_obj(m3))
+    if v.ChangeRequestName.is_some():
+        auto u5 = v.ChangeRequestName.unwrap()
+        parts.append("\"ChangeRequestName\":" + ssm_json_str(u5))
+    if v.ClientToken.is_some():
+        auto u6 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + ssm_json_str(u6))
+    if v.AutoApprove.is_some():
+        auto u7 = v.AutoApprove.unwrap()
+        parts.append("\"AutoApprove\":" + json.dumps(JsonValue.Bool(u7)))
+    list[str] e8 = []
+    for x8 in v.Runbooks:
+        e8.append(runbook_to_json(x8))
+    parts.append("\"Runbooks\":" + ssm_json_arr(e8))
+    if v.Tags.is_some():
+        auto u9 = v.Tags.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"Tags\":" + ssm_json_arr(e10))
+    if v.ScheduledEndTime.is_some():
+        auto u11 = v.ScheduledEndTime.unwrap()
+        parts.append("\"ScheduledEndTime\":" + str(datetime.to_timestamp(u11)))
+    if v.ChangeDetails.is_some():
+        auto u12 = v.ChangeDetails.unwrap()
+        parts.append("\"ChangeDetails\":" + ssm_json_str(u12))
+    return ssm_json_obj(parts)
+
+# Serialize StartExecutionPreviewRequest to a compact JSON object (declaration order).
+def start_execution_preview_request_to_json(StartExecutionPreviewRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DocumentName\":" + ssm_json_str(v.DocumentName))
+    if v.DocumentVersion.is_some():
+        auto u0 = v.DocumentVersion.unwrap()
+        parts.append("\"DocumentVersion\":" + ssm_json_str(u0))
+    if v.ExecutionInputs.is_some():
+        auto u1 = v.ExecutionInputs.unwrap()
+        parts.append("\"ExecutionInputs\":" + execution_inputs_to_json(u1))
+    return ssm_json_obj(parts)
+
+# Serialize StartSessionRequest to a compact JSON object (declaration order).
+def start_session_request_to_json(StartSessionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Target\":" + ssm_json_str(v.Target))
+    if v.DocumentName.is_some():
+        auto u0 = v.DocumentName.unwrap()
+        parts.append("\"DocumentName\":" + ssm_json_str(u0))
+    if v.Reason.is_some():
+        auto u1 = v.Reason.unwrap()
+        parts.append("\"Reason\":" + ssm_json_str(u1))
+    if v.Parameters.is_some():
+        auto u2 = v.Parameters.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            list[str] e4 = []
+            for x4 in u2[k3]:
+                e4.append(ssm_json_str(x4))
+            m3.append(ssm_json_str(k3) + ":" + ssm_json_arr(e4))
+        parts.append("\"Parameters\":" + ssm_json_obj(m3))
+    return ssm_json_obj(parts)
+
+# Serialize StepExecutionFilter to a compact JSON object (declaration order).
+def step_execution_filter_to_json(StepExecutionFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + v.Key.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(ssm_json_str(x0))
+    parts.append("\"Values\":" + ssm_json_arr(e0))
+    return ssm_json_obj(parts)
+
+# Serialize Target to a compact JSON object (declaration order).
+def target_to_json(Target v) -> str:
+    list[str] parts = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        parts.append("\"Key\":" + ssm_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ssm_json_str(x2))
+        parts.append("\"Values\":" + ssm_json_arr(e2))
+    return ssm_json_obj(parts)
+
+# Serialize TargetLocation to a compact JSON object (declaration order).
+def target_location_to_json(TargetLocation v) -> str:
+    list[str] parts = []
+    if v.Accounts.is_some():
+        auto u0 = v.Accounts.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ssm_json_str(x1))
+        parts.append("\"Accounts\":" + ssm_json_arr(e1))
+    if v.Regions.is_some():
+        auto u2 = v.Regions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(ssm_json_str(x3))
+        parts.append("\"Regions\":" + ssm_json_arr(e3))
+    if v.TargetLocationMaxConcurrency.is_some():
+        auto u4 = v.TargetLocationMaxConcurrency.unwrap()
+        parts.append("\"TargetLocationMaxConcurrency\":" + ssm_json_str(u4))
+    if v.TargetLocationMaxErrors.is_some():
+        auto u5 = v.TargetLocationMaxErrors.unwrap()
+        parts.append("\"TargetLocationMaxErrors\":" + ssm_json_str(u5))
+    if v.ExecutionRoleName.is_some():
+        auto u6 = v.ExecutionRoleName.unwrap()
+        parts.append("\"ExecutionRoleName\":" + ssm_json_str(u6))
+    if v.TargetLocationAlarmConfiguration.is_some():
+        auto u7 = v.TargetLocationAlarmConfiguration.unwrap()
+        parts.append("\"TargetLocationAlarmConfiguration\":" + alarm_configuration_to_json(u7))
+    if v.IncludeChildOrganizationUnits.is_some():
+        auto u8 = v.IncludeChildOrganizationUnits.unwrap()
+        parts.append("\"IncludeChildOrganizationUnits\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.ExcludeAccounts.is_some():
+        auto u9 = v.ExcludeAccounts.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(ssm_json_str(x10))
+        parts.append("\"ExcludeAccounts\":" + ssm_json_arr(e10))
+    if v.Targets.is_some():
+        auto u11 = v.Targets.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(target_to_json(x12))
+        parts.append("\"Targets\":" + ssm_json_arr(e12))
+    if v.TargetsMaxConcurrency.is_some():
+        auto u13 = v.TargetsMaxConcurrency.unwrap()
+        parts.append("\"TargetsMaxConcurrency\":" + ssm_json_str(u13))
+    if v.TargetsMaxErrors.is_some():
+        auto u14 = v.TargetsMaxErrors.unwrap()
+        parts.append("\"TargetsMaxErrors\":" + ssm_json_str(u14))
+    return ssm_json_obj(parts)
+
+# Serialize UnlabelParameterVersionRequest to a compact JSON object (declaration order).
+def unlabel_parameter_version_request_to_json(UnlabelParameterVersionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + ssm_json_str(v.Name))
+    parts.append("\"ParameterVersion\":" + str(v.ParameterVersion))
+    list[str] e0 = []
+    for x0 in v.Labels:
+        e0.append(ssm_json_str(x0))
+    parts.append("\"Labels\":" + ssm_json_arr(e0))
+    return ssm_json_obj(parts)
+
+# Serialize UpdateAssociationRequest to a compact JSON object (declaration order).
+def update_association_request_to_json(UpdateAssociationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AssociationId\":" + ssm_json_str(v.AssociationId))
+    if v.Parameters.is_some():
+        auto u0 = v.Parameters.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            list[str] e2 = []
+            for x2 in u0[k1]:
+                e2.append(ssm_json_str(x2))
+            m1.append(ssm_json_str(k1) + ":" + ssm_json_arr(e2))
+        parts.append("\"Parameters\":" + ssm_json_obj(m1))
+    if v.DocumentVersion.is_some():
+        auto u3 = v.DocumentVersion.unwrap()
+        parts.append("\"DocumentVersion\":" + ssm_json_str(u3))
+    if v.ScheduleExpression.is_some():
+        auto u4 = v.ScheduleExpression.unwrap()
+        parts.append("\"ScheduleExpression\":" + ssm_json_str(u4))
+    if v.OutputLocation.is_some():
+        auto u5 = v.OutputLocation.unwrap()
+        parts.append("\"OutputLocation\":" + u5.to_json())
+    if v.Name.is_some():
+        auto u6 = v.Name.unwrap()
+        parts.append("\"Name\":" + ssm_json_str(u6))
+    if v.Targets.is_some():
+        auto u7 = v.Targets.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(target_to_json(x8))
+        parts.append("\"Targets\":" + ssm_json_arr(e8))
+    if v.AssociationName.is_some():
+        auto u9 = v.AssociationName.unwrap()
+        parts.append("\"AssociationName\":" + ssm_json_str(u9))
+    if v.AssociationVersion.is_some():
+        auto u10 = v.AssociationVersion.unwrap()
+        parts.append("\"AssociationVersion\":" + ssm_json_str(u10))
+    if v.AutomationTargetParameterName.is_some():
+        auto u11 = v.AutomationTargetParameterName.unwrap()
+        parts.append("\"AutomationTargetParameterName\":" + ssm_json_str(u11))
+    if v.MaxErrors.is_some():
+        auto u12 = v.MaxErrors.unwrap()
+        parts.append("\"MaxErrors\":" + ssm_json_str(u12))
+    if v.MaxConcurrency.is_some():
+        auto u13 = v.MaxConcurrency.unwrap()
+        parts.append("\"MaxConcurrency\":" + ssm_json_str(u13))
+    if v.ComplianceSeverity.is_some():
+        auto u14 = v.ComplianceSeverity.unwrap()
+        parts.append("\"ComplianceSeverity\":" + u14.to_json())
+    if v.SyncCompliance.is_some():
+        auto u15 = v.SyncCompliance.unwrap()
+        parts.append("\"SyncCompliance\":" + u15.to_json())
+    if v.ApplyOnlyAtCronInterval.is_some():
+        auto u16 = v.ApplyOnlyAtCronInterval.unwrap()
+        parts.append("\"ApplyOnlyAtCronInterval\":" + json.dumps(JsonValue.Bool(u16)))
+    if v.CalendarNames.is_some():
+        auto u17 = v.CalendarNames.unwrap()
+        list[str] e18 = []
+        for x18 in u17:
+            e18.append(ssm_json_str(x18))
+        parts.append("\"CalendarNames\":" + ssm_json_arr(e18))
+    if v.TargetLocations.is_some():
+        auto u19 = v.TargetLocations.unwrap()
+        list[str] e20 = []
+        for x20 in u19:
+            e20.append(target_location_to_json(x20))
+        parts.append("\"TargetLocations\":" + ssm_json_arr(e20))
+    if v.ScheduleOffset.is_some():
+        auto u21 = v.ScheduleOffset.unwrap()
+        parts.append("\"ScheduleOffset\":" + str(u21))
+    if v.Duration.is_some():
+        auto u22 = v.Duration.unwrap()
+        parts.append("\"Duration\":" + str(u22))
+    if v.TargetMaps.is_some():
+        auto u23 = v.TargetMaps.unwrap()
+        list[str] e24 = []
+        for x24 in u23:
+            list[str] m25 = []
+            for k25 in sorted(x24.keys()):
+                list[str] e26 = []
+                for x26 in x24[k25]:
+                    e26.append(ssm_json_str(x26))
+                m25.append(ssm_json_str(k25) + ":" + ssm_json_arr(e26))
+            e24.append(ssm_json_obj(m25))
+        parts.append("\"TargetMaps\":" + ssm_json_arr(e24))
+    if v.AlarmConfiguration.is_some():
+        auto u27 = v.AlarmConfiguration.unwrap()
+        parts.append("\"AlarmConfiguration\":" + alarm_configuration_to_json(u27))
+    if v.AssociationDispatchAssumeRole.is_some():
+        auto u28 = v.AssociationDispatchAssumeRole.unwrap()
+        parts.append("\"AssociationDispatchAssumeRole\":" + ssm_json_str(u28))
+    return ssm_json_obj(parts)
+
+# Serialize UpdateCloudConnectorRequest to a compact JSON object (declaration order).
+def update_cloud_connector_request_to_json(UpdateCloudConnectorRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CloudConnectorId\":" + ssm_json_str(v.CloudConnectorId))
+    if v.DisplayName.is_some():
+        auto u0 = v.DisplayName.unwrap()
+        parts.append("\"DisplayName\":" + ssm_json_str(u0))
+    if v.Configuration.is_some():
+        auto u1 = v.Configuration.unwrap()
+        parts.append("\"Configuration\":" + cloud_connector_configuration_to_json(u1))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"Description\":" + ssm_json_str(u2))
+    return ssm_json_obj(parts)
+
+# Serialize UpdateDocumentMetadataRequest to a compact JSON object (declaration order).
+def update_document_metadata_request_to_json(UpdateDocumentMetadataRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + ssm_json_str(v.Name))
+    if v.DocumentVersion.is_some():
+        auto u0 = v.DocumentVersion.unwrap()
+        parts.append("\"DocumentVersion\":" + ssm_json_str(u0))
+    parts.append("\"DocumentReviews\":" + document_reviews_to_json(v.DocumentReviews))
+    return ssm_json_obj(parts)
+
+# Serialize UpdateDocumentRequest to a compact JSON object (declaration order).
+def update_document_request_to_json(UpdateDocumentRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Content\":" + ssm_json_str(v.Content))
+    if v.Attachments.is_some():
+        auto u0 = v.Attachments.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(attachments_source_to_json(x1))
+        parts.append("\"Attachments\":" + ssm_json_arr(e1))
+    parts.append("\"Name\":" + ssm_json_str(v.Name))
+    if v.DisplayName.is_some():
+        auto u2 = v.DisplayName.unwrap()
+        parts.append("\"DisplayName\":" + ssm_json_str(u2))
+    if v.VersionName.is_some():
+        auto u3 = v.VersionName.unwrap()
+        parts.append("\"VersionName\":" + ssm_json_str(u3))
+    if v.DocumentVersion.is_some():
+        auto u4 = v.DocumentVersion.unwrap()
+        parts.append("\"DocumentVersion\":" + ssm_json_str(u4))
+    if v.DocumentFormat.is_some():
+        auto u5 = v.DocumentFormat.unwrap()
+        parts.append("\"DocumentFormat\":" + u5.to_json())
+    if v.TargetType.is_some():
+        auto u6 = v.TargetType.unwrap()
+        parts.append("\"TargetType\":" + ssm_json_str(u6))
+    return ssm_json_obj(parts)
+
+# Serialize UpdateMaintenanceWindowTargetRequest to a compact JSON object (declaration order).
+def update_maintenance_window_target_request_to_json(UpdateMaintenanceWindowTargetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"WindowId\":" + ssm_json_str(v.WindowId))
+    parts.append("\"WindowTargetId\":" + ssm_json_str(v.WindowTargetId))
+    if v.Targets.is_some():
+        auto u0 = v.Targets.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(target_to_json(x1))
+        parts.append("\"Targets\":" + ssm_json_arr(e1))
+    if v.OwnerInformation.is_some():
+        auto u2 = v.OwnerInformation.unwrap()
+        parts.append("\"OwnerInformation\":" + ssm_json_str(u2))
+    if v.Name.is_some():
+        auto u3 = v.Name.unwrap()
+        parts.append("\"Name\":" + ssm_json_str(u3))
+    if v.Description.is_some():
+        auto u4 = v.Description.unwrap()
+        parts.append("\"Description\":" + ssm_json_str(u4))
+    if v.Replace.is_some():
+        auto u5 = v.Replace.unwrap()
+        parts.append("\"Replace\":" + json.dumps(JsonValue.Bool(u5)))
+    return ssm_json_obj(parts)
+
+# Serialize UpdateMaintenanceWindowTaskRequest to a compact JSON object (declaration order).
+def update_maintenance_window_task_request_to_json(UpdateMaintenanceWindowTaskRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"WindowId\":" + ssm_json_str(v.WindowId))
+    parts.append("\"WindowTaskId\":" + ssm_json_str(v.WindowTaskId))
+    if v.Targets.is_some():
+        auto u0 = v.Targets.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(target_to_json(x1))
+        parts.append("\"Targets\":" + ssm_json_arr(e1))
+    if v.TaskArn.is_some():
+        auto u2 = v.TaskArn.unwrap()
+        parts.append("\"TaskArn\":" + ssm_json_str(u2))
+    if v.ServiceRoleArn.is_some():
+        auto u3 = v.ServiceRoleArn.unwrap()
+        parts.append("\"ServiceRoleArn\":" + ssm_json_str(u3))
+    if v.TaskParameters.is_some():
+        auto u4 = v.TaskParameters.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(ssm_json_str(k5) + ":" + maintenance_window_task_parameter_value_expression_to_json(u4[k5]))
+        parts.append("\"TaskParameters\":" + ssm_json_obj(m5))
+    if v.TaskInvocationParameters.is_some():
+        auto u6 = v.TaskInvocationParameters.unwrap()
+        parts.append("\"TaskInvocationParameters\":" + maintenance_window_task_invocation_parameters_to_json(u6))
+    if v.Priority.is_some():
+        auto u7 = v.Priority.unwrap()
+        parts.append("\"Priority\":" + str(u7))
+    if v.MaxConcurrency.is_some():
+        auto u8 = v.MaxConcurrency.unwrap()
+        parts.append("\"MaxConcurrency\":" + ssm_json_str(u8))
+    if v.MaxErrors.is_some():
+        auto u9 = v.MaxErrors.unwrap()
+        parts.append("\"MaxErrors\":" + ssm_json_str(u9))
+    if v.LoggingInfo.is_some():
+        auto u10 = v.LoggingInfo.unwrap()
+        parts.append("\"LoggingInfo\":" + u10.to_json())
+    if v.Name.is_some():
+        auto u11 = v.Name.unwrap()
+        parts.append("\"Name\":" + ssm_json_str(u11))
+    if v.Description.is_some():
+        auto u12 = v.Description.unwrap()
+        parts.append("\"Description\":" + ssm_json_str(u12))
+    if v.Replace.is_some():
+        auto u13 = v.Replace.unwrap()
+        parts.append("\"Replace\":" + json.dumps(JsonValue.Bool(u13)))
+    if v.CutoffBehavior.is_some():
+        auto u14 = v.CutoffBehavior.unwrap()
+        parts.append("\"CutoffBehavior\":" + u14.to_json())
+    if v.AlarmConfiguration.is_some():
+        auto u15 = v.AlarmConfiguration.unwrap()
+        parts.append("\"AlarmConfiguration\":" + alarm_configuration_to_json(u15))
+    return ssm_json_obj(parts)
+
+# Serialize UpdateOpsItemRequest to a compact JSON object (declaration order).
+def update_ops_item_request_to_json(UpdateOpsItemRequest v) -> str:
+    list[str] parts = []
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + ssm_json_str(u0))
+    if v.OperationalData.is_some():
+        auto u1 = v.OperationalData.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(ssm_json_str(k2) + ":" + u1[k2].to_json())
+        parts.append("\"OperationalData\":" + ssm_json_obj(m2))
+    if v.OperationalDataToDelete.is_some():
+        auto u3 = v.OperationalDataToDelete.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(ssm_json_str(x4))
+        parts.append("\"OperationalDataToDelete\":" + ssm_json_arr(e4))
+    if v.Notifications.is_some():
+        auto u5 = v.Notifications.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Notifications\":" + ssm_json_arr(e6))
+    if v.Priority.is_some():
+        auto u7 = v.Priority.unwrap()
+        parts.append("\"Priority\":" + str(u7))
+    if v.RelatedOpsItems.is_some():
+        auto u8 = v.RelatedOpsItems.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"RelatedOpsItems\":" + ssm_json_arr(e9))
+    if v.Status.is_some():
+        auto u10 = v.Status.unwrap()
+        parts.append("\"Status\":" + u10.to_json())
+    parts.append("\"OpsItemId\":" + ssm_json_str(v.OpsItemId))
+    if v.Title.is_some():
+        auto u11 = v.Title.unwrap()
+        parts.append("\"Title\":" + ssm_json_str(u11))
+    if v.Category.is_some():
+        auto u12 = v.Category.unwrap()
+        parts.append("\"Category\":" + ssm_json_str(u12))
+    if v.Severity.is_some():
+        auto u13 = v.Severity.unwrap()
+        parts.append("\"Severity\":" + ssm_json_str(u13))
+    if v.ActualStartTime.is_some():
+        auto u14 = v.ActualStartTime.unwrap()
+        parts.append("\"ActualStartTime\":" + str(datetime.to_timestamp(u14)))
+    if v.ActualEndTime.is_some():
+        auto u15 = v.ActualEndTime.unwrap()
+        parts.append("\"ActualEndTime\":" + str(datetime.to_timestamp(u15)))
+    if v.PlannedStartTime.is_some():
+        auto u16 = v.PlannedStartTime.unwrap()
+        parts.append("\"PlannedStartTime\":" + str(datetime.to_timestamp(u16)))
+    if v.PlannedEndTime.is_some():
+        auto u17 = v.PlannedEndTime.unwrap()
+        parts.append("\"PlannedEndTime\":" + str(datetime.to_timestamp(u17)))
+    if v.OpsItemArn.is_some():
+        auto u18 = v.OpsItemArn.unwrap()
+        parts.append("\"OpsItemArn\":" + ssm_json_str(u18))
+    return ssm_json_obj(parts)
+
+# Serialize UpdateOpsMetadataRequest to a compact JSON object (declaration order).
+def update_ops_metadata_request_to_json(UpdateOpsMetadataRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"OpsMetadataArn\":" + ssm_json_str(v.OpsMetadataArn))
+    if v.MetadataToUpdate.is_some():
+        auto u0 = v.MetadataToUpdate.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(ssm_json_str(k1) + ":" + u0[k1].to_json())
+        parts.append("\"MetadataToUpdate\":" + ssm_json_obj(m1))
+    if v.KeysToDelete.is_some():
+        auto u2 = v.KeysToDelete.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(ssm_json_str(x3))
+        parts.append("\"KeysToDelete\":" + ssm_json_arr(e3))
+    return ssm_json_obj(parts)
+
+# Serialize UpdatePatchBaselineRequest to a compact JSON object (declaration order).
+def update_patch_baseline_request_to_json(UpdatePatchBaselineRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"BaselineId\":" + ssm_json_str(v.BaselineId))
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + ssm_json_str(u0))
+    if v.GlobalFilters.is_some():
+        auto u1 = v.GlobalFilters.unwrap()
+        parts.append("\"GlobalFilters\":" + patch_filter_group_to_json(u1))
+    if v.ApprovalRules.is_some():
+        auto u2 = v.ApprovalRules.unwrap()
+        parts.append("\"ApprovalRules\":" + patch_rule_group_to_json(u2))
+    if v.ApprovedPatches.is_some():
+        auto u3 = v.ApprovedPatches.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(ssm_json_str(x4))
+        parts.append("\"ApprovedPatches\":" + ssm_json_arr(e4))
+    if v.ApprovedPatchesComplianceLevel.is_some():
+        auto u5 = v.ApprovedPatchesComplianceLevel.unwrap()
+        parts.append("\"ApprovedPatchesComplianceLevel\":" + u5.to_json())
+    if v.ApprovedPatchesEnableNonSecurity.is_some():
+        auto u6 = v.ApprovedPatchesEnableNonSecurity.unwrap()
+        parts.append("\"ApprovedPatchesEnableNonSecurity\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.RejectedPatches.is_some():
+        auto u7 = v.RejectedPatches.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(ssm_json_str(x8))
+        parts.append("\"RejectedPatches\":" + ssm_json_arr(e8))
+    if v.RejectedPatchesAction.is_some():
+        auto u9 = v.RejectedPatchesAction.unwrap()
+        parts.append("\"RejectedPatchesAction\":" + u9.to_json())
+    if v.Description.is_some():
+        auto u10 = v.Description.unwrap()
+        parts.append("\"Description\":" + ssm_json_str(u10))
+    if v.Sources.is_some():
+        auto u11 = v.Sources.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(patch_source_to_json(x12))
+        parts.append("\"Sources\":" + ssm_json_arr(e12))
+    if v.AvailableSecurityUpdatesComplianceStatus.is_some():
+        auto u13 = v.AvailableSecurityUpdatesComplianceStatus.unwrap()
+        parts.append("\"AvailableSecurityUpdatesComplianceStatus\":" + u13.to_json())
+    if v.Replace.is_some():
+        auto u14 = v.Replace.unwrap()
+        parts.append("\"Replace\":" + json.dumps(JsonValue.Bool(u14)))
+    return ssm_json_obj(parts)
+
+# Serialize UpdateResourceDataSyncRequest to a compact JSON object (declaration order).
+def update_resource_data_sync_request_to_json(UpdateResourceDataSyncRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SyncName\":" + ssm_json_str(v.SyncName))
+    parts.append("\"SyncType\":" + ssm_json_str(v.SyncType))
+    parts.append("\"SyncSource\":" + resource_data_sync_source_to_json(v.SyncSource))
+    return ssm_json_obj(parts)
 
 # A bound SSM client: credentials + region, threaded into every operation.
 struct SSMClient:
     core.Credentials creds
     str region
+
+    # AddTagsToResource
+    # errors: InternalServerError, InvalidResourceId, InvalidResourceType, TooManyTagsError, TooManyUpdates
+    def add_tags_to_resource(self, AddTagsToResourceRequest input) -> str:
+        auto body = add_tags_to_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "AddTagsToResource", body)
 
     # AssociateOpsItemRelatedItem
     # errors: InternalServerError, OpsItemConflictException, OpsItemInvalidParameterException, OpsItemLimitExceededException, OpsItemNotFoundException, OpsItemRelatedItemAlreadyExistsException
@@ -6015,11 +9240,77 @@ struct SSMClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "AssociateOpsItemRelatedItem", body)
 
+    # CancelCommand
+    # errors: DuplicateInstanceId, InternalServerError, InvalidCommandId, InvalidInstanceId
+    def cancel_command(self, CancelCommandRequest input) -> str:
+        auto body = cancel_command_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "CancelCommand", body)
+
     # CancelMaintenanceWindowExecution
     # errors: DoesNotExistException, InternalServerError
     def cancel_maintenance_window_execution(self, CancelMaintenanceWindowExecutionRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "CancelMaintenanceWindowExecution", body)
+
+    # CreateActivation
+    # errors: InternalServerError, InvalidParameters
+    def create_activation(self, CreateActivationRequest input) -> str:
+        auto body = create_activation_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "CreateActivation", body)
+
+    # CreateAssociation
+    # errors: AssociationAlreadyExists, AssociationLimitExceeded, InternalServerError, InvalidDocument, InvalidDocumentVersion, InvalidInstanceId, InvalidOutputLocation, InvalidParameters, InvalidSchedule, InvalidTag, InvalidTarget, InvalidTargetMaps, UnsupportedPlatformType
+    def create_association(self, CreateAssociationRequest input) -> str:
+        auto body = create_association_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "CreateAssociation", body)
+
+    # CreateAssociationBatch
+    # errors: AssociationLimitExceeded, DuplicateInstanceId, InternalServerError, InvalidDocument, InvalidDocumentVersion, InvalidInstanceId, InvalidOutputLocation, InvalidParameters, InvalidSchedule, InvalidTarget, InvalidTargetMaps, UnsupportedPlatformType
+    def create_association_batch(self, CreateAssociationBatchRequest input) -> str:
+        auto body = create_association_batch_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "CreateAssociationBatch", body)
+
+    # CreateCloudConnector
+    # errors: ConflictException, InternalServerError, ServiceQuotaExceededException
+    def create_cloud_connector(self, CreateCloudConnectorRequest input) -> str:
+        auto body = create_cloud_connector_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "CreateCloudConnector", body)
+
+    # CreateDocument
+    # errors: DocumentAlreadyExists, DocumentLimitExceeded, InternalServerError, InvalidDocumentContent, InvalidDocumentSchemaVersion, MaxDocumentSizeExceeded, NoLongerSupportedException, TooManyUpdates
+    def create_document(self, CreateDocumentRequest input) -> str:
+        auto body = create_document_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "CreateDocument", body)
+
+    # CreateMaintenanceWindow
+    # errors: IdempotentParameterMismatch, InternalServerError, ResourceLimitExceededException
+    def create_maintenance_window(self, CreateMaintenanceWindowRequest input) -> str:
+        auto body = create_maintenance_window_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "CreateMaintenanceWindow", body)
+
+    # CreateOpsItem
+    # errors: InternalServerError, OpsItemAccessDeniedException, OpsItemAlreadyExistsException, OpsItemInvalidParameterException, OpsItemLimitExceededException
+    def create_ops_item(self, CreateOpsItemRequest input) -> str:
+        auto body = create_ops_item_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "CreateOpsItem", body)
+
+    # CreateOpsMetadata
+    # errors: InternalServerError, OpsMetadataAlreadyExistsException, OpsMetadataInvalidArgumentException, OpsMetadataLimitExceededException, OpsMetadataTooManyUpdatesException
+    def create_ops_metadata(self, CreateOpsMetadataRequest input) -> str:
+        auto body = create_ops_metadata_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "CreateOpsMetadata", body)
+
+    # CreatePatchBaseline
+    # errors: IdempotentParameterMismatch, InternalServerError, ResourceLimitExceededException
+    def create_patch_baseline(self, CreatePatchBaselineRequest input) -> str:
+        auto body = create_patch_baseline_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "CreatePatchBaseline", body)
+
+    # CreateResourceDataSync
+    # errors: InternalServerError, ResourceDataSyncAlreadyExistsException, ResourceDataSyncCountExceededException, ResourceDataSyncInvalidConfigurationException
+    def create_resource_data_sync(self, CreateResourceDataSyncRequest input) -> str:
+        auto body = create_resource_data_sync_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "CreateResourceDataSync", body)
 
     # DeleteActivation
     # errors: InternalServerError, InvalidActivation, InvalidActivationId, TooManyUpdates
@@ -6075,6 +9366,12 @@ struct SSMClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DeleteParameter", body)
 
+    # DeleteParameters
+    # errors: InternalServerError
+    def delete_parameters(self, DeleteParametersRequest input) -> str:
+        auto body = delete_parameters_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DeleteParameters", body)
+
     # DeletePatchBaseline
     # errors: InternalServerError, ResourceInUseException
     def delete_patch_baseline(self, DeletePatchBaselineRequest input) -> str:
@@ -6117,11 +9414,47 @@ struct SSMClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DeregisterTaskFromMaintenanceWindow", body)
 
+    # DescribeActivations
+    # errors: InternalServerError, InvalidFilter, InvalidNextToken
+    def describe_activations(self, DescribeActivationsRequest input) -> str:
+        auto body = describe_activations_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeActivations", body)
+
     # DescribeAssociation
     # errors: AssociationDoesNotExist, InternalServerError, InvalidAssociationVersion, InvalidDocument, InvalidInstanceId
     def describe_association(self, DescribeAssociationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeAssociation", body)
+
+    # DescribeAssociationExecutionTargets
+    # errors: AssociationDoesNotExist, AssociationExecutionDoesNotExist, InternalServerError, InvalidNextToken
+    def describe_association_execution_targets(self, DescribeAssociationExecutionTargetsRequest input) -> str:
+        auto body = describe_association_execution_targets_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeAssociationExecutionTargets", body)
+
+    # DescribeAssociationExecutions
+    # errors: AssociationDoesNotExist, InternalServerError, InvalidNextToken
+    def describe_association_executions(self, DescribeAssociationExecutionsRequest input) -> str:
+        auto body = describe_association_executions_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeAssociationExecutions", body)
+
+    # DescribeAutomationExecutions
+    # errors: InternalServerError, InvalidFilterKey, InvalidFilterValue, InvalidNextToken
+    def describe_automation_executions(self, DescribeAutomationExecutionsRequest input) -> str:
+        auto body = describe_automation_executions_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeAutomationExecutions", body)
+
+    # DescribeAutomationStepExecutions
+    # errors: AutomationExecutionNotFoundException, InternalServerError, InvalidFilterKey, InvalidFilterValue, InvalidNextToken
+    def describe_automation_step_executions(self, DescribeAutomationStepExecutionsRequest input) -> str:
+        auto body = describe_automation_step_executions_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeAutomationStepExecutions", body)
+
+    # DescribeAvailablePatches
+    # errors: InternalServerError
+    def describe_available_patches(self, DescribeAvailablePatchesRequest input) -> str:
+        auto body = describe_available_patches_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeAvailablePatches", body)
 
     # DescribeDocument
     # errors: InternalServerError, InvalidDocument, InvalidDocumentVersion
@@ -6153,11 +9486,107 @@ struct SSMClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeInstanceAssociationsStatus", body)
 
+    # DescribeInstanceInformation
+    # errors: InternalServerError, InvalidFilterKey, InvalidInstanceId, InvalidInstanceInformationFilterValue, InvalidNextToken
+    def describe_instance_information(self, DescribeInstanceInformationRequest input) -> str:
+        auto body = describe_instance_information_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeInstanceInformation", body)
+
+    # DescribeInstancePatchStates
+    # errors: InternalServerError, InvalidNextToken
+    def describe_instance_patch_states(self, DescribeInstancePatchStatesRequest input) -> str:
+        auto body = describe_instance_patch_states_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeInstancePatchStates", body)
+
+    # DescribeInstancePatchStatesForPatchGroup
+    # errors: InternalServerError, InvalidFilter, InvalidNextToken
+    def describe_instance_patch_states_for_patch_group(self, DescribeInstancePatchStatesForPatchGroupRequest input) -> str:
+        auto body = describe_instance_patch_states_for_patch_group_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeInstancePatchStatesForPatchGroup", body)
+
+    # DescribeInstancePatches
+    # errors: InternalServerError, InvalidFilter, InvalidInstanceId, InvalidNextToken
+    def describe_instance_patches(self, DescribeInstancePatchesRequest input) -> str:
+        auto body = describe_instance_patches_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeInstancePatches", body)
+
+    # DescribeInstanceProperties
+    # errors: InternalServerError, InvalidActivationId, InvalidDocument, InvalidFilterKey, InvalidInstanceId, InvalidInstancePropertyFilterValue, InvalidNextToken
+    def describe_instance_properties(self, DescribeInstancePropertiesRequest input) -> str:
+        auto body = describe_instance_properties_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeInstanceProperties", body)
+
     # DescribeInventoryDeletions
     # errors: InternalServerError, InvalidDeletionIdException, InvalidNextToken
     def describe_inventory_deletions(self, DescribeInventoryDeletionsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeInventoryDeletions", body)
+
+    # DescribeMaintenanceWindowExecutionTaskInvocations
+    # errors: DoesNotExistException, InternalServerError
+    def describe_maintenance_window_execution_task_invocations(self, DescribeMaintenanceWindowExecutionTaskInvocationsRequest input) -> str:
+        auto body = describe_maintenance_window_execution_task_invocations_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeMaintenanceWindowExecutionTaskInvocations", body)
+
+    # DescribeMaintenanceWindowExecutionTasks
+    # errors: DoesNotExistException, InternalServerError
+    def describe_maintenance_window_execution_tasks(self, DescribeMaintenanceWindowExecutionTasksRequest input) -> str:
+        auto body = describe_maintenance_window_execution_tasks_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeMaintenanceWindowExecutionTasks", body)
+
+    # DescribeMaintenanceWindowExecutions
+    # errors: InternalServerError
+    def describe_maintenance_window_executions(self, DescribeMaintenanceWindowExecutionsRequest input) -> str:
+        auto body = describe_maintenance_window_executions_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeMaintenanceWindowExecutions", body)
+
+    # DescribeMaintenanceWindowSchedule
+    # errors: DoesNotExistException, InternalServerError
+    def describe_maintenance_window_schedule(self, DescribeMaintenanceWindowScheduleRequest input) -> str:
+        auto body = describe_maintenance_window_schedule_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeMaintenanceWindowSchedule", body)
+
+    # DescribeMaintenanceWindowTargets
+    # errors: DoesNotExistException, InternalServerError
+    def describe_maintenance_window_targets(self, DescribeMaintenanceWindowTargetsRequest input) -> str:
+        auto body = describe_maintenance_window_targets_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeMaintenanceWindowTargets", body)
+
+    # DescribeMaintenanceWindowTasks
+    # errors: DoesNotExistException, InternalServerError
+    def describe_maintenance_window_tasks(self, DescribeMaintenanceWindowTasksRequest input) -> str:
+        auto body = describe_maintenance_window_tasks_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeMaintenanceWindowTasks", body)
+
+    # DescribeMaintenanceWindows
+    # errors: InternalServerError
+    def describe_maintenance_windows(self, DescribeMaintenanceWindowsRequest input) -> str:
+        auto body = describe_maintenance_windows_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeMaintenanceWindows", body)
+
+    # DescribeMaintenanceWindowsForTarget
+    # errors: InternalServerError
+    def describe_maintenance_windows_for_target(self, DescribeMaintenanceWindowsForTargetRequest input) -> str:
+        auto body = describe_maintenance_windows_for_target_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeMaintenanceWindowsForTarget", body)
+
+    # DescribeOpsItems
+    # errors: InternalServerError
+    def describe_ops_items(self, DescribeOpsItemsRequest input) -> str:
+        auto body = describe_ops_items_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeOpsItems", body)
+
+    # DescribeParameters
+    # errors: InternalServerError, InvalidFilterKey, InvalidFilterOption, InvalidFilterValue, InvalidNextToken
+    def describe_parameters(self, DescribeParametersRequest input) -> str:
+        auto body = describe_parameters_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeParameters", body)
+
+    # DescribePatchBaselines
+    # errors: InternalServerError
+    def describe_patch_baselines(self, DescribePatchBaselinesRequest input) -> str:
+        auto body = describe_patch_baselines_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribePatchBaselines", body)
 
     # DescribePatchGroupState
     # errors: InternalServerError, InvalidNextToken
@@ -6165,11 +9594,23 @@ struct SSMClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribePatchGroupState", body)
 
+    # DescribePatchGroups
+    # errors: InternalServerError
+    def describe_patch_groups(self, DescribePatchGroupsRequest input) -> str:
+        auto body = describe_patch_groups_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribePatchGroups", body)
+
     # DescribePatchProperties
     # errors: InternalServerError
     def describe_patch_properties(self, DescribePatchPropertiesRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribePatchProperties", body)
+
+    # DescribeSessions
+    # errors: InternalServerError, InvalidFilterKey, InvalidNextToken
+    def describe_sessions(self, DescribeSessionsRequest input) -> str:
+        auto body = describe_sessions_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeSessions", body)
 
     # DisassociateOpsItemRelatedItem
     # errors: InternalServerError, OpsItemConflictException, OpsItemInvalidParameterException, OpsItemNotFoundException, OpsItemRelatedItemAssociationNotFoundException
@@ -6188,6 +9629,12 @@ struct SSMClient:
     def get_automation_execution(self, GetAutomationExecutionRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "GetAutomationExecution", body)
+
+    # GetCalendarState
+    # errors: InternalServerError, InvalidDocument, InvalidDocumentType, UnsupportedCalendarException
+    def get_calendar_state(self, GetCalendarStateRequest input) -> str:
+        auto body = get_calendar_state_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "GetCalendarState", body)
 
     # GetCloudConnector
     # errors: InternalServerError, ResourceNotFoundException
@@ -6213,6 +9660,12 @@ struct SSMClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "GetDefaultPatchBaseline", body)
 
+    # GetDeployablePatchSnapshotForInstance
+    # errors: InternalServerError, UnsupportedFeatureRequiredException, UnsupportedOperatingSystem
+    def get_deployable_patch_snapshot_for_instance(self, GetDeployablePatchSnapshotForInstanceRequest input) -> str:
+        auto body = get_deployable_patch_snapshot_for_instance_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "GetDeployablePatchSnapshotForInstance", body)
+
     # GetDocument
     # errors: InternalServerError, InvalidDocument, InvalidDocumentVersion
     def get_document(self, GetDocumentRequest input) -> str:
@@ -6224,6 +9677,12 @@ struct SSMClient:
     def get_execution_preview(self, GetExecutionPreviewRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "GetExecutionPreview", body)
+
+    # GetInventory
+    # errors: InternalServerError, InvalidAggregatorException, InvalidFilter, InvalidInventoryGroupException, InvalidNextToken, InvalidResultAttributeException, InvalidTypeNameException
+    def get_inventory(self, GetInventoryRequest input) -> str:
+        auto body = get_inventory_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "GetInventory", body)
 
     # GetInventorySchema
     # errors: InternalServerError, InvalidNextToken, InvalidTypeNameException
@@ -6273,6 +9732,12 @@ struct SSMClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "GetOpsMetadata", body)
 
+    # GetOpsSummary
+    # errors: InternalServerError, InvalidAggregatorException, InvalidFilter, InvalidNextToken, InvalidTypeNameException, ResourceDataSyncNotFoundException
+    def get_ops_summary(self, GetOpsSummaryRequest input) -> str:
+        auto body = get_ops_summary_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "GetOpsSummary", body)
+
     # GetParameter
     # errors: InternalServerError, InvalidKeyId, ParameterNotFound, ParameterVersionNotFound
     def get_parameter(self, GetParameterRequest input) -> str:
@@ -6284,6 +9749,18 @@ struct SSMClient:
     def get_parameter_history(self, GetParameterHistoryRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "GetParameterHistory", body)
+
+    # GetParameters
+    # errors: InternalServerError, InvalidKeyId
+    def get_parameters(self, GetParametersRequest input) -> str:
+        auto body = get_parameters_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "GetParameters", body)
+
+    # GetParametersByPath
+    # errors: InternalServerError, InvalidFilterKey, InvalidFilterOption, InvalidFilterValue, InvalidKeyId, InvalidNextToken
+    def get_parameters_by_path(self, GetParametersByPathRequest input) -> str:
+        auto body = get_parameters_by_path_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "GetParametersByPath", body)
 
     # GetPatchBaseline
     # errors: DoesNotExistException, InternalServerError, InvalidResourceId
@@ -6309,11 +9786,53 @@ struct SSMClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "GetServiceSetting", body)
 
+    # LabelParameterVersion
+    # errors: InternalServerError, ParameterNotFound, ParameterVersionLabelLimitExceeded, ParameterVersionNotFound, TooManyUpdates
+    def label_parameter_version(self, LabelParameterVersionRequest input) -> str:
+        auto body = label_parameter_version_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "LabelParameterVersion", body)
+
     # ListAssociationVersions
     # errors: AssociationDoesNotExist, InternalServerError, InvalidNextToken
     def list_association_versions(self, ListAssociationVersionsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListAssociationVersions", body)
+
+    # ListAssociations
+    # errors: InternalServerError, InvalidNextToken
+    def list_associations(self, ListAssociationsRequest input) -> str:
+        auto body = list_associations_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListAssociations", body)
+
+    # ListCloudConnectors
+    # errors: InternalServerError
+    def list_cloud_connectors(self, ListCloudConnectorsRequest input) -> str:
+        auto body = list_cloud_connectors_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListCloudConnectors", body)
+
+    # ListCommandInvocations
+    # errors: InternalServerError, InvalidCommandId, InvalidFilterKey, InvalidInstanceId, InvalidNextToken
+    def list_command_invocations(self, ListCommandInvocationsRequest input) -> str:
+        auto body = list_command_invocations_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListCommandInvocations", body)
+
+    # ListCommands
+    # errors: InternalServerError, InvalidCommandId, InvalidFilterKey, InvalidInstanceId, InvalidNextToken
+    def list_commands(self, ListCommandsRequest input) -> str:
+        auto body = list_commands_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListCommands", body)
+
+    # ListComplianceItems
+    # errors: InternalServerError, InvalidFilter, InvalidNextToken, InvalidResourceId, InvalidResourceType
+    def list_compliance_items(self, ListComplianceItemsRequest input) -> str:
+        auto body = list_compliance_items_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListComplianceItems", body)
+
+    # ListComplianceSummaries
+    # errors: InternalServerError, InvalidFilter, InvalidNextToken
+    def list_compliance_summaries(self, ListComplianceSummariesRequest input) -> str:
+        auto body = list_compliance_summaries_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListComplianceSummaries", body)
 
     # ListDocumentMetadataHistory
     # errors: InternalServerError, InvalidDocument, InvalidDocumentVersion, InvalidNextToken
@@ -6327,6 +9846,54 @@ struct SSMClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListDocumentVersions", body)
 
+    # ListDocuments
+    # errors: InternalServerError, InvalidFilterKey, InvalidNextToken
+    def list_documents(self, ListDocumentsRequest input) -> str:
+        auto body = list_documents_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListDocuments", body)
+
+    # ListInventoryEntries
+    # errors: InternalServerError, InvalidFilter, InvalidInstanceId, InvalidNextToken, InvalidTypeNameException
+    def list_inventory_entries(self, ListInventoryEntriesRequest input) -> str:
+        auto body = list_inventory_entries_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListInventoryEntries", body)
+
+    # ListNodes
+    # errors: InternalServerError, InvalidFilter, InvalidNextToken, ResourceDataSyncNotFoundException, UnsupportedOperationException
+    def list_nodes(self, ListNodesRequest input) -> str:
+        auto body = list_nodes_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListNodes", body)
+
+    # ListNodesSummary
+    # errors: InternalServerError, InvalidAggregatorException, InvalidFilter, InvalidNextToken, ResourceDataSyncNotFoundException, UnsupportedOperationException
+    def list_nodes_summary(self, ListNodesSummaryRequest input) -> str:
+        auto body = list_nodes_summary_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListNodesSummary", body)
+
+    # ListOpsItemEvents
+    # errors: InternalServerError, OpsItemInvalidParameterException, OpsItemLimitExceededException, OpsItemNotFoundException
+    def list_ops_item_events(self, ListOpsItemEventsRequest input) -> str:
+        auto body = list_ops_item_events_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListOpsItemEvents", body)
+
+    # ListOpsItemRelatedItems
+    # errors: InternalServerError, OpsItemInvalidParameterException
+    def list_ops_item_related_items(self, ListOpsItemRelatedItemsRequest input) -> str:
+        auto body = list_ops_item_related_items_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListOpsItemRelatedItems", body)
+
+    # ListOpsMetadata
+    # errors: InternalServerError, OpsMetadataInvalidArgumentException
+    def list_ops_metadata(self, ListOpsMetadataRequest input) -> str:
+        auto body = list_ops_metadata_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListOpsMetadata", body)
+
+    # ListResourceComplianceSummaries
+    # errors: InternalServerError, InvalidFilter, InvalidNextToken
+    def list_resource_compliance_summaries(self, ListResourceComplianceSummariesRequest input) -> str:
+        auto body = list_resource_compliance_summaries_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListResourceComplianceSummaries", body)
+
     # ListResourceDataSync
     # errors: InternalServerError, InvalidNextToken, ResourceDataSyncInvalidConfigurationException
     def list_resource_data_sync(self, ListResourceDataSyncRequest input) -> str:
@@ -6338,6 +9905,30 @@ struct SSMClient:
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListTagsForResource", body)
+
+    # ModifyDocumentPermission
+    # errors: DocumentLimitExceeded, DocumentPermissionLimit, InternalServerError, InvalidDocument, InvalidPermissionType
+    def modify_document_permission(self, ModifyDocumentPermissionRequest input) -> str:
+        auto body = modify_document_permission_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ModifyDocumentPermission", body)
+
+    # PutComplianceItems
+    # errors: ComplianceTypeCountLimitExceededException, InternalServerError, InvalidItemContentException, InvalidResourceId, InvalidResourceType, ItemSizeLimitExceededException, TotalSizeLimitExceededException
+    def put_compliance_items(self, PutComplianceItemsRequest input) -> str:
+        auto body = put_compliance_items_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "PutComplianceItems", body)
+
+    # PutInventory
+    # errors: CustomSchemaCountLimitExceededException, InternalServerError, InvalidInstanceId, InvalidInventoryItemContextException, InvalidItemContentException, InvalidTypeNameException, ItemContentMismatchException, ItemSizeLimitExceededException, SubTypeCountLimitExceededException, TotalSizeLimitExceededException, UnsupportedInventoryItemContextException, UnsupportedInventorySchemaVersionException
+    def put_inventory(self, PutInventoryRequest input) -> str:
+        auto body = put_inventory_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "PutInventory", body)
+
+    # PutParameter
+    # errors: HierarchyLevelLimitExceededException, HierarchyTypeMismatchException, IncompatiblePolicyException, InternalServerError, InvalidAllowedPatternException, InvalidKeyId, InvalidPolicyAttributeException, InvalidPolicyTypeException, ParameterAlreadyExists, ParameterLimitExceeded, ParameterMaxVersionLimitExceeded, ParameterPatternMismatchException, PoliciesLimitExceededException, TooManyUpdates, UnsupportedParameterType
+    def put_parameter(self, PutParameterRequest input) -> str:
+        auto body = put_parameter_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "PutParameter", body)
 
     # PutResourcePolicy
     # errors: InternalServerError, MalformedResourcePolicyDocumentException, ResourceNotFoundException, ResourcePolicyConflictException, ResourcePolicyInvalidParameterException, ResourcePolicyLimitExceededException, ResourcePolicyNotFoundException
@@ -6357,6 +9948,24 @@ struct SSMClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "RegisterPatchBaselineForPatchGroup", body)
 
+    # RegisterTargetWithMaintenanceWindow
+    # errors: DoesNotExistException, IdempotentParameterMismatch, InternalServerError, ResourceLimitExceededException
+    def register_target_with_maintenance_window(self, RegisterTargetWithMaintenanceWindowRequest input) -> str:
+        auto body = register_target_with_maintenance_window_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "RegisterTargetWithMaintenanceWindow", body)
+
+    # RegisterTaskWithMaintenanceWindow
+    # errors: DoesNotExistException, FeatureNotAvailableException, IdempotentParameterMismatch, InternalServerError, ResourceLimitExceededException
+    def register_task_with_maintenance_window(self, RegisterTaskWithMaintenanceWindowRequest input) -> str:
+        auto body = register_task_with_maintenance_window_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "RegisterTaskWithMaintenanceWindow", body)
+
+    # RemoveTagsFromResource
+    # errors: InternalServerError, InvalidResourceId, InvalidResourceType, TooManyUpdates
+    def remove_tags_from_resource(self, RemoveTagsFromResourceRequest input) -> str:
+        auto body = remove_tags_from_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "RemoveTagsFromResource", body)
+
     # ResetServiceSetting
     # errors: InternalServerError, ServiceSettingNotFound, TooManyUpdates
     def reset_service_setting(self, ResetServiceSettingRequest input) -> str:
@@ -6368,6 +9977,54 @@ struct SSMClient:
     def resume_session(self, ResumeSessionRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ResumeSession", body)
+
+    # SendAutomationSignal
+    # errors: AutomationExecutionNotFoundException, AutomationStepNotFoundException, InternalServerError, InvalidAutomationSignalException
+    def send_automation_signal(self, SendAutomationSignalRequest input) -> str:
+        auto body = send_automation_signal_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "SendAutomationSignal", body)
+
+    # SendCommand
+    # errors: DuplicateInstanceId, InternalServerError, InvalidDocument, InvalidDocumentVersion, InvalidInstanceId, InvalidNotificationConfig, InvalidOutputFolder, InvalidParameters, InvalidRole, MaxDocumentSizeExceeded, UnsupportedPlatformType
+    def send_command(self, SendCommandRequest input) -> str:
+        auto body = send_command_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "SendCommand", body)
+
+    # StartAccessRequest
+    # errors: AccessDeniedException, InternalServerError, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_access_request(self, StartAccessRequestRequest input) -> str:
+        auto body = start_access_request_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "StartAccessRequest", body)
+
+    # StartAssociationsOnce
+    # errors: AssociationDoesNotExist, InvalidAssociation
+    def start_associations_once(self, StartAssociationsOnceRequest input) -> str:
+        auto body = start_associations_once_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "StartAssociationsOnce", body)
+
+    # StartAutomationExecution
+    # errors: AutomationDefinitionNotFoundException, AutomationDefinitionVersionNotFoundException, AutomationExecutionLimitExceededException, IdempotentParameterMismatch, InternalServerError, InvalidAutomationExecutionParametersException, InvalidTarget
+    def start_automation_execution(self, StartAutomationExecutionRequest input) -> str:
+        auto body = start_automation_execution_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "StartAutomationExecution", body)
+
+    # StartChangeRequestExecution
+    # errors: AutomationDefinitionNotApprovedException, AutomationDefinitionNotFoundException, AutomationDefinitionVersionNotFoundException, AutomationExecutionLimitExceededException, IdempotentParameterMismatch, InternalServerError, InvalidAutomationExecutionParametersException, NoLongerSupportedException
+    def start_change_request_execution(self, StartChangeRequestExecutionRequest input) -> str:
+        auto body = start_change_request_execution_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "StartChangeRequestExecution", body)
+
+    # StartExecutionPreview
+    # errors: InternalServerError, ValidationException
+    def start_execution_preview(self, StartExecutionPreviewRequest input) -> str:
+        auto body = start_execution_preview_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "StartExecutionPreview", body)
+
+    # StartSession
+    # errors: InternalServerError, InvalidDocument, TargetNotConnected
+    def start_session(self, StartSessionRequest input) -> str:
+        auto body = start_session_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "StartSession", body)
 
     # StopAutomationExecution
     # errors: AutomationExecutionNotFoundException, InternalServerError, InvalidAutomationStatusUpdateException
@@ -6381,11 +10038,35 @@ struct SSMClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "TerminateSession", body)
 
+    # UnlabelParameterVersion
+    # errors: InternalServerError, ParameterNotFound, ParameterVersionNotFound, TooManyUpdates
+    def unlabel_parameter_version(self, UnlabelParameterVersionRequest input) -> str:
+        auto body = unlabel_parameter_version_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "UnlabelParameterVersion", body)
+
+    # UpdateAssociation
+    # errors: AssociationDoesNotExist, AssociationVersionLimitExceeded, InternalServerError, InvalidAssociationVersion, InvalidDocument, InvalidDocumentVersion, InvalidOutputLocation, InvalidParameters, InvalidSchedule, InvalidTarget, InvalidTargetMaps, InvalidUpdate, TooManyUpdates
+    def update_association(self, UpdateAssociationRequest input) -> str:
+        auto body = update_association_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "UpdateAssociation", body)
+
     # UpdateAssociationStatus
     # errors: AssociationDoesNotExist, InternalServerError, InvalidDocument, InvalidInstanceId, StatusUnchanged, TooManyUpdates
     def update_association_status(self, UpdateAssociationStatusRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "UpdateAssociationStatus", body)
+
+    # UpdateCloudConnector
+    # errors: ConflictException, InternalServerError, ResourceNotFoundException
+    def update_cloud_connector(self, UpdateCloudConnectorRequest input) -> str:
+        auto body = update_cloud_connector_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "UpdateCloudConnector", body)
+
+    # UpdateDocument
+    # errors: DocumentVersionLimitExceeded, DuplicateDocumentContent, DuplicateDocumentVersionName, InternalServerError, InvalidDocument, InvalidDocumentContent, InvalidDocumentOperation, InvalidDocumentSchemaVersion, InvalidDocumentVersion, MaxDocumentSizeExceeded
+    def update_document(self, UpdateDocumentRequest input) -> str:
+        auto body = update_document_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "UpdateDocument", body)
 
     # UpdateDocumentDefaultVersion
     # errors: InternalServerError, InvalidDocument, InvalidDocumentSchemaVersion, InvalidDocumentVersion
@@ -6393,17 +10074,59 @@ struct SSMClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "UpdateDocumentDefaultVersion", body)
 
+    # UpdateDocumentMetadata
+    # errors: InternalServerError, InvalidDocument, InvalidDocumentOperation, InvalidDocumentVersion, TooManyUpdates
+    def update_document_metadata(self, UpdateDocumentMetadataRequest input) -> str:
+        auto body = update_document_metadata_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "UpdateDocumentMetadata", body)
+
     # UpdateMaintenanceWindow
     # errors: DoesNotExistException, InternalServerError
     def update_maintenance_window(self, UpdateMaintenanceWindowRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "UpdateMaintenanceWindow", body)
 
+    # UpdateMaintenanceWindowTarget
+    # errors: DoesNotExistException, InternalServerError
+    def update_maintenance_window_target(self, UpdateMaintenanceWindowTargetRequest input) -> str:
+        auto body = update_maintenance_window_target_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "UpdateMaintenanceWindowTarget", body)
+
+    # UpdateMaintenanceWindowTask
+    # errors: DoesNotExistException, InternalServerError
+    def update_maintenance_window_task(self, UpdateMaintenanceWindowTaskRequest input) -> str:
+        auto body = update_maintenance_window_task_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "UpdateMaintenanceWindowTask", body)
+
     # UpdateManagedInstanceRole
     # errors: InternalServerError, InvalidInstanceId
     def update_managed_instance_role(self, UpdateManagedInstanceRoleRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "UpdateManagedInstanceRole", body)
+
+    # UpdateOpsItem
+    # errors: InternalServerError, OpsItemAccessDeniedException, OpsItemAlreadyExistsException, OpsItemConflictException, OpsItemInvalidParameterException, OpsItemLimitExceededException, OpsItemNotFoundException
+    def update_ops_item(self, UpdateOpsItemRequest input) -> str:
+        auto body = update_ops_item_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "UpdateOpsItem", body)
+
+    # UpdateOpsMetadata
+    # errors: InternalServerError, OpsMetadataInvalidArgumentException, OpsMetadataKeyLimitExceededException, OpsMetadataNotFoundException, OpsMetadataTooManyUpdatesException
+    def update_ops_metadata(self, UpdateOpsMetadataRequest input) -> str:
+        auto body = update_ops_metadata_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "UpdateOpsMetadata", body)
+
+    # UpdatePatchBaseline
+    # errors: DoesNotExistException, InternalServerError
+    def update_patch_baseline(self, UpdatePatchBaselineRequest input) -> str:
+        auto body = update_patch_baseline_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "UpdatePatchBaseline", body)
+
+    # UpdateResourceDataSync
+    # errors: InternalServerError, ResourceDataSyncConflictException, ResourceDataSyncInvalidConfigurationException, ResourceDataSyncNotFoundException
+    def update_resource_data_sync(self, UpdateResourceDataSyncRequest input) -> str:
+        auto body = update_resource_data_sync_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "UpdateResourceDataSync", body)
 
     # UpdateServiceSetting
     # errors: InternalServerError, ServiceSettingNotFound, TooManyUpdates
@@ -6416,6 +10139,90 @@ struct SSMClient:
     def validate_cloud_connector(self, ValidateCloudConnectorRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ValidateCloudConnector", body)
+
+    # Paginator for DescribeActivations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ActivationList).
+    def paginate_describe_activations(self, DescribeActivationsRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = describe_activations_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeActivations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeAssociationExecutionTargets — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: AssociationExecutionTargets).
+    def paginate_describe_association_execution_targets(self, DescribeAssociationExecutionTargetsRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = describe_association_execution_targets_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeAssociationExecutionTargets", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeAssociationExecutions — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: AssociationExecutions).
+    def paginate_describe_association_executions(self, DescribeAssociationExecutionsRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = describe_association_executions_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeAssociationExecutions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeAutomationExecutions — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: AutomationExecutionMetadataList).
+    def paginate_describe_automation_executions(self, DescribeAutomationExecutionsRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = describe_automation_executions_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeAutomationExecutions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeAutomationStepExecutions — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: StepExecutions).
+    def paginate_describe_automation_step_executions(self, DescribeAutomationStepExecutionsRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = describe_automation_step_executions_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeAutomationStepExecutions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeAvailablePatches — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Patches).
+    def paginate_describe_available_patches(self, DescribeAvailablePatchesRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = describe_available_patches_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeAvailablePatches", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
     # Paginator for DescribeEffectiveInstanceAssociations — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: Associations).
@@ -6459,6 +10266,76 @@ struct SSMClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for DescribeInstanceInformation — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: InstanceInformationList).
+    def paginate_describe_instance_information(self, DescribeInstanceInformationRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = describe_instance_information_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeInstanceInformation", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeInstancePatchStates — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: InstancePatchStates).
+    def paginate_describe_instance_patch_states(self, DescribeInstancePatchStatesRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = describe_instance_patch_states_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeInstancePatchStates", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeInstancePatchStatesForPatchGroup — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: InstancePatchStates).
+    def paginate_describe_instance_patch_states_for_patch_group(self, DescribeInstancePatchStatesForPatchGroupRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = describe_instance_patch_states_for_patch_group_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeInstancePatchStatesForPatchGroup", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeInstancePatches — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Patches).
+    def paginate_describe_instance_patches(self, DescribeInstancePatchesRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = describe_instance_patches_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeInstancePatches", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeInstanceProperties — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: InstanceProperties).
+    def paginate_describe_instance_properties(self, DescribeInstancePropertiesRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = describe_instance_properties_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeInstanceProperties", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for DescribeInventoryDeletions — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: InventoryDeletions).
     def paginate_describe_inventory_deletions(self, DescribeInventoryDeletionsRequest input):
@@ -6466,6 +10343,174 @@ struct SSMClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeInventoryDeletions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeMaintenanceWindowExecutionTaskInvocations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: WindowExecutionTaskInvocationIdentities).
+    def paginate_describe_maintenance_window_execution_task_invocations(self, DescribeMaintenanceWindowExecutionTaskInvocationsRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = describe_maintenance_window_execution_task_invocations_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeMaintenanceWindowExecutionTaskInvocations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeMaintenanceWindowExecutionTasks — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: WindowExecutionTaskIdentities).
+    def paginate_describe_maintenance_window_execution_tasks(self, DescribeMaintenanceWindowExecutionTasksRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = describe_maintenance_window_execution_tasks_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeMaintenanceWindowExecutionTasks", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeMaintenanceWindowExecutions — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: WindowExecutions).
+    def paginate_describe_maintenance_window_executions(self, DescribeMaintenanceWindowExecutionsRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = describe_maintenance_window_executions_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeMaintenanceWindowExecutions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeMaintenanceWindowSchedule — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ScheduledWindowExecutions).
+    def paginate_describe_maintenance_window_schedule(self, DescribeMaintenanceWindowScheduleRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = describe_maintenance_window_schedule_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeMaintenanceWindowSchedule", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeMaintenanceWindowTargets — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Targets).
+    def paginate_describe_maintenance_window_targets(self, DescribeMaintenanceWindowTargetsRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = describe_maintenance_window_targets_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeMaintenanceWindowTargets", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeMaintenanceWindowTasks — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Tasks).
+    def paginate_describe_maintenance_window_tasks(self, DescribeMaintenanceWindowTasksRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = describe_maintenance_window_tasks_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeMaintenanceWindowTasks", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeMaintenanceWindows — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: WindowIdentities).
+    def paginate_describe_maintenance_windows(self, DescribeMaintenanceWindowsRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = describe_maintenance_windows_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeMaintenanceWindows", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeMaintenanceWindowsForTarget — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: WindowIdentities).
+    def paginate_describe_maintenance_windows_for_target(self, DescribeMaintenanceWindowsForTargetRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = describe_maintenance_windows_for_target_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeMaintenanceWindowsForTarget", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeOpsItems — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: OpsItemSummaries).
+    def paginate_describe_ops_items(self, DescribeOpsItemsRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = describe_ops_items_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeOpsItems", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeParameters — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Parameters).
+    def paginate_describe_parameters(self, DescribeParametersRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = describe_parameters_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeParameters", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribePatchBaselines — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: BaselineIdentities).
+    def paginate_describe_patch_baselines(self, DescribePatchBaselinesRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = describe_patch_baselines_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribePatchBaselines", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribePatchGroups — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Mappings).
+    def paginate_describe_patch_groups(self, DescribePatchGroupsRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = describe_patch_groups_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribePatchGroups", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")
@@ -6487,6 +10532,34 @@ struct SSMClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for DescribeSessions — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Sessions).
+    def paginate_describe_sessions(self, DescribeSessionsRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = describe_sessions_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "DescribeSessions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetInventory — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Entities).
+    def paginate_get_inventory(self, GetInventoryRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = get_inventory_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "GetInventory", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for GetInventorySchema — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: Schemas).
     def paginate_get_inventory_schema(self, GetInventorySchemaRequest input):
@@ -6501,6 +10574,20 @@ struct SSMClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for GetOpsSummary — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Entities).
+    def paginate_get_ops_summary(self, GetOpsSummaryRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = get_ops_summary_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "GetOpsSummary", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for GetParameterHistory — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: Parameters).
     def paginate_get_parameter_history(self, GetParameterHistoryRequest input):
@@ -6508,6 +10595,20 @@ struct SSMClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "GetParameterHistory", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetParametersByPath — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Parameters).
+    def paginate_get_parameters_by_path(self, GetParametersByPathRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = get_parameters_by_path_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "GetParametersByPath", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")
@@ -6543,6 +10644,90 @@ struct SSMClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListAssociations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Associations).
+    def paginate_list_associations(self, ListAssociationsRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = list_associations_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListAssociations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListCloudConnectors — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: CloudConnectors).
+    def paginate_list_cloud_connectors(self, ListCloudConnectorsRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = list_cloud_connectors_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListCloudConnectors", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListCommandInvocations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: CommandInvocations).
+    def paginate_list_command_invocations(self, ListCommandInvocationsRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = list_command_invocations_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListCommandInvocations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListCommands — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Commands).
+    def paginate_list_commands(self, ListCommandsRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = list_commands_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListCommands", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListComplianceItems — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ComplianceItems).
+    def paginate_list_compliance_items(self, ListComplianceItemsRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = list_compliance_items_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListComplianceItems", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListComplianceSummaries — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ComplianceSummaryItems).
+    def paginate_list_compliance_summaries(self, ListComplianceSummariesRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = list_compliance_summaries_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListComplianceSummaries", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListDocumentVersions — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: DocumentVersions).
     def paginate_list_document_versions(self, ListDocumentVersionsRequest input):
@@ -6550,6 +10735,104 @@ struct SSMClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListDocumentVersions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListDocuments — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: DocumentIdentifiers).
+    def paginate_list_documents(self, ListDocumentsRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = list_documents_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListDocuments", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListNodes — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Nodes).
+    def paginate_list_nodes(self, ListNodesRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = list_nodes_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListNodes", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListNodesSummary — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Summary).
+    def paginate_list_nodes_summary(self, ListNodesSummaryRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = list_nodes_summary_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListNodesSummary", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListOpsItemEvents — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Summaries).
+    def paginate_list_ops_item_events(self, ListOpsItemEventsRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = list_ops_item_events_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListOpsItemEvents", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListOpsItemRelatedItems — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Summaries).
+    def paginate_list_ops_item_related_items(self, ListOpsItemRelatedItemsRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = list_ops_item_related_items_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListOpsItemRelatedItems", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListOpsMetadata — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: OpsMetadataList).
+    def paginate_list_ops_metadata(self, ListOpsMetadataRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = list_ops_metadata_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListOpsMetadata", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListResourceComplianceSummaries — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ResourceComplianceSummaryItems).
+    def paginate_list_resource_compliance_summaries(self, ListResourceComplianceSummariesRequest input):
+        auto host = endpoints.regional_host(ssm_protocol().service, self.region)
+        while True:
+            auto body = list_resource_compliance_summaries_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(ssm_protocol(), self.creds, self.region, "ListResourceComplianceSummaries", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 63 operations — 51 with a generated method,
-#   12 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 63 operations — 59 with a generated method,
+#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   290 structs (201 @derive(Json)), 34 enums, 10 error variants.
-#   10 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   11 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The DevOps_Agent rest-json protocol: SigV4 service "aidevops" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -368,8 +369,9 @@ struct AWSConfiguration:
 struct AccessDeniedException:
     str message
 
-# no @derive(Json): member(s) mcpserverdatadog: RegisteredMCPServerDetails, mcpserver: RegisteredMCPServerDetails, mcpserversplunk: RegisteredMCPServerDetails, azureidentity: RegisteredAzureIdentityDetails, pagerduty: RegisteredPagerDutyDetails, mcpserversigv4: RegisteredMCPServerSigV4Details not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mcpserverdatadog: RegisteredMCPServerDetails, mcpserver: RegisteredMCPServerDetails, mcpserversplunk: RegisteredMCPServerDetails, azureidentity: RegisteredAzureIdentityDetails, pagerduty: RegisteredPagerDutyDetails, mcpserversigv4: RegisteredMCPServerSigV4Details not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdditionalServiceDetails:
     Optional[RegisteredGithubServiceDetails] github
     Optional[RegisteredSlackServiceDetails] slack
@@ -391,8 +393,9 @@ struct AdditionalServiceDetails:
 struct AdditionalServiceRegistrationStep:
     Optional[OAuthAdditionalStepDetails] oauth
 
-# no @derive(Json): member(s) preferences: dict[str, bool] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) preferences: dict[str, bool] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentSpace:
     str name
     Optional[str] description
@@ -411,8 +414,9 @@ struct ApprovalAction:
     Optional[str] buttonText
     Optional[ApprovalActionType] action
 
-# no @derive(Json): member(s) argumentPins: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) argumentPins: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApprovalPattern:
     str tool
     dict[str, str] argumentPins
@@ -493,14 +497,16 @@ struct AssociateServiceInput:
     ServiceConfiguration configuration
     Optional[dict[CapabilityType, CapabilityConfiguration]] capabilities
 
-# no @derive(Json): member(s) association: Association not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) association: Association not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateServiceOutput:
     Association association
     Optional[GenericWebhook] webhook
 
-# no @derive(Json): member(s) configuration: ServiceConfiguration, capabilities: dict[CapabilityType, CapabilityConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: ServiceConfiguration, capabilities: dict[CapabilityType, CapabilityConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Association:
     str agentSpaceId
     DateTime createdAt
@@ -521,8 +527,9 @@ struct AzureDevOpsConfiguration:
     str projectId
     str projectName
 
-# no @derive(Json): member(s) triggerFilterGroups: list[TriggerFilterGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) triggerFilterGroups: list[TriggerFilterGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CapabilityConfiguration:
     Optional[bool] enabled
     Optional[list[TriggerFilterGroup]] triggerFilterGroups
@@ -553,8 +560,9 @@ struct CreateAgentSpaceInput:
     Optional[dict[str, str]] tags
     Optional[dict[str, bool]] preferences
 
-# no @derive(Json): member(s) agentSpace: AgentSpace, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentSpace: AgentSpace, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAgentSpaceOutput:
     AgentSpace agentSpace
     Optional[dict[str, str]] tags
@@ -621,8 +629,9 @@ struct CreatePrivateConnectionInput:
     PrivateConnectionMode mode
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePrivateConnectionOutput:
     str name
     PrivateConnectionType type
@@ -739,8 +748,9 @@ struct DeregisterServiceOutput:
 struct DescribePrivateConnectionInput:
     str name
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePrivateConnectionOutput:
     str name
     PrivateConnectionType type
@@ -777,27 +787,31 @@ struct Document:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) resources: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resources: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DynatraceConfiguration:
     str envId
     Optional[list[str]] resources
 
-# no @derive(Json): member(s) exchangeParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exchangeParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DynatraceOAuthClientCredentialsConfig:
     Optional[str] clientName
     str clientId
     Optional[dict[str, str]] exchangeParameters
     str clientSecret
 
-# no @derive(Json): member(s) oAuthClientCredentials: DynatraceOAuthClientCredentialsConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oAuthClientCredentials: DynatraceOAuthClientCredentialsConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DynatraceServiceAuthorizationConfig:
     Optional[DynatraceOAuthClientCredentialsConfig] oAuthClientCredentials
 
-# no @derive(Json): member(s) authorizationConfig: DynatraceServiceAuthorizationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizationConfig: DynatraceServiceAuthorizationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DynatraceServiceDetails:
     str accountUrn
     Optional[DynatraceServiceAuthorizationConfig] authorizationConfig
@@ -876,8 +890,9 @@ struct GetAgentSpaceInput:
     # wire string of the IncludedData enum (querystring binding)
     Optional[str] includedData
 
-# no @derive(Json): member(s) agentSpace: AgentSpace, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentSpace: AgentSpace, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAgentSpaceOutput:
     AgentSpace agentSpace
     Optional[dict[str, str]] tags
@@ -923,8 +938,9 @@ struct GetAssociationInput:
     str agentSpaceId
     str associationId
 
-# no @derive(Json): member(s) association: Association not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) association: Association not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAssociationOutput:
     Association association
 
@@ -966,8 +982,9 @@ struct GetRecommendationResponse:
 struct GetServiceInput:
     str serviceId
 
-# no @derive(Json): member(s) service: RegisteredService, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) service: RegisteredService, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetServiceOutput:
     RegisteredService service
     Optional[dict[str, str]] tags
@@ -1040,8 +1057,9 @@ struct GoalSchedule:
 struct GoalScheduleInput:
     SchedulerState state
 
-# no @derive(Json): member(s) authorizationConfig: MCPServerAuthorizationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizationConfig: MCPServerAuthorizationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GrafanaServiceDetails:
     str name
     str endpoint
@@ -1108,8 +1126,9 @@ struct ListAgentSpacesInput:
     # wire string of the IncludedData enum (querystring binding)
     Optional[str] includedData
 
-# no @derive(Json): member(s) agentSpaces: list[AgentSpace] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentSpaces: list[AgentSpace] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAgentSpacesOutput:
     Optional[str] nextToken
     list[AgentSpace] agentSpaces
@@ -1123,8 +1142,9 @@ struct ListAssetFilesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[AssetFileSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[AssetFileSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssetFilesResponse:
     list[AssetFileSummary] items
     Optional[str] nextToken
@@ -1135,8 +1155,9 @@ struct ListAssetTypesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[AssetTypeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[AssetTypeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssetTypesResponse:
     list[AssetTypeSummary] items
     Optional[str] nextToken
@@ -1149,8 +1170,9 @@ struct ListAssetVersionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[AssetVersionMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[AssetVersionMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssetVersionsResponse:
     list[AssetVersionMetadata] items
     Optional[str] nextToken
@@ -1165,8 +1187,9 @@ struct ListAssetsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[Asset] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[Asset] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssetsResponse:
     list[Asset] items
     Optional[str] nextToken
@@ -1179,8 +1202,9 @@ struct ListAssociationsInput:
     Optional[str] nextToken
     Optional[str] filterServiceTypes
 
-# no @derive(Json): member(s) associations: list[Association] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associations: list[Association] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssociationsOutput:
     Optional[str] nextToken
     list[Association] associations
@@ -1195,8 +1219,9 @@ struct ListBacklogTasksRequest:
     Optional[TaskSortField] sortField
     Optional[TaskSortOrder] order
 
-# no @derive(Json): member(s) tasks: list[Task] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tasks: list[Task] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBacklogTasksResponse:
     list[Task] tasks
     Optional[str] nextToken
@@ -1209,8 +1234,9 @@ struct ListChatsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) executions: list[ChatExecution] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) executions: list[ChatExecution] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChatsResponse:
     list[ChatExecution] executions
     Optional[str] nextToken
@@ -1223,8 +1249,9 @@ struct ListExecutionsRequest:
     Optional[int64] limit
     Optional[str] nextToken
 
-# no @derive(Json): member(s) executions: list[Execution] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) executions: list[Execution] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExecutionsResponse:
     list[Execution] executions
     Optional[str] nextToken
@@ -1238,8 +1265,9 @@ struct ListGoalsRequest:
     Optional[int64] limit
     Optional[str] nextToken
 
-# no @derive(Json): member(s) goals: list[Goal] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) goals: list[Goal] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGoalsResponse:
     list[Goal] goals
     Optional[str] nextToken
@@ -1254,8 +1282,9 @@ struct ListJournalRecordsRequest:
     Optional[str] recordType
     Optional[OrderType] order
 
-# no @derive(Json): member(s) records: list[JournalRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) records: list[JournalRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJournalRecordsResponse:
     list[JournalRecord] records
     Optional[str] nextToken
@@ -1266,8 +1295,9 @@ struct ListPendingMessagesRequest:
     str agentSpaceId
     str executionId
 
-# no @derive(Json): member(s) messages: list[PendingMessage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) messages: list[PendingMessage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPendingMessagesResponse:
     str agentSpaceId
     str executionId
@@ -1280,8 +1310,9 @@ struct ListPrivateConnectionsInput:
     # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) privateConnections: list[PrivateConnectionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) privateConnections: list[PrivateConnectionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPrivateConnectionsOutput:
     list[PrivateConnectionSummary] privateConnections
 
@@ -1296,8 +1327,9 @@ struct ListRecommendationsRequest:
     Optional[int64] limit
     Optional[str] nextToken
 
-# no @derive(Json): member(s) recommendations: list[Recommendation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommendations: list[Recommendation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecommendationsResponse:
     list[Recommendation] recommendations
     Optional[str] nextToken
@@ -1310,8 +1342,9 @@ struct ListServicesInput:
     # wire string of the Service enum (querystring binding)
     Optional[str] filterServiceType
 
-# no @derive(Json): member(s) services: list[RegisteredService] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) services: list[RegisteredService] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServicesOutput:
     Optional[str] nextToken
     list[RegisteredService] services
@@ -1321,8 +1354,9 @@ struct ListServicesOutput:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     dict[str, str] tags
 
@@ -1334,8 +1368,9 @@ struct ListTriggersRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[Trigger] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[Trigger] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTriggersResponse:
     list[Trigger] items
     Optional[str] nextToken
@@ -1346,8 +1381,9 @@ struct ListWebhooksInput:
     str agentSpaceId
     str associationId
 
-# no @derive(Json): member(s) webhooks: list[Webhook] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) webhooks: list[Webhook] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWebhooksOutput:
     list[Webhook] webhooks
 
@@ -1357,8 +1393,9 @@ struct MCPServerAPIKeyConfig:
     str apiKeyValue
     str apiKeyHeader
 
-# no @derive(Json): member(s) oAuthClientCredentials: MCPServerOAuthClientCredentialsConfig, oAuth3LO: MCPServerOAuth3LOConfig, customHeaders: MCPServerCustomHeadersConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oAuthClientCredentials: MCPServerOAuthClientCredentialsConfig, oAuth3LO: MCPServerOAuth3LOConfig, customHeaders: MCPServerCustomHeadersConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MCPServerAuthorizationConfig:
     Optional[MCPServerOAuthClientCredentialsConfig] oAuthClientCredentials
     Optional[MCPServerOAuth3LOConfig] oAuth3LO
@@ -1377,32 +1414,37 @@ struct MCPServerBearerTokenConfig:
     str tokenValue
     Optional[str] authorizationHeader
 
-# no @derive(Json): member(s) tools: list[str], toolDetails: list[MCPToolDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tools: list[str], toolDetails: list[MCPToolDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MCPServerConfiguration:
     list[str] tools
     Optional[list[MCPToolDetail]] toolDetails
 
-# no @derive(Json): member(s) headers: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) headers: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MCPServerCustomHeadersConfig:
     dict[str, str] headers
 
-# no @derive(Json): member(s) enabledElevatedTools: list[MCPToolDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) enabledElevatedTools: list[MCPToolDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MCPServerDatadogConfiguration:
     Optional[list[MCPToolDetail]] enabledElevatedTools
 
-# no @derive(Json): member(s) authorizationConfig: MCPServerAuthorizationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizationConfig: MCPServerAuthorizationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MCPServerDetails:
     str name
     str endpoint
     Optional[str] description
     MCPServerAuthorizationConfig authorizationConfig
 
-# no @derive(Json): member(s) tools: list[str], enabledElevatedTools: list[MCPToolDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tools: list[str], enabledElevatedTools: list[MCPToolDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MCPServerGrafanaConfiguration:
     str endpoint
     Optional[str] organizationId
@@ -1414,8 +1456,9 @@ struct MCPServerNewRelicConfiguration:
     str accountId
     str endpoint
 
-# no @derive(Json): member(s) exchangeParameters: dict[str, str], scopes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exchangeParameters: dict[str, str], scopes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MCPServerOAuth3LOConfig:
     Optional[str] clientName
     str clientId
@@ -1427,8 +1470,9 @@ struct MCPServerOAuth3LOConfig:
     Optional[bool] supportCodeChallenge
     Optional[list[str]] scopes
 
-# no @derive(Json): member(s) exchangeParameters: dict[str, str], scopes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exchangeParameters: dict[str, str], scopes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MCPServerOAuthClientCredentialsConfig:
     Optional[str] clientName
     str clientId
@@ -1437,8 +1481,9 @@ struct MCPServerOAuthClientCredentialsConfig:
     str exchangeUrl
     Optional[list[str]] scopes
 
-# no @derive(Json): member(s) customHeaders: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customHeaders: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MCPServerSigV4AuthorizationConfig:
     str region
     str service
@@ -1446,14 +1491,16 @@ struct MCPServerSigV4AuthorizationConfig:
     Optional[str] mcpRoleArn
     Optional[dict[str, str]] customHeaders
 
-# no @derive(Json): member(s) tools: list[str], toolDetails: list[MCPToolDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tools: list[str], toolDetails: list[MCPToolDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MCPServerSigV4Configuration:
     list[str] tools
     Optional[list[MCPToolDetail]] toolDetails
 
-# no @derive(Json): member(s) authorizationConfig: MCPServerSigV4AuthorizationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizationConfig: MCPServerSigV4AuthorizationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MCPServerSigV4ServiceDetails:
     str name
     str endpoint
@@ -1486,8 +1533,9 @@ struct MSTeamsTransmissionTarget:
     Optional[MSTeamsChannel] opsOncallTarget
     Optional[MSTeamsChannel] opsSRETarget
 
-# no @derive(Json): member(s) userMessage: list[UserMessageBlock], assistantMessage: list[AssistantMessageBlock] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userMessage: list[UserMessageBlock], assistantMessage: list[AssistantMessageBlock] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Message:
     Optional[list[UserMessageBlock]] userMessage
     Optional[list[AssistantMessageBlock]] assistantMessage
@@ -1500,8 +1548,9 @@ struct MonthlyRecurrence:
 struct NetworkAccessConfiguration:
     Optional[PrivateNetworkAccess] privateAccess
 
-# no @derive(Json): member(s) applicationIds: list[str], entityGuids: list[str], alertPolicyIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) applicationIds: list[str], entityGuids: list[str], alertPolicyIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NewRelicApiKeyConfig:
     str apiKey
     str accountId
@@ -1510,13 +1559,15 @@ struct NewRelicApiKeyConfig:
     Optional[list[str]] entityGuids
     Optional[list[str]] alertPolicyIds
 
-# no @derive(Json): member(s) apiKey: NewRelicApiKeyConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) apiKey: NewRelicApiKeyConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NewRelicServiceAuthorizationConfig:
     Optional[NewRelicApiKeyConfig] apiKey
 
-# no @derive(Json): member(s) authorizationConfig: NewRelicServiceAuthorizationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizationConfig: NewRelicServiceAuthorizationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NewRelicServiceDetails:
     NewRelicServiceAuthorizationConfig authorizationConfig
 
@@ -1524,44 +1575,51 @@ struct NewRelicServiceDetails:
 struct OAuthAdditionalStepDetails:
     str authorizationUrl
 
-# no @derive(Json): member(s) oAuthClientCredentials: PagerDutyOAuthClientCredentialsConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oAuthClientCredentials: PagerDutyOAuthClientCredentialsConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PagerDutyAuthorizationConfig:
     Optional[PagerDutyOAuthClientCredentialsConfig] oAuthClientCredentials
 
-# no @derive(Json): member(s) services: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) services: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PagerDutyConfiguration:
     list[str] services
     str customerEmail
 
-# no @derive(Json): member(s) scopes: list[str], authorizationConfig: PagerDutyAuthorizationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scopes: list[str], authorizationConfig: PagerDutyAuthorizationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PagerDutyDetails:
     list[str] scopes
     PagerDutyAuthorizationConfig authorizationConfig
 
-# no @derive(Json): member(s) exchangeParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exchangeParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PagerDutyOAuthClientCredentialsConfig:
     Optional[str] clientName
     str clientId
     Optional[dict[str, str]] exchangeParameters
     str clientSecret
 
-# no @derive(Json): member(s) patterns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) patterns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PatternFilter:
     list[str] patterns
 
-# no @derive(Json): member(s) message: Message not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) message: Message not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PendingMessage:
     str messageId
     Message message
 
-# no @derive(Json): member(s) serviceManaged: ServiceManagedInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceManaged: ServiceManagedInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivateConnectionMode:
     Optional[ServiceManagedInput] serviceManaged
     Optional[SelfManagedInput] selfManaged
@@ -1646,8 +1704,9 @@ struct RegisterServiceInput:
     Optional[str] name
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterServiceOutput:
     Optional[str] serviceId
     Optional[AdditionalServiceRegistrationStep] additionalStep
@@ -1658,8 +1717,9 @@ struct RegisterServiceOutput:
 struct RegisteredAzureDevOpsServiceDetails:
     str organizationName
 
-# no @derive(Json): member(s) webIdentityTokenAudiences: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) webIdentityTokenAudiences: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisteredAzureIdentityDetails:
     str tenantId
     str clientId
@@ -1683,8 +1743,9 @@ struct RegisteredGrafanaServerDetails:
     str endpoint
     MCPServerAuthorizationMethod authorizationMethod
 
-# no @derive(Json): member(s) customHeaderNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customHeaderNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisteredMCPServerDetails:
     str name
     str endpoint
@@ -1693,8 +1754,9 @@ struct RegisteredMCPServerDetails:
     Optional[str] apiKeyHeader
     Optional[list[str]] customHeaderNames
 
-# no @derive(Json): member(s) customHeaders: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customHeaders: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisteredMCPServerSigV4Details:
     str name
     str endpoint
@@ -1711,8 +1773,9 @@ struct RegisteredNewRelicDetails:
     NewRelicRegion region
     Optional[str] description
 
-# no @derive(Json): member(s) scopes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scopes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisteredPagerDutyDetails:
     list[str] scopes
 
@@ -1733,8 +1796,9 @@ struct RegisteredRemoteAgentSigV4Details:
     str service
     Optional[str] roleArn
 
-# no @derive(Json): member(s) accessibleResources: list[Document], additionalServiceDetails: AdditionalServiceDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessibleResources: list[Document], additionalServiceDetails: AdditionalServiceDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisteredService:
     str serviceId
     Service serviceType
@@ -1766,8 +1830,9 @@ struct RemoteAgentAPIKeyConfig:
     str apiKeyValue
     str apiKeyHeader
 
-# no @derive(Json): member(s) oAuthClientCredentials: RemoteAgentOAuthClientCredentialsConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oAuthClientCredentials: RemoteAgentOAuthClientCredentialsConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoteAgentAuthorizationConfig:
     Optional[RemoteAgentAPIKeyConfig] apiKey
     Optional[RemoteAgentOAuthClientCredentialsConfig] oAuthClientCredentials
@@ -1784,8 +1849,9 @@ struct RemoteAgentConfiguration:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) exchangeParameters: dict[str, str], scopes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exchangeParameters: dict[str, str], scopes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoteAgentOAuthClientCredentialsConfig:
     Optional[str] clientName
     str clientId
@@ -1794,8 +1860,9 @@ struct RemoteAgentOAuthClientCredentialsConfig:
     str exchangeUrl
     Optional[list[str]] scopes
 
-# no @derive(Json): member(s) authorizationConfig: RemoteAgentAuthorizationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizationConfig: RemoteAgentAuthorizationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoteAgentServiceDetails:
     str name
     str endpoint
@@ -1947,8 +2014,9 @@ struct SendMessageUsageInfo:
     Optional[int64] outputTokens
     Optional[int64] totalTokens
 
-# no @derive(Json): member(s) dynatrace: DynatraceConfiguration, servicenow: ServiceNowConfiguration, mcpserverdatadog: MCPServerDatadogConfiguration, mcpserver: MCPServerConfiguration, mcpservergrafana: MCPServerGrafanaConfiguration, pagerduty: PagerDutyConfiguration, mcpserversigv4: MCPServerSigV4Configuration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dynatrace: DynatraceConfiguration, servicenow: ServiceNowConfiguration, mcpserverdatadog: MCPServerDatadogConfiguration, mcpserver: MCPServerConfiguration, mcpservergrafana: MCPServerGrafanaConfiguration, pagerduty: PagerDutyConfiguration, mcpserversigv4: MCPServerSigV4Configuration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceConfiguration:
     Optional[SourceAwsConfiguration] sourceAws
     Optional[AWSConfiguration] aws
@@ -1972,8 +2040,9 @@ struct ServiceConfiguration:
     Optional[MSTeamsConfiguration] msteams
     Optional[ReleaseManagementConfiguration] releaseManagement
 
-# no @derive(Json): member(s) dynatrace: DynatraceServiceDetails, servicenow: ServiceNowServiceDetails, mcpserver: MCPServerDetails, mcpserversplunk: MCPServerDetails, mcpservernewrelic: NewRelicServiceDetails, mcpservergrafana: GrafanaServiceDetails, pagerduty: PagerDutyDetails, azureidentity: RegisteredAzureIdentityDetails, mcpserversigv4: MCPServerSigV4ServiceDetails, remoteagent: RemoteAgentServiceDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dynatrace: DynatraceServiceDetails, servicenow: ServiceNowServiceDetails, mcpserver: MCPServerDetails, mcpserversplunk: MCPServerDetails, mcpservernewrelic: NewRelicServiceDetails, mcpservergrafana: GrafanaServiceDetails, pagerduty: PagerDutyDetails, azureidentity: RegisteredAzureIdentityDetails, mcpserversigv4: MCPServerSigV4ServiceDetails, remoteagent: RemoteAgentServiceDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceDetails:
     Optional[DynatraceServiceDetails] dynatrace
     Optional[ServiceNowServiceDetails] servicenow
@@ -1990,8 +2059,9 @@ struct ServiceDetails:
     Optional[RemoteAgentServiceDetails] remoteagent
     Optional[RemoteAgentSigV4ServiceDetails] remoteagentsigv4
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str], portRanges: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str], portRanges: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceManagedInput:
     str hostAddress
     str vpcId
@@ -2003,27 +2073,31 @@ struct ServiceManagedInput:
     Optional[str] certificate
     Optional[ResourceConfigDnsResolution] dnsResolution
 
-# no @derive(Json): member(s) authScopes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authScopes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceNowConfiguration:
     Optional[str] instanceId
     Optional[list[str]] authScopes
 
-# no @derive(Json): member(s) exchangeParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exchangeParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceNowOAuthClientCredentialsConfig:
     Optional[str] clientName
     str clientId
     Optional[dict[str, str]] exchangeParameters
     str clientSecret
 
-# no @derive(Json): member(s) oAuthClientCredentials: ServiceNowOAuthClientCredentialsConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oAuthClientCredentials: ServiceNowOAuthClientCredentialsConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceNowServiceAuthorizationConfig:
     Optional[ServiceNowOAuthClientCredentialsConfig] oAuthClientCredentials
 
-# no @derive(Json): member(s) authorizationConfig: ServiceNowServiceAuthorizationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizationConfig: ServiceNowServiceAuthorizationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceNowServiceDetails:
     str instanceUrl
     Optional[ServiceNowServiceAuthorizationConfig] authorizationConfig
@@ -2096,8 +2170,9 @@ struct Task:
     Optional[str] statusReason
     Optional[bool] hasLinkedTasks
 
-# no @derive(Json): member(s) priority: list[Priority], status: list[TaskStatus], taskType: list[TaskType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) priority: list[Priority], status: list[TaskStatus], taskType: list[TaskType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaskFilter:
     Optional[DateTime] createdAfter
     Optional[DateTime] createdBefore
@@ -2136,8 +2211,9 @@ struct TriggerAction:
 struct TriggerCondition:
     Optional[ScheduleCondition] schedule
 
-# no @derive(Json): member(s) events: list[TriggerEvent], targetBranches: PatternFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) events: list[TriggerEvent], targetBranches: PatternFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TriggerFilterGroup:
     Optional[list[TriggerEvent]] events
     Optional[PatternFilter] targetBranches
@@ -2162,8 +2238,9 @@ struct UpdateAgentSpaceInput:
     Optional[str] locale
     Optional[dict[str, bool]] preferences
 
-# no @derive(Json): member(s) agentSpace: AgentSpace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentSpace: AgentSpace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAgentSpaceOutput:
     AgentSpace agentSpace
 
@@ -2219,8 +2296,9 @@ struct UpdateAssociationInput:
     ServiceConfiguration configuration
     Optional[dict[CapabilityType, CapabilityConfiguration]] capabilities
 
-# no @derive(Json): member(s) association: Association not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) association: Association not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAssociationOutput:
     Association association
     Optional[GenericWebhook] webhook
@@ -2330,8 +2408,9 @@ struct ValidateAwsAssociationsOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     Optional[list[ValidationExceptionField]] fieldList
@@ -2398,23 +2477,14 @@ def aidevops_error_from_code(str code) -> DevOps_AgentError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AssociateService (document member `configuration: ServiceConfiguration` is not serializable by derive)
-#   CreateAgentSpace (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreatePrivateConnection (document member `mode: PrivateConnectionMode` is not serializable by derive)
+#   AssociateService (document member `capabilities: dict[CapabilityType, CapabilityConfiguration]` is not serializable)
 #   ListAssets (httpQuery `updatedAfter` has unsupported type DateTime)
-#   ListBacklogTasks (document member `filter: TaskFilter` is not serializable by derive)
-#   RegisterService (document member `serviceDetails: ServiceDetails` is not serializable by derive)
-#   SendMessage (document member `assetIds: list[str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateAgentSpace (document member `preferences: dict[str, bool]` is not serializable by derive)
-#   UpdateApprovalAction (document member `finalPattern: ApprovalPattern` is not serializable by derive)
-#   UpdateAssociation (document member `configuration: ServiceConfiguration` is not serializable by derive)
+#   UpdateAssociation (document member `capabilities: dict[CapabilityType, CapabilityConfiguration]` is not serializable)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
 #   ListAssets (operation not generated)
-#   ListBacklogTasks (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -2552,10 +2622,550 @@ struct UpdateTriggerDocument:
     Optional[str] status
     Optional[str] clientToken
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def aidevops_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def aidevops_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def aidevops_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# A timestamp as an ISO-8601 JSON string (`@json(timestamp="iso8601")`).
+def aidevops_json_ts_iso(DateTime dt) -> str:
+    return "\"" + datetime.strftime(dt, "%Y-%m-%dT%H:%M:%SZ") + "\""
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ApprovalPattern to a compact JSON object (declaration order).
+def approval_pattern_to_json(ApprovalPattern v) -> str:
+    list[str] parts = []
+    parts.append("\"tool\":" + aidevops_json_str(v.tool))
+    list[str] m0 = []
+    for k0 in sorted(v.argumentPins.keys()):
+        m0.append(aidevops_json_str(k0) + ":" + aidevops_json_str(v.argumentPins[k0]))
+    parts.append("\"argumentPins\":" + aidevops_json_obj(m0))
+    return aidevops_json_obj(parts)
+
+# Serialize DynatraceOAuthClientCredentialsConfig to a compact JSON object (declaration order).
+def dynatrace_o_auth_client_credentials_config_to_json(DynatraceOAuthClientCredentialsConfig v) -> str:
+    list[str] parts = []
+    if v.clientName.is_some():
+        auto u0 = v.clientName.unwrap()
+        parts.append("\"clientName\":" + aidevops_json_str(u0))
+    parts.append("\"clientId\":" + aidevops_json_str(v.clientId))
+    if v.exchangeParameters.is_some():
+        auto u1 = v.exchangeParameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(aidevops_json_str(k2) + ":" + aidevops_json_str(u1[k2]))
+        parts.append("\"exchangeParameters\":" + aidevops_json_obj(m2))
+    parts.append("\"clientSecret\":" + aidevops_json_str(v.clientSecret))
+    return aidevops_json_obj(parts)
+
+# Serialize DynatraceServiceAuthorizationConfig to a compact JSON object (declaration order).
+def dynatrace_service_authorization_config_to_json(DynatraceServiceAuthorizationConfig v) -> str:
+    list[str] parts = []
+    if v.oAuthClientCredentials.is_some():
+        auto u0 = v.oAuthClientCredentials.unwrap()
+        parts.append("\"oAuthClientCredentials\":" + dynatrace_o_auth_client_credentials_config_to_json(u0))
+    return aidevops_json_obj(parts)
+
+# Serialize DynatraceServiceDetails to a compact JSON object (declaration order).
+def dynatrace_service_details_to_json(DynatraceServiceDetails v) -> str:
+    list[str] parts = []
+    parts.append("\"accountUrn\":" + aidevops_json_str(v.accountUrn))
+    if v.authorizationConfig.is_some():
+        auto u0 = v.authorizationConfig.unwrap()
+        parts.append("\"authorizationConfig\":" + dynatrace_service_authorization_config_to_json(u0))
+    return aidevops_json_obj(parts)
+
+# Serialize GrafanaServiceDetails to a compact JSON object (declaration order).
+def grafana_service_details_to_json(GrafanaServiceDetails v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + aidevops_json_str(v.name))
+    parts.append("\"endpoint\":" + aidevops_json_str(v.endpoint))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + aidevops_json_str(u0))
+    parts.append("\"authorizationConfig\":" + mcp_server_authorization_config_to_json(v.authorizationConfig))
+    return aidevops_json_obj(parts)
+
+# Serialize MCPServerAuthorizationConfig to a compact JSON object (declaration order).
+def mcp_server_authorization_config_to_json(MCPServerAuthorizationConfig v) -> str:
+    list[str] parts = []
+    if v.oAuthClientCredentials.is_some():
+        auto u0 = v.oAuthClientCredentials.unwrap()
+        parts.append("\"oAuthClientCredentials\":" + mcp_server_o_auth_client_credentials_config_to_json(u0))
+    if v.oAuth3LO.is_some():
+        auto u1 = v.oAuth3LO.unwrap()
+        parts.append("\"oAuth3LO\":" + mcp_server_o_auth3_lo_config_to_json(u1))
+    if v.apiKey.is_some():
+        auto u2 = v.apiKey.unwrap()
+        parts.append("\"apiKey\":" + u2.to_json())
+    if v.bearerToken.is_some():
+        auto u3 = v.bearerToken.unwrap()
+        parts.append("\"bearerToken\":" + u3.to_json())
+    if v.customHeaders.is_some():
+        auto u4 = v.customHeaders.unwrap()
+        parts.append("\"customHeaders\":" + mcp_server_custom_headers_config_to_json(u4))
+    if v.authorizationDiscovery.is_some():
+        auto u5 = v.authorizationDiscovery.unwrap()
+        parts.append("\"authorizationDiscovery\":" + u5.to_json())
+    return aidevops_json_obj(parts)
+
+# Serialize MCPServerCustomHeadersConfig to a compact JSON object (declaration order).
+def mcp_server_custom_headers_config_to_json(MCPServerCustomHeadersConfig v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.headers.keys()):
+        m0.append(aidevops_json_str(k0) + ":" + aidevops_json_str(v.headers[k0]))
+    parts.append("\"headers\":" + aidevops_json_obj(m0))
+    return aidevops_json_obj(parts)
+
+# Serialize MCPServerDetails to a compact JSON object (declaration order).
+def mcp_server_details_to_json(MCPServerDetails v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + aidevops_json_str(v.name))
+    parts.append("\"endpoint\":" + aidevops_json_str(v.endpoint))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + aidevops_json_str(u0))
+    parts.append("\"authorizationConfig\":" + mcp_server_authorization_config_to_json(v.authorizationConfig))
+    return aidevops_json_obj(parts)
+
+# Serialize MCPServerOAuth3LOConfig to a compact JSON object (declaration order).
+def mcp_server_o_auth3_lo_config_to_json(MCPServerOAuth3LOConfig v) -> str:
+    list[str] parts = []
+    if v.clientName.is_some():
+        auto u0 = v.clientName.unwrap()
+        parts.append("\"clientName\":" + aidevops_json_str(u0))
+    parts.append("\"clientId\":" + aidevops_json_str(v.clientId))
+    if v.exchangeParameters.is_some():
+        auto u1 = v.exchangeParameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(aidevops_json_str(k2) + ":" + aidevops_json_str(u1[k2]))
+        parts.append("\"exchangeParameters\":" + aidevops_json_obj(m2))
+    parts.append("\"returnToEndpoint\":" + aidevops_json_str(v.returnToEndpoint))
+    parts.append("\"authorizationUrl\":" + aidevops_json_str(v.authorizationUrl))
+    parts.append("\"exchangeUrl\":" + aidevops_json_str(v.exchangeUrl))
+    if v.clientSecret.is_some():
+        auto u3 = v.clientSecret.unwrap()
+        parts.append("\"clientSecret\":" + aidevops_json_str(u3))
+    if v.supportCodeChallenge.is_some():
+        auto u4 = v.supportCodeChallenge.unwrap()
+        parts.append("\"supportCodeChallenge\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.scopes.is_some():
+        auto u5 = v.scopes.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(aidevops_json_str(x6))
+        parts.append("\"scopes\":" + aidevops_json_arr(e6))
+    return aidevops_json_obj(parts)
+
+# Serialize MCPServerOAuthClientCredentialsConfig to a compact JSON object (declaration order).
+def mcp_server_o_auth_client_credentials_config_to_json(MCPServerOAuthClientCredentialsConfig v) -> str:
+    list[str] parts = []
+    if v.clientName.is_some():
+        auto u0 = v.clientName.unwrap()
+        parts.append("\"clientName\":" + aidevops_json_str(u0))
+    parts.append("\"clientId\":" + aidevops_json_str(v.clientId))
+    if v.exchangeParameters.is_some():
+        auto u1 = v.exchangeParameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(aidevops_json_str(k2) + ":" + aidevops_json_str(u1[k2]))
+        parts.append("\"exchangeParameters\":" + aidevops_json_obj(m2))
+    parts.append("\"clientSecret\":" + aidevops_json_str(v.clientSecret))
+    parts.append("\"exchangeUrl\":" + aidevops_json_str(v.exchangeUrl))
+    if v.scopes.is_some():
+        auto u3 = v.scopes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(aidevops_json_str(x4))
+        parts.append("\"scopes\":" + aidevops_json_arr(e4))
+    return aidevops_json_obj(parts)
+
+# Serialize MCPServerSigV4AuthorizationConfig to a compact JSON object (declaration order).
+def mcp_server_sig_v4_authorization_config_to_json(MCPServerSigV4AuthorizationConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"region\":" + aidevops_json_str(v.region))
+    parts.append("\"service\":" + aidevops_json_str(v.service))
+    if v.roleArn.is_some():
+        auto u0 = v.roleArn.unwrap()
+        parts.append("\"roleArn\":" + aidevops_json_str(u0))
+    if v.mcpRoleArn.is_some():
+        auto u1 = v.mcpRoleArn.unwrap()
+        parts.append("\"mcpRoleArn\":" + aidevops_json_str(u1))
+    if v.customHeaders.is_some():
+        auto u2 = v.customHeaders.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(aidevops_json_str(k3) + ":" + aidevops_json_str(u2[k3]))
+        parts.append("\"customHeaders\":" + aidevops_json_obj(m3))
+    return aidevops_json_obj(parts)
+
+# Serialize MCPServerSigV4ServiceDetails to a compact JSON object (declaration order).
+def mcp_server_sig_v4_service_details_to_json(MCPServerSigV4ServiceDetails v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + aidevops_json_str(v.name))
+    parts.append("\"endpoint\":" + aidevops_json_str(v.endpoint))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + aidevops_json_str(u0))
+    parts.append("\"authorizationConfig\":" + mcp_server_sig_v4_authorization_config_to_json(v.authorizationConfig))
+    return aidevops_json_obj(parts)
+
+# Serialize NewRelicApiKeyConfig to a compact JSON object (declaration order).
+def new_relic_api_key_config_to_json(NewRelicApiKeyConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"apiKey\":" + aidevops_json_str(v.apiKey))
+    parts.append("\"accountId\":" + aidevops_json_str(v.accountId))
+    parts.append("\"region\":" + v.region.to_json())
+    if v.applicationIds.is_some():
+        auto u0 = v.applicationIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(aidevops_json_str(x1))
+        parts.append("\"applicationIds\":" + aidevops_json_arr(e1))
+    if v.entityGuids.is_some():
+        auto u2 = v.entityGuids.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(aidevops_json_str(x3))
+        parts.append("\"entityGuids\":" + aidevops_json_arr(e3))
+    if v.alertPolicyIds.is_some():
+        auto u4 = v.alertPolicyIds.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(aidevops_json_str(x5))
+        parts.append("\"alertPolicyIds\":" + aidevops_json_arr(e5))
+    return aidevops_json_obj(parts)
+
+# Serialize NewRelicServiceAuthorizationConfig to a compact JSON object (declaration order).
+def new_relic_service_authorization_config_to_json(NewRelicServiceAuthorizationConfig v) -> str:
+    list[str] parts = []
+    if v.apiKey.is_some():
+        auto u0 = v.apiKey.unwrap()
+        parts.append("\"apiKey\":" + new_relic_api_key_config_to_json(u0))
+    return aidevops_json_obj(parts)
+
+# Serialize NewRelicServiceDetails to a compact JSON object (declaration order).
+def new_relic_service_details_to_json(NewRelicServiceDetails v) -> str:
+    list[str] parts = []
+    parts.append("\"authorizationConfig\":" + new_relic_service_authorization_config_to_json(v.authorizationConfig))
+    return aidevops_json_obj(parts)
+
+# Serialize PagerDutyAuthorizationConfig to a compact JSON object (declaration order).
+def pager_duty_authorization_config_to_json(PagerDutyAuthorizationConfig v) -> str:
+    list[str] parts = []
+    if v.oAuthClientCredentials.is_some():
+        auto u0 = v.oAuthClientCredentials.unwrap()
+        parts.append("\"oAuthClientCredentials\":" + pager_duty_o_auth_client_credentials_config_to_json(u0))
+    return aidevops_json_obj(parts)
+
+# Serialize PagerDutyDetails to a compact JSON object (declaration order).
+def pager_duty_details_to_json(PagerDutyDetails v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.scopes:
+        e0.append(aidevops_json_str(x0))
+    parts.append("\"scopes\":" + aidevops_json_arr(e0))
+    parts.append("\"authorizationConfig\":" + pager_duty_authorization_config_to_json(v.authorizationConfig))
+    return aidevops_json_obj(parts)
+
+# Serialize PagerDutyOAuthClientCredentialsConfig to a compact JSON object (declaration order).
+def pager_duty_o_auth_client_credentials_config_to_json(PagerDutyOAuthClientCredentialsConfig v) -> str:
+    list[str] parts = []
+    if v.clientName.is_some():
+        auto u0 = v.clientName.unwrap()
+        parts.append("\"clientName\":" + aidevops_json_str(u0))
+    parts.append("\"clientId\":" + aidevops_json_str(v.clientId))
+    if v.exchangeParameters.is_some():
+        auto u1 = v.exchangeParameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(aidevops_json_str(k2) + ":" + aidevops_json_str(u1[k2]))
+        parts.append("\"exchangeParameters\":" + aidevops_json_obj(m2))
+    parts.append("\"clientSecret\":" + aidevops_json_str(v.clientSecret))
+    return aidevops_json_obj(parts)
+
+# Serialize PrivateConnectionMode to a compact JSON object (declaration order).
+def private_connection_mode_to_json(PrivateConnectionMode v) -> str:
+    list[str] parts = []
+    if v.serviceManaged.is_some():
+        auto u0 = v.serviceManaged.unwrap()
+        parts.append("\"serviceManaged\":" + service_managed_input_to_json(u0))
+    if v.selfManaged.is_some():
+        auto u1 = v.selfManaged.unwrap()
+        parts.append("\"selfManaged\":" + u1.to_json())
+    return aidevops_json_obj(parts)
+
+# Serialize RegisteredAzureIdentityDetails to a compact JSON object (declaration order).
+def registered_azure_identity_details_to_json(RegisteredAzureIdentityDetails v) -> str:
+    list[str] parts = []
+    parts.append("\"tenantId\":" + aidevops_json_str(v.tenantId))
+    parts.append("\"clientId\":" + aidevops_json_str(v.clientId))
+    parts.append("\"webIdentityRoleArn\":" + aidevops_json_str(v.webIdentityRoleArn))
+    list[str] e0 = []
+    for x0 in v.webIdentityTokenAudiences:
+        e0.append(aidevops_json_str(x0))
+    parts.append("\"webIdentityTokenAudiences\":" + aidevops_json_arr(e0))
+    return aidevops_json_obj(parts)
+
+# Serialize RemoteAgentAuthorizationConfig to a compact JSON object (declaration order).
+def remote_agent_authorization_config_to_json(RemoteAgentAuthorizationConfig v) -> str:
+    list[str] parts = []
+    if v.apiKey.is_some():
+        auto u0 = v.apiKey.unwrap()
+        parts.append("\"apiKey\":" + u0.to_json())
+    if v.oAuthClientCredentials.is_some():
+        auto u1 = v.oAuthClientCredentials.unwrap()
+        parts.append("\"oAuthClientCredentials\":" + remote_agent_o_auth_client_credentials_config_to_json(u1))
+    if v.bearerToken.is_some():
+        auto u2 = v.bearerToken.unwrap()
+        parts.append("\"bearerToken\":" + u2.to_json())
+    return aidevops_json_obj(parts)
+
+# Serialize RemoteAgentOAuthClientCredentialsConfig to a compact JSON object (declaration order).
+def remote_agent_o_auth_client_credentials_config_to_json(RemoteAgentOAuthClientCredentialsConfig v) -> str:
+    list[str] parts = []
+    if v.clientName.is_some():
+        auto u0 = v.clientName.unwrap()
+        parts.append("\"clientName\":" + aidevops_json_str(u0))
+    parts.append("\"clientId\":" + aidevops_json_str(v.clientId))
+    if v.exchangeParameters.is_some():
+        auto u1 = v.exchangeParameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(aidevops_json_str(k2) + ":" + aidevops_json_str(u1[k2]))
+        parts.append("\"exchangeParameters\":" + aidevops_json_obj(m2))
+    parts.append("\"clientSecret\":" + aidevops_json_str(v.clientSecret))
+    parts.append("\"exchangeUrl\":" + aidevops_json_str(v.exchangeUrl))
+    if v.scopes.is_some():
+        auto u3 = v.scopes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(aidevops_json_str(x4))
+        parts.append("\"scopes\":" + aidevops_json_arr(e4))
+    return aidevops_json_obj(parts)
+
+# Serialize RemoteAgentServiceDetails to a compact JSON object (declaration order).
+def remote_agent_service_details_to_json(RemoteAgentServiceDetails v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + aidevops_json_str(v.name))
+    parts.append("\"endpoint\":" + aidevops_json_str(v.endpoint))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + aidevops_json_str(u0))
+    parts.append("\"authorizationConfig\":" + remote_agent_authorization_config_to_json(v.authorizationConfig))
+    return aidevops_json_obj(parts)
+
+# Serialize ServiceDetails to a compact JSON object (declaration order).
+def service_details_to_json(ServiceDetails v) -> str:
+    list[str] parts = []
+    if v.dynatrace.is_some():
+        auto u0 = v.dynatrace.unwrap()
+        parts.append("\"dynatrace\":" + dynatrace_service_details_to_json(u0))
+    if v.servicenow.is_some():
+        auto u1 = v.servicenow.unwrap()
+        parts.append("\"servicenow\":" + service_now_service_details_to_json(u1))
+    if v.mcpserverdatadog.is_some():
+        auto u2 = v.mcpserverdatadog.unwrap()
+        parts.append("\"mcpserverdatadog\":" + u2.to_json())
+    if v.mcpserver.is_some():
+        auto u3 = v.mcpserver.unwrap()
+        parts.append("\"mcpserver\":" + mcp_server_details_to_json(u3))
+    if v.gitlab.is_some():
+        auto u4 = v.gitlab.unwrap()
+        parts.append("\"gitlab\":" + u4.to_json())
+    if v.mcpserversplunk.is_some():
+        auto u5 = v.mcpserversplunk.unwrap()
+        parts.append("\"mcpserversplunk\":" + mcp_server_details_to_json(u5))
+    if v.mcpservernewrelic.is_some():
+        auto u6 = v.mcpservernewrelic.unwrap()
+        parts.append("\"mcpservernewrelic\":" + new_relic_service_details_to_json(u6))
+    if v.eventChannel.is_some():
+        auto u7 = v.eventChannel.unwrap()
+        parts.append("\"eventChannel\":" + u7.to_json())
+    if v.mcpservergrafana.is_some():
+        auto u8 = v.mcpservergrafana.unwrap()
+        parts.append("\"mcpservergrafana\":" + grafana_service_details_to_json(u8))
+    if v.pagerduty.is_some():
+        auto u9 = v.pagerduty.unwrap()
+        parts.append("\"pagerduty\":" + pager_duty_details_to_json(u9))
+    if v.azureidentity.is_some():
+        auto u10 = v.azureidentity.unwrap()
+        parts.append("\"azureidentity\":" + registered_azure_identity_details_to_json(u10))
+    if v.mcpserversigv4.is_some():
+        auto u11 = v.mcpserversigv4.unwrap()
+        parts.append("\"mcpserversigv4\":" + mcp_server_sig_v4_service_details_to_json(u11))
+    if v.remoteagent.is_some():
+        auto u12 = v.remoteagent.unwrap()
+        parts.append("\"remoteagent\":" + remote_agent_service_details_to_json(u12))
+    if v.remoteagentsigv4.is_some():
+        auto u13 = v.remoteagentsigv4.unwrap()
+        parts.append("\"remoteagentsigv4\":" + u13.to_json())
+    return aidevops_json_obj(parts)
+
+# Serialize ServiceManagedInput to a compact JSON object (declaration order).
+def service_managed_input_to_json(ServiceManagedInput v) -> str:
+    list[str] parts = []
+    parts.append("\"hostAddress\":" + aidevops_json_str(v.hostAddress))
+    parts.append("\"vpcId\":" + aidevops_json_str(v.vpcId))
+    list[str] e0 = []
+    for x0 in v.subnetIds:
+        e0.append(aidevops_json_str(x0))
+    parts.append("\"subnetIds\":" + aidevops_json_arr(e0))
+    if v.securityGroupIds.is_some():
+        auto u1 = v.securityGroupIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(aidevops_json_str(x2))
+        parts.append("\"securityGroupIds\":" + aidevops_json_arr(e2))
+    if v.ipAddressType.is_some():
+        auto u3 = v.ipAddressType.unwrap()
+        parts.append("\"ipAddressType\":" + u3.to_json())
+    if v.ipv4AddressesPerEni.is_some():
+        auto u4 = v.ipv4AddressesPerEni.unwrap()
+        parts.append("\"ipv4AddressesPerEni\":" + str(u4))
+    if v.portRanges.is_some():
+        auto u5 = v.portRanges.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(aidevops_json_str(x6))
+        parts.append("\"portRanges\":" + aidevops_json_arr(e6))
+    if v.certificate.is_some():
+        auto u7 = v.certificate.unwrap()
+        parts.append("\"certificate\":" + aidevops_json_str(u7))
+    if v.dnsResolution.is_some():
+        auto u8 = v.dnsResolution.unwrap()
+        parts.append("\"dnsResolution\":" + u8.to_json())
+    return aidevops_json_obj(parts)
+
+# Serialize ServiceNowOAuthClientCredentialsConfig to a compact JSON object (declaration order).
+def service_now_o_auth_client_credentials_config_to_json(ServiceNowOAuthClientCredentialsConfig v) -> str:
+    list[str] parts = []
+    if v.clientName.is_some():
+        auto u0 = v.clientName.unwrap()
+        parts.append("\"clientName\":" + aidevops_json_str(u0))
+    parts.append("\"clientId\":" + aidevops_json_str(v.clientId))
+    if v.exchangeParameters.is_some():
+        auto u1 = v.exchangeParameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(aidevops_json_str(k2) + ":" + aidevops_json_str(u1[k2]))
+        parts.append("\"exchangeParameters\":" + aidevops_json_obj(m2))
+    parts.append("\"clientSecret\":" + aidevops_json_str(v.clientSecret))
+    return aidevops_json_obj(parts)
+
+# Serialize ServiceNowServiceAuthorizationConfig to a compact JSON object (declaration order).
+def service_now_service_authorization_config_to_json(ServiceNowServiceAuthorizationConfig v) -> str:
+    list[str] parts = []
+    if v.oAuthClientCredentials.is_some():
+        auto u0 = v.oAuthClientCredentials.unwrap()
+        parts.append("\"oAuthClientCredentials\":" + service_now_o_auth_client_credentials_config_to_json(u0))
+    return aidevops_json_obj(parts)
+
+# Serialize ServiceNowServiceDetails to a compact JSON object (declaration order).
+def service_now_service_details_to_json(ServiceNowServiceDetails v) -> str:
+    list[str] parts = []
+    parts.append("\"instanceUrl\":" + aidevops_json_str(v.instanceUrl))
+    if v.authorizationConfig.is_some():
+        auto u0 = v.authorizationConfig.unwrap()
+        parts.append("\"authorizationConfig\":" + service_now_service_authorization_config_to_json(u0))
+    return aidevops_json_obj(parts)
+
+# Serialize TaskFilter to a compact JSON object (declaration order).
+def task_filter_to_json(TaskFilter v) -> str:
+    list[str] parts = []
+    if v.createdAfter.is_some():
+        auto u0 = v.createdAfter.unwrap()
+        parts.append("\"createdAfter\":" + aidevops_json_ts_iso(u0))
+    if v.createdBefore.is_some():
+        auto u1 = v.createdBefore.unwrap()
+        parts.append("\"createdBefore\":" + aidevops_json_ts_iso(u1))
+    if v.priority.is_some():
+        auto u2 = v.priority.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"priority\":" + aidevops_json_arr(e3))
+    if v.status.is_some():
+        auto u4 = v.status.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"status\":" + aidevops_json_arr(e5))
+    if v.taskType.is_some():
+        auto u6 = v.taskType.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"taskType\":" + aidevops_json_arr(e7))
+    if v.primaryTaskId.is_some():
+        auto u8 = v.primaryTaskId.unwrap()
+        parts.append("\"primaryTaskId\":" + aidevops_json_str(u8))
+    return aidevops_json_obj(parts)
+
 # A bound DevOps_Agent client: credentials + region, threaded into every operation.
 struct DevOps_AgentClient:
     core.Credentials creds
     str region
+
+    # CreateAgentSpace  POST /v1/agentspaces
+    # errors: AccessDeniedException, ConflictException, ContentSizeExceededException, InternalServerException, InvalidParameterException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_agent_space(self, CreateAgentSpaceInput input) -> str:
+        auto host = endpoints.regional_host(aidevops_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/agentspaces", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + aidevops_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + aidevops_json_str(u0))
+        if input.locale.is_some():
+            auto u1 = input.locale.unwrap()
+            parts.append("\"locale\":" + aidevops_json_str(u1))
+        if input.kmsKeyArn.is_some():
+            auto u2 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + aidevops_json_str(u2))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + aidevops_json_str(u3))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(aidevops_json_str(k5) + ":" + aidevops_json_str(u4[k5]))
+            parts.append("\"tags\":" + aidevops_json_obj(m5))
+        if input.preferences.is_some():
+            auto u6 = input.preferences.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(aidevops_json_str(k7) + ":" + json.dumps(JsonValue.Bool(u6[k7])))
+            parts.append("\"preferences\":" + aidevops_json_obj(m7))
+        auto bp = restjson.rest_json_document(b, aidevops_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
 
     # CreateAsset  POST /asset/agent-space/{agentSpaceId}/assets
     # errors: AccessDeniedException, ConflictException, ContentSizeExceededException, InternalServerException, InvalidParameterException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -2606,6 +3216,23 @@ struct DevOps_AgentClient:
             query["userType"] = input.userType.unwrap_or("")
         auto b = binding.HttpBinding(method="POST", path_template="/agents/agent-space/{agentSpaceId}/chat/create", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
+
+    # CreatePrivateConnection  POST /v1/private-connections
+    # errors: AccessDeniedException, ConflictException, ContentSizeExceededException, InternalServerException, InvalidParameterException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_private_connection(self, CreatePrivateConnectionInput input) -> str:
+        auto host = endpoints.regional_host(aidevops_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/private-connections", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + aidevops_json_str(input.name))
+        parts.append("\"mode\":" + private_connection_mode_to_json(input.mode))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(aidevops_json_str(k1) + ":" + aidevops_json_str(u0[k1]))
+            parts.append("\"tags\":" + aidevops_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, aidevops_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
 
     # CreateTrigger  POST /trigger/agent-space/{agentSpaceId}/triggers
     # errors: AccessDeniedException, ConflictException, ContentSizeExceededException, InternalServerException, InvalidParameterException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -2914,6 +3541,32 @@ struct DevOps_AgentClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/agentspaces/{agentSpaceId}/associations/list", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
+    # ListBacklogTasks  POST /backlog/agent-space/{agentSpaceId}/tasks/list
+    # errors: AccessDeniedException, ConflictException, ContentSizeExceededException, InternalServerException, InvalidParameterException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_backlog_tasks(self, ListBacklogTasksRequest input) -> str:
+        auto host = endpoints.regional_host(aidevops_service(), self.region)
+        dict[str, str] labels = {}
+        labels["agentSpaceId"] = input.agentSpaceId
+        auto b = binding.HttpBinding(method="POST", path_template="/backlog/agent-space/{agentSpaceId}/tasks/list", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filter.is_some():
+            auto u0 = input.filter.unwrap()
+            parts.append("\"filter\":" + task_filter_to_json(u0))
+        if input.limit.is_some():
+            auto u1 = input.limit.unwrap()
+            parts.append("\"limit\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + aidevops_json_str(u2))
+        if input.sortField.is_some():
+            auto u3 = input.sortField.unwrap()
+            parts.append("\"sortField\":" + u3.to_json())
+        if input.order.is_some():
+            auto u4 = input.order.unwrap()
+            parts.append("\"order\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, aidevops_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
+
     # ListChats  GET /agents/agent-space/{agentSpaceId}/chat/list
     # errors: AccessDeniedException, ConflictException, ContentSizeExceededException, InternalServerException, InvalidParameterException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_chats(self, ListChatsRequest input) -> str:
@@ -3040,6 +3693,133 @@ struct DevOps_AgentClient:
         labels["associationId"] = input.associationId
         auto b = binding.HttpBinding(method="POST", path_template="/v1/agentspaces/{agentSpaceId}/associations/{associationId}/webhooks/list", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
+
+    # RegisterService  POST /v1/register/{service}
+    # errors: AccessDeniedException, ConflictException, ContentSizeExceededException, InternalServerException, InvalidParameterException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def register_service(self, RegisterServiceInput input) -> str:
+        auto host = endpoints.regional_host(aidevops_service(), self.region)
+        dict[str, str] labels = {}
+        labels["service"] = input.service
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/register/{service}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"serviceDetails\":" + service_details_to_json(input.serviceDetails))
+        if input.kmsKeyArn.is_some():
+            auto u0 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + aidevops_json_str(u0))
+        if input.privateConnectionName.is_some():
+            auto u1 = input.privateConnectionName.unwrap()
+            parts.append("\"privateConnectionName\":" + aidevops_json_str(u1))
+        if input.targetUrlPrivateConnectionName.is_some():
+            auto u2 = input.targetUrlPrivateConnectionName.unwrap()
+            parts.append("\"targetUrlPrivateConnectionName\":" + aidevops_json_str(u2))
+        if input.exchangeUrlPrivateConnectionName.is_some():
+            auto u3 = input.exchangeUrlPrivateConnectionName.unwrap()
+            parts.append("\"exchangeUrlPrivateConnectionName\":" + aidevops_json_str(u3))
+        if input.name.is_some():
+            auto u4 = input.name.unwrap()
+            parts.append("\"name\":" + aidevops_json_str(u4))
+        if input.tags.is_some():
+            auto u5 = input.tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(aidevops_json_str(k6) + ":" + aidevops_json_str(u5[k6]))
+            parts.append("\"tags\":" + aidevops_json_obj(m6))
+        auto bp = restjson.rest_json_document(b, aidevops_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
+
+    # SendMessage  POST /agents/agent-space/{agentSpaceId}/chat/sendMessage
+    # errors: AccessDeniedException, ConflictException, ContentSizeExceededException, InternalServerException, InvalidParameterException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def send_message(self, SendMessageRequest input) -> str:
+        auto host = endpoints.regional_host(aidevops_service(), self.region)
+        dict[str, str] labels = {}
+        labels["agentSpaceId"] = input.agentSpaceId
+        auto b = binding.HttpBinding(method="POST", path_template="/agents/agent-space/{agentSpaceId}/chat/sendMessage", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"executionId\":" + aidevops_json_str(input.executionId))
+        parts.append("\"content\":" + aidevops_json_str(input.content))
+        if input.context.is_some():
+            auto u0 = input.context.unwrap()
+            parts.append("\"context\":" + u0.to_json())
+        if input.userId.is_some():
+            auto u1 = input.userId.unwrap()
+            parts.append("\"userId\":" + aidevops_json_str(u1))
+        if input.assetIds.is_some():
+            auto u2 = input.assetIds.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(aidevops_json_str(x3))
+            parts.append("\"assetIds\":" + aidevops_json_arr(e3))
+        if input.modelTier.is_some():
+            auto u4 = input.modelTier.unwrap()
+            parts.append("\"modelTier\":" + aidevops_json_str(u4))
+        auto bp = restjson.rest_json_document(b, aidevops_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, ContentSizeExceededException, InternalServerException, InvalidParameterException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(aidevops_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(aidevops_json_str(k0) + ":" + aidevops_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + aidevops_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, aidevops_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
+
+    # UpdateAgentSpace  PATCH /v1/agentspaces/{agentSpaceId}
+    # errors: AccessDeniedException, ConflictException, ContentSizeExceededException, InternalServerException, InvalidParameterException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_agent_space(self, UpdateAgentSpaceInput input) -> str:
+        auto host = endpoints.regional_host(aidevops_service(), self.region)
+        dict[str, str] labels = {}
+        labels["agentSpaceId"] = input.agentSpaceId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/agentspaces/{agentSpaceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + aidevops_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + aidevops_json_str(u1))
+        if input.locale.is_some():
+            auto u2 = input.locale.unwrap()
+            parts.append("\"locale\":" + aidevops_json_str(u2))
+        if input.preferences.is_some():
+            auto u3 = input.preferences.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(aidevops_json_str(k4) + ":" + json.dumps(JsonValue.Bool(u3[k4])))
+            parts.append("\"preferences\":" + aidevops_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, aidevops_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
+
+    # UpdateApprovalAction  POST /agents/agent-space/{agentSpaceId}/approvals/{approvalId}/update-action
+    # errors: AccessDeniedException, ConflictException, ContentSizeExceededException, InternalServerException, InvalidParameterException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_approval_action(self, UpdateApprovalActionRequest input) -> str:
+        auto host = endpoints.regional_host(aidevops_service(), self.region)
+        dict[str, str] labels = {}
+        labels["agentSpaceId"] = input.agentSpaceId
+        labels["approvalId"] = input.approvalId
+        auto b = binding.HttpBinding(method="POST", path_template="/agents/agent-space/{agentSpaceId}/approvals/{approvalId}/update-action", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"action\":" + input.action.to_json())
+        if input.finalPattern.is_some():
+            auto u0 = input.finalPattern.unwrap()
+            parts.append("\"finalPattern\":" + approval_pattern_to_json(u0))
+        if input.reason.is_some():
+            auto u1 = input.reason.unwrap()
+            parts.append("\"reason\":" + aidevops_json_str(u1))
+        if input.ttlSeconds.is_some():
+            auto u2 = input.ttlSeconds.unwrap()
+            parts.append("\"ttlSeconds\":" + str(u2))
+        if input.singleUse.is_some():
+            auto u3 = input.singleUse.unwrap()
+            parts.append("\"singleUse\":" + json.dumps(JsonValue.Bool(u3)))
+        auto bp = restjson.rest_json_document(b, aidevops_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
 
     # UpdateAsset  PATCH /asset/agent-space/{agentSpaceId}/assets/{assetId}
     # errors: AccessDeniedException, ConflictException, ContentSizeExceededException, InternalServerException, InvalidParameterException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -3204,6 +3984,19 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         while True:
             auto raw = self.list_associations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListBacklogTasks — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: tasks).
+    def paginate_list_backlog_tasks(self, ListBacklogTasksRequest input):
+        auto host = endpoints.regional_host(aidevops_service(), self.region)
+        while True:
+            auto raw = self.list_backlog_tasks(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

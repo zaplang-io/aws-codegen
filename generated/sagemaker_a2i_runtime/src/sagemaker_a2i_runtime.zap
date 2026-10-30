@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 5 operations — 3 with a generated method,
-#   2 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 5 operations — 4 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   20 structs (17 @derive(Json)), 3 enums, 6 error variants.
 #   0 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -97,8 +97,9 @@ struct DescribeHumanLoopResponse:
     str FlowDefinitionArn
     Optional[HumanLoopOutput] HumanLoopOutput
 
-# no @derive(Json): member(s) ContentClassifiers: list[ContentClassifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContentClassifiers: list[ContentClassifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HumanLoopDataAttributes:
     list[ContentClassifier] ContentClassifiers
 
@@ -134,8 +135,9 @@ struct ListHumanLoopsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) HumanLoopSummaries: list[HumanLoopSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HumanLoopSummaries: list[HumanLoopSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListHumanLoopsResponse:
     list[HumanLoopSummary] HumanLoopSummaries
     Optional[str] NextToken
@@ -214,7 +216,6 @@ def a2i_runtime_sagemaker_error_from_code(str code) -> SageMaker_A2I_RuntimeErro
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   ListHumanLoops (httpQuery `CreationTimeAfter` has unsupported type DateTime)
-#   StartHumanLoop (document member `DataAttributes: HumanLoopDataAttributes` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -227,6 +228,45 @@ def a2i_runtime_sagemaker_error_from_code(str code) -> SageMaker_A2I_RuntimeErro
 struct StopHumanLoopDocument:
     # document members of StopHumanLoop
     str HumanLoopName
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def a2i_runtime_sagemaker_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def a2i_runtime_sagemaker_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def a2i_runtime_sagemaker_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize HumanLoopDataAttributes to a compact JSON object (declaration order).
+def human_loop_data_attributes_to_json(HumanLoopDataAttributes v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ContentClassifiers:
+        e0.append(x0.to_json())
+    parts.append("\"ContentClassifiers\":" + a2i_runtime_sagemaker_json_arr(e0))
+    return a2i_runtime_sagemaker_json_obj(parts)
 
 # A bound SageMaker_A2I_Runtime client: credentials + region, threaded into every operation.
 struct SageMaker_A2I_RuntimeClient:
@@ -250,6 +290,21 @@ struct SageMaker_A2I_RuntimeClient:
         labels["HumanLoopName"] = input.HumanLoopName
         auto b = binding.HttpBinding(method="GET", path_template="/human-loops/{HumanLoopName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, a2i_runtime_sagemaker_service(), self.region, host)
+
+    # StartHumanLoop  POST /human-loops
+    # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_human_loop(self, StartHumanLoopRequest input) -> str:
+        auto host = endpoints.regional_host(a2i_runtime_sagemaker_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/human-loops", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"HumanLoopName\":" + a2i_runtime_sagemaker_json_str(input.HumanLoopName))
+        parts.append("\"FlowDefinitionArn\":" + a2i_runtime_sagemaker_json_str(input.FlowDefinitionArn))
+        parts.append("\"HumanLoopInput\":" + input.HumanLoopInput.to_json())
+        if input.DataAttributes.is_some():
+            auto u0 = input.DataAttributes.unwrap()
+            parts.append("\"DataAttributes\":" + human_loop_data_attributes_to_json(u0))
+        auto bp = restjson.rest_json_document(b, a2i_runtime_sagemaker_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, a2i_runtime_sagemaker_service(), self.region, host)
 
     # StopHumanLoop  POST /human-loops/stop
     # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException

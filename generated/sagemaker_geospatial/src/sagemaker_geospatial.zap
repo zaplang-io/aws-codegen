@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 19 operations — 13 with a generated method,
-#   6 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 19 operations — 17 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   103 structs (63 @derive(Json)), 20 enums, 7 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -235,13 +235,15 @@ enum ZonalStatistics:
 struct AccessDeniedException:
     str Message
 
-# no @derive(Json): member(s) AreaOfInterestGeometry: AreaOfInterestGeometry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AreaOfInterestGeometry: AreaOfInterestGeometry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AreaOfInterest:
     Optional[AreaOfInterestGeometry] AreaOfInterestGeometry
 
-# no @derive(Json): member(s) MultiPolygonGeometry: MultiPolygonGeometryInput, PolygonGeometry: PolygonGeometryInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MultiPolygonGeometry: MultiPolygonGeometryInput, PolygonGeometry: PolygonGeometryInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AreaOfInterestGeometry:
     Optional[MultiPolygonGeometryInput] MultiPolygonGeometry
     Optional[PolygonGeometryInput] PolygonGeometry
@@ -250,8 +252,9 @@ struct AreaOfInterestGeometry:
 struct AssetValue:
     Optional[str] Href
 
-# no @derive(Json): member(s) CustomIndices: CustomIndicesInput, PredefinedIndices: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomIndices: CustomIndicesInput, PredefinedIndices: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BandMathConfigInput:
     Optional[CustomIndicesInput] CustomIndices
     Optional[list[str]] PredefinedIndices
@@ -261,8 +264,9 @@ struct CloudMaskingConfigInput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TargetBands: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetBands: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudRemovalConfigInput:
     Optional[str] AlgorithmName
     Optional[str] InterpolationValue
@@ -273,8 +277,9 @@ struct ConflictException:
     str Message
     Optional[str] ResourceId
 
-# no @derive(Json): member(s) Operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomIndicesInput:
     Optional[list[Operation]] Operations
 
@@ -370,14 +375,16 @@ struct Filter:
     str Name
     str Type
 
-# no @derive(Json): member(s) TargetBands: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetBands: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeoMosaicConfigInput:
     Optional[AlgorithmNameGeoMosaic] AlgorithmName
     Optional[list[str]] TargetBands
 
-# no @derive(Json): member(s) Coordinates: list[list[list[float64]]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Coordinates: list[list[list[float64]]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Geometry:
     list[list[list[float64]]] Coordinates
     str Type
@@ -387,8 +394,9 @@ struct Geometry:
 struct GetEarthObservationJobInput:
     str Arn
 
-# no @derive(Json): member(s) InputConfig: InputConfigOutput, JobConfig: JobConfigInput, OutputBands: list[OutputBand], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputConfig: InputConfigOutput, JobConfig: JobConfigInput, OutputBands: list[OutputBand], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEarthObservationJobOutput:
     str Arn
     DateTime CreationTime
@@ -410,8 +418,9 @@ struct GetEarthObservationJobOutput:
 struct GetRasterDataCollectionInput:
     str Arn
 
-# no @derive(Json): member(s) ImageSourceBands: list[str], SupportedFilters: list[Filter], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ImageSourceBands: list[str], SupportedFilters: list[Filter], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRasterDataCollectionOutput:
     str Arn
     str Description
@@ -449,8 +458,9 @@ struct GetTileOutput:
 struct GetVectorEnrichmentJobInput:
     str Arn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetVectorEnrichmentJobOutput:
     str Arn
     DateTime CreationTime
@@ -467,14 +477,16 @@ struct GetVectorEnrichmentJobOutput:
     Optional[dict[str, str]] Tags
     VectorEnrichmentJobType Type
 
-# no @derive(Json): member(s) RasterDataCollectionQuery: RasterDataCollectionQueryInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RasterDataCollectionQuery: RasterDataCollectionQueryInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputConfigInput:
     Optional[str] PreviousEarthObservationJobArn
     Optional[RasterDataCollectionQueryInput] RasterDataCollectionQuery
 
-# no @derive(Json): member(s) RasterDataCollectionQuery: RasterDataCollectionQueryOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RasterDataCollectionQuery: RasterDataCollectionQueryOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputConfigOutput:
     Optional[str] PreviousEarthObservationJobArn
     Optional[RasterDataCollectionQueryOutput] RasterDataCollectionQuery
@@ -484,8 +496,9 @@ struct InternalServerException:
     str Message
     Optional[str] ResourceId
 
-# no @derive(Json): member(s) Assets: dict[str, AssetValue], Geometry: Geometry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Assets: dict[str, AssetValue], Geometry: Geometry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ItemSource:
     Optional[dict[str, AssetValue]] Assets
     DateTime DateTime
@@ -493,8 +506,9 @@ struct ItemSource:
     str Id
     Optional[Properties] Properties
 
-# no @derive(Json): member(s) BandMathConfig: BandMathConfigInput, CloudRemovalConfig: CloudRemovalConfigInput, GeoMosaicConfig: GeoMosaicConfigInput, ResamplingConfig: ResamplingConfigInput, StackConfig: StackConfigInput, TemporalStatisticsConfig: TemporalStatisticsConfigInput, ZonalStatisticsConfig: ZonalStatisticsConfigInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BandMathConfig: BandMathConfigInput, CloudRemovalConfig: CloudRemovalConfigInput, GeoMosaicConfig: GeoMosaicConfigInput, ResamplingConfig: ResamplingConfigInput, StackConfig: StackConfigInput, TemporalStatisticsConfig: TemporalStatisticsConfigInput, ZonalStatisticsConfig: ZonalStatisticsConfigInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobConfigInput:
     Optional[BandMathConfigInput] BandMathConfig
     Optional[CloudMaskingConfigInput] CloudMaskingConfig
@@ -525,14 +539,16 @@ struct ListEarthObservationJobInput:
     Optional[SortOrder] SortOrder
     Optional[EarthObservationJobStatus] StatusEquals
 
-# no @derive(Json): member(s) EarthObservationJobSummaries: list[ListEarthObservationJobOutputConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EarthObservationJobSummaries: list[ListEarthObservationJobOutputConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEarthObservationJobOutput:
     list[ListEarthObservationJobOutputConfig] EarthObservationJobSummaries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEarthObservationJobOutputConfig:
     str Arn
     DateTime CreationTime
@@ -548,8 +564,9 @@ struct ListRasterDataCollectionsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RasterDataCollectionSummaries: list[RasterDataCollectionMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RasterDataCollectionSummaries: list[RasterDataCollectionMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRasterDataCollectionsOutput:
     Optional[str] NextToken
     list[RasterDataCollectionMetadata] RasterDataCollectionSummaries
@@ -559,8 +576,9 @@ struct ListRasterDataCollectionsOutput:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -573,14 +591,16 @@ struct ListVectorEnrichmentJobInput:
     Optional[SortOrder] SortOrder
     Optional[str] StatusEquals
 
-# no @derive(Json): member(s) VectorEnrichmentJobSummaries: list[ListVectorEnrichmentJobOutputConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VectorEnrichmentJobSummaries: list[ListVectorEnrichmentJobOutputConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVectorEnrichmentJobOutput:
     Optional[str] NextToken
     list[ListVectorEnrichmentJobOutputConfig] VectorEnrichmentJobSummaries
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVectorEnrichmentJobOutputConfig:
     str Arn
     DateTime CreationTime
@@ -597,8 +617,9 @@ struct MapMatchingConfig:
     str XAttributeName
     str YAttributeName
 
-# no @derive(Json): member(s) Coordinates: list[list[list[list[float64]]]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Coordinates: list[list[list[list[float64]]]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MultiPolygonGeometryInput:
     list[list[list[list[float64]]]] Coordinates
 
@@ -631,8 +652,9 @@ struct PlatformInput:
     Optional[ComparisonOperator] ComparisonOperator
     str Value
 
-# no @derive(Json): member(s) Coordinates: list[list[list[float64]]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Coordinates: list[list[list[float64]]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PolygonGeometryInput:
     list[list[list[float64]]] Coordinates
 
@@ -658,14 +680,16 @@ struct Property:
 struct PropertyFilter:
     Property Property
 
-# no @derive(Json): member(s) Properties: list[PropertyFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: list[PropertyFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PropertyFilters:
     Optional[str] LogicalOperator
     Optional[list[PropertyFilter]] Properties
 
-# no @derive(Json): member(s) SupportedFilters: list[Filter], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupportedFilters: list[Filter], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RasterDataCollectionMetadata:
     str Arn
     str Description
@@ -675,16 +699,18 @@ struct RasterDataCollectionMetadata:
     Optional[dict[str, str]] Tags
     DataCollectionType Type
 
-# no @derive(Json): member(s) AreaOfInterest: AreaOfInterest, PropertyFilters: PropertyFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AreaOfInterest: AreaOfInterest, PropertyFilters: PropertyFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RasterDataCollectionQueryInput:
     Optional[AreaOfInterest] AreaOfInterest
     Optional[PropertyFilters] PropertyFilters
     str RasterDataCollectionArn
     TimeRangeFilterInput TimeRangeFilter
 
-# no @derive(Json): member(s) AreaOfInterest: AreaOfInterest, PropertyFilters: PropertyFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AreaOfInterest: AreaOfInterest, PropertyFilters: PropertyFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RasterDataCollectionQueryOutput:
     Optional[AreaOfInterest] AreaOfInterest
     Optional[PropertyFilters] PropertyFilters
@@ -692,16 +718,18 @@ struct RasterDataCollectionQueryOutput:
     str RasterDataCollectionName
     TimeRangeFilterOutput TimeRangeFilter
 
-# no @derive(Json): member(s) AreaOfInterest: AreaOfInterest, BandFilter: list[str], PropertyFilters: PropertyFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AreaOfInterest: AreaOfInterest, BandFilter: list[str], PropertyFilters: PropertyFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RasterDataCollectionQueryWithBandFilterInput:
     Optional[AreaOfInterest] AreaOfInterest
     Optional[list[str]] BandFilter
     Optional[PropertyFilters] PropertyFilters
     TimeRangeFilterInput TimeRangeFilter
 
-# no @derive(Json): member(s) TargetBands: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetBands: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResamplingConfigInput:
     Optional[AlgorithmNameResampling] AlgorithmName
     OutputResolutionResamplingInput OutputResolution
@@ -724,8 +752,9 @@ struct SearchRasterDataCollectionInput:
     Optional[str] NextToken
     RasterDataCollectionQueryWithBandFilterInput RasterDataCollectionQuery
 
-# no @derive(Json): member(s) Items: list[ItemSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ItemSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchRasterDataCollectionOutput:
     int64 ApproximateResultCount
     Optional[list[ItemSource]] Items
@@ -736,8 +765,9 @@ struct ServiceQuotaExceededException:
     str Message
     Optional[str] ResourceId
 
-# no @derive(Json): member(s) TargetBands: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetBands: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StackConfigInput:
     Optional[OutputResolutionStackInput] OutputResolution
     Optional[list[str]] TargetBands
@@ -753,8 +783,9 @@ struct StartEarthObservationJobInput:
     str Name
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) InputConfig: InputConfigOutput, JobConfig: JobConfigInput, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputConfig: InputConfigOutput, JobConfig: JobConfigInput, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartEarthObservationJobOutput:
     str Arn
     DateTime CreationTime
@@ -778,8 +809,9 @@ struct StartVectorEnrichmentJobInput:
     str Name
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartVectorEnrichmentJobOutput:
     str Arn
     DateTime CreationTime
@@ -824,8 +856,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Statistics: list[TemporalStatistics], TargetBands: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Statistics: list[TemporalStatistics], TargetBands: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TemporalStatisticsConfigInput:
     Optional[GroupBy] GroupBy
     list[TemporalStatistics] Statistics
@@ -913,8 +946,9 @@ struct ViewSunElevationInput:
     float64 LowerBound
     float64 UpperBound
 
-# no @derive(Json): member(s) Statistics: list[ZonalStatistics], TargetBands: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Statistics: list[ZonalStatistics], TargetBands: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ZonalStatisticsConfigInput:
     list[ZonalStatistics] Statistics
     Optional[list[str]] TargetBands
@@ -960,10 +994,6 @@ def sagemaker_geospatial_error_from_code(str code) -> SageMaker_GeospatialError:
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   GetTile (httpQuery `ImageAssets` has unsupported type list[str])
-#   SearchRasterDataCollection (document member `RasterDataCollectionQuery: RasterDataCollectionQueryWithBandFilterInput` is not serializable by derive)
-#   StartEarthObservationJob (document member `InputConfig: InputConfigInput` is not serializable by derive)
-#   StartVectorEnrichmentJob (document member `Tags: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -1013,6 +1043,298 @@ struct StopEarthObservationJobDocument:
 struct StopVectorEnrichmentJobDocument:
     # document members of StopVectorEnrichmentJob
     str Arn
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def sagemaker_geospatial_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def sagemaker_geospatial_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def sagemaker_geospatial_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AreaOfInterest to a compact JSON object (declaration order).
+def area_of_interest_to_json(AreaOfInterest v) -> str:
+    list[str] parts = []
+    if v.AreaOfInterestGeometry.is_some():
+        auto u0 = v.AreaOfInterestGeometry.unwrap()
+        parts.append("\"AreaOfInterestGeometry\":" + area_of_interest_geometry_to_json(u0))
+    return sagemaker_geospatial_json_obj(parts)
+
+# Serialize AreaOfInterestGeometry to a compact JSON object (declaration order).
+def area_of_interest_geometry_to_json(AreaOfInterestGeometry v) -> str:
+    list[str] parts = []
+    if v.MultiPolygonGeometry.is_some():
+        auto u0 = v.MultiPolygonGeometry.unwrap()
+        parts.append("\"MultiPolygonGeometry\":" + multi_polygon_geometry_input_to_json(u0))
+    if v.PolygonGeometry.is_some():
+        auto u1 = v.PolygonGeometry.unwrap()
+        parts.append("\"PolygonGeometry\":" + polygon_geometry_input_to_json(u1))
+    return sagemaker_geospatial_json_obj(parts)
+
+# Serialize BandMathConfigInput to a compact JSON object (declaration order).
+def band_math_config_input_to_json(BandMathConfigInput v) -> str:
+    list[str] parts = []
+    if v.CustomIndices.is_some():
+        auto u0 = v.CustomIndices.unwrap()
+        parts.append("\"CustomIndices\":" + custom_indices_input_to_json(u0))
+    if v.PredefinedIndices.is_some():
+        auto u1 = v.PredefinedIndices.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(sagemaker_geospatial_json_str(x2))
+        parts.append("\"PredefinedIndices\":" + sagemaker_geospatial_json_arr(e2))
+    return sagemaker_geospatial_json_obj(parts)
+
+# Serialize CloudRemovalConfigInput to a compact JSON object (declaration order).
+def cloud_removal_config_input_to_json(CloudRemovalConfigInput v) -> str:
+    list[str] parts = []
+    if v.AlgorithmName.is_some():
+        auto u0 = v.AlgorithmName.unwrap()
+        parts.append("\"AlgorithmName\":" + sagemaker_geospatial_json_str(u0))
+    if v.InterpolationValue.is_some():
+        auto u1 = v.InterpolationValue.unwrap()
+        parts.append("\"InterpolationValue\":" + sagemaker_geospatial_json_str(u1))
+    if v.TargetBands.is_some():
+        auto u2 = v.TargetBands.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(sagemaker_geospatial_json_str(x3))
+        parts.append("\"TargetBands\":" + sagemaker_geospatial_json_arr(e3))
+    return sagemaker_geospatial_json_obj(parts)
+
+# Serialize CustomIndicesInput to a compact JSON object (declaration order).
+def custom_indices_input_to_json(CustomIndicesInput v) -> str:
+    list[str] parts = []
+    if v.Operations.is_some():
+        auto u0 = v.Operations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Operations\":" + sagemaker_geospatial_json_arr(e1))
+    return sagemaker_geospatial_json_obj(parts)
+
+# Serialize GeoMosaicConfigInput to a compact JSON object (declaration order).
+def geo_mosaic_config_input_to_json(GeoMosaicConfigInput v) -> str:
+    list[str] parts = []
+    if v.AlgorithmName.is_some():
+        auto u0 = v.AlgorithmName.unwrap()
+        parts.append("\"AlgorithmName\":" + u0.to_json())
+    if v.TargetBands.is_some():
+        auto u1 = v.TargetBands.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(sagemaker_geospatial_json_str(x2))
+        parts.append("\"TargetBands\":" + sagemaker_geospatial_json_arr(e2))
+    return sagemaker_geospatial_json_obj(parts)
+
+# Serialize InputConfigInput to a compact JSON object (declaration order).
+def input_config_input_to_json(InputConfigInput v) -> str:
+    list[str] parts = []
+    if v.PreviousEarthObservationJobArn.is_some():
+        auto u0 = v.PreviousEarthObservationJobArn.unwrap()
+        parts.append("\"PreviousEarthObservationJobArn\":" + sagemaker_geospatial_json_str(u0))
+    if v.RasterDataCollectionQuery.is_some():
+        auto u1 = v.RasterDataCollectionQuery.unwrap()
+        parts.append("\"RasterDataCollectionQuery\":" + raster_data_collection_query_input_to_json(u1))
+    return sagemaker_geospatial_json_obj(parts)
+
+# Serialize JobConfigInput to a compact JSON object (declaration order).
+def job_config_input_to_json(JobConfigInput v) -> str:
+    list[str] parts = []
+    if v.BandMathConfig.is_some():
+        auto u0 = v.BandMathConfig.unwrap()
+        parts.append("\"BandMathConfig\":" + band_math_config_input_to_json(u0))
+    if v.CloudMaskingConfig.is_some():
+        auto u1 = v.CloudMaskingConfig.unwrap()
+        parts.append("\"CloudMaskingConfig\":" + u1.to_json())
+    if v.CloudRemovalConfig.is_some():
+        auto u2 = v.CloudRemovalConfig.unwrap()
+        parts.append("\"CloudRemovalConfig\":" + cloud_removal_config_input_to_json(u2))
+    if v.GeoMosaicConfig.is_some():
+        auto u3 = v.GeoMosaicConfig.unwrap()
+        parts.append("\"GeoMosaicConfig\":" + geo_mosaic_config_input_to_json(u3))
+    if v.LandCoverSegmentationConfig.is_some():
+        auto u4 = v.LandCoverSegmentationConfig.unwrap()
+        parts.append("\"LandCoverSegmentationConfig\":" + u4.to_json())
+    if v.ResamplingConfig.is_some():
+        auto u5 = v.ResamplingConfig.unwrap()
+        parts.append("\"ResamplingConfig\":" + resampling_config_input_to_json(u5))
+    if v.StackConfig.is_some():
+        auto u6 = v.StackConfig.unwrap()
+        parts.append("\"StackConfig\":" + stack_config_input_to_json(u6))
+    if v.TemporalStatisticsConfig.is_some():
+        auto u7 = v.TemporalStatisticsConfig.unwrap()
+        parts.append("\"TemporalStatisticsConfig\":" + temporal_statistics_config_input_to_json(u7))
+    if v.ZonalStatisticsConfig.is_some():
+        auto u8 = v.ZonalStatisticsConfig.unwrap()
+        parts.append("\"ZonalStatisticsConfig\":" + zonal_statistics_config_input_to_json(u8))
+    return sagemaker_geospatial_json_obj(parts)
+
+# Serialize MultiPolygonGeometryInput to a compact JSON object (declaration order).
+def multi_polygon_geometry_input_to_json(MultiPolygonGeometryInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Coordinates:
+        list[str] e1 = []
+        for x1 in x0:
+            list[str] e2 = []
+            for x2 in x1:
+                list[str] e3 = []
+                for x3 in x2:
+                    e3.append(str(x3))
+                e2.append(sagemaker_geospatial_json_arr(e3))
+            e1.append(sagemaker_geospatial_json_arr(e2))
+        e0.append(sagemaker_geospatial_json_arr(e1))
+    parts.append("\"Coordinates\":" + sagemaker_geospatial_json_arr(e0))
+    return sagemaker_geospatial_json_obj(parts)
+
+# Serialize PolygonGeometryInput to a compact JSON object (declaration order).
+def polygon_geometry_input_to_json(PolygonGeometryInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Coordinates:
+        list[str] e1 = []
+        for x1 in x0:
+            list[str] e2 = []
+            for x2 in x1:
+                e2.append(str(x2))
+            e1.append(sagemaker_geospatial_json_arr(e2))
+        e0.append(sagemaker_geospatial_json_arr(e1))
+    parts.append("\"Coordinates\":" + sagemaker_geospatial_json_arr(e0))
+    return sagemaker_geospatial_json_obj(parts)
+
+# Serialize PropertyFilters to a compact JSON object (declaration order).
+def property_filters_to_json(PropertyFilters v) -> str:
+    list[str] parts = []
+    if v.LogicalOperator.is_some():
+        auto u0 = v.LogicalOperator.unwrap()
+        parts.append("\"LogicalOperator\":" + sagemaker_geospatial_json_str(u0))
+    if v.Properties.is_some():
+        auto u1 = v.Properties.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Properties\":" + sagemaker_geospatial_json_arr(e2))
+    return sagemaker_geospatial_json_obj(parts)
+
+# Serialize RasterDataCollectionQueryInput to a compact JSON object (declaration order).
+def raster_data_collection_query_input_to_json(RasterDataCollectionQueryInput v) -> str:
+    list[str] parts = []
+    if v.AreaOfInterest.is_some():
+        auto u0 = v.AreaOfInterest.unwrap()
+        parts.append("\"AreaOfInterest\":" + area_of_interest_to_json(u0))
+    if v.PropertyFilters.is_some():
+        auto u1 = v.PropertyFilters.unwrap()
+        parts.append("\"PropertyFilters\":" + property_filters_to_json(u1))
+    parts.append("\"RasterDataCollectionArn\":" + sagemaker_geospatial_json_str(v.RasterDataCollectionArn))
+    parts.append("\"TimeRangeFilter\":" + v.TimeRangeFilter.to_json())
+    return sagemaker_geospatial_json_obj(parts)
+
+# Serialize RasterDataCollectionQueryWithBandFilterInput to a compact JSON object (declaration order).
+def raster_data_collection_query_with_band_filter_input_to_json(RasterDataCollectionQueryWithBandFilterInput v) -> str:
+    list[str] parts = []
+    if v.AreaOfInterest.is_some():
+        auto u0 = v.AreaOfInterest.unwrap()
+        parts.append("\"AreaOfInterest\":" + area_of_interest_to_json(u0))
+    if v.BandFilter.is_some():
+        auto u1 = v.BandFilter.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(sagemaker_geospatial_json_str(x2))
+        parts.append("\"BandFilter\":" + sagemaker_geospatial_json_arr(e2))
+    if v.PropertyFilters.is_some():
+        auto u3 = v.PropertyFilters.unwrap()
+        parts.append("\"PropertyFilters\":" + property_filters_to_json(u3))
+    parts.append("\"TimeRangeFilter\":" + v.TimeRangeFilter.to_json())
+    return sagemaker_geospatial_json_obj(parts)
+
+# Serialize ResamplingConfigInput to a compact JSON object (declaration order).
+def resampling_config_input_to_json(ResamplingConfigInput v) -> str:
+    list[str] parts = []
+    if v.AlgorithmName.is_some():
+        auto u0 = v.AlgorithmName.unwrap()
+        parts.append("\"AlgorithmName\":" + u0.to_json())
+    parts.append("\"OutputResolution\":" + v.OutputResolution.to_json())
+    if v.TargetBands.is_some():
+        auto u1 = v.TargetBands.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(sagemaker_geospatial_json_str(x2))
+        parts.append("\"TargetBands\":" + sagemaker_geospatial_json_arr(e2))
+    return sagemaker_geospatial_json_obj(parts)
+
+# Serialize StackConfigInput to a compact JSON object (declaration order).
+def stack_config_input_to_json(StackConfigInput v) -> str:
+    list[str] parts = []
+    if v.OutputResolution.is_some():
+        auto u0 = v.OutputResolution.unwrap()
+        parts.append("\"OutputResolution\":" + u0.to_json())
+    if v.TargetBands.is_some():
+        auto u1 = v.TargetBands.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(sagemaker_geospatial_json_str(x2))
+        parts.append("\"TargetBands\":" + sagemaker_geospatial_json_arr(e2))
+    return sagemaker_geospatial_json_obj(parts)
+
+# Serialize TemporalStatisticsConfigInput to a compact JSON object (declaration order).
+def temporal_statistics_config_input_to_json(TemporalStatisticsConfigInput v) -> str:
+    list[str] parts = []
+    if v.GroupBy.is_some():
+        auto u0 = v.GroupBy.unwrap()
+        parts.append("\"GroupBy\":" + u0.to_json())
+    list[str] e1 = []
+    for x1 in v.Statistics:
+        e1.append(x1.to_json())
+    parts.append("\"Statistics\":" + sagemaker_geospatial_json_arr(e1))
+    if v.TargetBands.is_some():
+        auto u2 = v.TargetBands.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(sagemaker_geospatial_json_str(x3))
+        parts.append("\"TargetBands\":" + sagemaker_geospatial_json_arr(e3))
+    return sagemaker_geospatial_json_obj(parts)
+
+# Serialize ZonalStatisticsConfigInput to a compact JSON object (declaration order).
+def zonal_statistics_config_input_to_json(ZonalStatisticsConfigInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Statistics:
+        e0.append(x0.to_json())
+    parts.append("\"Statistics\":" + sagemaker_geospatial_json_arr(e0))
+    if v.TargetBands.is_some():
+        auto u1 = v.TargetBands.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(sagemaker_geospatial_json_str(x2))
+        parts.append("\"TargetBands\":" + sagemaker_geospatial_json_arr(e2))
+    parts.append("\"ZoneS3Path\":" + sagemaker_geospatial_json_str(v.ZoneS3Path))
+    if v.ZoneS3PathKmsKeyId.is_some():
+        auto u3 = v.ZoneS3PathKmsKeyId.unwrap()
+        parts.append("\"ZoneS3PathKmsKeyId\":" + sagemaker_geospatial_json_str(u3))
+    return sagemaker_geospatial_json_obj(parts)
 
 # A bound SageMaker_Geospatial client: credentials + region, threaded into every operation.
 struct SageMaker_GeospatialClient:
@@ -1121,6 +1443,70 @@ struct SageMaker_GeospatialClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, sagemaker_geospatial_service(), self.region, host)
 
+    # SearchRasterDataCollection  POST /search-raster-data-collection
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def search_raster_data_collection(self, SearchRasterDataCollectionInput input) -> str:
+        auto host = endpoints.regional_host(sagemaker_geospatial_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/search-raster-data-collection", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Arn\":" + sagemaker_geospatial_json_str(input.Arn))
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + sagemaker_geospatial_json_str(u0))
+        parts.append("\"RasterDataCollectionQuery\":" + raster_data_collection_query_with_band_filter_input_to_json(input.RasterDataCollectionQuery))
+        auto bp = restjson.rest_json_document(b, sagemaker_geospatial_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, sagemaker_geospatial_service(), self.region, host)
+
+    # StartEarthObservationJob  POST /earth-observation-jobs
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_earth_observation_job(self, StartEarthObservationJobInput input) -> str:
+        auto host = endpoints.regional_host(sagemaker_geospatial_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/earth-observation-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + sagemaker_geospatial_json_str(u0))
+        parts.append("\"ExecutionRoleArn\":" + sagemaker_geospatial_json_str(input.ExecutionRoleArn))
+        parts.append("\"InputConfig\":" + input_config_input_to_json(input.InputConfig))
+        parts.append("\"JobConfig\":" + job_config_input_to_json(input.JobConfig))
+        if input.KmsKeyId.is_some():
+            auto u1 = input.KmsKeyId.unwrap()
+            parts.append("\"KmsKeyId\":" + sagemaker_geospatial_json_str(u1))
+        parts.append("\"Name\":" + sagemaker_geospatial_json_str(input.Name))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(sagemaker_geospatial_json_str(k3) + ":" + sagemaker_geospatial_json_str(u2[k3]))
+            parts.append("\"Tags\":" + sagemaker_geospatial_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, sagemaker_geospatial_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, sagemaker_geospatial_service(), self.region, host)
+
+    # StartVectorEnrichmentJob  POST /vector-enrichment-jobs
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_vector_enrichment_job(self, StartVectorEnrichmentJobInput input) -> str:
+        auto host = endpoints.regional_host(sagemaker_geospatial_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/vector-enrichment-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + sagemaker_geospatial_json_str(u0))
+        parts.append("\"ExecutionRoleArn\":" + sagemaker_geospatial_json_str(input.ExecutionRoleArn))
+        parts.append("\"InputConfig\":" + input.InputConfig.to_json())
+        parts.append("\"JobConfig\":" + input.JobConfig.to_json())
+        if input.KmsKeyId.is_some():
+            auto u1 = input.KmsKeyId.unwrap()
+            parts.append("\"KmsKeyId\":" + sagemaker_geospatial_json_str(u1))
+        parts.append("\"Name\":" + sagemaker_geospatial_json_str(input.Name))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(sagemaker_geospatial_json_str(k3) + ":" + sagemaker_geospatial_json_str(u2[k3]))
+            parts.append("\"Tags\":" + sagemaker_geospatial_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, sagemaker_geospatial_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, sagemaker_geospatial_service(), self.region, host)
+
     # StopEarthObservationJob  POST /earth-observation-jobs/stop
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def stop_earth_observation_job(self, StopEarthObservationJobInput input) -> str:
@@ -1137,6 +1523,21 @@ struct SageMaker_GeospatialClient:
         auto b = binding.HttpBinding(method="POST", path_template="/vector-enrichment-jobs/stop", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopVectorEnrichmentJobDocument(Arn=input.Arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, sagemaker_geospatial_service(), self.region, host)
+
+    # TagResource  PUT /tags/{ResourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(sagemaker_geospatial_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(sagemaker_geospatial_json_str(k0) + ":" + sagemaker_geospatial_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + sagemaker_geospatial_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, sagemaker_geospatial_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, sagemaker_geospatial_service(), self.region, host)
 
     # Paginator for ListEarthObservationJobs — yields each Response page, threading the

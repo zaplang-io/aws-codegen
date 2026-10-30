@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 13 operations — 6 with a generated method,
-#   7 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 13 operations — 12 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   41 structs (28 @derive(Json)), 6 enums, 8 error variants.
-#   0 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -143,8 +143,9 @@ struct DeleteTargetResult:
 struct DescribeNotificationRuleRequest:
     str Arn
 
-# no @derive(Json): member(s) EventTypes: list[EventTypeSummary], Targets: list[TargetSummary], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventTypes: list[EventTypeSummary], Targets: list[TargetSummary], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeNotificationRuleResult:
     str Arn
     Optional[str] Name
@@ -185,8 +186,9 @@ struct ListEventTypesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) EventTypes: list[EventTypeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventTypes: list[EventTypeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventTypesResult:
     Optional[list[EventTypeSummary]] EventTypes
     Optional[str] NextToken
@@ -203,8 +205,9 @@ struct ListNotificationRulesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) NotificationRules: list[NotificationRuleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NotificationRules: list[NotificationRuleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNotificationRulesResult:
     Optional[str] NextToken
     Optional[list[NotificationRuleSummary]] NotificationRules
@@ -214,8 +217,9 @@ struct ListNotificationRulesResult:
 struct ListTagsForResourceRequest:
     str Arn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResult:
     Optional[dict[str, str]] Tags
 
@@ -231,8 +235,9 @@ struct ListTargetsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Targets: list[TargetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: list[TargetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTargetsResult:
     Optional[list[TargetSummary]] Targets
     Optional[str] NextToken
@@ -267,8 +272,9 @@ struct TagResourceRequest:
     str Arn
     dict[str, str] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceResult:
     Optional[dict[str, str]] Tags
 
@@ -364,19 +370,7 @@ def codestar_notifications_error_from_code(str code) -> codestar_notificationsEr
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateNotificationRule (document member `EventTypeIds: list[str]` is not serializable by derive)
-#   ListEventTypes (document member `Filters: list[ListEventTypesFilter]` is not serializable by derive)
-#   ListNotificationRules (document member `Filters: list[ListNotificationRulesFilter]` is not serializable by derive)
-#   ListTargets (document member `Filters: list[ListTargetsFilter]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateNotificationRule (document member `EventTypeIds: list[str]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListEventTypes (operation not generated)
-#   ListNotificationRules (operation not generated)
-#   ListTargets (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -420,6 +414,38 @@ struct codestar_notificationsClient:
     core.Credentials creds
     str region
 
+    # CreateNotificationRule  POST /createNotificationRule
+    # errors: AccessDeniedException, ConcurrentModificationException, ConfigurationException, LimitExceededException, ResourceAlreadyExistsException, ValidationException
+    def create_notification_rule(self, CreateNotificationRuleRequest input) -> str:
+        auto host = endpoints.regional_host(codestar_notifications_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/createNotificationRule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + codestar_notifications_json_str(input.Name))
+        list[str] e0 = []
+        for x0 in input.EventTypeIds:
+            e0.append(codestar_notifications_json_str(x0))
+        parts.append("\"EventTypeIds\":" + codestar_notifications_json_arr(e0))
+        parts.append("\"Resource\":" + codestar_notifications_json_str(input.Resource))
+        list[str] e1 = []
+        for x1 in input.Targets:
+            e1.append(x1.to_json())
+        parts.append("\"Targets\":" + codestar_notifications_json_arr(e1))
+        parts.append("\"DetailType\":" + input.DetailType.to_json())
+        if input.ClientRequestToken.is_some():
+            auto u2 = input.ClientRequestToken.unwrap()
+            parts.append("\"ClientRequestToken\":" + codestar_notifications_json_str(u2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(codestar_notifications_json_str(k4) + ":" + codestar_notifications_json_str(u3[k4]))
+            parts.append("\"Tags\":" + codestar_notifications_json_obj(m4))
+        if input.Status.is_some():
+            auto u5 = input.Status.unwrap()
+            parts.append("\"Status\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, codestar_notifications_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codestar_notifications_service(), self.region, host)
+
     # DeleteNotificationRule  POST /deleteNotificationRule
     # errors: ConcurrentModificationException, LimitExceededException, ValidationException
     def delete_notification_rule(self, DeleteNotificationRuleRequest input) -> str:
@@ -447,6 +473,48 @@ struct codestar_notificationsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codestar_notifications_service(), self.region, host)
 
+    # ListEventTypes  POST /listEventTypes
+    # errors: InvalidNextTokenException, ValidationException
+    def list_event_types(self, ListEventTypesRequest input) -> str:
+        auto host = endpoints.regional_host(codestar_notifications_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/listEventTypes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Filters\":" + codestar_notifications_json_arr(e1))
+        if input.NextToken.is_some():
+            auto u2 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + codestar_notifications_json_str(u2))
+        if input.MaxResults.is_some():
+            auto u3 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u3))
+        auto bp = restjson.rest_json_document(b, codestar_notifications_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codestar_notifications_service(), self.region, host)
+
+    # ListNotificationRules  POST /listNotificationRules
+    # errors: InvalidNextTokenException, ValidationException
+    def list_notification_rules(self, ListNotificationRulesRequest input) -> str:
+        auto host = endpoints.regional_host(codestar_notifications_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/listNotificationRules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Filters\":" + codestar_notifications_json_arr(e1))
+        if input.NextToken.is_some():
+            auto u2 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + codestar_notifications_json_str(u2))
+        if input.MaxResults.is_some():
+            auto u3 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u3))
+        auto bp = restjson.rest_json_document(b, codestar_notifications_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codestar_notifications_service(), self.region, host)
+
     # ListTagsForResource  POST /listTagsForResource
     # errors: ResourceNotFoundException, ValidationException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
@@ -454,6 +522,27 @@ struct codestar_notificationsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/listTagsForResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTagsForResourceDocument(Arn=input.Arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, codestar_notifications_service(), self.region, host)
+
+    # ListTargets  POST /listTargets
+    # errors: InvalidNextTokenException, ValidationException
+    def list_targets(self, ListTargetsRequest input) -> str:
+        auto host = endpoints.regional_host(codestar_notifications_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/listTargets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Filters\":" + codestar_notifications_json_arr(e1))
+        if input.NextToken.is_some():
+            auto u2 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + codestar_notifications_json_str(u2))
+        if input.MaxResults.is_some():
+            auto u3 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u3))
+        auto bp = restjson.rest_json_document(b, codestar_notifications_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, codestar_notifications_service(), self.region, host)
 
     # Subscribe  POST /subscribe
@@ -465,6 +554,20 @@ struct codestar_notificationsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codestar_notifications_service(), self.region, host)
 
+    # TagResource  POST /tagResource
+    # errors: ConcurrentModificationException, LimitExceededException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(codestar_notifications_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/tagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Arn\":" + codestar_notifications_json_str(input.Arn))
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(codestar_notifications_json_str(k0) + ":" + codestar_notifications_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + codestar_notifications_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, codestar_notifications_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codestar_notifications_service(), self.region, host)
+
     # Unsubscribe  POST /unsubscribe
     # errors: ValidationException
     def unsubscribe(self, UnsubscribeRequest input) -> str:
@@ -473,6 +576,76 @@ struct codestar_notificationsClient:
         auto doc = UnsubscribeDocument(Arn=input.Arn, TargetAddress=input.TargetAddress)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codestar_notifications_service(), self.region, host)
+
+    # UpdateNotificationRule  POST /updateNotificationRule
+    # errors: ConfigurationException, ResourceNotFoundException, ValidationException
+    def update_notification_rule(self, UpdateNotificationRuleRequest input) -> str:
+        auto host = endpoints.regional_host(codestar_notifications_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/updateNotificationRule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Arn\":" + codestar_notifications_json_str(input.Arn))
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + codestar_notifications_json_str(u0))
+        if input.Status.is_some():
+            auto u1 = input.Status.unwrap()
+            parts.append("\"Status\":" + u1.to_json())
+        if input.EventTypeIds.is_some():
+            auto u2 = input.EventTypeIds.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(codestar_notifications_json_str(x3))
+            parts.append("\"EventTypeIds\":" + codestar_notifications_json_arr(e3))
+        if input.Targets.is_some():
+            auto u4 = input.Targets.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"Targets\":" + codestar_notifications_json_arr(e5))
+        if input.DetailType.is_some():
+            auto u6 = input.DetailType.unwrap()
+            parts.append("\"DetailType\":" + u6.to_json())
+        auto bp = restjson.rest_json_document(b, codestar_notifications_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codestar_notifications_service(), self.region, host)
+
+    # Paginator for ListEventTypes — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: EventTypes).
+    def paginate_list_event_types(self, ListEventTypesRequest input):
+        auto host = endpoints.regional_host(codestar_notifications_service(), self.region)
+        while True:
+            auto raw = self.list_event_types(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListNotificationRules — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: NotificationRules).
+    def paginate_list_notification_rules(self, ListNotificationRulesRequest input):
+        auto host = endpoints.regional_host(codestar_notifications_service(), self.region)
+        while True:
+            auto raw = self.list_notification_rules(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListTargets — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Targets).
+    def paginate_list_targets(self, ListTargetsRequest input):
+        auto host = endpoints.regional_host(codestar_notifications_service(), self.region)
+        while True:
+            auto raw = self.list_targets(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
 # Construct a codestar_notificationsClient bound to credentials + region.
 def codestar_notifications_client(core.Credentials creds, str region) -> codestar_notificationsClient:

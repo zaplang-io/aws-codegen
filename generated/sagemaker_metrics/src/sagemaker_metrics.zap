@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 2 operations — 0 with a generated method,
-#   2 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 2 operations — 2 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   8 structs (3 @derive(Json)), 5 enums, 0 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -92,8 +92,9 @@ enum XAxisType:
 struct BatchGetMetricsRequest:
     list[MetricQuery] MetricQueries
 
-# no @derive(Json): member(s) MetricQueryResults: list[MetricQueryResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricQueryResults: list[MetricQueryResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetMetricsResponse:
     Optional[list[MetricQueryResult]] MetricQueryResults
 
@@ -108,8 +109,9 @@ struct BatchPutMetricsRequest:
     str TrialComponentName
     list[RawMetricData] MetricData
 
-# no @derive(Json): member(s) Errors: list[BatchPutMetricsError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[BatchPutMetricsError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchPutMetricsResponse:
     Optional[list[BatchPutMetricsError]] Errors
 
@@ -123,8 +125,9 @@ struct MetricQuery:
     Optional[int64] Start
     Optional[int64] End
 
-# no @derive(Json): member(s) XAxisValues: list[int64], MetricValues: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) XAxisValues: list[int64], MetricValues: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricQueryResult:
     MetricQueryResultStatus Status
     Optional[str] Message
@@ -152,18 +155,36 @@ def metrics_sagemaker_error_from_code(str code) -> SageMaker_MetricsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   BatchGetMetrics (document member `MetricQueries: list[MetricQuery]` is not serializable by derive)
-#   BatchPutMetrics (document member `MetricData: list[RawMetricData]` is not serializable by derive)
-
 # A bound SageMaker_Metrics client: credentials + region, threaded into every operation.
 struct SageMaker_MetricsClient:
     core.Credentials creds
     str region
 
-    # no bindable operations were generated for this service in v0
+    # BatchGetMetrics  POST /BatchGetMetrics
+    def batch_get_metrics(self, BatchGetMetricsRequest input) -> str:
+        auto host = endpoints.regional_host(metrics_sagemaker_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetMetrics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.MetricQueries:
+            e0.append(x0.to_json())
+        parts.append("\"MetricQueries\":" + metrics_sagemaker_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, metrics_sagemaker_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, metrics_sagemaker_service(), self.region, host)
+
+    # BatchPutMetrics  PUT /BatchPutMetrics
+    def batch_put_metrics(self, BatchPutMetricsRequest input) -> str:
+        auto host = endpoints.regional_host(metrics_sagemaker_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/BatchPutMetrics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"TrialComponentName\":" + metrics_sagemaker_json_str(input.TrialComponentName))
+        list[str] e0 = []
+        for x0 in input.MetricData:
+            e0.append(x0.to_json())
+        parts.append("\"MetricData\":" + metrics_sagemaker_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, metrics_sagemaker_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, metrics_sagemaker_service(), self.region, host)
+
 # Construct a SageMaker_MetricsClient bound to credentials + region.
 def metrics_sagemaker_client(core.Credentials creds, str region) -> SageMaker_MetricsClient:
     return SageMaker_MetricsClient(creds=creds, region=region)

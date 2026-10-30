@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 95 operations — 70 with a generated method,
-#   25 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 95 operations — 93 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   267 structs (143 @derive(Json)), 52 enums, 7 error variants.
 #   6 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -487,14 +487,16 @@ struct AccountJiraConfigurationOutput:
     Optional[str] JiraProjectKey
     Optional[str] StatusMessage
 
-# no @derive(Json): member(s) Content: list[ChoiceContent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Content: list[ChoiceContent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdditionalResources:
     Optional[AdditionalResourceType] Type
     Optional[list[ChoiceContent]] Content
 
-# no @derive(Json): member(s) pillars: list[Pillar], aggregationConfiguration: list[AggregationConfiguration], fieldErrors: dict[str, str], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pillars: list[Pillar], aggregationConfiguration: list[AggregationConfiguration], fieldErrors: dict[str, str], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentProfileSummary:
     str name
     Optional[str] displayName
@@ -542,8 +544,9 @@ struct AgentRecommendationItemSummary:
     @json(timestamp="iso8601")
     Optional[DateTime] lastModifiedAt
 
-# no @derive(Json): member(s) steps: list[RemediationStep], resourceLinks: list[ResourceLink] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) steps: list[RemediationStep], resourceLinks: list[ResourceLink] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentRecommendationRemediation:
     str recommendationArn
     RemediationType type
@@ -554,8 +557,9 @@ struct AgentRecommendationRemediation:
     Optional[str] lastModifiedBy
     Optional[DateTime] lastModifiedAt
 
-# no @derive(Json): member(s) awsServices: list[str], businessUnits: list[str], applications: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) awsServices: list[str], businessUnits: list[str], applications: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentRecommendationSummary:
     str recommendationArn
     str profileArn
@@ -580,15 +584,17 @@ struct AgentRecommendationSummary:
     Optional[str] lastModifiedBy
     Optional[DateTime] lastModifiedAt
 
-# no @derive(Json): member(s) regions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) regions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AggregationConfiguration:
     str accountId
     list[str] regions
     str accessRoleArn
 
-# no @derive(Json): member(s) Choices: list[Choice], SelectedChoices: list[str], ChoiceAnswers: list[ChoiceAnswer] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Choices: list[Choice], SelectedChoices: list[str], ChoiceAnswers: list[ChoiceAnswer] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Answer:
     Optional[str] QuestionId
     Optional[str] PillarId
@@ -606,8 +612,9 @@ struct Answer:
     Optional[AnswerReason] Reason
     Optional[JiraConfiguration] JiraConfiguration
 
-# no @derive(Json): member(s) Choices: list[Choice], SelectedChoices: list[str], ChoiceAnswerSummaries: list[ChoiceAnswerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Choices: list[Choice], SelectedChoices: list[str], ChoiceAnswerSummaries: list[ChoiceAnswerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnswerSummary:
     Optional[str] QuestionId
     Optional[str] PillarId
@@ -654,8 +661,9 @@ struct CheckDetail:
     Optional[CheckFailureReason] Reason
     Optional[DateTime] UpdatedAt
 
-# no @derive(Json): member(s) AccountSummary: dict[CheckStatus, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountSummary: dict[CheckStatus, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CheckSummary:
     Optional[str] Id
     Optional[str] Name
@@ -669,8 +677,9 @@ struct CheckSummary:
     Optional[CheckStatus] Status
     Optional[dict[CheckStatus, int64]] AccountSummary
 
-# no @derive(Json): member(s) AdditionalResources: list[AdditionalResources] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalResources: list[AdditionalResources] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Choice:
     Optional[str] ChoiceId
     Optional[str] Title
@@ -715,8 +724,9 @@ struct ConflictException:
     str ResourceId
     str ResourceType
 
-# no @derive(Json): member(s) RiskCounts: dict[Risk, int64], Lenses: list[LensMetric] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RiskCounts: dict[Risk, int64], Lenses: list[LensMetric] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConsolidatedReportMetric:
     Optional[str] MetricType
     Optional[dict[Risk, int64]] RiskCounts
@@ -727,8 +737,9 @@ struct ConsolidatedReportMetric:
     Optional[list[LensMetric]] Lenses
     Optional[int64] LensesAppliedCount
 
-# no @derive(Json): member(s) accountIds: list[str], regions: list[str], awsServices: list[str], resourceTypes: list[str], resourceTags: list[ContextResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountIds: list[str], regions: list[str], awsServices: list[str], resourceTypes: list[str], resourceTags: list[ContextResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContextContent:
     Optional[list[str]] accountIds
     Optional[list[str]] regions
@@ -747,8 +758,9 @@ struct ContextResourceTag:
     str key
     str value
 
-# no @derive(Json): member(s) content: ContextContent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) content: ContextContent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContextSummary:
     str id
     str profileArn
@@ -771,8 +783,9 @@ struct CreateAgentContextRequest:
     str contextType
     ContextContent content
 
-# no @derive(Json): member(s) context: ContextSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) context: ContextSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAgentContextResponse:
     ContextSummary context
 
@@ -785,8 +798,9 @@ struct CreateAgentGoalRequest:
     str title
     Optional[str] description
 
-# no @derive(Json): member(s) goal: GoalSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) goal: GoalSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAgentGoalResponse:
     GoalSummary goal
 
@@ -804,8 +818,9 @@ struct CreateAgentProfileRequest:
     Optional[str] clientToken
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) pillars: list[Pillar], aggregationConfiguration: list[AggregationConfiguration], fieldErrors: dict[str, str], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pillars: list[Pillar], aggregationConfiguration: list[AggregationConfiguration], fieldErrors: dict[str, str], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAgentProfileResponse:
     str name
     Optional[str] displayName
@@ -1086,8 +1101,9 @@ struct GetAgentContextRequest:
     str profileArn
     str id
 
-# no @derive(Json): member(s) context: ContextSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) context: ContextSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAgentContextResponse:
     ContextSummary context
 
@@ -1097,8 +1113,9 @@ struct GetAgentGoalRequest:
     str profileArn
     str id
 
-# no @derive(Json): member(s) goal: GoalSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) goal: GoalSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAgentGoalResponse:
     GoalSummary goal
 
@@ -1107,8 +1124,9 @@ struct GetAgentGoalResponse:
 struct GetAgentProfileRequest:
     str profileArn
 
-# no @derive(Json): member(s) pillars: list[Pillar], aggregationConfiguration: list[AggregationConfiguration], fieldErrors: dict[str, str], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pillars: list[Pillar], aggregationConfiguration: list[AggregationConfiguration], fieldErrors: dict[str, str], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAgentProfileResponse:
     str name
     Optional[str] displayName
@@ -1134,8 +1152,9 @@ struct GetAgentRecommendationGenerationRequest:
     str profileArn
     str generationId
 
-# no @derive(Json): member(s) scope: Scope not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scope: Scope not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAgentRecommendationGenerationResponse:
     str id
     str profileArn
@@ -1161,8 +1180,9 @@ struct GetAgentRecommendationRequest:
     # wire string of the RemediationType enum (querystring binding)
     Optional[str] remediationType
 
-# no @derive(Json): member(s) awsServices: list[str], businessUnits: list[str], applications: list[str], impactDetails: list[str], insights: list[Insight], highlights: list[str], remediationSummary: RemediationSummary, crossPillarBenefits: list[CrossPillarBenefit], tradeOffs: list[TradeOff], sources: list[RecommendationSource], goals: list[RecommendationGoal], tags: list[Tag], remediations: list[AgentRecommendationRemediation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) awsServices: list[str], businessUnits: list[str], applications: list[str], impactDetails: list[str], insights: list[Insight], highlights: list[str], remediationSummary: RemediationSummary, crossPillarBenefits: list[CrossPillarBenefit], tradeOffs: list[TradeOff], sources: list[RecommendationSource], goals: list[RecommendationGoal], tags: list[Tag], remediations: list[AgentRecommendationRemediation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAgentRecommendationResponse:
     str recommendationArn
     str profileArn
@@ -1205,8 +1225,9 @@ struct GetAnswerInput:
     str QuestionId
     Optional[int64] MilestoneNumber
 
-# no @derive(Json): member(s) Answer: Answer not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Answer: Answer not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAnswerOutput:
     Optional[str] WorkloadId
     Optional[int64] MilestoneNumber
@@ -1223,8 +1244,9 @@ struct GetConsolidatedReportInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Metrics: list[ConsolidatedReportMetric] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metrics: list[ConsolidatedReportMetric] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConsolidatedReportOutput:
     Optional[list[ConsolidatedReportMetric]] Metrics
     Optional[str] NextToken
@@ -1242,8 +1264,9 @@ struct GetLensInput:
     str LensAlias
     Optional[str] LensVersion
 
-# no @derive(Json): member(s) Lens: Lens not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Lens: Lens not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLensOutput:
     Optional[Lens] Lens
 
@@ -1254,8 +1277,9 @@ struct GetLensReviewInput:
     str LensAlias
     Optional[int64] MilestoneNumber
 
-# no @derive(Json): member(s) LensReview: LensReview not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LensReview: LensReview not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLensReviewOutput:
     Optional[str] WorkloadId
     Optional[int64] MilestoneNumber
@@ -1281,8 +1305,9 @@ struct GetLensVersionDifferenceInput:
     Optional[str] BaseLensVersion
     Optional[str] TargetLensVersion
 
-# no @derive(Json): member(s) VersionDifferences: VersionDifferences not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VersionDifferences: VersionDifferences not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLensVersionDifferenceOutput:
     Optional[str] LensAlias
     Optional[str] LensArn
@@ -1297,8 +1322,9 @@ struct GetMilestoneInput:
     str WorkloadId
     int64 MilestoneNumber
 
-# no @derive(Json): member(s) Milestone: Milestone not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Milestone: Milestone not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMilestoneOutput:
     Optional[str] WorkloadId
     Optional[Milestone] Milestone
@@ -1309,8 +1335,9 @@ struct GetProfileInput:
     str ProfileArn
     Optional[str] ProfileVersion
 
-# no @derive(Json): member(s) Profile: Profile not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Profile: Profile not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProfileOutput:
     Optional[Profile] Profile
 
@@ -1320,8 +1347,9 @@ struct GetProfileTemplateInput:
     # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) ProfileTemplate: ProfileTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProfileTemplate: ProfileTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProfileTemplateOutput:
     Optional[ProfileTemplate] ProfileTemplate
 
@@ -1332,8 +1360,9 @@ struct GetReviewTemplateAnswerInput:
     str LensAlias
     str QuestionId
 
-# no @derive(Json): member(s) Answer: ReviewTemplateAnswer not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Answer: ReviewTemplateAnswer not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetReviewTemplateAnswerOutput:
     Optional[str] TemplateArn
     Optional[str] LensAlias
@@ -1350,14 +1379,16 @@ struct GetReviewTemplateLensReviewInput:
     str TemplateArn
     str LensAlias
 
-# no @derive(Json): member(s) LensReview: ReviewTemplateLensReview not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LensReview: ReviewTemplateLensReview not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetReviewTemplateLensReviewOutput:
     Optional[str] TemplateArn
     Optional[ReviewTemplateLensReview] LensReview
 
-# no @derive(Json): member(s) ReviewTemplate: ReviewTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReviewTemplate: ReviewTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetReviewTemplateOutput:
     Optional[ReviewTemplate] ReviewTemplate
 
@@ -1366,13 +1397,15 @@ struct GetReviewTemplateOutput:
 struct GetWorkloadInput:
     str WorkloadId
 
-# no @derive(Json): member(s) Workload: Workload not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Workload: Workload not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWorkloadOutput:
     Optional[Workload] Workload
 
-# no @derive(Json): member(s) pillars: list[Pillar] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pillars: list[Pillar] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GoalSummary:
     str id
     str profileArn
@@ -1397,8 +1430,9 @@ struct ImportLensOutput:
     Optional[str] LensArn
     Optional[ImportLensStatus] Status
 
-# no @derive(Json): member(s) ImprovementPlans: list[ChoiceImprovementPlan] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ImprovementPlans: list[ChoiceImprovementPlan] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImprovementSummary:
     Optional[str] QuestionId
     Optional[str] PillarId
@@ -1422,13 +1456,15 @@ struct JiraConfiguration:
     Optional[str] JiraIssueUrl
     Optional[DateTime] LastSyncedTime
 
-# no @derive(Json): member(s) SelectedPillars: list[SelectedPillar] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectedPillars: list[SelectedPillar] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JiraSelectedQuestionConfiguration:
     Optional[list[SelectedPillar]] SelectedPillars
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Lens:
     Optional[str] LensArn
     Optional[str] LensVersion
@@ -1438,15 +1474,17 @@ struct Lens:
     Optional[str] ShareInvitationId
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Pillars: list[PillarMetric], RiskCounts: dict[Risk, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Pillars: list[PillarMetric], RiskCounts: dict[Risk, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LensMetric:
     Optional[str] LensArn
     Optional[list[PillarMetric]] Pillars
     Optional[dict[Risk, int64]] RiskCounts
 
-# no @derive(Json): member(s) PillarReviewSummaries: list[PillarReviewSummary], JiraConfiguration: JiraSelectedQuestionConfiguration, RiskCounts: dict[Risk, int64], Profiles: list[WorkloadProfile], PrioritizedRiskCounts: dict[Risk, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PillarReviewSummaries: list[PillarReviewSummary], JiraConfiguration: JiraSelectedQuestionConfiguration, RiskCounts: dict[Risk, int64], Profiles: list[WorkloadProfile], PrioritizedRiskCounts: dict[Risk, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LensReview:
     Optional[str] LensAlias
     Optional[str] LensArn
@@ -1468,8 +1506,9 @@ struct LensReviewReport:
     Optional[str] LensArn
     Optional[str] Base64String
 
-# no @derive(Json): member(s) RiskCounts: dict[Risk, int64], Profiles: list[WorkloadProfile], PrioritizedRiskCounts: dict[Risk, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RiskCounts: dict[Risk, int64], Profiles: list[WorkloadProfile], PrioritizedRiskCounts: dict[Risk, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LensReviewSummary:
     Optional[str] LensAlias
     Optional[str] LensArn
@@ -1519,8 +1558,9 @@ struct ListAgentContextsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[ContextSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ContextSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAgentContextsResponse:
     list[ContextSummary] items
     Optional[str] nextToken
@@ -1532,8 +1572,9 @@ struct ListAgentGoalsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[GoalSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[GoalSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAgentGoalsResponse:
     list[GoalSummary] items
     Optional[str] nextToken
@@ -1544,8 +1585,9 @@ struct ListAgentProfilesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[AgentProfileSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[AgentProfileSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAgentProfilesResponse:
     list[AgentProfileSummary] items
     Optional[str] nextToken
@@ -1559,8 +1601,9 @@ struct ListAgentRecommendationGenerationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[AgentRecommendationGenerationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[AgentRecommendationGenerationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAgentRecommendationGenerationsResponse:
     list[AgentRecommendationGenerationSummary] items
     Optional[str] nextToken
@@ -1574,8 +1617,9 @@ struct ListAgentRecommendationItemsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[AgentRecommendationItemSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[AgentRecommendationItemSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAgentRecommendationItemsResponse:
     list[AgentRecommendationItemSummary] items
     Optional[str] nextToken
@@ -1591,8 +1635,9 @@ struct ListAgentRecommendationsRequest:
     # wire string of the Pillar enum (querystring binding)
     Optional[str] pillar
 
-# no @derive(Json): member(s) items: list[AgentRecommendationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[AgentRecommendationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAgentRecommendationsResponse:
     list[AgentRecommendationSummary] items
     Optional[str] nextToken
@@ -1609,8 +1654,9 @@ struct ListAnswersInput:
     # wire string of the QuestionPriority enum (querystring binding)
     Optional[str] QuestionPriority
 
-# no @derive(Json): member(s) AnswerSummaries: list[AnswerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AnswerSummaries: list[AnswerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAnswersOutput:
     Optional[str] WorkloadId
     Optional[int64] MilestoneNumber
@@ -1630,8 +1676,9 @@ struct ListCheckDetailsInput:
     str QuestionId
     str ChoiceId
 
-# no @derive(Json): member(s) CheckDetails: list[CheckDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CheckDetails: list[CheckDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCheckDetailsOutput:
     Optional[list[CheckDetail]] CheckDetails
     Optional[str] NextToken
@@ -1647,8 +1694,9 @@ struct ListCheckSummariesInput:
     str QuestionId
     str ChoiceId
 
-# no @derive(Json): member(s) CheckSummaries: list[CheckSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CheckSummaries: list[CheckSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCheckSummariesOutput:
     Optional[list[CheckSummary]] CheckSummaries
     Optional[str] NextToken
@@ -1665,8 +1713,9 @@ struct ListLensReviewImprovementsInput:
     # wire string of the QuestionPriority enum (querystring binding)
     Optional[str] QuestionPriority
 
-# no @derive(Json): member(s) ImprovementSummaries: list[ImprovementSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ImprovementSummaries: list[ImprovementSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLensReviewImprovementsOutput:
     Optional[str] WorkloadId
     Optional[int64] MilestoneNumber
@@ -1683,8 +1732,9 @@ struct ListLensReviewsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) LensReviewSummaries: list[LensReviewSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LensReviewSummaries: list[LensReviewSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLensReviewsOutput:
     Optional[str] WorkloadId
     Optional[int64] MilestoneNumber
@@ -1701,8 +1751,9 @@ struct ListLensSharesInput:
     # wire string of the ShareStatus enum (querystring binding)
     Optional[str] Status
 
-# no @derive(Json): member(s) LensShareSummaries: list[LensShareSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LensShareSummaries: list[LensShareSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLensSharesOutput:
     Optional[list[LensShareSummary]] LensShareSummaries
     Optional[str] NextToken
@@ -1718,8 +1769,9 @@ struct ListLensesInput:
     Optional[str] LensStatus
     Optional[str] LensName
 
-# no @derive(Json): member(s) LensSummaries: list[LensSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LensSummaries: list[LensSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLensesOutput:
     Optional[list[LensSummary]] LensSummaries
     Optional[str] NextToken
@@ -1731,8 +1783,9 @@ struct ListMilestonesInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) MilestoneSummaries: list[MilestoneSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MilestoneSummaries: list[MilestoneSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMilestonesOutput:
     Optional[str] WorkloadId
     Optional[list[MilestoneSummary]] MilestoneSummaries
@@ -1746,8 +1799,9 @@ struct ListNotificationsInput:
     Optional[int64] MaxResults
     Optional[str] ResourceArn
 
-# no @derive(Json): member(s) NotificationSummaries: list[NotificationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NotificationSummaries: list[NotificationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNotificationsOutput:
     Optional[list[NotificationSummary]] NotificationSummaries
     Optional[str] NextToken
@@ -1759,8 +1813,9 @@ struct ListProfileNotificationsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) NotificationSummaries: list[ProfileNotificationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NotificationSummaries: list[ProfileNotificationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProfileNotificationsOutput:
     Optional[list[ProfileNotificationSummary]] NotificationSummaries
     Optional[str] NextToken
@@ -1775,8 +1830,9 @@ struct ListProfileSharesInput:
     # wire string of the ShareStatus enum (querystring binding)
     Optional[str] Status
 
-# no @derive(Json): member(s) ProfileShareSummaries: list[ProfileShareSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProfileShareSummaries: list[ProfileShareSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProfileSharesOutput:
     Optional[list[ProfileShareSummary]] ProfileShareSummaries
     Optional[str] NextToken
@@ -1790,8 +1846,9 @@ struct ListProfilesInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ProfileSummaries: list[ProfileSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProfileSummaries: list[ProfileSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProfilesOutput:
     Optional[list[ProfileSummary]] ProfileSummaries
     Optional[str] NextToken
@@ -1805,8 +1862,9 @@ struct ListReviewTemplateAnswersInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AnswerSummaries: list[ReviewTemplateAnswerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AnswerSummaries: list[ReviewTemplateAnswerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReviewTemplateAnswersOutput:
     Optional[str] TemplateArn
     Optional[str] LensAlias
@@ -1819,8 +1877,9 @@ struct ListReviewTemplatesInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ReviewTemplates: list[ReviewTemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReviewTemplates: list[ReviewTemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReviewTemplatesOutput:
     Optional[list[ReviewTemplateSummary]] ReviewTemplates
     Optional[str] NextToken
@@ -1837,8 +1896,9 @@ struct ListShareInvitationsInput:
     Optional[str] ProfileNamePrefix
     Optional[str] TemplateNamePrefix
 
-# no @derive(Json): member(s) ShareInvitationSummaries: list[ShareInvitationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ShareInvitationSummaries: list[ShareInvitationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListShareInvitationsOutput:
     Optional[list[ShareInvitationSummary]] ShareInvitationSummaries
     Optional[str] NextToken
@@ -1848,8 +1908,9 @@ struct ListShareInvitationsOutput:
 struct ListTagsForResourceInput:
     str WorkloadArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[dict[str, str]] Tags
 
@@ -1863,8 +1924,9 @@ struct ListTemplateSharesInput:
     # wire string of the ShareStatus enum (querystring binding)
     Optional[str] Status
 
-# no @derive(Json): member(s) TemplateShareSummaries: list[TemplateShareSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TemplateShareSummaries: list[TemplateShareSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTemplateSharesOutput:
     Optional[str] TemplateArn
     Optional[list[TemplateShareSummary]] TemplateShareSummaries
@@ -1880,8 +1942,9 @@ struct ListWorkloadSharesInput:
     # wire string of the ShareStatus enum (querystring binding)
     Optional[str] Status
 
-# no @derive(Json): member(s) WorkloadShareSummaries: list[WorkloadShareSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkloadShareSummaries: list[WorkloadShareSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkloadSharesOutput:
     Optional[str] WorkloadId
     Optional[list[WorkloadShareSummary]] WorkloadShareSummaries
@@ -1894,22 +1957,25 @@ struct ListWorkloadsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) WorkloadSummaries: list[WorkloadSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkloadSummaries: list[WorkloadSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkloadsOutput:
     Optional[list[WorkloadSummary]] WorkloadSummaries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Workload: Workload not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Workload: Workload not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Milestone:
     Optional[int64] MilestoneNumber
     Optional[str] MilestoneName
     Optional[DateTime] RecordedAt
     Optional[Workload] Workload
 
-# no @derive(Json): member(s) WorkloadSummary: WorkloadSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkloadSummary: WorkloadSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MilestoneSummary:
     Optional[int64] MilestoneNumber
     Optional[str] MilestoneName
@@ -1921,29 +1987,33 @@ struct NotificationSummary:
     Optional[NotificationType] Type
     Optional[LensUpgradeSummary] LensUpgradeSummary
 
-# no @derive(Json): member(s) QuestionDifferences: list[QuestionDifference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QuestionDifferences: list[QuestionDifference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PillarDifference:
     Optional[str] PillarId
     Optional[str] PillarName
     Optional[DifferenceStatus] DifferenceStatus
     Optional[list[QuestionDifference]] QuestionDifferences
 
-# no @derive(Json): member(s) ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PillarItem:
     Pillar pillar
     list[str] ids
 
-# no @derive(Json): member(s) RiskCounts: dict[Risk, int64], Questions: list[QuestionMetric] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RiskCounts: dict[Risk, int64], Questions: list[QuestionMetric] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PillarMetric:
     Optional[str] PillarId
     Optional[dict[Risk, int64]] RiskCounts
     Optional[list[QuestionMetric]] Questions
 
-# no @derive(Json): member(s) RiskCounts: dict[Risk, int64], PrioritizedRiskCounts: dict[Risk, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RiskCounts: dict[Risk, int64], PrioritizedRiskCounts: dict[Risk, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PillarReviewSummary:
     Optional[str] PillarId
     Optional[str] PillarName
@@ -1951,8 +2021,9 @@ struct PillarReviewSummary:
     Optional[dict[Risk, int64]] RiskCounts
     Optional[dict[Risk, int64]] PrioritizedRiskCounts
 
-# no @derive(Json): member(s) ProfileQuestions: list[ProfileQuestion], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProfileQuestions: list[ProfileQuestion], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Profile:
     Optional[str] ProfileArn
     Optional[str] ProfileVersion
@@ -1981,8 +2052,9 @@ struct ProfileNotificationSummary:
     Optional[str] WorkloadId
     Optional[str] WorkloadName
 
-# no @derive(Json): member(s) QuestionChoices: list[ProfileChoice], SelectedChoiceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QuestionChoices: list[ProfileChoice], SelectedChoiceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProfileQuestion:
     Optional[str] QuestionId
     Optional[str] QuestionTitle
@@ -1992,8 +2064,9 @@ struct ProfileQuestion:
     Optional[int64] MinSelectedChoices
     Optional[int64] MaxSelectedChoices
 
-# no @derive(Json): member(s) SelectedChoiceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectedChoiceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProfileQuestionUpdate:
     Optional[str] QuestionId
     Optional[list[str]] SelectedChoiceIds
@@ -2015,8 +2088,9 @@ struct ProfileSummary:
     Optional[DateTime] CreatedAt
     Optional[DateTime] UpdatedAt
 
-# no @derive(Json): member(s) TemplateQuestions: list[ProfileTemplateQuestion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TemplateQuestions: list[ProfileTemplateQuestion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProfileTemplate:
     Optional[str] TemplateName
     Optional[list[ProfileTemplateQuestion]] TemplateQuestions
@@ -2029,8 +2103,9 @@ struct ProfileTemplateChoice:
     Optional[str] ChoiceTitle
     Optional[str] ChoiceDescription
 
-# no @derive(Json): member(s) QuestionChoices: list[ProfileTemplateChoice] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QuestionChoices: list[ProfileTemplateChoice] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProfileTemplateQuestion:
     Optional[str] QuestionId
     Optional[str] QuestionTitle
@@ -2064,8 +2139,9 @@ struct QuestionDifference:
     Optional[str] QuestionTitle
     Optional[DifferenceStatus] DifferenceStatus
 
-# no @derive(Json): member(s) BestPractices: list[BestPractice] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BestPractices: list[BestPractice] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuestionMetric:
     Optional[str] QuestionId
     Optional[Risk] Risk
@@ -2080,8 +2156,9 @@ struct RemediationStep:
     Optional[str] title
     str content
 
-# no @derive(Json): member(s) steps: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) steps: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemediationSummary:
     str recommendation
     list[str] steps
@@ -2097,8 +2174,9 @@ struct ResourceNotFoundException:
     str ResourceId
     str ResourceType
 
-# no @derive(Json): member(s) Lenses: list[str], QuestionCounts: dict[Question, int64], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Lenses: list[str], QuestionCounts: dict[Question, int64], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReviewTemplate:
     Optional[str] Description
     Optional[list[str]] Lenses
@@ -2112,8 +2190,9 @@ struct ReviewTemplate:
     Optional[ReviewTemplateUpdateStatus] UpdateStatus
     Optional[str] ShareInvitationId
 
-# no @derive(Json): member(s) Choices: list[Choice], SelectedChoices: list[str], ChoiceAnswers: list[ChoiceAnswer] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Choices: list[Choice], SelectedChoices: list[str], ChoiceAnswers: list[ChoiceAnswer] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReviewTemplateAnswer:
     Optional[str] QuestionId
     Optional[str] PillarId
@@ -2130,8 +2209,9 @@ struct ReviewTemplateAnswer:
     Optional[str] Notes
     Optional[AnswerReason] Reason
 
-# no @derive(Json): member(s) Choices: list[Choice], SelectedChoices: list[str], ChoiceAnswerSummaries: list[ChoiceAnswerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Choices: list[Choice], SelectedChoices: list[str], ChoiceAnswerSummaries: list[ChoiceAnswerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReviewTemplateAnswerSummary:
     Optional[str] QuestionId
     Optional[str] PillarId
@@ -2144,8 +2224,9 @@ struct ReviewTemplateAnswerSummary:
     Optional[AnswerReason] Reason
     Optional[QuestionType] QuestionType
 
-# no @derive(Json): member(s) PillarReviewSummaries: list[ReviewTemplatePillarReviewSummary], QuestionCounts: dict[Question, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PillarReviewSummaries: list[ReviewTemplatePillarReviewSummary], QuestionCounts: dict[Question, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReviewTemplateLensReview:
     Optional[str] LensAlias
     Optional[str] LensArn
@@ -2158,16 +2239,18 @@ struct ReviewTemplateLensReview:
     Optional[dict[Question, int64]] QuestionCounts
     Optional[str] NextToken
 
-# no @derive(Json): member(s) QuestionCounts: dict[Question, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QuestionCounts: dict[Question, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReviewTemplatePillarReviewSummary:
     Optional[str] PillarId
     Optional[str] PillarName
     Optional[str] Notes
     Optional[dict[Question, int64]] QuestionCounts
 
-# no @derive(Json): member(s) Lenses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Lenses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReviewTemplateSummary:
     Optional[str] Description
     Optional[list[str]] Lenses
@@ -2182,15 +2265,17 @@ struct Roi:
     Optional[str] estimate
     str detail
 
-# no @derive(Json): member(s) pillars: list[Pillar], goalIds: list[str], items: list[PillarItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pillars: list[Pillar], goalIds: list[str], items: list[PillarItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Scope:
     list[Pillar] pillars
     Optional[list[str]] goalIds
     Optional[list[PillarItem]] items
 
-# no @derive(Json): member(s) SelectedQuestionIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectedQuestionIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SelectedPillar:
     Optional[str] PillarId
     Optional[list[str]] SelectedQuestionIds
@@ -2312,8 +2397,9 @@ struct UpdateAgentContextRequest:
     Optional[str] title
     Optional[ContextContent] content
 
-# no @derive(Json): member(s) context: ContextSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) context: ContextSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAgentContextResponse:
     ContextSummary context
 
@@ -2327,8 +2413,9 @@ struct UpdateAgentGoalRequest:
     Optional[str] title
     Optional[str] description
 
-# no @derive(Json): member(s) goal: GoalSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) goal: GoalSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAgentGoalResponse:
     GoalSummary goal
 
@@ -2345,8 +2432,9 @@ struct UpdateAgentProfileRequest:
     Optional[list[Pillar]] pillars
     Optional[bool] deletionProtection
 
-# no @derive(Json): member(s) pillars: list[Pillar], aggregationConfiguration: list[AggregationConfiguration], fieldErrors: dict[str, str], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pillars: list[Pillar], aggregationConfiguration: list[AggregationConfiguration], fieldErrors: dict[str, str], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAgentProfileResponse:
     str name
     Optional[str] displayName
@@ -2390,8 +2478,9 @@ struct UpdateAnswerInput:
     Optional[bool] IsApplicable
     Optional[AnswerReason] Reason
 
-# no @derive(Json): member(s) Answer: Answer not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Answer: Answer not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAnswerOutput:
     Optional[str] WorkloadId
     Optional[str] LensAlias
@@ -2421,8 +2510,9 @@ struct UpdateLensReviewInput:
     Optional[dict[str, str]] PillarNotes
     Optional[JiraSelectedQuestionConfiguration] JiraConfiguration
 
-# no @derive(Json): member(s) LensReview: LensReview not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LensReview: LensReview not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateLensReviewOutput:
     Optional[str] WorkloadId
     Optional[LensReview] LensReview
@@ -2434,8 +2524,9 @@ struct UpdateProfileInput:
     Optional[str] ProfileDescription
     Optional[list[ProfileQuestionUpdate]] ProfileQuestions
 
-# no @derive(Json): member(s) Profile: Profile not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Profile: Profile not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProfileOutput:
     Optional[Profile] Profile
 
@@ -2451,8 +2542,9 @@ struct UpdateReviewTemplateAnswerInput:
     Optional[bool] IsApplicable
     Optional[AnswerReason] Reason
 
-# no @derive(Json): member(s) Answer: ReviewTemplateAnswer not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Answer: ReviewTemplateAnswer not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateReviewTemplateAnswerOutput:
     Optional[str] TemplateArn
     Optional[str] LensAlias
@@ -2476,14 +2568,16 @@ struct UpdateReviewTemplateLensReviewInput:
     Optional[str] LensNotes
     Optional[dict[str, str]] PillarNotes
 
-# no @derive(Json): member(s) LensReview: ReviewTemplateLensReview not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LensReview: ReviewTemplateLensReview not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateReviewTemplateLensReviewOutput:
     Optional[str] TemplateArn
     Optional[ReviewTemplateLensReview] LensReview
 
-# no @derive(Json): member(s) ReviewTemplate: ReviewTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReviewTemplate: ReviewTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateReviewTemplateOutput:
     Optional[ReviewTemplate] ReviewTemplate
 
@@ -2519,8 +2613,9 @@ struct UpdateWorkloadInput:
     Optional[list[str]] Applications
     Optional[WorkloadJiraConfigurationInput] JiraConfiguration
 
-# no @derive(Json): member(s) Workload: Workload not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Workload: Workload not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateWorkloadOutput:
     Optional[Workload] Workload
 
@@ -2559,8 +2654,9 @@ struct UpgradeReviewTemplateLensReviewInput:
     str LensAlias
     Optional[str] ClientRequestToken
 
-# no @derive(Json): member(s) Fields: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fields: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str Message
     Optional[ValidationExceptionReason] Reason
@@ -2571,13 +2667,15 @@ struct ValidationExceptionField:
     str Name
     str Message
 
-# no @derive(Json): member(s) PillarDifferences: list[PillarDifference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PillarDifferences: list[PillarDifference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VersionDifferences:
     Optional[list[PillarDifference]] PillarDifferences
 
-# no @derive(Json): member(s) AccountIds: list[str], AwsRegions: list[str], NonAwsRegions: list[str], RiskCounts: dict[Risk, int64], PillarPriorities: list[str], Lenses: list[str], Tags: dict[str, str], DiscoveryConfig: WorkloadDiscoveryConfig, Applications: list[str], Profiles: list[WorkloadProfile], PrioritizedRiskCounts: dict[Risk, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountIds: list[str], AwsRegions: list[str], NonAwsRegions: list[str], RiskCounts: dict[Risk, int64], PillarPriorities: list[str], Lenses: list[str], Tags: dict[str, str], DiscoveryConfig: WorkloadDiscoveryConfig, Applications: list[str], Profiles: list[WorkloadProfile], PrioritizedRiskCounts: dict[Risk, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Workload:
     Optional[str] WorkloadId
     Optional[str] WorkloadArn
@@ -2608,8 +2706,9 @@ struct Workload:
     Optional[dict[Risk, int64]] PrioritizedRiskCounts
     Optional[WorkloadJiraConfigurationOutput] JiraConfiguration
 
-# no @derive(Json): member(s) WorkloadResourceDefinition: list[DefinitionType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkloadResourceDefinition: list[DefinitionType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkloadDiscoveryConfig:
     Optional[TrustedAdvisorIntegrationStatus] TrustedAdvisorIntegrationStatus
     Optional[list[DefinitionType]] WorkloadResourceDefinition
@@ -2650,8 +2749,9 @@ struct WorkloadShareSummary:
     Optional[ShareStatus] Status
     Optional[str] StatusMessage
 
-# no @derive(Json): member(s) Lenses: list[str], RiskCounts: dict[Risk, int64], Profiles: list[WorkloadProfile], PrioritizedRiskCounts: dict[Risk, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Lenses: list[str], RiskCounts: dict[Risk, int64], Profiles: list[WorkloadProfile], PrioritizedRiskCounts: dict[Risk, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkloadSummary:
     Optional[str] WorkloadId
     Optional[str] WorkloadArn
@@ -2702,31 +2802,8 @@ def wellarchitected_error_from_code(str code) -> WellArchitectedError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AssociateLenses (document member `LensAliases: list[str]` is not serializable by derive)
-#   AssociateProfiles (document member `ProfileArns: list[str]` is not serializable by derive)
-#   CreateAgentContext (document member `content: ContextContent` is not serializable by derive)
-#   CreateAgentGoal (document member `pillars: list[Pillar]` is not serializable by derive)
-#   CreateAgentProfile (document member `pillars: list[Pillar]` is not serializable by derive)
-#   CreateProfile (document member `ProfileQuestions: list[ProfileQuestionUpdate]` is not serializable by derive)
-#   CreateReviewTemplate (document member `Lenses: list[str]` is not serializable by derive)
-#   CreateWorkload (document member `AccountIds: list[str]` is not serializable by derive)
-#   DisassociateLenses (document member `LensAliases: list[str]` is not serializable by derive)
-#   DisassociateProfiles (document member `ProfileArns: list[str]` is not serializable by derive)
 #   GetConsolidatedReport (httpQuery `IncludeSharedResources` has unsupported type bool)
-#   ImportLens (document member `Tags: dict[str, str]` is not serializable by derive)
-#   StartAgentRecommendationGeneration (document member `types: list[RecommendationType]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateAgentContext (document member `content: ContextContent` is not serializable by derive)
-#   UpdateAgentGoal (document member `pillars: list[Pillar]` is not serializable by derive)
-#   UpdateAgentProfile (document member `aggregationConfiguration: list[AggregationConfiguration]` is not serializable by derive)
-#   UpdateAnswer (document member `SelectedChoices: list[str]` is not serializable by derive)
-#   UpdateLensReview (document member `PillarNotes: dict[str, str]` is not serializable by derive)
-#   UpdateProfile (document member `ProfileQuestions: list[ProfileQuestionUpdate]` is not serializable by derive)
-#   UpdateReviewTemplate (document member `LensesToAssociate: list[str]` is not serializable by derive)
-#   UpdateReviewTemplateAnswer (document member `SelectedChoices: list[str]` is not serializable by derive)
-#   UpdateReviewTemplateLensReview (document member `PillarNotes: dict[str, str]` is not serializable by derive)
-#   UpdateWorkload (document member `AccountIds: list[str]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -2863,10 +2940,297 @@ struct UpgradeReviewTemplateLensReviewDocument:
     # document members of UpgradeReviewTemplateLensReview
     Optional[str] ClientRequestToken
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def wellarchitected_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def wellarchitected_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def wellarchitected_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AggregationConfiguration to a compact JSON object (declaration order).
+def aggregation_configuration_to_json(AggregationConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"accountId\":" + wellarchitected_json_str(v.accountId))
+    list[str] e0 = []
+    for x0 in v.regions:
+        e0.append(wellarchitected_json_str(x0))
+    parts.append("\"regions\":" + wellarchitected_json_arr(e0))
+    parts.append("\"accessRoleArn\":" + wellarchitected_json_str(v.accessRoleArn))
+    return wellarchitected_json_obj(parts)
+
+# Serialize ContextContent to a compact JSON object (declaration order).
+def context_content_to_json(ContextContent v) -> str:
+    list[str] parts = []
+    if v.accountIds.is_some():
+        auto u0 = v.accountIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(wellarchitected_json_str(x1))
+        parts.append("\"accountIds\":" + wellarchitected_json_arr(e1))
+    if v.regions.is_some():
+        auto u2 = v.regions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(wellarchitected_json_str(x3))
+        parts.append("\"regions\":" + wellarchitected_json_arr(e3))
+    if v.awsServices.is_some():
+        auto u4 = v.awsServices.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(wellarchitected_json_str(x5))
+        parts.append("\"awsServices\":" + wellarchitected_json_arr(e5))
+    if v.resourceTypes.is_some():
+        auto u6 = v.resourceTypes.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(wellarchitected_json_str(x7))
+        parts.append("\"resourceTypes\":" + wellarchitected_json_arr(e7))
+    if v.resourceTags.is_some():
+        auto u8 = v.resourceTags.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"resourceTags\":" + wellarchitected_json_arr(e9))
+    if v.applicationOverview.is_some():
+        auto u10 = v.applicationOverview.unwrap()
+        parts.append("\"applicationOverview\":" + wellarchitected_json_str(u10))
+    if v.industry.is_some():
+        auto u11 = v.industry.unwrap()
+        parts.append("\"industry\":" + wellarchitected_json_str(u11))
+    if v.applicationType.is_some():
+        auto u12 = v.applicationType.unwrap()
+        parts.append("\"applicationType\":" + u12.to_json())
+    if v.criticality.is_some():
+        auto u13 = v.criticality.unwrap()
+        parts.append("\"criticality\":" + u13.to_json())
+    if v.architectureOverview.is_some():
+        auto u14 = v.architectureOverview.unwrap()
+        parts.append("\"architectureOverview\":" + wellarchitected_json_str(u14))
+    if v.additionalContext.is_some():
+        auto u15 = v.additionalContext.unwrap()
+        parts.append("\"additionalContext\":" + wellarchitected_json_str(u15))
+    return wellarchitected_json_obj(parts)
+
+# Serialize JiraSelectedQuestionConfiguration to a compact JSON object (declaration order).
+def jira_selected_question_configuration_to_json(JiraSelectedQuestionConfiguration v) -> str:
+    list[str] parts = []
+    if v.SelectedPillars.is_some():
+        auto u0 = v.SelectedPillars.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(selected_pillar_to_json(x1))
+        parts.append("\"SelectedPillars\":" + wellarchitected_json_arr(e1))
+    return wellarchitected_json_obj(parts)
+
+# Serialize PillarItem to a compact JSON object (declaration order).
+def pillar_item_to_json(PillarItem v) -> str:
+    list[str] parts = []
+    parts.append("\"pillar\":" + v.pillar.to_json())
+    list[str] e0 = []
+    for x0 in v.ids:
+        e0.append(wellarchitected_json_str(x0))
+    parts.append("\"ids\":" + wellarchitected_json_arr(e0))
+    return wellarchitected_json_obj(parts)
+
+# Serialize ProfileQuestionUpdate to a compact JSON object (declaration order).
+def profile_question_update_to_json(ProfileQuestionUpdate v) -> str:
+    list[str] parts = []
+    if v.QuestionId.is_some():
+        auto u0 = v.QuestionId.unwrap()
+        parts.append("\"QuestionId\":" + wellarchitected_json_str(u0))
+    if v.SelectedChoiceIds.is_some():
+        auto u1 = v.SelectedChoiceIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(wellarchitected_json_str(x2))
+        parts.append("\"SelectedChoiceIds\":" + wellarchitected_json_arr(e2))
+    return wellarchitected_json_obj(parts)
+
+# Serialize Scope to a compact JSON object (declaration order).
+def scope__to_json(Scope v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.pillars:
+        e0.append(x0.to_json())
+    parts.append("\"pillars\":" + wellarchitected_json_arr(e0))
+    if v.goalIds.is_some():
+        auto u1 = v.goalIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(wellarchitected_json_str(x2))
+        parts.append("\"goalIds\":" + wellarchitected_json_arr(e2))
+    if v.items.is_some():
+        auto u3 = v.items.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(pillar_item_to_json(x4))
+        parts.append("\"items\":" + wellarchitected_json_arr(e4))
+    return wellarchitected_json_obj(parts)
+
+# Serialize SelectedPillar to a compact JSON object (declaration order).
+def selected_pillar_to_json(SelectedPillar v) -> str:
+    list[str] parts = []
+    if v.PillarId.is_some():
+        auto u0 = v.PillarId.unwrap()
+        parts.append("\"PillarId\":" + wellarchitected_json_str(u0))
+    if v.SelectedQuestionIds.is_some():
+        auto u1 = v.SelectedQuestionIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(wellarchitected_json_str(x2))
+        parts.append("\"SelectedQuestionIds\":" + wellarchitected_json_arr(e2))
+    return wellarchitected_json_obj(parts)
+
+# Serialize WorkloadDiscoveryConfig to a compact JSON object (declaration order).
+def workload_discovery_config_to_json(WorkloadDiscoveryConfig v) -> str:
+    list[str] parts = []
+    if v.TrustedAdvisorIntegrationStatus.is_some():
+        auto u0 = v.TrustedAdvisorIntegrationStatus.unwrap()
+        parts.append("\"TrustedAdvisorIntegrationStatus\":" + u0.to_json())
+    if v.WorkloadResourceDefinition.is_some():
+        auto u1 = v.WorkloadResourceDefinition.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"WorkloadResourceDefinition\":" + wellarchitected_json_arr(e2))
+    return wellarchitected_json_obj(parts)
+
 # A bound WellArchitected client: credentials + region, threaded into every operation.
 struct WellArchitectedClient:
     core.Credentials creds
     str region
+
+    # AssociateLenses  PATCH /workloads/{WorkloadId}/associateLenses
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def associate_lenses(self, AssociateLensesInput input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        dict[str, str] labels = {}
+        labels["WorkloadId"] = input.WorkloadId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/workloads/{WorkloadId}/associateLenses", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.LensAliases:
+            e0.append(wellarchitected_json_str(x0))
+        parts.append("\"LensAliases\":" + wellarchitected_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, wellarchitected_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
+
+    # AssociateProfiles  PATCH /workloads/{WorkloadId}/associateProfiles
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def associate_profiles(self, AssociateProfilesInput input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        dict[str, str] labels = {}
+        labels["WorkloadId"] = input.WorkloadId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/workloads/{WorkloadId}/associateProfiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.ProfileArns:
+            e0.append(wellarchitected_json_str(x0))
+        parts.append("\"ProfileArns\":" + wellarchitected_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, wellarchitected_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
+
+    # CreateAgentContext  POST /api/v1/agent-profiles/{profileArn}/contexts
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_agent_context(self, CreateAgentContextRequest input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        dict[str, str] labels = {}
+        labels["profileArn"] = input.profileArn
+        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/agent-profiles/{profileArn}/contexts", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + wellarchitected_json_str(u0))
+        parts.append("\"title\":" + wellarchitected_json_str(input.title))
+        parts.append("\"contextType\":" + wellarchitected_json_str(input.contextType))
+        parts.append("\"content\":" + context_content_to_json(input.content))
+        auto bp = restjson.rest_json_document(b, wellarchitected_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
+
+    # CreateAgentGoal  POST /api/v1/agent-profiles/{profileArn}/goals
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_agent_goal(self, CreateAgentGoalRequest input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        dict[str, str] labels = {}
+        labels["profileArn"] = input.profileArn
+        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/agent-profiles/{profileArn}/goals", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + wellarchitected_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.pillars:
+            e1.append(x1.to_json())
+        parts.append("\"pillars\":" + wellarchitected_json_arr(e1))
+        parts.append("\"title\":" + wellarchitected_json_str(input.title))
+        if input.description.is_some():
+            auto u2 = input.description.unwrap()
+            parts.append("\"description\":" + wellarchitected_json_str(u2))
+        auto bp = restjson.rest_json_document(b, wellarchitected_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
+
+    # CreateAgentProfile  POST /api/v1/agent-profiles
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_agent_profile(self, CreateAgentProfileRequest input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/agent-profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + wellarchitected_json_str(input.name))
+        if input.displayName.is_some():
+            auto u0 = input.displayName.unwrap()
+            parts.append("\"displayName\":" + wellarchitected_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + wellarchitected_json_str(u1))
+        if input.businessOverview.is_some():
+            auto u2 = input.businessOverview.unwrap()
+            parts.append("\"businessOverview\":" + wellarchitected_json_str(u2))
+        list[str] e3 = []
+        for x3 in input.pillars:
+            e3.append(x3.to_json())
+        parts.append("\"pillars\":" + wellarchitected_json_arr(e3))
+        if input.deletionProtection.is_some():
+            auto u4 = input.deletionProtection.unwrap()
+            parts.append("\"deletionProtection\":" + json.dumps(JsonValue.Bool(u4)))
+        parts.append("\"executionRoleArn\":" + wellarchitected_json_str(input.executionRoleArn))
+        list[str] e5 = []
+        for x5 in input.aggregationConfiguration:
+            e5.append(aggregation_configuration_to_json(x5))
+        parts.append("\"aggregationConfiguration\":" + wellarchitected_json_arr(e5))
+        if input.clientToken.is_some():
+            auto u6 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + wellarchitected_json_str(u6))
+        if input.tags.is_some():
+            auto u7 = input.tags.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"tags\":" + wellarchitected_json_arr(e8))
+        auto bp = restjson.rest_json_document(b, wellarchitected_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
 
     # CreateLensShare  POST /lenses/{LensAlias}/shares
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -2901,6 +3265,28 @@ struct WellArchitectedClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
 
+    # CreateProfile  POST /profiles
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_profile(self, CreateProfileInput input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ProfileName\":" + wellarchitected_json_str(input.ProfileName))
+        parts.append("\"ProfileDescription\":" + wellarchitected_json_str(input.ProfileDescription))
+        list[str] e0 = []
+        for x0 in input.ProfileQuestions:
+            e0.append(profile_question_update_to_json(x0))
+        parts.append("\"ProfileQuestions\":" + wellarchitected_json_arr(e0))
+        parts.append("\"ClientRequestToken\":" + wellarchitected_json_str(input.ClientRequestToken))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(wellarchitected_json_str(k2) + ":" + wellarchitected_json_str(u1[k2]))
+            parts.append("\"Tags\":" + wellarchitected_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, wellarchitected_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
+
     # CreateProfileShare  POST /profiles/{ProfileArn}/shares
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_profile_share(self, CreateProfileShareInput input) -> str:
@@ -2912,6 +3298,31 @@ struct WellArchitectedClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
 
+    # CreateReviewTemplate  POST /reviewTemplates
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_review_template(self, CreateReviewTemplateInput input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/reviewTemplates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"TemplateName\":" + wellarchitected_json_str(input.TemplateName))
+        parts.append("\"Description\":" + wellarchitected_json_str(input.Description))
+        list[str] e0 = []
+        for x0 in input.Lenses:
+            e0.append(wellarchitected_json_str(x0))
+        parts.append("\"Lenses\":" + wellarchitected_json_arr(e0))
+        if input.Notes.is_some():
+            auto u1 = input.Notes.unwrap()
+            parts.append("\"Notes\":" + wellarchitected_json_str(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(wellarchitected_json_str(k3) + ":" + wellarchitected_json_str(u2[k3]))
+            parts.append("\"Tags\":" + wellarchitected_json_obj(m3))
+        parts.append("\"ClientRequestToken\":" + wellarchitected_json_str(input.ClientRequestToken))
+        auto bp = restjson.rest_json_document(b, wellarchitected_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
+
     # CreateTemplateShare  POST /templates/shares/{TemplateArn}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_template_share(self, CreateTemplateShareInput input) -> str:
@@ -2921,6 +3332,92 @@ struct WellArchitectedClient:
         auto b = binding.HttpBinding(method="POST", path_template="/templates/shares/{TemplateArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateTemplateShareDocument(SharedWith=input.SharedWith, ClientRequestToken=input.ClientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
+
+    # CreateWorkload  POST /workloads
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_workload(self, CreateWorkloadInput input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/workloads", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"WorkloadName\":" + wellarchitected_json_str(input.WorkloadName))
+        parts.append("\"Description\":" + wellarchitected_json_str(input.Description))
+        parts.append("\"Environment\":" + input.Environment.to_json())
+        if input.AccountIds.is_some():
+            auto u0 = input.AccountIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(wellarchitected_json_str(x1))
+            parts.append("\"AccountIds\":" + wellarchitected_json_arr(e1))
+        if input.AwsRegions.is_some():
+            auto u2 = input.AwsRegions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(wellarchitected_json_str(x3))
+            parts.append("\"AwsRegions\":" + wellarchitected_json_arr(e3))
+        if input.NonAwsRegions.is_some():
+            auto u4 = input.NonAwsRegions.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(wellarchitected_json_str(x5))
+            parts.append("\"NonAwsRegions\":" + wellarchitected_json_arr(e5))
+        if input.PillarPriorities.is_some():
+            auto u6 = input.PillarPriorities.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(wellarchitected_json_str(x7))
+            parts.append("\"PillarPriorities\":" + wellarchitected_json_arr(e7))
+        if input.ArchitecturalDesign.is_some():
+            auto u8 = input.ArchitecturalDesign.unwrap()
+            parts.append("\"ArchitecturalDesign\":" + wellarchitected_json_str(u8))
+        if input.ReviewOwner.is_some():
+            auto u9 = input.ReviewOwner.unwrap()
+            parts.append("\"ReviewOwner\":" + wellarchitected_json_str(u9))
+        if input.IndustryType.is_some():
+            auto u10 = input.IndustryType.unwrap()
+            parts.append("\"IndustryType\":" + wellarchitected_json_str(u10))
+        if input.Industry.is_some():
+            auto u11 = input.Industry.unwrap()
+            parts.append("\"Industry\":" + wellarchitected_json_str(u11))
+        list[str] e12 = []
+        for x12 in input.Lenses:
+            e12.append(wellarchitected_json_str(x12))
+        parts.append("\"Lenses\":" + wellarchitected_json_arr(e12))
+        if input.Notes.is_some():
+            auto u13 = input.Notes.unwrap()
+            parts.append("\"Notes\":" + wellarchitected_json_str(u13))
+        parts.append("\"ClientRequestToken\":" + wellarchitected_json_str(input.ClientRequestToken))
+        if input.Tags.is_some():
+            auto u14 = input.Tags.unwrap()
+            list[str] m15 = []
+            for k15 in sorted(u14.keys()):
+                m15.append(wellarchitected_json_str(k15) + ":" + wellarchitected_json_str(u14[k15]))
+            parts.append("\"Tags\":" + wellarchitected_json_obj(m15))
+        if input.DiscoveryConfig.is_some():
+            auto u16 = input.DiscoveryConfig.unwrap()
+            parts.append("\"DiscoveryConfig\":" + workload_discovery_config_to_json(u16))
+        if input.Applications.is_some():
+            auto u17 = input.Applications.unwrap()
+            list[str] e18 = []
+            for x18 in u17:
+                e18.append(wellarchitected_json_str(x18))
+            parts.append("\"Applications\":" + wellarchitected_json_arr(e18))
+        if input.ProfileArns.is_some():
+            auto u19 = input.ProfileArns.unwrap()
+            list[str] e20 = []
+            for x20 in u19:
+                e20.append(wellarchitected_json_str(x20))
+            parts.append("\"ProfileArns\":" + wellarchitected_json_arr(e20))
+        if input.ReviewTemplateArns.is_some():
+            auto u21 = input.ReviewTemplateArns.unwrap()
+            list[str] e22 = []
+            for x22 in u21:
+                e22.append(wellarchitected_json_str(x22))
+            parts.append("\"ReviewTemplateArns\":" + wellarchitected_json_arr(e22))
+        if input.JiraConfiguration.is_some():
+            auto u23 = input.JiraConfiguration.unwrap()
+            parts.append("\"JiraConfiguration\":" + u23.to_json())
+        auto bp = restjson.rest_json_document(b, wellarchitected_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
 
     # CreateWorkloadShare  POST /workloads/{WorkloadId}/shares
@@ -3055,6 +3552,36 @@ struct WellArchitectedClient:
         query["ClientRequestToken"] = input.ClientRequestToken
         auto b = binding.HttpBinding(method="DELETE", path_template="/workloads/{WorkloadId}/shares/{ShareId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
+
+    # DisassociateLenses  PATCH /workloads/{WorkloadId}/disassociateLenses
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def disassociate_lenses(self, DisassociateLensesInput input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        dict[str, str] labels = {}
+        labels["WorkloadId"] = input.WorkloadId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/workloads/{WorkloadId}/disassociateLenses", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.LensAliases:
+            e0.append(wellarchitected_json_str(x0))
+        parts.append("\"LensAliases\":" + wellarchitected_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, wellarchitected_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
+
+    # DisassociateProfiles  PATCH /workloads/{WorkloadId}/disassociateProfiles
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def disassociate_profiles(self, DisassociateProfilesInput input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        dict[str, str] labels = {}
+        labels["WorkloadId"] = input.WorkloadId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/workloads/{WorkloadId}/disassociateProfiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.ProfileArns:
+            e0.append(wellarchitected_json_str(x0))
+        parts.append("\"ProfileArns\":" + wellarchitected_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, wellarchitected_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
 
     # ExportLens  GET /lenses/{LensAlias}/export
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -3259,6 +3786,26 @@ struct WellArchitectedClient:
         labels["WorkloadId"] = input.WorkloadId
         auto b = binding.HttpBinding(method="GET", path_template="/workloads/{WorkloadId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
+
+    # ImportLens  PUT /importLens
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def import_lens(self, ImportLensInput input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/importLens", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.LensAlias.is_some():
+            auto u0 = input.LensAlias.unwrap()
+            parts.append("\"LensAlias\":" + wellarchitected_json_str(u0))
+        parts.append("\"JSONString\":" + wellarchitected_json_str(input.JSONString))
+        parts.append("\"ClientRequestToken\":" + wellarchitected_json_str(input.ClientRequestToken))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(wellarchitected_json_str(k2) + ":" + wellarchitected_json_str(u1[k2]))
+            parts.append("\"Tags\":" + wellarchitected_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, wellarchitected_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
 
     # ListAgentContexts  GET /api/v1/agent-profiles/{profileArn}/contexts
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
@@ -3650,6 +4197,132 @@ struct WellArchitectedClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
 
+    # StartAgentRecommendationGeneration  POST /api/v1/agent-profiles/{profileArn}/generations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_agent_recommendation_generation(self, StartAgentRecommendationGenerationRequest input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        dict[str, str] labels = {}
+        labels["profileArn"] = input.profileArn
+        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/agent-profiles/{profileArn}/generations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.types:
+            e0.append(x0.to_json())
+        parts.append("\"types\":" + wellarchitected_json_arr(e0))
+        if input.name.is_some():
+            auto u1 = input.name.unwrap()
+            parts.append("\"name\":" + wellarchitected_json_str(u1))
+        if input.additionalContext.is_some():
+            auto u2 = input.additionalContext.unwrap()
+            parts.append("\"additionalContext\":" + u2.to_json())
+        parts.append("\"scope\":" + scope__to_json(input.scope_))
+        auto bp = restjson.rest_json_document(b, wellarchitected_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
+
+    # TagResource  POST /tags/{WorkloadArn}
+    # errors: InternalServerException, ResourceNotFoundException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        dict[str, str] labels = {}
+        labels["WorkloadArn"] = input.WorkloadArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{WorkloadArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(wellarchitected_json_str(k0) + ":" + wellarchitected_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + wellarchitected_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, wellarchitected_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
+
+    # UpdateAgentContext  PUT /api/v1/agent-profiles/{profileArn}/contexts/{id}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_agent_context(self, UpdateAgentContextRequest input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        dict[str, str] labels = {}
+        labels["profileArn"] = input.profileArn
+        labels["id"] = input.id
+        auto b = binding.HttpBinding(method="PUT", path_template="/api/v1/agent-profiles/{profileArn}/contexts/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + wellarchitected_json_str(u0))
+        if input.title.is_some():
+            auto u1 = input.title.unwrap()
+            parts.append("\"title\":" + wellarchitected_json_str(u1))
+        if input.content.is_some():
+            auto u2 = input.content.unwrap()
+            parts.append("\"content\":" + context_content_to_json(u2))
+        auto bp = restjson.rest_json_document(b, wellarchitected_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
+
+    # UpdateAgentGoal  PUT /api/v1/agent-profiles/{profileArn}/goals/{id}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_agent_goal(self, UpdateAgentGoalRequest input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        dict[str, str] labels = {}
+        labels["profileArn"] = input.profileArn
+        labels["id"] = input.id
+        auto b = binding.HttpBinding(method="PUT", path_template="/api/v1/agent-profiles/{profileArn}/goals/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + wellarchitected_json_str(u0))
+        if input.pillars.is_some():
+            auto u1 = input.pillars.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"pillars\":" + wellarchitected_json_arr(e2))
+        if input.title.is_some():
+            auto u3 = input.title.unwrap()
+            parts.append("\"title\":" + wellarchitected_json_str(u3))
+        if input.description.is_some():
+            auto u4 = input.description.unwrap()
+            parts.append("\"description\":" + wellarchitected_json_str(u4))
+        auto bp = restjson.rest_json_document(b, wellarchitected_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
+
+    # UpdateAgentProfile  PUT /api/v1/agent-profiles/{profileArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_agent_profile(self, UpdateAgentProfileRequest input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        dict[str, str] labels = {}
+        labels["profileArn"] = input.profileArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/api/v1/agent-profiles/{profileArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + wellarchitected_json_str(u0))
+        if input.displayName.is_some():
+            auto u1 = input.displayName.unwrap()
+            parts.append("\"displayName\":" + wellarchitected_json_str(u1))
+        if input.description.is_some():
+            auto u2 = input.description.unwrap()
+            parts.append("\"description\":" + wellarchitected_json_str(u2))
+        if input.executionRoleArn.is_some():
+            auto u3 = input.executionRoleArn.unwrap()
+            parts.append("\"executionRoleArn\":" + wellarchitected_json_str(u3))
+        if input.aggregationConfiguration.is_some():
+            auto u4 = input.aggregationConfiguration.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(aggregation_configuration_to_json(x5))
+            parts.append("\"aggregationConfiguration\":" + wellarchitected_json_arr(e5))
+        if input.businessOverview.is_some():
+            auto u6 = input.businessOverview.unwrap()
+            parts.append("\"businessOverview\":" + wellarchitected_json_str(u6))
+        if input.pillars.is_some():
+            auto u7 = input.pillars.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"pillars\":" + wellarchitected_json_arr(e8))
+        if input.deletionProtection.is_some():
+            auto u9 = input.deletionProtection.unwrap()
+            parts.append("\"deletionProtection\":" + json.dumps(JsonValue.Bool(u9)))
+        auto bp = restjson.rest_json_document(b, wellarchitected_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
+
     # UpdateAgentRecommendationStatus  PATCH /api/v1/agent-recommendations/{recommendationArn}/status
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_agent_recommendation_status(self, UpdateAgentRecommendationStatusRequest input) -> str:
@@ -3659,6 +4332,40 @@ struct WellArchitectedClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/api/v1/agent-recommendations/{recommendationArn}/status", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAgentRecommendationStatusDocument(status=input.status, updateReason=input.updateReason)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
+
+    # UpdateAnswer  PATCH /workloads/{WorkloadId}/lensReviews/{LensAlias}/answers/{QuestionId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_answer(self, UpdateAnswerInput input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        dict[str, str] labels = {}
+        labels["WorkloadId"] = input.WorkloadId
+        labels["LensAlias"] = input.LensAlias
+        labels["QuestionId"] = input.QuestionId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/workloads/{WorkloadId}/lensReviews/{LensAlias}/answers/{QuestionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.SelectedChoices.is_some():
+            auto u0 = input.SelectedChoices.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(wellarchitected_json_str(x1))
+            parts.append("\"SelectedChoices\":" + wellarchitected_json_arr(e1))
+        if input.ChoiceUpdates.is_some():
+            auto u2 = input.ChoiceUpdates.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(wellarchitected_json_str(k3) + ":" + u2[k3].to_json())
+            parts.append("\"ChoiceUpdates\":" + wellarchitected_json_obj(m3))
+        if input.Notes.is_some():
+            auto u4 = input.Notes.unwrap()
+            parts.append("\"Notes\":" + wellarchitected_json_str(u4))
+        if input.IsApplicable.is_some():
+            auto u5 = input.IsApplicable.unwrap()
+            parts.append("\"IsApplicable\":" + json.dumps(JsonValue.Bool(u5)))
+        if input.Reason.is_some():
+            auto u6 = input.Reason.unwrap()
+            parts.append("\"Reason\":" + u6.to_json())
+        auto bp = restjson.rest_json_document(b, wellarchitected_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
 
     # UpdateGlobalSettings  PATCH /global-settings
@@ -3681,6 +4388,137 @@ struct WellArchitectedClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
 
+    # UpdateLensReview  PATCH /workloads/{WorkloadId}/lensReviews/{LensAlias}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_lens_review(self, UpdateLensReviewInput input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        dict[str, str] labels = {}
+        labels["WorkloadId"] = input.WorkloadId
+        labels["LensAlias"] = input.LensAlias
+        auto b = binding.HttpBinding(method="PATCH", path_template="/workloads/{WorkloadId}/lensReviews/{LensAlias}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.LensNotes.is_some():
+            auto u0 = input.LensNotes.unwrap()
+            parts.append("\"LensNotes\":" + wellarchitected_json_str(u0))
+        if input.PillarNotes.is_some():
+            auto u1 = input.PillarNotes.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(wellarchitected_json_str(k2) + ":" + wellarchitected_json_str(u1[k2]))
+            parts.append("\"PillarNotes\":" + wellarchitected_json_obj(m2))
+        if input.JiraConfiguration.is_some():
+            auto u3 = input.JiraConfiguration.unwrap()
+            parts.append("\"JiraConfiguration\":" + jira_selected_question_configuration_to_json(u3))
+        auto bp = restjson.rest_json_document(b, wellarchitected_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
+
+    # UpdateProfile  PATCH /profiles/{ProfileArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_profile(self, UpdateProfileInput input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ProfileArn"] = input.ProfileArn
+        auto b = binding.HttpBinding(method="PATCH", path_template="/profiles/{ProfileArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ProfileDescription.is_some():
+            auto u0 = input.ProfileDescription.unwrap()
+            parts.append("\"ProfileDescription\":" + wellarchitected_json_str(u0))
+        if input.ProfileQuestions.is_some():
+            auto u1 = input.ProfileQuestions.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(profile_question_update_to_json(x2))
+            parts.append("\"ProfileQuestions\":" + wellarchitected_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, wellarchitected_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
+
+    # UpdateReviewTemplate  PATCH /reviewTemplates/{TemplateArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_review_template(self, UpdateReviewTemplateInput input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        dict[str, str] labels = {}
+        labels["TemplateArn"] = input.TemplateArn
+        auto b = binding.HttpBinding(method="PATCH", path_template="/reviewTemplates/{TemplateArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.TemplateName.is_some():
+            auto u0 = input.TemplateName.unwrap()
+            parts.append("\"TemplateName\":" + wellarchitected_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + wellarchitected_json_str(u1))
+        if input.Notes.is_some():
+            auto u2 = input.Notes.unwrap()
+            parts.append("\"Notes\":" + wellarchitected_json_str(u2))
+        if input.LensesToAssociate.is_some():
+            auto u3 = input.LensesToAssociate.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(wellarchitected_json_str(x4))
+            parts.append("\"LensesToAssociate\":" + wellarchitected_json_arr(e4))
+        if input.LensesToDisassociate.is_some():
+            auto u5 = input.LensesToDisassociate.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(wellarchitected_json_str(x6))
+            parts.append("\"LensesToDisassociate\":" + wellarchitected_json_arr(e6))
+        auto bp = restjson.rest_json_document(b, wellarchitected_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
+
+    # UpdateReviewTemplateAnswer  PATCH /reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}/answers/{QuestionId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_review_template_answer(self, UpdateReviewTemplateAnswerInput input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        dict[str, str] labels = {}
+        labels["TemplateArn"] = input.TemplateArn
+        labels["LensAlias"] = input.LensAlias
+        labels["QuestionId"] = input.QuestionId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}/answers/{QuestionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.SelectedChoices.is_some():
+            auto u0 = input.SelectedChoices.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(wellarchitected_json_str(x1))
+            parts.append("\"SelectedChoices\":" + wellarchitected_json_arr(e1))
+        if input.ChoiceUpdates.is_some():
+            auto u2 = input.ChoiceUpdates.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(wellarchitected_json_str(k3) + ":" + u2[k3].to_json())
+            parts.append("\"ChoiceUpdates\":" + wellarchitected_json_obj(m3))
+        if input.Notes.is_some():
+            auto u4 = input.Notes.unwrap()
+            parts.append("\"Notes\":" + wellarchitected_json_str(u4))
+        if input.IsApplicable.is_some():
+            auto u5 = input.IsApplicable.unwrap()
+            parts.append("\"IsApplicable\":" + json.dumps(JsonValue.Bool(u5)))
+        if input.Reason.is_some():
+            auto u6 = input.Reason.unwrap()
+            parts.append("\"Reason\":" + u6.to_json())
+        auto bp = restjson.rest_json_document(b, wellarchitected_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
+
+    # UpdateReviewTemplateLensReview  PATCH /reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_review_template_lens_review(self, UpdateReviewTemplateLensReviewInput input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        dict[str, str] labels = {}
+        labels["TemplateArn"] = input.TemplateArn
+        labels["LensAlias"] = input.LensAlias
+        auto b = binding.HttpBinding(method="PATCH", path_template="/reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.LensNotes.is_some():
+            auto u0 = input.LensNotes.unwrap()
+            parts.append("\"LensNotes\":" + wellarchitected_json_str(u0))
+        if input.PillarNotes.is_some():
+            auto u1 = input.PillarNotes.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(wellarchitected_json_str(k2) + ":" + wellarchitected_json_str(u1[k2]))
+            parts.append("\"PillarNotes\":" + wellarchitected_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, wellarchitected_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
+
     # UpdateShareInvitation  PATCH /shareInvitations/{ShareInvitationId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_share_invitation(self, UpdateShareInvitationInput input) -> str:
@@ -3690,6 +4528,83 @@ struct WellArchitectedClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/shareInvitations/{ShareInvitationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateShareInvitationDocument(ShareInvitationAction=input.ShareInvitationAction)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
+
+    # UpdateWorkload  PATCH /workloads/{WorkloadId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_workload(self, UpdateWorkloadInput input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        dict[str, str] labels = {}
+        labels["WorkloadId"] = input.WorkloadId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/workloads/{WorkloadId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.WorkloadName.is_some():
+            auto u0 = input.WorkloadName.unwrap()
+            parts.append("\"WorkloadName\":" + wellarchitected_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + wellarchitected_json_str(u1))
+        if input.Environment.is_some():
+            auto u2 = input.Environment.unwrap()
+            parts.append("\"Environment\":" + u2.to_json())
+        if input.AccountIds.is_some():
+            auto u3 = input.AccountIds.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(wellarchitected_json_str(x4))
+            parts.append("\"AccountIds\":" + wellarchitected_json_arr(e4))
+        if input.AwsRegions.is_some():
+            auto u5 = input.AwsRegions.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(wellarchitected_json_str(x6))
+            parts.append("\"AwsRegions\":" + wellarchitected_json_arr(e6))
+        if input.NonAwsRegions.is_some():
+            auto u7 = input.NonAwsRegions.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(wellarchitected_json_str(x8))
+            parts.append("\"NonAwsRegions\":" + wellarchitected_json_arr(e8))
+        if input.PillarPriorities.is_some():
+            auto u9 = input.PillarPriorities.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(wellarchitected_json_str(x10))
+            parts.append("\"PillarPriorities\":" + wellarchitected_json_arr(e10))
+        if input.ArchitecturalDesign.is_some():
+            auto u11 = input.ArchitecturalDesign.unwrap()
+            parts.append("\"ArchitecturalDesign\":" + wellarchitected_json_str(u11))
+        if input.ReviewOwner.is_some():
+            auto u12 = input.ReviewOwner.unwrap()
+            parts.append("\"ReviewOwner\":" + wellarchitected_json_str(u12))
+        if input.IsReviewOwnerUpdateAcknowledged.is_some():
+            auto u13 = input.IsReviewOwnerUpdateAcknowledged.unwrap()
+            parts.append("\"IsReviewOwnerUpdateAcknowledged\":" + json.dumps(JsonValue.Bool(u13)))
+        if input.IndustryType.is_some():
+            auto u14 = input.IndustryType.unwrap()
+            parts.append("\"IndustryType\":" + wellarchitected_json_str(u14))
+        if input.Industry.is_some():
+            auto u15 = input.Industry.unwrap()
+            parts.append("\"Industry\":" + wellarchitected_json_str(u15))
+        if input.Notes.is_some():
+            auto u16 = input.Notes.unwrap()
+            parts.append("\"Notes\":" + wellarchitected_json_str(u16))
+        if input.ImprovementStatus.is_some():
+            auto u17 = input.ImprovementStatus.unwrap()
+            parts.append("\"ImprovementStatus\":" + u17.to_json())
+        if input.DiscoveryConfig.is_some():
+            auto u18 = input.DiscoveryConfig.unwrap()
+            parts.append("\"DiscoveryConfig\":" + workload_discovery_config_to_json(u18))
+        if input.Applications.is_some():
+            auto u19 = input.Applications.unwrap()
+            list[str] e20 = []
+            for x20 in u19:
+                e20.append(wellarchitected_json_str(x20))
+            parts.append("\"Applications\":" + wellarchitected_json_arr(e20))
+        if input.JiraConfiguration.is_some():
+            auto u21 = input.JiraConfiguration.unwrap()
+            parts.append("\"JiraConfiguration\":" + u21.to_json())
+        auto bp = restjson.rest_json_document(b, wellarchitected_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
 
     # UpdateWorkloadShare  PATCH /workloads/{WorkloadId}/shares/{ShareId}

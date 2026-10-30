@@ -14,12 +14,12 @@
 # Response.
 #
 # Coverage (v0, awsJson only): 4 operations — 4 with a generated method,
-#   0 skipped (input uses collections not yet serializable by derive).
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   24 structs (15 @derive(Json)), 6 enums, 5 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -97,8 +97,9 @@ struct GetRecordsInput:
     str shardIterator
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) changeRecords: list[Record] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) changeRecords: list[Record] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecordsOutput:
     Optional[list[Record]] changeRecords
     Optional[str] nextShardIterator
@@ -122,8 +123,9 @@ struct GetStreamInput:
     Optional[ShardFilter] shardFilter
     Optional[str] nextToken
 
-# no @derive(Json): member(s) shards: list[Shard] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) shards: list[Shard] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetStreamOutput:
     str streamArn
     str streamLabel
@@ -143,21 +145,24 @@ struct InternalServerException:
 struct IteratorDescription:
     Optional[IteratorPosition] iteratorPosition
 
-# no @derive(Json): member(s) value: KeyspacesCellValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: KeyspacesCellValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KeyspacesCell:
     Optional[KeyspacesCellValue] value
     Optional[KeyspacesMetadata] metadata
 
-# no @derive(Json): member(s) key: KeyspacesCellValue, value: KeyspacesCellValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) key: KeyspacesCellValue, value: KeyspacesCellValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KeyspacesCellMapDefinition:
     Optional[KeyspacesCellValue] key
     Optional[KeyspacesCellValue] value
     Optional[KeyspacesMetadata] metadata
 
-# no @derive(Json): member(s) listT: list[KeyspacesCell], mapT: list[KeyspacesCellMapDefinition], setT: list[KeyspacesCell], tupleT: list[KeyspacesCell], udtT: dict[str, KeyspacesCell] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) listT: list[KeyspacesCell], mapT: list[KeyspacesCellMapDefinition], setT: list[KeyspacesCell], tupleT: list[KeyspacesCell], udtT: dict[str, KeyspacesCell] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KeyspacesCellValue:
     Optional[str] asciiT
     Optional[str] bigintT
@@ -191,8 +196,9 @@ struct KeyspacesMetadata:
     Optional[str] expirationTime
     Optional[str] writeTime
 
-# no @derive(Json): member(s) valueCells: dict[str, KeyspacesCell], staticCells: dict[str, KeyspacesCell] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) valueCells: dict[str, KeyspacesCell], staticCells: dict[str, KeyspacesCell] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KeyspacesRow:
     Optional[dict[str, KeyspacesCell]] valueCells
     Optional[dict[str, KeyspacesCell]] staticCells
@@ -205,14 +211,16 @@ struct ListStreamsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) streams: list[Stream] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) streams: list[Stream] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStreamsOutput:
     Optional[list[Stream]] streams
     Optional[str] nextToken
 
-# no @derive(Json): member(s) partitionKeys: dict[str, KeyspacesCellValue], clusteringKeys: dict[str, KeyspacesCellValue], newImage: KeyspacesRow, oldImage: KeyspacesRow not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) partitionKeys: dict[str, KeyspacesCellValue], clusteringKeys: dict[str, KeyspacesCellValue], newImage: KeyspacesRow, oldImage: KeyspacesRow not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Record:
     Optional[str] eventVersion
     Optional[DateTime] createdAt
@@ -232,8 +240,9 @@ struct SequenceNumberRange:
     Optional[str] startingSequenceNumber
     Optional[str] endingSequenceNumber
 
-# no @derive(Json): member(s) parentShardIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parentShardIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Shard:
     Optional[str] shardId
     Optional[SequenceNumberRange] sequenceNumberRange

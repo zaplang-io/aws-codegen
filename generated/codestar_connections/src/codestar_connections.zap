@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 27 operations — 21 with a generated method,
-#   6 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 27 operations — 27 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   86 structs (61 @derive(Json)), 7 enums, 17 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -119,22 +119,25 @@ struct Connection:
     Optional[ConnectionStatus] ConnectionStatus
     Optional[str] HostArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConnectionInput:
     Optional[ProviderType] ProviderType
     str ConnectionName
     Optional[list[Tag]] Tags
     Optional[str] HostArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConnectionOutput:
     str ConnectionArn
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) VpcConfiguration: VpcConfiguration, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfiguration: VpcConfiguration, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateHostInput:
     str Name
     ProviderType ProviderType
@@ -142,14 +145,16 @@ struct CreateHostInput:
     Optional[VpcConfiguration] VpcConfiguration
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateHostOutput:
     Optional[str] HostArn
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRepositoryLinkInput:
     str ConnectionArn
     str OwnerId
@@ -225,8 +230,9 @@ struct GetConnectionOutput:
 struct GetHostInput:
     str HostArn
 
-# no @derive(Json): member(s) VpcConfiguration: VpcConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfiguration: VpcConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetHostOutput:
     Optional[str] Name
     Optional[str] Status
@@ -248,8 +254,9 @@ struct GetRepositorySyncStatusInput:
     str RepositoryLinkId
     str SyncType
 
-# no @derive(Json): member(s) LatestSync: RepositorySyncAttempt not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LatestSync: RepositorySyncAttempt not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRepositorySyncStatusOutput:
     RepositorySyncAttempt LatestSync
 
@@ -258,8 +265,9 @@ struct GetResourceSyncStatusInput:
     str ResourceName
     str SyncType
 
-# no @derive(Json): member(s) LatestSuccessfulSync: ResourceSyncAttempt, LatestSync: ResourceSyncAttempt not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LatestSuccessfulSync: ResourceSyncAttempt, LatestSync: ResourceSyncAttempt not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourceSyncStatusOutput:
     Optional[Revision] DesiredState
     Optional[ResourceSyncAttempt] LatestSuccessfulSync
@@ -270,8 +278,9 @@ struct GetSyncBlockerSummaryInput:
     str SyncType
     str ResourceName
 
-# no @derive(Json): member(s) SyncBlockerSummary: SyncBlockerSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SyncBlockerSummary: SyncBlockerSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSyncBlockerSummaryOutput:
     SyncBlockerSummary SyncBlockerSummary
 
@@ -284,8 +293,9 @@ struct GetSyncConfigurationInput:
 struct GetSyncConfigurationOutput:
     SyncConfiguration SyncConfiguration
 
-# no @derive(Json): member(s) VpcConfiguration: VpcConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfiguration: VpcConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Host:
     Optional[str] Name
     Optional[str] HostArn
@@ -314,8 +324,9 @@ struct ListConnectionsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Connections: list[Connection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Connections: list[Connection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectionsOutput:
     Optional[list[Connection]] Connections
     Optional[str] NextToken
@@ -325,8 +336,9 @@ struct ListHostsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Hosts: list[Host] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Hosts: list[Host] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListHostsOutput:
     Optional[list[Host]] Hosts
     Optional[str] NextToken
@@ -336,8 +348,9 @@ struct ListRepositoryLinksInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RepositoryLinks: list[RepositoryLinkInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RepositoryLinks: list[RepositoryLinkInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRepositoryLinksOutput:
     list[RepositoryLinkInfo] RepositoryLinks
     Optional[str] NextToken
@@ -347,8 +360,9 @@ struct ListRepositorySyncDefinitionsInput:
     str RepositoryLinkId
     str SyncType
 
-# no @derive(Json): member(s) RepositorySyncDefinitions: list[RepositorySyncDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RepositorySyncDefinitions: list[RepositorySyncDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRepositorySyncDefinitionsOutput:
     list[RepositorySyncDefinition] RepositorySyncDefinitions
     Optional[str] NextToken
@@ -360,8 +374,9 @@ struct ListSyncConfigurationsInput:
     str RepositoryLinkId
     str SyncType
 
-# no @derive(Json): member(s) SyncConfigurations: list[SyncConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SyncConfigurations: list[SyncConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSyncConfigurationsOutput:
     list[SyncConfiguration] SyncConfigurations
     Optional[str] NextToken
@@ -370,8 +385,9 @@ struct ListSyncConfigurationsOutput:
 struct ListTagsForResourceInput:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[list[Tag]] Tags
 
@@ -385,8 +401,9 @@ struct RepositoryLinkInfo:
     str RepositoryLinkId
     str RepositoryName
 
-# no @derive(Json): member(s) Events: list[RepositorySyncEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Events: list[RepositorySyncEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RepositorySyncAttempt:
     DateTime StartedAt
     RepositorySyncStatus Status
@@ -414,8 +431,9 @@ struct ResourceAlreadyExistsException:
 struct ResourceNotFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Events: list[ResourceSyncEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Events: list[ResourceSyncEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceSyncAttempt:
     list[ResourceSyncEvent] Events
     Revision InitialRevision
@@ -448,8 +466,9 @@ struct Revision:
     ProviderType ProviderType
     str Sha
 
-# no @derive(Json): member(s) Contexts: list[SyncBlockerContext] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Contexts: list[SyncBlockerContext] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SyncBlocker:
     str Id
     str Type
@@ -469,8 +488,9 @@ struct SyncBlockerContext:
 struct SyncBlockerDoesNotExistException:
     Optional[str] Message
 
-# no @derive(Json): member(s) LatestBlockers: list[SyncBlocker] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LatestBlockers: list[SyncBlocker] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SyncBlockerSummary:
     str ResourceName
     Optional[str] ParentResourceName
@@ -499,8 +519,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceInput:
     str ResourceArn
     list[Tag] Tags
@@ -522,8 +543,9 @@ struct UnsupportedOperationException:
 struct UnsupportedProviderTypeException:
     Optional[str] Message
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceInput:
     str ResourceArn
     list[str] TagKeys
@@ -533,8 +555,9 @@ struct UntagResourceOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) VpcConfiguration: VpcConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfiguration: VpcConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateHostInput:
     str HostArn
     Optional[str] ProviderEndpoint
@@ -566,8 +589,9 @@ struct UpdateSyncBlockerInput:
     str ResourceName
     str ResolvedReason
 
-# no @derive(Json): member(s) SyncBlocker: SyncBlocker not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SyncBlocker: SyncBlocker not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSyncBlockerOutput:
     str ResourceName
     Optional[str] ParentResourceName
@@ -588,8 +612,9 @@ struct UpdateSyncConfigurationInput:
 struct UpdateSyncConfigurationOutput:
     SyncConfiguration SyncConfiguration
 
-# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfiguration:
     str VpcId
     list[str] SubnetIds
@@ -660,19 +685,159 @@ def codestar_connections_error_from_code(str code) -> CodeStar_connectionsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateConnection (input CreateConnectionInput)
-#   CreateHost (input CreateHostInput)
-#   CreateRepositoryLink (input CreateRepositoryLinkInput)
-#   TagResource (input TagResourceInput)
-#   UntagResource (input UntagResourceInput)
-#   UpdateHost (input UpdateHostInput)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def codestar_connections_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def codestar_connections_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def codestar_connections_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateConnectionInput to a compact JSON object (declaration order).
+def create_connection_input_to_json(CreateConnectionInput v) -> str:
+    list[str] parts = []
+    if v.ProviderType.is_some():
+        auto u0 = v.ProviderType.unwrap()
+        parts.append("\"ProviderType\":" + u0.to_json())
+    parts.append("\"ConnectionName\":" + codestar_connections_json_str(v.ConnectionName))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + codestar_connections_json_arr(e2))
+    if v.HostArn.is_some():
+        auto u3 = v.HostArn.unwrap()
+        parts.append("\"HostArn\":" + codestar_connections_json_str(u3))
+    return codestar_connections_json_obj(parts)
+
+# Serialize CreateHostInput to a compact JSON object (declaration order).
+def create_host_input_to_json(CreateHostInput v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + codestar_connections_json_str(v.Name))
+    parts.append("\"ProviderType\":" + v.ProviderType.to_json())
+    parts.append("\"ProviderEndpoint\":" + codestar_connections_json_str(v.ProviderEndpoint))
+    if v.VpcConfiguration.is_some():
+        auto u0 = v.VpcConfiguration.unwrap()
+        parts.append("\"VpcConfiguration\":" + vpc_configuration_to_json(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + codestar_connections_json_arr(e2))
+    return codestar_connections_json_obj(parts)
+
+# Serialize CreateRepositoryLinkInput to a compact JSON object (declaration order).
+def create_repository_link_input_to_json(CreateRepositoryLinkInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ConnectionArn\":" + codestar_connections_json_str(v.ConnectionArn))
+    parts.append("\"OwnerId\":" + codestar_connections_json_str(v.OwnerId))
+    parts.append("\"RepositoryName\":" + codestar_connections_json_str(v.RepositoryName))
+    if v.EncryptionKeyArn.is_some():
+        auto u0 = v.EncryptionKeyArn.unwrap()
+        parts.append("\"EncryptionKeyArn\":" + codestar_connections_json_str(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + codestar_connections_json_arr(e2))
+    return codestar_connections_json_obj(parts)
+
+# Serialize TagResourceInput to a compact JSON object (declaration order).
+def tag_resource_input_to_json(TagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + codestar_connections_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + codestar_connections_json_arr(e0))
+    return codestar_connections_json_obj(parts)
+
+# Serialize UntagResourceInput to a compact JSON object (declaration order).
+def untag_resource_input_to_json(UntagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + codestar_connections_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(codestar_connections_json_str(x0))
+    parts.append("\"TagKeys\":" + codestar_connections_json_arr(e0))
+    return codestar_connections_json_obj(parts)
+
+# Serialize UpdateHostInput to a compact JSON object (declaration order).
+def update_host_input_to_json(UpdateHostInput v) -> str:
+    list[str] parts = []
+    parts.append("\"HostArn\":" + codestar_connections_json_str(v.HostArn))
+    if v.ProviderEndpoint.is_some():
+        auto u0 = v.ProviderEndpoint.unwrap()
+        parts.append("\"ProviderEndpoint\":" + codestar_connections_json_str(u0))
+    if v.VpcConfiguration.is_some():
+        auto u1 = v.VpcConfiguration.unwrap()
+        parts.append("\"VpcConfiguration\":" + vpc_configuration_to_json(u1))
+    return codestar_connections_json_obj(parts)
+
+# Serialize VpcConfiguration to a compact JSON object (declaration order).
+def vpc_configuration_to_json(VpcConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"VpcId\":" + codestar_connections_json_str(v.VpcId))
+    list[str] e0 = []
+    for x0 in v.SubnetIds:
+        e0.append(codestar_connections_json_str(x0))
+    parts.append("\"SubnetIds\":" + codestar_connections_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.SecurityGroupIds:
+        e1.append(codestar_connections_json_str(x1))
+    parts.append("\"SecurityGroupIds\":" + codestar_connections_json_arr(e1))
+    if v.TlsCertificate.is_some():
+        auto u2 = v.TlsCertificate.unwrap()
+        parts.append("\"TlsCertificate\":" + codestar_connections_json_str(u2))
+    return codestar_connections_json_obj(parts)
 
 # A bound CodeStar_connections client: credentials + region, threaded into every operation.
 struct CodeStar_connectionsClient:
     core.Credentials creds
     str region
+
+    # CreateConnection
+    # errors: LimitExceededException, ResourceNotFoundException, ResourceUnavailableException
+    def create_connection(self, CreateConnectionInput input) -> str:
+        auto body = create_connection_input_to_json(input)
+        return awsjson.awsjson_request_now(codestar_connections_protocol(), self.creds, self.region, "CreateConnection", body)
+
+    # CreateHost
+    # errors: LimitExceededException
+    def create_host(self, CreateHostInput input) -> str:
+        auto body = create_host_input_to_json(input)
+        return awsjson.awsjson_request_now(codestar_connections_protocol(), self.creds, self.region, "CreateHost", body)
+
+    # CreateRepositoryLink
+    # errors: AccessDeniedException, ConcurrentModificationException, InternalServerException, InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ThrottlingException
+    def create_repository_link(self, CreateRepositoryLinkInput input) -> str:
+        auto body = create_repository_link_input_to_json(input)
+        return awsjson.awsjson_request_now(codestar_connections_protocol(), self.creds, self.region, "CreateRepositoryLink", body)
 
     # CreateSyncConfiguration
     # errors: AccessDeniedException, ConcurrentModificationException, InternalServerException, InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ThrottlingException
@@ -780,6 +945,24 @@ struct CodeStar_connectionsClient:
     def list_tags_for_resource(self, ListTagsForResourceInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(codestar_connections_protocol(), self.creds, self.region, "ListTagsForResource", body)
+
+    # TagResource
+    # errors: LimitExceededException, ResourceNotFoundException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto body = tag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(codestar_connections_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: ResourceNotFoundException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto body = untag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(codestar_connections_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateHost
+    # errors: ConflictException, ResourceNotFoundException, ResourceUnavailableException, UnsupportedOperationException
+    def update_host(self, UpdateHostInput input) -> str:
+        auto body = update_host_input_to_json(input)
+        return awsjson.awsjson_request_now(codestar_connections_protocol(), self.creds, self.region, "UpdateHost", body)
 
     # UpdateRepositoryLink
     # errors: AccessDeniedException, ConditionalCheckFailedException, InternalServerException, InvalidInputException, ResourceNotFoundException, ThrottlingException, UpdateOutOfSyncException

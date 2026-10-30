@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 11 operations — 7 with a generated method,
-#   4 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 11 operations — 9 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   39 structs (22 @derive(Json)), 2 enums, 7 error variants.
 #   2 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -63,8 +63,9 @@ enum SupportPermitStatus:
 struct AccessDeniedException:
     str message
 
-# no @derive(Json): member(s) actions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionSet:
     Optional[Unit] allActions
     Optional[list[str]] actions
@@ -97,8 +98,9 @@ struct CreateSupportPermitInput:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) permit: Permit, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) permit: Permit, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSupportPermitOutput:
     str name
     str arn
@@ -115,8 +117,9 @@ struct CreateSupportPermitOutput:
 struct DeleteSupportPermitInput:
     str supportPermitIdentifier
 
-# no @derive(Json): member(s) permit: Permit not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) permit: Permit not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteSupportPermitOutput:
     str name
     str arn
@@ -143,8 +146,9 @@ struct GetActionOutput:
 struct GetSupportPermitInput:
     str supportPermitIdentifier
 
-# no @derive(Json): member(s) permit: Permit, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) permit: Permit, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSupportPermitOutput:
     str name
     str arn
@@ -168,8 +172,9 @@ struct ListActionsInput:
     Optional[int64] maxResults
     str service
 
-# no @derive(Json): member(s) actionSummaries: list[ActionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actionSummaries: list[ActionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListActionsOutput:
     list[ActionSummary] actionSummaries
     Optional[str] nextToken
@@ -181,8 +186,9 @@ struct ListSupportPermitRequestsInput:
     Optional[int64] maxResults
     Optional[str] supportCaseDisplayId
 
-# no @derive(Json): member(s) supportPermitRequests: list[SupportPermitRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) supportPermitRequests: list[SupportPermitRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSupportPermitRequestsOutput:
     list[SupportPermitRequest] supportPermitRequests
     Optional[str] nextToken
@@ -194,8 +200,9 @@ struct ListSupportPermitsInput:
     Optional[int64] maxResults
     Optional[list[SupportPermitStatus]] supportPermitStatuses
 
-# no @derive(Json): member(s) supportPermits: list[SupportPermitSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) supportPermits: list[SupportPermitSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSupportPermitsOutput:
     list[SupportPermitSummary] supportPermits
     Optional[str] nextToken
@@ -205,13 +212,15 @@ struct ListSupportPermitsOutput:
 struct ListTagsForResourceInput:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) actions: ActionSet, resources: ResourceSet, conditions: list[Condition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actions: ActionSet, resources: ResourceSet, conditions: list[Condition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Permit:
     ActionSet actions
     ResourceSet resources
@@ -232,8 +241,9 @@ struct ResourceNotFoundException:
     str resourceId
     str resourceType
 
-# no @derive(Json): member(s) resources: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resources: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceSet:
     Optional[Unit] allResourcesInRegion
     Optional[list[str]] resources
@@ -250,8 +260,9 @@ struct ServiceQuotaExceededException:
 struct SigningKeyInfo:
     Optional[str] kmsKey
 
-# no @derive(Json): member(s) permit: Permit not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) permit: Permit not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SupportPermitRequest:
     str requestArn
     Permit permit
@@ -260,8 +271,9 @@ struct SupportPermitRequest:
     DateTime createdAt
     DateTime updatedAt
 
-# no @derive(Json): member(s) permit: Permit not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) permit: Permit not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SupportPermitSummary:
     str name
     str arn
@@ -303,8 +315,9 @@ struct UntagResourceOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     Optional[list[ValidationExceptionField]] fieldList
@@ -352,19 +365,115 @@ def supportauthz_error_from_code(str code) -> SupportAuthZError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateSupportPermit (document member `permit: Permit` is not serializable by derive)
 #   ListSupportPermits (httpQuery `supportPermitStatuses` has unsupported type list[SupportPermitStatus])
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
 #   ListSupportPermits (operation not generated)
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def supportauthz_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def supportauthz_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def supportauthz_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ActionSet to a compact JSON object (declaration order).
+def action_set_to_json(ActionSet v) -> str:
+    list[str] parts = []
+    if v.allActions.is_some():
+        auto u0 = v.allActions.unwrap()
+        parts.append("\"allActions\":" + u0.to_json())
+    if v.actions.is_some():
+        auto u1 = v.actions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(supportauthz_json_str(x2))
+        parts.append("\"actions\":" + supportauthz_json_arr(e2))
+    return supportauthz_json_obj(parts)
+
+# Serialize Permit to a compact JSON object (declaration order).
+def permit_to_json(Permit v) -> str:
+    list[str] parts = []
+    parts.append("\"actions\":" + action_set_to_json(v.actions))
+    parts.append("\"resources\":" + resource_set_to_json(v.resources))
+    if v.conditions.is_some():
+        auto u0 = v.conditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"conditions\":" + supportauthz_json_arr(e1))
+    return supportauthz_json_obj(parts)
+
+# Serialize ResourceSet to a compact JSON object (declaration order).
+def resource_set_to_json(ResourceSet v) -> str:
+    list[str] parts = []
+    if v.allResourcesInRegion.is_some():
+        auto u0 = v.allResourcesInRegion.unwrap()
+        parts.append("\"allResourcesInRegion\":" + u0.to_json())
+    if v.resources.is_some():
+        auto u1 = v.resources.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(supportauthz_json_str(x2))
+        parts.append("\"resources\":" + supportauthz_json_arr(e2))
+    return supportauthz_json_obj(parts)
+
 # A bound SupportAuthZ client: credentials + region, threaded into every operation.
 struct SupportAuthZClient:
     core.Credentials creds
     str region
+
+    # CreateSupportPermit  POST /support-permits
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_support_permit(self, CreateSupportPermitInput input) -> str:
+        auto host = endpoints.regional_host(supportauthz_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/support-permits", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"permit\":" + permit_to_json(input.permit))
+        parts.append("\"name\":" + supportauthz_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + supportauthz_json_str(u0))
+        parts.append("\"signingKeyInfo\":" + input.signingKeyInfo.to_json())
+        if input.supportCaseDisplayId.is_some():
+            auto u1 = input.supportCaseDisplayId.unwrap()
+            parts.append("\"supportCaseDisplayId\":" + supportauthz_json_str(u1))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + supportauthz_json_str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(supportauthz_json_str(k4) + ":" + supportauthz_json_str(u3[k4]))
+            parts.append("\"tags\":" + supportauthz_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, supportauthz_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, supportauthz_service(), self.region, host)
 
     # DeleteSupportPermit  DELETE /support-permits/{supportPermitIdentifier}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -437,6 +546,21 @@ struct SupportAuthZClient:
         labels["requestArn"] = input.requestArn
         auto b = binding.HttpBinding(method="PUT", path_template="/support-permit-requests/{requestArn}/reject", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, supportauthz_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(supportauthz_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(supportauthz_json_str(k0) + ":" + supportauthz_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + supportauthz_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, supportauthz_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, supportauthz_service(), self.region, host)
 
     # Paginator for ListActions — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: actionSummaries).

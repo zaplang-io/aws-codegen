@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 38 operations — 25 with a generated method,
-#   13 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 38 operations — 36 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   121 structs (80 @derive(Json)), 3 enums, 10 error variants.
-#   4 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import base64
 
 # The SocialMessaging rest-json protocol: SigV4 service "social-messaging" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -89,8 +90,9 @@ struct AssociateWhatsAppBusinessAccountInput:
     Optional[WhatsAppSignupCallback] signupCallback
     Optional[WhatsAppSetupFinalization] setupFinalization
 
-# no @derive(Json): member(s) signupCallbackResult: WhatsAppSignupCallbackResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) signupCallbackResult: WhatsAppSignupCallbackResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateWhatsAppBusinessAccountOutput:
     Optional[WhatsAppSignupCallbackResult] signupCallbackResult
     Optional[int64] statusCode
@@ -120,8 +122,9 @@ struct CreateWhatsAppFlowInput:
     Optional[str] cloneFlowId
     Optional[str] endpointUri
 
-# no @derive(Json): member(s) validationErrors: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) validationErrors: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWhatsAppFlowOutput:
     Optional[str] flowId
     Optional[list[str]] validationErrors
@@ -224,8 +227,9 @@ struct DisassociateWhatsAppBusinessAccountOutput:
 struct GetLinkedWhatsAppBusinessAccountInput:
     str id
 
-# no @derive(Json): member(s) account: LinkedWhatsAppBusinessAccount not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) account: LinkedWhatsAppBusinessAccount not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLinkedWhatsAppBusinessAccountOutput:
     Optional[LinkedWhatsAppBusinessAccount] account
 
@@ -234,8 +238,9 @@ struct GetLinkedWhatsAppBusinessAccountOutput:
 struct GetLinkedWhatsAppBusinessAccountPhoneNumberInput:
     str id
 
-# no @derive(Json): member(s) callSettings: WhatsAppCallSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) callSettings: WhatsAppCallSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLinkedWhatsAppBusinessAccountPhoneNumberOutput:
     Optional[WhatsAppPhoneNumberDetail] phoneNumber
     Optional[str] linkedWhatsAppBusinessAccountId
@@ -258,8 +263,9 @@ struct GetWhatsAppCallPermissionInput:
     Optional[str] destinationPhoneNumber
     Optional[str] endUserBsuid
 
-# no @derive(Json): member(s) actions: list[WhatsAppCallPermissionAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actions: list[WhatsAppCallPermissionAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWhatsAppCallPermissionOutput:
     WhatsAppCallPermission permission
     list[WhatsAppCallPermissionAction] actions
@@ -270,8 +276,9 @@ struct GetWhatsAppFlowInput:
     str id
     str flowId
 
-# no @derive(Json): member(s) categories: list[MetaFlowCategory], validationErrors: list[str], healthStatus: MetaFlowHealthStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) categories: list[MetaFlowCategory], validationErrors: list[str], healthStatus: MetaFlowHealthStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWhatsAppFlowOutput:
     str flowId
     str flowName
@@ -340,8 +347,9 @@ struct LibraryTemplateBodyInputs:
     Optional[bool] addTrackPackageLink
     Optional[int64] codeExpirationMinutes
 
-# no @derive(Json): member(s) url: dict[str, str], supportedApps: list[dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) url: dict[str, str], supportedApps: list[dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LibraryTemplateButtonInput:
     Optional[str] type
     Optional[str] phoneNumber
@@ -350,8 +358,9 @@ struct LibraryTemplateButtonInput:
     Optional[bool] zeroTapTermsAccepted
     Optional[list[dict[str, str]]] supportedApps
 
-# no @derive(Json): member(s) supportedApps: list[dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) supportedApps: list[dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LibraryTemplateButtonList:
     Optional[str] type
     Optional[str] text
@@ -365,8 +374,9 @@ struct LibraryTemplateButtonList:
 struct LimitExceededException:
     Optional[str] message
 
-# no @derive(Json): member(s) eventDestinations: list[WhatsAppBusinessAccountEventDestination], phoneNumbers: list[WhatsAppPhoneNumberSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventDestinations: list[WhatsAppBusinessAccountEventDestination], phoneNumbers: list[WhatsAppPhoneNumberSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LinkedWhatsAppBusinessAccount:
     str arn
     str id
@@ -381,16 +391,18 @@ struct LinkedWhatsAppBusinessAccount:
     Optional[str] datasetId
     list[WhatsAppPhoneNumberSummary] phoneNumbers
 
-# no @derive(Json): member(s) unregisteredWhatsAppPhoneNumbers: list[WhatsAppPhoneNumberDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) unregisteredWhatsAppPhoneNumbers: list[WhatsAppPhoneNumberDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LinkedWhatsAppBusinessAccountIdMetaData:
     Optional[str] accountName
     Optional[RegistrationStatus] registrationStatus
     Optional[list[WhatsAppPhoneNumberDetail]] unregisteredWhatsAppPhoneNumbers
     Optional[str] wabaId
 
-# no @derive(Json): member(s) eventDestinations: list[WhatsAppBusinessAccountEventDestination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventDestinations: list[WhatsAppBusinessAccountEventDestination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LinkedWhatsAppBusinessAccountSummary:
     str arn
     str id
@@ -410,8 +422,9 @@ struct ListLinkedWhatsAppBusinessAccountsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) linkedAccounts: list[LinkedWhatsAppBusinessAccountSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) linkedAccounts: list[LinkedWhatsAppBusinessAccountSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLinkedWhatsAppBusinessAccountsOutput:
     Optional[list[LinkedWhatsAppBusinessAccountSummary]] linkedAccounts
     Optional[str] nextToken
@@ -421,8 +434,9 @@ struct ListLinkedWhatsAppBusinessAccountsOutput:
 struct ListTagsForResourceInput:
     str resourceArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[int64] statusCode
     Optional[list[Tag]] tags
@@ -435,8 +449,9 @@ struct ListWhatsAppFlowAssetsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) flowAssets: list[MetaFlowAsset] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) flowAssets: list[MetaFlowAsset] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWhatsAppFlowAssetsOutput:
     list[MetaFlowAsset] flowAssets
     Optional[str] nextToken
@@ -448,8 +463,9 @@ struct ListWhatsAppFlowsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) flows: list[MetaFlowSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) flows: list[MetaFlowSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWhatsAppFlowsOutput:
     list[MetaFlowSummary] flows
     Optional[str] nextToken
@@ -461,8 +477,9 @@ struct ListWhatsAppMessageTemplatesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) templates: list[TemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) templates: list[TemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWhatsAppMessageTemplatesOutput:
     Optional[list[TemplateSummary]] templates
     Optional[str] nextToken
@@ -475,8 +492,9 @@ struct ListWhatsAppTemplateLibraryInput:
     str id
     Optional[dict[str, str]] filters
 
-# no @derive(Json): member(s) metaLibraryTemplates: list[MetaLibraryTemplateDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metaLibraryTemplates: list[MetaLibraryTemplateDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWhatsAppTemplateLibraryOutput:
     Optional[list[MetaLibraryTemplateDefinition]] metaLibraryTemplates
     Optional[str] nextToken
@@ -499,8 +517,9 @@ struct MetaFlowHealthEntity:
     str id
     str canSendMessage
 
-# no @derive(Json): member(s) entities: list[MetaFlowHealthEntity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entities: list[MetaFlowHealthEntity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetaFlowHealthStatus:
     str canSendMessage
     Optional[list[MetaFlowHealthEntity]] entities
@@ -510,8 +529,9 @@ struct MetaFlowPreviewInfo:
     str previewUrl
     str expiresAt
 
-# no @derive(Json): member(s) flowCategories: list[MetaFlowCategory], validationErrors: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) flowCategories: list[MetaFlowCategory], validationErrors: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetaFlowSummary:
     str flowId
     str flowName
@@ -527,8 +547,9 @@ struct MetaFlowWhatsAppBusinessAccountInfo:
     Optional[str] timezoneId
     Optional[str] messageTemplateNamespace
 
-# no @derive(Json): member(s) libraryTemplateButtonInputs: list[LibraryTemplateButtonInput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) libraryTemplateButtonInputs: list[LibraryTemplateButtonInput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetaLibraryTemplate:
     str templateName
     str libraryTemplateName
@@ -537,8 +558,9 @@ struct MetaLibraryTemplate:
     Optional[list[LibraryTemplateButtonInput]] libraryTemplateButtonInputs
     Optional[LibraryTemplateBodyInputs] libraryTemplateBodyInputs
 
-# no @derive(Json): member(s) templateIndustry: list[str], templateButtons: list[LibraryTemplateButtonList], templateBodyExampleParams: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) templateIndustry: list[str], templateButtons: list[LibraryTemplateButtonList], templateBodyExampleParams: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetaLibraryTemplateDefinition:
     Optional[str] templateName
     Optional[str] templateLanguage
@@ -606,8 +628,9 @@ struct S3File:
     str bucketName
     str key
 
-# no @derive(Json): member(s) headers: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) headers: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3PresignedUrl:
     str url
     dict[str, str] headers
@@ -702,8 +725,9 @@ struct UpdateWhatsAppFlowAssetsInput:
     str flowId
     bytes flowJson
 
-# no @derive(Json): member(s) validationErrors: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) validationErrors: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateWhatsAppFlowAssetsOutput:
     Optional[list[str]] validationErrors
 
@@ -743,16 +767,18 @@ struct UpdateWhatsAppMessageTemplateOutput:
 struct ValidationException:
     Optional[str] message
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WabaPhoneNumberSetupFinalization:
     str id
     str twoFactorPin
     Optional[str] dataLocalizationRegion
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) eventDestinations: list[WhatsAppBusinessAccountEventDestination], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventDestinations: list[WhatsAppBusinessAccountEventDestination], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WabaSetupFinalization:
     Optional[str] id
     Optional[list[WhatsAppBusinessAccountEventDestination]] eventDestinations
@@ -763,8 +789,9 @@ struct WhatsAppBusinessAccountEventDestination:
     str eventDestinationArn
     Optional[str] roleArn
 
-# no @derive(Json): member(s) weeklyOperatingHours: list[WhatsAppWeeklyOperatingHoursEntry], holidaySchedule: list[WhatsAppHolidayScheduleEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) weeklyOperatingHours: list[WhatsAppWeeklyOperatingHoursEntry], holidaySchedule: list[WhatsAppHolidayScheduleEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WhatsAppCallHours:
     bool enabled
     str timezone
@@ -776,8 +803,9 @@ struct WhatsAppCallPermission:
     str status
     Optional[DateTime] expirationTime
 
-# no @derive(Json): member(s) limits: list[WhatsAppCallPermissionLimit] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) limits: list[WhatsAppCallPermissionLimit] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WhatsAppCallPermissionAction:
     str actionName
     bool canPerformAction
@@ -790,8 +818,9 @@ struct WhatsAppCallPermissionLimit:
     int64 currentUsage
     Optional[DateTime] limitExpirationTime
 
-# no @derive(Json): member(s) callHours: WhatsAppCallHours not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) callHours: WhatsAppCallHours not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WhatsAppCallSettings:
     bool callEnabled
     Optional[WhatsAppCallHours] callHours
@@ -826,8 +855,9 @@ struct WhatsAppPhoneNumberSummary:
     str qualityRating
     Optional[str] dataLocalizationRegion
 
-# no @derive(Json): member(s) phoneNumbers: list[WabaPhoneNumberSetupFinalization], waba: WabaSetupFinalization not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) phoneNumbers: list[WabaPhoneNumberSetupFinalization], waba: WabaSetupFinalization not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WhatsAppSetupFinalization:
     str associateInProgressToken
     list[WabaPhoneNumberSetupFinalization] phoneNumbers
@@ -839,8 +869,9 @@ struct WhatsAppSignupCallback:
     str accessToken
     Optional[str] callbackUrl
 
-# no @derive(Json): member(s) linkedAccountsWithIncompleteSetup: dict[str, LinkedWhatsAppBusinessAccountIdMetaData] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) linkedAccountsWithIncompleteSetup: dict[str, LinkedWhatsAppBusinessAccountIdMetaData] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WhatsAppSignupCallbackResult:
     Optional[str] associateInProgressToken
     Optional[dict[str, LinkedWhatsAppBusinessAccountIdMetaData]] linkedAccountsWithIncompleteSetup
@@ -903,23 +934,8 @@ def social_messaging_error_from_code(str code) -> SocialMessagingError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AssociateWhatsAppBusinessAccount (document member `setupFinalization: WhatsAppSetupFinalization` is not serializable by derive)
-#   CreateWhatsAppFlow (document member `categories: list[MetaFlowCategory]` is not serializable by derive)
-#   CreateWhatsAppMessageTemplateFromLibrary (document member `metaLibraryTemplate: MetaLibraryTemplate` is not serializable by derive)
 #   DeleteWhatsAppMessageTemplate (httpQuery `deleteAllLanguages` has unsupported type bool)
 #   GetWhatsAppFlowPreview (httpQuery `invalidate` has unsupported type bool)
-#   GetWhatsAppMessageMedia (document member `destinationS3PresignedUrl: S3PresignedUrl` is not serializable by derive)
-#   ListWhatsAppTemplateLibrary (document member `filters: dict[str, str]` is not serializable by derive)
-#   PostWhatsAppMessageMedia (document member `sourceS3PresignedUrl: S3PresignedUrl` is not serializable by derive)
-#   PutWhatsAppBusinessAccountEventDestinations (document member `eventDestinations: list[WhatsAppBusinessAccountEventDestination]` is not serializable by derive)
-#   TagResource (document member `tags: list[Tag]` is not serializable by derive)
-#   UntagResource (document member `tagKeys: list[str]` is not serializable by derive)
-#   UpdateLinkedWhatsAppBusinessAccountPhoneNumber (document member `callSettings: WhatsAppCallSettings` is not serializable by derive)
-#   UpdateWhatsAppFlow (document member `categories: list[MetaFlowCategory]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListWhatsAppTemplateLibrary (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1007,10 +1023,199 @@ struct UpdateWhatsAppMessageTemplateDocument:
     Optional[bytes] templateComponents
     Optional[bool] ctaUrlLinkTrackingOptedOut
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def social_messaging_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def social_messaging_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def social_messaging_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize LibraryTemplateButtonInput to a compact JSON object (declaration order).
+def library_template_button_input_to_json(LibraryTemplateButtonInput v) -> str:
+    list[str] parts = []
+    if v.type.is_some():
+        auto u0 = v.type.unwrap()
+        parts.append("\"type\":" + social_messaging_json_str(u0))
+    if v.phoneNumber.is_some():
+        auto u1 = v.phoneNumber.unwrap()
+        parts.append("\"phoneNumber\":" + social_messaging_json_str(u1))
+    if v.url.is_some():
+        auto u2 = v.url.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(social_messaging_json_str(k3) + ":" + social_messaging_json_str(u2[k3]))
+        parts.append("\"url\":" + social_messaging_json_obj(m3))
+    if v.otpType.is_some():
+        auto u4 = v.otpType.unwrap()
+        parts.append("\"otpType\":" + social_messaging_json_str(u4))
+    if v.zeroTapTermsAccepted.is_some():
+        auto u5 = v.zeroTapTermsAccepted.unwrap()
+        parts.append("\"zeroTapTermsAccepted\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.supportedApps.is_some():
+        auto u6 = v.supportedApps.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            list[str] m8 = []
+            for k8 in sorted(x7.keys()):
+                m8.append(social_messaging_json_str(k8) + ":" + social_messaging_json_str(x7[k8]))
+            e7.append(social_messaging_json_obj(m8))
+        parts.append("\"supportedApps\":" + social_messaging_json_arr(e7))
+    return social_messaging_json_obj(parts)
+
+# Serialize MetaLibraryTemplate to a compact JSON object (declaration order).
+def meta_library_template_to_json(MetaLibraryTemplate v) -> str:
+    list[str] parts = []
+    parts.append("\"templateName\":" + social_messaging_json_str(v.templateName))
+    parts.append("\"libraryTemplateName\":" + social_messaging_json_str(v.libraryTemplateName))
+    parts.append("\"templateCategory\":" + social_messaging_json_str(v.templateCategory))
+    parts.append("\"templateLanguage\":" + social_messaging_json_str(v.templateLanguage))
+    if v.libraryTemplateButtonInputs.is_some():
+        auto u0 = v.libraryTemplateButtonInputs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(library_template_button_input_to_json(x1))
+        parts.append("\"libraryTemplateButtonInputs\":" + social_messaging_json_arr(e1))
+    if v.libraryTemplateBodyInputs.is_some():
+        auto u2 = v.libraryTemplateBodyInputs.unwrap()
+        parts.append("\"libraryTemplateBodyInputs\":" + u2.to_json())
+    return social_messaging_json_obj(parts)
+
+# Serialize S3PresignedUrl to a compact JSON object (declaration order).
+def s3_presigned_url_to_json(S3PresignedUrl v) -> str:
+    list[str] parts = []
+    parts.append("\"url\":" + social_messaging_json_str(v.url))
+    list[str] m0 = []
+    for k0 in sorted(v.headers.keys()):
+        m0.append(social_messaging_json_str(k0) + ":" + social_messaging_json_str(v.headers[k0]))
+    parts.append("\"headers\":" + social_messaging_json_obj(m0))
+    return social_messaging_json_obj(parts)
+
+# Serialize WabaPhoneNumberSetupFinalization to a compact JSON object (declaration order).
+def waba_phone_number_setup_finalization_to_json(WabaPhoneNumberSetupFinalization v) -> str:
+    list[str] parts = []
+    parts.append("\"id\":" + social_messaging_json_str(v.id))
+    parts.append("\"twoFactorPin\":" + social_messaging_json_str(v.twoFactorPin))
+    if v.dataLocalizationRegion.is_some():
+        auto u0 = v.dataLocalizationRegion.unwrap()
+        parts.append("\"dataLocalizationRegion\":" + social_messaging_json_str(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + social_messaging_json_arr(e2))
+    return social_messaging_json_obj(parts)
+
+# Serialize WabaSetupFinalization to a compact JSON object (declaration order).
+def waba_setup_finalization_to_json(WabaSetupFinalization v) -> str:
+    list[str] parts = []
+    if v.id.is_some():
+        auto u0 = v.id.unwrap()
+        parts.append("\"id\":" + social_messaging_json_str(u0))
+    if v.eventDestinations.is_some():
+        auto u1 = v.eventDestinations.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"eventDestinations\":" + social_messaging_json_arr(e2))
+    if v.tags.is_some():
+        auto u3 = v.tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"tags\":" + social_messaging_json_arr(e4))
+    return social_messaging_json_obj(parts)
+
+# Serialize WhatsAppCallHours to a compact JSON object (declaration order).
+def whats_app_call_hours_to_json(WhatsAppCallHours v) -> str:
+    list[str] parts = []
+    parts.append("\"enabled\":" + json.dumps(JsonValue.Bool(v.enabled)))
+    parts.append("\"timezone\":" + social_messaging_json_str(v.timezone))
+    list[str] e0 = []
+    for x0 in v.weeklyOperatingHours:
+        e0.append(x0.to_json())
+    parts.append("\"weeklyOperatingHours\":" + social_messaging_json_arr(e0))
+    if v.holidaySchedule.is_some():
+        auto u1 = v.holidaySchedule.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"holidaySchedule\":" + social_messaging_json_arr(e2))
+    return social_messaging_json_obj(parts)
+
+# Serialize WhatsAppCallSettings to a compact JSON object (declaration order).
+def whats_app_call_settings_to_json(WhatsAppCallSettings v) -> str:
+    list[str] parts = []
+    parts.append("\"callEnabled\":" + json.dumps(JsonValue.Bool(v.callEnabled)))
+    if v.callHours.is_some():
+        auto u0 = v.callHours.unwrap()
+        parts.append("\"callHours\":" + whats_app_call_hours_to_json(u0))
+    if v.callIconVisibility.is_some():
+        auto u1 = v.callIconVisibility.unwrap()
+        parts.append("\"callIconVisibility\":" + social_messaging_json_str(u1))
+    if v.callbackPermissionStatus.is_some():
+        auto u2 = v.callbackPermissionStatus.unwrap()
+        parts.append("\"callbackPermissionStatus\":" + social_messaging_json_str(u2))
+    return social_messaging_json_obj(parts)
+
+# Serialize WhatsAppSetupFinalization to a compact JSON object (declaration order).
+def whats_app_setup_finalization_to_json(WhatsAppSetupFinalization v) -> str:
+    list[str] parts = []
+    parts.append("\"associateInProgressToken\":" + social_messaging_json_str(v.associateInProgressToken))
+    list[str] e0 = []
+    for x0 in v.phoneNumbers:
+        e0.append(waba_phone_number_setup_finalization_to_json(x0))
+    parts.append("\"phoneNumbers\":" + social_messaging_json_arr(e0))
+    if v.phoneNumberParent.is_some():
+        auto u1 = v.phoneNumberParent.unwrap()
+        parts.append("\"phoneNumberParent\":" + social_messaging_json_str(u1))
+    if v.waba.is_some():
+        auto u2 = v.waba.unwrap()
+        parts.append("\"waba\":" + waba_setup_finalization_to_json(u2))
+    return social_messaging_json_obj(parts)
+
 # A bound SocialMessaging client: credentials + region, threaded into every operation.
 struct SocialMessagingClient:
     core.Credentials creds
     str region
+
+    # AssociateWhatsAppBusinessAccount  POST /v1/whatsapp/signup
+    # errors: AccessDeniedException, DependencyException, InvalidParametersException, LimitExceededException, ThrottledRequestException, ValidationException
+    def associate_whats_app_business_account(self, AssociateWhatsAppBusinessAccountInput input) -> str:
+        auto host = endpoints.regional_host(social_messaging_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/signup", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.signupCallback.is_some():
+            auto u0 = input.signupCallback.unwrap()
+            parts.append("\"signupCallback\":" + u0.to_json())
+        if input.setupFinalization.is_some():
+            auto u1 = input.setupFinalization.unwrap()
+            parts.append("\"setupFinalization\":" + whats_app_setup_finalization_to_json(u1))
+        auto bp = restjson.rest_json_document(b, social_messaging_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
 
     # CreateWhatsAppDataset  POST /v1/whatsapp/waba/dataset
     # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
@@ -1021,6 +1226,33 @@ struct SocialMessagingClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
 
+    # CreateWhatsAppFlow  POST /v1/whatsapp/flow/create
+    # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
+    def create_whats_app_flow(self, CreateWhatsAppFlowInput input) -> str:
+        auto host = endpoints.regional_host(social_messaging_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/flow/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"id\":" + social_messaging_json_str(input.id))
+        parts.append("\"flowName\":" + social_messaging_json_str(input.flowName))
+        list[str] e0 = []
+        for x0 in input.categories:
+            e0.append(x0.to_json())
+        parts.append("\"categories\":" + social_messaging_json_arr(e0))
+        if input.flowJson.is_some():
+            auto u1 = input.flowJson.unwrap()
+            parts.append("\"flowJson\":" + social_messaging_json_str(base64.encode(u1)))
+        if input.publish.is_some():
+            auto u2 = input.publish.unwrap()
+            parts.append("\"publish\":" + json.dumps(JsonValue.Bool(u2)))
+        if input.cloneFlowId.is_some():
+            auto u3 = input.cloneFlowId.unwrap()
+            parts.append("\"cloneFlowId\":" + social_messaging_json_str(u3))
+        if input.endpointUri.is_some():
+            auto u4 = input.endpointUri.unwrap()
+            parts.append("\"endpointUri\":" + social_messaging_json_str(u4))
+        auto bp = restjson.rest_json_document(b, social_messaging_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
+
     # CreateWhatsAppMessageTemplate  POST /v1/whatsapp/template/put
     # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
     def create_whats_app_message_template(self, CreateWhatsAppMessageTemplateInput input) -> str:
@@ -1028,6 +1260,17 @@ struct SocialMessagingClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/template/put", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateWhatsAppMessageTemplateDocument(templateDefinition=input.templateDefinition, id=input.id)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
+
+    # CreateWhatsAppMessageTemplateFromLibrary  POST /v1/whatsapp/template/create
+    # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
+    def create_whats_app_message_template_from_library(self, CreateWhatsAppMessageTemplateFromLibraryInput input) -> str:
+        auto host = endpoints.regional_host(social_messaging_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/template/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"metaLibraryTemplate\":" + meta_library_template_to_json(input.metaLibraryTemplate))
+        parts.append("\"id\":" + social_messaging_json_str(input.id))
+        auto bp = restjson.rest_json_document(b, social_messaging_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
 
     # CreateWhatsAppMessageTemplateMedia  POST /v1/whatsapp/template/media
@@ -1123,6 +1366,26 @@ struct SocialMessagingClient:
         auto b = binding.HttpBinding(method="GET", path_template="/v1/whatsapp/flow", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, social_messaging_service(), self.region, host)
 
+    # GetWhatsAppMessageMedia  POST /v1/whatsapp/media/get
+    # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
+    def get_whats_app_message_media(self, GetWhatsAppMessageMediaInput input) -> str:
+        auto host = endpoints.regional_host(social_messaging_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/media/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"mediaId\":" + social_messaging_json_str(input.mediaId))
+        parts.append("\"originationPhoneNumberId\":" + social_messaging_json_str(input.originationPhoneNumberId))
+        if input.metadataOnly.is_some():
+            auto u0 = input.metadataOnly.unwrap()
+            parts.append("\"metadataOnly\":" + json.dumps(JsonValue.Bool(u0)))
+        if input.destinationS3PresignedUrl.is_some():
+            auto u1 = input.destinationS3PresignedUrl.unwrap()
+            parts.append("\"destinationS3PresignedUrl\":" + s3_presigned_url_to_json(u1))
+        if input.destinationS3File.is_some():
+            auto u2 = input.destinationS3File.unwrap()
+            parts.append("\"destinationS3File\":" + u2.to_json())
+        auto bp = restjson.rest_json_document(b, social_messaging_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
+
     # GetWhatsAppMessageTemplate  GET /v1/whatsapp/template
     # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
     def get_whats_app_message_template(self, GetWhatsAppMessageTemplateInput input) -> str:
@@ -1199,6 +1462,45 @@ struct SocialMessagingClient:
         auto b = binding.HttpBinding(method="GET", path_template="/v1/whatsapp/template/list", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, social_messaging_service(), self.region, host)
 
+    # ListWhatsAppTemplateLibrary  POST /v1/whatsapp/template/library
+    # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
+    def list_whats_app_template_library(self, ListWhatsAppTemplateLibraryInput input) -> str:
+        auto host = endpoints.regional_host(social_messaging_service(), self.region)
+        dict[str, str] query = {}
+        query["id"] = input.id
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/template/library", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.nextToken.is_some():
+            auto u0 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + social_messaging_json_str(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.filters.is_some():
+            auto u2 = input.filters.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(social_messaging_json_str(k3) + ":" + social_messaging_json_str(u2[k3]))
+            parts.append("\"filters\":" + social_messaging_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, social_messaging_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
+
+    # PostWhatsAppMessageMedia  POST /v1/whatsapp/media
+    # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
+    def post_whats_app_message_media(self, PostWhatsAppMessageMediaInput input) -> str:
+        auto host = endpoints.regional_host(social_messaging_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/media", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"originationPhoneNumberId\":" + social_messaging_json_str(input.originationPhoneNumberId))
+        if input.sourceS3PresignedUrl.is_some():
+            auto u0 = input.sourceS3PresignedUrl.unwrap()
+            parts.append("\"sourceS3PresignedUrl\":" + s3_presigned_url_to_json(u0))
+        if input.sourceS3File.is_some():
+            auto u1 = input.sourceS3File.unwrap()
+            parts.append("\"sourceS3File\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, social_messaging_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
+
     # PublishWhatsAppFlow  POST /v1/whatsapp/flow/publish
     # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
     def publish_whats_app_flow(self, PublishWhatsAppFlowInput input) -> str:
@@ -1206,6 +1508,20 @@ struct SocialMessagingClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/flow/publish", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PublishWhatsAppFlowDocument(id=input.id, flowId=input.flowId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
+
+    # PutWhatsAppBusinessAccountEventDestinations  PUT /v1/whatsapp/waba/eventdestinations
+    # errors: AccessDeniedException, InternalServiceException, InvalidParametersException, ThrottledRequestException, ValidationException
+    def put_whats_app_business_account_event_destinations(self, PutWhatsAppBusinessAccountEventDestinationsInput input) -> str:
+        auto host = endpoints.regional_host(social_messaging_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/whatsapp/waba/eventdestinations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"id\":" + social_messaging_json_str(input.id))
+        list[str] e0 = []
+        for x0 in input.eventDestinations:
+            e0.append(x0.to_json())
+        parts.append("\"eventDestinations\":" + social_messaging_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, social_messaging_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
 
     # PutWhatsAppBusinessPublicKey  PUT /v1/whatsapp/business-public-key
@@ -1242,6 +1558,72 @@ struct SocialMessagingClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/send", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SendWhatsAppMessageDocument(originationPhoneNumberId=input.originationPhoneNumberId, message=input.message, metaApiVersion=input.metaApiVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
+
+    # TagResource  POST /v1/tags/tag-resource
+    # errors: AccessDeniedException, InternalServiceException, InvalidParametersException, ThrottledRequestException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(social_messaging_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/tag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceArn\":" + social_messaging_json_str(input.resourceArn))
+        list[str] e0 = []
+        for x0 in input.tags:
+            e0.append(x0.to_json())
+        parts.append("\"tags\":" + social_messaging_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, social_messaging_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
+
+    # UntagResource  POST /v1/tags/untag-resource
+    # errors: AccessDeniedException, InternalServiceException, InvalidParametersException, ThrottledRequestException, ValidationException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(social_messaging_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/untag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceArn\":" + social_messaging_json_str(input.resourceArn))
+        list[str] e0 = []
+        for x0 in input.tagKeys:
+            e0.append(social_messaging_json_str(x0))
+        parts.append("\"tagKeys\":" + social_messaging_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, social_messaging_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
+
+    # UpdateLinkedWhatsAppBusinessAccountPhoneNumber  PUT /v1/whatsapp/waba/phone
+    # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
+    def update_linked_whats_app_business_account_phone_number(self, UpdateLinkedWhatsAppBusinessAccountPhoneNumberInput input) -> str:
+        auto host = endpoints.regional_host(social_messaging_service(), self.region)
+        dict[str, str] query = {}
+        query["id"] = input.id
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/whatsapp/waba/phone", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"callSettings\":" + whats_app_call_settings_to_json(input.callSettings))
+        auto bp = restjson.rest_json_document(b, social_messaging_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
+
+    # UpdateWhatsAppFlow  POST /v1/whatsapp/flow/update
+    # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
+    def update_whats_app_flow(self, UpdateWhatsAppFlowInput input) -> str:
+        auto host = endpoints.regional_host(social_messaging_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/flow/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"id\":" + social_messaging_json_str(input.id))
+        parts.append("\"flowId\":" + social_messaging_json_str(input.flowId))
+        if input.flowName.is_some():
+            auto u0 = input.flowName.unwrap()
+            parts.append("\"flowName\":" + social_messaging_json_str(u0))
+        if input.categories.is_some():
+            auto u1 = input.categories.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"categories\":" + social_messaging_json_arr(e2))
+        if input.endpointUri.is_some():
+            auto u3 = input.endpointUri.unwrap()
+            parts.append("\"endpointUri\":" + social_messaging_json_str(u3))
+        if input.metaAppId.is_some():
+            auto u4 = input.metaAppId.unwrap()
+            parts.append("\"metaAppId\":" + social_messaging_json_str(u4))
+        auto bp = restjson.rest_json_document(b, social_messaging_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
 
     # UpdateWhatsAppFlowAssets  POST /v1/whatsapp/flow/assets/update
@@ -1307,6 +1689,19 @@ struct SocialMessagingClient:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
         while True:
             auto raw = self.list_whats_app_message_templates(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListWhatsAppTemplateLibrary — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: metaLibraryTemplates).
+    def paginate_list_whats_app_template_library(self, ListWhatsAppTemplateLibraryInput input):
+        auto host = endpoints.regional_host(social_messaging_service(), self.region)
+        while True:
+            auto raw = self.list_whats_app_template_library(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

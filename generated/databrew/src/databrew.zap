@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 44 operations — 27 with a generated method,
-#   17 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 44 operations — 43 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   140 structs (83 @derive(Json)), 16 enums, 6 error variants.
 #   8 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -192,8 +192,9 @@ enum ThresholdUnit:
 struct AccessDeniedException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Statistics: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Statistics: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AllowedStatistics:
     list[str] Statistics
 
@@ -203,8 +204,9 @@ struct BatchDeleteRecipeVersionRequest:
     str Name
     list[str] RecipeVersions
 
-# no @derive(Json): member(s) Errors: list[RecipeVersionErrorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[RecipeVersionErrorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteRecipeVersionResponse:
     str Name
     Optional[list[RecipeVersionErrorDetail]] Errors
@@ -214,8 +216,9 @@ struct ColumnSelector:
     Optional[str] Regex
     Optional[str] Name
 
-# no @derive(Json): member(s) Selectors: list[ColumnSelector], Statistics: StatisticsConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Selectors: list[ColumnSelector], Statistics: StatisticsConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ColumnStatisticsConfiguration:
     Optional[list[ColumnSelector]] Selectors
     StatisticsConfiguration Statistics
@@ -383,8 +386,9 @@ struct DatabaseTableOutputOptions:
     Optional[S3Location] TempDirectory
     str TableName
 
-# no @derive(Json): member(s) FormatOptions: FormatOptions, PathOptions: PathOptions, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FormatOptions: FormatOptions, PathOptions: PathOptions, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Dataset:
     Optional[str] AccountId
     Optional[str] CreatedBy
@@ -400,8 +404,9 @@ struct Dataset:
     Optional[dict[str, str]] Tags
     Optional[str] ResourceArn
 
-# no @derive(Json): member(s) Filter: FilterExpression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filter: FilterExpression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatasetParameter:
     str Name
     ParameterType Type
@@ -476,8 +481,9 @@ struct DeleteScheduleResponse:
 struct DescribeDatasetRequest:
     str Name
 
-# no @derive(Json): member(s) FormatOptions: FormatOptions, PathOptions: PathOptions, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FormatOptions: FormatOptions, PathOptions: PathOptions, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDatasetResponse:
     Optional[str] CreatedBy
     Optional[DateTime] CreateDate
@@ -497,8 +503,9 @@ struct DescribeDatasetResponse:
 struct DescribeJobRequest:
     str Name
 
-# no @derive(Json): member(s) Outputs: list[Output], DataCatalogOutputs: list[DataCatalogOutput], DatabaseOutputs: list[DatabaseOutput], ProfileConfiguration: ProfileConfiguration, ValidationConfigurations: list[ValidationConfiguration], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Outputs: list[Output], DataCatalogOutputs: list[DataCatalogOutput], DatabaseOutputs: list[DatabaseOutput], ProfileConfiguration: ProfileConfiguration, ValidationConfigurations: list[ValidationConfiguration], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeJobResponse:
     Optional[DateTime] CreateDate
     Optional[str] CreatedBy
@@ -531,8 +538,9 @@ struct DescribeJobRunRequest:
     str Name
     str RunId
 
-# no @derive(Json): member(s) ProfileConfiguration: ProfileConfiguration, ValidationConfigurations: list[ValidationConfiguration], Outputs: list[Output], DataCatalogOutputs: list[DataCatalogOutput], DatabaseOutputs: list[DatabaseOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProfileConfiguration: ProfileConfiguration, ValidationConfigurations: list[ValidationConfiguration], Outputs: list[Output], DataCatalogOutputs: list[DataCatalogOutput], DatabaseOutputs: list[DatabaseOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeJobRunResponse:
     Optional[int64] Attempt
     Optional[DateTime] CompletedOn
@@ -559,8 +567,9 @@ struct DescribeJobRunResponse:
 struct DescribeProjectRequest:
     str Name
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProjectResponse:
     Optional[DateTime] CreateDate
     Optional[str] CreatedBy
@@ -583,8 +592,9 @@ struct DescribeRecipeRequest:
     str Name
     Optional[str] RecipeVersion
 
-# no @derive(Json): member(s) Steps: list[RecipeStep], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Steps: list[RecipeStep], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRecipeResponse:
     Optional[str] CreatedBy
     Optional[DateTime] CreateDate
@@ -605,8 +615,9 @@ struct DescribeRecipeResponse:
 struct DescribeRulesetRequest:
     str Name
 
-# no @derive(Json): member(s) Rules: list[Rule], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[Rule], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRulesetResponse:
     str Name
     Optional[str] Description
@@ -624,8 +635,9 @@ struct DescribeRulesetResponse:
 struct DescribeScheduleRequest:
     str Name
 
-# no @derive(Json): member(s) JobNames: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobNames: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeScheduleResponse:
     Optional[DateTime] CreateDate
     Optional[str] CreatedBy
@@ -637,14 +649,16 @@ struct DescribeScheduleResponse:
     Optional[dict[str, str]] Tags
     str Name
 
-# no @derive(Json): member(s) EntityTypes: list[str], AllowedStatistics: list[AllowedStatistics] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntityTypes: list[str], AllowedStatistics: list[AllowedStatistics] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EntityDetectorConfiguration:
     list[str] EntityTypes
     Optional[list[AllowedStatistics]] AllowedStatistics
 
-# no @derive(Json): member(s) SheetNames: list[str], SheetIndexes: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SheetNames: list[str], SheetIndexes: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExcelOptions:
     Optional[list[str]] SheetNames
     Optional[list[int64]] SheetIndexes
@@ -656,14 +670,16 @@ struct FilesLimit:
     Optional[str] OrderedBy
     Optional[Order] Order
 
-# no @derive(Json): member(s) ValuesMap: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValuesMap: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterExpression:
     str Expression
     dict[str, str] ValuesMap
 
-# no @derive(Json): member(s) Excel: ExcelOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Excel: ExcelOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FormatOptions:
     Optional[JsonOptions] Json
     Optional[ExcelOptions] Excel
@@ -680,8 +696,9 @@ struct Input:
 struct InternalServerException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Outputs: list[Output], DataCatalogOutputs: list[DataCatalogOutput], DatabaseOutputs: list[DatabaseOutput], Tags: dict[str, str], ValidationConfigurations: list[ValidationConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Outputs: list[Output], DataCatalogOutputs: list[DataCatalogOutput], DatabaseOutputs: list[DatabaseOutput], Tags: dict[str, str], ValidationConfigurations: list[ValidationConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Job:
     Optional[str] AccountId
     Optional[str] CreatedBy
@@ -708,8 +725,9 @@ struct Job:
     Optional[JobSample] JobSample
     Optional[list[ValidationConfiguration]] ValidationConfigurations
 
-# no @derive(Json): member(s) Outputs: list[Output], DataCatalogOutputs: list[DataCatalogOutput], DatabaseOutputs: list[DatabaseOutput], ValidationConfigurations: list[ValidationConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Outputs: list[Output], DataCatalogOutputs: list[DataCatalogOutput], DatabaseOutputs: list[DatabaseOutput], ValidationConfigurations: list[ValidationConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobRun:
     Optional[int64] Attempt
     Optional[DateTime] CompletedOn
@@ -745,8 +763,9 @@ struct ListDatasetsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Datasets: list[Dataset] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Datasets: list[Dataset] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatasetsResponse:
     list[Dataset] Datasets
     Optional[str] NextToken
@@ -758,8 +777,9 @@ struct ListJobRunsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) JobRuns: list[JobRun] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobRuns: list[JobRun] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobRunsResponse:
     list[JobRun] JobRuns
     Optional[str] NextToken
@@ -772,8 +792,9 @@ struct ListJobsRequest:
     Optional[str] NextToken
     Optional[str] ProjectName
 
-# no @derive(Json): member(s) Jobs: list[Job] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Jobs: list[Job] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobsResponse:
     list[Job] Jobs
     Optional[str] NextToken
@@ -784,8 +805,9 @@ struct ListProjectsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Projects: list[Project] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Projects: list[Project] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProjectsResponse:
     list[Project] Projects
     Optional[str] NextToken
@@ -797,8 +819,9 @@ struct ListRecipeVersionsRequest:
     Optional[str] NextToken
     str Name
 
-# no @derive(Json): member(s) Recipes: list[Recipe] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Recipes: list[Recipe] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecipeVersionsResponse:
     Optional[str] NextToken
     list[Recipe] Recipes
@@ -810,8 +833,9 @@ struct ListRecipesRequest:
     Optional[str] NextToken
     Optional[str] RecipeVersion
 
-# no @derive(Json): member(s) Recipes: list[Recipe] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Recipes: list[Recipe] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecipesResponse:
     list[Recipe] Recipes
     Optional[str] NextToken
@@ -823,8 +847,9 @@ struct ListRulesetsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Rulesets: list[RulesetItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rulesets: list[RulesetItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRulesetsResponse:
     list[RulesetItem] Rulesets
     Optional[str] NextToken
@@ -836,8 +861,9 @@ struct ListSchedulesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Schedules: list[Schedule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Schedules: list[Schedule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSchedulesResponse:
     list[Schedule] Schedules
     Optional[str] NextToken
@@ -847,8 +873,9 @@ struct ListSchedulesResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -856,8 +883,9 @@ struct ListTagsForResourceResponse:
 struct Metadata:
     Optional[str] SourceArn
 
-# no @derive(Json): member(s) PartitionColumns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionColumns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Output:
     Optional[CompressionFormat] CompressionFormat
     Optional[OutputFormat] Format
@@ -871,23 +899,26 @@ struct Output:
 struct OutputFormatOptions:
     Optional[CsvOutputOptions] Csv
 
-# no @derive(Json): member(s) LastModifiedDateCondition: FilterExpression, Parameters: dict[str, DatasetParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LastModifiedDateCondition: FilterExpression, Parameters: dict[str, DatasetParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PathOptions:
     Optional[FilterExpression] LastModifiedDateCondition
     Optional[FilesLimit] FilesLimit
     Optional[dict[str, DatasetParameter]] Parameters
 
-# no @derive(Json): member(s) DatasetStatisticsConfiguration: StatisticsConfiguration, ProfileColumns: list[ColumnSelector], ColumnStatisticsConfigurations: list[ColumnStatisticsConfiguration], EntityDetectorConfiguration: EntityDetectorConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatasetStatisticsConfiguration: StatisticsConfiguration, ProfileColumns: list[ColumnSelector], ColumnStatisticsConfigurations: list[ColumnStatisticsConfiguration], EntityDetectorConfiguration: EntityDetectorConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProfileConfiguration:
     Optional[StatisticsConfiguration] DatasetStatisticsConfiguration
     Optional[list[ColumnSelector]] ProfileColumns
     Optional[list[ColumnStatisticsConfiguration]] ColumnStatisticsConfigurations
     Optional[EntityDetectorConfiguration] EntityDetectorConfiguration
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Project:
     Optional[str] AccountId
     Optional[DateTime] CreateDate
@@ -914,8 +945,9 @@ struct PublishRecipeRequest:
 struct PublishRecipeResponse:
     str Name
 
-# no @derive(Json): member(s) Steps: list[RecipeStep], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Steps: list[RecipeStep], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Recipe:
     Optional[str] CreatedBy
     Optional[DateTime] CreateDate
@@ -931,8 +963,9 @@ struct Recipe:
     Optional[dict[str, str]] Tags
     Optional[str] RecipeVersion
 
-# no @derive(Json): member(s) Parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecipeAction:
     str Operation
     Optional[dict[str, str]] Parameters
@@ -942,8 +975,9 @@ struct RecipeReference:
     str Name
     Optional[str] RecipeVersion
 
-# no @derive(Json): member(s) Action: RecipeAction, ConditionExpressions: list[ConditionExpression] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Action: RecipeAction, ConditionExpressions: list[ConditionExpression] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecipeStep:
     RecipeAction Action
     Optional[list[ConditionExpression]] ConditionExpressions
@@ -958,8 +992,9 @@ struct RecipeVersionErrorDetail:
 struct ResourceNotFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) SubstitutionMap: dict[str, str], ColumnSelectors: list[ColumnSelector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubstitutionMap: dict[str, str], ColumnSelectors: list[ColumnSelector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Rule:
     str Name
     Optional[bool] Disabled
@@ -968,8 +1003,9 @@ struct Rule:
     Optional[Threshold] Threshold
     Optional[list[ColumnSelector]] ColumnSelectors
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RulesetItem:
     Optional[str] AccountId
     Optional[str] CreatedBy
@@ -998,8 +1034,9 @@ struct Sample:
     Optional[int64] Size
     SampleType Type
 
-# no @derive(Json): member(s) JobNames: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobNames: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Schedule:
     Optional[str] AccountId
     Optional[str] CreatedBy
@@ -1052,14 +1089,16 @@ struct StartProjectSessionResponse:
     str Name
     Optional[str] ClientSessionId
 
-# no @derive(Json): member(s) Parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StatisticOverride:
     str Statistic
     dict[str, str] Parameters
 
-# no @derive(Json): member(s) IncludedStatistics: list[str], Overrides: list[StatisticOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IncludedStatistics: list[str], Overrides: list[StatisticOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StatisticsConfiguration:
     Optional[list[str]] IncludedStatistics
     Optional[list[StatisticOverride]] Overrides
@@ -1208,8 +1247,9 @@ struct ValidationConfiguration:
 struct ValidationException:
     Optional[str] Message
 
-# no @derive(Json): member(s) HiddenColumns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HiddenColumns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ViewFrame:
     int64 StartColumnIndex
     Optional[int64] ColumnRange
@@ -1253,23 +1293,7 @@ def databrew_error_from_code(str code) -> DataBrewError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchDeleteRecipeVersion (document member `RecipeVersions: list[str]` is not serializable by derive)
-#   CreateDataset (document member `FormatOptions: FormatOptions` is not serializable by derive)
-#   CreateProfileJob (document member `Configuration: ProfileConfiguration` is not serializable by derive)
-#   CreateProject (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateRecipe (document member `Steps: list[RecipeStep]` is not serializable by derive)
-#   CreateRecipeJob (document member `Outputs: list[Output]` is not serializable by derive)
-#   CreateRuleset (document member `Rules: list[Rule]` is not serializable by derive)
-#   CreateSchedule (document member `JobNames: list[str]` is not serializable by derive)
-#   SendProjectSessionAction (document member `RecipeStep: RecipeStep` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateDataset (document member `FormatOptions: FormatOptions` is not serializable by derive)
-#   UpdateProfileJob (document member `Configuration: ProfileConfiguration` is not serializable by derive)
-#   UpdateRecipe (document member `Steps: list[RecipeStep]` is not serializable by derive)
-#   UpdateRecipeJob (document member `Outputs: list[Output]` is not serializable by derive)
-#   UpdateRuleset (document member `Rules: list[Rule]` is not serializable by derive)
-#   UpdateSchedule (document member `JobNames: list[str]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1290,10 +1314,547 @@ struct UpdateProjectDocument:
     Optional[Sample] Sample
     str RoleArn
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def databrew_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def databrew_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def databrew_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AllowedStatistics to a compact JSON object (declaration order).
+def allowed_statistics_to_json(AllowedStatistics v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Statistics:
+        e0.append(databrew_json_str(x0))
+    parts.append("\"Statistics\":" + databrew_json_arr(e0))
+    return databrew_json_obj(parts)
+
+# Serialize ColumnStatisticsConfiguration to a compact JSON object (declaration order).
+def column_statistics_configuration_to_json(ColumnStatisticsConfiguration v) -> str:
+    list[str] parts = []
+    if v.Selectors.is_some():
+        auto u0 = v.Selectors.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Selectors\":" + databrew_json_arr(e1))
+    parts.append("\"Statistics\":" + statistics_configuration_to_json(v.Statistics))
+    return databrew_json_obj(parts)
+
+# Serialize DatasetParameter to a compact JSON object (declaration order).
+def dataset_parameter_to_json(DatasetParameter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + databrew_json_str(v.Name))
+    parts.append("\"Type\":" + v.Type.to_json())
+    if v.DatetimeOptions.is_some():
+        auto u0 = v.DatetimeOptions.unwrap()
+        parts.append("\"DatetimeOptions\":" + u0.to_json())
+    if v.CreateColumn.is_some():
+        auto u1 = v.CreateColumn.unwrap()
+        parts.append("\"CreateColumn\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.Filter.is_some():
+        auto u2 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + filter_expression_to_json(u2))
+    return databrew_json_obj(parts)
+
+# Serialize EntityDetectorConfiguration to a compact JSON object (declaration order).
+def entity_detector_configuration_to_json(EntityDetectorConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.EntityTypes:
+        e0.append(databrew_json_str(x0))
+    parts.append("\"EntityTypes\":" + databrew_json_arr(e0))
+    if v.AllowedStatistics.is_some():
+        auto u1 = v.AllowedStatistics.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(allowed_statistics_to_json(x2))
+        parts.append("\"AllowedStatistics\":" + databrew_json_arr(e2))
+    return databrew_json_obj(parts)
+
+# Serialize ExcelOptions to a compact JSON object (declaration order).
+def excel_options_to_json(ExcelOptions v) -> str:
+    list[str] parts = []
+    if v.SheetNames.is_some():
+        auto u0 = v.SheetNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(databrew_json_str(x1))
+        parts.append("\"SheetNames\":" + databrew_json_arr(e1))
+    if v.SheetIndexes.is_some():
+        auto u2 = v.SheetIndexes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(str(x3))
+        parts.append("\"SheetIndexes\":" + databrew_json_arr(e3))
+    if v.HeaderRow.is_some():
+        auto u4 = v.HeaderRow.unwrap()
+        parts.append("\"HeaderRow\":" + json.dumps(JsonValue.Bool(u4)))
+    return databrew_json_obj(parts)
+
+# Serialize FilterExpression to a compact JSON object (declaration order).
+def filter_expression_to_json(FilterExpression v) -> str:
+    list[str] parts = []
+    parts.append("\"Expression\":" + databrew_json_str(v.Expression))
+    list[str] m0 = []
+    for k0 in sorted(v.ValuesMap.keys()):
+        m0.append(databrew_json_str(k0) + ":" + databrew_json_str(v.ValuesMap[k0]))
+    parts.append("\"ValuesMap\":" + databrew_json_obj(m0))
+    return databrew_json_obj(parts)
+
+# Serialize FormatOptions to a compact JSON object (declaration order).
+def format_options_to_json(FormatOptions v) -> str:
+    list[str] parts = []
+    if v.Json.is_some():
+        auto u0 = v.Json.unwrap()
+        parts.append("\"Json\":" + u0.to_json())
+    if v.Excel.is_some():
+        auto u1 = v.Excel.unwrap()
+        parts.append("\"Excel\":" + excel_options_to_json(u1))
+    if v.Csv.is_some():
+        auto u2 = v.Csv.unwrap()
+        parts.append("\"Csv\":" + u2.to_json())
+    return databrew_json_obj(parts)
+
+# Serialize Output to a compact JSON object (declaration order).
+def output_to_json(Output v) -> str:
+    list[str] parts = []
+    if v.CompressionFormat.is_some():
+        auto u0 = v.CompressionFormat.unwrap()
+        parts.append("\"CompressionFormat\":" + u0.to_json())
+    if v.Format.is_some():
+        auto u1 = v.Format.unwrap()
+        parts.append("\"Format\":" + u1.to_json())
+    if v.PartitionColumns.is_some():
+        auto u2 = v.PartitionColumns.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(databrew_json_str(x3))
+        parts.append("\"PartitionColumns\":" + databrew_json_arr(e3))
+    parts.append("\"Location\":" + v.Location.to_json())
+    if v.Overwrite.is_some():
+        auto u4 = v.Overwrite.unwrap()
+        parts.append("\"Overwrite\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.FormatOptions.is_some():
+        auto u5 = v.FormatOptions.unwrap()
+        parts.append("\"FormatOptions\":" + u5.to_json())
+    if v.MaxOutputFiles.is_some():
+        auto u6 = v.MaxOutputFiles.unwrap()
+        parts.append("\"MaxOutputFiles\":" + str(u6))
+    return databrew_json_obj(parts)
+
+# Serialize PathOptions to a compact JSON object (declaration order).
+def path_options_to_json(PathOptions v) -> str:
+    list[str] parts = []
+    if v.LastModifiedDateCondition.is_some():
+        auto u0 = v.LastModifiedDateCondition.unwrap()
+        parts.append("\"LastModifiedDateCondition\":" + filter_expression_to_json(u0))
+    if v.FilesLimit.is_some():
+        auto u1 = v.FilesLimit.unwrap()
+        parts.append("\"FilesLimit\":" + u1.to_json())
+    if v.Parameters.is_some():
+        auto u2 = v.Parameters.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(databrew_json_str(k3) + ":" + dataset_parameter_to_json(u2[k3]))
+        parts.append("\"Parameters\":" + databrew_json_obj(m3))
+    return databrew_json_obj(parts)
+
+# Serialize ProfileConfiguration to a compact JSON object (declaration order).
+def profile_configuration_to_json(ProfileConfiguration v) -> str:
+    list[str] parts = []
+    if v.DatasetStatisticsConfiguration.is_some():
+        auto u0 = v.DatasetStatisticsConfiguration.unwrap()
+        parts.append("\"DatasetStatisticsConfiguration\":" + statistics_configuration_to_json(u0))
+    if v.ProfileColumns.is_some():
+        auto u1 = v.ProfileColumns.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"ProfileColumns\":" + databrew_json_arr(e2))
+    if v.ColumnStatisticsConfigurations.is_some():
+        auto u3 = v.ColumnStatisticsConfigurations.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(column_statistics_configuration_to_json(x4))
+        parts.append("\"ColumnStatisticsConfigurations\":" + databrew_json_arr(e4))
+    if v.EntityDetectorConfiguration.is_some():
+        auto u5 = v.EntityDetectorConfiguration.unwrap()
+        parts.append("\"EntityDetectorConfiguration\":" + entity_detector_configuration_to_json(u5))
+    return databrew_json_obj(parts)
+
+# Serialize RecipeAction to a compact JSON object (declaration order).
+def recipe_action_to_json(RecipeAction v) -> str:
+    list[str] parts = []
+    parts.append("\"Operation\":" + databrew_json_str(v.Operation))
+    if v.Parameters.is_some():
+        auto u0 = v.Parameters.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(databrew_json_str(k1) + ":" + databrew_json_str(u0[k1]))
+        parts.append("\"Parameters\":" + databrew_json_obj(m1))
+    return databrew_json_obj(parts)
+
+# Serialize RecipeStep to a compact JSON object (declaration order).
+def recipe_step_to_json(RecipeStep v) -> str:
+    list[str] parts = []
+    parts.append("\"Action\":" + recipe_action_to_json(v.Action))
+    if v.ConditionExpressions.is_some():
+        auto u0 = v.ConditionExpressions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ConditionExpressions\":" + databrew_json_arr(e1))
+    return databrew_json_obj(parts)
+
+# Serialize Rule to a compact JSON object (declaration order).
+def rule_to_json(Rule v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + databrew_json_str(v.Name))
+    if v.Disabled.is_some():
+        auto u0 = v.Disabled.unwrap()
+        parts.append("\"Disabled\":" + json.dumps(JsonValue.Bool(u0)))
+    parts.append("\"CheckExpression\":" + databrew_json_str(v.CheckExpression))
+    if v.SubstitutionMap.is_some():
+        auto u1 = v.SubstitutionMap.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(databrew_json_str(k2) + ":" + databrew_json_str(u1[k2]))
+        parts.append("\"SubstitutionMap\":" + databrew_json_obj(m2))
+    if v.Threshold.is_some():
+        auto u3 = v.Threshold.unwrap()
+        parts.append("\"Threshold\":" + u3.to_json())
+    if v.ColumnSelectors.is_some():
+        auto u4 = v.ColumnSelectors.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"ColumnSelectors\":" + databrew_json_arr(e5))
+    return databrew_json_obj(parts)
+
+# Serialize StatisticOverride to a compact JSON object (declaration order).
+def statistic_override_to_json(StatisticOverride v) -> str:
+    list[str] parts = []
+    parts.append("\"Statistic\":" + databrew_json_str(v.Statistic))
+    list[str] m0 = []
+    for k0 in sorted(v.Parameters.keys()):
+        m0.append(databrew_json_str(k0) + ":" + databrew_json_str(v.Parameters[k0]))
+    parts.append("\"Parameters\":" + databrew_json_obj(m0))
+    return databrew_json_obj(parts)
+
+# Serialize StatisticsConfiguration to a compact JSON object (declaration order).
+def statistics_configuration_to_json(StatisticsConfiguration v) -> str:
+    list[str] parts = []
+    if v.IncludedStatistics.is_some():
+        auto u0 = v.IncludedStatistics.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(databrew_json_str(x1))
+        parts.append("\"IncludedStatistics\":" + databrew_json_arr(e1))
+    if v.Overrides.is_some():
+        auto u2 = v.Overrides.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(statistic_override_to_json(x3))
+        parts.append("\"Overrides\":" + databrew_json_arr(e3))
+    return databrew_json_obj(parts)
+
+# Serialize ViewFrame to a compact JSON object (declaration order).
+def view_frame_to_json(ViewFrame v) -> str:
+    list[str] parts = []
+    parts.append("\"StartColumnIndex\":" + str(v.StartColumnIndex))
+    if v.ColumnRange.is_some():
+        auto u0 = v.ColumnRange.unwrap()
+        parts.append("\"ColumnRange\":" + str(u0))
+    if v.HiddenColumns.is_some():
+        auto u1 = v.HiddenColumns.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(databrew_json_str(x2))
+        parts.append("\"HiddenColumns\":" + databrew_json_arr(e2))
+    if v.StartRowIndex.is_some():
+        auto u3 = v.StartRowIndex.unwrap()
+        parts.append("\"StartRowIndex\":" + str(u3))
+    if v.RowRange.is_some():
+        auto u4 = v.RowRange.unwrap()
+        parts.append("\"RowRange\":" + str(u4))
+    if v.Analytics.is_some():
+        auto u5 = v.Analytics.unwrap()
+        parts.append("\"Analytics\":" + u5.to_json())
+    return databrew_json_obj(parts)
+
 # A bound DataBrew client: credentials + region, threaded into every operation.
 struct DataBrewClient:
     core.Credentials creds
     str region
+
+    # BatchDeleteRecipeVersion  POST /recipes/{name}/batchDeleteRecipeVersion
+    # errors: ConflictException, ResourceNotFoundException, ValidationException
+    def batch_delete_recipe_version(self, BatchDeleteRecipeVersionRequest input) -> str:
+        auto host = endpoints.regional_host(databrew_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Name
+        auto b = binding.HttpBinding(method="POST", path_template="/recipes/{name}/batchDeleteRecipeVersion", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.RecipeVersions:
+            e0.append(databrew_json_str(x0))
+        parts.append("\"RecipeVersions\":" + databrew_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, databrew_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, databrew_service(), self.region, host)
+
+    # CreateDataset  POST /datasets
+    # errors: AccessDeniedException, ConflictException, ServiceQuotaExceededException, ValidationException
+    def create_dataset(self, CreateDatasetRequest input) -> str:
+        auto host = endpoints.regional_host(databrew_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/datasets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + databrew_json_str(input.Name))
+        if input.Format.is_some():
+            auto u0 = input.Format.unwrap()
+            parts.append("\"Format\":" + u0.to_json())
+        if input.FormatOptions.is_some():
+            auto u1 = input.FormatOptions.unwrap()
+            parts.append("\"FormatOptions\":" + format_options_to_json(u1))
+        parts.append("\"Input\":" + input.Input.to_json())
+        if input.PathOptions.is_some():
+            auto u2 = input.PathOptions.unwrap()
+            parts.append("\"PathOptions\":" + path_options_to_json(u2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(databrew_json_str(k4) + ":" + databrew_json_str(u3[k4]))
+            parts.append("\"Tags\":" + databrew_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, databrew_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, databrew_service(), self.region, host)
+
+    # CreateProfileJob  POST /profileJobs
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def create_profile_job(self, CreateProfileJobRequest input) -> str:
+        auto host = endpoints.regional_host(databrew_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/profileJobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"DatasetName\":" + databrew_json_str(input.DatasetName))
+        if input.EncryptionKeyArn.is_some():
+            auto u0 = input.EncryptionKeyArn.unwrap()
+            parts.append("\"EncryptionKeyArn\":" + databrew_json_str(u0))
+        if input.EncryptionMode.is_some():
+            auto u1 = input.EncryptionMode.unwrap()
+            parts.append("\"EncryptionMode\":" + u1.to_json())
+        parts.append("\"Name\":" + databrew_json_str(input.Name))
+        if input.LogSubscription.is_some():
+            auto u2 = input.LogSubscription.unwrap()
+            parts.append("\"LogSubscription\":" + u2.to_json())
+        if input.MaxCapacity.is_some():
+            auto u3 = input.MaxCapacity.unwrap()
+            parts.append("\"MaxCapacity\":" + str(u3))
+        if input.MaxRetries.is_some():
+            auto u4 = input.MaxRetries.unwrap()
+            parts.append("\"MaxRetries\":" + str(u4))
+        parts.append("\"OutputLocation\":" + input.OutputLocation.to_json())
+        if input.Configuration.is_some():
+            auto u5 = input.Configuration.unwrap()
+            parts.append("\"Configuration\":" + profile_configuration_to_json(u5))
+        if input.ValidationConfigurations.is_some():
+            auto u6 = input.ValidationConfigurations.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"ValidationConfigurations\":" + databrew_json_arr(e7))
+        parts.append("\"RoleArn\":" + databrew_json_str(input.RoleArn))
+        if input.Tags.is_some():
+            auto u8 = input.Tags.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(databrew_json_str(k9) + ":" + databrew_json_str(u8[k9]))
+            parts.append("\"Tags\":" + databrew_json_obj(m9))
+        if input.Timeout.is_some():
+            auto u10 = input.Timeout.unwrap()
+            parts.append("\"Timeout\":" + str(u10))
+        if input.JobSample.is_some():
+            auto u11 = input.JobSample.unwrap()
+            parts.append("\"JobSample\":" + u11.to_json())
+        auto bp = restjson.rest_json_document(b, databrew_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, databrew_service(), self.region, host)
+
+    # CreateProject  POST /projects
+    # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ValidationException
+    def create_project(self, CreateProjectRequest input) -> str:
+        auto host = endpoints.regional_host(databrew_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/projects", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"DatasetName\":" + databrew_json_str(input.DatasetName))
+        parts.append("\"Name\":" + databrew_json_str(input.Name))
+        parts.append("\"RecipeName\":" + databrew_json_str(input.RecipeName))
+        if input.Sample.is_some():
+            auto u0 = input.Sample.unwrap()
+            parts.append("\"Sample\":" + u0.to_json())
+        parts.append("\"RoleArn\":" + databrew_json_str(input.RoleArn))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(databrew_json_str(k2) + ":" + databrew_json_str(u1[k2]))
+            parts.append("\"Tags\":" + databrew_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, databrew_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, databrew_service(), self.region, host)
+
+    # CreateRecipe  POST /recipes
+    # errors: ConflictException, ServiceQuotaExceededException, ValidationException
+    def create_recipe(self, CreateRecipeRequest input) -> str:
+        auto host = endpoints.regional_host(databrew_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/recipes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + databrew_json_str(u0))
+        parts.append("\"Name\":" + databrew_json_str(input.Name))
+        list[str] e1 = []
+        for x1 in input.Steps:
+            e1.append(recipe_step_to_json(x1))
+        parts.append("\"Steps\":" + databrew_json_arr(e1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(databrew_json_str(k3) + ":" + databrew_json_str(u2[k3]))
+            parts.append("\"Tags\":" + databrew_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, databrew_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, databrew_service(), self.region, host)
+
+    # CreateRecipeJob  POST /recipeJobs
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def create_recipe_job(self, CreateRecipeJobRequest input) -> str:
+        auto host = endpoints.regional_host(databrew_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/recipeJobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.DatasetName.is_some():
+            auto u0 = input.DatasetName.unwrap()
+            parts.append("\"DatasetName\":" + databrew_json_str(u0))
+        if input.EncryptionKeyArn.is_some():
+            auto u1 = input.EncryptionKeyArn.unwrap()
+            parts.append("\"EncryptionKeyArn\":" + databrew_json_str(u1))
+        if input.EncryptionMode.is_some():
+            auto u2 = input.EncryptionMode.unwrap()
+            parts.append("\"EncryptionMode\":" + u2.to_json())
+        parts.append("\"Name\":" + databrew_json_str(input.Name))
+        if input.LogSubscription.is_some():
+            auto u3 = input.LogSubscription.unwrap()
+            parts.append("\"LogSubscription\":" + u3.to_json())
+        if input.MaxCapacity.is_some():
+            auto u4 = input.MaxCapacity.unwrap()
+            parts.append("\"MaxCapacity\":" + str(u4))
+        if input.MaxRetries.is_some():
+            auto u5 = input.MaxRetries.unwrap()
+            parts.append("\"MaxRetries\":" + str(u5))
+        if input.Outputs.is_some():
+            auto u6 = input.Outputs.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(output_to_json(x7))
+            parts.append("\"Outputs\":" + databrew_json_arr(e7))
+        if input.DataCatalogOutputs.is_some():
+            auto u8 = input.DataCatalogOutputs.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"DataCatalogOutputs\":" + databrew_json_arr(e9))
+        if input.DatabaseOutputs.is_some():
+            auto u10 = input.DatabaseOutputs.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(x11.to_json())
+            parts.append("\"DatabaseOutputs\":" + databrew_json_arr(e11))
+        if input.ProjectName.is_some():
+            auto u12 = input.ProjectName.unwrap()
+            parts.append("\"ProjectName\":" + databrew_json_str(u12))
+        if input.RecipeReference.is_some():
+            auto u13 = input.RecipeReference.unwrap()
+            parts.append("\"RecipeReference\":" + u13.to_json())
+        parts.append("\"RoleArn\":" + databrew_json_str(input.RoleArn))
+        if input.Tags.is_some():
+            auto u14 = input.Tags.unwrap()
+            list[str] m15 = []
+            for k15 in sorted(u14.keys()):
+                m15.append(databrew_json_str(k15) + ":" + databrew_json_str(u14[k15]))
+            parts.append("\"Tags\":" + databrew_json_obj(m15))
+        if input.Timeout.is_some():
+            auto u16 = input.Timeout.unwrap()
+            parts.append("\"Timeout\":" + str(u16))
+        auto bp = restjson.rest_json_document(b, databrew_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, databrew_service(), self.region, host)
+
+    # CreateRuleset  POST /rulesets
+    # errors: ConflictException, ServiceQuotaExceededException, ValidationException
+    def create_ruleset(self, CreateRulesetRequest input) -> str:
+        auto host = endpoints.regional_host(databrew_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/rulesets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + databrew_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + databrew_json_str(u0))
+        parts.append("\"TargetArn\":" + databrew_json_str(input.TargetArn))
+        list[str] e1 = []
+        for x1 in input.Rules:
+            e1.append(rule_to_json(x1))
+        parts.append("\"Rules\":" + databrew_json_arr(e1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(databrew_json_str(k3) + ":" + databrew_json_str(u2[k3]))
+            parts.append("\"Tags\":" + databrew_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, databrew_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, databrew_service(), self.region, host)
+
+    # CreateSchedule  POST /schedules
+    # errors: ConflictException, ServiceQuotaExceededException, ValidationException
+    def create_schedule(self, CreateScheduleRequest input) -> str:
+        auto host = endpoints.regional_host(databrew_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/schedules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.JobNames.is_some():
+            auto u0 = input.JobNames.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(databrew_json_str(x1))
+            parts.append("\"JobNames\":" + databrew_json_arr(e1))
+        parts.append("\"CronExpression\":" + databrew_json_str(input.CronExpression))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(databrew_json_str(k3) + ":" + databrew_json_str(u2[k3]))
+            parts.append("\"Tags\":" + databrew_json_obj(m3))
+        parts.append("\"Name\":" + databrew_json_str(input.Name))
+        auto bp = restjson.rest_json_document(b, databrew_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, databrew_service(), self.region, host)
 
     # DeleteDataset  DELETE /datasets/{name}
     # errors: ConflictException, ResourceNotFoundException, ValidationException
@@ -1546,6 +2107,32 @@ struct DataBrewClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, databrew_service(), self.region, host)
 
+    # SendProjectSessionAction  PUT /projects/{name}/sendProjectSessionAction
+    # errors: ConflictException, ResourceNotFoundException, ValidationException
+    def send_project_session_action(self, SendProjectSessionActionRequest input) -> str:
+        auto host = endpoints.regional_host(databrew_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Name
+        auto b = binding.HttpBinding(method="PUT", path_template="/projects/{name}/sendProjectSessionAction", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Preview.is_some():
+            auto u0 = input.Preview.unwrap()
+            parts.append("\"Preview\":" + json.dumps(JsonValue.Bool(u0)))
+        if input.RecipeStep.is_some():
+            auto u1 = input.RecipeStep.unwrap()
+            parts.append("\"RecipeStep\":" + recipe_step_to_json(u1))
+        if input.StepIndex.is_some():
+            auto u2 = input.StepIndex.unwrap()
+            parts.append("\"StepIndex\":" + str(u2))
+        if input.ClientSessionId.is_some():
+            auto u3 = input.ClientSessionId.unwrap()
+            parts.append("\"ClientSessionId\":" + databrew_json_str(u3))
+        if input.ViewFrame.is_some():
+            auto u4 = input.ViewFrame.unwrap()
+            parts.append("\"ViewFrame\":" + view_frame_to_json(u4))
+        auto bp = restjson.rest_json_document(b, databrew_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, databrew_service(), self.region, host)
+
     # StartJobRun  POST /jobs/{name}/startJobRun
     # errors: ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def start_job_run(self, StartJobRunRequest input) -> str:
@@ -1576,6 +2163,85 @@ struct DataBrewClient:
         auto b = binding.HttpBinding(method="POST", path_template="/jobs/{name}/jobRun/{runId}/stopJobRun", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
+    # TagResource  POST /tags/{ResourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(databrew_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(databrew_json_str(k0) + ":" + databrew_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + databrew_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, databrew_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, databrew_service(), self.region, host)
+
+    # UpdateDataset  PUT /datasets/{name}
+    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    def update_dataset(self, UpdateDatasetRequest input) -> str:
+        auto host = endpoints.regional_host(databrew_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Name
+        auto b = binding.HttpBinding(method="PUT", path_template="/datasets/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Format.is_some():
+            auto u0 = input.Format.unwrap()
+            parts.append("\"Format\":" + u0.to_json())
+        if input.FormatOptions.is_some():
+            auto u1 = input.FormatOptions.unwrap()
+            parts.append("\"FormatOptions\":" + format_options_to_json(u1))
+        parts.append("\"Input\":" + input.Input.to_json())
+        if input.PathOptions.is_some():
+            auto u2 = input.PathOptions.unwrap()
+            parts.append("\"PathOptions\":" + path_options_to_json(u2))
+        auto bp = restjson.rest_json_document(b, databrew_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, databrew_service(), self.region, host)
+
+    # UpdateProfileJob  PUT /profileJobs/{name}
+    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    def update_profile_job(self, UpdateProfileJobRequest input) -> str:
+        auto host = endpoints.regional_host(databrew_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Name
+        auto b = binding.HttpBinding(method="PUT", path_template="/profileJobs/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Configuration.is_some():
+            auto u0 = input.Configuration.unwrap()
+            parts.append("\"Configuration\":" + profile_configuration_to_json(u0))
+        if input.EncryptionKeyArn.is_some():
+            auto u1 = input.EncryptionKeyArn.unwrap()
+            parts.append("\"EncryptionKeyArn\":" + databrew_json_str(u1))
+        if input.EncryptionMode.is_some():
+            auto u2 = input.EncryptionMode.unwrap()
+            parts.append("\"EncryptionMode\":" + u2.to_json())
+        if input.LogSubscription.is_some():
+            auto u3 = input.LogSubscription.unwrap()
+            parts.append("\"LogSubscription\":" + u3.to_json())
+        if input.MaxCapacity.is_some():
+            auto u4 = input.MaxCapacity.unwrap()
+            parts.append("\"MaxCapacity\":" + str(u4))
+        if input.MaxRetries.is_some():
+            auto u5 = input.MaxRetries.unwrap()
+            parts.append("\"MaxRetries\":" + str(u5))
+        parts.append("\"OutputLocation\":" + input.OutputLocation.to_json())
+        if input.ValidationConfigurations.is_some():
+            auto u6 = input.ValidationConfigurations.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"ValidationConfigurations\":" + databrew_json_arr(e7))
+        parts.append("\"RoleArn\":" + databrew_json_str(input.RoleArn))
+        if input.Timeout.is_some():
+            auto u8 = input.Timeout.unwrap()
+            parts.append("\"Timeout\":" + str(u8))
+        if input.JobSample.is_some():
+            auto u9 = input.JobSample.unwrap()
+            parts.append("\"JobSample\":" + u9.to_json())
+        auto bp = restjson.rest_json_document(b, databrew_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, databrew_service(), self.region, host)
+
     # UpdateProject  PUT /projects/{name}
     # errors: ResourceNotFoundException, ValidationException
     def update_project(self, UpdateProjectRequest input) -> str:
@@ -1585,6 +2251,110 @@ struct DataBrewClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/projects/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateProjectDocument(Sample=input.Sample, RoleArn=input.RoleArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, databrew_service(), self.region, host)
+
+    # UpdateRecipe  PUT /recipes/{name}
+    # errors: ResourceNotFoundException, ValidationException
+    def update_recipe(self, UpdateRecipeRequest input) -> str:
+        auto host = endpoints.regional_host(databrew_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Name
+        auto b = binding.HttpBinding(method="PUT", path_template="/recipes/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + databrew_json_str(u0))
+        if input.Steps.is_some():
+            auto u1 = input.Steps.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(recipe_step_to_json(x2))
+            parts.append("\"Steps\":" + databrew_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, databrew_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, databrew_service(), self.region, host)
+
+    # UpdateRecipeJob  PUT /recipeJobs/{name}
+    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    def update_recipe_job(self, UpdateRecipeJobRequest input) -> str:
+        auto host = endpoints.regional_host(databrew_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Name
+        auto b = binding.HttpBinding(method="PUT", path_template="/recipeJobs/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.EncryptionKeyArn.is_some():
+            auto u0 = input.EncryptionKeyArn.unwrap()
+            parts.append("\"EncryptionKeyArn\":" + databrew_json_str(u0))
+        if input.EncryptionMode.is_some():
+            auto u1 = input.EncryptionMode.unwrap()
+            parts.append("\"EncryptionMode\":" + u1.to_json())
+        if input.LogSubscription.is_some():
+            auto u2 = input.LogSubscription.unwrap()
+            parts.append("\"LogSubscription\":" + u2.to_json())
+        if input.MaxCapacity.is_some():
+            auto u3 = input.MaxCapacity.unwrap()
+            parts.append("\"MaxCapacity\":" + str(u3))
+        if input.MaxRetries.is_some():
+            auto u4 = input.MaxRetries.unwrap()
+            parts.append("\"MaxRetries\":" + str(u4))
+        if input.Outputs.is_some():
+            auto u5 = input.Outputs.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(output_to_json(x6))
+            parts.append("\"Outputs\":" + databrew_json_arr(e6))
+        if input.DataCatalogOutputs.is_some():
+            auto u7 = input.DataCatalogOutputs.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"DataCatalogOutputs\":" + databrew_json_arr(e8))
+        if input.DatabaseOutputs.is_some():
+            auto u9 = input.DatabaseOutputs.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(x10.to_json())
+            parts.append("\"DatabaseOutputs\":" + databrew_json_arr(e10))
+        parts.append("\"RoleArn\":" + databrew_json_str(input.RoleArn))
+        if input.Timeout.is_some():
+            auto u11 = input.Timeout.unwrap()
+            parts.append("\"Timeout\":" + str(u11))
+        auto bp = restjson.rest_json_document(b, databrew_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, databrew_service(), self.region, host)
+
+    # UpdateRuleset  PUT /rulesets/{name}
+    # errors: ResourceNotFoundException, ValidationException
+    def update_ruleset(self, UpdateRulesetRequest input) -> str:
+        auto host = endpoints.regional_host(databrew_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Name
+        auto b = binding.HttpBinding(method="PUT", path_template="/rulesets/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + databrew_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.Rules:
+            e1.append(rule_to_json(x1))
+        parts.append("\"Rules\":" + databrew_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, databrew_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, databrew_service(), self.region, host)
+
+    # UpdateSchedule  PUT /schedules/{name}
+    # errors: ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def update_schedule(self, UpdateScheduleRequest input) -> str:
+        auto host = endpoints.regional_host(databrew_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Name
+        auto b = binding.HttpBinding(method="PUT", path_template="/schedules/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.JobNames.is_some():
+            auto u0 = input.JobNames.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(databrew_json_str(x1))
+            parts.append("\"JobNames\":" + databrew_json_arr(e1))
+        parts.append("\"CronExpression\":" + databrew_json_str(input.CronExpression))
+        auto bp = restjson.rest_json_document(b, databrew_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, databrew_service(), self.region, host)
 
     # Paginator for ListDatasets — yields each Response page, threading the

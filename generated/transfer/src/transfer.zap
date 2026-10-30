@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 71 operations — 52 with a generated method,
-#   19 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 71 operations — 71 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   215 structs (142 @derive(Json)), 42 enums, 9 error variants.
 #   13 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import datetime
 
 # The Transfer awsJson protocol: version 1.1, API id "TransferService".
 def transfer_protocol() -> awsjson.AwsJson:
@@ -374,14 +375,16 @@ enum WorkflowStepType:
 struct AccessDeniedException:
     Optional[str] Message
 
-# no @derive(Json): member(s) ServerIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServerIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct As2AsyncMdnConnectorConfig:
     Optional[str] Url
     Optional[list[str]] ServerIds
 
-# no @derive(Json): member(s) AsyncMdnConfig: As2AsyncMdnConnectorConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AsyncMdnConfig: As2AsyncMdnConnectorConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct As2ConnectorConfig:
     Optional[str] LocalProfileId
     Optional[str] PartnerProfileId
@@ -422,8 +425,9 @@ struct CopyStepDetails:
     Optional[OverwriteExisting] OverwriteExisting
     Optional[str] SourceFileLocation
 
-# no @derive(Json): member(s) HomeDirectoryMappings: list[HomeDirectoryMapEntry], PosixProfile: PosixProfile not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HomeDirectoryMappings: list[HomeDirectoryMapEntry], PosixProfile: PosixProfile not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAccessRequest:
     Optional[str] HomeDirectory
     Optional[HomeDirectoryType] HomeDirectoryType
@@ -439,8 +443,9 @@ struct CreateAccessResponse:
     str ServerId
     str ExternalId
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAgreementRequest:
     Optional[str] Description
     str ServerId
@@ -458,8 +463,9 @@ struct CreateAgreementRequest:
 struct CreateAgreementResponse:
     str AgreementId
 
-# no @derive(Json): member(s) As2Config: As2ConnectorConfig, Tags: list[Tag], SftpConfig: SftpConnectorConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) As2Config: As2ConnectorConfig, Tags: list[Tag], SftpConfig: SftpConnectorConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConnectorRequest:
     Optional[str] Url
     Optional[As2ConnectorConfig] As2Config
@@ -475,8 +481,9 @@ struct CreateConnectorRequest:
 struct CreateConnectorResponse:
     str ConnectorId
 
-# no @derive(Json): member(s) CertificateIds: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CertificateIds: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProfileRequest:
     str As2Id
     ProfileType ProfileType
@@ -487,8 +494,9 @@ struct CreateProfileRequest:
 struct CreateProfileResponse:
     str ProfileId
 
-# no @derive(Json): member(s) EndpointDetails: EndpointDetails, Protocols: list[Protocol], ProtocolDetails: ProtocolDetails, Tags: list[Tag], WorkflowDetails: WorkflowDetails, StructuredLogDestinations: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointDetails: EndpointDetails, Protocols: list[Protocol], ProtocolDetails: ProtocolDetails, Tags: list[Tag], WorkflowDetails: WorkflowDetails, StructuredLogDestinations: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateServerRequest:
     Optional[str] Certificate
     Optional[Domain] Domain
@@ -514,8 +522,9 @@ struct CreateServerRequest:
 struct CreateServerResponse:
     str ServerId
 
-# no @derive(Json): member(s) HomeDirectoryMappings: list[HomeDirectoryMapEntry], PosixProfile: PosixProfile, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HomeDirectoryMappings: list[HomeDirectoryMapEntry], PosixProfile: PosixProfile, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateUserRequest:
     Optional[str] HomeDirectory
     Optional[HomeDirectoryType] HomeDirectoryType
@@ -533,8 +542,9 @@ struct CreateUserResponse:
     str ServerId
     str UserName
 
-# no @derive(Json): member(s) Tags: list[Tag], EndpointDetails: WebAppEndpointDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], EndpointDetails: WebAppEndpointDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWebAppRequest:
     WebAppIdentityProviderDetails IdentityProviderDetails
     Optional[str] AccessEndpoint
@@ -547,8 +557,9 @@ struct CreateWebAppRequest:
 struct CreateWebAppResponse:
     str WebAppId
 
-# no @derive(Json): member(s) Steps: list[WorkflowStep], OnExceptionSteps: list[WorkflowStep], Tags: list[Tag], StructuredLogDestinations: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Steps: list[WorkflowStep], OnExceptionSteps: list[WorkflowStep], Tags: list[Tag], StructuredLogDestinations: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWorkflowRequest:
     Optional[str] Description
     list[WorkflowStep] Steps
@@ -652,8 +663,9 @@ struct DescribeAccessRequest:
     str ServerId
     str ExternalId
 
-# no @derive(Json): member(s) Access: DescribedAccess not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Access: DescribedAccess not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAccessResponse:
     str ServerId
     DescribedAccess Access
@@ -663,8 +675,9 @@ struct DescribeAgreementRequest:
     str AgreementId
     str ServerId
 
-# no @derive(Json): member(s) Agreement: DescribedAgreement not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Agreement: DescribedAgreement not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAgreementResponse:
     DescribedAgreement Agreement
 
@@ -672,8 +685,9 @@ struct DescribeAgreementResponse:
 struct DescribeCertificateRequest:
     str CertificateId
 
-# no @derive(Json): member(s) Certificate: DescribedCertificate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Certificate: DescribedCertificate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCertificateResponse:
     DescribedCertificate Certificate
 
@@ -681,8 +695,9 @@ struct DescribeCertificateResponse:
 struct DescribeConnectorRequest:
     str ConnectorId
 
-# no @derive(Json): member(s) Connector: DescribedConnector not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Connector: DescribedConnector not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConnectorResponse:
     DescribedConnector Connector
 
@@ -691,8 +706,9 @@ struct DescribeExecutionRequest:
     str ExecutionId
     str WorkflowId
 
-# no @derive(Json): member(s) Execution: DescribedExecution not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Execution: DescribedExecution not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeExecutionResponse:
     str WorkflowId
     DescribedExecution Execution
@@ -702,8 +718,9 @@ struct DescribeHostKeyRequest:
     str ServerId
     str HostKeyId
 
-# no @derive(Json): member(s) HostKey: DescribedHostKey not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HostKey: DescribedHostKey not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeHostKeyResponse:
     DescribedHostKey HostKey
 
@@ -711,8 +728,9 @@ struct DescribeHostKeyResponse:
 struct DescribeProfileRequest:
     str ProfileId
 
-# no @derive(Json): member(s) Profile: DescribedProfile not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Profile: DescribedProfile not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProfileResponse:
     DescribedProfile Profile
 
@@ -720,8 +738,9 @@ struct DescribeProfileResponse:
 struct DescribeSecurityPolicyRequest:
     str SecurityPolicyName
 
-# no @derive(Json): member(s) SecurityPolicy: DescribedSecurityPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityPolicy: DescribedSecurityPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSecurityPolicyResponse:
     DescribedSecurityPolicy SecurityPolicy
 
@@ -729,8 +748,9 @@ struct DescribeSecurityPolicyResponse:
 struct DescribeServerRequest:
     str ServerId
 
-# no @derive(Json): member(s) Server: DescribedServer not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Server: DescribedServer not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeServerResponse:
     DescribedServer Server
 
@@ -739,8 +759,9 @@ struct DescribeUserRequest:
     str ServerId
     str UserName
 
-# no @derive(Json): member(s) User: DescribedUser not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) User: DescribedUser not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeUserResponse:
     str ServerId
     DescribedUser User
@@ -757,8 +778,9 @@ struct DescribeWebAppCustomizationResponse:
 struct DescribeWebAppRequest:
     str WebAppId
 
-# no @derive(Json): member(s) WebApp: DescribedWebApp not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WebApp: DescribedWebApp not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWebAppResponse:
     DescribedWebApp WebApp
 
@@ -766,13 +788,15 @@ struct DescribeWebAppResponse:
 struct DescribeWorkflowRequest:
     str WorkflowId
 
-# no @derive(Json): member(s) Workflow: DescribedWorkflow not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Workflow: DescribedWorkflow not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkflowResponse:
     DescribedWorkflow Workflow
 
-# no @derive(Json): member(s) HomeDirectoryMappings: list[HomeDirectoryMapEntry], PosixProfile: PosixProfile not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HomeDirectoryMappings: list[HomeDirectoryMapEntry], PosixProfile: PosixProfile not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribedAccess:
     Optional[str] HomeDirectory
     Optional[list[HomeDirectoryMapEntry]] HomeDirectoryMappings
@@ -782,8 +806,9 @@ struct DescribedAccess:
     Optional[str] Role
     Optional[str] ExternalId
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribedAgreement:
     str Arn
     Optional[str] AgreementId
@@ -799,8 +824,9 @@ struct DescribedAgreement:
     Optional[EnforceMessageSigningType] EnforceMessageSigning
     Optional[CustomDirectoriesType] CustomDirectories
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribedCertificate:
     str Arn
     Optional[str] CertificateId
@@ -817,8 +843,9 @@ struct DescribedCertificate:
     Optional[str] Description
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) As2Config: As2ConnectorConfig, Tags: list[Tag], SftpConfig: SftpConnectorConfig, ServiceManagedEgressIpAddresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) As2Config: As2ConnectorConfig, Tags: list[Tag], SftpConfig: SftpConnectorConfig, ServiceManagedEgressIpAddresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribedConnector:
     str Arn
     Optional[str] ConnectorId
@@ -845,8 +872,9 @@ struct DescribedConnectorVpcLatticeEgressConfig:
     str ResourceConfigurationArn
     Optional[int64] PortNumber
 
-# no @derive(Json): member(s) PosixProfile: PosixProfile, Results: ExecutionResults not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PosixProfile: PosixProfile, Results: ExecutionResults not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribedExecution:
     Optional[str] ExecutionId
     Optional[FileLocation] InitialFileLocation
@@ -857,8 +885,9 @@ struct DescribedExecution:
     Optional[ExecutionStatus] Status
     Optional[ExecutionResults] Results
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribedHostKey:
     str Arn
     Optional[str] HostKeyId
@@ -876,8 +905,9 @@ struct DescribedIdentityCenterConfig:
     Optional[str] InstanceArn
     Optional[str] Role
 
-# no @derive(Json): member(s) CertificateIds: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CertificateIds: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribedProfile:
     str Arn
     Optional[str] ProfileId
@@ -886,8 +916,9 @@ struct DescribedProfile:
     Optional[list[str]] CertificateIds
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) SshCiphers: list[str], SshKexs: list[str], SshMacs: list[str], TlsCiphers: list[str], SshHostKeyAlgorithms: list[str], Protocols: list[SecurityPolicyProtocol] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SshCiphers: list[str], SshKexs: list[str], SshMacs: list[str], TlsCiphers: list[str], SshHostKeyAlgorithms: list[str], Protocols: list[SecurityPolicyProtocol] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribedSecurityPolicy:
     Optional[bool] Fips
     str SecurityPolicyName
@@ -899,8 +930,9 @@ struct DescribedSecurityPolicy:
     Optional[SecurityPolicyResourceType] Type
     Optional[list[SecurityPolicyProtocol]] Protocols
 
-# no @derive(Json): member(s) ProtocolDetails: ProtocolDetails, EndpointDetails: EndpointDetails, Protocols: list[Protocol], Tags: list[Tag], WorkflowDetails: WorkflowDetails, StructuredLogDestinations: list[str], As2ServiceManagedEgressIpAddresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProtocolDetails: ProtocolDetails, EndpointDetails: EndpointDetails, Protocols: list[Protocol], Tags: list[Tag], WorkflowDetails: WorkflowDetails, StructuredLogDestinations: list[str], As2ServiceManagedEgressIpAddresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribedServer:
     str Arn
     Optional[str] Certificate
@@ -926,8 +958,9 @@ struct DescribedServer:
     Optional[list[str]] As2ServiceManagedEgressIpAddresses
     Optional[IpAddressType] IpAddressType
 
-# no @derive(Json): member(s) HomeDirectoryMappings: list[HomeDirectoryMapEntry], PosixProfile: PosixProfile, SshPublicKeys: list[SshPublicKey], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HomeDirectoryMappings: list[HomeDirectoryMapEntry], PosixProfile: PosixProfile, SshPublicKeys: list[SshPublicKey], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribedUser:
     str Arn
     Optional[str] HomeDirectory
@@ -940,8 +973,9 @@ struct DescribedUser:
     Optional[list[Tag]] Tags
     Optional[str] UserName
 
-# no @derive(Json): member(s) Tags: list[Tag], DescribedEndpointDetails: DescribedWebAppEndpointDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], DescribedEndpointDetails: DescribedWebAppEndpointDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribedWebApp:
     str Arn
     str WebAppId
@@ -962,8 +996,9 @@ struct DescribedWebAppCustomization:
     Optional[bytes] LogoFile
     Optional[bytes] FaviconFile
 
-# no @derive(Json): member(s) Vpc: DescribedWebAppVpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Vpc: DescribedWebAppVpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribedWebAppEndpointDetails:
     Optional[DescribedWebAppVpcConfig] Vpc
 
@@ -971,15 +1006,17 @@ struct DescribedWebAppEndpointDetails:
 struct DescribedWebAppIdentityProviderDetails:
     Optional[DescribedIdentityCenterConfig] IdentityCenterConfig
 
-# no @derive(Json): member(s) SubnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribedWebAppVpcConfig:
     Optional[list[str]] SubnetIds
     Optional[str] VpcId
     Optional[str] VpcEndpointId
 
-# no @derive(Json): member(s) Steps: list[WorkflowStep], OnExceptionSteps: list[WorkflowStep], Tags: list[Tag], StructuredLogDestinations: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Steps: list[WorkflowStep], OnExceptionSteps: list[WorkflowStep], Tags: list[Tag], StructuredLogDestinations: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribedWorkflow:
     str Arn
     Optional[str] Description
@@ -994,8 +1031,9 @@ struct EfsFileLocation:
     Optional[str] FileSystemId
     Optional[str] Path
 
-# no @derive(Json): member(s) AddressAllocationIds: list[str], SubnetIds: list[str], SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AddressAllocationIds: list[str], SubnetIds: list[str], SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EndpointDetails:
     Optional[list[str]] AddressAllocationIds
     Optional[list[str]] SubnetIds
@@ -1008,8 +1046,9 @@ struct ExecutionError:
     ExecutionErrorType Type
     str Message
 
-# no @derive(Json): member(s) Steps: list[ExecutionStepResult], OnExceptionSteps: list[ExecutionStepResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Steps: list[ExecutionStepResult], OnExceptionSteps: list[ExecutionStepResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecutionResults:
     Optional[list[ExecutionStepResult]] Steps
     Optional[list[ExecutionStepResult]] OnExceptionSteps
@@ -1044,8 +1083,9 @@ struct IdentityProviderDetails:
     Optional[str] Function
     Optional[SftpAuthenticationMethods] SftpAuthenticationMethods
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportCertificateRequest:
     CertificateUsageType Usage
     str Certificate
@@ -1060,8 +1100,9 @@ struct ImportCertificateRequest:
 struct ImportCertificateResponse:
     str CertificateId
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportHostKeyRequest:
     str ServerId
     str HostKeyBody
@@ -1110,8 +1151,9 @@ struct ListAccessesRequest:
     Optional[str] NextToken
     str ServerId
 
-# no @derive(Json): member(s) Accesses: list[ListedAccess] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Accesses: list[ListedAccess] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccessesResponse:
     Optional[str] NextToken
     str ServerId
@@ -1123,8 +1165,9 @@ struct ListAgreementsRequest:
     Optional[str] NextToken
     str ServerId
 
-# no @derive(Json): member(s) Agreements: list[ListedAgreement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Agreements: list[ListedAgreement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAgreementsResponse:
     Optional[str] NextToken
     list[ListedAgreement] Agreements
@@ -1134,8 +1177,9 @@ struct ListCertificatesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Certificates: list[ListedCertificate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Certificates: list[ListedCertificate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCertificatesResponse:
     Optional[str] NextToken
     list[ListedCertificate] Certificates
@@ -1145,8 +1189,9 @@ struct ListConnectorsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Connectors: list[ListedConnector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Connectors: list[ListedConnector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectorsResponse:
     Optional[str] NextToken
     list[ListedConnector] Connectors
@@ -1157,8 +1202,9 @@ struct ListExecutionsRequest:
     Optional[str] NextToken
     str WorkflowId
 
-# no @derive(Json): member(s) Executions: list[ListedExecution] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Executions: list[ListedExecution] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExecutionsResponse:
     Optional[str] NextToken
     str WorkflowId
@@ -1171,8 +1217,9 @@ struct ListFileTransferResultsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) FileTransferResults: list[ConnectorFileTransferResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileTransferResults: list[ConnectorFileTransferResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFileTransferResultsResponse:
     list[ConnectorFileTransferResult] FileTransferResults
     Optional[str] NextToken
@@ -1183,8 +1230,9 @@ struct ListHostKeysRequest:
     Optional[str] NextToken
     str ServerId
 
-# no @derive(Json): member(s) HostKeys: list[ListedHostKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HostKeys: list[ListedHostKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListHostKeysResponse:
     Optional[str] NextToken
     str ServerId
@@ -1196,8 +1244,9 @@ struct ListProfilesRequest:
     Optional[str] NextToken
     Optional[ProfileType] ProfileType
 
-# no @derive(Json): member(s) Profiles: list[ListedProfile] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Profiles: list[ListedProfile] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProfilesResponse:
     Optional[str] NextToken
     list[ListedProfile] Profiles
@@ -1207,8 +1256,9 @@ struct ListSecurityPoliciesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SecurityPolicyNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityPolicyNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSecurityPoliciesResponse:
     Optional[str] NextToken
     list[str] SecurityPolicyNames
@@ -1218,8 +1268,9 @@ struct ListServersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Servers: list[ListedServer] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Servers: list[ListedServer] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServersResponse:
     Optional[str] NextToken
     list[ListedServer] Servers
@@ -1230,8 +1281,9 @@ struct ListTagsForResourceRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[str] Arn
     Optional[str] NextToken
@@ -1243,8 +1295,9 @@ struct ListUsersRequest:
     Optional[str] NextToken
     str ServerId
 
-# no @derive(Json): member(s) Users: list[ListedUser] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Users: list[ListedUser] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUsersResponse:
     Optional[str] NextToken
     str ServerId
@@ -1255,8 +1308,9 @@ struct ListWebAppsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) WebApps: list[ListedWebApp] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WebApps: list[ListedWebApp] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWebAppsResponse:
     Optional[str] NextToken
     list[ListedWebApp] WebApps
@@ -1266,8 +1320,9 @@ struct ListWorkflowsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Workflows: list[ListedWorkflow] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Workflows: list[ListedWorkflow] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkflowsResponse:
     Optional[str] NextToken
     list[ListedWorkflow] Workflows
@@ -1370,15 +1425,17 @@ struct LoggingConfiguration:
     Optional[str] LoggingRole
     Optional[str] LogGroupName
 
-# no @derive(Json): member(s) SecondaryGids: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecondaryGids: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PosixProfile:
     int64 Uid
     int64 Gid
     Optional[list[int64]] SecondaryGids
 
-# no @derive(Json): member(s) SftpPorts: list[SftpPortWithOptions], As2Transports: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SftpPorts: list[SftpPortWithOptions], As2Transports: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProtocolDetails:
     Optional[str] PassiveIp
     Optional[TlsSessionResumptionMode] TlsSessionResumptionMode
@@ -1444,8 +1501,9 @@ struct ServiceMetadata:
 struct ServiceUnavailableException:
     Optional[str] Message
 
-# no @derive(Json): member(s) TrustedHostKeys: list[str], OrderedUserSecretVersionStages: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrustedHostKeys: list[str], OrderedUserSecretVersionStages: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SftpConnectorConfig:
     Optional[str] UserSecretId
     Optional[list[str]] TrustedHostKeys
@@ -1479,8 +1537,9 @@ struct StartDirectoryListingResponse:
     str ListingId
     str OutputFileName
 
-# no @derive(Json): member(s) SendFilePaths: list[str], RetrieveFilePaths: list[str], CustomHttpHeaders: list[CustomHttpHeader] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SendFilePaths: list[str], RetrieveFilePaths: list[str], CustomHttpHeaders: list[CustomHttpHeader] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartFileTransferRequest:
     str ConnectorId
     Optional[list[str]] SendFilePaths
@@ -1525,14 +1584,16 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str Arn
     list[Tag] Tags
 
-# no @derive(Json): member(s) Tags: list[S3Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[S3Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagStepDetails:
     Optional[str] Name
     Optional[list[S3Tag]] Tags
@@ -1568,14 +1629,16 @@ struct TestIdentityProviderResponse:
 struct ThrottlingException:
     Optional[str] RetryAfterSeconds
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str Arn
     list[str] TagKeys
 
-# no @derive(Json): member(s) HomeDirectoryMappings: list[HomeDirectoryMapEntry], PosixProfile: PosixProfile not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HomeDirectoryMappings: list[HomeDirectoryMapEntry], PosixProfile: PosixProfile not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAccessRequest:
     Optional[str] HomeDirectory
     Optional[HomeDirectoryType] HomeDirectoryType
@@ -1624,8 +1687,9 @@ struct UpdateCertificateResponse:
 struct UpdateConnectorEgressConfig:
     Optional[UpdateConnectorVpcLatticeEgressConfig] VpcLattice
 
-# no @derive(Json): member(s) As2Config: As2ConnectorConfig, SftpConfig: SftpConnectorConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) As2Config: As2ConnectorConfig, SftpConfig: SftpConnectorConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateConnectorRequest:
     str ConnectorId
     Optional[str] Url
@@ -1659,8 +1723,9 @@ struct UpdateHostKeyResponse:
     str ServerId
     str HostKeyId
 
-# no @derive(Json): member(s) CertificateIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CertificateIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProfileRequest:
     str ProfileId
     Optional[list[str]] CertificateIds
@@ -1669,8 +1734,9 @@ struct UpdateProfileRequest:
 struct UpdateProfileResponse:
     str ProfileId
 
-# no @derive(Json): member(s) ProtocolDetails: ProtocolDetails, EndpointDetails: EndpointDetails, Protocols: list[Protocol], WorkflowDetails: WorkflowDetails, StructuredLogDestinations: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProtocolDetails: ProtocolDetails, EndpointDetails: EndpointDetails, Protocols: list[Protocol], WorkflowDetails: WorkflowDetails, StructuredLogDestinations: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateServerRequest:
     Optional[str] Certificate
     Optional[ProtocolDetails] ProtocolDetails
@@ -1694,8 +1760,9 @@ struct UpdateServerRequest:
 struct UpdateServerResponse:
     str ServerId
 
-# no @derive(Json): member(s) HomeDirectoryMappings: list[HomeDirectoryMapEntry], PosixProfile: PosixProfile not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HomeDirectoryMappings: list[HomeDirectoryMapEntry], PosixProfile: PosixProfile not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateUserRequest:
     Optional[str] HomeDirectory
     Optional[HomeDirectoryType] HomeDirectoryType
@@ -1722,8 +1789,9 @@ struct UpdateWebAppCustomizationRequest:
 struct UpdateWebAppCustomizationResponse:
     str WebAppId
 
-# no @derive(Json): member(s) Vpc: UpdateWebAppVpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Vpc: UpdateWebAppVpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateWebAppEndpointDetails:
     Optional[UpdateWebAppVpcConfig] Vpc
 
@@ -1735,8 +1803,9 @@ struct UpdateWebAppIdentityCenterConfig:
 struct UpdateWebAppIdentityProviderDetails:
     Optional[UpdateWebAppIdentityCenterConfig] IdentityCenterConfig
 
-# no @derive(Json): member(s) EndpointDetails: UpdateWebAppEndpointDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointDetails: UpdateWebAppEndpointDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateWebAppRequest:
     str WebAppId
     Optional[UpdateWebAppIdentityProviderDetails] IdentityProviderDetails
@@ -1748,8 +1817,9 @@ struct UpdateWebAppRequest:
 struct UpdateWebAppResponse:
     str WebAppId
 
-# no @derive(Json): member(s) SubnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateWebAppVpcConfig:
     Optional[list[str]] SubnetIds
     Optional[WebAppVpcEndpointIpAddressType] IpAddressType
@@ -1760,8 +1830,9 @@ struct UserDetails:
     str ServerId
     Optional[str] SessionId
 
-# no @derive(Json): member(s) Vpc: WebAppVpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Vpc: WebAppVpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WebAppEndpointDetails:
     Optional[WebAppVpcConfig] Vpc
 
@@ -1773,8 +1844,9 @@ struct WebAppIdentityProviderDetails:
 struct WebAppUnits:
     Optional[int64] Provisioned
 
-# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WebAppVpcConfig:
     Optional[list[str]] SubnetIds
     Optional[str] VpcId
@@ -1786,14 +1858,16 @@ struct WorkflowDetail:
     str WorkflowId
     str ExecutionRole
 
-# no @derive(Json): member(s) OnUpload: list[WorkflowDetail], OnPartialUpload: list[WorkflowDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OnUpload: list[WorkflowDetail], OnPartialUpload: list[WorkflowDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkflowDetails:
     Optional[list[WorkflowDetail]] OnUpload
     Optional[list[WorkflowDetail]] OnPartialUpload
 
-# no @derive(Json): member(s) TagStepDetails: TagStepDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagStepDetails: TagStepDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkflowStep:
     Optional[WorkflowStepType] Type
     Optional[CopyStepDetails] CopyStepDetails
@@ -1842,32 +1916,891 @@ def transfer_error_from_code(str code) -> TransferError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateAccess (input CreateAccessRequest)
-#   CreateAgreement (input CreateAgreementRequest)
-#   CreateConnector (input CreateConnectorRequest)
-#   CreateProfile (input CreateProfileRequest)
-#   CreateServer (input CreateServerRequest)
-#   CreateUser (input CreateUserRequest)
-#   CreateWebApp (input CreateWebAppRequest)
-#   CreateWorkflow (input CreateWorkflowRequest)
-#   ImportCertificate (input ImportCertificateRequest)
-#   ImportHostKey (input ImportHostKeyRequest)
-#   StartFileTransfer (input StartFileTransferRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateAccess (input UpdateAccessRequest)
-#   UpdateConnector (input UpdateConnectorRequest)
-#   UpdateProfile (input UpdateProfileRequest)
-#   UpdateServer (input UpdateServerRequest)
-#   UpdateUser (input UpdateUserRequest)
-#   UpdateWebApp (input UpdateWebAppRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def transfer_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def transfer_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def transfer_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize As2AsyncMdnConnectorConfig to a compact JSON object (declaration order).
+def as2_async_mdn_connector_config_to_json(As2AsyncMdnConnectorConfig v) -> str:
+    list[str] parts = []
+    if v.Url.is_some():
+        auto u0 = v.Url.unwrap()
+        parts.append("\"Url\":" + transfer_json_str(u0))
+    if v.ServerIds.is_some():
+        auto u1 = v.ServerIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(transfer_json_str(x2))
+        parts.append("\"ServerIds\":" + transfer_json_arr(e2))
+    return transfer_json_obj(parts)
+
+# Serialize As2ConnectorConfig to a compact JSON object (declaration order).
+def as2_connector_config_to_json(As2ConnectorConfig v) -> str:
+    list[str] parts = []
+    if v.LocalProfileId.is_some():
+        auto u0 = v.LocalProfileId.unwrap()
+        parts.append("\"LocalProfileId\":" + transfer_json_str(u0))
+    if v.PartnerProfileId.is_some():
+        auto u1 = v.PartnerProfileId.unwrap()
+        parts.append("\"PartnerProfileId\":" + transfer_json_str(u1))
+    if v.MessageSubject.is_some():
+        auto u2 = v.MessageSubject.unwrap()
+        parts.append("\"MessageSubject\":" + transfer_json_str(u2))
+    if v.Compression.is_some():
+        auto u3 = v.Compression.unwrap()
+        parts.append("\"Compression\":" + u3.to_json())
+    if v.EncryptionAlgorithm.is_some():
+        auto u4 = v.EncryptionAlgorithm.unwrap()
+        parts.append("\"EncryptionAlgorithm\":" + u4.to_json())
+    if v.SigningAlgorithm.is_some():
+        auto u5 = v.SigningAlgorithm.unwrap()
+        parts.append("\"SigningAlgorithm\":" + u5.to_json())
+    if v.MdnSigningAlgorithm.is_some():
+        auto u6 = v.MdnSigningAlgorithm.unwrap()
+        parts.append("\"MdnSigningAlgorithm\":" + u6.to_json())
+    if v.MdnResponse.is_some():
+        auto u7 = v.MdnResponse.unwrap()
+        parts.append("\"MdnResponse\":" + u7.to_json())
+    if v.BasicAuthSecretId.is_some():
+        auto u8 = v.BasicAuthSecretId.unwrap()
+        parts.append("\"BasicAuthSecretId\":" + transfer_json_str(u8))
+    if v.PreserveContentType.is_some():
+        auto u9 = v.PreserveContentType.unwrap()
+        parts.append("\"PreserveContentType\":" + u9.to_json())
+    if v.AsyncMdnConfig.is_some():
+        auto u10 = v.AsyncMdnConfig.unwrap()
+        parts.append("\"AsyncMdnConfig\":" + as2_async_mdn_connector_config_to_json(u10))
+    return transfer_json_obj(parts)
+
+# Serialize CreateAccessRequest to a compact JSON object (declaration order).
+def create_access_request_to_json(CreateAccessRequest v) -> str:
+    list[str] parts = []
+    if v.HomeDirectory.is_some():
+        auto u0 = v.HomeDirectory.unwrap()
+        parts.append("\"HomeDirectory\":" + transfer_json_str(u0))
+    if v.HomeDirectoryType.is_some():
+        auto u1 = v.HomeDirectoryType.unwrap()
+        parts.append("\"HomeDirectoryType\":" + u1.to_json())
+    if v.HomeDirectoryMappings.is_some():
+        auto u2 = v.HomeDirectoryMappings.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"HomeDirectoryMappings\":" + transfer_json_arr(e3))
+    if v.Policy.is_some():
+        auto u4 = v.Policy.unwrap()
+        parts.append("\"Policy\":" + transfer_json_str(u4))
+    if v.PosixProfile.is_some():
+        auto u5 = v.PosixProfile.unwrap()
+        parts.append("\"PosixProfile\":" + posix_profile_to_json(u5))
+    parts.append("\"Role\":" + transfer_json_str(v.Role))
+    parts.append("\"ServerId\":" + transfer_json_str(v.ServerId))
+    parts.append("\"ExternalId\":" + transfer_json_str(v.ExternalId))
+    return transfer_json_obj(parts)
+
+# Serialize CreateAgreementRequest to a compact JSON object (declaration order).
+def create_agreement_request_to_json(CreateAgreementRequest v) -> str:
+    list[str] parts = []
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + transfer_json_str(u0))
+    parts.append("\"ServerId\":" + transfer_json_str(v.ServerId))
+    parts.append("\"LocalProfileId\":" + transfer_json_str(v.LocalProfileId))
+    parts.append("\"PartnerProfileId\":" + transfer_json_str(v.PartnerProfileId))
+    if v.BaseDirectory.is_some():
+        auto u1 = v.BaseDirectory.unwrap()
+        parts.append("\"BaseDirectory\":" + transfer_json_str(u1))
+    parts.append("\"AccessRole\":" + transfer_json_str(v.AccessRole))
+    if v.Status.is_some():
+        auto u2 = v.Status.unwrap()
+        parts.append("\"Status\":" + u2.to_json())
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + transfer_json_arr(e4))
+    if v.PreserveFilename.is_some():
+        auto u5 = v.PreserveFilename.unwrap()
+        parts.append("\"PreserveFilename\":" + u5.to_json())
+    if v.EnforceMessageSigning.is_some():
+        auto u6 = v.EnforceMessageSigning.unwrap()
+        parts.append("\"EnforceMessageSigning\":" + u6.to_json())
+    if v.CustomDirectories.is_some():
+        auto u7 = v.CustomDirectories.unwrap()
+        parts.append("\"CustomDirectories\":" + u7.to_json())
+    return transfer_json_obj(parts)
+
+# Serialize CreateConnectorRequest to a compact JSON object (declaration order).
+def create_connector_request_to_json(CreateConnectorRequest v) -> str:
+    list[str] parts = []
+    if v.Url.is_some():
+        auto u0 = v.Url.unwrap()
+        parts.append("\"Url\":" + transfer_json_str(u0))
+    if v.As2Config.is_some():
+        auto u1 = v.As2Config.unwrap()
+        parts.append("\"As2Config\":" + as2_connector_config_to_json(u1))
+    parts.append("\"AccessRole\":" + transfer_json_str(v.AccessRole))
+    if v.LoggingRole.is_some():
+        auto u2 = v.LoggingRole.unwrap()
+        parts.append("\"LoggingRole\":" + transfer_json_str(u2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + transfer_json_arr(e4))
+    if v.SftpConfig.is_some():
+        auto u5 = v.SftpConfig.unwrap()
+        parts.append("\"SftpConfig\":" + sftp_connector_config_to_json(u5))
+    if v.SecurityPolicyName.is_some():
+        auto u6 = v.SecurityPolicyName.unwrap()
+        parts.append("\"SecurityPolicyName\":" + transfer_json_str(u6))
+    if v.EgressConfig.is_some():
+        auto u7 = v.EgressConfig.unwrap()
+        parts.append("\"EgressConfig\":" + u7.to_json())
+    if v.IpAddressType.is_some():
+        auto u8 = v.IpAddressType.unwrap()
+        parts.append("\"IpAddressType\":" + u8.to_json())
+    return transfer_json_obj(parts)
+
+# Serialize CreateProfileRequest to a compact JSON object (declaration order).
+def create_profile_request_to_json(CreateProfileRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"As2Id\":" + transfer_json_str(v.As2Id))
+    parts.append("\"ProfileType\":" + v.ProfileType.to_json())
+    if v.CertificateIds.is_some():
+        auto u0 = v.CertificateIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(transfer_json_str(x1))
+        parts.append("\"CertificateIds\":" + transfer_json_arr(e1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + transfer_json_arr(e3))
+    return transfer_json_obj(parts)
+
+# Serialize CreateServerRequest to a compact JSON object (declaration order).
+def create_server_request_to_json(CreateServerRequest v) -> str:
+    list[str] parts = []
+    if v.Certificate.is_some():
+        auto u0 = v.Certificate.unwrap()
+        parts.append("\"Certificate\":" + transfer_json_str(u0))
+    if v.Domain.is_some():
+        auto u1 = v.Domain.unwrap()
+        parts.append("\"Domain\":" + u1.to_json())
+    if v.EndpointDetails.is_some():
+        auto u2 = v.EndpointDetails.unwrap()
+        parts.append("\"EndpointDetails\":" + endpoint_details_to_json(u2))
+    if v.EndpointType.is_some():
+        auto u3 = v.EndpointType.unwrap()
+        parts.append("\"EndpointType\":" + u3.to_json())
+    if v.HostKey.is_some():
+        auto u4 = v.HostKey.unwrap()
+        parts.append("\"HostKey\":" + transfer_json_str(u4))
+    if v.IdentityProviderDetails.is_some():
+        auto u5 = v.IdentityProviderDetails.unwrap()
+        parts.append("\"IdentityProviderDetails\":" + u5.to_json())
+    if v.IdentityProviderType.is_some():
+        auto u6 = v.IdentityProviderType.unwrap()
+        parts.append("\"IdentityProviderType\":" + u6.to_json())
+    if v.LoggingRole.is_some():
+        auto u7 = v.LoggingRole.unwrap()
+        parts.append("\"LoggingRole\":" + transfer_json_str(u7))
+    if v.PostAuthenticationLoginBanner.is_some():
+        auto u8 = v.PostAuthenticationLoginBanner.unwrap()
+        parts.append("\"PostAuthenticationLoginBanner\":" + transfer_json_str(u8))
+    if v.PreAuthenticationLoginBanner.is_some():
+        auto u9 = v.PreAuthenticationLoginBanner.unwrap()
+        parts.append("\"PreAuthenticationLoginBanner\":" + transfer_json_str(u9))
+    if v.Protocols.is_some():
+        auto u10 = v.Protocols.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"Protocols\":" + transfer_json_arr(e11))
+    if v.ProtocolDetails.is_some():
+        auto u12 = v.ProtocolDetails.unwrap()
+        parts.append("\"ProtocolDetails\":" + protocol_details_to_json(u12))
+    if v.SecurityPolicyName.is_some():
+        auto u13 = v.SecurityPolicyName.unwrap()
+        parts.append("\"SecurityPolicyName\":" + transfer_json_str(u13))
+    if v.Tags.is_some():
+        auto u14 = v.Tags.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"Tags\":" + transfer_json_arr(e15))
+    if v.WorkflowDetails.is_some():
+        auto u16 = v.WorkflowDetails.unwrap()
+        parts.append("\"WorkflowDetails\":" + workflow_details_to_json(u16))
+    if v.StructuredLogDestinations.is_some():
+        auto u17 = v.StructuredLogDestinations.unwrap()
+        list[str] e18 = []
+        for x18 in u17:
+            e18.append(transfer_json_str(x18))
+        parts.append("\"StructuredLogDestinations\":" + transfer_json_arr(e18))
+    if v.S3StorageOptions.is_some():
+        auto u19 = v.S3StorageOptions.unwrap()
+        parts.append("\"S3StorageOptions\":" + u19.to_json())
+    if v.IpAddressType.is_some():
+        auto u20 = v.IpAddressType.unwrap()
+        parts.append("\"IpAddressType\":" + u20.to_json())
+    if v.HostKeyStorageType.is_some():
+        auto u21 = v.HostKeyStorageType.unwrap()
+        parts.append("\"HostKeyStorageType\":" + u21.to_json())
+    return transfer_json_obj(parts)
+
+# Serialize CreateUserRequest to a compact JSON object (declaration order).
+def create_user_request_to_json(CreateUserRequest v) -> str:
+    list[str] parts = []
+    if v.HomeDirectory.is_some():
+        auto u0 = v.HomeDirectory.unwrap()
+        parts.append("\"HomeDirectory\":" + transfer_json_str(u0))
+    if v.HomeDirectoryType.is_some():
+        auto u1 = v.HomeDirectoryType.unwrap()
+        parts.append("\"HomeDirectoryType\":" + u1.to_json())
+    if v.HomeDirectoryMappings.is_some():
+        auto u2 = v.HomeDirectoryMappings.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"HomeDirectoryMappings\":" + transfer_json_arr(e3))
+    if v.Policy.is_some():
+        auto u4 = v.Policy.unwrap()
+        parts.append("\"Policy\":" + transfer_json_str(u4))
+    if v.PosixProfile.is_some():
+        auto u5 = v.PosixProfile.unwrap()
+        parts.append("\"PosixProfile\":" + posix_profile_to_json(u5))
+    parts.append("\"Role\":" + transfer_json_str(v.Role))
+    parts.append("\"ServerId\":" + transfer_json_str(v.ServerId))
+    if v.SshPublicKeyBody.is_some():
+        auto u6 = v.SshPublicKeyBody.unwrap()
+        parts.append("\"SshPublicKeyBody\":" + transfer_json_str(u6))
+    if v.Tags.is_some():
+        auto u7 = v.Tags.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"Tags\":" + transfer_json_arr(e8))
+    parts.append("\"UserName\":" + transfer_json_str(v.UserName))
+    return transfer_json_obj(parts)
+
+# Serialize CreateWebAppRequest to a compact JSON object (declaration order).
+def create_web_app_request_to_json(CreateWebAppRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IdentityProviderDetails\":" + v.IdentityProviderDetails.to_json())
+    if v.AccessEndpoint.is_some():
+        auto u0 = v.AccessEndpoint.unwrap()
+        parts.append("\"AccessEndpoint\":" + transfer_json_str(u0))
+    if v.WebAppUnits.is_some():
+        auto u1 = v.WebAppUnits.unwrap()
+        parts.append("\"WebAppUnits\":" + u1.to_json())
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + transfer_json_arr(e3))
+    if v.WebAppEndpointPolicy.is_some():
+        auto u4 = v.WebAppEndpointPolicy.unwrap()
+        parts.append("\"WebAppEndpointPolicy\":" + u4.to_json())
+    if v.EndpointDetails.is_some():
+        auto u5 = v.EndpointDetails.unwrap()
+        parts.append("\"EndpointDetails\":" + web_app_endpoint_details_to_json(u5))
+    return transfer_json_obj(parts)
+
+# Serialize CreateWorkflowRequest to a compact JSON object (declaration order).
+def create_workflow_request_to_json(CreateWorkflowRequest v) -> str:
+    list[str] parts = []
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + transfer_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.Steps:
+        e1.append(workflow_step_to_json(x1))
+    parts.append("\"Steps\":" + transfer_json_arr(e1))
+    if v.OnExceptionSteps.is_some():
+        auto u2 = v.OnExceptionSteps.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(workflow_step_to_json(x3))
+        parts.append("\"OnExceptionSteps\":" + transfer_json_arr(e3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + transfer_json_arr(e5))
+    if v.StructuredLogDestinations.is_some():
+        auto u6 = v.StructuredLogDestinations.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(transfer_json_str(x7))
+        parts.append("\"StructuredLogDestinations\":" + transfer_json_arr(e7))
+    return transfer_json_obj(parts)
+
+# Serialize EndpointDetails to a compact JSON object (declaration order).
+def endpoint_details_to_json(EndpointDetails v) -> str:
+    list[str] parts = []
+    if v.AddressAllocationIds.is_some():
+        auto u0 = v.AddressAllocationIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(transfer_json_str(x1))
+        parts.append("\"AddressAllocationIds\":" + transfer_json_arr(e1))
+    if v.SubnetIds.is_some():
+        auto u2 = v.SubnetIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(transfer_json_str(x3))
+        parts.append("\"SubnetIds\":" + transfer_json_arr(e3))
+    if v.VpcEndpointId.is_some():
+        auto u4 = v.VpcEndpointId.unwrap()
+        parts.append("\"VpcEndpointId\":" + transfer_json_str(u4))
+    if v.VpcId.is_some():
+        auto u5 = v.VpcId.unwrap()
+        parts.append("\"VpcId\":" + transfer_json_str(u5))
+    if v.SecurityGroupIds.is_some():
+        auto u6 = v.SecurityGroupIds.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(transfer_json_str(x7))
+        parts.append("\"SecurityGroupIds\":" + transfer_json_arr(e7))
+    return transfer_json_obj(parts)
+
+# Serialize ImportCertificateRequest to a compact JSON object (declaration order).
+def import_certificate_request_to_json(ImportCertificateRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Usage\":" + v.Usage.to_json())
+    parts.append("\"Certificate\":" + transfer_json_str(v.Certificate))
+    if v.CertificateChain.is_some():
+        auto u0 = v.CertificateChain.unwrap()
+        parts.append("\"CertificateChain\":" + transfer_json_str(u0))
+    if v.PrivateKey.is_some():
+        auto u1 = v.PrivateKey.unwrap()
+        parts.append("\"PrivateKey\":" + transfer_json_str(u1))
+    if v.ActiveDate.is_some():
+        auto u2 = v.ActiveDate.unwrap()
+        parts.append("\"ActiveDate\":" + str(datetime.to_timestamp(u2)))
+    if v.InactiveDate.is_some():
+        auto u3 = v.InactiveDate.unwrap()
+        parts.append("\"InactiveDate\":" + str(datetime.to_timestamp(u3)))
+    if v.Description.is_some():
+        auto u4 = v.Description.unwrap()
+        parts.append("\"Description\":" + transfer_json_str(u4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + transfer_json_arr(e6))
+    return transfer_json_obj(parts)
+
+# Serialize ImportHostKeyRequest to a compact JSON object (declaration order).
+def import_host_key_request_to_json(ImportHostKeyRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ServerId\":" + transfer_json_str(v.ServerId))
+    parts.append("\"HostKeyBody\":" + transfer_json_str(v.HostKeyBody))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + transfer_json_str(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + transfer_json_arr(e2))
+    if v.StorageType.is_some():
+        auto u3 = v.StorageType.unwrap()
+        parts.append("\"StorageType\":" + u3.to_json())
+    if v.KmsKey.is_some():
+        auto u4 = v.KmsKey.unwrap()
+        parts.append("\"KmsKey\":" + transfer_json_str(u4))
+    return transfer_json_obj(parts)
+
+# Serialize PosixProfile to a compact JSON object (declaration order).
+def posix_profile_to_json(PosixProfile v) -> str:
+    list[str] parts = []
+    parts.append("\"Uid\":" + str(v.Uid))
+    parts.append("\"Gid\":" + str(v.Gid))
+    if v.SecondaryGids.is_some():
+        auto u0 = v.SecondaryGids.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"SecondaryGids\":" + transfer_json_arr(e1))
+    return transfer_json_obj(parts)
+
+# Serialize ProtocolDetails to a compact JSON object (declaration order).
+def protocol_details_to_json(ProtocolDetails v) -> str:
+    list[str] parts = []
+    if v.PassiveIp.is_some():
+        auto u0 = v.PassiveIp.unwrap()
+        parts.append("\"PassiveIp\":" + transfer_json_str(u0))
+    if v.TlsSessionResumptionMode.is_some():
+        auto u1 = v.TlsSessionResumptionMode.unwrap()
+        parts.append("\"TlsSessionResumptionMode\":" + u1.to_json())
+    if v.SetStatOption.is_some():
+        auto u2 = v.SetStatOption.unwrap()
+        parts.append("\"SetStatOption\":" + u2.to_json())
+    if v.SftpPorts.is_some():
+        auto u3 = v.SftpPorts.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"SftpPorts\":" + transfer_json_arr(e4))
+    if v.As2Transports.is_some():
+        auto u5 = v.As2Transports.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(transfer_json_str(x6))
+        parts.append("\"As2Transports\":" + transfer_json_arr(e6))
+    if v.ProxyConfig.is_some():
+        auto u7 = v.ProxyConfig.unwrap()
+        parts.append("\"ProxyConfig\":" + u7.to_json())
+    return transfer_json_obj(parts)
+
+# Serialize SftpConnectorConfig to a compact JSON object (declaration order).
+def sftp_connector_config_to_json(SftpConnectorConfig v) -> str:
+    list[str] parts = []
+    if v.UserSecretId.is_some():
+        auto u0 = v.UserSecretId.unwrap()
+        parts.append("\"UserSecretId\":" + transfer_json_str(u0))
+    if v.TrustedHostKeys.is_some():
+        auto u1 = v.TrustedHostKeys.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(transfer_json_str(x2))
+        parts.append("\"TrustedHostKeys\":" + transfer_json_arr(e2))
+    if v.MaxConcurrentConnections.is_some():
+        auto u3 = v.MaxConcurrentConnections.unwrap()
+        parts.append("\"MaxConcurrentConnections\":" + str(u3))
+    if v.OrderedUserSecretVersionStages.is_some():
+        auto u4 = v.OrderedUserSecretVersionStages.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(transfer_json_str(x5))
+        parts.append("\"OrderedUserSecretVersionStages\":" + transfer_json_arr(e5))
+    return transfer_json_obj(parts)
+
+# Serialize StartFileTransferRequest to a compact JSON object (declaration order).
+def start_file_transfer_request_to_json(StartFileTransferRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConnectorId\":" + transfer_json_str(v.ConnectorId))
+    if v.SendFilePaths.is_some():
+        auto u0 = v.SendFilePaths.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(transfer_json_str(x1))
+        parts.append("\"SendFilePaths\":" + transfer_json_arr(e1))
+    if v.RetrieveFilePaths.is_some():
+        auto u2 = v.RetrieveFilePaths.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(transfer_json_str(x3))
+        parts.append("\"RetrieveFilePaths\":" + transfer_json_arr(e3))
+    if v.LocalDirectoryPath.is_some():
+        auto u4 = v.LocalDirectoryPath.unwrap()
+        parts.append("\"LocalDirectoryPath\":" + transfer_json_str(u4))
+    if v.RemoteDirectoryPath.is_some():
+        auto u5 = v.RemoteDirectoryPath.unwrap()
+        parts.append("\"RemoteDirectoryPath\":" + transfer_json_str(u5))
+    if v.CustomHttpHeaders.is_some():
+        auto u6 = v.CustomHttpHeaders.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"CustomHttpHeaders\":" + transfer_json_arr(e7))
+    return transfer_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Arn\":" + transfer_json_str(v.Arn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + transfer_json_arr(e0))
+    return transfer_json_obj(parts)
+
+# Serialize TagStepDetails to a compact JSON object (declaration order).
+def tag_step_details_to_json(TagStepDetails v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + transfer_json_str(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + transfer_json_arr(e2))
+    if v.SourceFileLocation.is_some():
+        auto u3 = v.SourceFileLocation.unwrap()
+        parts.append("\"SourceFileLocation\":" + transfer_json_str(u3))
+    return transfer_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Arn\":" + transfer_json_str(v.Arn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(transfer_json_str(x0))
+    parts.append("\"TagKeys\":" + transfer_json_arr(e0))
+    return transfer_json_obj(parts)
+
+# Serialize UpdateAccessRequest to a compact JSON object (declaration order).
+def update_access_request_to_json(UpdateAccessRequest v) -> str:
+    list[str] parts = []
+    if v.HomeDirectory.is_some():
+        auto u0 = v.HomeDirectory.unwrap()
+        parts.append("\"HomeDirectory\":" + transfer_json_str(u0))
+    if v.HomeDirectoryType.is_some():
+        auto u1 = v.HomeDirectoryType.unwrap()
+        parts.append("\"HomeDirectoryType\":" + u1.to_json())
+    if v.HomeDirectoryMappings.is_some():
+        auto u2 = v.HomeDirectoryMappings.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"HomeDirectoryMappings\":" + transfer_json_arr(e3))
+    if v.Policy.is_some():
+        auto u4 = v.Policy.unwrap()
+        parts.append("\"Policy\":" + transfer_json_str(u4))
+    if v.PosixProfile.is_some():
+        auto u5 = v.PosixProfile.unwrap()
+        parts.append("\"PosixProfile\":" + posix_profile_to_json(u5))
+    if v.Role.is_some():
+        auto u6 = v.Role.unwrap()
+        parts.append("\"Role\":" + transfer_json_str(u6))
+    parts.append("\"ServerId\":" + transfer_json_str(v.ServerId))
+    parts.append("\"ExternalId\":" + transfer_json_str(v.ExternalId))
+    return transfer_json_obj(parts)
+
+# Serialize UpdateConnectorRequest to a compact JSON object (declaration order).
+def update_connector_request_to_json(UpdateConnectorRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConnectorId\":" + transfer_json_str(v.ConnectorId))
+    if v.Url.is_some():
+        auto u0 = v.Url.unwrap()
+        parts.append("\"Url\":" + transfer_json_str(u0))
+    if v.As2Config.is_some():
+        auto u1 = v.As2Config.unwrap()
+        parts.append("\"As2Config\":" + as2_connector_config_to_json(u1))
+    if v.AccessRole.is_some():
+        auto u2 = v.AccessRole.unwrap()
+        parts.append("\"AccessRole\":" + transfer_json_str(u2))
+    if v.LoggingRole.is_some():
+        auto u3 = v.LoggingRole.unwrap()
+        parts.append("\"LoggingRole\":" + transfer_json_str(u3))
+    if v.SftpConfig.is_some():
+        auto u4 = v.SftpConfig.unwrap()
+        parts.append("\"SftpConfig\":" + sftp_connector_config_to_json(u4))
+    if v.SecurityPolicyName.is_some():
+        auto u5 = v.SecurityPolicyName.unwrap()
+        parts.append("\"SecurityPolicyName\":" + transfer_json_str(u5))
+    if v.EgressConfig.is_some():
+        auto u6 = v.EgressConfig.unwrap()
+        parts.append("\"EgressConfig\":" + u6.to_json())
+    if v.IpAddressType.is_some():
+        auto u7 = v.IpAddressType.unwrap()
+        parts.append("\"IpAddressType\":" + u7.to_json())
+    return transfer_json_obj(parts)
+
+# Serialize UpdateProfileRequest to a compact JSON object (declaration order).
+def update_profile_request_to_json(UpdateProfileRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ProfileId\":" + transfer_json_str(v.ProfileId))
+    if v.CertificateIds.is_some():
+        auto u0 = v.CertificateIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(transfer_json_str(x1))
+        parts.append("\"CertificateIds\":" + transfer_json_arr(e1))
+    return transfer_json_obj(parts)
+
+# Serialize UpdateServerRequest to a compact JSON object (declaration order).
+def update_server_request_to_json(UpdateServerRequest v) -> str:
+    list[str] parts = []
+    if v.Certificate.is_some():
+        auto u0 = v.Certificate.unwrap()
+        parts.append("\"Certificate\":" + transfer_json_str(u0))
+    if v.ProtocolDetails.is_some():
+        auto u1 = v.ProtocolDetails.unwrap()
+        parts.append("\"ProtocolDetails\":" + protocol_details_to_json(u1))
+    if v.EndpointDetails.is_some():
+        auto u2 = v.EndpointDetails.unwrap()
+        parts.append("\"EndpointDetails\":" + endpoint_details_to_json(u2))
+    if v.EndpointType.is_some():
+        auto u3 = v.EndpointType.unwrap()
+        parts.append("\"EndpointType\":" + u3.to_json())
+    if v.HostKey.is_some():
+        auto u4 = v.HostKey.unwrap()
+        parts.append("\"HostKey\":" + transfer_json_str(u4))
+    if v.IdentityProviderDetails.is_some():
+        auto u5 = v.IdentityProviderDetails.unwrap()
+        parts.append("\"IdentityProviderDetails\":" + u5.to_json())
+    if v.LoggingRole.is_some():
+        auto u6 = v.LoggingRole.unwrap()
+        parts.append("\"LoggingRole\":" + transfer_json_str(u6))
+    if v.PostAuthenticationLoginBanner.is_some():
+        auto u7 = v.PostAuthenticationLoginBanner.unwrap()
+        parts.append("\"PostAuthenticationLoginBanner\":" + transfer_json_str(u7))
+    if v.PreAuthenticationLoginBanner.is_some():
+        auto u8 = v.PreAuthenticationLoginBanner.unwrap()
+        parts.append("\"PreAuthenticationLoginBanner\":" + transfer_json_str(u8))
+    if v.Protocols.is_some():
+        auto u9 = v.Protocols.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"Protocols\":" + transfer_json_arr(e10))
+    if v.SecurityPolicyName.is_some():
+        auto u11 = v.SecurityPolicyName.unwrap()
+        parts.append("\"SecurityPolicyName\":" + transfer_json_str(u11))
+    parts.append("\"ServerId\":" + transfer_json_str(v.ServerId))
+    if v.WorkflowDetails.is_some():
+        auto u12 = v.WorkflowDetails.unwrap()
+        parts.append("\"WorkflowDetails\":" + workflow_details_to_json(u12))
+    if v.StructuredLogDestinations.is_some():
+        auto u13 = v.StructuredLogDestinations.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(transfer_json_str(x14))
+        parts.append("\"StructuredLogDestinations\":" + transfer_json_arr(e14))
+    if v.S3StorageOptions.is_some():
+        auto u15 = v.S3StorageOptions.unwrap()
+        parts.append("\"S3StorageOptions\":" + u15.to_json())
+    if v.IpAddressType.is_some():
+        auto u16 = v.IpAddressType.unwrap()
+        parts.append("\"IpAddressType\":" + u16.to_json())
+    if v.IdentityProviderType.is_some():
+        auto u17 = v.IdentityProviderType.unwrap()
+        parts.append("\"IdentityProviderType\":" + u17.to_json())
+    return transfer_json_obj(parts)
+
+# Serialize UpdateUserRequest to a compact JSON object (declaration order).
+def update_user_request_to_json(UpdateUserRequest v) -> str:
+    list[str] parts = []
+    if v.HomeDirectory.is_some():
+        auto u0 = v.HomeDirectory.unwrap()
+        parts.append("\"HomeDirectory\":" + transfer_json_str(u0))
+    if v.HomeDirectoryType.is_some():
+        auto u1 = v.HomeDirectoryType.unwrap()
+        parts.append("\"HomeDirectoryType\":" + u1.to_json())
+    if v.HomeDirectoryMappings.is_some():
+        auto u2 = v.HomeDirectoryMappings.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"HomeDirectoryMappings\":" + transfer_json_arr(e3))
+    if v.Policy.is_some():
+        auto u4 = v.Policy.unwrap()
+        parts.append("\"Policy\":" + transfer_json_str(u4))
+    if v.PosixProfile.is_some():
+        auto u5 = v.PosixProfile.unwrap()
+        parts.append("\"PosixProfile\":" + posix_profile_to_json(u5))
+    if v.Role.is_some():
+        auto u6 = v.Role.unwrap()
+        parts.append("\"Role\":" + transfer_json_str(u6))
+    parts.append("\"ServerId\":" + transfer_json_str(v.ServerId))
+    parts.append("\"UserName\":" + transfer_json_str(v.UserName))
+    return transfer_json_obj(parts)
+
+# Serialize UpdateWebAppEndpointDetails to a compact JSON object (declaration order).
+def update_web_app_endpoint_details_to_json(UpdateWebAppEndpointDetails v) -> str:
+    list[str] parts = []
+    if v.Vpc.is_some():
+        auto u0 = v.Vpc.unwrap()
+        parts.append("\"Vpc\":" + update_web_app_vpc_config_to_json(u0))
+    return transfer_json_obj(parts)
+
+# Serialize UpdateWebAppRequest to a compact JSON object (declaration order).
+def update_web_app_request_to_json(UpdateWebAppRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"WebAppId\":" + transfer_json_str(v.WebAppId))
+    if v.IdentityProviderDetails.is_some():
+        auto u0 = v.IdentityProviderDetails.unwrap()
+        parts.append("\"IdentityProviderDetails\":" + u0.to_json())
+    if v.AccessEndpoint.is_some():
+        auto u1 = v.AccessEndpoint.unwrap()
+        parts.append("\"AccessEndpoint\":" + transfer_json_str(u1))
+    if v.WebAppUnits.is_some():
+        auto u2 = v.WebAppUnits.unwrap()
+        parts.append("\"WebAppUnits\":" + u2.to_json())
+    if v.EndpointDetails.is_some():
+        auto u3 = v.EndpointDetails.unwrap()
+        parts.append("\"EndpointDetails\":" + update_web_app_endpoint_details_to_json(u3))
+    return transfer_json_obj(parts)
+
+# Serialize UpdateWebAppVpcConfig to a compact JSON object (declaration order).
+def update_web_app_vpc_config_to_json(UpdateWebAppVpcConfig v) -> str:
+    list[str] parts = []
+    if v.SubnetIds.is_some():
+        auto u0 = v.SubnetIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(transfer_json_str(x1))
+        parts.append("\"SubnetIds\":" + transfer_json_arr(e1))
+    if v.IpAddressType.is_some():
+        auto u2 = v.IpAddressType.unwrap()
+        parts.append("\"IpAddressType\":" + u2.to_json())
+    return transfer_json_obj(parts)
+
+# Serialize WebAppEndpointDetails to a compact JSON object (declaration order).
+def web_app_endpoint_details_to_json(WebAppEndpointDetails v) -> str:
+    list[str] parts = []
+    if v.Vpc.is_some():
+        auto u0 = v.Vpc.unwrap()
+        parts.append("\"Vpc\":" + web_app_vpc_config_to_json(u0))
+    return transfer_json_obj(parts)
+
+# Serialize WebAppVpcConfig to a compact JSON object (declaration order).
+def web_app_vpc_config_to_json(WebAppVpcConfig v) -> str:
+    list[str] parts = []
+    if v.SubnetIds.is_some():
+        auto u0 = v.SubnetIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(transfer_json_str(x1))
+        parts.append("\"SubnetIds\":" + transfer_json_arr(e1))
+    if v.VpcId.is_some():
+        auto u2 = v.VpcId.unwrap()
+        parts.append("\"VpcId\":" + transfer_json_str(u2))
+    if v.SecurityGroupIds.is_some():
+        auto u3 = v.SecurityGroupIds.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(transfer_json_str(x4))
+        parts.append("\"SecurityGroupIds\":" + transfer_json_arr(e4))
+    if v.IpAddressType.is_some():
+        auto u5 = v.IpAddressType.unwrap()
+        parts.append("\"IpAddressType\":" + u5.to_json())
+    return transfer_json_obj(parts)
+
+# Serialize WorkflowDetails to a compact JSON object (declaration order).
+def workflow_details_to_json(WorkflowDetails v) -> str:
+    list[str] parts = []
+    if v.OnUpload.is_some():
+        auto u0 = v.OnUpload.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"OnUpload\":" + transfer_json_arr(e1))
+    if v.OnPartialUpload.is_some():
+        auto u2 = v.OnPartialUpload.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"OnPartialUpload\":" + transfer_json_arr(e3))
+    return transfer_json_obj(parts)
+
+# Serialize WorkflowStep to a compact JSON object (declaration order).
+def workflow_step_to_json(WorkflowStep v) -> str:
+    list[str] parts = []
+    if v.Type.is_some():
+        auto u0 = v.Type.unwrap()
+        parts.append("\"Type\":" + u0.to_json())
+    if v.CopyStepDetails.is_some():
+        auto u1 = v.CopyStepDetails.unwrap()
+        parts.append("\"CopyStepDetails\":" + u1.to_json())
+    if v.CustomStepDetails.is_some():
+        auto u2 = v.CustomStepDetails.unwrap()
+        parts.append("\"CustomStepDetails\":" + u2.to_json())
+    if v.DeleteStepDetails.is_some():
+        auto u3 = v.DeleteStepDetails.unwrap()
+        parts.append("\"DeleteStepDetails\":" + u3.to_json())
+    if v.TagStepDetails.is_some():
+        auto u4 = v.TagStepDetails.unwrap()
+        parts.append("\"TagStepDetails\":" + tag_step_details_to_json(u4))
+    if v.DecryptStepDetails.is_some():
+        auto u5 = v.DecryptStepDetails.unwrap()
+        parts.append("\"DecryptStepDetails\":" + u5.to_json())
+    return transfer_json_obj(parts)
 
 # A bound Transfer client: credentials + region, threaded into every operation.
 struct TransferClient:
     core.Credentials creds
     str region
+
+    # CreateAccess
+    # errors: InternalServiceError, InvalidRequestException, ResourceExistsException, ResourceNotFoundException, ServiceUnavailableException
+    def create_access(self, CreateAccessRequest input) -> str:
+        auto body = create_access_request_to_json(input)
+        return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "CreateAccess", body)
+
+    # CreateAgreement
+    # errors: InternalServiceError, InvalidRequestException, ResourceExistsException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
+    def create_agreement(self, CreateAgreementRequest input) -> str:
+        auto body = create_agreement_request_to_json(input)
+        return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "CreateAgreement", body)
+
+    # CreateConnector
+    # errors: InternalServiceError, InvalidRequestException, ResourceExistsException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
+    def create_connector(self, CreateConnectorRequest input) -> str:
+        auto body = create_connector_request_to_json(input)
+        return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "CreateConnector", body)
+
+    # CreateProfile
+    # errors: InternalServiceError, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
+    def create_profile(self, CreateProfileRequest input) -> str:
+        auto body = create_profile_request_to_json(input)
+        return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "CreateProfile", body)
+
+    # CreateServer
+    # errors: AccessDeniedException, InternalServiceError, InvalidRequestException, ResourceExistsException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
+    def create_server(self, CreateServerRequest input) -> str:
+        auto body = create_server_request_to_json(input)
+        return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "CreateServer", body)
+
+    # CreateUser
+    # errors: InternalServiceError, InvalidRequestException, ResourceExistsException, ResourceNotFoundException, ServiceUnavailableException
+    def create_user(self, CreateUserRequest input) -> str:
+        auto body = create_user_request_to_json(input)
+        return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "CreateUser", body)
+
+    # CreateWebApp
+    # errors: AccessDeniedException, InternalServiceError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def create_web_app(self, CreateWebAppRequest input) -> str:
+        auto body = create_web_app_request_to_json(input)
+        return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "CreateWebApp", body)
+
+    # CreateWorkflow
+    # errors: AccessDeniedException, InternalServiceError, InvalidRequestException, ResourceExistsException, ServiceUnavailableException, ThrottlingException
+    def create_workflow(self, CreateWorkflowRequest input) -> str:
+        auto body = create_workflow_request_to_json(input)
+        return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "CreateWorkflow", body)
 
     # DeleteAccess
     # errors: InternalServiceError, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException
@@ -2019,6 +2952,18 @@ struct TransferClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "DescribeWorkflow", body)
 
+    # ImportCertificate
+    # errors: InternalServiceError, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException
+    def import_certificate(self, ImportCertificateRequest input) -> str:
+        auto body = import_certificate_request_to_json(input)
+        return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "ImportCertificate", body)
+
+    # ImportHostKey
+    # errors: InternalServiceError, InvalidRequestException, ResourceExistsException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
+    def import_host_key(self, ImportHostKeyRequest input) -> str:
+        auto body = import_host_key_request_to_json(input)
+        return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "ImportHostKey", body)
+
     # ImportSshPublicKey
     # errors: InternalServiceError, InvalidRequestException, ResourceExistsException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
     def import_ssh_public_key(self, ImportSshPublicKeyRequest input) -> str:
@@ -2121,6 +3066,12 @@ struct TransferClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "StartDirectoryListing", body)
 
+    # StartFileTransfer
+    # errors: InternalServiceError, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
+    def start_file_transfer(self, StartFileTransferRequest input) -> str:
+        auto body = start_file_transfer_request_to_json(input)
+        return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "StartFileTransfer", body)
+
     # StartRemoteDelete
     # errors: InternalServiceError, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
     def start_remote_delete(self, StartRemoteDeleteRequest input) -> str:
@@ -2145,6 +3096,12 @@ struct TransferClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "StopServer", body)
 
+    # TagResource
+    # errors: InternalServiceError, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "TagResource", body)
+
     # TestConnection
     # errors: InternalServiceError, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException
     def test_connection(self, TestConnectionRequest input) -> str:
@@ -2156,6 +3113,18 @@ struct TransferClient:
     def test_identity_provider(self, TestIdentityProviderRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "TestIdentityProvider", body)
+
+    # UntagResource
+    # errors: InternalServiceError, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateAccess
+    # errors: InternalServiceError, InvalidRequestException, ResourceExistsException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
+    def update_access(self, UpdateAccessRequest input) -> str:
+        auto body = update_access_request_to_json(input)
+        return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "UpdateAccess", body)
 
     # UpdateAgreement
     # errors: InternalServiceError, InvalidRequestException, ResourceExistsException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
@@ -2169,11 +3138,41 @@ struct TransferClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "UpdateCertificate", body)
 
+    # UpdateConnector
+    # errors: InternalServiceError, InvalidRequestException, ResourceExistsException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
+    def update_connector(self, UpdateConnectorRequest input) -> str:
+        auto body = update_connector_request_to_json(input)
+        return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "UpdateConnector", body)
+
     # UpdateHostKey
     # errors: InternalServiceError, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
     def update_host_key(self, UpdateHostKeyRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "UpdateHostKey", body)
+
+    # UpdateProfile
+    # errors: InternalServiceError, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
+    def update_profile(self, UpdateProfileRequest input) -> str:
+        auto body = update_profile_request_to_json(input)
+        return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "UpdateProfile", body)
+
+    # UpdateServer
+    # errors: AccessDeniedException, ConflictException, InternalServiceError, InvalidRequestException, ResourceExistsException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
+    def update_server(self, UpdateServerRequest input) -> str:
+        auto body = update_server_request_to_json(input)
+        return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "UpdateServer", body)
+
+    # UpdateUser
+    # errors: InternalServiceError, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
+    def update_user(self, UpdateUserRequest input) -> str:
+        auto body = update_user_request_to_json(input)
+        return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "UpdateUser", body)
+
+    # UpdateWebApp
+    # errors: AccessDeniedException, ConflictException, InternalServiceError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_web_app(self, UpdateWebAppRequest input) -> str:
+        auto body = update_web_app_request_to_json(input)
+        return awsjson.awsjson_request_now(transfer_protocol(), self.creds, self.region, "UpdateWebApp", body)
 
     # UpdateWebAppCustomization
     # errors: AccessDeniedException, ConflictException, InternalServiceError, InvalidRequestException, ResourceNotFoundException, ThrottlingException

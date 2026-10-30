@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 71 operations — 51 with a generated method,
-#   20 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 71 operations — 68 with a generated method,
+#   3 skipped (input has a non-string-keyed map or free-form document member).
 #   215 structs (144 @derive(Json)), 8 enums, 8 error variants.
 #   16 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -97,8 +97,9 @@ enum TrainingType:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) defaultHyperParameters: dict[str, str], defaultHyperParameterRanges: DefaultHyperParameterRanges, defaultResourceConfig: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) defaultHyperParameters: dict[str, str], defaultHyperParameterRanges: DefaultHyperParameterRanges, defaultResourceConfig: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Algorithm:
     Optional[str] name
     Optional[str] algorithmArn
@@ -116,8 +117,9 @@ struct AlgorithmImage:
     Optional[str] name
     str dockerURI
 
-# no @derive(Json): member(s) recipeList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recipeList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoMLConfig:
     Optional[str] metricName
     Optional[list[str]] recipeList
@@ -130,8 +132,9 @@ struct AutoMLResult:
 struct AutoTrainingConfig:
     Optional[str] schedulingExpression
 
-# no @derive(Json): member(s) batchInferenceJobConfig: BatchInferenceJobConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) batchInferenceJobConfig: BatchInferenceJobConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchInferenceJob:
     Optional[str] jobName
     Optional[str] batchInferenceJobArn
@@ -149,8 +152,9 @@ struct BatchInferenceJob:
     Optional[DateTime] creationDateTime
     Optional[DateTime] lastUpdatedDateTime
 
-# no @derive(Json): member(s) itemExplorationConfig: dict[str, str], rankingInfluence: dict[RankingInfluenceType, float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) itemExplorationConfig: dict[str, str], rankingInfluence: dict[RankingInfluenceType, float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchInferenceJobConfig:
     Optional[dict[str, str]] itemExplorationConfig
     Optional[dict[RankingInfluenceType, float64]] rankingInfluence
@@ -207,8 +211,9 @@ struct BatchSegmentJobSummary:
     Optional[str] failureReason
     Optional[str] solutionVersionArn
 
-# no @derive(Json): member(s) campaignConfig: CampaignConfig, latestCampaignUpdate: CampaignUpdateSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) campaignConfig: CampaignConfig, latestCampaignUpdate: CampaignUpdateSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Campaign:
     Optional[str] name
     Optional[str] campaignArn
@@ -221,8 +226,9 @@ struct Campaign:
     Optional[DateTime] lastUpdatedDateTime
     Optional[CampaignUpdateSummary] latestCampaignUpdate
 
-# no @derive(Json): member(s) itemExplorationConfig: dict[str, str], rankingInfluence: dict[RankingInfluenceType, float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) itemExplorationConfig: dict[str, str], rankingInfluence: dict[RankingInfluenceType, float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CampaignConfig:
     Optional[dict[str, str]] itemExplorationConfig
     Optional[bool] enableMetadataWithRecommendations
@@ -238,8 +244,9 @@ struct CampaignSummary:
     Optional[DateTime] lastUpdatedDateTime
     Optional[str] failureReason
 
-# no @derive(Json): member(s) campaignConfig: CampaignConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) campaignConfig: CampaignConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CampaignUpdateSummary:
     Optional[str] solutionVersionArn
     Optional[int64] minProvisionedTPS
@@ -249,8 +256,9 @@ struct CampaignUpdateSummary:
     Optional[DateTime] creationDateTime
     Optional[DateTime] lastUpdatedDateTime
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CategoricalHyperParameterRange:
     Optional[str] name
     Optional[list[str]] values
@@ -261,8 +269,9 @@ struct ContinuousHyperParameterRange:
     Optional[float64] minValue
     Optional[float64] maxValue
 
-# no @derive(Json): member(s) batchInferenceJobConfig: BatchInferenceJobConfig, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) batchInferenceJobConfig: BatchInferenceJobConfig, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBatchInferenceJobRequest:
     str jobName
     str solutionVersionArn
@@ -280,8 +289,9 @@ struct CreateBatchInferenceJobRequest:
 struct CreateBatchInferenceJobResponse:
     Optional[str] batchInferenceJobArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBatchSegmentJobRequest:
     str jobName
     str solutionVersionArn
@@ -296,8 +306,9 @@ struct CreateBatchSegmentJobRequest:
 struct CreateBatchSegmentJobResponse:
     Optional[str] batchSegmentJobArn
 
-# no @derive(Json): member(s) campaignConfig: CampaignConfig, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) campaignConfig: CampaignConfig, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCampaignRequest:
     str name
     str solutionVersionArn
@@ -309,8 +320,9 @@ struct CreateCampaignRequest:
 struct CreateCampaignResponse:
     Optional[str] campaignArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDataDeletionJobRequest:
     str jobName
     str datasetGroupArn
@@ -322,8 +334,9 @@ struct CreateDataDeletionJobRequest:
 struct CreateDataDeletionJobResponse:
     Optional[str] dataDeletionJobArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDatasetExportJobRequest:
     str jobName
     str datasetArn
@@ -336,8 +349,9 @@ struct CreateDatasetExportJobRequest:
 struct CreateDatasetExportJobResponse:
     Optional[str] datasetExportJobArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDatasetGroupRequest:
     str name
     Optional[str] roleArn
@@ -350,8 +364,9 @@ struct CreateDatasetGroupResponse:
     Optional[str] datasetGroupArn
     Optional[Domain] domain
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDatasetImportJobRequest:
     str jobName
     str datasetArn
@@ -365,8 +380,9 @@ struct CreateDatasetImportJobRequest:
 struct CreateDatasetImportJobResponse:
     Optional[str] datasetImportJobArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDatasetRequest:
     str name
     str schemaArn
@@ -378,8 +394,9 @@ struct CreateDatasetRequest:
 struct CreateDatasetResponse:
     Optional[str] datasetArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEventTrackerRequest:
     str name
     str datasetGroupArn
@@ -390,8 +407,9 @@ struct CreateEventTrackerResponse:
     Optional[str] eventTrackerArn
     Optional[str] trackingId
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFilterRequest:
     str name
     str datasetGroupArn
@@ -402,8 +420,9 @@ struct CreateFilterRequest:
 struct CreateFilterResponse:
     Optional[str] filterArn
 
-# no @derive(Json): member(s) metrics: list[MetricAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metrics: list[MetricAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMetricAttributionRequest:
     str name
     str datasetGroupArn
@@ -414,8 +433,9 @@ struct CreateMetricAttributionRequest:
 struct CreateMetricAttributionResponse:
     Optional[str] metricAttributionArn
 
-# no @derive(Json): member(s) recommenderConfig: RecommenderConfig, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommenderConfig: RecommenderConfig, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRecommenderRequest:
     str name
     str datasetGroupArn
@@ -437,8 +457,9 @@ struct CreateSchemaRequest:
 struct CreateSchemaResponse:
     Optional[str] schemaArn
 
-# no @derive(Json): member(s) solutionConfig: SolutionConfig, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) solutionConfig: SolutionConfig, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSolutionRequest:
     str name
     Optional[bool] performHPO
@@ -455,8 +476,9 @@ struct CreateSolutionRequest:
 struct CreateSolutionResponse:
     Optional[str] solutionArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSolutionVersionRequest:
     Optional[str] name
     str solutionArn
@@ -613,8 +635,9 @@ struct DatasetUpdateSummary:
     Optional[DateTime] creationDateTime
     Optional[DateTime] lastUpdatedDateTime
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DefaultCategoricalHyperParameterRange:
     Optional[str] name
     Optional[list[str]] values
@@ -627,8 +650,9 @@ struct DefaultContinuousHyperParameterRange:
     Optional[float64] maxValue
     Optional[bool] isTunable
 
-# no @derive(Json): member(s) integerHyperParameterRanges: list[DefaultIntegerHyperParameterRange], continuousHyperParameterRanges: list[DefaultContinuousHyperParameterRange], categoricalHyperParameterRanges: list[DefaultCategoricalHyperParameterRange] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) integerHyperParameterRanges: list[DefaultIntegerHyperParameterRange], continuousHyperParameterRanges: list[DefaultContinuousHyperParameterRange], categoricalHyperParameterRanges: list[DefaultCategoricalHyperParameterRange] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DefaultHyperParameterRanges:
     Optional[list[DefaultIntegerHyperParameterRange]] integerHyperParameterRanges
     Optional[list[DefaultContinuousHyperParameterRange]] continuousHyperParameterRanges
@@ -681,8 +705,9 @@ struct DeleteSolutionRequest:
 struct DescribeAlgorithmRequest:
     str algorithmArn
 
-# no @derive(Json): member(s) algorithm: Algorithm not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) algorithm: Algorithm not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAlgorithmResponse:
     Optional[Algorithm] algorithm
 
@@ -690,8 +715,9 @@ struct DescribeAlgorithmResponse:
 struct DescribeBatchInferenceJobRequest:
     str batchInferenceJobArn
 
-# no @derive(Json): member(s) batchInferenceJob: BatchInferenceJob not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) batchInferenceJob: BatchInferenceJob not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBatchInferenceJobResponse:
     Optional[BatchInferenceJob] batchInferenceJob
 
@@ -707,8 +733,9 @@ struct DescribeBatchSegmentJobResponse:
 struct DescribeCampaignRequest:
     str campaignArn
 
-# no @derive(Json): member(s) campaign: Campaign not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) campaign: Campaign not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCampaignResponse:
     Optional[Campaign] campaign
 
@@ -764,8 +791,9 @@ struct DescribeEventTrackerResponse:
 struct DescribeFeatureTransformationRequest:
     str featureTransformationArn
 
-# no @derive(Json): member(s) featureTransformation: FeatureTransformation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) featureTransformation: FeatureTransformation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFeatureTransformationResponse:
     Optional[FeatureTransformation] featureTransformation
 
@@ -797,8 +825,9 @@ struct DescribeRecipeResponse:
 struct DescribeRecommenderRequest:
     str recommenderArn
 
-# no @derive(Json): member(s) recommender: Recommender not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommender: Recommender not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRecommenderResponse:
     Optional[Recommender] recommender
 
@@ -814,8 +843,9 @@ struct DescribeSchemaResponse:
 struct DescribeSolutionRequest:
     str solutionArn
 
-# no @derive(Json): member(s) solution: Solution not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) solution: Solution not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSolutionResponse:
     Optional[Solution] solution
 
@@ -823,8 +853,9 @@ struct DescribeSolutionResponse:
 struct DescribeSolutionVersionRequest:
     str solutionVersionArn
 
-# no @derive(Json): member(s) solutionVersion: SolutionVersion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) solutionVersion: SolutionVersion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSolutionVersionResponse:
     Optional[SolutionVersion] solutionVersion
 
@@ -853,13 +884,15 @@ struct EventTrackerSummary:
     Optional[DateTime] creationDateTime
     Optional[DateTime] lastUpdatedDateTime
 
-# no @derive(Json): member(s) eventParametersList: list[EventParameters] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventParametersList: list[EventParameters] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventsConfig:
     Optional[list[EventParameters]] eventParametersList
 
-# no @derive(Json): member(s) defaultParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) defaultParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FeatureTransformation:
     Optional[str] name
     Optional[str] featureTransformationArn
@@ -897,14 +930,16 @@ struct FilterSummary:
 struct GetSolutionMetricsRequest:
     str solutionVersionArn
 
-# no @derive(Json): member(s) metrics: dict[str, float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metrics: dict[str, float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSolutionMetricsResponse:
     Optional[str] solutionVersionArn
     Optional[dict[str, float64]] metrics
 
-# no @derive(Json): member(s) algorithmHyperParameterRanges: HyperParameterRanges not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) algorithmHyperParameterRanges: HyperParameterRanges not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HPOConfig:
     Optional[HPOObjective] hpoObjective
     Optional[HPOResourceConfig] hpoResourceConfig
@@ -921,8 +956,9 @@ struct HPOResourceConfig:
     Optional[str] maxNumberOfTrainingJobs
     Optional[str] maxParallelTrainingJobs
 
-# no @derive(Json): member(s) integerHyperParameterRanges: list[IntegerHyperParameterRange], continuousHyperParameterRanges: list[ContinuousHyperParameterRange], categoricalHyperParameterRanges: list[CategoricalHyperParameterRange] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) integerHyperParameterRanges: list[IntegerHyperParameterRange], continuousHyperParameterRanges: list[ContinuousHyperParameterRange], categoricalHyperParameterRanges: list[CategoricalHyperParameterRange] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HyperParameterRanges:
     Optional[list[IntegerHyperParameterRange]] integerHyperParameterRanges
     Optional[list[ContinuousHyperParameterRange]] continuousHyperParameterRanges
@@ -952,8 +988,9 @@ struct ListBatchInferenceJobsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) batchInferenceJobs: list[BatchInferenceJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) batchInferenceJobs: list[BatchInferenceJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBatchInferenceJobsResponse:
     Optional[list[BatchInferenceJobSummary]] batchInferenceJobs
     Optional[str] nextToken
@@ -964,8 +1001,9 @@ struct ListBatchSegmentJobsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) batchSegmentJobs: list[BatchSegmentJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) batchSegmentJobs: list[BatchSegmentJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBatchSegmentJobsResponse:
     Optional[list[BatchSegmentJobSummary]] batchSegmentJobs
     Optional[str] nextToken
@@ -976,8 +1014,9 @@ struct ListCampaignsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) campaigns: list[CampaignSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) campaigns: list[CampaignSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCampaignsResponse:
     Optional[list[CampaignSummary]] campaigns
     Optional[str] nextToken
@@ -988,8 +1027,9 @@ struct ListDataDeletionJobsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) dataDeletionJobs: list[DataDeletionJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataDeletionJobs: list[DataDeletionJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataDeletionJobsResponse:
     Optional[list[DataDeletionJobSummary]] dataDeletionJobs
     Optional[str] nextToken
@@ -1000,8 +1040,9 @@ struct ListDatasetExportJobsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) datasetExportJobs: list[DatasetExportJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) datasetExportJobs: list[DatasetExportJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatasetExportJobsResponse:
     Optional[list[DatasetExportJobSummary]] datasetExportJobs
     Optional[str] nextToken
@@ -1011,8 +1052,9 @@ struct ListDatasetGroupsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) datasetGroups: list[DatasetGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) datasetGroups: list[DatasetGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatasetGroupsResponse:
     Optional[list[DatasetGroupSummary]] datasetGroups
     Optional[str] nextToken
@@ -1023,8 +1065,9 @@ struct ListDatasetImportJobsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) datasetImportJobs: list[DatasetImportJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) datasetImportJobs: list[DatasetImportJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatasetImportJobsResponse:
     Optional[list[DatasetImportJobSummary]] datasetImportJobs
     Optional[str] nextToken
@@ -1035,8 +1078,9 @@ struct ListDatasetsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) datasets: list[DatasetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) datasets: list[DatasetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatasetsResponse:
     Optional[list[DatasetSummary]] datasets
     Optional[str] nextToken
@@ -1047,8 +1091,9 @@ struct ListEventTrackersRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) eventTrackers: list[EventTrackerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventTrackers: list[EventTrackerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventTrackersResponse:
     Optional[list[EventTrackerSummary]] eventTrackers
     Optional[str] nextToken
@@ -1059,8 +1104,9 @@ struct ListFiltersRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) Filters: list[FilterSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[FilterSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFiltersResponse:
     Optional[list[FilterSummary]] Filters
     Optional[str] nextToken
@@ -1071,8 +1117,9 @@ struct ListMetricAttributionMetricsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) metrics: list[MetricAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metrics: list[MetricAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMetricAttributionMetricsResponse:
     Optional[list[MetricAttribute]] metrics
     Optional[str] nextToken
@@ -1083,8 +1130,9 @@ struct ListMetricAttributionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) metricAttributions: list[MetricAttributionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metricAttributions: list[MetricAttributionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMetricAttributionsResponse:
     Optional[list[MetricAttributionSummary]] metricAttributions
     Optional[str] nextToken
@@ -1096,8 +1144,9 @@ struct ListRecipesRequest:
     Optional[int64] maxResults
     Optional[Domain] domain
 
-# no @derive(Json): member(s) recipes: list[RecipeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recipes: list[RecipeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecipesResponse:
     Optional[list[RecipeSummary]] recipes
     Optional[str] nextToken
@@ -1108,8 +1157,9 @@ struct ListRecommendersRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) recommenders: list[RecommenderSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommenders: list[RecommenderSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecommendersResponse:
     Optional[list[RecommenderSummary]] recommenders
     Optional[str] nextToken
@@ -1119,8 +1169,9 @@ struct ListSchemasRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) schemas: list[DatasetSchemaSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) schemas: list[DatasetSchemaSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSchemasResponse:
     Optional[list[DatasetSchemaSummary]] schemas
     Optional[str] nextToken
@@ -1131,8 +1182,9 @@ struct ListSolutionVersionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) solutionVersions: list[SolutionVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) solutionVersions: list[SolutionVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSolutionVersionsResponse:
     Optional[list[SolutionVersionSummary]] solutionVersions
     Optional[str] nextToken
@@ -1143,8 +1195,9 @@ struct ListSolutionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) solutions: list[SolutionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) solutions: list[SolutionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSolutionsResponse:
     Optional[list[SolutionSummary]] solutions
     Optional[str] nextToken
@@ -1153,8 +1206,9 @@ struct ListSolutionsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] tags
 
@@ -1215,8 +1269,9 @@ struct RecipeSummary:
     Optional[DateTime] lastUpdatedDateTime
     Optional[Domain] domain
 
-# no @derive(Json): member(s) recommenderConfig: RecommenderConfig, latestRecommenderUpdate: RecommenderUpdateSummary, modelMetrics: dict[str, float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommenderConfig: RecommenderConfig, latestRecommenderUpdate: RecommenderUpdateSummary, modelMetrics: dict[str, float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Recommender:
     Optional[str] recommenderArn
     Optional[str] datasetGroupArn
@@ -1230,16 +1285,18 @@ struct Recommender:
     Optional[RecommenderUpdateSummary] latestRecommenderUpdate
     Optional[dict[str, float64]] modelMetrics
 
-# no @derive(Json): member(s) itemExplorationConfig: dict[str, str], trainingDataConfig: TrainingDataConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) itemExplorationConfig: dict[str, str], trainingDataConfig: TrainingDataConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommenderConfig:
     Optional[dict[str, str]] itemExplorationConfig
     Optional[int64] minRecommendationRequestsPerSecond
     Optional[TrainingDataConfig] trainingDataConfig
     Optional[bool] enableMetadataWithRecommendations
 
-# no @derive(Json): member(s) recommenderConfig: RecommenderConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommenderConfig: RecommenderConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommenderSummary:
     Optional[str] name
     Optional[str] recommenderArn
@@ -1250,8 +1307,9 @@ struct RecommenderSummary:
     Optional[DateTime] creationDateTime
     Optional[DateTime] lastUpdatedDateTime
 
-# no @derive(Json): member(s) recommenderConfig: RecommenderConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommenderConfig: RecommenderConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommenderUpdateSummary:
     Optional[RecommenderConfig] recommenderConfig
     Optional[DateTime] creationDateTime
@@ -1276,8 +1334,9 @@ struct S3DataConfig:
     str path
     Optional[str] kmsKeyArn
 
-# no @derive(Json): member(s) solutionConfig: SolutionConfig, latestSolutionUpdate: SolutionUpdateSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) solutionConfig: SolutionConfig, latestSolutionUpdate: SolutionUpdateSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Solution:
     Optional[str] name
     Optional[str] solutionArn
@@ -1296,8 +1355,9 @@ struct Solution:
     Optional[SolutionVersionSummary] latestSolutionVersion
     Optional[SolutionUpdateSummary] latestSolutionUpdate
 
-# no @derive(Json): member(s) hpoConfig: HPOConfig, algorithmHyperParameters: dict[str, str], featureTransformationParameters: dict[str, str], autoMLConfig: AutoMLConfig, eventsConfig: EventsConfig, trainingDataConfig: TrainingDataConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) hpoConfig: HPOConfig, algorithmHyperParameters: dict[str, str], featureTransformationParameters: dict[str, str], autoMLConfig: AutoMLConfig, eventsConfig: EventsConfig, trainingDataConfig: TrainingDataConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SolutionConfig:
     Optional[str] eventValueThreshold
     Optional[HPOConfig] hpoConfig
@@ -1318,14 +1378,16 @@ struct SolutionSummary:
     Optional[DateTime] lastUpdatedDateTime
     Optional[str] recipeArn
 
-# no @derive(Json): member(s) eventsConfig: EventsConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventsConfig: EventsConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SolutionUpdateConfig:
     Optional[AutoTrainingConfig] autoTrainingConfig
     Optional[EventsConfig] eventsConfig
 
-# no @derive(Json): member(s) solutionUpdateConfig: SolutionUpdateConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) solutionUpdateConfig: SolutionUpdateConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SolutionUpdateSummary:
     Optional[SolutionUpdateConfig] solutionUpdateConfig
     Optional[str] status
@@ -1335,8 +1397,9 @@ struct SolutionUpdateSummary:
     Optional[DateTime] lastUpdatedDateTime
     Optional[str] failureReason
 
-# no @derive(Json): member(s) solutionConfig: SolutionConfig, tunedHPOParams: TunedHPOParams not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) solutionConfig: SolutionConfig, tunedHPOParams: TunedHPOParams not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SolutionVersion:
     Optional[str] name
     Optional[str] solutionVersionArn
@@ -1392,8 +1455,9 @@ struct Tag:
     str tagKey
     str tagValue
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str resourceArn
     list[Tag] tags
@@ -1415,19 +1479,22 @@ struct TooManyTagKeysException:
 struct TooManyTagsException:
     Optional[str] message
 
-# no @derive(Json): member(s) excludedDatasetColumns: dict[str, list[str]], includedDatasetColumns: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) excludedDatasetColumns: dict[str, list[str]], includedDatasetColumns: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrainingDataConfig:
     Optional[dict[str, list[str]]] excludedDatasetColumns
     Optional[dict[str, list[str]]] includedDatasetColumns
 
-# no @derive(Json): member(s) algorithmHyperParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) algorithmHyperParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TunedHPOParams:
     Optional[dict[str, str]] algorithmHyperParameters
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str resourceArn
     list[str] tagKeys
@@ -1437,8 +1504,9 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) campaignConfig: CampaignConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) campaignConfig: CampaignConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCampaignRequest:
     str campaignArn
     Optional[str] solutionVersionArn
@@ -1458,8 +1526,9 @@ struct UpdateDatasetRequest:
 struct UpdateDatasetResponse:
     Optional[str] datasetArn
 
-# no @derive(Json): member(s) addMetrics: list[MetricAttribute], removeMetrics: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) addMetrics: list[MetricAttribute], removeMetrics: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMetricAttributionRequest:
     Optional[list[MetricAttribute]] addMetrics
     Optional[list[str]] removeMetrics
@@ -1470,8 +1539,9 @@ struct UpdateMetricAttributionRequest:
 struct UpdateMetricAttributionResponse:
     Optional[str] metricAttributionArn
 
-# no @derive(Json): member(s) recommenderConfig: RecommenderConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommenderConfig: RecommenderConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRecommenderRequest:
     str recommenderArn
     RecommenderConfig recommenderConfig
@@ -1480,8 +1550,9 @@ struct UpdateRecommenderRequest:
 struct UpdateRecommenderResponse:
     Optional[str] recommenderArn
 
-# no @derive(Json): member(s) solutionUpdateConfig: SolutionUpdateConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) solutionUpdateConfig: SolutionUpdateConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSolutionRequest:
     str solutionArn
     Optional[bool] performAutoTraining
@@ -1529,39 +1600,579 @@ def personalize_error_from_code(str code) -> PersonalizeError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
+# Operations skipped in v0 (a member type is not yet serializable — a map
+# with a non-string key, or a free-form document member):
 #   CreateBatchInferenceJob (input CreateBatchInferenceJobRequest)
-#   CreateBatchSegmentJob (input CreateBatchSegmentJobRequest)
 #   CreateCampaign (input CreateCampaignRequest)
-#   CreateDataDeletionJob (input CreateDataDeletionJobRequest)
-#   CreateDataset (input CreateDatasetRequest)
-#   CreateDatasetExportJob (input CreateDatasetExportJobRequest)
-#   CreateDatasetGroup (input CreateDatasetGroupRequest)
-#   CreateDatasetImportJob (input CreateDatasetImportJobRequest)
-#   CreateEventTracker (input CreateEventTrackerRequest)
-#   CreateFilter (input CreateFilterRequest)
-#   CreateMetricAttribution (input CreateMetricAttributionRequest)
-#   CreateRecommender (input CreateRecommenderRequest)
-#   CreateSolution (input CreateSolutionRequest)
-#   CreateSolutionVersion (input CreateSolutionVersionRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
 #   UpdateCampaign (input UpdateCampaignRequest)
-#   UpdateMetricAttribution (input UpdateMetricAttributionRequest)
-#   UpdateRecommender (input UpdateRecommenderRequest)
-#   UpdateSolution (input UpdateSolutionRequest)
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def personalize_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def personalize_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def personalize_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AutoMLConfig to a compact JSON object (declaration order).
+def auto_ml_config_to_json(AutoMLConfig v) -> str:
+    list[str] parts = []
+    if v.metricName.is_some():
+        auto u0 = v.metricName.unwrap()
+        parts.append("\"metricName\":" + personalize_json_str(u0))
+    if v.recipeList.is_some():
+        auto u1 = v.recipeList.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(personalize_json_str(x2))
+        parts.append("\"recipeList\":" + personalize_json_arr(e2))
+    return personalize_json_obj(parts)
+
+# Serialize CategoricalHyperParameterRange to a compact JSON object (declaration order).
+def categorical_hyper_parameter_range_to_json(CategoricalHyperParameterRange v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + personalize_json_str(u0))
+    if v.values.is_some():
+        auto u1 = v.values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(personalize_json_str(x2))
+        parts.append("\"values\":" + personalize_json_arr(e2))
+    return personalize_json_obj(parts)
+
+# Serialize CreateBatchSegmentJobRequest to a compact JSON object (declaration order).
+def create_batch_segment_job_request_to_json(CreateBatchSegmentJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"jobName\":" + personalize_json_str(v.jobName))
+    parts.append("\"solutionVersionArn\":" + personalize_json_str(v.solutionVersionArn))
+    if v.filterArn.is_some():
+        auto u0 = v.filterArn.unwrap()
+        parts.append("\"filterArn\":" + personalize_json_str(u0))
+    if v.numResults.is_some():
+        auto u1 = v.numResults.unwrap()
+        parts.append("\"numResults\":" + str(u1))
+    parts.append("\"jobInput\":" + v.jobInput.to_json())
+    parts.append("\"jobOutput\":" + v.jobOutput.to_json())
+    parts.append("\"roleArn\":" + personalize_json_str(v.roleArn))
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"tags\":" + personalize_json_arr(e3))
+    return personalize_json_obj(parts)
+
+# Serialize CreateDataDeletionJobRequest to a compact JSON object (declaration order).
+def create_data_deletion_job_request_to_json(CreateDataDeletionJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"jobName\":" + personalize_json_str(v.jobName))
+    parts.append("\"datasetGroupArn\":" + personalize_json_str(v.datasetGroupArn))
+    parts.append("\"dataSource\":" + v.dataSource.to_json())
+    parts.append("\"roleArn\":" + personalize_json_str(v.roleArn))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + personalize_json_arr(e1))
+    return personalize_json_obj(parts)
+
+# Serialize CreateDatasetExportJobRequest to a compact JSON object (declaration order).
+def create_dataset_export_job_request_to_json(CreateDatasetExportJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"jobName\":" + personalize_json_str(v.jobName))
+    parts.append("\"datasetArn\":" + personalize_json_str(v.datasetArn))
+    if v.ingestionMode.is_some():
+        auto u0 = v.ingestionMode.unwrap()
+        parts.append("\"ingestionMode\":" + u0.to_json())
+    parts.append("\"roleArn\":" + personalize_json_str(v.roleArn))
+    parts.append("\"jobOutput\":" + v.jobOutput.to_json())
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + personalize_json_arr(e2))
+    return personalize_json_obj(parts)
+
+# Serialize CreateDatasetGroupRequest to a compact JSON object (declaration order).
+def create_dataset_group_request_to_json(CreateDatasetGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + personalize_json_str(v.name))
+    if v.roleArn.is_some():
+        auto u0 = v.roleArn.unwrap()
+        parts.append("\"roleArn\":" + personalize_json_str(u0))
+    if v.kmsKeyArn.is_some():
+        auto u1 = v.kmsKeyArn.unwrap()
+        parts.append("\"kmsKeyArn\":" + personalize_json_str(u1))
+    if v.domain.is_some():
+        auto u2 = v.domain.unwrap()
+        parts.append("\"domain\":" + u2.to_json())
+    if v.tags.is_some():
+        auto u3 = v.tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"tags\":" + personalize_json_arr(e4))
+    return personalize_json_obj(parts)
+
+# Serialize CreateDatasetImportJobRequest to a compact JSON object (declaration order).
+def create_dataset_import_job_request_to_json(CreateDatasetImportJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"jobName\":" + personalize_json_str(v.jobName))
+    parts.append("\"datasetArn\":" + personalize_json_str(v.datasetArn))
+    parts.append("\"dataSource\":" + v.dataSource.to_json())
+    if v.roleArn.is_some():
+        auto u0 = v.roleArn.unwrap()
+        parts.append("\"roleArn\":" + personalize_json_str(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + personalize_json_arr(e2))
+    if v.importMode.is_some():
+        auto u3 = v.importMode.unwrap()
+        parts.append("\"importMode\":" + u3.to_json())
+    if v.publishAttributionMetricsToS3.is_some():
+        auto u4 = v.publishAttributionMetricsToS3.unwrap()
+        parts.append("\"publishAttributionMetricsToS3\":" + json.dumps(JsonValue.Bool(u4)))
+    return personalize_json_obj(parts)
+
+# Serialize CreateDatasetRequest to a compact JSON object (declaration order).
+def create_dataset_request_to_json(CreateDatasetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + personalize_json_str(v.name))
+    parts.append("\"schemaArn\":" + personalize_json_str(v.schemaArn))
+    parts.append("\"datasetGroupArn\":" + personalize_json_str(v.datasetGroupArn))
+    parts.append("\"datasetType\":" + personalize_json_str(v.datasetType))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + personalize_json_arr(e1))
+    return personalize_json_obj(parts)
+
+# Serialize CreateEventTrackerRequest to a compact JSON object (declaration order).
+def create_event_tracker_request_to_json(CreateEventTrackerRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + personalize_json_str(v.name))
+    parts.append("\"datasetGroupArn\":" + personalize_json_str(v.datasetGroupArn))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + personalize_json_arr(e1))
+    return personalize_json_obj(parts)
+
+# Serialize CreateFilterRequest to a compact JSON object (declaration order).
+def create_filter_request_to_json(CreateFilterRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + personalize_json_str(v.name))
+    parts.append("\"datasetGroupArn\":" + personalize_json_str(v.datasetGroupArn))
+    parts.append("\"filterExpression\":" + personalize_json_str(v.filterExpression))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + personalize_json_arr(e1))
+    return personalize_json_obj(parts)
+
+# Serialize CreateMetricAttributionRequest to a compact JSON object (declaration order).
+def create_metric_attribution_request_to_json(CreateMetricAttributionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + personalize_json_str(v.name))
+    parts.append("\"datasetGroupArn\":" + personalize_json_str(v.datasetGroupArn))
+    list[str] e0 = []
+    for x0 in v.metrics:
+        e0.append(x0.to_json())
+    parts.append("\"metrics\":" + personalize_json_arr(e0))
+    parts.append("\"metricsOutputConfig\":" + v.metricsOutputConfig.to_json())
+    return personalize_json_obj(parts)
+
+# Serialize CreateRecommenderRequest to a compact JSON object (declaration order).
+def create_recommender_request_to_json(CreateRecommenderRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + personalize_json_str(v.name))
+    parts.append("\"datasetGroupArn\":" + personalize_json_str(v.datasetGroupArn))
+    parts.append("\"recipeArn\":" + personalize_json_str(v.recipeArn))
+    if v.recommenderConfig.is_some():
+        auto u0 = v.recommenderConfig.unwrap()
+        parts.append("\"recommenderConfig\":" + recommender_config_to_json(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + personalize_json_arr(e2))
+    return personalize_json_obj(parts)
+
+# Serialize CreateSolutionRequest to a compact JSON object (declaration order).
+def create_solution_request_to_json(CreateSolutionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + personalize_json_str(v.name))
+    if v.performHPO.is_some():
+        auto u0 = v.performHPO.unwrap()
+        parts.append("\"performHPO\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.performAutoML.is_some():
+        auto u1 = v.performAutoML.unwrap()
+        parts.append("\"performAutoML\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.performAutoTraining.is_some():
+        auto u2 = v.performAutoTraining.unwrap()
+        parts.append("\"performAutoTraining\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.performIncrementalUpdate.is_some():
+        auto u3 = v.performIncrementalUpdate.unwrap()
+        parts.append("\"performIncrementalUpdate\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.recipeArn.is_some():
+        auto u4 = v.recipeArn.unwrap()
+        parts.append("\"recipeArn\":" + personalize_json_str(u4))
+    parts.append("\"datasetGroupArn\":" + personalize_json_str(v.datasetGroupArn))
+    if v.eventType.is_some():
+        auto u5 = v.eventType.unwrap()
+        parts.append("\"eventType\":" + personalize_json_str(u5))
+    if v.solutionConfig.is_some():
+        auto u6 = v.solutionConfig.unwrap()
+        parts.append("\"solutionConfig\":" + solution_config_to_json(u6))
+    if v.tags.is_some():
+        auto u7 = v.tags.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"tags\":" + personalize_json_arr(e8))
+    return personalize_json_obj(parts)
+
+# Serialize CreateSolutionVersionRequest to a compact JSON object (declaration order).
+def create_solution_version_request_to_json(CreateSolutionVersionRequest v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + personalize_json_str(u0))
+    parts.append("\"solutionArn\":" + personalize_json_str(v.solutionArn))
+    if v.trainingMode.is_some():
+        auto u1 = v.trainingMode.unwrap()
+        parts.append("\"trainingMode\":" + u1.to_json())
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"tags\":" + personalize_json_arr(e3))
+    return personalize_json_obj(parts)
+
+# Serialize EventsConfig to a compact JSON object (declaration order).
+def events_config_to_json(EventsConfig v) -> str:
+    list[str] parts = []
+    if v.eventParametersList.is_some():
+        auto u0 = v.eventParametersList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"eventParametersList\":" + personalize_json_arr(e1))
+    return personalize_json_obj(parts)
+
+# Serialize HPOConfig to a compact JSON object (declaration order).
+def hpo_config_to_json(HPOConfig v) -> str:
+    list[str] parts = []
+    if v.hpoObjective.is_some():
+        auto u0 = v.hpoObjective.unwrap()
+        parts.append("\"hpoObjective\":" + u0.to_json())
+    if v.hpoResourceConfig.is_some():
+        auto u1 = v.hpoResourceConfig.unwrap()
+        parts.append("\"hpoResourceConfig\":" + u1.to_json())
+    if v.algorithmHyperParameterRanges.is_some():
+        auto u2 = v.algorithmHyperParameterRanges.unwrap()
+        parts.append("\"algorithmHyperParameterRanges\":" + hyper_parameter_ranges_to_json(u2))
+    return personalize_json_obj(parts)
+
+# Serialize HyperParameterRanges to a compact JSON object (declaration order).
+def hyper_parameter_ranges_to_json(HyperParameterRanges v) -> str:
+    list[str] parts = []
+    if v.integerHyperParameterRanges.is_some():
+        auto u0 = v.integerHyperParameterRanges.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"integerHyperParameterRanges\":" + personalize_json_arr(e1))
+    if v.continuousHyperParameterRanges.is_some():
+        auto u2 = v.continuousHyperParameterRanges.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"continuousHyperParameterRanges\":" + personalize_json_arr(e3))
+    if v.categoricalHyperParameterRanges.is_some():
+        auto u4 = v.categoricalHyperParameterRanges.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(categorical_hyper_parameter_range_to_json(x5))
+        parts.append("\"categoricalHyperParameterRanges\":" + personalize_json_arr(e5))
+    return personalize_json_obj(parts)
+
+# Serialize RecommenderConfig to a compact JSON object (declaration order).
+def recommender_config_to_json(RecommenderConfig v) -> str:
+    list[str] parts = []
+    if v.itemExplorationConfig.is_some():
+        auto u0 = v.itemExplorationConfig.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(personalize_json_str(k1) + ":" + personalize_json_str(u0[k1]))
+        parts.append("\"itemExplorationConfig\":" + personalize_json_obj(m1))
+    if v.minRecommendationRequestsPerSecond.is_some():
+        auto u2 = v.minRecommendationRequestsPerSecond.unwrap()
+        parts.append("\"minRecommendationRequestsPerSecond\":" + str(u2))
+    if v.trainingDataConfig.is_some():
+        auto u3 = v.trainingDataConfig.unwrap()
+        parts.append("\"trainingDataConfig\":" + training_data_config_to_json(u3))
+    if v.enableMetadataWithRecommendations.is_some():
+        auto u4 = v.enableMetadataWithRecommendations.unwrap()
+        parts.append("\"enableMetadataWithRecommendations\":" + json.dumps(JsonValue.Bool(u4)))
+    return personalize_json_obj(parts)
+
+# Serialize SolutionConfig to a compact JSON object (declaration order).
+def solution_config_to_json(SolutionConfig v) -> str:
+    list[str] parts = []
+    if v.eventValueThreshold.is_some():
+        auto u0 = v.eventValueThreshold.unwrap()
+        parts.append("\"eventValueThreshold\":" + personalize_json_str(u0))
+    if v.hpoConfig.is_some():
+        auto u1 = v.hpoConfig.unwrap()
+        parts.append("\"hpoConfig\":" + hpo_config_to_json(u1))
+    if v.algorithmHyperParameters.is_some():
+        auto u2 = v.algorithmHyperParameters.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(personalize_json_str(k3) + ":" + personalize_json_str(u2[k3]))
+        parts.append("\"algorithmHyperParameters\":" + personalize_json_obj(m3))
+    if v.featureTransformationParameters.is_some():
+        auto u4 = v.featureTransformationParameters.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(personalize_json_str(k5) + ":" + personalize_json_str(u4[k5]))
+        parts.append("\"featureTransformationParameters\":" + personalize_json_obj(m5))
+    if v.autoMLConfig.is_some():
+        auto u6 = v.autoMLConfig.unwrap()
+        parts.append("\"autoMLConfig\":" + auto_ml_config_to_json(u6))
+    if v.eventsConfig.is_some():
+        auto u7 = v.eventsConfig.unwrap()
+        parts.append("\"eventsConfig\":" + events_config_to_json(u7))
+    if v.optimizationObjective.is_some():
+        auto u8 = v.optimizationObjective.unwrap()
+        parts.append("\"optimizationObjective\":" + u8.to_json())
+    if v.trainingDataConfig.is_some():
+        auto u9 = v.trainingDataConfig.unwrap()
+        parts.append("\"trainingDataConfig\":" + training_data_config_to_json(u9))
+    if v.autoTrainingConfig.is_some():
+        auto u10 = v.autoTrainingConfig.unwrap()
+        parts.append("\"autoTrainingConfig\":" + u10.to_json())
+    return personalize_json_obj(parts)
+
+# Serialize SolutionUpdateConfig to a compact JSON object (declaration order).
+def solution_update_config_to_json(SolutionUpdateConfig v) -> str:
+    list[str] parts = []
+    if v.autoTrainingConfig.is_some():
+        auto u0 = v.autoTrainingConfig.unwrap()
+        parts.append("\"autoTrainingConfig\":" + u0.to_json())
+    if v.eventsConfig.is_some():
+        auto u1 = v.eventsConfig.unwrap()
+        parts.append("\"eventsConfig\":" + events_config_to_json(u1))
+    return personalize_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + personalize_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tags:
+        e0.append(x0.to_json())
+    parts.append("\"tags\":" + personalize_json_arr(e0))
+    return personalize_json_obj(parts)
+
+# Serialize TrainingDataConfig to a compact JSON object (declaration order).
+def training_data_config_to_json(TrainingDataConfig v) -> str:
+    list[str] parts = []
+    if v.excludedDatasetColumns.is_some():
+        auto u0 = v.excludedDatasetColumns.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            list[str] e2 = []
+            for x2 in u0[k1]:
+                e2.append(personalize_json_str(x2))
+            m1.append(personalize_json_str(k1) + ":" + personalize_json_arr(e2))
+        parts.append("\"excludedDatasetColumns\":" + personalize_json_obj(m1))
+    if v.includedDatasetColumns.is_some():
+        auto u3 = v.includedDatasetColumns.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            list[str] e5 = []
+            for x5 in u3[k4]:
+                e5.append(personalize_json_str(x5))
+            m4.append(personalize_json_str(k4) + ":" + personalize_json_arr(e5))
+        parts.append("\"includedDatasetColumns\":" + personalize_json_obj(m4))
+    return personalize_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + personalize_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(personalize_json_str(x0))
+    parts.append("\"tagKeys\":" + personalize_json_arr(e0))
+    return personalize_json_obj(parts)
+
+# Serialize UpdateMetricAttributionRequest to a compact JSON object (declaration order).
+def update_metric_attribution_request_to_json(UpdateMetricAttributionRequest v) -> str:
+    list[str] parts = []
+    if v.addMetrics.is_some():
+        auto u0 = v.addMetrics.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"addMetrics\":" + personalize_json_arr(e1))
+    if v.removeMetrics.is_some():
+        auto u2 = v.removeMetrics.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(personalize_json_str(x3))
+        parts.append("\"removeMetrics\":" + personalize_json_arr(e3))
+    if v.metricsOutputConfig.is_some():
+        auto u4 = v.metricsOutputConfig.unwrap()
+        parts.append("\"metricsOutputConfig\":" + u4.to_json())
+    if v.metricAttributionArn.is_some():
+        auto u5 = v.metricAttributionArn.unwrap()
+        parts.append("\"metricAttributionArn\":" + personalize_json_str(u5))
+    return personalize_json_obj(parts)
+
+# Serialize UpdateRecommenderRequest to a compact JSON object (declaration order).
+def update_recommender_request_to_json(UpdateRecommenderRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"recommenderArn\":" + personalize_json_str(v.recommenderArn))
+    parts.append("\"recommenderConfig\":" + recommender_config_to_json(v.recommenderConfig))
+    return personalize_json_obj(parts)
+
+# Serialize UpdateSolutionRequest to a compact JSON object (declaration order).
+def update_solution_request_to_json(UpdateSolutionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"solutionArn\":" + personalize_json_str(v.solutionArn))
+    if v.performAutoTraining.is_some():
+        auto u0 = v.performAutoTraining.unwrap()
+        parts.append("\"performAutoTraining\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.performIncrementalUpdate.is_some():
+        auto u1 = v.performIncrementalUpdate.unwrap()
+        parts.append("\"performIncrementalUpdate\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.solutionUpdateConfig.is_some():
+        auto u2 = v.solutionUpdateConfig.unwrap()
+        parts.append("\"solutionUpdateConfig\":" + solution_update_config_to_json(u2))
+    return personalize_json_obj(parts)
 
 # A bound Personalize client: credentials + region, threaded into every operation.
 struct PersonalizeClient:
     core.Credentials creds
     str region
 
+    # CreateBatchSegmentJob
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException, TooManyTagsException
+    def create_batch_segment_job(self, CreateBatchSegmentJobRequest input) -> str:
+        auto body = create_batch_segment_job_request_to_json(input)
+        return awsjson.awsjson_request_now(personalize_protocol(), self.creds, self.region, "CreateBatchSegmentJob", body)
+
+    # CreateDataDeletionJob
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException, TooManyTagsException
+    def create_data_deletion_job(self, CreateDataDeletionJobRequest input) -> str:
+        auto body = create_data_deletion_job_request_to_json(input)
+        return awsjson.awsjson_request_now(personalize_protocol(), self.creds, self.region, "CreateDataDeletionJob", body)
+
+    # CreateDataset
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException, TooManyTagsException
+    def create_dataset(self, CreateDatasetRequest input) -> str:
+        auto body = create_dataset_request_to_json(input)
+        return awsjson.awsjson_request_now(personalize_protocol(), self.creds, self.region, "CreateDataset", body)
+
+    # CreateDatasetExportJob
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException, TooManyTagsException
+    def create_dataset_export_job(self, CreateDatasetExportJobRequest input) -> str:
+        auto body = create_dataset_export_job_request_to_json(input)
+        return awsjson.awsjson_request_now(personalize_protocol(), self.creds, self.region, "CreateDatasetExportJob", body)
+
+    # CreateDatasetGroup
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, TooManyTagsException
+    def create_dataset_group(self, CreateDatasetGroupRequest input) -> str:
+        auto body = create_dataset_group_request_to_json(input)
+        return awsjson.awsjson_request_now(personalize_protocol(), self.creds, self.region, "CreateDatasetGroup", body)
+
+    # CreateDatasetImportJob
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException, TooManyTagsException
+    def create_dataset_import_job(self, CreateDatasetImportJobRequest input) -> str:
+        auto body = create_dataset_import_job_request_to_json(input)
+        return awsjson.awsjson_request_now(personalize_protocol(), self.creds, self.region, "CreateDatasetImportJob", body)
+
+    # CreateEventTracker
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException, TooManyTagsException
+    def create_event_tracker(self, CreateEventTrackerRequest input) -> str:
+        auto body = create_event_tracker_request_to_json(input)
+        return awsjson.awsjson_request_now(personalize_protocol(), self.creds, self.region, "CreateEventTracker", body)
+
+    # CreateFilter
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, TooManyTagsException
+    def create_filter(self, CreateFilterRequest input) -> str:
+        auto body = create_filter_request_to_json(input)
+        return awsjson.awsjson_request_now(personalize_protocol(), self.creds, self.region, "CreateFilter", body)
+
+    # CreateMetricAttribution
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException
+    def create_metric_attribution(self, CreateMetricAttributionRequest input) -> str:
+        auto body = create_metric_attribution_request_to_json(input)
+        return awsjson.awsjson_request_now(personalize_protocol(), self.creds, self.region, "CreateMetricAttribution", body)
+
+    # CreateRecommender
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException, TooManyTagsException
+    def create_recommender(self, CreateRecommenderRequest input) -> str:
+        auto body = create_recommender_request_to_json(input)
+        return awsjson.awsjson_request_now(personalize_protocol(), self.creds, self.region, "CreateRecommender", body)
+
     # CreateSchema
     # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException
     def create_schema(self, CreateSchemaRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(personalize_protocol(), self.creds, self.region, "CreateSchema", body)
+
+    # CreateSolution
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException, TooManyTagsException
+    def create_solution(self, CreateSolutionRequest input) -> str:
+        auto body = create_solution_request_to_json(input)
+        return awsjson.awsjson_request_now(personalize_protocol(), self.creds, self.region, "CreateSolution", body)
+
+    # CreateSolutionVersion
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException, TooManyTagsException
+    def create_solution_version(self, CreateSolutionVersionRequest input) -> str:
+        auto body = create_solution_version_request_to_json(input)
+        return awsjson.awsjson_request_now(personalize_protocol(), self.creds, self.region, "CreateSolutionVersion", body)
 
     # DeleteCampaign
     # errors: InvalidInputException, ResourceInUseException, ResourceNotFoundException
@@ -1857,11 +2468,41 @@ struct PersonalizeClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(personalize_protocol(), self.creds, self.region, "StopSolutionVersionCreation", body)
 
+    # TagResource
+    # errors: InvalidInputException, LimitExceededException, ResourceInUseException, ResourceNotFoundException, TooManyTagsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(personalize_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: InvalidInputException, ResourceInUseException, ResourceNotFoundException, TooManyTagKeysException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(personalize_protocol(), self.creds, self.region, "UntagResource", body)
+
     # UpdateDataset
     # errors: InvalidInputException, ResourceInUseException, ResourceNotFoundException
     def update_dataset(self, UpdateDatasetRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(personalize_protocol(), self.creds, self.region, "UpdateDataset", body)
+
+    # UpdateMetricAttribution
+    # errors: InvalidInputException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException
+    def update_metric_attribution(self, UpdateMetricAttributionRequest input) -> str:
+        auto body = update_metric_attribution_request_to_json(input)
+        return awsjson.awsjson_request_now(personalize_protocol(), self.creds, self.region, "UpdateMetricAttribution", body)
+
+    # UpdateRecommender
+    # errors: InvalidInputException, ResourceInUseException, ResourceNotFoundException
+    def update_recommender(self, UpdateRecommenderRequest input) -> str:
+        auto body = update_recommender_request_to_json(input)
+        return awsjson.awsjson_request_now(personalize_protocol(), self.creds, self.region, "UpdateRecommender", body)
+
+    # UpdateSolution
+    # errors: InvalidInputException, LimitExceededException, ResourceInUseException, ResourceInUseException, ResourceNotFoundException
+    def update_solution(self, UpdateSolutionRequest input) -> str:
+        auto body = update_solution_request_to_json(input)
+        return awsjson.awsjson_request_now(personalize_protocol(), self.creds, self.region, "UpdateSolution", body)
 
     # Paginator for ListBatchInferenceJobs — yields each Response page, threading the
     # nextToken -> nextToken continuation token until the output token is absent (result key: batchInferenceJobs).

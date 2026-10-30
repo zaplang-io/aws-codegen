@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 27 operations — 19 with a generated method,
-#   8 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 27 operations — 25 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   101 structs (74 @derive(Json)), 12 enums, 10 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -155,8 +155,9 @@ enum VoteValue:
 struct AccessDeniedException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Accessor:
     Optional[str] Id
     Optional[str] Type
@@ -292,8 +293,9 @@ struct DeleteNodeOutput:
 struct GetAccessorInput:
     str AccessorId
 
-# no @derive(Json): member(s) Accessor: Accessor not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Accessor: Accessor not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAccessorOutput:
     Optional[Accessor] Accessor
 
@@ -303,8 +305,9 @@ struct GetMemberInput:
     str NetworkId
     str MemberId
 
-# no @derive(Json): member(s) Member: Member not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Member: Member not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMemberOutput:
     Optional[Member] Member
 
@@ -313,8 +316,9 @@ struct GetMemberOutput:
 struct GetNetworkInput:
     str NetworkId
 
-# no @derive(Json): member(s) Network: Network not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Network: Network not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetNetworkOutput:
     Optional[Network] Network
 
@@ -325,8 +329,9 @@ struct GetNodeInput:
     Optional[str] MemberId
     str NodeId
 
-# no @derive(Json): member(s) Node: Node not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Node: Node not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetNodeOutput:
     Optional[Node] Node
 
@@ -336,8 +341,9 @@ struct GetProposalInput:
     str NetworkId
     str ProposalId
 
-# no @derive(Json): member(s) Proposal: Proposal not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Proposal: Proposal not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProposalOutput:
     Optional[Proposal] Proposal
 
@@ -377,8 +383,9 @@ struct ListAccessorsInput:
     # wire string of the AccessorNetworkType enum (querystring binding)
     Optional[str] NetworkType
 
-# no @derive(Json): member(s) Accessors: list[AccessorSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Accessors: list[AccessorSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccessorsOutput:
     Optional[list[AccessorSummary]] Accessors
     Optional[str] NextToken
@@ -389,8 +396,9 @@ struct ListInvitationsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Invitations: list[Invitation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Invitations: list[Invitation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInvitationsOutput:
     Optional[list[Invitation]] Invitations
     Optional[str] NextToken
@@ -406,8 +414,9 @@ struct ListMembersInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Members: list[MemberSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Members: list[MemberSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMembersOutput:
     Optional[list[MemberSummary]] Members
     Optional[str] NextToken
@@ -423,8 +432,9 @@ struct ListNetworksInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Networks: list[NetworkSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Networks: list[NetworkSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworksOutput:
     Optional[list[NetworkSummary]] Networks
     Optional[str] NextToken
@@ -439,8 +449,9 @@ struct ListNodesInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Nodes: list[NodeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Nodes: list[NodeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNodesOutput:
     Optional[list[NodeSummary]] Nodes
     Optional[str] NextToken
@@ -453,8 +464,9 @@ struct ListProposalVotesInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ProposalVotes: list[VoteSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProposalVotes: list[VoteSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProposalVotesOutput:
     Optional[list[VoteSummary]] ProposalVotes
     Optional[str] NextToken
@@ -466,8 +478,9 @@ struct ListProposalsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Proposals: list[ProposalSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Proposals: list[ProposalSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProposalsOutput:
     Optional[list[ProposalSummary]] Proposals
     Optional[str] NextToken
@@ -477,8 +490,9 @@ struct ListProposalsOutput:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -490,8 +504,9 @@ struct LogConfiguration:
 struct LogConfigurations:
     Optional[LogConfiguration] Cloudwatch
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Member:
     Optional[str] NetworkId
     Optional[str] Id
@@ -505,8 +520,9 @@ struct Member:
     Optional[str] Arn
     Optional[str] KmsKeyArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MemberConfiguration:
     str Name
     Optional[str] Description
@@ -552,8 +568,9 @@ struct MemberSummary:
     Optional[bool] IsOwned
     Optional[str] Arn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Network:
     Optional[str] Id
     Optional[str] Name
@@ -602,8 +619,9 @@ struct NetworkSummary:
     Optional[DateTime] CreationDate
     Optional[str] Arn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Node:
     Optional[str] NetworkId
     Optional[str] MemberId
@@ -660,8 +678,9 @@ struct NodeSummary:
     Optional[str] InstanceType
     Optional[str] Arn
 
-# no @derive(Json): member(s) Actions: ProposalActions, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: ProposalActions, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Proposal:
     Optional[str] ProposalId
     Optional[str] NetworkId
@@ -678,8 +697,9 @@ struct Proposal:
     Optional[dict[str, str]] Tags
     Optional[str] Arn
 
-# no @derive(Json): member(s) Invitations: list[InviteAction], Removals: list[RemoveAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Invitations: list[InviteAction], Removals: list[RemoveAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProposalActions:
     Optional[list[InviteAction]] Invitations
     Optional[list[RemoveAction]] Removals
@@ -855,13 +875,7 @@ def managedblockchain_error_from_code(str code) -> ManagedBlockchainError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateAccessor (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateMember (document member `MemberConfiguration: MemberConfiguration` is not serializable by derive)
-#   CreateNetwork (document member `MemberConfiguration: MemberConfiguration` is not serializable by derive)
-#   CreateNode (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateProposal (document member `Actions: ProposalActions` is not serializable by derive)
 #   ListMembers (httpQuery `IsOwned` has unsupported type bool)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -884,10 +898,185 @@ struct VoteOnProposalDocument:
     str VoterMemberId
     VoteValue Vote
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def managedblockchain_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def managedblockchain_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def managedblockchain_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize MemberConfiguration to a compact JSON object (declaration order).
+def member_configuration_to_json(MemberConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + managedblockchain_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + managedblockchain_json_str(u0))
+    parts.append("\"FrameworkConfiguration\":" + v.FrameworkConfiguration.to_json())
+    if v.LogPublishingConfiguration.is_some():
+        auto u1 = v.LogPublishingConfiguration.unwrap()
+        parts.append("\"LogPublishingConfiguration\":" + u1.to_json())
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(managedblockchain_json_str(k3) + ":" + managedblockchain_json_str(u2[k3]))
+        parts.append("\"Tags\":" + managedblockchain_json_obj(m3))
+    if v.KmsKeyArn.is_some():
+        auto u4 = v.KmsKeyArn.unwrap()
+        parts.append("\"KmsKeyArn\":" + managedblockchain_json_str(u4))
+    return managedblockchain_json_obj(parts)
+
+# Serialize ProposalActions to a compact JSON object (declaration order).
+def proposal_actions_to_json(ProposalActions v) -> str:
+    list[str] parts = []
+    if v.Invitations.is_some():
+        auto u0 = v.Invitations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Invitations\":" + managedblockchain_json_arr(e1))
+    if v.Removals.is_some():
+        auto u2 = v.Removals.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Removals\":" + managedblockchain_json_arr(e3))
+    return managedblockchain_json_obj(parts)
+
 # A bound ManagedBlockchain client: credentials + region, threaded into every operation.
 struct ManagedBlockchainClient:
     core.Credentials creds
     str region
+
+    # CreateAccessor  POST /accessors
+    # errors: AccessDeniedException, InternalServiceErrorException, InvalidRequestException, ResourceAlreadyExistsException, ResourceLimitExceededException, ThrottlingException, TooManyTagsException
+    def create_accessor(self, CreateAccessorInput input) -> str:
+        auto host = endpoints.regional_host(managedblockchain_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/accessors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ClientRequestToken\":" + managedblockchain_json_str(input.ClientRequestToken))
+        parts.append("\"AccessorType\":" + managedblockchain_json_str(input.AccessorType))
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(managedblockchain_json_str(k1) + ":" + managedblockchain_json_str(u0[k1]))
+            parts.append("\"Tags\":" + managedblockchain_json_obj(m1))
+        if input.NetworkType.is_some():
+            auto u2 = input.NetworkType.unwrap()
+            parts.append("\"NetworkType\":" + u2.to_json())
+        auto bp = restjson.rest_json_document(b, managedblockchain_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, managedblockchain_service(), self.region, host)
+
+    # CreateMember  POST /networks/{networkId}/members
+    # errors: AccessDeniedException, InternalServiceErrorException, InvalidRequestException, ResourceAlreadyExistsException, ResourceLimitExceededException, ResourceNotFoundException, ResourceNotReadyException, ThrottlingException, TooManyTagsException
+    def create_member(self, CreateMemberInput input) -> str:
+        auto host = endpoints.regional_host(managedblockchain_service(), self.region)
+        dict[str, str] labels = {}
+        labels["networkId"] = input.NetworkId
+        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/members", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ClientRequestToken\":" + managedblockchain_json_str(input.ClientRequestToken))
+        parts.append("\"InvitationId\":" + managedblockchain_json_str(input.InvitationId))
+        parts.append("\"MemberConfiguration\":" + member_configuration_to_json(input.MemberConfiguration))
+        auto bp = restjson.rest_json_document(b, managedblockchain_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, managedblockchain_service(), self.region, host)
+
+    # CreateNetwork  POST /networks
+    # errors: AccessDeniedException, InternalServiceErrorException, InvalidRequestException, ResourceAlreadyExistsException, ResourceLimitExceededException, ThrottlingException, TooManyTagsException
+    def create_network(self, CreateNetworkInput input) -> str:
+        auto host = endpoints.regional_host(managedblockchain_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/networks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ClientRequestToken\":" + managedblockchain_json_str(input.ClientRequestToken))
+        parts.append("\"Name\":" + managedblockchain_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + managedblockchain_json_str(u0))
+        parts.append("\"Framework\":" + input.Framework.to_json())
+        parts.append("\"FrameworkVersion\":" + managedblockchain_json_str(input.FrameworkVersion))
+        if input.FrameworkConfiguration.is_some():
+            auto u1 = input.FrameworkConfiguration.unwrap()
+            parts.append("\"FrameworkConfiguration\":" + u1.to_json())
+        parts.append("\"VotingPolicy\":" + input.VotingPolicy.to_json())
+        parts.append("\"MemberConfiguration\":" + member_configuration_to_json(input.MemberConfiguration))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(managedblockchain_json_str(k3) + ":" + managedblockchain_json_str(u2[k3]))
+            parts.append("\"Tags\":" + managedblockchain_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, managedblockchain_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, managedblockchain_service(), self.region, host)
+
+    # CreateNode  POST /networks/{networkId}/nodes
+    # errors: AccessDeniedException, InternalServiceErrorException, InvalidRequestException, ResourceAlreadyExistsException, ResourceLimitExceededException, ResourceNotFoundException, ResourceNotReadyException, ThrottlingException, TooManyTagsException
+    def create_node(self, CreateNodeInput input) -> str:
+        auto host = endpoints.regional_host(managedblockchain_service(), self.region)
+        dict[str, str] labels = {}
+        labels["networkId"] = input.NetworkId
+        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/nodes", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ClientRequestToken\":" + managedblockchain_json_str(input.ClientRequestToken))
+        if input.MemberId.is_some():
+            auto u0 = input.MemberId.unwrap()
+            parts.append("\"MemberId\":" + managedblockchain_json_str(u0))
+        parts.append("\"NodeConfiguration\":" + input.NodeConfiguration.to_json())
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(managedblockchain_json_str(k2) + ":" + managedblockchain_json_str(u1[k2]))
+            parts.append("\"Tags\":" + managedblockchain_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, managedblockchain_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, managedblockchain_service(), self.region, host)
+
+    # CreateProposal  POST /networks/{networkId}/proposals
+    # errors: AccessDeniedException, InternalServiceErrorException, InvalidRequestException, ResourceNotFoundException, ResourceNotReadyException, ThrottlingException, TooManyTagsException
+    def create_proposal(self, CreateProposalInput input) -> str:
+        auto host = endpoints.regional_host(managedblockchain_service(), self.region)
+        dict[str, str] labels = {}
+        labels["networkId"] = input.NetworkId
+        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/proposals", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ClientRequestToken\":" + managedblockchain_json_str(input.ClientRequestToken))
+        parts.append("\"MemberId\":" + managedblockchain_json_str(input.MemberId))
+        parts.append("\"Actions\":" + proposal_actions_to_json(input.Actions))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + managedblockchain_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(managedblockchain_json_str(k2) + ":" + managedblockchain_json_str(u1[k2]))
+            parts.append("\"Tags\":" + managedblockchain_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, managedblockchain_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, managedblockchain_service(), self.region, host)
 
     # DeleteAccessor  DELETE /accessors/{AccessorId}
     # errors: AccessDeniedException, InternalServiceErrorException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
@@ -1080,6 +1269,21 @@ struct ManagedBlockchainClient:
         labels["invitationId"] = input.InvitationId
         auto b = binding.HttpBinding(method="DELETE", path_template="/invitations/{invitationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, managedblockchain_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalServiceErrorException, InvalidRequestException, ResourceNotFoundException, ResourceNotReadyException, TooManyTagsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(managedblockchain_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(managedblockchain_json_str(k0) + ":" + managedblockchain_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + managedblockchain_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, managedblockchain_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, managedblockchain_service(), self.region, host)
 
     # UpdateMember  PATCH /networks/{networkId}/members/{memberId}
     # errors: AccessDeniedException, InternalServiceErrorException, InvalidRequestException, ResourceNotFoundException, ThrottlingException

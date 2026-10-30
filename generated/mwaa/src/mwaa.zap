@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 12 operations — 7 with a generated method,
-#   5 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 12 operations — 11 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   46 structs (34 @derive(Json)), 8 enums, 7 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The MWAA rest-json protocol: SigV4 service "airflow" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -220,8 +221,9 @@ struct Document:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) AirflowConfigurationOptions: dict[str, str], NetworkConfiguration: NetworkConfiguration, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AirflowConfigurationOptions: dict[str, str], NetworkConfiguration: NetworkConfiguration, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Environment:
     Optional[str] Name
     Optional[EnvironmentStatus] Status
@@ -263,8 +265,9 @@ struct Environment:
 struct GetEnvironmentInput:
     str Name
 
-# no @derive(Json): member(s) Environment: Environment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Environment: Environment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEnvironmentOutput:
     Optional[Environment] Environment
 
@@ -300,8 +303,9 @@ struct ListEnvironmentsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Environments: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Environments: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentsOutput:
     list[str] Environments
     Optional[str] NextToken
@@ -311,8 +315,9 @@ struct ListEnvironmentsOutput:
 struct ListTagsForResourceInput:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[dict[str, str]] Tags
 
@@ -332,8 +337,9 @@ struct LoggingConfigurationInput:
     Optional[ModuleLoggingConfigurationInput] WorkerLogs
     Optional[ModuleLoggingConfigurationInput] TaskLogs
 
-# no @derive(Json): member(s) Dimensions: list[Dimension] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: list[Dimension] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricDatum:
     str MetricName
     DateTime Timestamp
@@ -353,8 +359,9 @@ struct ModuleLoggingConfigurationInput:
     bool Enabled
     LoggingLevel LogLevel
 
-# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkConfiguration:
     Optional[list[str]] SubnetIds
     Optional[list[str]] SecurityGroupIds
@@ -463,8 +470,9 @@ struct UpdateError:
     Optional[str] ErrorCode
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateNetworkConfigurationInput:
     list[str] SecurityGroupIds
 
@@ -510,11 +518,7 @@ def airflow_error_from_code(str code) -> MWAAError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateEnvironment (document member `NetworkConfiguration: NetworkConfiguration` is not serializable by derive)
-#   PublishMetrics (document member `MetricData: list[MetricDatum]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateEnvironment (document member `AirflowConfigurationOptions: dict[str, str]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -526,6 +530,84 @@ struct InvokeRestApiDocument:
     RestApiMethod Method
     Optional[Document] QueryParameters
     Optional[RestApiRequestBody] Body
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def airflow_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def airflow_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def airflow_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize MetricDatum to a compact JSON object (declaration order).
+def metric_datum_to_json(MetricDatum v) -> str:
+    list[str] parts = []
+    parts.append("\"MetricName\":" + airflow_json_str(v.MetricName))
+    parts.append("\"Timestamp\":" + str(datetime.to_timestamp(v.Timestamp)))
+    if v.Dimensions.is_some():
+        auto u0 = v.Dimensions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Dimensions\":" + airflow_json_arr(e1))
+    if v.Value.is_some():
+        auto u2 = v.Value.unwrap()
+        parts.append("\"Value\":" + str(u2))
+    if v.Unit.is_some():
+        auto u3 = v.Unit.unwrap()
+        parts.append("\"Unit\":" + u3.to_json())
+    if v.StatisticValues.is_some():
+        auto u4 = v.StatisticValues.unwrap()
+        parts.append("\"StatisticValues\":" + u4.to_json())
+    return airflow_json_obj(parts)
+
+# Serialize NetworkConfiguration to a compact JSON object (declaration order).
+def network_configuration_to_json(NetworkConfiguration v) -> str:
+    list[str] parts = []
+    if v.SubnetIds.is_some():
+        auto u0 = v.SubnetIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(airflow_json_str(x1))
+        parts.append("\"SubnetIds\":" + airflow_json_arr(e1))
+    if v.SecurityGroupIds.is_some():
+        auto u2 = v.SecurityGroupIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(airflow_json_str(x3))
+        parts.append("\"SecurityGroupIds\":" + airflow_json_arr(e3))
+    return airflow_json_obj(parts)
+
+# Serialize UpdateNetworkConfigurationInput to a compact JSON object (declaration order).
+def update_network_configuration_input_to_json(UpdateNetworkConfigurationInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SecurityGroupIds:
+        e0.append(airflow_json_str(x0))
+    parts.append("\"SecurityGroupIds\":" + airflow_json_arr(e0))
+    return airflow_json_obj(parts)
 
 # A bound MWAA client: credentials + region, threaded into every operation.
 struct MWAAClient:
@@ -540,6 +622,87 @@ struct MWAAClient:
         labels["Name"] = input.Name
         auto b = binding.HttpBinding(method="POST", path_template="/clitoken/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, airflow_service(), self.region, host)
+
+    # CreateEnvironment  PUT /environments/{Name}
+    # errors: InternalServerException, ServiceUnavailableException, ValidationException
+    def create_environment(self, CreateEnvironmentInput input) -> str:
+        auto host = endpoints.regional_host(airflow_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Name"] = input.Name
+        auto b = binding.HttpBinding(method="PUT", path_template="/environments/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ExecutionRoleArn\":" + airflow_json_str(input.ExecutionRoleArn))
+        parts.append("\"SourceBucketArn\":" + airflow_json_str(input.SourceBucketArn))
+        parts.append("\"DagS3Path\":" + airflow_json_str(input.DagS3Path))
+        parts.append("\"NetworkConfiguration\":" + network_configuration_to_json(input.NetworkConfiguration))
+        if input.PluginsS3Path.is_some():
+            auto u0 = input.PluginsS3Path.unwrap()
+            parts.append("\"PluginsS3Path\":" + airflow_json_str(u0))
+        if input.PluginsS3ObjectVersion.is_some():
+            auto u1 = input.PluginsS3ObjectVersion.unwrap()
+            parts.append("\"PluginsS3ObjectVersion\":" + airflow_json_str(u1))
+        if input.RequirementsS3Path.is_some():
+            auto u2 = input.RequirementsS3Path.unwrap()
+            parts.append("\"RequirementsS3Path\":" + airflow_json_str(u2))
+        if input.RequirementsS3ObjectVersion.is_some():
+            auto u3 = input.RequirementsS3ObjectVersion.unwrap()
+            parts.append("\"RequirementsS3ObjectVersion\":" + airflow_json_str(u3))
+        if input.StartupScriptS3Path.is_some():
+            auto u4 = input.StartupScriptS3Path.unwrap()
+            parts.append("\"StartupScriptS3Path\":" + airflow_json_str(u4))
+        if input.StartupScriptS3ObjectVersion.is_some():
+            auto u5 = input.StartupScriptS3ObjectVersion.unwrap()
+            parts.append("\"StartupScriptS3ObjectVersion\":" + airflow_json_str(u5))
+        if input.AirflowConfigurationOptions.is_some():
+            auto u6 = input.AirflowConfigurationOptions.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(airflow_json_str(k7) + ":" + airflow_json_str(u6[k7]))
+            parts.append("\"AirflowConfigurationOptions\":" + airflow_json_obj(m7))
+        if input.EnvironmentClass.is_some():
+            auto u8 = input.EnvironmentClass.unwrap()
+            parts.append("\"EnvironmentClass\":" + airflow_json_str(u8))
+        if input.MaxWorkers.is_some():
+            auto u9 = input.MaxWorkers.unwrap()
+            parts.append("\"MaxWorkers\":" + str(u9))
+        if input.KmsKey.is_some():
+            auto u10 = input.KmsKey.unwrap()
+            parts.append("\"KmsKey\":" + airflow_json_str(u10))
+        if input.AirflowVersion.is_some():
+            auto u11 = input.AirflowVersion.unwrap()
+            parts.append("\"AirflowVersion\":" + airflow_json_str(u11))
+        if input.LoggingConfiguration.is_some():
+            auto u12 = input.LoggingConfiguration.unwrap()
+            parts.append("\"LoggingConfiguration\":" + u12.to_json())
+        if input.WeeklyMaintenanceWindowStart.is_some():
+            auto u13 = input.WeeklyMaintenanceWindowStart.unwrap()
+            parts.append("\"WeeklyMaintenanceWindowStart\":" + airflow_json_str(u13))
+        if input.Tags.is_some():
+            auto u14 = input.Tags.unwrap()
+            list[str] m15 = []
+            for k15 in sorted(u14.keys()):
+                m15.append(airflow_json_str(k15) + ":" + airflow_json_str(u14[k15]))
+            parts.append("\"Tags\":" + airflow_json_obj(m15))
+        if input.WebserverAccessMode.is_some():
+            auto u16 = input.WebserverAccessMode.unwrap()
+            parts.append("\"WebserverAccessMode\":" + u16.to_json())
+        if input.MinWorkers.is_some():
+            auto u17 = input.MinWorkers.unwrap()
+            parts.append("\"MinWorkers\":" + str(u17))
+        if input.Schedulers.is_some():
+            auto u18 = input.Schedulers.unwrap()
+            parts.append("\"Schedulers\":" + str(u18))
+        if input.EndpointManagement.is_some():
+            auto u19 = input.EndpointManagement.unwrap()
+            parts.append("\"EndpointManagement\":" + u19.to_json())
+        if input.MinWebservers.is_some():
+            auto u20 = input.MinWebservers.unwrap()
+            parts.append("\"MinWebservers\":" + str(u20))
+        if input.MaxWebservers.is_some():
+            auto u21 = input.MaxWebservers.unwrap()
+            parts.append("\"MaxWebservers\":" + str(u21))
+        auto bp = restjson.rest_json_document(b, airflow_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, airflow_service(), self.region, host)
 
     # CreateWebLoginToken  POST /webtoken/{Name}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
@@ -599,6 +762,116 @@ struct MWAAClient:
         labels["ResourceArn"] = input.ResourceArn
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, airflow_service(), self.region, host)
+
+    # PublishMetrics  POST /metrics/environments/{EnvironmentName}
+    # errors: InternalServerException, ValidationException
+    def publish_metrics(self, PublishMetricsInput input) -> str:
+        auto host = endpoints.regional_host(airflow_service(), self.region)
+        dict[str, str] labels = {}
+        labels["EnvironmentName"] = input.EnvironmentName
+        auto b = binding.HttpBinding(method="POST", path_template="/metrics/environments/{EnvironmentName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.MetricData:
+            e0.append(metric_datum_to_json(x0))
+        parts.append("\"MetricData\":" + airflow_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, airflow_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, airflow_service(), self.region, host)
+
+    # TagResource  POST /tags/{ResourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(airflow_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(airflow_json_str(k0) + ":" + airflow_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + airflow_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, airflow_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, airflow_service(), self.region, host)
+
+    # UpdateEnvironment  PATCH /environments/{Name}
+    # errors: InternalServerException, ResourceNotFoundException, ServiceUnavailableException, ValidationException
+    def update_environment(self, UpdateEnvironmentInput input) -> str:
+        auto host = endpoints.regional_host(airflow_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Name"] = input.Name
+        auto b = binding.HttpBinding(method="PATCH", path_template="/environments/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ExecutionRoleArn.is_some():
+            auto u0 = input.ExecutionRoleArn.unwrap()
+            parts.append("\"ExecutionRoleArn\":" + airflow_json_str(u0))
+        if input.AirflowConfigurationOptions.is_some():
+            auto u1 = input.AirflowConfigurationOptions.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(airflow_json_str(k2) + ":" + airflow_json_str(u1[k2]))
+            parts.append("\"AirflowConfigurationOptions\":" + airflow_json_obj(m2))
+        if input.AirflowVersion.is_some():
+            auto u3 = input.AirflowVersion.unwrap()
+            parts.append("\"AirflowVersion\":" + airflow_json_str(u3))
+        if input.DagS3Path.is_some():
+            auto u4 = input.DagS3Path.unwrap()
+            parts.append("\"DagS3Path\":" + airflow_json_str(u4))
+        if input.EnvironmentClass.is_some():
+            auto u5 = input.EnvironmentClass.unwrap()
+            parts.append("\"EnvironmentClass\":" + airflow_json_str(u5))
+        if input.LoggingConfiguration.is_some():
+            auto u6 = input.LoggingConfiguration.unwrap()
+            parts.append("\"LoggingConfiguration\":" + u6.to_json())
+        if input.MaxWorkers.is_some():
+            auto u7 = input.MaxWorkers.unwrap()
+            parts.append("\"MaxWorkers\":" + str(u7))
+        if input.MinWorkers.is_some():
+            auto u8 = input.MinWorkers.unwrap()
+            parts.append("\"MinWorkers\":" + str(u8))
+        if input.MaxWebservers.is_some():
+            auto u9 = input.MaxWebservers.unwrap()
+            parts.append("\"MaxWebservers\":" + str(u9))
+        if input.MinWebservers.is_some():
+            auto u10 = input.MinWebservers.unwrap()
+            parts.append("\"MinWebservers\":" + str(u10))
+        if input.WorkerReplacementStrategy.is_some():
+            auto u11 = input.WorkerReplacementStrategy.unwrap()
+            parts.append("\"WorkerReplacementStrategy\":" + u11.to_json())
+        if input.NetworkConfiguration.is_some():
+            auto u12 = input.NetworkConfiguration.unwrap()
+            parts.append("\"NetworkConfiguration\":" + update_network_configuration_input_to_json(u12))
+        if input.PluginsS3Path.is_some():
+            auto u13 = input.PluginsS3Path.unwrap()
+            parts.append("\"PluginsS3Path\":" + airflow_json_str(u13))
+        if input.PluginsS3ObjectVersion.is_some():
+            auto u14 = input.PluginsS3ObjectVersion.unwrap()
+            parts.append("\"PluginsS3ObjectVersion\":" + airflow_json_str(u14))
+        if input.RequirementsS3Path.is_some():
+            auto u15 = input.RequirementsS3Path.unwrap()
+            parts.append("\"RequirementsS3Path\":" + airflow_json_str(u15))
+        if input.RequirementsS3ObjectVersion.is_some():
+            auto u16 = input.RequirementsS3ObjectVersion.unwrap()
+            parts.append("\"RequirementsS3ObjectVersion\":" + airflow_json_str(u16))
+        if input.Schedulers.is_some():
+            auto u17 = input.Schedulers.unwrap()
+            parts.append("\"Schedulers\":" + str(u17))
+        if input.SourceBucketArn.is_some():
+            auto u18 = input.SourceBucketArn.unwrap()
+            parts.append("\"SourceBucketArn\":" + airflow_json_str(u18))
+        if input.StartupScriptS3Path.is_some():
+            auto u19 = input.StartupScriptS3Path.unwrap()
+            parts.append("\"StartupScriptS3Path\":" + airflow_json_str(u19))
+        if input.StartupScriptS3ObjectVersion.is_some():
+            auto u20 = input.StartupScriptS3ObjectVersion.unwrap()
+            parts.append("\"StartupScriptS3ObjectVersion\":" + airflow_json_str(u20))
+        if input.WebserverAccessMode.is_some():
+            auto u21 = input.WebserverAccessMode.unwrap()
+            parts.append("\"WebserverAccessMode\":" + u21.to_json())
+        if input.WeeklyMaintenanceWindowStart.is_some():
+            auto u22 = input.WeeklyMaintenanceWindowStart.unwrap()
+            parts.append("\"WeeklyMaintenanceWindowStart\":" + airflow_json_str(u22))
+        auto bp = restjson.rest_json_document(b, airflow_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, airflow_service(), self.region, host)
 
     # Paginator for ListEnvironments — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: Environments).

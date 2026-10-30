@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 1 operations — 0 with a generated method,
-#   1 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 1 operations — 1 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   6 structs (4 @derive(Json)), 0 enums, 4 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -54,8 +54,9 @@ struct GetBuyerDashboardInput:
     str dashboardIdentifier
     list[str] embeddingDomains
 
-# no @derive(Json): member(s) embeddingDomains: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) embeddingDomains: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBuyerDashboardOutput:
     str embedUrl
     str dashboardIdentifier
@@ -95,17 +96,25 @@ def reporting_marketplace_error_from_code(str code) -> Marketplace_ReportingErro
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   GetBuyerDashboard (document member `embeddingDomains: list[str]` is not serializable by derive)
-
 # A bound Marketplace_Reporting client: credentials + region, threaded into every operation.
 struct Marketplace_ReportingClient:
     core.Credentials creds
     str region
 
-    # no bindable operations were generated for this service in v0
+    # GetBuyerDashboard  POST /getBuyerDashboard
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, UnauthorizedException
+    def get_buyer_dashboard(self, GetBuyerDashboardInput input) -> str:
+        auto host = endpoints.regional_host(reporting_marketplace_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/getBuyerDashboard", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"dashboardIdentifier\":" + reporting_marketplace_json_str(input.dashboardIdentifier))
+        list[str] e0 = []
+        for x0 in input.embeddingDomains:
+            e0.append(reporting_marketplace_json_str(x0))
+        parts.append("\"embeddingDomains\":" + reporting_marketplace_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, reporting_marketplace_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, reporting_marketplace_service(), self.region, host)
+
 # Construct a Marketplace_ReportingClient bound to credentials + region.
 def reporting_marketplace_client(core.Credentials creds, str region) -> Marketplace_ReportingClient:
     return Marketplace_ReportingClient(creds=creds, region=region)

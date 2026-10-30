@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 40 operations — 32 with a generated method,
-#   8 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 40 operations — 36 with a generated method,
+#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   121 structs (82 @derive(Json)), 16 enums, 7 error variants.
 #   8 paginators generated (3 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -193,8 +193,9 @@ enum ValidationExceptionReason:
 struct AccessDeniedException:
     str message
 
-# no @derive(Json): member(s) summarizationDimensions: list[SummarizationDimensionDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) summarizationDimensions: list[SummarizationDimensionDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AggregationDetail:
     Optional[list[SummarizationDimensionDetail]] summarizationDimensions
 
@@ -203,8 +204,9 @@ struct AggregationKey:
     str name
     str value
 
-# no @derive(Json): member(s) aggregatedBy: list[AggregationKey], aggregatedAccounts: SummarizationDimensionOverview, aggregatedRegions: SummarizationDimensionOverview, aggregatedOrganizationalUnits: SummarizationDimensionOverview, additionalSummarizationDimensions: list[SummarizationDimensionOverview] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) aggregatedBy: list[AggregationKey], aggregatedAccounts: SummarizationDimensionOverview, aggregatedRegions: SummarizationDimensionOverview, aggregatedOrganizationalUnits: SummarizationDimensionOverview, additionalSummarizationDimensions: list[SummarizationDimensionOverview] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AggregationSummary:
     int64 eventCount
     list[AggregationKey] aggregatedBy
@@ -274,8 +276,9 @@ struct CreateEventRuleRequest:
     Optional[str] eventPattern
     list[str] regions
 
-# no @derive(Json): member(s) statusSummaryByRegion: dict[str, EventRuleStatusSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusSummaryByRegion: dict[str, EventRuleStatusSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEventRuleResponse:
     str arn
     str notificationConfigurationArn
@@ -401,8 +404,9 @@ struct EventRuleStatusSummary:
     EventRuleStatus status
     str reason
 
-# no @derive(Json): member(s) regions: list[str], managedRules: list[str], statusSummaryByRegion: dict[str, EventRuleStatusSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) regions: list[str], managedRules: list[str], statusSummaryByRegion: dict[str, EventRuleStatusSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventRuleStructure:
     str arn
     str notificationConfigurationArn
@@ -419,8 +423,9 @@ struct EventRuleStructure:
 struct GetEventRuleRequest:
     str arn
 
-# no @derive(Json): member(s) regions: list[str], managedRules: list[str], statusSummaryByRegion: dict[str, EventRuleStatusSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) regions: list[str], managedRules: list[str], statusSummaryByRegion: dict[str, EventRuleStatusSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEventRuleResponse:
     str arn
     str notificationConfigurationArn
@@ -439,8 +444,9 @@ struct GetManagedNotificationChildEventRequest:
     # wire string of the LocaleCode enum (querystring binding)
     Optional[str] locale
 
-# no @derive(Json): member(s) content: ManagedNotificationChildEvent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) content: ManagedNotificationChildEvent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetManagedNotificationChildEventResponse:
     str arn
     str managedNotificationConfigurationArn
@@ -467,8 +473,9 @@ struct GetManagedNotificationEventRequest:
     # wire string of the LocaleCode enum (querystring binding)
     Optional[str] locale
 
-# no @derive(Json): member(s) content: ManagedNotificationEvent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) content: ManagedNotificationEvent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetManagedNotificationEventResponse:
     str arn
     str managedNotificationConfigurationArn
@@ -498,8 +505,9 @@ struct GetNotificationEventRequest:
     # wire string of the LocaleCode enum (querystring binding)
     Optional[str] locale
 
-# no @derive(Json): member(s) content: NotificationEvent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) content: NotificationEvent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetNotificationEventResponse:
     str arn
     str notificationConfigurationArn
@@ -527,8 +535,9 @@ struct ListChannelsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) channels: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) channels: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelsResponse:
     Optional[str] nextToken
     list[str] channels
@@ -540,8 +549,9 @@ struct ListEventRulesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) eventRules: list[EventRuleStructure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventRules: list[EventRuleStructure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventRulesResponse:
     Optional[str] nextToken
     list[EventRuleStructure] eventRules
@@ -553,8 +563,9 @@ struct ListManagedNotificationChannelAssociationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) channelAssociations: list[ManagedNotificationChannelAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) channelAssociations: list[ManagedNotificationChannelAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListManagedNotificationChannelAssociationsResponse:
     Optional[str] nextToken
     list[ManagedNotificationChannelAssociationSummary] channelAssociations
@@ -572,8 +583,9 @@ struct ListManagedNotificationChildEventsRequest:
     Optional[str] organizationalUnitId
     Optional[str] nextToken
 
-# no @derive(Json): member(s) managedNotificationChildEvents: list[ManagedNotificationChildEventOverview] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) managedNotificationChildEvents: list[ManagedNotificationChildEventOverview] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListManagedNotificationChildEventsResponse:
     Optional[str] nextToken
     list[ManagedNotificationChildEventOverview] managedNotificationChildEvents
@@ -585,8 +597,9 @@ struct ListManagedNotificationConfigurationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) managedNotificationConfigurations: list[ManagedNotificationConfigurationStructure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) managedNotificationConfigurations: list[ManagedNotificationConfigurationStructure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListManagedNotificationConfigurationsResponse:
     Optional[str] nextToken
     list[ManagedNotificationConfigurationStructure] managedNotificationConfigurations
@@ -605,8 +618,9 @@ struct ListManagedNotificationEventsRequest:
     Optional[str] relatedAccount
     Optional[bool] includeSensitiveEvents
 
-# no @derive(Json): member(s) managedNotificationEvents: list[ManagedNotificationEventOverview] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) managedNotificationEvents: list[ManagedNotificationEventOverview] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListManagedNotificationEventsResponse:
     Optional[str] nextToken
     list[ManagedNotificationEventOverview] managedNotificationEvents
@@ -622,8 +636,9 @@ struct ListMemberAccountsRequest:
     Optional[str] status
     Optional[str] organizationalUnitId
 
-# no @derive(Json): member(s) memberAccounts: list[MemberAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) memberAccounts: list[MemberAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMemberAccountsResponse:
     list[MemberAccount] memberAccounts
     Optional[str] nextToken
@@ -640,8 +655,9 @@ struct ListNotificationConfigurationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) notificationConfigurations: list[NotificationConfigurationStructure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) notificationConfigurations: list[NotificationConfigurationStructure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNotificationConfigurationsResponse:
     Optional[str] nextToken
     list[NotificationConfigurationStructure] notificationConfigurations
@@ -660,8 +676,9 @@ struct ListNotificationEventsRequest:
     Optional[str] nextToken
     Optional[str] organizationalUnitId
 
-# no @derive(Json): member(s) notificationEvents: list[NotificationEventOverview] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) notificationEvents: list[NotificationEventOverview] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNotificationEventsResponse:
     Optional[str] nextToken
     list[NotificationEventOverview] notificationEvents
@@ -672,8 +689,9 @@ struct ListNotificationHubsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) notificationHubs: list[NotificationHubOverview] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) notificationHubs: list[NotificationHubOverview] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNotificationHubsResponse:
     list[NotificationHubOverview] notificationHubs
     Optional[str] nextToken
@@ -685,8 +703,9 @@ struct ListOrganizationalUnitsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) organizationalUnits: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) organizationalUnits: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOrganizationalUnitsResponse:
     list[str] organizationalUnits
     Optional[str] nextToken
@@ -696,8 +715,9 @@ struct ListOrganizationalUnitsResponse:
 struct ListTagsForResourceRequest:
     str arn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -708,8 +728,9 @@ struct ManagedNotificationChannelAssociationSummary:
     Optional[ChannelAssociationOverrideOption] overrideOption
     Optional[bool] isSensitiveEventsSubscribed
 
-# no @derive(Json): member(s) messageComponents: MessageComponents, textParts: dict[str, TextPartValue], aggregationDetail: AggregationDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) messageComponents: MessageComponents, textParts: dict[str, TextPartValue], aggregationDetail: AggregationDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedNotificationChildEvent:
     str schemaVersion
     str id
@@ -725,8 +746,9 @@ struct ManagedNotificationChildEvent:
     Optional[str] organizationalUnitId
     Optional[AggregationDetail] aggregationDetail
 
-# no @derive(Json): member(s) childEvent: ManagedNotificationChildEventSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) childEvent: ManagedNotificationChildEventSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedNotificationChildEventOverview:
     str arn
     str managedNotificationConfigurationArn
@@ -736,8 +758,9 @@ struct ManagedNotificationChildEventOverview:
     str aggregateManagedNotificationEventArn
     Optional[str] organizationalUnitId
 
-# no @derive(Json): member(s) aggregationDetail: AggregationDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) aggregationDetail: AggregationDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedNotificationChildEventSummary:
     str schemaVersion
     ManagedSourceEventMetadataSummary sourceEventMetadata
@@ -752,8 +775,9 @@ struct ManagedNotificationConfigurationStructure:
     str name
     str description
 
-# no @derive(Json): member(s) messageComponents: MessageComponents, aggregationSummary: AggregationSummary, textParts: dict[str, TextPartValue], attachments: list[NotificationEventAttachment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) messageComponents: MessageComponents, aggregationSummary: AggregationSummary, textParts: dict[str, TextPartValue], attachments: list[NotificationEventAttachment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedNotificationEvent:
     str schemaVersion
     str id
@@ -770,8 +794,9 @@ struct ManagedNotificationEvent:
     Optional[str] organizationalUnitId
     Optional[list[NotificationEventAttachment]] attachments
 
-# no @derive(Json): member(s) aggregationSummary: AggregationSummary, aggregatedNotificationRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) aggregationSummary: AggregationSummary, aggregatedNotificationRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedNotificationEventOverview:
     str arn
     str managedNotificationConfigurationArn
@@ -812,8 +837,9 @@ struct MemberAccount:
     str statusReason
     str organizationalUnitId
 
-# no @derive(Json): member(s) dimensions: list[Dimension] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dimensions: list[Dimension] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MessageComponents:
     Optional[str] headline
     Optional[str] paragraphSummary
@@ -836,8 +862,9 @@ struct NotificationConfigurationStructure:
     Optional[AggregationDuration] aggregationDuration
     Optional[NotificationConfigurationSubtype] subtype
 
-# no @derive(Json): member(s) sourceEventMetadata: SourceEventMetadata, messageComponents: MessageComponents, aggregationSummary: AggregationSummary, textParts: dict[str, TextPartValue], media: list[MediaElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceEventMetadata: SourceEventMetadata, messageComponents: MessageComponents, aggregationSummary: AggregationSummary, textParts: dict[str, TextPartValue], media: list[MediaElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotificationEvent:
     str schemaVersion
     str id
@@ -862,8 +889,9 @@ struct NotificationEventAttachment:
     Optional[str] attachmentDownloadUrl
     str contentType
 
-# no @derive(Json): member(s) aggregationSummary: AggregationSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) aggregationSummary: AggregationSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotificationEventOverview:
     str arn
     str notificationConfigurationArn
@@ -915,8 +943,9 @@ struct RegisterNotificationHubResponse:
     @json(timestamp="iso8601")
     Optional[DateTime] lastActivationTime
 
-# no @derive(Json): member(s) tags: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Resource:
     Optional[str] id
     Optional[str] arn
@@ -936,8 +965,9 @@ struct ServiceQuotaExceededException:
     Optional[str] serviceCode
     Optional[str] quotaCode
 
-# no @derive(Json): member(s) relatedResources: list[Resource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) relatedResources: list[Resource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceEventMetadata:
     str eventTypeVersion
     str sourceEventId
@@ -959,8 +989,9 @@ struct SummarizationDimensionDetail:
     str name
     str value
 
-# no @derive(Json): member(s) sampleValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sampleValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SummarizationDimensionOverview:
     str name
     int64 count
@@ -977,8 +1008,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) textByLocale: dict[LocaleCode, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) textByLocale: dict[LocaleCode, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TextPartValue:
     TextPartType type
     Optional[str] displayText
@@ -1010,8 +1042,9 @@ struct UpdateEventRuleRequest:
     Optional[str] eventPattern
     Optional[list[str]] regions
 
-# no @derive(Json): member(s) statusSummaryByRegion: dict[str, EventRuleStatusSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusSummaryByRegion: dict[str, EventRuleStatusSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEventRuleResponse:
     str arn
     str notificationConfigurationArn
@@ -1041,8 +1074,9 @@ struct UpdateNotificationConfigurationRequest:
 struct UpdateNotificationConfigurationResponse:
     str arn
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     Optional[ValidationExceptionReason] reason
@@ -1091,14 +1125,10 @@ def notifications_error_from_code(str code) -> NotificationsError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateEventRule (document member `regions: list[str]` is not serializable by derive)
-#   CreateNotificationConfiguration (document member `tags: dict[str, str]` is not serializable by derive)
 #   ListManagedNotificationChildEvents (httpQuery `startTime` has unsupported type DateTime)
 #   ListManagedNotificationEvents (httpQuery `startTime` has unsupported type DateTime)
 #   ListNotificationEvents (httpQuery `startTime` has unsupported type DateTime)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateEventRule (document member `regions: list[str]` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -1217,6 +1247,45 @@ struct NotificationsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/organizational-units/associate/{organizationalUnitId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateOrganizationalUnitDocument(notificationConfigurationArn=input.notificationConfigurationArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, notifications_service(), self.region, host)
+
+    # CreateEventRule  POST /event-rules
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_event_rule(self, CreateEventRuleRequest input) -> str:
+        auto host = endpoints.regional_host(notifications_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/event-rules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"notificationConfigurationArn\":" + notifications_json_str(input.notificationConfigurationArn))
+        parts.append("\"source\":" + notifications_json_str(input.source))
+        parts.append("\"eventType\":" + notifications_json_str(input.eventType))
+        if input.eventPattern.is_some():
+            auto u0 = input.eventPattern.unwrap()
+            parts.append("\"eventPattern\":" + notifications_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.regions:
+            e1.append(notifications_json_str(x1))
+        parts.append("\"regions\":" + notifications_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, notifications_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, notifications_service(), self.region, host)
+
+    # CreateNotificationConfiguration  POST /notification-configurations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_notification_configuration(self, CreateNotificationConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(notifications_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/notification-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + notifications_json_str(input.name))
+        parts.append("\"description\":" + notifications_json_str(input.description))
+        if input.aggregationDuration.is_some():
+            auto u0 = input.aggregationDuration.unwrap()
+            parts.append("\"aggregationDuration\":" + u0.to_json())
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(notifications_json_str(k2) + ":" + notifications_json_str(u1[k2]))
+            parts.append("\"tags\":" + notifications_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, notifications_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, notifications_service(), self.region, host)
 
     # DeleteEventRule  DELETE /event-rules/{arn}
@@ -1507,6 +1576,41 @@ struct NotificationsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/notification-hubs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RegisterNotificationHubDocument(notificationHubRegion=input.notificationHubRegion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, notifications_service(), self.region, host)
+
+    # TagResource  POST /tags/{arn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(notifications_service(), self.region)
+        dict[str, str] labels = {}
+        labels["arn"] = input.arn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(notifications_json_str(k0) + ":" + notifications_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + notifications_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, notifications_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, notifications_service(), self.region, host)
+
+    # UpdateEventRule  PUT /event-rules/{arn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_event_rule(self, UpdateEventRuleRequest input) -> str:
+        auto host = endpoints.regional_host(notifications_service(), self.region)
+        dict[str, str] labels = {}
+        labels["arn"] = input.arn
+        auto b = binding.HttpBinding(method="PUT", path_template="/event-rules/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.eventPattern.is_some():
+            auto u0 = input.eventPattern.unwrap()
+            parts.append("\"eventPattern\":" + notifications_json_str(u0))
+        if input.regions.is_some():
+            auto u1 = input.regions.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(notifications_json_str(x2))
+            parts.append("\"regions\":" + notifications_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, notifications_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, notifications_service(), self.region, host)
 
     # UpdateManagedNotificationChannelAssociation  PUT /channels/update-managed-notification-channel-association

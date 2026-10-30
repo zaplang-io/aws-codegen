@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 40 operations — 28 with a generated method,
-#   12 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 40 operations — 40 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   136 structs (91 @derive(Json)), 27 enums, 18 error variants.
-#   5 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import base64
 
 # The ACM awsJson protocol: version 1.1, API id "CertificateManager".
 def acm_protocol() -> awsjson.AwsJson:
@@ -356,8 +357,9 @@ struct AcmCertificateMetadataFilter:
     Optional[str] AcmeEndpointArn
     Optional[str] AcmeAccountId
 
-# no @derive(Json): member(s) Contacts: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Contacts: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AcmeAccount:
     Optional[str] AccountUrl
     Optional[str] PublicKeyThumbprint
@@ -366,8 +368,9 @@ struct AcmeAccount:
     Optional[str] AcmeExternalAccountBindingArn
     Optional[list[str]] Contacts
 
-# no @derive(Json): member(s) Contacts: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Contacts: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AcmeAccountSummary:
     Optional[str] AccountUrl
     Optional[str] PublicKeyThumbprint
@@ -400,8 +403,9 @@ struct AcmeDomainValidationSummary:
     Optional[DateTime] CreatedAt
     Optional[DateTime] UpdatedAt
 
-# no @derive(Json): member(s) CertificateAuthority: CertificateAuthority, CertificateTags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CertificateAuthority: CertificateAuthority, CertificateTags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AcmeEndpoint:
     Optional[str] AcmeEndpointArn
     Optional[str] EndpointUrl
@@ -414,8 +418,9 @@ struct AcmeEndpoint:
     Optional[DateTime] CreatedAt
     Optional[DateTime] UpdatedAt
 
-# no @derive(Json): member(s) CertificateAuthority: CertificateAuthority, CertificateTags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CertificateAuthority: CertificateAuthority, CertificateTags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AcmeEndpointSummary:
     Optional[str] AcmeEndpointArn
     Optional[str] EndpointUrl
@@ -450,19 +455,22 @@ struct AcmeExternalAccountBindingSummary:
     Optional[DateTime] CreatedAt
     Optional[DateTime] UpdatedAt
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddTagsToCertificateRequest:
     str CertificateArn
     list[Tag] Tags
 
-# no @derive(Json): member(s) PublicCertificateAuthority: PublicCertificateAuthority not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PublicCertificateAuthority: PublicCertificateAuthority not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CertificateAuthority:
     Optional[PublicCertificateAuthority] PublicCertificateAuthority
 
-# no @derive(Json): member(s) SubjectAlternativeNames: list[str], DomainValidationOptions: list[DomainValidation], InUseBy: list[str], RenewalSummary: RenewalSummary, KeyUsages: list[KeyUsage], ExtendedKeyUsages: list[ExtendedKeyUsage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubjectAlternativeNames: list[str], DomainValidationOptions: list[DomainValidation], InUseBy: list[str], RenewalSummary: RenewalSummary, KeyUsages: list[KeyUsage], ExtendedKeyUsages: list[ExtendedKeyUsage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CertificateDetail:
     Optional[str] CertificateArn
     Optional[str] DomainName
@@ -502,8 +510,9 @@ struct CertificateFilter:
     Optional[X509AttributeFilter] X509AttributeFilter
     Optional[AcmCertificateMetadataFilter] AcmCertificateMetadataFilter
 
-# no @derive(Json): member(s) And: list[CertificateFilterStatement], Or: list[CertificateFilterStatement], Not: CertificateFilterStatement not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) And: list[CertificateFilterStatement], Or: list[CertificateFilterStatement], Not: CertificateFilterStatement not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CertificateFilterStatement:
     Optional[list[CertificateFilterStatement]] And
     Optional[list[CertificateFilterStatement]] Or
@@ -520,15 +529,17 @@ struct CertificateOptions:
     Optional[CertificateExport] Export
     Optional[ValidationMethod] ValidationMethod
 
-# no @derive(Json): member(s) X509Attributes: X509Attributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) X509Attributes: X509Attributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CertificateSearchResult:
     Optional[str] CertificateArn
     Optional[X509Attributes] X509Attributes
     Optional[CertificateMetadata] CertificateMetadata
 
-# no @derive(Json): member(s) SubjectAlternativeNameSummaries: list[str], KeyUsages: list[KeyUsageName], ExtendedKeyUsages: list[ExtendedKeyUsageName] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubjectAlternativeNameSummaries: list[str], KeyUsages: list[KeyUsageName], ExtendedKeyUsages: list[ExtendedKeyUsageName] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CertificateSummary:
     Optional[str] CertificateArn
     Optional[str] DomainName
@@ -561,8 +572,9 @@ struct CommonNameFilter:
 struct ConflictException:
     Optional[str] message
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAcmeDomainValidationRequest:
     Optional[str] IdempotencyToken
     str AcmeEndpointArn
@@ -574,8 +586,9 @@ struct CreateAcmeDomainValidationRequest:
 struct CreateAcmeDomainValidationResponse:
     str AcmeDomainValidationArn
 
-# no @derive(Json): member(s) CertificateAuthority: CertificateAuthority, Tags: list[Tag], CertificateTags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CertificateAuthority: CertificateAuthority, Tags: list[Tag], CertificateTags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAcmeEndpointRequest:
     Optional[str] IdempotencyToken
     str AuthorizationBehavior
@@ -588,8 +601,9 @@ struct CreateAcmeEndpointRequest:
 struct CreateAcmeEndpointResponse:
     Optional[str] AcmeEndpointArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAcmeExternalAccountBindingRequest:
     Optional[str] IdempotencyToken
     str AcmeEndpointArn
@@ -627,8 +641,9 @@ struct DescribeAcmeAccountRequest:
     str AcmeEndpointArn
     str AccountUrl
 
-# no @derive(Json): member(s) AcmeAccount: AcmeAccount not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AcmeAccount: AcmeAccount not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAcmeAccountResponse:
     Optional[AcmeAccount] AcmeAccount
 
@@ -644,8 +659,9 @@ struct DescribeAcmeDomainValidationResponse:
 struct DescribeAcmeEndpointRequest:
     str AcmeEndpointArn
 
-# no @derive(Json): member(s) AcmeEndpoint: AcmeEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AcmeEndpoint: AcmeEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAcmeEndpointResponse:
     Optional[AcmeEndpoint] AcmeEndpoint
 
@@ -661,13 +677,15 @@ struct DescribeAcmeExternalAccountBindingResponse:
 struct DescribeCertificateRequest:
     str CertificateArn
 
-# no @derive(Json): member(s) Certificate: CertificateDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Certificate: CertificateDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCertificateResponse:
     Optional[CertificateDetail] Certificate
 
-# no @derive(Json): member(s) DomainComponents: list[str], CustomAttributes: list[CustomAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainComponents: list[str], CustomAttributes: list[CustomAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DistinguishedName:
     Optional[str] CommonName
     Optional[list[str]] DomainComponents
@@ -712,8 +730,9 @@ struct DomainScope:
     Optional[DomainScopeOption] Subdomains
     Optional[DomainScopeOption] Wildcards
 
-# no @derive(Json): member(s) ValidationEmails: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValidationEmails: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DomainValidation:
     str DomainName
     Optional[list[str]] ValidationEmails
@@ -733,15 +752,17 @@ struct DomainValidationOption:
     str DomainName
     str ValidationDomain
 
-# no @derive(Json): member(s) ActiveValidationConfiguration: ValidationConfiguration, RequestedValidationConfiguration: ValidationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActiveValidationConfiguration: ValidationConfiguration, RequestedValidationConfiguration: ValidationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DomainValidationSummary:
     str DomainName
     Optional[ValidationConfiguration] ActiveValidationConfiguration
     Optional[ValidationConfiguration] RequestedValidationConfiguration
 
-# no @derive(Json): member(s) ValidationEmails: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValidationEmails: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EmailValidationChallenge:
     Optional[list[str]] ValidationEmails
     Optional[str] ValidationDomain
@@ -776,8 +797,9 @@ struct FailureDetails:
     Optional[AcmeDomainValidationFailureReason] Reason
     Optional[str] Message
 
-# no @derive(Json): member(s) extendedKeyUsage: list[ExtendedKeyUsageName], keyUsage: list[KeyUsageName], keyTypes: list[KeyAlgorithm] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) extendedKeyUsage: list[ExtendedKeyUsageName], keyUsage: list[KeyUsageName], keyTypes: list[KeyAlgorithm] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filters:
     Optional[list[ExtendedKeyUsageName]] extendedKeyUsage
     Optional[list[KeyUsageName]] keyUsage
@@ -785,8 +807,9 @@ struct Filters:
     Optional[CertificateExport] exportOption
     Optional[str] managedBy
 
-# no @derive(Json): member(s) DirectoryName: DistinguishedName not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DirectoryName: DistinguishedName not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeneralName:
     Optional[DistinguishedName] DirectoryName
     Optional[str] DnsName
@@ -823,8 +846,9 @@ struct HttpRedirect:
     Optional[str] RedirectFrom
     Optional[str] RedirectTo
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportCertificateRequest:
     Optional[str] CertificateArn
     bytes Certificate
@@ -878,8 +902,9 @@ struct ListAcmeAccountsRequest:
     Optional[int64] MaxResults
     str AcmeEndpointArn
 
-# no @derive(Json): member(s) AcmeAccounts: list[AcmeAccountSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AcmeAccounts: list[AcmeAccountSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAcmeAccountsResponse:
     Optional[list[AcmeAccountSummary]] AcmeAccounts
     Optional[str] NextToken
@@ -890,8 +915,9 @@ struct ListAcmeDomainValidationsRequest:
     Optional[int64] MaxResults
     str AcmeEndpointArn
 
-# no @derive(Json): member(s) AcmeDomainValidations: list[AcmeDomainValidationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AcmeDomainValidations: list[AcmeDomainValidationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAcmeDomainValidationsResponse:
     Optional[list[AcmeDomainValidationSummary]] AcmeDomainValidations
     Optional[str] NextToken
@@ -901,8 +927,9 @@ struct ListAcmeEndpointsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AcmeEndpoints: list[AcmeEndpointSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AcmeEndpoints: list[AcmeEndpointSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAcmeEndpointsResponse:
     Optional[list[AcmeEndpointSummary]] AcmeEndpoints
     Optional[str] NextToken
@@ -913,8 +940,9 @@ struct ListAcmeExternalAccountBindingsRequest:
     Optional[int64] MaxResults
     str AcmeEndpointArn
 
-# no @derive(Json): member(s) ExternalAccountBindings: list[AcmeExternalAccountBindingSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExternalAccountBindings: list[AcmeExternalAccountBindingSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAcmeExternalAccountBindingsResponse:
     Optional[list[AcmeExternalAccountBindingSummary]] ExternalAccountBindings
     Optional[str] NextToken
@@ -925,14 +953,16 @@ struct ListCertificateDomainValidationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxItems
 
-# no @derive(Json): member(s) DomainValidationSummaryList: list[DomainValidationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainValidationSummaryList: list[DomainValidationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCertificateDomainValidationsResponse:
     Optional[list[DomainValidationSummary]] DomainValidationSummaryList
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CertificateStatuses: list[CertificateStatus], CertificateKeyPairOrigins: list[CertificateKeyPairOrigin], Includes: Filters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CertificateStatuses: list[CertificateStatus], CertificateKeyPairOrigins: list[CertificateKeyPairOrigin], Includes: Filters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCertificatesRequest:
     Optional[list[CertificateStatus]] CertificateStatuses
     Optional[list[CertificateKeyPairOrigin]] CertificateKeyPairOrigins
@@ -942,8 +972,9 @@ struct ListCertificatesRequest:
     Optional[str] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) CertificateSummaryList: list[CertificateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CertificateSummaryList: list[CertificateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCertificatesResponse:
     Optional[str] NextToken
     Optional[list[CertificateSummary]] CertificateSummaryList
@@ -952,8 +983,9 @@ struct ListCertificatesResponse:
 struct ListTagsForCertificateRequest:
     str CertificateArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForCertificateResponse:
     Optional[list[Tag]] Tags
 
@@ -961,8 +993,9 @@ struct ListTagsForCertificateResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -979,8 +1012,9 @@ struct PrevalidationDetails:
 struct PrevalidationOptions:
     Optional[DnsPrevalidationOptions] DnsPrevalidation
 
-# no @derive(Json): member(s) AllowedKeyAlgorithms: list[PublicKeyAlgorithm] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowedKeyAlgorithms: list[PublicKeyAlgorithm] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PublicCertificateAuthority:
     Optional[list[PublicKeyAlgorithm]] AllowedKeyAlgorithms
 
@@ -989,8 +1023,9 @@ struct PutAccountConfigurationRequest:
     Optional[ExpiryEventsConfiguration] ExpiryEvents
     str IdempotencyToken
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveTagsFromCertificateRequest:
     str CertificateArn
     list[Tag] Tags
@@ -999,16 +1034,18 @@ struct RemoveTagsFromCertificateRequest:
 struct RenewCertificateRequest:
     str CertificateArn
 
-# no @derive(Json): member(s) DomainValidationOptions: list[DomainValidation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainValidationOptions: list[DomainValidation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RenewalSummary:
     RenewalStatus RenewalStatus
     list[DomainValidation] DomainValidationOptions
     Optional[FailureReason] RenewalStatusReason
     DateTime UpdatedAt
 
-# no @derive(Json): member(s) SubjectAlternativeNames: list[str], DomainValidationOptions: list[DomainValidationOption], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubjectAlternativeNames: list[str], DomainValidationOptions: list[DomainValidationOption], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RequestCertificateRequest:
     str DomainName
     Optional[ValidationMethod] ValidationMethod
@@ -1067,8 +1104,9 @@ struct RevokeCertificateRequest:
 struct RevokeCertificateResponse:
     Optional[str] CertificateArn
 
-# no @derive(Json): member(s) FilterStatement: CertificateFilterStatement not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterStatement: CertificateFilterStatement not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchCertificatesRequest:
     Optional[CertificateFilterStatement] FilterStatement
     Optional[int64] MaxResults
@@ -1076,8 +1114,9 @@ struct SearchCertificatesRequest:
     Optional[SearchCertificatesSortBy] SortBy
     Optional[SearchCertificatesSortOrder] SortOrder
 
-# no @derive(Json): member(s) Results: list[CertificateSearchResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[CertificateSearchResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchCertificatesResponse:
     Optional[list[CertificateSearchResult]] Results
     Optional[str] NextToken
@@ -1103,14 +1142,16 @@ struct Tag:
 struct TagPolicyException:
     Optional[str] message
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[Tag] Tags
 
-# no @derive(Json): member(s) throttlingReasons: list[ThrottlingReason] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) throttlingReasons: list[ThrottlingReason] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThrottlingException:
     Optional[str] message
     Optional[list[ThrottlingReason]] throttlingReasons
@@ -1129,8 +1170,9 @@ struct TimestampRange:
 struct TooManyTagsException:
     Optional[str] message
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] TagKeys
@@ -1140,8 +1182,9 @@ struct UpdateAcmeDomainValidationRequest:
     str AcmeDomainValidationArn
     Optional[PrevalidationOptions] PrevalidationOptions
 
-# no @derive(Json): member(s) CertificateAuthority: CertificateAuthority not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CertificateAuthority: CertificateAuthority not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAcmeEndpointRequest:
     str AcmeEndpointArn
     Optional[str] AuthorizationBehavior
@@ -1161,14 +1204,16 @@ struct UpdateSummary:
     Optional[DateTime] RequestedAt
     Optional[DateTime] UpdatedAt
 
-# no @derive(Json): member(s) EmailValidationChallenge: EmailValidationChallenge not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EmailValidationChallenge: EmailValidationChallenge not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationChallenge:
     Optional[EmailValidationChallenge] EmailValidationChallenge
     Optional[DnsValidationChallenge] DnsValidationChallenge
 
-# no @derive(Json): member(s) ValidationChallenge: ValidationChallenge not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValidationChallenge: ValidationChallenge not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationConfiguration:
     Optional[ValidationMethod] ValidationMethod
     Optional[ValidationChallenge] ValidationChallenge
@@ -1189,8 +1234,9 @@ struct X509AttributeFilter:
     Optional[TimestampRange] NotAfter
     Optional[TimestampRange] NotBefore
 
-# no @derive(Json): member(s) Issuer: DistinguishedName, Subject: DistinguishedName, SubjectAlternativeNames: list[GeneralName], ExtendedKeyUsages: list[ExtendedKeyUsageName], KeyUsages: list[KeyUsageName] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Issuer: DistinguishedName, Subject: DistinguishedName, SubjectAlternativeNames: list[GeneralName], ExtendedKeyUsages: list[ExtendedKeyUsageName], KeyUsages: list[KeyUsageName] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct X509Attributes:
     Optional[DistinguishedName] Issuer
     Optional[DistinguishedName] Subject
@@ -1269,30 +1315,364 @@ def acm_error_from_code(str code) -> ACMError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AddTagsToCertificate (input AddTagsToCertificateRequest)
-#   CreateAcmeDomainValidation (input CreateAcmeDomainValidationRequest)
-#   CreateAcmeEndpoint (input CreateAcmeEndpointRequest)
-#   CreateAcmeExternalAccountBinding (input CreateAcmeExternalAccountBindingRequest)
-#   ImportCertificate (input ImportCertificateRequest)
-#   ListCertificates (input ListCertificatesRequest)
-#   RemoveTagsFromCertificate (input RemoveTagsFromCertificateRequest)
-#   RequestCertificate (input RequestCertificateRequest)
-#   SearchCertificates (input SearchCertificatesRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateAcmeEndpoint (input UpdateAcmeEndpointRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def acm_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListCertificates (input not derivable (no generated method))
-#   SearchCertificates (input not derivable (no generated method))
+def acm_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def acm_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AddTagsToCertificateRequest to a compact JSON object (declaration order).
+def add_tags_to_certificate_request_to_json(AddTagsToCertificateRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CertificateArn\":" + acm_json_str(v.CertificateArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + acm_json_arr(e0))
+    return acm_json_obj(parts)
+
+# Serialize CertificateAuthority to a compact JSON object (declaration order).
+def certificate_authority_to_json(CertificateAuthority v) -> str:
+    list[str] parts = []
+    if v.PublicCertificateAuthority.is_some():
+        auto u0 = v.PublicCertificateAuthority.unwrap()
+        parts.append("\"PublicCertificateAuthority\":" + public_certificate_authority_to_json(u0))
+    return acm_json_obj(parts)
+
+# Serialize CertificateFilterStatement to a compact JSON object (declaration order).
+def certificate_filter_statement_to_json(CertificateFilterStatement v) -> str:
+    list[str] parts = []
+    if v.And.is_some():
+        auto u0 = v.And.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(certificate_filter_statement_to_json(x1))
+        parts.append("\"And\":" + acm_json_arr(e1))
+    if v.Or.is_some():
+        auto u2 = v.Or.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(certificate_filter_statement_to_json(x3))
+        parts.append("\"Or\":" + acm_json_arr(e3))
+    if v.Not.is_some():
+        auto u4 = v.Not.unwrap()
+        parts.append("\"Not\":" + certificate_filter_statement_to_json(u4))
+    if v.Filter.is_some():
+        auto u5 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + u5.to_json())
+    return acm_json_obj(parts)
+
+# Serialize CreateAcmeDomainValidationRequest to a compact JSON object (declaration order).
+def create_acme_domain_validation_request_to_json(CreateAcmeDomainValidationRequest v) -> str:
+    list[str] parts = []
+    if v.IdempotencyToken.is_some():
+        auto u0 = v.IdempotencyToken.unwrap()
+        parts.append("\"IdempotencyToken\":" + acm_json_str(u0))
+    parts.append("\"AcmeEndpointArn\":" + acm_json_str(v.AcmeEndpointArn))
+    parts.append("\"DomainName\":" + acm_json_str(v.DomainName))
+    parts.append("\"PrevalidationOptions\":" + v.PrevalidationOptions.to_json())
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + acm_json_arr(e2))
+    return acm_json_obj(parts)
+
+# Serialize CreateAcmeEndpointRequest to a compact JSON object (declaration order).
+def create_acme_endpoint_request_to_json(CreateAcmeEndpointRequest v) -> str:
+    list[str] parts = []
+    if v.IdempotencyToken.is_some():
+        auto u0 = v.IdempotencyToken.unwrap()
+        parts.append("\"IdempotencyToken\":" + acm_json_str(u0))
+    parts.append("\"AuthorizationBehavior\":" + acm_json_str(v.AuthorizationBehavior))
+    if v.Contact.is_some():
+        auto u1 = v.Contact.unwrap()
+        parts.append("\"Contact\":" + u1.to_json())
+    parts.append("\"CertificateAuthority\":" + certificate_authority_to_json(v.CertificateAuthority))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + acm_json_arr(e3))
+    if v.CertificateTags.is_some():
+        auto u4 = v.CertificateTags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"CertificateTags\":" + acm_json_arr(e5))
+    return acm_json_obj(parts)
+
+# Serialize CreateAcmeExternalAccountBindingRequest to a compact JSON object (declaration order).
+def create_acme_external_account_binding_request_to_json(CreateAcmeExternalAccountBindingRequest v) -> str:
+    list[str] parts = []
+    if v.IdempotencyToken.is_some():
+        auto u0 = v.IdempotencyToken.unwrap()
+        parts.append("\"IdempotencyToken\":" + acm_json_str(u0))
+    parts.append("\"AcmeEndpointArn\":" + acm_json_str(v.AcmeEndpointArn))
+    parts.append("\"RoleArn\":" + acm_json_str(v.RoleArn))
+    if v.Expiration.is_some():
+        auto u1 = v.Expiration.unwrap()
+        parts.append("\"Expiration\":" + u1.to_json())
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + acm_json_arr(e3))
+    return acm_json_obj(parts)
+
+# Serialize Filters to a compact JSON object (declaration order).
+def filters_to_json(Filters v) -> str:
+    list[str] parts = []
+    if v.extendedKeyUsage.is_some():
+        auto u0 = v.extendedKeyUsage.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"extendedKeyUsage\":" + acm_json_arr(e1))
+    if v.keyUsage.is_some():
+        auto u2 = v.keyUsage.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"keyUsage\":" + acm_json_arr(e3))
+    if v.keyTypes.is_some():
+        auto u4 = v.keyTypes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"keyTypes\":" + acm_json_arr(e5))
+    if v.exportOption.is_some():
+        auto u6 = v.exportOption.unwrap()
+        parts.append("\"exportOption\":" + u6.to_json())
+    if v.managedBy.is_some():
+        auto u7 = v.managedBy.unwrap()
+        parts.append("\"managedBy\":" + acm_json_str(u7))
+    return acm_json_obj(parts)
+
+# Serialize ImportCertificateRequest to a compact JSON object (declaration order).
+def import_certificate_request_to_json(ImportCertificateRequest v) -> str:
+    list[str] parts = []
+    if v.CertificateArn.is_some():
+        auto u0 = v.CertificateArn.unwrap()
+        parts.append("\"CertificateArn\":" + acm_json_str(u0))
+    parts.append("\"Certificate\":" + acm_json_str(base64.encode(v.Certificate)))
+    parts.append("\"PrivateKey\":" + acm_json_str(base64.encode(v.PrivateKey)))
+    if v.CertificateChain.is_some():
+        auto u1 = v.CertificateChain.unwrap()
+        parts.append("\"CertificateChain\":" + acm_json_str(base64.encode(u1)))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + acm_json_arr(e3))
+    return acm_json_obj(parts)
+
+# Serialize ListCertificatesRequest to a compact JSON object (declaration order).
+def list_certificates_request_to_json(ListCertificatesRequest v) -> str:
+    list[str] parts = []
+    if v.CertificateStatuses.is_some():
+        auto u0 = v.CertificateStatuses.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"CertificateStatuses\":" + acm_json_arr(e1))
+    if v.CertificateKeyPairOrigins.is_some():
+        auto u2 = v.CertificateKeyPairOrigins.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"CertificateKeyPairOrigins\":" + acm_json_arr(e3))
+    if v.Includes.is_some():
+        auto u4 = v.Includes.unwrap()
+        parts.append("\"Includes\":" + filters_to_json(u4))
+    if v.NextToken.is_some():
+        auto u5 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + acm_json_str(u5))
+    if v.MaxItems.is_some():
+        auto u6 = v.MaxItems.unwrap()
+        parts.append("\"MaxItems\":" + str(u6))
+    if v.SortBy.is_some():
+        auto u7 = v.SortBy.unwrap()
+        parts.append("\"SortBy\":" + acm_json_str(u7))
+    if v.SortOrder.is_some():
+        auto u8 = v.SortOrder.unwrap()
+        parts.append("\"SortOrder\":" + u8.to_json())
+    return acm_json_obj(parts)
+
+# Serialize PublicCertificateAuthority to a compact JSON object (declaration order).
+def public_certificate_authority_to_json(PublicCertificateAuthority v) -> str:
+    list[str] parts = []
+    if v.AllowedKeyAlgorithms.is_some():
+        auto u0 = v.AllowedKeyAlgorithms.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AllowedKeyAlgorithms\":" + acm_json_arr(e1))
+    return acm_json_obj(parts)
+
+# Serialize RemoveTagsFromCertificateRequest to a compact JSON object (declaration order).
+def remove_tags_from_certificate_request_to_json(RemoveTagsFromCertificateRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CertificateArn\":" + acm_json_str(v.CertificateArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + acm_json_arr(e0))
+    return acm_json_obj(parts)
+
+# Serialize RequestCertificateRequest to a compact JSON object (declaration order).
+def request_certificate_request_to_json(RequestCertificateRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DomainName\":" + acm_json_str(v.DomainName))
+    if v.ValidationMethod.is_some():
+        auto u0 = v.ValidationMethod.unwrap()
+        parts.append("\"ValidationMethod\":" + u0.to_json())
+    if v.SubjectAlternativeNames.is_some():
+        auto u1 = v.SubjectAlternativeNames.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(acm_json_str(x2))
+        parts.append("\"SubjectAlternativeNames\":" + acm_json_arr(e2))
+    if v.IdempotencyToken.is_some():
+        auto u3 = v.IdempotencyToken.unwrap()
+        parts.append("\"IdempotencyToken\":" + acm_json_str(u3))
+    if v.DomainValidationOptions.is_some():
+        auto u4 = v.DomainValidationOptions.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"DomainValidationOptions\":" + acm_json_arr(e5))
+    if v.Options.is_some():
+        auto u6 = v.Options.unwrap()
+        parts.append("\"Options\":" + u6.to_json())
+    if v.CertificateAuthorityArn.is_some():
+        auto u7 = v.CertificateAuthorityArn.unwrap()
+        parts.append("\"CertificateAuthorityArn\":" + acm_json_str(u7))
+    if v.Tags.is_some():
+        auto u8 = v.Tags.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"Tags\":" + acm_json_arr(e9))
+    if v.KeyAlgorithm.is_some():
+        auto u10 = v.KeyAlgorithm.unwrap()
+        parts.append("\"KeyAlgorithm\":" + u10.to_json())
+    if v.ManagedBy.is_some():
+        auto u11 = v.ManagedBy.unwrap()
+        parts.append("\"ManagedBy\":" + acm_json_str(u11))
+    return acm_json_obj(parts)
+
+# Serialize SearchCertificatesRequest to a compact JSON object (declaration order).
+def search_certificates_request_to_json(SearchCertificatesRequest v) -> str:
+    list[str] parts = []
+    if v.FilterStatement.is_some():
+        auto u0 = v.FilterStatement.unwrap()
+        parts.append("\"FilterStatement\":" + certificate_filter_statement_to_json(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + acm_json_str(u2))
+    if v.SortBy.is_some():
+        auto u3 = v.SortBy.unwrap()
+        parts.append("\"SortBy\":" + u3.to_json())
+    if v.SortOrder.is_some():
+        auto u4 = v.SortOrder.unwrap()
+        parts.append("\"SortOrder\":" + u4.to_json())
+    return acm_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + acm_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + acm_json_arr(e0))
+    return acm_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + acm_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(acm_json_str(x0))
+    parts.append("\"TagKeys\":" + acm_json_arr(e0))
+    return acm_json_obj(parts)
+
+# Serialize UpdateAcmeEndpointRequest to a compact JSON object (declaration order).
+def update_acme_endpoint_request_to_json(UpdateAcmeEndpointRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AcmeEndpointArn\":" + acm_json_str(v.AcmeEndpointArn))
+    if v.AuthorizationBehavior.is_some():
+        auto u0 = v.AuthorizationBehavior.unwrap()
+        parts.append("\"AuthorizationBehavior\":" + acm_json_str(u0))
+    if v.Contact.is_some():
+        auto u1 = v.Contact.unwrap()
+        parts.append("\"Contact\":" + u1.to_json())
+    if v.CertificateAuthority.is_some():
+        auto u2 = v.CertificateAuthority.unwrap()
+        parts.append("\"CertificateAuthority\":" + certificate_authority_to_json(u2))
+    return acm_json_obj(parts)
 
 # A bound ACM client: credentials + region, threaded into every operation.
 struct ACMClient:
     core.Credentials creds
     str region
+
+    # AddTagsToCertificate
+    # errors: InvalidArnException, InvalidParameterException, InvalidTagException, ResourceNotFoundException, TagPolicyException, ThrottlingException, TooManyTagsException, ValidationException
+    def add_tags_to_certificate(self, AddTagsToCertificateRequest input) -> str:
+        auto body = add_tags_to_certificate_request_to_json(input)
+        return awsjson.awsjson_request_now(acm_protocol(), self.creds, self.region, "AddTagsToCertificate", body)
+
+    # CreateAcmeDomainValidation
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_acme_domain_validation(self, CreateAcmeDomainValidationRequest input) -> str:
+        auto body = create_acme_domain_validation_request_to_json(input)
+        return awsjson.awsjson_request_now(acm_protocol(), self.creds, self.region, "CreateAcmeDomainValidation", body)
+
+    # CreateAcmeEndpoint
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_acme_endpoint(self, CreateAcmeEndpointRequest input) -> str:
+        auto body = create_acme_endpoint_request_to_json(input)
+        return awsjson.awsjson_request_now(acm_protocol(), self.creds, self.region, "CreateAcmeEndpoint", body)
+
+    # CreateAcmeExternalAccountBinding
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_acme_external_account_binding(self, CreateAcmeExternalAccountBindingRequest input) -> str:
+        auto body = create_acme_external_account_binding_request_to_json(input)
+        return awsjson.awsjson_request_now(acm_protocol(), self.creds, self.region, "CreateAcmeExternalAccountBinding", body)
 
     # DeleteAcmeDomainValidation
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
@@ -1372,6 +1752,12 @@ struct ACMClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(acm_protocol(), self.creds, self.region, "GetCertificate", body)
 
+    # ImportCertificate
+    # errors: ConflictException, InvalidArnException, InvalidParameterException, InvalidTagException, LimitExceededException, ResourceNotFoundException, TagPolicyException, TooManyTagsException, ValidationException
+    def import_certificate(self, ImportCertificateRequest input) -> str:
+        auto body = import_certificate_request_to_json(input)
+        return awsjson.awsjson_request_now(acm_protocol(), self.creds, self.region, "ImportCertificate", body)
+
     # ListAcmeAccounts
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_acme_accounts(self, ListAcmeAccountsRequest input) -> str:
@@ -1402,6 +1788,12 @@ struct ACMClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(acm_protocol(), self.creds, self.region, "ListCertificateDomainValidations", body)
 
+    # ListCertificates
+    # errors: InvalidArgsException, ValidationException
+    def list_certificates(self, ListCertificatesRequest input) -> str:
+        auto body = list_certificates_request_to_json(input)
+        return awsjson.awsjson_request_now(acm_protocol(), self.creds, self.region, "ListCertificates", body)
+
     # ListTagsForCertificate
     # errors: InvalidArnException, ResourceNotFoundException, ValidationException
     def list_tags_for_certificate(self, ListTagsForCertificateRequest input) -> str:
@@ -1420,11 +1812,23 @@ struct ACMClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(acm_protocol(), self.creds, self.region, "PutAccountConfiguration", body)
 
+    # RemoveTagsFromCertificate
+    # errors: InvalidArnException, InvalidParameterException, InvalidTagException, ResourceNotFoundException, TagPolicyException, ThrottlingException, ValidationException
+    def remove_tags_from_certificate(self, RemoveTagsFromCertificateRequest input) -> str:
+        auto body = remove_tags_from_certificate_request_to_json(input)
+        return awsjson.awsjson_request_now(acm_protocol(), self.creds, self.region, "RemoveTagsFromCertificate", body)
+
     # RenewCertificate
     # errors: InvalidArnException, RequestInProgressException, ResourceNotFoundException, ValidationException
     def renew_certificate(self, RenewCertificateRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(acm_protocol(), self.creds, self.region, "RenewCertificate", body)
+
+    # RequestCertificate
+    # errors: InvalidArnException, InvalidDomainValidationOptionsException, InvalidParameterException, InvalidTagException, LimitExceededException, TagPolicyException, TooManyTagsException
+    def request_certificate(self, RequestCertificateRequest input) -> str:
+        auto body = request_certificate_request_to_json(input)
+        return awsjson.awsjson_request_now(acm_protocol(), self.creds, self.region, "RequestCertificate", body)
 
     # ResendValidationEmail
     # errors: InvalidArnException, InvalidDomainValidationOptionsException, InvalidStateException, ResourceNotFoundException, ValidationException
@@ -1450,11 +1854,35 @@ struct ACMClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(acm_protocol(), self.creds, self.region, "RevokeCertificate", body)
 
+    # SearchCertificates
+    # errors: AccessDeniedException, ThrottlingException, ValidationException
+    def search_certificates(self, SearchCertificatesRequest input) -> str:
+        auto body = search_certificates_request_to_json(input)
+        return awsjson.awsjson_request_now(acm_protocol(), self.creds, self.region, "SearchCertificates", body)
+
+    # TagResource
+    # errors: ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(acm_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(acm_protocol(), self.creds, self.region, "UntagResource", body)
+
     # UpdateAcmeDomainValidation
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_acme_domain_validation(self, UpdateAcmeDomainValidationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(acm_protocol(), self.creds, self.region, "UpdateAcmeDomainValidation", body)
+
+    # UpdateAcmeEndpoint
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_acme_endpoint(self, UpdateAcmeEndpointRequest input) -> str:
+        auto body = update_acme_endpoint_request_to_json(input)
+        return awsjson.awsjson_request_now(acm_protocol(), self.creds, self.region, "UpdateAcmeEndpoint", body)
 
     # UpdateCertificateOptions
     # errors: ConflictException, InvalidArnException, InvalidStateException, LimitExceededException, ResourceNotFoundException, ValidationException
@@ -1525,6 +1953,34 @@ struct ACMClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(acm_protocol(), self.creds, self.region, "ListCertificateDomainValidations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListCertificates — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: CertificateSummaryList).
+    def paginate_list_certificates(self, ListCertificatesRequest input):
+        auto host = endpoints.regional_host(acm_protocol().service, self.region)
+        while True:
+            auto body = list_certificates_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(acm_protocol(), self.creds, self.region, "ListCertificates", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchCertificates — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Results).
+    def paginate_search_certificates(self, SearchCertificatesRequest input):
+        auto host = endpoints.regional_host(acm_protocol().service, self.region)
+        while True:
+            auto body = search_certificates_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(acm_protocol(), self.creds, self.region, "SearchCertificates", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

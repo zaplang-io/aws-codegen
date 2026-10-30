@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 30 operations — 10 with a generated method,
-#   20 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 30 operations — 22 with a generated method,
+#   8 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   137 structs (55 @derive(Json)), 18 enums, 6 error variants.
-#   3 paginators generated (7 paginated ops skipped) from paginators-1.json.
+#   5 paginators generated (5 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The Application_Signals rest-json protocol: SigV4 service "application-signals" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -220,14 +221,16 @@ enum UnprocessedStatusEventFailureReason:
 struct AccessDeniedException:
     Optional[str] Message
 
-# no @derive(Json): member(s) AttributeFilterValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeFilterValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributeFilter:
     str AttributeFilterName
     list[str] AttributeFilterValues
 
-# no @derive(Json): member(s) KeyAttributes: dict[str, str], AuditorResults: list[AuditorResult], MetricGraph: MetricGraph, DependencyGraph: DependencyGraph not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeyAttributes: dict[str, str], AuditorResults: list[AuditorResult], MetricGraph: MetricGraph, DependencyGraph: DependencyGraph not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuditFinding:
     dict[str, str] KeyAttributes
     Optional[list[AuditorResult]] AuditorResults
@@ -248,22 +251,25 @@ struct AuditTargetEntity:
     Optional[ServiceOperationEntity] ServiceOperation
     Optional[CanaryEntity] Canary
 
-# no @derive(Json): member(s) Data: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Data: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuditorResult:
     Optional[str] Auditor
     Optional[str] Description
     Optional[dict[str, str]] Data
     Optional[Severity] Severity
 
-# no @derive(Json): member(s) ResourceArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteByResourceArns:
     list[str] ResourceArns
     InstrumentationType InstrumentationType
 
-# no @derive(Json): member(s) ResourceArns: BatchDeleteByResourceArns not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceArns: BatchDeleteByResourceArns not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteDeletionTarget:
     Optional[BatchDeleteScope] Scope
     Optional[BatchDeleteByResourceArns] ResourceArns
@@ -279,8 +285,9 @@ struct BatchDeleteError:
 struct BatchDeleteInstrumentationConfigurationsRequest:
     BatchDeleteDeletionTarget DeletionTarget
 
-# no @derive(Json): member(s) SuccessfulDeletions: list[BatchDeleteSuccessfulDeletion], Errors: list[BatchDeleteError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SuccessfulDeletions: list[BatchDeleteSuccessfulDeletion], Errors: list[BatchDeleteError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteInstrumentationConfigurationsResponse:
     int64 DeletedCount
     list[BatchDeleteSuccessfulDeletion] SuccessfulDeletions
@@ -304,8 +311,9 @@ struct BatchGetServiceLevelObjectiveBudgetReportInput:
     DateTime Timestamp
     list[str] SloIds
 
-# no @derive(Json): member(s) Reports: list[ServiceLevelObjectiveBudgetReport], Errors: list[ServiceLevelObjectiveBudgetReportError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Reports: list[ServiceLevelObjectiveBudgetReport], Errors: list[ServiceLevelObjectiveBudgetReportError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetServiceLevelObjectiveBudgetReportOutput:
     DateTime Timestamp
     list[ServiceLevelObjectiveBudgetReport] Reports
@@ -324,8 +332,9 @@ struct BatchUpdateExclusionWindowsInput:
     Optional[list[ExclusionWindow]] AddExclusionWindows
     Optional[list[ExclusionWindow]] RemoveExclusionWindows
 
-# no @derive(Json): member(s) SloIds: list[str], Errors: list[BatchUpdateExclusionWindowsError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SloIds: list[str], Errors: list[BatchUpdateExclusionWindowsError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateExclusionWindowsOutput:
     list[str] SloIds
     list[BatchUpdateExclusionWindowsError] Errors
@@ -344,8 +353,9 @@ struct CalendarInterval:
 struct CanaryEntity:
     str CanaryName
 
-# no @derive(Json): member(s) CodeCapture: CodeCaptureConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CodeCapture: CodeCaptureConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CaptureConfiguration:
     Optional[CodeCaptureConfiguration] CodeCapture
 
@@ -360,8 +370,9 @@ struct CaptureLimitsConfig:
     Optional[int64] MaxObjectDepth
     Optional[int64] MaxFieldsPerObject
 
-# no @derive(Json): member(s) Entity: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entity: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChangeEvent:
     DateTime Timestamp
     str AccountId
@@ -372,8 +383,9 @@ struct ChangeEvent:
     Optional[str] UserName
     Optional[str] EventName
 
-# no @derive(Json): member(s) CaptureArguments: list[str], CaptureLocals: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CaptureArguments: list[str], CaptureLocals: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeCaptureConfiguration:
     Optional[list[str]] CaptureArguments
     Optional[bool] CaptureReturn
@@ -394,8 +406,9 @@ struct CodeLocation:
 struct CompositeSliComponent:
     Optional[str] OperationName
 
-# no @derive(Json): member(s) Components: list[CompositeSliComponent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Components: list[CompositeSliComponent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CompositeSliConfig:
     SelectionConfig SelectionConfig
     Optional[list[CompositeSliComponent]] Components
@@ -418,8 +431,9 @@ struct CreateInstrumentationConfigurationRequest:
     CaptureConfiguration CaptureConfiguration
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) AttributeFilters: list[dict[str, str]], CaptureConfiguration: CaptureConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeFilters: list[dict[str, str]], CaptureConfiguration: CaptureConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInstrumentationConfigurationResponse:
     InstrumentationType InstrumentationType
     str Service
@@ -447,8 +461,9 @@ struct CreateServiceLevelObjectiveInput:
     Optional[bool] CreateRecommendedSlo
     Optional[bool] AutoInvestigationEnabled
 
-# no @derive(Json): member(s) Slo: ServiceLevelObjective not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Slo: ServiceLevelObjective not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateServiceLevelObjectiveOutput:
     ServiceLevelObjective Slo
 
@@ -480,14 +495,16 @@ struct DeleteServiceLevelObjectiveOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) DependencyKeyAttributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DependencyKeyAttributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DependencyConfig:
     dict[str, str] DependencyKeyAttributes
     str DependencyOperationName
 
-# no @derive(Json): member(s) Nodes: list[Node], Edges: list[Edge] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Nodes: list[Node], Edges: list[Edge] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DependencyGraph:
     Optional[list[Node]] Nodes
     Optional[list[Edge]] Edges
@@ -520,8 +537,9 @@ struct GetInstrumentationConfigurationRequest:
     str SignalType
     LocationIdentifier LocationIdentifier
 
-# no @derive(Json): member(s) Configuration: InstrumentationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: InstrumentationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInstrumentationConfigurationResponse:
     InstrumentationConfiguration Configuration
 
@@ -539,8 +557,9 @@ struct GetInstrumentationConfigurationStatusRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Events: list[InstrumentationStatusEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Events: list[InstrumentationStatusEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInstrumentationConfigurationStatusResponse:
     str Service
     str Environment
@@ -562,13 +581,15 @@ struct GetServiceInput:
 struct GetServiceLevelObjectiveInput:
     str Id
 
-# no @derive(Json): member(s) Slo: ServiceLevelObjective not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Slo: ServiceLevelObjective not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetServiceLevelObjectiveOutput:
     ServiceLevelObjective Slo
 
-# no @derive(Json): member(s) Service: Service, LogGroupReferences: list[dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Service: Service, LogGroupReferences: list[dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetServiceOutput:
     Service Service
     DateTime StartTime
@@ -581,21 +602,24 @@ struct Goal:
     Optional[float64] AttainmentGoal
     Optional[float64] WarningThreshold
 
-# no @derive(Json): member(s) GroupingSourceKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupingSourceKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GroupingAttributeDefinition:
     str GroupingName
     Optional[list[str]] GroupingSourceKeys
     Optional[str] DefaultGroupingValue
 
-# no @derive(Json): member(s) GroupingAttributeDefinitions: list[GroupingAttributeDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupingAttributeDefinitions: list[GroupingAttributeDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GroupingConfiguration:
     list[GroupingAttributeDefinition] GroupingAttributeDefinitions
     DateTime UpdatedAt
 
-# no @derive(Json): member(s) AttributeFilters: list[dict[str, str]], CaptureConfiguration: CaptureConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeFilters: list[dict[str, str]], CaptureConfiguration: CaptureConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstrumentationConfiguration:
     InstrumentationType InstrumentationType
     str Service
@@ -619,8 +643,9 @@ struct InstrumentationConfigurationStatusReport:
     DateTime Time
     Optional[InstrumentationErrorCause] ErrorCause
 
-# no @derive(Json): member(s) AttributeFilters: list[dict[str, str]], CaptureConfiguration: CaptureConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeFilters: list[dict[str, str]], CaptureConfiguration: CaptureConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstrumentationConfigurationWithoutServiceEnv:
     InstrumentationType InstrumentationType
     str SignalType
@@ -633,8 +658,9 @@ struct InstrumentationConfigurationWithoutServiceEnv:
     DateTime CreatedAt
     str ARN
 
-# no @derive(Json): member(s) LatestConfigurations: list[InstrumentationConfigurationWithoutServiceEnv] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LatestConfigurations: list[InstrumentationConfigurationWithoutServiceEnv] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstrumentationConfigurationsPage:
     str Service
     str Environment
@@ -665,8 +691,9 @@ struct ListAuditFindingsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AuditFindings: list[AuditFinding] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuditFindings: list[AuditFinding] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAuditFindingsOutput:
     Optional[DateTime] StartTime
     Optional[DateTime] EndTime
@@ -682,8 +709,9 @@ struct ListEntityEventsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ChangeEvents: list[ChangeEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChangeEvents: list[ChangeEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEntityEventsOutput:
     DateTime StartTime
     DateTime EndTime
@@ -697,8 +725,9 @@ struct ListGroupingAttributeDefinitionsInput:
     Optional[str] AwsAccountId
     Optional[bool] IncludeLinkedAccounts
 
-# no @derive(Json): member(s) GroupingAttributeDefinitions: list[GroupingAttributeDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupingAttributeDefinitions: list[GroupingAttributeDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupingAttributeDefinitionsOutput:
     list[GroupingAttributeDefinition] GroupingAttributeDefinitions
     Optional[DateTime] UpdatedAt
@@ -723,8 +752,9 @@ struct ListServiceDependenciesInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ServiceDependencies: list[ServiceDependency] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceDependencies: list[ServiceDependency] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceDependenciesOutput:
     DateTime StartTime
     DateTime EndTime
@@ -740,8 +770,9 @@ struct ListServiceDependentsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ServiceDependents: list[ServiceDependent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceDependents: list[ServiceDependent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceDependentsOutput:
     DateTime StartTime
     DateTime EndTime
@@ -755,8 +786,9 @@ struct ListServiceLevelObjectiveExclusionWindowsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ExclusionWindows: list[ExclusionWindow] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExclusionWindows: list[ExclusionWindow] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceLevelObjectiveExclusionWindowsOutput:
     list[ExclusionWindow] ExclusionWindows
     Optional[str] NextToken
@@ -774,8 +806,9 @@ struct ListServiceLevelObjectivesInput:
     Optional[str] SloOwnerAwsAccountId
     Optional[MetricSource] MetricSource
 
-# no @derive(Json): member(s) SloSummaries: list[ServiceLevelObjectiveSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SloSummaries: list[ServiceLevelObjectiveSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceLevelObjectivesOutput:
     Optional[list[ServiceLevelObjectiveSummary]] SloSummaries
     Optional[str] NextToken
@@ -789,8 +822,9 @@ struct ListServiceOperationsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ServiceOperations: list[ServiceOperation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceOperations: list[ServiceOperation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceOperationsOutput:
     DateTime StartTime
     DateTime EndTime
@@ -808,8 +842,9 @@ struct ListServiceStatesInput:
     Optional[str] AwsAccountId
     Optional[list[AttributeFilter]] AttributeFilters
 
-# no @derive(Json): member(s) ServiceStates: list[ServiceState] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceStates: list[ServiceState] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceStatesOutput:
     DateTime StartTime
     DateTime EndTime
@@ -826,8 +861,9 @@ struct ListServicesInput:
     Optional[bool] IncludeLinkedAccounts
     Optional[str] AwsAccountId
 
-# no @derive(Json): member(s) ServiceSummaries: list[ServiceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceSummaries: list[ServiceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServicesOutput:
     DateTime StartTime
     DateTime EndTime
@@ -839,8 +875,9 @@ struct ListServicesOutput:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -853,15 +890,17 @@ struct LocationIdentifier:
     Optional[CodeLocation] CodeLocation
     Optional[str] LocationHash
 
-# no @derive(Json): member(s) Dimensions: list[Dimension] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: list[Dimension] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Metric:
     Optional[str] Namespace
     Optional[str] MetricName
     Optional[list[Dimension]] Dimensions
 
-# no @derive(Json): member(s) MetricStat: MetricStat not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricStat: MetricStat not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricDataQuery:
     str Id
     Optional[MetricStat] MetricStat
@@ -871,15 +910,17 @@ struct MetricDataQuery:
     Optional[int64] Period
     Optional[str] AccountId
 
-# no @derive(Json): member(s) MetricDataQueries: list[MetricDataQuery] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricDataQueries: list[MetricDataQuery] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricGraph:
     Optional[list[MetricDataQuery]] MetricDataQueries
     Optional[DateTime] StartTime
     Optional[DateTime] EndTime
 
-# no @derive(Json): member(s) Dimensions: list[Dimension] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: list[Dimension] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricReference:
     str Namespace
     str MetricType
@@ -887,28 +928,32 @@ struct MetricReference:
     str MetricName
     Optional[str] AccountId
 
-# no @derive(Json): member(s) MetricSourceKeyAttributes: dict[str, str], MetricSourceAttributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricSourceKeyAttributes: dict[str, str], MetricSourceAttributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricSource:
     dict[str, str] MetricSourceKeyAttributes
     Optional[dict[str, str]] MetricSourceAttributes
 
-# no @derive(Json): member(s) Metric: Metric not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metric: Metric not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricStat:
     Metric Metric
     int64 Period
     str Stat
     Optional[StandardUnit] Unit
 
-# no @derive(Json): member(s) GoodCountMetric: list[MetricDataQuery], BadCountMetric: list[MetricDataQuery] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GoodCountMetric: list[MetricDataQuery], BadCountMetric: list[MetricDataQuery] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MonitoredRequestCountMetricDataQueries:
     Optional[list[MetricDataQuery]] GoodCountMetric
     Optional[list[MetricDataQuery]] BadCountMetric
 
-# no @derive(Json): member(s) KeyAttributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeyAttributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Node:
     dict[str, str] KeyAttributes
     str Name
@@ -923,8 +968,9 @@ struct Node:
 struct PutGroupingConfigurationInput:
     list[GroupingAttributeDefinition] GroupingAttributeDefinitions
 
-# no @derive(Json): member(s) GroupingConfiguration: GroupingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupingConfiguration: GroupingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutGroupingConfigurationOutput:
     GroupingConfiguration GroupingConfiguration
 
@@ -939,29 +985,33 @@ struct ReportInstrumentationConfigurationStatusRequest:
     str Environment
     list[InstrumentationConfigurationStatusReport] Configurations
 
-# no @derive(Json): member(s) UnprocessedStatusEvents: list[UnprocessedStatusEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UnprocessedStatusEvents: list[UnprocessedStatusEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReportInstrumentationConfigurationStatusResponse:
     str Service
     str Environment
     list[UnprocessedStatusEvent] UnprocessedStatusEvents
 
-# no @derive(Json): member(s) RequestBasedSliMetric: RequestBasedServiceLevelIndicatorMetric not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestBasedSliMetric: RequestBasedServiceLevelIndicatorMetric not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RequestBasedServiceLevelIndicator:
     RequestBasedServiceLevelIndicatorMetric RequestBasedSliMetric
     Optional[float64] MetricThreshold
     Optional[ServiceLevelIndicatorComparisonOperator] ComparisonOperator
 
-# no @derive(Json): member(s) RequestBasedSliMetricConfig: RequestBasedServiceLevelIndicatorMetricConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestBasedSliMetricConfig: RequestBasedServiceLevelIndicatorMetricConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RequestBasedServiceLevelIndicatorConfig:
     RequestBasedServiceLevelIndicatorMetricConfig RequestBasedSliMetricConfig
     Optional[float64] MetricThreshold
     Optional[ServiceLevelIndicatorComparisonOperator] ComparisonOperator
 
-# no @derive(Json): member(s) KeyAttributes: dict[str, str], TotalRequestCountMetric: list[MetricDataQuery], MonitoredRequestCountMetric: MonitoredRequestCountMetricDataQueries, DependencyConfig: DependencyConfig, MetricSource: MetricSource, CompositeSliConfig: CompositeSliConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeyAttributes: dict[str, str], TotalRequestCountMetric: list[MetricDataQuery], MonitoredRequestCountMetric: MonitoredRequestCountMetricDataQueries, DependencyConfig: DependencyConfig, MetricSource: MetricSource, CompositeSliConfig: CompositeSliConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RequestBasedServiceLevelIndicatorMetric:
     Optional[dict[str, str]] KeyAttributes
     Optional[str] OperationName
@@ -972,8 +1022,9 @@ struct RequestBasedServiceLevelIndicatorMetric:
     Optional[MetricSource] MetricSource
     Optional[CompositeSliConfig] CompositeSliConfig
 
-# no @derive(Json): member(s) KeyAttributes: dict[str, str], TotalRequestCountMetric: list[MetricDataQuery], MonitoredRequestCountMetric: MonitoredRequestCountMetricDataQueries, DependencyConfig: DependencyConfig, MetricSource: MetricSource, CompositeSliConfig: CompositeSliConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeyAttributes: dict[str, str], TotalRequestCountMetric: list[MetricDataQuery], MonitoredRequestCountMetric: MonitoredRequestCountMetricDataQueries, DependencyConfig: DependencyConfig, MetricSource: MetricSource, CompositeSliConfig: CompositeSliConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RequestBasedServiceLevelIndicatorMetricConfig:
     Optional[dict[str, str]] KeyAttributes
     Optional[str] OperationName
@@ -1001,8 +1052,9 @@ struct SelectionConfig:
     SelectionType Type
     Optional[str] Pattern
 
-# no @derive(Json): member(s) KeyAttributes: dict[str, str], AttributeMaps: list[dict[str, str]], ServiceGroups: list[ServiceGroup], MetricReferences: list[MetricReference], LogGroupReferences: list[dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeyAttributes: dict[str, str], AttributeMaps: list[dict[str, str]], ServiceGroups: list[ServiceGroup], MetricReferences: list[MetricReference], LogGroupReferences: list[dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Service:
     dict[str, str] KeyAttributes
     Optional[list[dict[str, str]]] AttributeMaps
@@ -1010,16 +1062,18 @@ struct Service:
     list[MetricReference] MetricReferences
     Optional[list[dict[str, str]]] LogGroupReferences
 
-# no @derive(Json): member(s) DependencyKeyAttributes: dict[str, str], MetricReferences: list[MetricReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DependencyKeyAttributes: dict[str, str], MetricReferences: list[MetricReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceDependency:
     str OperationName
     dict[str, str] DependencyKeyAttributes
     str DependencyOperationName
     list[MetricReference] MetricReferences
 
-# no @derive(Json): member(s) DependentKeyAttributes: dict[str, str], MetricReferences: list[MetricReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DependentKeyAttributes: dict[str, str], MetricReferences: list[MetricReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceDependent:
     Optional[str] OperationName
     dict[str, str] DependentKeyAttributes
@@ -1040,22 +1094,25 @@ struct ServiceGroup:
     str GroupSource
     str GroupIdentifier
 
-# no @derive(Json): member(s) SliMetric: ServiceLevelIndicatorMetric not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SliMetric: ServiceLevelIndicatorMetric not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceLevelIndicator:
     ServiceLevelIndicatorMetric SliMetric
     float64 MetricThreshold
     ServiceLevelIndicatorComparisonOperator ComparisonOperator
 
-# no @derive(Json): member(s) SliMetricConfig: ServiceLevelIndicatorMetricConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SliMetricConfig: ServiceLevelIndicatorMetricConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceLevelIndicatorConfig:
     ServiceLevelIndicatorMetricConfig SliMetricConfig
     Optional[float64] MetricThreshold
     Optional[ServiceLevelIndicatorComparisonOperator] ComparisonOperator
 
-# no @derive(Json): member(s) KeyAttributes: dict[str, str], MetricDataQueries: list[MetricDataQuery], DependencyConfig: DependencyConfig, MetricSource: MetricSource, CompositeSliConfig: CompositeSliConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeyAttributes: dict[str, str], MetricDataQueries: list[MetricDataQuery], DependencyConfig: DependencyConfig, MetricSource: MetricSource, CompositeSliConfig: CompositeSliConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceLevelIndicatorMetric:
     Optional[dict[str, str]] KeyAttributes
     Optional[str] OperationName
@@ -1065,8 +1122,9 @@ struct ServiceLevelIndicatorMetric:
     Optional[MetricSource] MetricSource
     Optional[CompositeSliConfig] CompositeSliConfig
 
-# no @derive(Json): member(s) KeyAttributes: dict[str, str], MetricSource: MetricSource, MetricDataQueries: list[MetricDataQuery], DependencyConfig: DependencyConfig, CompositeSliConfig: CompositeSliConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeyAttributes: dict[str, str], MetricSource: MetricSource, MetricDataQueries: list[MetricDataQuery], DependencyConfig: DependencyConfig, CompositeSliConfig: CompositeSliConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceLevelIndicatorMetricConfig:
     Optional[dict[str, str]] KeyAttributes
     Optional[str] OperationName
@@ -1079,8 +1137,9 @@ struct ServiceLevelIndicatorMetricConfig:
     Optional[DependencyConfig] DependencyConfig
     Optional[CompositeSliConfig] CompositeSliConfig
 
-# no @derive(Json): member(s) Sli: ServiceLevelIndicator, RequestBasedSli: RequestBasedServiceLevelIndicator, BurnRateConfigurations: list[BurnRateConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sli: ServiceLevelIndicator, RequestBasedSli: RequestBasedServiceLevelIndicator, BurnRateConfigurations: list[BurnRateConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceLevelObjective:
     str Arn
     str Name
@@ -1095,8 +1154,9 @@ struct ServiceLevelObjective:
     Optional[MetricSourceType] MetricSourceType
     Optional[bool] AutoInvestigationEnabled
 
-# no @derive(Json): member(s) Sli: ServiceLevelIndicator, RequestBasedSli: RequestBasedServiceLevelIndicator not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sli: ServiceLevelIndicator, RequestBasedSli: RequestBasedServiceLevelIndicator not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceLevelObjectiveBudgetReport:
     str Arn
     str Name
@@ -1123,8 +1183,9 @@ struct ServiceLevelObjectiveEntity:
     Optional[str] SloName
     Optional[str] SloArn
 
-# no @derive(Json): member(s) KeyAttributes: dict[str, str], DependencyConfig: DependencyConfig, MetricSource: MetricSource, CompositeSliConfig: CompositeSliConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeyAttributes: dict[str, str], DependencyConfig: DependencyConfig, MetricSource: MetricSource, CompositeSliConfig: CompositeSliConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceLevelObjectiveSummary:
     str Arn
     str Name
@@ -1137,8 +1198,9 @@ struct ServiceLevelObjectiveSummary:
     Optional[MetricSource] MetricSource
     Optional[CompositeSliConfig] CompositeSliConfig
 
-# no @derive(Json): member(s) MetricReferences: list[MetricReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricReferences: list[MetricReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceOperation:
     str Name
     list[MetricReference] MetricReferences
@@ -1153,15 +1215,17 @@ struct ServiceOperationEntity:
 struct ServiceQuotaExceededException:
     str Message
 
-# no @derive(Json): member(s) AttributeFilters: list[AttributeFilter], Service: dict[str, str], LatestChangeEvents: list[ChangeEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeFilters: list[AttributeFilter], Service: dict[str, str], LatestChangeEvents: list[ChangeEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceState:
     Optional[list[AttributeFilter]] AttributeFilters
     dict[str, str] Service
     list[ChangeEvent] LatestChangeEvents
 
-# no @derive(Json): member(s) KeyAttributes: dict[str, str], AttributeMaps: list[dict[str, str]], MetricReferences: list[MetricReference], ServiceGroups: list[ServiceGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeyAttributes: dict[str, str], AttributeMaps: list[dict[str, str]], MetricReferences: list[MetricReference], ServiceGroups: list[ServiceGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceSummary:
     dict[str, str] KeyAttributes
     Optional[list[dict[str, str]]] AttributeMaps
@@ -1230,8 +1294,9 @@ struct UpdateServiceLevelObjectiveInput:
     Optional[list[BurnRateConfiguration]] BurnRateConfigurations
     Optional[bool] AutoInvestigationEnabled
 
-# no @derive(Json): member(s) Slo: ServiceLevelObjective not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Slo: ServiceLevelObjective not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateServiceLevelObjectiveOutput:
     ServiceLevelObjective Slo
 
@@ -1279,35 +1344,21 @@ def application_signals_error_from_code(str code) -> Application_SignalsError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchDeleteInstrumentationConfigurations (document member `DeletionTarget: BatchDeleteDeletionTarget` is not serializable by derive)
-#   BatchGetServiceLevelObjectiveBudgetReport (document member `SloIds: list[str]` is not serializable by derive)
-#   BatchUpdateExclusionWindows (document member `SloIds: list[str]` is not serializable by derive)
-#   CreateInstrumentationConfiguration (document member `AttributeFilters: list[dict[str, str]]` is not serializable by derive)
-#   CreateServiceLevelObjective (document member `SliConfig: ServiceLevelIndicatorConfig` is not serializable by derive)
 #   GetService (httpQuery `StartTime` has unsupported type DateTime)
 #   ListAuditFindings (httpQuery `StartTime` has unsupported type DateTime)
-#   ListEntityEvents (document member `Entity: dict[str, str]` is not serializable by derive)
 #   ListGroupingAttributeDefinitions (httpQuery `IncludeLinkedAccounts` has unsupported type bool)
 #   ListServiceDependencies (httpQuery `StartTime` has unsupported type DateTime)
 #   ListServiceDependents (httpQuery `StartTime` has unsupported type DateTime)
-#   ListServiceLevelObjectives (document member `KeyAttributes: dict[str, str]` is not serializable by derive)
+#   ListServiceLevelObjectives (httpQuery `IncludeLinkedAccounts` has unsupported type bool)
 #   ListServiceOperations (httpQuery `StartTime` has unsupported type DateTime)
-#   ListServiceStates (document member `AttributeFilters: list[AttributeFilter]` is not serializable by derive)
 #   ListServices (httpQuery `StartTime` has unsupported type DateTime)
-#   PutGroupingConfiguration (document member `GroupingAttributeDefinitions: list[GroupingAttributeDefinition]` is not serializable by derive)
-#   ReportInstrumentationConfigurationStatus (document member `Configurations: list[InstrumentationConfigurationStatusReport]` is not serializable by derive)
-#   TagResource (document member `Tags: list[Tag]` is not serializable by derive)
-#   UntagResource (document member `TagKeys: list[str]` is not serializable by derive)
-#   UpdateServiceLevelObjective (document member `SliConfig: ServiceLevelIndicatorConfig` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
-#   ListEntityEvents (operation not generated)
 #   ListServiceDependencies (operation not generated)
 #   ListServiceDependents (operation not generated)
 #   ListServiceLevelObjectives (operation not generated)
 #   ListServiceOperations (operation not generated)
-#   ListServiceStates (operation not generated)
 #   ListServices (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -1355,10 +1406,452 @@ struct ListInstrumentationConfigurationsDocument:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def application_signals_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def application_signals_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def application_signals_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AttributeFilter to a compact JSON object (declaration order).
+def attribute_filter_to_json(AttributeFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"AttributeFilterName\":" + application_signals_json_str(v.AttributeFilterName))
+    list[str] e0 = []
+    for x0 in v.AttributeFilterValues:
+        e0.append(application_signals_json_str(x0))
+    parts.append("\"AttributeFilterValues\":" + application_signals_json_arr(e0))
+    return application_signals_json_obj(parts)
+
+# Serialize BatchDeleteByResourceArns to a compact JSON object (declaration order).
+def batch_delete_by_resource_arns_to_json(BatchDeleteByResourceArns v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ResourceArns:
+        e0.append(application_signals_json_str(x0))
+    parts.append("\"ResourceArns\":" + application_signals_json_arr(e0))
+    parts.append("\"InstrumentationType\":" + v.InstrumentationType.to_json())
+    return application_signals_json_obj(parts)
+
+# Serialize BatchDeleteDeletionTarget to a compact JSON object (declaration order).
+def batch_delete_deletion_target_to_json(BatchDeleteDeletionTarget v) -> str:
+    list[str] parts = []
+    if v.Scope.is_some():
+        auto u0 = v.Scope.unwrap()
+        parts.append("\"Scope\":" + u0.to_json())
+    if v.ResourceArns.is_some():
+        auto u1 = v.ResourceArns.unwrap()
+        parts.append("\"ResourceArns\":" + batch_delete_by_resource_arns_to_json(u1))
+    return application_signals_json_obj(parts)
+
+# Serialize CaptureConfiguration to a compact JSON object (declaration order).
+def capture_configuration_to_json(CaptureConfiguration v) -> str:
+    list[str] parts = []
+    if v.CodeCapture.is_some():
+        auto u0 = v.CodeCapture.unwrap()
+        parts.append("\"CodeCapture\":" + code_capture_configuration_to_json(u0))
+    return application_signals_json_obj(parts)
+
+# Serialize CodeCaptureConfiguration to a compact JSON object (declaration order).
+def code_capture_configuration_to_json(CodeCaptureConfiguration v) -> str:
+    list[str] parts = []
+    if v.CaptureArguments.is_some():
+        auto u0 = v.CaptureArguments.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(application_signals_json_str(x1))
+        parts.append("\"CaptureArguments\":" + application_signals_json_arr(e1))
+    if v.CaptureReturn.is_some():
+        auto u2 = v.CaptureReturn.unwrap()
+        parts.append("\"CaptureReturn\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.CaptureStackTrace.is_some():
+        auto u3 = v.CaptureStackTrace.unwrap()
+        parts.append("\"CaptureStackTrace\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.CaptureLocals.is_some():
+        auto u4 = v.CaptureLocals.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(application_signals_json_str(x5))
+        parts.append("\"CaptureLocals\":" + application_signals_json_arr(e5))
+    parts.append("\"CaptureLimits\":" + v.CaptureLimits.to_json())
+    return application_signals_json_obj(parts)
+
+# Serialize CompositeSliConfig to a compact JSON object (declaration order).
+def composite_sli_config_to_json(CompositeSliConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"SelectionConfig\":" + v.SelectionConfig.to_json())
+    if v.Components.is_some():
+        auto u0 = v.Components.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Components\":" + application_signals_json_arr(e1))
+    return application_signals_json_obj(parts)
+
+# Serialize DependencyConfig to a compact JSON object (declaration order).
+def dependency_config_to_json(DependencyConfig v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.DependencyKeyAttributes.keys()):
+        m0.append(application_signals_json_str(k0) + ":" + application_signals_json_str(v.DependencyKeyAttributes[k0]))
+    parts.append("\"DependencyKeyAttributes\":" + application_signals_json_obj(m0))
+    parts.append("\"DependencyOperationName\":" + application_signals_json_str(v.DependencyOperationName))
+    return application_signals_json_obj(parts)
+
+# Serialize GroupingAttributeDefinition to a compact JSON object (declaration order).
+def grouping_attribute_definition_to_json(GroupingAttributeDefinition v) -> str:
+    list[str] parts = []
+    parts.append("\"GroupingName\":" + application_signals_json_str(v.GroupingName))
+    if v.GroupingSourceKeys.is_some():
+        auto u0 = v.GroupingSourceKeys.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(application_signals_json_str(x1))
+        parts.append("\"GroupingSourceKeys\":" + application_signals_json_arr(e1))
+    if v.DefaultGroupingValue.is_some():
+        auto u2 = v.DefaultGroupingValue.unwrap()
+        parts.append("\"DefaultGroupingValue\":" + application_signals_json_str(u2))
+    return application_signals_json_obj(parts)
+
+# Serialize Metric to a compact JSON object (declaration order).
+def metric_to_json(Metric v) -> str:
+    list[str] parts = []
+    if v.Namespace.is_some():
+        auto u0 = v.Namespace.unwrap()
+        parts.append("\"Namespace\":" + application_signals_json_str(u0))
+    if v.MetricName.is_some():
+        auto u1 = v.MetricName.unwrap()
+        parts.append("\"MetricName\":" + application_signals_json_str(u1))
+    if v.Dimensions.is_some():
+        auto u2 = v.Dimensions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Dimensions\":" + application_signals_json_arr(e3))
+    return application_signals_json_obj(parts)
+
+# Serialize MetricDataQuery to a compact JSON object (declaration order).
+def metric_data_query_to_json(MetricDataQuery v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + application_signals_json_str(v.Id))
+    if v.MetricStat.is_some():
+        auto u0 = v.MetricStat.unwrap()
+        parts.append("\"MetricStat\":" + metric_stat_to_json(u0))
+    if v.Expression.is_some():
+        auto u1 = v.Expression.unwrap()
+        parts.append("\"Expression\":" + application_signals_json_str(u1))
+    if v.Label.is_some():
+        auto u2 = v.Label.unwrap()
+        parts.append("\"Label\":" + application_signals_json_str(u2))
+    if v.ReturnData.is_some():
+        auto u3 = v.ReturnData.unwrap()
+        parts.append("\"ReturnData\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.Period.is_some():
+        auto u4 = v.Period.unwrap()
+        parts.append("\"Period\":" + str(u4))
+    if v.AccountId.is_some():
+        auto u5 = v.AccountId.unwrap()
+        parts.append("\"AccountId\":" + application_signals_json_str(u5))
+    return application_signals_json_obj(parts)
+
+# Serialize MetricSource to a compact JSON object (declaration order).
+def metric_source_to_json(MetricSource v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.MetricSourceKeyAttributes.keys()):
+        m0.append(application_signals_json_str(k0) + ":" + application_signals_json_str(v.MetricSourceKeyAttributes[k0]))
+    parts.append("\"MetricSourceKeyAttributes\":" + application_signals_json_obj(m0))
+    if v.MetricSourceAttributes.is_some():
+        auto u1 = v.MetricSourceAttributes.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(application_signals_json_str(k2) + ":" + application_signals_json_str(u1[k2]))
+        parts.append("\"MetricSourceAttributes\":" + application_signals_json_obj(m2))
+    return application_signals_json_obj(parts)
+
+# Serialize MetricStat to a compact JSON object (declaration order).
+def metric_stat_to_json(MetricStat v) -> str:
+    list[str] parts = []
+    parts.append("\"Metric\":" + metric_to_json(v.Metric))
+    parts.append("\"Period\":" + str(v.Period))
+    parts.append("\"Stat\":" + application_signals_json_str(v.Stat))
+    if v.Unit.is_some():
+        auto u0 = v.Unit.unwrap()
+        parts.append("\"Unit\":" + u0.to_json())
+    return application_signals_json_obj(parts)
+
+# Serialize MonitoredRequestCountMetricDataQueries to a compact JSON object (declaration order).
+def monitored_request_count_metric_data_queries_to_json(MonitoredRequestCountMetricDataQueries v) -> str:
+    list[str] parts = []
+    if v.GoodCountMetric.is_some():
+        auto u0 = v.GoodCountMetric.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(metric_data_query_to_json(x1))
+        parts.append("\"GoodCountMetric\":" + application_signals_json_arr(e1))
+    if v.BadCountMetric.is_some():
+        auto u2 = v.BadCountMetric.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(metric_data_query_to_json(x3))
+        parts.append("\"BadCountMetric\":" + application_signals_json_arr(e3))
+    return application_signals_json_obj(parts)
+
+# Serialize RequestBasedServiceLevelIndicatorConfig to a compact JSON object (declaration order).
+def request_based_service_level_indicator_config_to_json(RequestBasedServiceLevelIndicatorConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"RequestBasedSliMetricConfig\":" + request_based_service_level_indicator_metric_config_to_json(v.RequestBasedSliMetricConfig))
+    if v.MetricThreshold.is_some():
+        auto u0 = v.MetricThreshold.unwrap()
+        parts.append("\"MetricThreshold\":" + str(u0))
+    if v.ComparisonOperator.is_some():
+        auto u1 = v.ComparisonOperator.unwrap()
+        parts.append("\"ComparisonOperator\":" + u1.to_json())
+    return application_signals_json_obj(parts)
+
+# Serialize RequestBasedServiceLevelIndicatorMetricConfig to a compact JSON object (declaration order).
+def request_based_service_level_indicator_metric_config_to_json(RequestBasedServiceLevelIndicatorMetricConfig v) -> str:
+    list[str] parts = []
+    if v.KeyAttributes.is_some():
+        auto u0 = v.KeyAttributes.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(application_signals_json_str(k1) + ":" + application_signals_json_str(u0[k1]))
+        parts.append("\"KeyAttributes\":" + application_signals_json_obj(m1))
+    if v.OperationName.is_some():
+        auto u2 = v.OperationName.unwrap()
+        parts.append("\"OperationName\":" + application_signals_json_str(u2))
+    if v.MetricType.is_some():
+        auto u3 = v.MetricType.unwrap()
+        parts.append("\"MetricType\":" + u3.to_json())
+    if v.TotalRequestCountMetric.is_some():
+        auto u4 = v.TotalRequestCountMetric.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(metric_data_query_to_json(x5))
+        parts.append("\"TotalRequestCountMetric\":" + application_signals_json_arr(e5))
+    if v.MonitoredRequestCountMetric.is_some():
+        auto u6 = v.MonitoredRequestCountMetric.unwrap()
+        parts.append("\"MonitoredRequestCountMetric\":" + monitored_request_count_metric_data_queries_to_json(u6))
+    if v.DependencyConfig.is_some():
+        auto u7 = v.DependencyConfig.unwrap()
+        parts.append("\"DependencyConfig\":" + dependency_config_to_json(u7))
+    if v.MetricSource.is_some():
+        auto u8 = v.MetricSource.unwrap()
+        parts.append("\"MetricSource\":" + metric_source_to_json(u8))
+    if v.MetricName.is_some():
+        auto u9 = v.MetricName.unwrap()
+        parts.append("\"MetricName\":" + application_signals_json_str(u9))
+    if v.CompositeSliConfig.is_some():
+        auto u10 = v.CompositeSliConfig.unwrap()
+        parts.append("\"CompositeSliConfig\":" + composite_sli_config_to_json(u10))
+    return application_signals_json_obj(parts)
+
+# Serialize ServiceLevelIndicatorConfig to a compact JSON object (declaration order).
+def service_level_indicator_config_to_json(ServiceLevelIndicatorConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"SliMetricConfig\":" + service_level_indicator_metric_config_to_json(v.SliMetricConfig))
+    if v.MetricThreshold.is_some():
+        auto u0 = v.MetricThreshold.unwrap()
+        parts.append("\"MetricThreshold\":" + str(u0))
+    if v.ComparisonOperator.is_some():
+        auto u1 = v.ComparisonOperator.unwrap()
+        parts.append("\"ComparisonOperator\":" + u1.to_json())
+    return application_signals_json_obj(parts)
+
+# Serialize ServiceLevelIndicatorMetricConfig to a compact JSON object (declaration order).
+def service_level_indicator_metric_config_to_json(ServiceLevelIndicatorMetricConfig v) -> str:
+    list[str] parts = []
+    if v.KeyAttributes.is_some():
+        auto u0 = v.KeyAttributes.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(application_signals_json_str(k1) + ":" + application_signals_json_str(u0[k1]))
+        parts.append("\"KeyAttributes\":" + application_signals_json_obj(m1))
+    if v.OperationName.is_some():
+        auto u2 = v.OperationName.unwrap()
+        parts.append("\"OperationName\":" + application_signals_json_str(u2))
+    if v.MetricType.is_some():
+        auto u3 = v.MetricType.unwrap()
+        parts.append("\"MetricType\":" + u3.to_json())
+    if v.MetricName.is_some():
+        auto u4 = v.MetricName.unwrap()
+        parts.append("\"MetricName\":" + application_signals_json_str(u4))
+    if v.Statistic.is_some():
+        auto u5 = v.Statistic.unwrap()
+        parts.append("\"Statistic\":" + application_signals_json_str(u5))
+    if v.PeriodSeconds.is_some():
+        auto u6 = v.PeriodSeconds.unwrap()
+        parts.append("\"PeriodSeconds\":" + str(u6))
+    if v.MetricSource.is_some():
+        auto u7 = v.MetricSource.unwrap()
+        parts.append("\"MetricSource\":" + metric_source_to_json(u7))
+    if v.MetricDataQueries.is_some():
+        auto u8 = v.MetricDataQueries.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(metric_data_query_to_json(x9))
+        parts.append("\"MetricDataQueries\":" + application_signals_json_arr(e9))
+    if v.DependencyConfig.is_some():
+        auto u10 = v.DependencyConfig.unwrap()
+        parts.append("\"DependencyConfig\":" + dependency_config_to_json(u10))
+    if v.CompositeSliConfig.is_some():
+        auto u11 = v.CompositeSliConfig.unwrap()
+        parts.append("\"CompositeSliConfig\":" + composite_sli_config_to_json(u11))
+    return application_signals_json_obj(parts)
+
 # A bound Application_Signals client: credentials + region, threaded into every operation.
 struct Application_SignalsClient:
     core.Credentials creds
     str region
+
+    # BatchDeleteInstrumentationConfigurations  POST /batch-delete-instrumentation-configurations
+    # errors: ThrottlingException, ValidationException
+    def batch_delete_instrumentation_configurations(self, BatchDeleteInstrumentationConfigurationsRequest input) -> str:
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/batch-delete-instrumentation-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"DeletionTarget\":" + batch_delete_deletion_target_to_json(input.DeletionTarget))
+        auto bp = restjson.rest_json_document(b, application_signals_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, application_signals_service(), self.region, host)
+
+    # BatchGetServiceLevelObjectiveBudgetReport  POST /budget-report
+    # errors: ThrottlingException, ValidationException
+    def batch_get_service_level_objective_budget_report(self, BatchGetServiceLevelObjectiveBudgetReportInput input) -> str:
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/budget-report", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Timestamp\":" + str(datetime.to_timestamp(input.Timestamp)))
+        list[str] e0 = []
+        for x0 in input.SloIds:
+            e0.append(application_signals_json_str(x0))
+        parts.append("\"SloIds\":" + application_signals_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, application_signals_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, application_signals_service(), self.region, host)
+
+    # BatchUpdateExclusionWindows  PATCH /exclusion-windows
+    # errors: ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_update_exclusion_windows(self, BatchUpdateExclusionWindowsInput input) -> str:
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        auto b = binding.HttpBinding(method="PATCH", path_template="/exclusion-windows", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.SloIds:
+            e0.append(application_signals_json_str(x0))
+        parts.append("\"SloIds\":" + application_signals_json_arr(e0))
+        if input.AddExclusionWindows.is_some():
+            auto u1 = input.AddExclusionWindows.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"AddExclusionWindows\":" + application_signals_json_arr(e2))
+        if input.RemoveExclusionWindows.is_some():
+            auto u3 = input.RemoveExclusionWindows.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"RemoveExclusionWindows\":" + application_signals_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, application_signals_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, application_signals_service(), self.region, host)
+
+    # CreateInstrumentationConfiguration  POST /create-instrumentation-configuration
+    # errors: ConflictException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_instrumentation_configuration(self, CreateInstrumentationConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/create-instrumentation-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"InstrumentationType\":" + input.InstrumentationType.to_json())
+        parts.append("\"Service\":" + application_signals_json_str(input.Service))
+        parts.append("\"Environment\":" + application_signals_json_str(input.Environment))
+        parts.append("\"SignalType\":" + application_signals_json_str(input.SignalType))
+        parts.append("\"Location\":" + input.Location.to_json())
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + application_signals_json_str(u0))
+        if input.ExpiresAt.is_some():
+            auto u1 = input.ExpiresAt.unwrap()
+            parts.append("\"ExpiresAt\":" + str(datetime.to_timestamp(u1)))
+        if input.AttributeFilters.is_some():
+            auto u2 = input.AttributeFilters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                list[str] m4 = []
+                for k4 in sorted(x3.keys()):
+                    m4.append(application_signals_json_str(k4) + ":" + application_signals_json_str(x3[k4]))
+                e3.append(application_signals_json_obj(m4))
+            parts.append("\"AttributeFilters\":" + application_signals_json_arr(e3))
+        parts.append("\"CaptureConfiguration\":" + capture_configuration_to_json(input.CaptureConfiguration))
+        if input.Tags.is_some():
+            auto u5 = input.Tags.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"Tags\":" + application_signals_json_arr(e6))
+        auto bp = restjson.rest_json_document(b, application_signals_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, application_signals_service(), self.region, host)
+
+    # CreateServiceLevelObjective  POST /slo
+    # errors: AccessDeniedException, ConflictException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_service_level_objective(self, CreateServiceLevelObjectiveInput input) -> str:
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/slo", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + application_signals_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + application_signals_json_str(u0))
+        if input.SliConfig.is_some():
+            auto u1 = input.SliConfig.unwrap()
+            parts.append("\"SliConfig\":" + service_level_indicator_config_to_json(u1))
+        if input.RequestBasedSliConfig.is_some():
+            auto u2 = input.RequestBasedSliConfig.unwrap()
+            parts.append("\"RequestBasedSliConfig\":" + request_based_service_level_indicator_config_to_json(u2))
+        if input.Goal.is_some():
+            auto u3 = input.Goal.unwrap()
+            parts.append("\"Goal\":" + u3.to_json())
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"Tags\":" + application_signals_json_arr(e5))
+        if input.BurnRateConfigurations.is_some():
+            auto u6 = input.BurnRateConfigurations.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"BurnRateConfigurations\":" + application_signals_json_arr(e7))
+        if input.CreateRecommendedSlo.is_some():
+            auto u8 = input.CreateRecommendedSlo.unwrap()
+            parts.append("\"CreateRecommendedSlo\":" + json.dumps(JsonValue.Bool(u8)))
+        if input.AutoInvestigationEnabled.is_some():
+            auto u9 = input.AutoInvestigationEnabled.unwrap()
+            parts.append("\"AutoInvestigationEnabled\":" + json.dumps(JsonValue.Bool(u9)))
+        auto bp = restjson.rest_json_document(b, application_signals_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, application_signals_service(), self.region, host)
 
     # DeleteGroupingConfiguration  DELETE /grouping-configuration
     # errors: AccessDeniedException, ThrottlingException, ValidationException
@@ -1412,6 +1905,26 @@ struct Application_SignalsClient:
         auto b = binding.HttpBinding(method="GET", path_template="/slo/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, application_signals_service(), self.region, host)
 
+    # ListEntityEvents  POST /events
+    # errors: ThrottlingException, ValidationException
+    def list_entity_events(self, ListEntityEventsInput input) -> str:
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        dict[str, str] query = {}
+        if input.MaxResults.is_some():
+            query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["NextToken"] = input.NextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/events", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Entity.keys()):
+            m0.append(application_signals_json_str(k0) + ":" + application_signals_json_str(input.Entity[k0]))
+        parts.append("\"Entity\":" + application_signals_json_obj(m0))
+        parts.append("\"StartTime\":" + str(datetime.to_timestamp(input.StartTime)))
+        parts.append("\"EndTime\":" + str(datetime.to_timestamp(input.EndTime)))
+        auto bp = restjson.rest_json_document(b, application_signals_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, application_signals_service(), self.region, host)
+
     # ListInstrumentationConfigurations  POST /list-instrumentation-configurations
     # errors: ResourceNotFoundException, ThrottlingException, ValidationException
     def list_instrumentation_configurations(self, ListInstrumentationConfigurationsRequest input) -> str:
@@ -1435,6 +1948,35 @@ struct Application_SignalsClient:
         auto b = binding.HttpBinding(method="GET", path_template="/slo/{Id}/exclusion-windows", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, application_signals_service(), self.region, host)
 
+    # ListServiceStates  POST /service/states
+    # errors: ThrottlingException, ValidationException
+    def list_service_states(self, ListServiceStatesInput input) -> str:
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/service/states", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"StartTime\":" + str(datetime.to_timestamp(input.StartTime)))
+        parts.append("\"EndTime\":" + str(datetime.to_timestamp(input.EndTime)))
+        if input.MaxResults.is_some():
+            auto u0 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + application_signals_json_str(u1))
+        if input.IncludeLinkedAccounts.is_some():
+            auto u2 = input.IncludeLinkedAccounts.unwrap()
+            parts.append("\"IncludeLinkedAccounts\":" + json.dumps(JsonValue.Bool(u2)))
+        if input.AwsAccountId.is_some():
+            auto u3 = input.AwsAccountId.unwrap()
+            parts.append("\"AwsAccountId\":" + application_signals_json_str(u3))
+        if input.AttributeFilters.is_some():
+            auto u4 = input.AttributeFilters.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(attribute_filter_to_json(x5))
+            parts.append("\"AttributeFilters\":" + application_signals_json_arr(e5))
+        auto bp = restjson.rest_json_document(b, application_signals_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, application_signals_service(), self.region, host)
+
     # ListTagsForResource  GET /tags
     # errors: ResourceNotFoundException, ThrottlingException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
@@ -1444,6 +1986,34 @@ struct Application_SignalsClient:
         auto b = binding.HttpBinding(method="GET", path_template="/tags", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, application_signals_service(), self.region, host)
 
+    # PutGroupingConfiguration  PUT /grouping-configuration
+    # errors: AccessDeniedException, ThrottlingException, ValidationException
+    def put_grouping_configuration(self, PutGroupingConfigurationInput input) -> str:
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/grouping-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.GroupingAttributeDefinitions:
+            e0.append(grouping_attribute_definition_to_json(x0))
+        parts.append("\"GroupingAttributeDefinitions\":" + application_signals_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, application_signals_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, application_signals_service(), self.region, host)
+
+    # ReportInstrumentationConfigurationStatus  POST /report-instrumentation-configuration-status
+    # errors: ThrottlingException, ValidationException
+    def report_instrumentation_configuration_status(self, ReportInstrumentationConfigurationStatusRequest input) -> str:
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/report-instrumentation-configuration-status", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Service\":" + application_signals_json_str(input.Service))
+        parts.append("\"Environment\":" + application_signals_json_str(input.Environment))
+        list[str] e0 = []
+        for x0 in input.Configurations:
+            e0.append(x0.to_json())
+        parts.append("\"Configurations\":" + application_signals_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, application_signals_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, application_signals_service(), self.region, host)
+
     # StartDiscovery  POST /start-discovery
     # errors: AccessDeniedException, ThrottlingException, ValidationException
     def start_discovery(self) -> str:
@@ -1451,12 +2021,85 @@ struct Application_SignalsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/start-discovery", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, application_signals_service(), self.region, host)
 
+    # TagResource  POST /tag-resource
+    # errors: ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/tag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceArn\":" + application_signals_json_str(input.ResourceArn))
+        list[str] e0 = []
+        for x0 in input.Tags:
+            e0.append(x0.to_json())
+        parts.append("\"Tags\":" + application_signals_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, application_signals_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, application_signals_service(), self.region, host)
+
+    # UntagResource  POST /untag-resource
+    # errors: ResourceNotFoundException, ThrottlingException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/untag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceArn\":" + application_signals_json_str(input.ResourceArn))
+        list[str] e0 = []
+        for x0 in input.TagKeys:
+            e0.append(application_signals_json_str(x0))
+        parts.append("\"TagKeys\":" + application_signals_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, application_signals_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, application_signals_service(), self.region, host)
+
+    # UpdateServiceLevelObjective  PATCH /slo/{Id}
+    # errors: ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_service_level_objective(self, UpdateServiceLevelObjectiveInput input) -> str:
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.Id
+        auto b = binding.HttpBinding(method="PATCH", path_template="/slo/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + application_signals_json_str(u0))
+        if input.SliConfig.is_some():
+            auto u1 = input.SliConfig.unwrap()
+            parts.append("\"SliConfig\":" + service_level_indicator_config_to_json(u1))
+        if input.RequestBasedSliConfig.is_some():
+            auto u2 = input.RequestBasedSliConfig.unwrap()
+            parts.append("\"RequestBasedSliConfig\":" + request_based_service_level_indicator_config_to_json(u2))
+        if input.Goal.is_some():
+            auto u3 = input.Goal.unwrap()
+            parts.append("\"Goal\":" + u3.to_json())
+        if input.BurnRateConfigurations.is_some():
+            auto u4 = input.BurnRateConfigurations.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"BurnRateConfigurations\":" + application_signals_json_arr(e5))
+        if input.AutoInvestigationEnabled.is_some():
+            auto u6 = input.AutoInvestigationEnabled.unwrap()
+            parts.append("\"AutoInvestigationEnabled\":" + json.dumps(JsonValue.Bool(u6)))
+        auto bp = restjson.rest_json_document(b, application_signals_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, application_signals_service(), self.region, host)
+
     # Paginator for GetInstrumentationConfigurationStatus — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: Events).
     def paginate_get_instrumentation_configuration_status(self, GetInstrumentationConfigurationStatusRequest input):
         auto host = endpoints.regional_host(application_signals_service(), self.region)
         while True:
             auto raw = self.get_instrumentation_configuration_status(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListEntityEvents — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: ChangeEvents).
+    def paginate_list_entity_events(self, ListEntityEventsInput input):
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        while True:
+            auto raw = self.list_entity_events(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")
@@ -1483,6 +2126,19 @@ struct Application_SignalsClient:
         auto host = endpoints.regional_host(application_signals_service(), self.region)
         while True:
             auto raw = self.list_service_level_objective_exclusion_windows(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListServiceStates — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: ServiceStates).
+    def paginate_list_service_states(self, ListServiceStatesInput input):
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        while True:
+            auto raw = self.list_service_states(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

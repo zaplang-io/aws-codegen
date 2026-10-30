@@ -13,19 +13,20 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 5 operations — 3 with a generated method,
-#   2 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 5 operations — 5 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   21 structs (15 @derive(Json)), 6 enums, 5 error variants.
-#   0 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.endpoints
 import aws_core.awsjson
 
 # The FreeTier awsJson protocol: version 1.0, API id "AWSFreeTierService".
@@ -115,15 +116,17 @@ struct ActivitySummary:
     ActivityReward reward
     ActivityStatus status
 
-# no @derive(Json): member(s) Values: list[str], MatchOptions: list[MatchOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str], MatchOptions: list[MatchOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DimensionValues:
     Dimension Key
     list[str] Values
     list[MatchOption] MatchOptions
 
-# no @derive(Json): member(s) Or: list[Expression], And: list[Expression], Not: Expression, Dimensions: DimensionValues not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Or: list[Expression], And: list[Expression], Not: Expression, Dimensions: DimensionValues not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Expression:
     Optional[list[Expression]] Or
     Optional[list[Expression]] And
@@ -178,15 +181,17 @@ struct GetAccountPlanStateResponse:
     @json(timestamp="iso8601")
     Optional[DateTime] accountPlanExpirationDate
 
-# no @derive(Json): member(s) filter: Expression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filter: Expression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFreeTierUsageRequest:
     Optional[Expression] filter
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) freeTierUsages: list[FreeTierUsage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) freeTierUsages: list[FreeTierUsage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFreeTierUsageResponse:
     list[FreeTierUsage] freeTierUsages
     Optional[str] nextToken
@@ -195,16 +200,18 @@ struct GetFreeTierUsageResponse:
 struct InternalServerException:
     str message
 
-# no @derive(Json): member(s) filterActivityStatuses: list[ActivityStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filterActivityStatuses: list[ActivityStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccountActivitiesRequest:
     Optional[list[ActivityStatus]] filterActivityStatuses
     Optional[str] nextToken
     Optional[int64] maxResults
     Optional[LanguageCode] languageCode
 
-# no @derive(Json): member(s) activities: list[ActivitySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) activities: list[ActivitySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccountActivitiesResponse:
     list[ActivitySummary] activities
     Optional[str] nextToken
@@ -264,15 +271,106 @@ def freetier_error_from_code(str code) -> FreeTierError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   GetFreeTierUsage (input GetFreeTierUsageRequest)
-#   ListAccountActivities (input ListAccountActivitiesRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def freetier_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   GetFreeTierUsage (input not derivable (no generated method))
-#   ListAccountActivities (input not derivable (no generated method))
+def freetier_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def freetier_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize DimensionValues to a compact JSON object (declaration order).
+def dimension_values_to_json(DimensionValues v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + v.Key.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(freetier_json_str(x0))
+    parts.append("\"Values\":" + freetier_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.MatchOptions:
+        e1.append(x1.to_json())
+    parts.append("\"MatchOptions\":" + freetier_json_arr(e1))
+    return freetier_json_obj(parts)
+
+# Serialize Expression to a compact JSON object (declaration order).
+def expression_to_json(Expression v) -> str:
+    list[str] parts = []
+    if v.Or.is_some():
+        auto u0 = v.Or.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(expression_to_json(x1))
+        parts.append("\"Or\":" + freetier_json_arr(e1))
+    if v.And.is_some():
+        auto u2 = v.And.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(expression_to_json(x3))
+        parts.append("\"And\":" + freetier_json_arr(e3))
+    if v.Not.is_some():
+        auto u4 = v.Not.unwrap()
+        parts.append("\"Not\":" + expression_to_json(u4))
+    if v.Dimensions.is_some():
+        auto u5 = v.Dimensions.unwrap()
+        parts.append("\"Dimensions\":" + dimension_values_to_json(u5))
+    return freetier_json_obj(parts)
+
+# Serialize GetFreeTierUsageRequest to a compact JSON object (declaration order).
+def get_free_tier_usage_request_to_json(GetFreeTierUsageRequest v) -> str:
+    list[str] parts = []
+    if v.filter.is_some():
+        auto u0 = v.filter.unwrap()
+        parts.append("\"filter\":" + expression_to_json(u0))
+    if v.maxResults.is_some():
+        auto u1 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + freetier_json_str(u2))
+    return freetier_json_obj(parts)
+
+# Serialize ListAccountActivitiesRequest to a compact JSON object (declaration order).
+def list_account_activities_request_to_json(ListAccountActivitiesRequest v) -> str:
+    list[str] parts = []
+    if v.filterActivityStatuses.is_some():
+        auto u0 = v.filterActivityStatuses.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"filterActivityStatuses\":" + freetier_json_arr(e1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + freetier_json_str(u2))
+    if v.maxResults.is_some():
+        auto u3 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u3))
+    if v.languageCode.is_some():
+        auto u4 = v.languageCode.unwrap()
+        parts.append("\"languageCode\":" + u4.to_json())
+    return freetier_json_obj(parts)
 
 # A bound FreeTier client: credentials + region, threaded into every operation.
 struct FreeTierClient:
@@ -291,11 +389,51 @@ struct FreeTierClient:
         auto body = "{}"
         return awsjson.awsjson_request_now(freetier_protocol(), self.creds, self.region, "GetAccountPlanState", body)
 
+    # GetFreeTierUsage
+    # errors: InternalServerException, ThrottlingException, ValidationException
+    def get_free_tier_usage(self, GetFreeTierUsageRequest input) -> str:
+        auto body = get_free_tier_usage_request_to_json(input)
+        return awsjson.awsjson_request_now(freetier_protocol(), self.creds, self.region, "GetFreeTierUsage", body)
+
+    # ListAccountActivities
+    # errors: InternalServerException, ThrottlingException, ValidationException
+    def list_account_activities(self, ListAccountActivitiesRequest input) -> str:
+        auto body = list_account_activities_request_to_json(input)
+        return awsjson.awsjson_request_now(freetier_protocol(), self.creds, self.region, "ListAccountActivities", body)
+
     # UpgradeAccountPlan
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def upgrade_account_plan(self, UpgradeAccountPlanRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(freetier_protocol(), self.creds, self.region, "UpgradeAccountPlan", body)
+
+    # Paginator for GetFreeTierUsage — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: freeTierUsages).
+    def paginate_get_free_tier_usage(self, GetFreeTierUsageRequest input):
+        auto host = endpoints.regional_host(freetier_protocol().service, self.region)
+        while True:
+            auto body = get_free_tier_usage_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(freetier_protocol(), self.creds, self.region, "GetFreeTierUsage", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListAccountActivities — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: activities).
+    def paginate_list_account_activities(self, ListAccountActivitiesRequest input):
+        auto host = endpoints.regional_host(freetier_protocol().service, self.region)
+        while True:
+            auto body = list_account_activities_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(freetier_protocol(), self.creds, self.region, "ListAccountActivities", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
 
 # Construct a FreeTierClient bound to credentials + region.
 def freetier_client(core.Credentials creds, str region) -> FreeTierClient:

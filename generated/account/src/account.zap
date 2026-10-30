@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 18 operations — 17 with a generated method,
-#   1 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 18 operations — 18 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   41 structs (38 @derive(Json)), 7 enums, 7 error variants.
-#   0 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -251,8 +251,9 @@ struct ListRegionsRequest:
     Optional[str] NextToken
     Optional[list[RegionOptStatus]] RegionOptStatusContains
 
-# no @derive(Json): member(s) Regions: list[Region] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Regions: list[Region] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRegionsResponse:
     Optional[str] NextToken
     Optional[list[Region]] Regions
@@ -318,8 +319,9 @@ struct TooManyRequestsException:
     str message
     Optional[str] errorType
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     Optional[ValidationExceptionReason] reason
@@ -374,15 +376,6 @@ def account_error_from_code(str code) -> AccountError:
     return AccountError.Unknown(code=code)
 
 # --- client ----------------------------------------------------------------
-
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   ListRegions (document member `RegionOptStatusContains: list[RegionOptStatus]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListRegions (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -592,6 +585,30 @@ struct AccountClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, account_service(), self.region, host)
 
+    # ListRegions  POST /listRegions
+    # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
+    def list_regions(self, ListRegionsRequest input) -> str:
+        auto host = endpoints.regional_host(account_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/listRegions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AccountId.is_some():
+            auto u0 = input.AccountId.unwrap()
+            parts.append("\"AccountId\":" + account_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.NextToken.is_some():
+            auto u2 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + account_json_str(u2))
+        if input.RegionOptStatusContains.is_some():
+            auto u3 = input.RegionOptStatusContains.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"RegionOptStatusContains\":" + account_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, account_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, account_service(), self.region, host)
+
     # PutAccountName  POST /putAccountName
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def put_account_name(self, PutAccountNameRequest input) -> str:
@@ -645,6 +662,19 @@ struct AccountClient:
         auto doc = VerifyPhoneNumberDocument(AccountId=input.AccountId, Otp=input.Otp)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, account_service(), self.region, host)
+
+    # Paginator for ListRegions — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Regions).
+    def paginate_list_regions(self, ListRegionsRequest input):
+        auto host = endpoints.regional_host(account_service(), self.region)
+        while True:
+            auto raw = self.list_regions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
 # Construct a AccountClient bound to credentials + region.
 def account_client(core.Credentials creds, str region) -> AccountClient:

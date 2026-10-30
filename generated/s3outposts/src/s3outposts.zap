@@ -16,12 +16,12 @@
 # Response.
 #
 # Coverage (rest-json): 5 operations — 5 with a generated method,
-#   0 skipped (a member type is not yet bindable/serializable by derive).
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   20 structs (16 @derive(Json)), 2 enums, 7 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -86,8 +86,9 @@ struct DeleteEndpointRequest:
     str EndpointId
     str OutpostId
 
-# no @derive(Json): member(s) NetworkInterfaces: list[NetworkInterface] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkInterfaces: list[NetworkInterface] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Endpoint:
     Optional[str] EndpointArn
     Optional[str] OutpostsId
@@ -117,8 +118,9 @@ struct ListEndpointsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Endpoints: list[Endpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoints: list[Endpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEndpointsResult:
     Optional[list[Endpoint]] Endpoints
     Optional[str] NextToken
@@ -129,8 +131,9 @@ struct ListOutpostsWithS3Request:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Outposts: list[Outpost] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Outposts: list[Outpost] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOutpostsWithS3Result:
     Optional[list[Outpost]] Outposts
     Optional[str] NextToken
@@ -142,8 +145,9 @@ struct ListSharedEndpointsRequest:
     Optional[int64] MaxResults
     str OutpostId
 
-# no @derive(Json): member(s) Endpoints: list[Endpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoints: list[Endpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSharedEndpointsResult:
     Optional[list[Endpoint]] Endpoints
     Optional[str] NextToken

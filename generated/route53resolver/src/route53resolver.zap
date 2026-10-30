@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 72 operations — 51 with a generated method,
-#   21 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 72 operations — 72 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   197 structs (142 @derive(Json)), 30 enums, 17 error variants.
-#   11 paginators generated (6 paginated ops skipped) from paginators-1.json.
+#   17 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -311,8 +311,9 @@ enum Validation:
 struct AccessDeniedException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateFirewallRuleGroupRequest:
     str CreatorRequestId
     str FirewallRuleGroupId
@@ -331,8 +332,9 @@ struct AssociateResolverEndpointIpAddressRequest:
     str ResolverEndpointId
     IpAddressUpdate IpAddress
 
-# no @derive(Json): member(s) ResolverEndpoint: ResolverEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResolverEndpoint: ResolverEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateResolverEndpointIpAddressResponse:
     Optional[ResolverEndpoint] ResolverEndpoint
 
@@ -361,13 +363,15 @@ struct BatchCreateFirewallRuleError:
     Optional[str] Code
     Optional[str] Message
 
-# no @derive(Json): member(s) CreateFirewallRuleEntries: list[CreateFirewallRuleEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CreateFirewallRuleEntries: list[CreateFirewallRuleEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateFirewallRuleRequest:
     list[CreateFirewallRuleEntry] CreateFirewallRuleEntries
 
-# no @derive(Json): member(s) CreatedFirewallRules: list[FirewallRule], CreateErrors: list[BatchCreateFirewallRuleError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CreatedFirewallRules: list[FirewallRule], CreateErrors: list[BatchCreateFirewallRuleError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateFirewallRuleResponse:
     Optional[list[FirewallRule]] CreatedFirewallRules
     Optional[list[BatchCreateFirewallRuleError]] CreateErrors
@@ -378,13 +382,15 @@ struct BatchDeleteFirewallRuleError:
     Optional[str] Code
     Optional[str] Message
 
-# no @derive(Json): member(s) DeleteFirewallRuleEntries: list[DeleteFirewallRuleEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeleteFirewallRuleEntries: list[DeleteFirewallRuleEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteFirewallRuleRequest:
     list[DeleteFirewallRuleEntry] DeleteFirewallRuleEntries
 
-# no @derive(Json): member(s) DeletedFirewallRules: list[FirewallRule], DeleteErrors: list[BatchDeleteFirewallRuleError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeletedFirewallRules: list[FirewallRule], DeleteErrors: list[BatchDeleteFirewallRuleError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteFirewallRuleResponse:
     Optional[list[FirewallRule]] DeletedFirewallRules
     Optional[list[BatchDeleteFirewallRuleError]] DeleteErrors
@@ -395,13 +401,15 @@ struct BatchUpdateFirewallRuleError:
     Optional[str] Code
     Optional[str] Message
 
-# no @derive(Json): member(s) UpdateFirewallRuleEntries: list[UpdateFirewallRuleEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UpdateFirewallRuleEntries: list[UpdateFirewallRuleEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateFirewallRuleRequest:
     list[UpdateFirewallRuleEntry] UpdateFirewallRuleEntries
 
-# no @derive(Json): member(s) UpdatedFirewallRules: list[FirewallRule], UpdateErrors: list[BatchUpdateFirewallRuleError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UpdatedFirewallRules: list[FirewallRule], UpdateErrors: list[BatchUpdateFirewallRuleError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateFirewallRuleResponse:
     Optional[list[FirewallRule]] UpdatedFirewallRules
     Optional[list[BatchUpdateFirewallRuleError]] UpdateErrors
@@ -410,8 +418,9 @@ struct BatchUpdateFirewallRuleResponse:
 struct ConflictException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFirewallDomainListRequest:
     str CreatorRequestId
     str Name
@@ -439,8 +448,9 @@ struct CreateFirewallRuleEntry:
     Optional[ConfidenceThreshold] ConfidenceThreshold
     Optional[FirewallRuleType] FirewallRuleType
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFirewallRuleGroupRequest:
     str CreatorRequestId
     str Name
@@ -472,8 +482,9 @@ struct CreateFirewallRuleRequest:
 struct CreateFirewallRuleResponse:
     Optional[FirewallRule] FirewallRule
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateOutpostResolverRequest:
     str CreatorRequestId
     str Name
@@ -486,8 +497,9 @@ struct CreateOutpostResolverRequest:
 struct CreateOutpostResolverResponse:
     Optional[OutpostResolver] OutpostResolver
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], IpAddresses: list[IpAddressRequest], Tags: list[Tag], Protocols: list[Protocol] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], IpAddresses: list[IpAddressRequest], Tags: list[Tag], Protocols: list[Protocol] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateResolverEndpointRequest:
     str CreatorRequestId
     Optional[str] Name
@@ -504,13 +516,15 @@ struct CreateResolverEndpointRequest:
     Optional[bool] Dns64Enabled
     Optional[bool] Ipv6InternetAccessEnabled
 
-# no @derive(Json): member(s) ResolverEndpoint: ResolverEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResolverEndpoint: ResolverEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateResolverEndpointResponse:
     Optional[ResolverEndpoint] ResolverEndpoint
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateResolverQueryLogConfigRequest:
     str Name
     str DestinationArn
@@ -521,8 +535,9 @@ struct CreateResolverQueryLogConfigRequest:
 struct CreateResolverQueryLogConfigResponse:
     Optional[ResolverQueryLogConfig] ResolverQueryLogConfig
 
-# no @derive(Json): member(s) TargetIps: list[TargetAddress], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetIps: list[TargetAddress], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateResolverRuleRequest:
     str CreatorRequestId
     Optional[str] Name
@@ -533,8 +548,9 @@ struct CreateResolverRuleRequest:
     Optional[list[Tag]] Tags
     Optional[str] DelegationRecord
 
-# no @derive(Json): member(s) ResolverRule: ResolverRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResolverRule: ResolverRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateResolverRuleResponse:
     Optional[ResolverRule] ResolverRule
 
@@ -584,8 +600,9 @@ struct DeleteOutpostResolverResponse:
 struct DeleteResolverEndpointRequest:
     str ResolverEndpointId
 
-# no @derive(Json): member(s) ResolverEndpoint: ResolverEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResolverEndpoint: ResolverEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteResolverEndpointResponse:
     Optional[ResolverEndpoint] ResolverEndpoint
 
@@ -601,8 +618,9 @@ struct DeleteResolverQueryLogConfigResponse:
 struct DeleteResolverRuleRequest:
     str ResolverRuleId
 
-# no @derive(Json): member(s) ResolverRule: ResolverRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResolverRule: ResolverRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteResolverRuleResponse:
     Optional[ResolverRule] ResolverRule
 
@@ -619,8 +637,9 @@ struct DisassociateResolverEndpointIpAddressRequest:
     str ResolverEndpointId
     IpAddressUpdate IpAddress
 
-# no @derive(Json): member(s) ResolverEndpoint: ResolverEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResolverEndpoint: ResolverEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateResolverEndpointIpAddressResponse:
     Optional[ResolverEndpoint] ResolverEndpoint
 
@@ -647,8 +666,9 @@ struct DnsThreatProtectionRuleTypeConfig:
     str Value
     ConfidenceThreshold ConfidenceThreshold
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filter:
     Optional[str] Name
     Optional[list[str]] Values
@@ -838,8 +858,9 @@ struct GetResolverDnssecConfigResponse:
 struct GetResolverEndpointRequest:
     str ResolverEndpointId
 
-# no @derive(Json): member(s) ResolverEndpoint: ResolverEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResolverEndpoint: ResolverEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResolverEndpointResponse:
     Optional[ResolverEndpoint] ResolverEndpoint
 
@@ -887,8 +908,9 @@ struct GetResolverRulePolicyResponse:
 struct GetResolverRuleRequest:
     str ResolverRuleId
 
-# no @derive(Json): member(s) ResolverRule: ResolverRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResolverRule: ResolverRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResolverRuleResponse:
     Optional[ResolverRule] ResolverRule
 
@@ -964,8 +986,9 @@ struct ListFirewallConfigsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) FirewallConfigs: list[FirewallConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FirewallConfigs: list[FirewallConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFirewallConfigsResponse:
     Optional[str] NextToken
     Optional[list[FirewallConfig]] FirewallConfigs
@@ -975,8 +998,9 @@ struct ListFirewallDomainListsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) FirewallDomainLists: list[FirewallDomainListMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FirewallDomainLists: list[FirewallDomainListMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFirewallDomainListsResponse:
     Optional[str] NextToken
     Optional[list[FirewallDomainListMetadata]] FirewallDomainLists
@@ -987,8 +1011,9 @@ struct ListFirewallDomainsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Domains: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Domains: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFirewallDomainsResponse:
     Optional[str] NextToken
     Optional[list[str]] Domains
@@ -1002,8 +1027,9 @@ struct ListFirewallRuleGroupAssociationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) FirewallRuleGroupAssociations: list[FirewallRuleGroupAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FirewallRuleGroupAssociations: list[FirewallRuleGroupAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFirewallRuleGroupAssociationsResponse:
     Optional[str] NextToken
     Optional[list[FirewallRuleGroupAssociation]] FirewallRuleGroupAssociations
@@ -1013,8 +1039,9 @@ struct ListFirewallRuleGroupsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) FirewallRuleGroups: list[FirewallRuleGroupMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FirewallRuleGroups: list[FirewallRuleGroupMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFirewallRuleGroupsResponse:
     Optional[str] NextToken
     Optional[list[FirewallRuleGroupMetadata]] FirewallRuleGroups
@@ -1025,8 +1052,9 @@ struct ListFirewallRuleTypesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) FirewallRuleTypes: list[FirewallRuleTypeDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FirewallRuleTypes: list[FirewallRuleTypeDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFirewallRuleTypesResponse:
     Optional[list[FirewallRuleTypeDefinition]] FirewallRuleTypes
     Optional[str] NextToken
@@ -1039,8 +1067,9 @@ struct ListFirewallRulesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) FirewallRules: list[FirewallRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FirewallRules: list[FirewallRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFirewallRulesResponse:
     Optional[str] NextToken
     Optional[list[FirewallRule]] FirewallRules
@@ -1051,8 +1080,9 @@ struct ListOutpostResolversRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) OutpostResolvers: list[OutpostResolver] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OutpostResolvers: list[OutpostResolver] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOutpostResolversResponse:
     Optional[list[OutpostResolver]] OutpostResolvers
     Optional[str] NextToken
@@ -1062,21 +1092,24 @@ struct ListResolverConfigsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ResolverConfigs: list[ResolverConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResolverConfigs: list[ResolverConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResolverConfigsResponse:
     Optional[str] NextToken
     Optional[list[ResolverConfig]] ResolverConfigs
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResolverDnssecConfigsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) ResolverDnssecConfigs: list[ResolverDnssecConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResolverDnssecConfigs: list[ResolverDnssecConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResolverDnssecConfigsResponse:
     Optional[str] NextToken
     Optional[list[ResolverDnssecConfig]] ResolverDnssecConfigs
@@ -1087,29 +1120,33 @@ struct ListResolverEndpointIpAddressesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) IpAddresses: list[IpAddressResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IpAddresses: list[IpAddressResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResolverEndpointIpAddressesResponse:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[list[IpAddressResponse]] IpAddresses
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResolverEndpointsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) ResolverEndpoints: list[ResolverEndpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResolverEndpoints: list[ResolverEndpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResolverEndpointsResponse:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[list[ResolverEndpoint]] ResolverEndpoints
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResolverQueryLogConfigAssociationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
@@ -1117,16 +1154,18 @@ struct ListResolverQueryLogConfigAssociationsRequest:
     Optional[str] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) ResolverQueryLogConfigAssociations: list[ResolverQueryLogConfigAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResolverQueryLogConfigAssociations: list[ResolverQueryLogConfigAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResolverQueryLogConfigAssociationsResponse:
     Optional[str] NextToken
     Optional[int64] TotalCount
     Optional[int64] TotalFilteredCount
     Optional[list[ResolverQueryLogConfigAssociation]] ResolverQueryLogConfigAssociations
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResolverQueryLogConfigsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
@@ -1134,37 +1173,42 @@ struct ListResolverQueryLogConfigsRequest:
     Optional[str] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) ResolverQueryLogConfigs: list[ResolverQueryLogConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResolverQueryLogConfigs: list[ResolverQueryLogConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResolverQueryLogConfigsResponse:
     Optional[str] NextToken
     Optional[int64] TotalCount
     Optional[int64] TotalFilteredCount
     Optional[list[ResolverQueryLogConfig]] ResolverQueryLogConfigs
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResolverRuleAssociationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) ResolverRuleAssociations: list[ResolverRuleAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResolverRuleAssociations: list[ResolverRuleAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResolverRuleAssociationsResponse:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[list[ResolverRuleAssociation]] ResolverRuleAssociations
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResolverRulesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) ResolverRules: list[ResolverRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResolverRules: list[ResolverRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResolverRulesResponse:
     Optional[str] NextToken
     Optional[int64] MaxResults
@@ -1176,8 +1220,9 @@ struct ListTagsForResourceRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
     Optional[str] NextToken
@@ -1241,8 +1286,9 @@ struct ResolverDnssecConfig:
     Optional[str] ResourceId
     Optional[ResolverDNSSECValidationStatus] ValidationStatus
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], Protocols: list[Protocol] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], Protocols: list[Protocol] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResolverEndpoint:
     Optional[str] Id
     Optional[str] CreatorRequestId
@@ -1288,8 +1334,9 @@ struct ResolverQueryLogConfigAssociation:
     Optional[str] ErrorMessage
     Optional[str] CreationTime
 
-# no @derive(Json): member(s) TargetIps: list[TargetAddress] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetIps: list[TargetAddress] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResolverRule:
     Optional[str] Id
     Optional[str] CreatorRequestId
@@ -1316,8 +1363,9 @@ struct ResolverRuleAssociation:
     Optional[ResolverRuleAssociationStatus] Status
     Optional[str] StatusMessage
 
-# no @derive(Json): member(s) TargetIps: list[TargetAddress] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetIps: list[TargetAddress] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResolverRuleConfig:
     Optional[str] Name
     Optional[list[TargetAddress]] TargetIps
@@ -1357,8 +1405,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[Tag] Tags
@@ -1384,8 +1433,9 @@ struct ThrottlingException:
 struct UnknownResourceException:
     Optional[str] Message
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] TagKeys
@@ -1404,8 +1454,9 @@ struct UpdateFirewallConfigRequest:
 struct UpdateFirewallConfigResponse:
     Optional[FirewallConfig] FirewallConfig
 
-# no @derive(Json): member(s) Domains: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Domains: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFirewallDomainsRequest:
     str FirewallDomainListId
     FirewallDomainUpdateOperation Operation
@@ -1503,8 +1554,9 @@ struct UpdateResolverDnssecConfigRequest:
 struct UpdateResolverDnssecConfigResponse:
     Optional[ResolverDnssecConfig] ResolverDNSSECConfig
 
-# no @derive(Json): member(s) UpdateIpAddresses: list[UpdateIpAddress], Protocols: list[Protocol] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UpdateIpAddresses: list[UpdateIpAddress], Protocols: list[Protocol] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateResolverEndpointRequest:
     str ResolverEndpointId
     Optional[str] Name
@@ -1516,19 +1568,22 @@ struct UpdateResolverEndpointRequest:
     Optional[bool] Dns64Enabled
     Optional[bool] Ipv6InternetAccessEnabled
 
-# no @derive(Json): member(s) ResolverEndpoint: ResolverEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResolverEndpoint: ResolverEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateResolverEndpointResponse:
     Optional[ResolverEndpoint] ResolverEndpoint
 
-# no @derive(Json): member(s) Config: ResolverRuleConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Config: ResolverRuleConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateResolverRuleRequest:
     str ResolverRuleId
     ResolverRuleConfig Config
 
-# no @derive(Json): member(s) ResolverRule: ResolverRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResolverRule: ResolverRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateResolverRuleResponse:
     Optional[ResolverRule] ResolverRule
 
@@ -1600,43 +1655,451 @@ def route53resolver_error_from_code(str code) -> Route53ResolverError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AssociateFirewallRuleGroup (input AssociateFirewallRuleGroupRequest)
-#   BatchCreateFirewallRule (input BatchCreateFirewallRuleRequest)
-#   BatchDeleteFirewallRule (input BatchDeleteFirewallRuleRequest)
-#   BatchUpdateFirewallRule (input BatchUpdateFirewallRuleRequest)
-#   CreateFirewallDomainList (input CreateFirewallDomainListRequest)
-#   CreateFirewallRuleGroup (input CreateFirewallRuleGroupRequest)
-#   CreateOutpostResolver (input CreateOutpostResolverRequest)
-#   CreateResolverEndpoint (input CreateResolverEndpointRequest)
-#   CreateResolverQueryLogConfig (input CreateResolverQueryLogConfigRequest)
-#   CreateResolverRule (input CreateResolverRuleRequest)
-#   ListResolverDnssecConfigs (input ListResolverDnssecConfigsRequest)
-#   ListResolverEndpoints (input ListResolverEndpointsRequest)
-#   ListResolverQueryLogConfigAssociations (input ListResolverQueryLogConfigAssociationsRequest)
-#   ListResolverQueryLogConfigs (input ListResolverQueryLogConfigsRequest)
-#   ListResolverRuleAssociations (input ListResolverRuleAssociationsRequest)
-#   ListResolverRules (input ListResolverRulesRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateFirewallDomains (input UpdateFirewallDomainsRequest)
-#   UpdateResolverEndpoint (input UpdateResolverEndpointRequest)
-#   UpdateResolverRule (input UpdateResolverRuleRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def route53resolver_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListResolverDnssecConfigs (input not derivable (no generated method))
-#   ListResolverEndpoints (input not derivable (no generated method))
-#   ListResolverQueryLogConfigAssociations (input not derivable (no generated method))
-#   ListResolverQueryLogConfigs (input not derivable (no generated method))
-#   ListResolverRuleAssociations (input not derivable (no generated method))
-#   ListResolverRules (input not derivable (no generated method))
+def route53resolver_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def route53resolver_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AssociateFirewallRuleGroupRequest to a compact JSON object (declaration order).
+def associate_firewall_rule_group_request_to_json(AssociateFirewallRuleGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CreatorRequestId\":" + route53resolver_json_str(v.CreatorRequestId))
+    parts.append("\"FirewallRuleGroupId\":" + route53resolver_json_str(v.FirewallRuleGroupId))
+    parts.append("\"VpcId\":" + route53resolver_json_str(v.VpcId))
+    parts.append("\"Priority\":" + str(v.Priority))
+    parts.append("\"Name\":" + route53resolver_json_str(v.Name))
+    if v.MutationProtection.is_some():
+        auto u0 = v.MutationProtection.unwrap()
+        parts.append("\"MutationProtection\":" + u0.to_json())
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + route53resolver_json_arr(e2))
+    return route53resolver_json_obj(parts)
+
+# Serialize BatchCreateFirewallRuleRequest to a compact JSON object (declaration order).
+def batch_create_firewall_rule_request_to_json(BatchCreateFirewallRuleRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.CreateFirewallRuleEntries:
+        e0.append(x0.to_json())
+    parts.append("\"CreateFirewallRuleEntries\":" + route53resolver_json_arr(e0))
+    return route53resolver_json_obj(parts)
+
+# Serialize BatchDeleteFirewallRuleRequest to a compact JSON object (declaration order).
+def batch_delete_firewall_rule_request_to_json(BatchDeleteFirewallRuleRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.DeleteFirewallRuleEntries:
+        e0.append(x0.to_json())
+    parts.append("\"DeleteFirewallRuleEntries\":" + route53resolver_json_arr(e0))
+    return route53resolver_json_obj(parts)
+
+# Serialize BatchUpdateFirewallRuleRequest to a compact JSON object (declaration order).
+def batch_update_firewall_rule_request_to_json(BatchUpdateFirewallRuleRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.UpdateFirewallRuleEntries:
+        e0.append(x0.to_json())
+    parts.append("\"UpdateFirewallRuleEntries\":" + route53resolver_json_arr(e0))
+    return route53resolver_json_obj(parts)
+
+# Serialize CreateFirewallDomainListRequest to a compact JSON object (declaration order).
+def create_firewall_domain_list_request_to_json(CreateFirewallDomainListRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CreatorRequestId\":" + route53resolver_json_str(v.CreatorRequestId))
+    parts.append("\"Name\":" + route53resolver_json_str(v.Name))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + route53resolver_json_arr(e1))
+    return route53resolver_json_obj(parts)
+
+# Serialize CreateFirewallRuleGroupRequest to a compact JSON object (declaration order).
+def create_firewall_rule_group_request_to_json(CreateFirewallRuleGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CreatorRequestId\":" + route53resolver_json_str(v.CreatorRequestId))
+    parts.append("\"Name\":" + route53resolver_json_str(v.Name))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + route53resolver_json_arr(e1))
+    return route53resolver_json_obj(parts)
+
+# Serialize CreateOutpostResolverRequest to a compact JSON object (declaration order).
+def create_outpost_resolver_request_to_json(CreateOutpostResolverRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CreatorRequestId\":" + route53resolver_json_str(v.CreatorRequestId))
+    parts.append("\"Name\":" + route53resolver_json_str(v.Name))
+    if v.InstanceCount.is_some():
+        auto u0 = v.InstanceCount.unwrap()
+        parts.append("\"InstanceCount\":" + str(u0))
+    parts.append("\"PreferredInstanceType\":" + route53resolver_json_str(v.PreferredInstanceType))
+    parts.append("\"OutpostArn\":" + route53resolver_json_str(v.OutpostArn))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + route53resolver_json_arr(e2))
+    return route53resolver_json_obj(parts)
+
+# Serialize CreateResolverEndpointRequest to a compact JSON object (declaration order).
+def create_resolver_endpoint_request_to_json(CreateResolverEndpointRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CreatorRequestId\":" + route53resolver_json_str(v.CreatorRequestId))
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + route53resolver_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.SecurityGroupIds:
+        e1.append(route53resolver_json_str(x1))
+    parts.append("\"SecurityGroupIds\":" + route53resolver_json_arr(e1))
+    parts.append("\"Direction\":" + v.Direction.to_json())
+    list[str] e2 = []
+    for x2 in v.IpAddresses:
+        e2.append(x2.to_json())
+    parts.append("\"IpAddresses\":" + route53resolver_json_arr(e2))
+    if v.OutpostArn.is_some():
+        auto u3 = v.OutpostArn.unwrap()
+        parts.append("\"OutpostArn\":" + route53resolver_json_str(u3))
+    if v.PreferredInstanceType.is_some():
+        auto u4 = v.PreferredInstanceType.unwrap()
+        parts.append("\"PreferredInstanceType\":" + route53resolver_json_str(u4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + route53resolver_json_arr(e6))
+    if v.ResolverEndpointType.is_some():
+        auto u7 = v.ResolverEndpointType.unwrap()
+        parts.append("\"ResolverEndpointType\":" + u7.to_json())
+    if v.Protocols.is_some():
+        auto u8 = v.Protocols.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"Protocols\":" + route53resolver_json_arr(e9))
+    if v.RniEnhancedMetricsEnabled.is_some():
+        auto u10 = v.RniEnhancedMetricsEnabled.unwrap()
+        parts.append("\"RniEnhancedMetricsEnabled\":" + json.dumps(JsonValue.Bool(u10)))
+    if v.TargetNameServerMetricsEnabled.is_some():
+        auto u11 = v.TargetNameServerMetricsEnabled.unwrap()
+        parts.append("\"TargetNameServerMetricsEnabled\":" + json.dumps(JsonValue.Bool(u11)))
+    if v.Dns64Enabled.is_some():
+        auto u12 = v.Dns64Enabled.unwrap()
+        parts.append("\"Dns64Enabled\":" + json.dumps(JsonValue.Bool(u12)))
+    if v.Ipv6InternetAccessEnabled.is_some():
+        auto u13 = v.Ipv6InternetAccessEnabled.unwrap()
+        parts.append("\"Ipv6InternetAccessEnabled\":" + json.dumps(JsonValue.Bool(u13)))
+    return route53resolver_json_obj(parts)
+
+# Serialize CreateResolverQueryLogConfigRequest to a compact JSON object (declaration order).
+def create_resolver_query_log_config_request_to_json(CreateResolverQueryLogConfigRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + route53resolver_json_str(v.Name))
+    parts.append("\"DestinationArn\":" + route53resolver_json_str(v.DestinationArn))
+    parts.append("\"CreatorRequestId\":" + route53resolver_json_str(v.CreatorRequestId))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + route53resolver_json_arr(e1))
+    return route53resolver_json_obj(parts)
+
+# Serialize CreateResolverRuleRequest to a compact JSON object (declaration order).
+def create_resolver_rule_request_to_json(CreateResolverRuleRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CreatorRequestId\":" + route53resolver_json_str(v.CreatorRequestId))
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + route53resolver_json_str(u0))
+    parts.append("\"RuleType\":" + v.RuleType.to_json())
+    if v.DomainName.is_some():
+        auto u1 = v.DomainName.unwrap()
+        parts.append("\"DomainName\":" + route53resolver_json_str(u1))
+    if v.TargetIps.is_some():
+        auto u2 = v.TargetIps.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"TargetIps\":" + route53resolver_json_arr(e3))
+    if v.ResolverEndpointId.is_some():
+        auto u4 = v.ResolverEndpointId.unwrap()
+        parts.append("\"ResolverEndpointId\":" + route53resolver_json_str(u4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + route53resolver_json_arr(e6))
+    if v.DelegationRecord.is_some():
+        auto u7 = v.DelegationRecord.unwrap()
+        parts.append("\"DelegationRecord\":" + route53resolver_json_str(u7))
+    return route53resolver_json_obj(parts)
+
+# Serialize Filter to a compact JSON object (declaration order).
+def filter_to_json(Filter v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + route53resolver_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(route53resolver_json_str(x2))
+        parts.append("\"Values\":" + route53resolver_json_arr(e2))
+    return route53resolver_json_obj(parts)
+
+# Serialize ListResolverDnssecConfigsRequest to a compact JSON object (declaration order).
+def list_resolver_dnssec_configs_request_to_json(ListResolverDnssecConfigsRequest v) -> str:
+    list[str] parts = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + route53resolver_json_str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(filter_to_json(x3))
+        parts.append("\"Filters\":" + route53resolver_json_arr(e3))
+    return route53resolver_json_obj(parts)
+
+# Serialize ListResolverEndpointsRequest to a compact JSON object (declaration order).
+def list_resolver_endpoints_request_to_json(ListResolverEndpointsRequest v) -> str:
+    list[str] parts = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + route53resolver_json_str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(filter_to_json(x3))
+        parts.append("\"Filters\":" + route53resolver_json_arr(e3))
+    return route53resolver_json_obj(parts)
+
+# Serialize ListResolverQueryLogConfigAssociationsRequest to a compact JSON object (declaration order).
+def list_resolver_query_log_config_associations_request_to_json(ListResolverQueryLogConfigAssociationsRequest v) -> str:
+    list[str] parts = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + route53resolver_json_str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(filter_to_json(x3))
+        parts.append("\"Filters\":" + route53resolver_json_arr(e3))
+    if v.SortBy.is_some():
+        auto u4 = v.SortBy.unwrap()
+        parts.append("\"SortBy\":" + route53resolver_json_str(u4))
+    if v.SortOrder.is_some():
+        auto u5 = v.SortOrder.unwrap()
+        parts.append("\"SortOrder\":" + u5.to_json())
+    return route53resolver_json_obj(parts)
+
+# Serialize ListResolverQueryLogConfigsRequest to a compact JSON object (declaration order).
+def list_resolver_query_log_configs_request_to_json(ListResolverQueryLogConfigsRequest v) -> str:
+    list[str] parts = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + route53resolver_json_str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(filter_to_json(x3))
+        parts.append("\"Filters\":" + route53resolver_json_arr(e3))
+    if v.SortBy.is_some():
+        auto u4 = v.SortBy.unwrap()
+        parts.append("\"SortBy\":" + route53resolver_json_str(u4))
+    if v.SortOrder.is_some():
+        auto u5 = v.SortOrder.unwrap()
+        parts.append("\"SortOrder\":" + u5.to_json())
+    return route53resolver_json_obj(parts)
+
+# Serialize ListResolverRuleAssociationsRequest to a compact JSON object (declaration order).
+def list_resolver_rule_associations_request_to_json(ListResolverRuleAssociationsRequest v) -> str:
+    list[str] parts = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + route53resolver_json_str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(filter_to_json(x3))
+        parts.append("\"Filters\":" + route53resolver_json_arr(e3))
+    return route53resolver_json_obj(parts)
+
+# Serialize ListResolverRulesRequest to a compact JSON object (declaration order).
+def list_resolver_rules_request_to_json(ListResolverRulesRequest v) -> str:
+    list[str] parts = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + route53resolver_json_str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(filter_to_json(x3))
+        parts.append("\"Filters\":" + route53resolver_json_arr(e3))
+    return route53resolver_json_obj(parts)
+
+# Serialize ResolverRuleConfig to a compact JSON object (declaration order).
+def resolver_rule_config_to_json(ResolverRuleConfig v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + route53resolver_json_str(u0))
+    if v.TargetIps.is_some():
+        auto u1 = v.TargetIps.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"TargetIps\":" + route53resolver_json_arr(e2))
+    if v.ResolverEndpointId.is_some():
+        auto u3 = v.ResolverEndpointId.unwrap()
+        parts.append("\"ResolverEndpointId\":" + route53resolver_json_str(u3))
+    return route53resolver_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + route53resolver_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + route53resolver_json_arr(e0))
+    return route53resolver_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + route53resolver_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(route53resolver_json_str(x0))
+    parts.append("\"TagKeys\":" + route53resolver_json_arr(e0))
+    return route53resolver_json_obj(parts)
+
+# Serialize UpdateFirewallDomainsRequest to a compact JSON object (declaration order).
+def update_firewall_domains_request_to_json(UpdateFirewallDomainsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"FirewallDomainListId\":" + route53resolver_json_str(v.FirewallDomainListId))
+    parts.append("\"Operation\":" + v.Operation.to_json())
+    list[str] e0 = []
+    for x0 in v.Domains:
+        e0.append(route53resolver_json_str(x0))
+    parts.append("\"Domains\":" + route53resolver_json_arr(e0))
+    return route53resolver_json_obj(parts)
+
+# Serialize UpdateResolverEndpointRequest to a compact JSON object (declaration order).
+def update_resolver_endpoint_request_to_json(UpdateResolverEndpointRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResolverEndpointId\":" + route53resolver_json_str(v.ResolverEndpointId))
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + route53resolver_json_str(u0))
+    if v.ResolverEndpointType.is_some():
+        auto u1 = v.ResolverEndpointType.unwrap()
+        parts.append("\"ResolverEndpointType\":" + u1.to_json())
+    if v.UpdateIpAddresses.is_some():
+        auto u2 = v.UpdateIpAddresses.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"UpdateIpAddresses\":" + route53resolver_json_arr(e3))
+    if v.Protocols.is_some():
+        auto u4 = v.Protocols.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Protocols\":" + route53resolver_json_arr(e5))
+    if v.RniEnhancedMetricsEnabled.is_some():
+        auto u6 = v.RniEnhancedMetricsEnabled.unwrap()
+        parts.append("\"RniEnhancedMetricsEnabled\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.TargetNameServerMetricsEnabled.is_some():
+        auto u7 = v.TargetNameServerMetricsEnabled.unwrap()
+        parts.append("\"TargetNameServerMetricsEnabled\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.Dns64Enabled.is_some():
+        auto u8 = v.Dns64Enabled.unwrap()
+        parts.append("\"Dns64Enabled\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.Ipv6InternetAccessEnabled.is_some():
+        auto u9 = v.Ipv6InternetAccessEnabled.unwrap()
+        parts.append("\"Ipv6InternetAccessEnabled\":" + json.dumps(JsonValue.Bool(u9)))
+    return route53resolver_json_obj(parts)
+
+# Serialize UpdateResolverRuleRequest to a compact JSON object (declaration order).
+def update_resolver_rule_request_to_json(UpdateResolverRuleRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResolverRuleId\":" + route53resolver_json_str(v.ResolverRuleId))
+    parts.append("\"Config\":" + resolver_rule_config_to_json(v.Config))
+    return route53resolver_json_obj(parts)
 
 # A bound Route53Resolver client: credentials + region, threaded into every operation.
 struct Route53ResolverClient:
     core.Credentials creds
     str region
+
+    # AssociateFirewallRuleGroup
+    # errors: AccessDeniedException, ConflictException, InternalServiceErrorException, LimitExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def associate_firewall_rule_group(self, AssociateFirewallRuleGroupRequest input) -> str:
+        auto body = associate_firewall_rule_group_request_to_json(input)
+        return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "AssociateFirewallRuleGroup", body)
 
     # AssociateResolverEndpointIpAddress
     # errors: InternalServiceErrorException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException
@@ -1656,11 +2119,65 @@ struct Route53ResolverClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "AssociateResolverRule", body)
 
+    # BatchCreateFirewallRule
+    # errors: AccessDeniedException, InternalServiceErrorException, LimitExceededException, ThrottlingException, ValidationException
+    def batch_create_firewall_rule(self, BatchCreateFirewallRuleRequest input) -> str:
+        auto body = batch_create_firewall_rule_request_to_json(input)
+        return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "BatchCreateFirewallRule", body)
+
+    # BatchDeleteFirewallRule
+    # errors: AccessDeniedException, InternalServiceErrorException, LimitExceededException, ThrottlingException, ValidationException
+    def batch_delete_firewall_rule(self, BatchDeleteFirewallRuleRequest input) -> str:
+        auto body = batch_delete_firewall_rule_request_to_json(input)
+        return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "BatchDeleteFirewallRule", body)
+
+    # BatchUpdateFirewallRule
+    # errors: AccessDeniedException, InternalServiceErrorException, LimitExceededException, ThrottlingException, ValidationException
+    def batch_update_firewall_rule(self, BatchUpdateFirewallRuleRequest input) -> str:
+        auto body = batch_update_firewall_rule_request_to_json(input)
+        return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "BatchUpdateFirewallRule", body)
+
+    # CreateFirewallDomainList
+    # errors: AccessDeniedException, InternalServiceErrorException, LimitExceededException, ThrottlingException, ValidationException
+    def create_firewall_domain_list(self, CreateFirewallDomainListRequest input) -> str:
+        auto body = create_firewall_domain_list_request_to_json(input)
+        return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "CreateFirewallDomainList", body)
+
     # CreateFirewallRule
     # errors: AccessDeniedException, InternalServiceErrorException, LimitExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_firewall_rule(self, CreateFirewallRuleRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "CreateFirewallRule", body)
+
+    # CreateFirewallRuleGroup
+    # errors: AccessDeniedException, InternalServiceErrorException, LimitExceededException, ThrottlingException, ValidationException
+    def create_firewall_rule_group(self, CreateFirewallRuleGroupRequest input) -> str:
+        auto body = create_firewall_rule_group_request_to_json(input)
+        return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "CreateFirewallRuleGroup", body)
+
+    # CreateOutpostResolver
+    # errors: AccessDeniedException, InternalServiceErrorException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_outpost_resolver(self, CreateOutpostResolverRequest input) -> str:
+        auto body = create_outpost_resolver_request_to_json(input)
+        return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "CreateOutpostResolver", body)
+
+    # CreateResolverEndpoint
+    # errors: AccessDeniedException, InternalServiceErrorException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException
+    def create_resolver_endpoint(self, CreateResolverEndpointRequest input) -> str:
+        auto body = create_resolver_endpoint_request_to_json(input)
+        return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "CreateResolverEndpoint", body)
+
+    # CreateResolverQueryLogConfig
+    # errors: AccessDeniedException, InternalServiceErrorException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException
+    def create_resolver_query_log_config(self, CreateResolverQueryLogConfigRequest input) -> str:
+        auto body = create_resolver_query_log_config_request_to_json(input)
+        return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "CreateResolverQueryLogConfig", body)
+
+    # CreateResolverRule
+    # errors: AccessDeniedException, InternalServiceErrorException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ResourceUnavailableException, ThrottlingException
+    def create_resolver_rule(self, CreateResolverRuleRequest input) -> str:
+        auto body = create_resolver_rule_request_to_json(input)
+        return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "CreateResolverRule", body)
 
     # DeleteFirewallDomainList
     # errors: AccessDeniedException, ConflictException, InternalServiceErrorException, ResourceNotFoundException, ThrottlingException
@@ -1878,11 +2395,47 @@ struct Route53ResolverClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "ListResolverConfigs", body)
 
+    # ListResolverDnssecConfigs
+    # errors: AccessDeniedException, InternalServiceErrorException, InvalidNextTokenException, InvalidParameterException, InvalidRequestException, ThrottlingException
+    def list_resolver_dnssec_configs(self, ListResolverDnssecConfigsRequest input) -> str:
+        auto body = list_resolver_dnssec_configs_request_to_json(input)
+        return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "ListResolverDnssecConfigs", body)
+
     # ListResolverEndpointIpAddresses
     # errors: InternalServiceErrorException, InvalidNextTokenException, InvalidParameterException, ResourceNotFoundException, ThrottlingException
     def list_resolver_endpoint_ip_addresses(self, ListResolverEndpointIpAddressesRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "ListResolverEndpointIpAddresses", body)
+
+    # ListResolverEndpoints
+    # errors: InternalServiceErrorException, InvalidNextTokenException, InvalidParameterException, InvalidRequestException, ThrottlingException
+    def list_resolver_endpoints(self, ListResolverEndpointsRequest input) -> str:
+        auto body = list_resolver_endpoints_request_to_json(input)
+        return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "ListResolverEndpoints", body)
+
+    # ListResolverQueryLogConfigAssociations
+    # errors: AccessDeniedException, InternalServiceErrorException, InvalidParameterException, InvalidRequestException, LimitExceededException, ThrottlingException
+    def list_resolver_query_log_config_associations(self, ListResolverQueryLogConfigAssociationsRequest input) -> str:
+        auto body = list_resolver_query_log_config_associations_request_to_json(input)
+        return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "ListResolverQueryLogConfigAssociations", body)
+
+    # ListResolverQueryLogConfigs
+    # errors: AccessDeniedException, InternalServiceErrorException, InvalidNextTokenException, InvalidParameterException, InvalidRequestException, ThrottlingException
+    def list_resolver_query_log_configs(self, ListResolverQueryLogConfigsRequest input) -> str:
+        auto body = list_resolver_query_log_configs_request_to_json(input)
+        return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "ListResolverQueryLogConfigs", body)
+
+    # ListResolverRuleAssociations
+    # errors: InternalServiceErrorException, InvalidNextTokenException, InvalidParameterException, InvalidRequestException, ThrottlingException
+    def list_resolver_rule_associations(self, ListResolverRuleAssociationsRequest input) -> str:
+        auto body = list_resolver_rule_associations_request_to_json(input)
+        return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "ListResolverRuleAssociations", body)
+
+    # ListResolverRules
+    # errors: InternalServiceErrorException, InvalidNextTokenException, InvalidParameterException, InvalidRequestException, ThrottlingException
+    def list_resolver_rules(self, ListResolverRulesRequest input) -> str:
+        auto body = list_resolver_rules_request_to_json(input)
+        return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "ListResolverRules", body)
 
     # ListTagsForResource
     # errors: InternalServiceErrorException, InvalidNextTokenException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
@@ -1908,11 +2461,29 @@ struct Route53ResolverClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "PutResolverRulePolicy", body)
 
+    # TagResource
+    # errors: InternalServiceErrorException, InvalidParameterException, InvalidRequestException, InvalidTagException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: InternalServiceErrorException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "UntagResource", body)
+
     # UpdateFirewallConfig
     # errors: AccessDeniedException, InternalServiceErrorException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_firewall_config(self, UpdateFirewallConfigRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "UpdateFirewallConfig", body)
+
+    # UpdateFirewallDomains
+    # errors: AccessDeniedException, ConflictException, InternalServiceErrorException, LimitExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_firewall_domains(self, UpdateFirewallDomainsRequest input) -> str:
+        auto body = update_firewall_domains_request_to_json(input)
+        return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "UpdateFirewallDomains", body)
 
     # UpdateFirewallRule
     # errors: AccessDeniedException, ConflictException, InternalServiceErrorException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1943,6 +2514,18 @@ struct Route53ResolverClient:
     def update_resolver_dnssec_config(self, UpdateResolverDnssecConfigRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "UpdateResolverDnssecConfig", body)
+
+    # UpdateResolverEndpoint
+    # errors: AccessDeniedException, InternalServiceErrorException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_resolver_endpoint(self, UpdateResolverEndpointRequest input) -> str:
+        auto body = update_resolver_endpoint_request_to_json(input)
+        return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "UpdateResolverEndpoint", body)
+
+    # UpdateResolverRule
+    # errors: AccessDeniedException, InternalServiceErrorException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ResourceUnavailableException, ThrottlingException
+    def update_resolver_rule(self, UpdateResolverRuleRequest input) -> str:
+        auto body = update_resolver_rule_request_to_json(input)
+        return awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "UpdateResolverRule", body)
 
     # Paginator for ListFirewallConfigs — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: FirewallConfigs).
@@ -2070,6 +2653,20 @@ struct Route53ResolverClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListResolverDnssecConfigs — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ResolverDnssecConfigs).
+    def paginate_list_resolver_dnssec_configs(self, ListResolverDnssecConfigsRequest input):
+        auto host = endpoints.regional_host(route53resolver_protocol().service, self.region)
+        while True:
+            auto body = list_resolver_dnssec_configs_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "ListResolverDnssecConfigs", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListResolverEndpointIpAddresses — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: IpAddresses).
     def paginate_list_resolver_endpoint_ip_addresses(self, ListResolverEndpointIpAddressesRequest input):
@@ -2077,6 +2674,76 @@ struct Route53ResolverClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "ListResolverEndpointIpAddresses", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListResolverEndpoints — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ResolverEndpoints).
+    def paginate_list_resolver_endpoints(self, ListResolverEndpointsRequest input):
+        auto host = endpoints.regional_host(route53resolver_protocol().service, self.region)
+        while True:
+            auto body = list_resolver_endpoints_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "ListResolverEndpoints", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListResolverQueryLogConfigAssociations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ResolverQueryLogConfigAssociations).
+    def paginate_list_resolver_query_log_config_associations(self, ListResolverQueryLogConfigAssociationsRequest input):
+        auto host = endpoints.regional_host(route53resolver_protocol().service, self.region)
+        while True:
+            auto body = list_resolver_query_log_config_associations_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "ListResolverQueryLogConfigAssociations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListResolverQueryLogConfigs — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ResolverQueryLogConfigs).
+    def paginate_list_resolver_query_log_configs(self, ListResolverQueryLogConfigsRequest input):
+        auto host = endpoints.regional_host(route53resolver_protocol().service, self.region)
+        while True:
+            auto body = list_resolver_query_log_configs_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "ListResolverQueryLogConfigs", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListResolverRuleAssociations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ResolverRuleAssociations).
+    def paginate_list_resolver_rule_associations(self, ListResolverRuleAssociationsRequest input):
+        auto host = endpoints.regional_host(route53resolver_protocol().service, self.region)
+        while True:
+            auto body = list_resolver_rule_associations_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "ListResolverRuleAssociations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListResolverRules — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ResolverRules).
+    def paginate_list_resolver_rules(self, ListResolverRulesRequest input):
+        auto host = endpoints.regional_host(route53resolver_protocol().service, self.region)
+        while True:
+            auto body = list_resolver_rules_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(route53resolver_protocol(), self.creds, self.region, "ListResolverRules", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

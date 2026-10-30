@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 30 operations — 20 with a generated method,
-#   10 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 30 operations — 29 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   52 structs (25 @derive(Json)), 3 enums, 4 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import base64
 
 # The RolesAnywhere rest-json protocol: SigV4 service "rolesanywhere" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -69,8 +70,9 @@ enum TrustAnchorType:
 struct AccessDeniedException:
     Optional[str] message
 
-# no @derive(Json): member(s) mappingRules: list[MappingRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mappingRules: list[MappingRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributeMapping:
     Optional[CertificateField] certificateField
     Optional[list[MappingRule]] mappingRules
@@ -132,8 +134,9 @@ struct DeleteAttributeMappingRequest:
     str certificateField
     Optional[list[str]] specifiers
 
-# no @derive(Json): member(s) profile: ProfileDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) profile: ProfileDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteAttributeMappingResponse:
     ProfileDetail profile
 
@@ -146,21 +149,24 @@ struct ImportCrlRequest:
     Optional[list[Tag]] tags
     str trustAnchorArn
 
-# no @derive(Json): member(s) properties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceProperty:
     Optional[DateTime] seenAt
     Optional[dict[str, str]] properties
     Optional[bool] failed
 
-# no @derive(Json): member(s) crls: list[CrlDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) crls: list[CrlDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCrlsResponse:
     Optional[str] nextToken
     Optional[list[CrlDetail]] crls
 
-# no @derive(Json): member(s) profiles: list[ProfileDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) profiles: list[ProfileDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProfilesResponse:
     Optional[str] nextToken
     Optional[list[ProfileDetail]] profiles
@@ -171,8 +177,9 @@ struct ListRequest:
     Optional[str] nextToken
     Optional[int64] pageSize
 
-# no @derive(Json): member(s) subjects: list[SubjectSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subjects: list[SubjectSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSubjectsResponse:
     Optional[list[SubjectSummary]] subjects
     Optional[str] nextToken
@@ -182,13 +189,15 @@ struct ListSubjectsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) trustAnchors: list[TrustAnchorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) trustAnchors: list[TrustAnchorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTrustAnchorsResponse:
     Optional[str] nextToken
     Optional[list[TrustAnchorDetail]] trustAnchors
@@ -220,8 +229,9 @@ struct NotificationSettingKey:
     # wire name "channel" differs from field; derive rename is a #346 follow-up
     Optional[str] channel_
 
-# no @derive(Json): member(s) roleArns: list[str], managedPolicyArns: list[str], attributeMappings: list[AttributeMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) roleArns: list[str], managedPolicyArns: list[str], attributeMappings: list[AttributeMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProfileDetail:
     Optional[str] profileId
     Optional[str] profileArn
@@ -238,8 +248,9 @@ struct ProfileDetail:
     Optional[bool] acceptRoleSessionName
     Optional[list[AttributeMapping]] attributeMappings
 
-# no @derive(Json): member(s) profile: ProfileDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) profile: ProfileDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProfileDetailResponse:
     Optional[ProfileDetail] profile
 
@@ -250,8 +261,9 @@ struct PutAttributeMappingRequest:
     CertificateField certificateField
     list[MappingRule] mappingRules
 
-# no @derive(Json): member(s) profile: ProfileDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) profile: ProfileDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutAttributeMappingResponse:
     ProfileDetail profile
 
@@ -261,8 +273,9 @@ struct PutNotificationSettingsRequest:
     str trustAnchorId
     list[NotificationSetting] notificationSettings
 
-# no @derive(Json): member(s) trustAnchor: TrustAnchorDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) trustAnchor: TrustAnchorDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutNotificationSettingsResponse:
     TrustAnchorDetail trustAnchor
 
@@ -272,8 +285,9 @@ struct ResetNotificationSettingsRequest:
     str trustAnchorId
     list[NotificationSettingKey] notificationSettingKeys
 
-# no @derive(Json): member(s) trustAnchor: TrustAnchorDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) trustAnchor: TrustAnchorDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResetNotificationSettingsResponse:
     TrustAnchorDetail trustAnchor
 
@@ -311,8 +325,9 @@ struct SourceData:
     Optional[str] x509CertificateData
     Optional[str] acmPcaArn
 
-# no @derive(Json): member(s) credentials: list[CredentialSummary], instanceProperties: list[InstanceProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) credentials: list[CredentialSummary], instanceProperties: list[InstanceProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubjectDetail:
     Optional[str] subjectArn
     Optional[str] subjectId
@@ -324,8 +339,9 @@ struct SubjectDetail:
     Optional[list[CredentialSummary]] credentials
     Optional[list[InstanceProperty]] instanceProperties
 
-# no @derive(Json): member(s) subject: SubjectDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subject: SubjectDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubjectDetailResponse:
     Optional[SubjectDetail] subject
 
@@ -362,8 +378,9 @@ struct TagResourceResponse:
 struct TooManyTagsException:
     Optional[str] message
 
-# no @derive(Json): member(s) notificationSettings: list[NotificationSettingDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) notificationSettings: list[NotificationSettingDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrustAnchorDetail:
     Optional[str] trustAnchorId
     Optional[str] trustAnchorArn
@@ -374,8 +391,9 @@ struct TrustAnchorDetail:
     Optional[DateTime] updatedAt
     Optional[list[NotificationSettingDetail]] notificationSettings
 
-# no @derive(Json): member(s) trustAnchor: TrustAnchorDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) trustAnchor: TrustAnchorDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrustAnchorDetailResponse:
     TrustAnchorDetail trustAnchor
 
@@ -448,16 +466,7 @@ def rolesanywhere_error_from_code(str code) -> RolesAnywhereError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateProfile (document member `roleArns: list[str]` is not serializable by derive)
-#   CreateTrustAnchor (document member `tags: list[Tag]` is not serializable by derive)
 #   DeleteAttributeMapping (httpQuery `specifiers` has unsupported type list[str])
-#   ImportCrl (document member `tags: list[Tag]` is not serializable by derive)
-#   PutAttributeMapping (document member `mappingRules: list[MappingRule]` is not serializable by derive)
-#   PutNotificationSettings (document member `notificationSettings: list[NotificationSetting]` is not serializable by derive)
-#   ResetNotificationSettings (document member `notificationSettingKeys: list[NotificationSettingKey]` is not serializable by derive)
-#   TagResource (document member `tags: list[Tag]` is not serializable by derive)
-#   UntagResource (document member `tagKeys: list[str]` is not serializable by derive)
-#   UpdateProfile (document member `roleArns: list[str]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -478,6 +487,73 @@ struct UpdateTrustAnchorDocument:
 struct RolesAnywhereClient:
     core.Credentials creds
     str region
+
+    # CreateProfile  POST /profiles
+    # errors: AccessDeniedException, ValidationException
+    def create_profile(self, CreateProfileRequest input) -> str:
+        auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + rolesanywhere_json_str(input.name))
+        if input.requireInstanceProperties.is_some():
+            auto u0 = input.requireInstanceProperties.unwrap()
+            parts.append("\"requireInstanceProperties\":" + json.dumps(JsonValue.Bool(u0)))
+        if input.sessionPolicy.is_some():
+            auto u1 = input.sessionPolicy.unwrap()
+            parts.append("\"sessionPolicy\":" + rolesanywhere_json_str(u1))
+        list[str] e2 = []
+        for x2 in input.roleArns:
+            e2.append(rolesanywhere_json_str(x2))
+        parts.append("\"roleArns\":" + rolesanywhere_json_arr(e2))
+        if input.managedPolicyArns.is_some():
+            auto u3 = input.managedPolicyArns.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(rolesanywhere_json_str(x4))
+            parts.append("\"managedPolicyArns\":" + rolesanywhere_json_arr(e4))
+        if input.durationSeconds.is_some():
+            auto u5 = input.durationSeconds.unwrap()
+            parts.append("\"durationSeconds\":" + str(u5))
+        if input.enabled.is_some():
+            auto u6 = input.enabled.unwrap()
+            parts.append("\"enabled\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.tags.is_some():
+            auto u7 = input.tags.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"tags\":" + rolesanywhere_json_arr(e8))
+        if input.acceptRoleSessionName.is_some():
+            auto u9 = input.acceptRoleSessionName.unwrap()
+            parts.append("\"acceptRoleSessionName\":" + json.dumps(JsonValue.Bool(u9)))
+        auto bp = restjson.rest_json_document(b, rolesanywhere_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rolesanywhere_service(), self.region, host)
+
+    # CreateTrustAnchor  POST /trustanchors
+    # errors: AccessDeniedException, ValidationException
+    def create_trust_anchor(self, CreateTrustAnchorRequest input) -> str:
+        auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/trustanchors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + rolesanywhere_json_str(input.name))
+        parts.append("\"source\":" + input.source.to_json())
+        if input.enabled.is_some():
+            auto u0 = input.enabled.unwrap()
+            parts.append("\"enabled\":" + json.dumps(JsonValue.Bool(u0)))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + rolesanywhere_json_arr(e2))
+        if input.notificationSettings.is_some():
+            auto u3 = input.notificationSettings.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"notificationSettings\":" + rolesanywhere_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, rolesanywhere_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rolesanywhere_service(), self.region, host)
 
     # DeleteCrl  DELETE /crl/{crlId}
     # errors: AccessDeniedException, ResourceNotFoundException
@@ -596,6 +672,27 @@ struct RolesAnywhereClient:
         auto b = binding.HttpBinding(method="GET", path_template="/trustanchor/{trustAnchorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
+    # ImportCrl  POST /crls
+    # errors: AccessDeniedException, ValidationException
+    def import_crl(self, ImportCrlRequest input) -> str:
+        auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/crls", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + rolesanywhere_json_str(input.name))
+        parts.append("\"crlData\":" + rolesanywhere_json_str(base64.encode(input.crlData)))
+        if input.enabled.is_some():
+            auto u0 = input.enabled.unwrap()
+            parts.append("\"enabled\":" + json.dumps(JsonValue.Bool(u0)))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + rolesanywhere_json_arr(e2))
+        parts.append("\"trustAnchorArn\":" + rolesanywhere_json_str(input.trustAnchorArn))
+        auto bp = restjson.rest_json_document(b, rolesanywhere_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rolesanywhere_service(), self.region, host)
+
     # ListCrls  GET /crls
     # errors: AccessDeniedException, ValidationException
     def list_crls(self, ListRequest input) -> str:
@@ -653,6 +750,78 @@ struct RolesAnywhereClient:
         auto b = binding.HttpBinding(method="GET", path_template="/trustanchors", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
+    # PutAttributeMapping  PUT /profiles/{profileId}/mappings
+    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    def put_attribute_mapping(self, PutAttributeMappingRequest input) -> str:
+        auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
+        dict[str, str] labels = {}
+        labels["profileId"] = input.profileId
+        auto b = binding.HttpBinding(method="PUT", path_template="/profiles/{profileId}/mappings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"certificateField\":" + input.certificateField.to_json())
+        list[str] e0 = []
+        for x0 in input.mappingRules:
+            e0.append(x0.to_json())
+        parts.append("\"mappingRules\":" + rolesanywhere_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, rolesanywhere_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rolesanywhere_service(), self.region, host)
+
+    # PutNotificationSettings  PATCH /put-notifications-settings
+    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    def put_notification_settings(self, PutNotificationSettingsRequest input) -> str:
+        auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
+        auto b = binding.HttpBinding(method="PATCH", path_template="/put-notifications-settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"trustAnchorId\":" + rolesanywhere_json_str(input.trustAnchorId))
+        list[str] e0 = []
+        for x0 in input.notificationSettings:
+            e0.append(x0.to_json())
+        parts.append("\"notificationSettings\":" + rolesanywhere_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, rolesanywhere_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rolesanywhere_service(), self.region, host)
+
+    # ResetNotificationSettings  PATCH /reset-notifications-settings
+    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    def reset_notification_settings(self, ResetNotificationSettingsRequest input) -> str:
+        auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
+        auto b = binding.HttpBinding(method="PATCH", path_template="/reset-notifications-settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"trustAnchorId\":" + rolesanywhere_json_str(input.trustAnchorId))
+        list[str] e0 = []
+        for x0 in input.notificationSettingKeys:
+            e0.append(x0.to_json())
+        parts.append("\"notificationSettingKeys\":" + rolesanywhere_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, rolesanywhere_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rolesanywhere_service(), self.region, host)
+
+    # TagResource  POST /TagResource
+    # errors: AccessDeniedException, ResourceNotFoundException, TooManyTagsException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/TagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceArn\":" + rolesanywhere_json_str(input.resourceArn))
+        list[str] e0 = []
+        for x0 in input.tags:
+            e0.append(x0.to_json())
+        parts.append("\"tags\":" + rolesanywhere_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, rolesanywhere_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rolesanywhere_service(), self.region, host)
+
+    # UntagResource  POST /UntagResource
+    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UntagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceArn\":" + rolesanywhere_json_str(input.resourceArn))
+        list[str] e0 = []
+        for x0 in input.tagKeys:
+            e0.append(rolesanywhere_json_str(x0))
+        parts.append("\"tagKeys\":" + rolesanywhere_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, rolesanywhere_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rolesanywhere_service(), self.region, host)
+
     # UpdateCrl  PATCH /crl/{crlId}
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
     def update_crl(self, UpdateCrlRequest input) -> str:
@@ -662,6 +831,41 @@ struct RolesAnywhereClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/crl/{crlId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCrlDocument(name=input.name, crlData=input.crlData)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, rolesanywhere_service(), self.region, host)
+
+    # UpdateProfile  PATCH /profile/{profileId}
+    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    def update_profile(self, UpdateProfileRequest input) -> str:
+        auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
+        dict[str, str] labels = {}
+        labels["profileId"] = input.profileId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/profile/{profileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + rolesanywhere_json_str(u0))
+        if input.sessionPolicy.is_some():
+            auto u1 = input.sessionPolicy.unwrap()
+            parts.append("\"sessionPolicy\":" + rolesanywhere_json_str(u1))
+        if input.roleArns.is_some():
+            auto u2 = input.roleArns.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(rolesanywhere_json_str(x3))
+            parts.append("\"roleArns\":" + rolesanywhere_json_arr(e3))
+        if input.managedPolicyArns.is_some():
+            auto u4 = input.managedPolicyArns.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(rolesanywhere_json_str(x5))
+            parts.append("\"managedPolicyArns\":" + rolesanywhere_json_arr(e5))
+        if input.durationSeconds.is_some():
+            auto u6 = input.durationSeconds.unwrap()
+            parts.append("\"durationSeconds\":" + str(u6))
+        if input.acceptRoleSessionName.is_some():
+            auto u7 = input.acceptRoleSessionName.unwrap()
+            parts.append("\"acceptRoleSessionName\":" + json.dumps(JsonValue.Bool(u7)))
+        auto bp = restjson.rest_json_document(b, rolesanywhere_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, rolesanywhere_service(), self.region, host)
 
     # UpdateTrustAnchor  PATCH /trustanchor/{trustAnchorId}

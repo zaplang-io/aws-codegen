@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 37 operations — 27 with a generated method,
-#   10 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 37 operations — 34 with a generated method,
+#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   141 structs (75 @derive(Json)), 19 enums, 7 error variants.
 #   6 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The DataExchange rest-json protocol: SigV4 service "dataexchange" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -279,8 +280,9 @@ struct ApiGatewayApiAsset:
     Optional[str] ProtocolType
     Optional[str] Stage
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetConfiguration:
     Optional[list[Tag]] Tags
 
@@ -290,8 +292,9 @@ struct AssetDestinationEntry:
     str Bucket
     Optional[str] Key
 
-# no @derive(Json): member(s) S3DataAccessAsset: S3DataAccessAsset, LakeFormationDataPermissionAsset: LakeFormationDataPermissionAsset not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3DataAccessAsset: S3DataAccessAsset, LakeFormationDataPermissionAsset: LakeFormationDataPermissionAsset not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetDetails:
     Optional[S3SnapshotAsset] S3SnapshotAsset
     Optional[RedshiftDataShareAsset] RedshiftDataShareAsset
@@ -299,8 +302,9 @@ struct AssetDetails:
     Optional[S3DataAccessAsset] S3DataAccessAsset
     Optional[LakeFormationDataPermissionAsset] LakeFormationDataPermissionAsset
 
-# no @derive(Json): member(s) AssetDetails: AssetDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssetDetails: AssetDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetEntry:
     str Arn
     AssetDetails AssetDetails
@@ -350,8 +354,9 @@ struct CreateDataGrantRequest:
     Optional[str] Description
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDataGrantResponse:
     str Name
     str SenderPrincipal
@@ -377,8 +382,9 @@ struct CreateDataSetRequest:
     str Name
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDataSetResponse:
     Optional[str] Arn
     Optional[AssetType] AssetType
@@ -399,8 +405,9 @@ struct CreateEventActionRequest:
     Event Event
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEventActionResponse:
     Optional[Action] Action
     Optional[str] Arn
@@ -417,8 +424,9 @@ struct CreateJobRequest:
     RequestDetails Details
     Type Type
 
-# no @derive(Json): member(s) AssetConfiguration: AssetConfiguration, Details: ResponseDetails, Errors: list[JobError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssetConfiguration: AssetConfiguration, Details: ResponseDetails, Errors: list[JobError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateJobResponse:
     Optional[str] Arn
     Optional[AssetConfiguration] AssetConfiguration
@@ -437,8 +445,9 @@ struct CreateRevisionRequest:
     str DataSetId
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRevisionResponse:
     Optional[str] Arn
     Optional[str] Comment
@@ -453,15 +462,17 @@ struct CreateRevisionResponse:
     Optional[bool] Revoked
     Optional[DateTime] RevokedAt
 
-# no @derive(Json): member(s) AssetSource: S3DataAccessAssetSourceEntry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssetSource: S3DataAccessAssetSourceEntry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateS3DataAccessFromS3BucketRequestDetails:
     S3DataAccessAssetSourceEntry AssetSource
     str DataSetId
     str RevisionId
 
-# no @derive(Json): member(s) AssetSource: S3DataAccessAssetSourceEntry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssetSource: S3DataAccessAssetSourceEntry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateS3DataAccessFromS3BucketResponseDetails:
     S3DataAccessAssetSourceEntry AssetSource
     str DataSetId
@@ -506,13 +517,15 @@ struct DataUpdateRequestDetails:
     @json(timestamp="iso8601")
     Optional[DateTime] DataUpdatedAt
 
-# no @derive(Json): member(s) Expression: list[LFTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Expression: list[LFTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatabaseLFTagPolicy:
     list[LFTag] Expression
 
-# no @derive(Json): member(s) Expression: list[LFTag], Permissions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Expression: list[LFTag], Permissions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatabaseLFTagPolicyAndPermissions:
     list[LFTag] Expression
     list[str] Permissions
@@ -550,8 +563,9 @@ struct DeprecationRequestDetails:
     @json(timestamp="iso8601")
     DateTime DeprecationAt
 
-# no @derive(Json): member(s) ImportAssetsFromS3JobErrorDetails: list[AssetSourceEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ImportAssetsFromS3JobErrorDetails: list[AssetSourceEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Details:
     Optional[ImportAssetFromSignedUrlJobErrorDetails] ImportAssetFromSignedUrlJobErrorDetails
     Optional[list[AssetSourceEntry]] ImportAssetsFromS3JobErrorDetails
@@ -586,31 +600,35 @@ struct ExportAssetToSignedUrlResponseDetails:
     @json(timestamp="iso8601")
     Optional[DateTime] SignedUrlExpiresAt
 
-# no @derive(Json): member(s) AssetDestinations: list[AssetDestinationEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssetDestinations: list[AssetDestinationEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportAssetsToS3RequestDetails:
     list[AssetDestinationEntry] AssetDestinations
     str DataSetId
     Optional[ExportServerSideEncryption] Encryption
     str RevisionId
 
-# no @derive(Json): member(s) AssetDestinations: list[AssetDestinationEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssetDestinations: list[AssetDestinationEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportAssetsToS3ResponseDetails:
     list[AssetDestinationEntry] AssetDestinations
     str DataSetId
     Optional[ExportServerSideEncryption] Encryption
     str RevisionId
 
-# no @derive(Json): member(s) RevisionDestinations: list[RevisionDestinationEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RevisionDestinations: list[RevisionDestinationEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportRevisionsToS3RequestDetails:
     str DataSetId
     Optional[ExportServerSideEncryption] Encryption
     list[RevisionDestinationEntry] RevisionDestinations
 
-# no @derive(Json): member(s) RevisionDestinations: list[RevisionDestinationEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RevisionDestinations: list[RevisionDestinationEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportRevisionsToS3ResponseDetails:
     str DataSetId
     Optional[ExportServerSideEncryption] Encryption
@@ -629,8 +647,9 @@ struct GetAssetRequest:
     str DataSetId
     str RevisionId
 
-# no @derive(Json): member(s) AssetDetails: AssetDetails, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssetDetails: AssetDetails, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAssetResponse:
     Optional[str] Arn
     Optional[AssetDetails] AssetDetails
@@ -649,8 +668,9 @@ struct GetAssetResponse:
 struct GetDataGrantRequest:
     str DataGrantId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataGrantResponse:
     str Name
     str SenderPrincipal
@@ -673,8 +693,9 @@ struct GetDataGrantResponse:
 struct GetDataSetRequest:
     str DataSetId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataSetResponse:
     Optional[str] Arn
     Optional[AssetType] AssetType
@@ -693,8 +714,9 @@ struct GetDataSetResponse:
 struct GetEventActionRequest:
     str EventActionId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEventActionResponse:
     Optional[Action] Action
     Optional[str] Arn
@@ -709,8 +731,9 @@ struct GetEventActionResponse:
 struct GetJobRequest:
     str JobId
 
-# no @derive(Json): member(s) AssetConfiguration: AssetConfiguration, Details: ResponseDetails, Errors: list[JobError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssetConfiguration: AssetConfiguration, Details: ResponseDetails, Errors: list[JobError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetJobResponse:
     Optional[str] Arn
     Optional[AssetConfiguration] AssetConfiguration
@@ -753,8 +776,9 @@ struct GetRevisionRequest:
     str DataSetId
     str RevisionId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRevisionResponse:
     Optional[str] Arn
     Optional[str] Comment
@@ -817,8 +841,9 @@ struct ImportAssetFromSignedUrlResponseDetails:
     @json(timestamp="iso8601")
     Optional[DateTime] SignedUrlExpiresAt
 
-# no @derive(Json): member(s) Database: DatabaseLFTagPolicyAndPermissions, Table: TableLFTagPolicyAndPermissions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Database: DatabaseLFTagPolicyAndPermissions, Table: TableLFTagPolicyAndPermissions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportAssetsFromLakeFormationTagPolicyRequestDetails:
     str CatalogId
     Optional[DatabaseLFTagPolicyAndPermissions] Database
@@ -827,8 +852,9 @@ struct ImportAssetsFromLakeFormationTagPolicyRequestDetails:
     str DataSetId
     str RevisionId
 
-# no @derive(Json): member(s) Database: DatabaseLFTagPolicyAndPermissions, Table: TableLFTagPolicyAndPermissions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Database: DatabaseLFTagPolicyAndPermissions, Table: TableLFTagPolicyAndPermissions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportAssetsFromLakeFormationTagPolicyResponseDetails:
     str CatalogId
     Optional[DatabaseLFTagPolicyAndPermissions] Database
@@ -837,29 +863,33 @@ struct ImportAssetsFromLakeFormationTagPolicyResponseDetails:
     str DataSetId
     str RevisionId
 
-# no @derive(Json): member(s) AssetSources: list[RedshiftDataShareAssetSourceEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssetSources: list[RedshiftDataShareAssetSourceEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportAssetsFromRedshiftDataSharesRequestDetails:
     list[RedshiftDataShareAssetSourceEntry] AssetSources
     str DataSetId
     str RevisionId
 
-# no @derive(Json): member(s) AssetSources: list[RedshiftDataShareAssetSourceEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssetSources: list[RedshiftDataShareAssetSourceEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportAssetsFromRedshiftDataSharesResponseDetails:
     list[RedshiftDataShareAssetSourceEntry] AssetSources
     str DataSetId
     str RevisionId
 
-# no @derive(Json): member(s) AssetSources: list[AssetSourceEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssetSources: list[AssetSourceEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportAssetsFromS3RequestDetails:
     list[AssetSourceEntry] AssetSources
     str DataSetId
     str RevisionId
 
-# no @derive(Json): member(s) AssetSources: list[AssetSourceEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssetSources: list[AssetSourceEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportAssetsFromS3ResponseDetails:
     list[AssetSourceEntry] AssetSources
     str DataSetId
@@ -869,8 +899,9 @@ struct ImportAssetsFromS3ResponseDetails:
 struct InternalServerException:
     str Message
 
-# no @derive(Json): member(s) AssetConfiguration: AssetConfiguration, Details: ResponseDetails, Errors: list[JobError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssetConfiguration: AssetConfiguration, Details: ResponseDetails, Errors: list[JobError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobEntry:
     str Arn
     Optional[AssetConfiguration] AssetConfiguration
@@ -882,8 +913,9 @@ struct JobEntry:
     Type Type
     DateTime UpdatedAt
 
-# no @derive(Json): member(s) Details: Details not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Details: Details not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobError:
     Code Code
     Optional[Details] Details
@@ -897,35 +929,40 @@ struct JobError:
 struct KmsKeyToGrant:
     str KmsKeyArn
 
-# no @derive(Json): member(s) Database: DatabaseLFTagPolicy, Table: TableLFTagPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Database: DatabaseLFTagPolicy, Table: TableLFTagPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LFResourceDetails:
     Optional[DatabaseLFTagPolicy] Database
     Optional[TableLFTagPolicy] Table
 
-# no @derive(Json): member(s) TagValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LFTag:
     str TagKey
     list[str] TagValues
 
-# no @derive(Json): member(s) ResourceDetails: LFResourceDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceDetails: LFResourceDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LFTagPolicyDetails:
     str CatalogId
     LFResourceType ResourceType
     LFResourceDetails ResourceDetails
 
-# no @derive(Json): member(s) LakeFormationDataPermissionDetails: LakeFormationDataPermissionDetails, Permissions: list[LFPermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LakeFormationDataPermissionDetails: LakeFormationDataPermissionDetails, Permissions: list[LFPermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LakeFormationDataPermissionAsset:
     LakeFormationDataPermissionDetails LakeFormationDataPermissionDetails
     str LakeFormationDataPermissionType
     list[LFPermission] Permissions
     Optional[str] RoleArn
 
-# no @derive(Json): member(s) LFTagPolicy: LFTagPolicyDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LFTagPolicy: LFTagPolicyDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LakeFormationDataPermissionDetails:
     Optional[LFTagPolicyDetails] LFTagPolicy
 
@@ -940,8 +977,9 @@ struct ListDataGrantsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) DataGrantSummaries: list[DataGrantSummaryEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataGrantSummaries: list[DataGrantSummaryEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataGrantsResponse:
     Optional[list[DataGrantSummaryEntry]] DataGrantSummaries
     Optional[str] NextToken
@@ -953,8 +991,9 @@ struct ListDataSetRevisionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Revisions: list[RevisionEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Revisions: list[RevisionEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataSetRevisionsResponse:
     Optional[str] NextToken
     Optional[list[RevisionEntry]] Revisions
@@ -966,8 +1005,9 @@ struct ListDataSetsRequest:
     Optional[str] NextToken
     Optional[str] Origin
 
-# no @derive(Json): member(s) DataSets: list[DataSetEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSets: list[DataSetEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataSetsResponse:
     Optional[list[DataSetEntry]] DataSets
     Optional[str] NextToken
@@ -979,8 +1019,9 @@ struct ListEventActionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) EventActions: list[EventActionEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventActions: list[EventActionEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventActionsResponse:
     Optional[list[EventActionEntry]] EventActions
     Optional[str] NextToken
@@ -993,8 +1034,9 @@ struct ListJobsRequest:
     Optional[str] NextToken
     Optional[str] RevisionId
 
-# no @derive(Json): member(s) Jobs: list[JobEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Jobs: list[JobEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobsResponse:
     Optional[list[JobEntry]] Jobs
     Optional[str] NextToken
@@ -1006,8 +1048,9 @@ struct ListReceivedDataGrantsRequest:
     Optional[str] NextToken
     Optional[list[AcceptanceStateFilterValue]] AcceptanceState
 
-# no @derive(Json): member(s) DataGrantSummaries: list[ReceivedDataGrantSummariesEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataGrantSummaries: list[ReceivedDataGrantSummariesEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReceivedDataGrantsResponse:
     Optional[list[ReceivedDataGrantSummariesEntry]] DataGrantSummaries
     Optional[str] NextToken
@@ -1020,8 +1063,9 @@ struct ListRevisionAssetsRequest:
     Optional[str] NextToken
     str RevisionId
 
-# no @derive(Json): member(s) Assets: list[AssetEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Assets: list[AssetEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRevisionAssetsResponse:
     Optional[list[AssetEntry]] Assets
     Optional[str] NextToken
@@ -1031,13 +1075,15 @@ struct ListRevisionAssetsResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) SchemaChange: SchemaChangeRequestDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SchemaChange: SchemaChangeRequestDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotificationDetails:
     Optional[DataUpdateRequestDetails] DataUpdate
     Optional[DeprecationRequestDetails] Deprecation
@@ -1083,8 +1129,9 @@ struct RedshiftDataShareDetails:
     Optional[str] Schema
     Optional[str] View
 
-# no @derive(Json): member(s) ExportAssetsToS3: ExportAssetsToS3RequestDetails, ExportRevisionsToS3: ExportRevisionsToS3RequestDetails, ImportAssetsFromS3: ImportAssetsFromS3RequestDetails, ImportAssetsFromRedshiftDataShares: ImportAssetsFromRedshiftDataSharesRequestDetails, CreateS3DataAccessFromS3Bucket: CreateS3DataAccessFromS3BucketRequestDetails, ImportAssetsFromLakeFormationTagPolicy: ImportAssetsFromLakeFormationTagPolicyRequestDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExportAssetsToS3: ExportAssetsToS3RequestDetails, ExportRevisionsToS3: ExportRevisionsToS3RequestDetails, ImportAssetsFromS3: ImportAssetsFromS3RequestDetails, ImportAssetsFromRedshiftDataShares: ImportAssetsFromRedshiftDataSharesRequestDetails, CreateS3DataAccessFromS3Bucket: CreateS3DataAccessFromS3BucketRequestDetails, ImportAssetsFromLakeFormationTagPolicy: ImportAssetsFromLakeFormationTagPolicyRequestDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RequestDetails:
     Optional[ExportAssetToSignedUrlRequestDetails] ExportAssetToSignedUrl
     Optional[ExportAssetsToS3RequestDetails] ExportAssetsToS3
@@ -1102,8 +1149,9 @@ struct ResourceNotFoundException:
     Optional[str] ResourceId
     Optional[ResourceType] ResourceType
 
-# no @derive(Json): member(s) ExportAssetsToS3: ExportAssetsToS3ResponseDetails, ExportRevisionsToS3: ExportRevisionsToS3ResponseDetails, ImportAssetsFromS3: ImportAssetsFromS3ResponseDetails, ImportAssetsFromRedshiftDataShares: ImportAssetsFromRedshiftDataSharesResponseDetails, CreateS3DataAccessFromS3Bucket: CreateS3DataAccessFromS3BucketResponseDetails, ImportAssetsFromLakeFormationTagPolicy: ImportAssetsFromLakeFormationTagPolicyResponseDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExportAssetsToS3: ExportAssetsToS3ResponseDetails, ExportRevisionsToS3: ExportRevisionsToS3ResponseDetails, ImportAssetsFromS3: ImportAssetsFromS3ResponseDetails, ImportAssetsFromRedshiftDataShares: ImportAssetsFromRedshiftDataSharesResponseDetails, CreateS3DataAccessFromS3Bucket: CreateS3DataAccessFromS3BucketResponseDetails, ImportAssetsFromLakeFormationTagPolicy: ImportAssetsFromLakeFormationTagPolicyResponseDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResponseDetails:
     Optional[ExportAssetToSignedUrlResponseDetails] ExportAssetToSignedUrl
     Optional[ExportAssetsToS3ResponseDetails] ExportAssetsToS3
@@ -1166,8 +1214,9 @@ struct RevokeRevisionResponse:
     @json(timestamp="iso8601")
     Optional[DateTime] RevokedAt
 
-# no @derive(Json): member(s) KeyPrefixes: list[str], Keys: list[str], KmsKeysToGrant: list[KmsKeyToGrant] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeyPrefixes: list[str], Keys: list[str], KmsKeysToGrant: list[KmsKeyToGrant] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3DataAccessAsset:
     str Bucket
     Optional[list[str]] KeyPrefixes
@@ -1176,16 +1225,18 @@ struct S3DataAccessAsset:
     Optional[str] S3AccessPointArn
     Optional[list[KmsKeyToGrant]] KmsKeysToGrant
 
-# no @derive(Json): member(s) KeyPrefixes: list[str], Keys: list[str], KmsKeysToGrant: list[KmsKeyToGrant] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeyPrefixes: list[str], Keys: list[str], KmsKeysToGrant: list[KmsKeyToGrant] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3DataAccessAssetSourceEntry:
     str Bucket
     Optional[list[str]] KeyPrefixes
     Optional[list[str]] Keys
     Optional[list[KmsKeyToGrant]] KmsKeysToGrant
 
-# no @derive(Json): member(s) KeyPrefixes: list[str], Keys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeyPrefixes: list[str], Keys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3DataAccessDetails:
     Optional[list[str]] KeyPrefixes
     Optional[list[str]] Keys
@@ -1200,14 +1251,16 @@ struct SchemaChangeDetails:
     SchemaChangeType Type
     Optional[str] Description
 
-# no @derive(Json): member(s) Changes: list[SchemaChangeDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Changes: list[SchemaChangeDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SchemaChangeRequestDetails:
     Optional[list[SchemaChangeDetails]] Changes
     DateTime SchemaChangeAt
 
-# no @derive(Json): member(s) LakeFormationTagPolicies: list[LakeFormationTagPolicyDetails], RedshiftDataShares: list[RedshiftDataShareDetails], S3DataAccesses: list[S3DataAccessDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LakeFormationTagPolicies: list[LakeFormationTagPolicyDetails], RedshiftDataShares: list[RedshiftDataShareDetails], S3DataAccesses: list[S3DataAccessDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScopeDetails:
     Optional[list[LakeFormationTagPolicyDetails]] LakeFormationTagPolicies
     Optional[list[RedshiftDataShareDetails]] RedshiftDataShares
@@ -1225,8 +1278,9 @@ struct SendApiAssetRequest:
     Optional[str] Path
     str RevisionId
 
-# no @derive(Json): member(s) ResponseHeaders: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResponseHeaders: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendApiAssetResponse:
     Optional[str] Body
     Optional[dict[str, str]] ResponseHeaders
@@ -1262,13 +1316,15 @@ struct StartJobResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Expression: list[LFTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Expression: list[LFTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableLFTagPolicy:
     list[LFTag] Expression
 
-# no @derive(Json): member(s) Expression: list[LFTag], Permissions: list[TableTagPolicyLFPermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Expression: list[LFTag], Permissions: list[TableTagPolicyLFPermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableLFTagPolicyAndPermissions:
     list[LFTag] Expression
     list[TableTagPolicyLFPermission] Permissions
@@ -1302,8 +1358,9 @@ struct UpdateAssetRequest:
     str Name
     str RevisionId
 
-# no @derive(Json): member(s) AssetDetails: AssetDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssetDetails: AssetDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAssetResponse:
     Optional[str] Arn
     Optional[AssetDetails] AssetDetails
@@ -1423,15 +1480,8 @@ def dataexchange_error_from_code(str code) -> DataExchangeError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateDataGrant (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateDataSet (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateEventAction (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateJob (document member `AssetConfiguration: AssetConfiguration` is not serializable by derive)
-#   CreateRevision (document member `Tags: dict[str, str]` is not serializable by derive)
 #   ListReceivedDataGrants (httpQuery `AcceptanceState` has unsupported type list[AcceptanceStateFilterValue])
 #   SendApiAsset (httpQuery `QueryStringParameters` has unsupported type dict[str, str])
-#   SendDataSetNotification (document member `Scope: ScopeDetails` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
@@ -1468,6 +1518,281 @@ struct UpdateRevisionDocument:
     Optional[str] Comment
     Optional[bool] Finalized
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def dataexchange_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def dataexchange_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def dataexchange_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# A timestamp as an ISO-8601 JSON string (`@json(timestamp="iso8601")`).
+def dataexchange_json_ts_iso(DateTime dt) -> str:
+    return "\"" + datetime.strftime(dt, "%Y-%m-%dT%H:%M:%SZ") + "\""
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AssetConfiguration to a compact JSON object (declaration order).
+def asset_configuration_to_json(AssetConfiguration v) -> str:
+    list[str] parts = []
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + dataexchange_json_arr(e1))
+    return dataexchange_json_obj(parts)
+
+# Serialize CreateS3DataAccessFromS3BucketRequestDetails to a compact JSON object (declaration order).
+def create_s3_data_access_from_s3_bucket_request_details_to_json(CreateS3DataAccessFromS3BucketRequestDetails v) -> str:
+    list[str] parts = []
+    parts.append("\"AssetSource\":" + s3_data_access_asset_source_entry_to_json(v.AssetSource))
+    parts.append("\"DataSetId\":" + dataexchange_json_str(v.DataSetId))
+    parts.append("\"RevisionId\":" + dataexchange_json_str(v.RevisionId))
+    return dataexchange_json_obj(parts)
+
+# Serialize DatabaseLFTagPolicyAndPermissions to a compact JSON object (declaration order).
+def database_lf_tag_policy_and_permissions_to_json(DatabaseLFTagPolicyAndPermissions v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Expression:
+        e0.append(lf_tag_to_json(x0))
+    parts.append("\"Expression\":" + dataexchange_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.Permissions:
+        e1.append(dataexchange_json_str(x1))
+    parts.append("\"Permissions\":" + dataexchange_json_arr(e1))
+    return dataexchange_json_obj(parts)
+
+# Serialize ExportAssetsToS3RequestDetails to a compact JSON object (declaration order).
+def export_assets_to_s3_request_details_to_json(ExportAssetsToS3RequestDetails v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AssetDestinations:
+        e0.append(x0.to_json())
+    parts.append("\"AssetDestinations\":" + dataexchange_json_arr(e0))
+    parts.append("\"DataSetId\":" + dataexchange_json_str(v.DataSetId))
+    if v.Encryption.is_some():
+        auto u1 = v.Encryption.unwrap()
+        parts.append("\"Encryption\":" + u1.to_json())
+    parts.append("\"RevisionId\":" + dataexchange_json_str(v.RevisionId))
+    return dataexchange_json_obj(parts)
+
+# Serialize ExportRevisionsToS3RequestDetails to a compact JSON object (declaration order).
+def export_revisions_to_s3_request_details_to_json(ExportRevisionsToS3RequestDetails v) -> str:
+    list[str] parts = []
+    parts.append("\"DataSetId\":" + dataexchange_json_str(v.DataSetId))
+    if v.Encryption.is_some():
+        auto u0 = v.Encryption.unwrap()
+        parts.append("\"Encryption\":" + u0.to_json())
+    list[str] e1 = []
+    for x1 in v.RevisionDestinations:
+        e1.append(x1.to_json())
+    parts.append("\"RevisionDestinations\":" + dataexchange_json_arr(e1))
+    return dataexchange_json_obj(parts)
+
+# Serialize ImportAssetsFromLakeFormationTagPolicyRequestDetails to a compact JSON object (declaration order).
+def import_assets_from_lake_formation_tag_policy_request_details_to_json(ImportAssetsFromLakeFormationTagPolicyRequestDetails v) -> str:
+    list[str] parts = []
+    parts.append("\"CatalogId\":" + dataexchange_json_str(v.CatalogId))
+    if v.Database.is_some():
+        auto u0 = v.Database.unwrap()
+        parts.append("\"Database\":" + database_lf_tag_policy_and_permissions_to_json(u0))
+    if v.Table.is_some():
+        auto u1 = v.Table.unwrap()
+        parts.append("\"Table\":" + table_lf_tag_policy_and_permissions_to_json(u1))
+    parts.append("\"RoleArn\":" + dataexchange_json_str(v.RoleArn))
+    parts.append("\"DataSetId\":" + dataexchange_json_str(v.DataSetId))
+    parts.append("\"RevisionId\":" + dataexchange_json_str(v.RevisionId))
+    return dataexchange_json_obj(parts)
+
+# Serialize ImportAssetsFromRedshiftDataSharesRequestDetails to a compact JSON object (declaration order).
+def import_assets_from_redshift_data_shares_request_details_to_json(ImportAssetsFromRedshiftDataSharesRequestDetails v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AssetSources:
+        e0.append(x0.to_json())
+    parts.append("\"AssetSources\":" + dataexchange_json_arr(e0))
+    parts.append("\"DataSetId\":" + dataexchange_json_str(v.DataSetId))
+    parts.append("\"RevisionId\":" + dataexchange_json_str(v.RevisionId))
+    return dataexchange_json_obj(parts)
+
+# Serialize ImportAssetsFromS3RequestDetails to a compact JSON object (declaration order).
+def import_assets_from_s3_request_details_to_json(ImportAssetsFromS3RequestDetails v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AssetSources:
+        e0.append(x0.to_json())
+    parts.append("\"AssetSources\":" + dataexchange_json_arr(e0))
+    parts.append("\"DataSetId\":" + dataexchange_json_str(v.DataSetId))
+    parts.append("\"RevisionId\":" + dataexchange_json_str(v.RevisionId))
+    return dataexchange_json_obj(parts)
+
+# Serialize LFTag to a compact JSON object (declaration order).
+def lf_tag_to_json(LFTag v) -> str:
+    list[str] parts = []
+    parts.append("\"TagKey\":" + dataexchange_json_str(v.TagKey))
+    list[str] e0 = []
+    for x0 in v.TagValues:
+        e0.append(dataexchange_json_str(x0))
+    parts.append("\"TagValues\":" + dataexchange_json_arr(e0))
+    return dataexchange_json_obj(parts)
+
+# Serialize NotificationDetails to a compact JSON object (declaration order).
+def notification_details_to_json(NotificationDetails v) -> str:
+    list[str] parts = []
+    if v.DataUpdate.is_some():
+        auto u0 = v.DataUpdate.unwrap()
+        parts.append("\"DataUpdate\":" + u0.to_json())
+    if v.Deprecation.is_some():
+        auto u1 = v.Deprecation.unwrap()
+        parts.append("\"Deprecation\":" + u1.to_json())
+    if v.SchemaChange.is_some():
+        auto u2 = v.SchemaChange.unwrap()
+        parts.append("\"SchemaChange\":" + schema_change_request_details_to_json(u2))
+    return dataexchange_json_obj(parts)
+
+# Serialize RequestDetails to a compact JSON object (declaration order).
+def request_details_to_json(RequestDetails v) -> str:
+    list[str] parts = []
+    if v.ExportAssetToSignedUrl.is_some():
+        auto u0 = v.ExportAssetToSignedUrl.unwrap()
+        parts.append("\"ExportAssetToSignedUrl\":" + u0.to_json())
+    if v.ExportAssetsToS3.is_some():
+        auto u1 = v.ExportAssetsToS3.unwrap()
+        parts.append("\"ExportAssetsToS3\":" + export_assets_to_s3_request_details_to_json(u1))
+    if v.ExportRevisionsToS3.is_some():
+        auto u2 = v.ExportRevisionsToS3.unwrap()
+        parts.append("\"ExportRevisionsToS3\":" + export_revisions_to_s3_request_details_to_json(u2))
+    if v.ImportAssetFromSignedUrl.is_some():
+        auto u3 = v.ImportAssetFromSignedUrl.unwrap()
+        parts.append("\"ImportAssetFromSignedUrl\":" + u3.to_json())
+    if v.ImportAssetsFromS3.is_some():
+        auto u4 = v.ImportAssetsFromS3.unwrap()
+        parts.append("\"ImportAssetsFromS3\":" + import_assets_from_s3_request_details_to_json(u4))
+    if v.ImportAssetsFromRedshiftDataShares.is_some():
+        auto u5 = v.ImportAssetsFromRedshiftDataShares.unwrap()
+        parts.append("\"ImportAssetsFromRedshiftDataShares\":" + import_assets_from_redshift_data_shares_request_details_to_json(u5))
+    if v.ImportAssetFromApiGatewayApi.is_some():
+        auto u6 = v.ImportAssetFromApiGatewayApi.unwrap()
+        parts.append("\"ImportAssetFromApiGatewayApi\":" + u6.to_json())
+    if v.CreateS3DataAccessFromS3Bucket.is_some():
+        auto u7 = v.CreateS3DataAccessFromS3Bucket.unwrap()
+        parts.append("\"CreateS3DataAccessFromS3Bucket\":" + create_s3_data_access_from_s3_bucket_request_details_to_json(u7))
+    if v.ImportAssetsFromLakeFormationTagPolicy.is_some():
+        auto u8 = v.ImportAssetsFromLakeFormationTagPolicy.unwrap()
+        parts.append("\"ImportAssetsFromLakeFormationTagPolicy\":" + import_assets_from_lake_formation_tag_policy_request_details_to_json(u8))
+    return dataexchange_json_obj(parts)
+
+# Serialize S3DataAccessAssetSourceEntry to a compact JSON object (declaration order).
+def s3_data_access_asset_source_entry_to_json(S3DataAccessAssetSourceEntry v) -> str:
+    list[str] parts = []
+    parts.append("\"Bucket\":" + dataexchange_json_str(v.Bucket))
+    if v.KeyPrefixes.is_some():
+        auto u0 = v.KeyPrefixes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(dataexchange_json_str(x1))
+        parts.append("\"KeyPrefixes\":" + dataexchange_json_arr(e1))
+    if v.Keys.is_some():
+        auto u2 = v.Keys.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(dataexchange_json_str(x3))
+        parts.append("\"Keys\":" + dataexchange_json_arr(e3))
+    if v.KmsKeysToGrant.is_some():
+        auto u4 = v.KmsKeysToGrant.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"KmsKeysToGrant\":" + dataexchange_json_arr(e5))
+    return dataexchange_json_obj(parts)
+
+# Serialize S3DataAccessDetails to a compact JSON object (declaration order).
+def s3_data_access_details_to_json(S3DataAccessDetails v) -> str:
+    list[str] parts = []
+    if v.KeyPrefixes.is_some():
+        auto u0 = v.KeyPrefixes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(dataexchange_json_str(x1))
+        parts.append("\"KeyPrefixes\":" + dataexchange_json_arr(e1))
+    if v.Keys.is_some():
+        auto u2 = v.Keys.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(dataexchange_json_str(x3))
+        parts.append("\"Keys\":" + dataexchange_json_arr(e3))
+    return dataexchange_json_obj(parts)
+
+# Serialize SchemaChangeRequestDetails to a compact JSON object (declaration order).
+def schema_change_request_details_to_json(SchemaChangeRequestDetails v) -> str:
+    list[str] parts = []
+    if v.Changes.is_some():
+        auto u0 = v.Changes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Changes\":" + dataexchange_json_arr(e1))
+    parts.append("\"SchemaChangeAt\":" + dataexchange_json_ts_iso(v.SchemaChangeAt))
+    return dataexchange_json_obj(parts)
+
+# Serialize ScopeDetails to a compact JSON object (declaration order).
+def scope_details_to_json(ScopeDetails v) -> str:
+    list[str] parts = []
+    if v.LakeFormationTagPolicies.is_some():
+        auto u0 = v.LakeFormationTagPolicies.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"LakeFormationTagPolicies\":" + dataexchange_json_arr(e1))
+    if v.RedshiftDataShares.is_some():
+        auto u2 = v.RedshiftDataShares.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"RedshiftDataShares\":" + dataexchange_json_arr(e3))
+    if v.S3DataAccesses.is_some():
+        auto u4 = v.S3DataAccesses.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(s3_data_access_details_to_json(x5))
+        parts.append("\"S3DataAccesses\":" + dataexchange_json_arr(e5))
+    return dataexchange_json_obj(parts)
+
+# Serialize TableLFTagPolicyAndPermissions to a compact JSON object (declaration order).
+def table_lf_tag_policy_and_permissions_to_json(TableLFTagPolicyAndPermissions v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Expression:
+        e0.append(lf_tag_to_json(x0))
+    parts.append("\"Expression\":" + dataexchange_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.Permissions:
+        e1.append(x1.to_json())
+    parts.append("\"Permissions\":" + dataexchange_json_arr(e1))
+    return dataexchange_json_obj(parts)
+
 # A bound DataExchange client: credentials + region, threaded into every operation.
 struct DataExchangeClient:
     core.Credentials creds
@@ -1490,6 +1815,100 @@ struct DataExchangeClient:
         labels["JobId"] = input.JobId
         auto b = binding.HttpBinding(method="DELETE", path_template="/v1/jobs/{JobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
+
+    # CreateDataGrant  POST /v1/data-grants
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceLimitExceededException, ThrottlingException, ValidationException
+    def create_data_grant(self, CreateDataGrantRequest input) -> str:
+        auto host = endpoints.regional_host(dataexchange_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/data-grants", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + dataexchange_json_str(input.Name))
+        parts.append("\"GrantDistributionScope\":" + input.GrantDistributionScope.to_json())
+        parts.append("\"ReceiverPrincipal\":" + dataexchange_json_str(input.ReceiverPrincipal))
+        parts.append("\"SourceDataSetId\":" + dataexchange_json_str(input.SourceDataSetId))
+        if input.EndsAt.is_some():
+            auto u0 = input.EndsAt.unwrap()
+            parts.append("\"EndsAt\":" + dataexchange_json_ts_iso(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + dataexchange_json_str(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(dataexchange_json_str(k3) + ":" + dataexchange_json_str(u2[k3]))
+            parts.append("\"Tags\":" + dataexchange_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, dataexchange_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, dataexchange_service(), self.region, host)
+
+    # CreateDataSet  POST /v1/data-sets
+    # errors: AccessDeniedException, InternalServerException, ServiceLimitExceededException, ThrottlingException, ValidationException
+    def create_data_set(self, CreateDataSetRequest input) -> str:
+        auto host = endpoints.regional_host(dataexchange_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/data-sets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"AssetType\":" + input.AssetType.to_json())
+        parts.append("\"Description\":" + dataexchange_json_str(input.Description))
+        parts.append("\"Name\":" + dataexchange_json_str(input.Name))
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(dataexchange_json_str(k1) + ":" + dataexchange_json_str(u0[k1]))
+            parts.append("\"Tags\":" + dataexchange_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, dataexchange_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, dataexchange_service(), self.region, host)
+
+    # CreateEventAction  POST /v1/event-actions
+    # errors: AccessDeniedException, InternalServerException, ServiceLimitExceededException, ThrottlingException, ValidationException
+    def create_event_action(self, CreateEventActionRequest input) -> str:
+        auto host = endpoints.regional_host(dataexchange_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/event-actions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Action\":" + input.Action.to_json())
+        parts.append("\"Event\":" + input.Event.to_json())
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(dataexchange_json_str(k1) + ":" + dataexchange_json_str(u0[k1]))
+            parts.append("\"Tags\":" + dataexchange_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, dataexchange_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, dataexchange_service(), self.region, host)
+
+    # CreateJob  POST /v1/jobs
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_job(self, CreateJobRequest input) -> str:
+        auto host = endpoints.regional_host(dataexchange_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AssetConfiguration.is_some():
+            auto u0 = input.AssetConfiguration.unwrap()
+            parts.append("\"AssetConfiguration\":" + asset_configuration_to_json(u0))
+        parts.append("\"Details\":" + request_details_to_json(input.Details))
+        parts.append("\"Type\":" + input.Type.to_json())
+        auto bp = restjson.rest_json_document(b, dataexchange_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, dataexchange_service(), self.region, host)
+
+    # CreateRevision  POST /v1/data-sets/{DataSetId}/revisions
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_revision(self, CreateRevisionRequest input) -> str:
+        auto host = endpoints.regional_host(dataexchange_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DataSetId"] = input.DataSetId
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/data-sets/{DataSetId}/revisions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Comment.is_some():
+            auto u0 = input.Comment.unwrap()
+            parts.append("\"Comment\":" + dataexchange_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(dataexchange_json_str(k2) + ":" + dataexchange_json_str(u1[k2]))
+            parts.append("\"Tags\":" + dataexchange_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, dataexchange_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, dataexchange_service(), self.region, host)
 
     # DeleteAsset  DELETE /v1/data-sets/{DataSetId}/revisions/{RevisionId}/assets/{AssetId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1710,6 +2129,30 @@ struct DataExchangeClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, dataexchange_service(), self.region, host)
 
+    # SendDataSetNotification  POST /v1/data-sets/{DataSetId}/notification
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def send_data_set_notification(self, SendDataSetNotificationRequest input) -> str:
+        auto host = endpoints.regional_host(dataexchange_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DataSetId"] = input.DataSetId
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/data-sets/{DataSetId}/notification", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Scope.is_some():
+            auto u0 = input.Scope.unwrap()
+            parts.append("\"Scope\":" + scope_details_to_json(u0))
+        if input.ClientToken.is_some():
+            auto u1 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + dataexchange_json_str(u1))
+        if input.Comment.is_some():
+            auto u2 = input.Comment.unwrap()
+            parts.append("\"Comment\":" + dataexchange_json_str(u2))
+        if input.Details.is_some():
+            auto u3 = input.Details.unwrap()
+            parts.append("\"Details\":" + notification_details_to_json(u3))
+        parts.append("\"Type\":" + input.Type.to_json())
+        auto bp = restjson.rest_json_document(b, dataexchange_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, dataexchange_service(), self.region, host)
+
     # StartJob  PATCH /v1/jobs/{JobId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_job(self, StartJobRequest input) -> str:
@@ -1718,6 +2161,20 @@ struct DataExchangeClient:
         labels["JobId"] = input.JobId
         auto b = binding.HttpBinding(method="PATCH", path_template="/v1/jobs/{JobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
+
+    # TagResource  POST /tags/{ResourceArn}
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(dataexchange_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(dataexchange_json_str(k0) + ":" + dataexchange_json_str(input.Tags[k0]))
+        parts.append("\"tags\":" + dataexchange_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, dataexchange_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, dataexchange_service(), self.region, host)
 
     # UpdateAsset  PATCH /v1/data-sets/{DataSetId}/revisions/{RevisionId}/assets/{AssetId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException

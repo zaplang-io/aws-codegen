@@ -13,19 +13,20 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 1 operations — 0 with a generated method,
-#   1 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 1 operations — 1 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   10 structs (4 @derive(Json)), 6 enums, 4 error variants.
-#   0 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.endpoints
 import aws_core.awsjson
 
 # The BCM_Recommended_Actions awsJson protocol: version 1.0, API id "AWSBillingAndCostManagementRecommendedActions".
@@ -112,8 +113,9 @@ enum ValidationExceptionReason:
 struct AccessDeniedException:
     str message
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionFilter:
     FilterName key
     MatchOption matchOption
@@ -123,21 +125,24 @@ struct ActionFilter:
 struct InternalServerException:
     str message
 
-# no @derive(Json): member(s) filter: RequestFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filter: RequestFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecommendedActionsRequest:
     Optional[RequestFilter] filter
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) recommendedActions: list[RecommendedAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommendedActions: list[RecommendedAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecommendedActionsResponse:
     list[RecommendedAction] recommendedActions
     Optional[str] nextToken
 
-# no @derive(Json): member(s) context: dict[str, str], nextSteps: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) context: dict[str, str], nextSteps: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendedAction:
     Optional[str] id
     Optional[ActionType] type
@@ -148,8 +153,9 @@ struct RecommendedAction:
     Optional[list[str]] nextSteps
     Optional[str] lastUpdatedTimeStamp
 
-# no @derive(Json): member(s) actions: list[ActionFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actions: list[ActionFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RequestFilter:
     Optional[list[ActionFilter]] actions
 
@@ -157,8 +163,9 @@ struct RequestFilter:
 struct ThrottlingException:
     str message
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -194,20 +201,97 @@ def bcm_recommended_actions_error_from_code(str code) -> BCM_Recommended_Actions
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   ListRecommendedActions (input ListRecommendedActionsRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def bcm_recommended_actions_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListRecommendedActions (input not derivable (no generated method))
+def bcm_recommended_actions_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def bcm_recommended_actions_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ActionFilter to a compact JSON object (declaration order).
+def action_filter_to_json(ActionFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"key\":" + v.key.to_json())
+    parts.append("\"matchOption\":" + v.matchOption.to_json())
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(bcm_recommended_actions_json_str(x0))
+    parts.append("\"values\":" + bcm_recommended_actions_json_arr(e0))
+    return bcm_recommended_actions_json_obj(parts)
+
+# Serialize ListRecommendedActionsRequest to a compact JSON object (declaration order).
+def list_recommended_actions_request_to_json(ListRecommendedActionsRequest v) -> str:
+    list[str] parts = []
+    if v.filter.is_some():
+        auto u0 = v.filter.unwrap()
+        parts.append("\"filter\":" + request_filter_to_json(u0))
+    if v.maxResults.is_some():
+        auto u1 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u1))
+    if v.nextToken.is_some():
+        auto u2 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + bcm_recommended_actions_json_str(u2))
+    return bcm_recommended_actions_json_obj(parts)
+
+# Serialize RequestFilter to a compact JSON object (declaration order).
+def request_filter_to_json(RequestFilter v) -> str:
+    list[str] parts = []
+    if v.actions.is_some():
+        auto u0 = v.actions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(action_filter_to_json(x1))
+        parts.append("\"actions\":" + bcm_recommended_actions_json_arr(e1))
+    return bcm_recommended_actions_json_obj(parts)
 
 # A bound BCM_Recommended_Actions client: credentials + region, threaded into every operation.
 struct BCM_Recommended_ActionsClient:
     core.Credentials creds
     str region
 
-    # no derivable-input operations were generated for this service in v0
+    # ListRecommendedActions
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_recommended_actions(self, ListRecommendedActionsRequest input) -> str:
+        auto body = list_recommended_actions_request_to_json(input)
+        return awsjson.awsjson_request_now(bcm_recommended_actions_protocol(), self.creds, self.region, "ListRecommendedActions", body)
+
+    # Paginator for ListRecommendedActions — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: recommendedActions).
+    def paginate_list_recommended_actions(self, ListRecommendedActionsRequest input):
+        auto host = endpoints.regional_host(bcm_recommended_actions_protocol().service, self.region)
+        while True:
+            auto body = list_recommended_actions_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(bcm_recommended_actions_protocol(), self.creds, self.region, "ListRecommendedActions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
 # Construct a BCM_Recommended_ActionsClient bound to credentials + region.
 def bcm_recommended_actions_client(core.Credentials creds, str region) -> BCM_Recommended_ActionsClient:
     return BCM_Recommended_ActionsClient(creds=creds, region=region)

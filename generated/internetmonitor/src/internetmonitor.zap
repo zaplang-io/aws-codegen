@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 16 operations — 8 with a generated method,
-#   8 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 16 operations — 12 with a generated method,
+#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   60 structs (44 @derive(Json)), 12 enums, 11 error variants.
 #   0 paginators generated (3 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The InternetMonitor rest-json protocol: SigV4 service "internetmonitor" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -197,8 +198,9 @@ struct DeleteMonitorOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterParameter:
     Optional[str] Field
     Optional[Operator] Operator
@@ -211,8 +213,9 @@ struct GetHealthEventInput:
     str EventId
     Optional[str] LinkedAccountId
 
-# no @derive(Json): member(s) ImpactedLocations: list[ImpactedLocation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ImpactedLocations: list[ImpactedLocation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetHealthEventOutput:
     str EventArn
     str EventId
@@ -249,8 +252,9 @@ struct GetMonitorInput:
     str MonitorName
     Optional[str] LinkedAccountId
 
-# no @derive(Json): member(s) Resources: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resources: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMonitorOutput:
     str MonitorName
     str MonitorArn
@@ -274,8 +278,9 @@ struct GetQueryResultsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Fields: list[QueryField], Data: list[list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fields: list[QueryField], Data: list[list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetQueryResultsOutput:
     list[QueryField] Fields
     list[list[str]] Data
@@ -291,8 +296,9 @@ struct GetQueryStatusInput:
 struct GetQueryStatusOutput:
     QueryStatus Status
 
-# no @derive(Json): member(s) ImpactedLocations: list[ImpactedLocation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ImpactedLocations: list[ImpactedLocation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HealthEvent:
     str EventArn
     str EventId
@@ -313,8 +319,9 @@ struct HealthEventsConfig:
     Optional[LocalHealthEventsConfig] AvailabilityLocalHealthEventsConfig
     Optional[LocalHealthEventsConfig] PerformanceLocalHealthEventsConfig
 
-# no @derive(Json): member(s) CausedBy: NetworkImpairment, Ipv4Prefixes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CausedBy: NetworkImpairment, Ipv4Prefixes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImpactedLocation:
     str ASName
     int64 ASNumber
@@ -377,8 +384,9 @@ struct ListHealthEventsInput:
     Optional[str] EventStatus
     Optional[str] LinkedAccountId
 
-# no @derive(Json): member(s) HealthEvents: list[HealthEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HealthEvents: list[HealthEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListHealthEventsOutput:
     list[HealthEvent] HealthEvents
     Optional[str] NextToken
@@ -393,8 +401,9 @@ struct ListInternetEventsInput:
     Optional[str] EventStatus
     Optional[str] EventType
 
-# no @derive(Json): member(s) InternetEvents: list[InternetEventSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InternetEvents: list[InternetEventSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInternetEventsOutput:
     list[InternetEventSummary] InternetEvents
     Optional[str] NextToken
@@ -407,8 +416,9 @@ struct ListMonitorsInput:
     Optional[str] MonitorStatus
     Optional[bool] IncludeLinkedAccounts
 
-# no @derive(Json): member(s) Monitors: list[Monitor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Monitors: list[Monitor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMonitorsOutput:
     list[Monitor] Monitors
     Optional[str] NextToken
@@ -418,8 +428,9 @@ struct ListMonitorsOutput:
 struct ListTagsForResourceInput:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[dict[str, str]] Tags
 
@@ -441,8 +452,9 @@ struct Network:
     str ASName
     int64 ASNumber
 
-# no @derive(Json): member(s) Networks: list[Network], AsPath: list[Network] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Networks: list[Network], AsPath: list[Network] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkImpairment:
     list[Network] Networks
     list[Network] AsPath
@@ -607,14 +619,10 @@ def internetmonitor_error_from_code(str code) -> InternetMonitorError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateMonitor (document member `Resources: list[str]` is not serializable by derive)
 #   ListHealthEvents (httpQuery `StartTime` has unsupported type DateTime)
 #   ListInternetEvents (httpQuery `StartTime` has unsupported type DateTime)
 #   ListMonitors (httpQuery `IncludeLinkedAccounts` has unsupported type bool)
-#   StartQuery (document member `FilterParameters: list[FilterParameter]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateMonitor (document member `ResourcesToAdd: list[str]` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -622,10 +630,98 @@ def internetmonitor_error_from_code(str code) -> InternetMonitorError:
 #   ListInternetEvents (operation not generated)
 #   ListMonitors (operation not generated)
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def internetmonitor_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def internetmonitor_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def internetmonitor_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# A timestamp as an ISO-8601 JSON string (`@json(timestamp="iso8601")`).
+def internetmonitor_json_ts_iso(DateTime dt) -> str:
+    return "\"" + datetime.strftime(dt, "%Y-%m-%dT%H:%M:%SZ") + "\""
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize FilterParameter to a compact JSON object (declaration order).
+def filter_parameter_to_json(FilterParameter v) -> str:
+    list[str] parts = []
+    if v.Field.is_some():
+        auto u0 = v.Field.unwrap()
+        parts.append("\"Field\":" + internetmonitor_json_str(u0))
+    if v.Operator.is_some():
+        auto u1 = v.Operator.unwrap()
+        parts.append("\"Operator\":" + u1.to_json())
+    if v.Values.is_some():
+        auto u2 = v.Values.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(internetmonitor_json_str(x3))
+        parts.append("\"Values\":" + internetmonitor_json_arr(e3))
+    return internetmonitor_json_obj(parts)
+
 # A bound InternetMonitor client: credentials + region, threaded into every operation.
 struct InternetMonitorClient:
     core.Credentials creds
     str region
+
+    # CreateMonitor  POST /v20210603/Monitors
+    # errors: AccessDeniedException, ConflictException, InternalServerException, LimitExceededException, ThrottlingException, ValidationException
+    def create_monitor(self, CreateMonitorInput input) -> str:
+        auto host = endpoints.regional_host(internetmonitor_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v20210603/Monitors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"MonitorName\":" + internetmonitor_json_str(input.MonitorName))
+        if input.Resources.is_some():
+            auto u0 = input.Resources.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(internetmonitor_json_str(x1))
+            parts.append("\"Resources\":" + internetmonitor_json_arr(e1))
+        if input.ClientToken.is_some():
+            auto u2 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + internetmonitor_json_str(u2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(internetmonitor_json_str(k4) + ":" + internetmonitor_json_str(u3[k4]))
+            parts.append("\"Tags\":" + internetmonitor_json_obj(m4))
+        if input.MaxCityNetworksToMonitor.is_some():
+            auto u5 = input.MaxCityNetworksToMonitor.unwrap()
+            parts.append("\"MaxCityNetworksToMonitor\":" + str(u5))
+        if input.InternetMeasurementsLogDelivery.is_some():
+            auto u6 = input.InternetMeasurementsLogDelivery.unwrap()
+            parts.append("\"InternetMeasurementsLogDelivery\":" + u6.to_json())
+        if input.TrafficPercentageToMonitor.is_some():
+            auto u7 = input.TrafficPercentageToMonitor.unwrap()
+            parts.append("\"TrafficPercentageToMonitor\":" + str(u7))
+        if input.HealthEventsConfig.is_some():
+            auto u8 = input.HealthEventsConfig.unwrap()
+            parts.append("\"HealthEventsConfig\":" + u8.to_json())
+        auto bp = restjson.rest_json_document(b, internetmonitor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, internetmonitor_service(), self.region, host)
 
     # DeleteMonitor  DELETE /v20210603/Monitors/{MonitorName}
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
@@ -704,6 +800,29 @@ struct InternetMonitorClient:
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, internetmonitor_service(), self.region, host)
 
+    # StartQuery  POST /v20210603/Monitors/{MonitorName}/Queries
+    # errors: AccessDeniedException, InternalServerException, LimitExceededException, ThrottlingException, ValidationException
+    def start_query(self, StartQueryInput input) -> str:
+        auto host = endpoints.regional_host(internetmonitor_service(), self.region)
+        dict[str, str] labels = {}
+        labels["MonitorName"] = input.MonitorName
+        auto b = binding.HttpBinding(method="POST", path_template="/v20210603/Monitors/{MonitorName}/Queries", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"StartTime\":" + internetmonitor_json_ts_iso(input.StartTime))
+        parts.append("\"EndTime\":" + internetmonitor_json_ts_iso(input.EndTime))
+        parts.append("\"QueryType\":" + input.QueryType.to_json())
+        if input.FilterParameters.is_some():
+            auto u0 = input.FilterParameters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(filter_parameter_to_json(x1))
+            parts.append("\"FilterParameters\":" + internetmonitor_json_arr(e1))
+        if input.LinkedAccountId.is_some():
+            auto u2 = input.LinkedAccountId.unwrap()
+            parts.append("\"LinkedAccountId\":" + internetmonitor_json_str(u2))
+        auto bp = restjson.rest_json_document(b, internetmonitor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, internetmonitor_service(), self.region, host)
+
     # StopQuery  DELETE /v20210603/Monitors/{MonitorName}/Queries/{QueryId}
     # errors: AccessDeniedException, InternalServerException, LimitExceededException, ThrottlingException, ValidationException
     def stop_query(self, StopQueryInput input) -> str:
@@ -713,6 +832,62 @@ struct InternetMonitorClient:
         labels["QueryId"] = input.QueryId
         auto b = binding.HttpBinding(method="DELETE", path_template="/v20210603/Monitors/{MonitorName}/Queries/{QueryId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, internetmonitor_service(), self.region, host)
+
+    # TagResource  POST /tags/{ResourceArn}
+    # errors: AccessDeniedException, BadRequestException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(internetmonitor_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(internetmonitor_json_str(k0) + ":" + internetmonitor_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + internetmonitor_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, internetmonitor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, internetmonitor_service(), self.region, host)
+
+    # UpdateMonitor  PATCH /v20210603/Monitors/{MonitorName}
+    # errors: AccessDeniedException, InternalServerException, LimitExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_monitor(self, UpdateMonitorInput input) -> str:
+        auto host = endpoints.regional_host(internetmonitor_service(), self.region)
+        dict[str, str] labels = {}
+        labels["MonitorName"] = input.MonitorName
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v20210603/Monitors/{MonitorName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ResourcesToAdd.is_some():
+            auto u0 = input.ResourcesToAdd.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(internetmonitor_json_str(x1))
+            parts.append("\"ResourcesToAdd\":" + internetmonitor_json_arr(e1))
+        if input.ResourcesToRemove.is_some():
+            auto u2 = input.ResourcesToRemove.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(internetmonitor_json_str(x3))
+            parts.append("\"ResourcesToRemove\":" + internetmonitor_json_arr(e3))
+        if input.Status.is_some():
+            auto u4 = input.Status.unwrap()
+            parts.append("\"Status\":" + u4.to_json())
+        if input.ClientToken.is_some():
+            auto u5 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + internetmonitor_json_str(u5))
+        if input.MaxCityNetworksToMonitor.is_some():
+            auto u6 = input.MaxCityNetworksToMonitor.unwrap()
+            parts.append("\"MaxCityNetworksToMonitor\":" + str(u6))
+        if input.InternetMeasurementsLogDelivery.is_some():
+            auto u7 = input.InternetMeasurementsLogDelivery.unwrap()
+            parts.append("\"InternetMeasurementsLogDelivery\":" + u7.to_json())
+        if input.TrafficPercentageToMonitor.is_some():
+            auto u8 = input.TrafficPercentageToMonitor.unwrap()
+            parts.append("\"TrafficPercentageToMonitor\":" + str(u8))
+        if input.HealthEventsConfig.is_some():
+            auto u9 = input.HealthEventsConfig.unwrap()
+            parts.append("\"HealthEventsConfig\":" + u9.to_json())
+        auto bp = restjson.rest_json_document(b, internetmonitor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, internetmonitor_service(), self.region, host)
 
 # Construct a InternetMonitorClient bound to credentials + region.
 def internetmonitor_client(core.Credentials creds, str region) -> InternetMonitorClient:

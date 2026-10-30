@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 299 operations — 206 with a generated method,
-#   93 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 299 operations — 290 with a generated method,
+#   9 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   1772 structs (1078 @derive(Json)), 287 enums, 23 error variants.
-#   37 paginators generated (12 paginated ops skipped) from paginators-1.json.
+#   49 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The QuickSight rest-json protocol: SigV4 service "quicksight" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -2734,8 +2735,9 @@ struct AccountSettings:
     Optional[bool] PublicSharingEnabled
     Optional[bool] TerminationProtectionEnabled
 
-# no @derive(Json): member(s) EnabledActions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnabledActions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionConnector:
     str Arn
     str ActionConnectorId
@@ -2785,8 +2787,9 @@ struct AdHocFilteringOption:
 struct AdditionalNotes:
     Optional[str] Text
 
-# no @derive(Json): member(s) Spaces: list[str], ActionConnectors: list[str], StarterPrompts: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Spaces: list[str], ActionConnectors: list[str], StarterPrompts: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Agent:
     Optional[list[str]] Spaces
     Optional[list[str]] ActionConnectors
@@ -2821,16 +2824,18 @@ struct AgentSummary:
     DateTime UpdatedAt
     Optional[str] IconId
 
-# no @derive(Json): member(s) AggregationFunctionParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AggregationFunctionParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AggFunction:
     Optional[AggType] Aggregation
     Optional[dict[str, str]] AggregationFunctionParameters
     Optional[TopicTimeGranularity] Period
     Optional[str] PeriodField
 
-# no @derive(Json): member(s) Source: TransformOperationSource, GroupByColumnNames: list[str], Aggregations: list[Aggregation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Source: TransformOperationSource, GroupByColumnNames: list[str], Aggregations: list[Aggregation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AggregateOperation:
     str Alias
     TransformOperationSource Source
@@ -2885,8 +2890,9 @@ struct AmazonQInQuickSightConsoleConfigurations:
 struct AmazonQInQuickSightDashboardConfigurations:
     Optional[ExecutiveSummaryConfigurations] ExecutiveSummary
 
-# no @derive(Json): member(s) Errors: list[AnalysisError], DataSetArns: list[str], TopicArns: list[str], Sheets: list[Sheet] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[AnalysisError], DataSetArns: list[str], TopicArns: list[str], Sheets: list[Sheet] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Analysis:
     Optional[str] AnalysisId
     Optional[str] Arn
@@ -2904,8 +2910,9 @@ struct Analysis:
 struct AnalysisDefaults:
     DefaultNewSheetConfiguration DefaultNewSheetConfiguration
 
-# no @derive(Json): member(s) DataSetIdentifierDeclarations: list[DataSetIdentifierDeclaration], TopicIdentifierDeclarations: list[TopicIdentifierDeclaration], Sheets: list[SheetDefinition], TooltipSheets: list[TooltipSheetDefinition], CalculatedFields: list[CalculatedField], ParameterDeclarations: list[ParameterDeclaration], FilterGroups: list[FilterGroup], ColumnConfigurations: list[ColumnConfiguration], Options: AssetOptions, StaticFiles: list[StaticFile] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSetIdentifierDeclarations: list[DataSetIdentifierDeclaration], TopicIdentifierDeclarations: list[TopicIdentifierDeclaration], Sheets: list[SheetDefinition], TooltipSheets: list[TooltipSheetDefinition], CalculatedFields: list[CalculatedField], ParameterDeclarations: list[ParameterDeclaration], FilterGroups: list[FilterGroup], ColumnConfigurations: list[ColumnConfiguration], Options: AssetOptions, StaticFiles: list[StaticFile] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalysisDefinition:
     list[DataSetIdentifierDeclaration] DataSetIdentifierDeclarations
     Optional[list[TopicIdentifierDeclaration]] TopicIdentifierDeclarations
@@ -2920,8 +2927,9 @@ struct AnalysisDefinition:
     Optional[QueryExecutionOptions] QueryExecutionOptions
     Optional[list[StaticFile]] StaticFiles
 
-# no @derive(Json): member(s) ViolatedEntities: list[Entity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ViolatedEntities: list[Entity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalysisError:
     Optional[AnalysisErrorType] Type
     Optional[str] Message
@@ -2933,13 +2941,15 @@ struct AnalysisSearchFilter:
     Optional[AnalysisFilterAttribute] Name
     Optional[str] Value
 
-# no @derive(Json): member(s) SourceTemplate: AnalysisSourceTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceTemplate: AnalysisSourceTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalysisSourceEntity:
     Optional[AnalysisSourceTemplate] SourceTemplate
 
-# no @derive(Json): member(s) DataSetReferences: list[DataSetReference], TopicReferences: list[TopicReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSetReferences: list[DataSetReference], TopicReferences: list[TopicReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalysisSourceTemplate:
     list[DataSetReference] DataSetReferences
     Optional[list[TopicReference]] TopicReferences
@@ -2965,8 +2975,9 @@ struct AnchorDateConfiguration:
     Optional[str] AnchorOption
     Optional[str] ParameterName
 
-# no @derive(Json): member(s) EnabledFeatures: list[str], DisabledFeatures: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnabledFeatures: list[str], DisabledFeatures: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnonymousUserDashboardEmbeddingConfiguration:
     str InitialDashboardId
     Optional[list[str]] EnabledFeatures
@@ -2981,8 +2992,9 @@ struct AnonymousUserDashboardFeatureConfigurations:
 struct AnonymousUserDashboardVisualEmbeddingConfiguration:
     DashboardVisualId InitialDashboardVisualId
 
-# no @derive(Json): member(s) Dashboard: AnonymousUserDashboardEmbeddingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dashboard: AnonymousUserDashboardEmbeddingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnonymousUserEmbeddingExperienceConfiguration:
     Optional[AnonymousUserDashboardEmbeddingConfiguration] Dashboard
     Optional[AnonymousUserDashboardVisualEmbeddingConfiguration] DashboardVisual
@@ -2997,8 +3009,9 @@ struct AnonymousUserGenerativeQnAEmbeddingConfiguration:
 struct AnonymousUserQSearchBarEmbeddingConfiguration:
     str InitialTopicId
 
-# no @derive(Json): member(s) FileGroups: list[SnapshotJobResultFileGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileGroups: list[SnapshotJobResultFileGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnonymousUserSnapshotJobResult:
     Optional[list[SnapshotJobResultFileGroup]] FileGroups
 
@@ -3011,8 +3024,9 @@ struct AppSummary:
     Optional[DateTime] LastUpdatedTime
     Optional[AppVisibility] Visibility
 
-# no @derive(Json): member(s) FirstSource: TransformOperationSource, SecondSource: TransformOperationSource, AppendedColumns: list[AppendedColumn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FirstSource: TransformOperationSource, SecondSource: TransformOperationSource, AppendedColumns: list[AppendedColumn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AppendOperation:
     str Alias
     Optional[TransformOperationSource] FirstSource
@@ -3024,8 +3038,9 @@ struct AppendedColumn:
     str ColumnName
     str NewColumnId
 
-# no @derive(Json): member(s) GroupArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicableTo:
     str Type
     Optional[list[str]] GroupArns
@@ -3036,8 +3051,9 @@ struct ApplicationTheme:
     Optional[ContextualAccentPalette] ContextualAccentPalette
     Optional[BrandElementStyle] BrandElementStyle
 
-# no @derive(Json): member(s) Actions: list[str], AssetTypes: list[AssetType], ApplicableTo: ApplicableTo, ApprovalGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: list[str], AssetTypes: list[AssetType], ApplicableTo: ApplicableTo, ApprovalGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApprovalPolicy:
     str PolicyId
     str PolicyArn
@@ -3069,8 +3085,9 @@ struct ArcConfiguration:
 struct ArcOptions:
     Optional[ArcThickness] ArcThickness
 
-# no @derive(Json): member(s) VPCConnections: list[AssetBundleExportJobVPCConnectionOverrideProperties], RefreshSchedules: list[AssetBundleExportJobRefreshScheduleOverrideProperties], DataSources: list[AssetBundleExportJobDataSourceOverrideProperties], DataSets: list[AssetBundleExportJobDataSetOverrideProperties], Themes: list[AssetBundleExportJobThemeOverrideProperties], Analyses: list[AssetBundleExportJobAnalysisOverrideProperties], Dashboards: list[AssetBundleExportJobDashboardOverrideProperties], Folders: list[AssetBundleExportJobFolderOverrideProperties], TopicsV2: list[AssetBundleExportJobTopicV2OverrideProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VPCConnections: list[AssetBundleExportJobVPCConnectionOverrideProperties], RefreshSchedules: list[AssetBundleExportJobRefreshScheduleOverrideProperties], DataSources: list[AssetBundleExportJobDataSourceOverrideProperties], DataSets: list[AssetBundleExportJobDataSetOverrideProperties], Themes: list[AssetBundleExportJobThemeOverrideProperties], Analyses: list[AssetBundleExportJobAnalysisOverrideProperties], Dashboards: list[AssetBundleExportJobDashboardOverrideProperties], Folders: list[AssetBundleExportJobFolderOverrideProperties], TopicsV2: list[AssetBundleExportJobTopicV2OverrideProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleCloudFormationOverridePropertyConfiguration:
     Optional[AssetBundleExportJobResourceIdOverrideConfiguration] ResourceIdOverrideConfiguration
     Optional[list[AssetBundleExportJobVPCConnectionOverrideProperties]] VPCConnections
@@ -3083,26 +3100,30 @@ struct AssetBundleCloudFormationOverridePropertyConfiguration:
     Optional[list[AssetBundleExportJobFolderOverrideProperties]] Folders
     Optional[list[AssetBundleExportJobTopicV2OverrideProperties]] TopicsV2
 
-# no @derive(Json): member(s) Properties: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleExportJobAnalysisOverrideProperties:
     str Arn
     list[str] Properties
 
-# no @derive(Json): member(s) Properties: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleExportJobDashboardOverrideProperties:
     str Arn
     list[str] Properties
 
-# no @derive(Json): member(s) Properties: list[AssetBundleExportJobDataSetPropertyToOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: list[AssetBundleExportJobDataSetPropertyToOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleExportJobDataSetOverrideProperties:
     str Arn
     list[AssetBundleExportJobDataSetPropertyToOverride] Properties
 
-# no @derive(Json): member(s) Properties: list[AssetBundleExportJobDataSourcePropertyToOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: list[AssetBundleExportJobDataSourcePropertyToOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleExportJobDataSourceOverrideProperties:
     str Arn
     list[AssetBundleExportJobDataSourcePropertyToOverride] Properties
@@ -3113,14 +3134,16 @@ struct AssetBundleExportJobError:
     Optional[str] Type
     Optional[str] Message
 
-# no @derive(Json): member(s) Properties: list[AssetBundleExportJobFolderPropertyToOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: list[AssetBundleExportJobFolderPropertyToOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleExportJobFolderOverrideProperties:
     str Arn
     list[AssetBundleExportJobFolderPropertyToOverride] Properties
 
-# no @derive(Json): member(s) Properties: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleExportJobRefreshScheduleOverrideProperties:
     str Arn
     list[str] Properties
@@ -3140,20 +3163,23 @@ struct AssetBundleExportJobSummary:
     Optional[bool] IncludePermissions
     Optional[bool] IncludeTags
 
-# no @derive(Json): member(s) Properties: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleExportJobThemeOverrideProperties:
     str Arn
     list[str] Properties
 
-# no @derive(Json): member(s) Properties: list[AssetBundleExportJobTopicV2PropertyToOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: list[AssetBundleExportJobTopicV2PropertyToOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleExportJobTopicV2OverrideProperties:
     str Arn
     list[AssetBundleExportJobTopicV2PropertyToOverride] Properties
 
-# no @derive(Json): member(s) Properties: list[AssetBundleExportJobVPCConnectionPropertyToOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: list[AssetBundleExportJobVPCConnectionPropertyToOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleExportJobVPCConnectionOverrideProperties:
     str Arn
     list[AssetBundleExportJobVPCConnectionPropertyToOverride] Properties
@@ -3172,14 +3198,16 @@ struct AssetBundleImportJobAnalysisOverrideParameters:
     str AnalysisId
     Optional[str] Name
 
-# no @derive(Json): member(s) AnalysisIds: list[str], Permissions: AssetBundleResourcePermissions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AnalysisIds: list[str], Permissions: AssetBundleResourcePermissions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleImportJobAnalysisOverridePermissions:
     list[str] AnalysisIds
     AssetBundleResourcePermissions Permissions
 
-# no @derive(Json): member(s) AnalysisIds: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AnalysisIds: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleImportJobAnalysisOverrideTags:
     list[str] AnalysisIds
     list[Tag] Tags
@@ -3189,15 +3217,17 @@ struct AssetBundleImportJobDashboardOverrideParameters:
     str DashboardId
     Optional[str] Name
 
-# no @derive(Json): member(s) DashboardIds: list[str], Permissions: AssetBundleResourcePermissions, LinkSharingConfiguration: AssetBundleResourceLinkSharingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DashboardIds: list[str], Permissions: AssetBundleResourcePermissions, LinkSharingConfiguration: AssetBundleResourceLinkSharingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleImportJobDashboardOverridePermissions:
     list[str] DashboardIds
     Optional[AssetBundleResourcePermissions] Permissions
     Optional[AssetBundleResourceLinkSharingConfiguration] LinkSharingConfiguration
 
-# no @derive(Json): member(s) DashboardIds: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DashboardIds: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleImportJobDashboardOverrideTags:
     list[str] DashboardIds
     list[Tag] Tags
@@ -3208,14 +3238,16 @@ struct AssetBundleImportJobDataSetOverrideParameters:
     Optional[str] Name
     Optional[DataSetRefreshProperties] DataSetRefreshProperties
 
-# no @derive(Json): member(s) DataSetIds: list[str], Permissions: AssetBundleResourcePermissions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSetIds: list[str], Permissions: AssetBundleResourcePermissions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleImportJobDataSetOverridePermissions:
     list[str] DataSetIds
     AssetBundleResourcePermissions Permissions
 
-# no @derive(Json): member(s) DataSetIds: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSetIds: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleImportJobDataSetOverrideTags:
     list[str] DataSetIds
     list[Tag] Tags
@@ -3230,8 +3262,9 @@ struct AssetBundleImportJobDataSourceCredentials:
     Optional[AssetBundleImportJobDataSourceCredentialPair] CredentialPair
     Optional[str] SecretArn
 
-# no @derive(Json): member(s) DataSourceParameters: DataSourceParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSourceParameters: DataSourceParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleImportJobDataSourceOverrideParameters:
     str DataSourceId
     Optional[str] Name
@@ -3240,14 +3273,16 @@ struct AssetBundleImportJobDataSourceOverrideParameters:
     Optional[SslProperties] SslProperties
     Optional[AssetBundleImportJobDataSourceCredentials] Credentials
 
-# no @derive(Json): member(s) DataSourceIds: list[str], Permissions: AssetBundleResourcePermissions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSourceIds: list[str], Permissions: AssetBundleResourcePermissions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleImportJobDataSourceOverridePermissions:
     list[str] DataSourceIds
     AssetBundleResourcePermissions Permissions
 
-# no @derive(Json): member(s) DataSourceIds: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSourceIds: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleImportJobDataSourceOverrideTags:
     list[str] DataSourceIds
     list[Tag] Tags
@@ -3264,20 +3299,23 @@ struct AssetBundleImportJobFolderOverrideParameters:
     Optional[str] Name
     Optional[str] ParentFolderArn
 
-# no @derive(Json): member(s) FolderIds: list[str], Permissions: AssetBundleResourcePermissions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FolderIds: list[str], Permissions: AssetBundleResourcePermissions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleImportJobFolderOverridePermissions:
     list[str] FolderIds
     Optional[AssetBundleResourcePermissions] Permissions
 
-# no @derive(Json): member(s) FolderIds: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FolderIds: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleImportJobFolderOverrideTags:
     list[str] FolderIds
     list[Tag] Tags
 
-# no @derive(Json): member(s) VPCConnections: list[AssetBundleImportJobVPCConnectionOverrideParameters], RefreshSchedules: list[AssetBundleImportJobRefreshScheduleOverrideParameters], DataSources: list[AssetBundleImportJobDataSourceOverrideParameters], DataSets: list[AssetBundleImportJobDataSetOverrideParameters], Themes: list[AssetBundleImportJobThemeOverrideParameters], Analyses: list[AssetBundleImportJobAnalysisOverrideParameters], Dashboards: list[AssetBundleImportJobDashboardOverrideParameters], Folders: list[AssetBundleImportJobFolderOverrideParameters], TopicsV2: list[AssetBundleImportJobTopicV2OverrideParameters] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VPCConnections: list[AssetBundleImportJobVPCConnectionOverrideParameters], RefreshSchedules: list[AssetBundleImportJobRefreshScheduleOverrideParameters], DataSources: list[AssetBundleImportJobDataSourceOverrideParameters], DataSets: list[AssetBundleImportJobDataSetOverrideParameters], Themes: list[AssetBundleImportJobThemeOverrideParameters], Analyses: list[AssetBundleImportJobAnalysisOverrideParameters], Dashboards: list[AssetBundleImportJobDashboardOverrideParameters], Folders: list[AssetBundleImportJobFolderOverrideParameters], TopicsV2: list[AssetBundleImportJobTopicV2OverrideParameters] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleImportJobOverrideParameters:
     Optional[AssetBundleImportJobResourceIdOverrideConfiguration] ResourceIdOverrideConfiguration
     Optional[list[AssetBundleImportJobVPCConnectionOverrideParameters]] VPCConnections
@@ -3290,8 +3328,9 @@ struct AssetBundleImportJobOverrideParameters:
     Optional[list[AssetBundleImportJobFolderOverrideParameters]] Folders
     Optional[list[AssetBundleImportJobTopicV2OverrideParameters]] TopicsV2
 
-# no @derive(Json): member(s) DataSources: list[AssetBundleImportJobDataSourceOverridePermissions], DataSets: list[AssetBundleImportJobDataSetOverridePermissions], Themes: list[AssetBundleImportJobThemeOverridePermissions], Analyses: list[AssetBundleImportJobAnalysisOverridePermissions], Dashboards: list[AssetBundleImportJobDashboardOverridePermissions], Folders: list[AssetBundleImportJobFolderOverridePermissions], TopicsV2: list[AssetBundleImportJobTopicV2OverridePermissions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSources: list[AssetBundleImportJobDataSourceOverridePermissions], DataSets: list[AssetBundleImportJobDataSetOverridePermissions], Themes: list[AssetBundleImportJobThemeOverridePermissions], Analyses: list[AssetBundleImportJobAnalysisOverridePermissions], Dashboards: list[AssetBundleImportJobDashboardOverridePermissions], Folders: list[AssetBundleImportJobFolderOverridePermissions], TopicsV2: list[AssetBundleImportJobTopicV2OverridePermissions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleImportJobOverridePermissions:
     Optional[list[AssetBundleImportJobDataSourceOverridePermissions]] DataSources
     Optional[list[AssetBundleImportJobDataSetOverridePermissions]] DataSets
@@ -3301,8 +3340,9 @@ struct AssetBundleImportJobOverridePermissions:
     Optional[list[AssetBundleImportJobFolderOverridePermissions]] Folders
     Optional[list[AssetBundleImportJobTopicV2OverridePermissions]] TopicsV2
 
-# no @derive(Json): member(s) VPCConnections: list[AssetBundleImportJobVPCConnectionOverrideTags], DataSources: list[AssetBundleImportJobDataSourceOverrideTags], DataSets: list[AssetBundleImportJobDataSetOverrideTags], Themes: list[AssetBundleImportJobThemeOverrideTags], Analyses: list[AssetBundleImportJobAnalysisOverrideTags], Dashboards: list[AssetBundleImportJobDashboardOverrideTags], Folders: list[AssetBundleImportJobFolderOverrideTags], TopicsV2: list[AssetBundleImportJobTopicV2OverrideTags] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VPCConnections: list[AssetBundleImportJobVPCConnectionOverrideTags], DataSources: list[AssetBundleImportJobDataSourceOverrideTags], DataSets: list[AssetBundleImportJobDataSetOverrideTags], Themes: list[AssetBundleImportJobThemeOverrideTags], Analyses: list[AssetBundleImportJobAnalysisOverrideTags], Dashboards: list[AssetBundleImportJobDashboardOverrideTags], Folders: list[AssetBundleImportJobFolderOverrideTags], TopicsV2: list[AssetBundleImportJobTopicV2OverrideTags] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleImportJobOverrideTags:
     Optional[list[AssetBundleImportJobVPCConnectionOverrideTags]] VPCConnections
     Optional[list[AssetBundleImportJobDataSourceOverrideTags]] DataSources
@@ -3340,14 +3380,16 @@ struct AssetBundleImportJobThemeOverrideParameters:
     str ThemeId
     Optional[str] Name
 
-# no @derive(Json): member(s) ThemeIds: list[str], Permissions: AssetBundleResourcePermissions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ThemeIds: list[str], Permissions: AssetBundleResourcePermissions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleImportJobThemeOverridePermissions:
     list[str] ThemeIds
     AssetBundleResourcePermissions Permissions
 
-# no @derive(Json): member(s) ThemeIds: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ThemeIds: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleImportJobThemeOverrideTags:
     list[str] ThemeIds
     list[Tag] Tags
@@ -3358,20 +3400,23 @@ struct AssetBundleImportJobTopicV2OverrideParameters:
     Optional[str] Name
     Optional[str] Description
 
-# no @derive(Json): member(s) TopicIds: list[str], Permissions: AssetBundleResourcePermissions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TopicIds: list[str], Permissions: AssetBundleResourcePermissions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleImportJobTopicV2OverridePermissions:
     list[str] TopicIds
     AssetBundleResourcePermissions Permissions
 
-# no @derive(Json): member(s) TopicIds: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TopicIds: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleImportJobTopicV2OverrideTags:
     list[str] TopicIds
     list[Tag] Tags
 
-# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str], DnsResolvers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str], DnsResolvers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleImportJobVPCConnectionOverrideParameters:
     str VPCConnectionId
     Optional[str] Name
@@ -3380,8 +3425,9 @@ struct AssetBundleImportJobVPCConnectionOverrideParameters:
     Optional[list[str]] DnsResolvers
     Optional[str] RoleArn
 
-# no @derive(Json): member(s) VPCConnectionIds: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VPCConnectionIds: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleImportJobVPCConnectionOverrideTags:
     list[str] VPCConnectionIds
     list[Tag] Tags
@@ -3401,19 +3447,22 @@ struct AssetBundleImportSourceDescription:
     Optional[str] Body
     Optional[str] S3Uri
 
-# no @derive(Json): member(s) Permissions: AssetBundleResourcePermissions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: AssetBundleResourcePermissions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleResourceLinkSharingConfiguration:
     Optional[AssetBundleResourcePermissions] Permissions
 
-# no @derive(Json): member(s) Principals: list[str], Actions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Principals: list[str], Actions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetBundleResourcePermissions:
     list[str] Principals
     list[str] Actions
 
-# no @derive(Json): member(s) ExcludedDataSetArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExcludedDataSetArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetOptions:
     Optional[str] Timezone
     Optional[DayOfTheWeek] WeekStart
@@ -3482,8 +3531,9 @@ struct AuthorizationCodeGrantMetadata:
     Optional[str] AuthorizationCodeGrantCredentialsSource
     Optional[AuthorizationCodeGrantCredentialsDetails] AuthorizationCodeGrantCredentialsDetails
 
-# no @derive(Json): member(s) AuthorizedTargets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthorizedTargets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthorizedTargetsByService:
     Optional[ServiceType] Service
     Optional[list[str]] AuthorizedTargets
@@ -3551,16 +3601,18 @@ struct AxisTickLabelOptions:
     Optional[LabelOptions] LabelOptions
     Optional[float64] RotationAngle
 
-# no @derive(Json): member(s) Category: list[DimensionField], Values: list[MeasureField], Colors: list[DimensionField], SmallMultiples: list[DimensionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Category: list[DimensionField], Values: list[MeasureField], Colors: list[DimensionField], SmallMultiples: list[DimensionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BarChartAggregatedFieldWells:
     Optional[list[DimensionField]] Category
     Optional[list[MeasureField]] Values
     Optional[list[DimensionField]] Colors
     Optional[list[DimensionField]] SmallMultiples
 
-# no @derive(Json): member(s) FieldWells: BarChartFieldWells, SortConfiguration: BarChartSortConfiguration, VisualPalette: VisualPalette, CategoryLabelOptions: ChartAxisLabelOptions, ValueLabelOptions: ChartAxisLabelOptions, ColorLabelOptions: ChartAxisLabelOptions, Series: list[BarSeriesItem], DataLabels: DataLabelOptions, Tooltip: TooltipOptions, ReferenceLines: list[ReferenceLine], ContributionAnalysisDefaults: list[ContributionAnalysisDefault] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldWells: BarChartFieldWells, SortConfiguration: BarChartSortConfiguration, VisualPalette: VisualPalette, CategoryLabelOptions: ChartAxisLabelOptions, ValueLabelOptions: ChartAxisLabelOptions, ColorLabelOptions: ChartAxisLabelOptions, Series: list[BarSeriesItem], DataLabels: DataLabelOptions, Tooltip: TooltipOptions, ReferenceLines: list[ReferenceLine], ContributionAnalysisDefaults: list[ContributionAnalysisDefault] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BarChartConfiguration:
     Optional[BarChartFieldWells] FieldWells
     Optional[BarChartSortConfiguration] SortConfiguration
@@ -3587,8 +3639,9 @@ struct BarChartDefaultSeriesSettings:
     Optional[DecalSettings] DecalSettings
     Optional[BorderSettings] BorderSettings
 
-# no @derive(Json): member(s) BarChartAggregatedFieldWells: BarChartAggregatedFieldWells not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BarChartAggregatedFieldWells: BarChartAggregatedFieldWells not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BarChartFieldWells:
     Optional[BarChartAggregatedFieldWells] BarChartAggregatedFieldWells
 
@@ -3597,8 +3650,9 @@ struct BarChartSeriesSettings:
     Optional[DecalSettings] DecalSettings
     Optional[BorderSettings] BorderSettings
 
-# no @derive(Json): member(s) CategorySort: list[FieldSortOptions], ColorSort: list[FieldSortOptions], SmallMultiplesSort: list[FieldSortOptions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CategorySort: list[FieldSortOptions], ColorSort: list[FieldSortOptions], SmallMultiplesSort: list[FieldSortOptions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BarChartSortConfiguration:
     Optional[list[FieldSortOptions]] CategorySort
     Optional[ItemsLimitConfiguration] CategoryItemsLimit
@@ -3607,8 +3661,9 @@ struct BarChartSortConfiguration:
     Optional[list[FieldSortOptions]] SmallMultiplesSort
     Optional[ItemsLimitConfiguration] SmallMultiplesLimitConfiguration
 
-# no @derive(Json): member(s) ChartConfiguration: BarChartConfiguration, Actions: list[VisualCustomAction], ColumnHierarchies: list[ColumnHierarchy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChartConfiguration: BarChartConfiguration, Actions: list[VisualCustomAction], ColumnHierarchies: list[ColumnHierarchy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BarChartVisual:
     str VisualId
     Optional[VisualTitleLabelOptions] Title
@@ -3636,8 +3691,9 @@ struct BatchCreateTopicReviewedAnswerRequest:
     str TopicId
     list[CreateTopicReviewedAnswer] Answers
 
-# no @derive(Json): member(s) SucceededAnswers: list[SucceededTopicReviewedAnswer], InvalidAnswers: list[InvalidTopicReviewedAnswer] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SucceededAnswers: list[SucceededTopicReviewedAnswer], InvalidAnswers: list[InvalidTopicReviewedAnswer] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateTopicReviewedAnswerResponse:
     Optional[str] TopicId
     Optional[str] TopicArn
@@ -3658,8 +3714,9 @@ struct BatchDeleteKnowledgeBaseRequest:
     str AwsAccountId
     list[str] KnowledgeBaseIds
 
-# no @derive(Json): member(s) Deleted: list[BatchDeleteKnowledgeBaseSuccess], Errors: list[BatchDeleteKnowledgeBaseFailure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Deleted: list[BatchDeleteKnowledgeBaseSuccess], Errors: list[BatchDeleteKnowledgeBaseFailure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteKnowledgeBaseResponse:
     list[BatchDeleteKnowledgeBaseSuccess] Deleted
     list[BatchDeleteKnowledgeBaseFailure] Errors
@@ -3678,8 +3735,9 @@ struct BatchDeleteTopicReviewedAnswerRequest:
     str TopicId
     Optional[list[str]] AnswerIds
 
-# no @derive(Json): member(s) SucceededAnswers: list[SucceededTopicReviewedAnswer], InvalidAnswers: list[InvalidTopicReviewedAnswer] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SucceededAnswers: list[SucceededTopicReviewedAnswer], InvalidAnswers: list[InvalidTopicReviewedAnswer] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteTopicReviewedAnswerResponse:
     Optional[str] TopicId
     Optional[str] TopicArn
@@ -3703,8 +3761,9 @@ struct BatchDescribeUserLimitsRequest:
     Optional[list[UserLimitsEntry]] users
     Optional[list[ResourceType]] resourceTypes
 
-# no @derive(Json): member(s) userLimits: list[UserLimits], errors: list[BatchDescribeUserLimitsError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userLimits: list[UserLimits], errors: list[BatchDescribeUserLimitsError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDescribeUserLimitsResponse:
     list[UserLimits] userLimits
     list[BatchDescribeUserLimitsError] errors
@@ -3723,8 +3782,9 @@ struct BinWidthOptions:
     Optional[float64] Value
     Optional[int64] BinCountLimit
 
-# no @derive(Json): member(s) Content: BodySectionContent, RepeatConfiguration: BodySectionRepeatConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Content: BodySectionContent, RepeatConfiguration: BodySectionRepeatConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BodySectionConfiguration:
     str SectionId
     BodySectionContent Content
@@ -3732,34 +3792,39 @@ struct BodySectionConfiguration:
     Optional[SectionPageBreakConfiguration] PageBreakConfiguration
     Optional[BodySectionRepeatConfiguration] RepeatConfiguration
 
-# no @derive(Json): member(s) Layout: SectionLayoutConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Layout: SectionLayoutConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BodySectionContent:
     Optional[SectionLayoutConfiguration] Layout
 
-# no @derive(Json): member(s) SortByMetrics: list[ColumnSort] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SortByMetrics: list[ColumnSort] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BodySectionDynamicCategoryDimensionConfiguration:
     ColumnIdentifier Column
     Optional[int64] Limit
     Optional[list[ColumnSort]] SortByMetrics
 
-# no @derive(Json): member(s) SortByMetrics: list[ColumnSort] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SortByMetrics: list[ColumnSort] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BodySectionDynamicNumericDimensionConfiguration:
     ColumnIdentifier Column
     Optional[int64] Limit
     Optional[list[ColumnSort]] SortByMetrics
 
-# no @derive(Json): member(s) DimensionConfigurations: list[BodySectionRepeatDimensionConfiguration], NonRepeatingVisuals: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DimensionConfigurations: list[BodySectionRepeatDimensionConfiguration], NonRepeatingVisuals: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BodySectionRepeatConfiguration:
     Optional[list[BodySectionRepeatDimensionConfiguration]] DimensionConfigurations
     Optional[BodySectionRepeatPageBreakConfiguration] PageBreakConfiguration
     Optional[list[str]] NonRepeatingVisuals
 
-# no @derive(Json): member(s) DynamicCategoryDimensionConfiguration: BodySectionDynamicCategoryDimensionConfiguration, DynamicNumericDimensionConfiguration: BodySectionDynamicNumericDimensionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DynamicCategoryDimensionConfiguration: BodySectionDynamicCategoryDimensionConfiguration, DynamicNumericDimensionConfiguration: BodySectionDynamicNumericDimensionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BodySectionRepeatDimensionConfiguration:
     Optional[BodySectionDynamicCategoryDimensionConfiguration] DynamicCategoryDimensionConfiguration
     Optional[BodySectionDynamicNumericDimensionConfiguration] DynamicNumericDimensionConfiguration
@@ -3784,14 +3849,16 @@ struct BorderStyle:
     Optional[bool] Show
     Optional[str] Width
 
-# no @derive(Json): member(s) GroupBy: list[DimensionField], Values: list[MeasureField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupBy: list[DimensionField], Values: list[MeasureField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BoxPlotAggregatedFieldWells:
     Optional[list[DimensionField]] GroupBy
     Optional[list[MeasureField]] Values
 
-# no @derive(Json): member(s) FieldWells: BoxPlotFieldWells, SortConfiguration: BoxPlotSortConfiguration, CategoryLabelOptions: ChartAxisLabelOptions, PrimaryYAxisLabelOptions: ChartAxisLabelOptions, Tooltip: TooltipOptions, ReferenceLines: list[ReferenceLine], VisualPalette: VisualPalette not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldWells: BoxPlotFieldWells, SortConfiguration: BoxPlotSortConfiguration, CategoryLabelOptions: ChartAxisLabelOptions, PrimaryYAxisLabelOptions: ChartAxisLabelOptions, Tooltip: TooltipOptions, ReferenceLines: list[ReferenceLine], VisualPalette: VisualPalette not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BoxPlotChartConfiguration:
     Optional[BoxPlotFieldWells] FieldWells
     Optional[BoxPlotSortConfiguration] SortConfiguration
@@ -3806,8 +3873,9 @@ struct BoxPlotChartConfiguration:
     Optional[VisualPalette] VisualPalette
     Optional[VisualInteractionOptions] Interactions
 
-# no @derive(Json): member(s) BoxPlotAggregatedFieldWells: BoxPlotAggregatedFieldWells not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BoxPlotAggregatedFieldWells: BoxPlotAggregatedFieldWells not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BoxPlotFieldWells:
     Optional[BoxPlotAggregatedFieldWells] BoxPlotAggregatedFieldWells
 
@@ -3817,8 +3885,9 @@ struct BoxPlotOptions:
     Optional[Visibility] OutlierVisibility
     Optional[Visibility] AllDataPointsVisibility
 
-# no @derive(Json): member(s) CategorySort: list[FieldSortOptions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CategorySort: list[FieldSortOptions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BoxPlotSortConfiguration:
     Optional[list[FieldSortOptions]] CategorySort
     Optional[PaginationConfiguration] PaginationConfiguration
@@ -3827,8 +3896,9 @@ struct BoxPlotSortConfiguration:
 struct BoxPlotStyleOptions:
     Optional[BoxPlotFillStyle] FillStyle
 
-# no @derive(Json): member(s) ChartConfiguration: BoxPlotChartConfiguration, Actions: list[VisualCustomAction], ColumnHierarchies: list[ColumnHierarchy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChartConfiguration: BoxPlotChartConfiguration, Actions: list[VisualCustomAction], ColumnHierarchies: list[ColumnHierarchy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BoxPlotVisual:
     str VisualId
     Optional[VisualTitleLabelOptions] Title
@@ -3857,8 +3927,9 @@ struct BrandDefinition:
     Optional[ApplicationTheme] ApplicationTheme
     Optional[LogoConfiguration] LogoConfiguration
 
-# no @derive(Json): member(s) Errors: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BrandDetail:
     str BrandId
     Optional[str] Arn
@@ -4499,8 +4570,9 @@ struct CapacityBytesRangeFilter:
     Optional[int64] minBytes
     Optional[int64] maxBytes
 
-# no @derive(Json): member(s) SourceControls: list[CascadingControlSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceControls: list[CascadingControlSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CascadingControlConfiguration:
     Optional[list[CascadingControlSource]] SourceControls
 
@@ -4516,8 +4588,9 @@ struct CastColumnTypeOperation:
     Optional[ColumnDataSubType] SubType
     Optional[str] Format
 
-# no @derive(Json): member(s) Source: TransformOperationSource, CastColumnTypeOperations: list[CastColumnTypeOperation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Source: TransformOperationSource, CastColumnTypeOperations: list[CastColumnTypeOperation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CastColumnTypesOperation:
     str Alias
     TransformOperationSource Source
@@ -4537,42 +4610,48 @@ struct CategoricalMeasureField:
     Optional[CategoricalAggregationFunction] AggregationFunction
     Optional[StringFormatConfiguration] FormatConfiguration
 
-# no @derive(Json): member(s) CategoryValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CategoryValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CategoryDrillDownFilter:
     ColumnIdentifier Column
     list[str] CategoryValues
 
-# no @derive(Json): member(s) Configuration: CategoryFilterConfiguration, DefaultFilterControlConfiguration: DefaultFilterControlConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: CategoryFilterConfiguration, DefaultFilterControlConfiguration: DefaultFilterControlConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CategoryFilter:
     str FilterId
     ColumnIdentifier Column
     CategoryFilterConfiguration Configuration
     Optional[DefaultFilterControlConfiguration] DefaultFilterControlConfiguration
 
-# no @derive(Json): member(s) FilterListConfiguration: FilterListConfiguration, CustomFilterListConfiguration: CustomFilterListConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterListConfiguration: FilterListConfiguration, CustomFilterListConfiguration: CustomFilterListConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CategoryFilterConfiguration:
     Optional[FilterListConfiguration] FilterListConfiguration
     Optional[CustomFilterListConfiguration] CustomFilterListConfiguration
     Optional[CustomFilterConfiguration] CustomFilterConfiguration
 
-# no @derive(Json): member(s) Configuration: CategoryFilterConfiguration, DefaultFilterControlConfiguration: DefaultFilterControlConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: CategoryFilterConfiguration, DefaultFilterControlConfiguration: DefaultFilterControlConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CategoryInnerFilter:
     ColumnIdentifier Column
     CategoryFilterConfiguration Configuration
     Optional[DefaultFilterControlConfiguration] DefaultFilterControlConfiguration
 
-# no @derive(Json): member(s) Synonyms: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Synonyms: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CellValueSynonym:
     Optional[str] CellValue
     Optional[list[str]] Synonyms
 
-# no @derive(Json): member(s) AxisLabelOptions: list[AxisLabelOptions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AxisLabelOptions: list[AxisLabelOptions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChartAxisLabelOptions:
     Optional[Visibility] Visibility
     Optional[Visibility] SortIconVisibility
@@ -4602,8 +4681,9 @@ struct ClusterMarker:
 struct ClusterMarkerConfiguration:
     Optional[ClusterMarker] ClusterMarker
 
-# no @derive(Json): member(s) ValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CollectiveConstant:
     Optional[list[str]] ValueList
 
@@ -4612,20 +4692,23 @@ struct CollectiveConstantEntry:
     Optional[ConstantType] ConstantType
     Optional[str] Value
 
-# no @derive(Json): member(s) Colors: list[DataColor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Colors: list[DataColor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ColorScale:
     list[DataColor] Colors
     ColorFillType ColorFillType
     Optional[DataColor] NullValueColor
 
-# no @derive(Json): member(s) CustomColors: list[CustomColor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomColors: list[CustomColor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ColorsConfiguration:
     Optional[list[CustomColor]] CustomColors
 
-# no @derive(Json): member(s) ColorsConfiguration: ColorsConfiguration, DecalSettingsConfiguration: DecalSettingsConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColorsConfiguration: ColorsConfiguration, DecalSettingsConfiguration: DecalSettingsConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ColumnConfiguration:
     ColumnIdentifier Column
     Optional[FormatConfiguration] FormatConfiguration
@@ -4637,8 +4720,9 @@ struct ColumnConfiguration:
 struct ColumnDescription:
     Optional[str] Text
 
-# no @derive(Json): member(s) GeoSpatialColumnGroup: GeoSpatialColumnGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GeoSpatialColumnGroup: GeoSpatialColumnGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ColumnGroup:
     Optional[GeoSpatialColumnGroup] GeoSpatialColumnGroup
 
@@ -4646,14 +4730,16 @@ struct ColumnGroup:
 struct ColumnGroupColumnSchema:
     Optional[str] Name
 
-# no @derive(Json): member(s) ColumnGroupColumnSchemaList: list[ColumnGroupColumnSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnGroupColumnSchemaList: list[ColumnGroupColumnSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ColumnGroupSchema:
     Optional[str] Name
     Optional[list[ColumnGroupColumnSchema]] ColumnGroupColumnSchemaList
 
-# no @derive(Json): member(s) ExplicitHierarchy: ExplicitHierarchy, DateTimeHierarchy: DateTimeHierarchy, PredefinedHierarchy: PredefinedHierarchy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExplicitHierarchy: ExplicitHierarchy, DateTimeHierarchy: DateTimeHierarchy, PredefinedHierarchy: PredefinedHierarchy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ColumnHierarchy:
     Optional[ExplicitHierarchy] ExplicitHierarchy
     Optional[DateTimeHierarchy] DateTimeHierarchy
@@ -4665,8 +4751,9 @@ struct ColumnIdentifier:
     Optional[str] TopicIdentifier
     str ColumnName
 
-# no @derive(Json): member(s) Principals: list[str], ColumnNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Principals: list[str], ColumnNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ColumnLevelPermissionRule:
     Optional[list[str]] Principals
     Optional[list[str]] ColumnNames
@@ -4711,16 +4798,18 @@ struct ColumnTooltipItem:
     Optional[AggregationFunction] Aggregation
     Optional[TooltipTarget] TooltipTarget
 
-# no @derive(Json): member(s) Category: list[DimensionField], BarValues: list[MeasureField], Colors: list[DimensionField], LineValues: list[MeasureField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Category: list[DimensionField], BarValues: list[MeasureField], Colors: list[DimensionField], LineValues: list[MeasureField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComboChartAggregatedFieldWells:
     Optional[list[DimensionField]] Category
     Optional[list[MeasureField]] BarValues
     Optional[list[DimensionField]] Colors
     Optional[list[MeasureField]] LineValues
 
-# no @derive(Json): member(s) FieldWells: ComboChartFieldWells, SortConfiguration: ComboChartSortConfiguration, CategoryLabelOptions: ChartAxisLabelOptions, PrimaryYAxisLabelOptions: ChartAxisLabelOptions, SecondaryYAxisLabelOptions: ChartAxisLabelOptions, ColorLabelOptions: ChartAxisLabelOptions, Series: list[ComboSeriesItem], BarDataLabels: DataLabelOptions, LineDataLabels: DataLabelOptions, Tooltip: TooltipOptions, ReferenceLines: list[ReferenceLine], VisualPalette: VisualPalette not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldWells: ComboChartFieldWells, SortConfiguration: ComboChartSortConfiguration, CategoryLabelOptions: ChartAxisLabelOptions, PrimaryYAxisLabelOptions: ChartAxisLabelOptions, SecondaryYAxisLabelOptions: ChartAxisLabelOptions, ColorLabelOptions: ChartAxisLabelOptions, Series: list[ComboSeriesItem], BarDataLabels: DataLabelOptions, LineDataLabels: DataLabelOptions, Tooltip: TooltipOptions, ReferenceLines: list[ReferenceLine], VisualPalette: VisualPalette not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComboChartConfiguration:
     Optional[ComboChartFieldWells] FieldWells
     Optional[ComboChartSortConfiguration] SortConfiguration
@@ -4750,8 +4839,9 @@ struct ComboChartDefaultSeriesSettings:
     Optional[DecalSettings] DecalSettings
     Optional[BorderSettings] BorderSettings
 
-# no @derive(Json): member(s) ComboChartAggregatedFieldWells: ComboChartAggregatedFieldWells not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ComboChartAggregatedFieldWells: ComboChartAggregatedFieldWells not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComboChartFieldWells:
     Optional[ComboChartAggregatedFieldWells] ComboChartAggregatedFieldWells
 
@@ -4762,16 +4852,18 @@ struct ComboChartSeriesSettings:
     Optional[DecalSettings] DecalSettings
     Optional[BorderSettings] BorderSettings
 
-# no @derive(Json): member(s) CategorySort: list[FieldSortOptions], ColorSort: list[FieldSortOptions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CategorySort: list[FieldSortOptions], ColorSort: list[FieldSortOptions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComboChartSortConfiguration:
     Optional[list[FieldSortOptions]] CategorySort
     Optional[ItemsLimitConfiguration] CategoryItemsLimit
     Optional[list[FieldSortOptions]] ColorSort
     Optional[ItemsLimitConfiguration] ColorItemsLimit
 
-# no @derive(Json): member(s) ChartConfiguration: ComboChartConfiguration, Actions: list[VisualCustomAction], ColumnHierarchies: list[ColumnHierarchy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChartConfiguration: ComboChartConfiguration, Actions: list[VisualCustomAction], ColumnHierarchies: list[ColumnHierarchy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComboChartVisual:
     str VisualId
     Optional[VisualTitleLabelOptions] Title
@@ -4786,8 +4878,9 @@ struct ComboSeriesItem:
     Optional[FieldComboSeriesItem] FieldComboSeriesItem
     Optional[DataFieldComboSeriesItem] DataFieldComboSeriesItem
 
-# no @derive(Json): member(s) SpecifedOrder: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpecifedOrder: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComparativeOrder:
     Optional[ColumnOrderingType] UseOrdering
     Optional[list[str]] SpecifedOrder
@@ -4821,8 +4914,9 @@ struct ConcurrentUpdatingException:
     Optional[str] Message
     Optional[str] RequestId
 
-# no @derive(Json): member(s) Gradient: ConditionalFormattingGradientColor not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Gradient: ConditionalFormattingGradientColor not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConditionalFormattingColor:
     Optional[ConditionalFormattingSolidColor] Solid
     Optional[ConditionalFormattingGradientColor] Gradient
@@ -4839,8 +4933,9 @@ struct ConditionalFormattingCustomIconOptions:
     Optional[Icon] Icon
     Optional[str] UnicodeIcon
 
-# no @derive(Json): member(s) Color: GradientColor not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Color: GradientColor not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConditionalFormattingGradientColor:
     str Expression
     GradientColor Color
@@ -4884,8 +4979,9 @@ struct ContextualAccentPalette:
     Optional[Palette] Insight
     Optional[Palette] Automation
 
-# no @derive(Json): member(s) ContributorDimensions: list[ColumnIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContributorDimensions: list[ColumnIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContributionAnalysisDefault:
     str MeasureFieldId
     list[ColumnIdentifier] ContributorDimensions
@@ -4894,8 +4990,9 @@ struct ContributionAnalysisDefault:
 struct ContributionAnalysisFactor:
     Optional[str] FieldName
 
-# no @derive(Json): member(s) StartRange: TopicIRFilterOption, EndRange: TopicIRFilterOption not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StartRange: TopicIRFilterOption, EndRange: TopicIRFilterOption not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContributionAnalysisTimeRanges:
     Optional[TopicIRFilterOption] StartRange
     Optional[TopicIRFilterOption] EndRange
@@ -5044,8 +5141,9 @@ struct CreateApprovalPolicyRequest:
     ApplicableTo ApplicableTo
     list[str] ApprovalGroups
 
-# no @derive(Json): member(s) Policy: ApprovalPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Policy: ApprovalPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateApprovalPolicyResponse:
     ApprovalPolicy Policy
 
@@ -5057,15 +5155,17 @@ struct CreateBrandRequest:
     Optional[BrandDefinition] BrandDefinition
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) BrandDetail: BrandDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BrandDetail: BrandDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBrandResponse:
     Optional[str] RequestId
     Optional[BrandDetail] BrandDetail
     Optional[BrandDefinition] BrandDefinition
 
-# no @derive(Json): member(s) Source: TransformOperationSource, Columns: list[CalculatedColumn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Source: TransformOperationSource, Columns: list[CalculatedColumn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateColumnsOperation:
     Optional[str] Alias
     Optional[TransformOperationSource] Source
@@ -5277,8 +5377,9 @@ struct CreateIAMPolicyAssignmentRequest:
     Optional[dict[str, list[str]]] Identities
     str Namespace
 
-# no @derive(Json): member(s) Identities: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Identities: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIAMPolicyAssignmentResponse:
     Optional[str] AssignmentName
     Optional[str] AssignmentId
@@ -5531,8 +5632,9 @@ struct CreateTopicResponse:
     Optional[str] RequestId
     Optional[int64] Status
 
-# no @derive(Json): member(s) Mir: TopicIR, PrimaryVisual: TopicVisual, Template: TopicTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Mir: TopicIR, PrimaryVisual: TopicVisual, Template: TopicTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTopicReviewedAnswer:
     str AnswerId
     str DatasetArn
@@ -5579,8 +5681,9 @@ struct CreateVPCConnectionResponse:
     Optional[str] RequestId
     Optional[int64] Status
 
-# no @derive(Json): member(s) AlternateDataSourceParameters: list[DataSourceParameters] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AlternateDataSourceParameters: list[DataSourceParameters] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CredentialPair:
     str Username
     str Password
@@ -5597,8 +5700,9 @@ struct CurrencyDisplayFormatConfiguration:
     Optional[NegativeValueConfiguration] NegativeValueConfiguration
     Optional[NullValueFormatConfiguration] NullValueFormatConfiguration
 
-# no @derive(Json): member(s) SelectedFieldsConfiguration: FilterOperationSelectedFieldsConfiguration, TargetVisualsConfiguration: FilterOperationTargetVisualsConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectedFieldsConfiguration: FilterOperationSelectedFieldsConfiguration, TargetVisualsConfiguration: FilterOperationTargetVisualsConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomActionFilterOperation:
     FilterOperationSelectedFieldsConfiguration SelectedFieldsConfiguration
     FilterOperationTargetVisualsConfiguration TargetVisualsConfiguration
@@ -5607,8 +5711,9 @@ struct CustomActionFilterOperation:
 struct CustomActionNavigationOperation:
     Optional[LocalNavigationConfiguration] LocalNavigationConfiguration
 
-# no @derive(Json): member(s) ParameterValueConfigurations: list[SetParameterValueConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParameterValueConfigurations: list[SetParameterValueConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomActionSetParametersOperation:
     list[SetParameterValueConfiguration] ParameterValueConfigurations
 
@@ -5634,8 +5739,9 @@ struct CustomContentConfiguration:
     Optional[CustomContentImageScalingConfiguration] ImageScaling
     Optional[VisualInteractionOptions] Interactions
 
-# no @derive(Json): member(s) Actions: list[VisualCustomAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: list[VisualCustomAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomContentVisual:
     str VisualId
     Optional[VisualTitleLabelOptions] Title
@@ -5654,8 +5760,9 @@ struct CustomFilterConfiguration:
     Optional[str] ParameterName
     FilterNullOption NullOption
 
-# no @derive(Json): member(s) CategoryValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CategoryValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomFilterListConfiguration:
     CategoryFilterMatchOperator MatchOperator
     Optional[list[str]] CategoryValues
@@ -5674,16 +5781,18 @@ struct CustomInstructions:
 struct CustomNarrativeOptions:
     str Narrative
 
-# no @derive(Json): member(s) StringValues: list[str], IntegerValues: list[int64], DecimalValues: list[float64], DateTimeValues: list[DateTime] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StringValues: list[str], IntegerValues: list[int64], DecimalValues: list[float64], DateTimeValues: list[DateTime] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomParameterValues:
     Optional[list[str]] StringValues
     Optional[list[int64]] IntegerValues
     Optional[list[float64]] DecimalValues
     Optional[list[DateTime]] DateTimeValues
 
-# no @derive(Json): member(s) Governance: Governance not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Governance: Governance not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomPermissions:
     Optional[str] Arn
     Optional[str] CustomPermissionsName
@@ -5721,16 +5830,18 @@ struct CustomPromptProfile:
     str SubscriptionId
     str QbsAwsAccountId
 
-# no @derive(Json): member(s) Columns: list[InputColumn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Columns: list[InputColumn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomSql:
     str DataSourceArn
     str Name
     str SqlQuery
     Optional[list[InputColumn]] Columns
 
-# no @derive(Json): member(s) CustomValues: CustomParameterValues not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomValues: CustomParameterValues not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomValuesConfiguration:
     Optional[bool] IncludeNullValue
     CustomParameterValues CustomValues
@@ -5740,8 +5851,9 @@ struct CustomerManagedKeyUnavailableException:
     Optional[str] Message
     Optional[str] RequestId
 
-# no @derive(Json): member(s) Version: DashboardVersion, LinkEntities: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Version: DashboardVersion, LinkEntities: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Dashboard:
     Optional[str] DashboardId
     Optional[str] Arn
@@ -5756,13 +5868,15 @@ struct Dashboard:
 struct DashboardCustomizationSummaryConfigurations:
     bool Enabled
 
-# no @derive(Json): member(s) FieldsConfiguration: VisualCustomizationFieldsConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldsConfiguration: VisualCustomizationFieldsConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DashboardCustomizationVisualOptions:
     Optional[VisualCustomizationFieldsConfiguration] FieldsConfiguration
 
-# no @derive(Json): member(s) ViolatedEntities: list[Entity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ViolatedEntities: list[Entity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DashboardError:
     Optional[DashboardErrorType] Type
     Optional[str] Message
@@ -5792,13 +5906,15 @@ struct DashboardSearchFilter:
     Optional[DashboardFilterAttribute] Name
     Optional[str] Value
 
-# no @derive(Json): member(s) SourceTemplate: DashboardSourceTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceTemplate: DashboardSourceTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DashboardSourceEntity:
     Optional[DashboardSourceTemplate] SourceTemplate
 
-# no @derive(Json): member(s) DataSetReferences: list[DataSetReference], TopicReferences: list[TopicReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSetReferences: list[DataSetReference], TopicReferences: list[TopicReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DashboardSourceTemplate:
     list[DataSetReference] DataSetReferences
     Optional[list[TopicReference]] TopicReferences
@@ -5814,8 +5930,9 @@ struct DashboardSummary:
     Optional[int64] PublishedVersionNumber
     Optional[DateTime] LastPublishedTime
 
-# no @derive(Json): member(s) Errors: list[DashboardError], DataSetArns: list[str], TopicArns: list[str], Sheets: list[Sheet] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[DashboardError], DataSetArns: list[str], TopicArns: list[str], Sheets: list[Sheet] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DashboardVersion:
     Optional[DateTime] CreatedTime
     Optional[list[DashboardError]] Errors
@@ -5829,8 +5946,9 @@ struct DashboardVersion:
     Optional[str] ThemeArn
     Optional[list[Sheet]] Sheets
 
-# no @derive(Json): member(s) DataSetIdentifierDeclarations: list[DataSetIdentifierDeclaration], TopicIdentifierDeclarations: list[TopicIdentifierDeclaration], Sheets: list[SheetDefinition], TooltipSheets: list[TooltipSheetDefinition], CalculatedFields: list[CalculatedField], ParameterDeclarations: list[ParameterDeclaration], FilterGroups: list[FilterGroup], ColumnConfigurations: list[ColumnConfiguration], Options: AssetOptions, StaticFiles: list[StaticFile] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSetIdentifierDeclarations: list[DataSetIdentifierDeclaration], TopicIdentifierDeclarations: list[TopicIdentifierDeclaration], Sheets: list[SheetDefinition], TooltipSheets: list[TooltipSheetDefinition], CalculatedFields: list[CalculatedField], ParameterDeclarations: list[ParameterDeclaration], FilterGroups: list[FilterGroup], ColumnConfigurations: list[ColumnConfiguration], Options: AssetOptions, StaticFiles: list[StaticFile] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DashboardVersionDefinition:
     list[DataSetIdentifierDeclaration] DataSetIdentifierDeclarations
     Optional[list[TopicIdentifierDeclaration]] TopicIdentifierDeclarations
@@ -5890,8 +6008,9 @@ struct DataColor:
     Optional[str] Color
     Optional[float64] DataValue
 
-# no @derive(Json): member(s) Colors: list[str], MinMaxGradient: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Colors: list[str], MinMaxGradient: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataColorPalette:
     Optional[list[str]] Colors
     Optional[list[str]] MinMaxGradient
@@ -5916,8 +6035,9 @@ struct DataFieldSeriesItem:
     AxisBinding AxisBinding
     Optional[LineChartSeriesSettings] Settings
 
-# no @derive(Json): member(s) DataLabelTypes: list[DataLabelType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataLabelTypes: list[DataLabelType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataLabelOptions:
     Optional[Visibility] Visibility
     Optional[Visibility] CategoryLabelVisibility
@@ -5950,8 +6070,9 @@ struct DataPathLabelType:
     Optional[str] FieldValue
     Optional[Visibility] Visibility
 
-# no @derive(Json): member(s) SortPaths: list[DataPathValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SortPaths: list[DataPathValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataPathSort:
     SortDirection Direction
     list[DataPathValue] SortPaths
@@ -5983,8 +6104,9 @@ struct DataPrepAggregationFunction:
     Optional[DataPrepSimpleAggregationFunction] SimpleAggregation
     Optional[DataPrepListAggregationFunction] ListAggregation
 
-# no @derive(Json): member(s) SourceTableMap: dict[str, SourceTable], TransformStepMap: dict[str, TransformStep], DestinationTableMap: dict[str, DestinationTable] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceTableMap: dict[str, SourceTable], TransformStepMap: dict[str, TransformStep], DestinationTableMap: dict[str, DestinationTable] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataPrepConfiguration:
     dict[str, SourceTable] SourceTableMap
     dict[str, TransformStep] TransformStepMap
@@ -6009,8 +6131,9 @@ struct DataQAEnabledOption:
 struct DataQnAConfigurations:
     bool Enabled
 
-# no @derive(Json): member(s) PhysicalTableMap: dict[str, PhysicalTable], LogicalTableMap: dict[str, LogicalTable], OutputColumns: list[OutputColumn], ColumnGroups: list[ColumnGroup], FieldFolders: dict[str, FieldFolder], RowLevelPermissionTagConfiguration: RowLevelPermissionTagConfiguration, ColumnLevelPermissionRules: list[ColumnLevelPermissionRule], DatasetParameters: list[DatasetParameter], PerformanceConfiguration: PerformanceConfiguration, DataPrepConfiguration: DataPrepConfiguration, SemanticModelConfiguration: SemanticModelConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhysicalTableMap: dict[str, PhysicalTable], LogicalTableMap: dict[str, LogicalTable], OutputColumns: list[OutputColumn], ColumnGroups: list[ColumnGroup], FieldFolders: dict[str, FieldFolder], RowLevelPermissionTagConfiguration: RowLevelPermissionTagConfiguration, ColumnLevelPermissionRules: list[ColumnLevelPermissionRule], DatasetParameters: list[DatasetParameter], PerformanceConfiguration: PerformanceConfiguration, DataPrepConfiguration: DataPrepConfiguration, SemanticModelConfiguration: SemanticModelConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSet:
     Optional[str] Arn
     Optional[str] DataSetId
@@ -6039,8 +6162,9 @@ struct DataSetColumnIdMapping:
     str SourceColumnId
     str TargetColumnId
 
-# no @derive(Json): member(s) DataSetSchema: DataSetSchema, ColumnGroupSchemaList: list[ColumnGroupSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSetSchema: DataSetSchema, ColumnGroupSchemaList: list[ColumnGroupSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSetConfiguration:
     Optional[str] Placeholder
     Optional[DataSetSchema] DataSetSchema
@@ -6105,8 +6229,9 @@ struct DataSetRefreshProperties:
     Optional[RefreshConfiguration] RefreshConfiguration
     Optional[RefreshFailureConfiguration] FailureConfiguration
 
-# no @derive(Json): member(s) ColumnSchemaList: list[ColumnSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnSchemaList: list[ColumnSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSetSchema:
     Optional[list[ColumnSchema]] ColumnSchemaList
 
@@ -6120,8 +6245,9 @@ struct DataSetSearchFilter:
 struct DataSetSemanticDescription:
     str Text
 
-# no @derive(Json): member(s) CustomInstructions: list[CustomInstruction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomInstructions: list[CustomInstruction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSetSemanticMetadata:
     Optional[DataSetSemanticDescription] Description
     Optional[list[CustomInstruction]] CustomInstructions
@@ -6131,8 +6257,9 @@ struct DataSetStringComparisonFilterCondition:
     DataSetStringComparisonFilterOperator Operator
     Optional[DataSetStringFilterValue] Value
 
-# no @derive(Json): member(s) ListFilterCondition: DataSetStringListFilterCondition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ListFilterCondition: DataSetStringListFilterCondition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSetStringFilterCondition:
     Optional[str] ColumnName
     Optional[DataSetStringComparisonFilterCondition] ComparisonFilterCondition
@@ -6142,19 +6269,22 @@ struct DataSetStringFilterCondition:
 struct DataSetStringFilterValue:
     Optional[str] StaticValue
 
-# no @derive(Json): member(s) Values: DataSetStringListFilterValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: DataSetStringListFilterValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSetStringListFilterCondition:
     DataSetStringListFilterOperator Operator
     Optional[DataSetStringListFilterValue] Values
 
-# no @derive(Json): member(s) StaticValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StaticValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSetStringListFilterValue:
     Optional[list[str]] StaticValues
 
-# no @derive(Json): member(s) RowLevelPermissionDataSetMap: dict[str, RowLevelPermissionDataSet] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RowLevelPermissionDataSetMap: dict[str, RowLevelPermissionDataSet] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSetSummary:
     Optional[str] Arn
     Optional[str] DataSetId
@@ -6173,8 +6303,9 @@ struct DataSetUsageConfiguration:
     Optional[bool] DisableUseAsDirectQuerySource
     Optional[bool] DisableUseAsImportedSource
 
-# no @derive(Json): member(s) DataSourceParameters: DataSourceParameters, AlternateDataSourceParameters: list[DataSourceParameters] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSourceParameters: DataSourceParameters, AlternateDataSourceParameters: list[DataSourceParameters] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSource:
     Optional[str] Arn
     Optional[str] DataSourceId
@@ -6192,8 +6323,9 @@ struct DataSource:
     Optional[CredentialStatus] CredentialStatus
     Optional[DateTime] LastCredentialVerifiedAt
 
-# no @derive(Json): member(s) CredentialPair: CredentialPair not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CredentialPair: CredentialPair not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSourceCredentials:
     Optional[CredentialPair] CredentialPair
     Optional[str] CopySourceArn
@@ -6210,8 +6342,9 @@ struct DataSourceErrorInfo:
     Optional[DataSourceErrorInfoType] Type
     Optional[str] Message
 
-# no @derive(Json): member(s) RedshiftParameters: RedshiftParameters, FMKBParameters: FMKBParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RedshiftParameters: RedshiftParameters, FMKBParameters: FMKBParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSourceParameters:
     Optional[AmazonElasticsearchParameters] AmazonElasticsearchParameters
     Optional[AthenaParameters] AthenaParameters
@@ -6282,8 +6415,9 @@ struct DatabricksParameters:
     Optional[AuthenticationType] AuthenticationType
     Optional[OAuthParameters] OAuthParameters
 
-# no @derive(Json): member(s) Filters: list[TopicFilter], Columns: list[TopicColumn], CalculatedFields: list[TopicCalculatedField], NamedEntities: list[TopicNamedEntity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[TopicFilter], Columns: list[TopicColumn], CalculatedFields: list[TopicCalculatedField], NamedEntities: list[TopicNamedEntity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatasetMetadata:
     str DatasetArn
     Optional[str] DatasetName
@@ -6294,8 +6428,9 @@ struct DatasetMetadata:
     Optional[list[TopicCalculatedField]] CalculatedFields
     Optional[list[TopicNamedEntity]] NamedEntities
 
-# no @derive(Json): member(s) StringDatasetParameter: StringDatasetParameter, DecimalDatasetParameter: DecimalDatasetParameter, IntegerDatasetParameter: IntegerDatasetParameter, DateTimeDatasetParameter: DateTimeDatasetParameter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StringDatasetParameter: StringDatasetParameter, DecimalDatasetParameter: DecimalDatasetParameter, IntegerDatasetParameter: IntegerDatasetParameter, DateTimeDatasetParameter: DateTimeDatasetParameter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatasetParameter:
     Optional[StringDatasetParameter] StringDatasetParameter
     Optional[DecimalDatasetParameter] DecimalDatasetParameter
@@ -6321,8 +6456,9 @@ struct DateMeasureField:
     Optional[DateAggregationFunction] AggregationFunction
     Optional[DateTimeFormatConfiguration] FormatConfiguration
 
-# no @derive(Json): member(s) DefaultValues: DateTimeDatasetParameterDefaultValues not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultValues: DateTimeDatasetParameterDefaultValues not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DateTimeDatasetParameter:
     str Id
     str Name
@@ -6330,13 +6466,15 @@ struct DateTimeDatasetParameter:
     Optional[TimeGranularity] TimeGranularity
     Optional[DateTimeDatasetParameterDefaultValues] DefaultValues
 
-# no @derive(Json): member(s) StaticValues: list[DateTime] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StaticValues: list[DateTime] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DateTimeDatasetParameterDefaultValues:
     Optional[list[DateTime]] StaticValues
 
-# no @derive(Json): member(s) StaticValues: list[DateTime] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StaticValues: list[DateTime] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DateTimeDefaultValues:
     Optional[DynamicDefaultValue] DynamicValue
     Optional[list[DateTime]] StaticValues
@@ -6348,20 +6486,23 @@ struct DateTimeFormatConfiguration:
     Optional[NullValueFormatConfiguration] NullValueFormatConfiguration
     Optional[NumericFormatConfiguration] NumericFormatConfiguration
 
-# no @derive(Json): member(s) DrillDownFilters: list[DrillDownFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DrillDownFilters: list[DrillDownFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DateTimeHierarchy:
     str HierarchyId
     Optional[list[DrillDownFilter]] DrillDownFilters
 
-# no @derive(Json): member(s) Values: list[DateTime] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[DateTime] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DateTimeParameter:
     str Name
     list[DateTime] Values
 
-# no @derive(Json): member(s) DefaultValues: DateTimeDefaultValues, MappedDataSetParameters: list[MappedDataSetParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultValues: DateTimeDefaultValues, MappedDataSetParameters: list[MappedDataSetParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DateTimeParameterDeclaration:
     str Name
     Optional[DateTimeDefaultValues] DefaultValues
@@ -6390,38 +6531,44 @@ struct DecalSettings:
     Optional[DecalPatternType] DecalPatternType
     Optional[DecalStyleType] DecalStyleType
 
-# no @derive(Json): member(s) CustomDecalSettings: list[DecalSettings] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomDecalSettings: list[DecalSettings] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DecalSettingsConfiguration:
     Optional[list[DecalSettings]] CustomDecalSettings
 
-# no @derive(Json): member(s) DefaultValues: DecimalDatasetParameterDefaultValues not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultValues: DecimalDatasetParameterDefaultValues not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DecimalDatasetParameter:
     str Id
     str Name
     DatasetParameterValueType ValueType
     Optional[DecimalDatasetParameterDefaultValues] DefaultValues
 
-# no @derive(Json): member(s) StaticValues: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StaticValues: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DecimalDatasetParameterDefaultValues:
     Optional[list[float64]] StaticValues
 
-# no @derive(Json): member(s) StaticValues: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StaticValues: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DecimalDefaultValues:
     Optional[DynamicDefaultValue] DynamicValue
     Optional[list[float64]] StaticValues
 
-# no @derive(Json): member(s) Values: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DecimalParameter:
     str Name
     list[float64] Values
 
-# no @derive(Json): member(s) DefaultValues: DecimalDefaultValues, MappedDataSetParameters: list[MappedDataSetParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultValues: DecimalDefaultValues, MappedDataSetParameters: list[MappedDataSetParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DecimalParameterDeclaration:
     ParameterValueType ParameterValueType
     str Name
@@ -6444,15 +6591,17 @@ struct DefaultDateTimePickerControlOptions:
     Optional[DateTimePickerControlDisplayOptions] DisplayOptions
     Optional[CommitMode] CommitMode
 
-# no @derive(Json): member(s) ControlOptions: DefaultFilterControlOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ControlOptions: DefaultFilterControlOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DefaultFilterControlConfiguration:
     Optional[str] Title
     DefaultFilterControlOptions ControlOptions
     Optional[ControlTitleFormatText] ControlTitleFormatText
 
-# no @derive(Json): member(s) DefaultListOptions: DefaultFilterListControlOptions, DefaultDropdownOptions: DefaultFilterDropDownControlOptions, DefaultHierarchyList: DefaultHierarchyFilterListControlOptions, DefaultHierarchyDropdown: DefaultHierarchyFilterDropDownControlOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultListOptions: DefaultFilterListControlOptions, DefaultDropdownOptions: DefaultFilterDropDownControlOptions, DefaultHierarchyList: DefaultHierarchyFilterListControlOptions, DefaultHierarchyDropdown: DefaultHierarchyFilterDropDownControlOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DefaultFilterControlOptions:
     Optional[DefaultDateTimePickerControlOptions] DefaultDateTimePickerOptions
     Optional[DefaultFilterListControlOptions] DefaultListOptions
@@ -6464,8 +6613,9 @@ struct DefaultFilterControlOptions:
     Optional[DefaultHierarchyFilterListControlOptions] DefaultHierarchyList
     Optional[DefaultHierarchyFilterDropDownControlOptions] DefaultHierarchyDropdown
 
-# no @derive(Json): member(s) SelectableValues: FilterSelectableValues, ControlSortConfigurations: list[ControlSortConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectableValues: FilterSelectableValues, ControlSortConfigurations: list[ControlSortConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DefaultFilterDropDownControlOptions:
     Optional[DropDownControlDisplayOptions] DisplayOptions
     Optional[SheetControlListType] Type
@@ -6473,8 +6623,9 @@ struct DefaultFilterDropDownControlOptions:
     Optional[CommitMode] CommitMode
     Optional[list[ControlSortConfiguration]] ControlSortConfigurations
 
-# no @derive(Json): member(s) SelectableValues: FilterSelectableValues, ControlSortConfigurations: list[ControlSortConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectableValues: FilterSelectableValues, ControlSortConfigurations: list[ControlSortConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DefaultFilterListControlOptions:
     Optional[ListControlDisplayOptions] DisplayOptions
     Optional[SheetControlListType] Type
@@ -6494,8 +6645,9 @@ struct DefaultFreeFormLayoutConfiguration:
 struct DefaultGridLayoutConfiguration:
     GridLayoutCanvasSizeOptions CanvasSizeOptions
 
-# no @derive(Json): member(s) ControlSortConfigurations: list[ControlSortConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ControlSortConfigurations: list[ControlSortConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DefaultHierarchyFilterDropDownControlOptions:
     Optional[HierarchyFilterDropDownControlDisplayOptions] DisplayOptions
     Optional[SheetControlListType] Type
@@ -6503,8 +6655,9 @@ struct DefaultHierarchyFilterDropDownControlOptions:
     Optional[list[ControlSortConfiguration]] ControlSortConfigurations
     Optional[ControlTitleFormatText] ControlTitleFormatText
 
-# no @derive(Json): member(s) ControlSortConfigurations: list[ControlSortConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ControlSortConfigurations: list[ControlSortConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DefaultHierarchyFilterListControlOptions:
     Optional[HierarchyFilterListControlDisplayOptions] DisplayOptions
     Optional[SheetControlListType] Type
@@ -7141,8 +7294,9 @@ struct DescribeActionConnectorPermissionsRequest:
     str AwsAccountId
     str ActionConnectorId
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeActionConnectorPermissionsResponse:
     Optional[str] Arn
     Optional[str] ActionConnectorId
@@ -7156,8 +7310,9 @@ struct DescribeActionConnectorRequest:
     str AwsAccountId
     str ActionConnectorId
 
-# no @derive(Json): member(s) ActionConnector: ActionConnector not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActionConnector: ActionConnector not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeActionConnectorResponse:
     Optional[ActionConnector] ActionConnector
     Optional[str] RequestId
@@ -7169,8 +7324,9 @@ struct DescribeAgentPermissionsRequest:
     str AgentId
     str AwsAccountId
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAgentPermissionsResponse:
     str Arn
     str AgentId
@@ -7183,8 +7339,9 @@ struct DescribeAgentRequest:
     str AgentId
     str AwsAccountId
 
-# no @derive(Json): member(s) Agent: Agent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Agent: Agent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAgentResponse:
     Agent Agent
     Optional[str] RequestId
@@ -7195,8 +7352,9 @@ struct DescribeAnalysisDefinitionRequest:
     str AwsAccountId
     str AnalysisId
 
-# no @derive(Json): member(s) Errors: list[AnalysisError], Definition: AnalysisDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[AnalysisError], Definition: AnalysisDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAnalysisDefinitionResponse:
     Optional[str] AnalysisId
     Optional[str] Name
@@ -7213,8 +7371,9 @@ struct DescribeAnalysisPermissionsRequest:
     str AwsAccountId
     str AnalysisId
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAnalysisPermissionsResponse:
     Optional[str] AnalysisId
     Optional[str] AnalysisArn
@@ -7228,8 +7387,9 @@ struct DescribeAnalysisRequest:
     str AwsAccountId
     str AnalysisId
 
-# no @derive(Json): member(s) Analysis: Analysis not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Analysis: Analysis not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAnalysisResponse:
     Optional[Analysis] Analysis
     Optional[int64] Status
@@ -7241,8 +7401,9 @@ struct DescribeAppPermissionsRequest:
     str AwsAccountId
     str AppId
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAppPermissionsResponse:
     Optional[str] AppId
     Optional[str] Arn
@@ -7265,8 +7426,9 @@ struct DescribeAppResponse:
 struct DescribeApprovalPolicyRequest:
     str PolicyId
 
-# no @derive(Json): member(s) Policy: ApprovalPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Policy: ApprovalPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeApprovalPolicyResponse:
     ApprovalPolicy Policy
 
@@ -7276,8 +7438,9 @@ struct DescribeAssetBundleExportJobRequest:
     str AwsAccountId
     str AssetBundleExportJobId
 
-# no @derive(Json): member(s) Errors: list[AssetBundleExportJobError], ResourceArns: list[str], CloudFormationOverridePropertyConfiguration: AssetBundleCloudFormationOverridePropertyConfiguration, Warnings: list[AssetBundleExportJobWarning] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[AssetBundleExportJobError], ResourceArns: list[str], CloudFormationOverridePropertyConfiguration: AssetBundleCloudFormationOverridePropertyConfiguration, Warnings: list[AssetBundleExportJobWarning] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAssetBundleExportJobResponse:
     Optional[AssetBundleExportJobStatus] JobStatus
     Optional[str] DownloadUrl
@@ -7305,8 +7468,9 @@ struct DescribeAssetBundleImportJobRequest:
     str AwsAccountId
     str AssetBundleImportJobId
 
-# no @derive(Json): member(s) Errors: list[AssetBundleImportJobError], RollbackErrors: list[AssetBundleImportJobError], OverrideParameters: AssetBundleImportJobOverrideParameters, OverridePermissions: AssetBundleImportJobOverridePermissions, OverrideTags: AssetBundleImportJobOverrideTags, Warnings: list[AssetBundleImportJobWarning] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[AssetBundleImportJobError], RollbackErrors: list[AssetBundleImportJobError], OverrideParameters: AssetBundleImportJobOverrideParameters, OverridePermissions: AssetBundleImportJobOverridePermissions, OverrideTags: AssetBundleImportJobOverrideTags, Warnings: list[AssetBundleImportJobWarning] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAssetBundleImportJobResponse:
     Optional[AssetBundleImportJobStatus] JobStatus
     Optional[list[AssetBundleImportJobError]] Errors
@@ -7362,8 +7526,9 @@ struct DescribeBrandPublishedVersionRequest:
     str AwsAccountId
     str BrandId
 
-# no @derive(Json): member(s) BrandDetail: BrandDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BrandDetail: BrandDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBrandPublishedVersionResponse:
     Optional[str] RequestId
     Optional[BrandDetail] BrandDetail
@@ -7376,8 +7541,9 @@ struct DescribeBrandRequest:
     str BrandId
     Optional[str] VersionId
 
-# no @derive(Json): member(s) BrandDetail: BrandDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BrandDetail: BrandDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBrandResponse:
     Optional[str] RequestId
     Optional[BrandDetail] BrandDetail
@@ -7389,8 +7555,9 @@ struct DescribeCustomPermissionsRequest:
     str AwsAccountId
     str CustomPermissionsName
 
-# no @derive(Json): member(s) CustomPermissions: CustomPermissions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomPermissions: CustomPermissions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCustomPermissionsResponse:
     Optional[int64] Status
     Optional[CustomPermissions] CustomPermissions
@@ -7404,8 +7571,9 @@ struct DescribeDashboardDefinitionRequest:
     Optional[int64] VersionNumber
     Optional[str] AliasName
 
-# no @derive(Json): member(s) Errors: list[DashboardError], Definition: DashboardVersionDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[DashboardError], Definition: DashboardVersionDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDashboardDefinitionResponse:
     Optional[str] DashboardId
     Optional[list[DashboardError]] Errors
@@ -7423,8 +7591,9 @@ struct DescribeDashboardPermissionsRequest:
     str AwsAccountId
     str DashboardId
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission], LinkSharingConfiguration: LinkSharingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission], LinkSharingConfiguration: LinkSharingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDashboardPermissionsResponse:
     Optional[str] DashboardId
     Optional[str] DashboardArn
@@ -7441,8 +7610,9 @@ struct DescribeDashboardRequest:
     Optional[int64] VersionNumber
     Optional[str] AliasName
 
-# no @derive(Json): member(s) Dashboard: Dashboard not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dashboard: Dashboard not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDashboardResponse:
     Optional[Dashboard] Dashboard
     Optional[int64] Status
@@ -7455,8 +7625,9 @@ struct DescribeDashboardSnapshotJobRequest:
     str DashboardId
     str SnapshotJobId
 
-# no @derive(Json): member(s) UserConfiguration: SnapshotUserConfigurationRedacted, SnapshotConfiguration: SnapshotConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserConfiguration: SnapshotUserConfigurationRedacted, SnapshotConfiguration: SnapshotConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDashboardSnapshotJobResponse:
     Optional[str] AwsAccountId
     Optional[str] DashboardId
@@ -7477,8 +7648,9 @@ struct DescribeDashboardSnapshotJobResultRequest:
     str DashboardId
     str SnapshotJobId
 
-# no @derive(Json): member(s) Result: SnapshotJobResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Result: SnapshotJobResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDashboardSnapshotJobResultResponse:
     Optional[str] Arn
     Optional[SnapshotJobStatus] JobStatus
@@ -7506,8 +7678,9 @@ struct DescribeDataSetPermissionsRequest:
     str AwsAccountId
     str DataSetId
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDataSetPermissionsResponse:
     Optional[str] DataSetArn
     Optional[str] DataSetId
@@ -7533,8 +7706,9 @@ struct DescribeDataSetRequest:
     str AwsAccountId
     str DataSetId
 
-# no @derive(Json): member(s) DataSet: DataSet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSet: DataSet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDataSetResponse:
     Optional[DataSet] DataSet
     Optional[str] RequestId
@@ -7546,8 +7720,9 @@ struct DescribeDataSourcePermissionsRequest:
     str AwsAccountId
     str DataSourceId
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDataSourcePermissionsResponse:
     Optional[str] DataSourceArn
     Optional[str] DataSourceId
@@ -7561,8 +7736,9 @@ struct DescribeDataSourceRequest:
     str AwsAccountId
     str DataSourceId
 
-# no @derive(Json): member(s) DataSource: DataSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSource: DataSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDataSourceResponse:
     Optional[DataSource] DataSource
     Optional[str] RequestId
@@ -7586,8 +7762,9 @@ struct DescribeDlpSettingRequest:
     str AwsAccountId
     str DlpSettingId
 
-# no @derive(Json): member(s) DlpSetting: DlpSettingDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DlpSetting: DlpSettingDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDlpSettingResponse:
     DlpSettingDetails DlpSetting
     Optional[str] RequestId
@@ -7600,8 +7777,9 @@ struct DescribeFlowRequest:
     # wire string of the FlowPublishState enum (querystring binding)
     str PublishState
 
-# no @derive(Json): member(s) Flow: FlowDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Flow: FlowDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFlowResponse:
     FlowDetail Flow
     Optional[str] RequestId
@@ -7616,8 +7794,9 @@ struct DescribeFolderPermissionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFolderPermissionsResponse:
     Optional[int64] Status
     Optional[str] FolderId
@@ -7641,8 +7820,9 @@ struct DescribeFolderResolvedPermissionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFolderResolvedPermissionsResponse:
     Optional[int64] Status
     Optional[str] FolderId
@@ -7651,8 +7831,9 @@ struct DescribeFolderResolvedPermissionsResponse:
     Optional[str] RequestId
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Folder: Folder not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Folder: Folder not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFolderResponse:
     Optional[int64] Status
     Optional[Folder] Folder
@@ -7692,8 +7873,9 @@ struct DescribeIAMPolicyAssignmentRequest:
     str AssignmentName
     str Namespace
 
-# no @derive(Json): member(s) IAMPolicyAssignment: IAMPolicyAssignment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IAMPolicyAssignment: IAMPolicyAssignment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeIAMPolicyAssignmentResponse:
     Optional[IAMPolicyAssignment] IAMPolicyAssignment
     Optional[str] RequestId
@@ -7717,8 +7899,9 @@ struct DescribeIngestionResponse:
 struct DescribeIpRestrictionRequest:
     str AwsAccountId
 
-# no @derive(Json): member(s) IpRestrictionRuleMap: dict[str, str], VpcIdRestrictionRuleMap: dict[str, str], VpcEndpointIdRestrictionRuleMap: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IpRestrictionRuleMap: dict[str, str], VpcIdRestrictionRuleMap: dict[str, str], VpcEndpointIdRestrictionRuleMap: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeIpRestrictionResponse:
     Optional[str] AwsAccountId
     Optional[dict[str, str]] IpRestrictionRuleMap
@@ -7734,8 +7917,9 @@ struct DescribeKeyRegistrationRequest:
     str AwsAccountId
     Optional[bool] DefaultKeyOnly
 
-# no @derive(Json): member(s) KeyRegistration: list[RegisteredCustomerManagedKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeyRegistration: list[RegisteredCustomerManagedKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeKeyRegistrationResponse:
     Optional[str] AwsAccountId
     Optional[list[RegisteredCustomerManagedKey]] KeyRegistration
@@ -7749,8 +7933,9 @@ struct DescribeKnowledgeBasePermissionsRequest:
     str AwsAccountId
     str KnowledgeBaseId
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeKnowledgeBasePermissionsResponse:
     str KnowledgeBaseArn
     str KnowledgeBaseId
@@ -7776,8 +7961,9 @@ struct DescribeLimitsProfileRequest:
     str profileId
     str accountId
 
-# no @derive(Json): member(s) profile: LimitsProfile not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) profile: LimitsProfile not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLimitsProfileResponse:
     LimitsProfile profile
 
@@ -7873,8 +8059,9 @@ struct DescribeSpacePermissionsRequest:
     str AwsAccountId
     str SpaceId
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSpacePermissionsResponse:
     str spaceId
     Optional[str] spaceArn
@@ -7888,8 +8075,9 @@ struct DescribeSpaceRequest:
     str SpaceId
     Optional[int64] MaxContributors
 
-# no @derive(Json): member(s) Space: SpaceDetails, Contributors: list[SpaceContributor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Space: SpaceDetails, Contributors: list[SpaceContributor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSpaceResponse:
     str spaceId
     Optional[str] spaceArn
@@ -7918,8 +8106,9 @@ struct DescribeTemplateDefinitionRequest:
     Optional[int64] VersionNumber
     Optional[str] AliasName
 
-# no @derive(Json): member(s) Errors: list[TemplateError], Definition: TemplateVersionDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[TemplateError], Definition: TemplateVersionDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTemplateDefinitionResponse:
     Optional[str] Name
     Optional[str] TemplateId
@@ -7936,8 +8125,9 @@ struct DescribeTemplatePermissionsRequest:
     str AwsAccountId
     str TemplateId
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTemplatePermissionsResponse:
     Optional[str] TemplateId
     Optional[str] TemplateArn
@@ -7953,8 +8143,9 @@ struct DescribeTemplateRequest:
     Optional[int64] VersionNumber
     Optional[str] AliasName
 
-# no @derive(Json): member(s) Template: Template not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Template: Template not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTemplateResponse:
     Optional[Template] Template
     Optional[int64] Status
@@ -7979,8 +8170,9 @@ struct DescribeThemePermissionsRequest:
     str AwsAccountId
     str ThemeId
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeThemePermissionsResponse:
     Optional[str] ThemeId
     Optional[str] ThemeArn
@@ -7996,8 +8188,9 @@ struct DescribeThemeRequest:
     Optional[int64] VersionNumber
     Optional[str] AliasName
 
-# no @derive(Json): member(s) Theme: Theme not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Theme: Theme not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeThemeResponse:
     Optional[Theme] Theme
     Optional[int64] Status
@@ -8009,8 +8202,9 @@ struct DescribeTopicPermissionsRequest:
     str AwsAccountId
     str TopicId
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTopicPermissionsResponse:
     Optional[str] TopicId
     Optional[str] TopicArn
@@ -8024,8 +8218,9 @@ struct DescribeTopicPermissionsV2Request:
     str AwsAccountId
     str TopicId
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTopicPermissionsV2Response:
     Optional[str] TopicId
     Optional[str] TopicArn
@@ -8068,8 +8263,9 @@ struct DescribeTopicRequest:
     str AwsAccountId
     str TopicId
 
-# no @derive(Json): member(s) Topic: TopicDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Topic: TopicDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTopicResponse:
     Optional[str] Arn
     Optional[str] TopicId
@@ -8084,8 +8280,9 @@ struct DescribeTopicV2Request:
     str AwsAccountId
     str TopicId
 
-# no @derive(Json): member(s) Topic: TopicV2Details not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Topic: TopicV2Details not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTopicV2Response:
     Optional[str] Arn
     Optional[str] TopicId
@@ -8113,15 +8310,17 @@ struct DescribeVPCConnectionRequest:
     str AwsAccountId
     str VPCConnectionId
 
-# no @derive(Json): member(s) VPCConnection: VPCConnection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VPCConnection: VPCConnection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeVPCConnectionResponse:
     Optional[VPCConnection] VPCConnection
     Optional[str] RequestId
     Optional[int64] Status
 
-# no @derive(Json): member(s) CustomValuesConfiguration: CustomValuesConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomValuesConfiguration: CustomValuesConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DestinationParameterValueConfiguration:
     Optional[CustomValuesConfiguration] CustomValuesConfiguration
     Optional[str] SelectAllValueOptions
@@ -8159,8 +8358,9 @@ struct DisplayFormatOptions:
     Optional[NegativeFormat] NegativeFormat
     Optional[str] CurrencySymbol
 
-# no @derive(Json): member(s) ProviderConfig: ProviderConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProviderConfig: ProviderConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DlpSettingDetails:
     str DlpSettingId
     str Name
@@ -8196,8 +8396,9 @@ struct DonutOptions:
     Optional[ArcOptions] ArcOptions
     Optional[DonutCenterOptions] DonutCenterOptions
 
-# no @derive(Json): member(s) CategoryFilter: CategoryDrillDownFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CategoryFilter: CategoryDrillDownFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DrillDownFilter:
     Optional[NumericEqualityDrillDownFilter] NumericEqualityFilter
     Optional[CategoryDrillDownFilter] CategoryFilter
@@ -8223,8 +8424,9 @@ struct EffectiveLimit:
     LimitSource source
     str profileId
 
-# no @derive(Json): member(s) Actions: list[VisualCustomAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: list[VisualCustomAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EmptyVisual:
     str VisualId
     Optional[str] DataSetIdentifier
@@ -8259,8 +8461,9 @@ struct ExecutiveSummaryConfigurations:
 struct ExecutiveSummaryOption:
     Optional[DashboardBehavior] AvailabilityStatus
 
-# no @derive(Json): member(s) Columns: list[ColumnIdentifier], DrillDownFilters: list[DrillDownFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Columns: list[ColumnIdentifier], DrillDownFilters: list[DrillDownFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExplicitHierarchy:
     str HierarchyId
     list[ColumnIdentifier] Columns
@@ -8278,8 +8481,9 @@ struct ExportToCSVOption:
 struct ExportWithHiddenFieldsOption:
     Optional[DashboardBehavior] AvailabilityStatus
 
-# no @derive(Json): member(s) LinkedDataSourceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LinkedDataSourceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FMKBParameters:
     str KnowledgeBaseArn
     Optional[list[str]] LinkedDataSourceIds
@@ -8308,8 +8512,9 @@ struct FieldBarSeriesItem:
     str FieldId
     Optional[BarChartSeriesSettings] Settings
 
-# no @derive(Json): member(s) TooltipFields: list[TooltipItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TooltipFields: list[TooltipItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FieldBasedTooltip:
     Optional[Visibility] AggregationVisibility
     Optional[TooltipTitleType] TooltipTitleType
@@ -8320,8 +8525,9 @@ struct FieldComboSeriesItem:
     str FieldId
     Optional[ComboChartSeriesSettings] Settings
 
-# no @derive(Json): member(s) columns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) columns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FieldFolder:
     Optional[str] description
     Optional[list[str]] columns
@@ -8354,32 +8560,37 @@ struct FieldTooltipItem:
     Optional[Visibility] Visibility
     Optional[TooltipTarget] TooltipTarget
 
-# no @derive(Json): member(s) InputColumns: list[InputColumn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputColumns: list[InputColumn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FileSource:
     str DataSourceArn
     Optional[UploadSettings] UploadSettings
     int64 SheetIndex
     list[InputColumn] InputColumns
 
-# no @derive(Json): member(s) Geospatial: list[DimensionField], Values: list[MeasureField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Geospatial: list[DimensionField], Values: list[MeasureField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilledMapAggregatedFieldWells:
     Optional[list[DimensionField]] Geospatial
     Optional[list[MeasureField]] Values
 
-# no @derive(Json): member(s) ConditionalFormattingOptions: list[FilledMapConditionalFormattingOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConditionalFormattingOptions: list[FilledMapConditionalFormattingOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilledMapConditionalFormatting:
     list[FilledMapConditionalFormattingOption] ConditionalFormattingOptions
 
-# no @derive(Json): member(s) Shape: FilledMapShapeConditionalFormatting not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Shape: FilledMapShapeConditionalFormatting not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilledMapConditionalFormattingOption:
     FilledMapShapeConditionalFormatting Shape
 
-# no @derive(Json): member(s) FieldWells: FilledMapFieldWells, SortConfiguration: FilledMapSortConfiguration, Tooltip: TooltipOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldWells: FilledMapFieldWells, SortConfiguration: FilledMapSortConfiguration, Tooltip: TooltipOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilledMapConfiguration:
     Optional[FilledMapFieldWells] FieldWells
     Optional[FilledMapSortConfiguration] SortConfiguration
@@ -8389,24 +8600,28 @@ struct FilledMapConfiguration:
     Optional[GeospatialMapStyleOptions] MapStyleOptions
     Optional[VisualInteractionOptions] Interactions
 
-# no @derive(Json): member(s) FilledMapAggregatedFieldWells: FilledMapAggregatedFieldWells not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilledMapAggregatedFieldWells: FilledMapAggregatedFieldWells not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilledMapFieldWells:
     Optional[FilledMapAggregatedFieldWells] FilledMapAggregatedFieldWells
 
-# no @derive(Json): member(s) Format: ShapeConditionalFormat not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Format: ShapeConditionalFormat not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilledMapShapeConditionalFormatting:
     str FieldId
     Optional[ShapeConditionalFormat] Format
 
-# no @derive(Json): member(s) CategorySort: list[FieldSortOptions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CategorySort: list[FieldSortOptions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilledMapSortConfiguration:
     Optional[list[FieldSortOptions]] CategorySort
 
-# no @derive(Json): member(s) ChartConfiguration: FilledMapConfiguration, ConditionalFormatting: FilledMapConditionalFormatting, ColumnHierarchies: list[ColumnHierarchy], Actions: list[VisualCustomAction], GeocodingPreferences: list[GeocodePreference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChartConfiguration: FilledMapConfiguration, ConditionalFormatting: FilledMapConditionalFormatting, ColumnHierarchies: list[ColumnHierarchy], Actions: list[VisualCustomAction], GeocodingPreferences: list[GeocodePreference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilledMapVisual:
     str VisualId
     Optional[VisualTitleLabelOptions] Title
@@ -8418,8 +8633,9 @@ struct FilledMapVisual:
     Optional[str] VisualContentAltText
     Optional[list[GeocodePreference]] GeocodingPreferences
 
-# no @derive(Json): member(s) CategoryFilter: CategoryFilter, NumericRangeFilter: NumericRangeFilter, NumericEqualityFilter: NumericEqualityFilter, TimeEqualityFilter: TimeEqualityFilter, TimeRangeFilter: TimeRangeFilter, RelativeDatesFilter: RelativeDatesFilter, TopBottomFilter: TopBottomFilter, NestedFilter: NestedFilter, HierarchyFilter: HierarchyFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CategoryFilter: CategoryFilter, NumericRangeFilter: NumericRangeFilter, NumericEqualityFilter: NumericEqualityFilter, TimeEqualityFilter: TimeEqualityFilter, TimeRangeFilter: TimeRangeFilter, RelativeDatesFilter: RelativeDatesFilter, TopBottomFilter: TopBottomFilter, NestedFilter: NestedFilter, HierarchyFilter: HierarchyFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filter:
     Optional[CategoryFilter] CategoryFilter
     Optional[NumericRangeFilter] NumericRangeFilter
@@ -8437,8 +8653,9 @@ struct FilterAggMetrics:
     Optional[AggType] Function
     Optional[TopicSortDirection] SortDirection
 
-# no @derive(Json): member(s) List: FilterListControl, Dropdown: FilterDropDownControl, CrossSheet: FilterCrossSheetControl, HierarchyList: HierarchyFilterListControl, HierarchyDropdown: HierarchyFilterDropDownControl not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) List: FilterListControl, Dropdown: FilterDropDownControl, CrossSheet: FilterCrossSheetControl, HierarchyList: HierarchyFilterListControl, HierarchyDropdown: HierarchyFilterDropDownControl not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterControl:
     Optional[FilterDateTimePickerControl] DateTimePicker
     Optional[FilterListControl] List
@@ -8451,8 +8668,9 @@ struct FilterControl:
     Optional[HierarchyFilterListControl] HierarchyList
     Optional[HierarchyFilterDropDownControl] HierarchyDropdown
 
-# no @derive(Json): member(s) CascadingControlConfiguration: CascadingControlConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CascadingControlConfiguration: CascadingControlConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterCrossSheetControl:
     str FilterControlId
     str SourceFilterId
@@ -8468,8 +8686,9 @@ struct FilterDateTimePickerControl:
     Optional[CommitMode] CommitMode
     Optional[ControlTitleFormatText] ControlTitleFormatText
 
-# no @derive(Json): member(s) SelectableValues: FilterSelectableValues, CascadingControlConfiguration: CascadingControlConfiguration, ControlSortConfigurations: list[ControlSortConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectableValues: FilterSelectableValues, CascadingControlConfiguration: CascadingControlConfiguration, ControlSortConfigurations: list[ControlSortConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterDropDownControl:
     str FilterControlId
     Optional[str] Title
@@ -8482,8 +8701,9 @@ struct FilterDropDownControl:
     Optional[list[ControlSortConfiguration]] ControlSortConfigurations
     Optional[ControlTitleFormatText] ControlTitleFormatText
 
-# no @derive(Json): member(s) Filters: list[Filter], ScopeConfiguration: FilterScopeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter], ScopeConfiguration: FilterScopeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterGroup:
     str FilterGroupId
     list[Filter] Filters
@@ -8491,16 +8711,18 @@ struct FilterGroup:
     Optional[WidgetStatus] Status
     CrossDatasetTypes CrossDataset
 
-# no @derive(Json): member(s) CategoryValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CategoryValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterListConfiguration:
     CategoryFilterMatchOperator MatchOperator
     Optional[list[str]] CategoryValues
     Optional[str] SelectAllOptions
     Optional[FilterNullOption] NullOption
 
-# no @derive(Json): member(s) SelectableValues: FilterSelectableValues, CascadingControlConfiguration: CascadingControlConfiguration, ControlSortConfigurations: list[ControlSortConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectableValues: FilterSelectableValues, CascadingControlConfiguration: CascadingControlConfiguration, ControlSortConfigurations: list[ControlSortConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterListControl:
     str FilterControlId
     Optional[str] Title
@@ -8512,23 +8734,26 @@ struct FilterListControl:
     Optional[list[ControlSortConfiguration]] ControlSortConfigurations
     Optional[ControlTitleFormatText] ControlTitleFormatText
 
-# no @derive(Json): member(s) StringFilterCondition: DataSetStringFilterCondition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StringFilterCondition: DataSetStringFilterCondition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterOperation:
     Optional[str] ConditionExpression
     Optional[DataSetStringFilterCondition] StringFilterCondition
     Optional[DataSetNumericFilterCondition] NumericFilterCondition
     Optional[DataSetDateFilterCondition] DateFilterCondition
 
-# no @derive(Json): member(s) SelectedFields: list[str], SelectedColumns: list[ColumnIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectedFields: list[str], SelectedColumns: list[ColumnIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterOperationSelectedFieldsConfiguration:
     Optional[list[str]] SelectedFields
     Optional[str] SelectedFieldOptions
     Optional[list[ColumnIdentifier]] SelectedColumns
 
-# no @derive(Json): member(s) SameSheetTargetVisualConfiguration: SameSheetTargetVisualConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SameSheetTargetVisualConfiguration: SameSheetTargetVisualConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterOperationTargetVisualsConfiguration:
     Optional[SameSheetTargetVisualConfiguration] SameSheetTargetVisualConfiguration
 
@@ -8541,14 +8766,16 @@ struct FilterRelativeDateTimeControl:
     Optional[CommitMode] CommitMode
     Optional[ControlTitleFormatText] ControlTitleFormatText
 
-# no @derive(Json): member(s) SelectedSheets: SelectedSheetsFilterScopeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectedSheets: SelectedSheetsFilterScopeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterScopeConfiguration:
     Optional[SelectedSheetsFilterScopeConfiguration] SelectedSheets
     Optional[AllSheetsFilterScopeConfiguration] AllSheets
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterSelectableValues:
     Optional[list[str]] Values
 
@@ -8581,15 +8808,17 @@ struct FilterTextFieldControl:
     Optional[TextFieldControlDisplayOptions] DisplayOptions
     Optional[ControlTitleFormatText] ControlTitleFormatText
 
-# no @derive(Json): member(s) Source: TransformOperationSource, FilterOperations: list[FilterOperation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Source: TransformOperationSource, FilterOperations: list[FilterOperation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FiltersOperation:
     str Alias
     TransformOperationSource Source
     list[FilterOperation] FilterOperations
 
-# no @derive(Json): member(s) StepAliases: list[StepAliasMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StepAliases: list[StepAliasMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FlowDetail:
     str Arn
     str FlowId
@@ -8619,8 +8848,9 @@ struct FlowSummary:
     Optional[str] LastPublishedBy
     Optional[DateTime] LastPublishedAt
 
-# no @derive(Json): member(s) FolderPath: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FolderPath: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Folder:
     Optional[str] FolderId
     Optional[str] Arn
@@ -8708,15 +8938,17 @@ struct FormatConfiguration:
 struct FreeFormLayoutCanvasSizeOptions:
     Optional[FreeFormLayoutScreenCanvasSizeOptions] ScreenCanvasSizeOptions
 
-# no @derive(Json): member(s) Elements: list[FreeFormLayoutElement], Groups: list[SheetLayoutGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Elements: list[FreeFormLayoutElement], Groups: list[SheetLayoutGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FreeFormLayoutConfiguration:
     list[FreeFormLayoutElement] Elements
     Optional[FreeFormLayoutCanvasSizeOptions] CanvasSizeOptions
     Optional[list[SheetLayoutGroup]] Groups
 
-# no @derive(Json): member(s) RenderingRules: list[SheetElementRenderingRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RenderingRules: list[SheetElementRenderingRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FreeFormLayoutElement:
     str ElementId
     LayoutElementType ElementType
@@ -8748,19 +8980,22 @@ struct FreeFormLayoutElementBorderStyle:
 struct FreeFormLayoutScreenCanvasSizeOptions:
     str OptimizedViewPortWidth
 
-# no @derive(Json): member(s) Elements: list[FreeFormLayoutElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Elements: list[FreeFormLayoutElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FreeFormSectionLayoutConfiguration:
     list[FreeFormLayoutElement] Elements
 
-# no @derive(Json): member(s) Category: list[DimensionField], Values: list[MeasureField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Category: list[DimensionField], Values: list[MeasureField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FunnelChartAggregatedFieldWells:
     Optional[list[DimensionField]] Category
     Optional[list[MeasureField]] Values
 
-# no @derive(Json): member(s) FieldWells: FunnelChartFieldWells, SortConfiguration: FunnelChartSortConfiguration, CategoryLabelOptions: ChartAxisLabelOptions, ValueLabelOptions: ChartAxisLabelOptions, Tooltip: TooltipOptions, VisualPalette: VisualPalette not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldWells: FunnelChartFieldWells, SortConfiguration: FunnelChartSortConfiguration, CategoryLabelOptions: ChartAxisLabelOptions, ValueLabelOptions: ChartAxisLabelOptions, Tooltip: TooltipOptions, VisualPalette: VisualPalette not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FunnelChartConfiguration:
     Optional[FunnelChartFieldWells] FieldWells
     Optional[FunnelChartSortConfiguration] SortConfiguration
@@ -8781,19 +9016,22 @@ struct FunnelChartDataLabelOptions:
     Optional[str] LabelColor
     Optional[FunnelChartMeasureDataLabelStyle] MeasureDataLabelStyle
 
-# no @derive(Json): member(s) FunnelChartAggregatedFieldWells: FunnelChartAggregatedFieldWells not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FunnelChartAggregatedFieldWells: FunnelChartAggregatedFieldWells not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FunnelChartFieldWells:
     Optional[FunnelChartAggregatedFieldWells] FunnelChartAggregatedFieldWells
 
-# no @derive(Json): member(s) CategorySort: list[FieldSortOptions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CategorySort: list[FieldSortOptions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FunnelChartSortConfiguration:
     Optional[list[FieldSortOptions]] CategorySort
     Optional[ItemsLimitConfiguration] CategoryItemsLimit
 
-# no @derive(Json): member(s) ChartConfiguration: FunnelChartConfiguration, Actions: list[VisualCustomAction], ColumnHierarchies: list[ColumnHierarchy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChartConfiguration: FunnelChartConfiguration, Actions: list[VisualCustomAction], ColumnHierarchies: list[ColumnHierarchy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FunnelChartVisual:
     str VisualId
     Optional[VisualTitleLabelOptions] Title
@@ -8803,8 +9041,9 @@ struct FunnelChartVisual:
     Optional[list[ColumnHierarchy]] ColumnHierarchies
     Optional[str] VisualContentAltText
 
-# no @derive(Json): member(s) ForegroundColor: ConditionalFormattingColor not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ForegroundColor: ConditionalFormattingColor not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GaugeChartArcConditionalFormatting:
     Optional[ConditionalFormattingColor] ForegroundColor
 
@@ -8813,19 +9052,22 @@ struct GaugeChartColorConfiguration:
     Optional[str] ForegroundColor
     Optional[str] BackgroundColor
 
-# no @derive(Json): member(s) ConditionalFormattingOptions: list[GaugeChartConditionalFormattingOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConditionalFormattingOptions: list[GaugeChartConditionalFormattingOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GaugeChartConditionalFormatting:
     Optional[list[GaugeChartConditionalFormattingOption]] ConditionalFormattingOptions
 
-# no @derive(Json): member(s) PrimaryValue: GaugeChartPrimaryValueConditionalFormatting, Arc: GaugeChartArcConditionalFormatting not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryValue: GaugeChartPrimaryValueConditionalFormatting, Arc: GaugeChartArcConditionalFormatting not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GaugeChartConditionalFormattingOption:
     Optional[GaugeChartPrimaryValueConditionalFormatting] PrimaryValue
     Optional[GaugeChartArcConditionalFormatting] Arc
 
-# no @derive(Json): member(s) FieldWells: GaugeChartFieldWells, DataLabels: DataLabelOptions, TooltipOptions: TooltipOptions, VisualPalette: VisualPalette not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldWells: GaugeChartFieldWells, DataLabels: DataLabelOptions, TooltipOptions: TooltipOptions, VisualPalette: VisualPalette not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GaugeChartConfiguration:
     Optional[GaugeChartFieldWells] FieldWells
     Optional[GaugeChartOptions] GaugeChartOptions
@@ -8835,8 +9077,9 @@ struct GaugeChartConfiguration:
     Optional[GaugeChartColorConfiguration] ColorConfiguration
     Optional[VisualInteractionOptions] Interactions
 
-# no @derive(Json): member(s) Values: list[MeasureField], TargetValues: list[MeasureField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[MeasureField], TargetValues: list[MeasureField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GaugeChartFieldWells:
     Optional[list[MeasureField]] Values
     Optional[list[MeasureField]] TargetValues
@@ -8849,14 +9092,16 @@ struct GaugeChartOptions:
     Optional[ArcConfiguration] Arc
     Optional[FontConfiguration] PrimaryValueFontConfiguration
 
-# no @derive(Json): member(s) TextColor: ConditionalFormattingColor not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TextColor: ConditionalFormattingColor not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GaugeChartPrimaryValueConditionalFormatting:
     Optional[ConditionalFormattingColor] TextColor
     Optional[ConditionalFormattingIcon] Icon
 
-# no @derive(Json): member(s) ChartConfiguration: GaugeChartConfiguration, ConditionalFormatting: GaugeChartConditionalFormatting, Actions: list[VisualCustomAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChartConfiguration: GaugeChartConfiguration, ConditionalFormatting: GaugeChartConditionalFormatting, Actions: list[VisualCustomAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GaugeChartVisual:
     str VisualId
     Optional[VisualTitleLabelOptions] Title
@@ -8928,8 +9173,9 @@ struct GeneratedAnswerResult:
 struct GenerativeAuthoringConfigurations:
     bool Enabled
 
-# no @derive(Json): member(s) Columns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Columns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeoSpatialColumnGroup:
     str Name
     Optional[str] CountryCode
@@ -8953,8 +9199,9 @@ struct GeocoderHierarchy:
     Optional[str] City
     Optional[str] PostCode
 
-# no @derive(Json): member(s) CategoryDataColors: list[GeospatialCategoricalDataColor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CategoryDataColors: list[GeospatialCategoricalDataColor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeospatialCategoricalColor:
     list[GeospatialCategoricalDataColor] CategoryDataColors
     Optional[Visibility] NullDataVisibility
@@ -8970,16 +9217,18 @@ struct GeospatialCategoricalDataColor:
 struct GeospatialCircleRadius:
     Optional[float64] Radius
 
-# no @derive(Json): member(s) FillColor: GeospatialColor, StrokeColor: GeospatialColor not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FillColor: GeospatialColor, StrokeColor: GeospatialColor not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeospatialCircleSymbolStyle:
     Optional[GeospatialColor] FillColor
     Optional[GeospatialColor] StrokeColor
     Optional[GeospatialLineWidth] StrokeWidth
     Optional[GeospatialCircleRadius] CircleRadius
 
-# no @derive(Json): member(s) Gradient: GeospatialGradientColor, Categorical: GeospatialCategoricalColor not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Gradient: GeospatialGradientColor, Categorical: GeospatialCategoricalColor not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeospatialColor:
     Optional[GeospatialSolidColor] Solid
     Optional[GeospatialGradientColor] Gradient
@@ -8996,8 +9245,9 @@ struct GeospatialCoordinateBounds:
 struct GeospatialDataSourceItem:
     Optional[GeospatialStaticFileSource] StaticFileDataSource
 
-# no @derive(Json): member(s) StepColors: list[GeospatialGradientStepColor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StepColors: list[GeospatialGradientStepColor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeospatialGradientColor:
     list[GeospatialGradientStepColor] StepColors
     Optional[Visibility] NullDataVisibility
@@ -9009,13 +9259,15 @@ struct GeospatialGradientStepColor:
     str Color
     float64 DataValue
 
-# no @derive(Json): member(s) Colors: list[GeospatialHeatmapDataColor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Colors: list[GeospatialHeatmapDataColor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeospatialHeatmapColorScale:
     Optional[list[GeospatialHeatmapDataColor]] Colors
 
-# no @derive(Json): member(s) HeatmapColor: GeospatialHeatmapColorScale not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HeatmapColor: GeospatialHeatmapColorScale not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeospatialHeatmapConfiguration:
     Optional[GeospatialHeatmapColorScale] HeatmapColor
 
@@ -9023,21 +9275,24 @@ struct GeospatialHeatmapConfiguration:
 struct GeospatialHeatmapDataColor:
     str Color
 
-# no @derive(Json): member(s) ColorDimensionsFields: list[DimensionField], ColorValuesFields: list[MeasureField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColorDimensionsFields: list[DimensionField], ColorValuesFields: list[MeasureField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeospatialLayerColorField:
     Optional[list[DimensionField]] ColorDimensionsFields
     Optional[list[MeasureField]] ColorValuesFields
 
-# no @derive(Json): member(s) PointLayer: GeospatialPointLayer, LineLayer: GeospatialLineLayer, PolygonLayer: GeospatialPolygonLayer not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PointLayer: GeospatialPointLayer, LineLayer: GeospatialLineLayer, PolygonLayer: GeospatialPolygonLayer not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeospatialLayerDefinition:
     Optional[GeospatialPointLayer] PointLayer
     Optional[GeospatialLineLayer] LineLayer
     Optional[GeospatialPolygonLayer] PolygonLayer
 
-# no @derive(Json): member(s) LayerDefinition: GeospatialLayerDefinition, Tooltip: TooltipOptions, JoinDefinition: GeospatialLayerJoinDefinition, Actions: list[LayerCustomAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LayerDefinition: GeospatialLayerDefinition, Tooltip: TooltipOptions, JoinDefinition: GeospatialLayerJoinDefinition, Actions: list[LayerCustomAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeospatialLayerItem:
     str LayerId
     Optional[GeospatialLayerType] LayerType
@@ -9049,15 +9304,17 @@ struct GeospatialLayerItem:
     Optional[GeospatialLayerJoinDefinition] JoinDefinition
     Optional[list[LayerCustomAction]] Actions
 
-# no @derive(Json): member(s) ColorField: GeospatialLayerColorField not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColorField: GeospatialLayerColorField not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeospatialLayerJoinDefinition:
     Optional[str] ShapeKeyField
     Optional[UnaggregatedField] DatasetKeyField
     Optional[GeospatialLayerColorField] ColorField
 
-# no @derive(Json): member(s) MapLayers: list[GeospatialLayerItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MapLayers: list[GeospatialLayerItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeospatialLayerMapConfiguration:
     Optional[LegendOptions] Legend
     Optional[list[GeospatialLayerItem]] MapLayers
@@ -9065,18 +9322,21 @@ struct GeospatialLayerMapConfiguration:
     Optional[GeospatialMapStyle] MapStyle
     Optional[VisualInteractionOptions] Interactions
 
-# no @derive(Json): member(s) Style: GeospatialLineStyle not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Style: GeospatialLineStyle not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeospatialLineLayer:
     GeospatialLineStyle Style
 
-# no @derive(Json): member(s) LineSymbolStyle: GeospatialLineSymbolStyle not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LineSymbolStyle: GeospatialLineSymbolStyle not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeospatialLineStyle:
     Optional[GeospatialLineSymbolStyle] LineSymbolStyle
 
-# no @derive(Json): member(s) FillColor: GeospatialColor not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FillColor: GeospatialColor not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeospatialLineSymbolStyle:
     Optional[GeospatialColor] FillColor
     Optional[GeospatialLineWidth] LineWidth
@@ -9085,15 +9345,17 @@ struct GeospatialLineSymbolStyle:
 struct GeospatialLineWidth:
     Optional[float64] LineWidth
 
-# no @derive(Json): member(s) Geospatial: list[DimensionField], Values: list[MeasureField], Colors: list[DimensionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Geospatial: list[DimensionField], Values: list[MeasureField], Colors: list[DimensionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeospatialMapAggregatedFieldWells:
     Optional[list[DimensionField]] Geospatial
     Optional[list[MeasureField]] Values
     Optional[list[DimensionField]] Colors
 
-# no @derive(Json): member(s) FieldWells: GeospatialMapFieldWells, Tooltip: TooltipOptions, PointStyleOptions: GeospatialPointStyleOptions, VisualPalette: VisualPalette not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldWells: GeospatialMapFieldWells, Tooltip: TooltipOptions, PointStyleOptions: GeospatialPointStyleOptions, VisualPalette: VisualPalette not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeospatialMapConfiguration:
     Optional[GeospatialMapFieldWells] FieldWells
     Optional[LegendOptions] Legend
@@ -9104,8 +9366,9 @@ struct GeospatialMapConfiguration:
     Optional[VisualPalette] VisualPalette
     Optional[VisualInteractionOptions] Interactions
 
-# no @derive(Json): member(s) GeospatialMapAggregatedFieldWells: GeospatialMapAggregatedFieldWells not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GeospatialMapAggregatedFieldWells: GeospatialMapAggregatedFieldWells not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeospatialMapFieldWells:
     Optional[GeospatialMapAggregatedFieldWells] GeospatialMapAggregatedFieldWells
 
@@ -9124,8 +9387,9 @@ struct GeospatialMapStyle:
 struct GeospatialMapStyleOptions:
     Optional[BaseMapStyleType] BaseMapStyle
 
-# no @derive(Json): member(s) ChartConfiguration: GeospatialMapConfiguration, ColumnHierarchies: list[ColumnHierarchy], Actions: list[VisualCustomAction], GeocodingPreferences: list[GeocodePreference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChartConfiguration: GeospatialMapConfiguration, ColumnHierarchies: list[ColumnHierarchy], Actions: list[VisualCustomAction], GeocodingPreferences: list[GeocodePreference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeospatialMapVisual:
     str VisualId
     Optional[VisualTitleLabelOptions] Title
@@ -9146,35 +9410,41 @@ struct GeospatialNullSymbolStyle:
     Optional[str] StrokeColor
     Optional[float64] StrokeWidth
 
-# no @derive(Json): member(s) Style: GeospatialPointStyle not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Style: GeospatialPointStyle not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeospatialPointLayer:
     GeospatialPointStyle Style
 
-# no @derive(Json): member(s) CircleSymbolStyle: GeospatialCircleSymbolStyle not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CircleSymbolStyle: GeospatialCircleSymbolStyle not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeospatialPointStyle:
     Optional[GeospatialCircleSymbolStyle] CircleSymbolStyle
 
-# no @derive(Json): member(s) HeatmapConfiguration: GeospatialHeatmapConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HeatmapConfiguration: GeospatialHeatmapConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeospatialPointStyleOptions:
     Optional[GeospatialSelectedPointStyle] SelectedPointStyle
     Optional[ClusterMarkerConfiguration] ClusterMarkerConfiguration
     Optional[GeospatialHeatmapConfiguration] HeatmapConfiguration
 
-# no @derive(Json): member(s) Style: GeospatialPolygonStyle not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Style: GeospatialPolygonStyle not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeospatialPolygonLayer:
     GeospatialPolygonStyle Style
 
-# no @derive(Json): member(s) PolygonSymbolStyle: GeospatialPolygonSymbolStyle not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PolygonSymbolStyle: GeospatialPolygonSymbolStyle not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeospatialPolygonStyle:
     Optional[GeospatialPolygonSymbolStyle] PolygonSymbolStyle
 
-# no @derive(Json): member(s) FillColor: GeospatialColor, StrokeColor: GeospatialColor not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FillColor: GeospatialColor, StrokeColor: GeospatialColor not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeospatialPolygonSymbolStyle:
     Optional[GeospatialColor] FillColor
     Optional[GeospatialColor] StrokeColor
@@ -9241,8 +9511,9 @@ struct GetFlowPermissionsInput:
     str AwsAccountId
     str FlowId
 
-# no @derive(Json): member(s) Permissions: list[Permission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[Permission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFlowPermissionsOutput:
     str Arn
     str FlowId
@@ -9288,13 +9559,15 @@ struct GlobalTableBorderOptions:
 struct GoogleDriveParameters:
     Optional[AuthType] AuthType
 
-# no @derive(Json): member(s) DefaultCategoryEffects: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultCategoryEffects: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Governance:
     Optional[dict[str, str]] DefaultCategoryEffects
 
-# no @derive(Json): member(s) Stops: list[GradientStop] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Stops: list[GradientStop] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GradientColor:
     Optional[list[GradientStop]] Stops
 
@@ -9308,8 +9581,9 @@ struct GradientStop:
 struct GridLayoutCanvasSizeOptions:
     Optional[GridLayoutScreenCanvasSizeOptions] ScreenCanvasSizeOptions
 
-# no @derive(Json): member(s) Elements: list[GridLayoutElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Elements: list[GridLayoutElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GridLayoutConfiguration:
     list[GridLayoutElement] Elements
     Optional[GridLayoutCanvasSizeOptions] CanvasSizeOptions
@@ -9375,22 +9649,25 @@ struct GrowthRateComputation:
 struct GutterStyle:
     Optional[bool] Show
 
-# no @derive(Json): member(s) Layout: SectionLayoutConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Layout: SectionLayoutConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HeaderFooterSectionConfiguration:
     str SectionId
     SectionLayoutConfiguration Layout
     Optional[SectionStyle] Style
 
-# no @derive(Json): member(s) Rows: list[DimensionField], Columns: list[DimensionField], Values: list[MeasureField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rows: list[DimensionField], Columns: list[DimensionField], Values: list[MeasureField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HeatMapAggregatedFieldWells:
     Optional[list[DimensionField]] Rows
     Optional[list[DimensionField]] Columns
     Optional[list[MeasureField]] Values
 
-# no @derive(Json): member(s) FieldWells: HeatMapFieldWells, SortConfiguration: HeatMapSortConfiguration, RowLabelOptions: ChartAxisLabelOptions, ColumnLabelOptions: ChartAxisLabelOptions, ColorScale: ColorScale, DataLabels: DataLabelOptions, Tooltip: TooltipOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldWells: HeatMapFieldWells, SortConfiguration: HeatMapSortConfiguration, RowLabelOptions: ChartAxisLabelOptions, ColumnLabelOptions: ChartAxisLabelOptions, ColorScale: ColorScale, DataLabels: DataLabelOptions, Tooltip: TooltipOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HeatMapConfiguration:
     Optional[HeatMapFieldWells] FieldWells
     Optional[HeatMapSortConfiguration] SortConfiguration
@@ -9404,21 +9681,24 @@ struct HeatMapConfiguration:
     Optional[TooltipOptions] Tooltip
     Optional[VisualInteractionOptions] Interactions
 
-# no @derive(Json): member(s) HeatMapAggregatedFieldWells: HeatMapAggregatedFieldWells not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HeatMapAggregatedFieldWells: HeatMapAggregatedFieldWells not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HeatMapFieldWells:
     Optional[HeatMapAggregatedFieldWells] HeatMapAggregatedFieldWells
 
-# no @derive(Json): member(s) HeatMapRowSort: list[FieldSortOptions], HeatMapColumnSort: list[FieldSortOptions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HeatMapRowSort: list[FieldSortOptions], HeatMapColumnSort: list[FieldSortOptions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HeatMapSortConfiguration:
     Optional[list[FieldSortOptions]] HeatMapRowSort
     Optional[list[FieldSortOptions]] HeatMapColumnSort
     Optional[ItemsLimitConfiguration] HeatMapRowItemsLimitConfiguration
     Optional[ItemsLimitConfiguration] HeatMapColumnItemsLimitConfiguration
 
-# no @derive(Json): member(s) ChartConfiguration: HeatMapConfiguration, ColumnHierarchies: list[ColumnHierarchy], Actions: list[VisualCustomAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChartConfiguration: HeatMapConfiguration, ColumnHierarchies: list[ColumnHierarchy], Actions: list[VisualCustomAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HeatMapVisual:
     str VisualId
     Optional[VisualTitleLabelOptions] Title
@@ -9428,8 +9708,9 @@ struct HeatMapVisual:
     Optional[list[VisualCustomAction]] Actions
     Optional[str] VisualContentAltText
 
-# no @derive(Json): member(s) HierarchyLevels: list[HierarchyFilterLevel], HierarchyTree: HierarchyFilterNode, DefaultFilterControlConfiguration: DefaultFilterControlConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HierarchyLevels: list[HierarchyFilterLevel], HierarchyTree: HierarchyFilterNode, DefaultFilterControlConfiguration: DefaultFilterControlConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HierarchyFilter:
     str FilterId
     ColumnIdentifier Column
@@ -9439,8 +9720,9 @@ struct HierarchyFilter:
     HierarchyFilterMatchOperator MatchOperator
     Optional[DefaultFilterControlConfiguration] DefaultFilterControlConfiguration
 
-# no @derive(Json): member(s) ControlSortConfigurations: list[ControlSortConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ControlSortConfigurations: list[ControlSortConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HierarchyFilterDropDownControl:
     str FilterControlId
     str SourceFilterId
@@ -9460,8 +9742,9 @@ struct HierarchyFilterDropDownControlDisplayOptions:
 struct HierarchyFilterLevel:
     ColumnIdentifier Column
 
-# no @derive(Json): member(s) ControlSortConfigurations: list[ControlSortConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ControlSortConfigurations: list[ControlSortConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HierarchyFilterListControl:
     str FilterControlId
     str SourceFilterId
@@ -9482,16 +9765,18 @@ struct HierarchyFilterListControlDisplayOptions:
 struct HierarchyFilterListControlSearchOptions:
     Optional[Visibility] Visibility
 
-# no @derive(Json): member(s) HierarchyValues: list[str], Children: list[HierarchyFilterNode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HierarchyValues: list[str], Children: list[HierarchyFilterNode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HierarchyFilterNode:
     ColumnIdentifier Column
     Optional[str] ParentValue
     Optional[list[str]] HierarchyValues
     Optional[list[HierarchyFilterNode]] Children
 
-# no @derive(Json): member(s) Values: list[MeasureField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[MeasureField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HistogramAggregatedFieldWells:
     Optional[list[MeasureField]] Values
 
@@ -9502,8 +9787,9 @@ struct HistogramBinOptions:
     Optional[BinWidthOptions] BinWidth
     Optional[float64] StartValue
 
-# no @derive(Json): member(s) FieldWells: HistogramFieldWells, XAxisLabelOptions: ChartAxisLabelOptions, DataLabels: DataLabelOptions, Tooltip: TooltipOptions, VisualPalette: VisualPalette not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldWells: HistogramFieldWells, XAxisLabelOptions: ChartAxisLabelOptions, DataLabels: DataLabelOptions, Tooltip: TooltipOptions, VisualPalette: VisualPalette not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HistogramConfiguration:
     Optional[HistogramFieldWells] FieldWells
     Optional[AxisDisplayOptions] XAxisDisplayOptions
@@ -9515,13 +9801,15 @@ struct HistogramConfiguration:
     Optional[VisualPalette] VisualPalette
     Optional[VisualInteractionOptions] Interactions
 
-# no @derive(Json): member(s) HistogramAggregatedFieldWells: HistogramAggregatedFieldWells not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HistogramAggregatedFieldWells: HistogramAggregatedFieldWells not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HistogramFieldWells:
     Optional[HistogramAggregatedFieldWells] HistogramAggregatedFieldWells
 
-# no @derive(Json): member(s) ChartConfiguration: HistogramConfiguration, Actions: list[VisualCustomAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChartConfiguration: HistogramConfiguration, Actions: list[VisualCustomAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HistogramVisual:
     str VisualId
     Optional[VisualTitleLabelOptions] Title
@@ -9534,8 +9822,9 @@ struct HistogramVisual:
 struct IAMConnectionMetadata:
     str RoleArn
 
-# no @derive(Json): member(s) Identities: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Identities: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IAMPolicyAssignment:
     Optional[str] AwsAccountId
     Optional[str] AssignmentId
@@ -9571,8 +9860,9 @@ struct Image:
 struct ImageConfiguration:
     Optional[ImageSource] Source
 
-# no @derive(Json): member(s) ActionOperations: list[ImageCustomActionOperation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActionOperations: list[ImageCustomActionOperation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImageCustomAction:
     str CustomActionId
     str Name
@@ -9580,8 +9870,9 @@ struct ImageCustomAction:
     ImageCustomActionTrigger Trigger
     list[ImageCustomActionOperation] ActionOperations
 
-# no @derive(Json): member(s) SetParametersOperation: CustomActionSetParametersOperation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SetParametersOperation: CustomActionSetParametersOperation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImageCustomActionOperation:
     Optional[CustomActionNavigationOperation] NavigationOperation
     Optional[CustomActionURLOperation] URLOperation
@@ -9626,14 +9917,16 @@ struct ImpalaParameters:
     Optional[str] Database
     str SqlEndpointPath
 
-# no @derive(Json): member(s) Source: ImportTableOperationSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Source: ImportTableOperationSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportTableOperation:
     str Alias
     ImportTableOperationSource Source
 
-# no @derive(Json): member(s) ColumnIdMappings: list[DataSetColumnIdMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnIdMappings: list[DataSetColumnIdMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportTableOperationSource:
     str SourceTableId
     Optional[list[DataSetColumnIdMapping]] ColumnIdMappings
@@ -9661,8 +9954,9 @@ struct InlineCustomInstruction:
     str InstructionText
     Optional[UploadedDocumentMetadata] UploadedDocumentMetadata
 
-# no @derive(Json): member(s) CategoryInnerFilter: CategoryInnerFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CategoryInnerFilter: CategoryInnerFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InnerFilter:
     Optional[CategoryInnerFilter] CategoryInnerFilter
 
@@ -9673,15 +9967,17 @@ struct InputColumn:
     InputColumnDataType Type
     Optional[ColumnDataSubType] SubType
 
-# no @derive(Json): member(s) Computations: list[Computation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Computations: list[Computation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InsightConfiguration:
     Optional[list[Computation]] Computations
     Optional[CustomNarrativeOptions] CustomNarrative
     Optional[VisualInteractionOptions] Interactions
 
-# no @derive(Json): member(s) InsightConfiguration: InsightConfiguration, Actions: list[VisualCustomAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InsightConfiguration: InsightConfiguration, Actions: list[VisualCustomAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InsightVisual:
     str VisualId
     Optional[VisualTitleLabelOptions] Title
@@ -9692,33 +9988,38 @@ struct InsightVisual:
     Optional[str] TopicIdentifier
     Optional[str] VisualContentAltText
 
-# no @derive(Json): member(s) DefaultValues: IntegerDatasetParameterDefaultValues not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultValues: IntegerDatasetParameterDefaultValues not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntegerDatasetParameter:
     str Id
     str Name
     DatasetParameterValueType ValueType
     Optional[IntegerDatasetParameterDefaultValues] DefaultValues
 
-# no @derive(Json): member(s) StaticValues: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StaticValues: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntegerDatasetParameterDefaultValues:
     Optional[list[int64]] StaticValues
 
-# no @derive(Json): member(s) StaticValues: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StaticValues: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntegerDefaultValues:
     Optional[DynamicDefaultValue] DynamicValue
     Optional[list[int64]] StaticValues
 
-# no @derive(Json): member(s) Values: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntegerParameter:
     str Name
     list[int64] Values
 
-# no @derive(Json): member(s) DefaultValues: IntegerDefaultValues, MappedDataSetParameters: list[MappedDataSetParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultValues: IntegerDefaultValues, MappedDataSetParameters: list[MappedDataSetParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntegerParameterDeclaration:
     ParameterValueType ParameterValueType
     str Name
@@ -9792,13 +10093,15 @@ struct JoinInstruction:
 struct JoinKeyProperties:
     Optional[bool] UniqueKey
 
-# no @derive(Json): member(s) OutputColumnNameOverrides: list[OutputColumnNameOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OutputColumnNameOverrides: list[OutputColumnNameOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JoinOperandProperties:
     list[OutputColumnNameOverride] OutputColumnNameOverrides
 
-# no @derive(Json): member(s) LeftOperand: TransformOperationSource, RightOperand: TransformOperationSource, LeftOperandProperties: JoinOperandProperties, RightOperandProperties: JoinOperandProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LeftOperand: TransformOperationSource, RightOperand: TransformOperationSource, LeftOperandProperties: JoinOperandProperties, RightOperandProperties: JoinOperandProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JoinOperation:
     str Alias
     TransformOperationSource LeftOperand
@@ -9808,41 +10111,47 @@ struct JoinOperation:
     Optional[JoinOperandProperties] LeftOperandProperties
     Optional[JoinOperandProperties] RightOperandProperties
 
-# no @derive(Json): member(s) TextColor: ConditionalFormattingColor not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TextColor: ConditionalFormattingColor not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KPIActualValueConditionalFormatting:
     Optional[ConditionalFormattingColor] TextColor
     Optional[ConditionalFormattingIcon] Icon
 
-# no @derive(Json): member(s) TextColor: ConditionalFormattingColor not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TextColor: ConditionalFormattingColor not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KPIComparisonValueConditionalFormatting:
     Optional[ConditionalFormattingColor] TextColor
     Optional[ConditionalFormattingIcon] Icon
 
-# no @derive(Json): member(s) ConditionalFormattingOptions: list[KPIConditionalFormattingOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConditionalFormattingOptions: list[KPIConditionalFormattingOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KPIConditionalFormatting:
     Optional[list[KPIConditionalFormattingOption]] ConditionalFormattingOptions
 
-# no @derive(Json): member(s) PrimaryValue: KPIPrimaryValueConditionalFormatting, ProgressBar: KPIProgressBarConditionalFormatting, ActualValue: KPIActualValueConditionalFormatting, ComparisonValue: KPIComparisonValueConditionalFormatting not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryValue: KPIPrimaryValueConditionalFormatting, ProgressBar: KPIProgressBarConditionalFormatting, ActualValue: KPIActualValueConditionalFormatting, ComparisonValue: KPIComparisonValueConditionalFormatting not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KPIConditionalFormattingOption:
     Optional[KPIPrimaryValueConditionalFormatting] PrimaryValue
     Optional[KPIProgressBarConditionalFormatting] ProgressBar
     Optional[KPIActualValueConditionalFormatting] ActualValue
     Optional[KPIComparisonValueConditionalFormatting] ComparisonValue
 
-# no @derive(Json): member(s) FieldWells: KPIFieldWells, SortConfiguration: KPISortConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldWells: KPIFieldWells, SortConfiguration: KPISortConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KPIConfiguration:
     Optional[KPIFieldWells] FieldWells
     Optional[KPISortConfiguration] SortConfiguration
     Optional[KPIOptions] KPIOptions
     Optional[VisualInteractionOptions] Interactions
 
-# no @derive(Json): member(s) Values: list[MeasureField], TargetValues: list[MeasureField], TrendGroups: list[DimensionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[MeasureField], TargetValues: list[MeasureField], TrendGroups: list[DimensionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KPIFieldWells:
     Optional[list[MeasureField]] Values
     Optional[list[MeasureField]] TargetValues
@@ -9860,19 +10169,22 @@ struct KPIOptions:
     Optional[KPISparklineOptions] Sparkline
     Optional[KPIVisualLayoutOptions] VisualLayoutOptions
 
-# no @derive(Json): member(s) TextColor: ConditionalFormattingColor not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TextColor: ConditionalFormattingColor not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KPIPrimaryValueConditionalFormatting:
     Optional[ConditionalFormattingColor] TextColor
     Optional[ConditionalFormattingIcon] Icon
 
-# no @derive(Json): member(s) ForegroundColor: ConditionalFormattingColor not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ForegroundColor: ConditionalFormattingColor not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KPIProgressBarConditionalFormatting:
     Optional[ConditionalFormattingColor] ForegroundColor
 
-# no @derive(Json): member(s) TrendGroupSort: list[FieldSortOptions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrendGroupSort: list[FieldSortOptions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KPISortConfiguration:
     Optional[list[FieldSortOptions]] TrendGroupSort
 
@@ -9883,8 +10195,9 @@ struct KPISparklineOptions:
     Optional[str] Color
     Optional[Visibility] TooltipVisibility
 
-# no @derive(Json): member(s) ChartConfiguration: KPIConfiguration, ConditionalFormatting: KPIConditionalFormatting, Actions: list[VisualCustomAction], ColumnHierarchies: list[ColumnHierarchy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChartConfiguration: KPIConfiguration, ConditionalFormatting: KPIConditionalFormatting, Actions: list[VisualCustomAction], ColumnHierarchies: list[ColumnHierarchy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KPIVisual:
     str VisualId
     Optional[VisualTitleLabelOptions] Title
@@ -9990,8 +10303,9 @@ struct LabelOptions:
     Optional[FontConfiguration] FontConfiguration
     Optional[str] CustomLabel
 
-# no @derive(Json): member(s) ActionOperations: list[LayerCustomActionOperation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActionOperations: list[LayerCustomActionOperation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LayerCustomAction:
     str CustomActionId
     str Name
@@ -9999,16 +10313,18 @@ struct LayerCustomAction:
     LayerCustomActionTrigger Trigger
     list[LayerCustomActionOperation] ActionOperations
 
-# no @derive(Json): member(s) FilterOperation: CustomActionFilterOperation, SetParametersOperation: CustomActionSetParametersOperation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterOperation: CustomActionFilterOperation, SetParametersOperation: CustomActionSetParametersOperation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LayerCustomActionOperation:
     Optional[CustomActionFilterOperation] FilterOperation
     Optional[CustomActionNavigationOperation] NavigationOperation
     Optional[CustomActionURLOperation] URLOperation
     Optional[CustomActionSetParametersOperation] SetParametersOperation
 
-# no @derive(Json): member(s) ChartConfiguration: GeospatialLayerMapConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChartConfiguration: GeospatialLayerMapConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LayerMapVisual:
     str VisualId
     Optional[VisualTitleLabelOptions] Title
@@ -10018,13 +10334,15 @@ struct LayerMapVisual:
     Optional[str] TopicIdentifier
     Optional[str] VisualContentAltText
 
-# no @derive(Json): member(s) Configuration: LayoutConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: LayoutConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Layout:
     LayoutConfiguration Configuration
 
-# no @derive(Json): member(s) GridLayout: GridLayoutConfiguration, FreeFormLayout: FreeFormLayoutConfiguration, SectionBasedLayout: SectionBasedLayoutConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GridLayout: GridLayoutConfiguration, FreeFormLayout: FreeFormLayoutConfiguration, SectionBasedLayout: SectionBasedLayoutConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LayoutConfiguration:
     Optional[GridLayoutConfiguration] GridLayout
     Optional[FreeFormLayoutConfiguration] FreeFormLayout
@@ -10045,8 +10363,9 @@ struct LimitExceededException:
     Optional[ExceptionResourceType] ResourceType
     Optional[str] RequestId
 
-# no @derive(Json): member(s) resourceLimits: dict[ResourceType, ProfileLimitValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceLimits: dict[ResourceType, ProfileLimitValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LimitsProfile:
     str profileId
     str arn
@@ -10057,16 +10376,18 @@ struct LimitsProfile:
     DateTime createdAt
     DateTime updatedAt
 
-# no @derive(Json): member(s) Category: list[DimensionField], Values: list[MeasureField], Colors: list[DimensionField], SmallMultiples: list[DimensionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Category: list[DimensionField], Values: list[MeasureField], Colors: list[DimensionField], SmallMultiples: list[DimensionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LineChartAggregatedFieldWells:
     Optional[list[DimensionField]] Category
     Optional[list[MeasureField]] Values
     Optional[list[DimensionField]] Colors
     Optional[list[DimensionField]] SmallMultiples
 
-# no @derive(Json): member(s) FieldWells: LineChartFieldWells, SortConfiguration: LineChartSortConfiguration, ForecastConfigurations: list[ForecastConfiguration], XAxisLabelOptions: ChartAxisLabelOptions, PrimaryYAxisDisplayOptions: LineSeriesAxisDisplayOptions, PrimaryYAxisLabelOptions: ChartAxisLabelOptions, SecondaryYAxisDisplayOptions: LineSeriesAxisDisplayOptions, SecondaryYAxisLabelOptions: ChartAxisLabelOptions, Series: list[SeriesItem], DataLabels: DataLabelOptions, ReferenceLines: list[ReferenceLine], Tooltip: TooltipOptions, ContributionAnalysisDefaults: list[ContributionAnalysisDefault], VisualPalette: VisualPalette not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldWells: LineChartFieldWells, SortConfiguration: LineChartSortConfiguration, ForecastConfigurations: list[ForecastConfiguration], XAxisLabelOptions: ChartAxisLabelOptions, PrimaryYAxisDisplayOptions: LineSeriesAxisDisplayOptions, PrimaryYAxisLabelOptions: ChartAxisLabelOptions, SecondaryYAxisDisplayOptions: LineSeriesAxisDisplayOptions, SecondaryYAxisLabelOptions: ChartAxisLabelOptions, Series: list[SeriesItem], DataLabels: DataLabelOptions, ReferenceLines: list[ReferenceLine], Tooltip: TooltipOptions, ContributionAnalysisDefaults: list[ContributionAnalysisDefault], VisualPalette: VisualPalette not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LineChartConfiguration:
     Optional[LineChartFieldWells] FieldWells
     Optional[LineChartSortConfiguration] SortConfiguration
@@ -10097,8 +10418,9 @@ struct LineChartDefaultSeriesSettings:
     Optional[LineChartMarkerStyleSettings] MarkerStyleSettings
     Optional[DecalSettings] DecalSettings
 
-# no @derive(Json): member(s) LineChartAggregatedFieldWells: LineChartAggregatedFieldWells not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LineChartAggregatedFieldWells: LineChartAggregatedFieldWells not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LineChartFieldWells:
     Optional[LineChartAggregatedFieldWells] LineChartAggregatedFieldWells
 
@@ -10122,8 +10444,9 @@ struct LineChartSeriesSettings:
     Optional[LineChartMarkerStyleSettings] MarkerStyleSettings
     Optional[DecalSettings] DecalSettings
 
-# no @derive(Json): member(s) CategorySort: list[FieldSortOptions], SmallMultiplesSort: list[FieldSortOptions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CategorySort: list[FieldSortOptions], SmallMultiplesSort: list[FieldSortOptions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LineChartSortConfiguration:
     Optional[list[FieldSortOptions]] CategorySort
     Optional[ItemsLimitConfiguration] CategoryItemsLimitConfiguration
@@ -10131,8 +10454,9 @@ struct LineChartSortConfiguration:
     Optional[list[FieldSortOptions]] SmallMultiplesSort
     Optional[ItemsLimitConfiguration] SmallMultiplesLimitConfiguration
 
-# no @derive(Json): member(s) ChartConfiguration: LineChartConfiguration, Actions: list[VisualCustomAction], ColumnHierarchies: list[ColumnHierarchy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChartConfiguration: LineChartConfiguration, Actions: list[VisualCustomAction], ColumnHierarchies: list[ColumnHierarchy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LineChartVisual:
     str VisualId
     Optional[VisualTitleLabelOptions] Title
@@ -10142,14 +10466,16 @@ struct LineChartVisual:
     Optional[list[ColumnHierarchy]] ColumnHierarchies
     Optional[str] VisualContentAltText
 
-# no @derive(Json): member(s) MissingDataConfigurations: list[MissingDataConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MissingDataConfigurations: list[MissingDataConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LineSeriesAxisDisplayOptions:
     Optional[AxisDisplayOptions] AxisOptions
     Optional[list[MissingDataConfiguration]] MissingDataConfigurations
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LinkSharingConfiguration:
     Optional[list[ResourcePermission]] Permissions
 
@@ -10160,8 +10486,9 @@ struct ListActionConnectorsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ActionConnectorSummaries: list[ActionConnectorSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActionConnectorSummaries: list[ActionConnectorSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListActionConnectorsResponse:
     list[ActionConnectorSummary] ActionConnectorSummaries
     Optional[str] NextToken
@@ -10175,8 +10502,9 @@ struct ListAgentsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AgentSummaries: list[AgentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentSummaries: list[AgentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAgentsResponse:
     Optional[str] RequestId
     list[AgentSummary] AgentSummaries
@@ -10189,8 +10517,9 @@ struct ListAnalysesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AnalysisSummaryList: list[AnalysisSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AnalysisSummaryList: list[AnalysisSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAnalysesResponse:
     Optional[list[AnalysisSummary]] AnalysisSummaryList
     Optional[str] NextToken
@@ -10203,8 +10532,9 @@ struct ListApprovalPoliciesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Policies: list[ApprovalPolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Policies: list[ApprovalPolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApprovalPoliciesResponse:
     list[ApprovalPolicy] Policies
     Optional[str] NextToken
@@ -10216,8 +10546,9 @@ struct ListAppsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AppSummaryList: list[AppSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AppSummaryList: list[AppSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAppsResponse:
     list[AppSummary] AppSummaryList
     Optional[str] NextToken
@@ -10230,8 +10561,9 @@ struct ListAssetBundleExportJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AssetBundleExportJobSummaryList: list[AssetBundleExportJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssetBundleExportJobSummaryList: list[AssetBundleExportJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssetBundleExportJobsResponse:
     Optional[list[AssetBundleExportJobSummary]] AssetBundleExportJobSummaryList
     Optional[str] NextToken
@@ -10245,8 +10577,9 @@ struct ListAssetBundleImportJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AssetBundleImportJobSummaryList: list[AssetBundleImportJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssetBundleImportJobSummaryList: list[AssetBundleImportJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssetBundleImportJobsResponse:
     Optional[list[AssetBundleImportJobSummary]] AssetBundleImportJobSummaryList
     Optional[str] NextToken
@@ -10260,8 +10593,9 @@ struct ListBrandsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Brands: list[BrandSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Brands: list[BrandSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBrandsResponse:
     Optional[str] NextToken
     Optional[list[BrandSummary]] Brands
@@ -10288,8 +10622,9 @@ struct ListCustomPermissionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CustomPermissionsList: list[CustomPermissions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomPermissionsList: list[CustomPermissions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomPermissionsResponse:
     Optional[int64] Status
     Optional[list[CustomPermissions]] CustomPermissionsList
@@ -10304,8 +10639,9 @@ struct ListDashboardVersionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DashboardVersionSummaryList: list[DashboardVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DashboardVersionSummaryList: list[DashboardVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDashboardVersionsResponse:
     Optional[list[DashboardVersionSummary]] DashboardVersionSummaryList
     Optional[str] NextToken
@@ -10319,8 +10655,9 @@ struct ListDashboardsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DashboardSummaryList: list[DashboardSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DashboardSummaryList: list[DashboardSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDashboardsResponse:
     Optional[list[DashboardSummary]] DashboardSummaryList
     Optional[str] NextToken
@@ -10334,8 +10671,9 @@ struct ListDataSetsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DataSetSummaries: list[DataSetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSetSummaries: list[DataSetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataSetsResponse:
     Optional[list[DataSetSummary]] DataSetSummaries
     Optional[str] NextToken
@@ -10349,8 +10687,9 @@ struct ListDataSourcesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DataSources: list[DataSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSources: list[DataSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataSourcesResponse:
     Optional[list[DataSource]] DataSources
     Optional[str] NextToken
@@ -10364,8 +10703,9 @@ struct ListDlpSettingsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DlpSettingSummaries: list[DlpSettingSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DlpSettingSummaries: list[DlpSettingSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDlpSettingsResponse:
     list[DlpSettingSummary] DlpSettingSummaries
     Optional[str] NextToken
@@ -10378,8 +10718,9 @@ struct ListFlowsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) FlowSummaryList: list[FlowSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FlowSummaryList: list[FlowSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFlowsOutput:
     Optional[list[FlowSummary]] FlowSummaryList
     Optional[str] NextToken
@@ -10394,8 +10735,9 @@ struct ListFolderMembersRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) FolderMemberList: list[MemberIdArnPair] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FolderMemberList: list[MemberIdArnPair] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFolderMembersResponse:
     Optional[int64] Status
     Optional[list[MemberIdArnPair]] FolderMemberList
@@ -10410,8 +10752,9 @@ struct ListFoldersForResourceRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Folders: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Folders: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFoldersForResourceResponse:
     Optional[int64] Status
     Optional[list[str]] Folders
@@ -10425,8 +10768,9 @@ struct ListFoldersRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) FolderSummaryList: list[FolderSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FolderSummaryList: list[FolderSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFoldersResponse:
     Optional[int64] Status
     Optional[list[FolderSummary]] FolderSummaryList
@@ -10442,8 +10786,9 @@ struct ListGroupMembershipsRequest:
     str AwsAccountId
     str Namespace
 
-# no @derive(Json): member(s) GroupMemberList: list[GroupMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupMemberList: list[GroupMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupMembershipsResponse:
     Optional[list[GroupMember]] GroupMemberList
     Optional[str] NextToken
@@ -10458,8 +10803,9 @@ struct ListGroupsRequest:
     Optional[int64] MaxResults
     str Namespace
 
-# no @derive(Json): member(s) GroupList: list[Group] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupList: list[Group] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupsResponse:
     Optional[list[Group]] GroupList
     Optional[str] NextToken
@@ -10475,8 +10821,9 @@ struct ListIAMPolicyAssignmentsForUserRequest:
     Optional[int64] MaxResults
     str Namespace
 
-# no @derive(Json): member(s) ActiveAssignments: list[ActiveIAMPolicyAssignment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActiveAssignments: list[ActiveIAMPolicyAssignment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIAMPolicyAssignmentsForUserResponse:
     Optional[list[ActiveIAMPolicyAssignment]] ActiveAssignments
     Optional[str] RequestId
@@ -10493,8 +10840,9 @@ struct ListIAMPolicyAssignmentsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) IAMPolicyAssignments: list[IAMPolicyAssignmentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IAMPolicyAssignments: list[IAMPolicyAssignmentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIAMPolicyAssignmentsResponse:
     Optional[list[IAMPolicyAssignmentSummary]] IAMPolicyAssignments
     Optional[str] NextToken
@@ -10508,8 +10856,9 @@ struct ListIdentityPropagationConfigsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Services: list[AuthorizedTargetsByService] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Services: list[AuthorizedTargetsByService] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIdentityPropagationConfigsResponse:
     Optional[list[AuthorizedTargetsByService]] Services
     Optional[str] NextToken
@@ -10524,8 +10873,9 @@ struct ListIngestionsRequest:
     str AwsAccountId
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Ingestions: list[Ingestion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Ingestions: list[Ingestion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIngestionsResponse:
     Optional[list[Ingestion]] Ingestions
     Optional[str] NextToken
@@ -10539,8 +10889,9 @@ struct ListKnowledgeBasesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) KnowledgeBaseSummaries: list[KnowledgeBaseSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KnowledgeBaseSummaries: list[KnowledgeBaseSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListKnowledgeBasesResponse:
     list[KnowledgeBaseSummary] KnowledgeBaseSummaries
     Optional[str] NextToken
@@ -10556,8 +10907,9 @@ struct ListLimitsProfilesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) profiles: list[LimitsProfile] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) profiles: list[LimitsProfile] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLimitsProfilesResponse:
     list[LimitsProfile] profiles
     Optional[str] nextToken
@@ -10569,8 +10921,9 @@ struct ListNamespacesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Namespaces: list[NamespaceInfoV2] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Namespaces: list[NamespaceInfoV2] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNamespacesResponse:
     Optional[list[NamespaceInfoV2]] Namespaces
     Optional[str] NextToken
@@ -10584,8 +10937,9 @@ struct ListOAuthClientApplicationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) OAuthClientApplications: list[OAuthClientApplicationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OAuthClientApplications: list[OAuthClientApplicationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOAuthClientApplicationsResponse:
     Optional[list[OAuthClientApplicationSummary]] OAuthClientApplications
     Optional[str] NextToken
@@ -10598,8 +10952,9 @@ struct ListRefreshSchedulesRequest:
     str AwsAccountId
     str DataSetId
 
-# no @derive(Json): member(s) RefreshSchedules: list[RefreshSchedule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RefreshSchedules: list[RefreshSchedule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRefreshSchedulesResponse:
     Optional[list[RefreshSchedule]] RefreshSchedules
     Optional[int64] Status
@@ -10615,8 +10970,9 @@ struct ListRoleMembershipsRequest:
     str AwsAccountId
     str Namespace
 
-# no @derive(Json): member(s) MembersList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MembersList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRoleMembershipsResponse:
     Optional[list[str]] MembersList
     Optional[str] NextToken
@@ -10631,8 +10987,9 @@ struct ListSelfUpgradesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) SelfUpgradeRequestDetails: list[SelfUpgradeRequestDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelfUpgradeRequestDetails: list[SelfUpgradeRequestDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSelfUpgradesResponse:
     Optional[list[SelfUpgradeRequestDetail]] SelfUpgradeRequestDetails
     Optional[str] NextToken
@@ -10645,8 +11002,9 @@ struct ListSpaceResourcesRequest:
     str AwsAccountId
     str SpaceId
 
-# no @derive(Json): member(s) SpaceResources: list[SpaceResourceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpaceResources: list[SpaceResourceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSpaceResourcesResponse:
     str spaceId
     Optional[str] spaceArn
@@ -10660,8 +11018,9 @@ struct ListSpacesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) SpaceSummaries: list[SpaceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpaceSummaries: list[SpaceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSpacesResponse:
     str spaceId
     Optional[str] spaceArn
@@ -10674,8 +11033,9 @@ struct ListSpacesResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
     Optional[str] RequestId
@@ -10689,8 +11049,9 @@ struct ListTemplateAliasesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TemplateAliasList: list[TemplateAlias] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TemplateAliasList: list[TemplateAlias] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTemplateAliasesResponse:
     Optional[list[TemplateAlias]] TemplateAliasList
     Optional[int64] Status
@@ -10705,8 +11066,9 @@ struct ListTemplateVersionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TemplateVersionSummaryList: list[TemplateVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TemplateVersionSummaryList: list[TemplateVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTemplateVersionsResponse:
     Optional[list[TemplateVersionSummary]] TemplateVersionSummaryList
     Optional[str] NextToken
@@ -10720,8 +11082,9 @@ struct ListTemplatesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TemplateSummaryList: list[TemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TemplateSummaryList: list[TemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTemplatesResponse:
     Optional[list[TemplateSummary]] TemplateSummaryList
     Optional[str] NextToken
@@ -10736,8 +11099,9 @@ struct ListThemeAliasesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ThemeAliasList: list[ThemeAlias] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ThemeAliasList: list[ThemeAlias] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListThemeAliasesResponse:
     Optional[list[ThemeAlias]] ThemeAliasList
     Optional[int64] Status
@@ -10752,8 +11116,9 @@ struct ListThemeVersionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ThemeVersionSummaryList: list[ThemeVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ThemeVersionSummaryList: list[ThemeVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListThemeVersionsResponse:
     Optional[list[ThemeVersionSummary]] ThemeVersionSummaryList
     Optional[str] NextToken
@@ -10769,8 +11134,9 @@ struct ListThemesRequest:
     # wire string of the ThemeType enum (querystring binding)
     Optional[str] Type
 
-# no @derive(Json): member(s) ThemeSummaryList: list[ThemeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ThemeSummaryList: list[ThemeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListThemesResponse:
     Optional[list[ThemeSummary]] ThemeSummaryList
     Optional[str] NextToken
@@ -10783,8 +11149,9 @@ struct ListTopicRefreshSchedulesRequest:
     str AwsAccountId
     str TopicId
 
-# no @derive(Json): member(s) RefreshSchedules: list[TopicRefreshScheduleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RefreshSchedules: list[TopicRefreshScheduleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTopicRefreshSchedulesResponse:
     Optional[str] TopicId
     Optional[str] TopicArn
@@ -10798,8 +11165,9 @@ struct ListTopicReviewedAnswersRequest:
     str AwsAccountId
     str TopicId
 
-# no @derive(Json): member(s) Answers: list[TopicReviewedAnswer] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Answers: list[TopicReviewedAnswer] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTopicReviewedAnswersResponse:
     Optional[str] TopicId
     Optional[str] TopicArn
@@ -10814,8 +11182,9 @@ struct ListTopicsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TopicsSummaries: list[TopicSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TopicsSummaries: list[TopicSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTopicsResponse:
     Optional[list[TopicSummary]] TopicsSummaries
     Optional[str] NextToken
@@ -10829,8 +11198,9 @@ struct ListTopicsV2Request:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TopicSummaryList: list[TopicV2Summary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TopicSummaryList: list[TopicV2Summary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTopicsV2Response:
     Optional[list[TopicV2Summary]] TopicSummaryList
     Optional[str] NextToken
@@ -10846,8 +11216,9 @@ struct ListUserGroupsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) GroupList: list[Group] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupList: list[Group] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUserGroupsResponse:
     Optional[list[Group]] GroupList
     Optional[str] NextToken
@@ -10865,8 +11236,9 @@ struct ListUsersIndexCapacityRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) users: list[UserIndexCapacity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) users: list[UserIndexCapacity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUsersIndexCapacityResponse:
     Optional[list[UserIndexCapacity]] users
     Optional[str] nextToken
@@ -10880,8 +11252,9 @@ struct ListUsersRequest:
     Optional[int64] MaxResults
     str Namespace
 
-# no @derive(Json): member(s) UserList: list[User] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserList: list[User] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUsersResponse:
     Optional[list[User]] UserList
     Optional[str] NextToken
@@ -10895,8 +11268,9 @@ struct ListVPCConnectionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) VPCConnectionSummaries: list[VPCConnectionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VPCConnectionSummaries: list[VPCConnectionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVPCConnectionsResponse:
     Optional[list[VPCConnectionSummary]] VPCConnectionSummaries
     Optional[str] NextToken
@@ -10911,8 +11285,9 @@ struct LoadingAnimation:
 struct LocalNavigationConfiguration:
     str TargetSheetId
 
-# no @derive(Json): member(s) DataTransforms: list[TransformOperation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataTransforms: list[TransformOperation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LogicalTable:
     str Alias
     Optional[list[TransformOperation]] DataTransforms
@@ -11017,8 +11392,9 @@ struct MetricComparisonComputation:
 struct MicrosoftPurviewCredentials:
     str SecretArn
 
-# no @derive(Json): member(s) LabelActionMappings: list[LabelActionMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LabelActionMappings: list[LabelActionMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MicrosoftPurviewProviderConfig:
     MicrosoftPurviewCredentials Credentials
     list[LabelActionMapping] LabelActionMappings
@@ -11038,8 +11414,9 @@ struct MySqlParameters:
     int64 Port
     str Database
 
-# no @derive(Json): member(s) Metric: NamedEntityDefinitionMetric not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metric: NamedEntityDefinitionMetric not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NamedEntityDefinition:
     Optional[str] FieldName
     Optional[str] PropertyName
@@ -11050,8 +11427,9 @@ struct NamedEntityDefinition:
     Optional[int64] PresentationOrder
     Optional[bool] IsHidden
 
-# no @derive(Json): member(s) AggregationFunctionParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AggregationFunctionParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NamedEntityDefinitionMetric:
     Optional[NamedEntityAggType] Aggregation
     Optional[dict[str, str]] AggregationFunctionParameters
@@ -11095,8 +11473,9 @@ struct NegativeFormat:
 struct NegativeValueConfiguration:
     NegativeValueDisplayMode DisplayMode
 
-# no @derive(Json): member(s) InnerFilter: InnerFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InnerFilter: InnerFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NestedFilter:
     str FilterId
     ColumnIdentifier Column
@@ -11111,8 +11490,9 @@ struct NetworkInterface:
     Optional[NetworkInterfaceStatus] Status
     Optional[str] NetworkInterfaceId
 
-# no @derive(Json): member(s) StringStaticValues: list[str], DecimalStaticValues: list[float64], DateTimeStaticValues: list[DateTime], IntegerStaticValues: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StringStaticValues: list[str], DecimalStaticValues: list[float64], DateTimeStaticValues: list[DateTime], IntegerStaticValues: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NewDefaultValues:
     Optional[list[str]] StringStaticValues
     Optional[list[float64]] DecimalStaticValues
@@ -11151,8 +11531,9 @@ struct NumericEqualityDrillDownFilter:
     ColumnIdentifier Column
     float64 Value
 
-# no @derive(Json): member(s) DefaultFilterControlConfiguration: DefaultFilterControlConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultFilterControlConfiguration: DefaultFilterControlConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NumericEqualityFilter:
     str FilterId
     ColumnIdentifier Column
@@ -11170,8 +11551,9 @@ struct NumericFormatConfiguration:
     Optional[CurrencyDisplayFormatConfiguration] CurrencyDisplayFormatConfiguration
     Optional[PercentageDisplayFormatConfiguration] PercentageDisplayFormatConfiguration
 
-# no @derive(Json): member(s) DefaultFilterControlConfiguration: DefaultFilterControlConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultFilterControlConfiguration: DefaultFilterControlConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NumericRangeFilter:
     str FilterId
     ColumnIdentifier Column
@@ -11283,8 +11665,9 @@ struct OutputColumnNameOverride:
     Optional[str] SourceColumnName
     str OutputColumnName
 
-# no @derive(Json): member(s) NewDefaultValues: NewDefaultValues not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NewDefaultValues: NewDefaultValues not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OverrideDatasetParameterOperation:
     str ParameterName
     Optional[str] NewParameterName
@@ -11318,8 +11701,9 @@ struct PanelTitleOptions:
     Optional[FontConfiguration] FontConfiguration
     Optional[HorizontalTextAlignment] HorizontalTextAlignment
 
-# no @derive(Json): member(s) List: ParameterListControl, Dropdown: ParameterDropDownControl not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) List: ParameterListControl, Dropdown: ParameterDropDownControl not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParameterControl:
     Optional[ParameterDateTimePickerControl] DateTimePicker
     Optional[ParameterListControl] List
@@ -11336,16 +11720,18 @@ struct ParameterDateTimePickerControl:
     Optional[DateTimePickerControlDisplayOptions] DisplayOptions
     Optional[ControlTitleFormatText] ControlTitleFormatText
 
-# no @derive(Json): member(s) StringParameterDeclaration: StringParameterDeclaration, DecimalParameterDeclaration: DecimalParameterDeclaration, IntegerParameterDeclaration: IntegerParameterDeclaration, DateTimeParameterDeclaration: DateTimeParameterDeclaration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StringParameterDeclaration: StringParameterDeclaration, DecimalParameterDeclaration: DecimalParameterDeclaration, IntegerParameterDeclaration: IntegerParameterDeclaration, DateTimeParameterDeclaration: DateTimeParameterDeclaration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParameterDeclaration:
     Optional[StringParameterDeclaration] StringParameterDeclaration
     Optional[DecimalParameterDeclaration] DecimalParameterDeclaration
     Optional[IntegerParameterDeclaration] IntegerParameterDeclaration
     Optional[DateTimeParameterDeclaration] DateTimeParameterDeclaration
 
-# no @derive(Json): member(s) SelectableValues: ParameterSelectableValues, CascadingControlConfiguration: CascadingControlConfiguration, ControlSortConfigurations: list[ControlSortConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectableValues: ParameterSelectableValues, CascadingControlConfiguration: CascadingControlConfiguration, ControlSortConfigurations: list[ControlSortConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParameterDropDownControl:
     str ParameterControlId
     Optional[str] Title
@@ -11358,8 +11744,9 @@ struct ParameterDropDownControl:
     Optional[list[ControlSortConfiguration]] ControlSortConfigurations
     Optional[ControlTitleFormatText] ControlTitleFormatText
 
-# no @derive(Json): member(s) SelectableValues: ParameterSelectableValues, CascadingControlConfiguration: CascadingControlConfiguration, ControlSortConfigurations: list[ControlSortConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectableValues: ParameterSelectableValues, CascadingControlConfiguration: CascadingControlConfiguration, ControlSortConfigurations: list[ControlSortConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParameterListControl:
     str ParameterControlId
     Optional[str] Title
@@ -11371,8 +11758,9 @@ struct ParameterListControl:
     Optional[list[ControlSortConfiguration]] ControlSortConfigurations
     Optional[ControlTitleFormatText] ControlTitleFormatText
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParameterSelectableValues:
     Optional[list[str]] Values
     Optional[ColumnIdentifier] LinkToDataSetColumn
@@ -11405,16 +11793,18 @@ struct ParameterTextFieldControl:
     Optional[TextFieldControlDisplayOptions] DisplayOptions
     Optional[ControlTitleFormatText] ControlTitleFormatText
 
-# no @derive(Json): member(s) StringParameters: list[StringParameter], IntegerParameters: list[IntegerParameter], DecimalParameters: list[DecimalParameter], DateTimeParameters: list[DateTimeParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StringParameters: list[StringParameter], IntegerParameters: list[IntegerParameter], DecimalParameters: list[DecimalParameter], DateTimeParameters: list[DateTimeParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Parameters:
     Optional[list[StringParameter]] StringParameters
     Optional[list[IntegerParameter]] IntegerParameters
     Optional[list[DecimalParameter]] DecimalParameters
     Optional[list[DateTimeParameter]] DateTimeParameters
 
-# no @derive(Json): member(s) InputColumns: list[InputColumn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputColumns: list[InputColumn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParentDataSet:
     str DataSetArn
     list[InputColumn] InputColumns
@@ -11437,8 +11827,9 @@ struct PercentageDisplayFormatConfiguration:
 struct PercentileAggregation:
     Optional[float64] PercentileValue
 
-# no @derive(Json): member(s) UniqueKeys: list[UniqueKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UniqueKeys: list[UniqueKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PerformanceConfiguration:
     Optional[list[UniqueKey]] UniqueKeys
 
@@ -11457,14 +11848,16 @@ struct PeriodToDateComputation:
     Optional[MeasureField] Value
     Optional[TimeGranularity] PeriodTimeGranularity
 
-# no @derive(Json): member(s) Actions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Permission:
     list[str] Actions
     str Principal
 
-# no @derive(Json): member(s) RelationalTable: RelationalTable, CustomSql: CustomSql, S3Source: S3Source, SaaSTable: SaaSTable, FileSource: FileSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RelationalTable: RelationalTable, CustomSql: CustomSql, S3Source: S3Source, SaaSTable: SaaSTable, FileSource: FileSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PhysicalTable:
     Optional[RelationalTable] RelationalTable
     Optional[CustomSql] CustomSql
@@ -11472,15 +11865,17 @@ struct PhysicalTable:
     Optional[SaaSTable] SaaSTable
     Optional[FileSource] FileSource
 
-# no @derive(Json): member(s) Category: list[DimensionField], Values: list[MeasureField], SmallMultiples: list[DimensionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Category: list[DimensionField], Values: list[MeasureField], SmallMultiples: list[DimensionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PieChartAggregatedFieldWells:
     Optional[list[DimensionField]] Category
     Optional[list[MeasureField]] Values
     Optional[list[DimensionField]] SmallMultiples
 
-# no @derive(Json): member(s) FieldWells: PieChartFieldWells, SortConfiguration: PieChartSortConfiguration, CategoryLabelOptions: ChartAxisLabelOptions, ValueLabelOptions: ChartAxisLabelOptions, DataLabels: DataLabelOptions, Tooltip: TooltipOptions, VisualPalette: VisualPalette, ContributionAnalysisDefaults: list[ContributionAnalysisDefault] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldWells: PieChartFieldWells, SortConfiguration: PieChartSortConfiguration, CategoryLabelOptions: ChartAxisLabelOptions, ValueLabelOptions: ChartAxisLabelOptions, DataLabels: DataLabelOptions, Tooltip: TooltipOptions, VisualPalette: VisualPalette, ContributionAnalysisDefaults: list[ContributionAnalysisDefault] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PieChartConfiguration:
     Optional[PieChartFieldWells] FieldWells
     Optional[PieChartSortConfiguration] SortConfiguration
@@ -11495,21 +11890,24 @@ struct PieChartConfiguration:
     Optional[list[ContributionAnalysisDefault]] ContributionAnalysisDefaults
     Optional[VisualInteractionOptions] Interactions
 
-# no @derive(Json): member(s) PieChartAggregatedFieldWells: PieChartAggregatedFieldWells not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PieChartAggregatedFieldWells: PieChartAggregatedFieldWells not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PieChartFieldWells:
     Optional[PieChartAggregatedFieldWells] PieChartAggregatedFieldWells
 
-# no @derive(Json): member(s) CategorySort: list[FieldSortOptions], SmallMultiplesSort: list[FieldSortOptions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CategorySort: list[FieldSortOptions], SmallMultiplesSort: list[FieldSortOptions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PieChartSortConfiguration:
     Optional[list[FieldSortOptions]] CategorySort
     Optional[ItemsLimitConfiguration] CategoryItemsLimit
     Optional[list[FieldSortOptions]] SmallMultiplesSort
     Optional[ItemsLimitConfiguration] SmallMultiplesLimitConfiguration
 
-# no @derive(Json): member(s) ChartConfiguration: PieChartConfiguration, Actions: list[VisualCustomAction], ColumnHierarchies: list[ColumnHierarchy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChartConfiguration: PieChartConfiguration, Actions: list[VisualCustomAction], ColumnHierarchies: list[ColumnHierarchy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PieChartVisual:
     str VisualId
     Optional[VisualTitleLabelOptions] Title
@@ -11519,20 +11917,23 @@ struct PieChartVisual:
     Optional[list[ColumnHierarchy]] ColumnHierarchies
     Optional[str] VisualContentAltText
 
-# no @derive(Json): member(s) PivotedLabels: list[PivotedLabel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PivotedLabels: list[PivotedLabel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PivotConfiguration:
     Optional[str] LabelColumnName
     list[PivotedLabel] PivotedLabels
 
-# no @derive(Json): member(s) SortBy: PivotTableSortBy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SortBy: PivotTableSortBy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PivotFieldSortOptions:
     str FieldId
     PivotTableSortBy SortBy
 
-# no @derive(Json): member(s) Source: TransformOperationSource, GroupByColumnNames: list[str], PivotConfiguration: PivotConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Source: TransformOperationSource, GroupByColumnNames: list[str], PivotConfiguration: PivotConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PivotOperation:
     str Alias
     TransformOperationSource Source
@@ -11540,28 +11941,32 @@ struct PivotOperation:
     ValueColumnConfiguration ValueColumnConfiguration
     PivotConfiguration PivotConfiguration
 
-# no @derive(Json): member(s) Rows: list[DimensionField], Columns: list[DimensionField], Values: list[MeasureField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rows: list[DimensionField], Columns: list[DimensionField], Values: list[MeasureField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PivotTableAggregatedFieldWells:
     Optional[list[DimensionField]] Rows
     Optional[list[DimensionField]] Columns
     Optional[list[MeasureField]] Values
 
-# no @derive(Json): member(s) TextFormat: TextConditionalFormat, Scopes: list[PivotTableConditionalFormattingScope] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TextFormat: TextConditionalFormat, Scopes: list[PivotTableConditionalFormattingScope] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PivotTableCellConditionalFormatting:
     str FieldId
     Optional[TextConditionalFormat] TextFormat
     Optional[PivotTableConditionalFormattingScope] Scope
     Optional[list[PivotTableConditionalFormattingScope]] Scopes
 
-# no @derive(Json): member(s) ConditionalFormattingOptions: list[PivotTableConditionalFormattingOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConditionalFormattingOptions: list[PivotTableConditionalFormattingOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PivotTableConditionalFormatting:
     Optional[list[PivotTableConditionalFormattingOption]] ConditionalFormattingOptions
 
-# no @derive(Json): member(s) Cell: PivotTableCellConditionalFormatting not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cell: PivotTableCellConditionalFormatting not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PivotTableConditionalFormattingOption:
     Optional[PivotTableCellConditionalFormatting] Cell
 
@@ -11569,8 +11974,9 @@ struct PivotTableConditionalFormattingOption:
 struct PivotTableConditionalFormattingScope:
     Optional[PivotTableConditionalFormattingScopeRole] Role
 
-# no @derive(Json): member(s) FieldWells: PivotTableFieldWells, SortConfiguration: PivotTableSortConfiguration, TableOptions: PivotTableOptions, TotalOptions: PivotTableTotalOptions, FieldOptions: PivotTableFieldOptions, Tooltip: TooltipOptions, DashboardCustomizationVisualOptions: DashboardCustomizationVisualOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldWells: PivotTableFieldWells, SortConfiguration: PivotTableSortConfiguration, TableOptions: PivotTableOptions, TotalOptions: PivotTableTotalOptions, FieldOptions: PivotTableFieldOptions, Tooltip: TooltipOptions, DashboardCustomizationVisualOptions: DashboardCustomizationVisualOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PivotTableConfiguration:
     Optional[PivotTableFieldWells] FieldWells
     Optional[PivotTableSortConfiguration] SortConfiguration
@@ -11582,20 +11988,23 @@ struct PivotTableConfiguration:
     Optional[DashboardCustomizationVisualOptions] DashboardCustomizationVisualOptions
     Optional[VisualInteractionOptions] Interactions
 
-# no @derive(Json): member(s) DataPathList: list[DataPathValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataPathList: list[DataPathValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PivotTableDataPathOption:
     list[DataPathValue] DataPathList
     Optional[str] Width
 
-# no @derive(Json): member(s) Target: PivotTableFieldCollapseStateTarget not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Target: PivotTableFieldCollapseStateTarget not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PivotTableFieldCollapseStateOption:
     PivotTableFieldCollapseStateTarget Target
     Optional[PivotTableFieldCollapseState] State
 
-# no @derive(Json): member(s) FieldDataPathValues: list[DataPathValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldDataPathValues: list[DataPathValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PivotTableFieldCollapseStateTarget:
     Optional[str] FieldId
     Optional[list[DataPathValue]] FieldDataPathValues
@@ -11606,8 +12015,9 @@ struct PivotTableFieldOption:
     Optional[str] CustomLabel
     Optional[Visibility] Visibility
 
-# no @derive(Json): member(s) SelectedFieldOptions: list[PivotTableFieldOption], DataPathOptions: list[PivotTableDataPathOption], CollapseStateOptions: list[PivotTableFieldCollapseStateOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectedFieldOptions: list[PivotTableFieldOption], DataPathOptions: list[PivotTableDataPathOption], CollapseStateOptions: list[PivotTableFieldCollapseStateOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PivotTableFieldOptions:
     Optional[list[PivotTableFieldOption]] SelectedFieldOptions
     Optional[list[PivotTableDataPathOption]] DataPathOptions
@@ -11617,13 +12027,15 @@ struct PivotTableFieldOptions:
 struct PivotTableFieldSubtotalOptions:
     Optional[str] FieldId
 
-# no @derive(Json): member(s) PivotTableAggregatedFieldWells: PivotTableAggregatedFieldWells not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PivotTableAggregatedFieldWells: PivotTableAggregatedFieldWells not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PivotTableFieldWells:
     Optional[PivotTableAggregatedFieldWells] PivotTableAggregatedFieldWells
 
-# no @derive(Json): member(s) RowAlternateColorOptions: RowAlternateColorOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RowAlternateColorOptions: RowAlternateColorOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PivotTableOptions:
     Optional[PivotTableMetricPlacement] MetricPlacement
     Optional[Visibility] SingleMetricVisibility
@@ -11649,28 +12061,32 @@ struct PivotTableRowsLabelOptions:
     Optional[Visibility] Visibility
     Optional[str] CustomLabel
 
-# no @derive(Json): member(s) DataPath: DataPathSort not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataPath: DataPathSort not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PivotTableSortBy:
     Optional[FieldSort] Field
     Optional[ColumnSort] Column
     Optional[DataPathSort] DataPath
 
-# no @derive(Json): member(s) FieldSortOptions: list[PivotFieldSortOptions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldSortOptions: list[PivotFieldSortOptions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PivotTableSortConfiguration:
     Optional[list[PivotFieldSortOptions]] FieldSortOptions
 
-# no @derive(Json): member(s) RowSubtotalOptions: SubtotalOptions, ColumnSubtotalOptions: SubtotalOptions, RowTotalOptions: PivotTotalOptions, ColumnTotalOptions: PivotTotalOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RowSubtotalOptions: SubtotalOptions, ColumnSubtotalOptions: SubtotalOptions, RowTotalOptions: PivotTotalOptions, ColumnTotalOptions: PivotTotalOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PivotTableTotalOptions:
     Optional[SubtotalOptions] RowSubtotalOptions
     Optional[SubtotalOptions] ColumnSubtotalOptions
     Optional[PivotTotalOptions] RowTotalOptions
     Optional[PivotTotalOptions] ColumnTotalOptions
 
-# no @derive(Json): member(s) ChartConfiguration: PivotTableConfiguration, ConditionalFormatting: PivotTableConditionalFormatting, Actions: list[VisualCustomAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChartConfiguration: PivotTableConfiguration, ConditionalFormatting: PivotTableConditionalFormatting, Actions: list[VisualCustomAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PivotTableVisual:
     str VisualId
     Optional[VisualTitleLabelOptions] Title
@@ -11680,8 +12096,9 @@ struct PivotTableVisual:
     Optional[list[VisualCustomAction]] Actions
     Optional[str] VisualContentAltText
 
-# no @derive(Json): member(s) TotalAggregationOptions: list[TotalAggregationOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TotalAggregationOptions: list[TotalAggregationOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PivotTotalOptions:
     Optional[Visibility] TotalsVisibility
     Optional[TableTotalsPlacement] Placement
@@ -11698,8 +12115,9 @@ struct PivotedLabel:
     str NewColumnName
     str NewColumnId
 
-# no @derive(Json): member(s) ChartConfiguration: PluginVisualConfiguration, Actions: list[VisualCustomAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChartConfiguration: PluginVisualConfiguration, Actions: list[VisualCustomAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PluginVisual:
     str VisualId
     str PluginArn
@@ -11709,15 +12127,17 @@ struct PluginVisual:
     Optional[list[VisualCustomAction]] Actions
     Optional[str] VisualContentAltText
 
-# no @derive(Json): member(s) FieldWells: list[PluginVisualFieldWell], VisualOptions: PluginVisualOptions, SortConfiguration: PluginVisualSortConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldWells: list[PluginVisualFieldWell], VisualOptions: PluginVisualOptions, SortConfiguration: PluginVisualSortConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PluginVisualConfiguration:
     Optional[list[PluginVisualFieldWell]] FieldWells
     Optional[PluginVisualOptions] VisualOptions
     Optional[PluginVisualSortConfiguration] SortConfiguration
 
-# no @derive(Json): member(s) Dimensions: list[DimensionField], Measures: list[MeasureField], Unaggregated: list[UnaggregatedField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: list[DimensionField], Measures: list[MeasureField], Unaggregated: list[UnaggregatedField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PluginVisualFieldWell:
     Optional[PluginVisualAxisName] AxisName
     Optional[list[DimensionField]] Dimensions
@@ -11728,8 +12148,9 @@ struct PluginVisualFieldWell:
 struct PluginVisualItemsLimitConfiguration:
     Optional[int64] ItemsLimit
 
-# no @derive(Json): member(s) VisualProperties: list[PluginVisualProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VisualProperties: list[PluginVisualProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PluginVisualOptions:
     Optional[list[PluginVisualProperty]] VisualProperties
 
@@ -11738,13 +12159,15 @@ struct PluginVisualProperty:
     Optional[str] Name
     Optional[str] Value
 
-# no @derive(Json): member(s) PluginVisualTableQuerySort: PluginVisualTableQuerySort not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PluginVisualTableQuerySort: PluginVisualTableQuerySort not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PluginVisualSortConfiguration:
     Optional[PluginVisualTableQuerySort] PluginVisualTableQuerySort
 
-# no @derive(Json): member(s) RowSort: list[FieldSortOptions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RowSort: list[FieldSortOptions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PluginVisualTableQuerySort:
     Optional[list[FieldSortOptions]] RowSort
     Optional[PluginVisualItemsLimitConfiguration] ItemsLimitConfiguration
@@ -11760,8 +12183,9 @@ struct PreconditionNotMetException:
     Optional[str] Message
     Optional[str] RequestId
 
-# no @derive(Json): member(s) Columns: list[ColumnIdentifier], DrillDownFilters: list[DrillDownFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Columns: list[ColumnIdentifier], DrillDownFilters: list[DrillDownFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PredefinedHierarchy:
     str HierarchyId
     list[ColumnIdentifier] Columns
@@ -11776,8 +12200,9 @@ struct PredictQAResultsRequest:
     Optional[IncludeGeneratedAnswer] IncludeGeneratedAnswer
     Optional[int64] MaxTopicsToConsider
 
-# no @derive(Json): member(s) AdditionalResults: list[QAResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalResults: list[QAResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PredictQAResultsResponse:
     Optional[QAResult] PrimaryResult
     Optional[list[QAResult]] AdditionalResults
@@ -11799,15 +12224,17 @@ struct ProfileLimitValue:
 struct ProgressBarOptions:
     Optional[Visibility] Visibility
 
-# no @derive(Json): member(s) Source: TransformOperationSource, ProjectedColumns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Source: TransformOperationSource, ProjectedColumns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProjectOperation:
     Optional[str] Alias
     Optional[TransformOperationSource] Source
     list[str] ProjectedColumns
 
-# no @derive(Json): member(s) MicrosoftPurview: MicrosoftPurviewProviderConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MicrosoftPurview: MicrosoftPurviewProviderConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProviderConfig:
     Optional[MicrosoftPurviewProviderConfig] MicrosoftPurview
 
@@ -11856,8 +12283,9 @@ struct QuickSightUserNotFoundException:
 struct QuickSuiteActionsOption:
     Optional[DashboardBehavior] AvailabilityStatus
 
-# no @derive(Json): member(s) Category: list[DimensionField], Color: list[DimensionField], Values: list[MeasureField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Category: list[DimensionField], Color: list[DimensionField], Values: list[MeasureField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RadarChartAggregatedFieldWells:
     Optional[list[DimensionField]] Category
     Optional[list[DimensionField]] Color
@@ -11867,8 +12295,9 @@ struct RadarChartAggregatedFieldWells:
 struct RadarChartAreaStyleSettings:
     Optional[Visibility] Visibility
 
-# no @derive(Json): member(s) FieldWells: RadarChartFieldWells, SortConfiguration: RadarChartSortConfiguration, VisualPalette: VisualPalette, CategoryLabelOptions: ChartAxisLabelOptions, ColorLabelOptions: ChartAxisLabelOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldWells: RadarChartFieldWells, SortConfiguration: RadarChartSortConfiguration, VisualPalette: VisualPalette, CategoryLabelOptions: ChartAxisLabelOptions, ColorLabelOptions: ChartAxisLabelOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RadarChartConfiguration:
     Optional[RadarChartFieldWells] FieldWells
     Optional[RadarChartSortConfiguration] SortConfiguration
@@ -11887,8 +12316,9 @@ struct RadarChartConfiguration:
     Optional[RadarChartAxesRangeScale] AxesRangeScale
     Optional[VisualInteractionOptions] Interactions
 
-# no @derive(Json): member(s) RadarChartAggregatedFieldWells: RadarChartAggregatedFieldWells not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RadarChartAggregatedFieldWells: RadarChartAggregatedFieldWells not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RadarChartFieldWells:
     Optional[RadarChartAggregatedFieldWells] RadarChartAggregatedFieldWells
 
@@ -11896,16 +12326,18 @@ struct RadarChartFieldWells:
 struct RadarChartSeriesSettings:
     Optional[RadarChartAreaStyleSettings] AreaStyleSettings
 
-# no @derive(Json): member(s) CategorySort: list[FieldSortOptions], ColorSort: list[FieldSortOptions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CategorySort: list[FieldSortOptions], ColorSort: list[FieldSortOptions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RadarChartSortConfiguration:
     Optional[list[FieldSortOptions]] CategorySort
     Optional[ItemsLimitConfiguration] CategoryItemsLimit
     Optional[list[FieldSortOptions]] ColorSort
     Optional[ItemsLimitConfiguration] ColorItemsLimit
 
-# no @derive(Json): member(s) ChartConfiguration: RadarChartConfiguration, Actions: list[VisualCustomAction], ColumnHierarchies: list[ColumnHierarchy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChartConfiguration: RadarChartConfiguration, Actions: list[VisualCustomAction], ColumnHierarchies: list[ColumnHierarchy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RadarChartVisual:
     str VisualId
     Optional[VisualTitleLabelOptions] Title
@@ -11998,16 +12430,18 @@ struct ReadNoneConnectionMetadata:
 struct RecentSnapshotsConfigurations:
     bool Enabled
 
-# no @derive(Json): member(s) DatabaseGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatabaseGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RedshiftIAMParameters:
     str RoleArn
     Optional[str] DatabaseUser
     Optional[list[str]] DatabaseGroups
     Optional[bool] AutoCreateDatabaseUser
 
-# no @derive(Json): member(s) IAMParameters: RedshiftIAMParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IAMParameters: RedshiftIAMParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RedshiftParameters:
     Optional[str] Host
     Optional[int64] Port
@@ -12176,13 +12610,15 @@ struct RegisteredUserQuickSightConsoleEmbeddingConfiguration:
     Optional[str] InitialPath
     Optional[RegisteredUserConsoleFeatureConfigurations] FeatureConfigurations
 
-# no @derive(Json): member(s) FileGroups: list[SnapshotJobResultFileGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileGroups: list[SnapshotJobResultFileGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisteredUserSnapshotJobResult:
     Optional[list[SnapshotJobResultFileGroup]] FileGroups
 
-# no @derive(Json): member(s) InputColumns: list[InputColumn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputColumns: list[InputColumn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RelationalTable:
     str DataSourceArn
     Optional[str] Catalog
@@ -12196,8 +12632,9 @@ struct RelativeDateTimeControlDisplayOptions:
     Optional[str] DateTimeFormat
     Optional[SheetControlInfoIconLabelOptions] InfoIconLabelOptions
 
-# no @derive(Json): member(s) DefaultFilterControlConfiguration: DefaultFilterControlConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultFilterControlConfiguration: DefaultFilterControlConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RelativeDatesFilter:
     str FilterId
     ColumnIdentifier Column
@@ -12216,8 +12653,9 @@ struct RenameColumnOperation:
     str ColumnName
     str NewColumnName
 
-# no @derive(Json): member(s) Source: TransformOperationSource, RenameColumnOperations: list[RenameColumnOperation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Source: TransformOperationSource, RenameColumnOperations: list[RenameColumnOperation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RenameColumnsOperation:
     str Alias
     TransformOperationSource Source
@@ -12235,8 +12673,9 @@ struct ResourceNotFoundException:
     Optional[ExceptionResourceType] ResourceType
     Optional[str] RequestId
 
-# no @derive(Json): member(s) Actions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourcePermission:
     str Principal
     list[str] Actions
@@ -12254,8 +12693,9 @@ struct RestoreAnalysisRequest:
     str AnalysisId
     Optional[bool] RestoreToFolders
 
-# no @derive(Json): member(s) RestorationFailedFolderArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RestorationFailedFolderArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestoreAnalysisResponse:
     Optional[int64] Status
     Optional[str] Arn
@@ -12268,8 +12708,9 @@ struct RollingDateConfiguration:
     Optional[str] DataSetIdentifier
     str Expression
 
-# no @derive(Json): member(s) RowAlternateColors: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RowAlternateColors: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RowAlternateColorOptions:
     Optional[WidgetStatus] Status
     Optional[list[str]] RowAlternateColors
@@ -12281,8 +12722,9 @@ struct RowInfo:
     Optional[int64] RowsDropped
     Optional[int64] TotalRowsInDataset
 
-# no @derive(Json): member(s) TagConfiguration: RowLevelPermissionTagConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagConfiguration: RowLevelPermissionTagConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RowLevelPermissionConfiguration:
     Optional[RowLevelPermissionTagConfiguration] TagConfiguration
     Optional[RowLevelPermissionDataSet] RowLevelPermissionDataSet
@@ -12295,8 +12737,9 @@ struct RowLevelPermissionDataSet:
     Optional[RowLevelPermissionFormatVersion] FormatVersion
     Optional[Status] Status
 
-# no @derive(Json): member(s) TagRules: list[RowLevelPermissionTagRule], TagRuleConfigurations: list[list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagRules: list[RowLevelPermissionTagRule], TagRuleConfigurations: list[list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RowLevelPermissionTagConfiguration:
     Optional[Status] Status
     list[RowLevelPermissionTagRule] TagRules
@@ -12326,8 +12769,9 @@ struct S3Parameters:
     ManifestFileLocation ManifestFileLocation
     Optional[str] RoleArn
 
-# no @derive(Json): member(s) InputColumns: list[InputColumn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputColumns: list[InputColumn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3Source:
     str DataSourceArn
     Optional[UploadSettings] UploadSettings
@@ -12337,48 +12781,55 @@ struct S3Source:
 struct S3TablesParameters:
     Optional[str] TableBucketArn
 
-# no @derive(Json): member(s) TablePath: list[TablePathElement], InputColumns: list[InputColumn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TablePath: list[TablePathElement], InputColumns: list[InputColumn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SaaSTable:
     str DataSourceArn
     list[TablePathElement] TablePath
     list[InputColumn] InputColumns
 
-# no @derive(Json): member(s) TargetVisuals: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetVisuals: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SameSheetTargetVisualConfiguration:
     Optional[list[str]] TargetVisuals
     Optional[str] TargetVisualOptions
 
-# no @derive(Json): member(s) Source: list[DimensionField], Destination: list[DimensionField], Weight: list[MeasureField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Source: list[DimensionField], Destination: list[DimensionField], Weight: list[MeasureField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SankeyDiagramAggregatedFieldWells:
     Optional[list[DimensionField]] Source
     Optional[list[DimensionField]] Destination
     Optional[list[MeasureField]] Weight
 
-# no @derive(Json): member(s) FieldWells: SankeyDiagramFieldWells, SortConfiguration: SankeyDiagramSortConfiguration, DataLabels: DataLabelOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldWells: SankeyDiagramFieldWells, SortConfiguration: SankeyDiagramSortConfiguration, DataLabels: DataLabelOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SankeyDiagramChartConfiguration:
     Optional[SankeyDiagramFieldWells] FieldWells
     Optional[SankeyDiagramSortConfiguration] SortConfiguration
     Optional[DataLabelOptions] DataLabels
     Optional[VisualInteractionOptions] Interactions
 
-# no @derive(Json): member(s) SankeyDiagramAggregatedFieldWells: SankeyDiagramAggregatedFieldWells not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SankeyDiagramAggregatedFieldWells: SankeyDiagramAggregatedFieldWells not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SankeyDiagramFieldWells:
     Optional[SankeyDiagramAggregatedFieldWells] SankeyDiagramAggregatedFieldWells
 
-# no @derive(Json): member(s) WeightSort: list[FieldSortOptions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WeightSort: list[FieldSortOptions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SankeyDiagramSortConfiguration:
     Optional[list[FieldSortOptions]] WeightSort
     Optional[ItemsLimitConfiguration] SourceItemsLimit
     Optional[ItemsLimitConfiguration] DestinationItemsLimit
 
-# no @derive(Json): member(s) ChartConfiguration: SankeyDiagramChartConfiguration, Actions: list[VisualCustomAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChartConfiguration: SankeyDiagramChartConfiguration, Actions: list[VisualCustomAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SankeyDiagramVisual:
     str VisualId
     Optional[VisualTitleLabelOptions] Title
@@ -12387,8 +12838,9 @@ struct SankeyDiagramVisual:
     Optional[list[VisualCustomAction]] Actions
     Optional[str] VisualContentAltText
 
-# no @derive(Json): member(s) XAxis: list[MeasureField], YAxis: list[MeasureField], Category: list[DimensionField], Size: list[MeasureField], Label: list[DimensionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) XAxis: list[MeasureField], YAxis: list[MeasureField], Category: list[DimensionField], Size: list[MeasureField], Label: list[DimensionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScatterPlotCategoricallyAggregatedFieldWells:
     Optional[list[MeasureField]] XAxis
     Optional[list[MeasureField]] YAxis
@@ -12396,8 +12848,9 @@ struct ScatterPlotCategoricallyAggregatedFieldWells:
     Optional[list[MeasureField]] Size
     Optional[list[DimensionField]] Label
 
-# no @derive(Json): member(s) FieldWells: ScatterPlotFieldWells, XAxisLabelOptions: ChartAxisLabelOptions, YAxisLabelOptions: ChartAxisLabelOptions, DataLabels: DataLabelOptions, Tooltip: TooltipOptions, VisualPalette: VisualPalette not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldWells: ScatterPlotFieldWells, XAxisLabelOptions: ChartAxisLabelOptions, YAxisLabelOptions: ChartAxisLabelOptions, DataLabels: DataLabelOptions, Tooltip: TooltipOptions, VisualPalette: VisualPalette not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScatterPlotConfiguration:
     Optional[ScatterPlotFieldWells] FieldWells
     Optional[ScatterPlotSortConfiguration] SortConfiguration
@@ -12411,8 +12864,9 @@ struct ScatterPlotConfiguration:
     Optional[VisualPalette] VisualPalette
     Optional[VisualInteractionOptions] Interactions
 
-# no @derive(Json): member(s) ScatterPlotCategoricallyAggregatedFieldWells: ScatterPlotCategoricallyAggregatedFieldWells, ScatterPlotUnaggregatedFieldWells: ScatterPlotUnaggregatedFieldWells not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScatterPlotCategoricallyAggregatedFieldWells: ScatterPlotCategoricallyAggregatedFieldWells, ScatterPlotUnaggregatedFieldWells: ScatterPlotUnaggregatedFieldWells not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScatterPlotFieldWells:
     Optional[ScatterPlotCategoricallyAggregatedFieldWells] ScatterPlotCategoricallyAggregatedFieldWells
     Optional[ScatterPlotUnaggregatedFieldWells] ScatterPlotUnaggregatedFieldWells
@@ -12421,8 +12875,9 @@ struct ScatterPlotFieldWells:
 struct ScatterPlotSortConfiguration:
     Optional[ItemsLimitConfiguration] ScatterPlotLimitConfiguration
 
-# no @derive(Json): member(s) XAxis: list[DimensionField], YAxis: list[DimensionField], Size: list[MeasureField], Category: list[DimensionField], Label: list[DimensionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) XAxis: list[DimensionField], YAxis: list[DimensionField], Size: list[MeasureField], Category: list[DimensionField], Label: list[DimensionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScatterPlotUnaggregatedFieldWells:
     Optional[list[DimensionField]] XAxis
     Optional[list[DimensionField]] YAxis
@@ -12430,8 +12885,9 @@ struct ScatterPlotUnaggregatedFieldWells:
     Optional[list[DimensionField]] Category
     Optional[list[DimensionField]] Label
 
-# no @derive(Json): member(s) ChartConfiguration: ScatterPlotConfiguration, Actions: list[VisualCustomAction], ColumnHierarchies: list[ColumnHierarchy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChartConfiguration: ScatterPlotConfiguration, Actions: list[VisualCustomAction], ColumnHierarchies: list[ColumnHierarchy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScatterPlotVisual:
     str VisualId
     Optional[VisualTitleLabelOptions] Title
@@ -12463,8 +12919,9 @@ struct SearchActionConnectorsRequest:
     Optional[str] NextToken
     list[ActionConnectorSearchFilter] Filters
 
-# no @derive(Json): member(s) ActionConnectorSummaries: list[ActionConnectorSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActionConnectorSummaries: list[ActionConnectorSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchActionConnectorsResponse:
     Optional[str] NextToken
     Optional[str] RequestId
@@ -12479,8 +12936,9 @@ struct SearchAgentsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AgentSummaries: list[AgentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentSummaries: list[AgentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchAgentsResponse:
     Optional[list[AgentSummary]] AgentSummaries
     Optional[str] NextToken
@@ -12494,8 +12952,9 @@ struct SearchAnalysesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AnalysisSummaryList: list[AnalysisSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AnalysisSummaryList: list[AnalysisSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchAnalysesResponse:
     Optional[list[AnalysisSummary]] AnalysisSummaryList
     Optional[str] NextToken
@@ -12516,8 +12975,9 @@ struct SearchAppsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AppSummaryList: list[AppSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AppSummaryList: list[AppSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchAppsResponse:
     list[AppSummary] AppSummaryList
     Optional[str] NextToken
@@ -12531,8 +12991,9 @@ struct SearchDashboardsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DashboardSummaryList: list[DashboardSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DashboardSummaryList: list[DashboardSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchDashboardsResponse:
     Optional[list[DashboardSummary]] DashboardSummaryList
     Optional[str] NextToken
@@ -12547,8 +13008,9 @@ struct SearchDataSetsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DataSetSummaries: list[DataSetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSetSummaries: list[DataSetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchDataSetsResponse:
     Optional[list[DataSetSummary]] DataSetSummaries
     Optional[str] NextToken
@@ -12563,8 +13025,9 @@ struct SearchDataSourcesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DataSourceSummaries: list[DataSourceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSourceSummaries: list[DataSourceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchDataSourcesResponse:
     Optional[list[DataSourceSummary]] DataSourceSummaries
     Optional[str] NextToken
@@ -12585,8 +13048,9 @@ struct SearchFlowsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) FlowSummaryList: list[FlowSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FlowSummaryList: list[FlowSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchFlowsOutput:
     list[FlowSummary] FlowSummaryList
     Optional[str] NextToken
@@ -12601,8 +13065,9 @@ struct SearchFoldersRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) FolderSummaryList: list[FolderSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FolderSummaryList: list[FolderSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchFoldersResponse:
     Optional[int64] Status
     Optional[list[FolderSummary]] FolderSummaryList
@@ -12618,8 +13083,9 @@ struct SearchGroupsRequest:
     str Namespace
     list[GroupSearchFilter] Filters
 
-# no @derive(Json): member(s) GroupList: list[Group] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupList: list[Group] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchGroupsResponse:
     Optional[list[Group]] GroupList
     Optional[str] NextToken
@@ -12635,8 +13101,9 @@ struct SearchKnowledgeBasesRequest:
     Optional[list[KnowledgeBaseSearchFilter]] Filters
     Optional[KnowledgeBaseSortBy] SortBy
 
-# no @derive(Json): member(s) KnowledgeBaseSummaries: list[KnowledgeBaseSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KnowledgeBaseSummaries: list[KnowledgeBaseSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchKnowledgeBasesResponse:
     list[KnowledgeBaseSummary] KnowledgeBaseSummaries
     Optional[str] NextToken
@@ -12651,8 +13118,9 @@ struct SearchSpacesRequest:
     Optional[int64] MaxResults
     list[SpaceQuicksightSearchFilter] Filters
 
-# no @derive(Json): member(s) SpaceSummaries: list[SpaceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SpaceSummaries: list[SpaceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchSpacesResponse:
     str spaceId
     Optional[str] spaceArn
@@ -12668,8 +13136,9 @@ struct SearchTopicsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TopicSummaryList: list[TopicSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TopicSummaryList: list[TopicSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchTopicsResponse:
     Optional[list[TopicSummary]] TopicSummaryList
     Optional[str] NextToken
@@ -12684,8 +13153,9 @@ struct SearchTopicsV2Request:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TopicSummaryList: list[TopicV2Summary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TopicSummaryList: list[TopicV2Summary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchTopicsV2Response:
     Optional[list[TopicV2Summary]] TopicSummaryList
     Optional[str] NextToken
@@ -12704,8 +13174,9 @@ struct SectionAfterPageBreak:
 struct SectionBasedLayoutCanvasSizeOptions:
     Optional[SectionBasedLayoutPaperCanvasSizeOptions] PaperCanvasSizeOptions
 
-# no @derive(Json): member(s) HeaderSections: list[HeaderFooterSectionConfiguration], BodySections: list[BodySectionConfiguration], FooterSections: list[HeaderFooterSectionConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HeaderSections: list[HeaderFooterSectionConfiguration], BodySections: list[BodySectionConfiguration], FooterSections: list[HeaderFooterSectionConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SectionBasedLayoutConfiguration:
     list[HeaderFooterSectionConfiguration] HeaderSections
     list[BodySectionConfiguration] BodySections
@@ -12718,8 +13189,9 @@ struct SectionBasedLayoutPaperCanvasSizeOptions:
     Optional[PaperOrientation] PaperOrientation
     Optional[Spacing] PaperMargin
 
-# no @derive(Json): member(s) FreeFormLayout: FreeFormSectionLayoutConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FreeFormLayout: FreeFormSectionLayoutConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SectionLayoutConfiguration:
     FreeFormSectionLayoutConfiguration FreeFormLayout
 
@@ -12736,8 +13208,9 @@ struct SectionStyle:
 struct SelectableValuesSort:
     ControlSortDirection Direction
 
-# no @derive(Json): member(s) SheetVisualScopingConfigurations: list[SheetVisualScopingConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SheetVisualScopingConfigurations: list[SheetVisualScopingConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SelectedSheetsFilterScopeConfiguration:
     Optional[list[SheetVisualScopingConfiguration]] SheetVisualScopingConfigurations
 
@@ -12757,29 +13230,33 @@ struct SelfUpgradeRequestDetail:
     Optional[int64] lastUpdateAttemptTime
     Optional[str] lastUpdateFailureReason
 
-# no @derive(Json): member(s) TypeParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TypeParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SemanticEntityType:
     Optional[str] TypeName
     Optional[str] SubTypeName
     Optional[dict[str, str]] TypeParameters
 
-# no @derive(Json): member(s) TableMap: dict[str, SemanticTable], SemanticMetadata: list[DataSetSemanticMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableMap: dict[str, SemanticTable], SemanticMetadata: list[DataSetSemanticMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SemanticModelConfiguration:
     Optional[dict[str, SemanticTable]] TableMap
     Optional[list[DataSetSemanticMetadata]] SemanticMetadata
 
-# no @derive(Json): member(s) RowLevelPermissionConfiguration: RowLevelPermissionConfiguration, SemanticMetadata: TableSemanticMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RowLevelPermissionConfiguration: RowLevelPermissionConfiguration, SemanticMetadata: TableSemanticMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SemanticTable:
     str Alias
     str DestinationTableId
     Optional[RowLevelPermissionConfiguration] RowLevelPermissionConfiguration
     Optional[TableSemanticMetadata] SemanticMetadata
 
-# no @derive(Json): member(s) TypeParameters: dict[str, str], TruthyCellValueSynonyms: list[str], FalseyCellValueSynonyms: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TypeParameters: dict[str, str], TruthyCellValueSynonyms: list[str], FalseyCellValueSynonyms: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SemanticType:
     Optional[str] TypeName
     Optional[str] SubTypeName
@@ -12819,14 +13296,16 @@ struct SessionTag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Value: DestinationParameterValueConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Value: DestinationParameterValueConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetParameterValueConfiguration:
     str DestinationParameterName
     DestinationParameterValueConfiguration Value
 
-# no @derive(Json): member(s) BackgroundColor: ConditionalFormattingColor not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackgroundColor: ConditionalFormattingColor not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ShapeConditionalFormat:
     ConditionalFormattingColor BackgroundColor
 
@@ -12842,8 +13321,9 @@ struct SharePointParameters:
     Optional[str] ClientId
     Optional[AuthType] AuthType
 
-# no @derive(Json): member(s) ColumnNames: list[str], ColumnProperties: list[ColumnSemanticProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnNames: list[str], ColumnProperties: list[ColumnSemanticProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SharedColumnSemanticMetadata:
     Optional[list[str]] ColumnNames
     list[ColumnSemanticProperty] ColumnProperties
@@ -12852,8 +13332,9 @@ struct SharedColumnSemanticMetadata:
 struct SharedViewConfigurations:
     bool Enabled
 
-# no @derive(Json): member(s) Images: list[SheetImage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Images: list[SheetImage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Sheet:
     Optional[str] SheetId
     Optional[str] Name
@@ -12869,13 +13350,15 @@ struct SheetControlInfoIconLabelOptions:
     Optional[Visibility] Visibility
     Optional[str] InfoIconText
 
-# no @derive(Json): member(s) Configuration: SheetControlLayoutConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: SheetControlLayoutConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SheetControlLayout:
     SheetControlLayoutConfiguration Configuration
 
-# no @derive(Json): member(s) GridLayout: GridLayoutConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GridLayout: GridLayoutConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SheetControlLayoutConfiguration:
     Optional[GridLayoutConfiguration] GridLayout
 
@@ -12883,8 +13366,9 @@ struct SheetControlLayoutConfiguration:
 struct SheetControlsOption:
     Optional[DashboardUIState] VisibilityState
 
-# no @derive(Json): member(s) ParameterControls: list[ParameterControl], FilterControls: list[FilterControl], Visuals: list[Visual], TextBoxes: list[SheetTextBox], Images: list[SheetImage], Layouts: list[Layout], SheetControlLayouts: list[SheetControlLayout] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParameterControls: list[ParameterControl], FilterControls: list[FilterControl], Visuals: list[Visual], TextBoxes: list[SheetTextBox], Images: list[SheetImage], Layouts: list[Layout], SheetControlLayouts: list[SheetControlLayout] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SheetDefinition:
     str SheetId
     Optional[str] Title
@@ -12909,8 +13393,9 @@ struct SheetElementRenderingRule:
     str Expression
     SheetElementConfigurationOverrides ConfigurationOverrides
 
-# no @derive(Json): member(s) Actions: list[ImageCustomAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: list[ImageCustomAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SheetImage:
     str SheetImageId
     SheetImageSource Source
@@ -12945,8 +13430,9 @@ struct SheetImageTooltipText:
 struct SheetLayoutElementMaximizationOption:
     Optional[DashboardBehavior] AvailabilityStatus
 
-# no @derive(Json): member(s) Members: list[SheetLayoutGroupMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Members: list[SheetLayoutGroupMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SheetLayoutGroup:
     str Id
     list[SheetLayoutGroupMember] Members
@@ -12972,8 +13458,9 @@ struct SheetTextBox:
 struct SheetTooltip:
     Optional[str] SheetId
 
-# no @derive(Json): member(s) VisualIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VisualIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SheetVisualScopingConfiguration:
     str SheetId
     FilterVisualScope Scope
@@ -13022,41 +13509,48 @@ struct SmallMultiplesOptions:
     Optional[SmallMultiplesAxisProperties] XAxis
     Optional[SmallMultiplesAxisProperties] YAxis
 
-# no @derive(Json): member(s) RowLevelPermissionTags: list[SessionTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RowLevelPermissionTags: list[SessionTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnapshotAnonymousUser:
     Optional[list[SessionTag]] RowLevelPermissionTags
 
-# no @derive(Json): member(s) RowLevelPermissionTagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RowLevelPermissionTagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnapshotAnonymousUserRedacted:
     Optional[list[str]] RowLevelPermissionTagKeys
 
-# no @derive(Json): member(s) FileGroups: list[SnapshotFileGroup], DestinationConfiguration: SnapshotDestinationConfiguration, Parameters: Parameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileGroups: list[SnapshotFileGroup], DestinationConfiguration: SnapshotDestinationConfiguration, Parameters: Parameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnapshotConfiguration:
     list[SnapshotFileGroup] FileGroups
     Optional[SnapshotDestinationConfiguration] DestinationConfiguration
     Optional[Parameters] Parameters
 
-# no @derive(Json): member(s) S3Destinations: list[SnapshotS3DestinationConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3Destinations: list[SnapshotS3DestinationConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnapshotDestinationConfiguration:
     Optional[list[SnapshotS3DestinationConfiguration]] S3Destinations
 
-# no @derive(Json): member(s) SheetSelections: list[SnapshotFileSheetSelection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SheetSelections: list[SnapshotFileSheetSelection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnapshotFile:
     list[SnapshotFileSheetSelection] SheetSelections
     SnapshotFileFormatType FormatType
 
-# no @derive(Json): member(s) Files: list[SnapshotFile] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Files: list[SnapshotFile] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnapshotFileGroup:
     Optional[list[SnapshotFile]] Files
 
-# no @derive(Json): member(s) VisualIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VisualIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnapshotFileSheetSelection:
     str SheetId
     SnapshotFileSheetSelectionScope SelectionScope
@@ -13067,8 +13561,9 @@ struct SnapshotJobErrorInfo:
     Optional[str] ErrorMessage
     Optional[str] ErrorType
 
-# no @derive(Json): member(s) AnonymousUsers: list[AnonymousUserSnapshotJobResult], RegisteredUsers: list[RegisteredUserSnapshotJobResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AnonymousUsers: list[AnonymousUserSnapshotJobResult], RegisteredUsers: list[RegisteredUserSnapshotJobResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnapshotJobResult:
     Optional[list[AnonymousUserSnapshotJobResult]] AnonymousUsers
     Optional[list[RegisteredUserSnapshotJobResult]] RegisteredUsers
@@ -13078,14 +13573,16 @@ struct SnapshotJobResultErrorInfo:
     Optional[str] ErrorMessage
     Optional[str] ErrorType
 
-# no @derive(Json): member(s) Files: list[SnapshotFile], S3Results: list[SnapshotJobS3Result] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Files: list[SnapshotFile], S3Results: list[SnapshotJobS3Result] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnapshotJobResultFileGroup:
     Optional[list[SnapshotFile]] Files
     Optional[list[SnapshotJobS3Result]] S3Results
 
-# no @derive(Json): member(s) ErrorInfo: list[SnapshotJobResultErrorInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ErrorInfo: list[SnapshotJobResultErrorInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnapshotJobS3Result:
     Optional[SnapshotS3DestinationConfiguration] S3DestinationConfiguration
     Optional[str] S3Uri
@@ -13095,13 +13592,15 @@ struct SnapshotJobS3Result:
 struct SnapshotS3DestinationConfiguration:
     S3BucketConfiguration BucketConfiguration
 
-# no @derive(Json): member(s) AnonymousUsers: list[SnapshotAnonymousUser] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AnonymousUsers: list[SnapshotAnonymousUser] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnapshotUserConfiguration:
     Optional[list[SnapshotAnonymousUser]] AnonymousUsers
 
-# no @derive(Json): member(s) AnonymousUsers: list[SnapshotAnonymousUserRedacted] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AnonymousUsers: list[SnapshotAnonymousUserRedacted] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnapshotUserConfigurationRedacted:
     Optional[list[SnapshotAnonymousUserRedacted]] AnonymousUsers
 
@@ -13114,8 +13613,9 @@ struct SnowflakeParameters:
     Optional[str] DatabaseAccessControlRole
     Optional[OAuthParameters] OAuthParameters
 
-# no @derive(Json): member(s) DataSet: ParentDataSet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSet: ParentDataSet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceTable:
     Optional[str] PhysicalTableId
     Optional[ParentDataSet] DataSet
@@ -13126,8 +13626,9 @@ struct SpaceContributor:
     int64 rawFileSizeBytes
     Optional[float64] percentage
 
-# no @derive(Json): member(s) resources: list[SpaceQuickSightResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resources: list[SpaceQuickSightResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SpaceDetails:
     Optional[str] name
     Optional[str] description
@@ -13342,21 +13843,24 @@ struct StepAliasMapping:
     str StepId
     str StepAlias
 
-# no @derive(Json): member(s) DefaultValues: StringDatasetParameterDefaultValues not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultValues: StringDatasetParameterDefaultValues not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StringDatasetParameter:
     str Id
     str Name
     DatasetParameterValueType ValueType
     Optional[StringDatasetParameterDefaultValues] DefaultValues
 
-# no @derive(Json): member(s) StaticValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StaticValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StringDatasetParameterDefaultValues:
     Optional[list[str]] StaticValues
 
-# no @derive(Json): member(s) StaticValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StaticValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StringDefaultValues:
     Optional[DynamicDefaultValue] DynamicValue
     Optional[list[str]] StaticValues
@@ -13366,14 +13870,16 @@ struct StringFormatConfiguration:
     Optional[NullValueFormatConfiguration] NullValueFormatConfiguration
     Optional[NumericFormatConfiguration] NumericFormatConfiguration
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StringParameter:
     str Name
     list[str] Values
 
-# no @derive(Json): member(s) DefaultValues: StringDefaultValues, MappedDataSetParameters: list[MappedDataSetParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultValues: StringDefaultValues, MappedDataSetParameters: list[MappedDataSetParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StringParameterDeclaration:
     ParameterValueType ParameterValueType
     str Name
@@ -13386,8 +13892,9 @@ struct StringValueWhenUnsetConfiguration:
     Optional[ValueWhenUnsetOption] ValueWhenUnsetOption
     Optional[str] CustomValue
 
-# no @derive(Json): member(s) FieldLevelOptions: list[PivotTableFieldSubtotalOptions], StyleTargets: list[TableStyleTarget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldLevelOptions: list[PivotTableFieldSubtotalOptions], StyleTargets: list[TableStyleTarget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubtotalOptions:
     Optional[Visibility] TotalsVisibility
     Optional[str] CustomLabel
@@ -13407,8 +13914,9 @@ struct SuccessfulKeyRegistrationEntry:
     str KeyArn
     int64 StatusCode
 
-# no @derive(Json): member(s) GroupBy: list[DimensionField], Values: list[MeasureField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupBy: list[DimensionField], Values: list[MeasureField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableAggregatedFieldWells:
     Optional[list[DimensionField]] GroupBy
     Optional[list[MeasureField]] Values
@@ -13419,8 +13927,9 @@ struct TableBorderOptions:
     Optional[int64] Thickness
     Optional[TableBorderStyle] Style
 
-# no @derive(Json): member(s) TextFormat: TextConditionalFormat not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TextFormat: TextConditionalFormat not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableCellConditionalFormatting:
     str FieldId
     Optional[TextConditionalFormat] TextFormat
@@ -13440,19 +13949,22 @@ struct TableCellStyle:
     Optional[int64] Height
     Optional[GlobalTableBorderOptions] Border
 
-# no @derive(Json): member(s) ConditionalFormattingOptions: list[TableConditionalFormattingOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConditionalFormattingOptions: list[TableConditionalFormattingOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableConditionalFormatting:
     Optional[list[TableConditionalFormattingOption]] ConditionalFormattingOptions
 
-# no @derive(Json): member(s) Cell: TableCellConditionalFormatting, Row: TableRowConditionalFormatting not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cell: TableCellConditionalFormatting, Row: TableRowConditionalFormatting not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableConditionalFormattingOption:
     Optional[TableCellConditionalFormatting] Cell
     Optional[TableRowConditionalFormatting] Row
 
-# no @derive(Json): member(s) FieldWells: TableFieldWells, SortConfiguration: TableSortConfiguration, TableOptions: TableOptions, TotalOptions: TotalOptions, FieldOptions: TableFieldOptions, TableInlineVisualizations: list[TableInlineVisualization], Tooltip: TooltipOptions, DashboardCustomizationVisualOptions: DashboardCustomizationVisualOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldWells: TableFieldWells, SortConfiguration: TableSortConfiguration, TableOptions: TableOptions, TotalOptions: TotalOptions, FieldOptions: TableFieldOptions, TableInlineVisualizations: list[TableInlineVisualization], Tooltip: TooltipOptions, DashboardCustomizationVisualOptions: DashboardCustomizationVisualOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableConfiguration:
     Optional[TableFieldWells] FieldWells
     Optional[TableSortConfiguration] SortConfiguration
@@ -13496,8 +14008,9 @@ struct TableFieldOption:
     Optional[Visibility] Visibility
     Optional[TableFieldURLConfiguration] URLStyling
 
-# no @derive(Json): member(s) SelectedFieldOptions: list[TableFieldOption], Order: list[str], PinnedFieldOptions: TablePinnedFieldOptions, TransposedTableOptions: list[TransposedTableOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectedFieldOptions: list[TableFieldOption], Order: list[str], PinnedFieldOptions: TablePinnedFieldOptions, TransposedTableOptions: list[TransposedTableOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableFieldOptions:
     Optional[list[TableFieldOption]] SelectedFieldOptions
     Optional[list[str]] Order
@@ -13509,8 +14022,9 @@ struct TableFieldURLConfiguration:
     Optional[TableFieldLinkConfiguration] LinkConfiguration
     Optional[TableFieldImageConfiguration] ImageConfiguration
 
-# no @derive(Json): member(s) TableAggregatedFieldWells: TableAggregatedFieldWells, TableUnaggregatedFieldWells: TableUnaggregatedFieldWells not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableAggregatedFieldWells: TableAggregatedFieldWells, TableUnaggregatedFieldWells: TableUnaggregatedFieldWells not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableFieldWells:
     Optional[TableAggregatedFieldWells] TableAggregatedFieldWells
     Optional[TableUnaggregatedFieldWells] TableUnaggregatedFieldWells
@@ -13520,8 +14034,9 @@ struct TableInlineVisualization:
     Optional[DataBarsOptions] DataBars
     Optional[SparklinesOptions] Sparklines
 
-# no @derive(Json): member(s) RowAlternateColorOptions: RowAlternateColorOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RowAlternateColorOptions: RowAlternateColorOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableOptions:
     Optional[TableOrientation] Orientation
     Optional[TableCellStyle] HeaderStyle
@@ -13538,19 +14053,22 @@ struct TablePathElement:
     Optional[str] Name
     Optional[str] Id
 
-# no @derive(Json): member(s) PinnedLeftFields: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PinnedLeftFields: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TablePinnedFieldOptions:
     Optional[list[str]] PinnedLeftFields
 
-# no @derive(Json): member(s) BackgroundColor: ConditionalFormattingColor, TextColor: ConditionalFormattingColor not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackgroundColor: ConditionalFormattingColor, TextColor: ConditionalFormattingColor not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableRowConditionalFormatting:
     Optional[ConditionalFormattingColor] BackgroundColor
     Optional[ConditionalFormattingColor] TextColor
 
-# no @derive(Json): member(s) ColumnMetadata: list[SharedColumnSemanticMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnMetadata: list[SharedColumnSemanticMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableSemanticMetadata:
     Optional[list[SharedColumnSemanticMetadata]] ColumnMetadata
 
@@ -13563,8 +14081,9 @@ struct TableSideBorderOptions:
     Optional[TableBorderOptions] Top
     Optional[TableBorderOptions] Bottom
 
-# no @derive(Json): member(s) RowSort: list[FieldSortOptions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RowSort: list[FieldSortOptions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableSortConfiguration:
     Optional[list[FieldSortOptions]] RowSort
     Optional[PaginationConfiguration] PaginationConfiguration
@@ -13573,13 +14092,15 @@ struct TableSortConfiguration:
 struct TableStyleTarget:
     StyledCellType CellType
 
-# no @derive(Json): member(s) Values: list[UnaggregatedField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[UnaggregatedField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableUnaggregatedFieldWells:
     Optional[list[UnaggregatedField]] Values
 
-# no @derive(Json): member(s) ChartConfiguration: TableConfiguration, ConditionalFormatting: TableConditionalFormatting, Actions: list[VisualCustomAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChartConfiguration: TableConfiguration, ConditionalFormatting: TableConditionalFormatting, Actions: list[VisualCustomAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableVisual:
     str VisualId
     Optional[VisualTitleLabelOptions] Title
@@ -13594,8 +14115,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[ColumnTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[ColumnTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagColumnOperation:
     str ColumnName
     list[ColumnTag] Tags
@@ -13611,8 +14133,9 @@ struct TagResourceResponse:
     Optional[str] RequestId
     Optional[int64] Status
 
-# no @derive(Json): member(s) Version: TemplateVersion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Version: TemplateVersion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Template:
     Optional[str] Arn
     Optional[str] Name
@@ -13627,22 +14150,25 @@ struct TemplateAlias:
     Optional[str] Arn
     Optional[int64] TemplateVersionNumber
 
-# no @derive(Json): member(s) ViolatedEntities: list[Entity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ViolatedEntities: list[Entity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TemplateError:
     Optional[TemplateErrorType] Type
     Optional[str] Message
     Optional[list[Entity]] ViolatedEntities
 
-# no @derive(Json): member(s) DataSetReferences: list[DataSetReference], TopicReferences: list[TopicReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSetReferences: list[DataSetReference], TopicReferences: list[TopicReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TemplateSourceAnalysis:
     str Arn
     list[DataSetReference] DataSetReferences
     Optional[list[TopicReference]] TopicReferences
 
-# no @derive(Json): member(s) SourceAnalysis: TemplateSourceAnalysis not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceAnalysis: TemplateSourceAnalysis not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TemplateSourceEntity:
     Optional[TemplateSourceAnalysis] SourceAnalysis
     Optional[TemplateSourceTemplate] SourceTemplate
@@ -13660,8 +14186,9 @@ struct TemplateSummary:
     Optional[DateTime] CreatedTime
     Optional[DateTime] LastUpdatedTime
 
-# no @derive(Json): member(s) Errors: list[TemplateError], DataSetConfigurations: list[DataSetConfiguration], TopicConfigurations: list[TopicConfiguration], Sheets: list[Sheet] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[TemplateError], DataSetConfigurations: list[DataSetConfiguration], TopicConfigurations: list[TopicConfiguration], Sheets: list[Sheet] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TemplateVersion:
     Optional[DateTime] CreatedTime
     Optional[list[TemplateError]] Errors
@@ -13674,8 +14201,9 @@ struct TemplateVersion:
     Optional[str] ThemeArn
     Optional[list[Sheet]] Sheets
 
-# no @derive(Json): member(s) DataSetConfigurations: list[DataSetConfiguration], TopicConfigurations: list[TopicConfiguration], Sheets: list[SheetDefinition], TooltipSheets: list[TooltipSheetDefinition], CalculatedFields: list[CalculatedField], ParameterDeclarations: list[ParameterDeclaration], FilterGroups: list[FilterGroup], ColumnConfigurations: list[ColumnConfiguration], Options: AssetOptions, StaticFiles: list[StaticFile] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSetConfigurations: list[DataSetConfiguration], TopicConfigurations: list[TopicConfiguration], Sheets: list[SheetDefinition], TooltipSheets: list[TooltipSheetDefinition], CalculatedFields: list[CalculatedField], ParameterDeclarations: list[ParameterDeclaration], FilterGroups: list[FilterGroup], ColumnConfigurations: list[ColumnConfiguration], Options: AssetOptions, StaticFiles: list[StaticFile] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TemplateVersionDefinition:
     list[DataSetConfiguration] DataSetConfigurations
     Optional[list[TopicConfiguration]] TopicConfigurations
@@ -13718,8 +14246,9 @@ struct TextBoxInteractionOptions:
 struct TextBoxMenuOption:
     Optional[DashboardBehavior] AvailabilityStatus
 
-# no @derive(Json): member(s) BackgroundColor: ConditionalFormattingColor, TextColor: ConditionalFormattingColor not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackgroundColor: ConditionalFormattingColor, TextColor: ConditionalFormattingColor not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TextConditionalFormat:
     Optional[ConditionalFormattingColor] BackgroundColor
     Optional[ConditionalFormattingColor] TextColor
@@ -13735,8 +14264,9 @@ struct TextFieldControlDisplayOptions:
     Optional[TextControlPlaceholderOptions] PlaceholderOptions
     Optional[SheetControlInfoIconLabelOptions] InfoIconLabelOptions
 
-# no @derive(Json): member(s) Version: ThemeVersion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Version: ThemeVersion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Theme:
     Optional[str] Arn
     Optional[str] Name
@@ -13752,8 +14282,9 @@ struct ThemeAlias:
     Optional[str] AliasName
     Optional[int64] ThemeVersionNumber
 
-# no @derive(Json): member(s) DataColorPalette: DataColorPalette, Typography: Typography not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataColorPalette: DataColorPalette, Typography: Typography not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThemeConfiguration:
     Optional[DataColorPalette] DataColorPalette
     Optional[UIColorPalette] UIColorPalette
@@ -13774,8 +14305,9 @@ struct ThemeSummary:
     Optional[DateTime] CreatedTime
     Optional[DateTime] LastUpdatedTime
 
-# no @derive(Json): member(s) Configuration: ThemeConfiguration, Errors: list[ThemeError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: ThemeConfiguration, Errors: list[ThemeError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThemeVersion:
     Optional[int64] VersionNumber
     Optional[str] Arn
@@ -13830,8 +14362,9 @@ struct TimeBasedForecastProperties:
     Optional[int64] PredictionInterval
     Optional[int64] Seasonality
 
-# no @derive(Json): member(s) DefaultFilterControlConfiguration: DefaultFilterControlConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultFilterControlConfiguration: DefaultFilterControlConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TimeEqualityFilter:
     str FilterId
     ColumnIdentifier Column
@@ -13848,8 +14381,9 @@ struct TimeRangeDrillDownFilter:
     DateTime RangeMaximum
     TimeGranularity TimeGranularity
 
-# no @derive(Json): member(s) DefaultFilterControlConfiguration: DefaultFilterControlConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultFilterControlConfiguration: DefaultFilterControlConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TimeRangeFilter:
     str FilterId
     ColumnIdentifier Column
@@ -13873,16 +14407,18 @@ struct TooltipItem:
     Optional[FieldTooltipItem] FieldTooltipItem
     Optional[ColumnTooltipItem] ColumnTooltipItem
 
-# no @derive(Json): member(s) FieldBasedTooltip: FieldBasedTooltip not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldBasedTooltip: FieldBasedTooltip not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TooltipOptions:
     Optional[Visibility] TooltipVisibility
     Optional[SelectedTooltipType] SelectedTooltipType
     Optional[FieldBasedTooltip] FieldBasedTooltip
     Optional[SheetTooltip] SheetTooltip
 
-# no @derive(Json): member(s) Visuals: list[Visual], TextBoxes: list[SheetTextBox], Images: list[SheetImage], Layouts: list[Layout] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Visuals: list[Visual], TextBoxes: list[SheetTextBox], Images: list[SheetImage], Layouts: list[Layout] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TooltipSheetDefinition:
     str SheetId
     Optional[str] Name
@@ -13891,8 +14427,9 @@ struct TooltipSheetDefinition:
     Optional[list[SheetImage]] Images
     Optional[list[Layout]] Layouts
 
-# no @derive(Json): member(s) AggregationSortConfigurations: list[AggregationSortConfiguration], DefaultFilterControlConfiguration: DefaultFilterControlConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AggregationSortConfigurations: list[AggregationSortConfiguration], DefaultFilterControlConfiguration: DefaultFilterControlConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopBottomFilter:
     str FilterId
     ColumnIdentifier Column
@@ -13922,8 +14459,9 @@ struct TopBottomRankedComputation:
     Optional[int64] ResultSize
     TopBottomComputationType Type
 
-# no @derive(Json): member(s) CalculatedFieldSynonyms: list[str], ComparativeOrder: ComparativeOrder, SemanticType: SemanticType, AllowedAggregations: list[AuthorSpecifiedAggregation], NotAllowedAggregations: list[AuthorSpecifiedAggregation], CellValueSynonyms: list[CellValueSynonym] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CalculatedFieldSynonyms: list[str], ComparativeOrder: ComparativeOrder, SemanticType: SemanticType, AllowedAggregations: list[AuthorSpecifiedAggregation], NotAllowedAggregations: list[AuthorSpecifiedAggregation], CellValueSynonyms: list[CellValueSynonym] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicCalculatedField:
     str CalculatedFieldName
     Optional[str] CalculatedFieldDescription
@@ -13943,8 +14481,9 @@ struct TopicCalculatedField:
     Optional[list[CellValueSynonym]] CellValueSynonyms
     Optional[bool] NonAdditive
 
-# no @derive(Json): member(s) Constant: TopicCategoryFilterConstant not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Constant: TopicCategoryFilterConstant not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicCategoryFilter:
     Optional[CategoryFilterFunction] CategoryFilterFunction
     Optional[CategoryFilterType] CategoryFilterType
@@ -13952,15 +14491,17 @@ struct TopicCategoryFilter:
     Optional[bool] Inverse
     Optional[NullFilterType] NullFilter
 
-# no @derive(Json): member(s) CollectiveConstant: CollectiveConstant not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CollectiveConstant: CollectiveConstant not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicCategoryFilterConstant:
     Optional[ConstantType] ConstantType
     Optional[str] SingularConstant
     Optional[CollectiveConstant] CollectiveConstant
 
-# no @derive(Json): member(s) ColumnSynonyms: list[str], ComparativeOrder: ComparativeOrder, SemanticType: SemanticType, AllowedAggregations: list[AuthorSpecifiedAggregation], NotAllowedAggregations: list[AuthorSpecifiedAggregation], CellValueSynonyms: list[CellValueSynonym] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnSynonyms: list[str], ComparativeOrder: ComparativeOrder, SemanticType: SemanticType, AllowedAggregations: list[AuthorSpecifiedAggregation], NotAllowedAggregations: list[AuthorSpecifiedAggregation], CellValueSynonyms: list[CellValueSynonym] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicColumn:
     str ColumnName
     Optional[str] ColumnFriendlyName
@@ -13984,15 +14525,17 @@ struct TopicColumn:
 struct TopicConfigOptions:
     Optional[bool] QBusinessInsightsEnabled
 
-# no @derive(Json): member(s) DataSetSchema: DataSetSchema, ColumnGroupSchemaList: list[ColumnGroupSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSetSchema: DataSetSchema, ColumnGroupSchemaList: list[ColumnGroupSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicConfiguration:
     Optional[str] Placeholder
     Optional[DataSetSchema] DataSetSchema
     Optional[list[ColumnGroupSchema]] ColumnGroupSchemaList
 
-# no @derive(Json): member(s) ValueList: list[CollectiveConstantEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueList: list[CollectiveConstantEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicConstantValue:
     Optional[ConstantType] ConstantType
     Optional[str] Value
@@ -14006,8 +14549,9 @@ struct TopicDateRangeFilter:
     Optional[TopicRangeFilterConstant] Constant
     Optional[NullFilterType] NullFilter
 
-# no @derive(Json): member(s) DataSets: list[DatasetMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSets: list[DatasetMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicDetails:
     Optional[str] Name
     Optional[str] Description
@@ -14015,8 +14559,9 @@ struct TopicDetails:
     Optional[list[DatasetMetadata]] DataSets
     Optional[TopicConfigOptions] ConfigOptions
 
-# no @derive(Json): member(s) FilterSynonyms: list[str], CategoryFilter: TopicCategoryFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterSynonyms: list[str], CategoryFilter: TopicCategoryFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicFilter:
     Optional[str] FilterDescription
     Optional[FilterClass] FilterClass
@@ -14031,8 +14576,9 @@ struct TopicFilter:
     Optional[TopicRelativeDateFilter] RelativeDateFilter
     Optional[TopicNullFilter] NullFilter
 
-# no @derive(Json): member(s) Metrics: list[TopicIRMetric], GroupByList: list[TopicIRGroupBy], Filters: list[list[TopicIRFilterOption]], ContributionAnalysis: TopicIRContributionAnalysis not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metrics: list[TopicIRMetric], GroupByList: list[TopicIRGroupBy], Filters: list[list[TopicIRFilterOption]], ContributionAnalysis: TopicIRContributionAnalysis not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicIR:
     Optional[list[TopicIRMetric]] Metrics
     Optional[list[TopicIRGroupBy]] GroupByList
@@ -14047,16 +14593,18 @@ struct TopicIRComparisonMethod:
     Optional[TopicTimeGranularity] Period
     Optional[int64] WindowSize
 
-# no @derive(Json): member(s) Factors: list[ContributionAnalysisFactor], TimeRanges: ContributionAnalysisTimeRanges not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Factors: list[ContributionAnalysisFactor], TimeRanges: ContributionAnalysisTimeRanges not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicIRContributionAnalysis:
     Optional[list[ContributionAnalysisFactor]] Factors
     Optional[ContributionAnalysisTimeRanges] TimeRanges
     Optional[ContributionAnalysisDirection] Direction
     Optional[ContributionAnalysisSortType] SortType
 
-# no @derive(Json): member(s) Constant: TopicConstantValue, AggregationFunctionParameters: dict[str, str], AggregationPartitionBy: list[AggregationPartitionBy], Range: TopicConstantValue, LastNextOffset: TopicConstantValue, AggMetrics: list[FilterAggMetrics], TopBottomLimit: TopicConstantValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Constant: TopicConstantValue, AggregationFunctionParameters: dict[str, str], AggregationPartitionBy: list[AggregationPartitionBy], Range: TopicConstantValue, LastNextOffset: TopicConstantValue, AggMetrics: list[FilterAggMetrics], TopBottomLimit: TopicConstantValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicIRFilterOption:
     Optional[TopicIRFilterType] FilterType
     Optional[FilterClass] FilterClass
@@ -14086,8 +14634,9 @@ struct TopicIRGroupBy:
     Optional[DisplayFormatOptions] DisplayFormatOptions
     Optional[NamedEntityRef] NamedEntity
 
-# no @derive(Json): member(s) Function: AggFunction, Operands: list[Identifier], CalculatedFieldReferences: list[Identifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Function: AggFunction, Operands: list[Identifier], CalculatedFieldReferences: list[Identifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicIRMetric:
     Optional[Identifier] MetricId
     Optional[AggFunction] Function
@@ -14104,8 +14653,9 @@ struct TopicIdentifierDeclaration:
     str Identifier
     str TopicArn
 
-# no @derive(Json): member(s) EntitySynonyms: list[str], SemanticEntityType: SemanticEntityType, Definition: list[NamedEntityDefinition], Sort: list[NamedEntitySort] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntitySynonyms: list[str], SemanticEntityType: SemanticEntityType, Definition: list[NamedEntityDefinition], Sort: list[NamedEntitySort] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicNamedEntity:
     str EntityName
     Optional[str] EntityDescription
@@ -14176,8 +14726,9 @@ struct TopicRelativeDateFilter:
     Optional[TopicSingularFilterConstant] Constant
     Optional[NullFilterType] NullFilter
 
-# no @derive(Json): member(s) Mir: TopicIR, PrimaryVisual: TopicVisual, Template: TopicTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Mir: TopicIR, PrimaryVisual: TopicVisual, Template: TopicTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicReviewedAnswer:
     Optional[str] Arn
     str AnswerId
@@ -14210,8 +14761,9 @@ struct TopicSummary:
     Optional[str] Name
     Optional[TopicUserExperienceVersion] UserExperienceVersion
 
-# no @derive(Json): member(s) Slots: list[Slot] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Slots: list[Slot] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicTemplate:
     Optional[str] TemplateType
     Optional[list[Slot]] Slots
@@ -14221,20 +14773,23 @@ struct TopicV2DataSetReference:
     str DataSetArn
     Optional[str] DataSetName
 
-# no @derive(Json): member(s) Left: TopicV2DataSetRelationEndpoint, Right: TopicV2DataSetRelationEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Left: TopicV2DataSetRelationEndpoint, Right: TopicV2DataSetRelationEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicV2DataSetRelation:
     TopicV2DataSetRelationEndpoint Left
     TopicV2DataSetRelationEndpoint Right
 
-# no @derive(Json): member(s) ColumnNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicV2DataSetRelationEndpoint:
     str DataSetArn
     list[str] ColumnNames
 
-# no @derive(Json): member(s) DataSets: list[TopicV2DataSetReference], DataSetRelations: list[TopicV2DataSetRelation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSets: list[TopicV2DataSetReference], DataSetRelations: list[TopicV2DataSetRelation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicV2Details:
     str Name
     Optional[str] Description
@@ -14247,8 +14802,9 @@ struct TopicV2Summary:
     Optional[str] TopicId
     Optional[str] Name
 
-# no @derive(Json): member(s) Ir: TopicIR, SupportingVisuals: list[TopicVisual] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Ir: TopicIR, SupportingVisuals: list[TopicVisual] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicVisual:
     Optional[str] VisualId
     Optional[VisualRole] Role
@@ -14270,8 +14826,9 @@ struct TotalAggregationOption:
     str FieldId
     TotalAggregationFunction TotalAggregationFunction
 
-# no @derive(Json): member(s) TotalAggregationOptions: list[TotalAggregationOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TotalAggregationOptions: list[TotalAggregationOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TotalOptions:
     Optional[Visibility] TotalsVisibility
     Optional[TableTotalsPlacement] Placement
@@ -14280,8 +14837,9 @@ struct TotalOptions:
     Optional[TableCellStyle] TotalCellStyle
     Optional[list[TotalAggregationOption]] TotalAggregationOptions
 
-# no @derive(Json): member(s) ProjectOperation: ProjectOperation, FilterOperation: FilterOperation, CreateColumnsOperation: CreateColumnsOperation, TagColumnOperation: TagColumnOperation, UntagColumnOperation: UntagColumnOperation, OverrideDatasetParameterOperation: OverrideDatasetParameterOperation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProjectOperation: ProjectOperation, FilterOperation: FilterOperation, CreateColumnsOperation: CreateColumnsOperation, TagColumnOperation: TagColumnOperation, UntagColumnOperation: UntagColumnOperation, OverrideDatasetParameterOperation: OverrideDatasetParameterOperation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TransformOperation:
     Optional[ProjectOperation] ProjectOperation
     Optional[FilterOperation] FilterOperation
@@ -14292,14 +14850,16 @@ struct TransformOperation:
     Optional[UntagColumnOperation] UntagColumnOperation
     Optional[OverrideDatasetParameterOperation] OverrideDatasetParameterOperation
 
-# no @derive(Json): member(s) ColumnIdMappings: list[DataSetColumnIdMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnIdMappings: list[DataSetColumnIdMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TransformOperationSource:
     str TransformOperationId
     Optional[list[DataSetColumnIdMapping]] ColumnIdMappings
 
-# no @derive(Json): member(s) ImportTableStep: ImportTableOperation, ProjectStep: ProjectOperation, FiltersStep: FiltersOperation, CreateColumnsStep: CreateColumnsOperation, RenameColumnsStep: RenameColumnsOperation, CastColumnTypesStep: CastColumnTypesOperation, JoinStep: JoinOperation, AggregateStep: AggregateOperation, PivotStep: PivotOperation, UnpivotStep: UnpivotOperation, AppendStep: AppendOperation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ImportTableStep: ImportTableOperation, ProjectStep: ProjectOperation, FiltersStep: FiltersOperation, CreateColumnsStep: CreateColumnsOperation, RenameColumnsStep: RenameColumnsOperation, CastColumnTypesStep: CastColumnTypesOperation, JoinStep: JoinOperation, AggregateStep: AggregateOperation, PivotStep: PivotOperation, UnpivotStep: UnpivotOperation, AppendStep: AppendOperation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TransformStep:
     Optional[ImportTableOperation] ImportTableStep
     Optional[ProjectOperation] ProjectStep
@@ -14319,15 +14879,17 @@ struct TransposedTableOption:
     Optional[str] ColumnWidth
     TransposedColumnType ColumnType
 
-# no @derive(Json): member(s) Groups: list[DimensionField], Sizes: list[MeasureField], Colors: list[MeasureField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[DimensionField], Sizes: list[MeasureField], Colors: list[MeasureField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TreeMapAggregatedFieldWells:
     Optional[list[DimensionField]] Groups
     Optional[list[MeasureField]] Sizes
     Optional[list[MeasureField]] Colors
 
-# no @derive(Json): member(s) FieldWells: TreeMapFieldWells, SortConfiguration: TreeMapSortConfiguration, GroupLabelOptions: ChartAxisLabelOptions, SizeLabelOptions: ChartAxisLabelOptions, ColorLabelOptions: ChartAxisLabelOptions, ColorScale: ColorScale, DataLabels: DataLabelOptions, Tooltip: TooltipOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldWells: TreeMapFieldWells, SortConfiguration: TreeMapSortConfiguration, GroupLabelOptions: ChartAxisLabelOptions, SizeLabelOptions: ChartAxisLabelOptions, ColorLabelOptions: ChartAxisLabelOptions, ColorScale: ColorScale, DataLabels: DataLabelOptions, Tooltip: TooltipOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TreeMapConfiguration:
     Optional[TreeMapFieldWells] FieldWells
     Optional[TreeMapSortConfiguration] SortConfiguration
@@ -14340,19 +14902,22 @@ struct TreeMapConfiguration:
     Optional[TooltipOptions] Tooltip
     Optional[VisualInteractionOptions] Interactions
 
-# no @derive(Json): member(s) TreeMapAggregatedFieldWells: TreeMapAggregatedFieldWells not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TreeMapAggregatedFieldWells: TreeMapAggregatedFieldWells not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TreeMapFieldWells:
     Optional[TreeMapAggregatedFieldWells] TreeMapAggregatedFieldWells
 
-# no @derive(Json): member(s) TreeMapSort: list[FieldSortOptions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TreeMapSort: list[FieldSortOptions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TreeMapSortConfiguration:
     Optional[list[FieldSortOptions]] TreeMapSort
     Optional[ItemsLimitConfiguration] TreeMapGroupItemsLimitConfiguration
 
-# no @derive(Json): member(s) ChartConfiguration: TreeMapConfiguration, Actions: list[VisualCustomAction], ColumnHierarchies: list[ColumnHierarchy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChartConfiguration: TreeMapConfiguration, Actions: list[VisualCustomAction], ColumnHierarchies: list[ColumnHierarchy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TreeMapVisual:
     str VisualId
     Optional[VisualTitleLabelOptions] Title
@@ -14377,8 +14942,9 @@ struct TwitterParameters:
     str Query
     int64 MaxRows
 
-# no @derive(Json): member(s) FontFamilies: list[Font] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FontFamilies: list[Font] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Typography:
     Optional[list[Font]] FontFamilies
     Optional[FontConfiguration] AxisTitleFontConfiguration
@@ -14415,8 +14981,9 @@ struct UnaggregatedField:
     ColumnIdentifier Column
     Optional[FormatConfiguration] FormatConfiguration
 
-# no @derive(Json): member(s) ColumnNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UniqueKey:
     list[str] ColumnNames
 
@@ -14426,8 +14993,9 @@ struct UniqueValuesComputation:
     Optional[str] Name
     Optional[DimensionField] Category
 
-# no @derive(Json): member(s) Source: TransformOperationSource, ColumnsToUnpivot: list[ColumnToUnpivot] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Source: TransformOperationSource, ColumnsToUnpivot: list[ColumnToUnpivot] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UnpivotOperation:
     str Alias
     TransformOperationSource Source
@@ -14447,8 +15015,9 @@ struct UnsupportedUserEditionException:
     Optional[str] Message
     Optional[str] RequestId
 
-# no @derive(Json): member(s) TagNames: list[ColumnTagName] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagNames: list[ColumnTagName] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagColumnOperation:
     str ColumnName
     list[ColumnTagName] TagNames
@@ -14512,8 +15081,9 @@ struct UpdateActionConnectorPermissionsRequest:
     Optional[list[ResourcePermission]] GrantPermissions
     Optional[list[ResourcePermission]] RevokePermissions
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateActionConnectorPermissionsResponse:
     Optional[str] Arn
     Optional[str] ActionConnectorId
@@ -14547,8 +15117,9 @@ struct UpdateAgentPermissionsRequest:
     Optional[list[ResourcePermission]] GrantPermissions
     Optional[list[ResourcePermission]] RevokePermissions
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAgentPermissionsResponse:
     str Arn
     str AgentId
@@ -14571,8 +15142,9 @@ struct UpdateAgentRequest:
     Optional[list[str]] ActionConnectorsToAdd
     Optional[list[str]] ActionConnectorsToRemove
 
-# no @derive(Json): member(s) FailedToAddSpaces: list[FailedToUpdateAssociation], FailedToRemoveSpaces: list[FailedToUpdateAssociation], FailedToAddActionConnectors: list[FailedToUpdateAssociation], FailedToRemoveActionConnectors: list[FailedToUpdateAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedToAddSpaces: list[FailedToUpdateAssociation], FailedToRemoveSpaces: list[FailedToUpdateAssociation], FailedToAddActionConnectors: list[FailedToUpdateAssociation], FailedToRemoveActionConnectors: list[FailedToUpdateAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAgentResponse:
     str Arn
     str AgentId
@@ -14591,8 +15163,9 @@ struct UpdateAnalysisPermissionsRequest:
     Optional[list[ResourcePermission]] GrantPermissions
     Optional[list[ResourcePermission]] RevokePermissions
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAnalysisPermissionsResponse:
     Optional[str] AnalysisArn
     Optional[str] AnalysisId
@@ -14629,8 +15202,9 @@ struct UpdateAppPermissionsRequest:
     Optional[list[ResourcePermission]] RevokePermissions
     Optional[AppVisibility] Visibility
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAppPermissionsResponse:
     Optional[str] Arn
     Optional[str] AppId
@@ -14660,8 +15234,9 @@ struct UpdateApprovalPolicyRequest:
     Optional[ApplicableTo] ApplicableTo
     Optional[list[str]] ApprovalGroups
 
-# no @derive(Json): member(s) Policy: ApprovalPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Policy: ApprovalPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateApprovalPolicyResponse:
     ApprovalPolicy Policy
 
@@ -14695,8 +15270,9 @@ struct UpdateBrandRequest:
     str BrandId
     Optional[BrandDefinition] BrandDefinition
 
-# no @derive(Json): member(s) BrandDetail: BrandDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BrandDetail: BrandDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBrandResponse:
     Optional[str] RequestId
     Optional[BrandDetail] BrandDetail
@@ -14723,8 +15299,9 @@ struct UpdateDashboardLinksRequest:
     str DashboardId
     list[str] LinkEntities
 
-# no @derive(Json): member(s) LinkEntities: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LinkEntities: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDashboardLinksResponse:
     Optional[str] RequestId
     Optional[int64] Status
@@ -14741,8 +15318,9 @@ struct UpdateDashboardPermissionsRequest:
     Optional[list[ResourcePermission]] GrantLinkPermissions
     Optional[list[ResourcePermission]] RevokeLinkPermissions
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission], LinkSharingConfiguration: LinkSharingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission], LinkSharingConfiguration: LinkSharingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDashboardPermissionsResponse:
     Optional[str] DashboardArn
     Optional[str] DashboardId
@@ -14915,8 +15493,9 @@ struct UpdateFlowPermissionsInput:
     Optional[list[Permission]] GrantPermissions
     Optional[list[Permission]] RevokePermissions
 
-# no @derive(Json): member(s) Permissions: list[Permission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[Permission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFlowPermissionsOutput:
     Optional[int64] Status
     str Arn
@@ -14949,8 +15528,9 @@ struct UpdateFolderPermissionsRequest:
     Optional[list[ResourcePermission]] GrantPermissions
     Optional[list[ResourcePermission]] RevokePermissions
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFolderPermissionsResponse:
     Optional[int64] Status
     Optional[str] Arn
@@ -14996,8 +15576,9 @@ struct UpdateIAMPolicyAssignmentRequest:
     Optional[str] PolicyArn
     Optional[dict[str, list[str]]] Identities
 
-# no @derive(Json): member(s) Identities: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Identities: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIAMPolicyAssignmentResponse:
     Optional[str] AssignmentName
     Optional[str] AssignmentId
@@ -15041,8 +15622,9 @@ struct UpdateKeyRegistrationRequest:
     str AwsAccountId
     list[RegisteredCustomerManagedKey] KeyRegistration
 
-# no @derive(Json): member(s) FailedKeyRegistration: list[FailedKeyRegistrationEntry], SuccessfulKeyRegistration: list[SuccessfulKeyRegistrationEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedKeyRegistration: list[FailedKeyRegistrationEntry], SuccessfulKeyRegistration: list[SuccessfulKeyRegistrationEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateKeyRegistrationResponse:
     Optional[list[FailedKeyRegistrationEntry]] FailedKeyRegistration
     Optional[list[SuccessfulKeyRegistrationEntry]] SuccessfulKeyRegistration
@@ -15056,8 +15638,9 @@ struct UpdateKnowledgeBasePermissionsRequest:
     Optional[list[ResourcePermission]] GrantPermissions
     Optional[list[ResourcePermission]] RevokePermissions
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateKnowledgeBasePermissionsResponse:
     str KnowledgeBaseArn
     str KnowledgeBaseId
@@ -15227,8 +15810,9 @@ struct UpdateSpacePermissionsRequest:
     Optional[list[ResourcePermission]] GrantPermissions
     Optional[list[ResourcePermission]] RevokePermissions
 
-# no @derive(Json): member(s) permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSpacePermissionsResponse:
     str spaceId
     Optional[str] spaceArn
@@ -15251,8 +15835,9 @@ struct UpdateSpaceResourcesRequest:
     Optional[list[SpaceResourceOperation]] AddResources
     Optional[list[SpaceResourceOperation]] RemoveResources
 
-# no @derive(Json): member(s) FailedResourceOperations: list[FailedSpaceResourceOperation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedResourceOperations: list[FailedSpaceResourceOperation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSpaceResourcesResponse:
     str spaceId
     Optional[str] spaceArn
@@ -15287,8 +15872,9 @@ struct UpdateTemplatePermissionsRequest:
     Optional[list[ResourcePermission]] GrantPermissions
     Optional[list[ResourcePermission]] RevokePermissions
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTemplatePermissionsResponse:
     Optional[str] TemplateId
     Optional[str] TemplateArn
@@ -15338,8 +15924,9 @@ struct UpdateThemePermissionsRequest:
     Optional[list[ResourcePermission]] GrantPermissions
     Optional[list[ResourcePermission]] RevokePermissions
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateThemePermissionsResponse:
     Optional[str] ThemeId
     Optional[str] ThemeArn
@@ -15374,8 +15961,9 @@ struct UpdateTopicPermissionsRequest:
     Optional[list[ResourcePermission]] GrantPermissions
     Optional[list[ResourcePermission]] RevokePermissions
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTopicPermissionsResponse:
     Optional[str] TopicId
     Optional[str] TopicArn
@@ -15391,8 +15979,9 @@ struct UpdateTopicPermissionsV2Request:
     Optional[list[ResourcePermission]] GrantPermissions
     Optional[list[ResourcePermission]] RevokePermissions
 
-# no @derive(Json): member(s) Permissions: list[ResourcePermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[ResourcePermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTopicPermissionsV2Response:
     Optional[str] TopicId
     Optional[str] TopicArn
@@ -15551,8 +16140,9 @@ struct UserIndexCapacityFilter:
     Optional[UserNameOrEmailFilter] userNameOrEmail
     Optional[CapacityBytesRangeFilter] totalCapacityBytes
 
-# no @derive(Json): member(s) effectiveLimits: list[EffectiveLimit] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) effectiveLimits: list[EffectiveLimit] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserLimits:
     str userName
     str namespace
@@ -15567,8 +16157,9 @@ struct UserLimitsEntry:
 struct UserNameOrEmailFilter:
     str prefix
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], DnsResolvers: list[str], NetworkInterfaces: list[NetworkInterface] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], DnsResolvers: list[str], NetworkInterfaces: list[NetworkInterface] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VPCConnection:
     Optional[str] VPCConnectionId
     Optional[str] Arn
@@ -15583,8 +16174,9 @@ struct VPCConnection:
     Optional[DateTime] CreatedTime
     Optional[DateTime] LastUpdatedTime
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], DnsResolvers: list[str], NetworkInterfaces: list[NetworkInterface] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], DnsResolvers: list[str], NetworkInterfaces: list[NetworkInterface] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VPCConnectionSummary:
     Optional[str] VPCConnectionId
     Optional[str] Arn
@@ -15616,8 +16208,9 @@ struct VideoExtractionConfiguration:
 struct VisibleRangeOptions:
     Optional[PercentVisibleRange] PercentRange
 
-# no @derive(Json): member(s) TableVisual: TableVisual, PivotTableVisual: PivotTableVisual, BarChartVisual: BarChartVisual, KPIVisual: KPIVisual, PieChartVisual: PieChartVisual, GaugeChartVisual: GaugeChartVisual, LineChartVisual: LineChartVisual, HeatMapVisual: HeatMapVisual, TreeMapVisual: TreeMapVisual, GeospatialMapVisual: GeospatialMapVisual, FilledMapVisual: FilledMapVisual, LayerMapVisual: LayerMapVisual, FunnelChartVisual: FunnelChartVisual, ScatterPlotVisual: ScatterPlotVisual, ComboChartVisual: ComboChartVisual, BoxPlotVisual: BoxPlotVisual, WaterfallVisual: WaterfallVisual, HistogramVisual: HistogramVisual, WordCloudVisual: WordCloudVisual, InsightVisual: InsightVisual, SankeyDiagramVisual: SankeyDiagramVisual, CustomContentVisual: CustomContentVisual, EmptyVisual: EmptyVisual, RadarChartVisual: RadarChartVisual, PluginVisual: PluginVisual not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableVisual: TableVisual, PivotTableVisual: PivotTableVisual, BarChartVisual: BarChartVisual, KPIVisual: KPIVisual, PieChartVisual: PieChartVisual, GaugeChartVisual: GaugeChartVisual, LineChartVisual: LineChartVisual, HeatMapVisual: HeatMapVisual, TreeMapVisual: TreeMapVisual, GeospatialMapVisual: GeospatialMapVisual, FilledMapVisual: FilledMapVisual, LayerMapVisual: LayerMapVisual, FunnelChartVisual: FunnelChartVisual, ScatterPlotVisual: ScatterPlotVisual, ComboChartVisual: ComboChartVisual, BoxPlotVisual: BoxPlotVisual, WaterfallVisual: WaterfallVisual, HistogramVisual: HistogramVisual, WordCloudVisual: WordCloudVisual, InsightVisual: InsightVisual, SankeyDiagramVisual: SankeyDiagramVisual, CustomContentVisual: CustomContentVisual, EmptyVisual: EmptyVisual, RadarChartVisual: RadarChartVisual, PluginVisual: PluginVisual not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Visual:
     Optional[TableVisual] TableVisual
     Optional[PivotTableVisual] PivotTableVisual
@@ -15649,8 +16242,9 @@ struct Visual:
 struct VisualAxisSortOption:
     Optional[DashboardBehavior] AvailabilityStatus
 
-# no @derive(Json): member(s) ActionOperations: list[VisualCustomActionOperation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActionOperations: list[VisualCustomActionOperation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VisualCustomAction:
     str CustomActionId
     str Name
@@ -15662,16 +16256,18 @@ struct VisualCustomAction:
 struct VisualCustomActionDefaults:
     Optional[VisualHighlightOperation] highlightOperation
 
-# no @derive(Json): member(s) FilterOperation: CustomActionFilterOperation, SetParametersOperation: CustomActionSetParametersOperation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterOperation: CustomActionFilterOperation, SetParametersOperation: CustomActionSetParametersOperation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VisualCustomActionOperation:
     Optional[CustomActionFilterOperation] FilterOperation
     Optional[CustomActionNavigationOperation] NavigationOperation
     Optional[CustomActionURLOperation] URLOperation
     Optional[CustomActionSetParametersOperation] SetParametersOperation
 
-# no @derive(Json): member(s) AdditionalFields: list[ColumnIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalFields: list[ColumnIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VisualCustomizationFieldsConfiguration:
     Optional[DashboardCustomizationStatus] Status
     Optional[list[ColumnIdentifier]] AdditionalFields
@@ -15708,8 +16304,9 @@ struct VisualMessages:
 struct VisualOptions:
     Optional[str] type
 
-# no @derive(Json): member(s) ColorMap: list[DataPathColor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColorMap: list[DataPathColor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VisualPalette:
     Optional[str] ChartColor
     Optional[list[DataPathColor]] ColorMap
@@ -15740,8 +16337,9 @@ struct VisualTitleLabelOptions:
 struct VpcConnectionProperties:
     str VpcConnectionArn
 
-# no @derive(Json): member(s) Categories: list[DimensionField], Values: list[MeasureField], Breakdowns: list[DimensionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Categories: list[DimensionField], Values: list[MeasureField], Breakdowns: list[DimensionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WaterfallChartAggregatedFieldWells:
     Optional[list[DimensionField]] Categories
     Optional[list[MeasureField]] Values
@@ -15751,8 +16349,9 @@ struct WaterfallChartAggregatedFieldWells:
 struct WaterfallChartColorConfiguration:
     Optional[WaterfallChartGroupColorConfiguration] GroupColorConfiguration
 
-# no @derive(Json): member(s) FieldWells: WaterfallChartFieldWells, SortConfiguration: WaterfallChartSortConfiguration, CategoryAxisLabelOptions: ChartAxisLabelOptions, PrimaryYAxisLabelOptions: ChartAxisLabelOptions, DataLabels: DataLabelOptions, VisualPalette: VisualPalette not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldWells: WaterfallChartFieldWells, SortConfiguration: WaterfallChartSortConfiguration, CategoryAxisLabelOptions: ChartAxisLabelOptions, PrimaryYAxisLabelOptions: ChartAxisLabelOptions, DataLabels: DataLabelOptions, VisualPalette: VisualPalette not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WaterfallChartConfiguration:
     Optional[WaterfallChartFieldWells] FieldWells
     Optional[WaterfallChartSortConfiguration] SortConfiguration
@@ -15767,8 +16366,9 @@ struct WaterfallChartConfiguration:
     Optional[WaterfallChartColorConfiguration] ColorConfiguration
     Optional[VisualInteractionOptions] Interactions
 
-# no @derive(Json): member(s) WaterfallChartAggregatedFieldWells: WaterfallChartAggregatedFieldWells not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WaterfallChartAggregatedFieldWells: WaterfallChartAggregatedFieldWells not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WaterfallChartFieldWells:
     Optional[WaterfallChartAggregatedFieldWells] WaterfallChartAggregatedFieldWells
 
@@ -15782,14 +16382,16 @@ struct WaterfallChartGroupColorConfiguration:
 struct WaterfallChartOptions:
     Optional[str] TotalBarLabel
 
-# no @derive(Json): member(s) CategorySort: list[FieldSortOptions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CategorySort: list[FieldSortOptions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WaterfallChartSortConfiguration:
     Optional[list[FieldSortOptions]] CategorySort
     Optional[ItemsLimitConfiguration] BreakdownItemsLimit
 
-# no @derive(Json): member(s) ChartConfiguration: WaterfallChartConfiguration, Actions: list[VisualCustomAction], ColumnHierarchies: list[ColumnHierarchy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChartConfiguration: WaterfallChartConfiguration, Actions: list[VisualCustomAction], ColumnHierarchies: list[ColumnHierarchy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WaterfallVisual:
     str VisualId
     Optional[VisualTitleLabelOptions] Title
@@ -15826,14 +16428,16 @@ struct WhatIfRangeScenario:
     DateTime EndDate
     float64 Value
 
-# no @derive(Json): member(s) GroupBy: list[DimensionField], Size: list[MeasureField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupBy: list[DimensionField], Size: list[MeasureField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WordCloudAggregatedFieldWells:
     Optional[list[DimensionField]] GroupBy
     Optional[list[MeasureField]] Size
 
-# no @derive(Json): member(s) FieldWells: WordCloudFieldWells, SortConfiguration: WordCloudSortConfiguration, CategoryLabelOptions: ChartAxisLabelOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldWells: WordCloudFieldWells, SortConfiguration: WordCloudSortConfiguration, CategoryLabelOptions: ChartAxisLabelOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WordCloudChartConfiguration:
     Optional[WordCloudFieldWells] FieldWells
     Optional[WordCloudSortConfiguration] SortConfiguration
@@ -15841,8 +16445,9 @@ struct WordCloudChartConfiguration:
     Optional[WordCloudOptions] WordCloudOptions
     Optional[VisualInteractionOptions] Interactions
 
-# no @derive(Json): member(s) WordCloudAggregatedFieldWells: WordCloudAggregatedFieldWells not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WordCloudAggregatedFieldWells: WordCloudAggregatedFieldWells not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WordCloudFieldWells:
     Optional[WordCloudAggregatedFieldWells] WordCloudAggregatedFieldWells
 
@@ -15855,14 +16460,16 @@ struct WordCloudOptions:
     Optional[WordCloudWordPadding] WordPadding
     Optional[int64] MaximumStringLength
 
-# no @derive(Json): member(s) CategorySort: list[FieldSortOptions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CategorySort: list[FieldSortOptions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WordCloudSortConfiguration:
     Optional[ItemsLimitConfiguration] CategoryItemsLimit
     Optional[list[FieldSortOptions]] CategorySort
 
-# no @derive(Json): member(s) ChartConfiguration: WordCloudChartConfiguration, Actions: list[VisualCustomAction], ColumnHierarchies: list[ColumnHierarchy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChartConfiguration: WordCloudChartConfiguration, Actions: list[VisualCustomAction], ColumnHierarchies: list[ColumnHierarchy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WordCloudVisual:
     str VisualId
     Optional[VisualTitleLabelOptions] Title
@@ -15962,114 +16569,15 @@ def quicksight_error_from_code(str code) -> QuickSightError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchCreateTopicReviewedAnswer (document member `Answers: list[CreateTopicReviewedAnswer]` is not serializable by derive)
-#   BatchDeleteKnowledgeBase (document member `KnowledgeBaseIds: list[str]` is not serializable by derive)
-#   BatchDeleteTopicReviewedAnswer (document member `AnswerIds: list[str]` is not serializable by derive)
-#   BatchDescribeUserLimits (document member `users: list[UserLimitsEntry]` is not serializable by derive)
-#   CreateAccountCustomization (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateAccountSubscription (document member `AdminGroup: list[str]` is not serializable by derive)
-#   CreateActionConnector (document member `Permissions: list[ResourcePermission]` is not serializable by derive)
-#   CreateAgent (document member `Spaces: list[str]` is not serializable by derive)
-#   CreateAnalysis (document member `Parameters: Parameters` is not serializable by derive)
-#   CreateApprovalPolicy (document member `Actions: list[str]` is not serializable by derive)
-#   CreateBrand (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateCustomPermissions (document member `Governance: Governance` is not serializable by derive)
-#   CreateDashboard (document member `Parameters: Parameters` is not serializable by derive)
-#   CreateDataSet (document member `PhysicalTableMap: dict[str, PhysicalTable]` is not serializable by derive)
-#   CreateDataSource (document member `DataSourceParameters: DataSourceParameters` is not serializable by derive)
-#   CreateDlpSetting (document member `ProviderConfig: ProviderConfig` is not serializable by derive)
-#   CreateFlow (document member `Permissions: list[Permission]` is not serializable by derive)
-#   CreateFolder (document member `Permissions: list[ResourcePermission]` is not serializable by derive)
-#   CreateIAMPolicyAssignment (document member `Identities: dict[str, list[str]]` is not serializable by derive)
-#   CreateKnowledgeBase (document member `Permissions: list[ResourcePermission]` is not serializable by derive)
-#   CreateLimitsProfile (document member `resourceLimits: dict[ResourceType, ProfileLimitValue]` is not serializable by derive)
-#   CreateNamespace (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateOAuthClientApplication (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateTemplate (document member `Permissions: list[ResourcePermission]` is not serializable by derive)
-#   CreateTheme (document member `Configuration: ThemeConfiguration` is not serializable by derive)
-#   CreateTopic (document member `Topic: TopicDetails` is not serializable by derive)
-#   CreateTopicV2 (document member `Topic: TopicV2Details` is not serializable by derive)
-#   CreateVPCConnection (document member `SubnetIds: list[str]` is not serializable by derive)
+#   CreateLimitsProfile (document member `resourceLimits: dict[ResourceType, ProfileLimitValue]` is not serializable)
 #   DeleteAnalysis (httpQuery `ForceDeleteWithoutRecovery` has unsupported type bool)
 #   DescribeAccountCustomization (httpQuery `Resolved` has unsupported type bool)
 #   DescribeAutomationJob (httpQuery `IncludeInputPayload` has unsupported type bool)
 #   DescribeKeyRegistration (httpQuery `DefaultKeyOnly` has unsupported type bool)
-#   GenerateEmbedUrlForAnonymousUser (document member `SessionTags: list[SessionTag]` is not serializable by derive)
-#   GenerateEmbedUrlForRegisteredUser (document member `AllowedDomains: list[str]` is not serializable by derive)
-#   GenerateEmbedUrlForRegisteredUserWithIdentity (document member `AllowedDomains: list[str]` is not serializable by derive)
 #   GetDashboardEmbedUrl (httpQuery `UndoRedoDisabled` has unsupported type bool)
-#   ListUsersIndexCapacity (document member `filters: list[UserIndexCapacityFilter]` is not serializable by derive)
-#   RegisterUser (document member `Tags: list[Tag]` is not serializable by derive)
 #   RestoreAnalysis (httpQuery `RestoreToFolders` has unsupported type bool)
-#   SearchActionConnectors (document member `Filters: list[ActionConnectorSearchFilter]` is not serializable by derive)
-#   SearchAgents (document member `Filters: list[AgentSearchFilter]` is not serializable by derive)
-#   SearchAnalyses (document member `Filters: list[AnalysisSearchFilter]` is not serializable by derive)
-#   SearchApps (document member `Filters: list[SearchAppsFilter]` is not serializable by derive)
-#   SearchDashboards (document member `Filters: list[DashboardSearchFilter]` is not serializable by derive)
-#   SearchDataSets (document member `Filters: list[DataSetSearchFilter]` is not serializable by derive)
-#   SearchDataSources (document member `Filters: list[DataSourceSearchFilter]` is not serializable by derive)
-#   SearchFlows (document member `Filters: list[SearchFlowsFilter]` is not serializable by derive)
-#   SearchFolders (document member `Filters: list[FolderSearchFilter]` is not serializable by derive)
-#   SearchGroups (document member `Filters: list[GroupSearchFilter]` is not serializable by derive)
-#   SearchKnowledgeBases (document member `Filters: list[KnowledgeBaseSearchFilter]` is not serializable by derive)
-#   SearchSpaces (document member `Filters: list[SpaceQuicksightSearchFilter]` is not serializable by derive)
-#   SearchTopics (document member `Filters: list[TopicSearchFilter]` is not serializable by derive)
-#   SearchTopicsV2 (document member `Filters: list[TopicSearchFilter]` is not serializable by derive)
-#   StartAssetBundleExportJob (document member `ResourceArns: list[str]` is not serializable by derive)
-#   StartAssetBundleImportJob (document member `OverrideParameters: AssetBundleImportJobOverrideParameters` is not serializable by derive)
-#   StartDashboardSnapshotJob (document member `UserConfiguration: SnapshotUserConfiguration` is not serializable by derive)
-#   TagResource (document member `Tags: list[Tag]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateActionConnectorPermissions (document member `GrantPermissions: list[ResourcePermission]` is not serializable by derive)
-#   UpdateAgent (document member `StarterPrompts: list[str]` is not serializable by derive)
-#   UpdateAgentPermissions (document member `GrantPermissions: list[ResourcePermission]` is not serializable by derive)
-#   UpdateAnalysis (document member `Parameters: Parameters` is not serializable by derive)
-#   UpdateAnalysisPermissions (document member `GrantPermissions: list[ResourcePermission]` is not serializable by derive)
-#   UpdateAppPermissions (document member `GrantPermissions: list[ResourcePermission]` is not serializable by derive)
-#   UpdateApprovalPolicy (document member `Actions: list[str]` is not serializable by derive)
-#   UpdateCustomPermissions (document member `Governance: Governance` is not serializable by derive)
-#   UpdateDashboard (document member `SourceEntity: DashboardSourceEntity` is not serializable by derive)
-#   UpdateDashboardLinks (document member `LinkEntities: list[str]` is not serializable by derive)
-#   UpdateDashboardPermissions (document member `GrantPermissions: list[ResourcePermission]` is not serializable by derive)
-#   UpdateDataSet (document member `PhysicalTableMap: dict[str, PhysicalTable]` is not serializable by derive)
-#   UpdateDataSetPermissions (document member `GrantPermissions: list[ResourcePermission]` is not serializable by derive)
-#   UpdateDataSource (document member `DataSourceParameters: DataSourceParameters` is not serializable by derive)
-#   UpdateDataSourcePermissions (document member `GrantPermissions: list[ResourcePermission]` is not serializable by derive)
-#   UpdateDlpSetting (document member `ProviderConfig: ProviderConfig` is not serializable by derive)
-#   UpdateFlowPermissions (document member `GrantPermissions: list[Permission]` is not serializable by derive)
-#   UpdateFolderPermissions (document member `GrantPermissions: list[ResourcePermission]` is not serializable by derive)
-#   UpdateIAMPolicyAssignment (document member `Identities: dict[str, list[str]]` is not serializable by derive)
-#   UpdateIdentityPropagationConfig (document member `AuthorizedTargets: list[str]` is not serializable by derive)
-#   UpdateIpRestriction (document member `IpRestrictionRuleMap: dict[str, str]` is not serializable by derive)
-#   UpdateKeyRegistration (document member `KeyRegistration: list[RegisteredCustomerManagedKey]` is not serializable by derive)
-#   UpdateKnowledgeBasePermissions (document member `GrantPermissions: list[ResourcePermission]` is not serializable by derive)
-#   UpdateLimitsProfile (document member `resourceLimits: dict[ResourceType, ProfileLimitValue]` is not serializable by derive)
-#   UpdateSpacePermissions (document member `GrantPermissions: list[ResourcePermission]` is not serializable by derive)
-#   UpdateSpaceResources (document member `AddResources: list[SpaceResourceOperation]` is not serializable by derive)
-#   UpdateTemplate (document member `SourceEntity: TemplateSourceEntity` is not serializable by derive)
-#   UpdateTemplatePermissions (document member `GrantPermissions: list[ResourcePermission]` is not serializable by derive)
-#   UpdateTheme (document member `Configuration: ThemeConfiguration` is not serializable by derive)
-#   UpdateThemePermissions (document member `GrantPermissions: list[ResourcePermission]` is not serializable by derive)
-#   UpdateTopic (document member `Topic: TopicDetails` is not serializable by derive)
-#   UpdateTopicPermissions (document member `GrantPermissions: list[ResourcePermission]` is not serializable by derive)
-#   UpdateTopicPermissionsV2 (document member `GrantPermissions: list[ResourcePermission]` is not serializable by derive)
-#   UpdateTopicV2 (document member `Topic: TopicV2Details` is not serializable by derive)
-#   UpdateVPCConnection (document member `SubnetIds: list[str]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   SearchActionConnectors (operation not generated)
-#   SearchAnalyses (operation not generated)
-#   SearchApps (operation not generated)
-#   SearchDashboards (operation not generated)
-#   SearchDataSets (operation not generated)
-#   SearchDataSources (operation not generated)
-#   SearchFlows (operation not generated)
-#   SearchFolders (operation not generated)
-#   SearchGroups (operation not generated)
-#   SearchKnowledgeBases (operation not generated)
-#   SearchTopics (operation not generated)
-#   SearchTopicsV2 (operation not generated)
+#   UpdateLimitsProfile (document member `resourceLimits: dict[ResourceType, ProfileLimitValue]` is not serializable)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -16308,10 +16816,8364 @@ struct UpdateUserCustomPermissionDocument:
     # document members of UpdateUserCustomPermission
     str CustomPermissionsName
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def quicksight_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def quicksight_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def quicksight_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AggFunction to a compact JSON object (declaration order).
+def agg_function_to_json(AggFunction v) -> str:
+    list[str] parts = []
+    if v.Aggregation.is_some():
+        auto u0 = v.Aggregation.unwrap()
+        parts.append("\"Aggregation\":" + u0.to_json())
+    if v.AggregationFunctionParameters.is_some():
+        auto u1 = v.AggregationFunctionParameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(quicksight_json_str(k2) + ":" + quicksight_json_str(u1[k2]))
+        parts.append("\"AggregationFunctionParameters\":" + quicksight_json_obj(m2))
+    if v.Period.is_some():
+        auto u3 = v.Period.unwrap()
+        parts.append("\"Period\":" + u3.to_json())
+    if v.PeriodField.is_some():
+        auto u4 = v.PeriodField.unwrap()
+        parts.append("\"PeriodField\":" + quicksight_json_str(u4))
+    return quicksight_json_obj(parts)
+
+# Serialize AggregateOperation to a compact JSON object (declaration order).
+def aggregate_operation_to_json(AggregateOperation v) -> str:
+    list[str] parts = []
+    parts.append("\"Alias\":" + quicksight_json_str(v.Alias))
+    parts.append("\"Source\":" + transform_operation_source_to_json(v.Source))
+    if v.GroupByColumnNames.is_some():
+        auto u0 = v.GroupByColumnNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"GroupByColumnNames\":" + quicksight_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.Aggregations:
+        e2.append(x2.to_json())
+    parts.append("\"Aggregations\":" + quicksight_json_arr(e2))
+    return quicksight_json_obj(parts)
+
+# Serialize AnalysisDefinition to a compact JSON object (declaration order).
+def analysis_definition_to_json(AnalysisDefinition v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.DataSetIdentifierDeclarations:
+        e0.append(x0.to_json())
+    parts.append("\"DataSetIdentifierDeclarations\":" + quicksight_json_arr(e0))
+    if v.TopicIdentifierDeclarations.is_some():
+        auto u1 = v.TopicIdentifierDeclarations.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"TopicIdentifierDeclarations\":" + quicksight_json_arr(e2))
+    if v.Sheets.is_some():
+        auto u3 = v.Sheets.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(sheet_definition_to_json(x4))
+        parts.append("\"Sheets\":" + quicksight_json_arr(e4))
+    if v.TooltipSheets.is_some():
+        auto u5 = v.TooltipSheets.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(tooltip_sheet_definition_to_json(x6))
+        parts.append("\"TooltipSheets\":" + quicksight_json_arr(e6))
+    if v.CalculatedFields.is_some():
+        auto u7 = v.CalculatedFields.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"CalculatedFields\":" + quicksight_json_arr(e8))
+    if v.ParameterDeclarations.is_some():
+        auto u9 = v.ParameterDeclarations.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(parameter_declaration_to_json(x10))
+        parts.append("\"ParameterDeclarations\":" + quicksight_json_arr(e10))
+    if v.FilterGroups.is_some():
+        auto u11 = v.FilterGroups.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(filter_group_to_json(x12))
+        parts.append("\"FilterGroups\":" + quicksight_json_arr(e12))
+    if v.ColumnConfigurations.is_some():
+        auto u13 = v.ColumnConfigurations.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(column_configuration_to_json(x14))
+        parts.append("\"ColumnConfigurations\":" + quicksight_json_arr(e14))
+    if v.AnalysisDefaults.is_some():
+        auto u15 = v.AnalysisDefaults.unwrap()
+        parts.append("\"AnalysisDefaults\":" + u15.to_json())
+    if v.Options.is_some():
+        auto u16 = v.Options.unwrap()
+        parts.append("\"Options\":" + asset_options_to_json(u16))
+    if v.QueryExecutionOptions.is_some():
+        auto u17 = v.QueryExecutionOptions.unwrap()
+        parts.append("\"QueryExecutionOptions\":" + u17.to_json())
+    if v.StaticFiles.is_some():
+        auto u18 = v.StaticFiles.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(x19.to_json())
+        parts.append("\"StaticFiles\":" + quicksight_json_arr(e19))
+    return quicksight_json_obj(parts)
+
+# Serialize AnalysisSourceEntity to a compact JSON object (declaration order).
+def analysis_source_entity_to_json(AnalysisSourceEntity v) -> str:
+    list[str] parts = []
+    if v.SourceTemplate.is_some():
+        auto u0 = v.SourceTemplate.unwrap()
+        parts.append("\"SourceTemplate\":" + analysis_source_template_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize AnalysisSourceTemplate to a compact JSON object (declaration order).
+def analysis_source_template_to_json(AnalysisSourceTemplate v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.DataSetReferences:
+        e0.append(x0.to_json())
+    parts.append("\"DataSetReferences\":" + quicksight_json_arr(e0))
+    if v.TopicReferences.is_some():
+        auto u1 = v.TopicReferences.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"TopicReferences\":" + quicksight_json_arr(e2))
+    parts.append("\"Arn\":" + quicksight_json_str(v.Arn))
+    return quicksight_json_obj(parts)
+
+# Serialize AnonymousUserDashboardEmbeddingConfiguration to a compact JSON object (declaration order).
+def anonymous_user_dashboard_embedding_configuration_to_json(AnonymousUserDashboardEmbeddingConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"InitialDashboardId\":" + quicksight_json_str(v.InitialDashboardId))
+    if v.EnabledFeatures.is_some():
+        auto u0 = v.EnabledFeatures.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"EnabledFeatures\":" + quicksight_json_arr(e1))
+    if v.DisabledFeatures.is_some():
+        auto u2 = v.DisabledFeatures.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(quicksight_json_str(x3))
+        parts.append("\"DisabledFeatures\":" + quicksight_json_arr(e3))
+    if v.FeatureConfigurations.is_some():
+        auto u4 = v.FeatureConfigurations.unwrap()
+        parts.append("\"FeatureConfigurations\":" + u4.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize AnonymousUserEmbeddingExperienceConfiguration to a compact JSON object (declaration order).
+def anonymous_user_embedding_experience_configuration_to_json(AnonymousUserEmbeddingExperienceConfiguration v) -> str:
+    list[str] parts = []
+    if v.Dashboard.is_some():
+        auto u0 = v.Dashboard.unwrap()
+        parts.append("\"Dashboard\":" + anonymous_user_dashboard_embedding_configuration_to_json(u0))
+    if v.DashboardVisual.is_some():
+        auto u1 = v.DashboardVisual.unwrap()
+        parts.append("\"DashboardVisual\":" + u1.to_json())
+    if v.QSearchBar.is_some():
+        auto u2 = v.QSearchBar.unwrap()
+        parts.append("\"QSearchBar\":" + u2.to_json())
+    if v.GenerativeQnA.is_some():
+        auto u3 = v.GenerativeQnA.unwrap()
+        parts.append("\"GenerativeQnA\":" + u3.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize AppendOperation to a compact JSON object (declaration order).
+def append_operation_to_json(AppendOperation v) -> str:
+    list[str] parts = []
+    parts.append("\"Alias\":" + quicksight_json_str(v.Alias))
+    if v.FirstSource.is_some():
+        auto u0 = v.FirstSource.unwrap()
+        parts.append("\"FirstSource\":" + transform_operation_source_to_json(u0))
+    if v.SecondSource.is_some():
+        auto u1 = v.SecondSource.unwrap()
+        parts.append("\"SecondSource\":" + transform_operation_source_to_json(u1))
+    list[str] e2 = []
+    for x2 in v.AppendedColumns:
+        e2.append(x2.to_json())
+    parts.append("\"AppendedColumns\":" + quicksight_json_arr(e2))
+    return quicksight_json_obj(parts)
+
+# Serialize ApplicableTo to a compact JSON object (declaration order).
+def applicable_to_to_json(ApplicableTo v) -> str:
+    list[str] parts = []
+    parts.append("\"Type\":" + quicksight_json_str(v.Type))
+    if v.GroupArns.is_some():
+        auto u0 = v.GroupArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"GroupArns\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleCloudFormationOverridePropertyConfiguration to a compact JSON object (declaration order).
+def asset_bundle_cloud_formation_override_property_configuration_to_json(AssetBundleCloudFormationOverridePropertyConfiguration v) -> str:
+    list[str] parts = []
+    if v.ResourceIdOverrideConfiguration.is_some():
+        auto u0 = v.ResourceIdOverrideConfiguration.unwrap()
+        parts.append("\"ResourceIdOverrideConfiguration\":" + u0.to_json())
+    if v.VPCConnections.is_some():
+        auto u1 = v.VPCConnections.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(asset_bundle_export_job_vpc_connection_override_properties_to_json(x2))
+        parts.append("\"VPCConnections\":" + quicksight_json_arr(e2))
+    if v.RefreshSchedules.is_some():
+        auto u3 = v.RefreshSchedules.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(asset_bundle_export_job_refresh_schedule_override_properties_to_json(x4))
+        parts.append("\"RefreshSchedules\":" + quicksight_json_arr(e4))
+    if v.DataSources.is_some():
+        auto u5 = v.DataSources.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(asset_bundle_export_job_data_source_override_properties_to_json(x6))
+        parts.append("\"DataSources\":" + quicksight_json_arr(e6))
+    if v.DataSets.is_some():
+        auto u7 = v.DataSets.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(asset_bundle_export_job_data_set_override_properties_to_json(x8))
+        parts.append("\"DataSets\":" + quicksight_json_arr(e8))
+    if v.Themes.is_some():
+        auto u9 = v.Themes.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(asset_bundle_export_job_theme_override_properties_to_json(x10))
+        parts.append("\"Themes\":" + quicksight_json_arr(e10))
+    if v.Analyses.is_some():
+        auto u11 = v.Analyses.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(asset_bundle_export_job_analysis_override_properties_to_json(x12))
+        parts.append("\"Analyses\":" + quicksight_json_arr(e12))
+    if v.Dashboards.is_some():
+        auto u13 = v.Dashboards.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(asset_bundle_export_job_dashboard_override_properties_to_json(x14))
+        parts.append("\"Dashboards\":" + quicksight_json_arr(e14))
+    if v.Folders.is_some():
+        auto u15 = v.Folders.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(asset_bundle_export_job_folder_override_properties_to_json(x16))
+        parts.append("\"Folders\":" + quicksight_json_arr(e16))
+    if v.TopicsV2.is_some():
+        auto u17 = v.TopicsV2.unwrap()
+        list[str] e18 = []
+        for x18 in u17:
+            e18.append(asset_bundle_export_job_topic_v2_override_properties_to_json(x18))
+        parts.append("\"TopicsV2\":" + quicksight_json_arr(e18))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleExportJobAnalysisOverrideProperties to a compact JSON object (declaration order).
+def asset_bundle_export_job_analysis_override_properties_to_json(AssetBundleExportJobAnalysisOverrideProperties v) -> str:
+    list[str] parts = []
+    parts.append("\"Arn\":" + quicksight_json_str(v.Arn))
+    list[str] e0 = []
+    for x0 in v.Properties:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"Properties\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleExportJobDashboardOverrideProperties to a compact JSON object (declaration order).
+def asset_bundle_export_job_dashboard_override_properties_to_json(AssetBundleExportJobDashboardOverrideProperties v) -> str:
+    list[str] parts = []
+    parts.append("\"Arn\":" + quicksight_json_str(v.Arn))
+    list[str] e0 = []
+    for x0 in v.Properties:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"Properties\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleExportJobDataSetOverrideProperties to a compact JSON object (declaration order).
+def asset_bundle_export_job_data_set_override_properties_to_json(AssetBundleExportJobDataSetOverrideProperties v) -> str:
+    list[str] parts = []
+    parts.append("\"Arn\":" + quicksight_json_str(v.Arn))
+    list[str] e0 = []
+    for x0 in v.Properties:
+        e0.append(x0.to_json())
+    parts.append("\"Properties\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleExportJobDataSourceOverrideProperties to a compact JSON object (declaration order).
+def asset_bundle_export_job_data_source_override_properties_to_json(AssetBundleExportJobDataSourceOverrideProperties v) -> str:
+    list[str] parts = []
+    parts.append("\"Arn\":" + quicksight_json_str(v.Arn))
+    list[str] e0 = []
+    for x0 in v.Properties:
+        e0.append(x0.to_json())
+    parts.append("\"Properties\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleExportJobFolderOverrideProperties to a compact JSON object (declaration order).
+def asset_bundle_export_job_folder_override_properties_to_json(AssetBundleExportJobFolderOverrideProperties v) -> str:
+    list[str] parts = []
+    parts.append("\"Arn\":" + quicksight_json_str(v.Arn))
+    list[str] e0 = []
+    for x0 in v.Properties:
+        e0.append(x0.to_json())
+    parts.append("\"Properties\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleExportJobRefreshScheduleOverrideProperties to a compact JSON object (declaration order).
+def asset_bundle_export_job_refresh_schedule_override_properties_to_json(AssetBundleExportJobRefreshScheduleOverrideProperties v) -> str:
+    list[str] parts = []
+    parts.append("\"Arn\":" + quicksight_json_str(v.Arn))
+    list[str] e0 = []
+    for x0 in v.Properties:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"Properties\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleExportJobThemeOverrideProperties to a compact JSON object (declaration order).
+def asset_bundle_export_job_theme_override_properties_to_json(AssetBundleExportJobThemeOverrideProperties v) -> str:
+    list[str] parts = []
+    parts.append("\"Arn\":" + quicksight_json_str(v.Arn))
+    list[str] e0 = []
+    for x0 in v.Properties:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"Properties\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleExportJobTopicV2OverrideProperties to a compact JSON object (declaration order).
+def asset_bundle_export_job_topic_v2_override_properties_to_json(AssetBundleExportJobTopicV2OverrideProperties v) -> str:
+    list[str] parts = []
+    parts.append("\"Arn\":" + quicksight_json_str(v.Arn))
+    list[str] e0 = []
+    for x0 in v.Properties:
+        e0.append(x0.to_json())
+    parts.append("\"Properties\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleExportJobVPCConnectionOverrideProperties to a compact JSON object (declaration order).
+def asset_bundle_export_job_vpc_connection_override_properties_to_json(AssetBundleExportJobVPCConnectionOverrideProperties v) -> str:
+    list[str] parts = []
+    parts.append("\"Arn\":" + quicksight_json_str(v.Arn))
+    list[str] e0 = []
+    for x0 in v.Properties:
+        e0.append(x0.to_json())
+    parts.append("\"Properties\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleImportJobAnalysisOverridePermissions to a compact JSON object (declaration order).
+def asset_bundle_import_job_analysis_override_permissions_to_json(AssetBundleImportJobAnalysisOverridePermissions v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AnalysisIds:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"AnalysisIds\":" + quicksight_json_arr(e0))
+    parts.append("\"Permissions\":" + asset_bundle_resource_permissions_to_json(v.Permissions))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleImportJobAnalysisOverrideTags to a compact JSON object (declaration order).
+def asset_bundle_import_job_analysis_override_tags_to_json(AssetBundleImportJobAnalysisOverrideTags v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AnalysisIds:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"AnalysisIds\":" + quicksight_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.Tags:
+        e1.append(x1.to_json())
+    parts.append("\"Tags\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleImportJobDashboardOverridePermissions to a compact JSON object (declaration order).
+def asset_bundle_import_job_dashboard_override_permissions_to_json(AssetBundleImportJobDashboardOverridePermissions v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.DashboardIds:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"DashboardIds\":" + quicksight_json_arr(e0))
+    if v.Permissions.is_some():
+        auto u1 = v.Permissions.unwrap()
+        parts.append("\"Permissions\":" + asset_bundle_resource_permissions_to_json(u1))
+    if v.LinkSharingConfiguration.is_some():
+        auto u2 = v.LinkSharingConfiguration.unwrap()
+        parts.append("\"LinkSharingConfiguration\":" + asset_bundle_resource_link_sharing_configuration_to_json(u2))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleImportJobDashboardOverrideTags to a compact JSON object (declaration order).
+def asset_bundle_import_job_dashboard_override_tags_to_json(AssetBundleImportJobDashboardOverrideTags v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.DashboardIds:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"DashboardIds\":" + quicksight_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.Tags:
+        e1.append(x1.to_json())
+    parts.append("\"Tags\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleImportJobDataSetOverridePermissions to a compact JSON object (declaration order).
+def asset_bundle_import_job_data_set_override_permissions_to_json(AssetBundleImportJobDataSetOverridePermissions v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.DataSetIds:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"DataSetIds\":" + quicksight_json_arr(e0))
+    parts.append("\"Permissions\":" + asset_bundle_resource_permissions_to_json(v.Permissions))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleImportJobDataSetOverrideTags to a compact JSON object (declaration order).
+def asset_bundle_import_job_data_set_override_tags_to_json(AssetBundleImportJobDataSetOverrideTags v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.DataSetIds:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"DataSetIds\":" + quicksight_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.Tags:
+        e1.append(x1.to_json())
+    parts.append("\"Tags\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleImportJobDataSourceOverrideParameters to a compact JSON object (declaration order).
+def asset_bundle_import_job_data_source_override_parameters_to_json(AssetBundleImportJobDataSourceOverrideParameters v) -> str:
+    list[str] parts = []
+    parts.append("\"DataSourceId\":" + quicksight_json_str(v.DataSourceId))
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + quicksight_json_str(u0))
+    if v.DataSourceParameters.is_some():
+        auto u1 = v.DataSourceParameters.unwrap()
+        parts.append("\"DataSourceParameters\":" + data_source_parameters_to_json(u1))
+    if v.VpcConnectionProperties.is_some():
+        auto u2 = v.VpcConnectionProperties.unwrap()
+        parts.append("\"VpcConnectionProperties\":" + u2.to_json())
+    if v.SslProperties.is_some():
+        auto u3 = v.SslProperties.unwrap()
+        parts.append("\"SslProperties\":" + u3.to_json())
+    if v.Credentials.is_some():
+        auto u4 = v.Credentials.unwrap()
+        parts.append("\"Credentials\":" + u4.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleImportJobDataSourceOverridePermissions to a compact JSON object (declaration order).
+def asset_bundle_import_job_data_source_override_permissions_to_json(AssetBundleImportJobDataSourceOverridePermissions v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.DataSourceIds:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"DataSourceIds\":" + quicksight_json_arr(e0))
+    parts.append("\"Permissions\":" + asset_bundle_resource_permissions_to_json(v.Permissions))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleImportJobDataSourceOverrideTags to a compact JSON object (declaration order).
+def asset_bundle_import_job_data_source_override_tags_to_json(AssetBundleImportJobDataSourceOverrideTags v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.DataSourceIds:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"DataSourceIds\":" + quicksight_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.Tags:
+        e1.append(x1.to_json())
+    parts.append("\"Tags\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleImportJobFolderOverridePermissions to a compact JSON object (declaration order).
+def asset_bundle_import_job_folder_override_permissions_to_json(AssetBundleImportJobFolderOverridePermissions v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.FolderIds:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"FolderIds\":" + quicksight_json_arr(e0))
+    if v.Permissions.is_some():
+        auto u1 = v.Permissions.unwrap()
+        parts.append("\"Permissions\":" + asset_bundle_resource_permissions_to_json(u1))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleImportJobFolderOverrideTags to a compact JSON object (declaration order).
+def asset_bundle_import_job_folder_override_tags_to_json(AssetBundleImportJobFolderOverrideTags v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.FolderIds:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"FolderIds\":" + quicksight_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.Tags:
+        e1.append(x1.to_json())
+    parts.append("\"Tags\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleImportJobOverrideParameters to a compact JSON object (declaration order).
+def asset_bundle_import_job_override_parameters_to_json(AssetBundleImportJobOverrideParameters v) -> str:
+    list[str] parts = []
+    if v.ResourceIdOverrideConfiguration.is_some():
+        auto u0 = v.ResourceIdOverrideConfiguration.unwrap()
+        parts.append("\"ResourceIdOverrideConfiguration\":" + u0.to_json())
+    if v.VPCConnections.is_some():
+        auto u1 = v.VPCConnections.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(asset_bundle_import_job_vpc_connection_override_parameters_to_json(x2))
+        parts.append("\"VPCConnections\":" + quicksight_json_arr(e2))
+    if v.RefreshSchedules.is_some():
+        auto u3 = v.RefreshSchedules.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"RefreshSchedules\":" + quicksight_json_arr(e4))
+    if v.DataSources.is_some():
+        auto u5 = v.DataSources.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(asset_bundle_import_job_data_source_override_parameters_to_json(x6))
+        parts.append("\"DataSources\":" + quicksight_json_arr(e6))
+    if v.DataSets.is_some():
+        auto u7 = v.DataSets.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"DataSets\":" + quicksight_json_arr(e8))
+    if v.Themes.is_some():
+        auto u9 = v.Themes.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"Themes\":" + quicksight_json_arr(e10))
+    if v.Analyses.is_some():
+        auto u11 = v.Analyses.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"Analyses\":" + quicksight_json_arr(e12))
+    if v.Dashboards.is_some():
+        auto u13 = v.Dashboards.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(x14.to_json())
+        parts.append("\"Dashboards\":" + quicksight_json_arr(e14))
+    if v.Folders.is_some():
+        auto u15 = v.Folders.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(x16.to_json())
+        parts.append("\"Folders\":" + quicksight_json_arr(e16))
+    if v.TopicsV2.is_some():
+        auto u17 = v.TopicsV2.unwrap()
+        list[str] e18 = []
+        for x18 in u17:
+            e18.append(x18.to_json())
+        parts.append("\"TopicsV2\":" + quicksight_json_arr(e18))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleImportJobOverridePermissions to a compact JSON object (declaration order).
+def asset_bundle_import_job_override_permissions_to_json(AssetBundleImportJobOverridePermissions v) -> str:
+    list[str] parts = []
+    if v.DataSources.is_some():
+        auto u0 = v.DataSources.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(asset_bundle_import_job_data_source_override_permissions_to_json(x1))
+        parts.append("\"DataSources\":" + quicksight_json_arr(e1))
+    if v.DataSets.is_some():
+        auto u2 = v.DataSets.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(asset_bundle_import_job_data_set_override_permissions_to_json(x3))
+        parts.append("\"DataSets\":" + quicksight_json_arr(e3))
+    if v.Themes.is_some():
+        auto u4 = v.Themes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(asset_bundle_import_job_theme_override_permissions_to_json(x5))
+        parts.append("\"Themes\":" + quicksight_json_arr(e5))
+    if v.Analyses.is_some():
+        auto u6 = v.Analyses.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(asset_bundle_import_job_analysis_override_permissions_to_json(x7))
+        parts.append("\"Analyses\":" + quicksight_json_arr(e7))
+    if v.Dashboards.is_some():
+        auto u8 = v.Dashboards.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(asset_bundle_import_job_dashboard_override_permissions_to_json(x9))
+        parts.append("\"Dashboards\":" + quicksight_json_arr(e9))
+    if v.Folders.is_some():
+        auto u10 = v.Folders.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(asset_bundle_import_job_folder_override_permissions_to_json(x11))
+        parts.append("\"Folders\":" + quicksight_json_arr(e11))
+    if v.TopicsV2.is_some():
+        auto u12 = v.TopicsV2.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(asset_bundle_import_job_topic_v2_override_permissions_to_json(x13))
+        parts.append("\"TopicsV2\":" + quicksight_json_arr(e13))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleImportJobOverrideTags to a compact JSON object (declaration order).
+def asset_bundle_import_job_override_tags_to_json(AssetBundleImportJobOverrideTags v) -> str:
+    list[str] parts = []
+    if v.VPCConnections.is_some():
+        auto u0 = v.VPCConnections.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(asset_bundle_import_job_vpc_connection_override_tags_to_json(x1))
+        parts.append("\"VPCConnections\":" + quicksight_json_arr(e1))
+    if v.DataSources.is_some():
+        auto u2 = v.DataSources.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(asset_bundle_import_job_data_source_override_tags_to_json(x3))
+        parts.append("\"DataSources\":" + quicksight_json_arr(e3))
+    if v.DataSets.is_some():
+        auto u4 = v.DataSets.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(asset_bundle_import_job_data_set_override_tags_to_json(x5))
+        parts.append("\"DataSets\":" + quicksight_json_arr(e5))
+    if v.Themes.is_some():
+        auto u6 = v.Themes.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(asset_bundle_import_job_theme_override_tags_to_json(x7))
+        parts.append("\"Themes\":" + quicksight_json_arr(e7))
+    if v.Analyses.is_some():
+        auto u8 = v.Analyses.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(asset_bundle_import_job_analysis_override_tags_to_json(x9))
+        parts.append("\"Analyses\":" + quicksight_json_arr(e9))
+    if v.Dashboards.is_some():
+        auto u10 = v.Dashboards.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(asset_bundle_import_job_dashboard_override_tags_to_json(x11))
+        parts.append("\"Dashboards\":" + quicksight_json_arr(e11))
+    if v.Folders.is_some():
+        auto u12 = v.Folders.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(asset_bundle_import_job_folder_override_tags_to_json(x13))
+        parts.append("\"Folders\":" + quicksight_json_arr(e13))
+    if v.TopicsV2.is_some():
+        auto u14 = v.TopicsV2.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(asset_bundle_import_job_topic_v2_override_tags_to_json(x15))
+        parts.append("\"TopicsV2\":" + quicksight_json_arr(e15))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleImportJobThemeOverridePermissions to a compact JSON object (declaration order).
+def asset_bundle_import_job_theme_override_permissions_to_json(AssetBundleImportJobThemeOverridePermissions v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ThemeIds:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"ThemeIds\":" + quicksight_json_arr(e0))
+    parts.append("\"Permissions\":" + asset_bundle_resource_permissions_to_json(v.Permissions))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleImportJobThemeOverrideTags to a compact JSON object (declaration order).
+def asset_bundle_import_job_theme_override_tags_to_json(AssetBundleImportJobThemeOverrideTags v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ThemeIds:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"ThemeIds\":" + quicksight_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.Tags:
+        e1.append(x1.to_json())
+    parts.append("\"Tags\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleImportJobTopicV2OverridePermissions to a compact JSON object (declaration order).
+def asset_bundle_import_job_topic_v2_override_permissions_to_json(AssetBundleImportJobTopicV2OverridePermissions v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.TopicIds:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"TopicIds\":" + quicksight_json_arr(e0))
+    parts.append("\"Permissions\":" + asset_bundle_resource_permissions_to_json(v.Permissions))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleImportJobTopicV2OverrideTags to a compact JSON object (declaration order).
+def asset_bundle_import_job_topic_v2_override_tags_to_json(AssetBundleImportJobTopicV2OverrideTags v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.TopicIds:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"TopicIds\":" + quicksight_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.Tags:
+        e1.append(x1.to_json())
+    parts.append("\"Tags\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleImportJobVPCConnectionOverrideParameters to a compact JSON object (declaration order).
+def asset_bundle_import_job_vpc_connection_override_parameters_to_json(AssetBundleImportJobVPCConnectionOverrideParameters v) -> str:
+    list[str] parts = []
+    parts.append("\"VPCConnectionId\":" + quicksight_json_str(v.VPCConnectionId))
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + quicksight_json_str(u0))
+    if v.SubnetIds.is_some():
+        auto u1 = v.SubnetIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(quicksight_json_str(x2))
+        parts.append("\"SubnetIds\":" + quicksight_json_arr(e2))
+    if v.SecurityGroupIds.is_some():
+        auto u3 = v.SecurityGroupIds.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(quicksight_json_str(x4))
+        parts.append("\"SecurityGroupIds\":" + quicksight_json_arr(e4))
+    if v.DnsResolvers.is_some():
+        auto u5 = v.DnsResolvers.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(quicksight_json_str(x6))
+        parts.append("\"DnsResolvers\":" + quicksight_json_arr(e6))
+    if v.RoleArn.is_some():
+        auto u7 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + quicksight_json_str(u7))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleImportJobVPCConnectionOverrideTags to a compact JSON object (declaration order).
+def asset_bundle_import_job_vpc_connection_override_tags_to_json(AssetBundleImportJobVPCConnectionOverrideTags v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.VPCConnectionIds:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"VPCConnectionIds\":" + quicksight_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.Tags:
+        e1.append(x1.to_json())
+    parts.append("\"Tags\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleResourceLinkSharingConfiguration to a compact JSON object (declaration order).
+def asset_bundle_resource_link_sharing_configuration_to_json(AssetBundleResourceLinkSharingConfiguration v) -> str:
+    list[str] parts = []
+    if v.Permissions.is_some():
+        auto u0 = v.Permissions.unwrap()
+        parts.append("\"Permissions\":" + asset_bundle_resource_permissions_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetBundleResourcePermissions to a compact JSON object (declaration order).
+def asset_bundle_resource_permissions_to_json(AssetBundleResourcePermissions v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Principals:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"Principals\":" + quicksight_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.Actions:
+        e1.append(quicksight_json_str(x1))
+    parts.append("\"Actions\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize AssetOptions to a compact JSON object (declaration order).
+def asset_options_to_json(AssetOptions v) -> str:
+    list[str] parts = []
+    if v.Timezone.is_some():
+        auto u0 = v.Timezone.unwrap()
+        parts.append("\"Timezone\":" + quicksight_json_str(u0))
+    if v.WeekStart.is_some():
+        auto u1 = v.WeekStart.unwrap()
+        parts.append("\"WeekStart\":" + u1.to_json())
+    if v.QBusinessInsightsStatus.is_some():
+        auto u2 = v.QBusinessInsightsStatus.unwrap()
+        parts.append("\"QBusinessInsightsStatus\":" + u2.to_json())
+    if v.ExcludedDataSetArns.is_some():
+        auto u3 = v.ExcludedDataSetArns.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(quicksight_json_str(x4))
+        parts.append("\"ExcludedDataSetArns\":" + quicksight_json_arr(e4))
+    if v.CustomActionDefaults.is_some():
+        auto u5 = v.CustomActionDefaults.unwrap()
+        parts.append("\"CustomActionDefaults\":" + u5.to_json())
+    if v.VisualMessages.is_some():
+        auto u6 = v.VisualMessages.unwrap()
+        parts.append("\"VisualMessages\":" + u6.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize BarChartAggregatedFieldWells to a compact JSON object (declaration order).
+def bar_chart_aggregated_field_wells_to_json(BarChartAggregatedFieldWells v) -> str:
+    list[str] parts = []
+    if v.Category.is_some():
+        auto u0 = v.Category.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Category\":" + quicksight_json_arr(e1))
+    if v.Values.is_some():
+        auto u2 = v.Values.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Values\":" + quicksight_json_arr(e3))
+    if v.Colors.is_some():
+        auto u4 = v.Colors.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Colors\":" + quicksight_json_arr(e5))
+    if v.SmallMultiples.is_some():
+        auto u6 = v.SmallMultiples.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"SmallMultiples\":" + quicksight_json_arr(e7))
+    return quicksight_json_obj(parts)
+
+# Serialize BarChartConfiguration to a compact JSON object (declaration order).
+def bar_chart_configuration_to_json(BarChartConfiguration v) -> str:
+    list[str] parts = []
+    if v.FieldWells.is_some():
+        auto u0 = v.FieldWells.unwrap()
+        parts.append("\"FieldWells\":" + bar_chart_field_wells_to_json(u0))
+    if v.SortConfiguration.is_some():
+        auto u1 = v.SortConfiguration.unwrap()
+        parts.append("\"SortConfiguration\":" + bar_chart_sort_configuration_to_json(u1))
+    if v.Orientation.is_some():
+        auto u2 = v.Orientation.unwrap()
+        parts.append("\"Orientation\":" + u2.to_json())
+    if v.BarsArrangement.is_some():
+        auto u3 = v.BarsArrangement.unwrap()
+        parts.append("\"BarsArrangement\":" + u3.to_json())
+    if v.VisualPalette.is_some():
+        auto u4 = v.VisualPalette.unwrap()
+        parts.append("\"VisualPalette\":" + visual_palette_to_json(u4))
+    if v.SmallMultiplesOptions.is_some():
+        auto u5 = v.SmallMultiplesOptions.unwrap()
+        parts.append("\"SmallMultiplesOptions\":" + u5.to_json())
+    if v.CategoryAxis.is_some():
+        auto u6 = v.CategoryAxis.unwrap()
+        parts.append("\"CategoryAxis\":" + u6.to_json())
+    if v.CategoryLabelOptions.is_some():
+        auto u7 = v.CategoryLabelOptions.unwrap()
+        parts.append("\"CategoryLabelOptions\":" + chart_axis_label_options_to_json(u7))
+    if v.ValueAxis.is_some():
+        auto u8 = v.ValueAxis.unwrap()
+        parts.append("\"ValueAxis\":" + u8.to_json())
+    if v.ValueLabelOptions.is_some():
+        auto u9 = v.ValueLabelOptions.unwrap()
+        parts.append("\"ValueLabelOptions\":" + chart_axis_label_options_to_json(u9))
+    if v.ColorLabelOptions.is_some():
+        auto u10 = v.ColorLabelOptions.unwrap()
+        parts.append("\"ColorLabelOptions\":" + chart_axis_label_options_to_json(u10))
+    if v.DefaultSeriesSettings.is_some():
+        auto u11 = v.DefaultSeriesSettings.unwrap()
+        parts.append("\"DefaultSeriesSettings\":" + u11.to_json())
+    if v.Series.is_some():
+        auto u12 = v.Series.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"Series\":" + quicksight_json_arr(e13))
+    if v.Legend.is_some():
+        auto u14 = v.Legend.unwrap()
+        parts.append("\"Legend\":" + u14.to_json())
+    if v.DataLabels.is_some():
+        auto u15 = v.DataLabels.unwrap()
+        parts.append("\"DataLabels\":" + data_label_options_to_json(u15))
+    if v.Tooltip.is_some():
+        auto u16 = v.Tooltip.unwrap()
+        parts.append("\"Tooltip\":" + tooltip_options_to_json(u16))
+    if v.ReferenceLines.is_some():
+        auto u17 = v.ReferenceLines.unwrap()
+        list[str] e18 = []
+        for x18 in u17:
+            e18.append(x18.to_json())
+        parts.append("\"ReferenceLines\":" + quicksight_json_arr(e18))
+    if v.ContributionAnalysisDefaults.is_some():
+        auto u19 = v.ContributionAnalysisDefaults.unwrap()
+        list[str] e20 = []
+        for x20 in u19:
+            e20.append(contribution_analysis_default_to_json(x20))
+        parts.append("\"ContributionAnalysisDefaults\":" + quicksight_json_arr(e20))
+    if v.Interactions.is_some():
+        auto u21 = v.Interactions.unwrap()
+        parts.append("\"Interactions\":" + u21.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize BarChartFieldWells to a compact JSON object (declaration order).
+def bar_chart_field_wells_to_json(BarChartFieldWells v) -> str:
+    list[str] parts = []
+    if v.BarChartAggregatedFieldWells.is_some():
+        auto u0 = v.BarChartAggregatedFieldWells.unwrap()
+        parts.append("\"BarChartAggregatedFieldWells\":" + bar_chart_aggregated_field_wells_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize BarChartSortConfiguration to a compact JSON object (declaration order).
+def bar_chart_sort_configuration_to_json(BarChartSortConfiguration v) -> str:
+    list[str] parts = []
+    if v.CategorySort.is_some():
+        auto u0 = v.CategorySort.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"CategorySort\":" + quicksight_json_arr(e1))
+    if v.CategoryItemsLimit.is_some():
+        auto u2 = v.CategoryItemsLimit.unwrap()
+        parts.append("\"CategoryItemsLimit\":" + u2.to_json())
+    if v.ColorSort.is_some():
+        auto u3 = v.ColorSort.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"ColorSort\":" + quicksight_json_arr(e4))
+    if v.ColorItemsLimit.is_some():
+        auto u5 = v.ColorItemsLimit.unwrap()
+        parts.append("\"ColorItemsLimit\":" + u5.to_json())
+    if v.SmallMultiplesSort.is_some():
+        auto u6 = v.SmallMultiplesSort.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"SmallMultiplesSort\":" + quicksight_json_arr(e7))
+    if v.SmallMultiplesLimitConfiguration.is_some():
+        auto u8 = v.SmallMultiplesLimitConfiguration.unwrap()
+        parts.append("\"SmallMultiplesLimitConfiguration\":" + u8.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize BarChartVisual to a compact JSON object (declaration order).
+def bar_chart_visual_to_json(BarChartVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + u0.to_json())
+    if v.Subtitle.is_some():
+        auto u1 = v.Subtitle.unwrap()
+        parts.append("\"Subtitle\":" + u1.to_json())
+    if v.ChartConfiguration.is_some():
+        auto u2 = v.ChartConfiguration.unwrap()
+        parts.append("\"ChartConfiguration\":" + bar_chart_configuration_to_json(u2))
+    if v.Actions.is_some():
+        auto u3 = v.Actions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(visual_custom_action_to_json(x4))
+        parts.append("\"Actions\":" + quicksight_json_arr(e4))
+    if v.ColumnHierarchies.is_some():
+        auto u5 = v.ColumnHierarchies.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(column_hierarchy_to_json(x6))
+        parts.append("\"ColumnHierarchies\":" + quicksight_json_arr(e6))
+    if v.VisualContentAltText.is_some():
+        auto u7 = v.VisualContentAltText.unwrap()
+        parts.append("\"VisualContentAltText\":" + quicksight_json_str(u7))
+    return quicksight_json_obj(parts)
+
+# Serialize BodySectionConfiguration to a compact JSON object (declaration order).
+def body_section_configuration_to_json(BodySectionConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"SectionId\":" + quicksight_json_str(v.SectionId))
+    parts.append("\"Content\":" + body_section_content_to_json(v.Content))
+    if v.Style.is_some():
+        auto u0 = v.Style.unwrap()
+        parts.append("\"Style\":" + u0.to_json())
+    if v.PageBreakConfiguration.is_some():
+        auto u1 = v.PageBreakConfiguration.unwrap()
+        parts.append("\"PageBreakConfiguration\":" + u1.to_json())
+    if v.RepeatConfiguration.is_some():
+        auto u2 = v.RepeatConfiguration.unwrap()
+        parts.append("\"RepeatConfiguration\":" + body_section_repeat_configuration_to_json(u2))
+    return quicksight_json_obj(parts)
+
+# Serialize BodySectionContent to a compact JSON object (declaration order).
+def body_section_content_to_json(BodySectionContent v) -> str:
+    list[str] parts = []
+    if v.Layout.is_some():
+        auto u0 = v.Layout.unwrap()
+        parts.append("\"Layout\":" + section_layout_configuration_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize BodySectionDynamicCategoryDimensionConfiguration to a compact JSON object (declaration order).
+def body_section_dynamic_category_dimension_configuration_to_json(BodySectionDynamicCategoryDimensionConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"Column\":" + v.Column.to_json())
+    if v.Limit.is_some():
+        auto u0 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u0))
+    if v.SortByMetrics.is_some():
+        auto u1 = v.SortByMetrics.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"SortByMetrics\":" + quicksight_json_arr(e2))
+    return quicksight_json_obj(parts)
+
+# Serialize BodySectionDynamicNumericDimensionConfiguration to a compact JSON object (declaration order).
+def body_section_dynamic_numeric_dimension_configuration_to_json(BodySectionDynamicNumericDimensionConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"Column\":" + v.Column.to_json())
+    if v.Limit.is_some():
+        auto u0 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u0))
+    if v.SortByMetrics.is_some():
+        auto u1 = v.SortByMetrics.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"SortByMetrics\":" + quicksight_json_arr(e2))
+    return quicksight_json_obj(parts)
+
+# Serialize BodySectionRepeatConfiguration to a compact JSON object (declaration order).
+def body_section_repeat_configuration_to_json(BodySectionRepeatConfiguration v) -> str:
+    list[str] parts = []
+    if v.DimensionConfigurations.is_some():
+        auto u0 = v.DimensionConfigurations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(body_section_repeat_dimension_configuration_to_json(x1))
+        parts.append("\"DimensionConfigurations\":" + quicksight_json_arr(e1))
+    if v.PageBreakConfiguration.is_some():
+        auto u2 = v.PageBreakConfiguration.unwrap()
+        parts.append("\"PageBreakConfiguration\":" + u2.to_json())
+    if v.NonRepeatingVisuals.is_some():
+        auto u3 = v.NonRepeatingVisuals.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(quicksight_json_str(x4))
+        parts.append("\"NonRepeatingVisuals\":" + quicksight_json_arr(e4))
+    return quicksight_json_obj(parts)
+
+# Serialize BodySectionRepeatDimensionConfiguration to a compact JSON object (declaration order).
+def body_section_repeat_dimension_configuration_to_json(BodySectionRepeatDimensionConfiguration v) -> str:
+    list[str] parts = []
+    if v.DynamicCategoryDimensionConfiguration.is_some():
+        auto u0 = v.DynamicCategoryDimensionConfiguration.unwrap()
+        parts.append("\"DynamicCategoryDimensionConfiguration\":" + body_section_dynamic_category_dimension_configuration_to_json(u0))
+    if v.DynamicNumericDimensionConfiguration.is_some():
+        auto u1 = v.DynamicNumericDimensionConfiguration.unwrap()
+        parts.append("\"DynamicNumericDimensionConfiguration\":" + body_section_dynamic_numeric_dimension_configuration_to_json(u1))
+    return quicksight_json_obj(parts)
+
+# Serialize BoxPlotAggregatedFieldWells to a compact JSON object (declaration order).
+def box_plot_aggregated_field_wells_to_json(BoxPlotAggregatedFieldWells v) -> str:
+    list[str] parts = []
+    if v.GroupBy.is_some():
+        auto u0 = v.GroupBy.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"GroupBy\":" + quicksight_json_arr(e1))
+    if v.Values.is_some():
+        auto u2 = v.Values.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Values\":" + quicksight_json_arr(e3))
+    return quicksight_json_obj(parts)
+
+# Serialize BoxPlotChartConfiguration to a compact JSON object (declaration order).
+def box_plot_chart_configuration_to_json(BoxPlotChartConfiguration v) -> str:
+    list[str] parts = []
+    if v.FieldWells.is_some():
+        auto u0 = v.FieldWells.unwrap()
+        parts.append("\"FieldWells\":" + box_plot_field_wells_to_json(u0))
+    if v.SortConfiguration.is_some():
+        auto u1 = v.SortConfiguration.unwrap()
+        parts.append("\"SortConfiguration\":" + box_plot_sort_configuration_to_json(u1))
+    if v.BoxPlotOptions.is_some():
+        auto u2 = v.BoxPlotOptions.unwrap()
+        parts.append("\"BoxPlotOptions\":" + u2.to_json())
+    if v.CategoryAxis.is_some():
+        auto u3 = v.CategoryAxis.unwrap()
+        parts.append("\"CategoryAxis\":" + u3.to_json())
+    if v.CategoryLabelOptions.is_some():
+        auto u4 = v.CategoryLabelOptions.unwrap()
+        parts.append("\"CategoryLabelOptions\":" + chart_axis_label_options_to_json(u4))
+    if v.PrimaryYAxisDisplayOptions.is_some():
+        auto u5 = v.PrimaryYAxisDisplayOptions.unwrap()
+        parts.append("\"PrimaryYAxisDisplayOptions\":" + u5.to_json())
+    if v.PrimaryYAxisLabelOptions.is_some():
+        auto u6 = v.PrimaryYAxisLabelOptions.unwrap()
+        parts.append("\"PrimaryYAxisLabelOptions\":" + chart_axis_label_options_to_json(u6))
+    if v.Legend.is_some():
+        auto u7 = v.Legend.unwrap()
+        parts.append("\"Legend\":" + u7.to_json())
+    if v.Tooltip.is_some():
+        auto u8 = v.Tooltip.unwrap()
+        parts.append("\"Tooltip\":" + tooltip_options_to_json(u8))
+    if v.ReferenceLines.is_some():
+        auto u9 = v.ReferenceLines.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"ReferenceLines\":" + quicksight_json_arr(e10))
+    if v.VisualPalette.is_some():
+        auto u11 = v.VisualPalette.unwrap()
+        parts.append("\"VisualPalette\":" + visual_palette_to_json(u11))
+    if v.Interactions.is_some():
+        auto u12 = v.Interactions.unwrap()
+        parts.append("\"Interactions\":" + u12.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize BoxPlotFieldWells to a compact JSON object (declaration order).
+def box_plot_field_wells_to_json(BoxPlotFieldWells v) -> str:
+    list[str] parts = []
+    if v.BoxPlotAggregatedFieldWells.is_some():
+        auto u0 = v.BoxPlotAggregatedFieldWells.unwrap()
+        parts.append("\"BoxPlotAggregatedFieldWells\":" + box_plot_aggregated_field_wells_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize BoxPlotSortConfiguration to a compact JSON object (declaration order).
+def box_plot_sort_configuration_to_json(BoxPlotSortConfiguration v) -> str:
+    list[str] parts = []
+    if v.CategorySort.is_some():
+        auto u0 = v.CategorySort.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"CategorySort\":" + quicksight_json_arr(e1))
+    if v.PaginationConfiguration.is_some():
+        auto u2 = v.PaginationConfiguration.unwrap()
+        parts.append("\"PaginationConfiguration\":" + u2.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize BoxPlotVisual to a compact JSON object (declaration order).
+def box_plot_visual_to_json(BoxPlotVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + u0.to_json())
+    if v.Subtitle.is_some():
+        auto u1 = v.Subtitle.unwrap()
+        parts.append("\"Subtitle\":" + u1.to_json())
+    if v.ChartConfiguration.is_some():
+        auto u2 = v.ChartConfiguration.unwrap()
+        parts.append("\"ChartConfiguration\":" + box_plot_chart_configuration_to_json(u2))
+    if v.Actions.is_some():
+        auto u3 = v.Actions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(visual_custom_action_to_json(x4))
+        parts.append("\"Actions\":" + quicksight_json_arr(e4))
+    if v.ColumnHierarchies.is_some():
+        auto u5 = v.ColumnHierarchies.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(column_hierarchy_to_json(x6))
+        parts.append("\"ColumnHierarchies\":" + quicksight_json_arr(e6))
+    if v.VisualContentAltText.is_some():
+        auto u7 = v.VisualContentAltText.unwrap()
+        parts.append("\"VisualContentAltText\":" + quicksight_json_str(u7))
+    return quicksight_json_obj(parts)
+
+# Serialize CascadingControlConfiguration to a compact JSON object (declaration order).
+def cascading_control_configuration_to_json(CascadingControlConfiguration v) -> str:
+    list[str] parts = []
+    if v.SourceControls.is_some():
+        auto u0 = v.SourceControls.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"SourceControls\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize CastColumnTypesOperation to a compact JSON object (declaration order).
+def cast_column_types_operation_to_json(CastColumnTypesOperation v) -> str:
+    list[str] parts = []
+    parts.append("\"Alias\":" + quicksight_json_str(v.Alias))
+    parts.append("\"Source\":" + transform_operation_source_to_json(v.Source))
+    list[str] e0 = []
+    for x0 in v.CastColumnTypeOperations:
+        e0.append(x0.to_json())
+    parts.append("\"CastColumnTypeOperations\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize CategoryDrillDownFilter to a compact JSON object (declaration order).
+def category_drill_down_filter_to_json(CategoryDrillDownFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Column\":" + v.Column.to_json())
+    list[str] e0 = []
+    for x0 in v.CategoryValues:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"CategoryValues\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize CategoryFilter to a compact JSON object (declaration order).
+def category_filter_to_json(CategoryFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"FilterId\":" + quicksight_json_str(v.FilterId))
+    parts.append("\"Column\":" + v.Column.to_json())
+    parts.append("\"Configuration\":" + category_filter_configuration_to_json(v.Configuration))
+    if v.DefaultFilterControlConfiguration.is_some():
+        auto u0 = v.DefaultFilterControlConfiguration.unwrap()
+        parts.append("\"DefaultFilterControlConfiguration\":" + default_filter_control_configuration_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize CategoryFilterConfiguration to a compact JSON object (declaration order).
+def category_filter_configuration_to_json(CategoryFilterConfiguration v) -> str:
+    list[str] parts = []
+    if v.FilterListConfiguration.is_some():
+        auto u0 = v.FilterListConfiguration.unwrap()
+        parts.append("\"FilterListConfiguration\":" + filter_list_configuration_to_json(u0))
+    if v.CustomFilterListConfiguration.is_some():
+        auto u1 = v.CustomFilterListConfiguration.unwrap()
+        parts.append("\"CustomFilterListConfiguration\":" + custom_filter_list_configuration_to_json(u1))
+    if v.CustomFilterConfiguration.is_some():
+        auto u2 = v.CustomFilterConfiguration.unwrap()
+        parts.append("\"CustomFilterConfiguration\":" + u2.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize CategoryInnerFilter to a compact JSON object (declaration order).
+def category_inner_filter_to_json(CategoryInnerFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Column\":" + v.Column.to_json())
+    parts.append("\"Configuration\":" + category_filter_configuration_to_json(v.Configuration))
+    if v.DefaultFilterControlConfiguration.is_some():
+        auto u0 = v.DefaultFilterControlConfiguration.unwrap()
+        parts.append("\"DefaultFilterControlConfiguration\":" + default_filter_control_configuration_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize CellValueSynonym to a compact JSON object (declaration order).
+def cell_value_synonym_to_json(CellValueSynonym v) -> str:
+    list[str] parts = []
+    if v.CellValue.is_some():
+        auto u0 = v.CellValue.unwrap()
+        parts.append("\"CellValue\":" + quicksight_json_str(u0))
+    if v.Synonyms.is_some():
+        auto u1 = v.Synonyms.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(quicksight_json_str(x2))
+        parts.append("\"Synonyms\":" + quicksight_json_arr(e2))
+    return quicksight_json_obj(parts)
+
+# Serialize ChartAxisLabelOptions to a compact JSON object (declaration order).
+def chart_axis_label_options_to_json(ChartAxisLabelOptions v) -> str:
+    list[str] parts = []
+    if v.Visibility.is_some():
+        auto u0 = v.Visibility.unwrap()
+        parts.append("\"Visibility\":" + u0.to_json())
+    if v.SortIconVisibility.is_some():
+        auto u1 = v.SortIconVisibility.unwrap()
+        parts.append("\"SortIconVisibility\":" + u1.to_json())
+    if v.AxisLabelOptions.is_some():
+        auto u2 = v.AxisLabelOptions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"AxisLabelOptions\":" + quicksight_json_arr(e3))
+    return quicksight_json_obj(parts)
+
+# Serialize CollectiveConstant to a compact JSON object (declaration order).
+def collective_constant_to_json(CollectiveConstant v) -> str:
+    list[str] parts = []
+    if v.ValueList.is_some():
+        auto u0 = v.ValueList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"ValueList\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize ColorScale to a compact JSON object (declaration order).
+def color_scale_to_json(ColorScale v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Colors:
+        e0.append(x0.to_json())
+    parts.append("\"Colors\":" + quicksight_json_arr(e0))
+    parts.append("\"ColorFillType\":" + v.ColorFillType.to_json())
+    if v.NullValueColor.is_some():
+        auto u1 = v.NullValueColor.unwrap()
+        parts.append("\"NullValueColor\":" + u1.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize ColorsConfiguration to a compact JSON object (declaration order).
+def colors_configuration_to_json(ColorsConfiguration v) -> str:
+    list[str] parts = []
+    if v.CustomColors.is_some():
+        auto u0 = v.CustomColors.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"CustomColors\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize ColumnConfiguration to a compact JSON object (declaration order).
+def column_configuration_to_json(ColumnConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"Column\":" + v.Column.to_json())
+    if v.FormatConfiguration.is_some():
+        auto u0 = v.FormatConfiguration.unwrap()
+        parts.append("\"FormatConfiguration\":" + u0.to_json())
+    if v.Role.is_some():
+        auto u1 = v.Role.unwrap()
+        parts.append("\"Role\":" + u1.to_json())
+    if v.ColorsConfiguration.is_some():
+        auto u2 = v.ColorsConfiguration.unwrap()
+        parts.append("\"ColorsConfiguration\":" + colors_configuration_to_json(u2))
+    if v.DecalSettingsConfiguration.is_some():
+        auto u3 = v.DecalSettingsConfiguration.unwrap()
+        parts.append("\"DecalSettingsConfiguration\":" + decal_settings_configuration_to_json(u3))
+    return quicksight_json_obj(parts)
+
+# Serialize ColumnGroup to a compact JSON object (declaration order).
+def column_group_to_json(ColumnGroup v) -> str:
+    list[str] parts = []
+    if v.GeoSpatialColumnGroup.is_some():
+        auto u0 = v.GeoSpatialColumnGroup.unwrap()
+        parts.append("\"GeoSpatialColumnGroup\":" + geo_spatial_column_group_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize ColumnGroupSchema to a compact JSON object (declaration order).
+def column_group_schema_to_json(ColumnGroupSchema v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + quicksight_json_str(u0))
+    if v.ColumnGroupColumnSchemaList.is_some():
+        auto u1 = v.ColumnGroupColumnSchemaList.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"ColumnGroupColumnSchemaList\":" + quicksight_json_arr(e2))
+    return quicksight_json_obj(parts)
+
+# Serialize ColumnHierarchy to a compact JSON object (declaration order).
+def column_hierarchy_to_json(ColumnHierarchy v) -> str:
+    list[str] parts = []
+    if v.ExplicitHierarchy.is_some():
+        auto u0 = v.ExplicitHierarchy.unwrap()
+        parts.append("\"ExplicitHierarchy\":" + explicit_hierarchy_to_json(u0))
+    if v.DateTimeHierarchy.is_some():
+        auto u1 = v.DateTimeHierarchy.unwrap()
+        parts.append("\"DateTimeHierarchy\":" + date_time_hierarchy_to_json(u1))
+    if v.PredefinedHierarchy.is_some():
+        auto u2 = v.PredefinedHierarchy.unwrap()
+        parts.append("\"PredefinedHierarchy\":" + predefined_hierarchy_to_json(u2))
+    return quicksight_json_obj(parts)
+
+# Serialize ColumnLevelPermissionRule to a compact JSON object (declaration order).
+def column_level_permission_rule_to_json(ColumnLevelPermissionRule v) -> str:
+    list[str] parts = []
+    if v.Principals.is_some():
+        auto u0 = v.Principals.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"Principals\":" + quicksight_json_arr(e1))
+    if v.ColumnNames.is_some():
+        auto u2 = v.ColumnNames.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(quicksight_json_str(x3))
+        parts.append("\"ColumnNames\":" + quicksight_json_arr(e3))
+    return quicksight_json_obj(parts)
+
+# Serialize ComboChartAggregatedFieldWells to a compact JSON object (declaration order).
+def combo_chart_aggregated_field_wells_to_json(ComboChartAggregatedFieldWells v) -> str:
+    list[str] parts = []
+    if v.Category.is_some():
+        auto u0 = v.Category.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Category\":" + quicksight_json_arr(e1))
+    if v.BarValues.is_some():
+        auto u2 = v.BarValues.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"BarValues\":" + quicksight_json_arr(e3))
+    if v.Colors.is_some():
+        auto u4 = v.Colors.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Colors\":" + quicksight_json_arr(e5))
+    if v.LineValues.is_some():
+        auto u6 = v.LineValues.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"LineValues\":" + quicksight_json_arr(e7))
+    return quicksight_json_obj(parts)
+
+# Serialize ComboChartConfiguration to a compact JSON object (declaration order).
+def combo_chart_configuration_to_json(ComboChartConfiguration v) -> str:
+    list[str] parts = []
+    if v.FieldWells.is_some():
+        auto u0 = v.FieldWells.unwrap()
+        parts.append("\"FieldWells\":" + combo_chart_field_wells_to_json(u0))
+    if v.SortConfiguration.is_some():
+        auto u1 = v.SortConfiguration.unwrap()
+        parts.append("\"SortConfiguration\":" + combo_chart_sort_configuration_to_json(u1))
+    if v.BarsArrangement.is_some():
+        auto u2 = v.BarsArrangement.unwrap()
+        parts.append("\"BarsArrangement\":" + u2.to_json())
+    if v.CategoryAxis.is_some():
+        auto u3 = v.CategoryAxis.unwrap()
+        parts.append("\"CategoryAxis\":" + u3.to_json())
+    if v.CategoryLabelOptions.is_some():
+        auto u4 = v.CategoryLabelOptions.unwrap()
+        parts.append("\"CategoryLabelOptions\":" + chart_axis_label_options_to_json(u4))
+    if v.PrimaryYAxisDisplayOptions.is_some():
+        auto u5 = v.PrimaryYAxisDisplayOptions.unwrap()
+        parts.append("\"PrimaryYAxisDisplayOptions\":" + u5.to_json())
+    if v.PrimaryYAxisLabelOptions.is_some():
+        auto u6 = v.PrimaryYAxisLabelOptions.unwrap()
+        parts.append("\"PrimaryYAxisLabelOptions\":" + chart_axis_label_options_to_json(u6))
+    if v.SecondaryYAxisDisplayOptions.is_some():
+        auto u7 = v.SecondaryYAxisDisplayOptions.unwrap()
+        parts.append("\"SecondaryYAxisDisplayOptions\":" + u7.to_json())
+    if v.SecondaryYAxisLabelOptions.is_some():
+        auto u8 = v.SecondaryYAxisLabelOptions.unwrap()
+        parts.append("\"SecondaryYAxisLabelOptions\":" + chart_axis_label_options_to_json(u8))
+    if v.SingleAxisOptions.is_some():
+        auto u9 = v.SingleAxisOptions.unwrap()
+        parts.append("\"SingleAxisOptions\":" + u9.to_json())
+    if v.ColorLabelOptions.is_some():
+        auto u10 = v.ColorLabelOptions.unwrap()
+        parts.append("\"ColorLabelOptions\":" + chart_axis_label_options_to_json(u10))
+    if v.DefaultSeriesSettings.is_some():
+        auto u11 = v.DefaultSeriesSettings.unwrap()
+        parts.append("\"DefaultSeriesSettings\":" + u11.to_json())
+    if v.Series.is_some():
+        auto u12 = v.Series.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"Series\":" + quicksight_json_arr(e13))
+    if v.Legend.is_some():
+        auto u14 = v.Legend.unwrap()
+        parts.append("\"Legend\":" + u14.to_json())
+    if v.BarDataLabels.is_some():
+        auto u15 = v.BarDataLabels.unwrap()
+        parts.append("\"BarDataLabels\":" + data_label_options_to_json(u15))
+    if v.LineDataLabels.is_some():
+        auto u16 = v.LineDataLabels.unwrap()
+        parts.append("\"LineDataLabels\":" + data_label_options_to_json(u16))
+    if v.Tooltip.is_some():
+        auto u17 = v.Tooltip.unwrap()
+        parts.append("\"Tooltip\":" + tooltip_options_to_json(u17))
+    if v.ReferenceLines.is_some():
+        auto u18 = v.ReferenceLines.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(x19.to_json())
+        parts.append("\"ReferenceLines\":" + quicksight_json_arr(e19))
+    if v.VisualPalette.is_some():
+        auto u20 = v.VisualPalette.unwrap()
+        parts.append("\"VisualPalette\":" + visual_palette_to_json(u20))
+    if v.Interactions.is_some():
+        auto u21 = v.Interactions.unwrap()
+        parts.append("\"Interactions\":" + u21.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize ComboChartFieldWells to a compact JSON object (declaration order).
+def combo_chart_field_wells_to_json(ComboChartFieldWells v) -> str:
+    list[str] parts = []
+    if v.ComboChartAggregatedFieldWells.is_some():
+        auto u0 = v.ComboChartAggregatedFieldWells.unwrap()
+        parts.append("\"ComboChartAggregatedFieldWells\":" + combo_chart_aggregated_field_wells_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize ComboChartSortConfiguration to a compact JSON object (declaration order).
+def combo_chart_sort_configuration_to_json(ComboChartSortConfiguration v) -> str:
+    list[str] parts = []
+    if v.CategorySort.is_some():
+        auto u0 = v.CategorySort.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"CategorySort\":" + quicksight_json_arr(e1))
+    if v.CategoryItemsLimit.is_some():
+        auto u2 = v.CategoryItemsLimit.unwrap()
+        parts.append("\"CategoryItemsLimit\":" + u2.to_json())
+    if v.ColorSort.is_some():
+        auto u3 = v.ColorSort.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"ColorSort\":" + quicksight_json_arr(e4))
+    if v.ColorItemsLimit.is_some():
+        auto u5 = v.ColorItemsLimit.unwrap()
+        parts.append("\"ColorItemsLimit\":" + u5.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize ComboChartVisual to a compact JSON object (declaration order).
+def combo_chart_visual_to_json(ComboChartVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + u0.to_json())
+    if v.Subtitle.is_some():
+        auto u1 = v.Subtitle.unwrap()
+        parts.append("\"Subtitle\":" + u1.to_json())
+    if v.ChartConfiguration.is_some():
+        auto u2 = v.ChartConfiguration.unwrap()
+        parts.append("\"ChartConfiguration\":" + combo_chart_configuration_to_json(u2))
+    if v.Actions.is_some():
+        auto u3 = v.Actions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(visual_custom_action_to_json(x4))
+        parts.append("\"Actions\":" + quicksight_json_arr(e4))
+    if v.ColumnHierarchies.is_some():
+        auto u5 = v.ColumnHierarchies.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(column_hierarchy_to_json(x6))
+        parts.append("\"ColumnHierarchies\":" + quicksight_json_arr(e6))
+    if v.VisualContentAltText.is_some():
+        auto u7 = v.VisualContentAltText.unwrap()
+        parts.append("\"VisualContentAltText\":" + quicksight_json_str(u7))
+    return quicksight_json_obj(parts)
+
+# Serialize ComparativeOrder to a compact JSON object (declaration order).
+def comparative_order_to_json(ComparativeOrder v) -> str:
+    list[str] parts = []
+    if v.UseOrdering.is_some():
+        auto u0 = v.UseOrdering.unwrap()
+        parts.append("\"UseOrdering\":" + u0.to_json())
+    if v.SpecifedOrder.is_some():
+        auto u1 = v.SpecifedOrder.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(quicksight_json_str(x2))
+        parts.append("\"SpecifedOrder\":" + quicksight_json_arr(e2))
+    if v.TreatUndefinedSpecifiedValues.is_some():
+        auto u3 = v.TreatUndefinedSpecifiedValues.unwrap()
+        parts.append("\"TreatUndefinedSpecifiedValues\":" + u3.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize ConditionalFormattingColor to a compact JSON object (declaration order).
+def conditional_formatting_color_to_json(ConditionalFormattingColor v) -> str:
+    list[str] parts = []
+    if v.Solid.is_some():
+        auto u0 = v.Solid.unwrap()
+        parts.append("\"Solid\":" + u0.to_json())
+    if v.Gradient.is_some():
+        auto u1 = v.Gradient.unwrap()
+        parts.append("\"Gradient\":" + conditional_formatting_gradient_color_to_json(u1))
+    return quicksight_json_obj(parts)
+
+# Serialize ConditionalFormattingGradientColor to a compact JSON object (declaration order).
+def conditional_formatting_gradient_color_to_json(ConditionalFormattingGradientColor v) -> str:
+    list[str] parts = []
+    parts.append("\"Expression\":" + quicksight_json_str(v.Expression))
+    parts.append("\"Color\":" + gradient_color_to_json(v.Color))
+    return quicksight_json_obj(parts)
+
+# Serialize ContributionAnalysisDefault to a compact JSON object (declaration order).
+def contribution_analysis_default_to_json(ContributionAnalysisDefault v) -> str:
+    list[str] parts = []
+    parts.append("\"MeasureFieldId\":" + quicksight_json_str(v.MeasureFieldId))
+    list[str] e0 = []
+    for x0 in v.ContributorDimensions:
+        e0.append(x0.to_json())
+    parts.append("\"ContributorDimensions\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize ContributionAnalysisTimeRanges to a compact JSON object (declaration order).
+def contribution_analysis_time_ranges_to_json(ContributionAnalysisTimeRanges v) -> str:
+    list[str] parts = []
+    if v.StartRange.is_some():
+        auto u0 = v.StartRange.unwrap()
+        parts.append("\"StartRange\":" + topic_ir_filter_option_to_json(u0))
+    if v.EndRange.is_some():
+        auto u1 = v.EndRange.unwrap()
+        parts.append("\"EndRange\":" + topic_ir_filter_option_to_json(u1))
+    return quicksight_json_obj(parts)
+
+# Serialize CreateColumnsOperation to a compact JSON object (declaration order).
+def create_columns_operation_to_json(CreateColumnsOperation v) -> str:
+    list[str] parts = []
+    if v.Alias.is_some():
+        auto u0 = v.Alias.unwrap()
+        parts.append("\"Alias\":" + quicksight_json_str(u0))
+    if v.Source.is_some():
+        auto u1 = v.Source.unwrap()
+        parts.append("\"Source\":" + transform_operation_source_to_json(u1))
+    list[str] e2 = []
+    for x2 in v.Columns:
+        e2.append(x2.to_json())
+    parts.append("\"Columns\":" + quicksight_json_arr(e2))
+    return quicksight_json_obj(parts)
+
+# Serialize CreateTopicReviewedAnswer to a compact JSON object (declaration order).
+def create_topic_reviewed_answer_to_json(CreateTopicReviewedAnswer v) -> str:
+    list[str] parts = []
+    parts.append("\"AnswerId\":" + quicksight_json_str(v.AnswerId))
+    parts.append("\"DatasetArn\":" + quicksight_json_str(v.DatasetArn))
+    parts.append("\"Question\":" + quicksight_json_str(v.Question))
+    if v.Mir.is_some():
+        auto u0 = v.Mir.unwrap()
+        parts.append("\"Mir\":" + topic_ir_to_json(u0))
+    if v.PrimaryVisual.is_some():
+        auto u1 = v.PrimaryVisual.unwrap()
+        parts.append("\"PrimaryVisual\":" + topic_visual_to_json(u1))
+    if v.Template.is_some():
+        auto u2 = v.Template.unwrap()
+        parts.append("\"Template\":" + topic_template_to_json(u2))
+    return quicksight_json_obj(parts)
+
+# Serialize CredentialPair to a compact JSON object (declaration order).
+def credential_pair_to_json(CredentialPair v) -> str:
+    list[str] parts = []
+    parts.append("\"Username\":" + quicksight_json_str(v.Username))
+    parts.append("\"Password\":" + quicksight_json_str(v.Password))
+    if v.AlternateDataSourceParameters.is_some():
+        auto u0 = v.AlternateDataSourceParameters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(data_source_parameters_to_json(x1))
+        parts.append("\"AlternateDataSourceParameters\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize CustomActionFilterOperation to a compact JSON object (declaration order).
+def custom_action_filter_operation_to_json(CustomActionFilterOperation v) -> str:
+    list[str] parts = []
+    parts.append("\"SelectedFieldsConfiguration\":" + filter_operation_selected_fields_configuration_to_json(v.SelectedFieldsConfiguration))
+    parts.append("\"TargetVisualsConfiguration\":" + filter_operation_target_visuals_configuration_to_json(v.TargetVisualsConfiguration))
+    return quicksight_json_obj(parts)
+
+# Serialize CustomActionSetParametersOperation to a compact JSON object (declaration order).
+def custom_action_set_parameters_operation_to_json(CustomActionSetParametersOperation v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ParameterValueConfigurations:
+        e0.append(set_parameter_value_configuration_to_json(x0))
+    parts.append("\"ParameterValueConfigurations\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize CustomContentVisual to a compact JSON object (declaration order).
+def custom_content_visual_to_json(CustomContentVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + u0.to_json())
+    if v.Subtitle.is_some():
+        auto u1 = v.Subtitle.unwrap()
+        parts.append("\"Subtitle\":" + u1.to_json())
+    if v.ChartConfiguration.is_some():
+        auto u2 = v.ChartConfiguration.unwrap()
+        parts.append("\"ChartConfiguration\":" + u2.to_json())
+    if v.Actions.is_some():
+        auto u3 = v.Actions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(visual_custom_action_to_json(x4))
+        parts.append("\"Actions\":" + quicksight_json_arr(e4))
+    if v.DataSetIdentifier.is_some():
+        auto u5 = v.DataSetIdentifier.unwrap()
+        parts.append("\"DataSetIdentifier\":" + quicksight_json_str(u5))
+    if v.TopicIdentifier.is_some():
+        auto u6 = v.TopicIdentifier.unwrap()
+        parts.append("\"TopicIdentifier\":" + quicksight_json_str(u6))
+    if v.VisualContentAltText.is_some():
+        auto u7 = v.VisualContentAltText.unwrap()
+        parts.append("\"VisualContentAltText\":" + quicksight_json_str(u7))
+    return quicksight_json_obj(parts)
+
+# Serialize CustomFilterListConfiguration to a compact JSON object (declaration order).
+def custom_filter_list_configuration_to_json(CustomFilterListConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"MatchOperator\":" + v.MatchOperator.to_json())
+    if v.CategoryValues.is_some():
+        auto u0 = v.CategoryValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"CategoryValues\":" + quicksight_json_arr(e1))
+    if v.SelectAllOptions.is_some():
+        auto u2 = v.SelectAllOptions.unwrap()
+        parts.append("\"SelectAllOptions\":" + quicksight_json_str(u2))
+    parts.append("\"NullOption\":" + v.NullOption.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize CustomParameterValues to a compact JSON object (declaration order).
+def custom_parameter_values_to_json(CustomParameterValues v) -> str:
+    list[str] parts = []
+    if v.StringValues.is_some():
+        auto u0 = v.StringValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"StringValues\":" + quicksight_json_arr(e1))
+    if v.IntegerValues.is_some():
+        auto u2 = v.IntegerValues.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(str(x3))
+        parts.append("\"IntegerValues\":" + quicksight_json_arr(e3))
+    if v.DecimalValues.is_some():
+        auto u4 = v.DecimalValues.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(str(x5))
+        parts.append("\"DecimalValues\":" + quicksight_json_arr(e5))
+    if v.DateTimeValues.is_some():
+        auto u6 = v.DateTimeValues.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(str(datetime.to_timestamp(x7)))
+        parts.append("\"DateTimeValues\":" + quicksight_json_arr(e7))
+    return quicksight_json_obj(parts)
+
+# Serialize CustomSql to a compact JSON object (declaration order).
+def custom_sql_to_json(CustomSql v) -> str:
+    list[str] parts = []
+    parts.append("\"DataSourceArn\":" + quicksight_json_str(v.DataSourceArn))
+    parts.append("\"Name\":" + quicksight_json_str(v.Name))
+    parts.append("\"SqlQuery\":" + quicksight_json_str(v.SqlQuery))
+    if v.Columns.is_some():
+        auto u0 = v.Columns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Columns\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize CustomValuesConfiguration to a compact JSON object (declaration order).
+def custom_values_configuration_to_json(CustomValuesConfiguration v) -> str:
+    list[str] parts = []
+    if v.IncludeNullValue.is_some():
+        auto u0 = v.IncludeNullValue.unwrap()
+        parts.append("\"IncludeNullValue\":" + json.dumps(JsonValue.Bool(u0)))
+    parts.append("\"CustomValues\":" + custom_parameter_values_to_json(v.CustomValues))
+    return quicksight_json_obj(parts)
+
+# Serialize DashboardCustomizationVisualOptions to a compact JSON object (declaration order).
+def dashboard_customization_visual_options_to_json(DashboardCustomizationVisualOptions v) -> str:
+    list[str] parts = []
+    if v.FieldsConfiguration.is_some():
+        auto u0 = v.FieldsConfiguration.unwrap()
+        parts.append("\"FieldsConfiguration\":" + visual_customization_fields_configuration_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize DashboardSourceEntity to a compact JSON object (declaration order).
+def dashboard_source_entity_to_json(DashboardSourceEntity v) -> str:
+    list[str] parts = []
+    if v.SourceTemplate.is_some():
+        auto u0 = v.SourceTemplate.unwrap()
+        parts.append("\"SourceTemplate\":" + dashboard_source_template_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize DashboardSourceTemplate to a compact JSON object (declaration order).
+def dashboard_source_template_to_json(DashboardSourceTemplate v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.DataSetReferences:
+        e0.append(x0.to_json())
+    parts.append("\"DataSetReferences\":" + quicksight_json_arr(e0))
+    if v.TopicReferences.is_some():
+        auto u1 = v.TopicReferences.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"TopicReferences\":" + quicksight_json_arr(e2))
+    parts.append("\"Arn\":" + quicksight_json_str(v.Arn))
+    return quicksight_json_obj(parts)
+
+# Serialize DashboardVersionDefinition to a compact JSON object (declaration order).
+def dashboard_version_definition_to_json(DashboardVersionDefinition v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.DataSetIdentifierDeclarations:
+        e0.append(x0.to_json())
+    parts.append("\"DataSetIdentifierDeclarations\":" + quicksight_json_arr(e0))
+    if v.TopicIdentifierDeclarations.is_some():
+        auto u1 = v.TopicIdentifierDeclarations.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"TopicIdentifierDeclarations\":" + quicksight_json_arr(e2))
+    if v.Sheets.is_some():
+        auto u3 = v.Sheets.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(sheet_definition_to_json(x4))
+        parts.append("\"Sheets\":" + quicksight_json_arr(e4))
+    if v.TooltipSheets.is_some():
+        auto u5 = v.TooltipSheets.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(tooltip_sheet_definition_to_json(x6))
+        parts.append("\"TooltipSheets\":" + quicksight_json_arr(e6))
+    if v.CalculatedFields.is_some():
+        auto u7 = v.CalculatedFields.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"CalculatedFields\":" + quicksight_json_arr(e8))
+    if v.ParameterDeclarations.is_some():
+        auto u9 = v.ParameterDeclarations.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(parameter_declaration_to_json(x10))
+        parts.append("\"ParameterDeclarations\":" + quicksight_json_arr(e10))
+    if v.FilterGroups.is_some():
+        auto u11 = v.FilterGroups.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(filter_group_to_json(x12))
+        parts.append("\"FilterGroups\":" + quicksight_json_arr(e12))
+    if v.ColumnConfigurations.is_some():
+        auto u13 = v.ColumnConfigurations.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(column_configuration_to_json(x14))
+        parts.append("\"ColumnConfigurations\":" + quicksight_json_arr(e14))
+    if v.AnalysisDefaults.is_some():
+        auto u15 = v.AnalysisDefaults.unwrap()
+        parts.append("\"AnalysisDefaults\":" + u15.to_json())
+    if v.Options.is_some():
+        auto u16 = v.Options.unwrap()
+        parts.append("\"Options\":" + asset_options_to_json(u16))
+    if v.StaticFiles.is_some():
+        auto u17 = v.StaticFiles.unwrap()
+        list[str] e18 = []
+        for x18 in u17:
+            e18.append(x18.to_json())
+        parts.append("\"StaticFiles\":" + quicksight_json_arr(e18))
+    return quicksight_json_obj(parts)
+
+# Serialize DataColorPalette to a compact JSON object (declaration order).
+def data_color_palette_to_json(DataColorPalette v) -> str:
+    list[str] parts = []
+    if v.Colors.is_some():
+        auto u0 = v.Colors.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"Colors\":" + quicksight_json_arr(e1))
+    if v.MinMaxGradient.is_some():
+        auto u2 = v.MinMaxGradient.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(quicksight_json_str(x3))
+        parts.append("\"MinMaxGradient\":" + quicksight_json_arr(e3))
+    if v.EmptyFillColor.is_some():
+        auto u4 = v.EmptyFillColor.unwrap()
+        parts.append("\"EmptyFillColor\":" + quicksight_json_str(u4))
+    return quicksight_json_obj(parts)
+
+# Serialize DataLabelOptions to a compact JSON object (declaration order).
+def data_label_options_to_json(DataLabelOptions v) -> str:
+    list[str] parts = []
+    if v.Visibility.is_some():
+        auto u0 = v.Visibility.unwrap()
+        parts.append("\"Visibility\":" + u0.to_json())
+    if v.CategoryLabelVisibility.is_some():
+        auto u1 = v.CategoryLabelVisibility.unwrap()
+        parts.append("\"CategoryLabelVisibility\":" + u1.to_json())
+    if v.MeasureLabelVisibility.is_some():
+        auto u2 = v.MeasureLabelVisibility.unwrap()
+        parts.append("\"MeasureLabelVisibility\":" + u2.to_json())
+    if v.DataLabelTypes.is_some():
+        auto u3 = v.DataLabelTypes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"DataLabelTypes\":" + quicksight_json_arr(e4))
+    if v.Position.is_some():
+        auto u5 = v.Position.unwrap()
+        parts.append("\"Position\":" + u5.to_json())
+    if v.LabelContent.is_some():
+        auto u6 = v.LabelContent.unwrap()
+        parts.append("\"LabelContent\":" + u6.to_json())
+    if v.LabelFontConfiguration.is_some():
+        auto u7 = v.LabelFontConfiguration.unwrap()
+        parts.append("\"LabelFontConfiguration\":" + u7.to_json())
+    if v.LabelColor.is_some():
+        auto u8 = v.LabelColor.unwrap()
+        parts.append("\"LabelColor\":" + quicksight_json_str(u8))
+    if v.Overlap.is_some():
+        auto u9 = v.Overlap.unwrap()
+        parts.append("\"Overlap\":" + u9.to_json())
+    if v.TotalsVisibility.is_some():
+        auto u10 = v.TotalsVisibility.unwrap()
+        parts.append("\"TotalsVisibility\":" + u10.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize DataPathSort to a compact JSON object (declaration order).
+def data_path_sort_to_json(DataPathSort v) -> str:
+    list[str] parts = []
+    parts.append("\"Direction\":" + v.Direction.to_json())
+    list[str] e0 = []
+    for x0 in v.SortPaths:
+        e0.append(x0.to_json())
+    parts.append("\"SortPaths\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize DataPrepConfiguration to a compact JSON object (declaration order).
+def data_prep_configuration_to_json(DataPrepConfiguration v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.SourceTableMap.keys()):
+        m0.append(quicksight_json_str(k0) + ":" + source_table_to_json(v.SourceTableMap[k0]))
+    parts.append("\"SourceTableMap\":" + quicksight_json_obj(m0))
+    list[str] m1 = []
+    for k1 in sorted(v.TransformStepMap.keys()):
+        m1.append(quicksight_json_str(k1) + ":" + transform_step_to_json(v.TransformStepMap[k1]))
+    parts.append("\"TransformStepMap\":" + quicksight_json_obj(m1))
+    list[str] m2 = []
+    for k2 in sorted(v.DestinationTableMap.keys()):
+        m2.append(quicksight_json_str(k2) + ":" + v.DestinationTableMap[k2].to_json())
+    parts.append("\"DestinationTableMap\":" + quicksight_json_obj(m2))
+    return quicksight_json_obj(parts)
+
+# Serialize DataSetConfiguration to a compact JSON object (declaration order).
+def data_set_configuration_to_json(DataSetConfiguration v) -> str:
+    list[str] parts = []
+    if v.Placeholder.is_some():
+        auto u0 = v.Placeholder.unwrap()
+        parts.append("\"Placeholder\":" + quicksight_json_str(u0))
+    if v.DataSetSchema.is_some():
+        auto u1 = v.DataSetSchema.unwrap()
+        parts.append("\"DataSetSchema\":" + data_set_schema_to_json(u1))
+    if v.ColumnGroupSchemaList.is_some():
+        auto u2 = v.ColumnGroupSchemaList.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(column_group_schema_to_json(x3))
+        parts.append("\"ColumnGroupSchemaList\":" + quicksight_json_arr(e3))
+    return quicksight_json_obj(parts)
+
+# Serialize DataSetSchema to a compact JSON object (declaration order).
+def data_set_schema_to_json(DataSetSchema v) -> str:
+    list[str] parts = []
+    if v.ColumnSchemaList.is_some():
+        auto u0 = v.ColumnSchemaList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ColumnSchemaList\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize DataSetSemanticMetadata to a compact JSON object (declaration order).
+def data_set_semantic_metadata_to_json(DataSetSemanticMetadata v) -> str:
+    list[str] parts = []
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + u0.to_json())
+    if v.CustomInstructions.is_some():
+        auto u1 = v.CustomInstructions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"CustomInstructions\":" + quicksight_json_arr(e2))
+    return quicksight_json_obj(parts)
+
+# Serialize DataSetStringFilterCondition to a compact JSON object (declaration order).
+def data_set_string_filter_condition_to_json(DataSetStringFilterCondition v) -> str:
+    list[str] parts = []
+    if v.ColumnName.is_some():
+        auto u0 = v.ColumnName.unwrap()
+        parts.append("\"ColumnName\":" + quicksight_json_str(u0))
+    if v.ComparisonFilterCondition.is_some():
+        auto u1 = v.ComparisonFilterCondition.unwrap()
+        parts.append("\"ComparisonFilterCondition\":" + u1.to_json())
+    if v.ListFilterCondition.is_some():
+        auto u2 = v.ListFilterCondition.unwrap()
+        parts.append("\"ListFilterCondition\":" + data_set_string_list_filter_condition_to_json(u2))
+    return quicksight_json_obj(parts)
+
+# Serialize DataSetStringListFilterCondition to a compact JSON object (declaration order).
+def data_set_string_list_filter_condition_to_json(DataSetStringListFilterCondition v) -> str:
+    list[str] parts = []
+    parts.append("\"Operator\":" + v.Operator.to_json())
+    if v.Values.is_some():
+        auto u0 = v.Values.unwrap()
+        parts.append("\"Values\":" + data_set_string_list_filter_value_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize DataSetStringListFilterValue to a compact JSON object (declaration order).
+def data_set_string_list_filter_value_to_json(DataSetStringListFilterValue v) -> str:
+    list[str] parts = []
+    if v.StaticValues.is_some():
+        auto u0 = v.StaticValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"StaticValues\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize DataSourceCredentials to a compact JSON object (declaration order).
+def data_source_credentials_to_json(DataSourceCredentials v) -> str:
+    list[str] parts = []
+    if v.CredentialPair.is_some():
+        auto u0 = v.CredentialPair.unwrap()
+        parts.append("\"CredentialPair\":" + credential_pair_to_json(u0))
+    if v.CopySourceArn.is_some():
+        auto u1 = v.CopySourceArn.unwrap()
+        parts.append("\"CopySourceArn\":" + quicksight_json_str(u1))
+    if v.SecretArn.is_some():
+        auto u2 = v.SecretArn.unwrap()
+        parts.append("\"SecretArn\":" + quicksight_json_str(u2))
+    if v.KeyPairCredentials.is_some():
+        auto u3 = v.KeyPairCredentials.unwrap()
+        parts.append("\"KeyPairCredentials\":" + u3.to_json())
+    if v.WebProxyCredentials.is_some():
+        auto u4 = v.WebProxyCredentials.unwrap()
+        parts.append("\"WebProxyCredentials\":" + u4.to_json())
+    if v.OAuthClientCredentials.is_some():
+        auto u5 = v.OAuthClientCredentials.unwrap()
+        parts.append("\"OAuthClientCredentials\":" + u5.to_json())
+    if v.ServiceAccountCredentials.is_some():
+        auto u6 = v.ServiceAccountCredentials.unwrap()
+        parts.append("\"ServiceAccountCredentials\":" + u6.to_json())
+    if v.SharePointClientCredentials.is_some():
+        auto u7 = v.SharePointClientCredentials.unwrap()
+        parts.append("\"SharePointClientCredentials\":" + u7.to_json())
+    if v.OneDriveClientCredentials.is_some():
+        auto u8 = v.OneDriveClientCredentials.unwrap()
+        parts.append("\"OneDriveClientCredentials\":" + u8.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize DataSourceParameters to a compact JSON object (declaration order).
+def data_source_parameters_to_json(DataSourceParameters v) -> str:
+    list[str] parts = []
+    if v.AmazonElasticsearchParameters.is_some():
+        auto u0 = v.AmazonElasticsearchParameters.unwrap()
+        parts.append("\"AmazonElasticsearchParameters\":" + u0.to_json())
+    if v.AthenaParameters.is_some():
+        auto u1 = v.AthenaParameters.unwrap()
+        parts.append("\"AthenaParameters\":" + u1.to_json())
+    if v.AuroraParameters.is_some():
+        auto u2 = v.AuroraParameters.unwrap()
+        parts.append("\"AuroraParameters\":" + u2.to_json())
+    if v.AuroraPostgreSqlParameters.is_some():
+        auto u3 = v.AuroraPostgreSqlParameters.unwrap()
+        parts.append("\"AuroraPostgreSqlParameters\":" + u3.to_json())
+    if v.AwsIotAnalyticsParameters.is_some():
+        auto u4 = v.AwsIotAnalyticsParameters.unwrap()
+        parts.append("\"AwsIotAnalyticsParameters\":" + u4.to_json())
+    if v.JiraParameters.is_some():
+        auto u5 = v.JiraParameters.unwrap()
+        parts.append("\"JiraParameters\":" + u5.to_json())
+    if v.MariaDbParameters.is_some():
+        auto u6 = v.MariaDbParameters.unwrap()
+        parts.append("\"MariaDbParameters\":" + u6.to_json())
+    if v.MySqlParameters.is_some():
+        auto u7 = v.MySqlParameters.unwrap()
+        parts.append("\"MySqlParameters\":" + u7.to_json())
+    if v.OracleParameters.is_some():
+        auto u8 = v.OracleParameters.unwrap()
+        parts.append("\"OracleParameters\":" + u8.to_json())
+    if v.PostgreSqlParameters.is_some():
+        auto u9 = v.PostgreSqlParameters.unwrap()
+        parts.append("\"PostgreSqlParameters\":" + u9.to_json())
+    if v.PrestoParameters.is_some():
+        auto u10 = v.PrestoParameters.unwrap()
+        parts.append("\"PrestoParameters\":" + u10.to_json())
+    if v.RdsParameters.is_some():
+        auto u11 = v.RdsParameters.unwrap()
+        parts.append("\"RdsParameters\":" + u11.to_json())
+    if v.RedshiftParameters.is_some():
+        auto u12 = v.RedshiftParameters.unwrap()
+        parts.append("\"RedshiftParameters\":" + redshift_parameters_to_json(u12))
+    if v.S3Parameters.is_some():
+        auto u13 = v.S3Parameters.unwrap()
+        parts.append("\"S3Parameters\":" + u13.to_json())
+    if v.S3TablesParameters.is_some():
+        auto u14 = v.S3TablesParameters.unwrap()
+        parts.append("\"S3TablesParameters\":" + u14.to_json())
+    if v.S3KnowledgeBaseParameters.is_some():
+        auto u15 = v.S3KnowledgeBaseParameters.unwrap()
+        parts.append("\"S3KnowledgeBaseParameters\":" + u15.to_json())
+    if v.ServiceNowParameters.is_some():
+        auto u16 = v.ServiceNowParameters.unwrap()
+        parts.append("\"ServiceNowParameters\":" + u16.to_json())
+    if v.SnowflakeParameters.is_some():
+        auto u17 = v.SnowflakeParameters.unwrap()
+        parts.append("\"SnowflakeParameters\":" + u17.to_json())
+    if v.SparkParameters.is_some():
+        auto u18 = v.SparkParameters.unwrap()
+        parts.append("\"SparkParameters\":" + u18.to_json())
+    if v.SqlServerParameters.is_some():
+        auto u19 = v.SqlServerParameters.unwrap()
+        parts.append("\"SqlServerParameters\":" + u19.to_json())
+    if v.TeradataParameters.is_some():
+        auto u20 = v.TeradataParameters.unwrap()
+        parts.append("\"TeradataParameters\":" + u20.to_json())
+    if v.TwitterParameters.is_some():
+        auto u21 = v.TwitterParameters.unwrap()
+        parts.append("\"TwitterParameters\":" + u21.to_json())
+    if v.AmazonOpenSearchParameters.is_some():
+        auto u22 = v.AmazonOpenSearchParameters.unwrap()
+        parts.append("\"AmazonOpenSearchParameters\":" + u22.to_json())
+    if v.ExasolParameters.is_some():
+        auto u23 = v.ExasolParameters.unwrap()
+        parts.append("\"ExasolParameters\":" + u23.to_json())
+    if v.DatabricksParameters.is_some():
+        auto u24 = v.DatabricksParameters.unwrap()
+        parts.append("\"DatabricksParameters\":" + u24.to_json())
+    if v.StarburstParameters.is_some():
+        auto u25 = v.StarburstParameters.unwrap()
+        parts.append("\"StarburstParameters\":" + u25.to_json())
+    if v.TrinoParameters.is_some():
+        auto u26 = v.TrinoParameters.unwrap()
+        parts.append("\"TrinoParameters\":" + u26.to_json())
+    if v.BigQueryParameters.is_some():
+        auto u27 = v.BigQueryParameters.unwrap()
+        parts.append("\"BigQueryParameters\":" + u27.to_json())
+    if v.ImpalaParameters.is_some():
+        auto u28 = v.ImpalaParameters.unwrap()
+        parts.append("\"ImpalaParameters\":" + u28.to_json())
+    if v.CustomConnectionParameters.is_some():
+        auto u29 = v.CustomConnectionParameters.unwrap()
+        parts.append("\"CustomConnectionParameters\":" + u29.to_json())
+    if v.WebCrawlerParameters.is_some():
+        auto u30 = v.WebCrawlerParameters.unwrap()
+        parts.append("\"WebCrawlerParameters\":" + u30.to_json())
+    if v.ConfluenceParameters.is_some():
+        auto u31 = v.ConfluenceParameters.unwrap()
+        parts.append("\"ConfluenceParameters\":" + u31.to_json())
+    if v.QBusinessParameters.is_some():
+        auto u32 = v.QBusinessParameters.unwrap()
+        parts.append("\"QBusinessParameters\":" + u32.to_json())
+    if v.SharePointParameters.is_some():
+        auto u33 = v.SharePointParameters.unwrap()
+        parts.append("\"SharePointParameters\":" + u33.to_json())
+    if v.GoogleDriveParameters.is_some():
+        auto u34 = v.GoogleDriveParameters.unwrap()
+        parts.append("\"GoogleDriveParameters\":" + u34.to_json())
+    if v.OneDriveParameters.is_some():
+        auto u35 = v.OneDriveParameters.unwrap()
+        parts.append("\"OneDriveParameters\":" + u35.to_json())
+    if v.FMKBParameters.is_some():
+        auto u36 = v.FMKBParameters.unwrap()
+        parts.append("\"FMKBParameters\":" + fmkb_parameters_to_json(u36))
+    return quicksight_json_obj(parts)
+
+# Serialize DatasetMetadata to a compact JSON object (declaration order).
+def dataset_metadata_to_json(DatasetMetadata v) -> str:
+    list[str] parts = []
+    parts.append("\"DatasetArn\":" + quicksight_json_str(v.DatasetArn))
+    if v.DatasetName.is_some():
+        auto u0 = v.DatasetName.unwrap()
+        parts.append("\"DatasetName\":" + quicksight_json_str(u0))
+    if v.DatasetDescription.is_some():
+        auto u1 = v.DatasetDescription.unwrap()
+        parts.append("\"DatasetDescription\":" + quicksight_json_str(u1))
+    if v.DataAggregation.is_some():
+        auto u2 = v.DataAggregation.unwrap()
+        parts.append("\"DataAggregation\":" + u2.to_json())
+    if v.Filters.is_some():
+        auto u3 = v.Filters.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(topic_filter_to_json(x4))
+        parts.append("\"Filters\":" + quicksight_json_arr(e4))
+    if v.Columns.is_some():
+        auto u5 = v.Columns.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(topic_column_to_json(x6))
+        parts.append("\"Columns\":" + quicksight_json_arr(e6))
+    if v.CalculatedFields.is_some():
+        auto u7 = v.CalculatedFields.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(topic_calculated_field_to_json(x8))
+        parts.append("\"CalculatedFields\":" + quicksight_json_arr(e8))
+    if v.NamedEntities.is_some():
+        auto u9 = v.NamedEntities.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(topic_named_entity_to_json(x10))
+        parts.append("\"NamedEntities\":" + quicksight_json_arr(e10))
+    return quicksight_json_obj(parts)
+
+# Serialize DatasetParameter to a compact JSON object (declaration order).
+def dataset_parameter_to_json(DatasetParameter v) -> str:
+    list[str] parts = []
+    if v.StringDatasetParameter.is_some():
+        auto u0 = v.StringDatasetParameter.unwrap()
+        parts.append("\"StringDatasetParameter\":" + string_dataset_parameter_to_json(u0))
+    if v.DecimalDatasetParameter.is_some():
+        auto u1 = v.DecimalDatasetParameter.unwrap()
+        parts.append("\"DecimalDatasetParameter\":" + decimal_dataset_parameter_to_json(u1))
+    if v.IntegerDatasetParameter.is_some():
+        auto u2 = v.IntegerDatasetParameter.unwrap()
+        parts.append("\"IntegerDatasetParameter\":" + integer_dataset_parameter_to_json(u2))
+    if v.DateTimeDatasetParameter.is_some():
+        auto u3 = v.DateTimeDatasetParameter.unwrap()
+        parts.append("\"DateTimeDatasetParameter\":" + date_time_dataset_parameter_to_json(u3))
+    return quicksight_json_obj(parts)
+
+# Serialize DateTimeDatasetParameter to a compact JSON object (declaration order).
+def date_time_dataset_parameter_to_json(DateTimeDatasetParameter v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + quicksight_json_str(v.Id))
+    parts.append("\"Name\":" + quicksight_json_str(v.Name))
+    parts.append("\"ValueType\":" + v.ValueType.to_json())
+    if v.TimeGranularity.is_some():
+        auto u0 = v.TimeGranularity.unwrap()
+        parts.append("\"TimeGranularity\":" + u0.to_json())
+    if v.DefaultValues.is_some():
+        auto u1 = v.DefaultValues.unwrap()
+        parts.append("\"DefaultValues\":" + date_time_dataset_parameter_default_values_to_json(u1))
+    return quicksight_json_obj(parts)
+
+# Serialize DateTimeDatasetParameterDefaultValues to a compact JSON object (declaration order).
+def date_time_dataset_parameter_default_values_to_json(DateTimeDatasetParameterDefaultValues v) -> str:
+    list[str] parts = []
+    if v.StaticValues.is_some():
+        auto u0 = v.StaticValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(datetime.to_timestamp(x1)))
+        parts.append("\"StaticValues\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize DateTimeDefaultValues to a compact JSON object (declaration order).
+def date_time_default_values_to_json(DateTimeDefaultValues v) -> str:
+    list[str] parts = []
+    if v.DynamicValue.is_some():
+        auto u0 = v.DynamicValue.unwrap()
+        parts.append("\"DynamicValue\":" + u0.to_json())
+    if v.StaticValues.is_some():
+        auto u1 = v.StaticValues.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(str(datetime.to_timestamp(x2)))
+        parts.append("\"StaticValues\":" + quicksight_json_arr(e2))
+    if v.RollingDate.is_some():
+        auto u3 = v.RollingDate.unwrap()
+        parts.append("\"RollingDate\":" + u3.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize DateTimeHierarchy to a compact JSON object (declaration order).
+def date_time_hierarchy_to_json(DateTimeHierarchy v) -> str:
+    list[str] parts = []
+    parts.append("\"HierarchyId\":" + quicksight_json_str(v.HierarchyId))
+    if v.DrillDownFilters.is_some():
+        auto u0 = v.DrillDownFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(drill_down_filter_to_json(x1))
+        parts.append("\"DrillDownFilters\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize DateTimeParameter to a compact JSON object (declaration order).
+def date_time_parameter_to_json(DateTimeParameter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + quicksight_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(str(datetime.to_timestamp(x0)))
+    parts.append("\"Values\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize DateTimeParameterDeclaration to a compact JSON object (declaration order).
+def date_time_parameter_declaration_to_json(DateTimeParameterDeclaration v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + quicksight_json_str(v.Name))
+    if v.DefaultValues.is_some():
+        auto u0 = v.DefaultValues.unwrap()
+        parts.append("\"DefaultValues\":" + date_time_default_values_to_json(u0))
+    if v.TimeGranularity.is_some():
+        auto u1 = v.TimeGranularity.unwrap()
+        parts.append("\"TimeGranularity\":" + u1.to_json())
+    if v.ValueWhenUnset.is_some():
+        auto u2 = v.ValueWhenUnset.unwrap()
+        parts.append("\"ValueWhenUnset\":" + u2.to_json())
+    if v.MappedDataSetParameters.is_some():
+        auto u3 = v.MappedDataSetParameters.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"MappedDataSetParameters\":" + quicksight_json_arr(e4))
+    return quicksight_json_obj(parts)
+
+# Serialize DecalSettingsConfiguration to a compact JSON object (declaration order).
+def decal_settings_configuration_to_json(DecalSettingsConfiguration v) -> str:
+    list[str] parts = []
+    if v.CustomDecalSettings.is_some():
+        auto u0 = v.CustomDecalSettings.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"CustomDecalSettings\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize DecimalDatasetParameter to a compact JSON object (declaration order).
+def decimal_dataset_parameter_to_json(DecimalDatasetParameter v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + quicksight_json_str(v.Id))
+    parts.append("\"Name\":" + quicksight_json_str(v.Name))
+    parts.append("\"ValueType\":" + v.ValueType.to_json())
+    if v.DefaultValues.is_some():
+        auto u0 = v.DefaultValues.unwrap()
+        parts.append("\"DefaultValues\":" + decimal_dataset_parameter_default_values_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize DecimalDatasetParameterDefaultValues to a compact JSON object (declaration order).
+def decimal_dataset_parameter_default_values_to_json(DecimalDatasetParameterDefaultValues v) -> str:
+    list[str] parts = []
+    if v.StaticValues.is_some():
+        auto u0 = v.StaticValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"StaticValues\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize DecimalDefaultValues to a compact JSON object (declaration order).
+def decimal_default_values_to_json(DecimalDefaultValues v) -> str:
+    list[str] parts = []
+    if v.DynamicValue.is_some():
+        auto u0 = v.DynamicValue.unwrap()
+        parts.append("\"DynamicValue\":" + u0.to_json())
+    if v.StaticValues.is_some():
+        auto u1 = v.StaticValues.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(str(x2))
+        parts.append("\"StaticValues\":" + quicksight_json_arr(e2))
+    return quicksight_json_obj(parts)
+
+# Serialize DecimalParameter to a compact JSON object (declaration order).
+def decimal_parameter_to_json(DecimalParameter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + quicksight_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(str(x0))
+    parts.append("\"Values\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize DecimalParameterDeclaration to a compact JSON object (declaration order).
+def decimal_parameter_declaration_to_json(DecimalParameterDeclaration v) -> str:
+    list[str] parts = []
+    parts.append("\"ParameterValueType\":" + v.ParameterValueType.to_json())
+    parts.append("\"Name\":" + quicksight_json_str(v.Name))
+    if v.DefaultValues.is_some():
+        auto u0 = v.DefaultValues.unwrap()
+        parts.append("\"DefaultValues\":" + decimal_default_values_to_json(u0))
+    if v.ValueWhenUnset.is_some():
+        auto u1 = v.ValueWhenUnset.unwrap()
+        parts.append("\"ValueWhenUnset\":" + u1.to_json())
+    if v.MappedDataSetParameters.is_some():
+        auto u2 = v.MappedDataSetParameters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"MappedDataSetParameters\":" + quicksight_json_arr(e3))
+    return quicksight_json_obj(parts)
+
+# Serialize DefaultFilterControlConfiguration to a compact JSON object (declaration order).
+def default_filter_control_configuration_to_json(DefaultFilterControlConfiguration v) -> str:
+    list[str] parts = []
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + quicksight_json_str(u0))
+    parts.append("\"ControlOptions\":" + default_filter_control_options_to_json(v.ControlOptions))
+    if v.ControlTitleFormatText.is_some():
+        auto u1 = v.ControlTitleFormatText.unwrap()
+        parts.append("\"ControlTitleFormatText\":" + u1.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize DefaultFilterControlOptions to a compact JSON object (declaration order).
+def default_filter_control_options_to_json(DefaultFilterControlOptions v) -> str:
+    list[str] parts = []
+    if v.DefaultDateTimePickerOptions.is_some():
+        auto u0 = v.DefaultDateTimePickerOptions.unwrap()
+        parts.append("\"DefaultDateTimePickerOptions\":" + u0.to_json())
+    if v.DefaultListOptions.is_some():
+        auto u1 = v.DefaultListOptions.unwrap()
+        parts.append("\"DefaultListOptions\":" + default_filter_list_control_options_to_json(u1))
+    if v.DefaultDropdownOptions.is_some():
+        auto u2 = v.DefaultDropdownOptions.unwrap()
+        parts.append("\"DefaultDropdownOptions\":" + default_filter_drop_down_control_options_to_json(u2))
+    if v.DefaultTextFieldOptions.is_some():
+        auto u3 = v.DefaultTextFieldOptions.unwrap()
+        parts.append("\"DefaultTextFieldOptions\":" + u3.to_json())
+    if v.DefaultTextAreaOptions.is_some():
+        auto u4 = v.DefaultTextAreaOptions.unwrap()
+        parts.append("\"DefaultTextAreaOptions\":" + u4.to_json())
+    if v.DefaultSliderOptions.is_some():
+        auto u5 = v.DefaultSliderOptions.unwrap()
+        parts.append("\"DefaultSliderOptions\":" + u5.to_json())
+    if v.DefaultRelativeDateTimeOptions.is_some():
+        auto u6 = v.DefaultRelativeDateTimeOptions.unwrap()
+        parts.append("\"DefaultRelativeDateTimeOptions\":" + u6.to_json())
+    if v.DefaultHierarchyList.is_some():
+        auto u7 = v.DefaultHierarchyList.unwrap()
+        parts.append("\"DefaultHierarchyList\":" + default_hierarchy_filter_list_control_options_to_json(u7))
+    if v.DefaultHierarchyDropdown.is_some():
+        auto u8 = v.DefaultHierarchyDropdown.unwrap()
+        parts.append("\"DefaultHierarchyDropdown\":" + default_hierarchy_filter_drop_down_control_options_to_json(u8))
+    return quicksight_json_obj(parts)
+
+# Serialize DefaultFilterDropDownControlOptions to a compact JSON object (declaration order).
+def default_filter_drop_down_control_options_to_json(DefaultFilterDropDownControlOptions v) -> str:
+    list[str] parts = []
+    if v.DisplayOptions.is_some():
+        auto u0 = v.DisplayOptions.unwrap()
+        parts.append("\"DisplayOptions\":" + u0.to_json())
+    if v.Type.is_some():
+        auto u1 = v.Type.unwrap()
+        parts.append("\"Type\":" + u1.to_json())
+    if v.SelectableValues.is_some():
+        auto u2 = v.SelectableValues.unwrap()
+        parts.append("\"SelectableValues\":" + filter_selectable_values_to_json(u2))
+    if v.CommitMode.is_some():
+        auto u3 = v.CommitMode.unwrap()
+        parts.append("\"CommitMode\":" + u3.to_json())
+    if v.ControlSortConfigurations.is_some():
+        auto u4 = v.ControlSortConfigurations.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"ControlSortConfigurations\":" + quicksight_json_arr(e5))
+    return quicksight_json_obj(parts)
+
+# Serialize DefaultFilterListControlOptions to a compact JSON object (declaration order).
+def default_filter_list_control_options_to_json(DefaultFilterListControlOptions v) -> str:
+    list[str] parts = []
+    if v.DisplayOptions.is_some():
+        auto u0 = v.DisplayOptions.unwrap()
+        parts.append("\"DisplayOptions\":" + u0.to_json())
+    if v.Type.is_some():
+        auto u1 = v.Type.unwrap()
+        parts.append("\"Type\":" + u1.to_json())
+    if v.SelectableValues.is_some():
+        auto u2 = v.SelectableValues.unwrap()
+        parts.append("\"SelectableValues\":" + filter_selectable_values_to_json(u2))
+    if v.ControlSortConfigurations.is_some():
+        auto u3 = v.ControlSortConfigurations.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"ControlSortConfigurations\":" + quicksight_json_arr(e4))
+    return quicksight_json_obj(parts)
+
+# Serialize DefaultHierarchyFilterDropDownControlOptions to a compact JSON object (declaration order).
+def default_hierarchy_filter_drop_down_control_options_to_json(DefaultHierarchyFilterDropDownControlOptions v) -> str:
+    list[str] parts = []
+    if v.DisplayOptions.is_some():
+        auto u0 = v.DisplayOptions.unwrap()
+        parts.append("\"DisplayOptions\":" + u0.to_json())
+    if v.Type.is_some():
+        auto u1 = v.Type.unwrap()
+        parts.append("\"Type\":" + u1.to_json())
+    if v.CommitMode.is_some():
+        auto u2 = v.CommitMode.unwrap()
+        parts.append("\"CommitMode\":" + u2.to_json())
+    if v.ControlSortConfigurations.is_some():
+        auto u3 = v.ControlSortConfigurations.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"ControlSortConfigurations\":" + quicksight_json_arr(e4))
+    if v.ControlTitleFormatText.is_some():
+        auto u5 = v.ControlTitleFormatText.unwrap()
+        parts.append("\"ControlTitleFormatText\":" + u5.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize DefaultHierarchyFilterListControlOptions to a compact JSON object (declaration order).
+def default_hierarchy_filter_list_control_options_to_json(DefaultHierarchyFilterListControlOptions v) -> str:
+    list[str] parts = []
+    if v.DisplayOptions.is_some():
+        auto u0 = v.DisplayOptions.unwrap()
+        parts.append("\"DisplayOptions\":" + u0.to_json())
+    if v.Type.is_some():
+        auto u1 = v.Type.unwrap()
+        parts.append("\"Type\":" + u1.to_json())
+    if v.CommitMode.is_some():
+        auto u2 = v.CommitMode.unwrap()
+        parts.append("\"CommitMode\":" + u2.to_json())
+    if v.ControlSortConfigurations.is_some():
+        auto u3 = v.ControlSortConfigurations.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"ControlSortConfigurations\":" + quicksight_json_arr(e4))
+    if v.ControlTitleFormatText.is_some():
+        auto u5 = v.ControlTitleFormatText.unwrap()
+        parts.append("\"ControlTitleFormatText\":" + u5.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize DestinationParameterValueConfiguration to a compact JSON object (declaration order).
+def destination_parameter_value_configuration_to_json(DestinationParameterValueConfiguration v) -> str:
+    list[str] parts = []
+    if v.CustomValuesConfiguration.is_some():
+        auto u0 = v.CustomValuesConfiguration.unwrap()
+        parts.append("\"CustomValuesConfiguration\":" + custom_values_configuration_to_json(u0))
+    if v.SelectAllValueOptions.is_some():
+        auto u1 = v.SelectAllValueOptions.unwrap()
+        parts.append("\"SelectAllValueOptions\":" + quicksight_json_str(u1))
+    if v.SourceParameterName.is_some():
+        auto u2 = v.SourceParameterName.unwrap()
+        parts.append("\"SourceParameterName\":" + quicksight_json_str(u2))
+    if v.SourceField.is_some():
+        auto u3 = v.SourceField.unwrap()
+        parts.append("\"SourceField\":" + quicksight_json_str(u3))
+    if v.SourceColumn.is_some():
+        auto u4 = v.SourceColumn.unwrap()
+        parts.append("\"SourceColumn\":" + u4.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize DrillDownFilter to a compact JSON object (declaration order).
+def drill_down_filter_to_json(DrillDownFilter v) -> str:
+    list[str] parts = []
+    if v.NumericEqualityFilter.is_some():
+        auto u0 = v.NumericEqualityFilter.unwrap()
+        parts.append("\"NumericEqualityFilter\":" + u0.to_json())
+    if v.CategoryFilter.is_some():
+        auto u1 = v.CategoryFilter.unwrap()
+        parts.append("\"CategoryFilter\":" + category_drill_down_filter_to_json(u1))
+    if v.TimeRangeFilter.is_some():
+        auto u2 = v.TimeRangeFilter.unwrap()
+        parts.append("\"TimeRangeFilter\":" + u2.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize EmptyVisual to a compact JSON object (declaration order).
+def empty_visual_to_json(EmptyVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    if v.DataSetIdentifier.is_some():
+        auto u0 = v.DataSetIdentifier.unwrap()
+        parts.append("\"DataSetIdentifier\":" + quicksight_json_str(u0))
+    if v.TopicIdentifier.is_some():
+        auto u1 = v.TopicIdentifier.unwrap()
+        parts.append("\"TopicIdentifier\":" + quicksight_json_str(u1))
+    if v.Actions.is_some():
+        auto u2 = v.Actions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(visual_custom_action_to_json(x3))
+        parts.append("\"Actions\":" + quicksight_json_arr(e3))
+    return quicksight_json_obj(parts)
+
+# Serialize ExplicitHierarchy to a compact JSON object (declaration order).
+def explicit_hierarchy_to_json(ExplicitHierarchy v) -> str:
+    list[str] parts = []
+    parts.append("\"HierarchyId\":" + quicksight_json_str(v.HierarchyId))
+    list[str] e0 = []
+    for x0 in v.Columns:
+        e0.append(x0.to_json())
+    parts.append("\"Columns\":" + quicksight_json_arr(e0))
+    if v.DrillDownFilters.is_some():
+        auto u1 = v.DrillDownFilters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(drill_down_filter_to_json(x2))
+        parts.append("\"DrillDownFilters\":" + quicksight_json_arr(e2))
+    return quicksight_json_obj(parts)
+
+# Serialize FMKBParameters to a compact JSON object (declaration order).
+def fmkb_parameters_to_json(FMKBParameters v) -> str:
+    list[str] parts = []
+    parts.append("\"KnowledgeBaseArn\":" + quicksight_json_str(v.KnowledgeBaseArn))
+    if v.LinkedDataSourceIds.is_some():
+        auto u0 = v.LinkedDataSourceIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"LinkedDataSourceIds\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize FieldBasedTooltip to a compact JSON object (declaration order).
+def field_based_tooltip_to_json(FieldBasedTooltip v) -> str:
+    list[str] parts = []
+    if v.AggregationVisibility.is_some():
+        auto u0 = v.AggregationVisibility.unwrap()
+        parts.append("\"AggregationVisibility\":" + u0.to_json())
+    if v.TooltipTitleType.is_some():
+        auto u1 = v.TooltipTitleType.unwrap()
+        parts.append("\"TooltipTitleType\":" + u1.to_json())
+    if v.TooltipFields.is_some():
+        auto u2 = v.TooltipFields.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"TooltipFields\":" + quicksight_json_arr(e3))
+    return quicksight_json_obj(parts)
+
+# Serialize FieldFolder to a compact JSON object (declaration order).
+def field_folder_to_json(FieldFolder v) -> str:
+    list[str] parts = []
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + quicksight_json_str(u0))
+    if v.columns.is_some():
+        auto u1 = v.columns.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(quicksight_json_str(x2))
+        parts.append("\"columns\":" + quicksight_json_arr(e2))
+    return quicksight_json_obj(parts)
+
+# Serialize FileSource to a compact JSON object (declaration order).
+def file_source_to_json(FileSource v) -> str:
+    list[str] parts = []
+    parts.append("\"DataSourceArn\":" + quicksight_json_str(v.DataSourceArn))
+    if v.UploadSettings.is_some():
+        auto u0 = v.UploadSettings.unwrap()
+        parts.append("\"UploadSettings\":" + u0.to_json())
+    parts.append("\"SheetIndex\":" + str(v.SheetIndex))
+    list[str] e1 = []
+    for x1 in v.InputColumns:
+        e1.append(x1.to_json())
+    parts.append("\"InputColumns\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize FilledMapAggregatedFieldWells to a compact JSON object (declaration order).
+def filled_map_aggregated_field_wells_to_json(FilledMapAggregatedFieldWells v) -> str:
+    list[str] parts = []
+    if v.Geospatial.is_some():
+        auto u0 = v.Geospatial.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Geospatial\":" + quicksight_json_arr(e1))
+    if v.Values.is_some():
+        auto u2 = v.Values.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Values\":" + quicksight_json_arr(e3))
+    return quicksight_json_obj(parts)
+
+# Serialize FilledMapConditionalFormatting to a compact JSON object (declaration order).
+def filled_map_conditional_formatting_to_json(FilledMapConditionalFormatting v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ConditionalFormattingOptions:
+        e0.append(filled_map_conditional_formatting_option_to_json(x0))
+    parts.append("\"ConditionalFormattingOptions\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize FilledMapConditionalFormattingOption to a compact JSON object (declaration order).
+def filled_map_conditional_formatting_option_to_json(FilledMapConditionalFormattingOption v) -> str:
+    list[str] parts = []
+    parts.append("\"Shape\":" + filled_map_shape_conditional_formatting_to_json(v.Shape))
+    return quicksight_json_obj(parts)
+
+# Serialize FilledMapConfiguration to a compact JSON object (declaration order).
+def filled_map_configuration_to_json(FilledMapConfiguration v) -> str:
+    list[str] parts = []
+    if v.FieldWells.is_some():
+        auto u0 = v.FieldWells.unwrap()
+        parts.append("\"FieldWells\":" + filled_map_field_wells_to_json(u0))
+    if v.SortConfiguration.is_some():
+        auto u1 = v.SortConfiguration.unwrap()
+        parts.append("\"SortConfiguration\":" + filled_map_sort_configuration_to_json(u1))
+    if v.Legend.is_some():
+        auto u2 = v.Legend.unwrap()
+        parts.append("\"Legend\":" + u2.to_json())
+    if v.Tooltip.is_some():
+        auto u3 = v.Tooltip.unwrap()
+        parts.append("\"Tooltip\":" + tooltip_options_to_json(u3))
+    if v.WindowOptions.is_some():
+        auto u4 = v.WindowOptions.unwrap()
+        parts.append("\"WindowOptions\":" + u4.to_json())
+    if v.MapStyleOptions.is_some():
+        auto u5 = v.MapStyleOptions.unwrap()
+        parts.append("\"MapStyleOptions\":" + u5.to_json())
+    if v.Interactions.is_some():
+        auto u6 = v.Interactions.unwrap()
+        parts.append("\"Interactions\":" + u6.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize FilledMapFieldWells to a compact JSON object (declaration order).
+def filled_map_field_wells_to_json(FilledMapFieldWells v) -> str:
+    list[str] parts = []
+    if v.FilledMapAggregatedFieldWells.is_some():
+        auto u0 = v.FilledMapAggregatedFieldWells.unwrap()
+        parts.append("\"FilledMapAggregatedFieldWells\":" + filled_map_aggregated_field_wells_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize FilledMapShapeConditionalFormatting to a compact JSON object (declaration order).
+def filled_map_shape_conditional_formatting_to_json(FilledMapShapeConditionalFormatting v) -> str:
+    list[str] parts = []
+    parts.append("\"FieldId\":" + quicksight_json_str(v.FieldId))
+    if v.Format.is_some():
+        auto u0 = v.Format.unwrap()
+        parts.append("\"Format\":" + shape_conditional_format_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize FilledMapSortConfiguration to a compact JSON object (declaration order).
+def filled_map_sort_configuration_to_json(FilledMapSortConfiguration v) -> str:
+    list[str] parts = []
+    if v.CategorySort.is_some():
+        auto u0 = v.CategorySort.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"CategorySort\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize FilledMapVisual to a compact JSON object (declaration order).
+def filled_map_visual_to_json(FilledMapVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + u0.to_json())
+    if v.Subtitle.is_some():
+        auto u1 = v.Subtitle.unwrap()
+        parts.append("\"Subtitle\":" + u1.to_json())
+    if v.ChartConfiguration.is_some():
+        auto u2 = v.ChartConfiguration.unwrap()
+        parts.append("\"ChartConfiguration\":" + filled_map_configuration_to_json(u2))
+    if v.ConditionalFormatting.is_some():
+        auto u3 = v.ConditionalFormatting.unwrap()
+        parts.append("\"ConditionalFormatting\":" + filled_map_conditional_formatting_to_json(u3))
+    if v.ColumnHierarchies.is_some():
+        auto u4 = v.ColumnHierarchies.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(column_hierarchy_to_json(x5))
+        parts.append("\"ColumnHierarchies\":" + quicksight_json_arr(e5))
+    if v.Actions.is_some():
+        auto u6 = v.Actions.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(visual_custom_action_to_json(x7))
+        parts.append("\"Actions\":" + quicksight_json_arr(e7))
+    if v.VisualContentAltText.is_some():
+        auto u8 = v.VisualContentAltText.unwrap()
+        parts.append("\"VisualContentAltText\":" + quicksight_json_str(u8))
+    if v.GeocodingPreferences.is_some():
+        auto u9 = v.GeocodingPreferences.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"GeocodingPreferences\":" + quicksight_json_arr(e10))
+    return quicksight_json_obj(parts)
+
+# Serialize Filter to a compact JSON object (declaration order).
+def filter_to_json(Filter v) -> str:
+    list[str] parts = []
+    if v.CategoryFilter.is_some():
+        auto u0 = v.CategoryFilter.unwrap()
+        parts.append("\"CategoryFilter\":" + category_filter_to_json(u0))
+    if v.NumericRangeFilter.is_some():
+        auto u1 = v.NumericRangeFilter.unwrap()
+        parts.append("\"NumericRangeFilter\":" + numeric_range_filter_to_json(u1))
+    if v.NumericEqualityFilter.is_some():
+        auto u2 = v.NumericEqualityFilter.unwrap()
+        parts.append("\"NumericEqualityFilter\":" + numeric_equality_filter_to_json(u2))
+    if v.TimeEqualityFilter.is_some():
+        auto u3 = v.TimeEqualityFilter.unwrap()
+        parts.append("\"TimeEqualityFilter\":" + time_equality_filter_to_json(u3))
+    if v.TimeRangeFilter.is_some():
+        auto u4 = v.TimeRangeFilter.unwrap()
+        parts.append("\"TimeRangeFilter\":" + time_range_filter_to_json(u4))
+    if v.RelativeDatesFilter.is_some():
+        auto u5 = v.RelativeDatesFilter.unwrap()
+        parts.append("\"RelativeDatesFilter\":" + relative_dates_filter_to_json(u5))
+    if v.TopBottomFilter.is_some():
+        auto u6 = v.TopBottomFilter.unwrap()
+        parts.append("\"TopBottomFilter\":" + top_bottom_filter_to_json(u6))
+    if v.NestedFilter.is_some():
+        auto u7 = v.NestedFilter.unwrap()
+        parts.append("\"NestedFilter\":" + nested_filter_to_json(u7))
+    if v.HierarchyFilter.is_some():
+        auto u8 = v.HierarchyFilter.unwrap()
+        parts.append("\"HierarchyFilter\":" + hierarchy_filter_to_json(u8))
+    return quicksight_json_obj(parts)
+
+# Serialize FilterControl to a compact JSON object (declaration order).
+def filter_control_to_json(FilterControl v) -> str:
+    list[str] parts = []
+    if v.DateTimePicker.is_some():
+        auto u0 = v.DateTimePicker.unwrap()
+        parts.append("\"DateTimePicker\":" + u0.to_json())
+    if v.List.is_some():
+        auto u1 = v.List.unwrap()
+        parts.append("\"List\":" + filter_list_control_to_json(u1))
+    if v.Dropdown.is_some():
+        auto u2 = v.Dropdown.unwrap()
+        parts.append("\"Dropdown\":" + filter_drop_down_control_to_json(u2))
+    if v.TextField.is_some():
+        auto u3 = v.TextField.unwrap()
+        parts.append("\"TextField\":" + u3.to_json())
+    if v.TextArea.is_some():
+        auto u4 = v.TextArea.unwrap()
+        parts.append("\"TextArea\":" + u4.to_json())
+    if v.Slider.is_some():
+        auto u5 = v.Slider.unwrap()
+        parts.append("\"Slider\":" + u5.to_json())
+    if v.RelativeDateTime.is_some():
+        auto u6 = v.RelativeDateTime.unwrap()
+        parts.append("\"RelativeDateTime\":" + u6.to_json())
+    if v.CrossSheet.is_some():
+        auto u7 = v.CrossSheet.unwrap()
+        parts.append("\"CrossSheet\":" + filter_cross_sheet_control_to_json(u7))
+    if v.HierarchyList.is_some():
+        auto u8 = v.HierarchyList.unwrap()
+        parts.append("\"HierarchyList\":" + hierarchy_filter_list_control_to_json(u8))
+    if v.HierarchyDropdown.is_some():
+        auto u9 = v.HierarchyDropdown.unwrap()
+        parts.append("\"HierarchyDropdown\":" + hierarchy_filter_drop_down_control_to_json(u9))
+    return quicksight_json_obj(parts)
+
+# Serialize FilterCrossSheetControl to a compact JSON object (declaration order).
+def filter_cross_sheet_control_to_json(FilterCrossSheetControl v) -> str:
+    list[str] parts = []
+    parts.append("\"FilterControlId\":" + quicksight_json_str(v.FilterControlId))
+    parts.append("\"SourceFilterId\":" + quicksight_json_str(v.SourceFilterId))
+    if v.CascadingControlConfiguration.is_some():
+        auto u0 = v.CascadingControlConfiguration.unwrap()
+        parts.append("\"CascadingControlConfiguration\":" + cascading_control_configuration_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize FilterDropDownControl to a compact JSON object (declaration order).
+def filter_drop_down_control_to_json(FilterDropDownControl v) -> str:
+    list[str] parts = []
+    parts.append("\"FilterControlId\":" + quicksight_json_str(v.FilterControlId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + quicksight_json_str(u0))
+    parts.append("\"SourceFilterId\":" + quicksight_json_str(v.SourceFilterId))
+    if v.DisplayOptions.is_some():
+        auto u1 = v.DisplayOptions.unwrap()
+        parts.append("\"DisplayOptions\":" + u1.to_json())
+    if v.Type.is_some():
+        auto u2 = v.Type.unwrap()
+        parts.append("\"Type\":" + u2.to_json())
+    if v.SelectableValues.is_some():
+        auto u3 = v.SelectableValues.unwrap()
+        parts.append("\"SelectableValues\":" + filter_selectable_values_to_json(u3))
+    if v.CascadingControlConfiguration.is_some():
+        auto u4 = v.CascadingControlConfiguration.unwrap()
+        parts.append("\"CascadingControlConfiguration\":" + cascading_control_configuration_to_json(u4))
+    if v.CommitMode.is_some():
+        auto u5 = v.CommitMode.unwrap()
+        parts.append("\"CommitMode\":" + u5.to_json())
+    if v.ControlSortConfigurations.is_some():
+        auto u6 = v.ControlSortConfigurations.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"ControlSortConfigurations\":" + quicksight_json_arr(e7))
+    if v.ControlTitleFormatText.is_some():
+        auto u8 = v.ControlTitleFormatText.unwrap()
+        parts.append("\"ControlTitleFormatText\":" + u8.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize FilterGroup to a compact JSON object (declaration order).
+def filter_group_to_json(FilterGroup v) -> str:
+    list[str] parts = []
+    parts.append("\"FilterGroupId\":" + quicksight_json_str(v.FilterGroupId))
+    list[str] e0 = []
+    for x0 in v.Filters:
+        e0.append(filter_to_json(x0))
+    parts.append("\"Filters\":" + quicksight_json_arr(e0))
+    parts.append("\"ScopeConfiguration\":" + filter_scope_configuration_to_json(v.ScopeConfiguration))
+    if v.Status.is_some():
+        auto u1 = v.Status.unwrap()
+        parts.append("\"Status\":" + u1.to_json())
+    parts.append("\"CrossDataset\":" + v.CrossDataset.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize FilterListConfiguration to a compact JSON object (declaration order).
+def filter_list_configuration_to_json(FilterListConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"MatchOperator\":" + v.MatchOperator.to_json())
+    if v.CategoryValues.is_some():
+        auto u0 = v.CategoryValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"CategoryValues\":" + quicksight_json_arr(e1))
+    if v.SelectAllOptions.is_some():
+        auto u2 = v.SelectAllOptions.unwrap()
+        parts.append("\"SelectAllOptions\":" + quicksight_json_str(u2))
+    if v.NullOption.is_some():
+        auto u3 = v.NullOption.unwrap()
+        parts.append("\"NullOption\":" + u3.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize FilterListControl to a compact JSON object (declaration order).
+def filter_list_control_to_json(FilterListControl v) -> str:
+    list[str] parts = []
+    parts.append("\"FilterControlId\":" + quicksight_json_str(v.FilterControlId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + quicksight_json_str(u0))
+    parts.append("\"SourceFilterId\":" + quicksight_json_str(v.SourceFilterId))
+    if v.DisplayOptions.is_some():
+        auto u1 = v.DisplayOptions.unwrap()
+        parts.append("\"DisplayOptions\":" + u1.to_json())
+    if v.Type.is_some():
+        auto u2 = v.Type.unwrap()
+        parts.append("\"Type\":" + u2.to_json())
+    if v.SelectableValues.is_some():
+        auto u3 = v.SelectableValues.unwrap()
+        parts.append("\"SelectableValues\":" + filter_selectable_values_to_json(u3))
+    if v.CascadingControlConfiguration.is_some():
+        auto u4 = v.CascadingControlConfiguration.unwrap()
+        parts.append("\"CascadingControlConfiguration\":" + cascading_control_configuration_to_json(u4))
+    if v.ControlSortConfigurations.is_some():
+        auto u5 = v.ControlSortConfigurations.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"ControlSortConfigurations\":" + quicksight_json_arr(e6))
+    if v.ControlTitleFormatText.is_some():
+        auto u7 = v.ControlTitleFormatText.unwrap()
+        parts.append("\"ControlTitleFormatText\":" + u7.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize FilterOperation to a compact JSON object (declaration order).
+def filter_operation_to_json(FilterOperation v) -> str:
+    list[str] parts = []
+    if v.ConditionExpression.is_some():
+        auto u0 = v.ConditionExpression.unwrap()
+        parts.append("\"ConditionExpression\":" + quicksight_json_str(u0))
+    if v.StringFilterCondition.is_some():
+        auto u1 = v.StringFilterCondition.unwrap()
+        parts.append("\"StringFilterCondition\":" + data_set_string_filter_condition_to_json(u1))
+    if v.NumericFilterCondition.is_some():
+        auto u2 = v.NumericFilterCondition.unwrap()
+        parts.append("\"NumericFilterCondition\":" + u2.to_json())
+    if v.DateFilterCondition.is_some():
+        auto u3 = v.DateFilterCondition.unwrap()
+        parts.append("\"DateFilterCondition\":" + u3.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize FilterOperationSelectedFieldsConfiguration to a compact JSON object (declaration order).
+def filter_operation_selected_fields_configuration_to_json(FilterOperationSelectedFieldsConfiguration v) -> str:
+    list[str] parts = []
+    if v.SelectedFields.is_some():
+        auto u0 = v.SelectedFields.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"SelectedFields\":" + quicksight_json_arr(e1))
+    if v.SelectedFieldOptions.is_some():
+        auto u2 = v.SelectedFieldOptions.unwrap()
+        parts.append("\"SelectedFieldOptions\":" + quicksight_json_str(u2))
+    if v.SelectedColumns.is_some():
+        auto u3 = v.SelectedColumns.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"SelectedColumns\":" + quicksight_json_arr(e4))
+    return quicksight_json_obj(parts)
+
+# Serialize FilterOperationTargetVisualsConfiguration to a compact JSON object (declaration order).
+def filter_operation_target_visuals_configuration_to_json(FilterOperationTargetVisualsConfiguration v) -> str:
+    list[str] parts = []
+    if v.SameSheetTargetVisualConfiguration.is_some():
+        auto u0 = v.SameSheetTargetVisualConfiguration.unwrap()
+        parts.append("\"SameSheetTargetVisualConfiguration\":" + same_sheet_target_visual_configuration_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize FilterScopeConfiguration to a compact JSON object (declaration order).
+def filter_scope_configuration_to_json(FilterScopeConfiguration v) -> str:
+    list[str] parts = []
+    if v.SelectedSheets.is_some():
+        auto u0 = v.SelectedSheets.unwrap()
+        parts.append("\"SelectedSheets\":" + selected_sheets_filter_scope_configuration_to_json(u0))
+    if v.AllSheets.is_some():
+        auto u1 = v.AllSheets.unwrap()
+        parts.append("\"AllSheets\":" + u1.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize FilterSelectableValues to a compact JSON object (declaration order).
+def filter_selectable_values_to_json(FilterSelectableValues v) -> str:
+    list[str] parts = []
+    if v.Values.is_some():
+        auto u0 = v.Values.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"Values\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize FiltersOperation to a compact JSON object (declaration order).
+def filters_operation_to_json(FiltersOperation v) -> str:
+    list[str] parts = []
+    parts.append("\"Alias\":" + quicksight_json_str(v.Alias))
+    parts.append("\"Source\":" + transform_operation_source_to_json(v.Source))
+    list[str] e0 = []
+    for x0 in v.FilterOperations:
+        e0.append(filter_operation_to_json(x0))
+    parts.append("\"FilterOperations\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize FreeFormLayoutConfiguration to a compact JSON object (declaration order).
+def free_form_layout_configuration_to_json(FreeFormLayoutConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Elements:
+        e0.append(free_form_layout_element_to_json(x0))
+    parts.append("\"Elements\":" + quicksight_json_arr(e0))
+    if v.CanvasSizeOptions.is_some():
+        auto u1 = v.CanvasSizeOptions.unwrap()
+        parts.append("\"CanvasSizeOptions\":" + u1.to_json())
+    if v.Groups.is_some():
+        auto u2 = v.Groups.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(sheet_layout_group_to_json(x3))
+        parts.append("\"Groups\":" + quicksight_json_arr(e3))
+    return quicksight_json_obj(parts)
+
+# Serialize FreeFormLayoutElement to a compact JSON object (declaration order).
+def free_form_layout_element_to_json(FreeFormLayoutElement v) -> str:
+    list[str] parts = []
+    parts.append("\"ElementId\":" + quicksight_json_str(v.ElementId))
+    parts.append("\"ElementType\":" + v.ElementType.to_json())
+    parts.append("\"XAxisLocation\":" + quicksight_json_str(v.XAxisLocation))
+    parts.append("\"YAxisLocation\":" + quicksight_json_str(v.YAxisLocation))
+    parts.append("\"Width\":" + quicksight_json_str(v.Width))
+    parts.append("\"Height\":" + quicksight_json_str(v.Height))
+    if v.Visibility.is_some():
+        auto u0 = v.Visibility.unwrap()
+        parts.append("\"Visibility\":" + u0.to_json())
+    if v.RenderingRules.is_some():
+        auto u1 = v.RenderingRules.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"RenderingRules\":" + quicksight_json_arr(e2))
+    if v.BorderStyle.is_some():
+        auto u3 = v.BorderStyle.unwrap()
+        parts.append("\"BorderStyle\":" + u3.to_json())
+    if v.SelectedBorderStyle.is_some():
+        auto u4 = v.SelectedBorderStyle.unwrap()
+        parts.append("\"SelectedBorderStyle\":" + u4.to_json())
+    if v.BackgroundStyle.is_some():
+        auto u5 = v.BackgroundStyle.unwrap()
+        parts.append("\"BackgroundStyle\":" + u5.to_json())
+    if v.LoadingAnimation.is_some():
+        auto u6 = v.LoadingAnimation.unwrap()
+        parts.append("\"LoadingAnimation\":" + u6.to_json())
+    if v.BorderRadius.is_some():
+        auto u7 = v.BorderRadius.unwrap()
+        parts.append("\"BorderRadius\":" + quicksight_json_str(u7))
+    if v.Padding.is_some():
+        auto u8 = v.Padding.unwrap()
+        parts.append("\"Padding\":" + quicksight_json_str(u8))
+    return quicksight_json_obj(parts)
+
+# Serialize FreeFormSectionLayoutConfiguration to a compact JSON object (declaration order).
+def free_form_section_layout_configuration_to_json(FreeFormSectionLayoutConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Elements:
+        e0.append(free_form_layout_element_to_json(x0))
+    parts.append("\"Elements\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize FunnelChartAggregatedFieldWells to a compact JSON object (declaration order).
+def funnel_chart_aggregated_field_wells_to_json(FunnelChartAggregatedFieldWells v) -> str:
+    list[str] parts = []
+    if v.Category.is_some():
+        auto u0 = v.Category.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Category\":" + quicksight_json_arr(e1))
+    if v.Values.is_some():
+        auto u2 = v.Values.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Values\":" + quicksight_json_arr(e3))
+    return quicksight_json_obj(parts)
+
+# Serialize FunnelChartConfiguration to a compact JSON object (declaration order).
+def funnel_chart_configuration_to_json(FunnelChartConfiguration v) -> str:
+    list[str] parts = []
+    if v.FieldWells.is_some():
+        auto u0 = v.FieldWells.unwrap()
+        parts.append("\"FieldWells\":" + funnel_chart_field_wells_to_json(u0))
+    if v.SortConfiguration.is_some():
+        auto u1 = v.SortConfiguration.unwrap()
+        parts.append("\"SortConfiguration\":" + funnel_chart_sort_configuration_to_json(u1))
+    if v.CategoryLabelOptions.is_some():
+        auto u2 = v.CategoryLabelOptions.unwrap()
+        parts.append("\"CategoryLabelOptions\":" + chart_axis_label_options_to_json(u2))
+    if v.ValueLabelOptions.is_some():
+        auto u3 = v.ValueLabelOptions.unwrap()
+        parts.append("\"ValueLabelOptions\":" + chart_axis_label_options_to_json(u3))
+    if v.Tooltip.is_some():
+        auto u4 = v.Tooltip.unwrap()
+        parts.append("\"Tooltip\":" + tooltip_options_to_json(u4))
+    if v.DataLabelOptions.is_some():
+        auto u5 = v.DataLabelOptions.unwrap()
+        parts.append("\"DataLabelOptions\":" + u5.to_json())
+    if v.VisualPalette.is_some():
+        auto u6 = v.VisualPalette.unwrap()
+        parts.append("\"VisualPalette\":" + visual_palette_to_json(u6))
+    if v.Interactions.is_some():
+        auto u7 = v.Interactions.unwrap()
+        parts.append("\"Interactions\":" + u7.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize FunnelChartFieldWells to a compact JSON object (declaration order).
+def funnel_chart_field_wells_to_json(FunnelChartFieldWells v) -> str:
+    list[str] parts = []
+    if v.FunnelChartAggregatedFieldWells.is_some():
+        auto u0 = v.FunnelChartAggregatedFieldWells.unwrap()
+        parts.append("\"FunnelChartAggregatedFieldWells\":" + funnel_chart_aggregated_field_wells_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize FunnelChartSortConfiguration to a compact JSON object (declaration order).
+def funnel_chart_sort_configuration_to_json(FunnelChartSortConfiguration v) -> str:
+    list[str] parts = []
+    if v.CategorySort.is_some():
+        auto u0 = v.CategorySort.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"CategorySort\":" + quicksight_json_arr(e1))
+    if v.CategoryItemsLimit.is_some():
+        auto u2 = v.CategoryItemsLimit.unwrap()
+        parts.append("\"CategoryItemsLimit\":" + u2.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize FunnelChartVisual to a compact JSON object (declaration order).
+def funnel_chart_visual_to_json(FunnelChartVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + u0.to_json())
+    if v.Subtitle.is_some():
+        auto u1 = v.Subtitle.unwrap()
+        parts.append("\"Subtitle\":" + u1.to_json())
+    if v.ChartConfiguration.is_some():
+        auto u2 = v.ChartConfiguration.unwrap()
+        parts.append("\"ChartConfiguration\":" + funnel_chart_configuration_to_json(u2))
+    if v.Actions.is_some():
+        auto u3 = v.Actions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(visual_custom_action_to_json(x4))
+        parts.append("\"Actions\":" + quicksight_json_arr(e4))
+    if v.ColumnHierarchies.is_some():
+        auto u5 = v.ColumnHierarchies.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(column_hierarchy_to_json(x6))
+        parts.append("\"ColumnHierarchies\":" + quicksight_json_arr(e6))
+    if v.VisualContentAltText.is_some():
+        auto u7 = v.VisualContentAltText.unwrap()
+        parts.append("\"VisualContentAltText\":" + quicksight_json_str(u7))
+    return quicksight_json_obj(parts)
+
+# Serialize GaugeChartArcConditionalFormatting to a compact JSON object (declaration order).
+def gauge_chart_arc_conditional_formatting_to_json(GaugeChartArcConditionalFormatting v) -> str:
+    list[str] parts = []
+    if v.ForegroundColor.is_some():
+        auto u0 = v.ForegroundColor.unwrap()
+        parts.append("\"ForegroundColor\":" + conditional_formatting_color_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize GaugeChartConditionalFormatting to a compact JSON object (declaration order).
+def gauge_chart_conditional_formatting_to_json(GaugeChartConditionalFormatting v) -> str:
+    list[str] parts = []
+    if v.ConditionalFormattingOptions.is_some():
+        auto u0 = v.ConditionalFormattingOptions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(gauge_chart_conditional_formatting_option_to_json(x1))
+        parts.append("\"ConditionalFormattingOptions\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize GaugeChartConditionalFormattingOption to a compact JSON object (declaration order).
+def gauge_chart_conditional_formatting_option_to_json(GaugeChartConditionalFormattingOption v) -> str:
+    list[str] parts = []
+    if v.PrimaryValue.is_some():
+        auto u0 = v.PrimaryValue.unwrap()
+        parts.append("\"PrimaryValue\":" + gauge_chart_primary_value_conditional_formatting_to_json(u0))
+    if v.Arc.is_some():
+        auto u1 = v.Arc.unwrap()
+        parts.append("\"Arc\":" + gauge_chart_arc_conditional_formatting_to_json(u1))
+    return quicksight_json_obj(parts)
+
+# Serialize GaugeChartConfiguration to a compact JSON object (declaration order).
+def gauge_chart_configuration_to_json(GaugeChartConfiguration v) -> str:
+    list[str] parts = []
+    if v.FieldWells.is_some():
+        auto u0 = v.FieldWells.unwrap()
+        parts.append("\"FieldWells\":" + gauge_chart_field_wells_to_json(u0))
+    if v.GaugeChartOptions.is_some():
+        auto u1 = v.GaugeChartOptions.unwrap()
+        parts.append("\"GaugeChartOptions\":" + u1.to_json())
+    if v.DataLabels.is_some():
+        auto u2 = v.DataLabels.unwrap()
+        parts.append("\"DataLabels\":" + data_label_options_to_json(u2))
+    if v.TooltipOptions.is_some():
+        auto u3 = v.TooltipOptions.unwrap()
+        parts.append("\"TooltipOptions\":" + tooltip_options_to_json(u3))
+    if v.VisualPalette.is_some():
+        auto u4 = v.VisualPalette.unwrap()
+        parts.append("\"VisualPalette\":" + visual_palette_to_json(u4))
+    if v.ColorConfiguration.is_some():
+        auto u5 = v.ColorConfiguration.unwrap()
+        parts.append("\"ColorConfiguration\":" + u5.to_json())
+    if v.Interactions.is_some():
+        auto u6 = v.Interactions.unwrap()
+        parts.append("\"Interactions\":" + u6.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize GaugeChartFieldWells to a compact JSON object (declaration order).
+def gauge_chart_field_wells_to_json(GaugeChartFieldWells v) -> str:
+    list[str] parts = []
+    if v.Values.is_some():
+        auto u0 = v.Values.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Values\":" + quicksight_json_arr(e1))
+    if v.TargetValues.is_some():
+        auto u2 = v.TargetValues.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"TargetValues\":" + quicksight_json_arr(e3))
+    return quicksight_json_obj(parts)
+
+# Serialize GaugeChartPrimaryValueConditionalFormatting to a compact JSON object (declaration order).
+def gauge_chart_primary_value_conditional_formatting_to_json(GaugeChartPrimaryValueConditionalFormatting v) -> str:
+    list[str] parts = []
+    if v.TextColor.is_some():
+        auto u0 = v.TextColor.unwrap()
+        parts.append("\"TextColor\":" + conditional_formatting_color_to_json(u0))
+    if v.Icon.is_some():
+        auto u1 = v.Icon.unwrap()
+        parts.append("\"Icon\":" + u1.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize GaugeChartVisual to a compact JSON object (declaration order).
+def gauge_chart_visual_to_json(GaugeChartVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + u0.to_json())
+    if v.Subtitle.is_some():
+        auto u1 = v.Subtitle.unwrap()
+        parts.append("\"Subtitle\":" + u1.to_json())
+    if v.ChartConfiguration.is_some():
+        auto u2 = v.ChartConfiguration.unwrap()
+        parts.append("\"ChartConfiguration\":" + gauge_chart_configuration_to_json(u2))
+    if v.ConditionalFormatting.is_some():
+        auto u3 = v.ConditionalFormatting.unwrap()
+        parts.append("\"ConditionalFormatting\":" + gauge_chart_conditional_formatting_to_json(u3))
+    if v.Actions.is_some():
+        auto u4 = v.Actions.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(visual_custom_action_to_json(x5))
+        parts.append("\"Actions\":" + quicksight_json_arr(e5))
+    if v.VisualContentAltText.is_some():
+        auto u6 = v.VisualContentAltText.unwrap()
+        parts.append("\"VisualContentAltText\":" + quicksight_json_str(u6))
+    return quicksight_json_obj(parts)
+
+# Serialize GeoSpatialColumnGroup to a compact JSON object (declaration order).
+def geo_spatial_column_group_to_json(GeoSpatialColumnGroup v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + quicksight_json_str(v.Name))
+    if v.CountryCode.is_some():
+        auto u0 = v.CountryCode.unwrap()
+        parts.append("\"CountryCode\":" + quicksight_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.Columns:
+        e1.append(quicksight_json_str(x1))
+    parts.append("\"Columns\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize GeospatialCategoricalColor to a compact JSON object (declaration order).
+def geospatial_categorical_color_to_json(GeospatialCategoricalColor v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.CategoryDataColors:
+        e0.append(x0.to_json())
+    parts.append("\"CategoryDataColors\":" + quicksight_json_arr(e0))
+    if v.NullDataVisibility.is_some():
+        auto u1 = v.NullDataVisibility.unwrap()
+        parts.append("\"NullDataVisibility\":" + u1.to_json())
+    if v.NullDataSettings.is_some():
+        auto u2 = v.NullDataSettings.unwrap()
+        parts.append("\"NullDataSettings\":" + u2.to_json())
+    if v.DefaultOpacity.is_some():
+        auto u3 = v.DefaultOpacity.unwrap()
+        parts.append("\"DefaultOpacity\":" + str(u3))
+    return quicksight_json_obj(parts)
+
+# Serialize GeospatialCircleSymbolStyle to a compact JSON object (declaration order).
+def geospatial_circle_symbol_style_to_json(GeospatialCircleSymbolStyle v) -> str:
+    list[str] parts = []
+    if v.FillColor.is_some():
+        auto u0 = v.FillColor.unwrap()
+        parts.append("\"FillColor\":" + geospatial_color_to_json(u0))
+    if v.StrokeColor.is_some():
+        auto u1 = v.StrokeColor.unwrap()
+        parts.append("\"StrokeColor\":" + geospatial_color_to_json(u1))
+    if v.StrokeWidth.is_some():
+        auto u2 = v.StrokeWidth.unwrap()
+        parts.append("\"StrokeWidth\":" + u2.to_json())
+    if v.CircleRadius.is_some():
+        auto u3 = v.CircleRadius.unwrap()
+        parts.append("\"CircleRadius\":" + u3.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize GeospatialColor to a compact JSON object (declaration order).
+def geospatial_color_to_json(GeospatialColor v) -> str:
+    list[str] parts = []
+    if v.Solid.is_some():
+        auto u0 = v.Solid.unwrap()
+        parts.append("\"Solid\":" + u0.to_json())
+    if v.Gradient.is_some():
+        auto u1 = v.Gradient.unwrap()
+        parts.append("\"Gradient\":" + geospatial_gradient_color_to_json(u1))
+    if v.Categorical.is_some():
+        auto u2 = v.Categorical.unwrap()
+        parts.append("\"Categorical\":" + geospatial_categorical_color_to_json(u2))
+    return quicksight_json_obj(parts)
+
+# Serialize GeospatialGradientColor to a compact JSON object (declaration order).
+def geospatial_gradient_color_to_json(GeospatialGradientColor v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.StepColors:
+        e0.append(x0.to_json())
+    parts.append("\"StepColors\":" + quicksight_json_arr(e0))
+    if v.NullDataVisibility.is_some():
+        auto u1 = v.NullDataVisibility.unwrap()
+        parts.append("\"NullDataVisibility\":" + u1.to_json())
+    if v.NullDataSettings.is_some():
+        auto u2 = v.NullDataSettings.unwrap()
+        parts.append("\"NullDataSettings\":" + u2.to_json())
+    if v.DefaultOpacity.is_some():
+        auto u3 = v.DefaultOpacity.unwrap()
+        parts.append("\"DefaultOpacity\":" + str(u3))
+    return quicksight_json_obj(parts)
+
+# Serialize GeospatialHeatmapColorScale to a compact JSON object (declaration order).
+def geospatial_heatmap_color_scale_to_json(GeospatialHeatmapColorScale v) -> str:
+    list[str] parts = []
+    if v.Colors.is_some():
+        auto u0 = v.Colors.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Colors\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize GeospatialHeatmapConfiguration to a compact JSON object (declaration order).
+def geospatial_heatmap_configuration_to_json(GeospatialHeatmapConfiguration v) -> str:
+    list[str] parts = []
+    if v.HeatmapColor.is_some():
+        auto u0 = v.HeatmapColor.unwrap()
+        parts.append("\"HeatmapColor\":" + geospatial_heatmap_color_scale_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize GeospatialLayerColorField to a compact JSON object (declaration order).
+def geospatial_layer_color_field_to_json(GeospatialLayerColorField v) -> str:
+    list[str] parts = []
+    if v.ColorDimensionsFields.is_some():
+        auto u0 = v.ColorDimensionsFields.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ColorDimensionsFields\":" + quicksight_json_arr(e1))
+    if v.ColorValuesFields.is_some():
+        auto u2 = v.ColorValuesFields.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ColorValuesFields\":" + quicksight_json_arr(e3))
+    return quicksight_json_obj(parts)
+
+# Serialize GeospatialLayerDefinition to a compact JSON object (declaration order).
+def geospatial_layer_definition_to_json(GeospatialLayerDefinition v) -> str:
+    list[str] parts = []
+    if v.PointLayer.is_some():
+        auto u0 = v.PointLayer.unwrap()
+        parts.append("\"PointLayer\":" + geospatial_point_layer_to_json(u0))
+    if v.LineLayer.is_some():
+        auto u1 = v.LineLayer.unwrap()
+        parts.append("\"LineLayer\":" + geospatial_line_layer_to_json(u1))
+    if v.PolygonLayer.is_some():
+        auto u2 = v.PolygonLayer.unwrap()
+        parts.append("\"PolygonLayer\":" + geospatial_polygon_layer_to_json(u2))
+    return quicksight_json_obj(parts)
+
+# Serialize GeospatialLayerItem to a compact JSON object (declaration order).
+def geospatial_layer_item_to_json(GeospatialLayerItem v) -> str:
+    list[str] parts = []
+    parts.append("\"LayerId\":" + quicksight_json_str(v.LayerId))
+    if v.LayerType.is_some():
+        auto u0 = v.LayerType.unwrap()
+        parts.append("\"LayerType\":" + u0.to_json())
+    if v.DataSource.is_some():
+        auto u1 = v.DataSource.unwrap()
+        parts.append("\"DataSource\":" + u1.to_json())
+    if v.Label.is_some():
+        auto u2 = v.Label.unwrap()
+        parts.append("\"Label\":" + quicksight_json_str(u2))
+    if v.Visibility.is_some():
+        auto u3 = v.Visibility.unwrap()
+        parts.append("\"Visibility\":" + u3.to_json())
+    if v.LayerDefinition.is_some():
+        auto u4 = v.LayerDefinition.unwrap()
+        parts.append("\"LayerDefinition\":" + geospatial_layer_definition_to_json(u4))
+    if v.Tooltip.is_some():
+        auto u5 = v.Tooltip.unwrap()
+        parts.append("\"Tooltip\":" + tooltip_options_to_json(u5))
+    if v.JoinDefinition.is_some():
+        auto u6 = v.JoinDefinition.unwrap()
+        parts.append("\"JoinDefinition\":" + geospatial_layer_join_definition_to_json(u6))
+    if v.Actions.is_some():
+        auto u7 = v.Actions.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(layer_custom_action_to_json(x8))
+        parts.append("\"Actions\":" + quicksight_json_arr(e8))
+    return quicksight_json_obj(parts)
+
+# Serialize GeospatialLayerJoinDefinition to a compact JSON object (declaration order).
+def geospatial_layer_join_definition_to_json(GeospatialLayerJoinDefinition v) -> str:
+    list[str] parts = []
+    if v.ShapeKeyField.is_some():
+        auto u0 = v.ShapeKeyField.unwrap()
+        parts.append("\"ShapeKeyField\":" + quicksight_json_str(u0))
+    if v.DatasetKeyField.is_some():
+        auto u1 = v.DatasetKeyField.unwrap()
+        parts.append("\"DatasetKeyField\":" + u1.to_json())
+    if v.ColorField.is_some():
+        auto u2 = v.ColorField.unwrap()
+        parts.append("\"ColorField\":" + geospatial_layer_color_field_to_json(u2))
+    return quicksight_json_obj(parts)
+
+# Serialize GeospatialLayerMapConfiguration to a compact JSON object (declaration order).
+def geospatial_layer_map_configuration_to_json(GeospatialLayerMapConfiguration v) -> str:
+    list[str] parts = []
+    if v.Legend.is_some():
+        auto u0 = v.Legend.unwrap()
+        parts.append("\"Legend\":" + u0.to_json())
+    if v.MapLayers.is_some():
+        auto u1 = v.MapLayers.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(geospatial_layer_item_to_json(x2))
+        parts.append("\"MapLayers\":" + quicksight_json_arr(e2))
+    if v.MapState.is_some():
+        auto u3 = v.MapState.unwrap()
+        parts.append("\"MapState\":" + u3.to_json())
+    if v.MapStyle.is_some():
+        auto u4 = v.MapStyle.unwrap()
+        parts.append("\"MapStyle\":" + u4.to_json())
+    if v.Interactions.is_some():
+        auto u5 = v.Interactions.unwrap()
+        parts.append("\"Interactions\":" + u5.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize GeospatialLineLayer to a compact JSON object (declaration order).
+def geospatial_line_layer_to_json(GeospatialLineLayer v) -> str:
+    list[str] parts = []
+    parts.append("\"Style\":" + geospatial_line_style_to_json(v.Style))
+    return quicksight_json_obj(parts)
+
+# Serialize GeospatialLineStyle to a compact JSON object (declaration order).
+def geospatial_line_style_to_json(GeospatialLineStyle v) -> str:
+    list[str] parts = []
+    if v.LineSymbolStyle.is_some():
+        auto u0 = v.LineSymbolStyle.unwrap()
+        parts.append("\"LineSymbolStyle\":" + geospatial_line_symbol_style_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize GeospatialLineSymbolStyle to a compact JSON object (declaration order).
+def geospatial_line_symbol_style_to_json(GeospatialLineSymbolStyle v) -> str:
+    list[str] parts = []
+    if v.FillColor.is_some():
+        auto u0 = v.FillColor.unwrap()
+        parts.append("\"FillColor\":" + geospatial_color_to_json(u0))
+    if v.LineWidth.is_some():
+        auto u1 = v.LineWidth.unwrap()
+        parts.append("\"LineWidth\":" + u1.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize GeospatialMapAggregatedFieldWells to a compact JSON object (declaration order).
+def geospatial_map_aggregated_field_wells_to_json(GeospatialMapAggregatedFieldWells v) -> str:
+    list[str] parts = []
+    if v.Geospatial.is_some():
+        auto u0 = v.Geospatial.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Geospatial\":" + quicksight_json_arr(e1))
+    if v.Values.is_some():
+        auto u2 = v.Values.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Values\":" + quicksight_json_arr(e3))
+    if v.Colors.is_some():
+        auto u4 = v.Colors.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Colors\":" + quicksight_json_arr(e5))
+    return quicksight_json_obj(parts)
+
+# Serialize GeospatialMapConfiguration to a compact JSON object (declaration order).
+def geospatial_map_configuration_to_json(GeospatialMapConfiguration v) -> str:
+    list[str] parts = []
+    if v.FieldWells.is_some():
+        auto u0 = v.FieldWells.unwrap()
+        parts.append("\"FieldWells\":" + geospatial_map_field_wells_to_json(u0))
+    if v.Legend.is_some():
+        auto u1 = v.Legend.unwrap()
+        parts.append("\"Legend\":" + u1.to_json())
+    if v.Tooltip.is_some():
+        auto u2 = v.Tooltip.unwrap()
+        parts.append("\"Tooltip\":" + tooltip_options_to_json(u2))
+    if v.WindowOptions.is_some():
+        auto u3 = v.WindowOptions.unwrap()
+        parts.append("\"WindowOptions\":" + u3.to_json())
+    if v.MapStyleOptions.is_some():
+        auto u4 = v.MapStyleOptions.unwrap()
+        parts.append("\"MapStyleOptions\":" + u4.to_json())
+    if v.PointStyleOptions.is_some():
+        auto u5 = v.PointStyleOptions.unwrap()
+        parts.append("\"PointStyleOptions\":" + geospatial_point_style_options_to_json(u5))
+    if v.VisualPalette.is_some():
+        auto u6 = v.VisualPalette.unwrap()
+        parts.append("\"VisualPalette\":" + visual_palette_to_json(u6))
+    if v.Interactions.is_some():
+        auto u7 = v.Interactions.unwrap()
+        parts.append("\"Interactions\":" + u7.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize GeospatialMapFieldWells to a compact JSON object (declaration order).
+def geospatial_map_field_wells_to_json(GeospatialMapFieldWells v) -> str:
+    list[str] parts = []
+    if v.GeospatialMapAggregatedFieldWells.is_some():
+        auto u0 = v.GeospatialMapAggregatedFieldWells.unwrap()
+        parts.append("\"GeospatialMapAggregatedFieldWells\":" + geospatial_map_aggregated_field_wells_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize GeospatialMapVisual to a compact JSON object (declaration order).
+def geospatial_map_visual_to_json(GeospatialMapVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + u0.to_json())
+    if v.Subtitle.is_some():
+        auto u1 = v.Subtitle.unwrap()
+        parts.append("\"Subtitle\":" + u1.to_json())
+    if v.ChartConfiguration.is_some():
+        auto u2 = v.ChartConfiguration.unwrap()
+        parts.append("\"ChartConfiguration\":" + geospatial_map_configuration_to_json(u2))
+    if v.ColumnHierarchies.is_some():
+        auto u3 = v.ColumnHierarchies.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(column_hierarchy_to_json(x4))
+        parts.append("\"ColumnHierarchies\":" + quicksight_json_arr(e4))
+    if v.Actions.is_some():
+        auto u5 = v.Actions.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(visual_custom_action_to_json(x6))
+        parts.append("\"Actions\":" + quicksight_json_arr(e6))
+    if v.VisualContentAltText.is_some():
+        auto u7 = v.VisualContentAltText.unwrap()
+        parts.append("\"VisualContentAltText\":" + quicksight_json_str(u7))
+    if v.GeocodingPreferences.is_some():
+        auto u8 = v.GeocodingPreferences.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"GeocodingPreferences\":" + quicksight_json_arr(e9))
+    return quicksight_json_obj(parts)
+
+# Serialize GeospatialPointLayer to a compact JSON object (declaration order).
+def geospatial_point_layer_to_json(GeospatialPointLayer v) -> str:
+    list[str] parts = []
+    parts.append("\"Style\":" + geospatial_point_style_to_json(v.Style))
+    return quicksight_json_obj(parts)
+
+# Serialize GeospatialPointStyle to a compact JSON object (declaration order).
+def geospatial_point_style_to_json(GeospatialPointStyle v) -> str:
+    list[str] parts = []
+    if v.CircleSymbolStyle.is_some():
+        auto u0 = v.CircleSymbolStyle.unwrap()
+        parts.append("\"CircleSymbolStyle\":" + geospatial_circle_symbol_style_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize GeospatialPointStyleOptions to a compact JSON object (declaration order).
+def geospatial_point_style_options_to_json(GeospatialPointStyleOptions v) -> str:
+    list[str] parts = []
+    if v.SelectedPointStyle.is_some():
+        auto u0 = v.SelectedPointStyle.unwrap()
+        parts.append("\"SelectedPointStyle\":" + u0.to_json())
+    if v.ClusterMarkerConfiguration.is_some():
+        auto u1 = v.ClusterMarkerConfiguration.unwrap()
+        parts.append("\"ClusterMarkerConfiguration\":" + u1.to_json())
+    if v.HeatmapConfiguration.is_some():
+        auto u2 = v.HeatmapConfiguration.unwrap()
+        parts.append("\"HeatmapConfiguration\":" + geospatial_heatmap_configuration_to_json(u2))
+    return quicksight_json_obj(parts)
+
+# Serialize GeospatialPolygonLayer to a compact JSON object (declaration order).
+def geospatial_polygon_layer_to_json(GeospatialPolygonLayer v) -> str:
+    list[str] parts = []
+    parts.append("\"Style\":" + geospatial_polygon_style_to_json(v.Style))
+    return quicksight_json_obj(parts)
+
+# Serialize GeospatialPolygonStyle to a compact JSON object (declaration order).
+def geospatial_polygon_style_to_json(GeospatialPolygonStyle v) -> str:
+    list[str] parts = []
+    if v.PolygonSymbolStyle.is_some():
+        auto u0 = v.PolygonSymbolStyle.unwrap()
+        parts.append("\"PolygonSymbolStyle\":" + geospatial_polygon_symbol_style_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize GeospatialPolygonSymbolStyle to a compact JSON object (declaration order).
+def geospatial_polygon_symbol_style_to_json(GeospatialPolygonSymbolStyle v) -> str:
+    list[str] parts = []
+    if v.FillColor.is_some():
+        auto u0 = v.FillColor.unwrap()
+        parts.append("\"FillColor\":" + geospatial_color_to_json(u0))
+    if v.StrokeColor.is_some():
+        auto u1 = v.StrokeColor.unwrap()
+        parts.append("\"StrokeColor\":" + geospatial_color_to_json(u1))
+    if v.StrokeWidth.is_some():
+        auto u2 = v.StrokeWidth.unwrap()
+        parts.append("\"StrokeWidth\":" + u2.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize Governance to a compact JSON object (declaration order).
+def governance_to_json(Governance v) -> str:
+    list[str] parts = []
+    if v.DefaultCategoryEffects.is_some():
+        auto u0 = v.DefaultCategoryEffects.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(quicksight_json_str(k1) + ":" + quicksight_json_str(u0[k1]))
+        parts.append("\"DefaultCategoryEffects\":" + quicksight_json_obj(m1))
+    return quicksight_json_obj(parts)
+
+# Serialize GradientColor to a compact JSON object (declaration order).
+def gradient_color_to_json(GradientColor v) -> str:
+    list[str] parts = []
+    if v.Stops.is_some():
+        auto u0 = v.Stops.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Stops\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize GridLayoutConfiguration to a compact JSON object (declaration order).
+def grid_layout_configuration_to_json(GridLayoutConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Elements:
+        e0.append(x0.to_json())
+    parts.append("\"Elements\":" + quicksight_json_arr(e0))
+    if v.CanvasSizeOptions.is_some():
+        auto u1 = v.CanvasSizeOptions.unwrap()
+        parts.append("\"CanvasSizeOptions\":" + u1.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize HeaderFooterSectionConfiguration to a compact JSON object (declaration order).
+def header_footer_section_configuration_to_json(HeaderFooterSectionConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"SectionId\":" + quicksight_json_str(v.SectionId))
+    parts.append("\"Layout\":" + section_layout_configuration_to_json(v.Layout))
+    if v.Style.is_some():
+        auto u0 = v.Style.unwrap()
+        parts.append("\"Style\":" + u0.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize HeatMapAggregatedFieldWells to a compact JSON object (declaration order).
+def heat_map_aggregated_field_wells_to_json(HeatMapAggregatedFieldWells v) -> str:
+    list[str] parts = []
+    if v.Rows.is_some():
+        auto u0 = v.Rows.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Rows\":" + quicksight_json_arr(e1))
+    if v.Columns.is_some():
+        auto u2 = v.Columns.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Columns\":" + quicksight_json_arr(e3))
+    if v.Values.is_some():
+        auto u4 = v.Values.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Values\":" + quicksight_json_arr(e5))
+    return quicksight_json_obj(parts)
+
+# Serialize HeatMapConfiguration to a compact JSON object (declaration order).
+def heat_map_configuration_to_json(HeatMapConfiguration v) -> str:
+    list[str] parts = []
+    if v.FieldWells.is_some():
+        auto u0 = v.FieldWells.unwrap()
+        parts.append("\"FieldWells\":" + heat_map_field_wells_to_json(u0))
+    if v.SortConfiguration.is_some():
+        auto u1 = v.SortConfiguration.unwrap()
+        parts.append("\"SortConfiguration\":" + heat_map_sort_configuration_to_json(u1))
+    if v.RowAxisDisplayOptions.is_some():
+        auto u2 = v.RowAxisDisplayOptions.unwrap()
+        parts.append("\"RowAxisDisplayOptions\":" + u2.to_json())
+    if v.RowLabelOptions.is_some():
+        auto u3 = v.RowLabelOptions.unwrap()
+        parts.append("\"RowLabelOptions\":" + chart_axis_label_options_to_json(u3))
+    if v.ColumnAxisDisplayOptions.is_some():
+        auto u4 = v.ColumnAxisDisplayOptions.unwrap()
+        parts.append("\"ColumnAxisDisplayOptions\":" + u4.to_json())
+    if v.ColumnLabelOptions.is_some():
+        auto u5 = v.ColumnLabelOptions.unwrap()
+        parts.append("\"ColumnLabelOptions\":" + chart_axis_label_options_to_json(u5))
+    if v.ColorScale.is_some():
+        auto u6 = v.ColorScale.unwrap()
+        parts.append("\"ColorScale\":" + color_scale_to_json(u6))
+    if v.Legend.is_some():
+        auto u7 = v.Legend.unwrap()
+        parts.append("\"Legend\":" + u7.to_json())
+    if v.DataLabels.is_some():
+        auto u8 = v.DataLabels.unwrap()
+        parts.append("\"DataLabels\":" + data_label_options_to_json(u8))
+    if v.Tooltip.is_some():
+        auto u9 = v.Tooltip.unwrap()
+        parts.append("\"Tooltip\":" + tooltip_options_to_json(u9))
+    if v.Interactions.is_some():
+        auto u10 = v.Interactions.unwrap()
+        parts.append("\"Interactions\":" + u10.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize HeatMapFieldWells to a compact JSON object (declaration order).
+def heat_map_field_wells_to_json(HeatMapFieldWells v) -> str:
+    list[str] parts = []
+    if v.HeatMapAggregatedFieldWells.is_some():
+        auto u0 = v.HeatMapAggregatedFieldWells.unwrap()
+        parts.append("\"HeatMapAggregatedFieldWells\":" + heat_map_aggregated_field_wells_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize HeatMapSortConfiguration to a compact JSON object (declaration order).
+def heat_map_sort_configuration_to_json(HeatMapSortConfiguration v) -> str:
+    list[str] parts = []
+    if v.HeatMapRowSort.is_some():
+        auto u0 = v.HeatMapRowSort.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"HeatMapRowSort\":" + quicksight_json_arr(e1))
+    if v.HeatMapColumnSort.is_some():
+        auto u2 = v.HeatMapColumnSort.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"HeatMapColumnSort\":" + quicksight_json_arr(e3))
+    if v.HeatMapRowItemsLimitConfiguration.is_some():
+        auto u4 = v.HeatMapRowItemsLimitConfiguration.unwrap()
+        parts.append("\"HeatMapRowItemsLimitConfiguration\":" + u4.to_json())
+    if v.HeatMapColumnItemsLimitConfiguration.is_some():
+        auto u5 = v.HeatMapColumnItemsLimitConfiguration.unwrap()
+        parts.append("\"HeatMapColumnItemsLimitConfiguration\":" + u5.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize HeatMapVisual to a compact JSON object (declaration order).
+def heat_map_visual_to_json(HeatMapVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + u0.to_json())
+    if v.Subtitle.is_some():
+        auto u1 = v.Subtitle.unwrap()
+        parts.append("\"Subtitle\":" + u1.to_json())
+    if v.ChartConfiguration.is_some():
+        auto u2 = v.ChartConfiguration.unwrap()
+        parts.append("\"ChartConfiguration\":" + heat_map_configuration_to_json(u2))
+    if v.ColumnHierarchies.is_some():
+        auto u3 = v.ColumnHierarchies.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(column_hierarchy_to_json(x4))
+        parts.append("\"ColumnHierarchies\":" + quicksight_json_arr(e4))
+    if v.Actions.is_some():
+        auto u5 = v.Actions.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(visual_custom_action_to_json(x6))
+        parts.append("\"Actions\":" + quicksight_json_arr(e6))
+    if v.VisualContentAltText.is_some():
+        auto u7 = v.VisualContentAltText.unwrap()
+        parts.append("\"VisualContentAltText\":" + quicksight_json_str(u7))
+    return quicksight_json_obj(parts)
+
+# Serialize HierarchyFilter to a compact JSON object (declaration order).
+def hierarchy_filter_to_json(HierarchyFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"FilterId\":" + quicksight_json_str(v.FilterId))
+    parts.append("\"Column\":" + v.Column.to_json())
+    list[str] e0 = []
+    for x0 in v.HierarchyLevels:
+        e0.append(x0.to_json())
+    parts.append("\"HierarchyLevels\":" + quicksight_json_arr(e0))
+    if v.HierarchyTree.is_some():
+        auto u1 = v.HierarchyTree.unwrap()
+        parts.append("\"HierarchyTree\":" + hierarchy_filter_node_to_json(u1))
+    parts.append("\"NullOption\":" + v.NullOption.to_json())
+    parts.append("\"MatchOperator\":" + v.MatchOperator.to_json())
+    if v.DefaultFilterControlConfiguration.is_some():
+        auto u2 = v.DefaultFilterControlConfiguration.unwrap()
+        parts.append("\"DefaultFilterControlConfiguration\":" + default_filter_control_configuration_to_json(u2))
+    return quicksight_json_obj(parts)
+
+# Serialize HierarchyFilterDropDownControl to a compact JSON object (declaration order).
+def hierarchy_filter_drop_down_control_to_json(HierarchyFilterDropDownControl v) -> str:
+    list[str] parts = []
+    parts.append("\"FilterControlId\":" + quicksight_json_str(v.FilterControlId))
+    parts.append("\"SourceFilterId\":" + quicksight_json_str(v.SourceFilterId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + quicksight_json_str(u0))
+    if v.DisplayOptions.is_some():
+        auto u1 = v.DisplayOptions.unwrap()
+        parts.append("\"DisplayOptions\":" + u1.to_json())
+    if v.Type.is_some():
+        auto u2 = v.Type.unwrap()
+        parts.append("\"Type\":" + u2.to_json())
+    if v.CommitMode.is_some():
+        auto u3 = v.CommitMode.unwrap()
+        parts.append("\"CommitMode\":" + u3.to_json())
+    if v.ControlSortConfigurations.is_some():
+        auto u4 = v.ControlSortConfigurations.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"ControlSortConfigurations\":" + quicksight_json_arr(e5))
+    if v.ControlTitleFormatText.is_some():
+        auto u6 = v.ControlTitleFormatText.unwrap()
+        parts.append("\"ControlTitleFormatText\":" + u6.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize HierarchyFilterListControl to a compact JSON object (declaration order).
+def hierarchy_filter_list_control_to_json(HierarchyFilterListControl v) -> str:
+    list[str] parts = []
+    parts.append("\"FilterControlId\":" + quicksight_json_str(v.FilterControlId))
+    parts.append("\"SourceFilterId\":" + quicksight_json_str(v.SourceFilterId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + quicksight_json_str(u0))
+    if v.DisplayOptions.is_some():
+        auto u1 = v.DisplayOptions.unwrap()
+        parts.append("\"DisplayOptions\":" + u1.to_json())
+    if v.Type.is_some():
+        auto u2 = v.Type.unwrap()
+        parts.append("\"Type\":" + u2.to_json())
+    if v.CommitMode.is_some():
+        auto u3 = v.CommitMode.unwrap()
+        parts.append("\"CommitMode\":" + u3.to_json())
+    if v.ControlSortConfigurations.is_some():
+        auto u4 = v.ControlSortConfigurations.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"ControlSortConfigurations\":" + quicksight_json_arr(e5))
+    if v.ControlTitleFormatText.is_some():
+        auto u6 = v.ControlTitleFormatText.unwrap()
+        parts.append("\"ControlTitleFormatText\":" + u6.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize HierarchyFilterNode to a compact JSON object (declaration order).
+def hierarchy_filter_node_to_json(HierarchyFilterNode v) -> str:
+    list[str] parts = []
+    parts.append("\"Column\":" + v.Column.to_json())
+    if v.ParentValue.is_some():
+        auto u0 = v.ParentValue.unwrap()
+        parts.append("\"ParentValue\":" + quicksight_json_str(u0))
+    if v.HierarchyValues.is_some():
+        auto u1 = v.HierarchyValues.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(quicksight_json_str(x2))
+        parts.append("\"HierarchyValues\":" + quicksight_json_arr(e2))
+    if v.Children.is_some():
+        auto u3 = v.Children.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(hierarchy_filter_node_to_json(x4))
+        parts.append("\"Children\":" + quicksight_json_arr(e4))
+    return quicksight_json_obj(parts)
+
+# Serialize HistogramAggregatedFieldWells to a compact JSON object (declaration order).
+def histogram_aggregated_field_wells_to_json(HistogramAggregatedFieldWells v) -> str:
+    list[str] parts = []
+    if v.Values.is_some():
+        auto u0 = v.Values.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Values\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize HistogramConfiguration to a compact JSON object (declaration order).
+def histogram_configuration_to_json(HistogramConfiguration v) -> str:
+    list[str] parts = []
+    if v.FieldWells.is_some():
+        auto u0 = v.FieldWells.unwrap()
+        parts.append("\"FieldWells\":" + histogram_field_wells_to_json(u0))
+    if v.XAxisDisplayOptions.is_some():
+        auto u1 = v.XAxisDisplayOptions.unwrap()
+        parts.append("\"XAxisDisplayOptions\":" + u1.to_json())
+    if v.XAxisLabelOptions.is_some():
+        auto u2 = v.XAxisLabelOptions.unwrap()
+        parts.append("\"XAxisLabelOptions\":" + chart_axis_label_options_to_json(u2))
+    if v.YAxisDisplayOptions.is_some():
+        auto u3 = v.YAxisDisplayOptions.unwrap()
+        parts.append("\"YAxisDisplayOptions\":" + u3.to_json())
+    if v.BinOptions.is_some():
+        auto u4 = v.BinOptions.unwrap()
+        parts.append("\"BinOptions\":" + u4.to_json())
+    if v.DataLabels.is_some():
+        auto u5 = v.DataLabels.unwrap()
+        parts.append("\"DataLabels\":" + data_label_options_to_json(u5))
+    if v.Tooltip.is_some():
+        auto u6 = v.Tooltip.unwrap()
+        parts.append("\"Tooltip\":" + tooltip_options_to_json(u6))
+    if v.VisualPalette.is_some():
+        auto u7 = v.VisualPalette.unwrap()
+        parts.append("\"VisualPalette\":" + visual_palette_to_json(u7))
+    if v.Interactions.is_some():
+        auto u8 = v.Interactions.unwrap()
+        parts.append("\"Interactions\":" + u8.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize HistogramFieldWells to a compact JSON object (declaration order).
+def histogram_field_wells_to_json(HistogramFieldWells v) -> str:
+    list[str] parts = []
+    if v.HistogramAggregatedFieldWells.is_some():
+        auto u0 = v.HistogramAggregatedFieldWells.unwrap()
+        parts.append("\"HistogramAggregatedFieldWells\":" + histogram_aggregated_field_wells_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize HistogramVisual to a compact JSON object (declaration order).
+def histogram_visual_to_json(HistogramVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + u0.to_json())
+    if v.Subtitle.is_some():
+        auto u1 = v.Subtitle.unwrap()
+        parts.append("\"Subtitle\":" + u1.to_json())
+    if v.ChartConfiguration.is_some():
+        auto u2 = v.ChartConfiguration.unwrap()
+        parts.append("\"ChartConfiguration\":" + histogram_configuration_to_json(u2))
+    if v.Actions.is_some():
+        auto u3 = v.Actions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(visual_custom_action_to_json(x4))
+        parts.append("\"Actions\":" + quicksight_json_arr(e4))
+    if v.VisualContentAltText.is_some():
+        auto u5 = v.VisualContentAltText.unwrap()
+        parts.append("\"VisualContentAltText\":" + quicksight_json_str(u5))
+    return quicksight_json_obj(parts)
+
+# Serialize ImageCustomAction to a compact JSON object (declaration order).
+def image_custom_action_to_json(ImageCustomAction v) -> str:
+    list[str] parts = []
+    parts.append("\"CustomActionId\":" + quicksight_json_str(v.CustomActionId))
+    parts.append("\"Name\":" + quicksight_json_str(v.Name))
+    if v.Status.is_some():
+        auto u0 = v.Status.unwrap()
+        parts.append("\"Status\":" + u0.to_json())
+    parts.append("\"Trigger\":" + v.Trigger.to_json())
+    list[str] e1 = []
+    for x1 in v.ActionOperations:
+        e1.append(image_custom_action_operation_to_json(x1))
+    parts.append("\"ActionOperations\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize ImageCustomActionOperation to a compact JSON object (declaration order).
+def image_custom_action_operation_to_json(ImageCustomActionOperation v) -> str:
+    list[str] parts = []
+    if v.NavigationOperation.is_some():
+        auto u0 = v.NavigationOperation.unwrap()
+        parts.append("\"NavigationOperation\":" + u0.to_json())
+    if v.URLOperation.is_some():
+        auto u1 = v.URLOperation.unwrap()
+        parts.append("\"URLOperation\":" + u1.to_json())
+    if v.SetParametersOperation.is_some():
+        auto u2 = v.SetParametersOperation.unwrap()
+        parts.append("\"SetParametersOperation\":" + custom_action_set_parameters_operation_to_json(u2))
+    return quicksight_json_obj(parts)
+
+# Serialize ImportTableOperation to a compact JSON object (declaration order).
+def import_table_operation_to_json(ImportTableOperation v) -> str:
+    list[str] parts = []
+    parts.append("\"Alias\":" + quicksight_json_str(v.Alias))
+    parts.append("\"Source\":" + import_table_operation_source_to_json(v.Source))
+    return quicksight_json_obj(parts)
+
+# Serialize ImportTableOperationSource to a compact JSON object (declaration order).
+def import_table_operation_source_to_json(ImportTableOperationSource v) -> str:
+    list[str] parts = []
+    parts.append("\"SourceTableId\":" + quicksight_json_str(v.SourceTableId))
+    if v.ColumnIdMappings.is_some():
+        auto u0 = v.ColumnIdMappings.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ColumnIdMappings\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize InnerFilter to a compact JSON object (declaration order).
+def inner_filter_to_json(InnerFilter v) -> str:
+    list[str] parts = []
+    if v.CategoryInnerFilter.is_some():
+        auto u0 = v.CategoryInnerFilter.unwrap()
+        parts.append("\"CategoryInnerFilter\":" + category_inner_filter_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize InsightConfiguration to a compact JSON object (declaration order).
+def insight_configuration_to_json(InsightConfiguration v) -> str:
+    list[str] parts = []
+    if v.Computations.is_some():
+        auto u0 = v.Computations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Computations\":" + quicksight_json_arr(e1))
+    if v.CustomNarrative.is_some():
+        auto u2 = v.CustomNarrative.unwrap()
+        parts.append("\"CustomNarrative\":" + u2.to_json())
+    if v.Interactions.is_some():
+        auto u3 = v.Interactions.unwrap()
+        parts.append("\"Interactions\":" + u3.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize InsightVisual to a compact JSON object (declaration order).
+def insight_visual_to_json(InsightVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + u0.to_json())
+    if v.Subtitle.is_some():
+        auto u1 = v.Subtitle.unwrap()
+        parts.append("\"Subtitle\":" + u1.to_json())
+    if v.InsightConfiguration.is_some():
+        auto u2 = v.InsightConfiguration.unwrap()
+        parts.append("\"InsightConfiguration\":" + insight_configuration_to_json(u2))
+    if v.Actions.is_some():
+        auto u3 = v.Actions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(visual_custom_action_to_json(x4))
+        parts.append("\"Actions\":" + quicksight_json_arr(e4))
+    if v.DataSetIdentifier.is_some():
+        auto u5 = v.DataSetIdentifier.unwrap()
+        parts.append("\"DataSetIdentifier\":" + quicksight_json_str(u5))
+    if v.TopicIdentifier.is_some():
+        auto u6 = v.TopicIdentifier.unwrap()
+        parts.append("\"TopicIdentifier\":" + quicksight_json_str(u6))
+    if v.VisualContentAltText.is_some():
+        auto u7 = v.VisualContentAltText.unwrap()
+        parts.append("\"VisualContentAltText\":" + quicksight_json_str(u7))
+    return quicksight_json_obj(parts)
+
+# Serialize IntegerDatasetParameter to a compact JSON object (declaration order).
+def integer_dataset_parameter_to_json(IntegerDatasetParameter v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + quicksight_json_str(v.Id))
+    parts.append("\"Name\":" + quicksight_json_str(v.Name))
+    parts.append("\"ValueType\":" + v.ValueType.to_json())
+    if v.DefaultValues.is_some():
+        auto u0 = v.DefaultValues.unwrap()
+        parts.append("\"DefaultValues\":" + integer_dataset_parameter_default_values_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize IntegerDatasetParameterDefaultValues to a compact JSON object (declaration order).
+def integer_dataset_parameter_default_values_to_json(IntegerDatasetParameterDefaultValues v) -> str:
+    list[str] parts = []
+    if v.StaticValues.is_some():
+        auto u0 = v.StaticValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"StaticValues\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize IntegerDefaultValues to a compact JSON object (declaration order).
+def integer_default_values_to_json(IntegerDefaultValues v) -> str:
+    list[str] parts = []
+    if v.DynamicValue.is_some():
+        auto u0 = v.DynamicValue.unwrap()
+        parts.append("\"DynamicValue\":" + u0.to_json())
+    if v.StaticValues.is_some():
+        auto u1 = v.StaticValues.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(str(x2))
+        parts.append("\"StaticValues\":" + quicksight_json_arr(e2))
+    return quicksight_json_obj(parts)
+
+# Serialize IntegerParameter to a compact JSON object (declaration order).
+def integer_parameter_to_json(IntegerParameter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + quicksight_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(str(x0))
+    parts.append("\"Values\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize IntegerParameterDeclaration to a compact JSON object (declaration order).
+def integer_parameter_declaration_to_json(IntegerParameterDeclaration v) -> str:
+    list[str] parts = []
+    parts.append("\"ParameterValueType\":" + v.ParameterValueType.to_json())
+    parts.append("\"Name\":" + quicksight_json_str(v.Name))
+    if v.DefaultValues.is_some():
+        auto u0 = v.DefaultValues.unwrap()
+        parts.append("\"DefaultValues\":" + integer_default_values_to_json(u0))
+    if v.ValueWhenUnset.is_some():
+        auto u1 = v.ValueWhenUnset.unwrap()
+        parts.append("\"ValueWhenUnset\":" + u1.to_json())
+    if v.MappedDataSetParameters.is_some():
+        auto u2 = v.MappedDataSetParameters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"MappedDataSetParameters\":" + quicksight_json_arr(e3))
+    return quicksight_json_obj(parts)
+
+# Serialize JoinOperandProperties to a compact JSON object (declaration order).
+def join_operand_properties_to_json(JoinOperandProperties v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.OutputColumnNameOverrides:
+        e0.append(x0.to_json())
+    parts.append("\"OutputColumnNameOverrides\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize JoinOperation to a compact JSON object (declaration order).
+def join_operation_to_json(JoinOperation v) -> str:
+    list[str] parts = []
+    parts.append("\"Alias\":" + quicksight_json_str(v.Alias))
+    parts.append("\"LeftOperand\":" + transform_operation_source_to_json(v.LeftOperand))
+    parts.append("\"RightOperand\":" + transform_operation_source_to_json(v.RightOperand))
+    parts.append("\"Type\":" + v.Type.to_json())
+    parts.append("\"OnClause\":" + quicksight_json_str(v.OnClause))
+    if v.LeftOperandProperties.is_some():
+        auto u0 = v.LeftOperandProperties.unwrap()
+        parts.append("\"LeftOperandProperties\":" + join_operand_properties_to_json(u0))
+    if v.RightOperandProperties.is_some():
+        auto u1 = v.RightOperandProperties.unwrap()
+        parts.append("\"RightOperandProperties\":" + join_operand_properties_to_json(u1))
+    return quicksight_json_obj(parts)
+
+# Serialize KPIActualValueConditionalFormatting to a compact JSON object (declaration order).
+def kpi_actual_value_conditional_formatting_to_json(KPIActualValueConditionalFormatting v) -> str:
+    list[str] parts = []
+    if v.TextColor.is_some():
+        auto u0 = v.TextColor.unwrap()
+        parts.append("\"TextColor\":" + conditional_formatting_color_to_json(u0))
+    if v.Icon.is_some():
+        auto u1 = v.Icon.unwrap()
+        parts.append("\"Icon\":" + u1.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize KPIComparisonValueConditionalFormatting to a compact JSON object (declaration order).
+def kpi_comparison_value_conditional_formatting_to_json(KPIComparisonValueConditionalFormatting v) -> str:
+    list[str] parts = []
+    if v.TextColor.is_some():
+        auto u0 = v.TextColor.unwrap()
+        parts.append("\"TextColor\":" + conditional_formatting_color_to_json(u0))
+    if v.Icon.is_some():
+        auto u1 = v.Icon.unwrap()
+        parts.append("\"Icon\":" + u1.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize KPIConditionalFormatting to a compact JSON object (declaration order).
+def kpi_conditional_formatting_to_json(KPIConditionalFormatting v) -> str:
+    list[str] parts = []
+    if v.ConditionalFormattingOptions.is_some():
+        auto u0 = v.ConditionalFormattingOptions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(kpi_conditional_formatting_option_to_json(x1))
+        parts.append("\"ConditionalFormattingOptions\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize KPIConditionalFormattingOption to a compact JSON object (declaration order).
+def kpi_conditional_formatting_option_to_json(KPIConditionalFormattingOption v) -> str:
+    list[str] parts = []
+    if v.PrimaryValue.is_some():
+        auto u0 = v.PrimaryValue.unwrap()
+        parts.append("\"PrimaryValue\":" + kpi_primary_value_conditional_formatting_to_json(u0))
+    if v.ProgressBar.is_some():
+        auto u1 = v.ProgressBar.unwrap()
+        parts.append("\"ProgressBar\":" + kpi_progress_bar_conditional_formatting_to_json(u1))
+    if v.ActualValue.is_some():
+        auto u2 = v.ActualValue.unwrap()
+        parts.append("\"ActualValue\":" + kpi_actual_value_conditional_formatting_to_json(u2))
+    if v.ComparisonValue.is_some():
+        auto u3 = v.ComparisonValue.unwrap()
+        parts.append("\"ComparisonValue\":" + kpi_comparison_value_conditional_formatting_to_json(u3))
+    return quicksight_json_obj(parts)
+
+# Serialize KPIConfiguration to a compact JSON object (declaration order).
+def kpi_configuration_to_json(KPIConfiguration v) -> str:
+    list[str] parts = []
+    if v.FieldWells.is_some():
+        auto u0 = v.FieldWells.unwrap()
+        parts.append("\"FieldWells\":" + kpi_field_wells_to_json(u0))
+    if v.SortConfiguration.is_some():
+        auto u1 = v.SortConfiguration.unwrap()
+        parts.append("\"SortConfiguration\":" + kpi_sort_configuration_to_json(u1))
+    if v.KPIOptions.is_some():
+        auto u2 = v.KPIOptions.unwrap()
+        parts.append("\"KPIOptions\":" + u2.to_json())
+    if v.Interactions.is_some():
+        auto u3 = v.Interactions.unwrap()
+        parts.append("\"Interactions\":" + u3.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize KPIFieldWells to a compact JSON object (declaration order).
+def kpi_field_wells_to_json(KPIFieldWells v) -> str:
+    list[str] parts = []
+    if v.Values.is_some():
+        auto u0 = v.Values.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Values\":" + quicksight_json_arr(e1))
+    if v.TargetValues.is_some():
+        auto u2 = v.TargetValues.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"TargetValues\":" + quicksight_json_arr(e3))
+    if v.TrendGroups.is_some():
+        auto u4 = v.TrendGroups.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"TrendGroups\":" + quicksight_json_arr(e5))
+    return quicksight_json_obj(parts)
+
+# Serialize KPIPrimaryValueConditionalFormatting to a compact JSON object (declaration order).
+def kpi_primary_value_conditional_formatting_to_json(KPIPrimaryValueConditionalFormatting v) -> str:
+    list[str] parts = []
+    if v.TextColor.is_some():
+        auto u0 = v.TextColor.unwrap()
+        parts.append("\"TextColor\":" + conditional_formatting_color_to_json(u0))
+    if v.Icon.is_some():
+        auto u1 = v.Icon.unwrap()
+        parts.append("\"Icon\":" + u1.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize KPIProgressBarConditionalFormatting to a compact JSON object (declaration order).
+def kpi_progress_bar_conditional_formatting_to_json(KPIProgressBarConditionalFormatting v) -> str:
+    list[str] parts = []
+    if v.ForegroundColor.is_some():
+        auto u0 = v.ForegroundColor.unwrap()
+        parts.append("\"ForegroundColor\":" + conditional_formatting_color_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize KPISortConfiguration to a compact JSON object (declaration order).
+def kpi_sort_configuration_to_json(KPISortConfiguration v) -> str:
+    list[str] parts = []
+    if v.TrendGroupSort.is_some():
+        auto u0 = v.TrendGroupSort.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"TrendGroupSort\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize KPIVisual to a compact JSON object (declaration order).
+def kpi_visual_to_json(KPIVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + u0.to_json())
+    if v.Subtitle.is_some():
+        auto u1 = v.Subtitle.unwrap()
+        parts.append("\"Subtitle\":" + u1.to_json())
+    if v.ChartConfiguration.is_some():
+        auto u2 = v.ChartConfiguration.unwrap()
+        parts.append("\"ChartConfiguration\":" + kpi_configuration_to_json(u2))
+    if v.ConditionalFormatting.is_some():
+        auto u3 = v.ConditionalFormatting.unwrap()
+        parts.append("\"ConditionalFormatting\":" + kpi_conditional_formatting_to_json(u3))
+    if v.Actions.is_some():
+        auto u4 = v.Actions.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(visual_custom_action_to_json(x5))
+        parts.append("\"Actions\":" + quicksight_json_arr(e5))
+    if v.ColumnHierarchies.is_some():
+        auto u6 = v.ColumnHierarchies.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(column_hierarchy_to_json(x7))
+        parts.append("\"ColumnHierarchies\":" + quicksight_json_arr(e7))
+    if v.VisualContentAltText.is_some():
+        auto u8 = v.VisualContentAltText.unwrap()
+        parts.append("\"VisualContentAltText\":" + quicksight_json_str(u8))
+    return quicksight_json_obj(parts)
+
+# Serialize LayerCustomAction to a compact JSON object (declaration order).
+def layer_custom_action_to_json(LayerCustomAction v) -> str:
+    list[str] parts = []
+    parts.append("\"CustomActionId\":" + quicksight_json_str(v.CustomActionId))
+    parts.append("\"Name\":" + quicksight_json_str(v.Name))
+    if v.Status.is_some():
+        auto u0 = v.Status.unwrap()
+        parts.append("\"Status\":" + u0.to_json())
+    parts.append("\"Trigger\":" + v.Trigger.to_json())
+    list[str] e1 = []
+    for x1 in v.ActionOperations:
+        e1.append(layer_custom_action_operation_to_json(x1))
+    parts.append("\"ActionOperations\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize LayerCustomActionOperation to a compact JSON object (declaration order).
+def layer_custom_action_operation_to_json(LayerCustomActionOperation v) -> str:
+    list[str] parts = []
+    if v.FilterOperation.is_some():
+        auto u0 = v.FilterOperation.unwrap()
+        parts.append("\"FilterOperation\":" + custom_action_filter_operation_to_json(u0))
+    if v.NavigationOperation.is_some():
+        auto u1 = v.NavigationOperation.unwrap()
+        parts.append("\"NavigationOperation\":" + u1.to_json())
+    if v.URLOperation.is_some():
+        auto u2 = v.URLOperation.unwrap()
+        parts.append("\"URLOperation\":" + u2.to_json())
+    if v.SetParametersOperation.is_some():
+        auto u3 = v.SetParametersOperation.unwrap()
+        parts.append("\"SetParametersOperation\":" + custom_action_set_parameters_operation_to_json(u3))
+    return quicksight_json_obj(parts)
+
+# Serialize LayerMapVisual to a compact JSON object (declaration order).
+def layer_map_visual_to_json(LayerMapVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + u0.to_json())
+    if v.Subtitle.is_some():
+        auto u1 = v.Subtitle.unwrap()
+        parts.append("\"Subtitle\":" + u1.to_json())
+    if v.ChartConfiguration.is_some():
+        auto u2 = v.ChartConfiguration.unwrap()
+        parts.append("\"ChartConfiguration\":" + geospatial_layer_map_configuration_to_json(u2))
+    if v.DataSetIdentifier.is_some():
+        auto u3 = v.DataSetIdentifier.unwrap()
+        parts.append("\"DataSetIdentifier\":" + quicksight_json_str(u3))
+    if v.TopicIdentifier.is_some():
+        auto u4 = v.TopicIdentifier.unwrap()
+        parts.append("\"TopicIdentifier\":" + quicksight_json_str(u4))
+    if v.VisualContentAltText.is_some():
+        auto u5 = v.VisualContentAltText.unwrap()
+        parts.append("\"VisualContentAltText\":" + quicksight_json_str(u5))
+    return quicksight_json_obj(parts)
+
+# Serialize Layout to a compact JSON object (declaration order).
+def layout_to_json(Layout v) -> str:
+    list[str] parts = []
+    parts.append("\"Configuration\":" + layout_configuration_to_json(v.Configuration))
+    return quicksight_json_obj(parts)
+
+# Serialize LayoutConfiguration to a compact JSON object (declaration order).
+def layout_configuration_to_json(LayoutConfiguration v) -> str:
+    list[str] parts = []
+    if v.GridLayout.is_some():
+        auto u0 = v.GridLayout.unwrap()
+        parts.append("\"GridLayout\":" + grid_layout_configuration_to_json(u0))
+    if v.FreeFormLayout.is_some():
+        auto u1 = v.FreeFormLayout.unwrap()
+        parts.append("\"FreeFormLayout\":" + free_form_layout_configuration_to_json(u1))
+    if v.SectionBasedLayout.is_some():
+        auto u2 = v.SectionBasedLayout.unwrap()
+        parts.append("\"SectionBasedLayout\":" + section_based_layout_configuration_to_json(u2))
+    return quicksight_json_obj(parts)
+
+# Serialize LineChartAggregatedFieldWells to a compact JSON object (declaration order).
+def line_chart_aggregated_field_wells_to_json(LineChartAggregatedFieldWells v) -> str:
+    list[str] parts = []
+    if v.Category.is_some():
+        auto u0 = v.Category.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Category\":" + quicksight_json_arr(e1))
+    if v.Values.is_some():
+        auto u2 = v.Values.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Values\":" + quicksight_json_arr(e3))
+    if v.Colors.is_some():
+        auto u4 = v.Colors.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Colors\":" + quicksight_json_arr(e5))
+    if v.SmallMultiples.is_some():
+        auto u6 = v.SmallMultiples.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"SmallMultiples\":" + quicksight_json_arr(e7))
+    return quicksight_json_obj(parts)
+
+# Serialize LineChartConfiguration to a compact JSON object (declaration order).
+def line_chart_configuration_to_json(LineChartConfiguration v) -> str:
+    list[str] parts = []
+    if v.FieldWells.is_some():
+        auto u0 = v.FieldWells.unwrap()
+        parts.append("\"FieldWells\":" + line_chart_field_wells_to_json(u0))
+    if v.SortConfiguration.is_some():
+        auto u1 = v.SortConfiguration.unwrap()
+        parts.append("\"SortConfiguration\":" + line_chart_sort_configuration_to_json(u1))
+    if v.ForecastConfigurations.is_some():
+        auto u2 = v.ForecastConfigurations.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ForecastConfigurations\":" + quicksight_json_arr(e3))
+    if v.Type.is_some():
+        auto u4 = v.Type.unwrap()
+        parts.append("\"Type\":" + u4.to_json())
+    if v.SmallMultiplesOptions.is_some():
+        auto u5 = v.SmallMultiplesOptions.unwrap()
+        parts.append("\"SmallMultiplesOptions\":" + u5.to_json())
+    if v.XAxisDisplayOptions.is_some():
+        auto u6 = v.XAxisDisplayOptions.unwrap()
+        parts.append("\"XAxisDisplayOptions\":" + u6.to_json())
+    if v.XAxisLabelOptions.is_some():
+        auto u7 = v.XAxisLabelOptions.unwrap()
+        parts.append("\"XAxisLabelOptions\":" + chart_axis_label_options_to_json(u7))
+    if v.PrimaryYAxisDisplayOptions.is_some():
+        auto u8 = v.PrimaryYAxisDisplayOptions.unwrap()
+        parts.append("\"PrimaryYAxisDisplayOptions\":" + line_series_axis_display_options_to_json(u8))
+    if v.PrimaryYAxisLabelOptions.is_some():
+        auto u9 = v.PrimaryYAxisLabelOptions.unwrap()
+        parts.append("\"PrimaryYAxisLabelOptions\":" + chart_axis_label_options_to_json(u9))
+    if v.SecondaryYAxisDisplayOptions.is_some():
+        auto u10 = v.SecondaryYAxisDisplayOptions.unwrap()
+        parts.append("\"SecondaryYAxisDisplayOptions\":" + line_series_axis_display_options_to_json(u10))
+    if v.SecondaryYAxisLabelOptions.is_some():
+        auto u11 = v.SecondaryYAxisLabelOptions.unwrap()
+        parts.append("\"SecondaryYAxisLabelOptions\":" + chart_axis_label_options_to_json(u11))
+    if v.SingleAxisOptions.is_some():
+        auto u12 = v.SingleAxisOptions.unwrap()
+        parts.append("\"SingleAxisOptions\":" + u12.to_json())
+    if v.DefaultSeriesSettings.is_some():
+        auto u13 = v.DefaultSeriesSettings.unwrap()
+        parts.append("\"DefaultSeriesSettings\":" + u13.to_json())
+    if v.Series.is_some():
+        auto u14 = v.Series.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"Series\":" + quicksight_json_arr(e15))
+    if v.Legend.is_some():
+        auto u16 = v.Legend.unwrap()
+        parts.append("\"Legend\":" + u16.to_json())
+    if v.DataLabels.is_some():
+        auto u17 = v.DataLabels.unwrap()
+        parts.append("\"DataLabels\":" + data_label_options_to_json(u17))
+    if v.ReferenceLines.is_some():
+        auto u18 = v.ReferenceLines.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(x19.to_json())
+        parts.append("\"ReferenceLines\":" + quicksight_json_arr(e19))
+    if v.Tooltip.is_some():
+        auto u20 = v.Tooltip.unwrap()
+        parts.append("\"Tooltip\":" + tooltip_options_to_json(u20))
+    if v.ContributionAnalysisDefaults.is_some():
+        auto u21 = v.ContributionAnalysisDefaults.unwrap()
+        list[str] e22 = []
+        for x22 in u21:
+            e22.append(contribution_analysis_default_to_json(x22))
+        parts.append("\"ContributionAnalysisDefaults\":" + quicksight_json_arr(e22))
+    if v.VisualPalette.is_some():
+        auto u23 = v.VisualPalette.unwrap()
+        parts.append("\"VisualPalette\":" + visual_palette_to_json(u23))
+    if v.Interactions.is_some():
+        auto u24 = v.Interactions.unwrap()
+        parts.append("\"Interactions\":" + u24.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize LineChartFieldWells to a compact JSON object (declaration order).
+def line_chart_field_wells_to_json(LineChartFieldWells v) -> str:
+    list[str] parts = []
+    if v.LineChartAggregatedFieldWells.is_some():
+        auto u0 = v.LineChartAggregatedFieldWells.unwrap()
+        parts.append("\"LineChartAggregatedFieldWells\":" + line_chart_aggregated_field_wells_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize LineChartSortConfiguration to a compact JSON object (declaration order).
+def line_chart_sort_configuration_to_json(LineChartSortConfiguration v) -> str:
+    list[str] parts = []
+    if v.CategorySort.is_some():
+        auto u0 = v.CategorySort.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"CategorySort\":" + quicksight_json_arr(e1))
+    if v.CategoryItemsLimitConfiguration.is_some():
+        auto u2 = v.CategoryItemsLimitConfiguration.unwrap()
+        parts.append("\"CategoryItemsLimitConfiguration\":" + u2.to_json())
+    if v.ColorItemsLimitConfiguration.is_some():
+        auto u3 = v.ColorItemsLimitConfiguration.unwrap()
+        parts.append("\"ColorItemsLimitConfiguration\":" + u3.to_json())
+    if v.SmallMultiplesSort.is_some():
+        auto u4 = v.SmallMultiplesSort.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"SmallMultiplesSort\":" + quicksight_json_arr(e5))
+    if v.SmallMultiplesLimitConfiguration.is_some():
+        auto u6 = v.SmallMultiplesLimitConfiguration.unwrap()
+        parts.append("\"SmallMultiplesLimitConfiguration\":" + u6.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize LineChartVisual to a compact JSON object (declaration order).
+def line_chart_visual_to_json(LineChartVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + u0.to_json())
+    if v.Subtitle.is_some():
+        auto u1 = v.Subtitle.unwrap()
+        parts.append("\"Subtitle\":" + u1.to_json())
+    if v.ChartConfiguration.is_some():
+        auto u2 = v.ChartConfiguration.unwrap()
+        parts.append("\"ChartConfiguration\":" + line_chart_configuration_to_json(u2))
+    if v.Actions.is_some():
+        auto u3 = v.Actions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(visual_custom_action_to_json(x4))
+        parts.append("\"Actions\":" + quicksight_json_arr(e4))
+    if v.ColumnHierarchies.is_some():
+        auto u5 = v.ColumnHierarchies.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(column_hierarchy_to_json(x6))
+        parts.append("\"ColumnHierarchies\":" + quicksight_json_arr(e6))
+    if v.VisualContentAltText.is_some():
+        auto u7 = v.VisualContentAltText.unwrap()
+        parts.append("\"VisualContentAltText\":" + quicksight_json_str(u7))
+    return quicksight_json_obj(parts)
+
+# Serialize LineSeriesAxisDisplayOptions to a compact JSON object (declaration order).
+def line_series_axis_display_options_to_json(LineSeriesAxisDisplayOptions v) -> str:
+    list[str] parts = []
+    if v.AxisOptions.is_some():
+        auto u0 = v.AxisOptions.unwrap()
+        parts.append("\"AxisOptions\":" + u0.to_json())
+    if v.MissingDataConfigurations.is_some():
+        auto u1 = v.MissingDataConfigurations.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"MissingDataConfigurations\":" + quicksight_json_arr(e2))
+    return quicksight_json_obj(parts)
+
+# Serialize LinkSharingConfiguration to a compact JSON object (declaration order).
+def link_sharing_configuration_to_json(LinkSharingConfiguration v) -> str:
+    list[str] parts = []
+    if v.Permissions.is_some():
+        auto u0 = v.Permissions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(resource_permission_to_json(x1))
+        parts.append("\"Permissions\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize LogicalTable to a compact JSON object (declaration order).
+def logical_table_to_json(LogicalTable v) -> str:
+    list[str] parts = []
+    parts.append("\"Alias\":" + quicksight_json_str(v.Alias))
+    if v.DataTransforms.is_some():
+        auto u0 = v.DataTransforms.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(transform_operation_to_json(x1))
+        parts.append("\"DataTransforms\":" + quicksight_json_arr(e1))
+    parts.append("\"Source\":" + v.Source.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize MicrosoftPurviewProviderConfig to a compact JSON object (declaration order).
+def microsoft_purview_provider_config_to_json(MicrosoftPurviewProviderConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"Credentials\":" + v.Credentials.to_json())
+    list[str] e0 = []
+    for x0 in v.LabelActionMappings:
+        e0.append(x0.to_json())
+    parts.append("\"LabelActionMappings\":" + quicksight_json_arr(e0))
+    parts.append("\"UnmappedAction\":" + v.UnmappedAction.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize NamedEntityDefinition to a compact JSON object (declaration order).
+def named_entity_definition_to_json(NamedEntityDefinition v) -> str:
+    list[str] parts = []
+    if v.FieldName.is_some():
+        auto u0 = v.FieldName.unwrap()
+        parts.append("\"FieldName\":" + quicksight_json_str(u0))
+    if v.PropertyName.is_some():
+        auto u1 = v.PropertyName.unwrap()
+        parts.append("\"PropertyName\":" + quicksight_json_str(u1))
+    if v.PropertyRole.is_some():
+        auto u2 = v.PropertyRole.unwrap()
+        parts.append("\"PropertyRole\":" + u2.to_json())
+    if v.PropertyUsage.is_some():
+        auto u3 = v.PropertyUsage.unwrap()
+        parts.append("\"PropertyUsage\":" + u3.to_json())
+    if v.Metric.is_some():
+        auto u4 = v.Metric.unwrap()
+        parts.append("\"Metric\":" + named_entity_definition_metric_to_json(u4))
+    if v.RankOrder.is_some():
+        auto u5 = v.RankOrder.unwrap()
+        parts.append("\"RankOrder\":" + str(u5))
+    if v.PresentationOrder.is_some():
+        auto u6 = v.PresentationOrder.unwrap()
+        parts.append("\"PresentationOrder\":" + str(u6))
+    if v.IsHidden.is_some():
+        auto u7 = v.IsHidden.unwrap()
+        parts.append("\"IsHidden\":" + json.dumps(JsonValue.Bool(u7)))
+    return quicksight_json_obj(parts)
+
+# Serialize NamedEntityDefinitionMetric to a compact JSON object (declaration order).
+def named_entity_definition_metric_to_json(NamedEntityDefinitionMetric v) -> str:
+    list[str] parts = []
+    if v.Aggregation.is_some():
+        auto u0 = v.Aggregation.unwrap()
+        parts.append("\"Aggregation\":" + u0.to_json())
+    if v.AggregationFunctionParameters.is_some():
+        auto u1 = v.AggregationFunctionParameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(quicksight_json_str(k2) + ":" + quicksight_json_str(u1[k2]))
+        parts.append("\"AggregationFunctionParameters\":" + quicksight_json_obj(m2))
+    return quicksight_json_obj(parts)
+
+# Serialize NestedFilter to a compact JSON object (declaration order).
+def nested_filter_to_json(NestedFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"FilterId\":" + quicksight_json_str(v.FilterId))
+    parts.append("\"Column\":" + v.Column.to_json())
+    parts.append("\"IncludeInnerSet\":" + json.dumps(JsonValue.Bool(v.IncludeInnerSet)))
+    parts.append("\"InnerFilter\":" + inner_filter_to_json(v.InnerFilter))
+    return quicksight_json_obj(parts)
+
+# Serialize NewDefaultValues to a compact JSON object (declaration order).
+def new_default_values_to_json(NewDefaultValues v) -> str:
+    list[str] parts = []
+    if v.StringStaticValues.is_some():
+        auto u0 = v.StringStaticValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"StringStaticValues\":" + quicksight_json_arr(e1))
+    if v.DecimalStaticValues.is_some():
+        auto u2 = v.DecimalStaticValues.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(str(x3))
+        parts.append("\"DecimalStaticValues\":" + quicksight_json_arr(e3))
+    if v.DateTimeStaticValues.is_some():
+        auto u4 = v.DateTimeStaticValues.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(str(datetime.to_timestamp(x5)))
+        parts.append("\"DateTimeStaticValues\":" + quicksight_json_arr(e5))
+    if v.IntegerStaticValues.is_some():
+        auto u6 = v.IntegerStaticValues.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(str(x7))
+        parts.append("\"IntegerStaticValues\":" + quicksight_json_arr(e7))
+    return quicksight_json_obj(parts)
+
+# Serialize NumericEqualityFilter to a compact JSON object (declaration order).
+def numeric_equality_filter_to_json(NumericEqualityFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"FilterId\":" + quicksight_json_str(v.FilterId))
+    parts.append("\"Column\":" + v.Column.to_json())
+    if v.Value.is_some():
+        auto u0 = v.Value.unwrap()
+        parts.append("\"Value\":" + str(u0))
+    if v.SelectAllOptions.is_some():
+        auto u1 = v.SelectAllOptions.unwrap()
+        parts.append("\"SelectAllOptions\":" + quicksight_json_str(u1))
+    parts.append("\"MatchOperator\":" + v.MatchOperator.to_json())
+    if v.AggregationFunction.is_some():
+        auto u2 = v.AggregationFunction.unwrap()
+        parts.append("\"AggregationFunction\":" + u2.to_json())
+    if v.ParameterName.is_some():
+        auto u3 = v.ParameterName.unwrap()
+        parts.append("\"ParameterName\":" + quicksight_json_str(u3))
+    parts.append("\"NullOption\":" + v.NullOption.to_json())
+    if v.DefaultFilterControlConfiguration.is_some():
+        auto u4 = v.DefaultFilterControlConfiguration.unwrap()
+        parts.append("\"DefaultFilterControlConfiguration\":" + default_filter_control_configuration_to_json(u4))
+    return quicksight_json_obj(parts)
+
+# Serialize NumericRangeFilter to a compact JSON object (declaration order).
+def numeric_range_filter_to_json(NumericRangeFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"FilterId\":" + quicksight_json_str(v.FilterId))
+    parts.append("\"Column\":" + v.Column.to_json())
+    if v.IncludeMinimum.is_some():
+        auto u0 = v.IncludeMinimum.unwrap()
+        parts.append("\"IncludeMinimum\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.IncludeMaximum.is_some():
+        auto u1 = v.IncludeMaximum.unwrap()
+        parts.append("\"IncludeMaximum\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.RangeMinimum.is_some():
+        auto u2 = v.RangeMinimum.unwrap()
+        parts.append("\"RangeMinimum\":" + u2.to_json())
+    if v.RangeMaximum.is_some():
+        auto u3 = v.RangeMaximum.unwrap()
+        parts.append("\"RangeMaximum\":" + u3.to_json())
+    if v.SelectAllOptions.is_some():
+        auto u4 = v.SelectAllOptions.unwrap()
+        parts.append("\"SelectAllOptions\":" + quicksight_json_str(u4))
+    if v.AggregationFunction.is_some():
+        auto u5 = v.AggregationFunction.unwrap()
+        parts.append("\"AggregationFunction\":" + u5.to_json())
+    parts.append("\"NullOption\":" + v.NullOption.to_json())
+    if v.DefaultFilterControlConfiguration.is_some():
+        auto u6 = v.DefaultFilterControlConfiguration.unwrap()
+        parts.append("\"DefaultFilterControlConfiguration\":" + default_filter_control_configuration_to_json(u6))
+    return quicksight_json_obj(parts)
+
+# Serialize OverrideDatasetParameterOperation to a compact JSON object (declaration order).
+def override_dataset_parameter_operation_to_json(OverrideDatasetParameterOperation v) -> str:
+    list[str] parts = []
+    parts.append("\"ParameterName\":" + quicksight_json_str(v.ParameterName))
+    if v.NewParameterName.is_some():
+        auto u0 = v.NewParameterName.unwrap()
+        parts.append("\"NewParameterName\":" + quicksight_json_str(u0))
+    if v.NewDefaultValues.is_some():
+        auto u1 = v.NewDefaultValues.unwrap()
+        parts.append("\"NewDefaultValues\":" + new_default_values_to_json(u1))
+    return quicksight_json_obj(parts)
+
+# Serialize ParameterControl to a compact JSON object (declaration order).
+def parameter_control_to_json(ParameterControl v) -> str:
+    list[str] parts = []
+    if v.DateTimePicker.is_some():
+        auto u0 = v.DateTimePicker.unwrap()
+        parts.append("\"DateTimePicker\":" + u0.to_json())
+    if v.List.is_some():
+        auto u1 = v.List.unwrap()
+        parts.append("\"List\":" + parameter_list_control_to_json(u1))
+    if v.Dropdown.is_some():
+        auto u2 = v.Dropdown.unwrap()
+        parts.append("\"Dropdown\":" + parameter_drop_down_control_to_json(u2))
+    if v.TextField.is_some():
+        auto u3 = v.TextField.unwrap()
+        parts.append("\"TextField\":" + u3.to_json())
+    if v.TextArea.is_some():
+        auto u4 = v.TextArea.unwrap()
+        parts.append("\"TextArea\":" + u4.to_json())
+    if v.Slider.is_some():
+        auto u5 = v.Slider.unwrap()
+        parts.append("\"Slider\":" + u5.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize ParameterDeclaration to a compact JSON object (declaration order).
+def parameter_declaration_to_json(ParameterDeclaration v) -> str:
+    list[str] parts = []
+    if v.StringParameterDeclaration.is_some():
+        auto u0 = v.StringParameterDeclaration.unwrap()
+        parts.append("\"StringParameterDeclaration\":" + string_parameter_declaration_to_json(u0))
+    if v.DecimalParameterDeclaration.is_some():
+        auto u1 = v.DecimalParameterDeclaration.unwrap()
+        parts.append("\"DecimalParameterDeclaration\":" + decimal_parameter_declaration_to_json(u1))
+    if v.IntegerParameterDeclaration.is_some():
+        auto u2 = v.IntegerParameterDeclaration.unwrap()
+        parts.append("\"IntegerParameterDeclaration\":" + integer_parameter_declaration_to_json(u2))
+    if v.DateTimeParameterDeclaration.is_some():
+        auto u3 = v.DateTimeParameterDeclaration.unwrap()
+        parts.append("\"DateTimeParameterDeclaration\":" + date_time_parameter_declaration_to_json(u3))
+    return quicksight_json_obj(parts)
+
+# Serialize ParameterDropDownControl to a compact JSON object (declaration order).
+def parameter_drop_down_control_to_json(ParameterDropDownControl v) -> str:
+    list[str] parts = []
+    parts.append("\"ParameterControlId\":" + quicksight_json_str(v.ParameterControlId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + quicksight_json_str(u0))
+    parts.append("\"SourceParameterName\":" + quicksight_json_str(v.SourceParameterName))
+    if v.DisplayOptions.is_some():
+        auto u1 = v.DisplayOptions.unwrap()
+        parts.append("\"DisplayOptions\":" + u1.to_json())
+    if v.Type.is_some():
+        auto u2 = v.Type.unwrap()
+        parts.append("\"Type\":" + u2.to_json())
+    if v.SelectableValues.is_some():
+        auto u3 = v.SelectableValues.unwrap()
+        parts.append("\"SelectableValues\":" + parameter_selectable_values_to_json(u3))
+    if v.CascadingControlConfiguration.is_some():
+        auto u4 = v.CascadingControlConfiguration.unwrap()
+        parts.append("\"CascadingControlConfiguration\":" + cascading_control_configuration_to_json(u4))
+    if v.CommitMode.is_some():
+        auto u5 = v.CommitMode.unwrap()
+        parts.append("\"CommitMode\":" + u5.to_json())
+    if v.ControlSortConfigurations.is_some():
+        auto u6 = v.ControlSortConfigurations.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"ControlSortConfigurations\":" + quicksight_json_arr(e7))
+    if v.ControlTitleFormatText.is_some():
+        auto u8 = v.ControlTitleFormatText.unwrap()
+        parts.append("\"ControlTitleFormatText\":" + u8.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize ParameterListControl to a compact JSON object (declaration order).
+def parameter_list_control_to_json(ParameterListControl v) -> str:
+    list[str] parts = []
+    parts.append("\"ParameterControlId\":" + quicksight_json_str(v.ParameterControlId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + quicksight_json_str(u0))
+    parts.append("\"SourceParameterName\":" + quicksight_json_str(v.SourceParameterName))
+    if v.DisplayOptions.is_some():
+        auto u1 = v.DisplayOptions.unwrap()
+        parts.append("\"DisplayOptions\":" + u1.to_json())
+    if v.Type.is_some():
+        auto u2 = v.Type.unwrap()
+        parts.append("\"Type\":" + u2.to_json())
+    if v.SelectableValues.is_some():
+        auto u3 = v.SelectableValues.unwrap()
+        parts.append("\"SelectableValues\":" + parameter_selectable_values_to_json(u3))
+    if v.CascadingControlConfiguration.is_some():
+        auto u4 = v.CascadingControlConfiguration.unwrap()
+        parts.append("\"CascadingControlConfiguration\":" + cascading_control_configuration_to_json(u4))
+    if v.ControlSortConfigurations.is_some():
+        auto u5 = v.ControlSortConfigurations.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"ControlSortConfigurations\":" + quicksight_json_arr(e6))
+    if v.ControlTitleFormatText.is_some():
+        auto u7 = v.ControlTitleFormatText.unwrap()
+        parts.append("\"ControlTitleFormatText\":" + u7.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize ParameterSelectableValues to a compact JSON object (declaration order).
+def parameter_selectable_values_to_json(ParameterSelectableValues v) -> str:
+    list[str] parts = []
+    if v.Values.is_some():
+        auto u0 = v.Values.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"Values\":" + quicksight_json_arr(e1))
+    if v.LinkToDataSetColumn.is_some():
+        auto u2 = v.LinkToDataSetColumn.unwrap()
+        parts.append("\"LinkToDataSetColumn\":" + u2.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize Parameters to a compact JSON object (declaration order).
+def parameters_to_json(Parameters v) -> str:
+    list[str] parts = []
+    if v.StringParameters.is_some():
+        auto u0 = v.StringParameters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(string_parameter_to_json(x1))
+        parts.append("\"StringParameters\":" + quicksight_json_arr(e1))
+    if v.IntegerParameters.is_some():
+        auto u2 = v.IntegerParameters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(integer_parameter_to_json(x3))
+        parts.append("\"IntegerParameters\":" + quicksight_json_arr(e3))
+    if v.DecimalParameters.is_some():
+        auto u4 = v.DecimalParameters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(decimal_parameter_to_json(x5))
+        parts.append("\"DecimalParameters\":" + quicksight_json_arr(e5))
+    if v.DateTimeParameters.is_some():
+        auto u6 = v.DateTimeParameters.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(date_time_parameter_to_json(x7))
+        parts.append("\"DateTimeParameters\":" + quicksight_json_arr(e7))
+    return quicksight_json_obj(parts)
+
+# Serialize ParentDataSet to a compact JSON object (declaration order).
+def parent_data_set_to_json(ParentDataSet v) -> str:
+    list[str] parts = []
+    parts.append("\"DataSetArn\":" + quicksight_json_str(v.DataSetArn))
+    list[str] e0 = []
+    for x0 in v.InputColumns:
+        e0.append(x0.to_json())
+    parts.append("\"InputColumns\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize PerformanceConfiguration to a compact JSON object (declaration order).
+def performance_configuration_to_json(PerformanceConfiguration v) -> str:
+    list[str] parts = []
+    if v.UniqueKeys.is_some():
+        auto u0 = v.UniqueKeys.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(unique_key_to_json(x1))
+        parts.append("\"UniqueKeys\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize Permission to a compact JSON object (declaration order).
+def permission_to_json(Permission v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Actions:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"Actions\":" + quicksight_json_arr(e0))
+    parts.append("\"Principal\":" + quicksight_json_str(v.Principal))
+    return quicksight_json_obj(parts)
+
+# Serialize PhysicalTable to a compact JSON object (declaration order).
+def physical_table_to_json(PhysicalTable v) -> str:
+    list[str] parts = []
+    if v.RelationalTable.is_some():
+        auto u0 = v.RelationalTable.unwrap()
+        parts.append("\"RelationalTable\":" + relational_table_to_json(u0))
+    if v.CustomSql.is_some():
+        auto u1 = v.CustomSql.unwrap()
+        parts.append("\"CustomSql\":" + custom_sql_to_json(u1))
+    if v.S3Source.is_some():
+        auto u2 = v.S3Source.unwrap()
+        parts.append("\"S3Source\":" + s3_source_to_json(u2))
+    if v.SaaSTable.is_some():
+        auto u3 = v.SaaSTable.unwrap()
+        parts.append("\"SaaSTable\":" + saa_s_table_to_json(u3))
+    if v.FileSource.is_some():
+        auto u4 = v.FileSource.unwrap()
+        parts.append("\"FileSource\":" + file_source_to_json(u4))
+    return quicksight_json_obj(parts)
+
+# Serialize PieChartAggregatedFieldWells to a compact JSON object (declaration order).
+def pie_chart_aggregated_field_wells_to_json(PieChartAggregatedFieldWells v) -> str:
+    list[str] parts = []
+    if v.Category.is_some():
+        auto u0 = v.Category.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Category\":" + quicksight_json_arr(e1))
+    if v.Values.is_some():
+        auto u2 = v.Values.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Values\":" + quicksight_json_arr(e3))
+    if v.SmallMultiples.is_some():
+        auto u4 = v.SmallMultiples.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"SmallMultiples\":" + quicksight_json_arr(e5))
+    return quicksight_json_obj(parts)
+
+# Serialize PieChartConfiguration to a compact JSON object (declaration order).
+def pie_chart_configuration_to_json(PieChartConfiguration v) -> str:
+    list[str] parts = []
+    if v.FieldWells.is_some():
+        auto u0 = v.FieldWells.unwrap()
+        parts.append("\"FieldWells\":" + pie_chart_field_wells_to_json(u0))
+    if v.SortConfiguration.is_some():
+        auto u1 = v.SortConfiguration.unwrap()
+        parts.append("\"SortConfiguration\":" + pie_chart_sort_configuration_to_json(u1))
+    if v.DonutOptions.is_some():
+        auto u2 = v.DonutOptions.unwrap()
+        parts.append("\"DonutOptions\":" + u2.to_json())
+    if v.SmallMultiplesOptions.is_some():
+        auto u3 = v.SmallMultiplesOptions.unwrap()
+        parts.append("\"SmallMultiplesOptions\":" + u3.to_json())
+    if v.CategoryLabelOptions.is_some():
+        auto u4 = v.CategoryLabelOptions.unwrap()
+        parts.append("\"CategoryLabelOptions\":" + chart_axis_label_options_to_json(u4))
+    if v.ValueLabelOptions.is_some():
+        auto u5 = v.ValueLabelOptions.unwrap()
+        parts.append("\"ValueLabelOptions\":" + chart_axis_label_options_to_json(u5))
+    if v.Legend.is_some():
+        auto u6 = v.Legend.unwrap()
+        parts.append("\"Legend\":" + u6.to_json())
+    if v.DataLabels.is_some():
+        auto u7 = v.DataLabels.unwrap()
+        parts.append("\"DataLabels\":" + data_label_options_to_json(u7))
+    if v.Tooltip.is_some():
+        auto u8 = v.Tooltip.unwrap()
+        parts.append("\"Tooltip\":" + tooltip_options_to_json(u8))
+    if v.VisualPalette.is_some():
+        auto u9 = v.VisualPalette.unwrap()
+        parts.append("\"VisualPalette\":" + visual_palette_to_json(u9))
+    if v.ContributionAnalysisDefaults.is_some():
+        auto u10 = v.ContributionAnalysisDefaults.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(contribution_analysis_default_to_json(x11))
+        parts.append("\"ContributionAnalysisDefaults\":" + quicksight_json_arr(e11))
+    if v.Interactions.is_some():
+        auto u12 = v.Interactions.unwrap()
+        parts.append("\"Interactions\":" + u12.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize PieChartFieldWells to a compact JSON object (declaration order).
+def pie_chart_field_wells_to_json(PieChartFieldWells v) -> str:
+    list[str] parts = []
+    if v.PieChartAggregatedFieldWells.is_some():
+        auto u0 = v.PieChartAggregatedFieldWells.unwrap()
+        parts.append("\"PieChartAggregatedFieldWells\":" + pie_chart_aggregated_field_wells_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize PieChartSortConfiguration to a compact JSON object (declaration order).
+def pie_chart_sort_configuration_to_json(PieChartSortConfiguration v) -> str:
+    list[str] parts = []
+    if v.CategorySort.is_some():
+        auto u0 = v.CategorySort.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"CategorySort\":" + quicksight_json_arr(e1))
+    if v.CategoryItemsLimit.is_some():
+        auto u2 = v.CategoryItemsLimit.unwrap()
+        parts.append("\"CategoryItemsLimit\":" + u2.to_json())
+    if v.SmallMultiplesSort.is_some():
+        auto u3 = v.SmallMultiplesSort.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"SmallMultiplesSort\":" + quicksight_json_arr(e4))
+    if v.SmallMultiplesLimitConfiguration.is_some():
+        auto u5 = v.SmallMultiplesLimitConfiguration.unwrap()
+        parts.append("\"SmallMultiplesLimitConfiguration\":" + u5.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize PieChartVisual to a compact JSON object (declaration order).
+def pie_chart_visual_to_json(PieChartVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + u0.to_json())
+    if v.Subtitle.is_some():
+        auto u1 = v.Subtitle.unwrap()
+        parts.append("\"Subtitle\":" + u1.to_json())
+    if v.ChartConfiguration.is_some():
+        auto u2 = v.ChartConfiguration.unwrap()
+        parts.append("\"ChartConfiguration\":" + pie_chart_configuration_to_json(u2))
+    if v.Actions.is_some():
+        auto u3 = v.Actions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(visual_custom_action_to_json(x4))
+        parts.append("\"Actions\":" + quicksight_json_arr(e4))
+    if v.ColumnHierarchies.is_some():
+        auto u5 = v.ColumnHierarchies.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(column_hierarchy_to_json(x6))
+        parts.append("\"ColumnHierarchies\":" + quicksight_json_arr(e6))
+    if v.VisualContentAltText.is_some():
+        auto u7 = v.VisualContentAltText.unwrap()
+        parts.append("\"VisualContentAltText\":" + quicksight_json_str(u7))
+    return quicksight_json_obj(parts)
+
+# Serialize PivotConfiguration to a compact JSON object (declaration order).
+def pivot_configuration_to_json(PivotConfiguration v) -> str:
+    list[str] parts = []
+    if v.LabelColumnName.is_some():
+        auto u0 = v.LabelColumnName.unwrap()
+        parts.append("\"LabelColumnName\":" + quicksight_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.PivotedLabels:
+        e1.append(x1.to_json())
+    parts.append("\"PivotedLabels\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize PivotFieldSortOptions to a compact JSON object (declaration order).
+def pivot_field_sort_options_to_json(PivotFieldSortOptions v) -> str:
+    list[str] parts = []
+    parts.append("\"FieldId\":" + quicksight_json_str(v.FieldId))
+    parts.append("\"SortBy\":" + pivot_table_sort_by_to_json(v.SortBy))
+    return quicksight_json_obj(parts)
+
+# Serialize PivotOperation to a compact JSON object (declaration order).
+def pivot_operation_to_json(PivotOperation v) -> str:
+    list[str] parts = []
+    parts.append("\"Alias\":" + quicksight_json_str(v.Alias))
+    parts.append("\"Source\":" + transform_operation_source_to_json(v.Source))
+    if v.GroupByColumnNames.is_some():
+        auto u0 = v.GroupByColumnNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"GroupByColumnNames\":" + quicksight_json_arr(e1))
+    parts.append("\"ValueColumnConfiguration\":" + v.ValueColumnConfiguration.to_json())
+    parts.append("\"PivotConfiguration\":" + pivot_configuration_to_json(v.PivotConfiguration))
+    return quicksight_json_obj(parts)
+
+# Serialize PivotTableAggregatedFieldWells to a compact JSON object (declaration order).
+def pivot_table_aggregated_field_wells_to_json(PivotTableAggregatedFieldWells v) -> str:
+    list[str] parts = []
+    if v.Rows.is_some():
+        auto u0 = v.Rows.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Rows\":" + quicksight_json_arr(e1))
+    if v.Columns.is_some():
+        auto u2 = v.Columns.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Columns\":" + quicksight_json_arr(e3))
+    if v.Values.is_some():
+        auto u4 = v.Values.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Values\":" + quicksight_json_arr(e5))
+    return quicksight_json_obj(parts)
+
+# Serialize PivotTableCellConditionalFormatting to a compact JSON object (declaration order).
+def pivot_table_cell_conditional_formatting_to_json(PivotTableCellConditionalFormatting v) -> str:
+    list[str] parts = []
+    parts.append("\"FieldId\":" + quicksight_json_str(v.FieldId))
+    if v.TextFormat.is_some():
+        auto u0 = v.TextFormat.unwrap()
+        parts.append("\"TextFormat\":" + text_conditional_format_to_json(u0))
+    if v.Scope.is_some():
+        auto u1 = v.Scope.unwrap()
+        parts.append("\"Scope\":" + u1.to_json())
+    if v.Scopes.is_some():
+        auto u2 = v.Scopes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Scopes\":" + quicksight_json_arr(e3))
+    return quicksight_json_obj(parts)
+
+# Serialize PivotTableConditionalFormatting to a compact JSON object (declaration order).
+def pivot_table_conditional_formatting_to_json(PivotTableConditionalFormatting v) -> str:
+    list[str] parts = []
+    if v.ConditionalFormattingOptions.is_some():
+        auto u0 = v.ConditionalFormattingOptions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(pivot_table_conditional_formatting_option_to_json(x1))
+        parts.append("\"ConditionalFormattingOptions\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize PivotTableConditionalFormattingOption to a compact JSON object (declaration order).
+def pivot_table_conditional_formatting_option_to_json(PivotTableConditionalFormattingOption v) -> str:
+    list[str] parts = []
+    if v.Cell.is_some():
+        auto u0 = v.Cell.unwrap()
+        parts.append("\"Cell\":" + pivot_table_cell_conditional_formatting_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize PivotTableConfiguration to a compact JSON object (declaration order).
+def pivot_table_configuration_to_json(PivotTableConfiguration v) -> str:
+    list[str] parts = []
+    if v.FieldWells.is_some():
+        auto u0 = v.FieldWells.unwrap()
+        parts.append("\"FieldWells\":" + pivot_table_field_wells_to_json(u0))
+    if v.SortConfiguration.is_some():
+        auto u1 = v.SortConfiguration.unwrap()
+        parts.append("\"SortConfiguration\":" + pivot_table_sort_configuration_to_json(u1))
+    if v.TableOptions.is_some():
+        auto u2 = v.TableOptions.unwrap()
+        parts.append("\"TableOptions\":" + pivot_table_options_to_json(u2))
+    if v.TotalOptions.is_some():
+        auto u3 = v.TotalOptions.unwrap()
+        parts.append("\"TotalOptions\":" + pivot_table_total_options_to_json(u3))
+    if v.FieldOptions.is_some():
+        auto u4 = v.FieldOptions.unwrap()
+        parts.append("\"FieldOptions\":" + pivot_table_field_options_to_json(u4))
+    if v.PaginatedReportOptions.is_some():
+        auto u5 = v.PaginatedReportOptions.unwrap()
+        parts.append("\"PaginatedReportOptions\":" + u5.to_json())
+    if v.Tooltip.is_some():
+        auto u6 = v.Tooltip.unwrap()
+        parts.append("\"Tooltip\":" + tooltip_options_to_json(u6))
+    if v.DashboardCustomizationVisualOptions.is_some():
+        auto u7 = v.DashboardCustomizationVisualOptions.unwrap()
+        parts.append("\"DashboardCustomizationVisualOptions\":" + dashboard_customization_visual_options_to_json(u7))
+    if v.Interactions.is_some():
+        auto u8 = v.Interactions.unwrap()
+        parts.append("\"Interactions\":" + u8.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize PivotTableDataPathOption to a compact JSON object (declaration order).
+def pivot_table_data_path_option_to_json(PivotTableDataPathOption v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.DataPathList:
+        e0.append(x0.to_json())
+    parts.append("\"DataPathList\":" + quicksight_json_arr(e0))
+    if v.Width.is_some():
+        auto u1 = v.Width.unwrap()
+        parts.append("\"Width\":" + quicksight_json_str(u1))
+    return quicksight_json_obj(parts)
+
+# Serialize PivotTableFieldCollapseStateOption to a compact JSON object (declaration order).
+def pivot_table_field_collapse_state_option_to_json(PivotTableFieldCollapseStateOption v) -> str:
+    list[str] parts = []
+    parts.append("\"Target\":" + pivot_table_field_collapse_state_target_to_json(v.Target))
+    if v.State.is_some():
+        auto u0 = v.State.unwrap()
+        parts.append("\"State\":" + u0.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize PivotTableFieldCollapseStateTarget to a compact JSON object (declaration order).
+def pivot_table_field_collapse_state_target_to_json(PivotTableFieldCollapseStateTarget v) -> str:
+    list[str] parts = []
+    if v.FieldId.is_some():
+        auto u0 = v.FieldId.unwrap()
+        parts.append("\"FieldId\":" + quicksight_json_str(u0))
+    if v.FieldDataPathValues.is_some():
+        auto u1 = v.FieldDataPathValues.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"FieldDataPathValues\":" + quicksight_json_arr(e2))
+    return quicksight_json_obj(parts)
+
+# Serialize PivotTableFieldOptions to a compact JSON object (declaration order).
+def pivot_table_field_options_to_json(PivotTableFieldOptions v) -> str:
+    list[str] parts = []
+    if v.SelectedFieldOptions.is_some():
+        auto u0 = v.SelectedFieldOptions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"SelectedFieldOptions\":" + quicksight_json_arr(e1))
+    if v.DataPathOptions.is_some():
+        auto u2 = v.DataPathOptions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(pivot_table_data_path_option_to_json(x3))
+        parts.append("\"DataPathOptions\":" + quicksight_json_arr(e3))
+    if v.CollapseStateOptions.is_some():
+        auto u4 = v.CollapseStateOptions.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(pivot_table_field_collapse_state_option_to_json(x5))
+        parts.append("\"CollapseStateOptions\":" + quicksight_json_arr(e5))
+    return quicksight_json_obj(parts)
+
+# Serialize PivotTableFieldWells to a compact JSON object (declaration order).
+def pivot_table_field_wells_to_json(PivotTableFieldWells v) -> str:
+    list[str] parts = []
+    if v.PivotTableAggregatedFieldWells.is_some():
+        auto u0 = v.PivotTableAggregatedFieldWells.unwrap()
+        parts.append("\"PivotTableAggregatedFieldWells\":" + pivot_table_aggregated_field_wells_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize PivotTableOptions to a compact JSON object (declaration order).
+def pivot_table_options_to_json(PivotTableOptions v) -> str:
+    list[str] parts = []
+    if v.MetricPlacement.is_some():
+        auto u0 = v.MetricPlacement.unwrap()
+        parts.append("\"MetricPlacement\":" + u0.to_json())
+    if v.SingleMetricVisibility.is_some():
+        auto u1 = v.SingleMetricVisibility.unwrap()
+        parts.append("\"SingleMetricVisibility\":" + u1.to_json())
+    if v.ColumnNamesVisibility.is_some():
+        auto u2 = v.ColumnNamesVisibility.unwrap()
+        parts.append("\"ColumnNamesVisibility\":" + u2.to_json())
+    if v.ToggleButtonsVisibility.is_some():
+        auto u3 = v.ToggleButtonsVisibility.unwrap()
+        parts.append("\"ToggleButtonsVisibility\":" + u3.to_json())
+    if v.ColumnHeaderStyle.is_some():
+        auto u4 = v.ColumnHeaderStyle.unwrap()
+        parts.append("\"ColumnHeaderStyle\":" + u4.to_json())
+    if v.RowHeaderStyle.is_some():
+        auto u5 = v.RowHeaderStyle.unwrap()
+        parts.append("\"RowHeaderStyle\":" + u5.to_json())
+    if v.CellStyle.is_some():
+        auto u6 = v.CellStyle.unwrap()
+        parts.append("\"CellStyle\":" + u6.to_json())
+    if v.RowFieldNamesStyle.is_some():
+        auto u7 = v.RowFieldNamesStyle.unwrap()
+        parts.append("\"RowFieldNamesStyle\":" + u7.to_json())
+    if v.RowAlternateColorOptions.is_some():
+        auto u8 = v.RowAlternateColorOptions.unwrap()
+        parts.append("\"RowAlternateColorOptions\":" + row_alternate_color_options_to_json(u8))
+    if v.CollapsedRowDimensionsVisibility.is_some():
+        auto u9 = v.CollapsedRowDimensionsVisibility.unwrap()
+        parts.append("\"CollapsedRowDimensionsVisibility\":" + u9.to_json())
+    if v.RowsLayout.is_some():
+        auto u10 = v.RowsLayout.unwrap()
+        parts.append("\"RowsLayout\":" + u10.to_json())
+    if v.RowsLabelOptions.is_some():
+        auto u11 = v.RowsLabelOptions.unwrap()
+        parts.append("\"RowsLabelOptions\":" + u11.to_json())
+    if v.DefaultCellWidth.is_some():
+        auto u12 = v.DefaultCellWidth.unwrap()
+        parts.append("\"DefaultCellWidth\":" + quicksight_json_str(u12))
+    return quicksight_json_obj(parts)
+
+# Serialize PivotTableSortBy to a compact JSON object (declaration order).
+def pivot_table_sort_by_to_json(PivotTableSortBy v) -> str:
+    list[str] parts = []
+    if v.Field.is_some():
+        auto u0 = v.Field.unwrap()
+        parts.append("\"Field\":" + u0.to_json())
+    if v.Column.is_some():
+        auto u1 = v.Column.unwrap()
+        parts.append("\"Column\":" + u1.to_json())
+    if v.DataPath.is_some():
+        auto u2 = v.DataPath.unwrap()
+        parts.append("\"DataPath\":" + data_path_sort_to_json(u2))
+    return quicksight_json_obj(parts)
+
+# Serialize PivotTableSortConfiguration to a compact JSON object (declaration order).
+def pivot_table_sort_configuration_to_json(PivotTableSortConfiguration v) -> str:
+    list[str] parts = []
+    if v.FieldSortOptions.is_some():
+        auto u0 = v.FieldSortOptions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(pivot_field_sort_options_to_json(x1))
+        parts.append("\"FieldSortOptions\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize PivotTableTotalOptions to a compact JSON object (declaration order).
+def pivot_table_total_options_to_json(PivotTableTotalOptions v) -> str:
+    list[str] parts = []
+    if v.RowSubtotalOptions.is_some():
+        auto u0 = v.RowSubtotalOptions.unwrap()
+        parts.append("\"RowSubtotalOptions\":" + subtotal_options_to_json(u0))
+    if v.ColumnSubtotalOptions.is_some():
+        auto u1 = v.ColumnSubtotalOptions.unwrap()
+        parts.append("\"ColumnSubtotalOptions\":" + subtotal_options_to_json(u1))
+    if v.RowTotalOptions.is_some():
+        auto u2 = v.RowTotalOptions.unwrap()
+        parts.append("\"RowTotalOptions\":" + pivot_total_options_to_json(u2))
+    if v.ColumnTotalOptions.is_some():
+        auto u3 = v.ColumnTotalOptions.unwrap()
+        parts.append("\"ColumnTotalOptions\":" + pivot_total_options_to_json(u3))
+    return quicksight_json_obj(parts)
+
+# Serialize PivotTableVisual to a compact JSON object (declaration order).
+def pivot_table_visual_to_json(PivotTableVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + u0.to_json())
+    if v.Subtitle.is_some():
+        auto u1 = v.Subtitle.unwrap()
+        parts.append("\"Subtitle\":" + u1.to_json())
+    if v.ChartConfiguration.is_some():
+        auto u2 = v.ChartConfiguration.unwrap()
+        parts.append("\"ChartConfiguration\":" + pivot_table_configuration_to_json(u2))
+    if v.ConditionalFormatting.is_some():
+        auto u3 = v.ConditionalFormatting.unwrap()
+        parts.append("\"ConditionalFormatting\":" + pivot_table_conditional_formatting_to_json(u3))
+    if v.Actions.is_some():
+        auto u4 = v.Actions.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(visual_custom_action_to_json(x5))
+        parts.append("\"Actions\":" + quicksight_json_arr(e5))
+    if v.VisualContentAltText.is_some():
+        auto u6 = v.VisualContentAltText.unwrap()
+        parts.append("\"VisualContentAltText\":" + quicksight_json_str(u6))
+    return quicksight_json_obj(parts)
+
+# Serialize PivotTotalOptions to a compact JSON object (declaration order).
+def pivot_total_options_to_json(PivotTotalOptions v) -> str:
+    list[str] parts = []
+    if v.TotalsVisibility.is_some():
+        auto u0 = v.TotalsVisibility.unwrap()
+        parts.append("\"TotalsVisibility\":" + u0.to_json())
+    if v.Placement.is_some():
+        auto u1 = v.Placement.unwrap()
+        parts.append("\"Placement\":" + u1.to_json())
+    if v.ScrollStatus.is_some():
+        auto u2 = v.ScrollStatus.unwrap()
+        parts.append("\"ScrollStatus\":" + u2.to_json())
+    if v.CustomLabel.is_some():
+        auto u3 = v.CustomLabel.unwrap()
+        parts.append("\"CustomLabel\":" + quicksight_json_str(u3))
+    if v.TotalCellStyle.is_some():
+        auto u4 = v.TotalCellStyle.unwrap()
+        parts.append("\"TotalCellStyle\":" + u4.to_json())
+    if v.ValueCellStyle.is_some():
+        auto u5 = v.ValueCellStyle.unwrap()
+        parts.append("\"ValueCellStyle\":" + u5.to_json())
+    if v.MetricHeaderCellStyle.is_some():
+        auto u6 = v.MetricHeaderCellStyle.unwrap()
+        parts.append("\"MetricHeaderCellStyle\":" + u6.to_json())
+    if v.TotalAggregationOptions.is_some():
+        auto u7 = v.TotalAggregationOptions.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"TotalAggregationOptions\":" + quicksight_json_arr(e8))
+    return quicksight_json_obj(parts)
+
+# Serialize PluginVisual to a compact JSON object (declaration order).
+def plugin_visual_to_json(PluginVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    parts.append("\"PluginArn\":" + quicksight_json_str(v.PluginArn))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + u0.to_json())
+    if v.Subtitle.is_some():
+        auto u1 = v.Subtitle.unwrap()
+        parts.append("\"Subtitle\":" + u1.to_json())
+    if v.ChartConfiguration.is_some():
+        auto u2 = v.ChartConfiguration.unwrap()
+        parts.append("\"ChartConfiguration\":" + plugin_visual_configuration_to_json(u2))
+    if v.Actions.is_some():
+        auto u3 = v.Actions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(visual_custom_action_to_json(x4))
+        parts.append("\"Actions\":" + quicksight_json_arr(e4))
+    if v.VisualContentAltText.is_some():
+        auto u5 = v.VisualContentAltText.unwrap()
+        parts.append("\"VisualContentAltText\":" + quicksight_json_str(u5))
+    return quicksight_json_obj(parts)
+
+# Serialize PluginVisualConfiguration to a compact JSON object (declaration order).
+def plugin_visual_configuration_to_json(PluginVisualConfiguration v) -> str:
+    list[str] parts = []
+    if v.FieldWells.is_some():
+        auto u0 = v.FieldWells.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(plugin_visual_field_well_to_json(x1))
+        parts.append("\"FieldWells\":" + quicksight_json_arr(e1))
+    if v.VisualOptions.is_some():
+        auto u2 = v.VisualOptions.unwrap()
+        parts.append("\"VisualOptions\":" + plugin_visual_options_to_json(u2))
+    if v.SortConfiguration.is_some():
+        auto u3 = v.SortConfiguration.unwrap()
+        parts.append("\"SortConfiguration\":" + plugin_visual_sort_configuration_to_json(u3))
+    return quicksight_json_obj(parts)
+
+# Serialize PluginVisualFieldWell to a compact JSON object (declaration order).
+def plugin_visual_field_well_to_json(PluginVisualFieldWell v) -> str:
+    list[str] parts = []
+    if v.AxisName.is_some():
+        auto u0 = v.AxisName.unwrap()
+        parts.append("\"AxisName\":" + u0.to_json())
+    if v.Dimensions.is_some():
+        auto u1 = v.Dimensions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Dimensions\":" + quicksight_json_arr(e2))
+    if v.Measures.is_some():
+        auto u3 = v.Measures.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Measures\":" + quicksight_json_arr(e4))
+    if v.Unaggregated.is_some():
+        auto u5 = v.Unaggregated.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Unaggregated\":" + quicksight_json_arr(e6))
+    return quicksight_json_obj(parts)
+
+# Serialize PluginVisualOptions to a compact JSON object (declaration order).
+def plugin_visual_options_to_json(PluginVisualOptions v) -> str:
+    list[str] parts = []
+    if v.VisualProperties.is_some():
+        auto u0 = v.VisualProperties.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"VisualProperties\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize PluginVisualSortConfiguration to a compact JSON object (declaration order).
+def plugin_visual_sort_configuration_to_json(PluginVisualSortConfiguration v) -> str:
+    list[str] parts = []
+    if v.PluginVisualTableQuerySort.is_some():
+        auto u0 = v.PluginVisualTableQuerySort.unwrap()
+        parts.append("\"PluginVisualTableQuerySort\":" + plugin_visual_table_query_sort_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize PluginVisualTableQuerySort to a compact JSON object (declaration order).
+def plugin_visual_table_query_sort_to_json(PluginVisualTableQuerySort v) -> str:
+    list[str] parts = []
+    if v.RowSort.is_some():
+        auto u0 = v.RowSort.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"RowSort\":" + quicksight_json_arr(e1))
+    if v.ItemsLimitConfiguration.is_some():
+        auto u2 = v.ItemsLimitConfiguration.unwrap()
+        parts.append("\"ItemsLimitConfiguration\":" + u2.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize PredefinedHierarchy to a compact JSON object (declaration order).
+def predefined_hierarchy_to_json(PredefinedHierarchy v) -> str:
+    list[str] parts = []
+    parts.append("\"HierarchyId\":" + quicksight_json_str(v.HierarchyId))
+    list[str] e0 = []
+    for x0 in v.Columns:
+        e0.append(x0.to_json())
+    parts.append("\"Columns\":" + quicksight_json_arr(e0))
+    if v.DrillDownFilters.is_some():
+        auto u1 = v.DrillDownFilters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(drill_down_filter_to_json(x2))
+        parts.append("\"DrillDownFilters\":" + quicksight_json_arr(e2))
+    return quicksight_json_obj(parts)
+
+# Serialize ProjectOperation to a compact JSON object (declaration order).
+def project_operation_to_json(ProjectOperation v) -> str:
+    list[str] parts = []
+    if v.Alias.is_some():
+        auto u0 = v.Alias.unwrap()
+        parts.append("\"Alias\":" + quicksight_json_str(u0))
+    if v.Source.is_some():
+        auto u1 = v.Source.unwrap()
+        parts.append("\"Source\":" + transform_operation_source_to_json(u1))
+    list[str] e2 = []
+    for x2 in v.ProjectedColumns:
+        e2.append(quicksight_json_str(x2))
+    parts.append("\"ProjectedColumns\":" + quicksight_json_arr(e2))
+    return quicksight_json_obj(parts)
+
+# Serialize ProviderConfig to a compact JSON object (declaration order).
+def provider_config_to_json(ProviderConfig v) -> str:
+    list[str] parts = []
+    if v.MicrosoftPurview.is_some():
+        auto u0 = v.MicrosoftPurview.unwrap()
+        parts.append("\"MicrosoftPurview\":" + microsoft_purview_provider_config_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize RadarChartAggregatedFieldWells to a compact JSON object (declaration order).
+def radar_chart_aggregated_field_wells_to_json(RadarChartAggregatedFieldWells v) -> str:
+    list[str] parts = []
+    if v.Category.is_some():
+        auto u0 = v.Category.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Category\":" + quicksight_json_arr(e1))
+    if v.Color.is_some():
+        auto u2 = v.Color.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Color\":" + quicksight_json_arr(e3))
+    if v.Values.is_some():
+        auto u4 = v.Values.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Values\":" + quicksight_json_arr(e5))
+    return quicksight_json_obj(parts)
+
+# Serialize RadarChartConfiguration to a compact JSON object (declaration order).
+def radar_chart_configuration_to_json(RadarChartConfiguration v) -> str:
+    list[str] parts = []
+    if v.FieldWells.is_some():
+        auto u0 = v.FieldWells.unwrap()
+        parts.append("\"FieldWells\":" + radar_chart_field_wells_to_json(u0))
+    if v.SortConfiguration.is_some():
+        auto u1 = v.SortConfiguration.unwrap()
+        parts.append("\"SortConfiguration\":" + radar_chart_sort_configuration_to_json(u1))
+    if v.Shape.is_some():
+        auto u2 = v.Shape.unwrap()
+        parts.append("\"Shape\":" + u2.to_json())
+    if v.BaseSeriesSettings.is_some():
+        auto u3 = v.BaseSeriesSettings.unwrap()
+        parts.append("\"BaseSeriesSettings\":" + u3.to_json())
+    if v.StartAngle.is_some():
+        auto u4 = v.StartAngle.unwrap()
+        parts.append("\"StartAngle\":" + str(u4))
+    if v.VisualPalette.is_some():
+        auto u5 = v.VisualPalette.unwrap()
+        parts.append("\"VisualPalette\":" + visual_palette_to_json(u5))
+    if v.AlternateBandColorsVisibility.is_some():
+        auto u6 = v.AlternateBandColorsVisibility.unwrap()
+        parts.append("\"AlternateBandColorsVisibility\":" + u6.to_json())
+    if v.AlternateBandEvenColor.is_some():
+        auto u7 = v.AlternateBandEvenColor.unwrap()
+        parts.append("\"AlternateBandEvenColor\":" + quicksight_json_str(u7))
+    if v.AlternateBandOddColor.is_some():
+        auto u8 = v.AlternateBandOddColor.unwrap()
+        parts.append("\"AlternateBandOddColor\":" + quicksight_json_str(u8))
+    if v.CategoryAxis.is_some():
+        auto u9 = v.CategoryAxis.unwrap()
+        parts.append("\"CategoryAxis\":" + u9.to_json())
+    if v.CategoryLabelOptions.is_some():
+        auto u10 = v.CategoryLabelOptions.unwrap()
+        parts.append("\"CategoryLabelOptions\":" + chart_axis_label_options_to_json(u10))
+    if v.ColorAxis.is_some():
+        auto u11 = v.ColorAxis.unwrap()
+        parts.append("\"ColorAxis\":" + u11.to_json())
+    if v.ColorLabelOptions.is_some():
+        auto u12 = v.ColorLabelOptions.unwrap()
+        parts.append("\"ColorLabelOptions\":" + chart_axis_label_options_to_json(u12))
+    if v.Legend.is_some():
+        auto u13 = v.Legend.unwrap()
+        parts.append("\"Legend\":" + u13.to_json())
+    if v.AxesRangeScale.is_some():
+        auto u14 = v.AxesRangeScale.unwrap()
+        parts.append("\"AxesRangeScale\":" + u14.to_json())
+    if v.Interactions.is_some():
+        auto u15 = v.Interactions.unwrap()
+        parts.append("\"Interactions\":" + u15.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize RadarChartFieldWells to a compact JSON object (declaration order).
+def radar_chart_field_wells_to_json(RadarChartFieldWells v) -> str:
+    list[str] parts = []
+    if v.RadarChartAggregatedFieldWells.is_some():
+        auto u0 = v.RadarChartAggregatedFieldWells.unwrap()
+        parts.append("\"RadarChartAggregatedFieldWells\":" + radar_chart_aggregated_field_wells_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize RadarChartSortConfiguration to a compact JSON object (declaration order).
+def radar_chart_sort_configuration_to_json(RadarChartSortConfiguration v) -> str:
+    list[str] parts = []
+    if v.CategorySort.is_some():
+        auto u0 = v.CategorySort.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"CategorySort\":" + quicksight_json_arr(e1))
+    if v.CategoryItemsLimit.is_some():
+        auto u2 = v.CategoryItemsLimit.unwrap()
+        parts.append("\"CategoryItemsLimit\":" + u2.to_json())
+    if v.ColorSort.is_some():
+        auto u3 = v.ColorSort.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"ColorSort\":" + quicksight_json_arr(e4))
+    if v.ColorItemsLimit.is_some():
+        auto u5 = v.ColorItemsLimit.unwrap()
+        parts.append("\"ColorItemsLimit\":" + u5.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize RadarChartVisual to a compact JSON object (declaration order).
+def radar_chart_visual_to_json(RadarChartVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + u0.to_json())
+    if v.Subtitle.is_some():
+        auto u1 = v.Subtitle.unwrap()
+        parts.append("\"Subtitle\":" + u1.to_json())
+    if v.ChartConfiguration.is_some():
+        auto u2 = v.ChartConfiguration.unwrap()
+        parts.append("\"ChartConfiguration\":" + radar_chart_configuration_to_json(u2))
+    if v.Actions.is_some():
+        auto u3 = v.Actions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(visual_custom_action_to_json(x4))
+        parts.append("\"Actions\":" + quicksight_json_arr(e4))
+    if v.ColumnHierarchies.is_some():
+        auto u5 = v.ColumnHierarchies.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(column_hierarchy_to_json(x6))
+        parts.append("\"ColumnHierarchies\":" + quicksight_json_arr(e6))
+    if v.VisualContentAltText.is_some():
+        auto u7 = v.VisualContentAltText.unwrap()
+        parts.append("\"VisualContentAltText\":" + quicksight_json_str(u7))
+    return quicksight_json_obj(parts)
+
+# Serialize RedshiftIAMParameters to a compact JSON object (declaration order).
+def redshift_iam_parameters_to_json(RedshiftIAMParameters v) -> str:
+    list[str] parts = []
+    parts.append("\"RoleArn\":" + quicksight_json_str(v.RoleArn))
+    if v.DatabaseUser.is_some():
+        auto u0 = v.DatabaseUser.unwrap()
+        parts.append("\"DatabaseUser\":" + quicksight_json_str(u0))
+    if v.DatabaseGroups.is_some():
+        auto u1 = v.DatabaseGroups.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(quicksight_json_str(x2))
+        parts.append("\"DatabaseGroups\":" + quicksight_json_arr(e2))
+    if v.AutoCreateDatabaseUser.is_some():
+        auto u3 = v.AutoCreateDatabaseUser.unwrap()
+        parts.append("\"AutoCreateDatabaseUser\":" + json.dumps(JsonValue.Bool(u3)))
+    return quicksight_json_obj(parts)
+
+# Serialize RedshiftParameters to a compact JSON object (declaration order).
+def redshift_parameters_to_json(RedshiftParameters v) -> str:
+    list[str] parts = []
+    if v.Host.is_some():
+        auto u0 = v.Host.unwrap()
+        parts.append("\"Host\":" + quicksight_json_str(u0))
+    if v.Port.is_some():
+        auto u1 = v.Port.unwrap()
+        parts.append("\"Port\":" + str(u1))
+    parts.append("\"Database\":" + quicksight_json_str(v.Database))
+    if v.ClusterId.is_some():
+        auto u2 = v.ClusterId.unwrap()
+        parts.append("\"ClusterId\":" + quicksight_json_str(u2))
+    if v.IAMParameters.is_some():
+        auto u3 = v.IAMParameters.unwrap()
+        parts.append("\"IAMParameters\":" + redshift_iam_parameters_to_json(u3))
+    if v.IdentityCenterConfiguration.is_some():
+        auto u4 = v.IdentityCenterConfiguration.unwrap()
+        parts.append("\"IdentityCenterConfiguration\":" + u4.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize RelationalTable to a compact JSON object (declaration order).
+def relational_table_to_json(RelationalTable v) -> str:
+    list[str] parts = []
+    parts.append("\"DataSourceArn\":" + quicksight_json_str(v.DataSourceArn))
+    if v.Catalog.is_some():
+        auto u0 = v.Catalog.unwrap()
+        parts.append("\"Catalog\":" + quicksight_json_str(u0))
+    if v.Schema.is_some():
+        auto u1 = v.Schema.unwrap()
+        parts.append("\"Schema\":" + quicksight_json_str(u1))
+    parts.append("\"Name\":" + quicksight_json_str(v.Name))
+    list[str] e2 = []
+    for x2 in v.InputColumns:
+        e2.append(x2.to_json())
+    parts.append("\"InputColumns\":" + quicksight_json_arr(e2))
+    return quicksight_json_obj(parts)
+
+# Serialize RelativeDatesFilter to a compact JSON object (declaration order).
+def relative_dates_filter_to_json(RelativeDatesFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"FilterId\":" + quicksight_json_str(v.FilterId))
+    parts.append("\"Column\":" + v.Column.to_json())
+    parts.append("\"AnchorDateConfiguration\":" + v.AnchorDateConfiguration.to_json())
+    if v.MinimumGranularity.is_some():
+        auto u0 = v.MinimumGranularity.unwrap()
+        parts.append("\"MinimumGranularity\":" + u0.to_json())
+    parts.append("\"TimeGranularity\":" + v.TimeGranularity.to_json())
+    parts.append("\"RelativeDateType\":" + v.RelativeDateType.to_json())
+    if v.RelativeDateValue.is_some():
+        auto u1 = v.RelativeDateValue.unwrap()
+        parts.append("\"RelativeDateValue\":" + str(u1))
+    if v.ParameterName.is_some():
+        auto u2 = v.ParameterName.unwrap()
+        parts.append("\"ParameterName\":" + quicksight_json_str(u2))
+    parts.append("\"NullOption\":" + v.NullOption.to_json())
+    if v.ExcludePeriodConfiguration.is_some():
+        auto u3 = v.ExcludePeriodConfiguration.unwrap()
+        parts.append("\"ExcludePeriodConfiguration\":" + u3.to_json())
+    if v.DefaultFilterControlConfiguration.is_some():
+        auto u4 = v.DefaultFilterControlConfiguration.unwrap()
+        parts.append("\"DefaultFilterControlConfiguration\":" + default_filter_control_configuration_to_json(u4))
+    return quicksight_json_obj(parts)
+
+# Serialize RenameColumnsOperation to a compact JSON object (declaration order).
+def rename_columns_operation_to_json(RenameColumnsOperation v) -> str:
+    list[str] parts = []
+    parts.append("\"Alias\":" + quicksight_json_str(v.Alias))
+    parts.append("\"Source\":" + transform_operation_source_to_json(v.Source))
+    list[str] e0 = []
+    for x0 in v.RenameColumnOperations:
+        e0.append(x0.to_json())
+    parts.append("\"RenameColumnOperations\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize ResourcePermission to a compact JSON object (declaration order).
+def resource_permission_to_json(ResourcePermission v) -> str:
+    list[str] parts = []
+    parts.append("\"Principal\":" + quicksight_json_str(v.Principal))
+    list[str] e0 = []
+    for x0 in v.Actions:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"Actions\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize RowAlternateColorOptions to a compact JSON object (declaration order).
+def row_alternate_color_options_to_json(RowAlternateColorOptions v) -> str:
+    list[str] parts = []
+    if v.Status.is_some():
+        auto u0 = v.Status.unwrap()
+        parts.append("\"Status\":" + u0.to_json())
+    if v.RowAlternateColors.is_some():
+        auto u1 = v.RowAlternateColors.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(quicksight_json_str(x2))
+        parts.append("\"RowAlternateColors\":" + quicksight_json_arr(e2))
+    if v.UsePrimaryBackgroundColor.is_some():
+        auto u3 = v.UsePrimaryBackgroundColor.unwrap()
+        parts.append("\"UsePrimaryBackgroundColor\":" + u3.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize RowLevelPermissionConfiguration to a compact JSON object (declaration order).
+def row_level_permission_configuration_to_json(RowLevelPermissionConfiguration v) -> str:
+    list[str] parts = []
+    if v.TagConfiguration.is_some():
+        auto u0 = v.TagConfiguration.unwrap()
+        parts.append("\"TagConfiguration\":" + row_level_permission_tag_configuration_to_json(u0))
+    if v.RowLevelPermissionDataSet.is_some():
+        auto u1 = v.RowLevelPermissionDataSet.unwrap()
+        parts.append("\"RowLevelPermissionDataSet\":" + u1.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize RowLevelPermissionTagConfiguration to a compact JSON object (declaration order).
+def row_level_permission_tag_configuration_to_json(RowLevelPermissionTagConfiguration v) -> str:
+    list[str] parts = []
+    if v.Status.is_some():
+        auto u0 = v.Status.unwrap()
+        parts.append("\"Status\":" + u0.to_json())
+    list[str] e1 = []
+    for x1 in v.TagRules:
+        e1.append(x1.to_json())
+    parts.append("\"TagRules\":" + quicksight_json_arr(e1))
+    if v.TagRuleConfigurations.is_some():
+        auto u2 = v.TagRuleConfigurations.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            list[str] e4 = []
+            for x4 in x3:
+                e4.append(quicksight_json_str(x4))
+            e3.append(quicksight_json_arr(e4))
+        parts.append("\"TagRuleConfigurations\":" + quicksight_json_arr(e3))
+    return quicksight_json_obj(parts)
+
+# Serialize S3Source to a compact JSON object (declaration order).
+def s3_source_to_json(S3Source v) -> str:
+    list[str] parts = []
+    parts.append("\"DataSourceArn\":" + quicksight_json_str(v.DataSourceArn))
+    if v.UploadSettings.is_some():
+        auto u0 = v.UploadSettings.unwrap()
+        parts.append("\"UploadSettings\":" + u0.to_json())
+    list[str] e1 = []
+    for x1 in v.InputColumns:
+        e1.append(x1.to_json())
+    parts.append("\"InputColumns\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize SaaSTable to a compact JSON object (declaration order).
+def saa_s_table_to_json(SaaSTable v) -> str:
+    list[str] parts = []
+    parts.append("\"DataSourceArn\":" + quicksight_json_str(v.DataSourceArn))
+    list[str] e0 = []
+    for x0 in v.TablePath:
+        e0.append(x0.to_json())
+    parts.append("\"TablePath\":" + quicksight_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.InputColumns:
+        e1.append(x1.to_json())
+    parts.append("\"InputColumns\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize SameSheetTargetVisualConfiguration to a compact JSON object (declaration order).
+def same_sheet_target_visual_configuration_to_json(SameSheetTargetVisualConfiguration v) -> str:
+    list[str] parts = []
+    if v.TargetVisuals.is_some():
+        auto u0 = v.TargetVisuals.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"TargetVisuals\":" + quicksight_json_arr(e1))
+    if v.TargetVisualOptions.is_some():
+        auto u2 = v.TargetVisualOptions.unwrap()
+        parts.append("\"TargetVisualOptions\":" + quicksight_json_str(u2))
+    return quicksight_json_obj(parts)
+
+# Serialize SankeyDiagramAggregatedFieldWells to a compact JSON object (declaration order).
+def sankey_diagram_aggregated_field_wells_to_json(SankeyDiagramAggregatedFieldWells v) -> str:
+    list[str] parts = []
+    if v.Source.is_some():
+        auto u0 = v.Source.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Source\":" + quicksight_json_arr(e1))
+    if v.Destination.is_some():
+        auto u2 = v.Destination.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Destination\":" + quicksight_json_arr(e3))
+    if v.Weight.is_some():
+        auto u4 = v.Weight.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Weight\":" + quicksight_json_arr(e5))
+    return quicksight_json_obj(parts)
+
+# Serialize SankeyDiagramChartConfiguration to a compact JSON object (declaration order).
+def sankey_diagram_chart_configuration_to_json(SankeyDiagramChartConfiguration v) -> str:
+    list[str] parts = []
+    if v.FieldWells.is_some():
+        auto u0 = v.FieldWells.unwrap()
+        parts.append("\"FieldWells\":" + sankey_diagram_field_wells_to_json(u0))
+    if v.SortConfiguration.is_some():
+        auto u1 = v.SortConfiguration.unwrap()
+        parts.append("\"SortConfiguration\":" + sankey_diagram_sort_configuration_to_json(u1))
+    if v.DataLabels.is_some():
+        auto u2 = v.DataLabels.unwrap()
+        parts.append("\"DataLabels\":" + data_label_options_to_json(u2))
+    if v.Interactions.is_some():
+        auto u3 = v.Interactions.unwrap()
+        parts.append("\"Interactions\":" + u3.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize SankeyDiagramFieldWells to a compact JSON object (declaration order).
+def sankey_diagram_field_wells_to_json(SankeyDiagramFieldWells v) -> str:
+    list[str] parts = []
+    if v.SankeyDiagramAggregatedFieldWells.is_some():
+        auto u0 = v.SankeyDiagramAggregatedFieldWells.unwrap()
+        parts.append("\"SankeyDiagramAggregatedFieldWells\":" + sankey_diagram_aggregated_field_wells_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize SankeyDiagramSortConfiguration to a compact JSON object (declaration order).
+def sankey_diagram_sort_configuration_to_json(SankeyDiagramSortConfiguration v) -> str:
+    list[str] parts = []
+    if v.WeightSort.is_some():
+        auto u0 = v.WeightSort.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"WeightSort\":" + quicksight_json_arr(e1))
+    if v.SourceItemsLimit.is_some():
+        auto u2 = v.SourceItemsLimit.unwrap()
+        parts.append("\"SourceItemsLimit\":" + u2.to_json())
+    if v.DestinationItemsLimit.is_some():
+        auto u3 = v.DestinationItemsLimit.unwrap()
+        parts.append("\"DestinationItemsLimit\":" + u3.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize SankeyDiagramVisual to a compact JSON object (declaration order).
+def sankey_diagram_visual_to_json(SankeyDiagramVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + u0.to_json())
+    if v.Subtitle.is_some():
+        auto u1 = v.Subtitle.unwrap()
+        parts.append("\"Subtitle\":" + u1.to_json())
+    if v.ChartConfiguration.is_some():
+        auto u2 = v.ChartConfiguration.unwrap()
+        parts.append("\"ChartConfiguration\":" + sankey_diagram_chart_configuration_to_json(u2))
+    if v.Actions.is_some():
+        auto u3 = v.Actions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(visual_custom_action_to_json(x4))
+        parts.append("\"Actions\":" + quicksight_json_arr(e4))
+    if v.VisualContentAltText.is_some():
+        auto u5 = v.VisualContentAltText.unwrap()
+        parts.append("\"VisualContentAltText\":" + quicksight_json_str(u5))
+    return quicksight_json_obj(parts)
+
+# Serialize ScatterPlotCategoricallyAggregatedFieldWells to a compact JSON object (declaration order).
+def scatter_plot_categorically_aggregated_field_wells_to_json(ScatterPlotCategoricallyAggregatedFieldWells v) -> str:
+    list[str] parts = []
+    if v.XAxis.is_some():
+        auto u0 = v.XAxis.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"XAxis\":" + quicksight_json_arr(e1))
+    if v.YAxis.is_some():
+        auto u2 = v.YAxis.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"YAxis\":" + quicksight_json_arr(e3))
+    if v.Category.is_some():
+        auto u4 = v.Category.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Category\":" + quicksight_json_arr(e5))
+    if v.Size.is_some():
+        auto u6 = v.Size.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Size\":" + quicksight_json_arr(e7))
+    if v.Label.is_some():
+        auto u8 = v.Label.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"Label\":" + quicksight_json_arr(e9))
+    return quicksight_json_obj(parts)
+
+# Serialize ScatterPlotConfiguration to a compact JSON object (declaration order).
+def scatter_plot_configuration_to_json(ScatterPlotConfiguration v) -> str:
+    list[str] parts = []
+    if v.FieldWells.is_some():
+        auto u0 = v.FieldWells.unwrap()
+        parts.append("\"FieldWells\":" + scatter_plot_field_wells_to_json(u0))
+    if v.SortConfiguration.is_some():
+        auto u1 = v.SortConfiguration.unwrap()
+        parts.append("\"SortConfiguration\":" + u1.to_json())
+    if v.XAxisLabelOptions.is_some():
+        auto u2 = v.XAxisLabelOptions.unwrap()
+        parts.append("\"XAxisLabelOptions\":" + chart_axis_label_options_to_json(u2))
+    if v.XAxisDisplayOptions.is_some():
+        auto u3 = v.XAxisDisplayOptions.unwrap()
+        parts.append("\"XAxisDisplayOptions\":" + u3.to_json())
+    if v.YAxisLabelOptions.is_some():
+        auto u4 = v.YAxisLabelOptions.unwrap()
+        parts.append("\"YAxisLabelOptions\":" + chart_axis_label_options_to_json(u4))
+    if v.YAxisDisplayOptions.is_some():
+        auto u5 = v.YAxisDisplayOptions.unwrap()
+        parts.append("\"YAxisDisplayOptions\":" + u5.to_json())
+    if v.Legend.is_some():
+        auto u6 = v.Legend.unwrap()
+        parts.append("\"Legend\":" + u6.to_json())
+    if v.DataLabels.is_some():
+        auto u7 = v.DataLabels.unwrap()
+        parts.append("\"DataLabels\":" + data_label_options_to_json(u7))
+    if v.Tooltip.is_some():
+        auto u8 = v.Tooltip.unwrap()
+        parts.append("\"Tooltip\":" + tooltip_options_to_json(u8))
+    if v.VisualPalette.is_some():
+        auto u9 = v.VisualPalette.unwrap()
+        parts.append("\"VisualPalette\":" + visual_palette_to_json(u9))
+    if v.Interactions.is_some():
+        auto u10 = v.Interactions.unwrap()
+        parts.append("\"Interactions\":" + u10.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize ScatterPlotFieldWells to a compact JSON object (declaration order).
+def scatter_plot_field_wells_to_json(ScatterPlotFieldWells v) -> str:
+    list[str] parts = []
+    if v.ScatterPlotCategoricallyAggregatedFieldWells.is_some():
+        auto u0 = v.ScatterPlotCategoricallyAggregatedFieldWells.unwrap()
+        parts.append("\"ScatterPlotCategoricallyAggregatedFieldWells\":" + scatter_plot_categorically_aggregated_field_wells_to_json(u0))
+    if v.ScatterPlotUnaggregatedFieldWells.is_some():
+        auto u1 = v.ScatterPlotUnaggregatedFieldWells.unwrap()
+        parts.append("\"ScatterPlotUnaggregatedFieldWells\":" + scatter_plot_unaggregated_field_wells_to_json(u1))
+    return quicksight_json_obj(parts)
+
+# Serialize ScatterPlotUnaggregatedFieldWells to a compact JSON object (declaration order).
+def scatter_plot_unaggregated_field_wells_to_json(ScatterPlotUnaggregatedFieldWells v) -> str:
+    list[str] parts = []
+    if v.XAxis.is_some():
+        auto u0 = v.XAxis.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"XAxis\":" + quicksight_json_arr(e1))
+    if v.YAxis.is_some():
+        auto u2 = v.YAxis.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"YAxis\":" + quicksight_json_arr(e3))
+    if v.Size.is_some():
+        auto u4 = v.Size.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Size\":" + quicksight_json_arr(e5))
+    if v.Category.is_some():
+        auto u6 = v.Category.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Category\":" + quicksight_json_arr(e7))
+    if v.Label.is_some():
+        auto u8 = v.Label.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"Label\":" + quicksight_json_arr(e9))
+    return quicksight_json_obj(parts)
+
+# Serialize ScatterPlotVisual to a compact JSON object (declaration order).
+def scatter_plot_visual_to_json(ScatterPlotVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + u0.to_json())
+    if v.Subtitle.is_some():
+        auto u1 = v.Subtitle.unwrap()
+        parts.append("\"Subtitle\":" + u1.to_json())
+    if v.ChartConfiguration.is_some():
+        auto u2 = v.ChartConfiguration.unwrap()
+        parts.append("\"ChartConfiguration\":" + scatter_plot_configuration_to_json(u2))
+    if v.Actions.is_some():
+        auto u3 = v.Actions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(visual_custom_action_to_json(x4))
+        parts.append("\"Actions\":" + quicksight_json_arr(e4))
+    if v.ColumnHierarchies.is_some():
+        auto u5 = v.ColumnHierarchies.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(column_hierarchy_to_json(x6))
+        parts.append("\"ColumnHierarchies\":" + quicksight_json_arr(e6))
+    if v.VisualContentAltText.is_some():
+        auto u7 = v.VisualContentAltText.unwrap()
+        parts.append("\"VisualContentAltText\":" + quicksight_json_str(u7))
+    return quicksight_json_obj(parts)
+
+# Serialize SectionBasedLayoutConfiguration to a compact JSON object (declaration order).
+def section_based_layout_configuration_to_json(SectionBasedLayoutConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.HeaderSections:
+        e0.append(header_footer_section_configuration_to_json(x0))
+    parts.append("\"HeaderSections\":" + quicksight_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.BodySections:
+        e1.append(body_section_configuration_to_json(x1))
+    parts.append("\"BodySections\":" + quicksight_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.FooterSections:
+        e2.append(header_footer_section_configuration_to_json(x2))
+    parts.append("\"FooterSections\":" + quicksight_json_arr(e2))
+    parts.append("\"CanvasSizeOptions\":" + v.CanvasSizeOptions.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize SectionLayoutConfiguration to a compact JSON object (declaration order).
+def section_layout_configuration_to_json(SectionLayoutConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"FreeFormLayout\":" + free_form_section_layout_configuration_to_json(v.FreeFormLayout))
+    return quicksight_json_obj(parts)
+
+# Serialize SelectedSheetsFilterScopeConfiguration to a compact JSON object (declaration order).
+def selected_sheets_filter_scope_configuration_to_json(SelectedSheetsFilterScopeConfiguration v) -> str:
+    list[str] parts = []
+    if v.SheetVisualScopingConfigurations.is_some():
+        auto u0 = v.SheetVisualScopingConfigurations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(sheet_visual_scoping_configuration_to_json(x1))
+        parts.append("\"SheetVisualScopingConfigurations\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize SemanticEntityType to a compact JSON object (declaration order).
+def semantic_entity_type_to_json(SemanticEntityType v) -> str:
+    list[str] parts = []
+    if v.TypeName.is_some():
+        auto u0 = v.TypeName.unwrap()
+        parts.append("\"TypeName\":" + quicksight_json_str(u0))
+    if v.SubTypeName.is_some():
+        auto u1 = v.SubTypeName.unwrap()
+        parts.append("\"SubTypeName\":" + quicksight_json_str(u1))
+    if v.TypeParameters.is_some():
+        auto u2 = v.TypeParameters.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(quicksight_json_str(k3) + ":" + quicksight_json_str(u2[k3]))
+        parts.append("\"TypeParameters\":" + quicksight_json_obj(m3))
+    return quicksight_json_obj(parts)
+
+# Serialize SemanticModelConfiguration to a compact JSON object (declaration order).
+def semantic_model_configuration_to_json(SemanticModelConfiguration v) -> str:
+    list[str] parts = []
+    if v.TableMap.is_some():
+        auto u0 = v.TableMap.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(quicksight_json_str(k1) + ":" + semantic_table_to_json(u0[k1]))
+        parts.append("\"TableMap\":" + quicksight_json_obj(m1))
+    if v.SemanticMetadata.is_some():
+        auto u2 = v.SemanticMetadata.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(data_set_semantic_metadata_to_json(x3))
+        parts.append("\"SemanticMetadata\":" + quicksight_json_arr(e3))
+    return quicksight_json_obj(parts)
+
+# Serialize SemanticTable to a compact JSON object (declaration order).
+def semantic_table_to_json(SemanticTable v) -> str:
+    list[str] parts = []
+    parts.append("\"Alias\":" + quicksight_json_str(v.Alias))
+    parts.append("\"DestinationTableId\":" + quicksight_json_str(v.DestinationTableId))
+    if v.RowLevelPermissionConfiguration.is_some():
+        auto u0 = v.RowLevelPermissionConfiguration.unwrap()
+        parts.append("\"RowLevelPermissionConfiguration\":" + row_level_permission_configuration_to_json(u0))
+    if v.SemanticMetadata.is_some():
+        auto u1 = v.SemanticMetadata.unwrap()
+        parts.append("\"SemanticMetadata\":" + table_semantic_metadata_to_json(u1))
+    return quicksight_json_obj(parts)
+
+# Serialize SemanticType to a compact JSON object (declaration order).
+def semantic_type_to_json(SemanticType v) -> str:
+    list[str] parts = []
+    if v.TypeName.is_some():
+        auto u0 = v.TypeName.unwrap()
+        parts.append("\"TypeName\":" + quicksight_json_str(u0))
+    if v.SubTypeName.is_some():
+        auto u1 = v.SubTypeName.unwrap()
+        parts.append("\"SubTypeName\":" + quicksight_json_str(u1))
+    if v.TypeParameters.is_some():
+        auto u2 = v.TypeParameters.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(quicksight_json_str(k3) + ":" + quicksight_json_str(u2[k3]))
+        parts.append("\"TypeParameters\":" + quicksight_json_obj(m3))
+    if v.TruthyCellValue.is_some():
+        auto u4 = v.TruthyCellValue.unwrap()
+        parts.append("\"TruthyCellValue\":" + quicksight_json_str(u4))
+    if v.TruthyCellValueSynonyms.is_some():
+        auto u5 = v.TruthyCellValueSynonyms.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(quicksight_json_str(x6))
+        parts.append("\"TruthyCellValueSynonyms\":" + quicksight_json_arr(e6))
+    if v.FalseyCellValue.is_some():
+        auto u7 = v.FalseyCellValue.unwrap()
+        parts.append("\"FalseyCellValue\":" + quicksight_json_str(u7))
+    if v.FalseyCellValueSynonyms.is_some():
+        auto u8 = v.FalseyCellValueSynonyms.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(quicksight_json_str(x9))
+        parts.append("\"FalseyCellValueSynonyms\":" + quicksight_json_arr(e9))
+    return quicksight_json_obj(parts)
+
+# Serialize SetParameterValueConfiguration to a compact JSON object (declaration order).
+def set_parameter_value_configuration_to_json(SetParameterValueConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"DestinationParameterName\":" + quicksight_json_str(v.DestinationParameterName))
+    parts.append("\"Value\":" + destination_parameter_value_configuration_to_json(v.Value))
+    return quicksight_json_obj(parts)
+
+# Serialize ShapeConditionalFormat to a compact JSON object (declaration order).
+def shape_conditional_format_to_json(ShapeConditionalFormat v) -> str:
+    list[str] parts = []
+    parts.append("\"BackgroundColor\":" + conditional_formatting_color_to_json(v.BackgroundColor))
+    return quicksight_json_obj(parts)
+
+# Serialize SharedColumnSemanticMetadata to a compact JSON object (declaration order).
+def shared_column_semantic_metadata_to_json(SharedColumnSemanticMetadata v) -> str:
+    list[str] parts = []
+    if v.ColumnNames.is_some():
+        auto u0 = v.ColumnNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"ColumnNames\":" + quicksight_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.ColumnProperties:
+        e2.append(x2.to_json())
+    parts.append("\"ColumnProperties\":" + quicksight_json_arr(e2))
+    return quicksight_json_obj(parts)
+
+# Serialize SheetControlLayout to a compact JSON object (declaration order).
+def sheet_control_layout_to_json(SheetControlLayout v) -> str:
+    list[str] parts = []
+    parts.append("\"Configuration\":" + sheet_control_layout_configuration_to_json(v.Configuration))
+    return quicksight_json_obj(parts)
+
+# Serialize SheetControlLayoutConfiguration to a compact JSON object (declaration order).
+def sheet_control_layout_configuration_to_json(SheetControlLayoutConfiguration v) -> str:
+    list[str] parts = []
+    if v.GridLayout.is_some():
+        auto u0 = v.GridLayout.unwrap()
+        parts.append("\"GridLayout\":" + grid_layout_configuration_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize SheetDefinition to a compact JSON object (declaration order).
+def sheet_definition_to_json(SheetDefinition v) -> str:
+    list[str] parts = []
+    parts.append("\"SheetId\":" + quicksight_json_str(v.SheetId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + quicksight_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + quicksight_json_str(u1))
+    if v.Name.is_some():
+        auto u2 = v.Name.unwrap()
+        parts.append("\"Name\":" + quicksight_json_str(u2))
+    if v.ParameterControls.is_some():
+        auto u3 = v.ParameterControls.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(parameter_control_to_json(x4))
+        parts.append("\"ParameterControls\":" + quicksight_json_arr(e4))
+    if v.FilterControls.is_some():
+        auto u5 = v.FilterControls.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(filter_control_to_json(x6))
+        parts.append("\"FilterControls\":" + quicksight_json_arr(e6))
+    if v.Visuals.is_some():
+        auto u7 = v.Visuals.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(visual_to_json(x8))
+        parts.append("\"Visuals\":" + quicksight_json_arr(e8))
+    if v.TextBoxes.is_some():
+        auto u9 = v.TextBoxes.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"TextBoxes\":" + quicksight_json_arr(e10))
+    if v.Images.is_some():
+        auto u11 = v.Images.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(sheet_image_to_json(x12))
+        parts.append("\"Images\":" + quicksight_json_arr(e12))
+    if v.Layouts.is_some():
+        auto u13 = v.Layouts.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(layout_to_json(x14))
+        parts.append("\"Layouts\":" + quicksight_json_arr(e14))
+    if v.SheetControlLayouts.is_some():
+        auto u15 = v.SheetControlLayouts.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(sheet_control_layout_to_json(x16))
+        parts.append("\"SheetControlLayouts\":" + quicksight_json_arr(e16))
+    if v.ContentType.is_some():
+        auto u17 = v.ContentType.unwrap()
+        parts.append("\"ContentType\":" + u17.to_json())
+    if v.CustomActionDefaults.is_some():
+        auto u18 = v.CustomActionDefaults.unwrap()
+        parts.append("\"CustomActionDefaults\":" + u18.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize SheetImage to a compact JSON object (declaration order).
+def sheet_image_to_json(SheetImage v) -> str:
+    list[str] parts = []
+    parts.append("\"SheetImageId\":" + quicksight_json_str(v.SheetImageId))
+    parts.append("\"Source\":" + v.Source.to_json())
+    if v.Scaling.is_some():
+        auto u0 = v.Scaling.unwrap()
+        parts.append("\"Scaling\":" + u0.to_json())
+    if v.Tooltip.is_some():
+        auto u1 = v.Tooltip.unwrap()
+        parts.append("\"Tooltip\":" + u1.to_json())
+    if v.ImageContentAltText.is_some():
+        auto u2 = v.ImageContentAltText.unwrap()
+        parts.append("\"ImageContentAltText\":" + quicksight_json_str(u2))
+    if v.Interactions.is_some():
+        auto u3 = v.Interactions.unwrap()
+        parts.append("\"Interactions\":" + u3.to_json())
+    if v.Actions.is_some():
+        auto u4 = v.Actions.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(image_custom_action_to_json(x5))
+        parts.append("\"Actions\":" + quicksight_json_arr(e5))
+    return quicksight_json_obj(parts)
+
+# Serialize SheetLayoutGroup to a compact JSON object (declaration order).
+def sheet_layout_group_to_json(SheetLayoutGroup v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + quicksight_json_str(v.Id))
+    list[str] e0 = []
+    for x0 in v.Members:
+        e0.append(x0.to_json())
+    parts.append("\"Members\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize SheetVisualScopingConfiguration to a compact JSON object (declaration order).
+def sheet_visual_scoping_configuration_to_json(SheetVisualScopingConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"SheetId\":" + quicksight_json_str(v.SheetId))
+    parts.append("\"Scope\":" + v.Scope.to_json())
+    if v.VisualIds.is_some():
+        auto u0 = v.VisualIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"VisualIds\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize SnapshotAnonymousUser to a compact JSON object (declaration order).
+def snapshot_anonymous_user_to_json(SnapshotAnonymousUser v) -> str:
+    list[str] parts = []
+    if v.RowLevelPermissionTags.is_some():
+        auto u0 = v.RowLevelPermissionTags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"RowLevelPermissionTags\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize SnapshotConfiguration to a compact JSON object (declaration order).
+def snapshot_configuration_to_json(SnapshotConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.FileGroups:
+        e0.append(snapshot_file_group_to_json(x0))
+    parts.append("\"FileGroups\":" + quicksight_json_arr(e0))
+    if v.DestinationConfiguration.is_some():
+        auto u1 = v.DestinationConfiguration.unwrap()
+        parts.append("\"DestinationConfiguration\":" + snapshot_destination_configuration_to_json(u1))
+    if v.Parameters.is_some():
+        auto u2 = v.Parameters.unwrap()
+        parts.append("\"Parameters\":" + parameters_to_json(u2))
+    return quicksight_json_obj(parts)
+
+# Serialize SnapshotDestinationConfiguration to a compact JSON object (declaration order).
+def snapshot_destination_configuration_to_json(SnapshotDestinationConfiguration v) -> str:
+    list[str] parts = []
+    if v.S3Destinations.is_some():
+        auto u0 = v.S3Destinations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"S3Destinations\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize SnapshotFile to a compact JSON object (declaration order).
+def snapshot_file_to_json(SnapshotFile v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SheetSelections:
+        e0.append(snapshot_file_sheet_selection_to_json(x0))
+    parts.append("\"SheetSelections\":" + quicksight_json_arr(e0))
+    parts.append("\"FormatType\":" + v.FormatType.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize SnapshotFileGroup to a compact JSON object (declaration order).
+def snapshot_file_group_to_json(SnapshotFileGroup v) -> str:
+    list[str] parts = []
+    if v.Files.is_some():
+        auto u0 = v.Files.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(snapshot_file_to_json(x1))
+        parts.append("\"Files\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize SnapshotFileSheetSelection to a compact JSON object (declaration order).
+def snapshot_file_sheet_selection_to_json(SnapshotFileSheetSelection v) -> str:
+    list[str] parts = []
+    parts.append("\"SheetId\":" + quicksight_json_str(v.SheetId))
+    parts.append("\"SelectionScope\":" + v.SelectionScope.to_json())
+    if v.VisualIds.is_some():
+        auto u0 = v.VisualIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"VisualIds\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize SnapshotUserConfiguration to a compact JSON object (declaration order).
+def snapshot_user_configuration_to_json(SnapshotUserConfiguration v) -> str:
+    list[str] parts = []
+    if v.AnonymousUsers.is_some():
+        auto u0 = v.AnonymousUsers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(snapshot_anonymous_user_to_json(x1))
+        parts.append("\"AnonymousUsers\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize SourceTable to a compact JSON object (declaration order).
+def source_table_to_json(SourceTable v) -> str:
+    list[str] parts = []
+    if v.PhysicalTableId.is_some():
+        auto u0 = v.PhysicalTableId.unwrap()
+        parts.append("\"PhysicalTableId\":" + quicksight_json_str(u0))
+    if v.DataSet.is_some():
+        auto u1 = v.DataSet.unwrap()
+        parts.append("\"DataSet\":" + parent_data_set_to_json(u1))
+    return quicksight_json_obj(parts)
+
+# Serialize StringDatasetParameter to a compact JSON object (declaration order).
+def string_dataset_parameter_to_json(StringDatasetParameter v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + quicksight_json_str(v.Id))
+    parts.append("\"Name\":" + quicksight_json_str(v.Name))
+    parts.append("\"ValueType\":" + v.ValueType.to_json())
+    if v.DefaultValues.is_some():
+        auto u0 = v.DefaultValues.unwrap()
+        parts.append("\"DefaultValues\":" + string_dataset_parameter_default_values_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize StringDatasetParameterDefaultValues to a compact JSON object (declaration order).
+def string_dataset_parameter_default_values_to_json(StringDatasetParameterDefaultValues v) -> str:
+    list[str] parts = []
+    if v.StaticValues.is_some():
+        auto u0 = v.StaticValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"StaticValues\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize StringDefaultValues to a compact JSON object (declaration order).
+def string_default_values_to_json(StringDefaultValues v) -> str:
+    list[str] parts = []
+    if v.DynamicValue.is_some():
+        auto u0 = v.DynamicValue.unwrap()
+        parts.append("\"DynamicValue\":" + u0.to_json())
+    if v.StaticValues.is_some():
+        auto u1 = v.StaticValues.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(quicksight_json_str(x2))
+        parts.append("\"StaticValues\":" + quicksight_json_arr(e2))
+    return quicksight_json_obj(parts)
+
+# Serialize StringParameter to a compact JSON object (declaration order).
+def string_parameter_to_json(StringParameter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + quicksight_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"Values\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize StringParameterDeclaration to a compact JSON object (declaration order).
+def string_parameter_declaration_to_json(StringParameterDeclaration v) -> str:
+    list[str] parts = []
+    parts.append("\"ParameterValueType\":" + v.ParameterValueType.to_json())
+    parts.append("\"Name\":" + quicksight_json_str(v.Name))
+    if v.DefaultValues.is_some():
+        auto u0 = v.DefaultValues.unwrap()
+        parts.append("\"DefaultValues\":" + string_default_values_to_json(u0))
+    if v.ValueWhenUnset.is_some():
+        auto u1 = v.ValueWhenUnset.unwrap()
+        parts.append("\"ValueWhenUnset\":" + u1.to_json())
+    if v.MappedDataSetParameters.is_some():
+        auto u2 = v.MappedDataSetParameters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"MappedDataSetParameters\":" + quicksight_json_arr(e3))
+    return quicksight_json_obj(parts)
+
+# Serialize SubtotalOptions to a compact JSON object (declaration order).
+def subtotal_options_to_json(SubtotalOptions v) -> str:
+    list[str] parts = []
+    if v.TotalsVisibility.is_some():
+        auto u0 = v.TotalsVisibility.unwrap()
+        parts.append("\"TotalsVisibility\":" + u0.to_json())
+    if v.CustomLabel.is_some():
+        auto u1 = v.CustomLabel.unwrap()
+        parts.append("\"CustomLabel\":" + quicksight_json_str(u1))
+    if v.FieldLevel.is_some():
+        auto u2 = v.FieldLevel.unwrap()
+        parts.append("\"FieldLevel\":" + u2.to_json())
+    if v.FieldLevelOptions.is_some():
+        auto u3 = v.FieldLevelOptions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"FieldLevelOptions\":" + quicksight_json_arr(e4))
+    if v.TotalCellStyle.is_some():
+        auto u5 = v.TotalCellStyle.unwrap()
+        parts.append("\"TotalCellStyle\":" + u5.to_json())
+    if v.ValueCellStyle.is_some():
+        auto u6 = v.ValueCellStyle.unwrap()
+        parts.append("\"ValueCellStyle\":" + u6.to_json())
+    if v.MetricHeaderCellStyle.is_some():
+        auto u7 = v.MetricHeaderCellStyle.unwrap()
+        parts.append("\"MetricHeaderCellStyle\":" + u7.to_json())
+    if v.StyleTargets.is_some():
+        auto u8 = v.StyleTargets.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"StyleTargets\":" + quicksight_json_arr(e9))
+    return quicksight_json_obj(parts)
+
+# Serialize TableAggregatedFieldWells to a compact JSON object (declaration order).
+def table_aggregated_field_wells_to_json(TableAggregatedFieldWells v) -> str:
+    list[str] parts = []
+    if v.GroupBy.is_some():
+        auto u0 = v.GroupBy.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"GroupBy\":" + quicksight_json_arr(e1))
+    if v.Values.is_some():
+        auto u2 = v.Values.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Values\":" + quicksight_json_arr(e3))
+    return quicksight_json_obj(parts)
+
+# Serialize TableCellConditionalFormatting to a compact JSON object (declaration order).
+def table_cell_conditional_formatting_to_json(TableCellConditionalFormatting v) -> str:
+    list[str] parts = []
+    parts.append("\"FieldId\":" + quicksight_json_str(v.FieldId))
+    if v.TextFormat.is_some():
+        auto u0 = v.TextFormat.unwrap()
+        parts.append("\"TextFormat\":" + text_conditional_format_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize TableConditionalFormatting to a compact JSON object (declaration order).
+def table_conditional_formatting_to_json(TableConditionalFormatting v) -> str:
+    list[str] parts = []
+    if v.ConditionalFormattingOptions.is_some():
+        auto u0 = v.ConditionalFormattingOptions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(table_conditional_formatting_option_to_json(x1))
+        parts.append("\"ConditionalFormattingOptions\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize TableConditionalFormattingOption to a compact JSON object (declaration order).
+def table_conditional_formatting_option_to_json(TableConditionalFormattingOption v) -> str:
+    list[str] parts = []
+    if v.Cell.is_some():
+        auto u0 = v.Cell.unwrap()
+        parts.append("\"Cell\":" + table_cell_conditional_formatting_to_json(u0))
+    if v.Row.is_some():
+        auto u1 = v.Row.unwrap()
+        parts.append("\"Row\":" + table_row_conditional_formatting_to_json(u1))
+    return quicksight_json_obj(parts)
+
+# Serialize TableConfiguration to a compact JSON object (declaration order).
+def table_configuration_to_json(TableConfiguration v) -> str:
+    list[str] parts = []
+    if v.FieldWells.is_some():
+        auto u0 = v.FieldWells.unwrap()
+        parts.append("\"FieldWells\":" + table_field_wells_to_json(u0))
+    if v.SortConfiguration.is_some():
+        auto u1 = v.SortConfiguration.unwrap()
+        parts.append("\"SortConfiguration\":" + table_sort_configuration_to_json(u1))
+    if v.TableOptions.is_some():
+        auto u2 = v.TableOptions.unwrap()
+        parts.append("\"TableOptions\":" + table_options_to_json(u2))
+    if v.TotalOptions.is_some():
+        auto u3 = v.TotalOptions.unwrap()
+        parts.append("\"TotalOptions\":" + total_options_to_json(u3))
+    if v.FieldOptions.is_some():
+        auto u4 = v.FieldOptions.unwrap()
+        parts.append("\"FieldOptions\":" + table_field_options_to_json(u4))
+    if v.PaginatedReportOptions.is_some():
+        auto u5 = v.PaginatedReportOptions.unwrap()
+        parts.append("\"PaginatedReportOptions\":" + u5.to_json())
+    if v.TableInlineVisualizations.is_some():
+        auto u6 = v.TableInlineVisualizations.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"TableInlineVisualizations\":" + quicksight_json_arr(e7))
+    if v.Tooltip.is_some():
+        auto u8 = v.Tooltip.unwrap()
+        parts.append("\"Tooltip\":" + tooltip_options_to_json(u8))
+    if v.DashboardCustomizationVisualOptions.is_some():
+        auto u9 = v.DashboardCustomizationVisualOptions.unwrap()
+        parts.append("\"DashboardCustomizationVisualOptions\":" + dashboard_customization_visual_options_to_json(u9))
+    if v.Interactions.is_some():
+        auto u10 = v.Interactions.unwrap()
+        parts.append("\"Interactions\":" + u10.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize TableFieldOptions to a compact JSON object (declaration order).
+def table_field_options_to_json(TableFieldOptions v) -> str:
+    list[str] parts = []
+    if v.SelectedFieldOptions.is_some():
+        auto u0 = v.SelectedFieldOptions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"SelectedFieldOptions\":" + quicksight_json_arr(e1))
+    if v.Order.is_some():
+        auto u2 = v.Order.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(quicksight_json_str(x3))
+        parts.append("\"Order\":" + quicksight_json_arr(e3))
+    if v.PinnedFieldOptions.is_some():
+        auto u4 = v.PinnedFieldOptions.unwrap()
+        parts.append("\"PinnedFieldOptions\":" + table_pinned_field_options_to_json(u4))
+    if v.TransposedTableOptions.is_some():
+        auto u5 = v.TransposedTableOptions.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"TransposedTableOptions\":" + quicksight_json_arr(e6))
+    return quicksight_json_obj(parts)
+
+# Serialize TableFieldWells to a compact JSON object (declaration order).
+def table_field_wells_to_json(TableFieldWells v) -> str:
+    list[str] parts = []
+    if v.TableAggregatedFieldWells.is_some():
+        auto u0 = v.TableAggregatedFieldWells.unwrap()
+        parts.append("\"TableAggregatedFieldWells\":" + table_aggregated_field_wells_to_json(u0))
+    if v.TableUnaggregatedFieldWells.is_some():
+        auto u1 = v.TableUnaggregatedFieldWells.unwrap()
+        parts.append("\"TableUnaggregatedFieldWells\":" + table_unaggregated_field_wells_to_json(u1))
+    return quicksight_json_obj(parts)
+
+# Serialize TableOptions to a compact JSON object (declaration order).
+def table_options_to_json(TableOptions v) -> str:
+    list[str] parts = []
+    if v.Orientation.is_some():
+        auto u0 = v.Orientation.unwrap()
+        parts.append("\"Orientation\":" + u0.to_json())
+    if v.HeaderStyle.is_some():
+        auto u1 = v.HeaderStyle.unwrap()
+        parts.append("\"HeaderStyle\":" + u1.to_json())
+    if v.CellStyle.is_some():
+        auto u2 = v.CellStyle.unwrap()
+        parts.append("\"CellStyle\":" + u2.to_json())
+    if v.RowAlternateColorOptions.is_some():
+        auto u3 = v.RowAlternateColorOptions.unwrap()
+        parts.append("\"RowAlternateColorOptions\":" + row_alternate_color_options_to_json(u3))
+    return quicksight_json_obj(parts)
+
+# Serialize TablePinnedFieldOptions to a compact JSON object (declaration order).
+def table_pinned_field_options_to_json(TablePinnedFieldOptions v) -> str:
+    list[str] parts = []
+    if v.PinnedLeftFields.is_some():
+        auto u0 = v.PinnedLeftFields.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"PinnedLeftFields\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize TableRowConditionalFormatting to a compact JSON object (declaration order).
+def table_row_conditional_formatting_to_json(TableRowConditionalFormatting v) -> str:
+    list[str] parts = []
+    if v.BackgroundColor.is_some():
+        auto u0 = v.BackgroundColor.unwrap()
+        parts.append("\"BackgroundColor\":" + conditional_formatting_color_to_json(u0))
+    if v.TextColor.is_some():
+        auto u1 = v.TextColor.unwrap()
+        parts.append("\"TextColor\":" + conditional_formatting_color_to_json(u1))
+    return quicksight_json_obj(parts)
+
+# Serialize TableSemanticMetadata to a compact JSON object (declaration order).
+def table_semantic_metadata_to_json(TableSemanticMetadata v) -> str:
+    list[str] parts = []
+    if v.ColumnMetadata.is_some():
+        auto u0 = v.ColumnMetadata.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(shared_column_semantic_metadata_to_json(x1))
+        parts.append("\"ColumnMetadata\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize TableSortConfiguration to a compact JSON object (declaration order).
+def table_sort_configuration_to_json(TableSortConfiguration v) -> str:
+    list[str] parts = []
+    if v.RowSort.is_some():
+        auto u0 = v.RowSort.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"RowSort\":" + quicksight_json_arr(e1))
+    if v.PaginationConfiguration.is_some():
+        auto u2 = v.PaginationConfiguration.unwrap()
+        parts.append("\"PaginationConfiguration\":" + u2.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize TableUnaggregatedFieldWells to a compact JSON object (declaration order).
+def table_unaggregated_field_wells_to_json(TableUnaggregatedFieldWells v) -> str:
+    list[str] parts = []
+    if v.Values.is_some():
+        auto u0 = v.Values.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Values\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize TableVisual to a compact JSON object (declaration order).
+def table_visual_to_json(TableVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + u0.to_json())
+    if v.Subtitle.is_some():
+        auto u1 = v.Subtitle.unwrap()
+        parts.append("\"Subtitle\":" + u1.to_json())
+    if v.ChartConfiguration.is_some():
+        auto u2 = v.ChartConfiguration.unwrap()
+        parts.append("\"ChartConfiguration\":" + table_configuration_to_json(u2))
+    if v.ConditionalFormatting.is_some():
+        auto u3 = v.ConditionalFormatting.unwrap()
+        parts.append("\"ConditionalFormatting\":" + table_conditional_formatting_to_json(u3))
+    if v.Actions.is_some():
+        auto u4 = v.Actions.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(visual_custom_action_to_json(x5))
+        parts.append("\"Actions\":" + quicksight_json_arr(e5))
+    if v.VisualContentAltText.is_some():
+        auto u6 = v.VisualContentAltText.unwrap()
+        parts.append("\"VisualContentAltText\":" + quicksight_json_str(u6))
+    return quicksight_json_obj(parts)
+
+# Serialize TagColumnOperation to a compact JSON object (declaration order).
+def tag_column_operation_to_json(TagColumnOperation v) -> str:
+    list[str] parts = []
+    parts.append("\"ColumnName\":" + quicksight_json_str(v.ColumnName))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize TemplateSourceAnalysis to a compact JSON object (declaration order).
+def template_source_analysis_to_json(TemplateSourceAnalysis v) -> str:
+    list[str] parts = []
+    parts.append("\"Arn\":" + quicksight_json_str(v.Arn))
+    list[str] e0 = []
+    for x0 in v.DataSetReferences:
+        e0.append(x0.to_json())
+    parts.append("\"DataSetReferences\":" + quicksight_json_arr(e0))
+    if v.TopicReferences.is_some():
+        auto u1 = v.TopicReferences.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"TopicReferences\":" + quicksight_json_arr(e2))
+    return quicksight_json_obj(parts)
+
+# Serialize TemplateSourceEntity to a compact JSON object (declaration order).
+def template_source_entity_to_json(TemplateSourceEntity v) -> str:
+    list[str] parts = []
+    if v.SourceAnalysis.is_some():
+        auto u0 = v.SourceAnalysis.unwrap()
+        parts.append("\"SourceAnalysis\":" + template_source_analysis_to_json(u0))
+    if v.SourceTemplate.is_some():
+        auto u1 = v.SourceTemplate.unwrap()
+        parts.append("\"SourceTemplate\":" + u1.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize TemplateVersionDefinition to a compact JSON object (declaration order).
+def template_version_definition_to_json(TemplateVersionDefinition v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.DataSetConfigurations:
+        e0.append(data_set_configuration_to_json(x0))
+    parts.append("\"DataSetConfigurations\":" + quicksight_json_arr(e0))
+    if v.TopicConfigurations.is_some():
+        auto u1 = v.TopicConfigurations.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(topic_configuration_to_json(x2))
+        parts.append("\"TopicConfigurations\":" + quicksight_json_arr(e2))
+    if v.Sheets.is_some():
+        auto u3 = v.Sheets.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(sheet_definition_to_json(x4))
+        parts.append("\"Sheets\":" + quicksight_json_arr(e4))
+    if v.TooltipSheets.is_some():
+        auto u5 = v.TooltipSheets.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(tooltip_sheet_definition_to_json(x6))
+        parts.append("\"TooltipSheets\":" + quicksight_json_arr(e6))
+    if v.CalculatedFields.is_some():
+        auto u7 = v.CalculatedFields.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"CalculatedFields\":" + quicksight_json_arr(e8))
+    if v.ParameterDeclarations.is_some():
+        auto u9 = v.ParameterDeclarations.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(parameter_declaration_to_json(x10))
+        parts.append("\"ParameterDeclarations\":" + quicksight_json_arr(e10))
+    if v.FilterGroups.is_some():
+        auto u11 = v.FilterGroups.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(filter_group_to_json(x12))
+        parts.append("\"FilterGroups\":" + quicksight_json_arr(e12))
+    if v.ColumnConfigurations.is_some():
+        auto u13 = v.ColumnConfigurations.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(column_configuration_to_json(x14))
+        parts.append("\"ColumnConfigurations\":" + quicksight_json_arr(e14))
+    if v.AnalysisDefaults.is_some():
+        auto u15 = v.AnalysisDefaults.unwrap()
+        parts.append("\"AnalysisDefaults\":" + u15.to_json())
+    if v.Options.is_some():
+        auto u16 = v.Options.unwrap()
+        parts.append("\"Options\":" + asset_options_to_json(u16))
+    if v.QueryExecutionOptions.is_some():
+        auto u17 = v.QueryExecutionOptions.unwrap()
+        parts.append("\"QueryExecutionOptions\":" + u17.to_json())
+    if v.StaticFiles.is_some():
+        auto u18 = v.StaticFiles.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(x19.to_json())
+        parts.append("\"StaticFiles\":" + quicksight_json_arr(e19))
+    return quicksight_json_obj(parts)
+
+# Serialize TextConditionalFormat to a compact JSON object (declaration order).
+def text_conditional_format_to_json(TextConditionalFormat v) -> str:
+    list[str] parts = []
+    if v.BackgroundColor.is_some():
+        auto u0 = v.BackgroundColor.unwrap()
+        parts.append("\"BackgroundColor\":" + conditional_formatting_color_to_json(u0))
+    if v.TextColor.is_some():
+        auto u1 = v.TextColor.unwrap()
+        parts.append("\"TextColor\":" + conditional_formatting_color_to_json(u1))
+    if v.Icon.is_some():
+        auto u2 = v.Icon.unwrap()
+        parts.append("\"Icon\":" + u2.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize ThemeConfiguration to a compact JSON object (declaration order).
+def theme_configuration_to_json(ThemeConfiguration v) -> str:
+    list[str] parts = []
+    if v.DataColorPalette.is_some():
+        auto u0 = v.DataColorPalette.unwrap()
+        parts.append("\"DataColorPalette\":" + data_color_palette_to_json(u0))
+    if v.UIColorPalette.is_some():
+        auto u1 = v.UIColorPalette.unwrap()
+        parts.append("\"UIColorPalette\":" + u1.to_json())
+    if v.Sheet.is_some():
+        auto u2 = v.Sheet.unwrap()
+        parts.append("\"Sheet\":" + u2.to_json())
+    if v.Typography.is_some():
+        auto u3 = v.Typography.unwrap()
+        parts.append("\"Typography\":" + typography_to_json(u3))
+    return quicksight_json_obj(parts)
+
+# Serialize TimeEqualityFilter to a compact JSON object (declaration order).
+def time_equality_filter_to_json(TimeEqualityFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"FilterId\":" + quicksight_json_str(v.FilterId))
+    parts.append("\"Column\":" + v.Column.to_json())
+    if v.Value.is_some():
+        auto u0 = v.Value.unwrap()
+        parts.append("\"Value\":" + str(datetime.to_timestamp(u0)))
+    if v.ParameterName.is_some():
+        auto u1 = v.ParameterName.unwrap()
+        parts.append("\"ParameterName\":" + quicksight_json_str(u1))
+    if v.TimeGranularity.is_some():
+        auto u2 = v.TimeGranularity.unwrap()
+        parts.append("\"TimeGranularity\":" + u2.to_json())
+    if v.RollingDate.is_some():
+        auto u3 = v.RollingDate.unwrap()
+        parts.append("\"RollingDate\":" + u3.to_json())
+    if v.DefaultFilterControlConfiguration.is_some():
+        auto u4 = v.DefaultFilterControlConfiguration.unwrap()
+        parts.append("\"DefaultFilterControlConfiguration\":" + default_filter_control_configuration_to_json(u4))
+    return quicksight_json_obj(parts)
+
+# Serialize TimeRangeFilter to a compact JSON object (declaration order).
+def time_range_filter_to_json(TimeRangeFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"FilterId\":" + quicksight_json_str(v.FilterId))
+    parts.append("\"Column\":" + v.Column.to_json())
+    if v.IncludeMinimum.is_some():
+        auto u0 = v.IncludeMinimum.unwrap()
+        parts.append("\"IncludeMinimum\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.IncludeMaximum.is_some():
+        auto u1 = v.IncludeMaximum.unwrap()
+        parts.append("\"IncludeMaximum\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.RangeMinimumValue.is_some():
+        auto u2 = v.RangeMinimumValue.unwrap()
+        parts.append("\"RangeMinimumValue\":" + u2.to_json())
+    if v.RangeMaximumValue.is_some():
+        auto u3 = v.RangeMaximumValue.unwrap()
+        parts.append("\"RangeMaximumValue\":" + u3.to_json())
+    parts.append("\"NullOption\":" + v.NullOption.to_json())
+    if v.ExcludePeriodConfiguration.is_some():
+        auto u4 = v.ExcludePeriodConfiguration.unwrap()
+        parts.append("\"ExcludePeriodConfiguration\":" + u4.to_json())
+    if v.TimeGranularity.is_some():
+        auto u5 = v.TimeGranularity.unwrap()
+        parts.append("\"TimeGranularity\":" + u5.to_json())
+    if v.DefaultFilterControlConfiguration.is_some():
+        auto u6 = v.DefaultFilterControlConfiguration.unwrap()
+        parts.append("\"DefaultFilterControlConfiguration\":" + default_filter_control_configuration_to_json(u6))
+    return quicksight_json_obj(parts)
+
+# Serialize TooltipOptions to a compact JSON object (declaration order).
+def tooltip_options_to_json(TooltipOptions v) -> str:
+    list[str] parts = []
+    if v.TooltipVisibility.is_some():
+        auto u0 = v.TooltipVisibility.unwrap()
+        parts.append("\"TooltipVisibility\":" + u0.to_json())
+    if v.SelectedTooltipType.is_some():
+        auto u1 = v.SelectedTooltipType.unwrap()
+        parts.append("\"SelectedTooltipType\":" + u1.to_json())
+    if v.FieldBasedTooltip.is_some():
+        auto u2 = v.FieldBasedTooltip.unwrap()
+        parts.append("\"FieldBasedTooltip\":" + field_based_tooltip_to_json(u2))
+    if v.SheetTooltip.is_some():
+        auto u3 = v.SheetTooltip.unwrap()
+        parts.append("\"SheetTooltip\":" + u3.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize TooltipSheetDefinition to a compact JSON object (declaration order).
+def tooltip_sheet_definition_to_json(TooltipSheetDefinition v) -> str:
+    list[str] parts = []
+    parts.append("\"SheetId\":" + quicksight_json_str(v.SheetId))
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + quicksight_json_str(u0))
+    if v.Visuals.is_some():
+        auto u1 = v.Visuals.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(visual_to_json(x2))
+        parts.append("\"Visuals\":" + quicksight_json_arr(e2))
+    if v.TextBoxes.is_some():
+        auto u3 = v.TextBoxes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"TextBoxes\":" + quicksight_json_arr(e4))
+    if v.Images.is_some():
+        auto u5 = v.Images.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(sheet_image_to_json(x6))
+        parts.append("\"Images\":" + quicksight_json_arr(e6))
+    if v.Layouts.is_some():
+        auto u7 = v.Layouts.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(layout_to_json(x8))
+        parts.append("\"Layouts\":" + quicksight_json_arr(e8))
+    return quicksight_json_obj(parts)
+
+# Serialize TopBottomFilter to a compact JSON object (declaration order).
+def top_bottom_filter_to_json(TopBottomFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"FilterId\":" + quicksight_json_str(v.FilterId))
+    parts.append("\"Column\":" + v.Column.to_json())
+    if v.Limit.is_some():
+        auto u0 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u0))
+    list[str] e1 = []
+    for x1 in v.AggregationSortConfigurations:
+        e1.append(x1.to_json())
+    parts.append("\"AggregationSortConfigurations\":" + quicksight_json_arr(e1))
+    if v.TimeGranularity.is_some():
+        auto u2 = v.TimeGranularity.unwrap()
+        parts.append("\"TimeGranularity\":" + u2.to_json())
+    if v.ParameterName.is_some():
+        auto u3 = v.ParameterName.unwrap()
+        parts.append("\"ParameterName\":" + quicksight_json_str(u3))
+    if v.DefaultFilterControlConfiguration.is_some():
+        auto u4 = v.DefaultFilterControlConfiguration.unwrap()
+        parts.append("\"DefaultFilterControlConfiguration\":" + default_filter_control_configuration_to_json(u4))
+    return quicksight_json_obj(parts)
+
+# Serialize TopicCalculatedField to a compact JSON object (declaration order).
+def topic_calculated_field_to_json(TopicCalculatedField v) -> str:
+    list[str] parts = []
+    parts.append("\"CalculatedFieldName\":" + quicksight_json_str(v.CalculatedFieldName))
+    if v.CalculatedFieldDescription.is_some():
+        auto u0 = v.CalculatedFieldDescription.unwrap()
+        parts.append("\"CalculatedFieldDescription\":" + quicksight_json_str(u0))
+    parts.append("\"Expression\":" + quicksight_json_str(v.Expression))
+    if v.CalculatedFieldSynonyms.is_some():
+        auto u1 = v.CalculatedFieldSynonyms.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(quicksight_json_str(x2))
+        parts.append("\"CalculatedFieldSynonyms\":" + quicksight_json_arr(e2))
+    if v.IsIncludedInTopic.is_some():
+        auto u3 = v.IsIncludedInTopic.unwrap()
+        parts.append("\"IsIncludedInTopic\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.DisableIndexing.is_some():
+        auto u4 = v.DisableIndexing.unwrap()
+        parts.append("\"DisableIndexing\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.ColumnDataRole.is_some():
+        auto u5 = v.ColumnDataRole.unwrap()
+        parts.append("\"ColumnDataRole\":" + u5.to_json())
+    if v.TimeGranularity.is_some():
+        auto u6 = v.TimeGranularity.unwrap()
+        parts.append("\"TimeGranularity\":" + u6.to_json())
+    if v.DefaultFormatting.is_some():
+        auto u7 = v.DefaultFormatting.unwrap()
+        parts.append("\"DefaultFormatting\":" + u7.to_json())
+    if v.Aggregation.is_some():
+        auto u8 = v.Aggregation.unwrap()
+        parts.append("\"Aggregation\":" + u8.to_json())
+    if v.ComparativeOrder.is_some():
+        auto u9 = v.ComparativeOrder.unwrap()
+        parts.append("\"ComparativeOrder\":" + comparative_order_to_json(u9))
+    if v.SemanticType.is_some():
+        auto u10 = v.SemanticType.unwrap()
+        parts.append("\"SemanticType\":" + semantic_type_to_json(u10))
+    if v.AllowedAggregations.is_some():
+        auto u11 = v.AllowedAggregations.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"AllowedAggregations\":" + quicksight_json_arr(e12))
+    if v.NotAllowedAggregations.is_some():
+        auto u13 = v.NotAllowedAggregations.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(x14.to_json())
+        parts.append("\"NotAllowedAggregations\":" + quicksight_json_arr(e14))
+    if v.NeverAggregateInFilter.is_some():
+        auto u15 = v.NeverAggregateInFilter.unwrap()
+        parts.append("\"NeverAggregateInFilter\":" + json.dumps(JsonValue.Bool(u15)))
+    if v.CellValueSynonyms.is_some():
+        auto u16 = v.CellValueSynonyms.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(cell_value_synonym_to_json(x17))
+        parts.append("\"CellValueSynonyms\":" + quicksight_json_arr(e17))
+    if v.NonAdditive.is_some():
+        auto u18 = v.NonAdditive.unwrap()
+        parts.append("\"NonAdditive\":" + json.dumps(JsonValue.Bool(u18)))
+    return quicksight_json_obj(parts)
+
+# Serialize TopicCategoryFilter to a compact JSON object (declaration order).
+def topic_category_filter_to_json(TopicCategoryFilter v) -> str:
+    list[str] parts = []
+    if v.CategoryFilterFunction.is_some():
+        auto u0 = v.CategoryFilterFunction.unwrap()
+        parts.append("\"CategoryFilterFunction\":" + u0.to_json())
+    if v.CategoryFilterType.is_some():
+        auto u1 = v.CategoryFilterType.unwrap()
+        parts.append("\"CategoryFilterType\":" + u1.to_json())
+    if v.Constant.is_some():
+        auto u2 = v.Constant.unwrap()
+        parts.append("\"Constant\":" + topic_category_filter_constant_to_json(u2))
+    if v.Inverse.is_some():
+        auto u3 = v.Inverse.unwrap()
+        parts.append("\"Inverse\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.NullFilter.is_some():
+        auto u4 = v.NullFilter.unwrap()
+        parts.append("\"NullFilter\":" + u4.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize TopicCategoryFilterConstant to a compact JSON object (declaration order).
+def topic_category_filter_constant_to_json(TopicCategoryFilterConstant v) -> str:
+    list[str] parts = []
+    if v.ConstantType.is_some():
+        auto u0 = v.ConstantType.unwrap()
+        parts.append("\"ConstantType\":" + u0.to_json())
+    if v.SingularConstant.is_some():
+        auto u1 = v.SingularConstant.unwrap()
+        parts.append("\"SingularConstant\":" + quicksight_json_str(u1))
+    if v.CollectiveConstant.is_some():
+        auto u2 = v.CollectiveConstant.unwrap()
+        parts.append("\"CollectiveConstant\":" + collective_constant_to_json(u2))
+    return quicksight_json_obj(parts)
+
+# Serialize TopicColumn to a compact JSON object (declaration order).
+def topic_column_to_json(TopicColumn v) -> str:
+    list[str] parts = []
+    parts.append("\"ColumnName\":" + quicksight_json_str(v.ColumnName))
+    if v.ColumnFriendlyName.is_some():
+        auto u0 = v.ColumnFriendlyName.unwrap()
+        parts.append("\"ColumnFriendlyName\":" + quicksight_json_str(u0))
+    if v.ColumnDescription.is_some():
+        auto u1 = v.ColumnDescription.unwrap()
+        parts.append("\"ColumnDescription\":" + quicksight_json_str(u1))
+    if v.ColumnSynonyms.is_some():
+        auto u2 = v.ColumnSynonyms.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(quicksight_json_str(x3))
+        parts.append("\"ColumnSynonyms\":" + quicksight_json_arr(e3))
+    if v.ColumnDataRole.is_some():
+        auto u4 = v.ColumnDataRole.unwrap()
+        parts.append("\"ColumnDataRole\":" + u4.to_json())
+    if v.Aggregation.is_some():
+        auto u5 = v.Aggregation.unwrap()
+        parts.append("\"Aggregation\":" + u5.to_json())
+    if v.IsIncludedInTopic.is_some():
+        auto u6 = v.IsIncludedInTopic.unwrap()
+        parts.append("\"IsIncludedInTopic\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.DisableIndexing.is_some():
+        auto u7 = v.DisableIndexing.unwrap()
+        parts.append("\"DisableIndexing\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.ComparativeOrder.is_some():
+        auto u8 = v.ComparativeOrder.unwrap()
+        parts.append("\"ComparativeOrder\":" + comparative_order_to_json(u8))
+    if v.SemanticType.is_some():
+        auto u9 = v.SemanticType.unwrap()
+        parts.append("\"SemanticType\":" + semantic_type_to_json(u9))
+    if v.TimeGranularity.is_some():
+        auto u10 = v.TimeGranularity.unwrap()
+        parts.append("\"TimeGranularity\":" + u10.to_json())
+    if v.AllowedAggregations.is_some():
+        auto u11 = v.AllowedAggregations.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"AllowedAggregations\":" + quicksight_json_arr(e12))
+    if v.NotAllowedAggregations.is_some():
+        auto u13 = v.NotAllowedAggregations.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(x14.to_json())
+        parts.append("\"NotAllowedAggregations\":" + quicksight_json_arr(e14))
+    if v.DefaultFormatting.is_some():
+        auto u15 = v.DefaultFormatting.unwrap()
+        parts.append("\"DefaultFormatting\":" + u15.to_json())
+    if v.NeverAggregateInFilter.is_some():
+        auto u16 = v.NeverAggregateInFilter.unwrap()
+        parts.append("\"NeverAggregateInFilter\":" + json.dumps(JsonValue.Bool(u16)))
+    if v.CellValueSynonyms.is_some():
+        auto u17 = v.CellValueSynonyms.unwrap()
+        list[str] e18 = []
+        for x18 in u17:
+            e18.append(cell_value_synonym_to_json(x18))
+        parts.append("\"CellValueSynonyms\":" + quicksight_json_arr(e18))
+    if v.NonAdditive.is_some():
+        auto u19 = v.NonAdditive.unwrap()
+        parts.append("\"NonAdditive\":" + json.dumps(JsonValue.Bool(u19)))
+    return quicksight_json_obj(parts)
+
+# Serialize TopicConfiguration to a compact JSON object (declaration order).
+def topic_configuration_to_json(TopicConfiguration v) -> str:
+    list[str] parts = []
+    if v.Placeholder.is_some():
+        auto u0 = v.Placeholder.unwrap()
+        parts.append("\"Placeholder\":" + quicksight_json_str(u0))
+    if v.DataSetSchema.is_some():
+        auto u1 = v.DataSetSchema.unwrap()
+        parts.append("\"DataSetSchema\":" + data_set_schema_to_json(u1))
+    if v.ColumnGroupSchemaList.is_some():
+        auto u2 = v.ColumnGroupSchemaList.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(column_group_schema_to_json(x3))
+        parts.append("\"ColumnGroupSchemaList\":" + quicksight_json_arr(e3))
+    return quicksight_json_obj(parts)
+
+# Serialize TopicConstantValue to a compact JSON object (declaration order).
+def topic_constant_value_to_json(TopicConstantValue v) -> str:
+    list[str] parts = []
+    if v.ConstantType.is_some():
+        auto u0 = v.ConstantType.unwrap()
+        parts.append("\"ConstantType\":" + u0.to_json())
+    if v.Value.is_some():
+        auto u1 = v.Value.unwrap()
+        parts.append("\"Value\":" + quicksight_json_str(u1))
+    if v.Minimum.is_some():
+        auto u2 = v.Minimum.unwrap()
+        parts.append("\"Minimum\":" + quicksight_json_str(u2))
+    if v.Maximum.is_some():
+        auto u3 = v.Maximum.unwrap()
+        parts.append("\"Maximum\":" + quicksight_json_str(u3))
+    if v.ValueList.is_some():
+        auto u4 = v.ValueList.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"ValueList\":" + quicksight_json_arr(e5))
+    return quicksight_json_obj(parts)
+
+# Serialize TopicDetails to a compact JSON object (declaration order).
+def topic_details_to_json(TopicDetails v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + quicksight_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + quicksight_json_str(u1))
+    if v.UserExperienceVersion.is_some():
+        auto u2 = v.UserExperienceVersion.unwrap()
+        parts.append("\"UserExperienceVersion\":" + u2.to_json())
+    if v.DataSets.is_some():
+        auto u3 = v.DataSets.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(dataset_metadata_to_json(x4))
+        parts.append("\"DataSets\":" + quicksight_json_arr(e4))
+    if v.ConfigOptions.is_some():
+        auto u5 = v.ConfigOptions.unwrap()
+        parts.append("\"ConfigOptions\":" + u5.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize TopicFilter to a compact JSON object (declaration order).
+def topic_filter_to_json(TopicFilter v) -> str:
+    list[str] parts = []
+    if v.FilterDescription.is_some():
+        auto u0 = v.FilterDescription.unwrap()
+        parts.append("\"FilterDescription\":" + quicksight_json_str(u0))
+    if v.FilterClass.is_some():
+        auto u1 = v.FilterClass.unwrap()
+        parts.append("\"FilterClass\":" + u1.to_json())
+    parts.append("\"FilterName\":" + quicksight_json_str(v.FilterName))
+    if v.FilterSynonyms.is_some():
+        auto u2 = v.FilterSynonyms.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(quicksight_json_str(x3))
+        parts.append("\"FilterSynonyms\":" + quicksight_json_arr(e3))
+    parts.append("\"OperandFieldName\":" + quicksight_json_str(v.OperandFieldName))
+    if v.FilterType.is_some():
+        auto u4 = v.FilterType.unwrap()
+        parts.append("\"FilterType\":" + u4.to_json())
+    if v.CategoryFilter.is_some():
+        auto u5 = v.CategoryFilter.unwrap()
+        parts.append("\"CategoryFilter\":" + topic_category_filter_to_json(u5))
+    if v.NumericEqualityFilter.is_some():
+        auto u6 = v.NumericEqualityFilter.unwrap()
+        parts.append("\"NumericEqualityFilter\":" + u6.to_json())
+    if v.NumericRangeFilter.is_some():
+        auto u7 = v.NumericRangeFilter.unwrap()
+        parts.append("\"NumericRangeFilter\":" + u7.to_json())
+    if v.DateRangeFilter.is_some():
+        auto u8 = v.DateRangeFilter.unwrap()
+        parts.append("\"DateRangeFilter\":" + u8.to_json())
+    if v.RelativeDateFilter.is_some():
+        auto u9 = v.RelativeDateFilter.unwrap()
+        parts.append("\"RelativeDateFilter\":" + u9.to_json())
+    if v.NullFilter.is_some():
+        auto u10 = v.NullFilter.unwrap()
+        parts.append("\"NullFilter\":" + u10.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize TopicIR to a compact JSON object (declaration order).
+def topic_ir_to_json(TopicIR v) -> str:
+    list[str] parts = []
+    if v.Metrics.is_some():
+        auto u0 = v.Metrics.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(topic_ir_metric_to_json(x1))
+        parts.append("\"Metrics\":" + quicksight_json_arr(e1))
+    if v.GroupByList.is_some():
+        auto u2 = v.GroupByList.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"GroupByList\":" + quicksight_json_arr(e3))
+    if v.Filters.is_some():
+        auto u4 = v.Filters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            list[str] e6 = []
+            for x6 in x5:
+                e6.append(topic_ir_filter_option_to_json(x6))
+            e5.append(quicksight_json_arr(e6))
+        parts.append("\"Filters\":" + quicksight_json_arr(e5))
+    if v.Sort.is_some():
+        auto u7 = v.Sort.unwrap()
+        parts.append("\"Sort\":" + u7.to_json())
+    if v.ContributionAnalysis.is_some():
+        auto u8 = v.ContributionAnalysis.unwrap()
+        parts.append("\"ContributionAnalysis\":" + topic_ir_contribution_analysis_to_json(u8))
+    if v.Visual.is_some():
+        auto u9 = v.Visual.unwrap()
+        parts.append("\"Visual\":" + u9.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize TopicIRContributionAnalysis to a compact JSON object (declaration order).
+def topic_ir_contribution_analysis_to_json(TopicIRContributionAnalysis v) -> str:
+    list[str] parts = []
+    if v.Factors.is_some():
+        auto u0 = v.Factors.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Factors\":" + quicksight_json_arr(e1))
+    if v.TimeRanges.is_some():
+        auto u2 = v.TimeRanges.unwrap()
+        parts.append("\"TimeRanges\":" + contribution_analysis_time_ranges_to_json(u2))
+    if v.Direction.is_some():
+        auto u3 = v.Direction.unwrap()
+        parts.append("\"Direction\":" + u3.to_json())
+    if v.SortType.is_some():
+        auto u4 = v.SortType.unwrap()
+        parts.append("\"SortType\":" + u4.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize TopicIRFilterOption to a compact JSON object (declaration order).
+def topic_ir_filter_option_to_json(TopicIRFilterOption v) -> str:
+    list[str] parts = []
+    if v.FilterType.is_some():
+        auto u0 = v.FilterType.unwrap()
+        parts.append("\"FilterType\":" + u0.to_json())
+    if v.FilterClass.is_some():
+        auto u1 = v.FilterClass.unwrap()
+        parts.append("\"FilterClass\":" + u1.to_json())
+    if v.OperandField.is_some():
+        auto u2 = v.OperandField.unwrap()
+        parts.append("\"OperandField\":" + u2.to_json())
+    if v.Function.is_some():
+        auto u3 = v.Function.unwrap()
+        parts.append("\"Function\":" + u3.to_json())
+    if v.Constant.is_some():
+        auto u4 = v.Constant.unwrap()
+        parts.append("\"Constant\":" + topic_constant_value_to_json(u4))
+    if v.Inverse.is_some():
+        auto u5 = v.Inverse.unwrap()
+        parts.append("\"Inverse\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.NullFilter.is_some():
+        auto u6 = v.NullFilter.unwrap()
+        parts.append("\"NullFilter\":" + u6.to_json())
+    if v.Aggregation.is_some():
+        auto u7 = v.Aggregation.unwrap()
+        parts.append("\"Aggregation\":" + u7.to_json())
+    if v.AggregationFunctionParameters.is_some():
+        auto u8 = v.AggregationFunctionParameters.unwrap()
+        list[str] m9 = []
+        for k9 in sorted(u8.keys()):
+            m9.append(quicksight_json_str(k9) + ":" + quicksight_json_str(u8[k9]))
+        parts.append("\"AggregationFunctionParameters\":" + quicksight_json_obj(m9))
+    if v.AggregationPartitionBy.is_some():
+        auto u10 = v.AggregationPartitionBy.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"AggregationPartitionBy\":" + quicksight_json_arr(e11))
+    if v.Range.is_some():
+        auto u12 = v.Range.unwrap()
+        parts.append("\"Range\":" + topic_constant_value_to_json(u12))
+    if v.Inclusive.is_some():
+        auto u13 = v.Inclusive.unwrap()
+        parts.append("\"Inclusive\":" + json.dumps(JsonValue.Bool(u13)))
+    if v.TimeGranularity.is_some():
+        auto u14 = v.TimeGranularity.unwrap()
+        parts.append("\"TimeGranularity\":" + u14.to_json())
+    if v.LastNextOffset.is_some():
+        auto u15 = v.LastNextOffset.unwrap()
+        parts.append("\"LastNextOffset\":" + topic_constant_value_to_json(u15))
+    if v.AggMetrics.is_some():
+        auto u16 = v.AggMetrics.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"AggMetrics\":" + quicksight_json_arr(e17))
+    if v.TopBottomLimit.is_some():
+        auto u18 = v.TopBottomLimit.unwrap()
+        parts.append("\"TopBottomLimit\":" + topic_constant_value_to_json(u18))
+    if v.SortDirection.is_some():
+        auto u19 = v.SortDirection.unwrap()
+        parts.append("\"SortDirection\":" + u19.to_json())
+    if v.Anchor.is_some():
+        auto u20 = v.Anchor.unwrap()
+        parts.append("\"Anchor\":" + u20.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize TopicIRMetric to a compact JSON object (declaration order).
+def topic_ir_metric_to_json(TopicIRMetric v) -> str:
+    list[str] parts = []
+    if v.MetricId.is_some():
+        auto u0 = v.MetricId.unwrap()
+        parts.append("\"MetricId\":" + u0.to_json())
+    if v.Function.is_some():
+        auto u1 = v.Function.unwrap()
+        parts.append("\"Function\":" + agg_function_to_json(u1))
+    if v.Operands.is_some():
+        auto u2 = v.Operands.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Operands\":" + quicksight_json_arr(e3))
+    if v.ComparisonMethod.is_some():
+        auto u4 = v.ComparisonMethod.unwrap()
+        parts.append("\"ComparisonMethod\":" + u4.to_json())
+    if v.Expression.is_some():
+        auto u5 = v.Expression.unwrap()
+        parts.append("\"Expression\":" + quicksight_json_str(u5))
+    if v.CalculatedFieldReferences.is_some():
+        auto u6 = v.CalculatedFieldReferences.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"CalculatedFieldReferences\":" + quicksight_json_arr(e7))
+    if v.DisplayFormat.is_some():
+        auto u8 = v.DisplayFormat.unwrap()
+        parts.append("\"DisplayFormat\":" + u8.to_json())
+    if v.DisplayFormatOptions.is_some():
+        auto u9 = v.DisplayFormatOptions.unwrap()
+        parts.append("\"DisplayFormatOptions\":" + u9.to_json())
+    if v.NamedEntity.is_some():
+        auto u10 = v.NamedEntity.unwrap()
+        parts.append("\"NamedEntity\":" + u10.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize TopicNamedEntity to a compact JSON object (declaration order).
+def topic_named_entity_to_json(TopicNamedEntity v) -> str:
+    list[str] parts = []
+    parts.append("\"EntityName\":" + quicksight_json_str(v.EntityName))
+    if v.EntityDescription.is_some():
+        auto u0 = v.EntityDescription.unwrap()
+        parts.append("\"EntityDescription\":" + quicksight_json_str(u0))
+    if v.EntitySynonyms.is_some():
+        auto u1 = v.EntitySynonyms.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(quicksight_json_str(x2))
+        parts.append("\"EntitySynonyms\":" + quicksight_json_arr(e2))
+    if v.SemanticEntityType.is_some():
+        auto u3 = v.SemanticEntityType.unwrap()
+        parts.append("\"SemanticEntityType\":" + semantic_entity_type_to_json(u3))
+    if v.Definition.is_some():
+        auto u4 = v.Definition.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(named_entity_definition_to_json(x5))
+        parts.append("\"Definition\":" + quicksight_json_arr(e5))
+    if v.Sort.is_some():
+        auto u6 = v.Sort.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Sort\":" + quicksight_json_arr(e7))
+    if v.RankOrder.is_some():
+        auto u8 = v.RankOrder.unwrap()
+        parts.append("\"RankOrder\":" + str(u8))
+    if v.PresentationOrder.is_some():
+        auto u9 = v.PresentationOrder.unwrap()
+        parts.append("\"PresentationOrder\":" + str(u9))
+    return quicksight_json_obj(parts)
+
+# Serialize TopicTemplate to a compact JSON object (declaration order).
+def topic_template_to_json(TopicTemplate v) -> str:
+    list[str] parts = []
+    if v.TemplateType.is_some():
+        auto u0 = v.TemplateType.unwrap()
+        parts.append("\"TemplateType\":" + quicksight_json_str(u0))
+    if v.Slots.is_some():
+        auto u1 = v.Slots.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Slots\":" + quicksight_json_arr(e2))
+    return quicksight_json_obj(parts)
+
+# Serialize TopicV2DataSetRelation to a compact JSON object (declaration order).
+def topic_v2_data_set_relation_to_json(TopicV2DataSetRelation v) -> str:
+    list[str] parts = []
+    parts.append("\"Left\":" + topic_v2_data_set_relation_endpoint_to_json(v.Left))
+    parts.append("\"Right\":" + topic_v2_data_set_relation_endpoint_to_json(v.Right))
+    return quicksight_json_obj(parts)
+
+# Serialize TopicV2DataSetRelationEndpoint to a compact JSON object (declaration order).
+def topic_v2_data_set_relation_endpoint_to_json(TopicV2DataSetRelationEndpoint v) -> str:
+    list[str] parts = []
+    parts.append("\"DataSetArn\":" + quicksight_json_str(v.DataSetArn))
+    list[str] e0 = []
+    for x0 in v.ColumnNames:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"ColumnNames\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize TopicV2Details to a compact JSON object (declaration order).
+def topic_v2_details_to_json(TopicV2Details v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + quicksight_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + quicksight_json_str(u0))
+    if v.DataSets.is_some():
+        auto u1 = v.DataSets.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"DataSets\":" + quicksight_json_arr(e2))
+    if v.DataSetRelations.is_some():
+        auto u3 = v.DataSetRelations.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(topic_v2_data_set_relation_to_json(x4))
+        parts.append("\"DataSetRelations\":" + quicksight_json_arr(e4))
+    return quicksight_json_obj(parts)
+
+# Serialize TopicVisual to a compact JSON object (declaration order).
+def topic_visual_to_json(TopicVisual v) -> str:
+    list[str] parts = []
+    if v.VisualId.is_some():
+        auto u0 = v.VisualId.unwrap()
+        parts.append("\"VisualId\":" + quicksight_json_str(u0))
+    if v.Role.is_some():
+        auto u1 = v.Role.unwrap()
+        parts.append("\"Role\":" + u1.to_json())
+    if v.Ir.is_some():
+        auto u2 = v.Ir.unwrap()
+        parts.append("\"Ir\":" + topic_ir_to_json(u2))
+    if v.SupportingVisuals.is_some():
+        auto u3 = v.SupportingVisuals.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(topic_visual_to_json(x4))
+        parts.append("\"SupportingVisuals\":" + quicksight_json_arr(e4))
+    return quicksight_json_obj(parts)
+
+# Serialize TotalOptions to a compact JSON object (declaration order).
+def total_options_to_json(TotalOptions v) -> str:
+    list[str] parts = []
+    if v.TotalsVisibility.is_some():
+        auto u0 = v.TotalsVisibility.unwrap()
+        parts.append("\"TotalsVisibility\":" + u0.to_json())
+    if v.Placement.is_some():
+        auto u1 = v.Placement.unwrap()
+        parts.append("\"Placement\":" + u1.to_json())
+    if v.ScrollStatus.is_some():
+        auto u2 = v.ScrollStatus.unwrap()
+        parts.append("\"ScrollStatus\":" + u2.to_json())
+    if v.CustomLabel.is_some():
+        auto u3 = v.CustomLabel.unwrap()
+        parts.append("\"CustomLabel\":" + quicksight_json_str(u3))
+    if v.TotalCellStyle.is_some():
+        auto u4 = v.TotalCellStyle.unwrap()
+        parts.append("\"TotalCellStyle\":" + u4.to_json())
+    if v.TotalAggregationOptions.is_some():
+        auto u5 = v.TotalAggregationOptions.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"TotalAggregationOptions\":" + quicksight_json_arr(e6))
+    return quicksight_json_obj(parts)
+
+# Serialize TransformOperation to a compact JSON object (declaration order).
+def transform_operation_to_json(TransformOperation v) -> str:
+    list[str] parts = []
+    if v.ProjectOperation.is_some():
+        auto u0 = v.ProjectOperation.unwrap()
+        parts.append("\"ProjectOperation\":" + project_operation_to_json(u0))
+    if v.FilterOperation.is_some():
+        auto u1 = v.FilterOperation.unwrap()
+        parts.append("\"FilterOperation\":" + filter_operation_to_json(u1))
+    if v.CreateColumnsOperation.is_some():
+        auto u2 = v.CreateColumnsOperation.unwrap()
+        parts.append("\"CreateColumnsOperation\":" + create_columns_operation_to_json(u2))
+    if v.RenameColumnOperation.is_some():
+        auto u3 = v.RenameColumnOperation.unwrap()
+        parts.append("\"RenameColumnOperation\":" + u3.to_json())
+    if v.CastColumnTypeOperation.is_some():
+        auto u4 = v.CastColumnTypeOperation.unwrap()
+        parts.append("\"CastColumnTypeOperation\":" + u4.to_json())
+    if v.TagColumnOperation.is_some():
+        auto u5 = v.TagColumnOperation.unwrap()
+        parts.append("\"TagColumnOperation\":" + tag_column_operation_to_json(u5))
+    if v.UntagColumnOperation.is_some():
+        auto u6 = v.UntagColumnOperation.unwrap()
+        parts.append("\"UntagColumnOperation\":" + untag_column_operation_to_json(u6))
+    if v.OverrideDatasetParameterOperation.is_some():
+        auto u7 = v.OverrideDatasetParameterOperation.unwrap()
+        parts.append("\"OverrideDatasetParameterOperation\":" + override_dataset_parameter_operation_to_json(u7))
+    return quicksight_json_obj(parts)
+
+# Serialize TransformOperationSource to a compact JSON object (declaration order).
+def transform_operation_source_to_json(TransformOperationSource v) -> str:
+    list[str] parts = []
+    parts.append("\"TransformOperationId\":" + quicksight_json_str(v.TransformOperationId))
+    if v.ColumnIdMappings.is_some():
+        auto u0 = v.ColumnIdMappings.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ColumnIdMappings\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize TransformStep to a compact JSON object (declaration order).
+def transform_step_to_json(TransformStep v) -> str:
+    list[str] parts = []
+    if v.ImportTableStep.is_some():
+        auto u0 = v.ImportTableStep.unwrap()
+        parts.append("\"ImportTableStep\":" + import_table_operation_to_json(u0))
+    if v.ProjectStep.is_some():
+        auto u1 = v.ProjectStep.unwrap()
+        parts.append("\"ProjectStep\":" + project_operation_to_json(u1))
+    if v.FiltersStep.is_some():
+        auto u2 = v.FiltersStep.unwrap()
+        parts.append("\"FiltersStep\":" + filters_operation_to_json(u2))
+    if v.CreateColumnsStep.is_some():
+        auto u3 = v.CreateColumnsStep.unwrap()
+        parts.append("\"CreateColumnsStep\":" + create_columns_operation_to_json(u3))
+    if v.RenameColumnsStep.is_some():
+        auto u4 = v.RenameColumnsStep.unwrap()
+        parts.append("\"RenameColumnsStep\":" + rename_columns_operation_to_json(u4))
+    if v.CastColumnTypesStep.is_some():
+        auto u5 = v.CastColumnTypesStep.unwrap()
+        parts.append("\"CastColumnTypesStep\":" + cast_column_types_operation_to_json(u5))
+    if v.JoinStep.is_some():
+        auto u6 = v.JoinStep.unwrap()
+        parts.append("\"JoinStep\":" + join_operation_to_json(u6))
+    if v.AggregateStep.is_some():
+        auto u7 = v.AggregateStep.unwrap()
+        parts.append("\"AggregateStep\":" + aggregate_operation_to_json(u7))
+    if v.PivotStep.is_some():
+        auto u8 = v.PivotStep.unwrap()
+        parts.append("\"PivotStep\":" + pivot_operation_to_json(u8))
+    if v.UnpivotStep.is_some():
+        auto u9 = v.UnpivotStep.unwrap()
+        parts.append("\"UnpivotStep\":" + unpivot_operation_to_json(u9))
+    if v.AppendStep.is_some():
+        auto u10 = v.AppendStep.unwrap()
+        parts.append("\"AppendStep\":" + append_operation_to_json(u10))
+    return quicksight_json_obj(parts)
+
+# Serialize TreeMapAggregatedFieldWells to a compact JSON object (declaration order).
+def tree_map_aggregated_field_wells_to_json(TreeMapAggregatedFieldWells v) -> str:
+    list[str] parts = []
+    if v.Groups.is_some():
+        auto u0 = v.Groups.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Groups\":" + quicksight_json_arr(e1))
+    if v.Sizes.is_some():
+        auto u2 = v.Sizes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Sizes\":" + quicksight_json_arr(e3))
+    if v.Colors.is_some():
+        auto u4 = v.Colors.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Colors\":" + quicksight_json_arr(e5))
+    return quicksight_json_obj(parts)
+
+# Serialize TreeMapConfiguration to a compact JSON object (declaration order).
+def tree_map_configuration_to_json(TreeMapConfiguration v) -> str:
+    list[str] parts = []
+    if v.FieldWells.is_some():
+        auto u0 = v.FieldWells.unwrap()
+        parts.append("\"FieldWells\":" + tree_map_field_wells_to_json(u0))
+    if v.SortConfiguration.is_some():
+        auto u1 = v.SortConfiguration.unwrap()
+        parts.append("\"SortConfiguration\":" + tree_map_sort_configuration_to_json(u1))
+    if v.GroupLabelOptions.is_some():
+        auto u2 = v.GroupLabelOptions.unwrap()
+        parts.append("\"GroupLabelOptions\":" + chart_axis_label_options_to_json(u2))
+    if v.SizeLabelOptions.is_some():
+        auto u3 = v.SizeLabelOptions.unwrap()
+        parts.append("\"SizeLabelOptions\":" + chart_axis_label_options_to_json(u3))
+    if v.ColorLabelOptions.is_some():
+        auto u4 = v.ColorLabelOptions.unwrap()
+        parts.append("\"ColorLabelOptions\":" + chart_axis_label_options_to_json(u4))
+    if v.ColorScale.is_some():
+        auto u5 = v.ColorScale.unwrap()
+        parts.append("\"ColorScale\":" + color_scale_to_json(u5))
+    if v.Legend.is_some():
+        auto u6 = v.Legend.unwrap()
+        parts.append("\"Legend\":" + u6.to_json())
+    if v.DataLabels.is_some():
+        auto u7 = v.DataLabels.unwrap()
+        parts.append("\"DataLabels\":" + data_label_options_to_json(u7))
+    if v.Tooltip.is_some():
+        auto u8 = v.Tooltip.unwrap()
+        parts.append("\"Tooltip\":" + tooltip_options_to_json(u8))
+    if v.Interactions.is_some():
+        auto u9 = v.Interactions.unwrap()
+        parts.append("\"Interactions\":" + u9.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize TreeMapFieldWells to a compact JSON object (declaration order).
+def tree_map_field_wells_to_json(TreeMapFieldWells v) -> str:
+    list[str] parts = []
+    if v.TreeMapAggregatedFieldWells.is_some():
+        auto u0 = v.TreeMapAggregatedFieldWells.unwrap()
+        parts.append("\"TreeMapAggregatedFieldWells\":" + tree_map_aggregated_field_wells_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize TreeMapSortConfiguration to a compact JSON object (declaration order).
+def tree_map_sort_configuration_to_json(TreeMapSortConfiguration v) -> str:
+    list[str] parts = []
+    if v.TreeMapSort.is_some():
+        auto u0 = v.TreeMapSort.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"TreeMapSort\":" + quicksight_json_arr(e1))
+    if v.TreeMapGroupItemsLimitConfiguration.is_some():
+        auto u2 = v.TreeMapGroupItemsLimitConfiguration.unwrap()
+        parts.append("\"TreeMapGroupItemsLimitConfiguration\":" + u2.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize TreeMapVisual to a compact JSON object (declaration order).
+def tree_map_visual_to_json(TreeMapVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + u0.to_json())
+    if v.Subtitle.is_some():
+        auto u1 = v.Subtitle.unwrap()
+        parts.append("\"Subtitle\":" + u1.to_json())
+    if v.ChartConfiguration.is_some():
+        auto u2 = v.ChartConfiguration.unwrap()
+        parts.append("\"ChartConfiguration\":" + tree_map_configuration_to_json(u2))
+    if v.Actions.is_some():
+        auto u3 = v.Actions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(visual_custom_action_to_json(x4))
+        parts.append("\"Actions\":" + quicksight_json_arr(e4))
+    if v.ColumnHierarchies.is_some():
+        auto u5 = v.ColumnHierarchies.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(column_hierarchy_to_json(x6))
+        parts.append("\"ColumnHierarchies\":" + quicksight_json_arr(e6))
+    if v.VisualContentAltText.is_some():
+        auto u7 = v.VisualContentAltText.unwrap()
+        parts.append("\"VisualContentAltText\":" + quicksight_json_str(u7))
+    return quicksight_json_obj(parts)
+
+# Serialize Typography to a compact JSON object (declaration order).
+def typography_to_json(Typography v) -> str:
+    list[str] parts = []
+    if v.FontFamilies.is_some():
+        auto u0 = v.FontFamilies.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"FontFamilies\":" + quicksight_json_arr(e1))
+    if v.AxisTitleFontConfiguration.is_some():
+        auto u2 = v.AxisTitleFontConfiguration.unwrap()
+        parts.append("\"AxisTitleFontConfiguration\":" + u2.to_json())
+    if v.AxisLabelFontConfiguration.is_some():
+        auto u3 = v.AxisLabelFontConfiguration.unwrap()
+        parts.append("\"AxisLabelFontConfiguration\":" + u3.to_json())
+    if v.LegendTitleFontConfiguration.is_some():
+        auto u4 = v.LegendTitleFontConfiguration.unwrap()
+        parts.append("\"LegendTitleFontConfiguration\":" + u4.to_json())
+    if v.LegendValueFontConfiguration.is_some():
+        auto u5 = v.LegendValueFontConfiguration.unwrap()
+        parts.append("\"LegendValueFontConfiguration\":" + u5.to_json())
+    if v.DataLabelFontConfiguration.is_some():
+        auto u6 = v.DataLabelFontConfiguration.unwrap()
+        parts.append("\"DataLabelFontConfiguration\":" + u6.to_json())
+    if v.VisualTitleFontConfiguration.is_some():
+        auto u7 = v.VisualTitleFontConfiguration.unwrap()
+        parts.append("\"VisualTitleFontConfiguration\":" + u7.to_json())
+    if v.VisualSubtitleFontConfiguration.is_some():
+        auto u8 = v.VisualSubtitleFontConfiguration.unwrap()
+        parts.append("\"VisualSubtitleFontConfiguration\":" + u8.to_json())
+    if v.ControlTitleFontConfiguration.is_some():
+        auto u9 = v.ControlTitleFontConfiguration.unwrap()
+        parts.append("\"ControlTitleFontConfiguration\":" + u9.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize UniqueKey to a compact JSON object (declaration order).
+def unique_key_to_json(UniqueKey v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ColumnNames:
+        e0.append(quicksight_json_str(x0))
+    parts.append("\"ColumnNames\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize UnpivotOperation to a compact JSON object (declaration order).
+def unpivot_operation_to_json(UnpivotOperation v) -> str:
+    list[str] parts = []
+    parts.append("\"Alias\":" + quicksight_json_str(v.Alias))
+    parts.append("\"Source\":" + transform_operation_source_to_json(v.Source))
+    list[str] e0 = []
+    for x0 in v.ColumnsToUnpivot:
+        e0.append(x0.to_json())
+    parts.append("\"ColumnsToUnpivot\":" + quicksight_json_arr(e0))
+    parts.append("\"UnpivotedLabelColumnName\":" + quicksight_json_str(v.UnpivotedLabelColumnName))
+    parts.append("\"UnpivotedLabelColumnId\":" + quicksight_json_str(v.UnpivotedLabelColumnId))
+    parts.append("\"UnpivotedValueColumnName\":" + quicksight_json_str(v.UnpivotedValueColumnName))
+    parts.append("\"UnpivotedValueColumnId\":" + quicksight_json_str(v.UnpivotedValueColumnId))
+    return quicksight_json_obj(parts)
+
+# Serialize UntagColumnOperation to a compact JSON object (declaration order).
+def untag_column_operation_to_json(UntagColumnOperation v) -> str:
+    list[str] parts = []
+    parts.append("\"ColumnName\":" + quicksight_json_str(v.ColumnName))
+    list[str] e0 = []
+    for x0 in v.TagNames:
+        e0.append(x0.to_json())
+    parts.append("\"TagNames\":" + quicksight_json_arr(e0))
+    return quicksight_json_obj(parts)
+
+# Serialize Visual to a compact JSON object (declaration order).
+def visual_to_json(Visual v) -> str:
+    list[str] parts = []
+    if v.TableVisual.is_some():
+        auto u0 = v.TableVisual.unwrap()
+        parts.append("\"TableVisual\":" + table_visual_to_json(u0))
+    if v.PivotTableVisual.is_some():
+        auto u1 = v.PivotTableVisual.unwrap()
+        parts.append("\"PivotTableVisual\":" + pivot_table_visual_to_json(u1))
+    if v.BarChartVisual.is_some():
+        auto u2 = v.BarChartVisual.unwrap()
+        parts.append("\"BarChartVisual\":" + bar_chart_visual_to_json(u2))
+    if v.KPIVisual.is_some():
+        auto u3 = v.KPIVisual.unwrap()
+        parts.append("\"KPIVisual\":" + kpi_visual_to_json(u3))
+    if v.PieChartVisual.is_some():
+        auto u4 = v.PieChartVisual.unwrap()
+        parts.append("\"PieChartVisual\":" + pie_chart_visual_to_json(u4))
+    if v.GaugeChartVisual.is_some():
+        auto u5 = v.GaugeChartVisual.unwrap()
+        parts.append("\"GaugeChartVisual\":" + gauge_chart_visual_to_json(u5))
+    if v.LineChartVisual.is_some():
+        auto u6 = v.LineChartVisual.unwrap()
+        parts.append("\"LineChartVisual\":" + line_chart_visual_to_json(u6))
+    if v.HeatMapVisual.is_some():
+        auto u7 = v.HeatMapVisual.unwrap()
+        parts.append("\"HeatMapVisual\":" + heat_map_visual_to_json(u7))
+    if v.TreeMapVisual.is_some():
+        auto u8 = v.TreeMapVisual.unwrap()
+        parts.append("\"TreeMapVisual\":" + tree_map_visual_to_json(u8))
+    if v.GeospatialMapVisual.is_some():
+        auto u9 = v.GeospatialMapVisual.unwrap()
+        parts.append("\"GeospatialMapVisual\":" + geospatial_map_visual_to_json(u9))
+    if v.FilledMapVisual.is_some():
+        auto u10 = v.FilledMapVisual.unwrap()
+        parts.append("\"FilledMapVisual\":" + filled_map_visual_to_json(u10))
+    if v.LayerMapVisual.is_some():
+        auto u11 = v.LayerMapVisual.unwrap()
+        parts.append("\"LayerMapVisual\":" + layer_map_visual_to_json(u11))
+    if v.FunnelChartVisual.is_some():
+        auto u12 = v.FunnelChartVisual.unwrap()
+        parts.append("\"FunnelChartVisual\":" + funnel_chart_visual_to_json(u12))
+    if v.ScatterPlotVisual.is_some():
+        auto u13 = v.ScatterPlotVisual.unwrap()
+        parts.append("\"ScatterPlotVisual\":" + scatter_plot_visual_to_json(u13))
+    if v.ComboChartVisual.is_some():
+        auto u14 = v.ComboChartVisual.unwrap()
+        parts.append("\"ComboChartVisual\":" + combo_chart_visual_to_json(u14))
+    if v.BoxPlotVisual.is_some():
+        auto u15 = v.BoxPlotVisual.unwrap()
+        parts.append("\"BoxPlotVisual\":" + box_plot_visual_to_json(u15))
+    if v.WaterfallVisual.is_some():
+        auto u16 = v.WaterfallVisual.unwrap()
+        parts.append("\"WaterfallVisual\":" + waterfall_visual_to_json(u16))
+    if v.HistogramVisual.is_some():
+        auto u17 = v.HistogramVisual.unwrap()
+        parts.append("\"HistogramVisual\":" + histogram_visual_to_json(u17))
+    if v.WordCloudVisual.is_some():
+        auto u18 = v.WordCloudVisual.unwrap()
+        parts.append("\"WordCloudVisual\":" + word_cloud_visual_to_json(u18))
+    if v.InsightVisual.is_some():
+        auto u19 = v.InsightVisual.unwrap()
+        parts.append("\"InsightVisual\":" + insight_visual_to_json(u19))
+    if v.SankeyDiagramVisual.is_some():
+        auto u20 = v.SankeyDiagramVisual.unwrap()
+        parts.append("\"SankeyDiagramVisual\":" + sankey_diagram_visual_to_json(u20))
+    if v.CustomContentVisual.is_some():
+        auto u21 = v.CustomContentVisual.unwrap()
+        parts.append("\"CustomContentVisual\":" + custom_content_visual_to_json(u21))
+    if v.EmptyVisual.is_some():
+        auto u22 = v.EmptyVisual.unwrap()
+        parts.append("\"EmptyVisual\":" + empty_visual_to_json(u22))
+    if v.RadarChartVisual.is_some():
+        auto u23 = v.RadarChartVisual.unwrap()
+        parts.append("\"RadarChartVisual\":" + radar_chart_visual_to_json(u23))
+    if v.PluginVisual.is_some():
+        auto u24 = v.PluginVisual.unwrap()
+        parts.append("\"PluginVisual\":" + plugin_visual_to_json(u24))
+    return quicksight_json_obj(parts)
+
+# Serialize VisualCustomAction to a compact JSON object (declaration order).
+def visual_custom_action_to_json(VisualCustomAction v) -> str:
+    list[str] parts = []
+    parts.append("\"CustomActionId\":" + quicksight_json_str(v.CustomActionId))
+    parts.append("\"Name\":" + quicksight_json_str(v.Name))
+    if v.Status.is_some():
+        auto u0 = v.Status.unwrap()
+        parts.append("\"Status\":" + u0.to_json())
+    parts.append("\"Trigger\":" + v.Trigger.to_json())
+    list[str] e1 = []
+    for x1 in v.ActionOperations:
+        e1.append(visual_custom_action_operation_to_json(x1))
+    parts.append("\"ActionOperations\":" + quicksight_json_arr(e1))
+    return quicksight_json_obj(parts)
+
+# Serialize VisualCustomActionOperation to a compact JSON object (declaration order).
+def visual_custom_action_operation_to_json(VisualCustomActionOperation v) -> str:
+    list[str] parts = []
+    if v.FilterOperation.is_some():
+        auto u0 = v.FilterOperation.unwrap()
+        parts.append("\"FilterOperation\":" + custom_action_filter_operation_to_json(u0))
+    if v.NavigationOperation.is_some():
+        auto u1 = v.NavigationOperation.unwrap()
+        parts.append("\"NavigationOperation\":" + u1.to_json())
+    if v.URLOperation.is_some():
+        auto u2 = v.URLOperation.unwrap()
+        parts.append("\"URLOperation\":" + u2.to_json())
+    if v.SetParametersOperation.is_some():
+        auto u3 = v.SetParametersOperation.unwrap()
+        parts.append("\"SetParametersOperation\":" + custom_action_set_parameters_operation_to_json(u3))
+    return quicksight_json_obj(parts)
+
+# Serialize VisualCustomizationFieldsConfiguration to a compact JSON object (declaration order).
+def visual_customization_fields_configuration_to_json(VisualCustomizationFieldsConfiguration v) -> str:
+    list[str] parts = []
+    if v.Status.is_some():
+        auto u0 = v.Status.unwrap()
+        parts.append("\"Status\":" + u0.to_json())
+    if v.AdditionalFields.is_some():
+        auto u1 = v.AdditionalFields.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"AdditionalFields\":" + quicksight_json_arr(e2))
+    return quicksight_json_obj(parts)
+
+# Serialize VisualPalette to a compact JSON object (declaration order).
+def visual_palette_to_json(VisualPalette v) -> str:
+    list[str] parts = []
+    if v.ChartColor.is_some():
+        auto u0 = v.ChartColor.unwrap()
+        parts.append("\"ChartColor\":" + quicksight_json_str(u0))
+    if v.ColorMap.is_some():
+        auto u1 = v.ColorMap.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"ColorMap\":" + quicksight_json_arr(e2))
+    return quicksight_json_obj(parts)
+
+# Serialize WaterfallChartAggregatedFieldWells to a compact JSON object (declaration order).
+def waterfall_chart_aggregated_field_wells_to_json(WaterfallChartAggregatedFieldWells v) -> str:
+    list[str] parts = []
+    if v.Categories.is_some():
+        auto u0 = v.Categories.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Categories\":" + quicksight_json_arr(e1))
+    if v.Values.is_some():
+        auto u2 = v.Values.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Values\":" + quicksight_json_arr(e3))
+    if v.Breakdowns.is_some():
+        auto u4 = v.Breakdowns.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Breakdowns\":" + quicksight_json_arr(e5))
+    return quicksight_json_obj(parts)
+
+# Serialize WaterfallChartConfiguration to a compact JSON object (declaration order).
+def waterfall_chart_configuration_to_json(WaterfallChartConfiguration v) -> str:
+    list[str] parts = []
+    if v.FieldWells.is_some():
+        auto u0 = v.FieldWells.unwrap()
+        parts.append("\"FieldWells\":" + waterfall_chart_field_wells_to_json(u0))
+    if v.SortConfiguration.is_some():
+        auto u1 = v.SortConfiguration.unwrap()
+        parts.append("\"SortConfiguration\":" + waterfall_chart_sort_configuration_to_json(u1))
+    if v.WaterfallChartOptions.is_some():
+        auto u2 = v.WaterfallChartOptions.unwrap()
+        parts.append("\"WaterfallChartOptions\":" + u2.to_json())
+    if v.CategoryAxisLabelOptions.is_some():
+        auto u3 = v.CategoryAxisLabelOptions.unwrap()
+        parts.append("\"CategoryAxisLabelOptions\":" + chart_axis_label_options_to_json(u3))
+    if v.CategoryAxisDisplayOptions.is_some():
+        auto u4 = v.CategoryAxisDisplayOptions.unwrap()
+        parts.append("\"CategoryAxisDisplayOptions\":" + u4.to_json())
+    if v.PrimaryYAxisLabelOptions.is_some():
+        auto u5 = v.PrimaryYAxisLabelOptions.unwrap()
+        parts.append("\"PrimaryYAxisLabelOptions\":" + chart_axis_label_options_to_json(u5))
+    if v.PrimaryYAxisDisplayOptions.is_some():
+        auto u6 = v.PrimaryYAxisDisplayOptions.unwrap()
+        parts.append("\"PrimaryYAxisDisplayOptions\":" + u6.to_json())
+    if v.Legend.is_some():
+        auto u7 = v.Legend.unwrap()
+        parts.append("\"Legend\":" + u7.to_json())
+    if v.DataLabels.is_some():
+        auto u8 = v.DataLabels.unwrap()
+        parts.append("\"DataLabels\":" + data_label_options_to_json(u8))
+    if v.VisualPalette.is_some():
+        auto u9 = v.VisualPalette.unwrap()
+        parts.append("\"VisualPalette\":" + visual_palette_to_json(u9))
+    if v.ColorConfiguration.is_some():
+        auto u10 = v.ColorConfiguration.unwrap()
+        parts.append("\"ColorConfiguration\":" + u10.to_json())
+    if v.Interactions.is_some():
+        auto u11 = v.Interactions.unwrap()
+        parts.append("\"Interactions\":" + u11.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize WaterfallChartFieldWells to a compact JSON object (declaration order).
+def waterfall_chart_field_wells_to_json(WaterfallChartFieldWells v) -> str:
+    list[str] parts = []
+    if v.WaterfallChartAggregatedFieldWells.is_some():
+        auto u0 = v.WaterfallChartAggregatedFieldWells.unwrap()
+        parts.append("\"WaterfallChartAggregatedFieldWells\":" + waterfall_chart_aggregated_field_wells_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize WaterfallChartSortConfiguration to a compact JSON object (declaration order).
+def waterfall_chart_sort_configuration_to_json(WaterfallChartSortConfiguration v) -> str:
+    list[str] parts = []
+    if v.CategorySort.is_some():
+        auto u0 = v.CategorySort.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"CategorySort\":" + quicksight_json_arr(e1))
+    if v.BreakdownItemsLimit.is_some():
+        auto u2 = v.BreakdownItemsLimit.unwrap()
+        parts.append("\"BreakdownItemsLimit\":" + u2.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize WaterfallVisual to a compact JSON object (declaration order).
+def waterfall_visual_to_json(WaterfallVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + u0.to_json())
+    if v.Subtitle.is_some():
+        auto u1 = v.Subtitle.unwrap()
+        parts.append("\"Subtitle\":" + u1.to_json())
+    if v.ChartConfiguration.is_some():
+        auto u2 = v.ChartConfiguration.unwrap()
+        parts.append("\"ChartConfiguration\":" + waterfall_chart_configuration_to_json(u2))
+    if v.Actions.is_some():
+        auto u3 = v.Actions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(visual_custom_action_to_json(x4))
+        parts.append("\"Actions\":" + quicksight_json_arr(e4))
+    if v.ColumnHierarchies.is_some():
+        auto u5 = v.ColumnHierarchies.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(column_hierarchy_to_json(x6))
+        parts.append("\"ColumnHierarchies\":" + quicksight_json_arr(e6))
+    if v.VisualContentAltText.is_some():
+        auto u7 = v.VisualContentAltText.unwrap()
+        parts.append("\"VisualContentAltText\":" + quicksight_json_str(u7))
+    return quicksight_json_obj(parts)
+
+# Serialize WordCloudAggregatedFieldWells to a compact JSON object (declaration order).
+def word_cloud_aggregated_field_wells_to_json(WordCloudAggregatedFieldWells v) -> str:
+    list[str] parts = []
+    if v.GroupBy.is_some():
+        auto u0 = v.GroupBy.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"GroupBy\":" + quicksight_json_arr(e1))
+    if v.Size.is_some():
+        auto u2 = v.Size.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Size\":" + quicksight_json_arr(e3))
+    return quicksight_json_obj(parts)
+
+# Serialize WordCloudChartConfiguration to a compact JSON object (declaration order).
+def word_cloud_chart_configuration_to_json(WordCloudChartConfiguration v) -> str:
+    list[str] parts = []
+    if v.FieldWells.is_some():
+        auto u0 = v.FieldWells.unwrap()
+        parts.append("\"FieldWells\":" + word_cloud_field_wells_to_json(u0))
+    if v.SortConfiguration.is_some():
+        auto u1 = v.SortConfiguration.unwrap()
+        parts.append("\"SortConfiguration\":" + word_cloud_sort_configuration_to_json(u1))
+    if v.CategoryLabelOptions.is_some():
+        auto u2 = v.CategoryLabelOptions.unwrap()
+        parts.append("\"CategoryLabelOptions\":" + chart_axis_label_options_to_json(u2))
+    if v.WordCloudOptions.is_some():
+        auto u3 = v.WordCloudOptions.unwrap()
+        parts.append("\"WordCloudOptions\":" + u3.to_json())
+    if v.Interactions.is_some():
+        auto u4 = v.Interactions.unwrap()
+        parts.append("\"Interactions\":" + u4.to_json())
+    return quicksight_json_obj(parts)
+
+# Serialize WordCloudFieldWells to a compact JSON object (declaration order).
+def word_cloud_field_wells_to_json(WordCloudFieldWells v) -> str:
+    list[str] parts = []
+    if v.WordCloudAggregatedFieldWells.is_some():
+        auto u0 = v.WordCloudAggregatedFieldWells.unwrap()
+        parts.append("\"WordCloudAggregatedFieldWells\":" + word_cloud_aggregated_field_wells_to_json(u0))
+    return quicksight_json_obj(parts)
+
+# Serialize WordCloudSortConfiguration to a compact JSON object (declaration order).
+def word_cloud_sort_configuration_to_json(WordCloudSortConfiguration v) -> str:
+    list[str] parts = []
+    if v.CategoryItemsLimit.is_some():
+        auto u0 = v.CategoryItemsLimit.unwrap()
+        parts.append("\"CategoryItemsLimit\":" + u0.to_json())
+    if v.CategorySort.is_some():
+        auto u1 = v.CategorySort.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"CategorySort\":" + quicksight_json_arr(e2))
+    return quicksight_json_obj(parts)
+
+# Serialize WordCloudVisual to a compact JSON object (declaration order).
+def word_cloud_visual_to_json(WordCloudVisual v) -> str:
+    list[str] parts = []
+    parts.append("\"VisualId\":" + quicksight_json_str(v.VisualId))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + u0.to_json())
+    if v.Subtitle.is_some():
+        auto u1 = v.Subtitle.unwrap()
+        parts.append("\"Subtitle\":" + u1.to_json())
+    if v.ChartConfiguration.is_some():
+        auto u2 = v.ChartConfiguration.unwrap()
+        parts.append("\"ChartConfiguration\":" + word_cloud_chart_configuration_to_json(u2))
+    if v.Actions.is_some():
+        auto u3 = v.Actions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(visual_custom_action_to_json(x4))
+        parts.append("\"Actions\":" + quicksight_json_arr(e4))
+    if v.ColumnHierarchies.is_some():
+        auto u5 = v.ColumnHierarchies.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(column_hierarchy_to_json(x6))
+        parts.append("\"ColumnHierarchies\":" + quicksight_json_arr(e6))
+    if v.VisualContentAltText.is_some():
+        auto u7 = v.VisualContentAltText.unwrap()
+        parts.append("\"VisualContentAltText\":" + quicksight_json_str(u7))
+    return quicksight_json_obj(parts)
+
 # A bound QuickSight client: credentials + region, threaded into every operation.
 struct QuickSightClient:
     core.Credentials creds
     str region
+
+    # BatchCreateTopicReviewedAnswer  POST /accounts/{AwsAccountId}/topics/{TopicId}/batch-create-reviewed-answers
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, ResourceNotFoundException, ThrottlingException
+    def batch_create_topic_reviewed_answer(self, BatchCreateTopicReviewedAnswerRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["TopicId"] = input.TopicId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/batch-create-reviewed-answers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Answers:
+            e0.append(create_topic_reviewed_answer_to_json(x0))
+        parts.append("\"Answers\":" + quicksight_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # BatchDeleteKnowledgeBase  POST /v1/accounts/{AwsAccountId}/knowledge-bases/batch-delete
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, InvalidRequestException, LimitExceededException, PreconditionNotMetException, ThrottlingException
+    def batch_delete_knowledge_base(self, BatchDeleteKnowledgeBaseRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/accounts/{AwsAccountId}/knowledge-bases/batch-delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.KnowledgeBaseIds:
+            e0.append(quicksight_json_str(x0))
+        parts.append("\"KnowledgeBaseIds\":" + quicksight_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # BatchDeleteTopicReviewedAnswer  POST /accounts/{AwsAccountId}/topics/{TopicId}/batch-delete-reviewed-answers
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, ResourceNotFoundException, ThrottlingException
+    def batch_delete_topic_reviewed_answer(self, BatchDeleteTopicReviewedAnswerRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["TopicId"] = input.TopicId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/batch-delete-reviewed-answers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AnswerIds.is_some():
+            auto u0 = input.AnswerIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(quicksight_json_str(x1))
+            parts.append("\"AnswerIds\":" + quicksight_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # BatchDescribeUserLimits  POST /governance/limits/accounts/{accountId}/user-limits
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, ThrottlingException
+    def batch_describe_user_limits(self, BatchDescribeUserLimitsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["accountId"] = input.accountId
+        auto b = binding.HttpBinding(method="POST", path_template="/governance/limits/accounts/{accountId}/user-limits", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.users.is_some():
+            auto u0 = input.users.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"users\":" + quicksight_json_arr(e1))
+        if input.resourceTypes.is_some():
+            auto u2 = input.resourceTypes.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"resourceTypes\":" + quicksight_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
     # CancelIngestion  DELETE /accounts/{AwsAccountId}/data-sets/{DataSetId}/ingestions/{IngestionId}
     # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, ResourceExistsException, ResourceNotFoundException, ThrottlingException
@@ -16323,6 +25185,577 @@ struct QuickSightClient:
         labels["IngestionId"] = input.IngestionId
         auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/ingestions/{IngestionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
+
+    # CreateAccountCustomization  POST /accounts/{AwsAccountId}/customizations
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, ResourceExistsException, ResourceNotFoundException, ResourceUnavailableException, ThrottlingException
+    def create_account_customization(self, CreateAccountCustomizationRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        dict[str, str] query = {}
+        if input.Namespace.is_some():
+            query["namespace"] = input.Namespace.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/customizations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"AccountCustomization\":" + input.AccountCustomization.to_json())
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Tags\":" + quicksight_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # CreateAccountSubscription  POST /account/{AwsAccountId}
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, PreconditionNotMetException, ResourceExistsException, ResourceNotFoundException, ResourceUnavailableException, ThrottlingException
+    def create_account_subscription(self, CreateAccountSubscriptionRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/account/{AwsAccountId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Edition.is_some():
+            auto u0 = input.Edition.unwrap()
+            parts.append("\"Edition\":" + u0.to_json())
+        parts.append("\"AuthenticationMethod\":" + input.AuthenticationMethod.to_json())
+        parts.append("\"AccountName\":" + quicksight_json_str(input.AccountName))
+        parts.append("\"NotificationEmail\":" + quicksight_json_str(input.NotificationEmail))
+        if input.ActiveDirectoryName.is_some():
+            auto u1 = input.ActiveDirectoryName.unwrap()
+            parts.append("\"ActiveDirectoryName\":" + quicksight_json_str(u1))
+        if input.Realm.is_some():
+            auto u2 = input.Realm.unwrap()
+            parts.append("\"Realm\":" + quicksight_json_str(u2))
+        if input.DirectoryId.is_some():
+            auto u3 = input.DirectoryId.unwrap()
+            parts.append("\"DirectoryId\":" + quicksight_json_str(u3))
+        if input.AdminGroup.is_some():
+            auto u4 = input.AdminGroup.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(quicksight_json_str(x5))
+            parts.append("\"AdminGroup\":" + quicksight_json_arr(e5))
+        if input.AuthorGroup.is_some():
+            auto u6 = input.AuthorGroup.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(quicksight_json_str(x7))
+            parts.append("\"AuthorGroup\":" + quicksight_json_arr(e7))
+        if input.ReaderGroup.is_some():
+            auto u8 = input.ReaderGroup.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(quicksight_json_str(x9))
+            parts.append("\"ReaderGroup\":" + quicksight_json_arr(e9))
+        if input.AdminProGroup.is_some():
+            auto u10 = input.AdminProGroup.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(quicksight_json_str(x11))
+            parts.append("\"AdminProGroup\":" + quicksight_json_arr(e11))
+        if input.AuthorProGroup.is_some():
+            auto u12 = input.AuthorProGroup.unwrap()
+            list[str] e13 = []
+            for x13 in u12:
+                e13.append(quicksight_json_str(x13))
+            parts.append("\"AuthorProGroup\":" + quicksight_json_arr(e13))
+        if input.ReaderProGroup.is_some():
+            auto u14 = input.ReaderProGroup.unwrap()
+            list[str] e15 = []
+            for x15 in u14:
+                e15.append(quicksight_json_str(x15))
+            parts.append("\"ReaderProGroup\":" + quicksight_json_arr(e15))
+        if input.FirstName.is_some():
+            auto u16 = input.FirstName.unwrap()
+            parts.append("\"FirstName\":" + quicksight_json_str(u16))
+        if input.LastName.is_some():
+            auto u17 = input.LastName.unwrap()
+            parts.append("\"LastName\":" + quicksight_json_str(u17))
+        if input.EmailAddress.is_some():
+            auto u18 = input.EmailAddress.unwrap()
+            parts.append("\"EmailAddress\":" + quicksight_json_str(u18))
+        if input.ContactNumber.is_some():
+            auto u19 = input.ContactNumber.unwrap()
+            parts.append("\"ContactNumber\":" + quicksight_json_str(u19))
+        if input.IAMIdentityCenterInstanceArn.is_some():
+            auto u20 = input.IAMIdentityCenterInstanceArn.unwrap()
+            parts.append("\"IAMIdentityCenterInstanceArn\":" + quicksight_json_str(u20))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # CreateActionConnector  POST /accounts/{AwsAccountId}/action-connectors
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, ResourceExistsException, ThrottlingException
+    def create_action_connector(self, CreateActionConnectorRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/action-connectors", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ActionConnectorId\":" + quicksight_json_str(input.ActionConnectorId))
+        parts.append("\"Name\":" + quicksight_json_str(input.Name))
+        parts.append("\"Type\":" + input.Type.to_json())
+        parts.append("\"AuthenticationConfig\":" + input.AuthenticationConfig.to_json())
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + quicksight_json_str(u0))
+        if input.Permissions.is_some():
+            auto u1 = input.Permissions.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(resource_permission_to_json(x2))
+            parts.append("\"Permissions\":" + quicksight_json_arr(e2))
+        if input.VpcConnectionArn.is_some():
+            auto u3 = input.VpcConnectionArn.unwrap()
+            parts.append("\"VpcConnectionArn\":" + quicksight_json_str(u3))
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"Tags\":" + quicksight_json_arr(e5))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # CreateAgent  POST /accounts/{AwsAccountId}/agents
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, PreconditionNotMetException, ResourceExistsException, ThrottlingException
+    def create_agent(self, CreateAgentRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/agents", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Spaces.is_some():
+            auto u0 = input.Spaces.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(quicksight_json_str(x1))
+            parts.append("\"Spaces\":" + quicksight_json_arr(e1))
+        if input.ActionConnectors.is_some():
+            auto u2 = input.ActionConnectors.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(quicksight_json_str(x3))
+            parts.append("\"ActionConnectors\":" + quicksight_json_arr(e3))
+        parts.append("\"AgentId\":" + quicksight_json_str(input.AgentId))
+        parts.append("\"Name\":" + quicksight_json_str(input.Name))
+        if input.Description.is_some():
+            auto u4 = input.Description.unwrap()
+            parts.append("\"Description\":" + quicksight_json_str(u4))
+        if input.IconId.is_some():
+            auto u5 = input.IconId.unwrap()
+            parts.append("\"IconId\":" + quicksight_json_str(u5))
+        if input.StarterPrompts.is_some():
+            auto u6 = input.StarterPrompts.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(quicksight_json_str(x7))
+            parts.append("\"StarterPrompts\":" + quicksight_json_arr(e7))
+        if input.WelcomeMessage.is_some():
+            auto u8 = input.WelcomeMessage.unwrap()
+            parts.append("\"WelcomeMessage\":" + quicksight_json_str(u8))
+        if input.AgentLifecycle.is_some():
+            auto u9 = input.AgentLifecycle.unwrap()
+            parts.append("\"AgentLifecycle\":" + u9.to_json())
+        if input.CustomPromptInput.is_some():
+            auto u10 = input.CustomPromptInput.unwrap()
+            parts.append("\"CustomPromptInput\":" + u10.to_json())
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # CreateAnalysis  POST /accounts/{AwsAccountId}/analyses/{AnalysisId}
+    # errors: ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def create_analysis(self, CreateAnalysisRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["AnalysisId"] = input.AnalysisId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/analyses/{AnalysisId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + quicksight_json_str(input.Name))
+        if input.Parameters.is_some():
+            auto u0 = input.Parameters.unwrap()
+            parts.append("\"Parameters\":" + parameters_to_json(u0))
+        if input.Permissions.is_some():
+            auto u1 = input.Permissions.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(resource_permission_to_json(x2))
+            parts.append("\"Permissions\":" + quicksight_json_arr(e2))
+        if input.SourceEntity.is_some():
+            auto u3 = input.SourceEntity.unwrap()
+            parts.append("\"SourceEntity\":" + analysis_source_entity_to_json(u3))
+        if input.ThemeArn.is_some():
+            auto u4 = input.ThemeArn.unwrap()
+            parts.append("\"ThemeArn\":" + quicksight_json_str(u4))
+        if input.Tags.is_some():
+            auto u5 = input.Tags.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"Tags\":" + quicksight_json_arr(e6))
+        if input.Definition.is_some():
+            auto u7 = input.Definition.unwrap()
+            parts.append("\"Definition\":" + analysis_definition_to_json(u7))
+        if input.ValidationStrategy.is_some():
+            auto u8 = input.ValidationStrategy.unwrap()
+            parts.append("\"ValidationStrategy\":" + u8.to_json())
+        if input.FolderArns.is_some():
+            auto u9 = input.FolderArns.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(quicksight_json_str(x10))
+            parts.append("\"FolderArns\":" + quicksight_json_arr(e10))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # CreateApprovalPolicy  POST /governance/approvalworkflows/policies
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def create_approval_policy(self, CreateApprovalPolicyRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/governance/approvalworkflows/policies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"PolicyId\":" + quicksight_json_str(input.PolicyId))
+        parts.append("\"Name\":" + quicksight_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + quicksight_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.Actions:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"Actions\":" + quicksight_json_arr(e1))
+        list[str] e2 = []
+        for x2 in input.AssetTypes:
+            e2.append(x2.to_json())
+        parts.append("\"AssetTypes\":" + quicksight_json_arr(e2))
+        parts.append("\"ApplicableTo\":" + applicable_to_to_json(input.ApplicableTo))
+        list[str] e3 = []
+        for x3 in input.ApprovalGroups:
+            e3.append(quicksight_json_str(x3))
+        parts.append("\"ApprovalGroups\":" + quicksight_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # CreateBrand  POST /accounts/{AwsAccountId}/brands/{BrandId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidRequestException, LimitExceededException, ThrottlingException
+    def create_brand(self, CreateBrandRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["BrandId"] = input.BrandId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/brands/{BrandId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.BrandDefinition.is_some():
+            auto u0 = input.BrandDefinition.unwrap()
+            parts.append("\"BrandDefinition\":" + u0.to_json())
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Tags\":" + quicksight_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # CreateCustomPermissions  POST /accounts/{AwsAccountId}/custom-permissions
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, PreconditionNotMetException, ResourceExistsException, ResourceNotFoundException, ResourceUnavailableException, ThrottlingException
+    def create_custom_permissions(self, CreateCustomPermissionsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/custom-permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"CustomPermissionsName\":" + quicksight_json_str(input.CustomPermissionsName))
+        if input.Capabilities.is_some():
+            auto u0 = input.Capabilities.unwrap()
+            parts.append("\"Capabilities\":" + u0.to_json())
+        if input.Governance.is_some():
+            auto u1 = input.Governance.unwrap()
+            parts.append("\"Governance\":" + governance_to_json(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"Tags\":" + quicksight_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # CreateDashboard  POST /accounts/{AwsAccountId}/dashboards/{DashboardId}
+    # errors: ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def create_dashboard(self, CreateDashboardRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["DashboardId"] = input.DashboardId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + quicksight_json_str(input.Name))
+        if input.Parameters.is_some():
+            auto u0 = input.Parameters.unwrap()
+            parts.append("\"Parameters\":" + parameters_to_json(u0))
+        if input.Permissions.is_some():
+            auto u1 = input.Permissions.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(resource_permission_to_json(x2))
+            parts.append("\"Permissions\":" + quicksight_json_arr(e2))
+        if input.SourceEntity.is_some():
+            auto u3 = input.SourceEntity.unwrap()
+            parts.append("\"SourceEntity\":" + dashboard_source_entity_to_json(u3))
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"Tags\":" + quicksight_json_arr(e5))
+        if input.VersionDescription.is_some():
+            auto u6 = input.VersionDescription.unwrap()
+            parts.append("\"VersionDescription\":" + quicksight_json_str(u6))
+        if input.DashboardPublishOptions.is_some():
+            auto u7 = input.DashboardPublishOptions.unwrap()
+            parts.append("\"DashboardPublishOptions\":" + u7.to_json())
+        if input.ThemeArn.is_some():
+            auto u8 = input.ThemeArn.unwrap()
+            parts.append("\"ThemeArn\":" + quicksight_json_str(u8))
+        if input.Definition.is_some():
+            auto u9 = input.Definition.unwrap()
+            parts.append("\"Definition\":" + dashboard_version_definition_to_json(u9))
+        if input.ValidationStrategy.is_some():
+            auto u10 = input.ValidationStrategy.unwrap()
+            parts.append("\"ValidationStrategy\":" + u10.to_json())
+        if input.FolderArns.is_some():
+            auto u11 = input.FolderArns.unwrap()
+            list[str] e12 = []
+            for x12 in u11:
+                e12.append(quicksight_json_str(x12))
+            parts.append("\"FolderArns\":" + quicksight_json_arr(e12))
+        if input.LinkSharingConfiguration.is_some():
+            auto u13 = input.LinkSharingConfiguration.unwrap()
+            parts.append("\"LinkSharingConfiguration\":" + link_sharing_configuration_to_json(u13))
+        if input.LinkEntities.is_some():
+            auto u14 = input.LinkEntities.unwrap()
+            list[str] e15 = []
+            for x15 in u14:
+                e15.append(quicksight_json_str(x15))
+            parts.append("\"LinkEntities\":" + quicksight_json_arr(e15))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # CreateDataSet  POST /accounts/{AwsAccountId}/data-sets
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidDataSetParameterValueException, InvalidParameterValueException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def create_data_set(self, CreateDataSetRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/data-sets", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"DataSetId\":" + quicksight_json_str(input.DataSetId))
+        parts.append("\"Name\":" + quicksight_json_str(input.Name))
+        list[str] m0 = []
+        for k0 in sorted(input.PhysicalTableMap.keys()):
+            m0.append(quicksight_json_str(k0) + ":" + physical_table_to_json(input.PhysicalTableMap[k0]))
+        parts.append("\"PhysicalTableMap\":" + quicksight_json_obj(m0))
+        if input.LogicalTableMap.is_some():
+            auto u1 = input.LogicalTableMap.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(quicksight_json_str(k2) + ":" + logical_table_to_json(u1[k2]))
+            parts.append("\"LogicalTableMap\":" + quicksight_json_obj(m2))
+        parts.append("\"ImportMode\":" + input.ImportMode.to_json())
+        if input.ColumnGroups.is_some():
+            auto u3 = input.ColumnGroups.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(column_group_to_json(x4))
+            parts.append("\"ColumnGroups\":" + quicksight_json_arr(e4))
+        if input.FieldFolders.is_some():
+            auto u5 = input.FieldFolders.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(quicksight_json_str(k6) + ":" + field_folder_to_json(u5[k6]))
+            parts.append("\"FieldFolders\":" + quicksight_json_obj(m6))
+        if input.Permissions.is_some():
+            auto u7 = input.Permissions.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(resource_permission_to_json(x8))
+            parts.append("\"Permissions\":" + quicksight_json_arr(e8))
+        if input.RowLevelPermissionDataSet.is_some():
+            auto u9 = input.RowLevelPermissionDataSet.unwrap()
+            parts.append("\"RowLevelPermissionDataSet\":" + u9.to_json())
+        if input.RowLevelPermissionTagConfiguration.is_some():
+            auto u10 = input.RowLevelPermissionTagConfiguration.unwrap()
+            parts.append("\"RowLevelPermissionTagConfiguration\":" + row_level_permission_tag_configuration_to_json(u10))
+        if input.ColumnLevelPermissionRules.is_some():
+            auto u11 = input.ColumnLevelPermissionRules.unwrap()
+            list[str] e12 = []
+            for x12 in u11:
+                e12.append(column_level_permission_rule_to_json(x12))
+            parts.append("\"ColumnLevelPermissionRules\":" + quicksight_json_arr(e12))
+        if input.Tags.is_some():
+            auto u13 = input.Tags.unwrap()
+            list[str] e14 = []
+            for x14 in u13:
+                e14.append(x14.to_json())
+            parts.append("\"Tags\":" + quicksight_json_arr(e14))
+        if input.DataSetUsageConfiguration.is_some():
+            auto u15 = input.DataSetUsageConfiguration.unwrap()
+            parts.append("\"DataSetUsageConfiguration\":" + u15.to_json())
+        if input.DatasetParameters.is_some():
+            auto u16 = input.DatasetParameters.unwrap()
+            list[str] e17 = []
+            for x17 in u16:
+                e17.append(dataset_parameter_to_json(x17))
+            parts.append("\"DatasetParameters\":" + quicksight_json_arr(e17))
+        if input.FolderArns.is_some():
+            auto u18 = input.FolderArns.unwrap()
+            list[str] e19 = []
+            for x19 in u18:
+                e19.append(quicksight_json_str(x19))
+            parts.append("\"FolderArns\":" + quicksight_json_arr(e19))
+        if input.PerformanceConfiguration.is_some():
+            auto u20 = input.PerformanceConfiguration.unwrap()
+            parts.append("\"PerformanceConfiguration\":" + performance_configuration_to_json(u20))
+        if input.UseAs.is_some():
+            auto u21 = input.UseAs.unwrap()
+            parts.append("\"UseAs\":" + quicksight_json_str(u21))
+        if input.DataPrepConfiguration.is_some():
+            auto u22 = input.DataPrepConfiguration.unwrap()
+            parts.append("\"DataPrepConfiguration\":" + data_prep_configuration_to_json(u22))
+        if input.SemanticModelConfiguration.is_some():
+            auto u23 = input.SemanticModelConfiguration.unwrap()
+            parts.append("\"SemanticModelConfiguration\":" + semantic_model_configuration_to_json(u23))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # CreateDataSource  POST /accounts/{AwsAccountId}/data-sources
+    # errors: AccessDeniedException, ConflictException, CustomerManagedKeyUnavailableException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException
+    def create_data_source(self, CreateDataSourceRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/data-sources", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"DataSourceId\":" + quicksight_json_str(input.DataSourceId))
+        parts.append("\"Name\":" + quicksight_json_str(input.Name))
+        parts.append("\"Type\":" + input.Type.to_json())
+        if input.DataSourceParameters.is_some():
+            auto u0 = input.DataSourceParameters.unwrap()
+            parts.append("\"DataSourceParameters\":" + data_source_parameters_to_json(u0))
+        if input.Credentials.is_some():
+            auto u1 = input.Credentials.unwrap()
+            parts.append("\"Credentials\":" + data_source_credentials_to_json(u1))
+        if input.Permissions.is_some():
+            auto u2 = input.Permissions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(resource_permission_to_json(x3))
+            parts.append("\"Permissions\":" + quicksight_json_arr(e3))
+        if input.VpcConnectionProperties.is_some():
+            auto u4 = input.VpcConnectionProperties.unwrap()
+            parts.append("\"VpcConnectionProperties\":" + u4.to_json())
+        if input.SslProperties.is_some():
+            auto u5 = input.SslProperties.unwrap()
+            parts.append("\"SslProperties\":" + u5.to_json())
+        if input.Tags.is_some():
+            auto u6 = input.Tags.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"Tags\":" + quicksight_json_arr(e7))
+        if input.FolderArns.is_some():
+            auto u8 = input.FolderArns.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(quicksight_json_str(x9))
+            parts.append("\"FolderArns\":" + quicksight_json_arr(e9))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # CreateDlpSetting  POST /accounts/{AwsAccountId}/data-loss-prevention/settings/{DlpSettingId}
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceExistsException, ThrottlingException
+    def create_dlp_setting(self, CreateDlpSettingRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["DlpSettingId"] = input.DlpSettingId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/data-loss-prevention/settings/{DlpSettingId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + quicksight_json_str(input.Name))
+        parts.append("\"ProviderType\":" + quicksight_json_str(input.ProviderType))
+        parts.append("\"ProviderConfig\":" + provider_config_to_json(input.ProviderConfig))
+        parts.append("\"ProviderOutageAction\":" + input.ProviderOutageAction.to_json())
+        parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(input.Enabled)))
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Tags\":" + quicksight_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # CreateFlow  POST /accounts/{AwsAccountId}/flows
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException
+    def create_flow(self, CreateFlowRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/flows", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + quicksight_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + quicksight_json_str(u0))
+        parts.append("\"FlowDefinition\":" + input.FlowDefinition.to_json())
+        if input.Permissions.is_some():
+            auto u1 = input.Permissions.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(permission_to_json(x2))
+            parts.append("\"Permissions\":" + quicksight_json_arr(e2))
+        if input.ClientToken.is_some():
+            auto u3 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + quicksight_json_str(u3))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # CreateFolder  POST /accounts/{AwsAccountId}/folders/{FolderId}
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def create_folder(self, CreateFolderRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["FolderId"] = input.FolderId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/folders/{FolderId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + quicksight_json_str(u0))
+        if input.FolderType.is_some():
+            auto u1 = input.FolderType.unwrap()
+            parts.append("\"FolderType\":" + u1.to_json())
+        if input.ParentFolderArn.is_some():
+            auto u2 = input.ParentFolderArn.unwrap()
+            parts.append("\"ParentFolderArn\":" + quicksight_json_str(u2))
+        if input.Permissions.is_some():
+            auto u3 = input.Permissions.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(resource_permission_to_json(x4))
+            parts.append("\"Permissions\":" + quicksight_json_arr(e4))
+        if input.Tags.is_some():
+            auto u5 = input.Tags.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"Tags\":" + quicksight_json_arr(e6))
+        if input.SharingModel.is_some():
+            auto u7 = input.SharingModel.unwrap()
+            parts.append("\"SharingModel\":" + u7.to_json())
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
     # CreateFolderMembership  PUT /accounts/{AwsAccountId}/folders/{FolderId}/members/{MemberType}/{MemberId}
     # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
@@ -16360,6 +25793,32 @@ struct QuickSightClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/groups/{GroupName}/members/{MemberName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
+    # CreateIAMPolicyAssignment  POST /accounts/{AwsAccountId}/namespaces/{Namespace}/iam-policy-assignments/
+    # errors: AccessDeniedException, ConcurrentUpdatingException, InternalFailureException, InvalidParameterValueException, ResourceExistsException, ResourceNotFoundException, ThrottlingException
+    def create_iam_policy_assignment(self, CreateIAMPolicyAssignmentRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["Namespace"] = input.Namespace
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/iam-policy-assignments/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"AssignmentName\":" + quicksight_json_str(input.AssignmentName))
+        parts.append("\"AssignmentStatus\":" + input.AssignmentStatus.to_json())
+        if input.PolicyArn.is_some():
+            auto u0 = input.PolicyArn.unwrap()
+            parts.append("\"PolicyArn\":" + quicksight_json_str(u0))
+        if input.Identities.is_some():
+            auto u1 = input.Identities.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                list[str] e3 = []
+                for x3 in u1[k2]:
+                    e3.append(quicksight_json_str(x3))
+                m2.append(quicksight_json_str(k2) + ":" + quicksight_json_arr(e3))
+            parts.append("\"Identities\":" + quicksight_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
     # CreateIngestion  PUT /accounts/{AwsAccountId}/data-sets/{DataSetId}/ingestions/{IngestionId}
     # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException
     def create_ingestion(self, CreateIngestionRequest input) -> str:
@@ -16371,6 +25830,99 @@ struct QuickSightClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/ingestions/{IngestionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateIngestionDocument(IngestionType=input.IngestionType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # CreateKnowledgeBase  POST /v1/accounts/{AwsAccountId}/knowledge-bases
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, InvalidRequestException, LimitExceededException, PreconditionNotMetException, ResourceExistsException, ResourceNotFoundException, ThrottlingException
+    def create_knowledge_base(self, CreateKnowledgeBaseRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/accounts/{AwsAccountId}/knowledge-bases", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"KnowledgeBaseId\":" + quicksight_json_str(input.KnowledgeBaseId))
+        parts.append("\"Name\":" + quicksight_json_str(input.Name))
+        parts.append("\"DataSourceArn\":" + quicksight_json_str(input.DataSourceArn))
+        parts.append("\"KnowledgeBaseConfiguration\":" + input.KnowledgeBaseConfiguration.to_json())
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + quicksight_json_str(u0))
+        if input.Permissions.is_some():
+            auto u1 = input.Permissions.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(resource_permission_to_json(x2))
+            parts.append("\"Permissions\":" + quicksight_json_arr(e2))
+        if input.MediaExtractionConfiguration.is_some():
+            auto u3 = input.MediaExtractionConfiguration.unwrap()
+            parts.append("\"MediaExtractionConfiguration\":" + u3.to_json())
+        if input.AccessControlConfiguration.is_some():
+            auto u4 = input.AccessControlConfiguration.unwrap()
+            parts.append("\"AccessControlConfiguration\":" + u4.to_json())
+        if input.PrimaryOwnerArn.is_some():
+            auto u5 = input.PrimaryOwnerArn.unwrap()
+            parts.append("\"PrimaryOwnerArn\":" + quicksight_json_str(u5))
+        if input.Tags.is_some():
+            auto u6 = input.Tags.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"Tags\":" + quicksight_json_arr(e7))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # CreateNamespace  POST /accounts/{AwsAccountId}
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, PreconditionNotMetException, ResourceExistsException, ResourceNotFoundException, ResourceUnavailableException, ThrottlingException
+    def create_namespace(self, CreateNamespaceRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Namespace\":" + quicksight_json_str(input.Namespace))
+        parts.append("\"IdentityStore\":" + quicksight_json_str(input.IdentityStore))
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Tags\":" + quicksight_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # CreateOAuthClientApplication  POST /accounts/{AwsAccountId}/oauth-client-applications
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException
+    def create_o_auth_client_application(self, CreateOAuthClientApplicationRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/oauth-client-applications", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"OAuthClientApplicationId\":" + quicksight_json_str(input.OAuthClientApplicationId))
+        parts.append("\"Name\":" + quicksight_json_str(input.Name))
+        parts.append("\"OAuthClientAuthenticationType\":" + quicksight_json_str(input.OAuthClientAuthenticationType))
+        parts.append("\"ClientId\":" + quicksight_json_str(input.ClientId))
+        parts.append("\"ClientSecret\":" + quicksight_json_str(input.ClientSecret))
+        parts.append("\"OAuthTokenEndpointUrl\":" + quicksight_json_str(input.OAuthTokenEndpointUrl))
+        if input.OAuthAuthorizationEndpointUrl.is_some():
+            auto u0 = input.OAuthAuthorizationEndpointUrl.unwrap()
+            parts.append("\"OAuthAuthorizationEndpointUrl\":" + quicksight_json_str(u0))
+        if input.OAuthScopes.is_some():
+            auto u1 = input.OAuthScopes.unwrap()
+            parts.append("\"OAuthScopes\":" + quicksight_json_str(u1))
+        if input.DataSourceType.is_some():
+            auto u2 = input.DataSourceType.unwrap()
+            parts.append("\"DataSourceType\":" + u2.to_json())
+        if input.IdentityProviderVpcConnectionProperties.is_some():
+            auto u3 = input.IdentityProviderVpcConnectionProperties.unwrap()
+            parts.append("\"IdentityProviderVpcConnectionProperties\":" + u3.to_json())
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"Tags\":" + quicksight_json_arr(e5))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
     # CreateRefreshSchedule  POST /accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-schedules
@@ -16408,6 +25960,45 @@ struct QuickSightClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
+    # CreateTemplate  POST /accounts/{AwsAccountId}/templates/{TemplateId}
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def create_template(self, CreateTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["TemplateId"] = input.TemplateId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + quicksight_json_str(u0))
+        if input.Permissions.is_some():
+            auto u1 = input.Permissions.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(resource_permission_to_json(x2))
+            parts.append("\"Permissions\":" + quicksight_json_arr(e2))
+        if input.SourceEntity.is_some():
+            auto u3 = input.SourceEntity.unwrap()
+            parts.append("\"SourceEntity\":" + template_source_entity_to_json(u3))
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"Tags\":" + quicksight_json_arr(e5))
+        if input.VersionDescription.is_some():
+            auto u6 = input.VersionDescription.unwrap()
+            parts.append("\"VersionDescription\":" + quicksight_json_str(u6))
+        if input.Definition.is_some():
+            auto u7 = input.Definition.unwrap()
+            parts.append("\"Definition\":" + template_version_definition_to_json(u7))
+        if input.ValidationStrategy.is_some():
+            auto u8 = input.ValidationStrategy.unwrap()
+            parts.append("\"ValidationStrategy\":" + u8.to_json())
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
     # CreateTemplateAlias  POST /accounts/{AwsAccountId}/templates/{TemplateId}/aliases/{AliasName}
     # errors: ConflictException, ConflictException, InternalFailureException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
     def create_template_alias(self, CreateTemplateAliasRequest input) -> str:
@@ -16419,6 +26010,36 @@ struct QuickSightClient:
         auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}/aliases/{AliasName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateTemplateAliasDocument(TemplateVersionNumber=input.TemplateVersionNumber)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # CreateTheme  POST /accounts/{AwsAccountId}/themes/{ThemeId}
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def create_theme(self, CreateThemeRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["ThemeId"] = input.ThemeId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + quicksight_json_str(input.Name))
+        parts.append("\"BaseThemeId\":" + quicksight_json_str(input.BaseThemeId))
+        if input.VersionDescription.is_some():
+            auto u0 = input.VersionDescription.unwrap()
+            parts.append("\"VersionDescription\":" + quicksight_json_str(u0))
+        parts.append("\"Configuration\":" + theme_configuration_to_json(input.Configuration))
+        if input.Permissions.is_some():
+            auto u1 = input.Permissions.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(resource_permission_to_json(x2))
+            parts.append("\"Permissions\":" + quicksight_json_arr(e2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"Tags\":" + quicksight_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
     # CreateThemeAlias  POST /accounts/{AwsAccountId}/themes/{ThemeId}/aliases/{AliasName}
@@ -16434,6 +26055,34 @@ struct QuickSightClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
+    # CreateTopic  POST /accounts/{AwsAccountId}/topics
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException
+    def create_topic(self, CreateTopicRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/topics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"TopicId\":" + quicksight_json_str(input.TopicId))
+        parts.append("\"Topic\":" + topic_details_to_json(input.Topic))
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Tags\":" + quicksight_json_arr(e1))
+        if input.FolderArns.is_some():
+            auto u2 = input.FolderArns.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(quicksight_json_str(x3))
+            parts.append("\"FolderArns\":" + quicksight_json_arr(e3))
+        if input.CustomInstructions.is_some():
+            auto u4 = input.CustomInstructions.unwrap()
+            parts.append("\"CustomInstructions\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
     # CreateTopicRefreshSchedule  POST /accounts/{AwsAccountId}/topics/{TopicId}/schedules
     # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException
     def create_topic_refresh_schedule(self, CreateTopicRefreshScheduleRequest input) -> str:
@@ -16444,6 +26093,68 @@ struct QuickSightClient:
         auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/schedules", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateTopicRefreshScheduleDocument(DatasetArn=input.DatasetArn, DatasetName=input.DatasetName, RefreshSchedule=input.RefreshSchedule)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # CreateTopicV2  POST /accounts/{AwsAccountId}/topicsV2
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException
+    def create_topic_v2(self, CreateTopicV2Request input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/topicsV2", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"TopicId\":" + quicksight_json_str(input.TopicId))
+        parts.append("\"Topic\":" + topic_v2_details_to_json(input.Topic))
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Tags\":" + quicksight_json_arr(e1))
+        if input.FolderArns.is_some():
+            auto u2 = input.FolderArns.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(quicksight_json_str(x3))
+            parts.append("\"FolderArns\":" + quicksight_json_arr(e3))
+        if input.CustomInstructions.is_some():
+            auto u4 = input.CustomInstructions.unwrap()
+            parts.append("\"CustomInstructions\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # CreateVPCConnection  POST /accounts/{AwsAccountId}/vpc-connections
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceExistsException, ThrottlingException, UnsupportedUserEditionException
+    def create_vpc_connection(self, CreateVPCConnectionRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/vpc-connections", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"VPCConnectionId\":" + quicksight_json_str(input.VPCConnectionId))
+        parts.append("\"Name\":" + quicksight_json_str(input.Name))
+        list[str] e0 = []
+        for x0 in input.SubnetIds:
+            e0.append(quicksight_json_str(x0))
+        parts.append("\"SubnetIds\":" + quicksight_json_arr(e0))
+        list[str] e1 = []
+        for x1 in input.SecurityGroupIds:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"SecurityGroupIds\":" + quicksight_json_arr(e1))
+        if input.DnsResolvers.is_some():
+            auto u2 = input.DnsResolvers.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(quicksight_json_str(x3))
+            parts.append("\"DnsResolvers\":" + quicksight_json_arr(e3))
+        parts.append("\"RoleArn\":" + quicksight_json_str(input.RoleArn))
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"Tags\":" + quicksight_json_arr(e5))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
     # DeleteAccountCustomPermission  DELETE /accounts/{AwsAccountId}/custom-permission
@@ -17625,6 +27336,81 @@ struct QuickSightClient:
         auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/vpc-connections/{VPCConnectionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
+    # GenerateEmbedUrlForAnonymousUser  POST /accounts/{AwsAccountId}/embed-url/anonymous-user
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, ResourceNotFoundException, SessionLifetimeInMinutesInvalidException, ThrottlingException, UnsupportedPricingPlanException, UnsupportedUserEditionException
+    def generate_embed_url_for_anonymous_user(self, GenerateEmbedUrlForAnonymousUserRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/embed-url/anonymous-user", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.SessionLifetimeInMinutes.is_some():
+            auto u0 = input.SessionLifetimeInMinutes.unwrap()
+            parts.append("\"SessionLifetimeInMinutes\":" + str(u0))
+        parts.append("\"Namespace\":" + quicksight_json_str(input.Namespace))
+        if input.SessionTags.is_some():
+            auto u1 = input.SessionTags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"SessionTags\":" + quicksight_json_arr(e2))
+        list[str] e3 = []
+        for x3 in input.AuthorizedResourceArns:
+            e3.append(quicksight_json_str(x3))
+        parts.append("\"AuthorizedResourceArns\":" + quicksight_json_arr(e3))
+        parts.append("\"ExperienceConfiguration\":" + anonymous_user_embedding_experience_configuration_to_json(input.ExperienceConfiguration))
+        if input.AllowedDomains.is_some():
+            auto u4 = input.AllowedDomains.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(quicksight_json_str(x5))
+            parts.append("\"AllowedDomains\":" + quicksight_json_arr(e5))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # GenerateEmbedUrlForRegisteredUser  POST /accounts/{AwsAccountId}/embed-url/registered-user
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, QuickSightUserNotFoundException, ResourceNotFoundException, SessionLifetimeInMinutesInvalidException, ThrottlingException, UnsupportedPricingPlanException, UnsupportedUserEditionException
+    def generate_embed_url_for_registered_user(self, GenerateEmbedUrlForRegisteredUserRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/embed-url/registered-user", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.SessionLifetimeInMinutes.is_some():
+            auto u0 = input.SessionLifetimeInMinutes.unwrap()
+            parts.append("\"SessionLifetimeInMinutes\":" + str(u0))
+        parts.append("\"UserArn\":" + quicksight_json_str(input.UserArn))
+        parts.append("\"ExperienceConfiguration\":" + input.ExperienceConfiguration.to_json())
+        if input.AllowedDomains.is_some():
+            auto u1 = input.AllowedDomains.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(quicksight_json_str(x2))
+            parts.append("\"AllowedDomains\":" + quicksight_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # GenerateEmbedUrlForRegisteredUserWithIdentity  POST /accounts/{AwsAccountId}/embed-url/registered-user-with-identity
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, QuickSightUserNotFoundException, ResourceNotFoundException, SessionLifetimeInMinutesInvalidException, ThrottlingException, UnsupportedPricingPlanException, UnsupportedUserEditionException
+    def generate_embed_url_for_registered_user_with_identity(self, GenerateEmbedUrlForRegisteredUserWithIdentityRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/embed-url/registered-user-with-identity", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.SessionLifetimeInMinutes.is_some():
+            auto u0 = input.SessionLifetimeInMinutes.unwrap()
+            parts.append("\"SessionLifetimeInMinutes\":" + str(u0))
+        parts.append("\"ExperienceConfiguration\":" + input.ExperienceConfiguration.to_json())
+        if input.AllowedDomains.is_some():
+            auto u1 = input.AllowedDomains.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(quicksight_json_str(x2))
+            parts.append("\"AllowedDomains\":" + quicksight_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
     # GetFlowMetadata  GET /accounts/{AwsAccountId}/flows/{FlowId}/metadata
     # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, ThrottlingException
     def get_flow_metadata(self, GetFlowMetadataInput input) -> str:
@@ -18319,6 +28105,38 @@ struct QuickSightClient:
         auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/users", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
+    # ListUsersIndexCapacity  POST /accounts/{awsAccountId}/quick-index/user-capacity
+    # errors: AccessDeniedException, InternalFailureException, InvalidRequestException, PreconditionNotMetException, ResourceNotFoundException, ThrottlingException
+    def list_users_index_capacity(self, ListUsersIndexCapacityRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["awsAccountId"] = input.awsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{awsAccountId}/quick-index/user-capacity", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.namespace.is_some():
+            auto u0 = input.namespace.unwrap()
+            parts.append("\"namespace\":" + quicksight_json_str(u0))
+        if input.filters.is_some():
+            auto u1 = input.filters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"filters\":" + quicksight_json_arr(e2))
+        if input.sortBy.is_some():
+            auto u3 = input.sortBy.unwrap()
+            parts.append("\"sortBy\":" + quicksight_json_str(u3))
+        if input.sortOrder.is_some():
+            auto u4 = input.sortOrder.unwrap()
+            parts.append("\"sortOrder\":" + u4.to_json())
+        if input.maxResults.is_some():
+            auto u5 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u5))
+        if input.nextToken.is_some():
+            auto u6 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + quicksight_json_str(u6))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
     # ListVPCConnections  GET /accounts/{AwsAccountId}/vpc-connections
     # errors: AccessDeniedException, InternalFailureException, InvalidNextTokenException, InvalidParameterValueException, ThrottlingException, UnsupportedUserEditionException
     def list_vpc_connections(self, ListVPCConnectionsRequest input) -> str:
@@ -18356,6 +28174,411 @@ struct QuickSightClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
+    # RegisterUser  POST /accounts/{AwsAccountId}/namespaces/{Namespace}/users
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, LimitExceededException, PreconditionNotMetException, ResourceExistsException, ResourceNotFoundException, ResourceUnavailableException, ThrottlingException
+    def register_user(self, RegisterUserRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["Namespace"] = input.Namespace
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/users", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"IdentityType\":" + input.IdentityType.to_json())
+        parts.append("\"Email\":" + quicksight_json_str(input.Email))
+        parts.append("\"UserRole\":" + input.UserRole.to_json())
+        if input.IamArn.is_some():
+            auto u0 = input.IamArn.unwrap()
+            parts.append("\"IamArn\":" + quicksight_json_str(u0))
+        if input.SessionName.is_some():
+            auto u1 = input.SessionName.unwrap()
+            parts.append("\"SessionName\":" + quicksight_json_str(u1))
+        if input.UserName.is_some():
+            auto u2 = input.UserName.unwrap()
+            parts.append("\"UserName\":" + quicksight_json_str(u2))
+        if input.CustomPermissionsName.is_some():
+            auto u3 = input.CustomPermissionsName.unwrap()
+            parts.append("\"CustomPermissionsName\":" + quicksight_json_str(u3))
+        if input.ExternalLoginFederationProviderType.is_some():
+            auto u4 = input.ExternalLoginFederationProviderType.unwrap()
+            parts.append("\"ExternalLoginFederationProviderType\":" + quicksight_json_str(u4))
+        if input.CustomFederationProviderUrl.is_some():
+            auto u5 = input.CustomFederationProviderUrl.unwrap()
+            parts.append("\"CustomFederationProviderUrl\":" + quicksight_json_str(u5))
+        if input.ExternalLoginId.is_some():
+            auto u6 = input.ExternalLoginId.unwrap()
+            parts.append("\"ExternalLoginId\":" + quicksight_json_str(u6))
+        if input.Tags.is_some():
+            auto u7 = input.Tags.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"Tags\":" + quicksight_json_arr(e8))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # SearchActionConnectors  POST /accounts/{AwsAccountId}/search/action-connectors
+    # errors: AccessDeniedException, InvalidNextTokenException, InvalidParameterValueException, ThrottlingException
+    def search_action_connectors(self, SearchActionConnectorsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        dict[str, str] query = {}
+        if input.MaxResults.is_some():
+            query["max-results"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["next-token"] = input.NextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/action-connectors", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Filters:
+            e0.append(x0.to_json())
+        parts.append("\"Filters\":" + quicksight_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # SearchAgents  POST /accounts/{AwsAccountId}/search/agents
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, PreconditionNotMetException, ResourceExistsException, ThrottlingException
+    def search_agents(self, SearchAgentsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        dict[str, str] query = {}
+        if input.MaxResults.is_some():
+            query["max-results"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["next-token"] = input.NextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/agents", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Filters:
+            e0.append(x0.to_json())
+        parts.append("\"Filters\":" + quicksight_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # SearchAnalyses  POST /accounts/{AwsAccountId}/search/analyses
+    # errors: InternalFailureException, InvalidNextTokenException, InvalidParameterValueException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def search_analyses(self, SearchAnalysesRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/analyses", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Filters:
+            e0.append(x0.to_json())
+        parts.append("\"Filters\":" + quicksight_json_arr(e0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + quicksight_json_str(u1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # SearchApps  POST /accounts/{AwsAccountId}/search/apps
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterException, ThrottlingException
+    def search_apps(self, SearchAppsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/apps", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Filters:
+            e0.append(x0.to_json())
+        parts.append("\"Filters\":" + quicksight_json_arr(e0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.NextToken.is_some():
+            auto u2 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + quicksight_json_str(u2))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # SearchDashboards  POST /accounts/{AwsAccountId}/search/dashboards
+    # errors: InternalFailureException, InvalidNextTokenException, InvalidParameterValueException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def search_dashboards(self, SearchDashboardsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/dashboards", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Filters:
+            e0.append(x0.to_json())
+        parts.append("\"Filters\":" + quicksight_json_arr(e0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + quicksight_json_str(u1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # SearchDataSets  POST /accounts/{AwsAccountId}/search/data-sets
+    # errors: AccessDeniedException, InternalFailureException, InvalidNextTokenException, InvalidParameterValueException, ResourceNotFoundException, ThrottlingException
+    def search_data_sets(self, SearchDataSetsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/data-sets", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Filters:
+            e0.append(x0.to_json())
+        parts.append("\"Filters\":" + quicksight_json_arr(e0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + quicksight_json_str(u1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # SearchDataSources  POST /accounts/{AwsAccountId}/search/data-sources
+    # errors: AccessDeniedException, InternalFailureException, InvalidNextTokenException, InvalidParameterValueException, ResourceNotFoundException, ThrottlingException
+    def search_data_sources(self, SearchDataSourcesRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/data-sources", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Filters:
+            e0.append(x0.to_json())
+        parts.append("\"Filters\":" + quicksight_json_arr(e0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + quicksight_json_str(u1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # SearchFlows  POST /accounts/{AwsAccountId}/flows/searchFlows
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, ThrottlingException
+    def search_flows(self, SearchFlowsInput input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/flows/searchFlows", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Filters:
+            e0.append(x0.to_json())
+        parts.append("\"Filters\":" + quicksight_json_arr(e0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + quicksight_json_str(u1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # SearchFolders  POST /accounts/{AwsAccountId}/search/folders
+    # errors: AccessDeniedException, InternalFailureException, InvalidNextTokenException, InvalidParameterValueException, InvalidRequestException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def search_folders(self, SearchFoldersRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/folders", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Filters:
+            e0.append(x0.to_json())
+        parts.append("\"Filters\":" + quicksight_json_arr(e0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + quicksight_json_str(u1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # SearchGroups  POST /accounts/{AwsAccountId}/namespaces/{Namespace}/groups-search
+    # errors: AccessDeniedException, InternalFailureException, InvalidNextTokenException, InvalidParameterValueException, PreconditionNotMetException, ResourceNotFoundException, ResourceUnavailableException, ThrottlingException
+    def search_groups(self, SearchGroupsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["Namespace"] = input.Namespace
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["next-token"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["max-results"] = str(input.MaxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/groups-search", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Filters:
+            e0.append(x0.to_json())
+        parts.append("\"Filters\":" + quicksight_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # SearchKnowledgeBases  POST /v1/accounts/{AwsAccountId}/search/knowledge-bases
+    # errors: AccessDeniedException, InternalFailureException, InvalidNextTokenException, InvalidParameterValueException, PreconditionNotMetException, ResourceNotFoundException, ThrottlingException
+    def search_knowledge_bases(self, SearchKnowledgeBasesRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/accounts/{AwsAccountId}/search/knowledge-bases", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + quicksight_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.Filters.is_some():
+            auto u2 = input.Filters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"Filters\":" + quicksight_json_arr(e3))
+        if input.SortBy.is_some():
+            auto u4 = input.SortBy.unwrap()
+            parts.append("\"SortBy\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # SearchSpaces  POST /v1/accounts/{AwsAccountId}/search/spaces
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, ResourceNotFoundException, ThrottlingException
+    def search_spaces(self, SearchSpacesRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/accounts/{AwsAccountId}/search/spaces", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + quicksight_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        list[str] e2 = []
+        for x2 in input.Filters:
+            e2.append(x2.to_json())
+        parts.append("\"Filters\":" + quicksight_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # SearchTopics  POST /accounts/{AwsAccountId}/search/topics
+    # errors: AccessDeniedException, InternalFailureException, InvalidNextTokenException, InvalidParameterValueException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def search_topics(self, SearchTopicsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/topics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Filters:
+            e0.append(x0.to_json())
+        parts.append("\"Filters\":" + quicksight_json_arr(e0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + quicksight_json_str(u1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # SearchTopicsV2  POST /accounts/{AwsAccountId}/search/topicsV2
+    # errors: AccessDeniedException, InternalFailureException, InvalidNextTokenException, InvalidParameterValueException, ResourceNotFoundException, ThrottlingException
+    def search_topics_v2(self, SearchTopicsV2Request input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/topicsV2", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Filters:
+            e0.append(x0.to_json())
+        parts.append("\"Filters\":" + quicksight_json_arr(e0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + quicksight_json_str(u1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # StartAssetBundleExportJob  POST /accounts/{AwsAccountId}/asset-bundle-export-jobs/export
+    # errors: AccessDeniedException, ConflictException, InvalidParameterValueException, LimitExceededException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def start_asset_bundle_export_job(self, StartAssetBundleExportJobRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/asset-bundle-export-jobs/export", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"AssetBundleExportJobId\":" + quicksight_json_str(input.AssetBundleExportJobId))
+        list[str] e0 = []
+        for x0 in input.ResourceArns:
+            e0.append(quicksight_json_str(x0))
+        parts.append("\"ResourceArns\":" + quicksight_json_arr(e0))
+        if input.IncludeAllDependencies.is_some():
+            auto u1 = input.IncludeAllDependencies.unwrap()
+            parts.append("\"IncludeAllDependencies\":" + json.dumps(JsonValue.Bool(u1)))
+        parts.append("\"ExportFormat\":" + input.ExportFormat.to_json())
+        if input.CloudFormationOverridePropertyConfiguration.is_some():
+            auto u2 = input.CloudFormationOverridePropertyConfiguration.unwrap()
+            parts.append("\"CloudFormationOverridePropertyConfiguration\":" + asset_bundle_cloud_formation_override_property_configuration_to_json(u2))
+        if input.IncludePermissions.is_some():
+            auto u3 = input.IncludePermissions.unwrap()
+            parts.append("\"IncludePermissions\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.IncludeTags.is_some():
+            auto u4 = input.IncludeTags.unwrap()
+            parts.append("\"IncludeTags\":" + json.dumps(JsonValue.Bool(u4)))
+        if input.ValidationStrategy.is_some():
+            auto u5 = input.ValidationStrategy.unwrap()
+            parts.append("\"ValidationStrategy\":" + u5.to_json())
+        if input.IncludeFolderMemberships.is_some():
+            auto u6 = input.IncludeFolderMemberships.unwrap()
+            parts.append("\"IncludeFolderMemberships\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.IncludeFolderMembers.is_some():
+            auto u7 = input.IncludeFolderMembers.unwrap()
+            parts.append("\"IncludeFolderMembers\":" + u7.to_json())
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # StartAssetBundleImportJob  POST /accounts/{AwsAccountId}/asset-bundle-import-jobs/import
+    # errors: AccessDeniedException, ConflictException, InvalidParameterValueException, LimitExceededException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def start_asset_bundle_import_job(self, StartAssetBundleImportJobRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/asset-bundle-import-jobs/import", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"AssetBundleImportJobId\":" + quicksight_json_str(input.AssetBundleImportJobId))
+        parts.append("\"AssetBundleImportSource\":" + input.AssetBundleImportSource.to_json())
+        if input.OverrideParameters.is_some():
+            auto u0 = input.OverrideParameters.unwrap()
+            parts.append("\"OverrideParameters\":" + asset_bundle_import_job_override_parameters_to_json(u0))
+        if input.FailureAction.is_some():
+            auto u1 = input.FailureAction.unwrap()
+            parts.append("\"FailureAction\":" + u1.to_json())
+        if input.OverridePermissions.is_some():
+            auto u2 = input.OverridePermissions.unwrap()
+            parts.append("\"OverridePermissions\":" + asset_bundle_import_job_override_permissions_to_json(u2))
+        if input.OverrideTags.is_some():
+            auto u3 = input.OverrideTags.unwrap()
+            parts.append("\"OverrideTags\":" + asset_bundle_import_job_override_tags_to_json(u3))
+        if input.OverrideValidationStrategy.is_some():
+            auto u4 = input.OverrideValidationStrategy.unwrap()
+            parts.append("\"OverrideValidationStrategy\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
     # StartAutomationJob  POST /accounts/{AwsAccountId}/automation-groups/{AutomationGroupId}/automations/{AutomationId}/jobs
     # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceNotFoundException, ThrottlingException
     def start_automation_job(self, StartAutomationJobRequest input) -> str:
@@ -18369,6 +28592,23 @@ struct QuickSightClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
+    # StartDashboardSnapshotJob  POST /accounts/{AwsAccountId}/dashboards/{DashboardId}/snapshot-jobs
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException, UnsupportedPricingPlanException, UnsupportedUserEditionException
+    def start_dashboard_snapshot_job(self, StartDashboardSnapshotJobRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["DashboardId"] = input.DashboardId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/snapshot-jobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"SnapshotJobId\":" + quicksight_json_str(input.SnapshotJobId))
+        if input.UserConfiguration.is_some():
+            auto u0 = input.UserConfiguration.unwrap()
+            parts.append("\"UserConfiguration\":" + snapshot_user_configuration_to_json(u0))
+        parts.append("\"SnapshotConfiguration\":" + snapshot_configuration_to_json(input.SnapshotConfiguration))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
     # StartDashboardSnapshotJobSchedule  POST /accounts/{AwsAccountId}/dashboards/{DashboardId}/schedules/{ScheduleId}
     # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
     def start_dashboard_snapshot_job_schedule(self, StartDashboardSnapshotJobScheduleRequest input) -> str:
@@ -18379,6 +28619,21 @@ struct QuickSightClient:
         labels["ScheduleId"] = input.ScheduleId
         auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/schedules/{ScheduleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
+
+    # TagResource  POST /resources/{ResourceArn}/tags
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/resources/{ResourceArn}/tags", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Tags:
+            e0.append(x0.to_json())
+        parts.append("\"Tags\":" + quicksight_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
     # UpdateAccountCustomPermission  PUT /accounts/{AwsAccountId}/custom-permission
     # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, ResourceNotFoundException, ThrottlingException
@@ -18428,6 +28683,188 @@ struct QuickSightClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
+    # UpdateActionConnectorPermissions  POST /accounts/{AwsAccountId}/action-connectors/{ActionConnectorId}/permissions
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def update_action_connector_permissions(self, UpdateActionConnectorPermissionsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["ActionConnectorId"] = input.ActionConnectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/action-connectors/{ActionConnectorId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.GrantPermissions.is_some():
+            auto u0 = input.GrantPermissions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(resource_permission_to_json(x1))
+            parts.append("\"GrantPermissions\":" + quicksight_json_arr(e1))
+        if input.RevokePermissions.is_some():
+            auto u2 = input.RevokePermissions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(resource_permission_to_json(x3))
+            parts.append("\"RevokePermissions\":" + quicksight_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateAgent  PUT /accounts/{AwsAccountId}/agents/{AgentId}
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, PreconditionNotMetException, ResourceNotFoundException, ThrottlingException
+    def update_agent(self, UpdateAgentRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AgentId"] = input.AgentId
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/agents/{AgentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + quicksight_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + quicksight_json_str(u0))
+        if input.IconId.is_some():
+            auto u1 = input.IconId.unwrap()
+            parts.append("\"IconId\":" + quicksight_json_str(u1))
+        if input.StarterPrompts.is_some():
+            auto u2 = input.StarterPrompts.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(quicksight_json_str(x3))
+            parts.append("\"StarterPrompts\":" + quicksight_json_arr(e3))
+        if input.WelcomeMessage.is_some():
+            auto u4 = input.WelcomeMessage.unwrap()
+            parts.append("\"WelcomeMessage\":" + quicksight_json_str(u4))
+        if input.CustomPromptInput.is_some():
+            auto u5 = input.CustomPromptInput.unwrap()
+            parts.append("\"CustomPromptInput\":" + u5.to_json())
+        if input.SpacesToAdd.is_some():
+            auto u6 = input.SpacesToAdd.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(quicksight_json_str(x7))
+            parts.append("\"SpacesToAdd\":" + quicksight_json_arr(e7))
+        if input.SpacesToRemove.is_some():
+            auto u8 = input.SpacesToRemove.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(quicksight_json_str(x9))
+            parts.append("\"SpacesToRemove\":" + quicksight_json_arr(e9))
+        if input.ActionConnectorsToAdd.is_some():
+            auto u10 = input.ActionConnectorsToAdd.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(quicksight_json_str(x11))
+            parts.append("\"ActionConnectorsToAdd\":" + quicksight_json_arr(e11))
+        if input.ActionConnectorsToRemove.is_some():
+            auto u12 = input.ActionConnectorsToRemove.unwrap()
+            list[str] e13 = []
+            for x13 in u12:
+                e13.append(quicksight_json_str(x13))
+            parts.append("\"ActionConnectorsToRemove\":" + quicksight_json_arr(e13))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateAgentPermissions  PUT /accounts/{AwsAccountId}/agents/{AgentId}/permissions
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, PreconditionNotMetException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def update_agent_permissions(self, UpdateAgentPermissionsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AgentId"] = input.AgentId
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/agents/{AgentId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.GrantPermissions.is_some():
+            auto u0 = input.GrantPermissions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(resource_permission_to_json(x1))
+            parts.append("\"GrantPermissions\":" + quicksight_json_arr(e1))
+        if input.RevokePermissions.is_some():
+            auto u2 = input.RevokePermissions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(resource_permission_to_json(x3))
+            parts.append("\"RevokePermissions\":" + quicksight_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateAnalysis  PUT /accounts/{AwsAccountId}/analyses/{AnalysisId}
+    # errors: ConflictException, InternalFailureException, InvalidParameterValueException, ResourceExistsException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def update_analysis(self, UpdateAnalysisRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["AnalysisId"] = input.AnalysisId
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/analyses/{AnalysisId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + quicksight_json_str(input.Name))
+        if input.Parameters.is_some():
+            auto u0 = input.Parameters.unwrap()
+            parts.append("\"Parameters\":" + parameters_to_json(u0))
+        if input.SourceEntity.is_some():
+            auto u1 = input.SourceEntity.unwrap()
+            parts.append("\"SourceEntity\":" + analysis_source_entity_to_json(u1))
+        if input.ThemeArn.is_some():
+            auto u2 = input.ThemeArn.unwrap()
+            parts.append("\"ThemeArn\":" + quicksight_json_str(u2))
+        if input.Definition.is_some():
+            auto u3 = input.Definition.unwrap()
+            parts.append("\"Definition\":" + analysis_definition_to_json(u3))
+        if input.ValidationStrategy.is_some():
+            auto u4 = input.ValidationStrategy.unwrap()
+            parts.append("\"ValidationStrategy\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateAnalysisPermissions  PUT /accounts/{AwsAccountId}/analyses/{AnalysisId}/permissions
+    # errors: ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def update_analysis_permissions(self, UpdateAnalysisPermissionsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["AnalysisId"] = input.AnalysisId
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/analyses/{AnalysisId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.GrantPermissions.is_some():
+            auto u0 = input.GrantPermissions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(resource_permission_to_json(x1))
+            parts.append("\"GrantPermissions\":" + quicksight_json_arr(e1))
+        if input.RevokePermissions.is_some():
+            auto u2 = input.RevokePermissions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(resource_permission_to_json(x3))
+            parts.append("\"RevokePermissions\":" + quicksight_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateAppPermissions  PUT /accounts/{AwsAccountId}/apps/{AppId}/permissions
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterException, ResourceNotFoundException, ThrottlingException
+    def update_app_permissions(self, UpdateAppPermissionsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["AppId"] = input.AppId
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/apps/{AppId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.GrantPermissions.is_some():
+            auto u0 = input.GrantPermissions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(resource_permission_to_json(x1))
+            parts.append("\"GrantPermissions\":" + quicksight_json_arr(e1))
+        if input.RevokePermissions.is_some():
+            auto u2 = input.RevokePermissions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(resource_permission_to_json(x3))
+            parts.append("\"RevokePermissions\":" + quicksight_json_arr(e3))
+        if input.Visibility.is_some():
+            auto u4 = input.Visibility.unwrap()
+            parts.append("\"Visibility\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
     # UpdateApplicationWithTokenExchangeGrant  PUT /accounts/{AwsAccountId}/application-with-token-exchange-grant
     # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
     def update_application_with_token_exchange_grant(self, UpdateApplicationWithTokenExchangeGrantRequest input) -> str:
@@ -18438,6 +28875,44 @@ struct QuickSightClient:
         query["namespace"] = input.Namespace
         auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/application-with-token-exchange-grant", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
+
+    # UpdateApprovalPolicy  PATCH /governance/approvalworkflows/policies/{PolicyId}
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, ResourceNotFoundException, ThrottlingException
+    def update_approval_policy(self, UpdateApprovalPolicyRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["PolicyId"] = input.PolicyId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/governance/approvalworkflows/policies/{PolicyId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + quicksight_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + quicksight_json_str(u1))
+        if input.Actions.is_some():
+            auto u2 = input.Actions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(quicksight_json_str(x3))
+            parts.append("\"Actions\":" + quicksight_json_arr(e3))
+        if input.AssetTypes.is_some():
+            auto u4 = input.AssetTypes.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"AssetTypes\":" + quicksight_json_arr(e5))
+        if input.ApplicableTo.is_some():
+            auto u6 = input.ApplicableTo.unwrap()
+            parts.append("\"ApplicableTo\":" + applicable_to_to_json(u6))
+        if input.ApprovalGroups.is_some():
+            auto u7 = input.ApprovalGroups.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(quicksight_json_str(x8))
+            parts.append("\"ApprovalGroups\":" + quicksight_json_arr(e8))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
     # UpdateBrand  PUT /accounts/{AwsAccountId}/brands/{BrandId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
@@ -18474,6 +28949,110 @@ struct QuickSightClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
+    # UpdateCustomPermissions  PUT /accounts/{AwsAccountId}/custom-permissions/{CustomPermissionsName}
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, PreconditionNotMetException, ResourceNotFoundException, ResourceUnavailableException, ThrottlingException
+    def update_custom_permissions(self, UpdateCustomPermissionsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["CustomPermissionsName"] = input.CustomPermissionsName
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/custom-permissions/{CustomPermissionsName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Capabilities.is_some():
+            auto u0 = input.Capabilities.unwrap()
+            parts.append("\"Capabilities\":" + u0.to_json())
+        if input.Governance.is_some():
+            auto u1 = input.Governance.unwrap()
+            parts.append("\"Governance\":" + governance_to_json(u1))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateDashboard  PUT /accounts/{AwsAccountId}/dashboards/{DashboardId}
+    # errors: ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def update_dashboard(self, UpdateDashboardRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["DashboardId"] = input.DashboardId
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + quicksight_json_str(input.Name))
+        if input.SourceEntity.is_some():
+            auto u0 = input.SourceEntity.unwrap()
+            parts.append("\"SourceEntity\":" + dashboard_source_entity_to_json(u0))
+        if input.Parameters.is_some():
+            auto u1 = input.Parameters.unwrap()
+            parts.append("\"Parameters\":" + parameters_to_json(u1))
+        if input.VersionDescription.is_some():
+            auto u2 = input.VersionDescription.unwrap()
+            parts.append("\"VersionDescription\":" + quicksight_json_str(u2))
+        if input.DashboardPublishOptions.is_some():
+            auto u3 = input.DashboardPublishOptions.unwrap()
+            parts.append("\"DashboardPublishOptions\":" + u3.to_json())
+        if input.ThemeArn.is_some():
+            auto u4 = input.ThemeArn.unwrap()
+            parts.append("\"ThemeArn\":" + quicksight_json_str(u4))
+        if input.Definition.is_some():
+            auto u5 = input.Definition.unwrap()
+            parts.append("\"Definition\":" + dashboard_version_definition_to_json(u5))
+        if input.ValidationStrategy.is_some():
+            auto u6 = input.ValidationStrategy.unwrap()
+            parts.append("\"ValidationStrategy\":" + u6.to_json())
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateDashboardLinks  PUT /accounts/{AwsAccountId}/dashboards/{DashboardId}/linked-entities
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def update_dashboard_links(self, UpdateDashboardLinksRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["DashboardId"] = input.DashboardId
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/linked-entities", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.LinkEntities:
+            e0.append(quicksight_json_str(x0))
+        parts.append("\"LinkEntities\":" + quicksight_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateDashboardPermissions  PUT /accounts/{AwsAccountId}/dashboards/{DashboardId}/permissions
+    # errors: ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def update_dashboard_permissions(self, UpdateDashboardPermissionsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["DashboardId"] = input.DashboardId
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.GrantPermissions.is_some():
+            auto u0 = input.GrantPermissions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(resource_permission_to_json(x1))
+            parts.append("\"GrantPermissions\":" + quicksight_json_arr(e1))
+        if input.RevokePermissions.is_some():
+            auto u2 = input.RevokePermissions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(resource_permission_to_json(x3))
+            parts.append("\"RevokePermissions\":" + quicksight_json_arr(e3))
+        if input.GrantLinkPermissions.is_some():
+            auto u4 = input.GrantLinkPermissions.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(resource_permission_to_json(x5))
+            parts.append("\"GrantLinkPermissions\":" + quicksight_json_arr(e5))
+        if input.RevokeLinkPermissions.is_some():
+            auto u6 = input.RevokeLinkPermissions.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(resource_permission_to_json(x7))
+            parts.append("\"RevokeLinkPermissions\":" + quicksight_json_arr(e7))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
     # UpdateDashboardPublishedVersion  PUT /accounts/{AwsAccountId}/dashboards/{DashboardId}/versions/{VersionNumber}
     # errors: ConflictException, InternalFailureException, InvalidParameterValueException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
     def update_dashboard_published_version(self, UpdateDashboardPublishedVersionRequest input) -> str:
@@ -18496,6 +29075,145 @@ struct QuickSightClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
+    # UpdateDataSet  PUT /accounts/{AwsAccountId}/data-sets/{DataSetId}
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidDataSetParameterValueException, InvalidParameterValueException, LimitExceededException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def update_data_set(self, UpdateDataSetRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["DataSetId"] = input.DataSetId
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + quicksight_json_str(input.Name))
+        list[str] m0 = []
+        for k0 in sorted(input.PhysicalTableMap.keys()):
+            m0.append(quicksight_json_str(k0) + ":" + physical_table_to_json(input.PhysicalTableMap[k0]))
+        parts.append("\"PhysicalTableMap\":" + quicksight_json_obj(m0))
+        if input.LogicalTableMap.is_some():
+            auto u1 = input.LogicalTableMap.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(quicksight_json_str(k2) + ":" + logical_table_to_json(u1[k2]))
+            parts.append("\"LogicalTableMap\":" + quicksight_json_obj(m2))
+        parts.append("\"ImportMode\":" + input.ImportMode.to_json())
+        if input.ColumnGroups.is_some():
+            auto u3 = input.ColumnGroups.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(column_group_to_json(x4))
+            parts.append("\"ColumnGroups\":" + quicksight_json_arr(e4))
+        if input.FieldFolders.is_some():
+            auto u5 = input.FieldFolders.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(quicksight_json_str(k6) + ":" + field_folder_to_json(u5[k6]))
+            parts.append("\"FieldFolders\":" + quicksight_json_obj(m6))
+        if input.RowLevelPermissionDataSet.is_some():
+            auto u7 = input.RowLevelPermissionDataSet.unwrap()
+            parts.append("\"RowLevelPermissionDataSet\":" + u7.to_json())
+        if input.RowLevelPermissionTagConfiguration.is_some():
+            auto u8 = input.RowLevelPermissionTagConfiguration.unwrap()
+            parts.append("\"RowLevelPermissionTagConfiguration\":" + row_level_permission_tag_configuration_to_json(u8))
+        if input.ColumnLevelPermissionRules.is_some():
+            auto u9 = input.ColumnLevelPermissionRules.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(column_level_permission_rule_to_json(x10))
+            parts.append("\"ColumnLevelPermissionRules\":" + quicksight_json_arr(e10))
+        if input.DataSetUsageConfiguration.is_some():
+            auto u11 = input.DataSetUsageConfiguration.unwrap()
+            parts.append("\"DataSetUsageConfiguration\":" + u11.to_json())
+        if input.DatasetParameters.is_some():
+            auto u12 = input.DatasetParameters.unwrap()
+            list[str] e13 = []
+            for x13 in u12:
+                e13.append(dataset_parameter_to_json(x13))
+            parts.append("\"DatasetParameters\":" + quicksight_json_arr(e13))
+        if input.PerformanceConfiguration.is_some():
+            auto u14 = input.PerformanceConfiguration.unwrap()
+            parts.append("\"PerformanceConfiguration\":" + performance_configuration_to_json(u14))
+        if input.DataPrepConfiguration.is_some():
+            auto u15 = input.DataPrepConfiguration.unwrap()
+            parts.append("\"DataPrepConfiguration\":" + data_prep_configuration_to_json(u15))
+        if input.SemanticModelConfiguration.is_some():
+            auto u16 = input.SemanticModelConfiguration.unwrap()
+            parts.append("\"SemanticModelConfiguration\":" + semantic_model_configuration_to_json(u16))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateDataSetPermissions  POST /accounts/{AwsAccountId}/data-sets/{DataSetId}/permissions
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, ResourceNotFoundException, ThrottlingException
+    def update_data_set_permissions(self, UpdateDataSetPermissionsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["DataSetId"] = input.DataSetId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.GrantPermissions.is_some():
+            auto u0 = input.GrantPermissions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(resource_permission_to_json(x1))
+            parts.append("\"GrantPermissions\":" + quicksight_json_arr(e1))
+        if input.RevokePermissions.is_some():
+            auto u2 = input.RevokePermissions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(resource_permission_to_json(x3))
+            parts.append("\"RevokePermissions\":" + quicksight_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateDataSource  PUT /accounts/{AwsAccountId}/data-sources/{DataSourceId}
+    # errors: AccessDeniedException, ConflictException, CustomerManagedKeyUnavailableException, InternalFailureException, InvalidParameterValueException, ResourceNotFoundException, ThrottlingException
+    def update_data_source(self, UpdateDataSourceRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["DataSourceId"] = input.DataSourceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/data-sources/{DataSourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + quicksight_json_str(input.Name))
+        if input.DataSourceParameters.is_some():
+            auto u0 = input.DataSourceParameters.unwrap()
+            parts.append("\"DataSourceParameters\":" + data_source_parameters_to_json(u0))
+        if input.Credentials.is_some():
+            auto u1 = input.Credentials.unwrap()
+            parts.append("\"Credentials\":" + data_source_credentials_to_json(u1))
+        if input.VpcConnectionProperties.is_some():
+            auto u2 = input.VpcConnectionProperties.unwrap()
+            parts.append("\"VpcConnectionProperties\":" + u2.to_json())
+        if input.SslProperties.is_some():
+            auto u3 = input.SslProperties.unwrap()
+            parts.append("\"SslProperties\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateDataSourcePermissions  POST /accounts/{AwsAccountId}/data-sources/{DataSourceId}/permissions
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, ResourceNotFoundException, ThrottlingException
+    def update_data_source_permissions(self, UpdateDataSourcePermissionsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["DataSourceId"] = input.DataSourceId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/data-sources/{DataSourceId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.GrantPermissions.is_some():
+            auto u0 = input.GrantPermissions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(resource_permission_to_json(x1))
+            parts.append("\"GrantPermissions\":" + quicksight_json_arr(e1))
+        if input.RevokePermissions.is_some():
+            auto u2 = input.RevokePermissions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(resource_permission_to_json(x3))
+            parts.append("\"RevokePermissions\":" + quicksight_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
     # UpdateDefaultQBusinessApplication  PUT /accounts/{AwsAccountId}/default-qbusiness-application
     # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, ResourceNotFoundException, ThrottlingException
     def update_default_q_business_application(self, UpdateDefaultQBusinessApplicationRequest input) -> str:
@@ -18510,6 +29228,33 @@ struct QuickSightClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
+    # UpdateDlpSetting  PUT /accounts/{AwsAccountId}/data-loss-prevention/settings/{DlpSettingId}
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_dlp_setting(self, UpdateDlpSettingRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["DlpSettingId"] = input.DlpSettingId
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/data-loss-prevention/settings/{DlpSettingId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + quicksight_json_str(u0))
+        if input.ProviderType.is_some():
+            auto u1 = input.ProviderType.unwrap()
+            parts.append("\"ProviderType\":" + quicksight_json_str(u1))
+        if input.ProviderConfig.is_some():
+            auto u2 = input.ProviderConfig.unwrap()
+            parts.append("\"ProviderConfig\":" + provider_config_to_json(u2))
+        if input.ProviderOutageAction.is_some():
+            auto u3 = input.ProviderOutageAction.unwrap()
+            parts.append("\"ProviderOutageAction\":" + u3.to_json())
+        if input.Enabled.is_some():
+            auto u4 = input.Enabled.unwrap()
+            parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(u4)))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
     # UpdateFlow  PUT /accounts/{AwsAccountId}/flows/{FlowId}
     # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceNotFoundException, ThrottlingException
     def update_flow(self, UpdateFlowRequest input) -> str:
@@ -18522,6 +29267,30 @@ struct QuickSightClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
+    # UpdateFlowPermissions  PUT /accounts/{AwsAccountId}/flows/{FlowId}/permissions
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, ThrottlingException
+    def update_flow_permissions(self, UpdateFlowPermissionsInput input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["FlowId"] = input.FlowId
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/flows/{FlowId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.GrantPermissions.is_some():
+            auto u0 = input.GrantPermissions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(permission_to_json(x1))
+            parts.append("\"GrantPermissions\":" + quicksight_json_arr(e1))
+        if input.RevokePermissions.is_some():
+            auto u2 = input.RevokePermissions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(permission_to_json(x3))
+            parts.append("\"RevokePermissions\":" + quicksight_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
     # UpdateFolder  PUT /accounts/{AwsAccountId}/folders/{FolderId}
     # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, ResourceExistsException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
     def update_folder(self, UpdateFolderRequest input) -> str:
@@ -18532,6 +29301,30 @@ struct QuickSightClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/folders/{FolderId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateFolderDocument(Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateFolderPermissions  PUT /accounts/{AwsAccountId}/folders/{FolderId}/permissions
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def update_folder_permissions(self, UpdateFolderPermissionsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["FolderId"] = input.FolderId
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/folders/{FolderId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.GrantPermissions.is_some():
+            auto u0 = input.GrantPermissions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(resource_permission_to_json(x1))
+            parts.append("\"GrantPermissions\":" + quicksight_json_arr(e1))
+        if input.RevokePermissions.is_some():
+            auto u2 = input.RevokePermissions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(resource_permission_to_json(x3))
+            parts.append("\"RevokePermissions\":" + quicksight_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
     # UpdateGroup  PUT /accounts/{AwsAccountId}/namespaces/{Namespace}/groups/{GroupName}
@@ -18547,6 +29340,99 @@ struct QuickSightClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
+    # UpdateIAMPolicyAssignment  PUT /accounts/{AwsAccountId}/namespaces/{Namespace}/iam-policy-assignments/{AssignmentName}
+    # errors: AccessDeniedException, ConcurrentUpdatingException, InternalFailureException, InvalidParameterValueException, ResourceExistsException, ResourceNotFoundException, ThrottlingException
+    def update_iam_policy_assignment(self, UpdateIAMPolicyAssignmentRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["AssignmentName"] = input.AssignmentName
+        labels["Namespace"] = input.Namespace
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/iam-policy-assignments/{AssignmentName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AssignmentStatus.is_some():
+            auto u0 = input.AssignmentStatus.unwrap()
+            parts.append("\"AssignmentStatus\":" + u0.to_json())
+        if input.PolicyArn.is_some():
+            auto u1 = input.PolicyArn.unwrap()
+            parts.append("\"PolicyArn\":" + quicksight_json_str(u1))
+        if input.Identities.is_some():
+            auto u2 = input.Identities.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                list[str] e4 = []
+                for x4 in u2[k3]:
+                    e4.append(quicksight_json_str(x4))
+                m3.append(quicksight_json_str(k3) + ":" + quicksight_json_arr(e4))
+            parts.append("\"Identities\":" + quicksight_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateIdentityPropagationConfig  POST /accounts/{AwsAccountId}/identity-propagation-config/{Service}
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, ResourceNotFoundException, ThrottlingException
+    def update_identity_propagation_config(self, UpdateIdentityPropagationConfigRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["Service"] = input.Service
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/identity-propagation-config/{Service}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AuthorizedTargets.is_some():
+            auto u0 = input.AuthorizedTargets.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(quicksight_json_str(x1))
+            parts.append("\"AuthorizedTargets\":" + quicksight_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateIpRestriction  POST /accounts/{AwsAccountId}/ip-restriction
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def update_ip_restriction(self, UpdateIpRestrictionRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/ip-restriction", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.IpRestrictionRuleMap.is_some():
+            auto u0 = input.IpRestrictionRuleMap.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(quicksight_json_str(k1) + ":" + quicksight_json_str(u0[k1]))
+            parts.append("\"IpRestrictionRuleMap\":" + quicksight_json_obj(m1))
+        if input.VpcIdRestrictionRuleMap.is_some():
+            auto u2 = input.VpcIdRestrictionRuleMap.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(quicksight_json_str(k3) + ":" + quicksight_json_str(u2[k3]))
+            parts.append("\"VpcIdRestrictionRuleMap\":" + quicksight_json_obj(m3))
+        if input.VpcEndpointIdRestrictionRuleMap.is_some():
+            auto u4 = input.VpcEndpointIdRestrictionRuleMap.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(quicksight_json_str(k5) + ":" + quicksight_json_str(u4[k5]))
+            parts.append("\"VpcEndpointIdRestrictionRuleMap\":" + quicksight_json_obj(m5))
+        if input.Enabled.is_some():
+            auto u6 = input.Enabled.unwrap()
+            parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(u6)))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateKeyRegistration  POST /accounts/{AwsAccountId}/key-registration
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, ThrottlingException
+    def update_key_registration(self, UpdateKeyRegistrationRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/key-registration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.KeyRegistration:
+            e0.append(x0.to_json())
+        parts.append("\"KeyRegistration\":" + quicksight_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
     # UpdateKnowledgeBase  POST /v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}
     # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, InvalidRequestException, LimitExceededException, PreconditionNotMetException, ResourceNotFoundException, ThrottlingException
     def update_knowledge_base(self, UpdateKnowledgeBaseRequest input) -> str:
@@ -18557,6 +29443,30 @@ struct QuickSightClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateKnowledgeBaseDocument(Name=input.Name, Description=input.Description, KnowledgeBaseConfiguration=input.KnowledgeBaseConfiguration, MediaExtractionConfiguration=input.MediaExtractionConfiguration, IsEmailNotificationOptedForIngestionFailures=input.IsEmailNotificationOptedForIngestionFailures, AccessControlConfiguration=input.AccessControlConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateKnowledgeBasePermissions  POST /v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}/permissions
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, InvalidRequestException, LimitExceededException, PreconditionNotMetException, ResourceNotFoundException, ThrottlingException
+    def update_knowledge_base_permissions(self, UpdateKnowledgeBasePermissionsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["KnowledgeBaseId"] = input.KnowledgeBaseId
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.GrantPermissions.is_some():
+            auto u0 = input.GrantPermissions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(resource_permission_to_json(x1))
+            parts.append("\"GrantPermissions\":" + quicksight_json_arr(e1))
+        if input.RevokePermissions.is_some():
+            auto u2 = input.RevokePermissions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(resource_permission_to_json(x3))
+            parts.append("\"RevokePermissions\":" + quicksight_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
     # UpdateOAuthClientApplication  PUT /accounts/{AwsAccountId}/oauth-client-applications/{OAuthClientApplicationId}
@@ -18676,6 +29586,81 @@ struct QuickSightClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
+    # UpdateSpacePermissions  PUT /v1/accounts/{AwsAccountId}/spaces/{SpaceId}/permissions
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def update_space_permissions(self, UpdateSpacePermissionsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["SpaceId"] = input.SpaceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/accounts/{AwsAccountId}/spaces/{SpaceId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.GrantPermissions.is_some():
+            auto u0 = input.GrantPermissions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(resource_permission_to_json(x1))
+            parts.append("\"GrantPermissions\":" + quicksight_json_arr(e1))
+        if input.RevokePermissions.is_some():
+            auto u2 = input.RevokePermissions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(resource_permission_to_json(x3))
+            parts.append("\"RevokePermissions\":" + quicksight_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateSpaceResources  PUT /v1/accounts/{AwsAccountId}/spaces/{SpaceId}/resources
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException
+    def update_space_resources(self, UpdateSpaceResourcesRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["SpaceId"] = input.SpaceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/accounts/{AwsAccountId}/spaces/{SpaceId}/resources", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AddResources.is_some():
+            auto u0 = input.AddResources.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"AddResources\":" + quicksight_json_arr(e1))
+        if input.RemoveResources.is_some():
+            auto u2 = input.RemoveResources.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"RemoveResources\":" + quicksight_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateTemplate  PUT /accounts/{AwsAccountId}/templates/{TemplateId}
+    # errors: ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def update_template(self, UpdateTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["TemplateId"] = input.TemplateId
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.SourceEntity.is_some():
+            auto u0 = input.SourceEntity.unwrap()
+            parts.append("\"SourceEntity\":" + template_source_entity_to_json(u0))
+        if input.VersionDescription.is_some():
+            auto u1 = input.VersionDescription.unwrap()
+            parts.append("\"VersionDescription\":" + quicksight_json_str(u1))
+        if input.Name.is_some():
+            auto u2 = input.Name.unwrap()
+            parts.append("\"Name\":" + quicksight_json_str(u2))
+        if input.Definition.is_some():
+            auto u3 = input.Definition.unwrap()
+            parts.append("\"Definition\":" + template_version_definition_to_json(u3))
+        if input.ValidationStrategy.is_some():
+            auto u4 = input.ValidationStrategy.unwrap()
+            parts.append("\"ValidationStrategy\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
     # UpdateTemplateAlias  PUT /accounts/{AwsAccountId}/templates/{TemplateId}/aliases/{AliasName}
     # errors: ConflictException, ConflictException, InternalFailureException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
     def update_template_alias(self, UpdateTemplateAliasRequest input) -> str:
@@ -18687,6 +29672,52 @@ struct QuickSightClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}/aliases/{AliasName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateTemplateAliasDocument(TemplateVersionNumber=input.TemplateVersionNumber)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateTemplatePermissions  PUT /accounts/{AwsAccountId}/templates/{TemplateId}/permissions
+    # errors: ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def update_template_permissions(self, UpdateTemplatePermissionsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["TemplateId"] = input.TemplateId
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.GrantPermissions.is_some():
+            auto u0 = input.GrantPermissions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(resource_permission_to_json(x1))
+            parts.append("\"GrantPermissions\":" + quicksight_json_arr(e1))
+        if input.RevokePermissions.is_some():
+            auto u2 = input.RevokePermissions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(resource_permission_to_json(x3))
+            parts.append("\"RevokePermissions\":" + quicksight_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateTheme  PUT /accounts/{AwsAccountId}/themes/{ThemeId}
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def update_theme(self, UpdateThemeRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["ThemeId"] = input.ThemeId
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + quicksight_json_str(u0))
+        parts.append("\"BaseThemeId\":" + quicksight_json_str(input.BaseThemeId))
+        if input.VersionDescription.is_some():
+            auto u1 = input.VersionDescription.unwrap()
+            parts.append("\"VersionDescription\":" + quicksight_json_str(u1))
+        if input.Configuration.is_some():
+            auto u2 = input.Configuration.unwrap()
+            parts.append("\"Configuration\":" + theme_configuration_to_json(u2))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
     # UpdateThemeAlias  PUT /accounts/{AwsAccountId}/themes/{ThemeId}/aliases/{AliasName}
@@ -18702,6 +29733,94 @@ struct QuickSightClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
+    # UpdateThemePermissions  PUT /accounts/{AwsAccountId}/themes/{ThemeId}/permissions
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def update_theme_permissions(self, UpdateThemePermissionsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["ThemeId"] = input.ThemeId
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.GrantPermissions.is_some():
+            auto u0 = input.GrantPermissions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(resource_permission_to_json(x1))
+            parts.append("\"GrantPermissions\":" + quicksight_json_arr(e1))
+        if input.RevokePermissions.is_some():
+            auto u2 = input.RevokePermissions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(resource_permission_to_json(x3))
+            parts.append("\"RevokePermissions\":" + quicksight_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateTopic  PUT /accounts/{AwsAccountId}/topics/{TopicId}
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException
+    def update_topic(self, UpdateTopicRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["TopicId"] = input.TopicId
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/topics/{TopicId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Topic\":" + topic_details_to_json(input.Topic))
+        if input.CustomInstructions.is_some():
+            auto u0 = input.CustomInstructions.unwrap()
+            parts.append("\"CustomInstructions\":" + u0.to_json())
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateTopicPermissions  PUT /accounts/{AwsAccountId}/topics/{TopicId}/permissions
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def update_topic_permissions(self, UpdateTopicPermissionsRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["TopicId"] = input.TopicId
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.GrantPermissions.is_some():
+            auto u0 = input.GrantPermissions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(resource_permission_to_json(x1))
+            parts.append("\"GrantPermissions\":" + quicksight_json_arr(e1))
+        if input.RevokePermissions.is_some():
+            auto u2 = input.RevokePermissions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(resource_permission_to_json(x3))
+            parts.append("\"RevokePermissions\":" + quicksight_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateTopicPermissionsV2  PUT /accounts/{AwsAccountId}/topicsV2/{TopicId}/permissions
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def update_topic_permissions_v2(self, UpdateTopicPermissionsV2Request input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["TopicId"] = input.TopicId
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/topicsV2/{TopicId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.GrantPermissions.is_some():
+            auto u0 = input.GrantPermissions.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(resource_permission_to_json(x1))
+            parts.append("\"GrantPermissions\":" + quicksight_json_arr(e1))
+        if input.RevokePermissions.is_some():
+            auto u2 = input.RevokePermissions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(resource_permission_to_json(x3))
+            parts.append("\"RevokePermissions\":" + quicksight_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
     # UpdateTopicRefreshSchedule  PUT /accounts/{AwsAccountId}/topics/{TopicId}/schedules/{DatasetId}
     # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException
     def update_topic_refresh_schedule(self, UpdateTopicRefreshScheduleRequest input) -> str:
@@ -18713,6 +29832,25 @@ struct QuickSightClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/schedules/{DatasetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateTopicRefreshScheduleDocument(RefreshSchedule=input.RefreshSchedule)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateTopicV2  PUT /accounts/{AwsAccountId}/topicsV2/{TopicId}
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException
+    def update_topic_v2(self, UpdateTopicV2Request input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["TopicId"] = input.TopicId
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/topicsV2/{TopicId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Topic\":" + topic_v2_details_to_json(input.Topic))
+        if input.CustomInstructions.is_some():
+            auto u0 = input.CustomInstructions.unwrap()
+            parts.append("\"CustomInstructions\":" + u0.to_json())
+        if input.PublishOption.is_some():
+            auto u1 = input.PublishOption.unwrap()
+            parts.append("\"PublishOption\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
     # UpdateUser  PUT /accounts/{AwsAccountId}/namespaces/{Namespace}/users/{UserName}
@@ -18739,6 +29877,34 @@ struct QuickSightClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/users/{UserName}/custom-permission", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateUserCustomPermissionDocument(CustomPermissionsName=input.CustomPermissionsName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
+
+    # UpdateVPCConnection  PUT /accounts/{AwsAccountId}/vpc-connections/{VPCConnectionId}
+    # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def update_vpc_connection(self, UpdateVPCConnectionRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["VPCConnectionId"] = input.VPCConnectionId
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/vpc-connections/{VPCConnectionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + quicksight_json_str(input.Name))
+        list[str] e0 = []
+        for x0 in input.SubnetIds:
+            e0.append(quicksight_json_str(x0))
+        parts.append("\"SubnetIds\":" + quicksight_json_arr(e0))
+        list[str] e1 = []
+        for x1 in input.SecurityGroupIds:
+            e1.append(quicksight_json_str(x1))
+        parts.append("\"SecurityGroupIds\":" + quicksight_json_arr(e1))
+        if input.DnsResolvers.is_some():
+            auto u2 = input.DnsResolvers.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(quicksight_json_str(x3))
+            parts.append("\"DnsResolvers\":" + quicksight_json_arr(e3))
+        parts.append("\"RoleArn\":" + quicksight_json_str(input.RoleArn))
+        auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
     # Paginator for DescribeFolderPermissions — yields each Response page, threading the
@@ -19215,6 +30381,162 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         while True:
             auto raw = self.list_users(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchActionConnectors — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: ActionConnectorSummaries).
+    def paginate_search_action_connectors(self, SearchActionConnectorsRequest input):
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        while True:
+            auto raw = self.search_action_connectors(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchAnalyses — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: AnalysisSummaryList).
+    def paginate_search_analyses(self, SearchAnalysesRequest input):
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        while True:
+            auto raw = self.search_analyses(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchApps — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: AppSummaryList).
+    def paginate_search_apps(self, SearchAppsRequest input):
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        while True:
+            auto raw = self.search_apps(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchDashboards — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: DashboardSummaryList).
+    def paginate_search_dashboards(self, SearchDashboardsRequest input):
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        while True:
+            auto raw = self.search_dashboards(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchDataSets — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: DataSetSummaries).
+    def paginate_search_data_sets(self, SearchDataSetsRequest input):
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        while True:
+            auto raw = self.search_data_sets(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchDataSources — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: DataSourceSummaries).
+    def paginate_search_data_sources(self, SearchDataSourcesRequest input):
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        while True:
+            auto raw = self.search_data_sources(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchFlows — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: FlowSummaryList).
+    def paginate_search_flows(self, SearchFlowsInput input):
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        while True:
+            auto raw = self.search_flows(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchFolders — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: FolderSummaryList).
+    def paginate_search_folders(self, SearchFoldersRequest input):
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        while True:
+            auto raw = self.search_folders(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchGroups — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: GroupList).
+    def paginate_search_groups(self, SearchGroupsRequest input):
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        while True:
+            auto raw = self.search_groups(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchKnowledgeBases — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: KnowledgeBaseSummaries).
+    def paginate_search_knowledge_bases(self, SearchKnowledgeBasesRequest input):
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        while True:
+            auto raw = self.search_knowledge_bases(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchTopics — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: TopicSummaryList).
+    def paginate_search_topics(self, SearchTopicsRequest input):
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        while True:
+            auto raw = self.search_topics(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchTopicsV2 — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: TopicSummaryList).
+    def paginate_search_topics_v2(self, SearchTopicsV2Request input):
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        while True:
+            auto raw = self.search_topics_v2(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

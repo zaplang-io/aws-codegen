@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 25 operations — 19 with a generated method,
-#   6 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 25 operations — 24 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   77 structs (44 @derive(Json)), 12 enums, 7 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -169,20 +169,23 @@ struct AssociateLicenseRequest:
     str licenseType
     Optional[str] grafanaToken
 
-# no @derive(Json): member(s) workspace: WorkspaceDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workspace: WorkspaceDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateLicenseResponse:
     WorkspaceDescription workspace
 
-# no @derive(Json): member(s) providers: list[AuthenticationProviderTypes], saml: SamlAuthentication not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) providers: list[AuthenticationProviderTypes], saml: SamlAuthentication not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthenticationDescription:
     list[AuthenticationProviderTypes] providers
     Optional[SamlAuthentication] saml
     Optional[AwsSsoAuthentication] awsSso
 
-# no @derive(Json): member(s) providers: list[AuthenticationProviderTypes] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) providers: list[AuthenticationProviderTypes] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthenticationSummary:
     list[AuthenticationProviderTypes] providers
     Optional[SamlConfigurationStatus] samlConfigurationStatus
@@ -234,8 +237,9 @@ struct CreateWorkspaceRequest:
     Optional[IPAddressType] ipAddressType
     Optional[str] kmsKeyId
 
-# no @derive(Json): member(s) workspace: WorkspaceDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workspace: WorkspaceDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWorkspaceResponse:
     WorkspaceDescription workspace
 
@@ -283,8 +287,9 @@ struct DeleteWorkspaceApiKeyResponse:
 struct DeleteWorkspaceRequest:
     str workspaceId
 
-# no @derive(Json): member(s) workspace: WorkspaceDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workspace: WorkspaceDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteWorkspaceResponse:
     WorkspaceDescription workspace
 
@@ -317,8 +322,9 @@ struct DeleteWorkspaceServiceAccountTokenResponse:
 struct DescribeWorkspaceAuthenticationRequest:
     str workspaceId
 
-# no @derive(Json): member(s) authentication: AuthenticationDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authentication: AuthenticationDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkspaceAuthenticationResponse:
     AuthenticationDescription authentication
 
@@ -337,8 +343,9 @@ struct DescribeWorkspaceConfigurationResponse:
 struct DescribeWorkspaceRequest:
     str workspaceId
 
-# no @derive(Json): member(s) workspace: WorkspaceDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workspace: WorkspaceDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkspaceResponse:
     WorkspaceDescription workspace
 
@@ -349,8 +356,9 @@ struct DisassociateLicenseRequest:
     # wire string of the LicenseType enum (uri binding)
     str licenseType
 
-# no @derive(Json): member(s) workspace: WorkspaceDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workspace: WorkspaceDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateLicenseResponse:
     WorkspaceDescription workspace
 
@@ -375,8 +383,9 @@ struct ListPermissionsRequest:
     Optional[str] groupId
     str workspaceId
 
-# no @derive(Json): member(s) permissions: list[PermissionEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) permissions: list[PermissionEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPermissionsResponse:
     Optional[str] nextToken
     list[PermissionEntry] permissions
@@ -386,8 +395,9 @@ struct ListPermissionsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -398,8 +408,9 @@ struct ListVersionsRequest:
     Optional[str] nextToken
     Optional[str] workspaceId
 
-# no @derive(Json): member(s) grafanaVersions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) grafanaVersions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVersionsResponse:
     Optional[str] nextToken
     Optional[list[str]] grafanaVersions
@@ -412,8 +423,9 @@ struct ListWorkspaceServiceAccountTokensRequest:
     str serviceAccountId
     str workspaceId
 
-# no @derive(Json): member(s) serviceAccountTokens: list[ServiceAccountTokenSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceAccountTokens: list[ServiceAccountTokenSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkspaceServiceAccountTokensResponse:
     Optional[str] nextToken
     list[ServiceAccountTokenSummary] serviceAccountTokens
@@ -427,8 +439,9 @@ struct ListWorkspaceServiceAccountsRequest:
     Optional[str] nextToken
     str workspaceId
 
-# no @derive(Json): member(s) serviceAccounts: list[ServiceAccountSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceAccounts: list[ServiceAccountSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkspaceServiceAccountsResponse:
     Optional[str] nextToken
     list[ServiceAccountSummary] serviceAccounts
@@ -440,14 +453,16 @@ struct ListWorkspacesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) workspaces: list[WorkspaceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workspaces: list[WorkspaceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkspacesResponse:
     list[WorkspaceSummary] workspaces
     Optional[str] nextToken
 
-# no @derive(Json): member(s) prefixListIds: list[str], vpceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) prefixListIds: list[str], vpceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkAccessConfiguration:
     list[str] prefixListIds
     list[str] vpceIds
@@ -463,20 +478,23 @@ struct ResourceNotFoundException:
     str resourceId
     str resourceType
 
-# no @derive(Json): member(s) editor: list[str], admin: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) editor: list[str], admin: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoleValues:
     Optional[list[str]] editor
     Optional[list[str]] admin
 
-# no @derive(Json): member(s) configuration: SamlConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: SamlConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SamlAuthentication:
     SamlConfigurationStatus status
     Optional[SamlConfiguration] configuration
 
-# no @derive(Json): member(s) roleValues: RoleValues, allowedOrganizations: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) roleValues: RoleValues, allowedOrganizations: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SamlConfiguration:
     IdpMetadata idpMetadata
     Optional[AssertionAttributes] assertionAttributes
@@ -542,15 +560,17 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) causedBy: UpdateInstruction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) causedBy: UpdateInstruction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateError:
     int64 code
     str message
     UpdateInstruction causedBy
 
-# no @derive(Json): member(s) users: list[User] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) users: list[User] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateInstruction:
     UpdateAction action
     Role role
@@ -562,8 +582,9 @@ struct UpdatePermissionsRequest:
     list[UpdateInstruction] updateInstructionBatch
     str workspaceId
 
-# no @derive(Json): member(s) errors: list[UpdateError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[UpdateError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePermissionsResponse:
     list[UpdateError] errors
 
@@ -574,8 +595,9 @@ struct UpdateWorkspaceAuthenticationRequest:
     list[AuthenticationProviderTypes] authenticationProviders
     Optional[SamlConfiguration] samlConfiguration
 
-# no @derive(Json): member(s) authentication: AuthenticationDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authentication: AuthenticationDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateWorkspaceAuthenticationResponse:
     AuthenticationDescription authentication
 
@@ -611,8 +633,9 @@ struct UpdateWorkspaceRequest:
     Optional[bool] removeNetworkAccessConfiguration
     Optional[IPAddressType] ipAddressType
 
-# no @derive(Json): member(s) workspace: WorkspaceDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workspace: WorkspaceDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateWorkspaceResponse:
     WorkspaceDescription workspace
 
@@ -621,8 +644,9 @@ struct User:
     str id
     UserType type
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -633,14 +657,16 @@ struct ValidationExceptionField:
     str name
     str message
 
-# no @derive(Json): member(s) securityGroupIds: list[str], subnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroupIds: list[str], subnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfiguration:
     list[str] securityGroupIds
     list[str] subnetIds
 
-# no @derive(Json): member(s) dataSources: list[DataSourceType], notificationDestinations: list[str], organizationalUnits: list[str], authentication: AuthenticationSummary, tags: dict[str, str], vpcConfiguration: VpcConfiguration, networkAccessControl: NetworkAccessConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataSources: list[DataSourceType], notificationDestinations: list[str], organizationalUnits: list[str], authentication: AuthenticationSummary, tags: dict[str, str], vpcConfiguration: VpcConfiguration, networkAccessControl: NetworkAccessConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkspaceDescription:
     Optional[AccountAccessType] accountAccessType
     DateTime created
@@ -671,8 +697,9 @@ struct WorkspaceDescription:
     Optional[str] kmsKeyId
     Optional[str] degradedWorkspaceReason
 
-# no @derive(Json): member(s) notificationDestinations: list[str], authentication: AuthenticationSummary, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) notificationDestinations: list[str], authentication: AuthenticationSummary, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkspaceSummary:
     DateTime created
     Optional[str] description
@@ -726,12 +753,7 @@ def grafana_error_from_code(str code) -> grafanaError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateWorkspace (document member `workspaceDataSources: list[DataSourceType]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdatePermissions (document member `updateInstructionBatch: list[UpdateInstruction]` is not serializable by derive)
-#   UpdateWorkspace (document member `workspaceDataSources: list[DataSourceType]` is not serializable by derive)
-#   UpdateWorkspaceAuthentication (document member `authenticationProviders: list[AuthenticationProviderTypes]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -761,6 +783,111 @@ struct UpdateWorkspaceConfigurationDocument:
     str configuration
     Optional[str] grafanaVersion
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def grafana_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def grafana_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def grafana_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize NetworkAccessConfiguration to a compact JSON object (declaration order).
+def network_access_configuration_to_json(NetworkAccessConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.prefixListIds:
+        e0.append(grafana_json_str(x0))
+    parts.append("\"prefixListIds\":" + grafana_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.vpceIds:
+        e1.append(grafana_json_str(x1))
+    parts.append("\"vpceIds\":" + grafana_json_arr(e1))
+    return grafana_json_obj(parts)
+
+# Serialize RoleValues to a compact JSON object (declaration order).
+def role_values_to_json(RoleValues v) -> str:
+    list[str] parts = []
+    if v.editor.is_some():
+        auto u0 = v.editor.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(grafana_json_str(x1))
+        parts.append("\"editor\":" + grafana_json_arr(e1))
+    if v.admin.is_some():
+        auto u2 = v.admin.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(grafana_json_str(x3))
+        parts.append("\"admin\":" + grafana_json_arr(e3))
+    return grafana_json_obj(parts)
+
+# Serialize SamlConfiguration to a compact JSON object (declaration order).
+def saml_configuration_to_json(SamlConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"idpMetadata\":" + v.idpMetadata.to_json())
+    if v.assertionAttributes.is_some():
+        auto u0 = v.assertionAttributes.unwrap()
+        parts.append("\"assertionAttributes\":" + u0.to_json())
+    if v.roleValues.is_some():
+        auto u1 = v.roleValues.unwrap()
+        parts.append("\"roleValues\":" + role_values_to_json(u1))
+    if v.allowedOrganizations.is_some():
+        auto u2 = v.allowedOrganizations.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(grafana_json_str(x3))
+        parts.append("\"allowedOrganizations\":" + grafana_json_arr(e3))
+    if v.loginValidityDuration.is_some():
+        auto u4 = v.loginValidityDuration.unwrap()
+        parts.append("\"loginValidityDuration\":" + str(u4))
+    return grafana_json_obj(parts)
+
+# Serialize UpdateInstruction to a compact JSON object (declaration order).
+def update_instruction_to_json(UpdateInstruction v) -> str:
+    list[str] parts = []
+    parts.append("\"action\":" + v.action.to_json())
+    parts.append("\"role\":" + v.role.to_json())
+    list[str] e0 = []
+    for x0 in v.users:
+        e0.append(x0.to_json())
+    parts.append("\"users\":" + grafana_json_arr(e0))
+    return grafana_json_obj(parts)
+
+# Serialize VpcConfiguration to a compact JSON object (declaration order).
+def vpc_configuration_to_json(VpcConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.securityGroupIds:
+        e0.append(grafana_json_str(x0))
+    parts.append("\"securityGroupIds\":" + grafana_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.subnetIds:
+        e1.append(grafana_json_str(x1))
+    parts.append("\"subnetIds\":" + grafana_json_arr(e1))
+    return grafana_json_obj(parts)
+
 # A bound grafana client: credentials + region, threaded into every operation.
 struct grafanaClient:
     core.Credentials creds
@@ -778,6 +905,81 @@ struct grafanaClient:
             headers["Grafana-Token"] = input.grafanaToken.unwrap_or("")
         auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/licenses/{licenseType}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, grafana_service(), self.region, host)
+
+    # CreateWorkspace  POST /workspaces
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_workspace(self, CreateWorkspaceRequest input) -> str:
+        auto host = endpoints.regional_host(grafana_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"accountAccessType\":" + input.accountAccessType.to_json())
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + grafana_json_str(u0))
+        if input.organizationRoleName.is_some():
+            auto u1 = input.organizationRoleName.unwrap()
+            parts.append("\"organizationRoleName\":" + grafana_json_str(u1))
+        parts.append("\"permissionType\":" + input.permissionType.to_json())
+        if input.stackSetName.is_some():
+            auto u2 = input.stackSetName.unwrap()
+            parts.append("\"stackSetName\":" + grafana_json_str(u2))
+        if input.workspaceDataSources.is_some():
+            auto u3 = input.workspaceDataSources.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"workspaceDataSources\":" + grafana_json_arr(e4))
+        if input.workspaceDescription.is_some():
+            auto u5 = input.workspaceDescription.unwrap()
+            parts.append("\"workspaceDescription\":" + grafana_json_str(u5))
+        if input.workspaceName.is_some():
+            auto u6 = input.workspaceName.unwrap()
+            parts.append("\"workspaceName\":" + grafana_json_str(u6))
+        if input.workspaceNotificationDestinations.is_some():
+            auto u7 = input.workspaceNotificationDestinations.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(grafana_json_str(x8))
+            parts.append("\"workspaceNotificationDestinations\":" + grafana_json_arr(e8))
+        if input.workspaceOrganizationalUnits.is_some():
+            auto u9 = input.workspaceOrganizationalUnits.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(grafana_json_str(x10))
+            parts.append("\"workspaceOrganizationalUnits\":" + grafana_json_arr(e10))
+        if input.workspaceRoleArn.is_some():
+            auto u11 = input.workspaceRoleArn.unwrap()
+            parts.append("\"workspaceRoleArn\":" + grafana_json_str(u11))
+        list[str] e12 = []
+        for x12 in input.authenticationProviders:
+            e12.append(x12.to_json())
+        parts.append("\"authenticationProviders\":" + grafana_json_arr(e12))
+        if input.tags.is_some():
+            auto u13 = input.tags.unwrap()
+            list[str] m14 = []
+            for k14 in sorted(u13.keys()):
+                m14.append(grafana_json_str(k14) + ":" + grafana_json_str(u13[k14]))
+            parts.append("\"tags\":" + grafana_json_obj(m14))
+        if input.vpcConfiguration.is_some():
+            auto u15 = input.vpcConfiguration.unwrap()
+            parts.append("\"vpcConfiguration\":" + vpc_configuration_to_json(u15))
+        if input.configuration.is_some():
+            auto u16 = input.configuration.unwrap()
+            parts.append("\"configuration\":" + grafana_json_str(u16))
+        if input.networkAccessControl.is_some():
+            auto u17 = input.networkAccessControl.unwrap()
+            parts.append("\"networkAccessControl\":" + network_access_configuration_to_json(u17))
+        if input.grafanaVersion.is_some():
+            auto u18 = input.grafanaVersion.unwrap()
+            parts.append("\"grafanaVersion\":" + grafana_json_str(u18))
+        if input.ipAddressType.is_some():
+            auto u19 = input.ipAddressType.unwrap()
+            parts.append("\"ipAddressType\":" + u19.to_json())
+        if input.kmsKeyId.is_some():
+            auto u20 = input.kmsKeyId.unwrap()
+            parts.append("\"kmsKeyId\":" + grafana_json_str(u20))
+        auto bp = restjson.rest_json_document(b, grafana_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, grafana_service(), self.region, host)
 
     # CreateWorkspaceApiKey  POST /workspaces/{workspaceId}/apikeys
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -973,6 +1175,119 @@ struct grafanaClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         auto b = binding.HttpBinding(method="GET", path_template="/workspaces", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, grafana_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(grafana_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(grafana_json_str(k0) + ":" + grafana_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + grafana_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, grafana_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, grafana_service(), self.region, host)
+
+    # UpdatePermissions  PATCH /workspaces/{workspaceId}/permissions
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_permissions(self, UpdatePermissionsRequest input) -> str:
+        auto host = endpoints.regional_host(grafana_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceId"] = input.workspaceId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/workspaces/{workspaceId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.updateInstructionBatch:
+            e0.append(update_instruction_to_json(x0))
+        parts.append("\"updateInstructionBatch\":" + grafana_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, grafana_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, grafana_service(), self.region, host)
+
+    # UpdateWorkspace  PUT /workspaces/{workspaceId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_workspace(self, UpdateWorkspaceRequest input) -> str:
+        auto host = endpoints.regional_host(grafana_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceId"] = input.workspaceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.accountAccessType.is_some():
+            auto u0 = input.accountAccessType.unwrap()
+            parts.append("\"accountAccessType\":" + u0.to_json())
+        if input.organizationRoleName.is_some():
+            auto u1 = input.organizationRoleName.unwrap()
+            parts.append("\"organizationRoleName\":" + grafana_json_str(u1))
+        if input.permissionType.is_some():
+            auto u2 = input.permissionType.unwrap()
+            parts.append("\"permissionType\":" + u2.to_json())
+        if input.stackSetName.is_some():
+            auto u3 = input.stackSetName.unwrap()
+            parts.append("\"stackSetName\":" + grafana_json_str(u3))
+        if input.workspaceDataSources.is_some():
+            auto u4 = input.workspaceDataSources.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"workspaceDataSources\":" + grafana_json_arr(e5))
+        if input.workspaceDescription.is_some():
+            auto u6 = input.workspaceDescription.unwrap()
+            parts.append("\"workspaceDescription\":" + grafana_json_str(u6))
+        if input.workspaceName.is_some():
+            auto u7 = input.workspaceName.unwrap()
+            parts.append("\"workspaceName\":" + grafana_json_str(u7))
+        if input.workspaceNotificationDestinations.is_some():
+            auto u8 = input.workspaceNotificationDestinations.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(grafana_json_str(x9))
+            parts.append("\"workspaceNotificationDestinations\":" + grafana_json_arr(e9))
+        if input.workspaceOrganizationalUnits.is_some():
+            auto u10 = input.workspaceOrganizationalUnits.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(grafana_json_str(x11))
+            parts.append("\"workspaceOrganizationalUnits\":" + grafana_json_arr(e11))
+        if input.workspaceRoleArn.is_some():
+            auto u12 = input.workspaceRoleArn.unwrap()
+            parts.append("\"workspaceRoleArn\":" + grafana_json_str(u12))
+        if input.vpcConfiguration.is_some():
+            auto u13 = input.vpcConfiguration.unwrap()
+            parts.append("\"vpcConfiguration\":" + vpc_configuration_to_json(u13))
+        if input.removeVpcConfiguration.is_some():
+            auto u14 = input.removeVpcConfiguration.unwrap()
+            parts.append("\"removeVpcConfiguration\":" + json.dumps(JsonValue.Bool(u14)))
+        if input.networkAccessControl.is_some():
+            auto u15 = input.networkAccessControl.unwrap()
+            parts.append("\"networkAccessControl\":" + network_access_configuration_to_json(u15))
+        if input.removeNetworkAccessConfiguration.is_some():
+            auto u16 = input.removeNetworkAccessConfiguration.unwrap()
+            parts.append("\"removeNetworkAccessConfiguration\":" + json.dumps(JsonValue.Bool(u16)))
+        if input.ipAddressType.is_some():
+            auto u17 = input.ipAddressType.unwrap()
+            parts.append("\"ipAddressType\":" + u17.to_json())
+        auto bp = restjson.rest_json_document(b, grafana_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, grafana_service(), self.region, host)
+
+    # UpdateWorkspaceAuthentication  POST /workspaces/{workspaceId}/authentication
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_workspace_authentication(self, UpdateWorkspaceAuthenticationRequest input) -> str:
+        auto host = endpoints.regional_host(grafana_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceId"] = input.workspaceId
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/authentication", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.authenticationProviders:
+            e0.append(x0.to_json())
+        parts.append("\"authenticationProviders\":" + grafana_json_arr(e0))
+        if input.samlConfiguration.is_some():
+            auto u1 = input.samlConfiguration.unwrap()
+            parts.append("\"samlConfiguration\":" + saml_configuration_to_json(u1))
+        auto bp = restjson.rest_json_document(b, grafana_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, grafana_service(), self.region, host)
 
     # UpdateWorkspaceConfiguration  PUT /workspaces/{workspaceId}/configuration
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException

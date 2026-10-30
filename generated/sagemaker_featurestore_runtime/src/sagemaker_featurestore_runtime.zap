@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 7 operations — 1 with a generated method,
-#   6 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 7 operations — 5 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   24 structs (9 @derive(Json)), 4 enums, 6 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -84,8 +84,9 @@ struct BatchGetRecordError:
     str ErrorCode
     str ErrorMessage
 
-# no @derive(Json): member(s) RecordIdentifiersValueAsString: list[str], FeatureNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecordIdentifiersValueAsString: list[str], FeatureNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetRecordIdentifier:
     str FeatureGroupName
     list[str] RecordIdentifiersValueAsString
@@ -97,31 +98,35 @@ struct BatchGetRecordRequest:
     list[BatchGetRecordIdentifier] Identifiers
     Optional[ExpirationTimeResponse] ExpirationTimeResponse
 
-# no @derive(Json): member(s) Records: list[BatchGetRecordResultDetail], Errors: list[BatchGetRecordError], UnprocessedIdentifiers: list[BatchGetRecordIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Records: list[BatchGetRecordResultDetail], Errors: list[BatchGetRecordError], UnprocessedIdentifiers: list[BatchGetRecordIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetRecordResponse:
     list[BatchGetRecordResultDetail] Records
     list[BatchGetRecordError] Errors
     list[BatchGetRecordIdentifier] UnprocessedIdentifiers
 
-# no @derive(Json): member(s) Record: list[FeatureValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Record: list[FeatureValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetRecordResultDetail:
     str FeatureGroupName
     str RecordIdentifierValueAsString
     list[FeatureValue] Record
     Optional[str] ExpiresAt
 
-# no @derive(Json): member(s) Record: list[FeatureValue], TargetStores: list[TargetStore] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Record: list[FeatureValue], TargetStores: list[TargetStore] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchWriteRecordEntry:
     str FeatureGroupName
     list[FeatureValue] Record
     Optional[list[TargetStore]] TargetStores
     Optional[TtlDuration] TtlDuration
 
-# no @derive(Json): member(s) Entry: BatchWriteRecordEntry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entry: BatchWriteRecordEntry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchWriteRecordError:
     BatchWriteRecordEntry Entry
     str ErrorCode
@@ -133,8 +138,9 @@ struct BatchWriteRecordRequest:
     list[BatchWriteRecordEntry] Entries
     Optional[TtlDuration] TtlDuration
 
-# no @derive(Json): member(s) Errors: list[BatchWriteRecordError], UnprocessedEntries: list[BatchWriteRecordEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[BatchWriteRecordError], UnprocessedEntries: list[BatchWriteRecordEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchWriteRecordResponse:
     list[BatchWriteRecordError] Errors
     list[BatchWriteRecordEntry] UnprocessedEntries
@@ -153,8 +159,9 @@ struct DeleteRecordRequest:
     # wire string of the DeletionMode enum (querystring binding)
     Optional[str] DeletionMode
 
-# no @derive(Json): member(s) ValueAsStringList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueAsStringList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FeatureValue:
     str FeatureName
     Optional[str] ValueAsString
@@ -169,8 +176,9 @@ struct GetRecordRequest:
     # wire string of the ExpirationTimeResponse enum (querystring binding)
     Optional[str] ExpirationTimeResponse
 
-# no @derive(Json): member(s) Record: list[FeatureValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Record: list[FeatureValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecordResponse:
     Optional[list[FeatureValue]] Record
     Optional[str] ExpiresAt
@@ -187,8 +195,9 @@ struct ListRecordsRequest:
     Optional[str] NextToken
     Optional[bool] IncludeSoftDeletedRecords
 
-# no @derive(Json): member(s) RecordIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecordIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecordsResponse:
     list[str] RecordIdentifiers
     Optional[str] NextToken
@@ -262,12 +271,8 @@ def featurestore_runtime_sagemaker_error_from_code(str code) -> SageMaker_Featur
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchGetRecord (document member `Identifiers: list[BatchGetRecordIdentifier]` is not serializable by derive)
-#   BatchWriteRecord (document member `Entries: list[BatchWriteRecordEntry]` is not serializable by derive)
 #   DeleteRecord (httpQuery `TargetStores` has unsupported type list[TargetStore])
 #   GetRecord (httpQuery `FeatureNames` has unsupported type list[str])
-#   PutRecord (document member `Record: list[FeatureValue]` is not serializable by derive)
-#   UpdateRecord (document member `Features: list[FeatureValue]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -279,10 +284,122 @@ struct ListRecordsDocument:
     Optional[str] NextToken
     Optional[bool] IncludeSoftDeletedRecords
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def featurestore_runtime_sagemaker_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def featurestore_runtime_sagemaker_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def featurestore_runtime_sagemaker_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize BatchGetRecordIdentifier to a compact JSON object (declaration order).
+def batch_get_record_identifier_to_json(BatchGetRecordIdentifier v) -> str:
+    list[str] parts = []
+    parts.append("\"FeatureGroupName\":" + featurestore_runtime_sagemaker_json_str(v.FeatureGroupName))
+    list[str] e0 = []
+    for x0 in v.RecordIdentifiersValueAsString:
+        e0.append(featurestore_runtime_sagemaker_json_str(x0))
+    parts.append("\"RecordIdentifiersValueAsString\":" + featurestore_runtime_sagemaker_json_arr(e0))
+    if v.FeatureNames.is_some():
+        auto u1 = v.FeatureNames.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(featurestore_runtime_sagemaker_json_str(x2))
+        parts.append("\"FeatureNames\":" + featurestore_runtime_sagemaker_json_arr(e2))
+    return featurestore_runtime_sagemaker_json_obj(parts)
+
+# Serialize BatchWriteRecordEntry to a compact JSON object (declaration order).
+def batch_write_record_entry_to_json(BatchWriteRecordEntry v) -> str:
+    list[str] parts = []
+    parts.append("\"FeatureGroupName\":" + featurestore_runtime_sagemaker_json_str(v.FeatureGroupName))
+    list[str] e0 = []
+    for x0 in v.Record:
+        e0.append(feature_value_to_json(x0))
+    parts.append("\"Record\":" + featurestore_runtime_sagemaker_json_arr(e0))
+    if v.TargetStores.is_some():
+        auto u1 = v.TargetStores.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"TargetStores\":" + featurestore_runtime_sagemaker_json_arr(e2))
+    if v.TtlDuration.is_some():
+        auto u3 = v.TtlDuration.unwrap()
+        parts.append("\"TtlDuration\":" + u3.to_json())
+    return featurestore_runtime_sagemaker_json_obj(parts)
+
+# Serialize FeatureValue to a compact JSON object (declaration order).
+def feature_value_to_json(FeatureValue v) -> str:
+    list[str] parts = []
+    parts.append("\"FeatureName\":" + featurestore_runtime_sagemaker_json_str(v.FeatureName))
+    if v.ValueAsString.is_some():
+        auto u0 = v.ValueAsString.unwrap()
+        parts.append("\"ValueAsString\":" + featurestore_runtime_sagemaker_json_str(u0))
+    if v.ValueAsStringList.is_some():
+        auto u1 = v.ValueAsStringList.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(featurestore_runtime_sagemaker_json_str(x2))
+        parts.append("\"ValueAsStringList\":" + featurestore_runtime_sagemaker_json_arr(e2))
+    return featurestore_runtime_sagemaker_json_obj(parts)
+
 # A bound SageMaker_FeatureStore_Runtime client: credentials + region, threaded into every operation.
 struct SageMaker_FeatureStore_RuntimeClient:
     core.Credentials creds
     str region
+
+    # BatchGetRecord  POST /BatchGetRecord
+    # errors: AccessForbidden, InternalFailure, ServiceUnavailable, ValidationError
+    def batch_get_record(self, BatchGetRecordRequest input) -> str:
+        auto host = endpoints.regional_host(featurestore_runtime_sagemaker_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetRecord", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Identifiers:
+            e0.append(batch_get_record_identifier_to_json(x0))
+        parts.append("\"Identifiers\":" + featurestore_runtime_sagemaker_json_arr(e0))
+        if input.ExpirationTimeResponse.is_some():
+            auto u1 = input.ExpirationTimeResponse.unwrap()
+            parts.append("\"ExpirationTimeResponse\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, featurestore_runtime_sagemaker_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, featurestore_runtime_sagemaker_service(), self.region, host)
+
+    # BatchWriteRecord  POST /BatchWriteRecord
+    # errors: AccessForbidden, InternalFailure, ResourceNotFound, ServiceUnavailable, ValidationError
+    def batch_write_record(self, BatchWriteRecordRequest input) -> str:
+        auto host = endpoints.regional_host(featurestore_runtime_sagemaker_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchWriteRecord", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Entries:
+            e0.append(batch_write_record_entry_to_json(x0))
+        parts.append("\"Entries\":" + featurestore_runtime_sagemaker_json_arr(e0))
+        if input.TtlDuration.is_some():
+            auto u1 = input.TtlDuration.unwrap()
+            parts.append("\"TtlDuration\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, featurestore_runtime_sagemaker_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, featurestore_runtime_sagemaker_service(), self.region, host)
 
     # ListRecords  POST /FeatureGroup/{FeatureGroupName}/ListRecords
     # errors: AccessForbidden, InternalFailure, ResourceNotFound, ServiceUnavailable, ValidationError
@@ -293,6 +410,55 @@ struct SageMaker_FeatureStore_RuntimeClient:
         auto b = binding.HttpBinding(method="POST", path_template="/FeatureGroup/{FeatureGroupName}/ListRecords", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListRecordsDocument(MaxResults=input.MaxResults, NextToken=input.NextToken, IncludeSoftDeletedRecords=input.IncludeSoftDeletedRecords)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, featurestore_runtime_sagemaker_service(), self.region, host)
+
+    # PutRecord  PUT /FeatureGroup/{FeatureGroupName}
+    # errors: AccessForbidden, InternalFailure, ServiceUnavailable, ValidationError
+    def put_record(self, PutRecordRequest input) -> str:
+        auto host = endpoints.regional_host(featurestore_runtime_sagemaker_service(), self.region)
+        dict[str, str] labels = {}
+        labels["FeatureGroupName"] = input.FeatureGroupName
+        auto b = binding.HttpBinding(method="PUT", path_template="/FeatureGroup/{FeatureGroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Record:
+            e0.append(feature_value_to_json(x0))
+        parts.append("\"Record\":" + featurestore_runtime_sagemaker_json_arr(e0))
+        if input.TargetStores.is_some():
+            auto u1 = input.TargetStores.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"TargetStores\":" + featurestore_runtime_sagemaker_json_arr(e2))
+        if input.TtlDuration.is_some():
+            auto u3 = input.TtlDuration.unwrap()
+            parts.append("\"TtlDuration\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, featurestore_runtime_sagemaker_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, featurestore_runtime_sagemaker_service(), self.region, host)
+
+    # UpdateRecord  POST /FeatureGroup/{FeatureGroupName}/Record
+    # errors: AccessForbidden, ConflictException, InternalFailure, ResourceNotFound, ServiceUnavailable, ValidationError
+    def update_record(self, UpdateRecordRequest input) -> str:
+        auto host = endpoints.regional_host(featurestore_runtime_sagemaker_service(), self.region)
+        dict[str, str] labels = {}
+        labels["FeatureGroupName"] = input.FeatureGroupName
+        auto b = binding.HttpBinding(method="POST", path_template="/FeatureGroup/{FeatureGroupName}/Record", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"RecordIdentifierValueAsString\":" + featurestore_runtime_sagemaker_json_str(input.RecordIdentifierValueAsString))
+        list[str] e0 = []
+        for x0 in input.Features:
+            e0.append(feature_value_to_json(x0))
+        parts.append("\"Features\":" + featurestore_runtime_sagemaker_json_arr(e0))
+        if input.TargetStores.is_some():
+            auto u1 = input.TargetStores.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"TargetStores\":" + featurestore_runtime_sagemaker_json_arr(e2))
+        if input.TtlDuration.is_some():
+            auto u3 = input.TtlDuration.unwrap()
+            parts.append("\"TtlDuration\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, featurestore_runtime_sagemaker_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, featurestore_runtime_sagemaker_service(), self.region, host)
 
     # Paginator for ListRecords — yields each Response page, threading the

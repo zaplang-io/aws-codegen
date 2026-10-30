@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 34 operations — 24 with a generated method,
-#   10 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 34 operations — 32 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   93 structs (65 @derive(Json)), 15 enums, 8 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -321,8 +321,9 @@ struct CreatePrivateGraphEndpointInput:
     Optional[list[str]] subnetIds
     Optional[list[str]] vpcSecurityGroupIds
 
-# no @derive(Json): member(s) subnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePrivateGraphEndpointOutput:
     str vpcId
     list[str] subnetIds
@@ -374,8 +375,9 @@ struct DeletePrivateGraphEndpointInput:
     str graphIdentifier
     str vpcId
 
-# no @derive(Json): member(s) subnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeletePrivateGraphEndpointOutput:
     str vpcId
     list[str] subnetIds
@@ -387,8 +389,9 @@ struct Document:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) edgeProperties: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) edgeProperties: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EdgeStructure:
     Optional[int64] count
     Optional[list[str]] edgeProperties
@@ -408,14 +411,16 @@ struct ExecuteQueryInput:
 struct ExecuteQueryOutput:
     bytes payload
 
-# no @derive(Json): member(s) vertexFilter: dict[str, ExportFilterElement], edgeFilter: dict[str, ExportFilterElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vertexFilter: dict[str, ExportFilterElement], edgeFilter: dict[str, ExportFilterElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportFilter:
     Optional[dict[str, ExportFilterElement]] vertexFilter
     Optional[dict[str, ExportFilterElement]] edgeFilter
 
-# no @derive(Json): member(s) properties: dict[str, ExportFilterPropertyAttributes] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: dict[str, ExportFilterPropertyAttributes] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportFilterElement:
     Optional[dict[str, ExportFilterPropertyAttributes]] properties
 
@@ -450,8 +455,9 @@ struct ExportTaskSummary:
 struct GetExportTaskInput:
     str taskIdentifier
 
-# no @derive(Json): member(s) exportFilter: ExportFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exportFilter: ExportFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetExportTaskOutput:
     str graphId
     str roleArn
@@ -510,8 +516,9 @@ struct GetGraphSummaryInput:
     # wire string of the GraphSummaryMode enum (querystring binding)
     Optional[str] mode
 
-# no @derive(Json): member(s) graphSummary: GraphDataSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) graphSummary: GraphDataSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetGraphSummaryOutput:
     Optional[str] version
     Optional[DateTime] lastStatisticsComputationTime
@@ -542,8 +549,9 @@ struct GetPrivateGraphEndpointInput:
     str graphIdentifier
     str vpcId
 
-# no @derive(Json): member(s) subnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPrivateGraphEndpointOutput:
     str vpcId
     list[str] subnetIds
@@ -564,8 +572,9 @@ struct GetQueryOutput:
     Optional[int64] elapsed
     Optional[QueryState] state
 
-# no @derive(Json): member(s) nodeLabels: list[str], edgeLabels: list[str], nodeProperties: list[dict[str, int64]], edgeProperties: list[dict[str, int64]], nodeStructures: list[NodeStructure], edgeStructures: list[EdgeStructure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodeLabels: list[str], edgeLabels: list[str], nodeProperties: list[dict[str, int64]], edgeProperties: list[dict[str, int64]], nodeStructures: list[NodeStructure], edgeStructures: list[EdgeStructure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GraphDataSummary:
     Optional[int64] numNodes
     Optional[int64] numEdges
@@ -641,8 +650,9 @@ struct ListExportTasksInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) tasks: list[ExportTaskSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tasks: list[ExportTaskSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExportTasksOutput:
     list[ExportTaskSummary] tasks
     Optional[str] nextToken
@@ -654,8 +664,9 @@ struct ListGraphSnapshotsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) graphSnapshots: list[GraphSnapshotSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) graphSnapshots: list[GraphSnapshotSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGraphSnapshotsOutput:
     list[GraphSnapshotSummary] graphSnapshots
     Optional[str] nextToken
@@ -666,8 +677,9 @@ struct ListGraphsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) graphs: list[GraphSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) graphs: list[GraphSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGraphsOutput:
     list[GraphSummary] graphs
     Optional[str] nextToken
@@ -679,8 +691,9 @@ struct ListImportTasksInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) tasks: list[ImportTaskSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tasks: list[ImportTaskSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImportTasksOutput:
     list[ImportTaskSummary] tasks
     Optional[str] nextToken
@@ -692,8 +705,9 @@ struct ListPrivateGraphEndpointsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) privateGraphEndpoints: list[PrivateGraphEndpointSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) privateGraphEndpoints: list[PrivateGraphEndpointSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPrivateGraphEndpointsOutput:
     list[PrivateGraphEndpointSummary] privateGraphEndpoints
     Optional[str] nextToken
@@ -706,8 +720,9 @@ struct ListQueriesInput:
     # wire string of the QueryStateInput enum (querystring binding)
     Optional[str] state
 
-# no @derive(Json): member(s) queries: list[QuerySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) queries: list[QuerySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListQueriesOutput:
     list[QuerySummary] queries
 
@@ -716,8 +731,9 @@ struct ListQueriesOutput:
 struct ListTagsForResourceInput:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[dict[str, str]] tags
 
@@ -728,15 +744,17 @@ struct NeptuneImportOptions:
     Optional[bool] preserveDefaultVertexLabels
     Optional[bool] preserveEdgeIds
 
-# no @derive(Json): member(s) nodeProperties: list[str], distinctOutgoingEdgeLabels: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodeProperties: list[str], distinctOutgoingEdgeLabels: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NodeStructure:
     Optional[int64] count
     Optional[list[str]] nodeProperties
     Optional[list[str]] distinctOutgoingEdgeLabels
 
-# no @derive(Json): member(s) subnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivateGraphEndpointSummary:
     str vpcId
     list[str] subnetIds
@@ -828,8 +846,9 @@ struct StartExportTaskInput:
     Optional[ExportFilter] exportFilter
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) exportFilter: ExportFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exportFilter: ExportFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartExportTaskOutput:
     str graphId
     str roleArn
@@ -1018,15 +1037,7 @@ def neptune_graph_error_from_code(str code) -> Neptune_GraphError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateGraph (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateGraphSnapshot (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateGraphUsingImportTask (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreatePrivateGraphEndpoint (document member `subnetIds: list[str]` is not serializable by derive)
 #   DeleteGraph (httpQuery `skipSnapshot` has unsupported type bool)
-#   ExecuteQuery (document member `parameters: dict[str, Document]` is not serializable by derive)
-#   RestoreGraphFromSnapshot (document member `tags: dict[str, str]` is not serializable by derive)
-#   StartExportTask (document member `exportFilter: ExportFilter` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -1054,6 +1065,64 @@ struct UpdateGraphDocument:
     Optional[bool] publicConnectivity
     Optional[int64] provisionedMemory
     Optional[bool] deletionProtection
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def neptune_graph_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def neptune_graph_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def neptune_graph_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ExportFilter to a compact JSON object (declaration order).
+def export_filter_to_json(ExportFilter v) -> str:
+    list[str] parts = []
+    if v.vertexFilter.is_some():
+        auto u0 = v.vertexFilter.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(neptune_graph_json_str(k1) + ":" + export_filter_element_to_json(u0[k1]))
+        parts.append("\"vertexFilter\":" + neptune_graph_json_obj(m1))
+    if v.edgeFilter.is_some():
+        auto u2 = v.edgeFilter.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(neptune_graph_json_str(k3) + ":" + export_filter_element_to_json(u2[k3]))
+        parts.append("\"edgeFilter\":" + neptune_graph_json_obj(m3))
+    return neptune_graph_json_obj(parts)
+
+# Serialize ExportFilterElement to a compact JSON object (declaration order).
+def export_filter_element_to_json(ExportFilterElement v) -> str:
+    list[str] parts = []
+    if v.properties.is_some():
+        auto u0 = v.properties.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(neptune_graph_json_str(k1) + ":" + u0[k1].to_json())
+        parts.append("\"properties\":" + neptune_graph_json_obj(m1))
+    return neptune_graph_json_obj(parts)
 
 # A bound Neptune_Graph client: credentials + region, threaded into every operation.
 struct Neptune_GraphClient:
@@ -1089,6 +1158,135 @@ struct Neptune_GraphClient:
         auto b = binding.HttpBinding(method="DELETE", path_template="/queries/{queryId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
 
+    # CreateGraph  POST /graphs
+    # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_graph(self, CreateGraphInput input) -> str:
+        auto host = endpoints.regional_host(neptune_graph_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/graphs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"graphName\":" + neptune_graph_json_str(input.graphName))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(neptune_graph_json_str(k1) + ":" + neptune_graph_json_str(u0[k1]))
+            parts.append("\"tags\":" + neptune_graph_json_obj(m1))
+        if input.publicConnectivity.is_some():
+            auto u2 = input.publicConnectivity.unwrap()
+            parts.append("\"publicConnectivity\":" + json.dumps(JsonValue.Bool(u2)))
+        if input.kmsKeyIdentifier.is_some():
+            auto u3 = input.kmsKeyIdentifier.unwrap()
+            parts.append("\"kmsKeyIdentifier\":" + neptune_graph_json_str(u3))
+        if input.vectorSearchConfiguration.is_some():
+            auto u4 = input.vectorSearchConfiguration.unwrap()
+            parts.append("\"vectorSearchConfiguration\":" + u4.to_json())
+        if input.replicaCount.is_some():
+            auto u5 = input.replicaCount.unwrap()
+            parts.append("\"replicaCount\":" + str(u5))
+        if input.deletionProtection.is_some():
+            auto u6 = input.deletionProtection.unwrap()
+            parts.append("\"deletionProtection\":" + json.dumps(JsonValue.Bool(u6)))
+        parts.append("\"provisionedMemory\":" + str(input.provisionedMemory))
+        auto bp = restjson.rest_json_document(b, neptune_graph_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, neptune_graph_service(), self.region, host)
+
+    # CreateGraphSnapshot  POST /snapshots
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_graph_snapshot(self, CreateGraphSnapshotInput input) -> str:
+        auto host = endpoints.regional_host(neptune_graph_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/snapshots", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"graphIdentifier\":" + neptune_graph_json_str(input.graphIdentifier))
+        parts.append("\"snapshotName\":" + neptune_graph_json_str(input.snapshotName))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(neptune_graph_json_str(k1) + ":" + neptune_graph_json_str(u0[k1]))
+            parts.append("\"tags\":" + neptune_graph_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, neptune_graph_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, neptune_graph_service(), self.region, host)
+
+    # CreateGraphUsingImportTask  POST /importtasks
+    # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_graph_using_import_task(self, CreateGraphUsingImportTaskInput input) -> str:
+        auto host = endpoints.regional_host(neptune_graph_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/importtasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"graphName\":" + neptune_graph_json_str(input.graphName))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(neptune_graph_json_str(k1) + ":" + neptune_graph_json_str(u0[k1]))
+            parts.append("\"tags\":" + neptune_graph_json_obj(m1))
+        if input.publicConnectivity.is_some():
+            auto u2 = input.publicConnectivity.unwrap()
+            parts.append("\"publicConnectivity\":" + json.dumps(JsonValue.Bool(u2)))
+        if input.kmsKeyIdentifier.is_some():
+            auto u3 = input.kmsKeyIdentifier.unwrap()
+            parts.append("\"kmsKeyIdentifier\":" + neptune_graph_json_str(u3))
+        if input.vectorSearchConfiguration.is_some():
+            auto u4 = input.vectorSearchConfiguration.unwrap()
+            parts.append("\"vectorSearchConfiguration\":" + u4.to_json())
+        if input.replicaCount.is_some():
+            auto u5 = input.replicaCount.unwrap()
+            parts.append("\"replicaCount\":" + str(u5))
+        if input.deletionProtection.is_some():
+            auto u6 = input.deletionProtection.unwrap()
+            parts.append("\"deletionProtection\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.importOptions.is_some():
+            auto u7 = input.importOptions.unwrap()
+            parts.append("\"importOptions\":" + u7.to_json())
+        if input.maxProvisionedMemory.is_some():
+            auto u8 = input.maxProvisionedMemory.unwrap()
+            parts.append("\"maxProvisionedMemory\":" + str(u8))
+        if input.minProvisionedMemory.is_some():
+            auto u9 = input.minProvisionedMemory.unwrap()
+            parts.append("\"minProvisionedMemory\":" + str(u9))
+        if input.failOnError.is_some():
+            auto u10 = input.failOnError.unwrap()
+            parts.append("\"failOnError\":" + json.dumps(JsonValue.Bool(u10)))
+        parts.append("\"source\":" + neptune_graph_json_str(input.source))
+        if input.format.is_some():
+            auto u11 = input.format.unwrap()
+            parts.append("\"format\":" + u11.to_json())
+        if input.parquetType.is_some():
+            auto u12 = input.parquetType.unwrap()
+            parts.append("\"parquetType\":" + neptune_graph_json_str(u12))
+        if input.blankNodeHandling.is_some():
+            auto u13 = input.blankNodeHandling.unwrap()
+            parts.append("\"blankNodeHandling\":" + neptune_graph_json_str(u13))
+        parts.append("\"roleArn\":" + neptune_graph_json_str(input.roleArn))
+        auto bp = restjson.rest_json_document(b, neptune_graph_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, neptune_graph_service(), self.region, host)
+
+    # CreatePrivateGraphEndpoint  POST /graphs/{graphIdentifier}/endpoints/
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_private_graph_endpoint(self, CreatePrivateGraphEndpointInput input) -> str:
+        auto host = endpoints.regional_host(neptune_graph_service(), self.region)
+        dict[str, str] labels = {}
+        labels["graphIdentifier"] = input.graphIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/graphs/{graphIdentifier}/endpoints/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.vpcId.is_some():
+            auto u0 = input.vpcId.unwrap()
+            parts.append("\"vpcId\":" + neptune_graph_json_str(u0))
+        if input.subnetIds.is_some():
+            auto u1 = input.subnetIds.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(neptune_graph_json_str(x2))
+            parts.append("\"subnetIds\":" + neptune_graph_json_arr(e2))
+        if input.vpcSecurityGroupIds.is_some():
+            auto u3 = input.vpcSecurityGroupIds.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(neptune_graph_json_str(x4))
+            parts.append("\"vpcSecurityGroupIds\":" + neptune_graph_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, neptune_graph_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, neptune_graph_service(), self.region, host)
+
     # DeleteGraphSnapshot  DELETE /snapshots/{snapshotIdentifier}
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_graph_snapshot(self, DeleteGraphSnapshotInput input) -> str:
@@ -1107,6 +1305,34 @@ struct Neptune_GraphClient:
         labels["vpcId"] = input.vpcId
         auto b = binding.HttpBinding(method="DELETE", path_template="/graphs/{graphIdentifier}/endpoints/{vpcId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
+
+    # ExecuteQuery  POST /queries
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, UnprocessableException, ValidationException
+    def execute_query(self, ExecuteQueryInput input) -> str:
+        auto host = endpoints.regional_host(neptune_graph_service(), self.region)
+        dict[str, str] headers = {}
+        headers["graphIdentifier"] = input.graphIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/queries", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"query\":" + neptune_graph_json_str(input.queryString))
+        parts.append("\"language\":" + neptune_graph_json_str(input.language))
+        if input.parameters.is_some():
+            auto u0 = input.parameters.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(neptune_graph_json_str(k1) + ":" + u0[k1].to_json())
+            parts.append("\"parameters\":" + neptune_graph_json_obj(m1))
+        if input.planCache.is_some():
+            auto u2 = input.planCache.unwrap()
+            parts.append("\"planCache\":" + u2.to_json())
+        if input.explainMode.is_some():
+            auto u3 = input.explainMode.unwrap()
+            parts.append("\"explain\":" + u3.to_json())
+        if input.queryTimeoutMilliseconds.is_some():
+            auto u4 = input.queryTimeoutMilliseconds.unwrap()
+            parts.append("\"queryTimeoutMilliseconds\":" + str(u4))
+        auto bp = restjson.rest_json_document(b, neptune_graph_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, neptune_graph_service(), self.region, host)
 
     # GetExportTask  GET /exporttasks/{taskIdentifier}
     # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1278,6 +1504,62 @@ struct Neptune_GraphClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, neptune_graph_service(), self.region, host)
 
+    # RestoreGraphFromSnapshot  POST /snapshots/{snapshotIdentifier}/restore
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def restore_graph_from_snapshot(self, RestoreGraphFromSnapshotInput input) -> str:
+        auto host = endpoints.regional_host(neptune_graph_service(), self.region)
+        dict[str, str] labels = {}
+        labels["snapshotIdentifier"] = input.snapshotIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/snapshots/{snapshotIdentifier}/restore", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"graphName\":" + neptune_graph_json_str(input.graphName))
+        if input.provisionedMemory.is_some():
+            auto u0 = input.provisionedMemory.unwrap()
+            parts.append("\"provisionedMemory\":" + str(u0))
+        if input.deletionProtection.is_some():
+            auto u1 = input.deletionProtection.unwrap()
+            parts.append("\"deletionProtection\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(neptune_graph_json_str(k3) + ":" + neptune_graph_json_str(u2[k3]))
+            parts.append("\"tags\":" + neptune_graph_json_obj(m3))
+        if input.replicaCount.is_some():
+            auto u4 = input.replicaCount.unwrap()
+            parts.append("\"replicaCount\":" + str(u4))
+        if input.publicConnectivity.is_some():
+            auto u5 = input.publicConnectivity.unwrap()
+            parts.append("\"publicConnectivity\":" + json.dumps(JsonValue.Bool(u5)))
+        auto bp = restjson.rest_json_document(b, neptune_graph_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, neptune_graph_service(), self.region, host)
+
+    # StartExportTask  POST /exporttasks
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def start_export_task(self, StartExportTaskInput input) -> str:
+        auto host = endpoints.regional_host(neptune_graph_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/exporttasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"graphIdentifier\":" + neptune_graph_json_str(input.graphIdentifier))
+        parts.append("\"roleArn\":" + neptune_graph_json_str(input.roleArn))
+        parts.append("\"format\":" + input.format.to_json())
+        parts.append("\"destination\":" + neptune_graph_json_str(input.destination))
+        parts.append("\"kmsKeyIdentifier\":" + neptune_graph_json_str(input.kmsKeyIdentifier))
+        if input.parquetType.is_some():
+            auto u0 = input.parquetType.unwrap()
+            parts.append("\"parquetType\":" + neptune_graph_json_str(u0))
+        if input.exportFilter.is_some():
+            auto u1 = input.exportFilter.unwrap()
+            parts.append("\"exportFilter\":" + export_filter_to_json(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(neptune_graph_json_str(k3) + ":" + neptune_graph_json_str(u2[k3]))
+            parts.append("\"tags\":" + neptune_graph_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, neptune_graph_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, neptune_graph_service(), self.region, host)
+
     # StartGraph  POST /graphs/{graphIdentifier}/start
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_graph(self, StartGraphInput input) -> str:
@@ -1306,6 +1588,21 @@ struct Neptune_GraphClient:
         labels["graphIdentifier"] = input.graphIdentifier
         auto b = binding.HttpBinding(method="POST", path_template="/graphs/{graphIdentifier}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(neptune_graph_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(neptune_graph_json_str(k0) + ":" + neptune_graph_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + neptune_graph_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, neptune_graph_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, neptune_graph_service(), self.region, host)
 
     # UpdateGraph  PATCH /graphs/{graphIdentifier}
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException

@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 37 operations — 30 with a generated method,
-#   7 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 37 operations — 37 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   170 structs (148 @derive(Json)), 18 enums, 33 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -317,8 +317,9 @@ struct CloudWatchLogsLogGroup:
 struct ConflictException:
     Optional[str] message
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateActivityInput:
     str name
     Optional[list[Tag]] tags
@@ -329,8 +330,9 @@ struct CreateActivityOutput:
     str activityArn
     DateTime creationDate
 
-# no @derive(Json): member(s) routingConfiguration: list[RoutingConfigurationListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) routingConfiguration: list[RoutingConfigurationListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateStateMachineAliasInput:
     Optional[str] description
     str name
@@ -341,8 +343,9 @@ struct CreateStateMachineAliasOutput:
     str stateMachineAliasArn
     DateTime creationDate
 
-# no @derive(Json): member(s) loggingConfiguration: LoggingConfiguration, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) loggingConfiguration: LoggingConfiguration, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateStateMachineInput:
     str name
     str definition
@@ -459,8 +462,9 @@ struct DescribeMapRunOutput:
 struct DescribeStateMachineAliasInput:
     str stateMachineAliasArn
 
-# no @derive(Json): member(s) routingConfiguration: list[RoutingConfigurationListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) routingConfiguration: list[RoutingConfigurationListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeStateMachineAliasOutput:
     Optional[str] stateMachineAliasArn
     Optional[str] name
@@ -474,8 +478,9 @@ struct DescribeStateMachineForExecutionInput:
     str executionArn
     Optional[IncludedData] includedData
 
-# no @derive(Json): member(s) loggingConfiguration: LoggingConfiguration, variableReferences: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) loggingConfiguration: LoggingConfiguration, variableReferences: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeStateMachineForExecutionOutput:
     str stateMachineArn
     str name
@@ -495,8 +500,9 @@ struct DescribeStateMachineInput:
     str stateMachineArn
     Optional[IncludedData] includedData
 
-# no @derive(Json): member(s) loggingConfiguration: LoggingConfiguration, variableReferences: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) loggingConfiguration: LoggingConfiguration, variableReferences: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeStateMachineOutput:
     str stateMachineArn
     str name
@@ -607,14 +613,16 @@ struct GetExecutionHistoryInput:
     Optional[str] nextToken
     Optional[bool] includeExecutionData
 
-# no @derive(Json): member(s) events: list[HistoryEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) events: list[HistoryEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetExecutionHistoryOutput:
     list[HistoryEvent] events
     Optional[str] nextToken
 
-# no @derive(Json): member(s) stateExitedEventDetails: StateExitedEventDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stateExitedEventDetails: StateExitedEventDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HistoryEvent:
     DateTime timestamp
     HistoryEventType type
@@ -792,8 +800,9 @@ struct ListActivitiesInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) activities: list[ActivityListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) activities: list[ActivityListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListActivitiesOutput:
     list[ActivityListItem] activities
     Optional[str] nextToken
@@ -807,8 +816,9 @@ struct ListExecutionsInput:
     Optional[str] mapRunArn
     Optional[ExecutionRedriveFilter] redriveFilter
 
-# no @derive(Json): member(s) executions: list[ExecutionListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) executions: list[ExecutionListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExecutionsOutput:
     list[ExecutionListItem] executions
     Optional[str] nextToken
@@ -819,8 +829,9 @@ struct ListMapRunsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) mapRuns: list[MapRunListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mapRuns: list[MapRunListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMapRunsOutput:
     list[MapRunListItem] mapRuns
     Optional[str] nextToken
@@ -831,8 +842,9 @@ struct ListStateMachineAliasesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) stateMachineAliases: list[StateMachineAliasListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stateMachineAliases: list[StateMachineAliasListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStateMachineAliasesOutput:
     list[StateMachineAliasListItem] stateMachineAliases
     Optional[str] nextToken
@@ -843,8 +855,9 @@ struct ListStateMachineVersionsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) stateMachineVersions: list[StateMachineVersionListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stateMachineVersions: list[StateMachineVersionListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStateMachineVersionsOutput:
     list[StateMachineVersionListItem] stateMachineVersions
     Optional[str] nextToken
@@ -854,8 +867,9 @@ struct ListStateMachinesInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) stateMachines: list[StateMachineListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stateMachines: list[StateMachineListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStateMachinesOutput:
     list[StateMachineListItem] stateMachines
     Optional[str] nextToken
@@ -864,8 +878,9 @@ struct ListStateMachinesOutput:
 struct ListTagsForResourceInput:
     str resourceArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[list[Tag]] tags
 
@@ -873,8 +888,9 @@ struct ListTagsForResourceOutput:
 struct LogDestination:
     Optional[CloudWatchLogsLogGroup] cloudWatchLogsLogGroup
 
-# no @derive(Json): member(s) destinations: list[LogDestination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) destinations: list[LogDestination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LoggingConfiguration:
     Optional[LogLevel] level
     Optional[bool] includeExecutionData
@@ -1059,8 +1075,9 @@ struct StateEnteredEventDetails:
     Optional[str] input
     Optional[HistoryEventExecutionDataDetails] inputDetails
 
-# no @derive(Json): member(s) assignedVariables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assignedVariables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StateExitedEventDetails:
     str name
     Optional[str] output
@@ -1120,8 +1137,9 @@ struct Tag:
     Optional[str] key
     Optional[str] value
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceInput:
     str resourceArn
     list[Tag] tags
@@ -1238,8 +1256,9 @@ struct TooManyTags:
 struct TracingConfiguration:
     Optional[bool] enabled
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceInput:
     str resourceArn
     list[str] tagKeys
@@ -1261,8 +1280,9 @@ struct UpdateMapRunOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) routingConfiguration: list[RoutingConfigurationListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) routingConfiguration: list[RoutingConfigurationListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateStateMachineAliasInput:
     str stateMachineAliasArn
     Optional[str] description
@@ -1272,8 +1292,9 @@ struct UpdateStateMachineAliasInput:
 struct UpdateStateMachineAliasOutput:
     DateTime updateDate
 
-# no @derive(Json): member(s) loggingConfiguration: LoggingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) loggingConfiguration: LoggingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateStateMachineInput:
     str stateMachineArn
     Optional[str] definition
@@ -1304,8 +1325,9 @@ struct ValidateStateMachineDefinitionInput:
     Optional[ValidateStateMachineDefinitionSeverity] severity
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) diagnostics: list[ValidateStateMachineDefinitionDiagnostic] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) diagnostics: list[ValidateStateMachineDefinitionDiagnostic] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidateStateMachineDefinitionOutput:
     ValidateStateMachineDefinitionResultCode result
     list[ValidateStateMachineDefinitionDiagnostic] diagnostics
@@ -1428,20 +1450,197 @@ def states_error_from_code(str code) -> SFNError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateActivity (input CreateActivityInput)
-#   CreateStateMachine (input CreateStateMachineInput)
-#   CreateStateMachineAlias (input CreateStateMachineAliasInput)
-#   TagResource (input TagResourceInput)
-#   UntagResource (input UntagResourceInput)
-#   UpdateStateMachine (input UpdateStateMachineInput)
-#   UpdateStateMachineAlias (input UpdateStateMachineAliasInput)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def states_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def states_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def states_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateActivityInput to a compact JSON object (declaration order).
+def create_activity_input_to_json(CreateActivityInput v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + states_json_str(v.name))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + states_json_arr(e1))
+    if v.encryptionConfiguration.is_some():
+        auto u2 = v.encryptionConfiguration.unwrap()
+        parts.append("\"encryptionConfiguration\":" + u2.to_json())
+    return states_json_obj(parts)
+
+# Serialize CreateStateMachineAliasInput to a compact JSON object (declaration order).
+def create_state_machine_alias_input_to_json(CreateStateMachineAliasInput v) -> str:
+    list[str] parts = []
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + states_json_str(u0))
+    parts.append("\"name\":" + states_json_str(v.name))
+    list[str] e1 = []
+    for x1 in v.routingConfiguration:
+        e1.append(x1.to_json())
+    parts.append("\"routingConfiguration\":" + states_json_arr(e1))
+    return states_json_obj(parts)
+
+# Serialize CreateStateMachineInput to a compact JSON object (declaration order).
+def create_state_machine_input_to_json(CreateStateMachineInput v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + states_json_str(v.name))
+    parts.append("\"definition\":" + states_json_str(v.definition))
+    parts.append("\"roleArn\":" + states_json_str(v.roleArn))
+    if v.type.is_some():
+        auto u0 = v.type.unwrap()
+        parts.append("\"type\":" + u0.to_json())
+    if v.loggingConfiguration.is_some():
+        auto u1 = v.loggingConfiguration.unwrap()
+        parts.append("\"loggingConfiguration\":" + logging_configuration_to_json(u1))
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"tags\":" + states_json_arr(e3))
+    if v.tracingConfiguration.is_some():
+        auto u4 = v.tracingConfiguration.unwrap()
+        parts.append("\"tracingConfiguration\":" + u4.to_json())
+    if v.publish.is_some():
+        auto u5 = v.publish.unwrap()
+        parts.append("\"publish\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.versionDescription.is_some():
+        auto u6 = v.versionDescription.unwrap()
+        parts.append("\"versionDescription\":" + states_json_str(u6))
+    if v.encryptionConfiguration.is_some():
+        auto u7 = v.encryptionConfiguration.unwrap()
+        parts.append("\"encryptionConfiguration\":" + u7.to_json())
+    return states_json_obj(parts)
+
+# Serialize LoggingConfiguration to a compact JSON object (declaration order).
+def logging_configuration_to_json(LoggingConfiguration v) -> str:
+    list[str] parts = []
+    if v.level.is_some():
+        auto u0 = v.level.unwrap()
+        parts.append("\"level\":" + u0.to_json())
+    if v.includeExecutionData.is_some():
+        auto u1 = v.includeExecutionData.unwrap()
+        parts.append("\"includeExecutionData\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.destinations.is_some():
+        auto u2 = v.destinations.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"destinations\":" + states_json_arr(e3))
+    return states_json_obj(parts)
+
+# Serialize TagResourceInput to a compact JSON object (declaration order).
+def tag_resource_input_to_json(TagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + states_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tags:
+        e0.append(x0.to_json())
+    parts.append("\"tags\":" + states_json_arr(e0))
+    return states_json_obj(parts)
+
+# Serialize UntagResourceInput to a compact JSON object (declaration order).
+def untag_resource_input_to_json(UntagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + states_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(states_json_str(x0))
+    parts.append("\"tagKeys\":" + states_json_arr(e0))
+    return states_json_obj(parts)
+
+# Serialize UpdateStateMachineAliasInput to a compact JSON object (declaration order).
+def update_state_machine_alias_input_to_json(UpdateStateMachineAliasInput v) -> str:
+    list[str] parts = []
+    parts.append("\"stateMachineAliasArn\":" + states_json_str(v.stateMachineAliasArn))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + states_json_str(u0))
+    if v.routingConfiguration.is_some():
+        auto u1 = v.routingConfiguration.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"routingConfiguration\":" + states_json_arr(e2))
+    return states_json_obj(parts)
+
+# Serialize UpdateStateMachineInput to a compact JSON object (declaration order).
+def update_state_machine_input_to_json(UpdateStateMachineInput v) -> str:
+    list[str] parts = []
+    parts.append("\"stateMachineArn\":" + states_json_str(v.stateMachineArn))
+    if v.definition.is_some():
+        auto u0 = v.definition.unwrap()
+        parts.append("\"definition\":" + states_json_str(u0))
+    if v.roleArn.is_some():
+        auto u1 = v.roleArn.unwrap()
+        parts.append("\"roleArn\":" + states_json_str(u1))
+    if v.loggingConfiguration.is_some():
+        auto u2 = v.loggingConfiguration.unwrap()
+        parts.append("\"loggingConfiguration\":" + logging_configuration_to_json(u2))
+    if v.tracingConfiguration.is_some():
+        auto u3 = v.tracingConfiguration.unwrap()
+        parts.append("\"tracingConfiguration\":" + u3.to_json())
+    if v.publish.is_some():
+        auto u4 = v.publish.unwrap()
+        parts.append("\"publish\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.versionDescription.is_some():
+        auto u5 = v.versionDescription.unwrap()
+        parts.append("\"versionDescription\":" + states_json_str(u5))
+    if v.encryptionConfiguration.is_some():
+        auto u6 = v.encryptionConfiguration.unwrap()
+        parts.append("\"encryptionConfiguration\":" + u6.to_json())
+    return states_json_obj(parts)
 
 # A bound SFN client: credentials + region, threaded into every operation.
 struct SFNClient:
     core.Credentials creds
     str region
+
+    # CreateActivity
+    # errors: ActivityAlreadyExists, ActivityLimitExceeded, InvalidEncryptionConfiguration, InvalidName, KmsAccessDeniedException, KmsThrottlingException, TooManyTags
+    def create_activity(self, CreateActivityInput input) -> str:
+        auto body = create_activity_input_to_json(input)
+        return awsjson.awsjson_request_now(states_protocol(), self.creds, self.region, "CreateActivity", body)
+
+    # CreateStateMachine
+    # errors: ConflictException, InvalidArn, InvalidDefinition, InvalidEncryptionConfiguration, InvalidLoggingConfiguration, InvalidName, InvalidTracingConfiguration, KmsAccessDeniedException, KmsThrottlingException, StateMachineAlreadyExists, StateMachineDeleting, StateMachineLimitExceeded, StateMachineTypeNotSupported, TooManyTags, ValidationException
+    def create_state_machine(self, CreateStateMachineInput input) -> str:
+        auto body = create_state_machine_input_to_json(input)
+        return awsjson.awsjson_request_now(states_protocol(), self.creds, self.region, "CreateStateMachine", body)
+
+    # CreateStateMachineAlias
+    # errors: ConflictException, InvalidArn, InvalidName, ResourceNotFound, ServiceQuotaExceededException, StateMachineDeleting, ValidationException
+    def create_state_machine_alias(self, CreateStateMachineAliasInput input) -> str:
+        auto body = create_state_machine_alias_input_to_json(input)
+        return awsjson.awsjson_request_now(states_protocol(), self.creds, self.region, "CreateStateMachineAlias", body)
 
     # DeleteActivity
     # errors: InvalidArn
@@ -1605,17 +1804,41 @@ struct SFNClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(states_protocol(), self.creds, self.region, "StopExecution", body)
 
+    # TagResource
+    # errors: InvalidArn, ResourceNotFound, TooManyTags
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto body = tag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(states_protocol(), self.creds, self.region, "TagResource", body)
+
     # TestState
     # errors: InvalidArn, InvalidDefinition, InvalidExecutionInput, ValidationException
     def test_state(self, TestStateInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(states_protocol(), self.creds, self.region, "TestState", body)
 
+    # UntagResource
+    # errors: InvalidArn, ResourceNotFound
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto body = untag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(states_protocol(), self.creds, self.region, "UntagResource", body)
+
     # UpdateMapRun
     # errors: InvalidArn, ResourceNotFound, ValidationException
     def update_map_run(self, UpdateMapRunInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(states_protocol(), self.creds, self.region, "UpdateMapRun", body)
+
+    # UpdateStateMachine
+    # errors: ConflictException, InvalidArn, InvalidDefinition, InvalidEncryptionConfiguration, InvalidLoggingConfiguration, InvalidTracingConfiguration, KmsAccessDeniedException, KmsThrottlingException, MissingRequiredParameter, ServiceQuotaExceededException, StateMachineDeleting, StateMachineDoesNotExist, ValidationException
+    def update_state_machine(self, UpdateStateMachineInput input) -> str:
+        auto body = update_state_machine_input_to_json(input)
+        return awsjson.awsjson_request_now(states_protocol(), self.creds, self.region, "UpdateStateMachine", body)
+
+    # UpdateStateMachineAlias
+    # errors: ConflictException, InvalidArn, ResourceNotFound, StateMachineDeleting, ValidationException
+    def update_state_machine_alias(self, UpdateStateMachineAliasInput input) -> str:
+        auto body = update_state_machine_alias_input_to_json(input)
+        return awsjson.awsjson_request_now(states_protocol(), self.creds, self.region, "UpdateStateMachineAlias", body)
 
     # ValidateStateMachineDefinition
     # errors: ValidationException

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 108 operations — 70 with a generated method,
-#   38 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 108 operations — 95 with a generated method,
+#   13 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   486 structs (299 @derive(Json)), 65 enums, 10 error variants.
 #   10 paginators generated (9 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -617,16 +617,18 @@ enum Status:
 struct AccessDeniedException:
     Optional[str] message
 
-# no @derive(Json): member(s) modelEnforcement: ModelEnforcement not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) modelEnforcement: ModelEnforcement not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccountEnforcedGuardrailInferenceInputConfiguration:
     str guardrailIdentifier
     str guardrailVersion
     Optional[SelectiveContentGuarding] selectiveContentGuarding
     Optional[ModelEnforcement] modelEnforcement
 
-# no @derive(Json): member(s) modelEnforcement: ModelEnforcement not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) modelEnforcement: ModelEnforcement not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccountEnforcedGuardrailOutputConfiguration:
     Optional[str] configId
     Optional[str] guardrailArn
@@ -669,26 +671,30 @@ struct AgreementAvailability:
     AgreementStatus status
     Optional[str] errorMessage
 
-# no @derive(Json): member(s) datasetMetricConfigs: list[EvaluationDatasetMetricConfig], evaluatorModelConfig: EvaluatorModelConfig, customMetricConfig: AutomatedEvaluationCustomMetricConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) datasetMetricConfigs: list[EvaluationDatasetMetricConfig], evaluatorModelConfig: EvaluatorModelConfig, customMetricConfig: AutomatedEvaluationCustomMetricConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedEvaluationConfig:
     list[EvaluationDatasetMetricConfig] datasetMetricConfigs
     Optional[EvaluatorModelConfig] evaluatorModelConfig
     Optional[AutomatedEvaluationCustomMetricConfig] customMetricConfig
 
-# no @derive(Json): member(s) customMetrics: list[AutomatedEvaluationCustomMetricSource], evaluatorModelConfig: CustomMetricEvaluatorModelConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customMetrics: list[AutomatedEvaluationCustomMetricSource], evaluatorModelConfig: CustomMetricEvaluatorModelConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedEvaluationCustomMetricConfig:
     list[AutomatedEvaluationCustomMetricSource] customMetrics
     CustomMetricEvaluatorModelConfig evaluatorModelConfig
 
-# no @derive(Json): member(s) customMetricDefinition: CustomMetricDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customMetricDefinition: CustomMetricDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedEvaluationCustomMetricSource:
     Optional[CustomMetricDefinition] customMetricDefinition
 
-# no @derive(Json): member(s) valid: AutomatedReasoningCheckValidFinding, invalid: AutomatedReasoningCheckInvalidFinding, satisfiable: AutomatedReasoningCheckSatisfiableFinding, impossible: AutomatedReasoningCheckImpossibleFinding, translationAmbiguous: AutomatedReasoningCheckTranslationAmbiguousFinding not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) valid: AutomatedReasoningCheckValidFinding, invalid: AutomatedReasoningCheckInvalidFinding, satisfiable: AutomatedReasoningCheckSatisfiableFinding, impossible: AutomatedReasoningCheckImpossibleFinding, translationAmbiguous: AutomatedReasoningCheckTranslationAmbiguousFinding not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningCheckFinding:
     Optional[AutomatedReasoningCheckValidFinding] valid
     Optional[AutomatedReasoningCheckInvalidFinding] invalid
@@ -698,8 +704,9 @@ struct AutomatedReasoningCheckFinding:
     Optional[AutomatedReasoningCheckTooComplexFinding] tooComplex
     Optional[AutomatedReasoningCheckNoTranslationsFinding] noTranslations
 
-# no @derive(Json): member(s) translation: AutomatedReasoningCheckTranslation, contradictingRules: list[AutomatedReasoningCheckRule], logicWarning: AutomatedReasoningCheckLogicWarning not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) translation: AutomatedReasoningCheckTranslation, contradictingRules: list[AutomatedReasoningCheckRule], logicWarning: AutomatedReasoningCheckLogicWarning not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningCheckImpossibleFinding:
     Optional[AutomatedReasoningCheckTranslation] translation
     Optional[list[AutomatedReasoningCheckRule]] contradictingRules
@@ -709,15 +716,17 @@ struct AutomatedReasoningCheckImpossibleFinding:
 struct AutomatedReasoningCheckInputTextReference:
     Optional[str] text
 
-# no @derive(Json): member(s) translation: AutomatedReasoningCheckTranslation, contradictingRules: list[AutomatedReasoningCheckRule], logicWarning: AutomatedReasoningCheckLogicWarning not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) translation: AutomatedReasoningCheckTranslation, contradictingRules: list[AutomatedReasoningCheckRule], logicWarning: AutomatedReasoningCheckLogicWarning not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningCheckInvalidFinding:
     Optional[AutomatedReasoningCheckTranslation] translation
     Optional[list[AutomatedReasoningCheckRule]] contradictingRules
     Optional[AutomatedReasoningCheckLogicWarning] logicWarning
 
-# no @derive(Json): member(s) premises: list[AutomatedReasoningLogicStatement], claims: list[AutomatedReasoningLogicStatement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) premises: list[AutomatedReasoningLogicStatement], claims: list[AutomatedReasoningLogicStatement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningCheckLogicWarning:
     Optional[AutomatedReasoningCheckLogicWarningType] type
     Optional[list[AutomatedReasoningLogicStatement]] premises
@@ -733,16 +742,18 @@ struct AutomatedReasoningCheckRule:
     Optional[str] id
     Optional[str] policyVersionArn
 
-# no @derive(Json): member(s) translation: AutomatedReasoningCheckTranslation, claimsTrueScenario: AutomatedReasoningCheckScenario, claimsFalseScenario: AutomatedReasoningCheckScenario, logicWarning: AutomatedReasoningCheckLogicWarning not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) translation: AutomatedReasoningCheckTranslation, claimsTrueScenario: AutomatedReasoningCheckScenario, claimsFalseScenario: AutomatedReasoningCheckScenario, logicWarning: AutomatedReasoningCheckLogicWarning not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningCheckSatisfiableFinding:
     Optional[AutomatedReasoningCheckTranslation] translation
     Optional[AutomatedReasoningCheckScenario] claimsTrueScenario
     Optional[AutomatedReasoningCheckScenario] claimsFalseScenario
     Optional[AutomatedReasoningCheckLogicWarning] logicWarning
 
-# no @derive(Json): member(s) statements: list[AutomatedReasoningLogicStatement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statements: list[AutomatedReasoningLogicStatement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningCheckScenario:
     Optional[list[AutomatedReasoningLogicStatement]] statements
 
@@ -751,8 +762,9 @@ struct AutomatedReasoningCheckTooComplexFinding:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) premises: list[AutomatedReasoningLogicStatement], claims: list[AutomatedReasoningLogicStatement], untranslatedPremises: list[AutomatedReasoningCheckInputTextReference], untranslatedClaims: list[AutomatedReasoningCheckInputTextReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) premises: list[AutomatedReasoningLogicStatement], claims: list[AutomatedReasoningLogicStatement], untranslatedPremises: list[AutomatedReasoningCheckInputTextReference], untranslatedClaims: list[AutomatedReasoningCheckInputTextReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningCheckTranslation:
     Optional[list[AutomatedReasoningLogicStatement]] premises
     list[AutomatedReasoningLogicStatement] claims
@@ -760,19 +772,22 @@ struct AutomatedReasoningCheckTranslation:
     Optional[list[AutomatedReasoningCheckInputTextReference]] untranslatedClaims
     float64 confidence
 
-# no @derive(Json): member(s) options: list[AutomatedReasoningCheckTranslationOption], differenceScenarios: list[AutomatedReasoningCheckScenario] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) options: list[AutomatedReasoningCheckTranslationOption], differenceScenarios: list[AutomatedReasoningCheckScenario] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningCheckTranslationAmbiguousFinding:
     Optional[list[AutomatedReasoningCheckTranslationOption]] options
     Optional[list[AutomatedReasoningCheckScenario]] differenceScenarios
 
-# no @derive(Json): member(s) translations: list[AutomatedReasoningCheckTranslation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) translations: list[AutomatedReasoningCheckTranslation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningCheckTranslationOption:
     Optional[list[AutomatedReasoningCheckTranslation]] translations
 
-# no @derive(Json): member(s) translation: AutomatedReasoningCheckTranslation, claimsTrueScenario: AutomatedReasoningCheckScenario, supportingRules: list[AutomatedReasoningCheckRule], logicWarning: AutomatedReasoningCheckLogicWarning not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) translation: AutomatedReasoningCheckTranslation, claimsTrueScenario: AutomatedReasoningCheckScenario, supportingRules: list[AutomatedReasoningCheckRule], logicWarning: AutomatedReasoningCheckLogicWarning not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningCheckValidFinding:
     Optional[AutomatedReasoningCheckTranslation] translation
     Optional[AutomatedReasoningCheckScenario] claimsTrueScenario
@@ -796,15 +811,17 @@ struct AutomatedReasoningPolicyAddRuleFromNaturalLanguageAnnotation:
 struct AutomatedReasoningPolicyAddRuleMutation:
     AutomatedReasoningPolicyDefinitionRule rule
 
-# no @derive(Json): member(s) values: list[AutomatedReasoningPolicyDefinitionTypeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[AutomatedReasoningPolicyDefinitionTypeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyAddTypeAnnotation:
     str name
     str description
     list[AutomatedReasoningPolicyDefinitionTypeValue] values
 
-# no @derive(Json): member(s) type: AutomatedReasoningPolicyDefinitionType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) type: AutomatedReasoningPolicyDefinitionType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyAddTypeMutation:
     AutomatedReasoningPolicyDefinitionType type
 
@@ -823,8 +840,9 @@ struct AutomatedReasoningPolicyAddVariableAnnotation:
 struct AutomatedReasoningPolicyAddVariableMutation:
     AutomatedReasoningPolicyDefinitionVariable variable
 
-# no @derive(Json): member(s) content: list[AutomatedReasoningPolicyAnnotatedContent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) content: list[AutomatedReasoningPolicyAnnotatedContent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyAnnotatedChunk:
     Optional[int64] pageNumber
     list[AutomatedReasoningPolicyAnnotatedContent] content
@@ -838,8 +856,9 @@ struct AutomatedReasoningPolicyAnnotatedLine:
     Optional[int64] lineNumber
     Optional[str] lineText
 
-# no @derive(Json): member(s) addType: AutomatedReasoningPolicyAddTypeAnnotation, updateType: AutomatedReasoningPolicyUpdateTypeAnnotation, updateFromRulesFeedback: AutomatedReasoningPolicyUpdateFromRuleFeedbackAnnotation, updateFromScenarioFeedback: AutomatedReasoningPolicyUpdateFromScenarioFeedbackAnnotation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) addType: AutomatedReasoningPolicyAddTypeAnnotation, updateType: AutomatedReasoningPolicyUpdateTypeAnnotation, updateFromRulesFeedback: AutomatedReasoningPolicyUpdateFromRuleFeedbackAnnotation, updateFromScenarioFeedback: AutomatedReasoningPolicyUpdateFromScenarioFeedbackAnnotation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyAnnotation:
     Optional[AutomatedReasoningPolicyAddTypeAnnotation] addType
     Optional[AutomatedReasoningPolicyUpdateTypeAnnotation] updateType
@@ -855,28 +874,32 @@ struct AutomatedReasoningPolicyAnnotation:
     Optional[AutomatedReasoningPolicyUpdateFromScenarioFeedbackAnnotation] updateFromScenarioFeedback
     Optional[AutomatedReasoningPolicyIngestContentAnnotation] ingestContent
 
-# no @derive(Json): member(s) location: AutomatedReasoningPolicyStatementLocation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) location: AutomatedReasoningPolicyStatementLocation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyAtomicStatement:
     str id
     str text
     AutomatedReasoningPolicyStatementLocation location
 
-# no @derive(Json): member(s) entries: list[AutomatedReasoningPolicyBuildLogEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entries: list[AutomatedReasoningPolicyBuildLogEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyBuildLog:
     list[AutomatedReasoningPolicyBuildLogEntry] entries
 
-# no @derive(Json): member(s) annotation: AutomatedReasoningPolicyAnnotation, buildSteps: list[AutomatedReasoningPolicyBuildStep] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) annotation: AutomatedReasoningPolicyAnnotation, buildSteps: list[AutomatedReasoningPolicyBuildStep] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyBuildLogEntry:
     # wire name "annotation" differs from field; derive rename is a #346 follow-up
     AutomatedReasoningPolicyAnnotation annotation_
     AutomatedReasoningPolicyAnnotationStatus status
     list[AutomatedReasoningPolicyBuildStep] buildSteps
 
-# no @derive(Json): member(s) entries: list[AutomatedReasoningPolicyBuildResultAssetManifestEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entries: list[AutomatedReasoningPolicyBuildResultAssetManifestEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyBuildResultAssetManifest:
     list[AutomatedReasoningPolicyBuildResultAssetManifestEntry] entries
 
@@ -886,8 +909,9 @@ struct AutomatedReasoningPolicyBuildResultAssetManifestEntry:
     Optional[str] assetName
     Optional[str] assetId
 
-# no @derive(Json): member(s) policyDefinition: AutomatedReasoningPolicyDefinition, qualityReport: AutomatedReasoningPolicyDefinitionQualityReport, buildLog: AutomatedReasoningPolicyBuildLog, generatedTestCases: AutomatedReasoningPolicyGeneratedTestCases, policyScenarios: AutomatedReasoningPolicyScenarios, assetManifest: AutomatedReasoningPolicyBuildResultAssetManifest, fidelityReport: AutomatedReasoningPolicyFidelityReport not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policyDefinition: AutomatedReasoningPolicyDefinition, qualityReport: AutomatedReasoningPolicyDefinitionQualityReport, buildLog: AutomatedReasoningPolicyBuildLog, generatedTestCases: AutomatedReasoningPolicyGeneratedTestCases, policyScenarios: AutomatedReasoningPolicyScenarios, assetManifest: AutomatedReasoningPolicyBuildResultAssetManifest, fidelityReport: AutomatedReasoningPolicyFidelityReport not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyBuildResultAssets:
     Optional[AutomatedReasoningPolicyDefinition] policyDefinition
     Optional[AutomatedReasoningPolicyDefinitionQualityReport] qualityReport
@@ -898,15 +922,17 @@ struct AutomatedReasoningPolicyBuildResultAssets:
     Optional[AutomatedReasoningPolicySourceDocument] document
     Optional[AutomatedReasoningPolicyFidelityReport] fidelityReport
 
-# no @derive(Json): member(s) context: AutomatedReasoningPolicyBuildStepContext, priorElement: AutomatedReasoningPolicyDefinitionElement, messages: list[AutomatedReasoningPolicyBuildStepMessage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) context: AutomatedReasoningPolicyBuildStepContext, priorElement: AutomatedReasoningPolicyDefinitionElement, messages: list[AutomatedReasoningPolicyBuildStepMessage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyBuildStep:
     AutomatedReasoningPolicyBuildStepContext context
     Optional[AutomatedReasoningPolicyDefinitionElement] priorElement
     list[AutomatedReasoningPolicyBuildStepMessage] messages
 
-# no @derive(Json): member(s) mutation: AutomatedReasoningPolicyMutation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mutation: AutomatedReasoningPolicyMutation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyBuildStepContext:
     Optional[AutomatedReasoningPolicyPlanning] planning
     Optional[AutomatedReasoningPolicyMutation] mutation
@@ -923,13 +949,15 @@ struct AutomatedReasoningPolicyBuildWorkflowDocument:
     str documentName
     Optional[str] documentDescription
 
-# no @derive(Json): member(s) annotations: list[AutomatedReasoningPolicyAnnotation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) annotations: list[AutomatedReasoningPolicyAnnotation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyBuildWorkflowRepairContent:
     list[AutomatedReasoningPolicyAnnotation] annotations
 
-# no @derive(Json): member(s) policyDefinition: AutomatedReasoningPolicyDefinition, workflowContent: AutomatedReasoningPolicyWorkflowTypeContent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policyDefinition: AutomatedReasoningPolicyDefinition, workflowContent: AutomatedReasoningPolicyWorkflowTypeContent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyBuildWorkflowSource:
     Optional[AutomatedReasoningPolicyDefinition] policyDefinition
     Optional[AutomatedReasoningPolicyWorkflowTypeContent] workflowContent
@@ -945,23 +973,26 @@ struct AutomatedReasoningPolicyBuildWorkflowSummary:
     @json(timestamp="iso8601")
     DateTime updatedAt
 
-# no @derive(Json): member(s) types: list[AutomatedReasoningPolicyDefinitionType], rules: list[AutomatedReasoningPolicyDefinitionRule], variables: list[AutomatedReasoningPolicyDefinitionVariable] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) types: list[AutomatedReasoningPolicyDefinitionType], rules: list[AutomatedReasoningPolicyDefinitionRule], variables: list[AutomatedReasoningPolicyDefinitionVariable] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyDefinition:
     Optional[str] version
     Optional[list[AutomatedReasoningPolicyDefinitionType]] types
     Optional[list[AutomatedReasoningPolicyDefinitionRule]] rules
     Optional[list[AutomatedReasoningPolicyDefinitionVariable]] variables
 
-# no @derive(Json): member(s) policyDefinitionType: AutomatedReasoningPolicyDefinitionType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policyDefinitionType: AutomatedReasoningPolicyDefinitionType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyDefinitionElement:
     Optional[AutomatedReasoningPolicyDefinitionVariable] policyDefinitionVariable
     Optional[AutomatedReasoningPolicyDefinitionType] policyDefinitionType
     Optional[AutomatedReasoningPolicyDefinitionRule] policyDefinitionRule
 
-# no @derive(Json): member(s) unusedTypes: list[str], unusedTypeValues: list[AutomatedReasoningPolicyDefinitionTypeValuePair], unusedVariables: list[str], conflictingRules: list[str], disjointRuleSets: list[AutomatedReasoningPolicyDisjointRuleSet] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) unusedTypes: list[str], unusedTypeValues: list[AutomatedReasoningPolicyDefinitionTypeValuePair], unusedVariables: list[str], conflictingRules: list[str], disjointRuleSets: list[AutomatedReasoningPolicyDisjointRuleSet] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyDefinitionQualityReport:
     int64 typeCount
     int64 variableCount
@@ -978,8 +1009,9 @@ struct AutomatedReasoningPolicyDefinitionRule:
     str expression
     Optional[str] alternateExpression
 
-# no @derive(Json): member(s) values: list[AutomatedReasoningPolicyDefinitionTypeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[AutomatedReasoningPolicyDefinitionTypeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyDefinitionType:
     str name
     Optional[str] description
@@ -1029,14 +1061,16 @@ struct AutomatedReasoningPolicyDeleteVariableAnnotation:
 struct AutomatedReasoningPolicyDeleteVariableMutation:
     str name
 
-# no @derive(Json): member(s) variables: list[str], rules: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) variables: list[str], rules: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyDisjointRuleSet:
     list[str] variables
     list[str] rules
 
-# no @derive(Json): member(s) ruleReports: dict[str, AutomatedReasoningPolicyRuleReport], variableReports: dict[str, AutomatedReasoningPolicyVariableReport], documentSources: list[AutomatedReasoningPolicyReportSourceDocument] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ruleReports: dict[str, AutomatedReasoningPolicyRuleReport], variableReports: dict[str, AutomatedReasoningPolicyVariableReport], documentSources: list[AutomatedReasoningPolicyReportSourceDocument] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyFidelityReport:
     float64 coverageScore
     float64 accuracyScore
@@ -1044,8 +1078,9 @@ struct AutomatedReasoningPolicyFidelityReport:
     dict[str, AutomatedReasoningPolicyVariableReport] variableReports
     list[AutomatedReasoningPolicyReportSourceDocument] documentSources
 
-# no @derive(Json): member(s) documents: list[AutomatedReasoningPolicyBuildWorkflowDocument] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) documents: list[AutomatedReasoningPolicyBuildWorkflowDocument] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyGenerateFidelityReportContent:
     Optional[list[AutomatedReasoningPolicyBuildWorkflowDocument]] documents
 
@@ -1055,8 +1090,9 @@ struct AutomatedReasoningPolicyGeneratedTestCase:
     str guardContent
     AutomatedReasoningCheckResult expectedAggregatedFindingsResult
 
-# no @derive(Json): member(s) generatedTestCases: list[AutomatedReasoningPolicyGeneratedTestCase] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) generatedTestCases: list[AutomatedReasoningPolicyGeneratedTestCase] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyGeneratedTestCases:
     list[AutomatedReasoningPolicyGeneratedTestCase] generatedTestCases
 
@@ -1064,14 +1100,16 @@ struct AutomatedReasoningPolicyGeneratedTestCases:
 struct AutomatedReasoningPolicyIngestContentAnnotation:
     str content
 
-# no @derive(Json): member(s) documents: list[AutomatedReasoningPolicyBuildWorkflowDocument] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) documents: list[AutomatedReasoningPolicyBuildWorkflowDocument] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyIterativeRefinementContent:
     list[AutomatedReasoningPolicyBuildWorkflowDocument] documents
     Optional[str] feedback
 
-# no @derive(Json): member(s) addType: AutomatedReasoningPolicyAddTypeMutation, updateType: AutomatedReasoningPolicyUpdateTypeMutation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) addType: AutomatedReasoningPolicyAddTypeMutation, updateType: AutomatedReasoningPolicyUpdateTypeMutation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyMutation:
     Optional[AutomatedReasoningPolicyAddTypeMutation] addType
     Optional[AutomatedReasoningPolicyUpdateTypeMutation] updateType
@@ -1088,8 +1126,9 @@ struct AutomatedReasoningPolicyPlanning:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) atomicStatements: list[AutomatedReasoningPolicyAtomicStatement], documentContent: list[AutomatedReasoningPolicyAnnotatedChunk] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) atomicStatements: list[AutomatedReasoningPolicyAtomicStatement], documentContent: list[AutomatedReasoningPolicyAnnotatedChunk] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyReportSourceDocument:
     str documentName
     str documentHash
@@ -1097,8 +1136,9 @@ struct AutomatedReasoningPolicyReportSourceDocument:
     list[AutomatedReasoningPolicyAtomicStatement] atomicStatements
     list[AutomatedReasoningPolicyAnnotatedChunk] documentContent
 
-# no @derive(Json): member(s) groundingStatements: list[AutomatedReasoningPolicyStatementReference], groundingJustifications: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) groundingStatements: list[AutomatedReasoningPolicyStatementReference], groundingJustifications: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyRuleReport:
     str rule
     Optional[list[AutomatedReasoningPolicyStatementReference]] groundingStatements
@@ -1106,16 +1146,18 @@ struct AutomatedReasoningPolicyRuleReport:
     Optional[float64] accuracyScore
     Optional[str] accuracyJustification
 
-# no @derive(Json): member(s) ruleIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ruleIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyScenario:
     str expression
     str alternateExpression
     AutomatedReasoningCheckResult expectedResult
     list[str] ruleIds
 
-# no @derive(Json): member(s) policyScenarios: list[AutomatedReasoningPolicyScenario] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policyScenarios: list[AutomatedReasoningPolicyScenario] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyScenarios:
     list[AutomatedReasoningPolicyScenario] policyScenarios
 
@@ -1127,8 +1169,9 @@ struct AutomatedReasoningPolicySourceDocument:
     Optional[str] documentDescription
     str documentHash
 
-# no @derive(Json): member(s) lines: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lines: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyStatementLocation:
     list[int64] lines
 
@@ -1161,8 +1204,9 @@ struct AutomatedReasoningPolicyTestCase:
     DateTime updatedAt
     Optional[float64] confidenceThreshold
 
-# no @derive(Json): member(s) testFindings: list[AutomatedReasoningCheckFinding] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) testFindings: list[AutomatedReasoningCheckFinding] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyTestResult:
     AutomatedReasoningPolicyTestCase testCase
     str policyArn
@@ -1178,14 +1222,16 @@ struct AutomatedReasoningPolicyTypeValueAnnotation:
     Optional[AutomatedReasoningPolicyUpdateTypeValue] updateTypeValue
     Optional[AutomatedReasoningPolicyDeleteTypeValue] deleteTypeValue
 
-# no @derive(Json): member(s) ruleIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ruleIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyUpdateFromRuleFeedbackAnnotation:
     Optional[list[str]] ruleIds
     str feedback
 
-# no @derive(Json): member(s) ruleIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ruleIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyUpdateFromScenarioFeedbackAnnotation:
     Optional[list[str]] ruleIds
     str scenarioExpression
@@ -1200,16 +1246,18 @@ struct AutomatedReasoningPolicyUpdateRuleAnnotation:
 struct AutomatedReasoningPolicyUpdateRuleMutation:
     AutomatedReasoningPolicyDefinitionRule rule
 
-# no @derive(Json): member(s) values: list[AutomatedReasoningPolicyTypeValueAnnotation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[AutomatedReasoningPolicyTypeValueAnnotation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyUpdateTypeAnnotation:
     str name
     Optional[str] newName
     Optional[str] description
     list[AutomatedReasoningPolicyTypeValueAnnotation] values
 
-# no @derive(Json): member(s) type: AutomatedReasoningPolicyDefinitionType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) type: AutomatedReasoningPolicyDefinitionType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyUpdateTypeMutation:
     AutomatedReasoningPolicyDefinitionType type
 
@@ -1229,8 +1277,9 @@ struct AutomatedReasoningPolicyUpdateVariableAnnotation:
 struct AutomatedReasoningPolicyUpdateVariableMutation:
     AutomatedReasoningPolicyDefinitionVariable variable
 
-# no @derive(Json): member(s) groundingStatements: list[AutomatedReasoningPolicyStatementReference], groundingJustifications: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) groundingStatements: list[AutomatedReasoningPolicyStatementReference], groundingJustifications: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyVariableReport:
     str policyVariable
     Optional[list[AutomatedReasoningPolicyStatementReference]] groundingStatements
@@ -1238,8 +1287,9 @@ struct AutomatedReasoningPolicyVariableReport:
     Optional[float64] accuracyScore
     Optional[str] accuracyJustification
 
-# no @derive(Json): member(s) documents: list[AutomatedReasoningPolicyBuildWorkflowDocument], policyRepairAssets: AutomatedReasoningPolicyBuildWorkflowRepairContent, generateFidelityReportContent: AutomatedReasoningPolicyGenerateFidelityReportContent, iterativeRefinementContent: AutomatedReasoningPolicyIterativeRefinementContent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) documents: list[AutomatedReasoningPolicyBuildWorkflowDocument], policyRepairAssets: AutomatedReasoningPolicyBuildWorkflowRepairContent, generateFidelityReportContent: AutomatedReasoningPolicyGenerateFidelityReportContent, iterativeRefinementContent: AutomatedReasoningPolicyIterativeRefinementContent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomatedReasoningPolicyWorkflowTypeContent:
     Optional[list[AutomatedReasoningPolicyBuildWorkflowDocument]] documents
     Optional[AutomatedReasoningPolicyBuildWorkflowRepairContent] policyRepairAssets
@@ -1262,8 +1312,9 @@ struct BatchDeleteAdvancedPromptOptimizationJobItem:
 struct BatchDeleteAdvancedPromptOptimizationJobRequest:
     list[str] jobIdentifiers
 
-# no @derive(Json): member(s) errors: list[BatchDeleteAdvancedPromptOptimizationJobError], advancedPromptOptimizationJobs: list[BatchDeleteAdvancedPromptOptimizationJobItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[BatchDeleteAdvancedPromptOptimizationJobError], advancedPromptOptimizationJobs: list[BatchDeleteAdvancedPromptOptimizationJobItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteAdvancedPromptOptimizationJobResponse:
     list[BatchDeleteAdvancedPromptOptimizationJobError] errors
     list[BatchDeleteAdvancedPromptOptimizationJobItem] advancedPromptOptimizationJobs
@@ -1284,8 +1335,9 @@ struct BatchDeleteEvaluationJobItem:
 struct BatchDeleteEvaluationJobRequest:
     list[str] jobIdentifiers
 
-# no @derive(Json): member(s) errors: list[BatchDeleteEvaluationJobError], evaluationJobs: list[BatchDeleteEvaluationJobItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[BatchDeleteEvaluationJobError], evaluationJobs: list[BatchDeleteEvaluationJobItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteEvaluationJobResponse:
     list[BatchDeleteEvaluationJobError] errors
     list[BatchDeleteEvaluationJobItem] evaluationJobs
@@ -1510,8 +1562,9 @@ struct CreateMarketplaceModelEndpointRequest:
     Optional[str] clientRequestToken
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) marketplaceModelEndpoint: MarketplaceModelEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) marketplaceModelEndpoint: MarketplaceModelEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMarketplaceModelEndpointResponse:
     MarketplaceModelEndpoint marketplaceModelEndpoint
 
@@ -1619,15 +1672,17 @@ struct CreateProvisionedModelThroughputResponse:
 struct CustomMetricBedrockEvaluatorModel:
     str modelIdentifier
 
-# no @derive(Json): member(s) ratingScale: list[RatingScaleItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ratingScale: list[RatingScaleItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomMetricDefinition:
     str name
     str instructions
     Optional[list[RatingScaleItem]] ratingScale
 
-# no @derive(Json): member(s) bedrockEvaluatorModels: list[CustomMetricBedrockEvaluatorModel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bedrockEvaluatorModels: list[CustomMetricBedrockEvaluatorModel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomMetricEvaluatorModelConfig:
     list[CustomMetricBedrockEvaluatorModel] bedrockEvaluatorModels
 
@@ -1860,8 +1915,9 @@ struct DimensionalPriceRate:
 struct DistillationConfig:
     TeacherModelConfig teacherModelConfig
 
-# no @derive(Json): member(s) sageMaker: SageMakerEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sageMaker: SageMakerEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EndpointConfig:
     Optional[SageMakerEndpoint] sageMaker
 
@@ -1871,8 +1927,9 @@ struct EvaluationBedrockModel:
     Optional[str] inferenceParams
     Optional[PerformanceConfiguration] performanceConfig
 
-# no @derive(Json): member(s) automated: AutomatedEvaluationConfig, human: HumanEvaluationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) automated: AutomatedEvaluationConfig, human: HumanEvaluationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationConfig:
     Optional[AutomatedEvaluationConfig] automated
     Optional[HumanEvaluationConfig] human
@@ -1886,21 +1943,24 @@ struct EvaluationDataset:
 struct EvaluationDatasetLocation:
     Optional[str] s3Uri
 
-# no @derive(Json): member(s) metricNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metricNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationDatasetMetricConfig:
     EvaluationTaskType taskType
     EvaluationDataset dataset
     list[str] metricNames
 
-# no @derive(Json): member(s) models: list[EvaluationModelConfig], ragConfigs: list[RAGConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) models: list[EvaluationModelConfig], ragConfigs: list[RAGConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationInferenceConfig:
     Optional[list[EvaluationModelConfig]] models
     Optional[list[RAGConfig]] ragConfigs
 
-# no @derive(Json): member(s) modelConfigSummary: EvaluationModelConfigSummary, ragConfigSummary: EvaluationRagConfigSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) modelConfigSummary: EvaluationModelConfigSummary, ragConfigSummary: EvaluationRagConfigSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationInferenceConfigSummary:
     Optional[EvaluationModelConfigSummary] modelConfigSummary
     Optional[EvaluationRagConfigSummary] ragConfigSummary
@@ -1910,8 +1970,9 @@ struct EvaluationModelConfig:
     Optional[EvaluationBedrockModel] bedrockModel
     Optional[EvaluationPrecomputedInferenceSource] precomputedInferenceSource
 
-# no @derive(Json): member(s) bedrockModelIdentifiers: list[str], precomputedInferenceSourceIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bedrockModelIdentifiers: list[str], precomputedInferenceSourceIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationModelConfigSummary:
     Optional[list[str]] bedrockModelIdentifiers
     Optional[list[str]] precomputedInferenceSourceIdentifiers
@@ -1937,14 +1998,16 @@ struct EvaluationPrecomputedRetrieveAndGenerateSourceConfig:
 struct EvaluationPrecomputedRetrieveSourceConfig:
     str ragSourceIdentifier
 
-# no @derive(Json): member(s) bedrockKnowledgeBaseIdentifiers: list[str], precomputedRagSourceIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bedrockKnowledgeBaseIdentifiers: list[str], precomputedRagSourceIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationRagConfigSummary:
     Optional[list[str]] bedrockKnowledgeBaseIdentifiers
     Optional[list[str]] precomputedRagSourceIdentifiers
 
-# no @derive(Json): member(s) evaluationTaskTypes: list[EvaluationTaskType], modelIdentifiers: list[str], ragIdentifiers: list[str], evaluatorModelIdentifiers: list[str], customMetricsEvaluatorModelIdentifiers: list[str], inferenceConfigSummary: EvaluationInferenceConfigSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) evaluationTaskTypes: list[EvaluationTaskType], modelIdentifiers: list[str], ragIdentifiers: list[str], evaluatorModelIdentifiers: list[str], customMetricsEvaluatorModelIdentifiers: list[str], inferenceConfigSummary: EvaluationInferenceConfigSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationSummary:
     str jobArn
     str jobName
@@ -1959,8 +2022,9 @@ struct EvaluationSummary:
     Optional[EvaluationInferenceConfigSummary] inferenceConfigSummary
     Optional[ApplicationType] applicationType
 
-# no @derive(Json): member(s) bedrockEvaluatorModels: list[BedrockEvaluatorModel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bedrockEvaluatorModels: list[BedrockEvaluatorModel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluatorModelConfig:
     Optional[list[BedrockEvaluatorModel]] bedrockEvaluatorModels
 
@@ -1969,8 +2033,9 @@ struct EvaluatorModelConfig:
 struct ExportAutomatedReasoningPolicyVersionRequest:
     str policyArn
 
-# no @derive(Json): member(s) policyDefinition: AutomatedReasoningPolicyDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policyDefinition: AutomatedReasoningPolicyDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportAutomatedReasoningPolicyVersionResponse:
     AutomatedReasoningPolicyDefinition policyDefinition
 
@@ -1980,16 +2045,18 @@ struct ExternalSource:
     Optional[S3ObjectDoc] s3Location
     Optional[ByteContentDoc] byteContent
 
-# no @derive(Json): member(s) kbInferenceConfig: KbInferenceConfig, additionalModelRequestFields: dict[str, AdditionalModelRequestFieldsValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) kbInferenceConfig: KbInferenceConfig, additionalModelRequestFields: dict[str, AdditionalModelRequestFieldsValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExternalSourcesGenerationConfiguration:
     Optional[PromptTemplate] promptTemplate
     Optional[GuardrailConfiguration] guardrailConfiguration
     Optional[KbInferenceConfig] kbInferenceConfig
     Optional[dict[str, AdditionalModelRequestFieldsValue]] additionalModelRequestFields
 
-# no @derive(Json): member(s) sources: list[ExternalSource], generationConfiguration: ExternalSourcesGenerationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sources: list[ExternalSource], generationConfiguration: ExternalSourcesGenerationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExternalSourcesRetrieveAndGenerateConfiguration:
     str modelArn
     list[ExternalSource] sources
@@ -2009,8 +2076,9 @@ struct FilterValue:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) inputModalities: list[ModelModality], outputModalities: list[ModelModality], customizationsSupported: list[ModelCustomization], inferenceTypesSupported: list[InferenceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputModalities: list[ModelModality], outputModalities: list[ModelModality], customizationsSupported: list[ModelCustomization], inferenceTypesSupported: list[InferenceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FoundationModelDetails:
     str modelArn
     str modelId
@@ -2035,8 +2103,9 @@ struct FoundationModelLifecycle:
     @json(timestamp="iso8601")
     Optional[DateTime] publicExtendedAccessTime
 
-# no @derive(Json): member(s) inputModalities: list[ModelModality], outputModalities: list[ModelModality], customizationsSupported: list[ModelCustomization], inferenceTypesSupported: list[InferenceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputModalities: list[ModelModality], outputModalities: list[ModelModality], customizationsSupported: list[ModelCustomization], inferenceTypesSupported: list[InferenceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FoundationModelSummary:
     str modelArn
     str modelId
@@ -2049,8 +2118,9 @@ struct FoundationModelSummary:
     Optional[list[InferenceType]] inferenceTypesSupported
     Optional[FoundationModelLifecycle] modelLifecycle
 
-# no @derive(Json): member(s) kbInferenceConfig: KbInferenceConfig, additionalModelRequestFields: dict[str, AdditionalModelRequestFieldsValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) kbInferenceConfig: KbInferenceConfig, additionalModelRequestFields: dict[str, AdditionalModelRequestFieldsValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GenerationConfiguration:
     Optional[PromptTemplate] promptTemplate
     Optional[GuardrailConfiguration] guardrailConfiguration
@@ -2074,8 +2144,9 @@ struct GetAccountDataRetentionResponse:
 struct GetAdvancedPromptOptimizationJobRequest:
     str jobIdentifier
 
-# no @derive(Json): member(s) modelConfigurations: list[ModelConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) modelConfigurations: list[ModelConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAdvancedPromptOptimizationJobResponse:
     str jobArn
     str jobName
@@ -2095,8 +2166,9 @@ struct GetAutomatedReasoningPolicyAnnotationsRequest:
     str policyArn
     str buildWorkflowId
 
-# no @derive(Json): member(s) annotations: list[AutomatedReasoningPolicyAnnotation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) annotations: list[AutomatedReasoningPolicyAnnotation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAutomatedReasoningPolicyAnnotationsResponse:
     str policyArn
     str name
@@ -2134,8 +2206,9 @@ struct GetAutomatedReasoningPolicyBuildWorkflowResultAssetsRequest:
     str assetType
     Optional[str] assetId
 
-# no @derive(Json): member(s) buildWorkflowAssets: AutomatedReasoningPolicyBuildResultAssets not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) buildWorkflowAssets: AutomatedReasoningPolicyBuildResultAssets not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAutomatedReasoningPolicyBuildWorkflowResultAssetsResponse:
     str policyArn
     str buildWorkflowId
@@ -2147,8 +2220,9 @@ struct GetAutomatedReasoningPolicyNextScenarioRequest:
     str policyArn
     str buildWorkflowId
 
-# no @derive(Json): member(s) scenario: AutomatedReasoningPolicyScenario not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scenario: AutomatedReasoningPolicyScenario not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAutomatedReasoningPolicyNextScenarioResponse:
     str policyArn
     Optional[AutomatedReasoningPolicyScenario] scenario
@@ -2190,8 +2264,9 @@ struct GetAutomatedReasoningPolicyTestResultRequest:
     str buildWorkflowId
     str testCaseId
 
-# no @derive(Json): member(s) testResult: AutomatedReasoningPolicyTestResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) testResult: AutomatedReasoningPolicyTestResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAutomatedReasoningPolicyTestResultResponse:
     AutomatedReasoningPolicyTestResult testResult
 
@@ -2219,8 +2294,9 @@ struct GetCustomModelDeploymentResponse:
 struct GetCustomModelRequest:
     str modelIdentifier
 
-# no @derive(Json): member(s) hyperParameters: dict[str, str], trainingDataConfig: TrainingDataConfig, validationDataConfig: ValidationDataConfig, validationMetrics: list[ValidatorMetric] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) hyperParameters: dict[str, str], trainingDataConfig: TrainingDataConfig, validationDataConfig: ValidationDataConfig, validationMetrics: list[ValidatorMetric] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCustomModelResponse:
     str modelArn
     str modelName
@@ -2245,8 +2321,9 @@ struct GetCustomModelResponse:
 struct GetEvaluationJobRequest:
     str jobIdentifier
 
-# no @derive(Json): member(s) evaluationConfig: EvaluationConfig, inferenceConfig: EvaluationInferenceConfig, failureMessages: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) evaluationConfig: EvaluationConfig, inferenceConfig: EvaluationInferenceConfig, failureMessages: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEvaluationJobResponse:
     str jobName
     EvaluationJobStatus status
@@ -2281,8 +2358,9 @@ struct GetFoundationModelAvailabilityResponse:
 struct GetFoundationModelRequest:
     str modelIdentifier
 
-# no @derive(Json): member(s) modelDetails: FoundationModelDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) modelDetails: FoundationModelDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFoundationModelResponse:
     Optional[FoundationModelDetails] modelDetails
 
@@ -2292,8 +2370,9 @@ struct GetGuardrailRequest:
     str guardrailIdentifier
     Optional[str] guardrailVersion
 
-# no @derive(Json): member(s) topicPolicy: GuardrailTopicPolicy, contentPolicy: GuardrailContentPolicy, wordPolicy: GuardrailWordPolicy, sensitiveInformationPolicy: GuardrailSensitiveInformationPolicy, contextualGroundingPolicy: GuardrailContextualGroundingPolicy, automatedReasoningPolicy: GuardrailAutomatedReasoningPolicy, statusReasons: list[str], failureRecommendations: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) topicPolicy: GuardrailTopicPolicy, contentPolicy: GuardrailContentPolicy, wordPolicy: GuardrailWordPolicy, sensitiveInformationPolicy: GuardrailSensitiveInformationPolicy, contextualGroundingPolicy: GuardrailContextualGroundingPolicy, automatedReasoningPolicy: GuardrailAutomatedReasoningPolicy, statusReasons: list[str], failureRecommendations: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetGuardrailResponse:
     str name
     Optional[str] description
@@ -2340,8 +2419,9 @@ struct GetImportedModelResponse:
 struct GetInferenceProfileRequest:
     str inferenceProfileIdentifier
 
-# no @derive(Json): member(s) models: list[InferenceProfileModel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) models: list[InferenceProfileModel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInferenceProfileResponse:
     str inferenceProfileName
     Optional[str] description
@@ -2358,8 +2438,9 @@ struct GetInferenceProfileResponse:
 struct GetMarketplaceModelEndpointRequest:
     str endpointArn
 
-# no @derive(Json): member(s) marketplaceModelEndpoint: MarketplaceModelEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) marketplaceModelEndpoint: MarketplaceModelEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMarketplaceModelEndpointResponse:
     Optional[MarketplaceModelEndpoint] marketplaceModelEndpoint
 
@@ -2368,8 +2449,9 @@ struct GetMarketplaceModelEndpointResponse:
 struct GetModelCopyJobRequest:
     str jobArn
 
-# no @derive(Json): member(s) targetModelTags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetModelTags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetModelCopyJobResponse:
     str jobArn
     ModelCopyJobStatus status
@@ -2388,8 +2470,9 @@ struct GetModelCopyJobResponse:
 struct GetModelCustomizationJobRequest:
     str jobIdentifier
 
-# no @derive(Json): member(s) hyperParameters: dict[str, str], trainingDataConfig: TrainingDataConfig, validationDataConfig: ValidationDataConfig, validationMetrics: list[ValidatorMetric], vpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) hyperParameters: dict[str, str], trainingDataConfig: TrainingDataConfig, validationDataConfig: ValidationDataConfig, validationMetrics: list[ValidatorMetric], vpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetModelCustomizationJobResponse:
     str jobArn
     str jobName
@@ -2420,8 +2503,9 @@ struct GetModelCustomizationJobResponse:
 struct GetModelImportJobRequest:
     str jobIdentifier
 
-# no @derive(Json): member(s) vpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetModelImportJobResponse:
     Optional[str] jobArn
     Optional[str] jobName
@@ -2442,8 +2526,9 @@ struct GetModelImportJobResponse:
 struct GetModelInvocationJobRequest:
     str jobIdentifier
 
-# no @derive(Json): member(s) vpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetModelInvocationJobResponse:
     str jobArn
     Optional[str] jobName
@@ -2481,8 +2566,9 @@ struct GetModelInvocationLoggingConfigurationResponse:
 struct GetPromptRouterRequest:
     str promptRouterArn
 
-# no @derive(Json): member(s) models: list[PromptRouterTargetModel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) models: list[PromptRouterTargetModel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPromptRouterResponse:
     str promptRouterName
     RoutingCriteria routingCriteria
@@ -2542,14 +2628,16 @@ struct GetUseCaseForModelAccessResponse:
 struct GraderConfig:
     Optional[LambdaGraderConfig] lambdaGrader
 
-# no @derive(Json): member(s) policies: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policies: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailAutomatedReasoningPolicy:
     list[str] policies
     Optional[float64] confidenceThreshold
 
-# no @derive(Json): member(s) policies: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policies: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailAutomatedReasoningPolicyConfig:
     list[str] policies
     Optional[float64] confidenceThreshold
@@ -2559,8 +2647,9 @@ struct GuardrailConfiguration:
     str guardrailId
     str guardrailVersion
 
-# no @derive(Json): member(s) inputModalities: list[GuardrailModality], outputModalities: list[GuardrailModality] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputModalities: list[GuardrailModality], outputModalities: list[GuardrailModality] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailContentFilter:
     GuardrailContentFilterType type
     GuardrailFilterStrength inputStrength
@@ -2572,8 +2661,9 @@ struct GuardrailContentFilter:
     Optional[bool] inputEnabled
     Optional[bool] outputEnabled
 
-# no @derive(Json): member(s) inputModalities: list[GuardrailModality], outputModalities: list[GuardrailModality] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputModalities: list[GuardrailModality], outputModalities: list[GuardrailModality] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailContentFilterConfig:
     GuardrailContentFilterType type
     GuardrailFilterStrength inputStrength
@@ -2593,14 +2683,16 @@ struct GuardrailContentFiltersTier:
 struct GuardrailContentFiltersTierConfig:
     GuardrailContentFiltersTierName tierName
 
-# no @derive(Json): member(s) filters: list[GuardrailContentFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[GuardrailContentFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailContentPolicy:
     Optional[list[GuardrailContentFilter]] filters
     Optional[GuardrailContentFiltersTier] tier
 
-# no @derive(Json): member(s) filtersConfig: list[GuardrailContentFilterConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filtersConfig: list[GuardrailContentFilterConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailContentPolicyConfig:
     list[GuardrailContentFilterConfig] filtersConfig
     Optional[GuardrailContentFiltersTierConfig] tierConfig
@@ -2619,14 +2711,16 @@ struct GuardrailContextualGroundingFilterConfig:
     Optional[GuardrailContextualGroundingAction] action
     Optional[bool] enabled
 
-# no @derive(Json): member(s) filters: list[GuardrailContextualGroundingFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[GuardrailContextualGroundingFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailContextualGroundingPolicy:
     list[GuardrailContextualGroundingFilter] filters
     Optional[GuardrailContextualGroundingTier] tier
 
-# no @derive(Json): member(s) filtersConfig: list[GuardrailContextualGroundingFilterConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filtersConfig: list[GuardrailContextualGroundingFilterConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailContextualGroundingPolicyConfig:
     list[GuardrailContextualGroundingFilterConfig] filtersConfig
     Optional[GuardrailContextualGroundingTierConfig] tierConfig
@@ -2704,14 +2798,16 @@ struct GuardrailRegexConfig:
     Optional[bool] inputEnabled
     Optional[bool] outputEnabled
 
-# no @derive(Json): member(s) piiEntities: list[GuardrailPiiEntity], regexes: list[GuardrailRegex] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) piiEntities: list[GuardrailPiiEntity], regexes: list[GuardrailRegex] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailSensitiveInformationPolicy:
     Optional[list[GuardrailPiiEntity]] piiEntities
     Optional[list[GuardrailRegex]] regexes
 
-# no @derive(Json): member(s) piiEntitiesConfig: list[GuardrailPiiEntityConfig], regexesConfig: list[GuardrailRegexConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) piiEntitiesConfig: list[GuardrailPiiEntityConfig], regexesConfig: list[GuardrailRegexConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailSensitiveInformationPolicyConfig:
     Optional[list[GuardrailPiiEntityConfig]] piiEntitiesConfig
     Optional[list[GuardrailRegexConfig]] regexesConfig
@@ -2730,8 +2826,9 @@ struct GuardrailSummary:
     DateTime updatedAt
     Optional[GuardrailCrossRegionDetails] crossRegionDetails
 
-# no @derive(Json): member(s) examples: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) examples: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailTopic:
     str name
     str definition
@@ -2742,8 +2839,9 @@ struct GuardrailTopic:
     Optional[bool] inputEnabled
     Optional[bool] outputEnabled
 
-# no @derive(Json): member(s) examples: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) examples: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailTopicConfig:
     str name
     str definition
@@ -2754,14 +2852,16 @@ struct GuardrailTopicConfig:
     Optional[bool] inputEnabled
     Optional[bool] outputEnabled
 
-# no @derive(Json): member(s) topics: list[GuardrailTopic] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) topics: list[GuardrailTopic] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailTopicPolicy:
     list[GuardrailTopic] topics
     Optional[GuardrailTopicsTier] tier
 
-# no @derive(Json): member(s) topicsConfig: list[GuardrailTopicConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) topicsConfig: list[GuardrailTopicConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailTopicPolicyConfig:
     list[GuardrailTopicConfig] topicsConfig
     Optional[GuardrailTopicsTierConfig] tierConfig
@@ -2790,20 +2890,23 @@ struct GuardrailWordConfig:
     Optional[bool] inputEnabled
     Optional[bool] outputEnabled
 
-# no @derive(Json): member(s) words: list[GuardrailWord], managedWordLists: list[GuardrailManagedWords] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) words: list[GuardrailWord], managedWordLists: list[GuardrailManagedWords] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailWordPolicy:
     Optional[list[GuardrailWord]] words
     Optional[list[GuardrailManagedWords]] managedWordLists
 
-# no @derive(Json): member(s) wordsConfig: list[GuardrailWordConfig], managedWordListsConfig: list[GuardrailManagedWordsConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) wordsConfig: list[GuardrailWordConfig], managedWordListsConfig: list[GuardrailManagedWordsConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailWordPolicyConfig:
     Optional[list[GuardrailWordConfig]] wordsConfig
     Optional[list[GuardrailManagedWordsConfig]] managedWordListsConfig
 
-# no @derive(Json): member(s) customMetrics: list[HumanEvaluationCustomMetric], datasetMetricConfigs: list[EvaluationDatasetMetricConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customMetrics: list[HumanEvaluationCustomMetric], datasetMetricConfigs: list[EvaluationDatasetMetricConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HumanEvaluationConfig:
     Optional[HumanWorkflowConfig] humanWorkflowConfig
     Optional[list[HumanEvaluationCustomMetric]] customMetrics
@@ -2820,8 +2923,9 @@ struct HumanWorkflowConfig:
     str flowDefinitionArn
     Optional[str] instructions
 
-# no @derive(Json): member(s) metadataAttributes: list[MetadataAttributeSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadataAttributes: list[MetadataAttributeSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImplicitFilterConfiguration:
     list[MetadataAttributeSchema] metadataAttributes
     str modelArn
@@ -2835,8 +2939,9 @@ struct ImportedModelSummary:
     Optional[bool] instructSupported
     Optional[str] modelArchitecture
 
-# no @derive(Json): member(s) stopSequences: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stopSequences: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InferenceConfiguration:
     Optional[int64] maxTokens
     Optional[float64] temperature
@@ -2851,8 +2956,9 @@ struct InferenceProfileModel:
 struct InferenceProfileModelSource:
     Optional[str] copyFrom
 
-# no @derive(Json): member(s) models: list[InferenceProfileModel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) models: list[InferenceProfileModel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InferenceProfileSummary:
     str inferenceProfileName
     Optional[str] description
@@ -2872,31 +2978,36 @@ struct InternalServerException:
 struct InvocationLogSource:
     Optional[str] s3Uri
 
-# no @derive(Json): member(s) requestMetadataFilters: RequestMetadataFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) requestMetadataFilters: RequestMetadataFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvocationLogsConfig:
     Optional[bool] usePromptResponse
     InvocationLogSource invocationLogSource
     Optional[RequestMetadataFilters] requestMetadataFilters
 
-# no @derive(Json): member(s) textInferenceConfig: TextInferenceConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) textInferenceConfig: TextInferenceConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KbInferenceConfig:
     Optional[TextInferenceConfig] textInferenceConfig
 
-# no @derive(Json): member(s) retrieveConfig: RetrieveConfig, retrieveAndGenerateConfig: RetrieveAndGenerateConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) retrieveConfig: RetrieveConfig, retrieveAndGenerateConfig: RetrieveAndGenerateConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KnowledgeBaseConfig:
     Optional[RetrieveConfig] retrieveConfig
     Optional[RetrieveAndGenerateConfiguration] retrieveAndGenerateConfig
 
-# no @derive(Json): member(s) vectorSearchConfiguration: KnowledgeBaseVectorSearchConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vectorSearchConfiguration: KnowledgeBaseVectorSearchConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KnowledgeBaseRetrievalConfiguration:
     KnowledgeBaseVectorSearchConfiguration vectorSearchConfiguration
 
-# no @derive(Json): member(s) retrievalConfiguration: KnowledgeBaseRetrievalConfiguration, generationConfiguration: GenerationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) retrievalConfiguration: KnowledgeBaseRetrievalConfiguration, generationConfiguration: GenerationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KnowledgeBaseRetrieveAndGenerateConfiguration:
     str knowledgeBaseId
     str modelArn
@@ -2904,8 +3015,9 @@ struct KnowledgeBaseRetrieveAndGenerateConfiguration:
     Optional[GenerationConfiguration] generationConfiguration
     Optional[OrchestrationConfiguration] orchestrationConfiguration
 
-# no @derive(Json): member(s) filter: RetrievalFilter, implicitFilterConfiguration: ImplicitFilterConfiguration, rerankingConfiguration: VectorSearchRerankingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filter: RetrievalFilter, implicitFilterConfiguration: ImplicitFilterConfiguration, rerankingConfiguration: VectorSearchRerankingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KnowledgeBaseVectorSearchConfiguration:
     Optional[int64] numberOfResults
     Optional[SearchType] overrideSearchType
@@ -2930,8 +3042,9 @@ struct ListAdvancedPromptOptimizationJobsRequest:
     # wire string of the SortOrder enum (querystring binding)
     Optional[str] sortOrder
 
-# no @derive(Json): member(s) jobSummaries: list[AdvancedPromptOptimizationJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobSummaries: list[AdvancedPromptOptimizationJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAdvancedPromptOptimizationJobsResponse:
     Optional[list[AdvancedPromptOptimizationJobSummary]] jobSummaries
     Optional[str] nextToken
@@ -2943,8 +3056,9 @@ struct ListAutomatedReasoningPoliciesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) automatedReasoningPolicySummaries: list[AutomatedReasoningPolicySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) automatedReasoningPolicySummaries: list[AutomatedReasoningPolicySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAutomatedReasoningPoliciesResponse:
     list[AutomatedReasoningPolicySummary] automatedReasoningPolicySummaries
     Optional[str] nextToken
@@ -2956,8 +3070,9 @@ struct ListAutomatedReasoningPolicyBuildWorkflowsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) automatedReasoningPolicyBuildWorkflowSummaries: list[AutomatedReasoningPolicyBuildWorkflowSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) automatedReasoningPolicyBuildWorkflowSummaries: list[AutomatedReasoningPolicyBuildWorkflowSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAutomatedReasoningPolicyBuildWorkflowsResponse:
     list[AutomatedReasoningPolicyBuildWorkflowSummary] automatedReasoningPolicyBuildWorkflowSummaries
     Optional[str] nextToken
@@ -2969,8 +3084,9 @@ struct ListAutomatedReasoningPolicyTestCasesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) testCases: list[AutomatedReasoningPolicyTestCase] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) testCases: list[AutomatedReasoningPolicyTestCase] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAutomatedReasoningPolicyTestCasesResponse:
     list[AutomatedReasoningPolicyTestCase] testCases
     Optional[str] nextToken
@@ -2983,8 +3099,9 @@ struct ListAutomatedReasoningPolicyTestResultsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) testResults: list[AutomatedReasoningPolicyTestResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) testResults: list[AutomatedReasoningPolicyTestResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAutomatedReasoningPolicyTestResultsResponse:
     list[AutomatedReasoningPolicyTestResult] testResults
     Optional[str] nextToken
@@ -3004,8 +3121,9 @@ struct ListCustomModelDeploymentsRequest:
     Optional[str] statusEquals
     Optional[str] modelArnEquals
 
-# no @derive(Json): member(s) modelDeploymentSummaries: list[CustomModelDeploymentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) modelDeploymentSummaries: list[CustomModelDeploymentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomModelDeploymentsResponse:
     Optional[str] nextToken
     Optional[list[CustomModelDeploymentSummary]] modelDeploymentSummaries
@@ -3027,8 +3145,9 @@ struct ListCustomModelsRequest:
     # wire string of the ModelStatus enum (querystring binding)
     Optional[str] modelStatus
 
-# no @derive(Json): member(s) modelSummaries: list[CustomModelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) modelSummaries: list[CustomModelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomModelsResponse:
     Optional[str] nextToken
     Optional[list[CustomModelSummary]] modelSummaries
@@ -3038,8 +3157,9 @@ struct ListCustomModelsResponse:
 struct ListEnforcedGuardrailsConfigurationRequest:
     Optional[str] nextToken
 
-# no @derive(Json): member(s) guardrailsConfig: list[AccountEnforcedGuardrailOutputConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) guardrailsConfig: list[AccountEnforcedGuardrailOutputConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnforcedGuardrailsConfigurationResponse:
     list[AccountEnforcedGuardrailOutputConfiguration] guardrailsConfig
     Optional[str] nextToken
@@ -3060,8 +3180,9 @@ struct ListEvaluationJobsRequest:
     # wire string of the SortOrder enum (querystring binding)
     Optional[str] sortOrder
 
-# no @derive(Json): member(s) jobSummaries: list[EvaluationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobSummaries: list[EvaluationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEvaluationJobsResponse:
     Optional[str] nextToken
     Optional[list[EvaluationSummary]] jobSummaries
@@ -3073,8 +3194,9 @@ struct ListFoundationModelAgreementOffersRequest:
     # wire string of the OfferType enum (querystring binding)
     Optional[str] offerType
 
-# no @derive(Json): member(s) offers: list[Offer] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) offers: list[Offer] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFoundationModelAgreementOffersResponse:
     str modelId
     list[Offer] offers
@@ -3090,8 +3212,9 @@ struct ListFoundationModelsRequest:
     # wire string of the InferenceType enum (querystring binding)
     Optional[str] byInferenceType
 
-# no @derive(Json): member(s) modelSummaries: list[FoundationModelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) modelSummaries: list[FoundationModelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFoundationModelsResponse:
     Optional[list[FoundationModelSummary]] modelSummaries
 
@@ -3102,8 +3225,9 @@ struct ListGuardrailsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) guardrails: list[GuardrailSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) guardrails: list[GuardrailSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGuardrailsResponse:
     list[GuardrailSummary] guardrails
     Optional[str] nextToken
@@ -3120,8 +3244,9 @@ struct ListImportedModelsRequest:
     # wire string of the SortOrder enum (querystring binding)
     Optional[str] sortOrder
 
-# no @derive(Json): member(s) modelSummaries: list[ImportedModelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) modelSummaries: list[ImportedModelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImportedModelsResponse:
     Optional[str] nextToken
     Optional[list[ImportedModelSummary]] modelSummaries
@@ -3134,8 +3259,9 @@ struct ListInferenceProfilesRequest:
     # wire string of the InferenceProfileType enum (querystring binding)
     Optional[str] typeEquals
 
-# no @derive(Json): member(s) inferenceProfileSummaries: list[InferenceProfileSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inferenceProfileSummaries: list[InferenceProfileSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInferenceProfilesResponse:
     Optional[list[InferenceProfileSummary]] inferenceProfileSummaries
     Optional[str] nextToken
@@ -3147,8 +3273,9 @@ struct ListMarketplaceModelEndpointsRequest:
     Optional[str] nextToken
     Optional[str] modelSourceEquals
 
-# no @derive(Json): member(s) marketplaceModelEndpoints: list[MarketplaceModelEndpointSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) marketplaceModelEndpoints: list[MarketplaceModelEndpointSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMarketplaceModelEndpointsResponse:
     Optional[list[MarketplaceModelEndpointSummary]] marketplaceModelEndpoints
     Optional[str] nextToken
@@ -3169,8 +3296,9 @@ struct ListModelCopyJobsRequest:
     # wire string of the SortOrder enum (querystring binding)
     Optional[str] sortOrder
 
-# no @derive(Json): member(s) modelCopyJobSummaries: list[ModelCopyJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) modelCopyJobSummaries: list[ModelCopyJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListModelCopyJobsResponse:
     Optional[str] nextToken
     Optional[list[ModelCopyJobSummary]] modelCopyJobSummaries
@@ -3189,8 +3317,9 @@ struct ListModelCustomizationJobsRequest:
     # wire string of the SortOrder enum (querystring binding)
     Optional[str] sortOrder
 
-# no @derive(Json): member(s) modelCustomizationJobSummaries: list[ModelCustomizationJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) modelCustomizationJobSummaries: list[ModelCustomizationJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListModelCustomizationJobsResponse:
     Optional[str] nextToken
     Optional[list[ModelCustomizationJobSummary]] modelCustomizationJobSummaries
@@ -3209,8 +3338,9 @@ struct ListModelImportJobsRequest:
     # wire string of the SortOrder enum (querystring binding)
     Optional[str] sortOrder
 
-# no @derive(Json): member(s) modelImportJobSummaries: list[ModelImportJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) modelImportJobSummaries: list[ModelImportJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListModelImportJobsResponse:
     Optional[str] nextToken
     Optional[list[ModelImportJobSummary]] modelImportJobSummaries
@@ -3229,8 +3359,9 @@ struct ListModelInvocationJobsRequest:
     # wire string of the SortOrder enum (querystring binding)
     Optional[str] sortOrder
 
-# no @derive(Json): member(s) invocationJobSummaries: list[ModelInvocationJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) invocationJobSummaries: list[ModelInvocationJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListModelInvocationJobsResponse:
     Optional[str] nextToken
     Optional[list[ModelInvocationJobSummary]] invocationJobSummaries
@@ -3243,8 +3374,9 @@ struct ListPromptRoutersRequest:
     # wire string of the PromptRouterType enum (querystring binding)
     Optional[str] type
 
-# no @derive(Json): member(s) promptRouterSummaries: list[PromptRouterSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) promptRouterSummaries: list[PromptRouterSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPromptRoutersResponse:
     Optional[list[PromptRouterSummary]] promptRouterSummaries
     Optional[str] nextToken
@@ -3264,8 +3396,9 @@ struct ListProvisionedModelThroughputsRequest:
     # wire string of the SortOrder enum (querystring binding)
     Optional[str] sortOrder
 
-# no @derive(Json): member(s) provisionedModelSummaries: list[ProvisionedModelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) provisionedModelSummaries: list[ProvisionedModelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProvisionedModelThroughputsResponse:
     Optional[str] nextToken
     Optional[list[ProvisionedModelSummary]] provisionedModelSummaries
@@ -3275,8 +3408,9 @@ struct ListProvisionedModelThroughputsResponse:
 struct ListTagsForResourceRequest:
     str resourceARN
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] tags
 
@@ -3290,8 +3424,9 @@ struct LoggingConfig:
     Optional[bool] videoDataDeliveryEnabled
     Optional[bool] audioDataDeliveryEnabled
 
-# no @derive(Json): member(s) endpointConfig: EndpointConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) endpointConfig: EndpointConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MarketplaceModelEndpoint:
     str endpointArn
     str modelSourceIdentifier
@@ -3320,21 +3455,24 @@ struct MetadataAttributeSchema:
     AttributeType type
     str description
 
-# no @derive(Json): member(s) selectiveModeConfiguration: RerankingMetadataSelectiveModeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) selectiveModeConfiguration: RerankingMetadataSelectiveModeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetadataConfigurationForReranking:
     RerankingMetadataSelectionMode selectionMode
     Optional[RerankingMetadataSelectiveModeConfiguration] selectiveModeConfiguration
 
-# no @derive(Json): member(s) inferenceConfig: InferenceConfiguration, additionalModelRequestFields: dict[str, AdditionalModelRequestFieldsValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inferenceConfig: InferenceConfiguration, additionalModelRequestFields: dict[str, AdditionalModelRequestFieldsValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelConfiguration:
     str modelId
     Optional[InferenceConfiguration] inferenceConfig
     Optional[dict[str, AdditionalModelRequestFieldsValue]] additionalModelRequestFields
 
-# no @derive(Json): member(s) targetModelTags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetModelTags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelCopyJobSummary:
     str jobArn
     ModelCopyJobStatus status
@@ -3369,8 +3507,9 @@ struct ModelCustomizationJobSummary:
 struct ModelDataSource:
     Optional[S3DataSource] s3DataSource
 
-# no @derive(Json): member(s) includedModels: list[str], excludedModels: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) includedModels: list[str], excludedModels: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelEnforcement:
     list[str] includedModels
     list[str] excludedModels
@@ -3409,8 +3548,9 @@ struct ModelInvocationJobS3OutputDataConfig:
     Optional[str] s3EncryptionKeyId
     Optional[str] s3BucketOwner
 
-# no @derive(Json): member(s) vpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelInvocationJobSummary:
     str jobArn
     str jobName
@@ -3437,8 +3577,9 @@ struct ModelInvocationJobSummary:
 struct ModelPackageArnDataSource:
     str modelPackageArn
 
-# no @derive(Json): member(s) termDetails: TermDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) termDetails: TermDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Offer:
     Optional[str] offerId
     str offerToken
@@ -3456,13 +3597,15 @@ struct OutputDataConfig:
 struct PerformanceConfiguration:
     Optional[PerformanceConfigLatency] latency
 
-# no @derive(Json): member(s) rateCard: list[DimensionalPriceRate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rateCard: list[DimensionalPriceRate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PricingTerm:
     list[DimensionalPriceRate] rateCard
 
-# no @derive(Json): member(s) models: list[PromptRouterTargetModel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) models: list[PromptRouterTargetModel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PromptRouterSummary:
     str promptRouterName
     RoutingCriteria routingCriteria
@@ -3559,8 +3702,9 @@ struct PutUseCaseForModelAccessResponse:
 struct QueryTransformationConfiguration:
     str type
 
-# no @derive(Json): member(s) knowledgeBaseConfig: KnowledgeBaseConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) knowledgeBaseConfig: KnowledgeBaseConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RAGConfig:
     Optional[KnowledgeBaseConfig] knowledgeBaseConfig
     Optional[EvaluationPrecomputedRagSourceConfig] precomputedRagSourceConfig
@@ -3597,27 +3741,31 @@ struct RegisterMarketplaceModelEndpointRequest:
     str endpointIdentifier
     str modelSourceIdentifier
 
-# no @derive(Json): member(s) marketplaceModelEndpoint: MarketplaceModelEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) marketplaceModelEndpoint: MarketplaceModelEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterMarketplaceModelEndpointResponse:
     MarketplaceModelEndpoint marketplaceModelEndpoint
 
-# no @derive(Json): member(s) equals: dict[str, str], notEquals: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) equals: dict[str, str], notEquals: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RequestMetadataBaseFilters:
     Optional[dict[str, str]] equals
     Optional[dict[str, str]] notEquals
 
-# no @derive(Json): member(s) equals: dict[str, str], notEquals: dict[str, str], andAll: list[RequestMetadataBaseFilters], orAll: list[RequestMetadataBaseFilters] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) equals: dict[str, str], notEquals: dict[str, str], andAll: list[RequestMetadataBaseFilters], orAll: list[RequestMetadataBaseFilters] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RequestMetadataFilters:
     Optional[dict[str, str]] equals
     Optional[dict[str, str]] notEquals
     Optional[list[RequestMetadataBaseFilters]] andAll
     Optional[list[RequestMetadataBaseFilters]] orAll
 
-# no @derive(Json): member(s) fieldsToInclude: list[FieldForReranking], fieldsToExclude: list[FieldForReranking] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldsToInclude: list[FieldForReranking], fieldsToExclude: list[FieldForReranking] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RerankingMetadataSelectiveModeConfiguration:
     Optional[list[FieldForReranking]] fieldsToInclude
     Optional[list[FieldForReranking]] fieldsToExclude
@@ -3630,8 +3778,9 @@ struct ResourceInUseException:
 struct ResourceNotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) andAll: list[RetrievalFilter], orAll: list[RetrievalFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) andAll: list[RetrievalFilter], orAll: list[RetrievalFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RetrievalFilter:
     Optional[FilterAttribute] equals
     Optional[FilterAttribute] notEquals
@@ -3648,15 +3797,17 @@ struct RetrievalFilter:
     Optional[list[RetrievalFilter]] andAll
     Optional[list[RetrievalFilter]] orAll
 
-# no @derive(Json): member(s) knowledgeBaseConfiguration: KnowledgeBaseRetrieveAndGenerateConfiguration, externalSourcesConfiguration: ExternalSourcesRetrieveAndGenerateConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) knowledgeBaseConfiguration: KnowledgeBaseRetrieveAndGenerateConfiguration, externalSourcesConfiguration: ExternalSourcesRetrieveAndGenerateConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RetrieveAndGenerateConfiguration:
     RetrieveAndGenerateType type
     Optional[KnowledgeBaseRetrieveAndGenerateConfiguration] knowledgeBaseConfiguration
     Optional[ExternalSourcesRetrieveAndGenerateConfiguration] externalSourcesConfiguration
 
-# no @derive(Json): member(s) knowledgeBaseRetrievalConfiguration: KnowledgeBaseRetrievalConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) knowledgeBaseRetrievalConfiguration: KnowledgeBaseRetrievalConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RetrieveConfig:
     str knowledgeBaseId
     KnowledgeBaseRetrievalConfiguration knowledgeBaseRetrievalConfiguration
@@ -3678,8 +3829,9 @@ struct S3DataSource:
 struct S3ObjectDoc:
     str uri
 
-# no @derive(Json): member(s) vpc: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpc: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SageMakerEndpoint:
     int64 initialInstanceCount
     str instanceType
@@ -3797,16 +3949,18 @@ struct TeacherModelConfig:
     str teacherModelIdentifier
     Optional[int64] maxResponseLengthForInference
 
-# no @derive(Json): member(s) usageBasedPricingTerm: PricingTerm not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) usageBasedPricingTerm: PricingTerm not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TermDetails:
     PricingTerm usageBasedPricingTerm
     LegalTerm legalTerm
     SupportTerm supportTerm
     Optional[ValidityTerm] validityTerm
 
-# no @derive(Json): member(s) stopSequences: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stopSequences: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TextInferenceConfig:
     Optional[float64] temperature
     Optional[float64] topP
@@ -3822,8 +3976,9 @@ struct TooManyTagsException:
     Optional[str] message
     Optional[str] resourceName
 
-# no @derive(Json): member(s) invocationLogsConfig: InvocationLogsConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) invocationLogsConfig: InvocationLogsConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrainingDataConfig:
     Optional[str] s3Uri
     Optional[InvocationLogsConfig] invocationLogsConfig
@@ -3942,8 +4097,9 @@ struct UpdateMarketplaceModelEndpointRequest:
     EndpointConfig endpointConfig
     Optional[str] clientRequestToken
 
-# no @derive(Json): member(s) marketplaceModelEndpoint: MarketplaceModelEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) marketplaceModelEndpoint: MarketplaceModelEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMarketplaceModelEndpointResponse:
     MarketplaceModelEndpoint marketplaceModelEndpoint
 
@@ -3959,8 +4115,9 @@ struct UpdateProvisionedModelThroughputResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) validators: list[Validator] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) validators: list[Validator] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationDataConfig:
     list[Validator] validators
 
@@ -3988,27 +4145,31 @@ struct ValidatorMetric:
 struct ValidityTerm:
     Optional[str] agreementDuration
 
-# no @derive(Json): member(s) modelConfiguration: VectorSearchBedrockRerankingModelConfiguration, metadataConfiguration: MetadataConfigurationForReranking not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) modelConfiguration: VectorSearchBedrockRerankingModelConfiguration, metadataConfiguration: MetadataConfigurationForReranking not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VectorSearchBedrockRerankingConfiguration:
     VectorSearchBedrockRerankingModelConfiguration modelConfiguration
     Optional[int64] numberOfRerankedResults
     Optional[MetadataConfigurationForReranking] metadataConfiguration
 
-# no @derive(Json): member(s) additionalModelRequestFields: dict[str, AdditionalModelRequestFieldsValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) additionalModelRequestFields: dict[str, AdditionalModelRequestFieldsValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VectorSearchBedrockRerankingModelConfiguration:
     str modelArn
     Optional[dict[str, AdditionalModelRequestFieldsValue]] additionalModelRequestFields
 
-# no @derive(Json): member(s) bedrockRerankingConfiguration: VectorSearchBedrockRerankingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bedrockRerankingConfiguration: VectorSearchBedrockRerankingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VectorSearchRerankingConfiguration:
     str type
     Optional[VectorSearchBedrockRerankingConfiguration] bedrockRerankingConfiguration
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfig:
     list[str] subnetIds
     list[str] securityGroupIds
@@ -4060,23 +4221,6 @@ def bedrock_error_from_code(str code) -> BedrockError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchDeleteAdvancedPromptOptimizationJob (document member `jobIdentifiers: list[str]` is not serializable by derive)
-#   BatchDeleteEvaluationJob (document member `jobIdentifiers: list[str]` is not serializable by derive)
-#   CreateAdvancedPromptOptimizationJob (document member `tags: list[Tag]` is not serializable by derive)
-#   CreateAutomatedReasoningPolicy (document member `policyDefinition: AutomatedReasoningPolicyDefinition` is not serializable by derive)
-#   CreateAutomatedReasoningPolicyVersion (document member `tags: list[Tag]` is not serializable by derive)
-#   CreateCustomModel (document member `modelTags: list[Tag]` is not serializable by derive)
-#   CreateCustomModelDeployment (document member `tags: list[Tag]` is not serializable by derive)
-#   CreateEvaluationJob (document member `jobTags: list[Tag]` is not serializable by derive)
-#   CreateGuardrail (document member `topicPolicyConfig: GuardrailTopicPolicyConfig` is not serializable by derive)
-#   CreateInferenceProfile (document member `tags: list[Tag]` is not serializable by derive)
-#   CreateMarketplaceModelEndpoint (document member `endpointConfig: EndpointConfig` is not serializable by derive)
-#   CreateModelCopyJob (document member `targetModelTags: list[Tag]` is not serializable by derive)
-#   CreateModelCustomizationJob (document member `jobTags: list[Tag]` is not serializable by derive)
-#   CreateModelImportJob (document member `jobTags: list[Tag]` is not serializable by derive)
-#   CreateModelInvocationJob (document member `vpcConfig: VpcConfig` is not serializable by derive)
-#   CreatePromptRouter (document member `models: list[PromptRouterTargetModel]` is not serializable by derive)
-#   CreateProvisionedModelThroughput (document member `tags: list[Tag]` is not serializable by derive)
 #   DeleteAutomatedReasoningPolicy (httpQuery `force` has unsupported type bool)
 #   DeleteAutomatedReasoningPolicyBuildWorkflow (httpQuery `lastUpdatedAt` has unsupported type DateTime)
 #   DeleteAutomatedReasoningPolicyTestCase (httpQuery `lastUpdatedAt` has unsupported type DateTime)
@@ -4089,15 +4233,7 @@ def bedrock_error_from_code(str code) -> BedrockError:
 #   ListModelImportJobs (httpQuery `creationTimeAfter` has unsupported type DateTime)
 #   ListModelInvocationJobs (httpQuery `submitTimeAfter` has unsupported type DateTime)
 #   ListProvisionedModelThroughputs (httpQuery `creationTimeAfter` has unsupported type DateTime)
-#   PutEnforcedGuardrailConfiguration (document member `guardrailInferenceConfig: AccountEnforcedGuardrailInferenceInputConfiguration` is not serializable by derive)
 #   StartAutomatedReasoningPolicyBuildWorkflow (httpPayload member `sourceContent` is a non-derivable structure)
-#   StartAutomatedReasoningPolicyTestWorkflow (document member `testCaseIds: list[str]` is not serializable by derive)
-#   TagResource (document member `tags: list[Tag]` is not serializable by derive)
-#   UntagResource (document member `tagKeys: list[str]` is not serializable by derive)
-#   UpdateAutomatedReasoningPolicy (document member `policyDefinition: AutomatedReasoningPolicyDefinition` is not serializable by derive)
-#   UpdateAutomatedReasoningPolicyAnnotations (document member `annotations: list[AutomatedReasoningPolicyAnnotation]` is not serializable by derive)
-#   UpdateGuardrail (document member `topicPolicyConfig: GuardrailTopicPolicyConfig` is not serializable by derive)
-#   UpdateMarketplaceModelEndpoint (document member `endpointConfig: EndpointConfig` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -4192,10 +4328,923 @@ struct UpdateProvisionedModelThroughputDocument:
     Optional[str] desiredProvisionedModelName
     Optional[str] desiredModelId
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def bedrock_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def bedrock_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def bedrock_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AccountEnforcedGuardrailInferenceInputConfiguration to a compact JSON object (declaration order).
+def account_enforced_guardrail_inference_input_configuration_to_json(AccountEnforcedGuardrailInferenceInputConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"guardrailIdentifier\":" + bedrock_json_str(v.guardrailIdentifier))
+    parts.append("\"guardrailVersion\":" + bedrock_json_str(v.guardrailVersion))
+    if v.selectiveContentGuarding.is_some():
+        auto u0 = v.selectiveContentGuarding.unwrap()
+        parts.append("\"selectiveContentGuarding\":" + u0.to_json())
+    if v.modelEnforcement.is_some():
+        auto u1 = v.modelEnforcement.unwrap()
+        parts.append("\"modelEnforcement\":" + model_enforcement_to_json(u1))
+    return bedrock_json_obj(parts)
+
+# Serialize AutomatedEvaluationConfig to a compact JSON object (declaration order).
+def automated_evaluation_config_to_json(AutomatedEvaluationConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.datasetMetricConfigs:
+        e0.append(evaluation_dataset_metric_config_to_json(x0))
+    parts.append("\"datasetMetricConfigs\":" + bedrock_json_arr(e0))
+    if v.evaluatorModelConfig.is_some():
+        auto u1 = v.evaluatorModelConfig.unwrap()
+        parts.append("\"evaluatorModelConfig\":" + evaluator_model_config_to_json(u1))
+    if v.customMetricConfig.is_some():
+        auto u2 = v.customMetricConfig.unwrap()
+        parts.append("\"customMetricConfig\":" + automated_evaluation_custom_metric_config_to_json(u2))
+    return bedrock_json_obj(parts)
+
+# Serialize AutomatedEvaluationCustomMetricConfig to a compact JSON object (declaration order).
+def automated_evaluation_custom_metric_config_to_json(AutomatedEvaluationCustomMetricConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.customMetrics:
+        e0.append(automated_evaluation_custom_metric_source_to_json(x0))
+    parts.append("\"customMetrics\":" + bedrock_json_arr(e0))
+    parts.append("\"evaluatorModelConfig\":" + custom_metric_evaluator_model_config_to_json(v.evaluatorModelConfig))
+    return bedrock_json_obj(parts)
+
+# Serialize AutomatedEvaluationCustomMetricSource to a compact JSON object (declaration order).
+def automated_evaluation_custom_metric_source_to_json(AutomatedEvaluationCustomMetricSource v) -> str:
+    list[str] parts = []
+    if v.customMetricDefinition.is_some():
+        auto u0 = v.customMetricDefinition.unwrap()
+        parts.append("\"customMetricDefinition\":" + custom_metric_definition_to_json(u0))
+    return bedrock_json_obj(parts)
+
+# Serialize AutomatedReasoningPolicyAddTypeAnnotation to a compact JSON object (declaration order).
+def automated_reasoning_policy_add_type_annotation_to_json(AutomatedReasoningPolicyAddTypeAnnotation v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + bedrock_json_str(v.name))
+    parts.append("\"description\":" + bedrock_json_str(v.description))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(x0.to_json())
+    parts.append("\"values\":" + bedrock_json_arr(e0))
+    return bedrock_json_obj(parts)
+
+# Serialize AutomatedReasoningPolicyAnnotation to a compact JSON object (declaration order).
+def automated_reasoning_policy_annotation_to_json(AutomatedReasoningPolicyAnnotation v) -> str:
+    list[str] parts = []
+    if v.addType.is_some():
+        auto u0 = v.addType.unwrap()
+        parts.append("\"addType\":" + automated_reasoning_policy_add_type_annotation_to_json(u0))
+    if v.updateType.is_some():
+        auto u1 = v.updateType.unwrap()
+        parts.append("\"updateType\":" + automated_reasoning_policy_update_type_annotation_to_json(u1))
+    if v.deleteType.is_some():
+        auto u2 = v.deleteType.unwrap()
+        parts.append("\"deleteType\":" + u2.to_json())
+    if v.addVariable.is_some():
+        auto u3 = v.addVariable.unwrap()
+        parts.append("\"addVariable\":" + u3.to_json())
+    if v.updateVariable.is_some():
+        auto u4 = v.updateVariable.unwrap()
+        parts.append("\"updateVariable\":" + u4.to_json())
+    if v.deleteVariable.is_some():
+        auto u5 = v.deleteVariable.unwrap()
+        parts.append("\"deleteVariable\":" + u5.to_json())
+    if v.addRule.is_some():
+        auto u6 = v.addRule.unwrap()
+        parts.append("\"addRule\":" + u6.to_json())
+    if v.updateRule.is_some():
+        auto u7 = v.updateRule.unwrap()
+        parts.append("\"updateRule\":" + u7.to_json())
+    if v.deleteRule.is_some():
+        auto u8 = v.deleteRule.unwrap()
+        parts.append("\"deleteRule\":" + u8.to_json())
+    if v.addRuleFromNaturalLanguage.is_some():
+        auto u9 = v.addRuleFromNaturalLanguage.unwrap()
+        parts.append("\"addRuleFromNaturalLanguage\":" + u9.to_json())
+    if v.updateFromRulesFeedback.is_some():
+        auto u10 = v.updateFromRulesFeedback.unwrap()
+        parts.append("\"updateFromRulesFeedback\":" + automated_reasoning_policy_update_from_rule_feedback_annotation_to_json(u10))
+    if v.updateFromScenarioFeedback.is_some():
+        auto u11 = v.updateFromScenarioFeedback.unwrap()
+        parts.append("\"updateFromScenarioFeedback\":" + automated_reasoning_policy_update_from_scenario_feedback_annotation_to_json(u11))
+    if v.ingestContent.is_some():
+        auto u12 = v.ingestContent.unwrap()
+        parts.append("\"ingestContent\":" + u12.to_json())
+    return bedrock_json_obj(parts)
+
+# Serialize AutomatedReasoningPolicyDefinition to a compact JSON object (declaration order).
+def automated_reasoning_policy_definition_to_json(AutomatedReasoningPolicyDefinition v) -> str:
+    list[str] parts = []
+    if v.version.is_some():
+        auto u0 = v.version.unwrap()
+        parts.append("\"version\":" + bedrock_json_str(u0))
+    if v.types.is_some():
+        auto u1 = v.types.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(automated_reasoning_policy_definition_type_to_json(x2))
+        parts.append("\"types\":" + bedrock_json_arr(e2))
+    if v.rules.is_some():
+        auto u3 = v.rules.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"rules\":" + bedrock_json_arr(e4))
+    if v.variables.is_some():
+        auto u5 = v.variables.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"variables\":" + bedrock_json_arr(e6))
+    return bedrock_json_obj(parts)
+
+# Serialize AutomatedReasoningPolicyDefinitionType to a compact JSON object (declaration order).
+def automated_reasoning_policy_definition_type_to_json(AutomatedReasoningPolicyDefinitionType v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + bedrock_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + bedrock_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.values:
+        e1.append(x1.to_json())
+    parts.append("\"values\":" + bedrock_json_arr(e1))
+    return bedrock_json_obj(parts)
+
+# Serialize AutomatedReasoningPolicyUpdateFromRuleFeedbackAnnotation to a compact JSON object (declaration order).
+def automated_reasoning_policy_update_from_rule_feedback_annotation_to_json(AutomatedReasoningPolicyUpdateFromRuleFeedbackAnnotation v) -> str:
+    list[str] parts = []
+    if v.ruleIds.is_some():
+        auto u0 = v.ruleIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_json_str(x1))
+        parts.append("\"ruleIds\":" + bedrock_json_arr(e1))
+    parts.append("\"feedback\":" + bedrock_json_str(v.feedback))
+    return bedrock_json_obj(parts)
+
+# Serialize AutomatedReasoningPolicyUpdateFromScenarioFeedbackAnnotation to a compact JSON object (declaration order).
+def automated_reasoning_policy_update_from_scenario_feedback_annotation_to_json(AutomatedReasoningPolicyUpdateFromScenarioFeedbackAnnotation v) -> str:
+    list[str] parts = []
+    if v.ruleIds.is_some():
+        auto u0 = v.ruleIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_json_str(x1))
+        parts.append("\"ruleIds\":" + bedrock_json_arr(e1))
+    parts.append("\"scenarioExpression\":" + bedrock_json_str(v.scenarioExpression))
+    if v.feedback.is_some():
+        auto u2 = v.feedback.unwrap()
+        parts.append("\"feedback\":" + bedrock_json_str(u2))
+    return bedrock_json_obj(parts)
+
+# Serialize AutomatedReasoningPolicyUpdateTypeAnnotation to a compact JSON object (declaration order).
+def automated_reasoning_policy_update_type_annotation_to_json(AutomatedReasoningPolicyUpdateTypeAnnotation v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + bedrock_json_str(v.name))
+    if v.newName.is_some():
+        auto u0 = v.newName.unwrap()
+        parts.append("\"newName\":" + bedrock_json_str(u0))
+    if v.description.is_some():
+        auto u1 = v.description.unwrap()
+        parts.append("\"description\":" + bedrock_json_str(u1))
+    list[str] e2 = []
+    for x2 in v.values:
+        e2.append(x2.to_json())
+    parts.append("\"values\":" + bedrock_json_arr(e2))
+    return bedrock_json_obj(parts)
+
+# Serialize CustomMetricDefinition to a compact JSON object (declaration order).
+def custom_metric_definition_to_json(CustomMetricDefinition v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + bedrock_json_str(v.name))
+    parts.append("\"instructions\":" + bedrock_json_str(v.instructions))
+    if v.ratingScale.is_some():
+        auto u0 = v.ratingScale.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ratingScale\":" + bedrock_json_arr(e1))
+    return bedrock_json_obj(parts)
+
+# Serialize CustomMetricEvaluatorModelConfig to a compact JSON object (declaration order).
+def custom_metric_evaluator_model_config_to_json(CustomMetricEvaluatorModelConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.bedrockEvaluatorModels:
+        e0.append(x0.to_json())
+    parts.append("\"bedrockEvaluatorModels\":" + bedrock_json_arr(e0))
+    return bedrock_json_obj(parts)
+
+# Serialize EndpointConfig to a compact JSON object (declaration order).
+def endpoint_config_to_json(EndpointConfig v) -> str:
+    list[str] parts = []
+    if v.sageMaker.is_some():
+        auto u0 = v.sageMaker.unwrap()
+        parts.append("\"sageMaker\":" + sage_maker_endpoint_to_json(u0))
+    return bedrock_json_obj(parts)
+
+# Serialize EvaluationConfig to a compact JSON object (declaration order).
+def evaluation_config_to_json(EvaluationConfig v) -> str:
+    list[str] parts = []
+    if v.automated.is_some():
+        auto u0 = v.automated.unwrap()
+        parts.append("\"automated\":" + automated_evaluation_config_to_json(u0))
+    if v.human.is_some():
+        auto u1 = v.human.unwrap()
+        parts.append("\"human\":" + human_evaluation_config_to_json(u1))
+    return bedrock_json_obj(parts)
+
+# Serialize EvaluationDatasetMetricConfig to a compact JSON object (declaration order).
+def evaluation_dataset_metric_config_to_json(EvaluationDatasetMetricConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"taskType\":" + v.taskType.to_json())
+    parts.append("\"dataset\":" + v.dataset.to_json())
+    list[str] e0 = []
+    for x0 in v.metricNames:
+        e0.append(bedrock_json_str(x0))
+    parts.append("\"metricNames\":" + bedrock_json_arr(e0))
+    return bedrock_json_obj(parts)
+
+# Serialize EvaluationInferenceConfig to a compact JSON object (declaration order).
+def evaluation_inference_config_to_json(EvaluationInferenceConfig v) -> str:
+    list[str] parts = []
+    if v.models.is_some():
+        auto u0 = v.models.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"models\":" + bedrock_json_arr(e1))
+    if v.ragConfigs.is_some():
+        auto u2 = v.ragConfigs.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(rag_config_to_json(x3))
+        parts.append("\"ragConfigs\":" + bedrock_json_arr(e3))
+    return bedrock_json_obj(parts)
+
+# Serialize EvaluatorModelConfig to a compact JSON object (declaration order).
+def evaluator_model_config_to_json(EvaluatorModelConfig v) -> str:
+    list[str] parts = []
+    if v.bedrockEvaluatorModels.is_some():
+        auto u0 = v.bedrockEvaluatorModels.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"bedrockEvaluatorModels\":" + bedrock_json_arr(e1))
+    return bedrock_json_obj(parts)
+
+# Serialize ExternalSourcesGenerationConfiguration to a compact JSON object (declaration order).
+def external_sources_generation_configuration_to_json(ExternalSourcesGenerationConfiguration v) -> str:
+    list[str] parts = []
+    if v.promptTemplate.is_some():
+        auto u0 = v.promptTemplate.unwrap()
+        parts.append("\"promptTemplate\":" + u0.to_json())
+    if v.guardrailConfiguration.is_some():
+        auto u1 = v.guardrailConfiguration.unwrap()
+        parts.append("\"guardrailConfiguration\":" + u1.to_json())
+    if v.kbInferenceConfig.is_some():
+        auto u2 = v.kbInferenceConfig.unwrap()
+        parts.append("\"kbInferenceConfig\":" + kb_inference_config_to_json(u2))
+    if v.additionalModelRequestFields.is_some():
+        auto u3 = v.additionalModelRequestFields.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(bedrock_json_str(k4) + ":" + u3[k4].to_json())
+        parts.append("\"additionalModelRequestFields\":" + bedrock_json_obj(m4))
+    return bedrock_json_obj(parts)
+
+# Serialize ExternalSourcesRetrieveAndGenerateConfiguration to a compact JSON object (declaration order).
+def external_sources_retrieve_and_generate_configuration_to_json(ExternalSourcesRetrieveAndGenerateConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"modelArn\":" + bedrock_json_str(v.modelArn))
+    list[str] e0 = []
+    for x0 in v.sources:
+        e0.append(x0.to_json())
+    parts.append("\"sources\":" + bedrock_json_arr(e0))
+    if v.generationConfiguration.is_some():
+        auto u1 = v.generationConfiguration.unwrap()
+        parts.append("\"generationConfiguration\":" + external_sources_generation_configuration_to_json(u1))
+    return bedrock_json_obj(parts)
+
+# Serialize GenerationConfiguration to a compact JSON object (declaration order).
+def generation_configuration_to_json(GenerationConfiguration v) -> str:
+    list[str] parts = []
+    if v.promptTemplate.is_some():
+        auto u0 = v.promptTemplate.unwrap()
+        parts.append("\"promptTemplate\":" + u0.to_json())
+    if v.guardrailConfiguration.is_some():
+        auto u1 = v.guardrailConfiguration.unwrap()
+        parts.append("\"guardrailConfiguration\":" + u1.to_json())
+    if v.kbInferenceConfig.is_some():
+        auto u2 = v.kbInferenceConfig.unwrap()
+        parts.append("\"kbInferenceConfig\":" + kb_inference_config_to_json(u2))
+    if v.additionalModelRequestFields.is_some():
+        auto u3 = v.additionalModelRequestFields.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(bedrock_json_str(k4) + ":" + u3[k4].to_json())
+        parts.append("\"additionalModelRequestFields\":" + bedrock_json_obj(m4))
+    return bedrock_json_obj(parts)
+
+# Serialize GuardrailAutomatedReasoningPolicyConfig to a compact JSON object (declaration order).
+def guardrail_automated_reasoning_policy_config_to_json(GuardrailAutomatedReasoningPolicyConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.policies:
+        e0.append(bedrock_json_str(x0))
+    parts.append("\"policies\":" + bedrock_json_arr(e0))
+    if v.confidenceThreshold.is_some():
+        auto u1 = v.confidenceThreshold.unwrap()
+        parts.append("\"confidenceThreshold\":" + str(u1))
+    return bedrock_json_obj(parts)
+
+# Serialize GuardrailContentFilterConfig to a compact JSON object (declaration order).
+def guardrail_content_filter_config_to_json(GuardrailContentFilterConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + v.type.to_json())
+    parts.append("\"inputStrength\":" + v.inputStrength.to_json())
+    parts.append("\"outputStrength\":" + v.outputStrength.to_json())
+    if v.inputModalities.is_some():
+        auto u0 = v.inputModalities.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"inputModalities\":" + bedrock_json_arr(e1))
+    if v.outputModalities.is_some():
+        auto u2 = v.outputModalities.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"outputModalities\":" + bedrock_json_arr(e3))
+    if v.inputAction.is_some():
+        auto u4 = v.inputAction.unwrap()
+        parts.append("\"inputAction\":" + u4.to_json())
+    if v.outputAction.is_some():
+        auto u5 = v.outputAction.unwrap()
+        parts.append("\"outputAction\":" + u5.to_json())
+    if v.inputEnabled.is_some():
+        auto u6 = v.inputEnabled.unwrap()
+        parts.append("\"inputEnabled\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.outputEnabled.is_some():
+        auto u7 = v.outputEnabled.unwrap()
+        parts.append("\"outputEnabled\":" + json.dumps(JsonValue.Bool(u7)))
+    return bedrock_json_obj(parts)
+
+# Serialize GuardrailContentPolicyConfig to a compact JSON object (declaration order).
+def guardrail_content_policy_config_to_json(GuardrailContentPolicyConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.filtersConfig:
+        e0.append(guardrail_content_filter_config_to_json(x0))
+    parts.append("\"filtersConfig\":" + bedrock_json_arr(e0))
+    if v.tierConfig.is_some():
+        auto u1 = v.tierConfig.unwrap()
+        parts.append("\"tierConfig\":" + u1.to_json())
+    return bedrock_json_obj(parts)
+
+# Serialize GuardrailContextualGroundingPolicyConfig to a compact JSON object (declaration order).
+def guardrail_contextual_grounding_policy_config_to_json(GuardrailContextualGroundingPolicyConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.filtersConfig:
+        e0.append(x0.to_json())
+    parts.append("\"filtersConfig\":" + bedrock_json_arr(e0))
+    if v.tierConfig.is_some():
+        auto u1 = v.tierConfig.unwrap()
+        parts.append("\"tierConfig\":" + u1.to_json())
+    return bedrock_json_obj(parts)
+
+# Serialize GuardrailSensitiveInformationPolicyConfig to a compact JSON object (declaration order).
+def guardrail_sensitive_information_policy_config_to_json(GuardrailSensitiveInformationPolicyConfig v) -> str:
+    list[str] parts = []
+    if v.piiEntitiesConfig.is_some():
+        auto u0 = v.piiEntitiesConfig.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"piiEntitiesConfig\":" + bedrock_json_arr(e1))
+    if v.regexesConfig.is_some():
+        auto u2 = v.regexesConfig.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"regexesConfig\":" + bedrock_json_arr(e3))
+    return bedrock_json_obj(parts)
+
+# Serialize GuardrailTopicConfig to a compact JSON object (declaration order).
+def guardrail_topic_config_to_json(GuardrailTopicConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + bedrock_json_str(v.name))
+    parts.append("\"definition\":" + bedrock_json_str(v.definition))
+    if v.examples.is_some():
+        auto u0 = v.examples.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_json_str(x1))
+        parts.append("\"examples\":" + bedrock_json_arr(e1))
+    parts.append("\"type\":" + bedrock_json_str(v.type))
+    if v.inputAction.is_some():
+        auto u2 = v.inputAction.unwrap()
+        parts.append("\"inputAction\":" + u2.to_json())
+    if v.outputAction.is_some():
+        auto u3 = v.outputAction.unwrap()
+        parts.append("\"outputAction\":" + u3.to_json())
+    if v.inputEnabled.is_some():
+        auto u4 = v.inputEnabled.unwrap()
+        parts.append("\"inputEnabled\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.outputEnabled.is_some():
+        auto u5 = v.outputEnabled.unwrap()
+        parts.append("\"outputEnabled\":" + json.dumps(JsonValue.Bool(u5)))
+    return bedrock_json_obj(parts)
+
+# Serialize GuardrailTopicPolicyConfig to a compact JSON object (declaration order).
+def guardrail_topic_policy_config_to_json(GuardrailTopicPolicyConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.topicsConfig:
+        e0.append(guardrail_topic_config_to_json(x0))
+    parts.append("\"topicsConfig\":" + bedrock_json_arr(e0))
+    if v.tierConfig.is_some():
+        auto u1 = v.tierConfig.unwrap()
+        parts.append("\"tierConfig\":" + u1.to_json())
+    return bedrock_json_obj(parts)
+
+# Serialize GuardrailWordPolicyConfig to a compact JSON object (declaration order).
+def guardrail_word_policy_config_to_json(GuardrailWordPolicyConfig v) -> str:
+    list[str] parts = []
+    if v.wordsConfig.is_some():
+        auto u0 = v.wordsConfig.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"wordsConfig\":" + bedrock_json_arr(e1))
+    if v.managedWordListsConfig.is_some():
+        auto u2 = v.managedWordListsConfig.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"managedWordListsConfig\":" + bedrock_json_arr(e3))
+    return bedrock_json_obj(parts)
+
+# Serialize HumanEvaluationConfig to a compact JSON object (declaration order).
+def human_evaluation_config_to_json(HumanEvaluationConfig v) -> str:
+    list[str] parts = []
+    if v.humanWorkflowConfig.is_some():
+        auto u0 = v.humanWorkflowConfig.unwrap()
+        parts.append("\"humanWorkflowConfig\":" + u0.to_json())
+    if v.customMetrics.is_some():
+        auto u1 = v.customMetrics.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"customMetrics\":" + bedrock_json_arr(e2))
+    list[str] e3 = []
+    for x3 in v.datasetMetricConfigs:
+        e3.append(evaluation_dataset_metric_config_to_json(x3))
+    parts.append("\"datasetMetricConfigs\":" + bedrock_json_arr(e3))
+    return bedrock_json_obj(parts)
+
+# Serialize ImplicitFilterConfiguration to a compact JSON object (declaration order).
+def implicit_filter_configuration_to_json(ImplicitFilterConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.metadataAttributes:
+        e0.append(x0.to_json())
+    parts.append("\"metadataAttributes\":" + bedrock_json_arr(e0))
+    parts.append("\"modelArn\":" + bedrock_json_str(v.modelArn))
+    return bedrock_json_obj(parts)
+
+# Serialize InferenceConfiguration to a compact JSON object (declaration order).
+def inference_configuration_to_json(InferenceConfiguration v) -> str:
+    list[str] parts = []
+    if v.maxTokens.is_some():
+        auto u0 = v.maxTokens.unwrap()
+        parts.append("\"maxTokens\":" + str(u0))
+    if v.temperature.is_some():
+        auto u1 = v.temperature.unwrap()
+        parts.append("\"temperature\":" + str(u1))
+    if v.topP.is_some():
+        auto u2 = v.topP.unwrap()
+        parts.append("\"topP\":" + str(u2))
+    if v.stopSequences.is_some():
+        auto u3 = v.stopSequences.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(bedrock_json_str(x4))
+        parts.append("\"stopSequences\":" + bedrock_json_arr(e4))
+    return bedrock_json_obj(parts)
+
+# Serialize InvocationLogsConfig to a compact JSON object (declaration order).
+def invocation_logs_config_to_json(InvocationLogsConfig v) -> str:
+    list[str] parts = []
+    if v.usePromptResponse.is_some():
+        auto u0 = v.usePromptResponse.unwrap()
+        parts.append("\"usePromptResponse\":" + json.dumps(JsonValue.Bool(u0)))
+    parts.append("\"invocationLogSource\":" + v.invocationLogSource.to_json())
+    if v.requestMetadataFilters.is_some():
+        auto u1 = v.requestMetadataFilters.unwrap()
+        parts.append("\"requestMetadataFilters\":" + request_metadata_filters_to_json(u1))
+    return bedrock_json_obj(parts)
+
+# Serialize KbInferenceConfig to a compact JSON object (declaration order).
+def kb_inference_config_to_json(KbInferenceConfig v) -> str:
+    list[str] parts = []
+    if v.textInferenceConfig.is_some():
+        auto u0 = v.textInferenceConfig.unwrap()
+        parts.append("\"textInferenceConfig\":" + text_inference_config_to_json(u0))
+    return bedrock_json_obj(parts)
+
+# Serialize KnowledgeBaseConfig to a compact JSON object (declaration order).
+def knowledge_base_config_to_json(KnowledgeBaseConfig v) -> str:
+    list[str] parts = []
+    if v.retrieveConfig.is_some():
+        auto u0 = v.retrieveConfig.unwrap()
+        parts.append("\"retrieveConfig\":" + retrieve_config_to_json(u0))
+    if v.retrieveAndGenerateConfig.is_some():
+        auto u1 = v.retrieveAndGenerateConfig.unwrap()
+        parts.append("\"retrieveAndGenerateConfig\":" + retrieve_and_generate_configuration_to_json(u1))
+    return bedrock_json_obj(parts)
+
+# Serialize KnowledgeBaseRetrievalConfiguration to a compact JSON object (declaration order).
+def knowledge_base_retrieval_configuration_to_json(KnowledgeBaseRetrievalConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"vectorSearchConfiguration\":" + knowledge_base_vector_search_configuration_to_json(v.vectorSearchConfiguration))
+    return bedrock_json_obj(parts)
+
+# Serialize KnowledgeBaseRetrieveAndGenerateConfiguration to a compact JSON object (declaration order).
+def knowledge_base_retrieve_and_generate_configuration_to_json(KnowledgeBaseRetrieveAndGenerateConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"knowledgeBaseId\":" + bedrock_json_str(v.knowledgeBaseId))
+    parts.append("\"modelArn\":" + bedrock_json_str(v.modelArn))
+    if v.retrievalConfiguration.is_some():
+        auto u0 = v.retrievalConfiguration.unwrap()
+        parts.append("\"retrievalConfiguration\":" + knowledge_base_retrieval_configuration_to_json(u0))
+    if v.generationConfiguration.is_some():
+        auto u1 = v.generationConfiguration.unwrap()
+        parts.append("\"generationConfiguration\":" + generation_configuration_to_json(u1))
+    if v.orchestrationConfiguration.is_some():
+        auto u2 = v.orchestrationConfiguration.unwrap()
+        parts.append("\"orchestrationConfiguration\":" + u2.to_json())
+    return bedrock_json_obj(parts)
+
+# Serialize KnowledgeBaseVectorSearchConfiguration to a compact JSON object (declaration order).
+def knowledge_base_vector_search_configuration_to_json(KnowledgeBaseVectorSearchConfiguration v) -> str:
+    list[str] parts = []
+    if v.numberOfResults.is_some():
+        auto u0 = v.numberOfResults.unwrap()
+        parts.append("\"numberOfResults\":" + str(u0))
+    if v.overrideSearchType.is_some():
+        auto u1 = v.overrideSearchType.unwrap()
+        parts.append("\"overrideSearchType\":" + u1.to_json())
+    if v.filter.is_some():
+        auto u2 = v.filter.unwrap()
+        parts.append("\"filter\":" + retrieval_filter_to_json(u2))
+    if v.implicitFilterConfiguration.is_some():
+        auto u3 = v.implicitFilterConfiguration.unwrap()
+        parts.append("\"implicitFilterConfiguration\":" + implicit_filter_configuration_to_json(u3))
+    if v.rerankingConfiguration.is_some():
+        auto u4 = v.rerankingConfiguration.unwrap()
+        parts.append("\"rerankingConfiguration\":" + vector_search_reranking_configuration_to_json(u4))
+    return bedrock_json_obj(parts)
+
+# Serialize MetadataConfigurationForReranking to a compact JSON object (declaration order).
+def metadata_configuration_for_reranking_to_json(MetadataConfigurationForReranking v) -> str:
+    list[str] parts = []
+    parts.append("\"selectionMode\":" + v.selectionMode.to_json())
+    if v.selectiveModeConfiguration.is_some():
+        auto u0 = v.selectiveModeConfiguration.unwrap()
+        parts.append("\"selectiveModeConfiguration\":" + reranking_metadata_selective_mode_configuration_to_json(u0))
+    return bedrock_json_obj(parts)
+
+# Serialize ModelConfiguration to a compact JSON object (declaration order).
+def model_configuration_to_json(ModelConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"modelId\":" + bedrock_json_str(v.modelId))
+    if v.inferenceConfig.is_some():
+        auto u0 = v.inferenceConfig.unwrap()
+        parts.append("\"inferenceConfig\":" + inference_configuration_to_json(u0))
+    if v.additionalModelRequestFields.is_some():
+        auto u1 = v.additionalModelRequestFields.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(bedrock_json_str(k2) + ":" + u1[k2].to_json())
+        parts.append("\"additionalModelRequestFields\":" + bedrock_json_obj(m2))
+    return bedrock_json_obj(parts)
+
+# Serialize ModelEnforcement to a compact JSON object (declaration order).
+def model_enforcement_to_json(ModelEnforcement v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.includedModels:
+        e0.append(bedrock_json_str(x0))
+    parts.append("\"includedModels\":" + bedrock_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.excludedModels:
+        e1.append(bedrock_json_str(x1))
+    parts.append("\"excludedModels\":" + bedrock_json_arr(e1))
+    return bedrock_json_obj(parts)
+
+# Serialize RAGConfig to a compact JSON object (declaration order).
+def rag_config_to_json(RAGConfig v) -> str:
+    list[str] parts = []
+    if v.knowledgeBaseConfig.is_some():
+        auto u0 = v.knowledgeBaseConfig.unwrap()
+        parts.append("\"knowledgeBaseConfig\":" + knowledge_base_config_to_json(u0))
+    if v.precomputedRagSourceConfig.is_some():
+        auto u1 = v.precomputedRagSourceConfig.unwrap()
+        parts.append("\"precomputedRagSourceConfig\":" + u1.to_json())
+    return bedrock_json_obj(parts)
+
+# Serialize RequestMetadataBaseFilters to a compact JSON object (declaration order).
+def request_metadata_base_filters_to_json(RequestMetadataBaseFilters v) -> str:
+    list[str] parts = []
+    if v.equals.is_some():
+        auto u0 = v.equals.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(bedrock_json_str(k1) + ":" + bedrock_json_str(u0[k1]))
+        parts.append("\"equals\":" + bedrock_json_obj(m1))
+    if v.notEquals.is_some():
+        auto u2 = v.notEquals.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(bedrock_json_str(k3) + ":" + bedrock_json_str(u2[k3]))
+        parts.append("\"notEquals\":" + bedrock_json_obj(m3))
+    return bedrock_json_obj(parts)
+
+# Serialize RequestMetadataFilters to a compact JSON object (declaration order).
+def request_metadata_filters_to_json(RequestMetadataFilters v) -> str:
+    list[str] parts = []
+    if v.equals.is_some():
+        auto u0 = v.equals.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(bedrock_json_str(k1) + ":" + bedrock_json_str(u0[k1]))
+        parts.append("\"equals\":" + bedrock_json_obj(m1))
+    if v.notEquals.is_some():
+        auto u2 = v.notEquals.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(bedrock_json_str(k3) + ":" + bedrock_json_str(u2[k3]))
+        parts.append("\"notEquals\":" + bedrock_json_obj(m3))
+    if v.andAll.is_some():
+        auto u4 = v.andAll.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(request_metadata_base_filters_to_json(x5))
+        parts.append("\"andAll\":" + bedrock_json_arr(e5))
+    if v.orAll.is_some():
+        auto u6 = v.orAll.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(request_metadata_base_filters_to_json(x7))
+        parts.append("\"orAll\":" + bedrock_json_arr(e7))
+    return bedrock_json_obj(parts)
+
+# Serialize RerankingMetadataSelectiveModeConfiguration to a compact JSON object (declaration order).
+def reranking_metadata_selective_mode_configuration_to_json(RerankingMetadataSelectiveModeConfiguration v) -> str:
+    list[str] parts = []
+    if v.fieldsToInclude.is_some():
+        auto u0 = v.fieldsToInclude.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"fieldsToInclude\":" + bedrock_json_arr(e1))
+    if v.fieldsToExclude.is_some():
+        auto u2 = v.fieldsToExclude.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"fieldsToExclude\":" + bedrock_json_arr(e3))
+    return bedrock_json_obj(parts)
+
+# Serialize RetrievalFilter to a compact JSON object (declaration order).
+def retrieval_filter_to_json(RetrievalFilter v) -> str:
+    list[str] parts = []
+    if v.equals.is_some():
+        auto u0 = v.equals.unwrap()
+        parts.append("\"equals\":" + u0.to_json())
+    if v.notEquals.is_some():
+        auto u1 = v.notEquals.unwrap()
+        parts.append("\"notEquals\":" + u1.to_json())
+    if v.greaterThan.is_some():
+        auto u2 = v.greaterThan.unwrap()
+        parts.append("\"greaterThan\":" + u2.to_json())
+    if v.greaterThanOrEquals.is_some():
+        auto u3 = v.greaterThanOrEquals.unwrap()
+        parts.append("\"greaterThanOrEquals\":" + u3.to_json())
+    if v.lessThan.is_some():
+        auto u4 = v.lessThan.unwrap()
+        parts.append("\"lessThan\":" + u4.to_json())
+    if v.lessThanOrEquals.is_some():
+        auto u5 = v.lessThanOrEquals.unwrap()
+        parts.append("\"lessThanOrEquals\":" + u5.to_json())
+    if v.in_.is_some():
+        auto u6 = v.in_.unwrap()
+        parts.append("\"in\":" + u6.to_json())
+    if v.notIn.is_some():
+        auto u7 = v.notIn.unwrap()
+        parts.append("\"notIn\":" + u7.to_json())
+    if v.startsWith.is_some():
+        auto u8 = v.startsWith.unwrap()
+        parts.append("\"startsWith\":" + u8.to_json())
+    if v.listContains.is_some():
+        auto u9 = v.listContains.unwrap()
+        parts.append("\"listContains\":" + u9.to_json())
+    if v.stringContains.is_some():
+        auto u10 = v.stringContains.unwrap()
+        parts.append("\"stringContains\":" + u10.to_json())
+    if v.andAll.is_some():
+        auto u11 = v.andAll.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(retrieval_filter_to_json(x12))
+        parts.append("\"andAll\":" + bedrock_json_arr(e12))
+    if v.orAll.is_some():
+        auto u13 = v.orAll.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(retrieval_filter_to_json(x14))
+        parts.append("\"orAll\":" + bedrock_json_arr(e14))
+    return bedrock_json_obj(parts)
+
+# Serialize RetrieveAndGenerateConfiguration to a compact JSON object (declaration order).
+def retrieve_and_generate_configuration_to_json(RetrieveAndGenerateConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + v.type.to_json())
+    if v.knowledgeBaseConfiguration.is_some():
+        auto u0 = v.knowledgeBaseConfiguration.unwrap()
+        parts.append("\"knowledgeBaseConfiguration\":" + knowledge_base_retrieve_and_generate_configuration_to_json(u0))
+    if v.externalSourcesConfiguration.is_some():
+        auto u1 = v.externalSourcesConfiguration.unwrap()
+        parts.append("\"externalSourcesConfiguration\":" + external_sources_retrieve_and_generate_configuration_to_json(u1))
+    return bedrock_json_obj(parts)
+
+# Serialize RetrieveConfig to a compact JSON object (declaration order).
+def retrieve_config_to_json(RetrieveConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"knowledgeBaseId\":" + bedrock_json_str(v.knowledgeBaseId))
+    parts.append("\"knowledgeBaseRetrievalConfiguration\":" + knowledge_base_retrieval_configuration_to_json(v.knowledgeBaseRetrievalConfiguration))
+    return bedrock_json_obj(parts)
+
+# Serialize SageMakerEndpoint to a compact JSON object (declaration order).
+def sage_maker_endpoint_to_json(SageMakerEndpoint v) -> str:
+    list[str] parts = []
+    parts.append("\"initialInstanceCount\":" + str(v.initialInstanceCount))
+    parts.append("\"instanceType\":" + bedrock_json_str(v.instanceType))
+    parts.append("\"executionRole\":" + bedrock_json_str(v.executionRole))
+    if v.kmsEncryptionKey.is_some():
+        auto u0 = v.kmsEncryptionKey.unwrap()
+        parts.append("\"kmsEncryptionKey\":" + bedrock_json_str(u0))
+    if v.vpc.is_some():
+        auto u1 = v.vpc.unwrap()
+        parts.append("\"vpc\":" + vpc_config_to_json(u1))
+    return bedrock_json_obj(parts)
+
+# Serialize TextInferenceConfig to a compact JSON object (declaration order).
+def text_inference_config_to_json(TextInferenceConfig v) -> str:
+    list[str] parts = []
+    if v.temperature.is_some():
+        auto u0 = v.temperature.unwrap()
+        parts.append("\"temperature\":" + str(u0))
+    if v.topP.is_some():
+        auto u1 = v.topP.unwrap()
+        parts.append("\"topP\":" + str(u1))
+    if v.maxTokens.is_some():
+        auto u2 = v.maxTokens.unwrap()
+        parts.append("\"maxTokens\":" + str(u2))
+    if v.stopSequences.is_some():
+        auto u3 = v.stopSequences.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(bedrock_json_str(x4))
+        parts.append("\"stopSequences\":" + bedrock_json_arr(e4))
+    return bedrock_json_obj(parts)
+
+# Serialize TrainingDataConfig to a compact JSON object (declaration order).
+def training_data_config_to_json(TrainingDataConfig v) -> str:
+    list[str] parts = []
+    if v.s3Uri.is_some():
+        auto u0 = v.s3Uri.unwrap()
+        parts.append("\"s3Uri\":" + bedrock_json_str(u0))
+    if v.invocationLogsConfig.is_some():
+        auto u1 = v.invocationLogsConfig.unwrap()
+        parts.append("\"invocationLogsConfig\":" + invocation_logs_config_to_json(u1))
+    return bedrock_json_obj(parts)
+
+# Serialize ValidationDataConfig to a compact JSON object (declaration order).
+def validation_data_config_to_json(ValidationDataConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.validators:
+        e0.append(x0.to_json())
+    parts.append("\"validators\":" + bedrock_json_arr(e0))
+    return bedrock_json_obj(parts)
+
+# Serialize VectorSearchBedrockRerankingConfiguration to a compact JSON object (declaration order).
+def vector_search_bedrock_reranking_configuration_to_json(VectorSearchBedrockRerankingConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"modelConfiguration\":" + vector_search_bedrock_reranking_model_configuration_to_json(v.modelConfiguration))
+    if v.numberOfRerankedResults.is_some():
+        auto u0 = v.numberOfRerankedResults.unwrap()
+        parts.append("\"numberOfRerankedResults\":" + str(u0))
+    if v.metadataConfiguration.is_some():
+        auto u1 = v.metadataConfiguration.unwrap()
+        parts.append("\"metadataConfiguration\":" + metadata_configuration_for_reranking_to_json(u1))
+    return bedrock_json_obj(parts)
+
+# Serialize VectorSearchBedrockRerankingModelConfiguration to a compact JSON object (declaration order).
+def vector_search_bedrock_reranking_model_configuration_to_json(VectorSearchBedrockRerankingModelConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"modelArn\":" + bedrock_json_str(v.modelArn))
+    if v.additionalModelRequestFields.is_some():
+        auto u0 = v.additionalModelRequestFields.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(bedrock_json_str(k1) + ":" + u0[k1].to_json())
+        parts.append("\"additionalModelRequestFields\":" + bedrock_json_obj(m1))
+    return bedrock_json_obj(parts)
+
+# Serialize VectorSearchRerankingConfiguration to a compact JSON object (declaration order).
+def vector_search_reranking_configuration_to_json(VectorSearchRerankingConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + bedrock_json_str(v.type))
+    if v.bedrockRerankingConfiguration.is_some():
+        auto u0 = v.bedrockRerankingConfiguration.unwrap()
+        parts.append("\"bedrockRerankingConfiguration\":" + vector_search_bedrock_reranking_configuration_to_json(u0))
+    return bedrock_json_obj(parts)
+
+# Serialize VpcConfig to a compact JSON object (declaration order).
+def vpc_config_to_json(VpcConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.subnetIds:
+        e0.append(bedrock_json_str(x0))
+    parts.append("\"subnetIds\":" + bedrock_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.securityGroupIds:
+        e1.append(bedrock_json_str(x1))
+    parts.append("\"securityGroupIds\":" + bedrock_json_arr(e1))
+    return bedrock_json_obj(parts)
+
 # A bound Bedrock client: credentials + region, threaded into every operation.
 struct BedrockClient:
     core.Credentials creds
     str region
+
+    # BatchDeleteAdvancedPromptOptimizationJob  POST /advanced-prompt-optimization-job/batch-delete
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def batch_delete_advanced_prompt_optimization_job(self, BatchDeleteAdvancedPromptOptimizationJobRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/advanced-prompt-optimization-job/batch-delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.jobIdentifiers:
+            e0.append(bedrock_json_str(x0))
+        parts.append("\"jobIdentifiers\":" + bedrock_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
+
+    # BatchDeleteEvaluationJob  POST /evaluation-jobs/batch-delete
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_delete_evaluation_job(self, BatchDeleteEvaluationJobRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/evaluation-jobs/batch-delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.jobIdentifiers:
+            e0.append(bedrock_json_str(x0))
+        parts.append("\"jobIdentifiers\":" + bedrock_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
 
     # CancelAutomatedReasoningPolicyBuildWorkflow  POST /automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/cancel
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -4206,6 +5255,65 @@ struct BedrockClient:
         labels["buildWorkflowId"] = input.buildWorkflowId
         auto b = binding.HttpBinding(method="POST", path_template="/automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
+
+    # CreateAdvancedPromptOptimizationJob  POST /advanced-prompt-optimization-jobs
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, TooManyTagsException, ValidationException
+    def create_advanced_prompt_optimization_job(self, CreateAdvancedPromptOptimizationJobRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/advanced-prompt-optimization-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"jobName\":" + bedrock_json_str(input.jobName))
+        if input.jobDescription.is_some():
+            auto u0 = input.jobDescription.unwrap()
+            parts.append("\"jobDescription\":" + bedrock_json_str(u0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_json_str(u1))
+        parts.append("\"inputConfig\":" + input.inputConfig.to_json())
+        parts.append("\"outputConfig\":" + input.outputConfig.to_json())
+        if input.encryptionKeyArn.is_some():
+            auto u2 = input.encryptionKeyArn.unwrap()
+            parts.append("\"encryptionKeyArn\":" + bedrock_json_str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"tags\":" + bedrock_json_arr(e4))
+        list[str] e5 = []
+        for x5 in input.modelConfigurations:
+            e5.append(model_configuration_to_json(x5))
+        parts.append("\"modelConfigurations\":" + bedrock_json_arr(e5))
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
+
+    # CreateAutomatedReasoningPolicy  POST /automated-reasoning-policies
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, TooManyTagsException, ValidationException
+    def create_automated_reasoning_policy(self, CreateAutomatedReasoningPolicyRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/automated-reasoning-policies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + bedrock_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_json_str(u0))
+        if input.clientRequestToken.is_some():
+            auto u1 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + bedrock_json_str(u1))
+        if input.policyDefinition.is_some():
+            auto u2 = input.policyDefinition.unwrap()
+            parts.append("\"policyDefinition\":" + automated_reasoning_policy_definition_to_json(u2))
+        if input.kmsKeyId.is_some():
+            auto u3 = input.kmsKeyId.unwrap()
+            parts.append("\"kmsKeyId\":" + bedrock_json_str(u3))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"tags\":" + bedrock_json_arr(e5))
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
 
     # CreateAutomatedReasoningPolicyTestCase  POST /automated-reasoning-policies/{policyArn}/test-cases
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -4218,6 +5326,113 @@ struct BedrockClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
 
+    # CreateAutomatedReasoningPolicyVersion  POST /automated-reasoning-policies/{policyArn}/versions
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, TooManyTagsException, ValidationException
+    def create_automated_reasoning_policy_version(self, CreateAutomatedReasoningPolicyVersionRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        dict[str, str] labels = {}
+        labels["policyArn"] = input.policyArn
+        auto b = binding.HttpBinding(method="POST", path_template="/automated-reasoning-policies/{policyArn}/versions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientRequestToken.is_some():
+            auto u0 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + bedrock_json_str(u0))
+        parts.append("\"lastUpdatedDefinitionHash\":" + bedrock_json_str(input.lastUpdatedDefinitionHash))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + bedrock_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
+
+    # CreateCustomModel  POST /custom-models/create-custom-model
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, TooManyTagsException, ValidationException
+    def create_custom_model(self, CreateCustomModelRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/custom-models/create-custom-model", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"modelName\":" + bedrock_json_str(input.modelName))
+        if input.modelSourceConfig.is_some():
+            auto u0 = input.modelSourceConfig.unwrap()
+            parts.append("\"modelSourceConfig\":" + u0.to_json())
+        if input.customModelDataSource.is_some():
+            auto u1 = input.customModelDataSource.unwrap()
+            parts.append("\"customModelDataSource\":" + u1.to_json())
+        if input.modelKmsKeyArn.is_some():
+            auto u2 = input.modelKmsKeyArn.unwrap()
+            parts.append("\"modelKmsKeyArn\":" + bedrock_json_str(u2))
+        if input.roleArn.is_some():
+            auto u3 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + bedrock_json_str(u3))
+        if input.modelTags.is_some():
+            auto u4 = input.modelTags.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"modelTags\":" + bedrock_json_arr(e5))
+        if input.clientRequestToken.is_some():
+            auto u6 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + bedrock_json_str(u6))
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
+
+    # CreateCustomModelDeployment  POST /model-customization/custom-model-deployments
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, TooManyTagsException, ValidationException
+    def create_custom_model_deployment(self, CreateCustomModelDeploymentRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/model-customization/custom-model-deployments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"modelDeploymentName\":" + bedrock_json_str(input.modelDeploymentName))
+        parts.append("\"modelArn\":" + bedrock_json_str(input.modelArn))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + bedrock_json_arr(e2))
+        if input.clientRequestToken.is_some():
+            auto u3 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + bedrock_json_str(u3))
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
+
+    # CreateEvaluationJob  POST /evaluation-jobs
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_evaluation_job(self, CreateEvaluationJobRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/evaluation-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"jobName\":" + bedrock_json_str(input.jobName))
+        if input.jobDescription.is_some():
+            auto u0 = input.jobDescription.unwrap()
+            parts.append("\"jobDescription\":" + bedrock_json_str(u0))
+        if input.clientRequestToken.is_some():
+            auto u1 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + bedrock_json_str(u1))
+        parts.append("\"roleArn\":" + bedrock_json_str(input.roleArn))
+        if input.customerEncryptionKeyId.is_some():
+            auto u2 = input.customerEncryptionKeyId.unwrap()
+            parts.append("\"customerEncryptionKeyId\":" + bedrock_json_str(u2))
+        if input.jobTags.is_some():
+            auto u3 = input.jobTags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"jobTags\":" + bedrock_json_arr(e4))
+        if input.applicationType.is_some():
+            auto u5 = input.applicationType.unwrap()
+            parts.append("\"applicationType\":" + u5.to_json())
+        parts.append("\"evaluationConfig\":" + evaluation_config_to_json(input.evaluationConfig))
+        parts.append("\"inferenceConfig\":" + evaluation_inference_config_to_json(input.inferenceConfig))
+        parts.append("\"outputDataConfig\":" + input.outputDataConfig.to_json())
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
+
     # CreateFoundationModelAgreement  POST /create-foundation-model-agreement
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_foundation_model_agreement(self, CreateFoundationModelAgreementRequest input) -> str:
@@ -4225,6 +5440,54 @@ struct BedrockClient:
         auto b = binding.HttpBinding(method="POST", path_template="/create-foundation-model-agreement", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateFoundationModelAgreementDocument(offerToken=input.offerToken, modelId=input.modelId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
+
+    # CreateGuardrail  POST /guardrails
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, TooManyTagsException, ValidationException
+    def create_guardrail(self, CreateGuardrailRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/guardrails", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + bedrock_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_json_str(u0))
+        if input.topicPolicyConfig.is_some():
+            auto u1 = input.topicPolicyConfig.unwrap()
+            parts.append("\"topicPolicyConfig\":" + guardrail_topic_policy_config_to_json(u1))
+        if input.contentPolicyConfig.is_some():
+            auto u2 = input.contentPolicyConfig.unwrap()
+            parts.append("\"contentPolicyConfig\":" + guardrail_content_policy_config_to_json(u2))
+        if input.wordPolicyConfig.is_some():
+            auto u3 = input.wordPolicyConfig.unwrap()
+            parts.append("\"wordPolicyConfig\":" + guardrail_word_policy_config_to_json(u3))
+        if input.sensitiveInformationPolicyConfig.is_some():
+            auto u4 = input.sensitiveInformationPolicyConfig.unwrap()
+            parts.append("\"sensitiveInformationPolicyConfig\":" + guardrail_sensitive_information_policy_config_to_json(u4))
+        if input.contextualGroundingPolicyConfig.is_some():
+            auto u5 = input.contextualGroundingPolicyConfig.unwrap()
+            parts.append("\"contextualGroundingPolicyConfig\":" + guardrail_contextual_grounding_policy_config_to_json(u5))
+        if input.automatedReasoningPolicyConfig.is_some():
+            auto u6 = input.automatedReasoningPolicyConfig.unwrap()
+            parts.append("\"automatedReasoningPolicyConfig\":" + guardrail_automated_reasoning_policy_config_to_json(u6))
+        if input.crossRegionConfig.is_some():
+            auto u7 = input.crossRegionConfig.unwrap()
+            parts.append("\"crossRegionConfig\":" + u7.to_json())
+        parts.append("\"blockedInputMessaging\":" + bedrock_json_str(input.blockedInputMessaging))
+        parts.append("\"blockedOutputsMessaging\":" + bedrock_json_str(input.blockedOutputsMessaging))
+        if input.kmsKeyId.is_some():
+            auto u8 = input.kmsKeyId.unwrap()
+            parts.append("\"kmsKeyId\":" + bedrock_json_str(u8))
+        if input.tags.is_some():
+            auto u9 = input.tags.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(x10.to_json())
+            parts.append("\"tags\":" + bedrock_json_arr(e10))
+        if input.clientRequestToken.is_some():
+            auto u11 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + bedrock_json_str(u11))
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
 
     # CreateGuardrailVersion  POST /guardrails/{guardrailIdentifier}
@@ -4236,6 +5499,245 @@ struct BedrockClient:
         auto b = binding.HttpBinding(method="POST", path_template="/guardrails/{guardrailIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateGuardrailVersionDocument(description=input.description, clientRequestToken=input.clientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
+
+    # CreateInferenceProfile  POST /inference-profiles
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, TooManyTagsException, ValidationException
+    def create_inference_profile(self, CreateInferenceProfileRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/inference-profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"inferenceProfileName\":" + bedrock_json_str(input.inferenceProfileName))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_json_str(u0))
+        if input.clientRequestToken.is_some():
+            auto u1 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + bedrock_json_str(u1))
+        parts.append("\"modelSource\":" + input.modelSource.to_json())
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"tags\":" + bedrock_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
+
+    # CreateMarketplaceModelEndpoint  POST /marketplace-model/endpoints
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_marketplace_model_endpoint(self, CreateMarketplaceModelEndpointRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/marketplace-model/endpoints", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"modelSourceIdentifier\":" + bedrock_json_str(input.modelSourceIdentifier))
+        parts.append("\"endpointConfig\":" + endpoint_config_to_json(input.endpointConfig))
+        if input.acceptEula.is_some():
+            auto u0 = input.acceptEula.unwrap()
+            parts.append("\"acceptEula\":" + json.dumps(JsonValue.Bool(u0)))
+        parts.append("\"endpointName\":" + bedrock_json_str(input.endpointName))
+        if input.clientRequestToken.is_some():
+            auto u1 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + bedrock_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"tags\":" + bedrock_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
+
+    # CreateModelCopyJob  POST /model-copy-jobs
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyTagsException
+    def create_model_copy_job(self, CreateModelCopyJobRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/model-copy-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"sourceModelArn\":" + bedrock_json_str(input.sourceModelArn))
+        parts.append("\"targetModelName\":" + bedrock_json_str(input.targetModelName))
+        if input.modelKmsKeyId.is_some():
+            auto u0 = input.modelKmsKeyId.unwrap()
+            parts.append("\"modelKmsKeyId\":" + bedrock_json_str(u0))
+        if input.targetModelTags.is_some():
+            auto u1 = input.targetModelTags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"targetModelTags\":" + bedrock_json_arr(e2))
+        if input.clientRequestToken.is_some():
+            auto u3 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + bedrock_json_str(u3))
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
+
+    # CreateModelCustomizationJob  POST /model-customization-jobs
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, TooManyTagsException, ValidationException
+    def create_model_customization_job(self, CreateModelCustomizationJobRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/model-customization-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"jobName\":" + bedrock_json_str(input.jobName))
+        parts.append("\"customModelName\":" + bedrock_json_str(input.customModelName))
+        parts.append("\"roleArn\":" + bedrock_json_str(input.roleArn))
+        if input.clientRequestToken.is_some():
+            auto u0 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + bedrock_json_str(u0))
+        parts.append("\"baseModelIdentifier\":" + bedrock_json_str(input.baseModelIdentifier))
+        if input.customizationType.is_some():
+            auto u1 = input.customizationType.unwrap()
+            parts.append("\"customizationType\":" + u1.to_json())
+        if input.customModelKmsKeyId.is_some():
+            auto u2 = input.customModelKmsKeyId.unwrap()
+            parts.append("\"customModelKmsKeyId\":" + bedrock_json_str(u2))
+        if input.jobTags.is_some():
+            auto u3 = input.jobTags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"jobTags\":" + bedrock_json_arr(e4))
+        if input.customModelTags.is_some():
+            auto u5 = input.customModelTags.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"customModelTags\":" + bedrock_json_arr(e6))
+        parts.append("\"trainingDataConfig\":" + training_data_config_to_json(input.trainingDataConfig))
+        if input.validationDataConfig.is_some():
+            auto u7 = input.validationDataConfig.unwrap()
+            parts.append("\"validationDataConfig\":" + validation_data_config_to_json(u7))
+        parts.append("\"outputDataConfig\":" + input.outputDataConfig.to_json())
+        if input.hyperParameters.is_some():
+            auto u8 = input.hyperParameters.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(bedrock_json_str(k9) + ":" + bedrock_json_str(u8[k9]))
+            parts.append("\"hyperParameters\":" + bedrock_json_obj(m9))
+        if input.vpcConfig.is_some():
+            auto u10 = input.vpcConfig.unwrap()
+            parts.append("\"vpcConfig\":" + vpc_config_to_json(u10))
+        if input.customizationConfig.is_some():
+            auto u11 = input.customizationConfig.unwrap()
+            parts.append("\"customizationConfig\":" + u11.to_json())
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
+
+    # CreateModelImportJob  POST /model-import-jobs
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, TooManyTagsException, ValidationException
+    def create_model_import_job(self, CreateModelImportJobRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/model-import-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"jobName\":" + bedrock_json_str(input.jobName))
+        parts.append("\"importedModelName\":" + bedrock_json_str(input.importedModelName))
+        parts.append("\"roleArn\":" + bedrock_json_str(input.roleArn))
+        parts.append("\"modelDataSource\":" + input.modelDataSource.to_json())
+        if input.jobTags.is_some():
+            auto u0 = input.jobTags.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"jobTags\":" + bedrock_json_arr(e1))
+        if input.importedModelTags.is_some():
+            auto u2 = input.importedModelTags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"importedModelTags\":" + bedrock_json_arr(e3))
+        if input.clientRequestToken.is_some():
+            auto u4 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + bedrock_json_str(u4))
+        if input.vpcConfig.is_some():
+            auto u5 = input.vpcConfig.unwrap()
+            parts.append("\"vpcConfig\":" + vpc_config_to_json(u5))
+        if input.importedModelKmsKeyId.is_some():
+            auto u6 = input.importedModelKmsKeyId.unwrap()
+            parts.append("\"importedModelKmsKeyId\":" + bedrock_json_str(u6))
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
+
+    # CreateModelInvocationJob  POST /model-invocation-job
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_model_invocation_job(self, CreateModelInvocationJobRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/model-invocation-job", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"jobName\":" + bedrock_json_str(input.jobName))
+        parts.append("\"roleArn\":" + bedrock_json_str(input.roleArn))
+        if input.clientRequestToken.is_some():
+            auto u0 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + bedrock_json_str(u0))
+        parts.append("\"modelId\":" + bedrock_json_str(input.modelId))
+        parts.append("\"inputDataConfig\":" + input.inputDataConfig.to_json())
+        parts.append("\"outputDataConfig\":" + input.outputDataConfig.to_json())
+        if input.vpcConfig.is_some():
+            auto u1 = input.vpcConfig.unwrap()
+            parts.append("\"vpcConfig\":" + vpc_config_to_json(u1))
+        if input.timeoutDurationInHours.is_some():
+            auto u2 = input.timeoutDurationInHours.unwrap()
+            parts.append("\"timeoutDurationInHours\":" + str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"tags\":" + bedrock_json_arr(e4))
+        if input.modelInvocationType.is_some():
+            auto u5 = input.modelInvocationType.unwrap()
+            parts.append("\"modelInvocationType\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
+
+    # CreatePromptRouter  POST /prompt-routers
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, TooManyTagsException, ValidationException
+    def create_prompt_router(self, CreatePromptRouterRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/prompt-routers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientRequestToken.is_some():
+            auto u0 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + bedrock_json_str(u0))
+        parts.append("\"promptRouterName\":" + bedrock_json_str(input.promptRouterName))
+        list[str] e1 = []
+        for x1 in input.models:
+            e1.append(x1.to_json())
+        parts.append("\"models\":" + bedrock_json_arr(e1))
+        if input.description.is_some():
+            auto u2 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_json_str(u2))
+        parts.append("\"routingCriteria\":" + input.routingCriteria.to_json())
+        parts.append("\"fallbackModel\":" + input.fallbackModel.to_json())
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"tags\":" + bedrock_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
+
+    # CreateProvisionedModelThroughput  POST /provisioned-model-throughput
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, TooManyTagsException, ValidationException
+    def create_provisioned_model_throughput(self, CreateProvisionedModelThroughputRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/provisioned-model-throughput", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientRequestToken.is_some():
+            auto u0 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + bedrock_json_str(u0))
+        parts.append("\"modelUnits\":" + str(input.modelUnits))
+        parts.append("\"provisionedModelName\":" + bedrock_json_str(input.provisionedModelName))
+        parts.append("\"modelId\":" + bedrock_json_str(input.modelId))
+        if input.commitmentDuration.is_some():
+            auto u1 = input.commitmentDuration.unwrap()
+            parts.append("\"commitmentDuration\":" + u1.to_json())
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"tags\":" + bedrock_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
 
     # DeleteCustomModel  DELETE /custom-models/{modelIdentifier}
@@ -4801,6 +6303,19 @@ struct BedrockClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
 
+    # PutEnforcedGuardrailConfiguration  PUT /enforcedGuardrailsConfiguration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def put_enforced_guardrail_configuration(self, PutEnforcedGuardrailConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/enforcedGuardrailsConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.configId.is_some():
+            auto u0 = input.configId.unwrap()
+            parts.append("\"configId\":" + bedrock_json_str(u0))
+        parts.append("\"guardrailInferenceConfig\":" + account_enforced_guardrail_inference_input_configuration_to_json(input.guardrailInferenceConfig))
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
+
     # PutModelInvocationLoggingConfiguration  PUT /logging/modelinvocations
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def put_model_invocation_logging_configuration(self, PutModelInvocationLoggingConfigurationRequest input) -> str:
@@ -4839,6 +6354,27 @@ struct BedrockClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
 
+    # StartAutomatedReasoningPolicyTestWorkflow  POST /automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/test-workflows
+    # errors: AccessDeniedException, InternalServerException, ResourceInUseException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def start_automated_reasoning_policy_test_workflow(self, StartAutomatedReasoningPolicyTestWorkflowRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        dict[str, str] labels = {}
+        labels["policyArn"] = input.policyArn
+        labels["buildWorkflowId"] = input.buildWorkflowId
+        auto b = binding.HttpBinding(method="POST", path_template="/automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/test-workflows", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.testCaseIds.is_some():
+            auto u0 = input.testCaseIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(bedrock_json_str(x1))
+            parts.append("\"testCaseIds\":" + bedrock_json_arr(e1))
+        if input.clientRequestToken.is_some():
+            auto u2 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + bedrock_json_str(u2))
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
+
     # StopAdvancedPromptOptimizationJob  POST /advanced-prompt-optimization-jobs/{jobIdentifier}/stop
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def stop_advanced_prompt_optimization_job(self, StopAdvancedPromptOptimizationJobRequest input) -> str:
@@ -4875,6 +6411,69 @@ struct BedrockClient:
         auto b = binding.HttpBinding(method="POST", path_template="/model-invocation-job/{jobIdentifier}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
+    # TagResource  POST /tagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, TooManyTagsException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/tagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceARN\":" + bedrock_json_str(input.resourceARN))
+        list[str] e0 = []
+        for x0 in input.tags:
+            e0.append(x0.to_json())
+        parts.append("\"tags\":" + bedrock_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
+
+    # UntagResource  POST /untagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/untagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceARN\":" + bedrock_json_str(input.resourceARN))
+        list[str] e0 = []
+        for x0 in input.tagKeys:
+            e0.append(bedrock_json_str(x0))
+        parts.append("\"tagKeys\":" + bedrock_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
+
+    # UpdateAutomatedReasoningPolicy  PATCH /automated-reasoning-policies/{policyArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, TooManyTagsException, ValidationException
+    def update_automated_reasoning_policy(self, UpdateAutomatedReasoningPolicyRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        dict[str, str] labels = {}
+        labels["policyArn"] = input.policyArn
+        auto b = binding.HttpBinding(method="PATCH", path_template="/automated-reasoning-policies/{policyArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"policyDefinition\":" + automated_reasoning_policy_definition_to_json(input.policyDefinition))
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + bedrock_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_json_str(u1))
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
+
+    # UpdateAutomatedReasoningPolicyAnnotations  PATCH /automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/annotations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_automated_reasoning_policy_annotations(self, UpdateAutomatedReasoningPolicyAnnotationsRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        dict[str, str] labels = {}
+        labels["policyArn"] = input.policyArn
+        labels["buildWorkflowId"] = input.buildWorkflowId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/annotations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.annotations:
+            e0.append(automated_reasoning_policy_annotation_to_json(x0))
+        parts.append("\"annotations\":" + bedrock_json_arr(e0))
+        parts.append("\"lastUpdatedAnnotationSetHash\":" + bedrock_json_str(input.lastUpdatedAnnotationSetHash))
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
+
     # UpdateAutomatedReasoningPolicyTestCase  PATCH /automated-reasoning-policies/{policyArn}/test-cases/{testCaseId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceInUseException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_automated_reasoning_policy_test_case(self, UpdateAutomatedReasoningPolicyTestCaseRequest input) -> str:
@@ -4896,6 +6495,62 @@ struct BedrockClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/model-customization/custom-model-deployments/{customModelDeploymentIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCustomModelDeploymentDocument(modelArn=input.modelArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
+
+    # UpdateGuardrail  PUT /guardrails/{guardrailIdentifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_guardrail(self, UpdateGuardrailRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        dict[str, str] labels = {}
+        labels["guardrailIdentifier"] = input.guardrailIdentifier
+        auto b = binding.HttpBinding(method="PUT", path_template="/guardrails/{guardrailIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + bedrock_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_json_str(u0))
+        if input.topicPolicyConfig.is_some():
+            auto u1 = input.topicPolicyConfig.unwrap()
+            parts.append("\"topicPolicyConfig\":" + guardrail_topic_policy_config_to_json(u1))
+        if input.contentPolicyConfig.is_some():
+            auto u2 = input.contentPolicyConfig.unwrap()
+            parts.append("\"contentPolicyConfig\":" + guardrail_content_policy_config_to_json(u2))
+        if input.wordPolicyConfig.is_some():
+            auto u3 = input.wordPolicyConfig.unwrap()
+            parts.append("\"wordPolicyConfig\":" + guardrail_word_policy_config_to_json(u3))
+        if input.sensitiveInformationPolicyConfig.is_some():
+            auto u4 = input.sensitiveInformationPolicyConfig.unwrap()
+            parts.append("\"sensitiveInformationPolicyConfig\":" + guardrail_sensitive_information_policy_config_to_json(u4))
+        if input.contextualGroundingPolicyConfig.is_some():
+            auto u5 = input.contextualGroundingPolicyConfig.unwrap()
+            parts.append("\"contextualGroundingPolicyConfig\":" + guardrail_contextual_grounding_policy_config_to_json(u5))
+        if input.automatedReasoningPolicyConfig.is_some():
+            auto u6 = input.automatedReasoningPolicyConfig.unwrap()
+            parts.append("\"automatedReasoningPolicyConfig\":" + guardrail_automated_reasoning_policy_config_to_json(u6))
+        if input.crossRegionConfig.is_some():
+            auto u7 = input.crossRegionConfig.unwrap()
+            parts.append("\"crossRegionConfig\":" + u7.to_json())
+        parts.append("\"blockedInputMessaging\":" + bedrock_json_str(input.blockedInputMessaging))
+        parts.append("\"blockedOutputsMessaging\":" + bedrock_json_str(input.blockedOutputsMessaging))
+        if input.kmsKeyId.is_some():
+            auto u8 = input.kmsKeyId.unwrap()
+            parts.append("\"kmsKeyId\":" + bedrock_json_str(u8))
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
+
+    # UpdateMarketplaceModelEndpoint  PATCH /marketplace-model/endpoints/{endpointArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_marketplace_model_endpoint(self, UpdateMarketplaceModelEndpointRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        dict[str, str] labels = {}
+        labels["endpointArn"] = input.endpointArn
+        auto b = binding.HttpBinding(method="PATCH", path_template="/marketplace-model/endpoints/{endpointArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"endpointConfig\":" + endpoint_config_to_json(input.endpointConfig))
+        if input.clientRequestToken.is_some():
+            auto u0 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + bedrock_json_str(u0))
+        auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
 
     # UpdateProvisionedModelThroughput  PATCH /provisioned-model-throughput/{provisionedModelId}

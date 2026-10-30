@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 33 operations — 28 with a generated method,
-#   5 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 33 operations — 31 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   83 structs (64 @derive(Json)), 9 enums, 9 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -187,8 +187,9 @@ struct CreateVaultInput:
 struct CreateVaultOutput:
     Optional[str] location
 
-# no @derive(Json): member(s) Rules: list[DataRetrievalRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[DataRetrievalRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataRetrievalPolicy:
     Optional[list[DataRetrievalRule]] Rules
 
@@ -255,8 +256,9 @@ struct Encryption:
 struct GetDataRetrievalPolicyInput:
     str accountId
 
-# no @derive(Json): member(s) Policy: DataRetrievalPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Policy: DataRetrievalPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataRetrievalPolicyOutput:
     Optional[DataRetrievalPolicy] Policy
 
@@ -308,13 +310,15 @@ struct GetVaultNotificationsInput:
     str accountId
     str vaultName
 
-# no @derive(Json): member(s) vaultNotificationConfig: VaultNotificationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vaultNotificationConfig: VaultNotificationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetVaultNotificationsOutput:
     Optional[VaultNotificationConfig] vaultNotificationConfig
 
-# no @derive(Json): member(s) OutputLocation: OutputLocation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OutputLocation: OutputLocation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GlacierJobDescription:
     Optional[str] JobId
     Optional[str] JobDescription
@@ -419,8 +423,9 @@ struct InventoryRetrievalJobInput:
     Optional[str] Limit
     Optional[str] Marker
 
-# no @derive(Json): member(s) OutputLocation: OutputLocation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OutputLocation: OutputLocation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobParameters:
     Optional[str] Format
     Optional[str] Type
@@ -449,8 +454,9 @@ struct ListJobsInput:
     Optional[str] statuscode
     Optional[str] completed
 
-# no @derive(Json): member(s) JobList: list[GlacierJobDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobList: list[GlacierJobDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobsOutput:
     Optional[list[GlacierJobDescription]] JobList
     Optional[str] Marker
@@ -463,8 +469,9 @@ struct ListMultipartUploadsInput:
     Optional[str] marker
     Optional[str] limit
 
-# no @derive(Json): member(s) UploadsList: list[UploadListElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UploadsList: list[UploadListElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMultipartUploadsOutput:
     Optional[list[UploadListElement]] UploadsList
     Optional[str] Marker
@@ -478,8 +485,9 @@ struct ListPartsInput:
     Optional[str] marker
     Optional[str] limit
 
-# no @derive(Json): member(s) Parts: list[PartListElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parts: list[PartListElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPartsOutput:
     Optional[str] MultipartUploadId
     Optional[str] VaultARN
@@ -494,8 +502,9 @@ struct ListPartsOutput:
 struct ListProvisionedCapacityInput:
     str accountId
 
-# no @derive(Json): member(s) ProvisionedCapacityList: list[ProvisionedCapacityDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProvisionedCapacityList: list[ProvisionedCapacityDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProvisionedCapacityOutput:
     Optional[list[ProvisionedCapacityDescription]] ProvisionedCapacityList
 
@@ -505,8 +514,9 @@ struct ListTagsForVaultInput:
     str accountId
     str vaultName
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForVaultOutput:
     Optional[dict[str, str]] Tags
 
@@ -517,8 +527,9 @@ struct ListVaultsInput:
     Optional[str] marker
     Optional[str] limit
 
-# no @derive(Json): member(s) VaultList: list[DescribeVaultOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VaultList: list[DescribeVaultOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVaultsOutput:
     Optional[list[DescribeVaultOutput]] VaultList
     Optional[str] Marker
@@ -535,8 +546,9 @@ struct NoLongerSupportedException:
     Optional[str] code
     Optional[str] message
 
-# no @derive(Json): member(s) S3: S3Location not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3: S3Location not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OutputLocation:
     Optional[S3Location] S3
 
@@ -589,8 +601,9 @@ struct ResourceNotFoundException:
     Optional[str] code
     Optional[str] message
 
-# no @derive(Json): member(s) AccessControlList: list[Grant], Tagging: dict[str, str], UserMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccessControlList: list[Grant], Tagging: dict[str, str], UserMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3Location:
     Optional[str] BucketName
     Optional[str] Prefix
@@ -674,8 +687,9 @@ struct VaultAccessPolicy:
 struct VaultLockPolicy:
     Optional[str] Policy
 
-# no @derive(Json): member(s) Events: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Events: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VaultNotificationConfig:
     Optional[str] SNSTopic
     Optional[list[str]] Events
@@ -724,11 +738,49 @@ def glacier_error_from_code(str code) -> GlacierError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AddTagsToVault (document member `Tags: dict[str, str]` is not serializable by derive)
 #   InitiateJob (httpPayload member `jobParameters` is a non-derivable structure)
-#   RemoveTagsFromVault (document member `TagKeys: list[str]` is not serializable by derive)
-#   SetDataRetrievalPolicy (document member `Policy: DataRetrievalPolicy` is not serializable by derive)
 #   SetVaultNotifications (httpPayload member `vaultNotificationConfig` is a non-derivable structure)
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def glacier_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def glacier_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def glacier_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize DataRetrievalPolicy to a compact JSON object (declaration order).
+def data_retrieval_policy_to_json(DataRetrievalPolicy v) -> str:
+    list[str] parts = []
+    if v.Rules.is_some():
+        auto u0 = v.Rules.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Rules\":" + glacier_json_arr(e1))
+    return glacier_json_obj(parts)
 
 # A bound Glacier client: credentials + region, threaded into every operation.
 struct GlacierClient:
@@ -755,6 +807,24 @@ struct GlacierClient:
         labels["vaultName"] = input.vaultName
         auto b = binding.HttpBinding(method="DELETE", path_template="/{accountId}/vaults/{vaultName}/lock-policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
+
+    # AddTagsToVault  POST /{accountId}/vaults/{vaultName}/tags?operation=add
+    # errors: InvalidParameterValueException, LimitExceededException, MissingParameterValueException, NoLongerSupportedException, ResourceNotFoundException, ServiceUnavailableException
+    def add_tags_to_vault(self, AddTagsToVaultInput input) -> str:
+        auto host = endpoints.regional_host(glacier_service(), self.region)
+        dict[str, str] labels = {}
+        labels["accountId"] = input.accountId
+        labels["vaultName"] = input.vaultName
+        auto b = binding.HttpBinding(method="POST", path_template="/{accountId}/vaults/{vaultName}/tags?operation=add", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(glacier_json_str(k1) + ":" + glacier_json_str(u0[k1]))
+            parts.append("\"Tags\":" + glacier_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, glacier_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, glacier_service(), self.region, host)
 
     # CompleteMultipartUpload  POST /{accountId}/vaults/{vaultName}/multipart-uploads/{uploadId}
     # errors: InvalidParameterValueException, MissingParameterValueException, NoLongerSupportedException, ResourceNotFoundException, ServiceUnavailableException
@@ -1025,6 +1095,38 @@ struct GlacierClient:
         labels["accountId"] = input.accountId
         auto b = binding.HttpBinding(method="POST", path_template="/{accountId}/provisioned-capacity", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
+
+    # RemoveTagsFromVault  POST /{accountId}/vaults/{vaultName}/tags?operation=remove
+    # errors: InvalidParameterValueException, MissingParameterValueException, NoLongerSupportedException, ResourceNotFoundException, ServiceUnavailableException
+    def remove_tags_from_vault(self, RemoveTagsFromVaultInput input) -> str:
+        auto host = endpoints.regional_host(glacier_service(), self.region)
+        dict[str, str] labels = {}
+        labels["accountId"] = input.accountId
+        labels["vaultName"] = input.vaultName
+        auto b = binding.HttpBinding(method="POST", path_template="/{accountId}/vaults/{vaultName}/tags?operation=remove", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.TagKeys.is_some():
+            auto u0 = input.TagKeys.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(glacier_json_str(x1))
+            parts.append("\"TagKeys\":" + glacier_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, glacier_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, glacier_service(), self.region, host)
+
+    # SetDataRetrievalPolicy  PUT /{accountId}/policies/data-retrieval
+    # errors: InvalidParameterValueException, MissingParameterValueException, NoLongerSupportedException, ServiceUnavailableException
+    def set_data_retrieval_policy(self, SetDataRetrievalPolicyInput input) -> str:
+        auto host = endpoints.regional_host(glacier_service(), self.region)
+        dict[str, str] labels = {}
+        labels["accountId"] = input.accountId
+        auto b = binding.HttpBinding(method="PUT", path_template="/{accountId}/policies/data-retrieval", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Policy.is_some():
+            auto u0 = input.Policy.unwrap()
+            parts.append("\"Policy\":" + data_retrieval_policy_to_json(u0))
+        auto bp = restjson.rest_json_document(b, glacier_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, glacier_service(), self.region, host)
 
     # SetVaultAccessPolicy  PUT /{accountId}/vaults/{vaultName}/access-policy
     # errors: InvalidParameterValueException, MissingParameterValueException, NoLongerSupportedException, ResourceNotFoundException, ServiceUnavailableException

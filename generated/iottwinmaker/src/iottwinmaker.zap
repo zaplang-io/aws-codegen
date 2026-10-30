@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 40 operations — 20 with a generated method,
-#   20 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 40 operations — 38 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   164 structs (89 @derive(Json)), 20 enums, 11 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The IoTTwinMaker rest-json protocol: SigV4 service "iottwinmaker" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -225,15 +226,17 @@ enum UpdateReason:
 struct AccessDeniedException:
     Optional[str] message
 
-# no @derive(Json): member(s) entry: PropertyValueEntry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entry: PropertyValueEntry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchPutPropertyError:
     str errorCode
     str errorMessage
     PropertyValueEntry entry
 
-# no @derive(Json): member(s) errors: list[BatchPutPropertyError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[BatchPutPropertyError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchPutPropertyErrorEntry:
     list[BatchPutPropertyError] errors
 
@@ -243,13 +246,15 @@ struct BatchPutPropertyValuesRequest:
     str workspaceId
     list[PropertyValueEntry] entries
 
-# no @derive(Json): member(s) errorEntries: list[BatchPutPropertyErrorEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errorEntries: list[BatchPutPropertyErrorEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchPutPropertyValuesResponse:
     list[BatchPutPropertyErrorEntry] errorEntries
 
-# no @derive(Json): member(s) bundleNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bundleNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BundleInformation:
     list[str] bundleNames
     Optional[PricingTier] pricingTier
@@ -272,30 +277,34 @@ struct ColumnDescription:
     Optional[str] name
     Optional[ColumnType] type
 
-# no @derive(Json): member(s) propertyNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) propertyNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComponentPropertyGroupRequest:
     Optional[str] groupType
     Optional[list[str]] propertyNames
     Optional[PropertyGroupUpdateType] updateType
 
-# no @derive(Json): member(s) propertyNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) propertyNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComponentPropertyGroupResponse:
     str groupType
     list[str] propertyNames
     bool isInherited
 
-# no @derive(Json): member(s) properties: dict[str, PropertyRequest], propertyGroups: dict[str, ComponentPropertyGroupRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: dict[str, PropertyRequest], propertyGroups: dict[str, ComponentPropertyGroupRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComponentRequest:
     Optional[str] description
     Optional[str] componentTypeId
     Optional[dict[str, PropertyRequest]] properties
     Optional[dict[str, ComponentPropertyGroupRequest]] propertyGroups
 
-# no @derive(Json): member(s) properties: dict[str, PropertyResponse], propertyGroups: dict[str, ComponentPropertyGroupResponse], compositeComponents: dict[str, ComponentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: dict[str, PropertyResponse], propertyGroups: dict[str, ComponentPropertyGroupResponse], compositeComponents: dict[str, ComponentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComponentResponse:
     Optional[str] componentName
     Optional[str] description
@@ -309,8 +318,9 @@ struct ComponentResponse:
     Optional[dict[str, ComponentSummary]] compositeComponents
     Optional[bool] areAllCompositeComponentsReturned
 
-# no @derive(Json): member(s) propertyGroups: dict[str, ComponentPropertyGroupResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) propertyGroups: dict[str, ComponentPropertyGroupResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComponentSummary:
     str componentName
     str componentTypeId
@@ -331,8 +341,9 @@ struct ComponentTypeSummary:
     Optional[Status] status
     Optional[str] componentTypeName
 
-# no @derive(Json): member(s) propertyUpdates: dict[str, PropertyRequest], propertyGroupUpdates: dict[str, ComponentPropertyGroupRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) propertyUpdates: dict[str, PropertyRequest], propertyGroupUpdates: dict[str, ComponentPropertyGroupRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComponentUpdateRequest:
     Optional[ComponentUpdateType] updateType
     Optional[str] description
@@ -340,8 +351,9 @@ struct ComponentUpdateRequest:
     Optional[dict[str, PropertyRequest]] propertyUpdates
     Optional[dict[str, ComponentPropertyGroupRequest]] propertyGroupUpdates
 
-# no @derive(Json): member(s) properties: dict[str, PropertyRequest], propertyGroups: dict[str, ComponentPropertyGroupRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: dict[str, PropertyRequest], propertyGroups: dict[str, ComponentPropertyGroupRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CompositeComponentRequest:
     Optional[str] description
     Optional[dict[str, PropertyRequest]] properties
@@ -356,8 +368,9 @@ struct CompositeComponentTypeResponse:
     Optional[str] componentTypeId
     Optional[bool] isInherited
 
-# no @derive(Json): member(s) propertyUpdates: dict[str, PropertyRequest], propertyGroupUpdates: dict[str, ComponentPropertyGroupRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) propertyUpdates: dict[str, PropertyRequest], propertyGroupUpdates: dict[str, ComponentPropertyGroupRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CompositeComponentUpdateRequest:
     Optional[ComponentUpdateType] updateType
     Optional[str] description
@@ -481,8 +494,9 @@ struct DataConnector:
     Optional[LambdaFunction] lambda_
     Optional[bool] isNative
 
-# no @derive(Json): member(s) nestedType: DataType, allowedValues: list[DataValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nestedType: DataType, allowedValues: list[DataValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataType:
     Type type
     Optional[DataType] nestedType
@@ -490,8 +504,9 @@ struct DataType:
     Optional[str] unitOfMeasure
     Optional[Relationship] relationship
 
-# no @derive(Json): member(s) listValue: list[DataValue], mapValue: dict[str, DataValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) listValue: list[DataValue], mapValue: dict[str, DataValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataValue:
     Optional[bool] booleanValue
     Optional[float64] doubleValue
@@ -560,8 +575,9 @@ struct DestinationConfiguration:
     Optional[S3DestinationConfiguration] s3Configuration
     Optional[IotTwinMakerDestinationConfiguration] iotTwinMakerConfiguration
 
-# no @derive(Json): member(s) externalIdProperty: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) externalIdProperty: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EntityPropertyReference:
     Optional[str] componentName
     Optional[str] componentPath
@@ -594,8 +610,9 @@ struct ExecuteQueryRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) columnDescriptions: list[ColumnDescription], rows: list[Row] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) columnDescriptions: list[ColumnDescription], rows: list[Row] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecuteQueryResponse:
     Optional[list[ColumnDescription]] columnDescriptions
     Optional[list[Row]] rows
@@ -623,16 +640,18 @@ struct FilterByComponentType:
 struct FilterByEntity:
     str entityId
 
-# no @derive(Json): member(s) requiredProperties: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) requiredProperties: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FunctionRequest:
     Optional[list[str]] requiredProperties
     # wire name "scope" differs from field; derive rename is a #346 follow-up
     Optional[Scope] scope_
     Optional[DataConnector] implementedBy
 
-# no @derive(Json): member(s) requiredProperties: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) requiredProperties: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FunctionResponse:
     Optional[list[str]] requiredProperties
     # wire name "scope" differs from field; derive rename is a #346 follow-up
@@ -646,8 +665,9 @@ struct GetComponentTypeRequest:
     str workspaceId
     str componentTypeId
 
-# no @derive(Json): member(s) propertyDefinitions: dict[str, PropertyDefinitionResponse], extendsFrom: list[str], functions: dict[str, FunctionResponse], propertyGroups: dict[str, PropertyGroupResponse], compositeComponentTypes: dict[str, CompositeComponentTypeResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) propertyDefinitions: dict[str, PropertyDefinitionResponse], extendsFrom: list[str], functions: dict[str, FunctionResponse], propertyGroups: dict[str, PropertyGroupResponse], compositeComponentTypes: dict[str, CompositeComponentTypeResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetComponentTypeResponse:
     str workspaceId
     Optional[bool] isSingleton
@@ -673,8 +693,9 @@ struct GetEntityRequest:
     str workspaceId
     str entityId
 
-# no @derive(Json): member(s) components: dict[str, ComponentResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) components: dict[str, ComponentResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEntityResponse:
     str entityId
     str entityName
@@ -695,8 +716,9 @@ struct GetEntityResponse:
 struct GetMetadataTransferJobRequest:
     str metadataTransferJobId
 
-# no @derive(Json): member(s) sources: list[SourceConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sources: list[SourceConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMetadataTransferJobResponse:
     str metadataTransferJobId
     str arn
@@ -716,8 +738,9 @@ struct GetPricingPlanRequest:
     # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) currentPricingPlan: PricingPlan, pendingPricingPlan: PricingPlan not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) currentPricingPlan: PricingPlan, pendingPricingPlan: PricingPlan not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPricingPlanResponse:
     PricingPlan currentPricingPlan
     Optional[PricingPlan] pendingPricingPlan
@@ -741,8 +764,9 @@ struct GetPropertyValueHistoryRequest:
     Optional[str] startTime
     Optional[str] endTime
 
-# no @derive(Json): member(s) propertyValues: list[PropertyValueHistory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) propertyValues: list[PropertyValueHistory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPropertyValueHistoryResponse:
     list[PropertyValueHistory] propertyValues
     Optional[str] nextToken
@@ -761,8 +785,9 @@ struct GetPropertyValueRequest:
     Optional[str] propertyGroupName
     Optional[TabularConditions] tabularConditions
 
-# no @derive(Json): member(s) propertyValues: dict[str, PropertyLatestValue], tabularPropertyValues: list[list[dict[str, DataValue]]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) propertyValues: dict[str, PropertyLatestValue], tabularPropertyValues: list[list[dict[str, DataValue]]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPropertyValueResponse:
     Optional[dict[str, PropertyLatestValue]] propertyValues
     Optional[str] nextToken
@@ -774,8 +799,9 @@ struct GetSceneRequest:
     str workspaceId
     str sceneId
 
-# no @derive(Json): member(s) capabilities: list[str], sceneMetadata: dict[str, str], generatedSceneMetadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capabilities: list[str], sceneMetadata: dict[str, str], generatedSceneMetadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSceneResponse:
     str workspaceId
     str sceneId
@@ -810,8 +836,9 @@ struct GetSyncJobResponse:
 struct GetWorkspaceRequest:
     str workspaceId
 
-# no @derive(Json): member(s) linkedServices: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) linkedServices: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWorkspaceResponse:
     str workspaceId
     str arn
@@ -831,8 +858,9 @@ struct InterpolationParameters:
     Optional[str] interpolationType
     Optional[int64] intervalInSeconds
 
-# no @derive(Json): member(s) filters: list[IotSiteWiseSourceConfigurationFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[IotSiteWiseSourceConfigurationFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IotSiteWiseSourceConfiguration:
     Optional[list[IotSiteWiseSourceConfigurationFilter]] filters
 
@@ -845,8 +873,9 @@ struct IotSiteWiseSourceConfigurationFilter:
 struct IotTwinMakerDestinationConfiguration:
     str workspace
 
-# no @derive(Json): member(s) filters: list[IotTwinMakerSourceConfigurationFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[IotTwinMakerSourceConfigurationFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IotTwinMakerSourceConfiguration:
     str workspace
     Optional[list[IotTwinMakerSourceConfigurationFilter]] filters
@@ -874,8 +903,9 @@ struct ListComponentTypesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) componentTypeSummaries: list[ComponentTypeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) componentTypeSummaries: list[ComponentTypeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListComponentTypesResponse:
     str workspaceId
     list[ComponentTypeSummary] componentTypeSummaries
@@ -891,8 +921,9 @@ struct ListComponentsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) componentSummaries: list[ComponentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) componentSummaries: list[ComponentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListComponentsResponse:
     list[ComponentSummary] componentSummaries
     Optional[str] nextToken
@@ -911,8 +942,9 @@ struct ListEntitiesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) entitySummaries: list[EntitySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entitySummaries: list[EntitySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEntitiesResponse:
     Optional[list[EntitySummary]] entitySummaries
     Optional[str] nextToken
@@ -931,8 +963,9 @@ struct ListMetadataTransferJobsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) metadataTransferJobSummaries: list[MetadataTransferJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadataTransferJobSummaries: list[MetadataTransferJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMetadataTransferJobsResponse:
     list[MetadataTransferJobSummary] metadataTransferJobSummaries
     Optional[str] nextToken
@@ -947,8 +980,9 @@ struct ListPropertiesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) propertySummaries: list[PropertySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) propertySummaries: list[PropertySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPropertiesResponse:
     list[PropertySummary] propertySummaries
     Optional[str] nextToken
@@ -960,8 +994,9 @@ struct ListScenesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) sceneSummaries: list[SceneSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sceneSummaries: list[SceneSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListScenesResponse:
     Optional[list[SceneSummary]] sceneSummaries
     Optional[str] nextToken
@@ -973,8 +1008,9 @@ struct ListSyncJobsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) syncJobSummaries: list[SyncJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) syncJobSummaries: list[SyncJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSyncJobsResponse:
     Optional[list[SyncJobSummary]] syncJobSummaries
     Optional[str] nextToken
@@ -988,8 +1024,9 @@ struct ListSyncResourcesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) syncResources: list[SyncResourceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) syncResources: list[SyncResourceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSyncResourcesResponse:
     Optional[list[SyncResourceSummary]] syncResources
     Optional[str] nextToken
@@ -1001,8 +1038,9 @@ struct ListTagsForResourceRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
     Optional[str] nextToken
@@ -1013,8 +1051,9 @@ struct ListWorkspacesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) workspaceSummaries: list[WorkspaceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workspaceSummaries: list[WorkspaceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkspacesResponse:
     Optional[list[WorkspaceSummary]] workspaceSummaries
     Optional[str] nextToken
@@ -1051,8 +1090,9 @@ struct ParentEntityUpdateRequest:
     ParentEntityUpdateType updateType
     Optional[str] parentEntityId
 
-# no @derive(Json): member(s) bundleInformation: BundleInformation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bundleInformation: BundleInformation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PricingPlan:
     Optional[int64] billableEntityCount
     Optional[BundleInformation] bundleInformation
@@ -1061,8 +1101,9 @@ struct PricingPlan:
     DateTime updateDateTime
     UpdateReason updateReason
 
-# no @derive(Json): member(s) dataType: DataType, defaultValue: DataValue, configuration: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataType: DataType, defaultValue: DataValue, configuration: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PropertyDefinitionRequest:
     Optional[DataType] dataType
     Optional[bool] isRequiredInEntity
@@ -1073,8 +1114,9 @@ struct PropertyDefinitionRequest:
     Optional[dict[str, str]] configuration
     Optional[str] displayName
 
-# no @derive(Json): member(s) dataType: DataType, defaultValue: DataValue, configuration: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataType: DataType, defaultValue: DataValue, configuration: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PropertyDefinitionResponse:
     DataType dataType
     bool isTimeSeries
@@ -1088,69 +1130,79 @@ struct PropertyDefinitionResponse:
     Optional[dict[str, str]] configuration
     Optional[str] displayName
 
-# no @derive(Json): member(s) value: DataValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: DataValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PropertyFilter:
     Optional[str] propertyName
     Optional[str] operator
     Optional[DataValue] value
 
-# no @derive(Json): member(s) propertyNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) propertyNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PropertyGroupRequest:
     Optional[str] groupType
     Optional[list[str]] propertyNames
 
-# no @derive(Json): member(s) propertyNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) propertyNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PropertyGroupResponse:
     str groupType
     list[str] propertyNames
     bool isInherited
 
-# no @derive(Json): member(s) propertyReference: EntityPropertyReference, propertyValue: DataValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) propertyReference: EntityPropertyReference, propertyValue: DataValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PropertyLatestValue:
     EntityPropertyReference propertyReference
     Optional[DataValue] propertyValue
 
-# no @derive(Json): member(s) definition: PropertyDefinitionRequest, value: DataValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) definition: PropertyDefinitionRequest, value: DataValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PropertyRequest:
     Optional[PropertyDefinitionRequest] definition
     Optional[DataValue] value
     Optional[PropertyUpdateType] updateType
 
-# no @derive(Json): member(s) definition: PropertyDefinitionResponse, value: DataValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) definition: PropertyDefinitionResponse, value: DataValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PropertyResponse:
     Optional[PropertyDefinitionResponse] definition
     Optional[DataValue] value
     Optional[bool] areAllPropertyValuesReturned
 
-# no @derive(Json): member(s) definition: PropertyDefinitionResponse, value: DataValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) definition: PropertyDefinitionResponse, value: DataValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PropertySummary:
     Optional[PropertyDefinitionResponse] definition
     str propertyName
     Optional[DataValue] value
     Optional[bool] areAllPropertyValuesReturned
 
-# no @derive(Json): member(s) value: DataValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: DataValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PropertyValue:
     Optional[DateTime] timestamp
     DataValue value
     Optional[str] time
 
-# no @derive(Json): member(s) entityPropertyReference: EntityPropertyReference, propertyValues: list[PropertyValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entityPropertyReference: EntityPropertyReference, propertyValues: list[PropertyValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PropertyValueEntry:
     EntityPropertyReference entityPropertyReference
     Optional[list[PropertyValue]] propertyValues
 
-# no @derive(Json): member(s) entityPropertyReference: EntityPropertyReference, values: list[PropertyValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entityPropertyReference: EntityPropertyReference, values: list[PropertyValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PropertyValueHistory:
     EntityPropertyReference entityPropertyReference
     Optional[list[PropertyValue]] values
@@ -1178,8 +1230,9 @@ struct RelationshipValue:
 struct ResourceNotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) rowData: list[QueryResultValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rowData: list[QueryResultValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Row:
     Optional[list[QueryResultValue]] rowData
 
@@ -1209,8 +1262,9 @@ struct SceneSummary:
 struct ServiceQuotaExceededException:
     Optional[str] message
 
-# no @derive(Json): member(s) iotSiteWiseConfiguration: IotSiteWiseSourceConfiguration, iotTwinMakerConfiguration: IotTwinMakerSourceConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) iotSiteWiseConfiguration: IotSiteWiseSourceConfiguration, iotTwinMakerConfiguration: IotTwinMakerSourceConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceConfiguration:
     SourceType type
     Optional[S3SourceConfiguration] s3Configuration
@@ -1256,8 +1310,9 @@ struct SyncResourceSummary:
     Optional[SyncResourceStatus] status
     Optional[DateTime] updateDateTime
 
-# no @derive(Json): member(s) orderBy: list[OrderBy], propertyFilters: list[PropertyFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) orderBy: list[OrderBy], propertyFilters: list[PropertyFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TabularConditions:
     Optional[list[OrderBy]] orderBy
     Optional[list[PropertyFilter]] propertyFilters
@@ -1335,8 +1390,9 @@ struct UpdatePricingPlanRequest:
     PricingMode pricingMode
     Optional[list[str]] bundleNames
 
-# no @derive(Json): member(s) currentPricingPlan: PricingPlan, pendingPricingPlan: PricingPlan not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) currentPricingPlan: PricingPlan, pendingPricingPlan: PricingPlan not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePricingPlanResponse:
     PricingPlan currentPricingPlan
     Optional[PricingPlan] pendingPricingPlan
@@ -1371,8 +1427,9 @@ struct UpdateWorkspaceResponse:
 struct ValidationException:
     Optional[str] message
 
-# no @derive(Json): member(s) linkedServices: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) linkedServices: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkspaceSummary:
     str workspaceId
     str arn
@@ -1431,26 +1488,8 @@ def iottwinmaker_error_from_code(str code) -> IoTTwinMakerError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchPutPropertyValues (document member `entries: list[PropertyValueEntry]` is not serializable by derive)
-#   CreateComponentType (document member `propertyDefinitions: dict[str, PropertyDefinitionRequest]` is not serializable by derive)
-#   CreateEntity (document member `components: dict[str, ComponentRequest]` is not serializable by derive)
-#   CreateMetadataTransferJob (document member `sources: list[SourceConfiguration]` is not serializable by derive)
-#   CreateScene (document member `capabilities: list[str]` is not serializable by derive)
-#   CreateSyncJob (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateWorkspace (document member `tags: dict[str, str]` is not serializable by derive)
 #   DeleteEntity (httpQuery `isRecursive` has unsupported type bool)
-#   GetPropertyValue (document member `selectedProperties: list[str]` is not serializable by derive)
-#   GetPropertyValueHistory (document member `selectedProperties: list[str]` is not serializable by derive)
-#   ListComponentTypes (document member `filters: list[ListComponentTypesFilter]` is not serializable by derive)
-#   ListEntities (document member `filters: list[ListEntitiesFilter]` is not serializable by derive)
-#   ListMetadataTransferJobs (document member `filters: list[ListMetadataTransferJobsFilter]` is not serializable by derive)
-#   ListSyncResources (document member `filters: list[SyncResourceFilter]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateComponentType (document member `propertyDefinitions: dict[str, PropertyDefinitionRequest]` is not serializable by derive)
-#   UpdateEntity (document member `componentUpdates: dict[str, ComponentUpdateRequest]` is not serializable by derive)
-#   UpdatePricingPlan (document member `bundleNames: list[str]` is not serializable by derive)
-#   UpdateScene (document member `capabilities: list[str]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1511,10 +1550,414 @@ struct UpdateWorkspaceDocument:
     Optional[str] role
     Optional[str] s3Location
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def iottwinmaker_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def iottwinmaker_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def iottwinmaker_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ComponentPropertyGroupRequest to a compact JSON object (declaration order).
+def component_property_group_request_to_json(ComponentPropertyGroupRequest v) -> str:
+    list[str] parts = []
+    if v.groupType.is_some():
+        auto u0 = v.groupType.unwrap()
+        parts.append("\"groupType\":" + iottwinmaker_json_str(u0))
+    if v.propertyNames.is_some():
+        auto u1 = v.propertyNames.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(iottwinmaker_json_str(x2))
+        parts.append("\"propertyNames\":" + iottwinmaker_json_arr(e2))
+    if v.updateType.is_some():
+        auto u3 = v.updateType.unwrap()
+        parts.append("\"updateType\":" + u3.to_json())
+    return iottwinmaker_json_obj(parts)
+
+# Serialize ComponentRequest to a compact JSON object (declaration order).
+def component_request_to_json(ComponentRequest v) -> str:
+    list[str] parts = []
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + iottwinmaker_json_str(u0))
+    if v.componentTypeId.is_some():
+        auto u1 = v.componentTypeId.unwrap()
+        parts.append("\"componentTypeId\":" + iottwinmaker_json_str(u1))
+    if v.properties.is_some():
+        auto u2 = v.properties.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(iottwinmaker_json_str(k3) + ":" + property_request_to_json(u2[k3]))
+        parts.append("\"properties\":" + iottwinmaker_json_obj(m3))
+    if v.propertyGroups.is_some():
+        auto u4 = v.propertyGroups.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(iottwinmaker_json_str(k5) + ":" + component_property_group_request_to_json(u4[k5]))
+        parts.append("\"propertyGroups\":" + iottwinmaker_json_obj(m5))
+    return iottwinmaker_json_obj(parts)
+
+# Serialize ComponentUpdateRequest to a compact JSON object (declaration order).
+def component_update_request_to_json(ComponentUpdateRequest v) -> str:
+    list[str] parts = []
+    if v.updateType.is_some():
+        auto u0 = v.updateType.unwrap()
+        parts.append("\"updateType\":" + u0.to_json())
+    if v.description.is_some():
+        auto u1 = v.description.unwrap()
+        parts.append("\"description\":" + iottwinmaker_json_str(u1))
+    if v.componentTypeId.is_some():
+        auto u2 = v.componentTypeId.unwrap()
+        parts.append("\"componentTypeId\":" + iottwinmaker_json_str(u2))
+    if v.propertyUpdates.is_some():
+        auto u3 = v.propertyUpdates.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(iottwinmaker_json_str(k4) + ":" + property_request_to_json(u3[k4]))
+        parts.append("\"propertyUpdates\":" + iottwinmaker_json_obj(m4))
+    if v.propertyGroupUpdates.is_some():
+        auto u5 = v.propertyGroupUpdates.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(iottwinmaker_json_str(k6) + ":" + component_property_group_request_to_json(u5[k6]))
+        parts.append("\"propertyGroupUpdates\":" + iottwinmaker_json_obj(m6))
+    return iottwinmaker_json_obj(parts)
+
+# Serialize CompositeComponentRequest to a compact JSON object (declaration order).
+def composite_component_request_to_json(CompositeComponentRequest v) -> str:
+    list[str] parts = []
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + iottwinmaker_json_str(u0))
+    if v.properties.is_some():
+        auto u1 = v.properties.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(iottwinmaker_json_str(k2) + ":" + property_request_to_json(u1[k2]))
+        parts.append("\"properties\":" + iottwinmaker_json_obj(m2))
+    if v.propertyGroups.is_some():
+        auto u3 = v.propertyGroups.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(iottwinmaker_json_str(k4) + ":" + component_property_group_request_to_json(u3[k4]))
+        parts.append("\"propertyGroups\":" + iottwinmaker_json_obj(m4))
+    return iottwinmaker_json_obj(parts)
+
+# Serialize CompositeComponentUpdateRequest to a compact JSON object (declaration order).
+def composite_component_update_request_to_json(CompositeComponentUpdateRequest v) -> str:
+    list[str] parts = []
+    if v.updateType.is_some():
+        auto u0 = v.updateType.unwrap()
+        parts.append("\"updateType\":" + u0.to_json())
+    if v.description.is_some():
+        auto u1 = v.description.unwrap()
+        parts.append("\"description\":" + iottwinmaker_json_str(u1))
+    if v.propertyUpdates.is_some():
+        auto u2 = v.propertyUpdates.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(iottwinmaker_json_str(k3) + ":" + property_request_to_json(u2[k3]))
+        parts.append("\"propertyUpdates\":" + iottwinmaker_json_obj(m3))
+    if v.propertyGroupUpdates.is_some():
+        auto u4 = v.propertyGroupUpdates.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(iottwinmaker_json_str(k5) + ":" + component_property_group_request_to_json(u4[k5]))
+        parts.append("\"propertyGroupUpdates\":" + iottwinmaker_json_obj(m5))
+    return iottwinmaker_json_obj(parts)
+
+# Serialize DataType to a compact JSON object (declaration order).
+def data_type_to_json(DataType v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + v.type.to_json())
+    if v.nestedType.is_some():
+        auto u0 = v.nestedType.unwrap()
+        parts.append("\"nestedType\":" + data_type_to_json(u0))
+    if v.allowedValues.is_some():
+        auto u1 = v.allowedValues.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(data_value_to_json(x2))
+        parts.append("\"allowedValues\":" + iottwinmaker_json_arr(e2))
+    if v.unitOfMeasure.is_some():
+        auto u3 = v.unitOfMeasure.unwrap()
+        parts.append("\"unitOfMeasure\":" + iottwinmaker_json_str(u3))
+    if v.relationship.is_some():
+        auto u4 = v.relationship.unwrap()
+        parts.append("\"relationship\":" + u4.to_json())
+    return iottwinmaker_json_obj(parts)
+
+# Serialize DataValue to a compact JSON object (declaration order).
+def data_value_to_json(DataValue v) -> str:
+    list[str] parts = []
+    if v.booleanValue.is_some():
+        auto u0 = v.booleanValue.unwrap()
+        parts.append("\"booleanValue\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.doubleValue.is_some():
+        auto u1 = v.doubleValue.unwrap()
+        parts.append("\"doubleValue\":" + str(u1))
+    if v.integerValue.is_some():
+        auto u2 = v.integerValue.unwrap()
+        parts.append("\"integerValue\":" + str(u2))
+    if v.longValue.is_some():
+        auto u3 = v.longValue.unwrap()
+        parts.append("\"longValue\":" + str(u3))
+    if v.stringValue.is_some():
+        auto u4 = v.stringValue.unwrap()
+        parts.append("\"stringValue\":" + iottwinmaker_json_str(u4))
+    if v.listValue.is_some():
+        auto u5 = v.listValue.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(data_value_to_json(x6))
+        parts.append("\"listValue\":" + iottwinmaker_json_arr(e6))
+    if v.mapValue.is_some():
+        auto u7 = v.mapValue.unwrap()
+        list[str] m8 = []
+        for k8 in sorted(u7.keys()):
+            m8.append(iottwinmaker_json_str(k8) + ":" + data_value_to_json(u7[k8]))
+        parts.append("\"mapValue\":" + iottwinmaker_json_obj(m8))
+    if v.relationshipValue.is_some():
+        auto u9 = v.relationshipValue.unwrap()
+        parts.append("\"relationshipValue\":" + u9.to_json())
+    if v.expression.is_some():
+        auto u10 = v.expression.unwrap()
+        parts.append("\"expression\":" + iottwinmaker_json_str(u10))
+    return iottwinmaker_json_obj(parts)
+
+# Serialize EntityPropertyReference to a compact JSON object (declaration order).
+def entity_property_reference_to_json(EntityPropertyReference v) -> str:
+    list[str] parts = []
+    if v.componentName.is_some():
+        auto u0 = v.componentName.unwrap()
+        parts.append("\"componentName\":" + iottwinmaker_json_str(u0))
+    if v.componentPath.is_some():
+        auto u1 = v.componentPath.unwrap()
+        parts.append("\"componentPath\":" + iottwinmaker_json_str(u1))
+    if v.externalIdProperty.is_some():
+        auto u2 = v.externalIdProperty.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(iottwinmaker_json_str(k3) + ":" + iottwinmaker_json_str(u2[k3]))
+        parts.append("\"externalIdProperty\":" + iottwinmaker_json_obj(m3))
+    if v.entityId.is_some():
+        auto u4 = v.entityId.unwrap()
+        parts.append("\"entityId\":" + iottwinmaker_json_str(u4))
+    parts.append("\"propertyName\":" + iottwinmaker_json_str(v.propertyName))
+    return iottwinmaker_json_obj(parts)
+
+# Serialize FunctionRequest to a compact JSON object (declaration order).
+def function_request_to_json(FunctionRequest v) -> str:
+    list[str] parts = []
+    if v.requiredProperties.is_some():
+        auto u0 = v.requiredProperties.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(iottwinmaker_json_str(x1))
+        parts.append("\"requiredProperties\":" + iottwinmaker_json_arr(e1))
+    if v.scope_.is_some():
+        auto u2 = v.scope_.unwrap()
+        parts.append("\"scope\":" + u2.to_json())
+    if v.implementedBy.is_some():
+        auto u3 = v.implementedBy.unwrap()
+        parts.append("\"implementedBy\":" + u3.to_json())
+    return iottwinmaker_json_obj(parts)
+
+# Serialize IotSiteWiseSourceConfiguration to a compact JSON object (declaration order).
+def iot_site_wise_source_configuration_to_json(IotSiteWiseSourceConfiguration v) -> str:
+    list[str] parts = []
+    if v.filters.is_some():
+        auto u0 = v.filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"filters\":" + iottwinmaker_json_arr(e1))
+    return iottwinmaker_json_obj(parts)
+
+# Serialize IotTwinMakerSourceConfiguration to a compact JSON object (declaration order).
+def iot_twin_maker_source_configuration_to_json(IotTwinMakerSourceConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"workspace\":" + iottwinmaker_json_str(v.workspace))
+    if v.filters.is_some():
+        auto u0 = v.filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"filters\":" + iottwinmaker_json_arr(e1))
+    return iottwinmaker_json_obj(parts)
+
+# Serialize PropertyDefinitionRequest to a compact JSON object (declaration order).
+def property_definition_request_to_json(PropertyDefinitionRequest v) -> str:
+    list[str] parts = []
+    if v.dataType.is_some():
+        auto u0 = v.dataType.unwrap()
+        parts.append("\"dataType\":" + data_type_to_json(u0))
+    if v.isRequiredInEntity.is_some():
+        auto u1 = v.isRequiredInEntity.unwrap()
+        parts.append("\"isRequiredInEntity\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.isExternalId.is_some():
+        auto u2 = v.isExternalId.unwrap()
+        parts.append("\"isExternalId\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.isStoredExternally.is_some():
+        auto u3 = v.isStoredExternally.unwrap()
+        parts.append("\"isStoredExternally\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.isTimeSeries.is_some():
+        auto u4 = v.isTimeSeries.unwrap()
+        parts.append("\"isTimeSeries\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.defaultValue.is_some():
+        auto u5 = v.defaultValue.unwrap()
+        parts.append("\"defaultValue\":" + data_value_to_json(u5))
+    if v.configuration.is_some():
+        auto u6 = v.configuration.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(iottwinmaker_json_str(k7) + ":" + iottwinmaker_json_str(u6[k7]))
+        parts.append("\"configuration\":" + iottwinmaker_json_obj(m7))
+    if v.displayName.is_some():
+        auto u8 = v.displayName.unwrap()
+        parts.append("\"displayName\":" + iottwinmaker_json_str(u8))
+    return iottwinmaker_json_obj(parts)
+
+# Serialize PropertyFilter to a compact JSON object (declaration order).
+def property_filter_to_json(PropertyFilter v) -> str:
+    list[str] parts = []
+    if v.propertyName.is_some():
+        auto u0 = v.propertyName.unwrap()
+        parts.append("\"propertyName\":" + iottwinmaker_json_str(u0))
+    if v.operator.is_some():
+        auto u1 = v.operator.unwrap()
+        parts.append("\"operator\":" + iottwinmaker_json_str(u1))
+    if v.value.is_some():
+        auto u2 = v.value.unwrap()
+        parts.append("\"value\":" + data_value_to_json(u2))
+    return iottwinmaker_json_obj(parts)
+
+# Serialize PropertyGroupRequest to a compact JSON object (declaration order).
+def property_group_request_to_json(PropertyGroupRequest v) -> str:
+    list[str] parts = []
+    if v.groupType.is_some():
+        auto u0 = v.groupType.unwrap()
+        parts.append("\"groupType\":" + iottwinmaker_json_str(u0))
+    if v.propertyNames.is_some():
+        auto u1 = v.propertyNames.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(iottwinmaker_json_str(x2))
+        parts.append("\"propertyNames\":" + iottwinmaker_json_arr(e2))
+    return iottwinmaker_json_obj(parts)
+
+# Serialize PropertyRequest to a compact JSON object (declaration order).
+def property_request_to_json(PropertyRequest v) -> str:
+    list[str] parts = []
+    if v.definition.is_some():
+        auto u0 = v.definition.unwrap()
+        parts.append("\"definition\":" + property_definition_request_to_json(u0))
+    if v.value.is_some():
+        auto u1 = v.value.unwrap()
+        parts.append("\"value\":" + data_value_to_json(u1))
+    if v.updateType.is_some():
+        auto u2 = v.updateType.unwrap()
+        parts.append("\"updateType\":" + u2.to_json())
+    return iottwinmaker_json_obj(parts)
+
+# Serialize PropertyValue to a compact JSON object (declaration order).
+def property_value_to_json(PropertyValue v) -> str:
+    list[str] parts = []
+    if v.timestamp.is_some():
+        auto u0 = v.timestamp.unwrap()
+        parts.append("\"timestamp\":" + str(datetime.to_timestamp(u0)))
+    parts.append("\"value\":" + data_value_to_json(v.value))
+    if v.time.is_some():
+        auto u1 = v.time.unwrap()
+        parts.append("\"time\":" + iottwinmaker_json_str(u1))
+    return iottwinmaker_json_obj(parts)
+
+# Serialize PropertyValueEntry to a compact JSON object (declaration order).
+def property_value_entry_to_json(PropertyValueEntry v) -> str:
+    list[str] parts = []
+    parts.append("\"entityPropertyReference\":" + entity_property_reference_to_json(v.entityPropertyReference))
+    if v.propertyValues.is_some():
+        auto u0 = v.propertyValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(property_value_to_json(x1))
+        parts.append("\"propertyValues\":" + iottwinmaker_json_arr(e1))
+    return iottwinmaker_json_obj(parts)
+
+# Serialize SourceConfiguration to a compact JSON object (declaration order).
+def source_configuration_to_json(SourceConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + v.type.to_json())
+    if v.s3Configuration.is_some():
+        auto u0 = v.s3Configuration.unwrap()
+        parts.append("\"s3Configuration\":" + u0.to_json())
+    if v.iotSiteWiseConfiguration.is_some():
+        auto u1 = v.iotSiteWiseConfiguration.unwrap()
+        parts.append("\"iotSiteWiseConfiguration\":" + iot_site_wise_source_configuration_to_json(u1))
+    if v.iotTwinMakerConfiguration.is_some():
+        auto u2 = v.iotTwinMakerConfiguration.unwrap()
+        parts.append("\"iotTwinMakerConfiguration\":" + iot_twin_maker_source_configuration_to_json(u2))
+    return iottwinmaker_json_obj(parts)
+
+# Serialize TabularConditions to a compact JSON object (declaration order).
+def tabular_conditions_to_json(TabularConditions v) -> str:
+    list[str] parts = []
+    if v.orderBy.is_some():
+        auto u0 = v.orderBy.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"orderBy\":" + iottwinmaker_json_arr(e1))
+    if v.propertyFilters.is_some():
+        auto u2 = v.propertyFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(property_filter_to_json(x3))
+        parts.append("\"propertyFilters\":" + iottwinmaker_json_arr(e3))
+    return iottwinmaker_json_obj(parts)
+
 # A bound IoTTwinMaker client: credentials + region, threaded into every operation.
 struct IoTTwinMakerClient:
     core.Credentials creds
     str region
+
+    # BatchPutPropertyValues  POST /workspaces/{workspaceId}/entity-properties
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_put_property_values(self, BatchPutPropertyValuesRequest input) -> str:
+        auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceId"] = input.workspaceId
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/entity-properties", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.entries:
+            e0.append(property_value_entry_to_json(x0))
+        parts.append("\"entries\":" + iottwinmaker_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, iottwinmaker_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
 
     # CancelMetadataTransferJob  PUT /metadata-transfer-jobs/{metadataTransferJobId}/cancel
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1524,6 +1967,201 @@ struct IoTTwinMakerClient:
         labels["metadataTransferJobId"] = input.metadataTransferJobId
         auto b = binding.HttpBinding(method="PUT", path_template="/metadata-transfer-jobs/{metadataTransferJobId}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iottwinmaker_service(), self.region, host)
+
+    # CreateComponentType  POST /workspaces/{workspaceId}/component-types/{componentTypeId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_component_type(self, CreateComponentTypeRequest input) -> str:
+        auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceId"] = input.workspaceId
+        labels["componentTypeId"] = input.componentTypeId
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/component-types/{componentTypeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.isSingleton.is_some():
+            auto u0 = input.isSingleton.unwrap()
+            parts.append("\"isSingleton\":" + json.dumps(JsonValue.Bool(u0)))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + iottwinmaker_json_str(u1))
+        if input.propertyDefinitions.is_some():
+            auto u2 = input.propertyDefinitions.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(iottwinmaker_json_str(k3) + ":" + property_definition_request_to_json(u2[k3]))
+            parts.append("\"propertyDefinitions\":" + iottwinmaker_json_obj(m3))
+        if input.extendsFrom.is_some():
+            auto u4 = input.extendsFrom.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(iottwinmaker_json_str(x5))
+            parts.append("\"extendsFrom\":" + iottwinmaker_json_arr(e5))
+        if input.functions.is_some():
+            auto u6 = input.functions.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(iottwinmaker_json_str(k7) + ":" + function_request_to_json(u6[k7]))
+            parts.append("\"functions\":" + iottwinmaker_json_obj(m7))
+        if input.tags.is_some():
+            auto u8 = input.tags.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(iottwinmaker_json_str(k9) + ":" + iottwinmaker_json_str(u8[k9]))
+            parts.append("\"tags\":" + iottwinmaker_json_obj(m9))
+        if input.propertyGroups.is_some():
+            auto u10 = input.propertyGroups.unwrap()
+            list[str] m11 = []
+            for k11 in sorted(u10.keys()):
+                m11.append(iottwinmaker_json_str(k11) + ":" + property_group_request_to_json(u10[k11]))
+            parts.append("\"propertyGroups\":" + iottwinmaker_json_obj(m11))
+        if input.componentTypeName.is_some():
+            auto u12 = input.componentTypeName.unwrap()
+            parts.append("\"componentTypeName\":" + iottwinmaker_json_str(u12))
+        if input.compositeComponentTypes.is_some():
+            auto u13 = input.compositeComponentTypes.unwrap()
+            list[str] m14 = []
+            for k14 in sorted(u13.keys()):
+                m14.append(iottwinmaker_json_str(k14) + ":" + u13[k14].to_json())
+            parts.append("\"compositeComponentTypes\":" + iottwinmaker_json_obj(m14))
+        auto bp = restjson.rest_json_document(b, iottwinmaker_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
+
+    # CreateEntity  POST /workspaces/{workspaceId}/entities
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_entity(self, CreateEntityRequest input) -> str:
+        auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceId"] = input.workspaceId
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/entities", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.entityId.is_some():
+            auto u0 = input.entityId.unwrap()
+            parts.append("\"entityId\":" + iottwinmaker_json_str(u0))
+        parts.append("\"entityName\":" + iottwinmaker_json_str(input.entityName))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + iottwinmaker_json_str(u1))
+        if input.components.is_some():
+            auto u2 = input.components.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(iottwinmaker_json_str(k3) + ":" + component_request_to_json(u2[k3]))
+            parts.append("\"components\":" + iottwinmaker_json_obj(m3))
+        if input.compositeComponents.is_some():
+            auto u4 = input.compositeComponents.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(iottwinmaker_json_str(k5) + ":" + composite_component_request_to_json(u4[k5]))
+            parts.append("\"compositeComponents\":" + iottwinmaker_json_obj(m5))
+        if input.parentEntityId.is_some():
+            auto u6 = input.parentEntityId.unwrap()
+            parts.append("\"parentEntityId\":" + iottwinmaker_json_str(u6))
+        if input.tags.is_some():
+            auto u7 = input.tags.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(iottwinmaker_json_str(k8) + ":" + iottwinmaker_json_str(u7[k8]))
+            parts.append("\"tags\":" + iottwinmaker_json_obj(m8))
+        auto bp = restjson.rest_json_document(b, iottwinmaker_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
+
+    # CreateMetadataTransferJob  POST /metadata-transfer-jobs
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_metadata_transfer_job(self, CreateMetadataTransferJobRequest input) -> str:
+        auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/metadata-transfer-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.metadataTransferJobId.is_some():
+            auto u0 = input.metadataTransferJobId.unwrap()
+            parts.append("\"metadataTransferJobId\":" + iottwinmaker_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + iottwinmaker_json_str(u1))
+        list[str] e2 = []
+        for x2 in input.sources:
+            e2.append(source_configuration_to_json(x2))
+        parts.append("\"sources\":" + iottwinmaker_json_arr(e2))
+        parts.append("\"destination\":" + input.destination.to_json())
+        auto bp = restjson.rest_json_document(b, iottwinmaker_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
+
+    # CreateScene  POST /workspaces/{workspaceId}/scenes
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_scene(self, CreateSceneRequest input) -> str:
+        auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceId"] = input.workspaceId
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/scenes", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"sceneId\":" + iottwinmaker_json_str(input.sceneId))
+        parts.append("\"contentLocation\":" + iottwinmaker_json_str(input.contentLocation))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + iottwinmaker_json_str(u0))
+        if input.capabilities.is_some():
+            auto u1 = input.capabilities.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(iottwinmaker_json_str(x2))
+            parts.append("\"capabilities\":" + iottwinmaker_json_arr(e2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(iottwinmaker_json_str(k4) + ":" + iottwinmaker_json_str(u3[k4]))
+            parts.append("\"tags\":" + iottwinmaker_json_obj(m4))
+        if input.sceneMetadata.is_some():
+            auto u5 = input.sceneMetadata.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(iottwinmaker_json_str(k6) + ":" + iottwinmaker_json_str(u5[k6]))
+            parts.append("\"sceneMetadata\":" + iottwinmaker_json_obj(m6))
+        auto bp = restjson.rest_json_document(b, iottwinmaker_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
+
+    # CreateSyncJob  POST /workspaces/{workspaceId}/sync-jobs/{syncSource}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_sync_job(self, CreateSyncJobRequest input) -> str:
+        auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceId"] = input.workspaceId
+        labels["syncSource"] = input.syncSource
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/sync-jobs/{syncSource}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"syncRole\":" + iottwinmaker_json_str(input.syncRole))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(iottwinmaker_json_str(k1) + ":" + iottwinmaker_json_str(u0[k1]))
+            parts.append("\"tags\":" + iottwinmaker_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, iottwinmaker_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
+
+    # CreateWorkspace  POST /workspaces/{workspaceId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_workspace(self, CreateWorkspaceRequest input) -> str:
+        auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceId"] = input.workspaceId
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + iottwinmaker_json_str(u0))
+        if input.s3Location.is_some():
+            auto u1 = input.s3Location.unwrap()
+            parts.append("\"s3Location\":" + iottwinmaker_json_str(u1))
+        if input.role.is_some():
+            auto u2 = input.role.unwrap()
+            parts.append("\"role\":" + iottwinmaker_json_str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(iottwinmaker_json_str(k4) + ":" + iottwinmaker_json_str(u3[k4]))
+            parts.append("\"tags\":" + iottwinmaker_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, iottwinmaker_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
 
     # DeleteComponentType  DELETE /workspaces/{workspaceId}/component-types/{componentTypeId}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1609,6 +2247,102 @@ struct IoTTwinMakerClient:
         auto b = binding.HttpBinding(method="GET", path_template="/pricingplan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iottwinmaker_service(), self.region, host)
 
+    # GetPropertyValue  POST /workspaces/{workspaceId}/entity-properties/value
+    # errors: AccessDeniedException, ConnectorFailureException, ConnectorTimeoutException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_property_value(self, GetPropertyValueRequest input) -> str:
+        auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceId"] = input.workspaceId
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/entity-properties/value", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.componentName.is_some():
+            auto u0 = input.componentName.unwrap()
+            parts.append("\"componentName\":" + iottwinmaker_json_str(u0))
+        if input.componentPath.is_some():
+            auto u1 = input.componentPath.unwrap()
+            parts.append("\"componentPath\":" + iottwinmaker_json_str(u1))
+        if input.componentTypeId.is_some():
+            auto u2 = input.componentTypeId.unwrap()
+            parts.append("\"componentTypeId\":" + iottwinmaker_json_str(u2))
+        if input.entityId.is_some():
+            auto u3 = input.entityId.unwrap()
+            parts.append("\"entityId\":" + iottwinmaker_json_str(u3))
+        list[str] e4 = []
+        for x4 in input.selectedProperties:
+            e4.append(iottwinmaker_json_str(x4))
+        parts.append("\"selectedProperties\":" + iottwinmaker_json_arr(e4))
+        if input.maxResults.is_some():
+            auto u5 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u5))
+        if input.nextToken.is_some():
+            auto u6 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + iottwinmaker_json_str(u6))
+        if input.propertyGroupName.is_some():
+            auto u7 = input.propertyGroupName.unwrap()
+            parts.append("\"propertyGroupName\":" + iottwinmaker_json_str(u7))
+        if input.tabularConditions.is_some():
+            auto u8 = input.tabularConditions.unwrap()
+            parts.append("\"tabularConditions\":" + tabular_conditions_to_json(u8))
+        auto bp = restjson.rest_json_document(b, iottwinmaker_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
+
+    # GetPropertyValueHistory  POST /workspaces/{workspaceId}/entity-properties/history
+    # errors: AccessDeniedException, ConnectorFailureException, ConnectorTimeoutException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_property_value_history(self, GetPropertyValueHistoryRequest input) -> str:
+        auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceId"] = input.workspaceId
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/entity-properties/history", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.entityId.is_some():
+            auto u0 = input.entityId.unwrap()
+            parts.append("\"entityId\":" + iottwinmaker_json_str(u0))
+        if input.componentName.is_some():
+            auto u1 = input.componentName.unwrap()
+            parts.append("\"componentName\":" + iottwinmaker_json_str(u1))
+        if input.componentPath.is_some():
+            auto u2 = input.componentPath.unwrap()
+            parts.append("\"componentPath\":" + iottwinmaker_json_str(u2))
+        if input.componentTypeId.is_some():
+            auto u3 = input.componentTypeId.unwrap()
+            parts.append("\"componentTypeId\":" + iottwinmaker_json_str(u3))
+        list[str] e4 = []
+        for x4 in input.selectedProperties:
+            e4.append(iottwinmaker_json_str(x4))
+        parts.append("\"selectedProperties\":" + iottwinmaker_json_arr(e4))
+        if input.propertyFilters.is_some():
+            auto u5 = input.propertyFilters.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(property_filter_to_json(x6))
+            parts.append("\"propertyFilters\":" + iottwinmaker_json_arr(e6))
+        if input.startDateTime.is_some():
+            auto u7 = input.startDateTime.unwrap()
+            parts.append("\"startDateTime\":" + str(datetime.to_timestamp(u7)))
+        if input.endDateTime.is_some():
+            auto u8 = input.endDateTime.unwrap()
+            parts.append("\"endDateTime\":" + str(datetime.to_timestamp(u8)))
+        if input.interpolation.is_some():
+            auto u9 = input.interpolation.unwrap()
+            parts.append("\"interpolation\":" + u9.to_json())
+        if input.nextToken.is_some():
+            auto u10 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + iottwinmaker_json_str(u10))
+        if input.maxResults.is_some():
+            auto u11 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u11))
+        if input.orderByTime.is_some():
+            auto u12 = input.orderByTime.unwrap()
+            parts.append("\"orderByTime\":" + u12.to_json())
+        if input.startTime.is_some():
+            auto u13 = input.startTime.unwrap()
+            parts.append("\"startTime\":" + iottwinmaker_json_str(u13))
+        if input.endTime.is_some():
+            auto u14 = input.endTime.unwrap()
+            parts.append("\"endTime\":" + iottwinmaker_json_str(u14))
+        auto bp = restjson.rest_json_document(b, iottwinmaker_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
+
     # GetScene  GET /workspaces/{workspaceId}/scenes/{sceneId}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_scene(self, GetSceneRequest input) -> str:
@@ -1640,6 +2374,29 @@ struct IoTTwinMakerClient:
         auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iottwinmaker_service(), self.region, host)
 
+    # ListComponentTypes  POST /workspaces/{workspaceId}/component-types-list
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_component_types(self, ListComponentTypesRequest input) -> str:
+        auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceId"] = input.workspaceId
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/component-types-list", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"filters\":" + iottwinmaker_json_arr(e1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + iottwinmaker_json_str(u2))
+        if input.maxResults.is_some():
+            auto u3 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u3))
+        auto bp = restjson.rest_json_document(b, iottwinmaker_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
+
     # ListComponents  POST /workspaces/{workspaceId}/entities/{entityId}/components-list
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_components(self, ListComponentsRequest input) -> str:
@@ -1650,6 +2407,52 @@ struct IoTTwinMakerClient:
         auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/entities/{entityId}/components-list", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListComponentsDocument(componentPath=input.componentPath, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
+
+    # ListEntities  POST /workspaces/{workspaceId}/entities-list
+    # errors: InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_entities(self, ListEntitiesRequest input) -> str:
+        auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceId"] = input.workspaceId
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/entities-list", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"filters\":" + iottwinmaker_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + iottwinmaker_json_str(u3))
+        auto bp = restjson.rest_json_document(b, iottwinmaker_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
+
+    # ListMetadataTransferJobs  POST /metadata-transfer-jobs-list
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_metadata_transfer_jobs(self, ListMetadataTransferJobsRequest input) -> str:
+        auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/metadata-transfer-jobs-list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"sourceType\":" + input.sourceType.to_json())
+        parts.append("\"destinationType\":" + input.destinationType.to_json())
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"filters\":" + iottwinmaker_json_arr(e1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + iottwinmaker_json_str(u2))
+        if input.maxResults.is_some():
+            auto u3 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u3))
+        auto bp = restjson.rest_json_document(b, iottwinmaker_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
 
     # ListProperties  POST /workspaces/{workspaceId}/properties-list
@@ -1685,6 +2488,30 @@ struct IoTTwinMakerClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
 
+    # ListSyncResources  POST /workspaces/{workspaceId}/sync-jobs/{syncSource}/resources-list
+    # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_sync_resources(self, ListSyncResourcesRequest input) -> str:
+        auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceId"] = input.workspaceId
+        labels["syncSource"] = input.syncSource
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/sync-jobs/{syncSource}/resources-list", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"filters\":" + iottwinmaker_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + iottwinmaker_json_str(u3))
+        auto bp = restjson.rest_json_document(b, iottwinmaker_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
+
     # ListTagsForResource  POST /tags-list
     # errors: AccessDeniedException, ResourceNotFoundException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
@@ -1701,6 +2528,150 @@ struct IoTTwinMakerClient:
         auto b = binding.HttpBinding(method="POST", path_template="/workspaces-list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListWorkspacesDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
+
+    # TagResource  POST /tags
+    # errors: AccessDeniedException, ResourceNotFoundException, TooManyTagsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/tags", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceARN\":" + iottwinmaker_json_str(input.resourceARN))
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(iottwinmaker_json_str(k0) + ":" + iottwinmaker_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + iottwinmaker_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, iottwinmaker_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
+
+    # UpdateComponentType  PUT /workspaces/{workspaceId}/component-types/{componentTypeId}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_component_type(self, UpdateComponentTypeRequest input) -> str:
+        auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceId"] = input.workspaceId
+        labels["componentTypeId"] = input.componentTypeId
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/component-types/{componentTypeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.isSingleton.is_some():
+            auto u0 = input.isSingleton.unwrap()
+            parts.append("\"isSingleton\":" + json.dumps(JsonValue.Bool(u0)))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + iottwinmaker_json_str(u1))
+        if input.propertyDefinitions.is_some():
+            auto u2 = input.propertyDefinitions.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(iottwinmaker_json_str(k3) + ":" + property_definition_request_to_json(u2[k3]))
+            parts.append("\"propertyDefinitions\":" + iottwinmaker_json_obj(m3))
+        if input.extendsFrom.is_some():
+            auto u4 = input.extendsFrom.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(iottwinmaker_json_str(x5))
+            parts.append("\"extendsFrom\":" + iottwinmaker_json_arr(e5))
+        if input.functions.is_some():
+            auto u6 = input.functions.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(iottwinmaker_json_str(k7) + ":" + function_request_to_json(u6[k7]))
+            parts.append("\"functions\":" + iottwinmaker_json_obj(m7))
+        if input.propertyGroups.is_some():
+            auto u8 = input.propertyGroups.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(iottwinmaker_json_str(k9) + ":" + property_group_request_to_json(u8[k9]))
+            parts.append("\"propertyGroups\":" + iottwinmaker_json_obj(m9))
+        if input.componentTypeName.is_some():
+            auto u10 = input.componentTypeName.unwrap()
+            parts.append("\"componentTypeName\":" + iottwinmaker_json_str(u10))
+        if input.compositeComponentTypes.is_some():
+            auto u11 = input.compositeComponentTypes.unwrap()
+            list[str] m12 = []
+            for k12 in sorted(u11.keys()):
+                m12.append(iottwinmaker_json_str(k12) + ":" + u11[k12].to_json())
+            parts.append("\"compositeComponentTypes\":" + iottwinmaker_json_obj(m12))
+        auto bp = restjson.rest_json_document(b, iottwinmaker_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
+
+    # UpdateEntity  PUT /workspaces/{workspaceId}/entities/{entityId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_entity(self, UpdateEntityRequest input) -> str:
+        auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceId"] = input.workspaceId
+        labels["entityId"] = input.entityId
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/entities/{entityId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.entityName.is_some():
+            auto u0 = input.entityName.unwrap()
+            parts.append("\"entityName\":" + iottwinmaker_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + iottwinmaker_json_str(u1))
+        if input.componentUpdates.is_some():
+            auto u2 = input.componentUpdates.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(iottwinmaker_json_str(k3) + ":" + component_update_request_to_json(u2[k3]))
+            parts.append("\"componentUpdates\":" + iottwinmaker_json_obj(m3))
+        if input.compositeComponentUpdates.is_some():
+            auto u4 = input.compositeComponentUpdates.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(iottwinmaker_json_str(k5) + ":" + composite_component_update_request_to_json(u4[k5]))
+            parts.append("\"compositeComponentUpdates\":" + iottwinmaker_json_obj(m5))
+        if input.parentEntityUpdate.is_some():
+            auto u6 = input.parentEntityUpdate.unwrap()
+            parts.append("\"parentEntityUpdate\":" + u6.to_json())
+        auto bp = restjson.rest_json_document(b, iottwinmaker_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
+
+    # UpdatePricingPlan  POST /pricingplan
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def update_pricing_plan(self, UpdatePricingPlanRequest input) -> str:
+        auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/pricingplan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"pricingMode\":" + input.pricingMode.to_json())
+        if input.bundleNames.is_some():
+            auto u0 = input.bundleNames.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(iottwinmaker_json_str(x1))
+            parts.append("\"bundleNames\":" + iottwinmaker_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, iottwinmaker_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
+
+    # UpdateScene  PUT /workspaces/{workspaceId}/scenes/{sceneId}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_scene(self, UpdateSceneRequest input) -> str:
+        auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceId"] = input.workspaceId
+        labels["sceneId"] = input.sceneId
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/scenes/{sceneId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.contentLocation.is_some():
+            auto u0 = input.contentLocation.unwrap()
+            parts.append("\"contentLocation\":" + iottwinmaker_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + iottwinmaker_json_str(u1))
+        if input.capabilities.is_some():
+            auto u2 = input.capabilities.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(iottwinmaker_json_str(x3))
+            parts.append("\"capabilities\":" + iottwinmaker_json_arr(e3))
+        if input.sceneMetadata.is_some():
+            auto u4 = input.sceneMetadata.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(iottwinmaker_json_str(k5) + ":" + iottwinmaker_json_str(u4[k5]))
+            parts.append("\"sceneMetadata\":" + iottwinmaker_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, iottwinmaker_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
 
     # UpdateWorkspace  PUT /workspaces/{workspaceId}

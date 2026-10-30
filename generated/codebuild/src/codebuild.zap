@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 59 operations — 40 with a generated method,
-#   19 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 59 operations — 59 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   196 structs (103 @derive(Json)), 49 enums, 6 error variants.
 #   15 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -513,115 +513,135 @@ struct AutoRetryConfig:
     Optional[str] nextAutoRetry
     Optional[str] previousAutoRetry
 
-# no @derive(Json): member(s) ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteBuildsInput:
     list[str] ids
 
-# no @derive(Json): member(s) buildsDeleted: list[str], buildsNotDeleted: list[BuildNotDeleted] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) buildsDeleted: list[str], buildsNotDeleted: list[BuildNotDeleted] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteBuildsOutput:
     Optional[list[str]] buildsDeleted
     Optional[list[BuildNotDeleted]] buildsNotDeleted
 
-# no @derive(Json): member(s) ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetBuildBatchesInput:
     list[str] ids
 
-# no @derive(Json): member(s) buildBatches: list[BuildBatch], buildBatchesNotFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) buildBatches: list[BuildBatch], buildBatchesNotFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetBuildBatchesOutput:
     Optional[list[BuildBatch]] buildBatches
     Optional[list[str]] buildBatchesNotFound
 
-# no @derive(Json): member(s) ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetBuildsInput:
     list[str] ids
 
-# no @derive(Json): member(s) builds: list[Build], buildsNotFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) builds: list[Build], buildsNotFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetBuildsOutput:
     Optional[list[Build]] builds
     Optional[list[str]] buildsNotFound
 
-# no @derive(Json): member(s) commandExecutionIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) commandExecutionIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetCommandExecutionsInput:
     str sandboxId
     list[str] commandExecutionIds
 
-# no @derive(Json): member(s) commandExecutions: list[CommandExecution], commandExecutionsNotFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) commandExecutions: list[CommandExecution], commandExecutionsNotFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetCommandExecutionsOutput:
     Optional[list[CommandExecution]] commandExecutions
     Optional[list[str]] commandExecutionsNotFound
 
-# no @derive(Json): member(s) names: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) names: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetFleetsInput:
     list[str] names
 
-# no @derive(Json): member(s) fleets: list[Fleet], fleetsNotFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fleets: list[Fleet], fleetsNotFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetFleetsOutput:
     Optional[list[Fleet]] fleets
     Optional[list[str]] fleetsNotFound
 
-# no @derive(Json): member(s) names: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) names: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetProjectsInput:
     list[str] names
 
-# no @derive(Json): member(s) projects: list[Project], projectsNotFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) projects: list[Project], projectsNotFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetProjectsOutput:
     Optional[list[Project]] projects
     Optional[list[str]] projectsNotFound
 
-# no @derive(Json): member(s) reportGroupArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reportGroupArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetReportGroupsInput:
     list[str] reportGroupArns
 
-# no @derive(Json): member(s) reportGroups: list[ReportGroup], reportGroupsNotFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reportGroups: list[ReportGroup], reportGroupsNotFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetReportGroupsOutput:
     Optional[list[ReportGroup]] reportGroups
     Optional[list[str]] reportGroupsNotFound
 
-# no @derive(Json): member(s) reportArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reportArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetReportsInput:
     list[str] reportArns
 
-# no @derive(Json): member(s) reports: list[Report], reportsNotFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reports: list[Report], reportsNotFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetReportsOutput:
     Optional[list[Report]] reports
     Optional[list[str]] reportsNotFound
 
-# no @derive(Json): member(s) ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetSandboxesInput:
     list[str] ids
 
-# no @derive(Json): member(s) sandboxes: list[Sandbox], sandboxesNotFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sandboxes: list[Sandbox], sandboxesNotFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetSandboxesOutput:
     Optional[list[Sandbox]] sandboxes
     Optional[list[str]] sandboxesNotFound
 
-# no @derive(Json): member(s) computeTypesAllowed: list[str], fleetsAllowed: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) computeTypesAllowed: list[str], fleetsAllowed: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchRestrictions:
     Optional[int64] maximumBuildsAllowed
     Optional[list[str]] computeTypesAllowed
     Optional[list[str]] fleetsAllowed
 
-# no @derive(Json): member(s) phases: list[BuildPhase], secondarySources: list[ProjectSource], secondarySourceVersions: list[ProjectSourceVersion], secondaryArtifacts: list[BuildArtifacts], cache: ProjectCache, environment: ProjectEnvironment, vpcConfig: VpcConfig, exportedEnvironmentVariables: list[ExportedEnvironmentVariable], reportArns: list[str], fileSystemLocations: list[ProjectFileSystemLocation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) phases: list[BuildPhase], secondarySources: list[ProjectSource], secondarySourceVersions: list[ProjectSourceVersion], secondaryArtifacts: list[BuildArtifacts], cache: ProjectCache, environment: ProjectEnvironment, vpcConfig: VpcConfig, exportedEnvironmentVariables: list[ExportedEnvironmentVariable], reportArns: list[str], fileSystemLocations: list[ProjectFileSystemLocation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Build:
     Optional[str] id
     Optional[str] arn
@@ -667,8 +687,9 @@ struct BuildArtifacts:
     Optional[str] artifactIdentifier
     Optional[BucketOwnerAccess] bucketOwnerAccess
 
-# no @derive(Json): member(s) phases: list[BuildBatchPhase], secondarySources: list[ProjectSource], secondarySourceVersions: list[ProjectSourceVersion], secondaryArtifacts: list[BuildArtifacts], cache: ProjectCache, environment: ProjectEnvironment, vpcConfig: VpcConfig, fileSystemLocations: list[ProjectFileSystemLocation], buildBatchConfig: ProjectBuildBatchConfig, buildGroups: list[BuildGroup], reportArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) phases: list[BuildBatchPhase], secondarySources: list[ProjectSource], secondarySourceVersions: list[ProjectSourceVersion], secondaryArtifacts: list[BuildArtifacts], cache: ProjectCache, environment: ProjectEnvironment, vpcConfig: VpcConfig, fileSystemLocations: list[ProjectFileSystemLocation], buildBatchConfig: ProjectBuildBatchConfig, buildGroups: list[BuildGroup], reportArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BuildBatch:
     Optional[str] id
     Optional[str] arn
@@ -706,8 +727,9 @@ struct BuildBatch:
 struct BuildBatchFilter:
     Optional[StatusType] status
 
-# no @derive(Json): member(s) contexts: list[PhaseContext] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) contexts: list[PhaseContext] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BuildBatchPhase:
     Optional[BuildBatchPhaseType] phaseType
     Optional[StatusType] phaseStatus
@@ -716,8 +738,9 @@ struct BuildBatchPhase:
     Optional[int64] durationInSeconds
     Optional[list[PhaseContext]] contexts
 
-# no @derive(Json): member(s) dependsOn: list[str], currentBuildSummary: BuildSummary, priorBuildSummaryList: list[BuildSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dependsOn: list[str], currentBuildSummary: BuildSummary, priorBuildSummaryList: list[BuildSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BuildGroup:
     Optional[str] identifier
     Optional[list[str]] dependsOn
@@ -730,8 +753,9 @@ struct BuildNotDeleted:
     Optional[str] id
     Optional[str] statusCode
 
-# no @derive(Json): member(s) contexts: list[PhaseContext] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) contexts: list[PhaseContext] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BuildPhase:
     Optional[BuildPhaseType] phaseType
     Optional[StatusType] phaseStatus
@@ -745,8 +769,9 @@ struct BuildStatusConfig:
     Optional[str] context
     Optional[str] targetUrl
 
-# no @derive(Json): member(s) secondaryArtifacts: list[ResolvedArtifact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) secondaryArtifacts: list[ResolvedArtifact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BuildSummary:
     Optional[str] arn
     Optional[DateTime] requestedOn
@@ -806,8 +831,9 @@ struct ComputeConfiguration:
     Optional[MachineType] machineType
     Optional[str] instanceType
 
-# no @derive(Json): member(s) scalingConfiguration: ScalingConfigurationInput, vpcConfig: VpcConfig, proxyConfiguration: ProxyConfiguration, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scalingConfiguration: ScalingConfigurationInput, vpcConfig: VpcConfig, proxyConfiguration: ProxyConfiguration, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFleetInput:
     str name
     int64 baseCapacity
@@ -822,13 +848,15 @@ struct CreateFleetInput:
     Optional[str] fleetServiceRole
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) fleet: Fleet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fleet: Fleet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFleetOutput:
     Optional[Fleet] fleet
 
-# no @derive(Json): member(s) secondarySources: list[ProjectSource], secondarySourceVersions: list[ProjectSourceVersion], secondaryArtifacts: list[ProjectArtifacts], cache: ProjectCache, environment: ProjectEnvironment, tags: list[Tag], vpcConfig: VpcConfig, fileSystemLocations: list[ProjectFileSystemLocation], buildBatchConfig: ProjectBuildBatchConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) secondarySources: list[ProjectSource], secondarySourceVersions: list[ProjectSourceVersion], secondaryArtifacts: list[ProjectArtifacts], cache: ProjectCache, environment: ProjectEnvironment, tags: list[Tag], vpcConfig: VpcConfig, fileSystemLocations: list[ProjectFileSystemLocation], buildBatchConfig: ProjectBuildBatchConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProjectInput:
     str name
     Optional[str] description
@@ -853,26 +881,30 @@ struct CreateProjectInput:
     Optional[int64] concurrentBuildLimit
     Optional[int64] autoRetryLimit
 
-# no @derive(Json): member(s) project: Project not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) project: Project not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProjectOutput:
     Optional[Project] project
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateReportGroupInput:
     str name
     ReportType type
     ReportExportConfig exportConfig
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) reportGroup: ReportGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reportGroup: ReportGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateReportGroupOutput:
     Optional[ReportGroup] reportGroup
 
-# no @derive(Json): member(s) filterGroups: list[list[WebhookFilter]], pullRequestBuildPolicy: PullRequestBuildPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filterGroups: list[list[WebhookFilter]], pullRequestBuildPolicy: PullRequestBuildPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWebhookInput:
     str projectName
     Optional[str] branchFilter
@@ -882,8 +914,9 @@ struct CreateWebhookInput:
     Optional[ScopeConfiguration] scopeConfiguration
     Optional[PullRequestBuildPolicy] pullRequestBuildPolicy
 
-# no @derive(Json): member(s) webhook: Webhook not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) webhook: Webhook not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWebhookOutput:
     Optional[Webhook] webhook
 
@@ -896,8 +929,9 @@ struct DebugSession:
 struct DeleteBuildBatchInput:
     str id
 
-# no @derive(Json): member(s) buildsDeleted: list[str], buildsNotDeleted: list[BuildNotDeleted] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) buildsDeleted: list[str], buildsNotDeleted: list[BuildNotDeleted] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteBuildBatchOutput:
     Optional[str] statusCode
     Optional[list[str]] buildsDeleted
@@ -976,8 +1010,9 @@ struct DescribeCodeCoveragesInput:
     Optional[float64] minLineCoveragePercentage
     Optional[float64] maxLineCoveragePercentage
 
-# no @derive(Json): member(s) codeCoverages: list[CodeCoverage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) codeCoverages: list[CodeCoverage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCodeCoveragesOutput:
     Optional[str] nextToken
     Optional[list[CodeCoverage]] codeCoverages
@@ -989,14 +1024,16 @@ struct DescribeTestCasesInput:
     Optional[int64] maxResults
     Optional[TestCaseFilter] filter
 
-# no @derive(Json): member(s) testCases: list[TestCase] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) testCases: list[TestCase] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTestCasesOutput:
     Optional[str] nextToken
     Optional[list[TestCase]] testCases
 
-# no @derive(Json): member(s) securityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DockerServer:
     ComputeType computeType
     Optional[list[str]] securityGroupIds
@@ -1007,21 +1044,24 @@ struct DockerServerStatus:
     Optional[str] status
     Optional[str] message
 
-# no @derive(Json): member(s) versions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) versions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnvironmentImage:
     Optional[str] name
     Optional[str] description
     Optional[list[str]] versions
 
-# no @derive(Json): member(s) images: list[EnvironmentImage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) images: list[EnvironmentImage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnvironmentLanguage:
     Optional[LanguageType] language
     Optional[list[EnvironmentImage]] images
 
-# no @derive(Json): member(s) languages: list[EnvironmentLanguage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) languages: list[EnvironmentLanguage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnvironmentPlatform:
     Optional[PlatformType] platform
     Optional[list[EnvironmentLanguage]] languages
@@ -1037,8 +1077,9 @@ struct ExportedEnvironmentVariable:
     Optional[str] name
     Optional[str] value
 
-# no @derive(Json): member(s) scalingConfiguration: ScalingConfigurationOutput, vpcConfig: VpcConfig, proxyConfiguration: ProxyConfiguration, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scalingConfiguration: ScalingConfigurationOutput, vpcConfig: VpcConfig, proxyConfiguration: ProxyConfiguration, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Fleet:
     Optional[str] arn
     Optional[str] name
@@ -1058,8 +1099,9 @@ struct Fleet:
     Optional[str] fleetServiceRole
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) entities: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entities: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FleetProxyRule:
     FleetProxyRuleType type
     FleetProxyRuleEffectType effect
@@ -1077,8 +1119,9 @@ struct GetReportGroupTrendInput:
     Optional[int64] numOfReports
     ReportGroupTrendFieldType trendField
 
-# no @derive(Json): member(s) rawData: list[ReportWithRawData] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rawData: list[ReportWithRawData] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetReportGroupTrendOutput:
     Optional[ReportGroupTrendStats] stats
     Optional[list[ReportWithRawData]] rawData
@@ -1129,8 +1172,9 @@ struct ListBuildBatchesForProjectInput:
     Optional[SortOrderType] sortOrder
     Optional[str] nextToken
 
-# no @derive(Json): member(s) ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBuildBatchesForProjectOutput:
     Optional[list[str]] ids
     Optional[str] nextToken
@@ -1142,8 +1186,9 @@ struct ListBuildBatchesInput:
     Optional[SortOrderType] sortOrder
     Optional[str] nextToken
 
-# no @derive(Json): member(s) ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBuildBatchesOutput:
     Optional[list[str]] ids
     Optional[str] nextToken
@@ -1154,8 +1199,9 @@ struct ListBuildsForProjectInput:
     Optional[SortOrderType] sortOrder
     Optional[str] nextToken
 
-# no @derive(Json): member(s) ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBuildsForProjectOutput:
     Optional[list[str]] ids
     Optional[str] nextToken
@@ -1165,8 +1211,9 @@ struct ListBuildsInput:
     Optional[SortOrderType] sortOrder
     Optional[str] nextToken
 
-# no @derive(Json): member(s) ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBuildsOutput:
     Optional[list[str]] ids
     Optional[str] nextToken
@@ -1178,8 +1225,9 @@ struct ListCommandExecutionsForSandboxInput:
     Optional[SortOrderType] sortOrder
     Optional[str] nextToken
 
-# no @derive(Json): member(s) commandExecutions: list[CommandExecution] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) commandExecutions: list[CommandExecution] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCommandExecutionsForSandboxOutput:
     Optional[list[CommandExecution]] commandExecutions
     Optional[str] nextToken
@@ -1189,8 +1237,9 @@ struct ListCuratedEnvironmentImagesInput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) platforms: list[EnvironmentPlatform] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) platforms: list[EnvironmentPlatform] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCuratedEnvironmentImagesOutput:
     Optional[list[EnvironmentPlatform]] platforms
 
@@ -1201,8 +1250,9 @@ struct ListFleetsInput:
     Optional[SortOrderType] sortOrder
     Optional[FleetSortByType] sortBy
 
-# no @derive(Json): member(s) fleets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fleets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFleetsOutput:
     Optional[str] nextToken
     Optional[list[str]] fleets
@@ -1213,8 +1263,9 @@ struct ListProjectsInput:
     Optional[SortOrderType] sortOrder
     Optional[str] nextToken
 
-# no @derive(Json): member(s) projects: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) projects: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProjectsOutput:
     Optional[str] nextToken
     Optional[list[str]] projects
@@ -1226,8 +1277,9 @@ struct ListReportGroupsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) reportGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reportGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReportGroupsOutput:
     Optional[str] nextToken
     Optional[list[str]] reportGroups
@@ -1240,8 +1292,9 @@ struct ListReportsForReportGroupInput:
     Optional[int64] maxResults
     Optional[ReportFilter] filter
 
-# no @derive(Json): member(s) reports: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reports: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReportsForReportGroupOutput:
     Optional[str] nextToken
     Optional[list[str]] reports
@@ -1253,8 +1306,9 @@ struct ListReportsInput:
     Optional[int64] maxResults
     Optional[ReportFilter] filter
 
-# no @derive(Json): member(s) reports: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reports: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReportsOutput:
     Optional[str] nextToken
     Optional[list[str]] reports
@@ -1266,8 +1320,9 @@ struct ListSandboxesForProjectInput:
     Optional[SortOrderType] sortOrder
     Optional[str] nextToken
 
-# no @derive(Json): member(s) ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSandboxesForProjectOutput:
     Optional[list[str]] ids
     Optional[str] nextToken
@@ -1278,8 +1333,9 @@ struct ListSandboxesInput:
     Optional[SortOrderType] sortOrder
     Optional[str] nextToken
 
-# no @derive(Json): member(s) ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSandboxesOutput:
     Optional[list[str]] ids
     Optional[str] nextToken
@@ -1291,8 +1347,9 @@ struct ListSharedProjectsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) projects: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) projects: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSharedProjectsOutput:
     Optional[str] nextToken
     Optional[list[str]] projects
@@ -1304,8 +1361,9 @@ struct ListSharedReportGroupsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) reportGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reportGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSharedReportGroupsOutput:
     Optional[str] nextToken
     Optional[list[str]] reportGroups
@@ -1315,8 +1373,9 @@ struct ListSourceCredentialsInput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) sourceCredentialsInfos: list[SourceCredentialsInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceCredentialsInfos: list[SourceCredentialsInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSourceCredentialsOutput:
     Optional[list[SourceCredentialsInfo]] sourceCredentialsInfos
 
@@ -1351,8 +1410,9 @@ struct PhaseContext:
     Optional[str] statusCode
     Optional[str] message
 
-# no @derive(Json): member(s) secondarySources: list[ProjectSource], secondarySourceVersions: list[ProjectSourceVersion], secondaryArtifacts: list[ProjectArtifacts], cache: ProjectCache, environment: ProjectEnvironment, tags: list[Tag], webhook: Webhook, vpcConfig: VpcConfig, fileSystemLocations: list[ProjectFileSystemLocation], buildBatchConfig: ProjectBuildBatchConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) secondarySources: list[ProjectSource], secondarySourceVersions: list[ProjectSourceVersion], secondaryArtifacts: list[ProjectArtifacts], cache: ProjectCache, environment: ProjectEnvironment, tags: list[Tag], webhook: Webhook, vpcConfig: VpcConfig, fileSystemLocations: list[ProjectFileSystemLocation], buildBatchConfig: ProjectBuildBatchConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Project:
     Optional[str] name
     Optional[str] arn
@@ -1402,8 +1462,9 @@ struct ProjectBadge:
     Optional[bool] badgeEnabled
     Optional[str] badgeRequestUrl
 
-# no @derive(Json): member(s) restrictions: BatchRestrictions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) restrictions: BatchRestrictions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProjectBuildBatchConfig:
     Optional[str] serviceRole
     Optional[bool] combineArtifacts
@@ -1411,16 +1472,18 @@ struct ProjectBuildBatchConfig:
     Optional[int64] timeoutInMins
     Optional[BatchReportModeType] batchReportMode
 
-# no @derive(Json): member(s) modes: list[CacheMode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) modes: list[CacheMode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProjectCache:
     CacheType type
     Optional[str] location
     Optional[list[CacheMode]] modes
     Optional[str] cacheNamespace
 
-# no @derive(Json): member(s) environmentVariables: list[EnvironmentVariable], dockerServer: DockerServer not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environmentVariables: list[EnvironmentVariable], dockerServer: DockerServer not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProjectEnvironment:
     EnvironmentType type
     str image
@@ -1465,14 +1528,16 @@ struct ProjectSourceVersion:
     str sourceIdentifier
     str sourceVersion
 
-# no @derive(Json): member(s) orderedProxyRules: list[FleetProxyRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) orderedProxyRules: list[FleetProxyRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProxyConfiguration:
     Optional[FleetProxyRuleBehavior] defaultBehavior
     Optional[list[FleetProxyRule]] orderedProxyRules
 
-# no @derive(Json): member(s) approverRoles: list[PullRequestBuildApproverRole] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) approverRoles: list[PullRequestBuildApproverRole] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PullRequestBuildPolicy:
     PullRequestBuildCommentApproval requiresCommentApproval
     Optional[list[PullRequestBuildApproverRole]] approverRoles
@@ -1491,8 +1556,9 @@ struct RegistryCredential:
     str credential
     str credentialProvider
 
-# no @derive(Json): member(s) testSummary: TestReportSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) testSummary: TestReportSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Report:
     Optional[str] arn
     Optional[ReportType] type
@@ -1516,8 +1582,9 @@ struct ReportExportConfig:
 struct ReportFilter:
     Optional[ReportStatusType] status
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReportGroup:
     Optional[str] arn
     Optional[str] name
@@ -1561,8 +1628,9 @@ struct RetryBuildBatchInput:
     Optional[str] idempotencyToken
     Optional[RetryBuildBatchType] retryType
 
-# no @derive(Json): member(s) buildBatch: BuildBatch not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) buildBatch: BuildBatch not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RetryBuildBatchOutput:
     Optional[BuildBatch] buildBatch
 
@@ -1571,8 +1639,9 @@ struct RetryBuildInput:
     Optional[str] id
     Optional[str] idempotencyToken
 
-# no @derive(Json): member(s) build: Build not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) build: Build not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RetryBuildOutput:
     Optional[Build] build
 
@@ -1598,8 +1667,9 @@ struct SSMSession:
     Optional[str] tokenValue
     Optional[str] streamUrl
 
-# no @derive(Json): member(s) secondarySources: list[ProjectSource], secondarySourceVersions: list[ProjectSourceVersion], environment: ProjectEnvironment, fileSystemLocations: list[ProjectFileSystemLocation], vpcConfig: VpcConfig, currentSession: SandboxSession not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) secondarySources: list[ProjectSource], secondarySourceVersions: list[ProjectSourceVersion], environment: ProjectEnvironment, fileSystemLocations: list[ProjectFileSystemLocation], vpcConfig: VpcConfig, currentSession: SandboxSession not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Sandbox:
     Optional[str] id
     Optional[str] arn
@@ -1622,8 +1692,9 @@ struct Sandbox:
     Optional[str] serviceRole
     Optional[SandboxSession] currentSession
 
-# no @derive(Json): member(s) phases: list[SandboxSessionPhase] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) phases: list[SandboxSessionPhase] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SandboxSession:
     Optional[str] id
     Optional[str] status
@@ -1635,8 +1706,9 @@ struct SandboxSession:
     Optional[LogsLocation] logs
     Optional[NetworkInterface] networkInterface
 
-# no @derive(Json): member(s) contexts: list[PhaseContext] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) contexts: list[PhaseContext] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SandboxSessionPhase:
     Optional[str] phaseType
     Optional[StatusType] phaseStatus
@@ -1645,15 +1717,17 @@ struct SandboxSessionPhase:
     Optional[int64] durationInSeconds
     Optional[list[PhaseContext]] contexts
 
-# no @derive(Json): member(s) targetTrackingScalingConfigs: list[TargetTrackingScalingConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetTrackingScalingConfigs: list[TargetTrackingScalingConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScalingConfigurationInput:
     Optional[str] scalingType
     Optional[list[TargetTrackingScalingConfiguration]] targetTrackingScalingConfigs
     Optional[int64] maxCapacity
 
-# no @derive(Json): member(s) targetTrackingScalingConfigs: list[TargetTrackingScalingConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetTrackingScalingConfigs: list[TargetTrackingScalingConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScalingConfigurationOutput:
     Optional[str] scalingType
     Optional[list[TargetTrackingScalingConfiguration]] targetTrackingScalingConfigs
@@ -1679,8 +1753,9 @@ struct SourceCredentialsInfo:
     Optional[AuthType] authType
     Optional[str] resource
 
-# no @derive(Json): member(s) secondarySourcesOverride: list[ProjectSource], secondarySourcesVersionOverride: list[ProjectSourceVersion], secondaryArtifactsOverride: list[ProjectArtifacts], environmentVariablesOverride: list[EnvironmentVariable], cacheOverride: ProjectCache, buildBatchConfigOverride: ProjectBuildBatchConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) secondarySourcesOverride: list[ProjectSource], secondarySourcesVersionOverride: list[ProjectSourceVersion], secondaryArtifactsOverride: list[ProjectArtifacts], environmentVariablesOverride: list[EnvironmentVariable], cacheOverride: ProjectCache, buildBatchConfigOverride: ProjectBuildBatchConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartBuildBatchInput:
     str projectName
     Optional[list[ProjectSource]] secondarySourcesOverride
@@ -1714,13 +1789,15 @@ struct StartBuildBatchInput:
     Optional[ProjectBuildBatchConfig] buildBatchConfigOverride
     Optional[bool] debugSessionEnabled
 
-# no @derive(Json): member(s) buildBatch: BuildBatch not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) buildBatch: BuildBatch not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartBuildBatchOutput:
     Optional[BuildBatch] buildBatch
 
-# no @derive(Json): member(s) secondarySourcesOverride: list[ProjectSource], secondarySourcesVersionOverride: list[ProjectSourceVersion], secondaryArtifactsOverride: list[ProjectArtifacts], environmentVariablesOverride: list[EnvironmentVariable], cacheOverride: ProjectCache not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) secondarySourcesOverride: list[ProjectSource], secondarySourcesVersionOverride: list[ProjectSourceVersion], secondaryArtifactsOverride: list[ProjectArtifacts], environmentVariablesOverride: list[EnvironmentVariable], cacheOverride: ProjectCache not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartBuildInput:
     str projectName
     Optional[list[ProjectSource]] secondarySourcesOverride
@@ -1757,8 +1834,9 @@ struct StartBuildInput:
     Optional[int64] autoRetryLimitOverride
     Optional[HostKernel] hostKernelOverride
 
-# no @derive(Json): member(s) build: Build not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) build: Build not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartBuildOutput:
     Optional[Build] build
 
@@ -1785,8 +1863,9 @@ struct StartSandboxInput:
     Optional[str] projectName
     Optional[str] idempotencyToken
 
-# no @derive(Json): member(s) sandbox: Sandbox not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sandbox: Sandbox not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartSandboxOutput:
     Optional[Sandbox] sandbox
 
@@ -1794,8 +1873,9 @@ struct StartSandboxOutput:
 struct StopBuildBatchInput:
     str id
 
-# no @derive(Json): member(s) buildBatch: BuildBatch not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) buildBatch: BuildBatch not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopBuildBatchOutput:
     Optional[BuildBatch] buildBatch
 
@@ -1803,8 +1883,9 @@ struct StopBuildBatchOutput:
 struct StopBuildInput:
     str id
 
-# no @derive(Json): member(s) build: Build not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) build: Build not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopBuildOutput:
     Optional[Build] build
 
@@ -1812,8 +1893,9 @@ struct StopBuildOutput:
 struct StopSandboxInput:
     str id
 
-# no @derive(Json): member(s) sandbox: Sandbox not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sandbox: Sandbox not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopSandboxOutput:
     Optional[Sandbox] sandbox
 
@@ -1844,15 +1926,17 @@ struct TestCaseFilter:
     Optional[str] status
     Optional[str] keyword
 
-# no @derive(Json): member(s) statusCounts: dict[str, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusCounts: dict[str, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestReportSummary:
     int64 total
     dict[str, int64] statusCounts
     int64 durationInNanoSeconds
 
-# no @derive(Json): member(s) scalingConfiguration: ScalingConfigurationInput, vpcConfig: VpcConfig, proxyConfiguration: ProxyConfiguration, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scalingConfiguration: ScalingConfigurationInput, vpcConfig: VpcConfig, proxyConfiguration: ProxyConfiguration, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFleetInput:
     str arn
     Optional[int64] baseCapacity
@@ -1867,13 +1951,15 @@ struct UpdateFleetInput:
     Optional[str] fleetServiceRole
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) fleet: Fleet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fleet: Fleet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFleetOutput:
     Optional[Fleet] fleet
 
-# no @derive(Json): member(s) secondarySources: list[ProjectSource], secondarySourceVersions: list[ProjectSourceVersion], secondaryArtifacts: list[ProjectArtifacts], cache: ProjectCache, environment: ProjectEnvironment, tags: list[Tag], vpcConfig: VpcConfig, fileSystemLocations: list[ProjectFileSystemLocation], buildBatchConfig: ProjectBuildBatchConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) secondarySources: list[ProjectSource], secondarySourceVersions: list[ProjectSourceVersion], secondaryArtifacts: list[ProjectArtifacts], cache: ProjectCache, environment: ProjectEnvironment, tags: list[Tag], vpcConfig: VpcConfig, fileSystemLocations: list[ProjectFileSystemLocation], buildBatchConfig: ProjectBuildBatchConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProjectInput:
     str name
     Optional[str] description
@@ -1898,8 +1984,9 @@ struct UpdateProjectInput:
     Optional[int64] concurrentBuildLimit
     Optional[int64] autoRetryLimit
 
-# no @derive(Json): member(s) project: Project not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) project: Project not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProjectOutput:
     Optional[Project] project
 
@@ -1915,20 +2002,23 @@ struct UpdateProjectVisibilityOutput:
     Optional[str] publicProjectAlias
     Optional[ProjectVisibilityType] projectVisibility
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateReportGroupInput:
     str arn
     Optional[ReportExportConfig] exportConfig
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) reportGroup: ReportGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reportGroup: ReportGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateReportGroupOutput:
     Optional[ReportGroup] reportGroup
 
-# no @derive(Json): member(s) filterGroups: list[list[WebhookFilter]], pullRequestBuildPolicy: PullRequestBuildPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filterGroups: list[list[WebhookFilter]], pullRequestBuildPolicy: PullRequestBuildPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateWebhookInput:
     str projectName
     Optional[str] branchFilter
@@ -1937,20 +2027,23 @@ struct UpdateWebhookInput:
     Optional[WebhookBuildType] buildType
     Optional[PullRequestBuildPolicy] pullRequestBuildPolicy
 
-# no @derive(Json): member(s) webhook: Webhook not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) webhook: Webhook not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateWebhookOutput:
     Optional[Webhook] webhook
 
-# no @derive(Json): member(s) subnets: list[str], securityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnets: list[str], securityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfig:
     Optional[str] vpcId
     Optional[list[str]] subnets
     Optional[list[str]] securityGroupIds
 
-# no @derive(Json): member(s) filterGroups: list[list[WebhookFilter]], pullRequestBuildPolicy: PullRequestBuildPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filterGroups: list[list[WebhookFilter]], pullRequestBuildPolicy: PullRequestBuildPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Webhook:
     Optional[str] url
     Optional[str] payloadUrl
@@ -2002,32 +2095,934 @@ def codebuild_error_from_code(str code) -> CodeBuildError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   BatchDeleteBuilds (input BatchDeleteBuildsInput)
-#   BatchGetBuildBatches (input BatchGetBuildBatchesInput)
-#   BatchGetBuilds (input BatchGetBuildsInput)
-#   BatchGetCommandExecutions (input BatchGetCommandExecutionsInput)
-#   BatchGetFleets (input BatchGetFleetsInput)
-#   BatchGetProjects (input BatchGetProjectsInput)
-#   BatchGetReportGroups (input BatchGetReportGroupsInput)
-#   BatchGetReports (input BatchGetReportsInput)
-#   BatchGetSandboxes (input BatchGetSandboxesInput)
-#   CreateFleet (input CreateFleetInput)
-#   CreateProject (input CreateProjectInput)
-#   CreateReportGroup (input CreateReportGroupInput)
-#   CreateWebhook (input CreateWebhookInput)
-#   StartBuild (input StartBuildInput)
-#   StartBuildBatch (input StartBuildBatchInput)
-#   UpdateFleet (input UpdateFleetInput)
-#   UpdateProject (input UpdateProjectInput)
-#   UpdateReportGroup (input UpdateReportGroupInput)
-#   UpdateWebhook (input UpdateWebhookInput)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def codebuild_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def codebuild_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def codebuild_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize BatchDeleteBuildsInput to a compact JSON object (declaration order).
+def batch_delete_builds_input_to_json(BatchDeleteBuildsInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ids:
+        e0.append(codebuild_json_str(x0))
+    parts.append("\"ids\":" + codebuild_json_arr(e0))
+    return codebuild_json_obj(parts)
+
+# Serialize BatchGetBuildBatchesInput to a compact JSON object (declaration order).
+def batch_get_build_batches_input_to_json(BatchGetBuildBatchesInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ids:
+        e0.append(codebuild_json_str(x0))
+    parts.append("\"ids\":" + codebuild_json_arr(e0))
+    return codebuild_json_obj(parts)
+
+# Serialize BatchGetBuildsInput to a compact JSON object (declaration order).
+def batch_get_builds_input_to_json(BatchGetBuildsInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ids:
+        e0.append(codebuild_json_str(x0))
+    parts.append("\"ids\":" + codebuild_json_arr(e0))
+    return codebuild_json_obj(parts)
+
+# Serialize BatchGetCommandExecutionsInput to a compact JSON object (declaration order).
+def batch_get_command_executions_input_to_json(BatchGetCommandExecutionsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"sandboxId\":" + codebuild_json_str(v.sandboxId))
+    list[str] e0 = []
+    for x0 in v.commandExecutionIds:
+        e0.append(codebuild_json_str(x0))
+    parts.append("\"commandExecutionIds\":" + codebuild_json_arr(e0))
+    return codebuild_json_obj(parts)
+
+# Serialize BatchGetFleetsInput to a compact JSON object (declaration order).
+def batch_get_fleets_input_to_json(BatchGetFleetsInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.names:
+        e0.append(codebuild_json_str(x0))
+    parts.append("\"names\":" + codebuild_json_arr(e0))
+    return codebuild_json_obj(parts)
+
+# Serialize BatchGetProjectsInput to a compact JSON object (declaration order).
+def batch_get_projects_input_to_json(BatchGetProjectsInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.names:
+        e0.append(codebuild_json_str(x0))
+    parts.append("\"names\":" + codebuild_json_arr(e0))
+    return codebuild_json_obj(parts)
+
+# Serialize BatchGetReportGroupsInput to a compact JSON object (declaration order).
+def batch_get_report_groups_input_to_json(BatchGetReportGroupsInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.reportGroupArns:
+        e0.append(codebuild_json_str(x0))
+    parts.append("\"reportGroupArns\":" + codebuild_json_arr(e0))
+    return codebuild_json_obj(parts)
+
+# Serialize BatchGetReportsInput to a compact JSON object (declaration order).
+def batch_get_reports_input_to_json(BatchGetReportsInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.reportArns:
+        e0.append(codebuild_json_str(x0))
+    parts.append("\"reportArns\":" + codebuild_json_arr(e0))
+    return codebuild_json_obj(parts)
+
+# Serialize BatchGetSandboxesInput to a compact JSON object (declaration order).
+def batch_get_sandboxes_input_to_json(BatchGetSandboxesInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ids:
+        e0.append(codebuild_json_str(x0))
+    parts.append("\"ids\":" + codebuild_json_arr(e0))
+    return codebuild_json_obj(parts)
+
+# Serialize BatchRestrictions to a compact JSON object (declaration order).
+def batch_restrictions_to_json(BatchRestrictions v) -> str:
+    list[str] parts = []
+    if v.maximumBuildsAllowed.is_some():
+        auto u0 = v.maximumBuildsAllowed.unwrap()
+        parts.append("\"maximumBuildsAllowed\":" + str(u0))
+    if v.computeTypesAllowed.is_some():
+        auto u1 = v.computeTypesAllowed.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(codebuild_json_str(x2))
+        parts.append("\"computeTypesAllowed\":" + codebuild_json_arr(e2))
+    if v.fleetsAllowed.is_some():
+        auto u3 = v.fleetsAllowed.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(codebuild_json_str(x4))
+        parts.append("\"fleetsAllowed\":" + codebuild_json_arr(e4))
+    return codebuild_json_obj(parts)
+
+# Serialize CreateFleetInput to a compact JSON object (declaration order).
+def create_fleet_input_to_json(CreateFleetInput v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + codebuild_json_str(v.name))
+    parts.append("\"baseCapacity\":" + str(v.baseCapacity))
+    parts.append("\"environmentType\":" + v.environmentType.to_json())
+    parts.append("\"computeType\":" + v.computeType.to_json())
+    if v.computeConfiguration.is_some():
+        auto u0 = v.computeConfiguration.unwrap()
+        parts.append("\"computeConfiguration\":" + u0.to_json())
+    if v.scalingConfiguration.is_some():
+        auto u1 = v.scalingConfiguration.unwrap()
+        parts.append("\"scalingConfiguration\":" + scaling_configuration_input_to_json(u1))
+    if v.overflowBehavior.is_some():
+        auto u2 = v.overflowBehavior.unwrap()
+        parts.append("\"overflowBehavior\":" + u2.to_json())
+    if v.vpcConfig.is_some():
+        auto u3 = v.vpcConfig.unwrap()
+        parts.append("\"vpcConfig\":" + vpc_config_to_json(u3))
+    if v.proxyConfiguration.is_some():
+        auto u4 = v.proxyConfiguration.unwrap()
+        parts.append("\"proxyConfiguration\":" + proxy_configuration_to_json(u4))
+    if v.imageId.is_some():
+        auto u5 = v.imageId.unwrap()
+        parts.append("\"imageId\":" + codebuild_json_str(u5))
+    if v.fleetServiceRole.is_some():
+        auto u6 = v.fleetServiceRole.unwrap()
+        parts.append("\"fleetServiceRole\":" + codebuild_json_str(u6))
+    if v.tags.is_some():
+        auto u7 = v.tags.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"tags\":" + codebuild_json_arr(e8))
+    return codebuild_json_obj(parts)
+
+# Serialize CreateProjectInput to a compact JSON object (declaration order).
+def create_project_input_to_json(CreateProjectInput v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + codebuild_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + codebuild_json_str(u0))
+    parts.append("\"source\":" + v.source.to_json())
+    if v.secondarySources.is_some():
+        auto u1 = v.secondarySources.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"secondarySources\":" + codebuild_json_arr(e2))
+    if v.sourceVersion.is_some():
+        auto u3 = v.sourceVersion.unwrap()
+        parts.append("\"sourceVersion\":" + codebuild_json_str(u3))
+    if v.secondarySourceVersions.is_some():
+        auto u4 = v.secondarySourceVersions.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"secondarySourceVersions\":" + codebuild_json_arr(e5))
+    parts.append("\"artifacts\":" + v.artifacts.to_json())
+    if v.secondaryArtifacts.is_some():
+        auto u6 = v.secondaryArtifacts.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"secondaryArtifacts\":" + codebuild_json_arr(e7))
+    if v.cache.is_some():
+        auto u8 = v.cache.unwrap()
+        parts.append("\"cache\":" + project_cache_to_json(u8))
+    parts.append("\"environment\":" + project_environment_to_json(v.environment))
+    parts.append("\"serviceRole\":" + codebuild_json_str(v.serviceRole))
+    if v.timeoutInMinutes.is_some():
+        auto u9 = v.timeoutInMinutes.unwrap()
+        parts.append("\"timeoutInMinutes\":" + str(u9))
+    if v.queuedTimeoutInMinutes.is_some():
+        auto u10 = v.queuedTimeoutInMinutes.unwrap()
+        parts.append("\"queuedTimeoutInMinutes\":" + str(u10))
+    if v.encryptionKey.is_some():
+        auto u11 = v.encryptionKey.unwrap()
+        parts.append("\"encryptionKey\":" + codebuild_json_str(u11))
+    if v.tags.is_some():
+        auto u12 = v.tags.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"tags\":" + codebuild_json_arr(e13))
+    if v.vpcConfig.is_some():
+        auto u14 = v.vpcConfig.unwrap()
+        parts.append("\"vpcConfig\":" + vpc_config_to_json(u14))
+    if v.badgeEnabled.is_some():
+        auto u15 = v.badgeEnabled.unwrap()
+        parts.append("\"badgeEnabled\":" + json.dumps(JsonValue.Bool(u15)))
+    if v.logsConfig.is_some():
+        auto u16 = v.logsConfig.unwrap()
+        parts.append("\"logsConfig\":" + u16.to_json())
+    if v.fileSystemLocations.is_some():
+        auto u17 = v.fileSystemLocations.unwrap()
+        list[str] e18 = []
+        for x18 in u17:
+            e18.append(x18.to_json())
+        parts.append("\"fileSystemLocations\":" + codebuild_json_arr(e18))
+    if v.buildBatchConfig.is_some():
+        auto u19 = v.buildBatchConfig.unwrap()
+        parts.append("\"buildBatchConfig\":" + project_build_batch_config_to_json(u19))
+    if v.concurrentBuildLimit.is_some():
+        auto u20 = v.concurrentBuildLimit.unwrap()
+        parts.append("\"concurrentBuildLimit\":" + str(u20))
+    if v.autoRetryLimit.is_some():
+        auto u21 = v.autoRetryLimit.unwrap()
+        parts.append("\"autoRetryLimit\":" + str(u21))
+    return codebuild_json_obj(parts)
+
+# Serialize CreateReportGroupInput to a compact JSON object (declaration order).
+def create_report_group_input_to_json(CreateReportGroupInput v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + codebuild_json_str(v.name))
+    parts.append("\"type\":" + v.type.to_json())
+    parts.append("\"exportConfig\":" + v.exportConfig.to_json())
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + codebuild_json_arr(e1))
+    return codebuild_json_obj(parts)
+
+# Serialize CreateWebhookInput to a compact JSON object (declaration order).
+def create_webhook_input_to_json(CreateWebhookInput v) -> str:
+    list[str] parts = []
+    parts.append("\"projectName\":" + codebuild_json_str(v.projectName))
+    if v.branchFilter.is_some():
+        auto u0 = v.branchFilter.unwrap()
+        parts.append("\"branchFilter\":" + codebuild_json_str(u0))
+    if v.filterGroups.is_some():
+        auto u1 = v.filterGroups.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            list[str] e3 = []
+            for x3 in x2:
+                e3.append(x3.to_json())
+            e2.append(codebuild_json_arr(e3))
+        parts.append("\"filterGroups\":" + codebuild_json_arr(e2))
+    if v.buildType.is_some():
+        auto u4 = v.buildType.unwrap()
+        parts.append("\"buildType\":" + u4.to_json())
+    if v.manualCreation.is_some():
+        auto u5 = v.manualCreation.unwrap()
+        parts.append("\"manualCreation\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.scopeConfiguration.is_some():
+        auto u6 = v.scopeConfiguration.unwrap()
+        parts.append("\"scopeConfiguration\":" + u6.to_json())
+    if v.pullRequestBuildPolicy.is_some():
+        auto u7 = v.pullRequestBuildPolicy.unwrap()
+        parts.append("\"pullRequestBuildPolicy\":" + pull_request_build_policy_to_json(u7))
+    return codebuild_json_obj(parts)
+
+# Serialize DockerServer to a compact JSON object (declaration order).
+def docker_server_to_json(DockerServer v) -> str:
+    list[str] parts = []
+    parts.append("\"computeType\":" + v.computeType.to_json())
+    if v.securityGroupIds.is_some():
+        auto u0 = v.securityGroupIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(codebuild_json_str(x1))
+        parts.append("\"securityGroupIds\":" + codebuild_json_arr(e1))
+    if v.status.is_some():
+        auto u2 = v.status.unwrap()
+        parts.append("\"status\":" + u2.to_json())
+    return codebuild_json_obj(parts)
+
+# Serialize FleetProxyRule to a compact JSON object (declaration order).
+def fleet_proxy_rule_to_json(FleetProxyRule v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + v.type.to_json())
+    parts.append("\"effect\":" + v.effect.to_json())
+    list[str] e0 = []
+    for x0 in v.entities:
+        e0.append(codebuild_json_str(x0))
+    parts.append("\"entities\":" + codebuild_json_arr(e0))
+    return codebuild_json_obj(parts)
+
+# Serialize ProjectBuildBatchConfig to a compact JSON object (declaration order).
+def project_build_batch_config_to_json(ProjectBuildBatchConfig v) -> str:
+    list[str] parts = []
+    if v.serviceRole.is_some():
+        auto u0 = v.serviceRole.unwrap()
+        parts.append("\"serviceRole\":" + codebuild_json_str(u0))
+    if v.combineArtifacts.is_some():
+        auto u1 = v.combineArtifacts.unwrap()
+        parts.append("\"combineArtifacts\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.restrictions.is_some():
+        auto u2 = v.restrictions.unwrap()
+        parts.append("\"restrictions\":" + batch_restrictions_to_json(u2))
+    if v.timeoutInMins.is_some():
+        auto u3 = v.timeoutInMins.unwrap()
+        parts.append("\"timeoutInMins\":" + str(u3))
+    if v.batchReportMode.is_some():
+        auto u4 = v.batchReportMode.unwrap()
+        parts.append("\"batchReportMode\":" + u4.to_json())
+    return codebuild_json_obj(parts)
+
+# Serialize ProjectCache to a compact JSON object (declaration order).
+def project_cache_to_json(ProjectCache v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + v.type.to_json())
+    if v.location.is_some():
+        auto u0 = v.location.unwrap()
+        parts.append("\"location\":" + codebuild_json_str(u0))
+    if v.modes.is_some():
+        auto u1 = v.modes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"modes\":" + codebuild_json_arr(e2))
+    if v.cacheNamespace.is_some():
+        auto u3 = v.cacheNamespace.unwrap()
+        parts.append("\"cacheNamespace\":" + codebuild_json_str(u3))
+    return codebuild_json_obj(parts)
+
+# Serialize ProjectEnvironment to a compact JSON object (declaration order).
+def project_environment_to_json(ProjectEnvironment v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + v.type.to_json())
+    parts.append("\"image\":" + codebuild_json_str(v.image))
+    parts.append("\"computeType\":" + v.computeType.to_json())
+    if v.computeConfiguration.is_some():
+        auto u0 = v.computeConfiguration.unwrap()
+        parts.append("\"computeConfiguration\":" + u0.to_json())
+    if v.fleet.is_some():
+        auto u1 = v.fleet.unwrap()
+        parts.append("\"fleet\":" + u1.to_json())
+    if v.environmentVariables.is_some():
+        auto u2 = v.environmentVariables.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"environmentVariables\":" + codebuild_json_arr(e3))
+    if v.privilegedMode.is_some():
+        auto u4 = v.privilegedMode.unwrap()
+        parts.append("\"privilegedMode\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.certificate.is_some():
+        auto u5 = v.certificate.unwrap()
+        parts.append("\"certificate\":" + codebuild_json_str(u5))
+    if v.registryCredential.is_some():
+        auto u6 = v.registryCredential.unwrap()
+        parts.append("\"registryCredential\":" + u6.to_json())
+    if v.imagePullCredentialsType.is_some():
+        auto u7 = v.imagePullCredentialsType.unwrap()
+        parts.append("\"imagePullCredentialsType\":" + u7.to_json())
+    if v.dockerServer.is_some():
+        auto u8 = v.dockerServer.unwrap()
+        parts.append("\"dockerServer\":" + docker_server_to_json(u8))
+    if v.hostKernel.is_some():
+        auto u9 = v.hostKernel.unwrap()
+        parts.append("\"hostKernel\":" + u9.to_json())
+    return codebuild_json_obj(parts)
+
+# Serialize ProxyConfiguration to a compact JSON object (declaration order).
+def proxy_configuration_to_json(ProxyConfiguration v) -> str:
+    list[str] parts = []
+    if v.defaultBehavior.is_some():
+        auto u0 = v.defaultBehavior.unwrap()
+        parts.append("\"defaultBehavior\":" + u0.to_json())
+    if v.orderedProxyRules.is_some():
+        auto u1 = v.orderedProxyRules.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(fleet_proxy_rule_to_json(x2))
+        parts.append("\"orderedProxyRules\":" + codebuild_json_arr(e2))
+    return codebuild_json_obj(parts)
+
+# Serialize PullRequestBuildPolicy to a compact JSON object (declaration order).
+def pull_request_build_policy_to_json(PullRequestBuildPolicy v) -> str:
+    list[str] parts = []
+    parts.append("\"requiresCommentApproval\":" + v.requiresCommentApproval.to_json())
+    if v.approverRoles.is_some():
+        auto u0 = v.approverRoles.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"approverRoles\":" + codebuild_json_arr(e1))
+    return codebuild_json_obj(parts)
+
+# Serialize ScalingConfigurationInput to a compact JSON object (declaration order).
+def scaling_configuration_input_to_json(ScalingConfigurationInput v) -> str:
+    list[str] parts = []
+    if v.scalingType.is_some():
+        auto u0 = v.scalingType.unwrap()
+        parts.append("\"scalingType\":" + codebuild_json_str(u0))
+    if v.targetTrackingScalingConfigs.is_some():
+        auto u1 = v.targetTrackingScalingConfigs.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"targetTrackingScalingConfigs\":" + codebuild_json_arr(e2))
+    if v.maxCapacity.is_some():
+        auto u3 = v.maxCapacity.unwrap()
+        parts.append("\"maxCapacity\":" + str(u3))
+    return codebuild_json_obj(parts)
+
+# Serialize StartBuildBatchInput to a compact JSON object (declaration order).
+def start_build_batch_input_to_json(StartBuildBatchInput v) -> str:
+    list[str] parts = []
+    parts.append("\"projectName\":" + codebuild_json_str(v.projectName))
+    if v.secondarySourcesOverride.is_some():
+        auto u0 = v.secondarySourcesOverride.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"secondarySourcesOverride\":" + codebuild_json_arr(e1))
+    if v.secondarySourcesVersionOverride.is_some():
+        auto u2 = v.secondarySourcesVersionOverride.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"secondarySourcesVersionOverride\":" + codebuild_json_arr(e3))
+    if v.sourceVersion.is_some():
+        auto u4 = v.sourceVersion.unwrap()
+        parts.append("\"sourceVersion\":" + codebuild_json_str(u4))
+    if v.artifactsOverride.is_some():
+        auto u5 = v.artifactsOverride.unwrap()
+        parts.append("\"artifactsOverride\":" + u5.to_json())
+    if v.secondaryArtifactsOverride.is_some():
+        auto u6 = v.secondaryArtifactsOverride.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"secondaryArtifactsOverride\":" + codebuild_json_arr(e7))
+    if v.environmentVariablesOverride.is_some():
+        auto u8 = v.environmentVariablesOverride.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"environmentVariablesOverride\":" + codebuild_json_arr(e9))
+    if v.sourceTypeOverride.is_some():
+        auto u10 = v.sourceTypeOverride.unwrap()
+        parts.append("\"sourceTypeOverride\":" + u10.to_json())
+    if v.sourceLocationOverride.is_some():
+        auto u11 = v.sourceLocationOverride.unwrap()
+        parts.append("\"sourceLocationOverride\":" + codebuild_json_str(u11))
+    if v.sourceAuthOverride.is_some():
+        auto u12 = v.sourceAuthOverride.unwrap()
+        parts.append("\"sourceAuthOverride\":" + u12.to_json())
+    if v.gitCloneDepthOverride.is_some():
+        auto u13 = v.gitCloneDepthOverride.unwrap()
+        parts.append("\"gitCloneDepthOverride\":" + str(u13))
+    if v.gitSubmodulesConfigOverride.is_some():
+        auto u14 = v.gitSubmodulesConfigOverride.unwrap()
+        parts.append("\"gitSubmodulesConfigOverride\":" + u14.to_json())
+    if v.buildspecOverride.is_some():
+        auto u15 = v.buildspecOverride.unwrap()
+        parts.append("\"buildspecOverride\":" + codebuild_json_str(u15))
+    if v.insecureSslOverride.is_some():
+        auto u16 = v.insecureSslOverride.unwrap()
+        parts.append("\"insecureSslOverride\":" + json.dumps(JsonValue.Bool(u16)))
+    if v.reportBuildBatchStatusOverride.is_some():
+        auto u17 = v.reportBuildBatchStatusOverride.unwrap()
+        parts.append("\"reportBuildBatchStatusOverride\":" + json.dumps(JsonValue.Bool(u17)))
+    if v.environmentTypeOverride.is_some():
+        auto u18 = v.environmentTypeOverride.unwrap()
+        parts.append("\"environmentTypeOverride\":" + u18.to_json())
+    if v.imageOverride.is_some():
+        auto u19 = v.imageOverride.unwrap()
+        parts.append("\"imageOverride\":" + codebuild_json_str(u19))
+    if v.computeTypeOverride.is_some():
+        auto u20 = v.computeTypeOverride.unwrap()
+        parts.append("\"computeTypeOverride\":" + u20.to_json())
+    if v.certificateOverride.is_some():
+        auto u21 = v.certificateOverride.unwrap()
+        parts.append("\"certificateOverride\":" + codebuild_json_str(u21))
+    if v.cacheOverride.is_some():
+        auto u22 = v.cacheOverride.unwrap()
+        parts.append("\"cacheOverride\":" + project_cache_to_json(u22))
+    if v.serviceRoleOverride.is_some():
+        auto u23 = v.serviceRoleOverride.unwrap()
+        parts.append("\"serviceRoleOverride\":" + codebuild_json_str(u23))
+    if v.privilegedModeOverride.is_some():
+        auto u24 = v.privilegedModeOverride.unwrap()
+        parts.append("\"privilegedModeOverride\":" + json.dumps(JsonValue.Bool(u24)))
+    if v.buildTimeoutInMinutesOverride.is_some():
+        auto u25 = v.buildTimeoutInMinutesOverride.unwrap()
+        parts.append("\"buildTimeoutInMinutesOverride\":" + str(u25))
+    if v.queuedTimeoutInMinutesOverride.is_some():
+        auto u26 = v.queuedTimeoutInMinutesOverride.unwrap()
+        parts.append("\"queuedTimeoutInMinutesOverride\":" + str(u26))
+    if v.encryptionKeyOverride.is_some():
+        auto u27 = v.encryptionKeyOverride.unwrap()
+        parts.append("\"encryptionKeyOverride\":" + codebuild_json_str(u27))
+    if v.idempotencyToken.is_some():
+        auto u28 = v.idempotencyToken.unwrap()
+        parts.append("\"idempotencyToken\":" + codebuild_json_str(u28))
+    if v.logsConfigOverride.is_some():
+        auto u29 = v.logsConfigOverride.unwrap()
+        parts.append("\"logsConfigOverride\":" + u29.to_json())
+    if v.registryCredentialOverride.is_some():
+        auto u30 = v.registryCredentialOverride.unwrap()
+        parts.append("\"registryCredentialOverride\":" + u30.to_json())
+    if v.imagePullCredentialsTypeOverride.is_some():
+        auto u31 = v.imagePullCredentialsTypeOverride.unwrap()
+        parts.append("\"imagePullCredentialsTypeOverride\":" + u31.to_json())
+    if v.buildBatchConfigOverride.is_some():
+        auto u32 = v.buildBatchConfigOverride.unwrap()
+        parts.append("\"buildBatchConfigOverride\":" + project_build_batch_config_to_json(u32))
+    if v.debugSessionEnabled.is_some():
+        auto u33 = v.debugSessionEnabled.unwrap()
+        parts.append("\"debugSessionEnabled\":" + json.dumps(JsonValue.Bool(u33)))
+    return codebuild_json_obj(parts)
+
+# Serialize StartBuildInput to a compact JSON object (declaration order).
+def start_build_input_to_json(StartBuildInput v) -> str:
+    list[str] parts = []
+    parts.append("\"projectName\":" + codebuild_json_str(v.projectName))
+    if v.secondarySourcesOverride.is_some():
+        auto u0 = v.secondarySourcesOverride.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"secondarySourcesOverride\":" + codebuild_json_arr(e1))
+    if v.secondarySourcesVersionOverride.is_some():
+        auto u2 = v.secondarySourcesVersionOverride.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"secondarySourcesVersionOverride\":" + codebuild_json_arr(e3))
+    if v.sourceVersion.is_some():
+        auto u4 = v.sourceVersion.unwrap()
+        parts.append("\"sourceVersion\":" + codebuild_json_str(u4))
+    if v.artifactsOverride.is_some():
+        auto u5 = v.artifactsOverride.unwrap()
+        parts.append("\"artifactsOverride\":" + u5.to_json())
+    if v.secondaryArtifactsOverride.is_some():
+        auto u6 = v.secondaryArtifactsOverride.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"secondaryArtifactsOverride\":" + codebuild_json_arr(e7))
+    if v.environmentVariablesOverride.is_some():
+        auto u8 = v.environmentVariablesOverride.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"environmentVariablesOverride\":" + codebuild_json_arr(e9))
+    if v.sourceTypeOverride.is_some():
+        auto u10 = v.sourceTypeOverride.unwrap()
+        parts.append("\"sourceTypeOverride\":" + u10.to_json())
+    if v.sourceLocationOverride.is_some():
+        auto u11 = v.sourceLocationOverride.unwrap()
+        parts.append("\"sourceLocationOverride\":" + codebuild_json_str(u11))
+    if v.sourceAuthOverride.is_some():
+        auto u12 = v.sourceAuthOverride.unwrap()
+        parts.append("\"sourceAuthOverride\":" + u12.to_json())
+    if v.gitCloneDepthOverride.is_some():
+        auto u13 = v.gitCloneDepthOverride.unwrap()
+        parts.append("\"gitCloneDepthOverride\":" + str(u13))
+    if v.gitSubmodulesConfigOverride.is_some():
+        auto u14 = v.gitSubmodulesConfigOverride.unwrap()
+        parts.append("\"gitSubmodulesConfigOverride\":" + u14.to_json())
+    if v.buildspecOverride.is_some():
+        auto u15 = v.buildspecOverride.unwrap()
+        parts.append("\"buildspecOverride\":" + codebuild_json_str(u15))
+    if v.insecureSslOverride.is_some():
+        auto u16 = v.insecureSslOverride.unwrap()
+        parts.append("\"insecureSslOverride\":" + json.dumps(JsonValue.Bool(u16)))
+    if v.reportBuildStatusOverride.is_some():
+        auto u17 = v.reportBuildStatusOverride.unwrap()
+        parts.append("\"reportBuildStatusOverride\":" + json.dumps(JsonValue.Bool(u17)))
+    if v.buildStatusConfigOverride.is_some():
+        auto u18 = v.buildStatusConfigOverride.unwrap()
+        parts.append("\"buildStatusConfigOverride\":" + u18.to_json())
+    if v.environmentTypeOverride.is_some():
+        auto u19 = v.environmentTypeOverride.unwrap()
+        parts.append("\"environmentTypeOverride\":" + u19.to_json())
+    if v.imageOverride.is_some():
+        auto u20 = v.imageOverride.unwrap()
+        parts.append("\"imageOverride\":" + codebuild_json_str(u20))
+    if v.computeTypeOverride.is_some():
+        auto u21 = v.computeTypeOverride.unwrap()
+        parts.append("\"computeTypeOverride\":" + u21.to_json())
+    if v.certificateOverride.is_some():
+        auto u22 = v.certificateOverride.unwrap()
+        parts.append("\"certificateOverride\":" + codebuild_json_str(u22))
+    if v.cacheOverride.is_some():
+        auto u23 = v.cacheOverride.unwrap()
+        parts.append("\"cacheOverride\":" + project_cache_to_json(u23))
+    if v.serviceRoleOverride.is_some():
+        auto u24 = v.serviceRoleOverride.unwrap()
+        parts.append("\"serviceRoleOverride\":" + codebuild_json_str(u24))
+    if v.privilegedModeOverride.is_some():
+        auto u25 = v.privilegedModeOverride.unwrap()
+        parts.append("\"privilegedModeOverride\":" + json.dumps(JsonValue.Bool(u25)))
+    if v.timeoutInMinutesOverride.is_some():
+        auto u26 = v.timeoutInMinutesOverride.unwrap()
+        parts.append("\"timeoutInMinutesOverride\":" + str(u26))
+    if v.queuedTimeoutInMinutesOverride.is_some():
+        auto u27 = v.queuedTimeoutInMinutesOverride.unwrap()
+        parts.append("\"queuedTimeoutInMinutesOverride\":" + str(u27))
+    if v.encryptionKeyOverride.is_some():
+        auto u28 = v.encryptionKeyOverride.unwrap()
+        parts.append("\"encryptionKeyOverride\":" + codebuild_json_str(u28))
+    if v.idempotencyToken.is_some():
+        auto u29 = v.idempotencyToken.unwrap()
+        parts.append("\"idempotencyToken\":" + codebuild_json_str(u29))
+    if v.logsConfigOverride.is_some():
+        auto u30 = v.logsConfigOverride.unwrap()
+        parts.append("\"logsConfigOverride\":" + u30.to_json())
+    if v.registryCredentialOverride.is_some():
+        auto u31 = v.registryCredentialOverride.unwrap()
+        parts.append("\"registryCredentialOverride\":" + u31.to_json())
+    if v.imagePullCredentialsTypeOverride.is_some():
+        auto u32 = v.imagePullCredentialsTypeOverride.unwrap()
+        parts.append("\"imagePullCredentialsTypeOverride\":" + u32.to_json())
+    if v.debugSessionEnabled.is_some():
+        auto u33 = v.debugSessionEnabled.unwrap()
+        parts.append("\"debugSessionEnabled\":" + json.dumps(JsonValue.Bool(u33)))
+    if v.fleetOverride.is_some():
+        auto u34 = v.fleetOverride.unwrap()
+        parts.append("\"fleetOverride\":" + u34.to_json())
+    if v.autoRetryLimitOverride.is_some():
+        auto u35 = v.autoRetryLimitOverride.unwrap()
+        parts.append("\"autoRetryLimitOverride\":" + str(u35))
+    if v.hostKernelOverride.is_some():
+        auto u36 = v.hostKernelOverride.unwrap()
+        parts.append("\"hostKernelOverride\":" + u36.to_json())
+    return codebuild_json_obj(parts)
+
+# Serialize UpdateFleetInput to a compact JSON object (declaration order).
+def update_fleet_input_to_json(UpdateFleetInput v) -> str:
+    list[str] parts = []
+    parts.append("\"arn\":" + codebuild_json_str(v.arn))
+    if v.baseCapacity.is_some():
+        auto u0 = v.baseCapacity.unwrap()
+        parts.append("\"baseCapacity\":" + str(u0))
+    if v.environmentType.is_some():
+        auto u1 = v.environmentType.unwrap()
+        parts.append("\"environmentType\":" + u1.to_json())
+    if v.computeType.is_some():
+        auto u2 = v.computeType.unwrap()
+        parts.append("\"computeType\":" + u2.to_json())
+    if v.computeConfiguration.is_some():
+        auto u3 = v.computeConfiguration.unwrap()
+        parts.append("\"computeConfiguration\":" + u3.to_json())
+    if v.scalingConfiguration.is_some():
+        auto u4 = v.scalingConfiguration.unwrap()
+        parts.append("\"scalingConfiguration\":" + scaling_configuration_input_to_json(u4))
+    if v.overflowBehavior.is_some():
+        auto u5 = v.overflowBehavior.unwrap()
+        parts.append("\"overflowBehavior\":" + u5.to_json())
+    if v.vpcConfig.is_some():
+        auto u6 = v.vpcConfig.unwrap()
+        parts.append("\"vpcConfig\":" + vpc_config_to_json(u6))
+    if v.proxyConfiguration.is_some():
+        auto u7 = v.proxyConfiguration.unwrap()
+        parts.append("\"proxyConfiguration\":" + proxy_configuration_to_json(u7))
+    if v.imageId.is_some():
+        auto u8 = v.imageId.unwrap()
+        parts.append("\"imageId\":" + codebuild_json_str(u8))
+    if v.fleetServiceRole.is_some():
+        auto u9 = v.fleetServiceRole.unwrap()
+        parts.append("\"fleetServiceRole\":" + codebuild_json_str(u9))
+    if v.tags.is_some():
+        auto u10 = v.tags.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"tags\":" + codebuild_json_arr(e11))
+    return codebuild_json_obj(parts)
+
+# Serialize UpdateProjectInput to a compact JSON object (declaration order).
+def update_project_input_to_json(UpdateProjectInput v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + codebuild_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + codebuild_json_str(u0))
+    if v.source.is_some():
+        auto u1 = v.source.unwrap()
+        parts.append("\"source\":" + u1.to_json())
+    if v.secondarySources.is_some():
+        auto u2 = v.secondarySources.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"secondarySources\":" + codebuild_json_arr(e3))
+    if v.sourceVersion.is_some():
+        auto u4 = v.sourceVersion.unwrap()
+        parts.append("\"sourceVersion\":" + codebuild_json_str(u4))
+    if v.secondarySourceVersions.is_some():
+        auto u5 = v.secondarySourceVersions.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"secondarySourceVersions\":" + codebuild_json_arr(e6))
+    if v.artifacts.is_some():
+        auto u7 = v.artifacts.unwrap()
+        parts.append("\"artifacts\":" + u7.to_json())
+    if v.secondaryArtifacts.is_some():
+        auto u8 = v.secondaryArtifacts.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"secondaryArtifacts\":" + codebuild_json_arr(e9))
+    if v.cache.is_some():
+        auto u10 = v.cache.unwrap()
+        parts.append("\"cache\":" + project_cache_to_json(u10))
+    if v.environment.is_some():
+        auto u11 = v.environment.unwrap()
+        parts.append("\"environment\":" + project_environment_to_json(u11))
+    if v.serviceRole.is_some():
+        auto u12 = v.serviceRole.unwrap()
+        parts.append("\"serviceRole\":" + codebuild_json_str(u12))
+    if v.timeoutInMinutes.is_some():
+        auto u13 = v.timeoutInMinutes.unwrap()
+        parts.append("\"timeoutInMinutes\":" + str(u13))
+    if v.queuedTimeoutInMinutes.is_some():
+        auto u14 = v.queuedTimeoutInMinutes.unwrap()
+        parts.append("\"queuedTimeoutInMinutes\":" + str(u14))
+    if v.encryptionKey.is_some():
+        auto u15 = v.encryptionKey.unwrap()
+        parts.append("\"encryptionKey\":" + codebuild_json_str(u15))
+    if v.tags.is_some():
+        auto u16 = v.tags.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"tags\":" + codebuild_json_arr(e17))
+    if v.vpcConfig.is_some():
+        auto u18 = v.vpcConfig.unwrap()
+        parts.append("\"vpcConfig\":" + vpc_config_to_json(u18))
+    if v.badgeEnabled.is_some():
+        auto u19 = v.badgeEnabled.unwrap()
+        parts.append("\"badgeEnabled\":" + json.dumps(JsonValue.Bool(u19)))
+    if v.logsConfig.is_some():
+        auto u20 = v.logsConfig.unwrap()
+        parts.append("\"logsConfig\":" + u20.to_json())
+    if v.fileSystemLocations.is_some():
+        auto u21 = v.fileSystemLocations.unwrap()
+        list[str] e22 = []
+        for x22 in u21:
+            e22.append(x22.to_json())
+        parts.append("\"fileSystemLocations\":" + codebuild_json_arr(e22))
+    if v.buildBatchConfig.is_some():
+        auto u23 = v.buildBatchConfig.unwrap()
+        parts.append("\"buildBatchConfig\":" + project_build_batch_config_to_json(u23))
+    if v.concurrentBuildLimit.is_some():
+        auto u24 = v.concurrentBuildLimit.unwrap()
+        parts.append("\"concurrentBuildLimit\":" + str(u24))
+    if v.autoRetryLimit.is_some():
+        auto u25 = v.autoRetryLimit.unwrap()
+        parts.append("\"autoRetryLimit\":" + str(u25))
+    return codebuild_json_obj(parts)
+
+# Serialize UpdateReportGroupInput to a compact JSON object (declaration order).
+def update_report_group_input_to_json(UpdateReportGroupInput v) -> str:
+    list[str] parts = []
+    parts.append("\"arn\":" + codebuild_json_str(v.arn))
+    if v.exportConfig.is_some():
+        auto u0 = v.exportConfig.unwrap()
+        parts.append("\"exportConfig\":" + u0.to_json())
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + codebuild_json_arr(e2))
+    return codebuild_json_obj(parts)
+
+# Serialize UpdateWebhookInput to a compact JSON object (declaration order).
+def update_webhook_input_to_json(UpdateWebhookInput v) -> str:
+    list[str] parts = []
+    parts.append("\"projectName\":" + codebuild_json_str(v.projectName))
+    if v.branchFilter.is_some():
+        auto u0 = v.branchFilter.unwrap()
+        parts.append("\"branchFilter\":" + codebuild_json_str(u0))
+    if v.rotateSecret.is_some():
+        auto u1 = v.rotateSecret.unwrap()
+        parts.append("\"rotateSecret\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.filterGroups.is_some():
+        auto u2 = v.filterGroups.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            list[str] e4 = []
+            for x4 in x3:
+                e4.append(x4.to_json())
+            e3.append(codebuild_json_arr(e4))
+        parts.append("\"filterGroups\":" + codebuild_json_arr(e3))
+    if v.buildType.is_some():
+        auto u5 = v.buildType.unwrap()
+        parts.append("\"buildType\":" + u5.to_json())
+    if v.pullRequestBuildPolicy.is_some():
+        auto u6 = v.pullRequestBuildPolicy.unwrap()
+        parts.append("\"pullRequestBuildPolicy\":" + pull_request_build_policy_to_json(u6))
+    return codebuild_json_obj(parts)
+
+# Serialize VpcConfig to a compact JSON object (declaration order).
+def vpc_config_to_json(VpcConfig v) -> str:
+    list[str] parts = []
+    if v.vpcId.is_some():
+        auto u0 = v.vpcId.unwrap()
+        parts.append("\"vpcId\":" + codebuild_json_str(u0))
+    if v.subnets.is_some():
+        auto u1 = v.subnets.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(codebuild_json_str(x2))
+        parts.append("\"subnets\":" + codebuild_json_arr(e2))
+    if v.securityGroupIds.is_some():
+        auto u3 = v.securityGroupIds.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(codebuild_json_str(x4))
+        parts.append("\"securityGroupIds\":" + codebuild_json_arr(e4))
+    return codebuild_json_obj(parts)
 
 # A bound CodeBuild client: credentials + region, threaded into every operation.
 struct CodeBuildClient:
     core.Credentials creds
     str region
+
+    # BatchDeleteBuilds
+    # errors: InvalidInputException
+    def batch_delete_builds(self, BatchDeleteBuildsInput input) -> str:
+        auto body = batch_delete_builds_input_to_json(input)
+        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "BatchDeleteBuilds", body)
+
+    # BatchGetBuildBatches
+    # errors: InvalidInputException
+    def batch_get_build_batches(self, BatchGetBuildBatchesInput input) -> str:
+        auto body = batch_get_build_batches_input_to_json(input)
+        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "BatchGetBuildBatches", body)
+
+    # BatchGetBuilds
+    # errors: InvalidInputException
+    def batch_get_builds(self, BatchGetBuildsInput input) -> str:
+        auto body = batch_get_builds_input_to_json(input)
+        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "BatchGetBuilds", body)
+
+    # BatchGetCommandExecutions
+    # errors: InvalidInputException
+    def batch_get_command_executions(self, BatchGetCommandExecutionsInput input) -> str:
+        auto body = batch_get_command_executions_input_to_json(input)
+        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "BatchGetCommandExecutions", body)
+
+    # BatchGetFleets
+    # errors: InvalidInputException
+    def batch_get_fleets(self, BatchGetFleetsInput input) -> str:
+        auto body = batch_get_fleets_input_to_json(input)
+        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "BatchGetFleets", body)
+
+    # BatchGetProjects
+    # errors: InvalidInputException
+    def batch_get_projects(self, BatchGetProjectsInput input) -> str:
+        auto body = batch_get_projects_input_to_json(input)
+        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "BatchGetProjects", body)
+
+    # BatchGetReportGroups
+    # errors: InvalidInputException
+    def batch_get_report_groups(self, BatchGetReportGroupsInput input) -> str:
+        auto body = batch_get_report_groups_input_to_json(input)
+        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "BatchGetReportGroups", body)
+
+    # BatchGetReports
+    # errors: InvalidInputException
+    def batch_get_reports(self, BatchGetReportsInput input) -> str:
+        auto body = batch_get_reports_input_to_json(input)
+        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "BatchGetReports", body)
+
+    # BatchGetSandboxes
+    # errors: InvalidInputException
+    def batch_get_sandboxes(self, BatchGetSandboxesInput input) -> str:
+        auto body = batch_get_sandboxes_input_to_json(input)
+        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "BatchGetSandboxes", body)
+
+    # CreateFleet
+    # errors: AccountLimitExceededException, InvalidInputException, ResourceAlreadyExistsException
+    def create_fleet(self, CreateFleetInput input) -> str:
+        auto body = create_fleet_input_to_json(input)
+        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "CreateFleet", body)
+
+    # CreateProject
+    # errors: AccountLimitExceededException, InvalidInputException, ResourceAlreadyExistsException
+    def create_project(self, CreateProjectInput input) -> str:
+        auto body = create_project_input_to_json(input)
+        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "CreateProject", body)
+
+    # CreateReportGroup
+    # errors: AccountLimitExceededException, InvalidInputException, ResourceAlreadyExistsException
+    def create_report_group(self, CreateReportGroupInput input) -> str:
+        auto body = create_report_group_input_to_json(input)
+        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "CreateReportGroup", body)
+
+    # CreateWebhook
+    # errors: InvalidInputException, OAuthProviderException, ResourceAlreadyExistsException, ResourceNotFoundException
+    def create_webhook(self, CreateWebhookInput input) -> str:
+        auto body = create_webhook_input_to_json(input)
+        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "CreateWebhook", body)
 
     # DeleteBuildBatch
     # errors: InvalidInputException
@@ -2226,6 +3221,18 @@ struct CodeBuildClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "RetryBuildBatch", body)
 
+    # StartBuild
+    # errors: AccountLimitExceededException, InvalidInputException, ResourceNotFoundException
+    def start_build(self, StartBuildInput input) -> str:
+        auto body = start_build_input_to_json(input)
+        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "StartBuild", body)
+
+    # StartBuildBatch
+    # errors: InvalidInputException, ResourceNotFoundException
+    def start_build_batch(self, StartBuildBatchInput input) -> str:
+        auto body = start_build_batch_input_to_json(input)
+        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "StartBuildBatch", body)
+
     # StartCommandExecution
     # errors: InvalidInputException, ResourceNotFoundException
     def start_command_execution(self, StartCommandExecutionInput input) -> str:
@@ -2262,11 +3269,35 @@ struct CodeBuildClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "StopSandbox", body)
 
+    # UpdateFleet
+    # errors: AccountLimitExceededException, InvalidInputException, ResourceNotFoundException
+    def update_fleet(self, UpdateFleetInput input) -> str:
+        auto body = update_fleet_input_to_json(input)
+        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "UpdateFleet", body)
+
+    # UpdateProject
+    # errors: InvalidInputException, ResourceNotFoundException
+    def update_project(self, UpdateProjectInput input) -> str:
+        auto body = update_project_input_to_json(input)
+        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "UpdateProject", body)
+
     # UpdateProjectVisibility
     # errors: InvalidInputException, ResourceNotFoundException
     def update_project_visibility(self, UpdateProjectVisibilityInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "UpdateProjectVisibility", body)
+
+    # UpdateReportGroup
+    # errors: InvalidInputException, ResourceNotFoundException
+    def update_report_group(self, UpdateReportGroupInput input) -> str:
+        auto body = update_report_group_input_to_json(input)
+        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "UpdateReportGroup", body)
+
+    # UpdateWebhook
+    # errors: InvalidInputException, OAuthProviderException, ResourceNotFoundException
+    def update_webhook(self, UpdateWebhookInput input) -> str:
+        auto body = update_webhook_input_to_json(input)
+        return awsjson.awsjson_request_now(codebuild_protocol(), self.creds, self.region, "UpdateWebhook", body)
 
     # Paginator for DescribeCodeCoverages — yields each Response page, threading the
     # nextToken -> nextToken continuation token until the output token is absent (result key: codeCoverages).

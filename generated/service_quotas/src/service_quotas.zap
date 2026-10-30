@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 26 operations — 22 with a generated method,
-#   4 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 26 operations — 26 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   80 structs (63 @derive(Json)), 10 enums, 17 error variants.
 #   6 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -185,8 +185,9 @@ struct GetAWSDefaultServiceQuotaRequest:
     str ServiceCode
     str QuotaCode
 
-# no @derive(Json): member(s) Quota: ServiceQuota not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Quota: ServiceQuota not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAWSDefaultServiceQuotaResponse:
     Optional[ServiceQuota] Quota
 
@@ -204,8 +205,9 @@ struct GetAutoManagementConfigurationRequest:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ExclusionList: dict[str, list[QuotaInfo]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExclusionList: dict[str, list[QuotaInfo]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAutoManagementConfigurationResponse:
     Optional[str] OptInLevel
     Optional[OptInType] OptInType
@@ -219,8 +221,9 @@ struct GetQuotaUtilizationReportRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Quotas: list[QuotaUtilizationInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Quotas: list[QuotaUtilizationInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetQuotaUtilizationReportResponse:
     Optional[str] ReportId
     Optional[ReportStatus] Status
@@ -255,8 +258,9 @@ struct GetServiceQuotaRequest:
     str QuotaCode
     Optional[str] ContextId
 
-# no @derive(Json): member(s) Quota: ServiceQuota not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Quota: ServiceQuota not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetServiceQuotaResponse:
     Optional[ServiceQuota] Quota
 
@@ -278,8 +282,9 @@ struct ListAWSDefaultServiceQuotasRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Quotas: list[ServiceQuota] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Quotas: list[ServiceQuota] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAWSDefaultServiceQuotasResponse:
     Optional[str] NextToken
     Optional[list[ServiceQuota]] Quotas
@@ -293,8 +298,9 @@ struct ListRequestedServiceQuotaChangeHistoryByQuotaRequest:
     Optional[int64] MaxResults
     Optional[AppliedLevelEnum] QuotaRequestedAtLevel
 
-# no @derive(Json): member(s) RequestedQuotas: list[RequestedServiceQuotaChange] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestedQuotas: list[RequestedServiceQuotaChange] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRequestedServiceQuotaChangeHistoryByQuotaResponse:
     Optional[str] NextToken
     Optional[list[RequestedServiceQuotaChange]] RequestedQuotas
@@ -307,8 +313,9 @@ struct ListRequestedServiceQuotaChangeHistoryRequest:
     Optional[int64] MaxResults
     Optional[AppliedLevelEnum] QuotaRequestedAtLevel
 
-# no @derive(Json): member(s) RequestedQuotas: list[RequestedServiceQuotaChange] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestedQuotas: list[RequestedServiceQuotaChange] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRequestedServiceQuotaChangeHistoryResponse:
     Optional[str] NextToken
     Optional[list[RequestedServiceQuotaChange]] RequestedQuotas
@@ -320,8 +327,9 @@ struct ListServiceQuotaIncreaseRequestsInTemplateRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ServiceQuotaIncreaseRequestInTemplateList: list[ServiceQuotaIncreaseRequestInTemplate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceQuotaIncreaseRequestInTemplateList: list[ServiceQuotaIncreaseRequestInTemplate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceQuotaIncreaseRequestsInTemplateResponse:
     Optional[list[ServiceQuotaIncreaseRequestInTemplate]] ServiceQuotaIncreaseRequestInTemplateList
     Optional[str] NextToken
@@ -334,8 +342,9 @@ struct ListServiceQuotasRequest:
     Optional[str] QuotaCode
     Optional[AppliedLevelEnum] QuotaAppliedAtLevel
 
-# no @derive(Json): member(s) Quotas: list[ServiceQuota] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Quotas: list[ServiceQuota] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServiceQuotasResponse:
     Optional[str] NextToken
     Optional[list[ServiceQuota]] Quotas
@@ -345,8 +354,9 @@ struct ListServicesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Services: list[ServiceInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Services: list[ServiceInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServicesResponse:
     Optional[str] NextToken
     Optional[list[ServiceInfo]] Services
@@ -355,13 +365,15 @@ struct ListServicesResponse:
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) MetricDimensions: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricDimensions: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricInfo:
     Optional[str] MetricNamespace
     Optional[str] MetricName
@@ -469,8 +481,9 @@ struct ServiceInfo:
     Optional[str] ServiceCode
     Optional[str] ServiceName
 
-# no @derive(Json): member(s) UsageMetric: MetricInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UsageMetric: MetricInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceQuota:
     Optional[str] ServiceCode
     Optional[str] ServiceName
@@ -503,8 +516,9 @@ struct ServiceQuotaIncreaseRequestInTemplate:
 struct ServiceQuotaTemplateNotInUseException:
     Optional[str] Message
 
-# no @derive(Json): member(s) ExclusionList: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExclusionList: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartAutoManagementRequest:
     str OptInLevel
     OptInType OptInType
@@ -546,8 +560,9 @@ struct Tag:
 struct TagPolicyViolationException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceARN
     list[Tag] Tags
@@ -569,8 +584,9 @@ struct TooManyRequestsException:
 struct TooManyTagsException:
     Optional[str] Message
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceARN
     list[str] TagKeys
@@ -580,8 +596,9 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ExclusionList: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExclusionList: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAutoManagementRequest:
     Optional[OptInType] OptInType
     Optional[str] NotificationArn
@@ -656,12 +673,94 @@ def servicequotas_error_from_code(str code) -> Service_QuotasError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   StartAutoManagement (input StartAutoManagementRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateAutoManagement (input UpdateAutoManagementRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def servicequotas_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def servicequotas_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def servicequotas_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize StartAutoManagementRequest to a compact JSON object (declaration order).
+def start_auto_management_request_to_json(StartAutoManagementRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"OptInLevel\":" + servicequotas_json_str(v.OptInLevel))
+    parts.append("\"OptInType\":" + v.OptInType.to_json())
+    if v.NotificationArn.is_some():
+        auto u0 = v.NotificationArn.unwrap()
+        parts.append("\"NotificationArn\":" + servicequotas_json_str(u0))
+    if v.ExclusionList.is_some():
+        auto u1 = v.ExclusionList.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            list[str] e3 = []
+            for x3 in u1[k2]:
+                e3.append(servicequotas_json_str(x3))
+            m2.append(servicequotas_json_str(k2) + ":" + servicequotas_json_arr(e3))
+        parts.append("\"ExclusionList\":" + servicequotas_json_obj(m2))
+    return servicequotas_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + servicequotas_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + servicequotas_json_arr(e0))
+    return servicequotas_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + servicequotas_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(servicequotas_json_str(x0))
+    parts.append("\"TagKeys\":" + servicequotas_json_arr(e0))
+    return servicequotas_json_obj(parts)
+
+# Serialize UpdateAutoManagementRequest to a compact JSON object (declaration order).
+def update_auto_management_request_to_json(UpdateAutoManagementRequest v) -> str:
+    list[str] parts = []
+    if v.OptInType.is_some():
+        auto u0 = v.OptInType.unwrap()
+        parts.append("\"OptInType\":" + u0.to_json())
+    if v.NotificationArn.is_some():
+        auto u1 = v.NotificationArn.unwrap()
+        parts.append("\"NotificationArn\":" + servicequotas_json_str(u1))
+    if v.ExclusionList.is_some():
+        auto u2 = v.ExclusionList.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            list[str] e4 = []
+            for x4 in u2[k3]:
+                e4.append(servicequotas_json_str(x4))
+            m3.append(servicequotas_json_str(k3) + ":" + servicequotas_json_arr(e4))
+        parts.append("\"ExclusionList\":" + servicequotas_json_obj(m3))
+    return servicequotas_json_obj(parts)
 
 # A bound Service_Quotas client: credentials + region, threaded into every operation.
 struct Service_QuotasClient:
@@ -788,6 +887,12 @@ struct Service_QuotasClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(servicequotas_protocol(), self.creds, self.region, "RequestServiceQuotaIncrease", body)
 
+    # StartAutoManagement
+    # errors: AccessDeniedException, IllegalArgumentException, NoSuchResourceException, ServiceException, TooManyRequestsException
+    def start_auto_management(self, StartAutoManagementRequest input) -> str:
+        auto body = start_auto_management_request_to_json(input)
+        return awsjson.awsjson_request_now(servicequotas_protocol(), self.creds, self.region, "StartAutoManagement", body)
+
     # StartQuotaUtilizationReport
     # errors: AccessDeniedException, IllegalArgumentException, InvalidPaginationTokenException, NoSuchResourceException, ServiceException, TooManyRequestsException
     def start_quota_utilization_report(self) -> str:
@@ -799,6 +904,24 @@ struct Service_QuotasClient:
     def stop_auto_management(self) -> str:
         auto body = "{}"
         return awsjson.awsjson_request_now(servicequotas_protocol(), self.creds, self.region, "StopAutoManagement", body)
+
+    # TagResource
+    # errors: AccessDeniedException, IllegalArgumentException, NoSuchResourceException, ServiceException, TagPolicyViolationException, TooManyRequestsException, TooManyTagsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(servicequotas_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, IllegalArgumentException, NoSuchResourceException, ServiceException, TooManyRequestsException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(servicequotas_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateAutoManagement
+    # errors: AccessDeniedException, IllegalArgumentException, NoSuchResourceException, ServiceException, TooManyRequestsException
+    def update_auto_management(self, UpdateAutoManagementRequest input) -> str:
+        auto body = update_auto_management_request_to_json(input)
+        return awsjson.awsjson_request_now(servicequotas_protocol(), self.creds, self.region, "UpdateAutoManagement", body)
 
     # Paginator for ListAWSDefaultServiceQuotas — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: Quotas).

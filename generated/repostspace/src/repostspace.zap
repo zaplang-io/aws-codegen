@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 19 operations — 10 with a generated method,
-#   9 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 19 operations — 18 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   46 structs (24 @derive(Json)), 9 enums, 7 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -129,8 +129,9 @@ struct BatchAddChannelRoleToAccessorsInput:
     list[str] accessorIds
     ChannelRole channelRole
 
-# no @derive(Json): member(s) addedAccessorIds: list[str], errors: list[BatchError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) addedAccessorIds: list[str], errors: list[BatchError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchAddChannelRoleToAccessorsOutput:
     list[str] addedAccessorIds
     list[BatchError] errors
@@ -142,8 +143,9 @@ struct BatchAddRoleInput:
     list[str] accessorIds
     Role role
 
-# no @derive(Json): member(s) addedAccessorIds: list[str], errors: list[BatchError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) addedAccessorIds: list[str], errors: list[BatchError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchAddRoleOutput:
     list[str] addedAccessorIds
     list[BatchError] errors
@@ -162,8 +164,9 @@ struct BatchRemoveChannelRoleFromAccessorsInput:
     list[str] accessorIds
     ChannelRole channelRole
 
-# no @derive(Json): member(s) removedAccessorIds: list[str], errors: list[BatchError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) removedAccessorIds: list[str], errors: list[BatchError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchRemoveChannelRoleFromAccessorsOutput:
     list[str] removedAccessorIds
     list[BatchError] errors
@@ -175,8 +178,9 @@ struct BatchRemoveRoleInput:
     list[str] accessorIds
     Role role
 
-# no @derive(Json): member(s) removedAccessorIds: list[str], errors: list[BatchError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) removedAccessorIds: list[str], errors: list[BatchError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchRemoveRoleOutput:
     list[str] removedAccessorIds
     list[BatchError] errors
@@ -245,8 +249,9 @@ struct GetChannelInput:
     str spaceId
     str channelId
 
-# no @derive(Json): member(s) channelRoles: dict[str, list[ChannelRole]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) channelRoles: dict[str, list[ChannelRole]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetChannelOutput:
     str spaceId
     str channelId
@@ -262,8 +267,9 @@ struct GetChannelOutput:
 struct GetSpaceInput:
     str spaceId
 
-# no @derive(Json): member(s) userAdmins: list[str], groupAdmins: list[str], roles: dict[str, list[Role]], supportedEmailDomains: SupportedEmailDomainsStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userAdmins: list[str], groupAdmins: list[str], roles: dict[str, list[Role]], supportedEmailDomains: SupportedEmailDomainsStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSpaceOutput:
     str spaceId
     str arn
@@ -302,8 +308,9 @@ struct ListChannelsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) channels: list[ChannelData] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) channels: list[ChannelData] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelsOutput:
     list[ChannelData] channels
     Optional[str] nextToken
@@ -314,8 +321,9 @@ struct ListSpacesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) spaces: list[SpaceData] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) spaces: list[SpaceData] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSpacesOutput:
     list[SpaceData] spaces
     Optional[str] nextToken
@@ -325,8 +333,9 @@ struct ListSpacesOutput:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -358,8 +367,9 @@ struct ServiceQuotaExceededException:
     str serviceCode
     str quotaCode
 
-# no @derive(Json): member(s) supportedEmailDomains: SupportedEmailDomainsStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) supportedEmailDomains: SupportedEmailDomainsStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SpaceData:
     str spaceId
     str arn
@@ -379,14 +389,16 @@ struct SpaceData:
     Optional[int64] contentSize
     Optional[SupportedEmailDomainsStatus] supportedEmailDomains
 
-# no @derive(Json): member(s) allowedDomains: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedDomains: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SupportedEmailDomainsParameters:
     Optional[FeatureEnableParameter] enabled
     Optional[list[str]] allowedDomains
 
-# no @derive(Json): member(s) allowedDomains: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedDomains: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SupportedEmailDomainsStatus:
     Optional[FeatureEnableStatus] enabled
     Optional[list[str]] allowedDomains
@@ -442,8 +454,9 @@ struct UpdateSpaceInput:
     Optional[str] roleArn
     Optional[SupportedEmailDomainsParameters] supportedEmailDomains
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -492,15 +505,7 @@ def repostspace_error_from_code(str code) -> repostspaceError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchAddChannelRoleToAccessors (document member `accessorIds: list[str]` is not serializable by derive)
-#   BatchAddRole (document member `accessorIds: list[str]` is not serializable by derive)
-#   BatchRemoveChannelRoleFromAccessors (document member `accessorIds: list[str]` is not serializable by derive)
-#   BatchRemoveRole (document member `accessorIds: list[str]` is not serializable by derive)
-#   CreateSpace (document member `tags: dict[str, str]` is not serializable by derive)
-#   SendInvites (document member `accessorIds: list[str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateSpace (document member `supportedEmailDomains: SupportedEmailDomainsParameters` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -517,10 +522,120 @@ struct UpdateChannelDocument:
     str channelName
     Optional[str] channelDescription
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def repostspace_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def repostspace_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def repostspace_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize SupportedEmailDomainsParameters to a compact JSON object (declaration order).
+def supported_email_domains_parameters_to_json(SupportedEmailDomainsParameters v) -> str:
+    list[str] parts = []
+    if v.enabled.is_some():
+        auto u0 = v.enabled.unwrap()
+        parts.append("\"enabled\":" + u0.to_json())
+    if v.allowedDomains.is_some():
+        auto u1 = v.allowedDomains.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(repostspace_json_str(x2))
+        parts.append("\"allowedDomains\":" + repostspace_json_arr(e2))
+    return repostspace_json_obj(parts)
+
 # A bound repostspace client: credentials + region, threaded into every operation.
 struct repostspaceClient:
     core.Credentials creds
     str region
+
+    # BatchAddChannelRoleToAccessors  POST /spaces/{spaceId}/channels/{channelId}/roles
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_add_channel_role_to_accessors(self, BatchAddChannelRoleToAccessorsInput input) -> str:
+        auto host = endpoints.regional_host(repostspace_service(), self.region)
+        dict[str, str] labels = {}
+        labels["spaceId"] = input.spaceId
+        labels["channelId"] = input.channelId
+        auto b = binding.HttpBinding(method="POST", path_template="/spaces/{spaceId}/channels/{channelId}/roles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.accessorIds:
+            e0.append(repostspace_json_str(x0))
+        parts.append("\"accessorIds\":" + repostspace_json_arr(e0))
+        parts.append("\"channelRole\":" + input.channelRole.to_json())
+        auto bp = restjson.rest_json_document(b, repostspace_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, repostspace_service(), self.region, host)
+
+    # BatchAddRole  POST /spaces/{spaceId}/roles
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_add_role(self, BatchAddRoleInput input) -> str:
+        auto host = endpoints.regional_host(repostspace_service(), self.region)
+        dict[str, str] labels = {}
+        labels["spaceId"] = input.spaceId
+        auto b = binding.HttpBinding(method="POST", path_template="/spaces/{spaceId}/roles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.accessorIds:
+            e0.append(repostspace_json_str(x0))
+        parts.append("\"accessorIds\":" + repostspace_json_arr(e0))
+        parts.append("\"role\":" + input.role.to_json())
+        auto bp = restjson.rest_json_document(b, repostspace_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, repostspace_service(), self.region, host)
+
+    # BatchRemoveChannelRoleFromAccessors  PATCH /spaces/{spaceId}/channels/{channelId}/roles
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_remove_channel_role_from_accessors(self, BatchRemoveChannelRoleFromAccessorsInput input) -> str:
+        auto host = endpoints.regional_host(repostspace_service(), self.region)
+        dict[str, str] labels = {}
+        labels["spaceId"] = input.spaceId
+        labels["channelId"] = input.channelId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/spaces/{spaceId}/channels/{channelId}/roles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.accessorIds:
+            e0.append(repostspace_json_str(x0))
+        parts.append("\"accessorIds\":" + repostspace_json_arr(e0))
+        parts.append("\"channelRole\":" + input.channelRole.to_json())
+        auto bp = restjson.rest_json_document(b, repostspace_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, repostspace_service(), self.region, host)
+
+    # BatchRemoveRole  PATCH /spaces/{spaceId}/roles
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_remove_role(self, BatchRemoveRoleInput input) -> str:
+        auto host = endpoints.regional_host(repostspace_service(), self.region)
+        dict[str, str] labels = {}
+        labels["spaceId"] = input.spaceId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/spaces/{spaceId}/roles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.accessorIds:
+            e0.append(repostspace_json_str(x0))
+        parts.append("\"accessorIds\":" + repostspace_json_arr(e0))
+        parts.append("\"role\":" + input.role.to_json())
+        auto bp = restjson.rest_json_document(b, repostspace_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, repostspace_service(), self.region, host)
 
     # CreateChannel  POST /spaces/{spaceId}/channels
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -531,6 +646,36 @@ struct repostspaceClient:
         auto b = binding.HttpBinding(method="POST", path_template="/spaces/{spaceId}/channels", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateChannelDocument(channelName=input.channelName, channelDescription=input.channelDescription)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, repostspace_service(), self.region, host)
+
+    # CreateSpace  POST /spaces
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_space(self, CreateSpaceInput input) -> str:
+        auto host = endpoints.regional_host(repostspace_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/spaces", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + repostspace_json_str(input.name))
+        parts.append("\"subdomain\":" + repostspace_json_str(input.subdomain))
+        parts.append("\"tier\":" + input.tier.to_json())
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + repostspace_json_str(u0))
+        if input.userKMSKey.is_some():
+            auto u1 = input.userKMSKey.unwrap()
+            parts.append("\"userKMSKey\":" + repostspace_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(repostspace_json_str(k3) + ":" + repostspace_json_str(u2[k3]))
+            parts.append("\"tags\":" + repostspace_json_obj(m3))
+        if input.roleArn.is_some():
+            auto u4 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + repostspace_json_str(u4))
+        if input.supportedEmailDomains.is_some():
+            auto u5 = input.supportedEmailDomains.unwrap()
+            parts.append("\"supportedEmailDomains\":" + supported_email_domains_parameters_to_json(u5))
+        auto bp = restjson.rest_json_document(b, repostspace_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, repostspace_service(), self.region, host)
 
     # DeleteSpace  DELETE /spaces/{spaceId}
@@ -616,6 +761,38 @@ struct repostspaceClient:
         auto b = binding.HttpBinding(method="POST", path_template="/spaces/{spaceId}/admins/{adminId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, repostspace_service(), self.region, host)
 
+    # SendInvites  POST /spaces/{spaceId}/invite
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def send_invites(self, SendInvitesInput input) -> str:
+        auto host = endpoints.regional_host(repostspace_service(), self.region)
+        dict[str, str] labels = {}
+        labels["spaceId"] = input.spaceId
+        auto b = binding.HttpBinding(method="POST", path_template="/spaces/{spaceId}/invite", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.accessorIds:
+            e0.append(repostspace_json_str(x0))
+        parts.append("\"accessorIds\":" + repostspace_json_arr(e0))
+        parts.append("\"title\":" + repostspace_json_str(input.title))
+        parts.append("\"body\":" + repostspace_json_str(input.body))
+        auto bp = restjson.rest_json_document(b, repostspace_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, repostspace_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(repostspace_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(repostspace_json_str(k0) + ":" + repostspace_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + repostspace_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, repostspace_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, repostspace_service(), self.region, host)
+
     # UpdateChannel  PUT /spaces/{spaceId}/channels/{channelId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_channel(self, UpdateChannelInput input) -> str:
@@ -626,6 +803,29 @@ struct repostspaceClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/spaces/{spaceId}/channels/{channelId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateChannelDocument(channelName=input.channelName, channelDescription=input.channelDescription)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, repostspace_service(), self.region, host)
+
+    # UpdateSpace  PUT /spaces/{spaceId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_space(self, UpdateSpaceInput input) -> str:
+        auto host = endpoints.regional_host(repostspace_service(), self.region)
+        dict[str, str] labels = {}
+        labels["spaceId"] = input.spaceId
+        auto b = binding.HttpBinding(method="PUT", path_template="/spaces/{spaceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + repostspace_json_str(u0))
+        if input.tier.is_some():
+            auto u1 = input.tier.unwrap()
+            parts.append("\"tier\":" + u1.to_json())
+        if input.roleArn.is_some():
+            auto u2 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + repostspace_json_str(u2))
+        if input.supportedEmailDomains.is_some():
+            auto u3 = input.supportedEmailDomains.unwrap()
+            parts.append("\"supportedEmailDomains\":" + supported_email_domains_parameters_to_json(u3))
+        auto bp = restjson.rest_json_document(b, repostspace_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, repostspace_service(), self.region, host)
 
     # Paginator for ListChannels — yields each Response page, threading the

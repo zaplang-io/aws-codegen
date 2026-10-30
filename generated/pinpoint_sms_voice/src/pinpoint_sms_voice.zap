@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 8 operations — 6 with a generated method,
-#   2 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 8 operations — 8 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   31 structs (25 @derive(Json)), 1 enums, 6 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -114,8 +114,9 @@ struct DeleteConfigurationSetResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) MatchingEventTypes: list[EventType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchingEventTypes: list[EventType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventDestination:
     Optional[CloudWatchLogsDestination] CloudWatchLogsDestination
     Optional[bool] Enabled
@@ -124,8 +125,9 @@ struct EventDestination:
     Optional[str] Name
     Optional[SnsDestination] SnsDestination
 
-# no @derive(Json): member(s) MatchingEventTypes: list[EventType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchingEventTypes: list[EventType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventDestinationDefinition:
     Optional[CloudWatchLogsDestination] CloudWatchLogsDestination
     Optional[bool] Enabled
@@ -138,8 +140,9 @@ struct EventDestinationDefinition:
 struct GetConfigurationSetEventDestinationsRequest:
     str ConfigurationSetName
 
-# no @derive(Json): member(s) EventDestinations: list[EventDestination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventDestinations: list[EventDestination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConfigurationSetEventDestinationsResponse:
     Optional[list[EventDestination]] EventDestinations
 
@@ -162,8 +165,9 @@ struct ListConfigurationSetsRequest:
     Optional[str] NextToken
     Optional[str] PageSize
 
-# no @derive(Json): member(s) ConfigurationSets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationSets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfigurationSetsResponse:
     Optional[list[str]] ConfigurationSets
     Optional[str] NextToken
@@ -255,12 +259,6 @@ def sms_voice_pinpoint_error_from_code(str code) -> Pinpoint_SMS_VoiceError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CreateConfigurationSetEventDestination (document member `EventDestination: EventDestinationDefinition` is not serializable by derive)
-#   UpdateConfigurationSetEventDestination (document member `EventDestination: EventDestinationDefinition` is not serializable by derive)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -278,6 +276,59 @@ struct SendVoiceMessageDocument:
     Optional[str] DestinationPhoneNumber
     Optional[str] OriginationPhoneNumber
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def sms_voice_pinpoint_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def sms_voice_pinpoint_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def sms_voice_pinpoint_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize EventDestinationDefinition to a compact JSON object (declaration order).
+def event_destination_definition_to_json(EventDestinationDefinition v) -> str:
+    list[str] parts = []
+    if v.CloudWatchLogsDestination.is_some():
+        auto u0 = v.CloudWatchLogsDestination.unwrap()
+        parts.append("\"CloudWatchLogsDestination\":" + u0.to_json())
+    if v.Enabled.is_some():
+        auto u1 = v.Enabled.unwrap()
+        parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.KinesisFirehoseDestination.is_some():
+        auto u2 = v.KinesisFirehoseDestination.unwrap()
+        parts.append("\"KinesisFirehoseDestination\":" + u2.to_json())
+    if v.MatchingEventTypes.is_some():
+        auto u3 = v.MatchingEventTypes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"MatchingEventTypes\":" + sms_voice_pinpoint_json_arr(e4))
+    if v.SnsDestination.is_some():
+        auto u5 = v.SnsDestination.unwrap()
+        parts.append("\"SnsDestination\":" + u5.to_json())
+    return sms_voice_pinpoint_json_obj(parts)
+
 # A bound Pinpoint_SMS_Voice client: credentials + region, threaded into every operation.
 struct Pinpoint_SMS_VoiceClient:
     core.Credentials creds
@@ -290,6 +341,23 @@ struct Pinpoint_SMS_VoiceClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/sms-voice/configuration-sets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateConfigurationSetDocument(ConfigurationSetName=input.ConfigurationSetName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, sms_voice_pinpoint_service(), self.region, host)
+
+    # CreateConfigurationSetEventDestination  POST /v1/sms-voice/configuration-sets/{ConfigurationSetName}/event-destinations
+    # errors: AlreadyExistsException, BadRequestException, InternalServiceErrorException, LimitExceededException, NotFoundException, TooManyRequestsException
+    def create_configuration_set_event_destination(self, CreateConfigurationSetEventDestinationRequest input) -> str:
+        auto host = endpoints.regional_host(sms_voice_pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ConfigurationSetName"] = input.ConfigurationSetName
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/sms-voice/configuration-sets/{ConfigurationSetName}/event-destinations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.EventDestination.is_some():
+            auto u0 = input.EventDestination.unwrap()
+            parts.append("\"EventDestination\":" + event_destination_definition_to_json(u0))
+        if input.EventDestinationName.is_some():
+            auto u1 = input.EventDestinationName.unwrap()
+            parts.append("\"EventDestinationName\":" + sms_voice_pinpoint_json_str(u1))
+        auto bp = restjson.rest_json_document(b, sms_voice_pinpoint_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, sms_voice_pinpoint_service(), self.region, host)
 
     # DeleteConfigurationSet  DELETE /v1/sms-voice/configuration-sets/{ConfigurationSetName}
@@ -339,6 +407,21 @@ struct Pinpoint_SMS_VoiceClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/sms-voice/voice/message", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SendVoiceMessageDocument(CallerId=input.CallerId, ConfigurationSetName=input.ConfigurationSetName, Content=input.Content, DestinationPhoneNumber=input.DestinationPhoneNumber, OriginationPhoneNumber=input.OriginationPhoneNumber)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, sms_voice_pinpoint_service(), self.region, host)
+
+    # UpdateConfigurationSetEventDestination  PUT /v1/sms-voice/configuration-sets/{ConfigurationSetName}/event-destinations/{EventDestinationName}
+    # errors: BadRequestException, InternalServiceErrorException, NotFoundException, TooManyRequestsException
+    def update_configuration_set_event_destination(self, UpdateConfigurationSetEventDestinationRequest input) -> str:
+        auto host = endpoints.regional_host(sms_voice_pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ConfigurationSetName"] = input.ConfigurationSetName
+        labels["EventDestinationName"] = input.EventDestinationName
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/sms-voice/configuration-sets/{ConfigurationSetName}/event-destinations/{EventDestinationName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.EventDestination.is_some():
+            auto u0 = input.EventDestination.unwrap()
+            parts.append("\"EventDestination\":" + event_destination_definition_to_json(u0))
+        auto bp = restjson.rest_json_document(b, sms_voice_pinpoint_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, sms_voice_pinpoint_service(), self.region, host)
 
 # Construct a Pinpoint_SMS_VoiceClient bound to credentials + region.

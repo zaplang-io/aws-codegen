@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 162 operations — 118 with a generated method,
-#   44 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 162 operations — 162 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   462 structs (233 @derive(Json)), 81 enums, 8 error variants.
 #   20 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import datetime
 
 # The Lightsail awsJson protocol: version 1.1, API id "Lightsail_20161128".
 def lightsail_protocol() -> awsjson.AwsJson:
@@ -1008,8 +1009,9 @@ struct AddOnRequest:
     Optional[AutoSnapshotAddOnRequest] autoSnapshotAddOnRequest
     Optional[StopInstanceOnIdleRequest] stopInstanceOnIdleRequest
 
-# no @derive(Json): member(s) contactProtocols: list[ContactProtocol], notificationTriggers: list[AlarmState], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) contactProtocols: list[ContactProtocol], notificationTriggers: list[AlarmState], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Alarm:
     Optional[str] name
     Optional[str] arn
@@ -1037,8 +1039,9 @@ struct Alarm:
 struct AllocateStaticIpRequest:
     str staticIpName
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AllocateStaticIpResult:
     Optional[list[Operation]] operations
 
@@ -1058,19 +1061,22 @@ struct AttachDiskRequest:
     str diskPath
     Optional[bool] autoMounting
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttachDiskResult:
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) instanceNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttachInstancesToLoadBalancerRequest:
     str loadBalancerName
     list[str] instanceNames
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttachInstancesToLoadBalancerResult:
     Optional[list[Operation]] operations
 
@@ -1079,8 +1085,9 @@ struct AttachLoadBalancerTlsCertificateRequest:
     str loadBalancerName
     str certificateName
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttachLoadBalancerTlsCertificateResult:
     Optional[list[Operation]] operations
 
@@ -1089,8 +1096,9 @@ struct AttachStaticIpRequest:
     str staticIpName
     str instanceName
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttachStaticIpResult:
     Optional[list[Operation]] operations
 
@@ -1103,8 +1111,9 @@ struct AttachedDisk:
 struct AutoSnapshotAddOnRequest:
     Optional[str] snapshotTimeOfDay
 
-# no @derive(Json): member(s) fromAttachedDisks: list[AttachedDisk] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fromAttachedDisks: list[AttachedDisk] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoSnapshotDetails:
     Optional[str] date
     Optional[DateTime] createdAt
@@ -1132,8 +1141,9 @@ struct Blueprint:
     Optional[InstancePlatform] platform
     Optional[str] appCategory
 
-# no @derive(Json): member(s) tags: list[Tag], readonlyAccessAccounts: list[str], resourcesReceivingAccess: list[ResourceReceivingAccess], cors: BucketCorsConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag], readonlyAccessAccounts: list[str], resourcesReceivingAccess: list[ResourceReceivingAccess], cors: BucketCorsConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Bucket:
     Optional[str] resourceType
     Optional[AccessRules] accessRules
@@ -1168,13 +1178,15 @@ struct BucketBundle:
     Optional[int64] transferPerMonthInGb
     Optional[bool] isActive
 
-# no @derive(Json): member(s) rules: list[BucketCorsRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rules: list[BucketCorsRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BucketCorsConfig:
     Optional[list[BucketCorsRule]] rules
 
-# no @derive(Json): member(s) allowedMethods: list[str], allowedOrigins: list[str], allowedHeaders: list[str], exposeHeaders: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedMethods: list[str], allowedOrigins: list[str], allowedHeaders: list[str], exposeHeaders: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BucketCorsRule:
     Optional[str] id
     list[str] allowedMethods
@@ -1188,8 +1200,9 @@ struct BucketState:
     Optional[str] code
     Optional[str] message
 
-# no @derive(Json): member(s) supportedPlatforms: list[InstancePlatform], supportedAppCategories: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) supportedPlatforms: list[InstancePlatform], supportedAppCategories: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Bundle:
     Optional[float64] price
     Optional[int64] cpuCount
@@ -1214,8 +1227,9 @@ struct CacheBehaviorPerPath:
     Optional[str] path
     Optional[BehaviorEnum] behavior
 
-# no @derive(Json): member(s) forwardedCookies: CookieObject, forwardedHeaders: HeaderObject, forwardedQueryStrings: QueryStringObject not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) forwardedCookies: CookieObject, forwardedHeaders: HeaderObject, forwardedQueryStrings: QueryStringObject not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CacheSettings:
     Optional[int64] defaultTTL
     Optional[int64] minimumTTL
@@ -1226,8 +1240,9 @@ struct CacheSettings:
     Optional[HeaderObject] forwardedHeaders
     Optional[QueryStringObject] forwardedQueryStrings
 
-# no @derive(Json): member(s) subjectAlternativeNames: list[str], domainValidationRecords: list[DomainValidationRecord], renewalSummary: RenewalSummary, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subjectAlternativeNames: list[str], domainValidationRecords: list[DomainValidationRecord], renewalSummary: RenewalSummary, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Certificate:
     Optional[str] arn
     Optional[str] name
@@ -1251,8 +1266,9 @@ struct Certificate:
     Optional[list[Tag]] tags
     Optional[str] supportCode
 
-# no @derive(Json): member(s) certificateDetail: Certificate, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) certificateDetail: Certificate, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CertificateSummary:
     Optional[str] certificateArn
     Optional[str] certificateName
@@ -1260,8 +1276,9 @@ struct CertificateSummary:
     Optional[Certificate] certificateDetail
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) portInfo: PortInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) portInfo: PortInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloseInstancePublicPortsRequest:
     PortInfo portInfo
     str instanceName
@@ -1270,8 +1287,9 @@ struct CloseInstancePublicPortsRequest:
 struct CloseInstancePublicPortsResult:
     Optional[Operation] operation
 
-# no @derive(Json): member(s) sourceInfo: list[CloudFormationStackRecordSourceInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceInfo: list[CloudFormationStackRecordSourceInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudFormationStackRecord:
     Optional[str] name
     Optional[str] arn
@@ -1288,8 +1306,9 @@ struct CloudFormationStackRecordSourceInfo:
     Optional[str] name
     Optional[str] arn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContactMethod:
     Optional[str] contactEndpoint
     Optional[ContactMethodStatus] status
@@ -1302,8 +1321,9 @@ struct ContactMethod:
     Optional[str] supportCode
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) command: list[str], environment: dict[str, str], ports: dict[str, ContainerServiceProtocol] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) command: list[str], environment: dict[str, str], ports: dict[str, ContainerServiceProtocol] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Container:
     Optional[str] image
     Optional[list[str]] command
@@ -1316,8 +1336,9 @@ struct ContainerImage:
     Optional[str] digest
     Optional[DateTime] createdAt
 
-# no @derive(Json): member(s) tags: list[Tag], currentDeployment: ContainerServiceDeployment, nextDeployment: ContainerServiceDeployment, publicDomainNames: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag], currentDeployment: ContainerServiceDeployment, nextDeployment: ContainerServiceDeployment, publicDomainNames: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerService:
     Optional[str] containerServiceName
     Optional[str] arn
@@ -1339,8 +1360,9 @@ struct ContainerService:
     Optional[str] url
     Optional[PrivateRegistryAccess] privateRegistryAccess
 
-# no @derive(Json): member(s) containers: dict[str, Container] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containers: dict[str, Container] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerServiceDeployment:
     Optional[int64] version
     Optional[ContainerServiceDeploymentState] state
@@ -1348,8 +1370,9 @@ struct ContainerServiceDeployment:
     Optional[ContainerServiceEndpoint] publicEndpoint
     Optional[DateTime] createdAt
 
-# no @derive(Json): member(s) containers: dict[str, Container] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containers: dict[str, Container] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerServiceDeploymentRequest:
     Optional[dict[str, Container]] containers
     Optional[EndpointRequest] publicEndpoint
@@ -1404,13 +1427,15 @@ struct ContainerServiceStateDetail:
     Optional[ContainerServiceStateDetailCode] code
     Optional[str] message
 
-# no @derive(Json): member(s) containerServices: list[ContainerService] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerServices: list[ContainerService] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerServicesListResult:
     Optional[list[ContainerService]] containerServices
 
-# no @derive(Json): member(s) cookiesAllowList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cookiesAllowList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CookieObject:
     Optional[ForwardValues] option
     Optional[list[str]] cookiesAllowList
@@ -1424,13 +1449,15 @@ struct CopySnapshotRequest:
     str targetSnapshotName
     RegionName sourceRegion
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CopySnapshotResult:
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) resultsByTime: list[EstimateByTime] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resultsByTime: list[EstimateByTime] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CostEstimate:
     Optional[str] usageType
     Optional[list[EstimateByTime]] resultsByTime
@@ -1439,71 +1466,82 @@ struct CostEstimate:
 struct CreateBucketAccessKeyRequest:
     str bucketName
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBucketAccessKeyResult:
     Optional[AccessKey] accessKey
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBucketRequest:
     str bucketName
     str bundleId
     Optional[list[Tag]] tags
     Optional[bool] enableObjectVersioning
 
-# no @derive(Json): member(s) bucket: Bucket, operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bucket: Bucket, operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBucketResult:
     Optional[Bucket] bucket
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) subjectAlternativeNames: list[str], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subjectAlternativeNames: list[str], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCertificateRequest:
     str certificateName
     str domainName
     Optional[list[str]] subjectAlternativeNames
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) certificate: CertificateSummary, operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) certificate: CertificateSummary, operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCertificateResult:
     Optional[CertificateSummary] certificate
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) instances: list[InstanceEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instances: list[InstanceEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCloudFormationStackRequest:
     list[InstanceEntry] instances
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCloudFormationStackResult:
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateContactMethodRequest:
     ContactProtocol protocol
     str contactEndpoint
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateContactMethodResult:
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) containers: dict[str, Container] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containers: dict[str, Container] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateContainerServiceDeploymentRequest:
     str serviceName
     Optional[dict[str, Container]] containers
     Optional[EndpointRequest] publicEndpoint
 
-# no @derive(Json): member(s) containerService: ContainerService not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerService: ContainerService not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateContainerServiceDeploymentResult:
     Optional[ContainerService] containerService
 
@@ -1516,8 +1554,9 @@ struct CreateContainerServiceRegistryLoginRequest:
 struct CreateContainerServiceRegistryLoginResult:
     Optional[ContainerServiceRegistryLogin] registryLogin
 
-# no @derive(Json): member(s) tags: list[Tag], publicDomainNames: dict[str, list[str]], deployment: ContainerServiceDeploymentRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag], publicDomainNames: dict[str, list[str]], deployment: ContainerServiceDeploymentRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateContainerServiceRequest:
     str serviceName
     ContainerServicePowerName power
@@ -1527,13 +1566,15 @@ struct CreateContainerServiceRequest:
     Optional[ContainerServiceDeploymentRequest] deployment
     Optional[PrivateRegistryAccessRequest] privateRegistryAccess
 
-# no @derive(Json): member(s) containerService: ContainerService not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerService: ContainerService not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateContainerServiceResult:
     Optional[ContainerService] containerService
 
-# no @derive(Json): member(s) tags: list[Tag], addOns: list[AddOnRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag], addOns: list[AddOnRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDiskFromSnapshotRequest:
     str diskName
     Optional[str] diskSnapshotName
@@ -1545,13 +1586,15 @@ struct CreateDiskFromSnapshotRequest:
     Optional[str] restoreDate
     Optional[bool] useLatestRestorableAutoSnapshot
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDiskFromSnapshotResult:
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) tags: list[Tag], addOns: list[AddOnRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag], addOns: list[AddOnRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDiskRequest:
     str diskName
     str availabilityZone
@@ -1559,26 +1602,30 @@ struct CreateDiskRequest:
     Optional[list[Tag]] tags
     Optional[list[AddOnRequest]] addOns
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDiskResult:
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDiskSnapshotRequest:
     Optional[str] diskName
     str diskSnapshotName
     Optional[str] instanceName
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDiskSnapshotResult:
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) cacheBehaviorSettings: CacheSettings, cacheBehaviors: list[CacheBehaviorPerPath], tags: list[Tag], customErrorResponses: list[DistributionCustomErrorResponse], wafRules: list[WafRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cacheBehaviorSettings: CacheSettings, cacheBehaviors: list[CacheBehaviorPerPath], tags: list[Tag], customErrorResponses: list[DistributionCustomErrorResponse], wafRules: list[WafRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDistributionRequest:
     str distributionName
     InputOrigin origin
@@ -1596,14 +1643,16 @@ struct CreateDistributionRequest:
     Optional[bool] enableWaf
     Optional[list[WafRule]] wafRules
 
-# no @derive(Json): member(s) distribution: LightsailDistribution not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) distribution: LightsailDistribution not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDistributionResult:
     Optional[LightsailDistribution] distribution
     Optional[Operation] operation
 
-# no @derive(Json): member(s) domainEntry: DomainEntry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domainEntry: DomainEntry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDomainEntryRequest:
     str domainName
     DomainEntry domainEntry
@@ -1612,8 +1661,9 @@ struct CreateDomainEntryRequest:
 struct CreateDomainEntryResult:
     Optional[Operation] operation
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDomainRequest:
     str domainName
     Optional[list[Tag]] tags
@@ -1626,8 +1676,9 @@ struct CreateDomainResult:
 struct CreateGUISessionAccessDetailsRequest:
     str resourceName
 
-# no @derive(Json): member(s) sessions: list[Session] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sessions: list[Session] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateGUISessionAccessDetailsResult:
     Optional[str] resourceName
     Optional[Status] status
@@ -1635,20 +1686,23 @@ struct CreateGUISessionAccessDetailsResult:
     Optional[str] failureReason
     Optional[list[Session]] sessions
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInstanceSnapshotRequest:
     str instanceSnapshotName
     str instanceName
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInstanceSnapshotResult:
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) instanceNames: list[str], attachedDiskMapping: dict[str, list[DiskMap]], tags: list[Tag], addOns: list[AddOnRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceNames: list[str], attachedDiskMapping: dict[str, list[DiskMap]], tags: list[Tag], addOns: list[AddOnRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInstancesFromSnapshotRequest:
     list[str] instanceNames
     Optional[dict[str, list[DiskMap]]] attachedDiskMapping
@@ -1664,13 +1718,15 @@ struct CreateInstancesFromSnapshotRequest:
     Optional[str] restoreDate
     Optional[bool] useLatestRestorableAutoSnapshot
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInstancesFromSnapshotResult:
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) instanceNames: list[str], tags: list[Tag], addOns: list[AddOnRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceNames: list[str], tags: list[Tag], addOns: list[AddOnRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInstancesRequest:
     list[str] instanceNames
     str availabilityZone
@@ -1683,27 +1739,31 @@ struct CreateInstancesRequest:
     Optional[list[AddOnRequest]] addOns
     Optional[IpAddressType] ipAddressType
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInstancesResult:
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateKeyPairRequest:
     str keyPairName
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) keyPair: KeyPair not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) keyPair: KeyPair not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateKeyPairResult:
     Optional[KeyPair] keyPair
     Optional[str] publicKeyBase64
     Optional[str] privateKeyBase64
     Optional[Operation] operation
 
-# no @derive(Json): member(s) certificateAlternativeNames: list[str], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) certificateAlternativeNames: list[str], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLoadBalancerRequest:
     str loadBalancerName
     int64 instancePort
@@ -1715,13 +1775,15 @@ struct CreateLoadBalancerRequest:
     Optional[IpAddressType] ipAddressType
     Optional[str] tlsPolicyName
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLoadBalancerResult:
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) certificateAlternativeNames: list[str], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) certificateAlternativeNames: list[str], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLoadBalancerTlsCertificateRequest:
     str loadBalancerName
     str certificateName
@@ -1729,13 +1791,15 @@ struct CreateLoadBalancerTlsCertificateRequest:
     Optional[list[str]] certificateAlternativeNames
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLoadBalancerTlsCertificateResult:
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRelationalDatabaseFromSnapshotRequest:
     str relationalDatabaseName
     Optional[str] availabilityZone
@@ -1747,13 +1811,15 @@ struct CreateRelationalDatabaseFromSnapshotRequest:
     Optional[bool] useLatestRestorableTime
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRelationalDatabaseFromSnapshotResult:
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRelationalDatabaseRequest:
     str relationalDatabaseName
     Optional[str] availabilityZone
@@ -1767,20 +1833,23 @@ struct CreateRelationalDatabaseRequest:
     Optional[bool] publiclyAccessible
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRelationalDatabaseResult:
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRelationalDatabaseSnapshotRequest:
     str relationalDatabaseName
     str relationalDatabaseSnapshotName
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRelationalDatabaseSnapshotResult:
     Optional[list[Operation]] operations
 
@@ -1788,8 +1857,9 @@ struct CreateRelationalDatabaseSnapshotResult:
 struct DeleteAlarmRequest:
     str alarmName
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteAlarmResult:
     Optional[list[Operation]] operations
 
@@ -1798,8 +1868,9 @@ struct DeleteAutoSnapshotRequest:
     str resourceName
     str date
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteAutoSnapshotResult:
     Optional[list[Operation]] operations
 
@@ -1808,8 +1879,9 @@ struct DeleteBucketAccessKeyRequest:
     str bucketName
     str accessKeyId
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteBucketAccessKeyResult:
     Optional[list[Operation]] operations
 
@@ -1818,8 +1890,9 @@ struct DeleteBucketRequest:
     str bucketName
     Optional[bool] forceDelete
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteBucketResult:
     Optional[list[Operation]] operations
 
@@ -1827,8 +1900,9 @@ struct DeleteBucketResult:
 struct DeleteCertificateRequest:
     str certificateName
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteCertificateResult:
     Optional[list[Operation]] operations
 
@@ -1836,8 +1910,9 @@ struct DeleteCertificateResult:
 struct DeleteContactMethodRequest:
     ContactProtocol protocol
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteContactMethodResult:
     Optional[list[Operation]] operations
 
@@ -1865,8 +1940,9 @@ struct DeleteDiskRequest:
     str diskName
     Optional[bool] forceDeleteAddOns
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteDiskResult:
     Optional[list[Operation]] operations
 
@@ -1874,8 +1950,9 @@ struct DeleteDiskResult:
 struct DeleteDiskSnapshotRequest:
     str diskSnapshotName
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteDiskSnapshotResult:
     Optional[list[Operation]] operations
 
@@ -1887,8 +1964,9 @@ struct DeleteDistributionRequest:
 struct DeleteDistributionResult:
     Optional[Operation] operation
 
-# no @derive(Json): member(s) domainEntry: DomainEntry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domainEntry: DomainEntry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteDomainEntryRequest:
     str domainName
     DomainEntry domainEntry
@@ -1910,8 +1988,9 @@ struct DeleteInstanceRequest:
     str instanceName
     Optional[bool] forceDeleteAddOns
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteInstanceResult:
     Optional[list[Operation]] operations
 
@@ -1919,8 +1998,9 @@ struct DeleteInstanceResult:
 struct DeleteInstanceSnapshotRequest:
     str instanceSnapshotName
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteInstanceSnapshotResult:
     Optional[list[Operation]] operations
 
@@ -1937,8 +2017,9 @@ struct DeleteKeyPairResult:
 struct DeleteKnownHostKeysRequest:
     str instanceName
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteKnownHostKeysResult:
     Optional[list[Operation]] operations
 
@@ -1946,8 +2027,9 @@ struct DeleteKnownHostKeysResult:
 struct DeleteLoadBalancerRequest:
     str loadBalancerName
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteLoadBalancerResult:
     Optional[list[Operation]] operations
 
@@ -1957,8 +2039,9 @@ struct DeleteLoadBalancerTlsCertificateRequest:
     str certificateName
     Optional[bool] force
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteLoadBalancerTlsCertificateResult:
     Optional[list[Operation]] operations
 
@@ -1968,8 +2051,9 @@ struct DeleteRelationalDatabaseRequest:
     Optional[bool] skipFinalSnapshot
     Optional[str] finalRelationalDatabaseSnapshotName
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteRelationalDatabaseResult:
     Optional[list[Operation]] operations
 
@@ -1977,8 +2061,9 @@ struct DeleteRelationalDatabaseResult:
 struct DeleteRelationalDatabaseSnapshotRequest:
     str relationalDatabaseSnapshotName
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteRelationalDatabaseSnapshotResult:
     Optional[list[Operation]] operations
 
@@ -1999,19 +2084,22 @@ struct DetachCertificateFromDistributionResult:
 struct DetachDiskRequest:
     str diskName
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetachDiskResult:
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) instanceNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetachInstancesFromLoadBalancerRequest:
     str loadBalancerName
     list[str] instanceNames
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetachInstancesFromLoadBalancerResult:
     Optional[list[Operation]] operations
 
@@ -2019,8 +2107,9 @@ struct DetachInstancesFromLoadBalancerResult:
 struct DetachStaticIpRequest:
     str staticIpName
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetachStaticIpResult:
     Optional[list[Operation]] operations
 
@@ -2029,13 +2118,15 @@ struct DisableAddOnRequest:
     AddOnType addOnType
     str resourceName
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisableAddOnResult:
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) tags: list[Tag], addOns: list[AddOn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag], addOns: list[AddOn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Disk:
     Optional[str] name
     Optional[str] arn
@@ -2068,8 +2159,9 @@ struct DiskMap:
     Optional[str] originalDiskPath
     Optional[str] newDiskName
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DiskSnapshot:
     Optional[str] name
     Optional[str] arn
@@ -2111,8 +2203,9 @@ struct DnsRecordCreationState:
     Optional[DnsRecordCreationStateCode] code
     Optional[str] message
 
-# no @derive(Json): member(s) tags: list[Tag], domainEntries: list[DomainEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag], domainEntries: list[DomainEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Domain:
     Optional[str] name
     Optional[str] arn
@@ -2124,8 +2217,9 @@ struct Domain:
     Optional[list[DomainEntry]] domainEntries
     Optional[RegisteredDomainDelegationInfo] registeredDomainDelegationInfo
 
-# no @derive(Json): member(s) options: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) options: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DomainEntry:
     Optional[str] id
     Optional[str] name
@@ -2157,8 +2251,9 @@ struct EnableAddOnRequest:
     str resourceName
     AddOnRequest addOnRequest
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnableAddOnResult:
     Optional[list[Operation]] operations
 
@@ -2176,8 +2271,9 @@ struct EstimateByTime:
     Optional[str] currency
     Optional[TimePeriod] timePeriod
 
-# no @derive(Json): member(s) sourceInfo: ExportSnapshotRecordSourceInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceInfo: ExportSnapshotRecordSourceInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportSnapshotRecord:
     Optional[str] name
     Optional[str] arn
@@ -2188,8 +2284,9 @@ struct ExportSnapshotRecord:
     Optional[ExportSnapshotRecordSourceInfo] sourceInfo
     Optional[DestinationInfo] destinationInfo
 
-# no @derive(Json): member(s) instanceSnapshotInfo: InstanceSnapshotInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceSnapshotInfo: InstanceSnapshotInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportSnapshotRecordSourceInfo:
     Optional[ExportSnapshotRecordSourceType] resourceType
     Optional[DateTime] createdAt
@@ -2204,8 +2301,9 @@ struct ExportSnapshotRecordSourceInfo:
 struct ExportSnapshotRequest:
     str sourceSnapshotName
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportSnapshotResult:
     Optional[list[Operation]] operations
 
@@ -2213,8 +2311,9 @@ struct ExportSnapshotResult:
 struct GetActiveNamesRequest:
     Optional[str] pageToken
 
-# no @derive(Json): member(s) activeNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) activeNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetActiveNamesResult:
     Optional[list[str]] activeNames
     Optional[str] nextPageToken
@@ -2225,8 +2324,9 @@ struct GetAlarmsRequest:
     Optional[str] pageToken
     Optional[str] monitoredResourceName
 
-# no @derive(Json): member(s) alarms: list[Alarm] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) alarms: list[Alarm] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAlarmsResult:
     Optional[list[Alarm]] alarms
     Optional[str] nextPageToken
@@ -2235,8 +2335,9 @@ struct GetAlarmsResult:
 struct GetAutoSnapshotsRequest:
     str resourceName
 
-# no @derive(Json): member(s) autoSnapshots: list[AutoSnapshotDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) autoSnapshots: list[AutoSnapshotDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAutoSnapshotsResult:
     Optional[str] resourceName
     Optional[ResourceType] resourceType
@@ -2248,8 +2349,9 @@ struct GetBlueprintsRequest:
     Optional[str] pageToken
     Optional[str] appCategory
 
-# no @derive(Json): member(s) blueprints: list[Blueprint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) blueprints: list[Blueprint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBlueprintsResult:
     Optional[list[Blueprint]] blueprints
     Optional[str] nextPageToken
@@ -2258,8 +2360,9 @@ struct GetBlueprintsResult:
 struct GetBucketAccessKeysRequest:
     str bucketName
 
-# no @derive(Json): member(s) accessKeys: list[AccessKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessKeys: list[AccessKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBucketAccessKeysResult:
     Optional[list[AccessKey]] accessKeys
 
@@ -2267,13 +2370,15 @@ struct GetBucketAccessKeysResult:
 struct GetBucketBundlesRequest:
     Optional[bool] includeInactive
 
-# no @derive(Json): member(s) bundles: list[BucketBundle] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bundles: list[BucketBundle] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBucketBundlesResult:
     Optional[list[BucketBundle]] bundles
 
-# no @derive(Json): member(s) statistics: list[MetricStatistic] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statistics: list[MetricStatistic] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBucketMetricDataRequest:
     str bucketName
     BucketMetricName metricName
@@ -2283,8 +2388,9 @@ struct GetBucketMetricDataRequest:
     list[MetricStatistic] statistics
     MetricUnit unit
 
-# no @derive(Json): member(s) metricData: list[MetricDatapoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metricData: list[MetricDatapoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBucketMetricDataResult:
     Optional[BucketMetricName] metricName
     Optional[list[MetricDatapoint]] metricData
@@ -2296,8 +2402,9 @@ struct GetBucketsRequest:
     Optional[bool] includeConnectedResources
     Optional[bool] includeCors
 
-# no @derive(Json): member(s) buckets: list[Bucket] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) buckets: list[Bucket] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBucketsResult:
     Optional[list[Bucket]] buckets
     Optional[str] nextPageToken
@@ -2309,22 +2416,25 @@ struct GetBundlesRequest:
     Optional[str] pageToken
     Optional[str] appCategory
 
-# no @derive(Json): member(s) bundles: list[Bundle] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bundles: list[Bundle] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBundlesResult:
     Optional[list[Bundle]] bundles
     Optional[str] nextPageToken
 
-# no @derive(Json): member(s) certificateStatuses: list[CertificateStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) certificateStatuses: list[CertificateStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCertificatesRequest:
     Optional[list[CertificateStatus]] certificateStatuses
     Optional[bool] includeCertificateDetails
     Optional[str] certificateName
     Optional[str] pageToken
 
-# no @derive(Json): member(s) certificates: list[CertificateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) certificates: list[CertificateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCertificatesResult:
     Optional[list[CertificateSummary]] certificates
     Optional[str] nextPageToken
@@ -2333,19 +2443,22 @@ struct GetCertificatesResult:
 struct GetCloudFormationStackRecordsRequest:
     Optional[str] pageToken
 
-# no @derive(Json): member(s) cloudFormationStackRecords: list[CloudFormationStackRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cloudFormationStackRecords: list[CloudFormationStackRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCloudFormationStackRecordsResult:
     Optional[list[CloudFormationStackRecord]] cloudFormationStackRecords
     Optional[str] nextPageToken
 
-# no @derive(Json): member(s) protocols: list[ContactProtocol] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) protocols: list[ContactProtocol] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetContactMethodsRequest:
     Optional[list[ContactProtocol]] protocols
 
-# no @derive(Json): member(s) contactMethods: list[ContactMethod] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) contactMethods: list[ContactMethod] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetContactMethodsResult:
     Optional[list[ContactMethod]] contactMethods
 
@@ -2354,8 +2467,9 @@ struct GetContainerAPIMetadataRequest:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) metadata: list[dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadata: list[dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetContainerAPIMetadataResult:
     Optional[list[dict[str, str]]] metadata
 
@@ -2363,8 +2477,9 @@ struct GetContainerAPIMetadataResult:
 struct GetContainerImagesRequest:
     str serviceName
 
-# no @derive(Json): member(s) containerImages: list[ContainerImage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerImages: list[ContainerImage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetContainerImagesResult:
     Optional[list[ContainerImage]] containerImages
 
@@ -2377,8 +2492,9 @@ struct GetContainerLogRequest:
     Optional[str] filterPattern
     Optional[str] pageToken
 
-# no @derive(Json): member(s) logEvents: list[ContainerServiceLogEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logEvents: list[ContainerServiceLogEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetContainerLogResult:
     Optional[list[ContainerServiceLogEvent]] logEvents
     Optional[str] nextPageToken
@@ -2387,13 +2503,15 @@ struct GetContainerLogResult:
 struct GetContainerServiceDeploymentsRequest:
     str serviceName
 
-# no @derive(Json): member(s) deployments: list[ContainerServiceDeployment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deployments: list[ContainerServiceDeployment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetContainerServiceDeploymentsResult:
     Optional[list[ContainerServiceDeployment]] deployments
 
-# no @derive(Json): member(s) statistics: list[MetricStatistic] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statistics: list[MetricStatistic] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetContainerServiceMetricDataRequest:
     str serviceName
     ContainerServiceMetricName metricName
@@ -2402,8 +2520,9 @@ struct GetContainerServiceMetricDataRequest:
     int64 period
     list[MetricStatistic] statistics
 
-# no @derive(Json): member(s) metricData: list[MetricDatapoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metricData: list[MetricDatapoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetContainerServiceMetricDataResult:
     Optional[ContainerServiceMetricName] metricName
     Optional[list[MetricDatapoint]] metricData
@@ -2413,8 +2532,9 @@ struct GetContainerServicePowersRequest:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) powers: list[ContainerServicePower] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) powers: list[ContainerServicePower] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetContainerServicePowersResult:
     Optional[list[ContainerServicePower]] powers
 
@@ -2428,8 +2548,9 @@ struct GetCostEstimateRequest:
     DateTime startTime
     DateTime endTime
 
-# no @derive(Json): member(s) resourcesBudgetEstimate: list[ResourceBudgetEstimate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourcesBudgetEstimate: list[ResourceBudgetEstimate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCostEstimateResult:
     Optional[list[ResourceBudgetEstimate]] resourcesBudgetEstimate
 
@@ -2437,8 +2558,9 @@ struct GetCostEstimateResult:
 struct GetDiskRequest:
     str diskName
 
-# no @derive(Json): member(s) disk: Disk not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) disk: Disk not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDiskResult:
     Optional[Disk] disk
 
@@ -2446,8 +2568,9 @@ struct GetDiskResult:
 struct GetDiskSnapshotRequest:
     str diskSnapshotName
 
-# no @derive(Json): member(s) diskSnapshot: DiskSnapshot not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) diskSnapshot: DiskSnapshot not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDiskSnapshotResult:
     Optional[DiskSnapshot] diskSnapshot
 
@@ -2455,8 +2578,9 @@ struct GetDiskSnapshotResult:
 struct GetDiskSnapshotsRequest:
     Optional[str] pageToken
 
-# no @derive(Json): member(s) diskSnapshots: list[DiskSnapshot] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) diskSnapshots: list[DiskSnapshot] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDiskSnapshotsResult:
     Optional[list[DiskSnapshot]] diskSnapshots
     Optional[str] nextPageToken
@@ -2465,8 +2589,9 @@ struct GetDiskSnapshotsResult:
 struct GetDisksRequest:
     Optional[str] pageToken
 
-# no @derive(Json): member(s) disks: list[Disk] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) disks: list[Disk] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDisksResult:
     Optional[list[Disk]] disks
     Optional[str] nextPageToken
@@ -2476,8 +2601,9 @@ struct GetDistributionBundlesRequest:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) bundles: list[DistributionBundle] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bundles: list[DistributionBundle] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDistributionBundlesResult:
     Optional[list[DistributionBundle]] bundles
 
@@ -2490,8 +2616,9 @@ struct GetDistributionLatestCacheResetResult:
     Optional[str] status
     Optional[DateTime] createTime
 
-# no @derive(Json): member(s) statistics: list[MetricStatistic] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statistics: list[MetricStatistic] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDistributionMetricDataRequest:
     str distributionName
     DistributionMetricName metricName
@@ -2501,8 +2628,9 @@ struct GetDistributionMetricDataRequest:
     MetricUnit unit
     list[MetricStatistic] statistics
 
-# no @derive(Json): member(s) metricData: list[MetricDatapoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metricData: list[MetricDatapoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDistributionMetricDataResult:
     Optional[DistributionMetricName] metricName
     Optional[list[MetricDatapoint]] metricData
@@ -2512,8 +2640,9 @@ struct GetDistributionsRequest:
     Optional[str] distributionName
     Optional[str] pageToken
 
-# no @derive(Json): member(s) distributions: list[LightsailDistribution] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) distributions: list[LightsailDistribution] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDistributionsResult:
     Optional[list[LightsailDistribution]] distributions
     Optional[str] nextPageToken
@@ -2522,8 +2651,9 @@ struct GetDistributionsResult:
 struct GetDomainRequest:
     str domainName
 
-# no @derive(Json): member(s) domain: Domain not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domain: Domain not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDomainResult:
     Optional[Domain] domain
 
@@ -2531,8 +2661,9 @@ struct GetDomainResult:
 struct GetDomainsRequest:
     Optional[str] pageToken
 
-# no @derive(Json): member(s) domains: list[Domain] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domains: list[Domain] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDomainsResult:
     Optional[list[Domain]] domains
     Optional[str] nextPageToken
@@ -2541,8 +2672,9 @@ struct GetDomainsResult:
 struct GetExportSnapshotRecordsRequest:
     Optional[str] pageToken
 
-# no @derive(Json): member(s) exportSnapshotRecords: list[ExportSnapshotRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exportSnapshotRecords: list[ExportSnapshotRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetExportSnapshotRecordsResult:
     Optional[list[ExportSnapshotRecord]] exportSnapshotRecords
     Optional[str] nextPageToken
@@ -2552,13 +2684,15 @@ struct GetInstanceAccessDetailsRequest:
     str instanceName
     Optional[InstanceAccessProtocol] protocol
 
-# no @derive(Json): member(s) accessDetails: InstanceAccessDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessDetails: InstanceAccessDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInstanceAccessDetailsResult:
     Optional[InstanceAccessDetails] accessDetails
 
-# no @derive(Json): member(s) statistics: list[MetricStatistic] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statistics: list[MetricStatistic] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInstanceMetricDataRequest:
     str instanceName
     InstanceMetricName metricName
@@ -2568,8 +2702,9 @@ struct GetInstanceMetricDataRequest:
     MetricUnit unit
     list[MetricStatistic] statistics
 
-# no @derive(Json): member(s) metricData: list[MetricDatapoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metricData: list[MetricDatapoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInstanceMetricDataResult:
     Optional[InstanceMetricName] metricName
     Optional[list[MetricDatapoint]] metricData
@@ -2578,8 +2713,9 @@ struct GetInstanceMetricDataResult:
 struct GetInstancePortStatesRequest:
     str instanceName
 
-# no @derive(Json): member(s) portStates: list[InstancePortState] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) portStates: list[InstancePortState] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInstancePortStatesResult:
     Optional[list[InstancePortState]] portStates
 
@@ -2587,8 +2723,9 @@ struct GetInstancePortStatesResult:
 struct GetInstanceRequest:
     str instanceName
 
-# no @derive(Json): member(s) instance: Instance not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instance: Instance not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInstanceResult:
     Optional[Instance] instance
 
@@ -2596,8 +2733,9 @@ struct GetInstanceResult:
 struct GetInstanceSnapshotRequest:
     str instanceSnapshotName
 
-# no @derive(Json): member(s) instanceSnapshot: InstanceSnapshot not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceSnapshot: InstanceSnapshot not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInstanceSnapshotResult:
     Optional[InstanceSnapshot] instanceSnapshot
 
@@ -2605,8 +2743,9 @@ struct GetInstanceSnapshotResult:
 struct GetInstanceSnapshotsRequest:
     Optional[str] pageToken
 
-# no @derive(Json): member(s) instanceSnapshots: list[InstanceSnapshot] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceSnapshots: list[InstanceSnapshot] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInstanceSnapshotsResult:
     Optional[list[InstanceSnapshot]] instanceSnapshots
     Optional[str] nextPageToken
@@ -2623,8 +2762,9 @@ struct GetInstanceStateResult:
 struct GetInstancesRequest:
     Optional[str] pageToken
 
-# no @derive(Json): member(s) instances: list[Instance] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instances: list[Instance] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInstancesResult:
     Optional[list[Instance]] instances
     Optional[str] nextPageToken
@@ -2633,8 +2773,9 @@ struct GetInstancesResult:
 struct GetKeyPairRequest:
     str keyPairName
 
-# no @derive(Json): member(s) keyPair: KeyPair not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) keyPair: KeyPair not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetKeyPairResult:
     Optional[KeyPair] keyPair
 
@@ -2643,14 +2784,16 @@ struct GetKeyPairsRequest:
     Optional[str] pageToken
     Optional[bool] includeDefaultKeyPair
 
-# no @derive(Json): member(s) keyPairs: list[KeyPair] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) keyPairs: list[KeyPair] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetKeyPairsResult:
     Optional[list[KeyPair]] keyPairs
     Optional[str] nextPageToken
 
-# no @derive(Json): member(s) statistics: list[MetricStatistic] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statistics: list[MetricStatistic] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLoadBalancerMetricDataRequest:
     str loadBalancerName
     LoadBalancerMetricName metricName
@@ -2660,8 +2803,9 @@ struct GetLoadBalancerMetricDataRequest:
     MetricUnit unit
     list[MetricStatistic] statistics
 
-# no @derive(Json): member(s) metricData: list[MetricDatapoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metricData: list[MetricDatapoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLoadBalancerMetricDataResult:
     Optional[LoadBalancerMetricName] metricName
     Optional[list[MetricDatapoint]] metricData
@@ -2670,8 +2814,9 @@ struct GetLoadBalancerMetricDataResult:
 struct GetLoadBalancerRequest:
     str loadBalancerName
 
-# no @derive(Json): member(s) loadBalancer: LoadBalancer not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) loadBalancer: LoadBalancer not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLoadBalancerResult:
     Optional[LoadBalancer] loadBalancer
 
@@ -2679,8 +2824,9 @@ struct GetLoadBalancerResult:
 struct GetLoadBalancerTlsCertificatesRequest:
     str loadBalancerName
 
-# no @derive(Json): member(s) tlsCertificates: list[LoadBalancerTlsCertificate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tlsCertificates: list[LoadBalancerTlsCertificate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLoadBalancerTlsCertificatesResult:
     Optional[list[LoadBalancerTlsCertificate]] tlsCertificates
 
@@ -2688,8 +2834,9 @@ struct GetLoadBalancerTlsCertificatesResult:
 struct GetLoadBalancerTlsPoliciesRequest:
     Optional[str] pageToken
 
-# no @derive(Json): member(s) tlsPolicies: list[LoadBalancerTlsPolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tlsPolicies: list[LoadBalancerTlsPolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLoadBalancerTlsPoliciesResult:
     Optional[list[LoadBalancerTlsPolicy]] tlsPolicies
     Optional[str] nextPageToken
@@ -2698,8 +2845,9 @@ struct GetLoadBalancerTlsPoliciesResult:
 struct GetLoadBalancersRequest:
     Optional[str] pageToken
 
-# no @derive(Json): member(s) loadBalancers: list[LoadBalancer] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) loadBalancers: list[LoadBalancer] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLoadBalancersResult:
     Optional[list[LoadBalancer]] loadBalancers
     Optional[str] nextPageToken
@@ -2717,8 +2865,9 @@ struct GetOperationsForResourceRequest:
     str resourceName
     Optional[str] pageToken
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOperationsForResourceResult:
     Optional[list[Operation]] operations
     Optional[str] nextPageCount
@@ -2728,8 +2877,9 @@ struct GetOperationsForResourceResult:
 struct GetOperationsRequest:
     Optional[str] pageToken
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOperationsResult:
     Optional[list[Operation]] operations
     Optional[str] nextPageToken
@@ -2749,8 +2899,9 @@ struct GetRegionsRequest:
     Optional[bool] includeAvailabilityZones
     Optional[bool] includeRelationalDatabaseAvailabilityZones
 
-# no @derive(Json): member(s) regions: list[Region] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) regions: list[Region] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRegionsResult:
     Optional[list[Region]] regions
 
@@ -2758,8 +2909,9 @@ struct GetRegionsResult:
 struct GetRelationalDatabaseBlueprintsRequest:
     Optional[str] pageToken
 
-# no @derive(Json): member(s) blueprints: list[RelationalDatabaseBlueprint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) blueprints: list[RelationalDatabaseBlueprint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRelationalDatabaseBlueprintsResult:
     Optional[list[RelationalDatabaseBlueprint]] blueprints
     Optional[str] nextPageToken
@@ -2769,8 +2921,9 @@ struct GetRelationalDatabaseBundlesRequest:
     Optional[str] pageToken
     Optional[bool] includeInactive
 
-# no @derive(Json): member(s) bundles: list[RelationalDatabaseBundle] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bundles: list[RelationalDatabaseBundle] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRelationalDatabaseBundlesResult:
     Optional[list[RelationalDatabaseBundle]] bundles
     Optional[str] nextPageToken
@@ -2781,8 +2934,9 @@ struct GetRelationalDatabaseEventsRequest:
     Optional[int64] durationInMinutes
     Optional[str] pageToken
 
-# no @derive(Json): member(s) relationalDatabaseEvents: list[RelationalDatabaseEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) relationalDatabaseEvents: list[RelationalDatabaseEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRelationalDatabaseEventsResult:
     Optional[list[RelationalDatabaseEvent]] relationalDatabaseEvents
     Optional[str] nextPageToken
@@ -2796,8 +2950,9 @@ struct GetRelationalDatabaseLogEventsRequest:
     Optional[bool] startFromHead
     Optional[str] pageToken
 
-# no @derive(Json): member(s) resourceLogEvents: list[LogEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceLogEvents: list[LogEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRelationalDatabaseLogEventsResult:
     Optional[list[LogEvent]] resourceLogEvents
     Optional[str] nextBackwardToken
@@ -2807,8 +2962,9 @@ struct GetRelationalDatabaseLogEventsResult:
 struct GetRelationalDatabaseLogStreamsRequest:
     str relationalDatabaseName
 
-# no @derive(Json): member(s) logStreams: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logStreams: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRelationalDatabaseLogStreamsResult:
     Optional[list[str]] logStreams
 
@@ -2822,8 +2978,9 @@ struct GetRelationalDatabaseMasterUserPasswordResult:
     Optional[str] masterUserPassword
     Optional[DateTime] createdAt
 
-# no @derive(Json): member(s) statistics: list[MetricStatistic] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statistics: list[MetricStatistic] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRelationalDatabaseMetricDataRequest:
     str relationalDatabaseName
     RelationalDatabaseMetricName metricName
@@ -2833,8 +2990,9 @@ struct GetRelationalDatabaseMetricDataRequest:
     MetricUnit unit
     list[MetricStatistic] statistics
 
-# no @derive(Json): member(s) metricData: list[MetricDatapoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metricData: list[MetricDatapoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRelationalDatabaseMetricDataResult:
     Optional[RelationalDatabaseMetricName] metricName
     Optional[list[MetricDatapoint]] metricData
@@ -2844,8 +3002,9 @@ struct GetRelationalDatabaseParametersRequest:
     str relationalDatabaseName
     Optional[str] pageToken
 
-# no @derive(Json): member(s) parameters: list[RelationalDatabaseParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: list[RelationalDatabaseParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRelationalDatabaseParametersResult:
     Optional[list[RelationalDatabaseParameter]] parameters
     Optional[str] nextPageToken
@@ -2854,8 +3013,9 @@ struct GetRelationalDatabaseParametersResult:
 struct GetRelationalDatabaseRequest:
     str relationalDatabaseName
 
-# no @derive(Json): member(s) relationalDatabase: RelationalDatabase not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) relationalDatabase: RelationalDatabase not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRelationalDatabaseResult:
     Optional[RelationalDatabase] relationalDatabase
 
@@ -2863,8 +3023,9 @@ struct GetRelationalDatabaseResult:
 struct GetRelationalDatabaseSnapshotRequest:
     str relationalDatabaseSnapshotName
 
-# no @derive(Json): member(s) relationalDatabaseSnapshot: RelationalDatabaseSnapshot not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) relationalDatabaseSnapshot: RelationalDatabaseSnapshot not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRelationalDatabaseSnapshotResult:
     Optional[RelationalDatabaseSnapshot] relationalDatabaseSnapshot
 
@@ -2872,8 +3033,9 @@ struct GetRelationalDatabaseSnapshotResult:
 struct GetRelationalDatabaseSnapshotsRequest:
     Optional[str] pageToken
 
-# no @derive(Json): member(s) relationalDatabaseSnapshots: list[RelationalDatabaseSnapshot] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) relationalDatabaseSnapshots: list[RelationalDatabaseSnapshot] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRelationalDatabaseSnapshotsResult:
     Optional[list[RelationalDatabaseSnapshot]] relationalDatabaseSnapshots
     Optional[str] nextPageToken
@@ -2882,8 +3044,9 @@ struct GetRelationalDatabaseSnapshotsResult:
 struct GetRelationalDatabasesRequest:
     Optional[str] pageToken
 
-# no @derive(Json): member(s) relationalDatabases: list[RelationalDatabase] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) relationalDatabases: list[RelationalDatabase] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRelationalDatabasesResult:
     Optional[list[RelationalDatabase]] relationalDatabases
     Optional[str] nextPageToken
@@ -2893,8 +3056,9 @@ struct GetSetupHistoryRequest:
     str resourceName
     Optional[str] pageToken
 
-# no @derive(Json): member(s) setupHistory: list[SetupHistory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) setupHistory: list[SetupHistory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSetupHistoryResult:
     Optional[list[SetupHistory]] setupHistory
     Optional[str] nextPageToken
@@ -2911,14 +3075,16 @@ struct GetStaticIpResult:
 struct GetStaticIpsRequest:
     Optional[str] pageToken
 
-# no @derive(Json): member(s) staticIps: list[StaticIp] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) staticIps: list[StaticIp] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetStaticIpsResult:
     Optional[list[StaticIp]] staticIps
     Optional[str] nextPageToken
 
-# no @derive(Json): member(s) headersAllowList: list[HeaderEnum] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) headersAllowList: list[HeaderEnum] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HeaderObject:
     Optional[ForwardValues] option
     Optional[list[HeaderEnum]] headersAllowList
@@ -2950,8 +3116,9 @@ struct InputOrigin:
     Optional[int64] responseTimeout
     Optional[OriginIpAddressTypeEnum] ipAddressType
 
-# no @derive(Json): member(s) tags: list[Tag], addOns: list[AddOn], ipv6Addresses: list[str], hardware: InstanceHardware, networking: InstanceNetworking not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag], addOns: list[AddOn], ipv6Addresses: list[str], hardware: InstanceHardware, networking: InstanceNetworking not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Instance:
     Optional[str] name
     Optional[str] arn
@@ -2976,8 +3143,9 @@ struct Instance:
     Optional[str] sshKeyName
     Optional[InstanceMetadataOptions] metadataOptions
 
-# no @derive(Json): member(s) ipv6Addresses: list[str], hostKeys: list[HostKeyAttributes] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ipv6Addresses: list[str], hostKeys: list[HostKeyAttributes] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceAccessDetails:
     Optional[str] certKey
     Optional[DateTime] expiresAt
@@ -3003,8 +3171,9 @@ struct InstanceEntry:
     Optional[str] userData
     str availabilityZone
 
-# no @derive(Json): member(s) disks: list[Disk] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) disks: list[Disk] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceHardware:
     Optional[int64] cpuCount
     Optional[list[Disk]] disks
@@ -3024,14 +3193,16 @@ struct InstanceMetadataOptions:
     Optional[int64] httpPutResponseHopLimit
     Optional[HttpProtocolIpv6] httpProtocolIpv6
 
-# no @derive(Json): member(s) ports: list[InstancePortInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ports: list[InstancePortInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceNetworking:
     Optional[MonthlyTransfer] monthlyTransfer
     Optional[list[InstancePortInfo]] ports
 
-# no @derive(Json): member(s) cidrs: list[str], ipv6Cidrs: list[str], cidrListAliases: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cidrs: list[str], ipv6Cidrs: list[str], cidrListAliases: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstancePortInfo:
     Optional[int64] fromPort
     Optional[int64] toPort
@@ -3044,8 +3215,9 @@ struct InstancePortInfo:
     Optional[list[str]] ipv6Cidrs
     Optional[list[str]] cidrListAliases
 
-# no @derive(Json): member(s) cidrs: list[str], ipv6Cidrs: list[str], cidrListAliases: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cidrs: list[str], ipv6Cidrs: list[str], cidrListAliases: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstancePortState:
     Optional[int64] fromPort
     Optional[int64] toPort
@@ -3055,8 +3227,9 @@ struct InstancePortState:
     Optional[list[str]] ipv6Cidrs
     Optional[list[str]] cidrListAliases
 
-# no @derive(Json): member(s) tags: list[Tag], fromAttachedDisks: list[Disk] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag], fromAttachedDisks: list[Disk] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceSnapshot:
     Optional[str] name
     Optional[str] arn
@@ -3075,8 +3248,9 @@ struct InstanceSnapshot:
     Optional[bool] isFromAutoSnapshot
     Optional[int64] sizeInGb
 
-# no @derive(Json): member(s) fromDiskInfo: list[DiskInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fromDiskInfo: list[DiskInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceSnapshotInfo:
     Optional[str] fromBundleId
     Optional[str] fromBlueprintId
@@ -3103,8 +3277,9 @@ struct IsVpcPeeredRequest:
 struct IsVpcPeeredResult:
     Optional[bool] isPeered
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KeyPair:
     Optional[str] name
     Optional[str] arn
@@ -3115,8 +3290,9 @@ struct KeyPair:
     Optional[list[Tag]] tags
     Optional[str] fingerprint
 
-# no @derive(Json): member(s) alternativeDomainNames: list[str], cacheBehaviorSettings: CacheSettings, cacheBehaviors: list[CacheBehaviorPerPath], tags: list[Tag], customErrorResponses: list[DistributionCustomErrorResponse], waf: WafConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) alternativeDomainNames: list[str], cacheBehaviorSettings: CacheSettings, cacheBehaviors: list[CacheBehaviorPerPath], tags: list[Tag], customErrorResponses: list[DistributionCustomErrorResponse], waf: WafConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LightsailDistribution:
     Optional[str] name
     Optional[str] arn
@@ -3143,8 +3319,9 @@ struct LightsailDistribution:
     Optional[list[DistributionCustomErrorResponse]] customErrorResponses
     Optional[WafConfig] waf
 
-# no @derive(Json): member(s) tags: list[Tag], publicPorts: list[int64], instanceHealthSummary: list[InstanceHealthSummary], tlsCertificateSummaries: list[LoadBalancerTlsCertificateSummary], configurationOptions: dict[LoadBalancerAttributeName, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag], publicPorts: list[int64], instanceHealthSummary: list[InstanceHealthSummary], tlsCertificateSummaries: list[LoadBalancerTlsCertificateSummary], configurationOptions: dict[LoadBalancerAttributeName, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LoadBalancer:
     Optional[str] name
     Optional[str] arn
@@ -3166,8 +3343,9 @@ struct LoadBalancer:
     Optional[bool] httpsRedirectionEnabled
     Optional[str] tlsPolicyName
 
-# no @derive(Json): member(s) tags: list[Tag], domainValidationRecords: list[LoadBalancerTlsCertificateDomainValidationRecord], renewalSummary: LoadBalancerTlsCertificateRenewalSummary, subjectAlternativeNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag], domainValidationRecords: list[LoadBalancerTlsCertificateDomainValidationRecord], renewalSummary: LoadBalancerTlsCertificateRenewalSummary, subjectAlternativeNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LoadBalancerTlsCertificate:
     Optional[str] name
     Optional[str] arn
@@ -3214,8 +3392,9 @@ struct LoadBalancerTlsCertificateDomainValidationRecord:
     Optional[str] domainName
     Optional[LoadBalancerTlsCertificateDnsRecordCreationState] dnsRecordCreationState
 
-# no @derive(Json): member(s) domainValidationOptions: list[LoadBalancerTlsCertificateDomainValidationOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domainValidationOptions: list[LoadBalancerTlsCertificateDomainValidationOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LoadBalancerTlsCertificateRenewalSummary:
     Optional[LoadBalancerTlsCertificateRenewalStatus] renewalStatus
     Optional[list[LoadBalancerTlsCertificateDomainValidationOption]] domainValidationOptions
@@ -3225,8 +3404,9 @@ struct LoadBalancerTlsCertificateSummary:
     Optional[str] name
     Optional[bool] isAttached
 
-# no @derive(Json): member(s) protocols: list[str], ciphers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) protocols: list[str], ciphers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LoadBalancerTlsPolicy:
     Optional[str] name
     Optional[bool] isDefault
@@ -3271,8 +3451,9 @@ struct NotFoundException:
     Optional[str] message
     Optional[str] tip
 
-# no @derive(Json): member(s) portInfo: PortInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) portInfo: PortInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenInstancePublicPortsRequest:
     PortInfo portInfo
     str instanceName
@@ -3345,8 +3526,9 @@ struct PendingModifiedRelationalDatabaseValues:
     Optional[str] engineVersion
     Optional[bool] backupRetentionEnabled
 
-# no @derive(Json): member(s) cidrs: list[str], ipv6Cidrs: list[str], cidrListAliases: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cidrs: list[str], ipv6Cidrs: list[str], cidrListAliases: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PortInfo:
     Optional[int64] fromPort
     Optional[int64] toPort
@@ -3363,8 +3545,9 @@ struct PrivateRegistryAccess:
 struct PrivateRegistryAccessRequest:
     Optional[ContainerServiceECRImagePullerRoleRequest] ecrImagePullerRole
 
-# no @derive(Json): member(s) contactProtocols: list[ContactProtocol], notificationTriggers: list[AlarmState], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) contactProtocols: list[ContactProtocol], notificationTriggers: list[AlarmState], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutAlarmRequest:
     str alarmName
     MetricName metricName
@@ -3379,13 +3562,15 @@ struct PutAlarmRequest:
     Optional[bool] notificationEnabled
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutAlarmResult:
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) portInfos: list[PortInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) portInfos: list[PortInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutInstancePublicPortsRequest:
     list[PortInfo] portInfos
     str instanceName
@@ -3394,8 +3579,9 @@ struct PutInstancePublicPortsRequest:
 struct PutInstancePublicPortsResult:
     Optional[Operation] operation
 
-# no @derive(Json): member(s) queryStringsAllowList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) queryStringsAllowList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryStringObject:
     Optional[bool] option
     Optional[list[str]] queryStringsAllowList
@@ -3409,8 +3595,9 @@ struct R53HostedZoneDeletionState:
 struct RebootInstanceRequest:
     str instanceName
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RebootInstanceResult:
     Optional[list[Operation]] operations
 
@@ -3418,13 +3605,15 @@ struct RebootInstanceResult:
 struct RebootRelationalDatabaseRequest:
     str relationalDatabaseName
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RebootRelationalDatabaseResult:
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) availabilityZones: list[AvailabilityZone], relationalDatabaseAvailabilityZones: list[AvailabilityZone] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) availabilityZones: list[AvailabilityZone], relationalDatabaseAvailabilityZones: list[AvailabilityZone] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Region:
     Optional[str] continentCode
     Optional[str] description
@@ -3455,8 +3644,9 @@ struct RegisteredDomainDelegationInfo:
     Optional[NameServersUpdateState] nameServersUpdateState
     Optional[R53HostedZoneDeletionState] r53HostedZoneDeletionState
 
-# no @derive(Json): member(s) tags: list[Tag], pendingMaintenanceActions: list[PendingMaintenanceAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag], pendingMaintenanceActions: list[PendingMaintenanceAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RelationalDatabase:
     Optional[str] name
     Optional[str] arn
@@ -3511,8 +3701,9 @@ struct RelationalDatabaseEndpoint:
     Optional[int64] port
     Optional[str] address
 
-# no @derive(Json): member(s) eventCategories: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventCategories: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RelationalDatabaseEvent:
     Optional[str] resource
     Optional[DateTime] createdAt
@@ -3536,8 +3727,9 @@ struct RelationalDatabaseParameter:
     Optional[str] parameterName
     Optional[str] parameterValue
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RelationalDatabaseSnapshot:
     Optional[str] name
     Optional[str] arn
@@ -3559,13 +3751,15 @@ struct RelationalDatabaseSnapshot:
 struct ReleaseStaticIpRequest:
     str staticIpName
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReleaseStaticIpResult:
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) domainValidationRecords: list[DomainValidationRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domainValidationRecords: list[DomainValidationRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RenewalSummary:
     Optional[list[DomainValidationRecord]] domainValidationRecords
     Optional[RenewalStatus] renewalStatus
@@ -3582,8 +3776,9 @@ struct ResetDistributionCacheResult:
     Optional[DateTime] createTime
     Optional[Operation] operation
 
-# no @derive(Json): member(s) costEstimates: list[CostEstimate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) costEstimates: list[CostEstimate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceBudgetEstimate:
     Optional[str] resourceName
     Optional[ResourceType] resourceType
@@ -3611,8 +3806,9 @@ struct ResourceRecord:
 struct SendContactMethodVerificationRequest:
     str protocol
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendContactMethodVerificationResult:
     Optional[list[Operation]] operations
 
@@ -3636,8 +3832,9 @@ struct SetIpAddressTypeRequest:
     IpAddressType ipAddressType
     Optional[bool] acceptBundleUpdate
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetIpAddressTypeResult:
     Optional[list[Operation]] operations
 
@@ -3647,8 +3844,9 @@ struct SetResourceAccessForBucketRequest:
     str bucketName
     ResourceBucketAccess access
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetResourceAccessForBucketResult:
     Optional[list[Operation]] operations
 
@@ -3662,8 +3860,9 @@ struct SetupExecutionDetails:
     Optional[str] standardOutput
     Optional[str] version
 
-# no @derive(Json): member(s) request: SetupRequest, executionDetails: list[SetupExecutionDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) request: SetupRequest, executionDetails: list[SetupExecutionDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetupHistory:
     Optional[str] operationId
     Optional[SetupRequest] request
@@ -3679,21 +3878,24 @@ struct SetupHistoryResource:
     Optional[ResourceLocation] location
     Optional[ResourceType] resourceType
 
-# no @derive(Json): member(s) domainNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domainNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetupInstanceHttpsRequest:
     str instanceName
     str emailAddress
     list[str] domainNames
     str certificateProvider
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetupInstanceHttpsResult:
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) domainNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domainNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetupRequest:
     Optional[str] instanceName
     Optional[list[str]] domainNames
@@ -3703,8 +3905,9 @@ struct SetupRequest:
 struct StartGUISessionRequest:
     str resourceName
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartGUISessionResult:
     Optional[list[Operation]] operations
 
@@ -3713,8 +3916,9 @@ struct StartInstanceRequest:
     str instanceName
     Optional[InstanceAttributeUpdates] attributeUpdates
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartInstanceResult:
     Optional[list[Operation]] operations
 
@@ -3722,8 +3926,9 @@ struct StartInstanceResult:
 struct StartRelationalDatabaseRequest:
     str relationalDatabaseName
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartRelationalDatabaseResult:
     Optional[list[Operation]] operations
 
@@ -3743,8 +3948,9 @@ struct StaticIp:
 struct StopGUISessionRequest:
     str resourceName
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopGUISessionResult:
     Optional[list[Operation]] operations
 
@@ -3758,8 +3964,9 @@ struct StopInstanceRequest:
     str instanceName
     Optional[bool] force
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopInstanceResult:
     Optional[list[Operation]] operations
 
@@ -3768,8 +3975,9 @@ struct StopRelationalDatabaseRequest:
     str relationalDatabaseName
     Optional[str] relationalDatabaseSnapshotName
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopRelationalDatabaseResult:
     Optional[list[Operation]] operations
 
@@ -3778,15 +3986,17 @@ struct Tag:
     Optional[str] key
     Optional[str] value
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str resourceName
     Optional[str] resourceArn
     list[Tag] tags
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceResult:
     Optional[list[Operation]] operations
 
@@ -3795,8 +4005,9 @@ struct TestAlarmRequest:
     str alarmName
     AlarmState state
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestAlarmResult:
     Optional[list[Operation]] operations
 
@@ -3821,15 +4032,17 @@ struct UnpeerVpcRequest:
 struct UnpeerVpcResult:
     Optional[Operation] operation
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str resourceName
     Optional[str] resourceArn
     list[str] tagKeys
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceResult:
     Optional[list[Operation]] operations
 
@@ -3838,13 +4051,15 @@ struct UpdateBucketBundleRequest:
     str bucketName
     str bundleId
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBucketBundleResult:
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) readonlyAccessAccounts: list[str], cors: BucketCorsConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) readonlyAccessAccounts: list[str], cors: BucketCorsConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBucketRequest:
     str bucketName
     Optional[AccessRules] accessRules
@@ -3853,14 +4068,16 @@ struct UpdateBucketRequest:
     Optional[BucketAccessLogConfig] accessLogConfig
     Optional[BucketCorsConfig] cors
 
-# no @derive(Json): member(s) bucket: Bucket, operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bucket: Bucket, operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBucketResult:
     Optional[Bucket] bucket
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) publicDomainNames: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) publicDomainNames: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateContainerServiceRequest:
     str serviceName
     Optional[ContainerServicePowerName] power
@@ -3869,8 +4086,9 @@ struct UpdateContainerServiceRequest:
     Optional[dict[str, list[str]]] publicDomainNames
     Optional[PrivateRegistryAccessRequest] privateRegistryAccess
 
-# no @derive(Json): member(s) containerService: ContainerService not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerService: ContainerService not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateContainerServiceResult:
     Optional[ContainerService] containerService
 
@@ -3883,8 +4101,9 @@ struct UpdateDistributionBundleRequest:
 struct UpdateDistributionBundleResult:
     Optional[Operation] operation
 
-# no @derive(Json): member(s) cacheBehaviorSettings: CacheSettings, cacheBehaviors: list[CacheBehaviorPerPath], customErrorResponses: list[DistributionCustomErrorResponse], wafRules: list[WafRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cacheBehaviorSettings: CacheSettings, cacheBehaviors: list[CacheBehaviorPerPath], customErrorResponses: list[DistributionCustomErrorResponse], wafRules: list[WafRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDistributionRequest:
     str distributionName
     Optional[InputOrigin] origin
@@ -3905,14 +4124,16 @@ struct UpdateDistributionRequest:
 struct UpdateDistributionResult:
     Optional[Operation] operation
 
-# no @derive(Json): member(s) domainEntry: DomainEntry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domainEntry: DomainEntry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDomainEntryRequest:
     str domainName
     DomainEntry domainEntry
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDomainEntryResult:
     Optional[list[Operation]] operations
 
@@ -3934,19 +4155,22 @@ struct UpdateLoadBalancerAttributeRequest:
     LoadBalancerAttributeName attributeName
     str attributeValue
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateLoadBalancerAttributeResult:
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) parameters: list[RelationalDatabaseParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: list[RelationalDatabaseParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRelationalDatabaseParametersRequest:
     str relationalDatabaseName
     list[RelationalDatabaseParameter] parameters
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRelationalDatabaseParametersResult:
     Optional[list[Operation]] operations
 
@@ -3964,21 +4188,24 @@ struct UpdateRelationalDatabaseRequest:
     Optional[str] caCertificateIdentifier
     Optional[str] relationalDatabaseBlueprintId
 
-# no @derive(Json): member(s) operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRelationalDatabaseResult:
     Optional[list[Operation]] operations
 
-# no @derive(Json): member(s) responseInspection: WafResponseInspection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) responseInspection: WafResponseInspection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WafAcfpConfig:
     Optional[WafPayloadTypeEnum] payloadType
     Optional[str] creationPath
     Optional[str] registrationPagePath
     Optional[WafResponseInspection] responseInspection
 
-# no @derive(Json): member(s) responseInspection: WafResponseInspection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) responseInspection: WafResponseInspection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WafAtpConfig:
     Optional[str] loginPath
     Optional[WafPayloadTypeEnum] payloadType
@@ -3990,20 +4217,23 @@ struct WafAtpConfig:
 struct WafBotControlConfig:
     Optional[WafInspectionLevelEnum] inspectionLevel
 
-# no @derive(Json): member(s) wafRules: list[WafRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) wafRules: list[WafRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WafConfig:
     Optional[bool] isWafEnabled
     Optional[list[WafRule]] wafRules
 
-# no @derive(Json): member(s) successCodes: list[int64], failureCodes: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successCodes: list[int64], failureCodes: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WafResponseInspection:
     Optional[list[int64]] successCodes
     Optional[list[int64]] failureCodes
 
-# no @derive(Json): member(s) atpConfig: WafAtpConfig, acfpConfig: WafAcfpConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) atpConfig: WafAtpConfig, acfpConfig: WafAcfpConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WafRule:
     str name
     Optional[WafAtpConfig] atpConfig
@@ -4047,52 +4277,1173 @@ def lightsail_error_from_code(str code) -> LightsailError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AttachInstancesToLoadBalancer (input AttachInstancesToLoadBalancerRequest)
-#   CloseInstancePublicPorts (input CloseInstancePublicPortsRequest)
-#   CreateBucket (input CreateBucketRequest)
-#   CreateCertificate (input CreateCertificateRequest)
-#   CreateCloudFormationStack (input CreateCloudFormationStackRequest)
-#   CreateContactMethod (input CreateContactMethodRequest)
-#   CreateContainerService (input CreateContainerServiceRequest)
-#   CreateContainerServiceDeployment (input CreateContainerServiceDeploymentRequest)
-#   CreateDisk (input CreateDiskRequest)
-#   CreateDiskFromSnapshot (input CreateDiskFromSnapshotRequest)
-#   CreateDiskSnapshot (input CreateDiskSnapshotRequest)
-#   CreateDistribution (input CreateDistributionRequest)
-#   CreateDomain (input CreateDomainRequest)
-#   CreateDomainEntry (input CreateDomainEntryRequest)
-#   CreateInstanceSnapshot (input CreateInstanceSnapshotRequest)
-#   CreateInstances (input CreateInstancesRequest)
-#   CreateInstancesFromSnapshot (input CreateInstancesFromSnapshotRequest)
-#   CreateKeyPair (input CreateKeyPairRequest)
-#   CreateLoadBalancer (input CreateLoadBalancerRequest)
-#   CreateLoadBalancerTlsCertificate (input CreateLoadBalancerTlsCertificateRequest)
-#   CreateRelationalDatabase (input CreateRelationalDatabaseRequest)
-#   CreateRelationalDatabaseFromSnapshot (input CreateRelationalDatabaseFromSnapshotRequest)
-#   CreateRelationalDatabaseSnapshot (input CreateRelationalDatabaseSnapshotRequest)
-#   DeleteDomainEntry (input DeleteDomainEntryRequest)
-#   DetachInstancesFromLoadBalancer (input DetachInstancesFromLoadBalancerRequest)
-#   GetBucketMetricData (input GetBucketMetricDataRequest)
-#   GetCertificates (input GetCertificatesRequest)
-#   GetContactMethods (input GetContactMethodsRequest)
-#   GetContainerServiceMetricData (input GetContainerServiceMetricDataRequest)
-#   GetDistributionMetricData (input GetDistributionMetricDataRequest)
-#   GetInstanceMetricData (input GetInstanceMetricDataRequest)
-#   GetLoadBalancerMetricData (input GetLoadBalancerMetricDataRequest)
-#   GetRelationalDatabaseMetricData (input GetRelationalDatabaseMetricDataRequest)
-#   OpenInstancePublicPorts (input OpenInstancePublicPortsRequest)
-#   PutAlarm (input PutAlarmRequest)
-#   PutInstancePublicPorts (input PutInstancePublicPortsRequest)
-#   SetupInstanceHttps (input SetupInstanceHttpsRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateBucket (input UpdateBucketRequest)
-#   UpdateContainerService (input UpdateContainerServiceRequest)
-#   UpdateDistribution (input UpdateDistributionRequest)
-#   UpdateDomainEntry (input UpdateDomainEntryRequest)
-#   UpdateRelationalDatabaseParameters (input UpdateRelationalDatabaseParametersRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def lightsail_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def lightsail_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def lightsail_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AttachInstancesToLoadBalancerRequest to a compact JSON object (declaration order).
+def attach_instances_to_load_balancer_request_to_json(AttachInstancesToLoadBalancerRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"loadBalancerName\":" + lightsail_json_str(v.loadBalancerName))
+    list[str] e0 = []
+    for x0 in v.instanceNames:
+        e0.append(lightsail_json_str(x0))
+    parts.append("\"instanceNames\":" + lightsail_json_arr(e0))
+    return lightsail_json_obj(parts)
+
+# Serialize BucketCorsConfig to a compact JSON object (declaration order).
+def bucket_cors_config_to_json(BucketCorsConfig v) -> str:
+    list[str] parts = []
+    if v.rules.is_some():
+        auto u0 = v.rules.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bucket_cors_rule_to_json(x1))
+        parts.append("\"rules\":" + lightsail_json_arr(e1))
+    return lightsail_json_obj(parts)
+
+# Serialize BucketCorsRule to a compact JSON object (declaration order).
+def bucket_cors_rule_to_json(BucketCorsRule v) -> str:
+    list[str] parts = []
+    if v.id.is_some():
+        auto u0 = v.id.unwrap()
+        parts.append("\"id\":" + lightsail_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.allowedMethods:
+        e1.append(lightsail_json_str(x1))
+    parts.append("\"allowedMethods\":" + lightsail_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.allowedOrigins:
+        e2.append(lightsail_json_str(x2))
+    parts.append("\"allowedOrigins\":" + lightsail_json_arr(e2))
+    if v.allowedHeaders.is_some():
+        auto u3 = v.allowedHeaders.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(lightsail_json_str(x4))
+        parts.append("\"allowedHeaders\":" + lightsail_json_arr(e4))
+    if v.exposeHeaders.is_some():
+        auto u5 = v.exposeHeaders.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(lightsail_json_str(x6))
+        parts.append("\"exposeHeaders\":" + lightsail_json_arr(e6))
+    if v.maxAgeSeconds.is_some():
+        auto u7 = v.maxAgeSeconds.unwrap()
+        parts.append("\"maxAgeSeconds\":" + str(u7))
+    return lightsail_json_obj(parts)
+
+# Serialize CacheSettings to a compact JSON object (declaration order).
+def cache_settings_to_json(CacheSettings v) -> str:
+    list[str] parts = []
+    if v.defaultTTL.is_some():
+        auto u0 = v.defaultTTL.unwrap()
+        parts.append("\"defaultTTL\":" + str(u0))
+    if v.minimumTTL.is_some():
+        auto u1 = v.minimumTTL.unwrap()
+        parts.append("\"minimumTTL\":" + str(u1))
+    if v.maximumTTL.is_some():
+        auto u2 = v.maximumTTL.unwrap()
+        parts.append("\"maximumTTL\":" + str(u2))
+    if v.allowedHTTPMethods.is_some():
+        auto u3 = v.allowedHTTPMethods.unwrap()
+        parts.append("\"allowedHTTPMethods\":" + lightsail_json_str(u3))
+    if v.cachedHTTPMethods.is_some():
+        auto u4 = v.cachedHTTPMethods.unwrap()
+        parts.append("\"cachedHTTPMethods\":" + lightsail_json_str(u4))
+    if v.forwardedCookies.is_some():
+        auto u5 = v.forwardedCookies.unwrap()
+        parts.append("\"forwardedCookies\":" + cookie_object_to_json(u5))
+    if v.forwardedHeaders.is_some():
+        auto u6 = v.forwardedHeaders.unwrap()
+        parts.append("\"forwardedHeaders\":" + header_object_to_json(u6))
+    if v.forwardedQueryStrings.is_some():
+        auto u7 = v.forwardedQueryStrings.unwrap()
+        parts.append("\"forwardedQueryStrings\":" + query_string_object_to_json(u7))
+    return lightsail_json_obj(parts)
+
+# Serialize CloseInstancePublicPortsRequest to a compact JSON object (declaration order).
+def close_instance_public_ports_request_to_json(CloseInstancePublicPortsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"portInfo\":" + port_info_to_json(v.portInfo))
+    parts.append("\"instanceName\":" + lightsail_json_str(v.instanceName))
+    return lightsail_json_obj(parts)
+
+# Serialize Container to a compact JSON object (declaration order).
+def container_to_json(Container v) -> str:
+    list[str] parts = []
+    if v.image.is_some():
+        auto u0 = v.image.unwrap()
+        parts.append("\"image\":" + lightsail_json_str(u0))
+    if v.command.is_some():
+        auto u1 = v.command.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(lightsail_json_str(x2))
+        parts.append("\"command\":" + lightsail_json_arr(e2))
+    if v.environment.is_some():
+        auto u3 = v.environment.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(lightsail_json_str(k4) + ":" + lightsail_json_str(u3[k4]))
+        parts.append("\"environment\":" + lightsail_json_obj(m4))
+    if v.ports.is_some():
+        auto u5 = v.ports.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(lightsail_json_str(k6) + ":" + u5[k6].to_json())
+        parts.append("\"ports\":" + lightsail_json_obj(m6))
+    return lightsail_json_obj(parts)
+
+# Serialize ContainerServiceDeploymentRequest to a compact JSON object (declaration order).
+def container_service_deployment_request_to_json(ContainerServiceDeploymentRequest v) -> str:
+    list[str] parts = []
+    if v.containers.is_some():
+        auto u0 = v.containers.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(lightsail_json_str(k1) + ":" + container_to_json(u0[k1]))
+        parts.append("\"containers\":" + lightsail_json_obj(m1))
+    if v.publicEndpoint.is_some():
+        auto u2 = v.publicEndpoint.unwrap()
+        parts.append("\"publicEndpoint\":" + u2.to_json())
+    return lightsail_json_obj(parts)
+
+# Serialize CookieObject to a compact JSON object (declaration order).
+def cookie_object_to_json(CookieObject v) -> str:
+    list[str] parts = []
+    if v.option.is_some():
+        auto u0 = v.option.unwrap()
+        parts.append("\"option\":" + u0.to_json())
+    if v.cookiesAllowList.is_some():
+        auto u1 = v.cookiesAllowList.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(lightsail_json_str(x2))
+        parts.append("\"cookiesAllowList\":" + lightsail_json_arr(e2))
+    return lightsail_json_obj(parts)
+
+# Serialize CreateBucketRequest to a compact JSON object (declaration order).
+def create_bucket_request_to_json(CreateBucketRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"bucketName\":" + lightsail_json_str(v.bucketName))
+    parts.append("\"bundleId\":" + lightsail_json_str(v.bundleId))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + lightsail_json_arr(e1))
+    if v.enableObjectVersioning.is_some():
+        auto u2 = v.enableObjectVersioning.unwrap()
+        parts.append("\"enableObjectVersioning\":" + json.dumps(JsonValue.Bool(u2)))
+    return lightsail_json_obj(parts)
+
+# Serialize CreateCertificateRequest to a compact JSON object (declaration order).
+def create_certificate_request_to_json(CreateCertificateRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"certificateName\":" + lightsail_json_str(v.certificateName))
+    parts.append("\"domainName\":" + lightsail_json_str(v.domainName))
+    if v.subjectAlternativeNames.is_some():
+        auto u0 = v.subjectAlternativeNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(lightsail_json_str(x1))
+        parts.append("\"subjectAlternativeNames\":" + lightsail_json_arr(e1))
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"tags\":" + lightsail_json_arr(e3))
+    return lightsail_json_obj(parts)
+
+# Serialize CreateCloudFormationStackRequest to a compact JSON object (declaration order).
+def create_cloud_formation_stack_request_to_json(CreateCloudFormationStackRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.instances:
+        e0.append(x0.to_json())
+    parts.append("\"instances\":" + lightsail_json_arr(e0))
+    return lightsail_json_obj(parts)
+
+# Serialize CreateContactMethodRequest to a compact JSON object (declaration order).
+def create_contact_method_request_to_json(CreateContactMethodRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"protocol\":" + v.protocol.to_json())
+    parts.append("\"contactEndpoint\":" + lightsail_json_str(v.contactEndpoint))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + lightsail_json_arr(e1))
+    return lightsail_json_obj(parts)
+
+# Serialize CreateContainerServiceDeploymentRequest to a compact JSON object (declaration order).
+def create_container_service_deployment_request_to_json(CreateContainerServiceDeploymentRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"serviceName\":" + lightsail_json_str(v.serviceName))
+    if v.containers.is_some():
+        auto u0 = v.containers.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(lightsail_json_str(k1) + ":" + container_to_json(u0[k1]))
+        parts.append("\"containers\":" + lightsail_json_obj(m1))
+    if v.publicEndpoint.is_some():
+        auto u2 = v.publicEndpoint.unwrap()
+        parts.append("\"publicEndpoint\":" + u2.to_json())
+    return lightsail_json_obj(parts)
+
+# Serialize CreateContainerServiceRequest to a compact JSON object (declaration order).
+def create_container_service_request_to_json(CreateContainerServiceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"serviceName\":" + lightsail_json_str(v.serviceName))
+    parts.append("\"power\":" + v.power.to_json())
+    parts.append("\"scale\":" + str(v.scale))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + lightsail_json_arr(e1))
+    if v.publicDomainNames.is_some():
+        auto u2 = v.publicDomainNames.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            list[str] e4 = []
+            for x4 in u2[k3]:
+                e4.append(lightsail_json_str(x4))
+            m3.append(lightsail_json_str(k3) + ":" + lightsail_json_arr(e4))
+        parts.append("\"publicDomainNames\":" + lightsail_json_obj(m3))
+    if v.deployment.is_some():
+        auto u5 = v.deployment.unwrap()
+        parts.append("\"deployment\":" + container_service_deployment_request_to_json(u5))
+    if v.privateRegistryAccess.is_some():
+        auto u6 = v.privateRegistryAccess.unwrap()
+        parts.append("\"privateRegistryAccess\":" + u6.to_json())
+    return lightsail_json_obj(parts)
+
+# Serialize CreateDiskFromSnapshotRequest to a compact JSON object (declaration order).
+def create_disk_from_snapshot_request_to_json(CreateDiskFromSnapshotRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"diskName\":" + lightsail_json_str(v.diskName))
+    if v.diskSnapshotName.is_some():
+        auto u0 = v.diskSnapshotName.unwrap()
+        parts.append("\"diskSnapshotName\":" + lightsail_json_str(u0))
+    parts.append("\"availabilityZone\":" + lightsail_json_str(v.availabilityZone))
+    parts.append("\"sizeInGb\":" + str(v.sizeInGb))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + lightsail_json_arr(e2))
+    if v.addOns.is_some():
+        auto u3 = v.addOns.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"addOns\":" + lightsail_json_arr(e4))
+    if v.sourceDiskName.is_some():
+        auto u5 = v.sourceDiskName.unwrap()
+        parts.append("\"sourceDiskName\":" + lightsail_json_str(u5))
+    if v.restoreDate.is_some():
+        auto u6 = v.restoreDate.unwrap()
+        parts.append("\"restoreDate\":" + lightsail_json_str(u6))
+    if v.useLatestRestorableAutoSnapshot.is_some():
+        auto u7 = v.useLatestRestorableAutoSnapshot.unwrap()
+        parts.append("\"useLatestRestorableAutoSnapshot\":" + json.dumps(JsonValue.Bool(u7)))
+    return lightsail_json_obj(parts)
+
+# Serialize CreateDiskRequest to a compact JSON object (declaration order).
+def create_disk_request_to_json(CreateDiskRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"diskName\":" + lightsail_json_str(v.diskName))
+    parts.append("\"availabilityZone\":" + lightsail_json_str(v.availabilityZone))
+    parts.append("\"sizeInGb\":" + str(v.sizeInGb))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + lightsail_json_arr(e1))
+    if v.addOns.is_some():
+        auto u2 = v.addOns.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"addOns\":" + lightsail_json_arr(e3))
+    return lightsail_json_obj(parts)
+
+# Serialize CreateDiskSnapshotRequest to a compact JSON object (declaration order).
+def create_disk_snapshot_request_to_json(CreateDiskSnapshotRequest v) -> str:
+    list[str] parts = []
+    if v.diskName.is_some():
+        auto u0 = v.diskName.unwrap()
+        parts.append("\"diskName\":" + lightsail_json_str(u0))
+    parts.append("\"diskSnapshotName\":" + lightsail_json_str(v.diskSnapshotName))
+    if v.instanceName.is_some():
+        auto u1 = v.instanceName.unwrap()
+        parts.append("\"instanceName\":" + lightsail_json_str(u1))
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"tags\":" + lightsail_json_arr(e3))
+    return lightsail_json_obj(parts)
+
+# Serialize CreateDistributionRequest to a compact JSON object (declaration order).
+def create_distribution_request_to_json(CreateDistributionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"distributionName\":" + lightsail_json_str(v.distributionName))
+    parts.append("\"origin\":" + v.origin.to_json())
+    parts.append("\"defaultCacheBehavior\":" + v.defaultCacheBehavior.to_json())
+    if v.cacheBehaviorSettings.is_some():
+        auto u0 = v.cacheBehaviorSettings.unwrap()
+        parts.append("\"cacheBehaviorSettings\":" + cache_settings_to_json(u0))
+    if v.cacheBehaviors.is_some():
+        auto u1 = v.cacheBehaviors.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"cacheBehaviors\":" + lightsail_json_arr(e2))
+    parts.append("\"bundleId\":" + lightsail_json_str(v.bundleId))
+    if v.ipAddressType.is_some():
+        auto u3 = v.ipAddressType.unwrap()
+        parts.append("\"ipAddressType\":" + u3.to_json())
+    if v.tags.is_some():
+        auto u4 = v.tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"tags\":" + lightsail_json_arr(e5))
+    if v.certificateName.is_some():
+        auto u6 = v.certificateName.unwrap()
+        parts.append("\"certificateName\":" + lightsail_json_str(u6))
+    if v.viewerMinimumTlsProtocolVersion.is_some():
+        auto u7 = v.viewerMinimumTlsProtocolVersion.unwrap()
+        parts.append("\"viewerMinimumTlsProtocolVersion\":" + u7.to_json())
+    if v.enablePrivateOriginAccess.is_some():
+        auto u8 = v.enablePrivateOriginAccess.unwrap()
+        parts.append("\"enablePrivateOriginAccess\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.defaultRootObject.is_some():
+        auto u9 = v.defaultRootObject.unwrap()
+        parts.append("\"defaultRootObject\":" + lightsail_json_str(u9))
+    if v.customErrorResponses.is_some():
+        auto u10 = v.customErrorResponses.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"customErrorResponses\":" + lightsail_json_arr(e11))
+    if v.enableWaf.is_some():
+        auto u12 = v.enableWaf.unwrap()
+        parts.append("\"enableWaf\":" + json.dumps(JsonValue.Bool(u12)))
+    if v.wafRules.is_some():
+        auto u13 = v.wafRules.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(waf_rule_to_json(x14))
+        parts.append("\"wafRules\":" + lightsail_json_arr(e14))
+    return lightsail_json_obj(parts)
+
+# Serialize CreateDomainEntryRequest to a compact JSON object (declaration order).
+def create_domain_entry_request_to_json(CreateDomainEntryRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"domainName\":" + lightsail_json_str(v.domainName))
+    parts.append("\"domainEntry\":" + domain_entry_to_json(v.domainEntry))
+    return lightsail_json_obj(parts)
+
+# Serialize CreateDomainRequest to a compact JSON object (declaration order).
+def create_domain_request_to_json(CreateDomainRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"domainName\":" + lightsail_json_str(v.domainName))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + lightsail_json_arr(e1))
+    return lightsail_json_obj(parts)
+
+# Serialize CreateInstanceSnapshotRequest to a compact JSON object (declaration order).
+def create_instance_snapshot_request_to_json(CreateInstanceSnapshotRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"instanceSnapshotName\":" + lightsail_json_str(v.instanceSnapshotName))
+    parts.append("\"instanceName\":" + lightsail_json_str(v.instanceName))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + lightsail_json_arr(e1))
+    return lightsail_json_obj(parts)
+
+# Serialize CreateInstancesFromSnapshotRequest to a compact JSON object (declaration order).
+def create_instances_from_snapshot_request_to_json(CreateInstancesFromSnapshotRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.instanceNames:
+        e0.append(lightsail_json_str(x0))
+    parts.append("\"instanceNames\":" + lightsail_json_arr(e0))
+    if v.attachedDiskMapping.is_some():
+        auto u1 = v.attachedDiskMapping.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            list[str] e3 = []
+            for x3 in u1[k2]:
+                e3.append(x3.to_json())
+            m2.append(lightsail_json_str(k2) + ":" + lightsail_json_arr(e3))
+        parts.append("\"attachedDiskMapping\":" + lightsail_json_obj(m2))
+    parts.append("\"availabilityZone\":" + lightsail_json_str(v.availabilityZone))
+    if v.instanceSnapshotName.is_some():
+        auto u4 = v.instanceSnapshotName.unwrap()
+        parts.append("\"instanceSnapshotName\":" + lightsail_json_str(u4))
+    parts.append("\"bundleId\":" + lightsail_json_str(v.bundleId))
+    if v.userData.is_some():
+        auto u5 = v.userData.unwrap()
+        parts.append("\"userData\":" + lightsail_json_str(u5))
+    if v.keyPairName.is_some():
+        auto u6 = v.keyPairName.unwrap()
+        parts.append("\"keyPairName\":" + lightsail_json_str(u6))
+    if v.tags.is_some():
+        auto u7 = v.tags.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"tags\":" + lightsail_json_arr(e8))
+    if v.addOns.is_some():
+        auto u9 = v.addOns.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"addOns\":" + lightsail_json_arr(e10))
+    if v.ipAddressType.is_some():
+        auto u11 = v.ipAddressType.unwrap()
+        parts.append("\"ipAddressType\":" + u11.to_json())
+    if v.sourceInstanceName.is_some():
+        auto u12 = v.sourceInstanceName.unwrap()
+        parts.append("\"sourceInstanceName\":" + lightsail_json_str(u12))
+    if v.restoreDate.is_some():
+        auto u13 = v.restoreDate.unwrap()
+        parts.append("\"restoreDate\":" + lightsail_json_str(u13))
+    if v.useLatestRestorableAutoSnapshot.is_some():
+        auto u14 = v.useLatestRestorableAutoSnapshot.unwrap()
+        parts.append("\"useLatestRestorableAutoSnapshot\":" + json.dumps(JsonValue.Bool(u14)))
+    return lightsail_json_obj(parts)
+
+# Serialize CreateInstancesRequest to a compact JSON object (declaration order).
+def create_instances_request_to_json(CreateInstancesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.instanceNames:
+        e0.append(lightsail_json_str(x0))
+    parts.append("\"instanceNames\":" + lightsail_json_arr(e0))
+    parts.append("\"availabilityZone\":" + lightsail_json_str(v.availabilityZone))
+    if v.customImageName.is_some():
+        auto u1 = v.customImageName.unwrap()
+        parts.append("\"customImageName\":" + lightsail_json_str(u1))
+    parts.append("\"blueprintId\":" + lightsail_json_str(v.blueprintId))
+    parts.append("\"bundleId\":" + lightsail_json_str(v.bundleId))
+    if v.userData.is_some():
+        auto u2 = v.userData.unwrap()
+        parts.append("\"userData\":" + lightsail_json_str(u2))
+    if v.keyPairName.is_some():
+        auto u3 = v.keyPairName.unwrap()
+        parts.append("\"keyPairName\":" + lightsail_json_str(u3))
+    if v.tags.is_some():
+        auto u4 = v.tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"tags\":" + lightsail_json_arr(e5))
+    if v.addOns.is_some():
+        auto u6 = v.addOns.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"addOns\":" + lightsail_json_arr(e7))
+    if v.ipAddressType.is_some():
+        auto u8 = v.ipAddressType.unwrap()
+        parts.append("\"ipAddressType\":" + u8.to_json())
+    return lightsail_json_obj(parts)
+
+# Serialize CreateKeyPairRequest to a compact JSON object (declaration order).
+def create_key_pair_request_to_json(CreateKeyPairRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"keyPairName\":" + lightsail_json_str(v.keyPairName))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + lightsail_json_arr(e1))
+    return lightsail_json_obj(parts)
+
+# Serialize CreateLoadBalancerRequest to a compact JSON object (declaration order).
+def create_load_balancer_request_to_json(CreateLoadBalancerRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"loadBalancerName\":" + lightsail_json_str(v.loadBalancerName))
+    parts.append("\"instancePort\":" + str(v.instancePort))
+    if v.healthCheckPath.is_some():
+        auto u0 = v.healthCheckPath.unwrap()
+        parts.append("\"healthCheckPath\":" + lightsail_json_str(u0))
+    if v.certificateName.is_some():
+        auto u1 = v.certificateName.unwrap()
+        parts.append("\"certificateName\":" + lightsail_json_str(u1))
+    if v.certificateDomainName.is_some():
+        auto u2 = v.certificateDomainName.unwrap()
+        parts.append("\"certificateDomainName\":" + lightsail_json_str(u2))
+    if v.certificateAlternativeNames.is_some():
+        auto u3 = v.certificateAlternativeNames.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(lightsail_json_str(x4))
+        parts.append("\"certificateAlternativeNames\":" + lightsail_json_arr(e4))
+    if v.tags.is_some():
+        auto u5 = v.tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"tags\":" + lightsail_json_arr(e6))
+    if v.ipAddressType.is_some():
+        auto u7 = v.ipAddressType.unwrap()
+        parts.append("\"ipAddressType\":" + u7.to_json())
+    if v.tlsPolicyName.is_some():
+        auto u8 = v.tlsPolicyName.unwrap()
+        parts.append("\"tlsPolicyName\":" + lightsail_json_str(u8))
+    return lightsail_json_obj(parts)
+
+# Serialize CreateLoadBalancerTlsCertificateRequest to a compact JSON object (declaration order).
+def create_load_balancer_tls_certificate_request_to_json(CreateLoadBalancerTlsCertificateRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"loadBalancerName\":" + lightsail_json_str(v.loadBalancerName))
+    parts.append("\"certificateName\":" + lightsail_json_str(v.certificateName))
+    parts.append("\"certificateDomainName\":" + lightsail_json_str(v.certificateDomainName))
+    if v.certificateAlternativeNames.is_some():
+        auto u0 = v.certificateAlternativeNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(lightsail_json_str(x1))
+        parts.append("\"certificateAlternativeNames\":" + lightsail_json_arr(e1))
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"tags\":" + lightsail_json_arr(e3))
+    return lightsail_json_obj(parts)
+
+# Serialize CreateRelationalDatabaseFromSnapshotRequest to a compact JSON object (declaration order).
+def create_relational_database_from_snapshot_request_to_json(CreateRelationalDatabaseFromSnapshotRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"relationalDatabaseName\":" + lightsail_json_str(v.relationalDatabaseName))
+    if v.availabilityZone.is_some():
+        auto u0 = v.availabilityZone.unwrap()
+        parts.append("\"availabilityZone\":" + lightsail_json_str(u0))
+    if v.publiclyAccessible.is_some():
+        auto u1 = v.publiclyAccessible.unwrap()
+        parts.append("\"publiclyAccessible\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.relationalDatabaseSnapshotName.is_some():
+        auto u2 = v.relationalDatabaseSnapshotName.unwrap()
+        parts.append("\"relationalDatabaseSnapshotName\":" + lightsail_json_str(u2))
+    if v.relationalDatabaseBundleId.is_some():
+        auto u3 = v.relationalDatabaseBundleId.unwrap()
+        parts.append("\"relationalDatabaseBundleId\":" + lightsail_json_str(u3))
+    if v.sourceRelationalDatabaseName.is_some():
+        auto u4 = v.sourceRelationalDatabaseName.unwrap()
+        parts.append("\"sourceRelationalDatabaseName\":" + lightsail_json_str(u4))
+    if v.restoreTime.is_some():
+        auto u5 = v.restoreTime.unwrap()
+        parts.append("\"restoreTime\":" + str(datetime.to_timestamp(u5)))
+    if v.useLatestRestorableTime.is_some():
+        auto u6 = v.useLatestRestorableTime.unwrap()
+        parts.append("\"useLatestRestorableTime\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.tags.is_some():
+        auto u7 = v.tags.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"tags\":" + lightsail_json_arr(e8))
+    return lightsail_json_obj(parts)
+
+# Serialize CreateRelationalDatabaseRequest to a compact JSON object (declaration order).
+def create_relational_database_request_to_json(CreateRelationalDatabaseRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"relationalDatabaseName\":" + lightsail_json_str(v.relationalDatabaseName))
+    if v.availabilityZone.is_some():
+        auto u0 = v.availabilityZone.unwrap()
+        parts.append("\"availabilityZone\":" + lightsail_json_str(u0))
+    parts.append("\"relationalDatabaseBlueprintId\":" + lightsail_json_str(v.relationalDatabaseBlueprintId))
+    parts.append("\"relationalDatabaseBundleId\":" + lightsail_json_str(v.relationalDatabaseBundleId))
+    parts.append("\"masterDatabaseName\":" + lightsail_json_str(v.masterDatabaseName))
+    parts.append("\"masterUsername\":" + lightsail_json_str(v.masterUsername))
+    if v.masterUserPassword.is_some():
+        auto u1 = v.masterUserPassword.unwrap()
+        parts.append("\"masterUserPassword\":" + lightsail_json_str(u1))
+    if v.preferredBackupWindow.is_some():
+        auto u2 = v.preferredBackupWindow.unwrap()
+        parts.append("\"preferredBackupWindow\":" + lightsail_json_str(u2))
+    if v.preferredMaintenanceWindow.is_some():
+        auto u3 = v.preferredMaintenanceWindow.unwrap()
+        parts.append("\"preferredMaintenanceWindow\":" + lightsail_json_str(u3))
+    if v.publiclyAccessible.is_some():
+        auto u4 = v.publiclyAccessible.unwrap()
+        parts.append("\"publiclyAccessible\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.tags.is_some():
+        auto u5 = v.tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"tags\":" + lightsail_json_arr(e6))
+    return lightsail_json_obj(parts)
+
+# Serialize CreateRelationalDatabaseSnapshotRequest to a compact JSON object (declaration order).
+def create_relational_database_snapshot_request_to_json(CreateRelationalDatabaseSnapshotRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"relationalDatabaseName\":" + lightsail_json_str(v.relationalDatabaseName))
+    parts.append("\"relationalDatabaseSnapshotName\":" + lightsail_json_str(v.relationalDatabaseSnapshotName))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + lightsail_json_arr(e1))
+    return lightsail_json_obj(parts)
+
+# Serialize DeleteDomainEntryRequest to a compact JSON object (declaration order).
+def delete_domain_entry_request_to_json(DeleteDomainEntryRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"domainName\":" + lightsail_json_str(v.domainName))
+    parts.append("\"domainEntry\":" + domain_entry_to_json(v.domainEntry))
+    return lightsail_json_obj(parts)
+
+# Serialize DetachInstancesFromLoadBalancerRequest to a compact JSON object (declaration order).
+def detach_instances_from_load_balancer_request_to_json(DetachInstancesFromLoadBalancerRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"loadBalancerName\":" + lightsail_json_str(v.loadBalancerName))
+    list[str] e0 = []
+    for x0 in v.instanceNames:
+        e0.append(lightsail_json_str(x0))
+    parts.append("\"instanceNames\":" + lightsail_json_arr(e0))
+    return lightsail_json_obj(parts)
+
+# Serialize DomainEntry to a compact JSON object (declaration order).
+def domain_entry_to_json(DomainEntry v) -> str:
+    list[str] parts = []
+    if v.id.is_some():
+        auto u0 = v.id.unwrap()
+        parts.append("\"id\":" + lightsail_json_str(u0))
+    if v.name.is_some():
+        auto u1 = v.name.unwrap()
+        parts.append("\"name\":" + lightsail_json_str(u1))
+    if v.target.is_some():
+        auto u2 = v.target.unwrap()
+        parts.append("\"target\":" + lightsail_json_str(u2))
+    if v.isAlias.is_some():
+        auto u3 = v.isAlias.unwrap()
+        parts.append("\"isAlias\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.type.is_some():
+        auto u4 = v.type.unwrap()
+        parts.append("\"type\":" + lightsail_json_str(u4))
+    if v.options.is_some():
+        auto u5 = v.options.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(lightsail_json_str(k6) + ":" + lightsail_json_str(u5[k6]))
+        parts.append("\"options\":" + lightsail_json_obj(m6))
+    return lightsail_json_obj(parts)
+
+# Serialize GetBucketMetricDataRequest to a compact JSON object (declaration order).
+def get_bucket_metric_data_request_to_json(GetBucketMetricDataRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"bucketName\":" + lightsail_json_str(v.bucketName))
+    parts.append("\"metricName\":" + v.metricName.to_json())
+    parts.append("\"startTime\":" + str(datetime.to_timestamp(v.startTime)))
+    parts.append("\"endTime\":" + str(datetime.to_timestamp(v.endTime)))
+    parts.append("\"period\":" + str(v.period))
+    list[str] e0 = []
+    for x0 in v.statistics:
+        e0.append(x0.to_json())
+    parts.append("\"statistics\":" + lightsail_json_arr(e0))
+    parts.append("\"unit\":" + v.unit.to_json())
+    return lightsail_json_obj(parts)
+
+# Serialize GetCertificatesRequest to a compact JSON object (declaration order).
+def get_certificates_request_to_json(GetCertificatesRequest v) -> str:
+    list[str] parts = []
+    if v.certificateStatuses.is_some():
+        auto u0 = v.certificateStatuses.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"certificateStatuses\":" + lightsail_json_arr(e1))
+    if v.includeCertificateDetails.is_some():
+        auto u2 = v.includeCertificateDetails.unwrap()
+        parts.append("\"includeCertificateDetails\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.certificateName.is_some():
+        auto u3 = v.certificateName.unwrap()
+        parts.append("\"certificateName\":" + lightsail_json_str(u3))
+    if v.pageToken.is_some():
+        auto u4 = v.pageToken.unwrap()
+        parts.append("\"pageToken\":" + lightsail_json_str(u4))
+    return lightsail_json_obj(parts)
+
+# Serialize GetContactMethodsRequest to a compact JSON object (declaration order).
+def get_contact_methods_request_to_json(GetContactMethodsRequest v) -> str:
+    list[str] parts = []
+    if v.protocols.is_some():
+        auto u0 = v.protocols.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"protocols\":" + lightsail_json_arr(e1))
+    return lightsail_json_obj(parts)
+
+# Serialize GetContainerServiceMetricDataRequest to a compact JSON object (declaration order).
+def get_container_service_metric_data_request_to_json(GetContainerServiceMetricDataRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"serviceName\":" + lightsail_json_str(v.serviceName))
+    parts.append("\"metricName\":" + v.metricName.to_json())
+    parts.append("\"startTime\":" + str(datetime.to_timestamp(v.startTime)))
+    parts.append("\"endTime\":" + str(datetime.to_timestamp(v.endTime)))
+    parts.append("\"period\":" + str(v.period))
+    list[str] e0 = []
+    for x0 in v.statistics:
+        e0.append(x0.to_json())
+    parts.append("\"statistics\":" + lightsail_json_arr(e0))
+    return lightsail_json_obj(parts)
+
+# Serialize GetDistributionMetricDataRequest to a compact JSON object (declaration order).
+def get_distribution_metric_data_request_to_json(GetDistributionMetricDataRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"distributionName\":" + lightsail_json_str(v.distributionName))
+    parts.append("\"metricName\":" + v.metricName.to_json())
+    parts.append("\"startTime\":" + str(datetime.to_timestamp(v.startTime)))
+    parts.append("\"endTime\":" + str(datetime.to_timestamp(v.endTime)))
+    parts.append("\"period\":" + str(v.period))
+    parts.append("\"unit\":" + v.unit.to_json())
+    list[str] e0 = []
+    for x0 in v.statistics:
+        e0.append(x0.to_json())
+    parts.append("\"statistics\":" + lightsail_json_arr(e0))
+    return lightsail_json_obj(parts)
+
+# Serialize GetInstanceMetricDataRequest to a compact JSON object (declaration order).
+def get_instance_metric_data_request_to_json(GetInstanceMetricDataRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"instanceName\":" + lightsail_json_str(v.instanceName))
+    parts.append("\"metricName\":" + v.metricName.to_json())
+    parts.append("\"period\":" + str(v.period))
+    parts.append("\"startTime\":" + str(datetime.to_timestamp(v.startTime)))
+    parts.append("\"endTime\":" + str(datetime.to_timestamp(v.endTime)))
+    parts.append("\"unit\":" + v.unit.to_json())
+    list[str] e0 = []
+    for x0 in v.statistics:
+        e0.append(x0.to_json())
+    parts.append("\"statistics\":" + lightsail_json_arr(e0))
+    return lightsail_json_obj(parts)
+
+# Serialize GetLoadBalancerMetricDataRequest to a compact JSON object (declaration order).
+def get_load_balancer_metric_data_request_to_json(GetLoadBalancerMetricDataRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"loadBalancerName\":" + lightsail_json_str(v.loadBalancerName))
+    parts.append("\"metricName\":" + v.metricName.to_json())
+    parts.append("\"period\":" + str(v.period))
+    parts.append("\"startTime\":" + str(datetime.to_timestamp(v.startTime)))
+    parts.append("\"endTime\":" + str(datetime.to_timestamp(v.endTime)))
+    parts.append("\"unit\":" + v.unit.to_json())
+    list[str] e0 = []
+    for x0 in v.statistics:
+        e0.append(x0.to_json())
+    parts.append("\"statistics\":" + lightsail_json_arr(e0))
+    return lightsail_json_obj(parts)
+
+# Serialize GetRelationalDatabaseMetricDataRequest to a compact JSON object (declaration order).
+def get_relational_database_metric_data_request_to_json(GetRelationalDatabaseMetricDataRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"relationalDatabaseName\":" + lightsail_json_str(v.relationalDatabaseName))
+    parts.append("\"metricName\":" + v.metricName.to_json())
+    parts.append("\"period\":" + str(v.period))
+    parts.append("\"startTime\":" + str(datetime.to_timestamp(v.startTime)))
+    parts.append("\"endTime\":" + str(datetime.to_timestamp(v.endTime)))
+    parts.append("\"unit\":" + v.unit.to_json())
+    list[str] e0 = []
+    for x0 in v.statistics:
+        e0.append(x0.to_json())
+    parts.append("\"statistics\":" + lightsail_json_arr(e0))
+    return lightsail_json_obj(parts)
+
+# Serialize HeaderObject to a compact JSON object (declaration order).
+def header_object_to_json(HeaderObject v) -> str:
+    list[str] parts = []
+    if v.option.is_some():
+        auto u0 = v.option.unwrap()
+        parts.append("\"option\":" + u0.to_json())
+    if v.headersAllowList.is_some():
+        auto u1 = v.headersAllowList.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"headersAllowList\":" + lightsail_json_arr(e2))
+    return lightsail_json_obj(parts)
+
+# Serialize OpenInstancePublicPortsRequest to a compact JSON object (declaration order).
+def open_instance_public_ports_request_to_json(OpenInstancePublicPortsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"portInfo\":" + port_info_to_json(v.portInfo))
+    parts.append("\"instanceName\":" + lightsail_json_str(v.instanceName))
+    return lightsail_json_obj(parts)
+
+# Serialize PortInfo to a compact JSON object (declaration order).
+def port_info_to_json(PortInfo v) -> str:
+    list[str] parts = []
+    if v.fromPort.is_some():
+        auto u0 = v.fromPort.unwrap()
+        parts.append("\"fromPort\":" + str(u0))
+    if v.toPort.is_some():
+        auto u1 = v.toPort.unwrap()
+        parts.append("\"toPort\":" + str(u1))
+    if v.protocol.is_some():
+        auto u2 = v.protocol.unwrap()
+        parts.append("\"protocol\":" + u2.to_json())
+    if v.cidrs.is_some():
+        auto u3 = v.cidrs.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(lightsail_json_str(x4))
+        parts.append("\"cidrs\":" + lightsail_json_arr(e4))
+    if v.ipv6Cidrs.is_some():
+        auto u5 = v.ipv6Cidrs.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(lightsail_json_str(x6))
+        parts.append("\"ipv6Cidrs\":" + lightsail_json_arr(e6))
+    if v.cidrListAliases.is_some():
+        auto u7 = v.cidrListAliases.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(lightsail_json_str(x8))
+        parts.append("\"cidrListAliases\":" + lightsail_json_arr(e8))
+    return lightsail_json_obj(parts)
+
+# Serialize PutAlarmRequest to a compact JSON object (declaration order).
+def put_alarm_request_to_json(PutAlarmRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"alarmName\":" + lightsail_json_str(v.alarmName))
+    parts.append("\"metricName\":" + v.metricName.to_json())
+    parts.append("\"monitoredResourceName\":" + lightsail_json_str(v.monitoredResourceName))
+    parts.append("\"comparisonOperator\":" + v.comparisonOperator.to_json())
+    parts.append("\"threshold\":" + str(v.threshold))
+    parts.append("\"evaluationPeriods\":" + str(v.evaluationPeriods))
+    if v.datapointsToAlarm.is_some():
+        auto u0 = v.datapointsToAlarm.unwrap()
+        parts.append("\"datapointsToAlarm\":" + str(u0))
+    if v.treatMissingData.is_some():
+        auto u1 = v.treatMissingData.unwrap()
+        parts.append("\"treatMissingData\":" + u1.to_json())
+    if v.contactProtocols.is_some():
+        auto u2 = v.contactProtocols.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"contactProtocols\":" + lightsail_json_arr(e3))
+    if v.notificationTriggers.is_some():
+        auto u4 = v.notificationTriggers.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"notificationTriggers\":" + lightsail_json_arr(e5))
+    if v.notificationEnabled.is_some():
+        auto u6 = v.notificationEnabled.unwrap()
+        parts.append("\"notificationEnabled\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.tags.is_some():
+        auto u7 = v.tags.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"tags\":" + lightsail_json_arr(e8))
+    return lightsail_json_obj(parts)
+
+# Serialize PutInstancePublicPortsRequest to a compact JSON object (declaration order).
+def put_instance_public_ports_request_to_json(PutInstancePublicPortsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.portInfos:
+        e0.append(port_info_to_json(x0))
+    parts.append("\"portInfos\":" + lightsail_json_arr(e0))
+    parts.append("\"instanceName\":" + lightsail_json_str(v.instanceName))
+    return lightsail_json_obj(parts)
+
+# Serialize QueryStringObject to a compact JSON object (declaration order).
+def query_string_object_to_json(QueryStringObject v) -> str:
+    list[str] parts = []
+    if v.option.is_some():
+        auto u0 = v.option.unwrap()
+        parts.append("\"option\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.queryStringsAllowList.is_some():
+        auto u1 = v.queryStringsAllowList.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(lightsail_json_str(x2))
+        parts.append("\"queryStringsAllowList\":" + lightsail_json_arr(e2))
+    return lightsail_json_obj(parts)
+
+# Serialize SetupInstanceHttpsRequest to a compact JSON object (declaration order).
+def setup_instance_https_request_to_json(SetupInstanceHttpsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"instanceName\":" + lightsail_json_str(v.instanceName))
+    parts.append("\"emailAddress\":" + lightsail_json_str(v.emailAddress))
+    list[str] e0 = []
+    for x0 in v.domainNames:
+        e0.append(lightsail_json_str(x0))
+    parts.append("\"domainNames\":" + lightsail_json_arr(e0))
+    parts.append("\"certificateProvider\":" + lightsail_json_str(v.certificateProvider))
+    return lightsail_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceName\":" + lightsail_json_str(v.resourceName))
+    if v.resourceArn.is_some():
+        auto u0 = v.resourceArn.unwrap()
+        parts.append("\"resourceArn\":" + lightsail_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.tags:
+        e1.append(x1.to_json())
+    parts.append("\"tags\":" + lightsail_json_arr(e1))
+    return lightsail_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceName\":" + lightsail_json_str(v.resourceName))
+    if v.resourceArn.is_some():
+        auto u0 = v.resourceArn.unwrap()
+        parts.append("\"resourceArn\":" + lightsail_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.tagKeys:
+        e1.append(lightsail_json_str(x1))
+    parts.append("\"tagKeys\":" + lightsail_json_arr(e1))
+    return lightsail_json_obj(parts)
+
+# Serialize UpdateBucketRequest to a compact JSON object (declaration order).
+def update_bucket_request_to_json(UpdateBucketRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"bucketName\":" + lightsail_json_str(v.bucketName))
+    if v.accessRules.is_some():
+        auto u0 = v.accessRules.unwrap()
+        parts.append("\"accessRules\":" + u0.to_json())
+    if v.versioning.is_some():
+        auto u1 = v.versioning.unwrap()
+        parts.append("\"versioning\":" + lightsail_json_str(u1))
+    if v.readonlyAccessAccounts.is_some():
+        auto u2 = v.readonlyAccessAccounts.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(lightsail_json_str(x3))
+        parts.append("\"readonlyAccessAccounts\":" + lightsail_json_arr(e3))
+    if v.accessLogConfig.is_some():
+        auto u4 = v.accessLogConfig.unwrap()
+        parts.append("\"accessLogConfig\":" + u4.to_json())
+    if v.cors.is_some():
+        auto u5 = v.cors.unwrap()
+        parts.append("\"cors\":" + bucket_cors_config_to_json(u5))
+    return lightsail_json_obj(parts)
+
+# Serialize UpdateContainerServiceRequest to a compact JSON object (declaration order).
+def update_container_service_request_to_json(UpdateContainerServiceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"serviceName\":" + lightsail_json_str(v.serviceName))
+    if v.power.is_some():
+        auto u0 = v.power.unwrap()
+        parts.append("\"power\":" + u0.to_json())
+    if v.scale.is_some():
+        auto u1 = v.scale.unwrap()
+        parts.append("\"scale\":" + str(u1))
+    if v.isDisabled.is_some():
+        auto u2 = v.isDisabled.unwrap()
+        parts.append("\"isDisabled\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.publicDomainNames.is_some():
+        auto u3 = v.publicDomainNames.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            list[str] e5 = []
+            for x5 in u3[k4]:
+                e5.append(lightsail_json_str(x5))
+            m4.append(lightsail_json_str(k4) + ":" + lightsail_json_arr(e5))
+        parts.append("\"publicDomainNames\":" + lightsail_json_obj(m4))
+    if v.privateRegistryAccess.is_some():
+        auto u6 = v.privateRegistryAccess.unwrap()
+        parts.append("\"privateRegistryAccess\":" + u6.to_json())
+    return lightsail_json_obj(parts)
+
+# Serialize UpdateDistributionRequest to a compact JSON object (declaration order).
+def update_distribution_request_to_json(UpdateDistributionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"distributionName\":" + lightsail_json_str(v.distributionName))
+    if v.origin.is_some():
+        auto u0 = v.origin.unwrap()
+        parts.append("\"origin\":" + u0.to_json())
+    if v.defaultCacheBehavior.is_some():
+        auto u1 = v.defaultCacheBehavior.unwrap()
+        parts.append("\"defaultCacheBehavior\":" + u1.to_json())
+    if v.cacheBehaviorSettings.is_some():
+        auto u2 = v.cacheBehaviorSettings.unwrap()
+        parts.append("\"cacheBehaviorSettings\":" + cache_settings_to_json(u2))
+    if v.cacheBehaviors.is_some():
+        auto u3 = v.cacheBehaviors.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"cacheBehaviors\":" + lightsail_json_arr(e4))
+    if v.isEnabled.is_some():
+        auto u5 = v.isEnabled.unwrap()
+        parts.append("\"isEnabled\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.viewerMinimumTlsProtocolVersion.is_some():
+        auto u6 = v.viewerMinimumTlsProtocolVersion.unwrap()
+        parts.append("\"viewerMinimumTlsProtocolVersion\":" + u6.to_json())
+    if v.certificateName.is_some():
+        auto u7 = v.certificateName.unwrap()
+        parts.append("\"certificateName\":" + lightsail_json_str(u7))
+    if v.useDefaultCertificate.is_some():
+        auto u8 = v.useDefaultCertificate.unwrap()
+        parts.append("\"useDefaultCertificate\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.enablePrivateOriginAccess.is_some():
+        auto u9 = v.enablePrivateOriginAccess.unwrap()
+        parts.append("\"enablePrivateOriginAccess\":" + json.dumps(JsonValue.Bool(u9)))
+    if v.defaultRootObject.is_some():
+        auto u10 = v.defaultRootObject.unwrap()
+        parts.append("\"defaultRootObject\":" + lightsail_json_str(u10))
+    if v.customErrorResponses.is_some():
+        auto u11 = v.customErrorResponses.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"customErrorResponses\":" + lightsail_json_arr(e12))
+    if v.enableWaf.is_some():
+        auto u13 = v.enableWaf.unwrap()
+        parts.append("\"enableWaf\":" + json.dumps(JsonValue.Bool(u13)))
+    if v.wafRules.is_some():
+        auto u14 = v.wafRules.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(waf_rule_to_json(x15))
+        parts.append("\"wafRules\":" + lightsail_json_arr(e15))
+    return lightsail_json_obj(parts)
+
+# Serialize UpdateDomainEntryRequest to a compact JSON object (declaration order).
+def update_domain_entry_request_to_json(UpdateDomainEntryRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"domainName\":" + lightsail_json_str(v.domainName))
+    parts.append("\"domainEntry\":" + domain_entry_to_json(v.domainEntry))
+    return lightsail_json_obj(parts)
+
+# Serialize UpdateRelationalDatabaseParametersRequest to a compact JSON object (declaration order).
+def update_relational_database_parameters_request_to_json(UpdateRelationalDatabaseParametersRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"relationalDatabaseName\":" + lightsail_json_str(v.relationalDatabaseName))
+    list[str] e0 = []
+    for x0 in v.parameters:
+        e0.append(x0.to_json())
+    parts.append("\"parameters\":" + lightsail_json_arr(e0))
+    return lightsail_json_obj(parts)
+
+# Serialize WafAcfpConfig to a compact JSON object (declaration order).
+def waf_acfp_config_to_json(WafAcfpConfig v) -> str:
+    list[str] parts = []
+    if v.payloadType.is_some():
+        auto u0 = v.payloadType.unwrap()
+        parts.append("\"payloadType\":" + u0.to_json())
+    if v.creationPath.is_some():
+        auto u1 = v.creationPath.unwrap()
+        parts.append("\"creationPath\":" + lightsail_json_str(u1))
+    if v.registrationPagePath.is_some():
+        auto u2 = v.registrationPagePath.unwrap()
+        parts.append("\"registrationPagePath\":" + lightsail_json_str(u2))
+    if v.responseInspection.is_some():
+        auto u3 = v.responseInspection.unwrap()
+        parts.append("\"responseInspection\":" + waf_response_inspection_to_json(u3))
+    return lightsail_json_obj(parts)
+
+# Serialize WafAtpConfig to a compact JSON object (declaration order).
+def waf_atp_config_to_json(WafAtpConfig v) -> str:
+    list[str] parts = []
+    if v.loginPath.is_some():
+        auto u0 = v.loginPath.unwrap()
+        parts.append("\"loginPath\":" + lightsail_json_str(u0))
+    if v.payloadType.is_some():
+        auto u1 = v.payloadType.unwrap()
+        parts.append("\"payloadType\":" + u1.to_json())
+    if v.usernameField.is_some():
+        auto u2 = v.usernameField.unwrap()
+        parts.append("\"usernameField\":" + lightsail_json_str(u2))
+    if v.passwordField.is_some():
+        auto u3 = v.passwordField.unwrap()
+        parts.append("\"passwordField\":" + lightsail_json_str(u3))
+    if v.responseInspection.is_some():
+        auto u4 = v.responseInspection.unwrap()
+        parts.append("\"responseInspection\":" + waf_response_inspection_to_json(u4))
+    return lightsail_json_obj(parts)
+
+# Serialize WafResponseInspection to a compact JSON object (declaration order).
+def waf_response_inspection_to_json(WafResponseInspection v) -> str:
+    list[str] parts = []
+    if v.successCodes.is_some():
+        auto u0 = v.successCodes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"successCodes\":" + lightsail_json_arr(e1))
+    if v.failureCodes.is_some():
+        auto u2 = v.failureCodes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(str(x3))
+        parts.append("\"failureCodes\":" + lightsail_json_arr(e3))
+    return lightsail_json_obj(parts)
+
+# Serialize WafRule to a compact JSON object (declaration order).
+def waf_rule_to_json(WafRule v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + lightsail_json_str(v.name))
+    if v.atpConfig.is_some():
+        auto u0 = v.atpConfig.unwrap()
+        parts.append("\"atpConfig\":" + waf_atp_config_to_json(u0))
+    if v.acfpConfig.is_some():
+        auto u1 = v.acfpConfig.unwrap()
+        parts.append("\"acfpConfig\":" + waf_acfp_config_to_json(u1))
+    if v.botControlConfig.is_some():
+        auto u2 = v.botControlConfig.unwrap()
+        parts.append("\"botControlConfig\":" + u2.to_json())
+    return lightsail_json_obj(parts)
 
 # A bound Lightsail client: credentials + region, threaded into every operation.
 struct LightsailClient:
@@ -4117,6 +5468,12 @@ struct LightsailClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "AttachDisk", body)
 
+    # AttachInstancesToLoadBalancer
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def attach_instances_to_load_balancer(self, AttachInstancesToLoadBalancerRequest input) -> str:
+        auto body = attach_instances_to_load_balancer_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "AttachInstancesToLoadBalancer", body)
+
     # AttachLoadBalancerTlsCertificate
     # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
     def attach_load_balancer_tls_certificate(self, AttachLoadBalancerTlsCertificateRequest input) -> str:
@@ -4129,11 +5486,23 @@ struct LightsailClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "AttachStaticIp", body)
 
+    # CloseInstancePublicPorts
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def close_instance_public_ports(self, CloseInstancePublicPortsRequest input) -> str:
+        auto body = close_instance_public_ports_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CloseInstancePublicPorts", body)
+
     # CopySnapshot
     # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
     def copy_snapshot(self, CopySnapshotRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CopySnapshot", body)
+
+    # CreateBucket
+    # errors: AccessDeniedException, InvalidInputException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def create_bucket(self, CreateBucketRequest input) -> str:
+        auto body = create_bucket_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateBucket", body)
 
     # CreateBucketAccessKey
     # errors: AccessDeniedException, InvalidInputException, NotFoundException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
@@ -4141,17 +5510,137 @@ struct LightsailClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateBucketAccessKey", body)
 
+    # CreateCertificate
+    # errors: AccessDeniedException, InvalidInputException, NotFoundException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def create_certificate(self, CreateCertificateRequest input) -> str:
+        auto body = create_certificate_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateCertificate", body)
+
+    # CreateCloudFormationStack
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def create_cloud_formation_stack(self, CreateCloudFormationStackRequest input) -> str:
+        auto body = create_cloud_formation_stack_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateCloudFormationStack", body)
+
+    # CreateContactMethod
+    # errors: AccessDeniedException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def create_contact_method(self, CreateContactMethodRequest input) -> str:
+        auto body = create_contact_method_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateContactMethod", body)
+
+    # CreateContainerService
+    # errors: AccessDeniedException, InvalidInputException, NotFoundException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def create_container_service(self, CreateContainerServiceRequest input) -> str:
+        auto body = create_container_service_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateContainerService", body)
+
+    # CreateContainerServiceDeployment
+    # errors: AccessDeniedException, InvalidInputException, NotFoundException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def create_container_service_deployment(self, CreateContainerServiceDeploymentRequest input) -> str:
+        auto body = create_container_service_deployment_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateContainerServiceDeployment", body)
+
     # CreateContainerServiceRegistryLogin
     # errors: AccessDeniedException, InvalidInputException, NotFoundException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
     def create_container_service_registry_login(self) -> str:
         auto body = "{}"
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateContainerServiceRegistryLogin", body)
 
+    # CreateDisk
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def create_disk(self, CreateDiskRequest input) -> str:
+        auto body = create_disk_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateDisk", body)
+
+    # CreateDiskFromSnapshot
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def create_disk_from_snapshot(self, CreateDiskFromSnapshotRequest input) -> str:
+        auto body = create_disk_from_snapshot_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateDiskFromSnapshot", body)
+
+    # CreateDiskSnapshot
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def create_disk_snapshot(self, CreateDiskSnapshotRequest input) -> str:
+        auto body = create_disk_snapshot_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateDiskSnapshot", body)
+
+    # CreateDistribution
+    # errors: AccessDeniedException, InvalidInputException, NotFoundException, OperationFailureException, ServiceException, UnauthenticatedException
+    def create_distribution(self, CreateDistributionRequest input) -> str:
+        auto body = create_distribution_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateDistribution", body)
+
+    # CreateDomain
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def create_domain(self, CreateDomainRequest input) -> str:
+        auto body = create_domain_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateDomain", body)
+
+    # CreateDomainEntry
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def create_domain_entry(self, CreateDomainEntryRequest input) -> str:
+        auto body = create_domain_entry_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateDomainEntry", body)
+
     # CreateGUISessionAccessDetails
     # errors: AccessDeniedException, InvalidInputException, NotFoundException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
     def create_gui_session_access_details(self, CreateGUISessionAccessDetailsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateGUISessionAccessDetails", body)
+
+    # CreateInstanceSnapshot
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def create_instance_snapshot(self, CreateInstanceSnapshotRequest input) -> str:
+        auto body = create_instance_snapshot_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateInstanceSnapshot", body)
+
+    # CreateInstances
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def create_instances(self, CreateInstancesRequest input) -> str:
+        auto body = create_instances_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateInstances", body)
+
+    # CreateInstancesFromSnapshot
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def create_instances_from_snapshot(self, CreateInstancesFromSnapshotRequest input) -> str:
+        auto body = create_instances_from_snapshot_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateInstancesFromSnapshot", body)
+
+    # CreateKeyPair
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def create_key_pair(self, CreateKeyPairRequest input) -> str:
+        auto body = create_key_pair_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateKeyPair", body)
+
+    # CreateLoadBalancer
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def create_load_balancer(self, CreateLoadBalancerRequest input) -> str:
+        auto body = create_load_balancer_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateLoadBalancer", body)
+
+    # CreateLoadBalancerTlsCertificate
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def create_load_balancer_tls_certificate(self, CreateLoadBalancerTlsCertificateRequest input) -> str:
+        auto body = create_load_balancer_tls_certificate_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateLoadBalancerTlsCertificate", body)
+
+    # CreateRelationalDatabase
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def create_relational_database(self, CreateRelationalDatabaseRequest input) -> str:
+        auto body = create_relational_database_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateRelationalDatabase", body)
+
+    # CreateRelationalDatabaseFromSnapshot
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def create_relational_database_from_snapshot(self, CreateRelationalDatabaseFromSnapshotRequest input) -> str:
+        auto body = create_relational_database_from_snapshot_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateRelationalDatabaseFromSnapshot", body)
+
+    # CreateRelationalDatabaseSnapshot
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def create_relational_database_snapshot(self, CreateRelationalDatabaseSnapshotRequest input) -> str:
+        auto body = create_relational_database_snapshot_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "CreateRelationalDatabaseSnapshot", body)
 
     # DeleteAlarm
     # errors: AccessDeniedException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
@@ -4225,6 +5714,12 @@ struct LightsailClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "DeleteDomain", body)
 
+    # DeleteDomainEntry
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def delete_domain_entry(self, DeleteDomainEntryRequest input) -> str:
+        auto body = delete_domain_entry_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "DeleteDomainEntry", body)
+
     # DeleteInstance
     # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
     def delete_instance(self, DeleteInstanceRequest input) -> str:
@@ -4284,6 +5779,12 @@ struct LightsailClient:
     def detach_disk(self, DetachDiskRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "DetachDisk", body)
+
+    # DetachInstancesFromLoadBalancer
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def detach_instances_from_load_balancer(self, DetachInstancesFromLoadBalancerRequest input) -> str:
+        auto body = detach_instances_from_load_balancer_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "DetachInstancesFromLoadBalancer", body)
 
     # DetachStaticIp
     # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
@@ -4351,6 +5852,12 @@ struct LightsailClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "GetBucketBundles", body)
 
+    # GetBucketMetricData
+    # errors: AccessDeniedException, InvalidInputException, NotFoundException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def get_bucket_metric_data(self, GetBucketMetricDataRequest input) -> str:
+        auto body = get_bucket_metric_data_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "GetBucketMetricData", body)
+
     # GetBuckets
     # errors: AccessDeniedException, InvalidInputException, NotFoundException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
     def get_buckets(self, GetBucketsRequest input) -> str:
@@ -4363,11 +5870,23 @@ struct LightsailClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "GetBundles", body)
 
+    # GetCertificates
+    # errors: AccessDeniedException, InvalidInputException, NotFoundException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def get_certificates(self, GetCertificatesRequest input) -> str:
+        auto body = get_certificates_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "GetCertificates", body)
+
     # GetCloudFormationStackRecords
     # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
     def get_cloud_formation_stack_records(self, GetCloudFormationStackRecordsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "GetCloudFormationStackRecords", body)
+
+    # GetContactMethods
+    # errors: AccessDeniedException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def get_contact_methods(self, GetContactMethodsRequest input) -> str:
+        auto body = get_contact_methods_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "GetContactMethods", body)
 
     # GetContainerAPIMetadata
     # errors: AccessDeniedException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
@@ -4392,6 +5911,12 @@ struct LightsailClient:
     def get_container_service_deployments(self, GetContainerServiceDeploymentsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "GetContainerServiceDeployments", body)
+
+    # GetContainerServiceMetricData
+    # errors: AccessDeniedException, InvalidInputException, NotFoundException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def get_container_service_metric_data(self, GetContainerServiceMetricDataRequest input) -> str:
+        auto body = get_container_service_metric_data_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "GetContainerServiceMetricData", body)
 
     # GetContainerServicePowers
     # errors: AccessDeniedException, InvalidInputException, NotFoundException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
@@ -4447,6 +5972,12 @@ struct LightsailClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "GetDistributionLatestCacheReset", body)
 
+    # GetDistributionMetricData
+    # errors: AccessDeniedException, InvalidInputException, NotFoundException, OperationFailureException, ServiceException, UnauthenticatedException
+    def get_distribution_metric_data(self, GetDistributionMetricDataRequest input) -> str:
+        auto body = get_distribution_metric_data_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "GetDistributionMetricData", body)
+
     # GetDistributions
     # errors: AccessDeniedException, InvalidInputException, NotFoundException, OperationFailureException, ServiceException, UnauthenticatedException
     def get_distributions(self, GetDistributionsRequest input) -> str:
@@ -4482,6 +6013,12 @@ struct LightsailClient:
     def get_instance_access_details(self, GetInstanceAccessDetailsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "GetInstanceAccessDetails", body)
+
+    # GetInstanceMetricData
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def get_instance_metric_data(self, GetInstanceMetricDataRequest input) -> str:
+        auto body = get_instance_metric_data_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "GetInstanceMetricData", body)
 
     # GetInstancePortStates
     # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
@@ -4530,6 +6067,12 @@ struct LightsailClient:
     def get_load_balancer(self, GetLoadBalancerRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "GetLoadBalancer", body)
+
+    # GetLoadBalancerMetricData
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def get_load_balancer_metric_data(self, GetLoadBalancerMetricDataRequest input) -> str:
+        auto body = get_load_balancer_metric_data_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "GetLoadBalancerMetricData", body)
 
     # GetLoadBalancerTlsCertificates
     # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
@@ -4621,6 +6164,12 @@ struct LightsailClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "GetRelationalDatabaseMasterUserPassword", body)
 
+    # GetRelationalDatabaseMetricData
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def get_relational_database_metric_data(self, GetRelationalDatabaseMetricDataRequest input) -> str:
+        auto body = get_relational_database_metric_data_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "GetRelationalDatabaseMetricData", body)
+
     # GetRelationalDatabaseParameters
     # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
     def get_relational_database_parameters(self, GetRelationalDatabaseParametersRequest input) -> str:
@@ -4675,11 +6224,29 @@ struct LightsailClient:
         auto body = "{}"
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "IsVpcPeered", body)
 
+    # OpenInstancePublicPorts
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def open_instance_public_ports(self, OpenInstancePublicPortsRequest input) -> str:
+        auto body = open_instance_public_ports_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "OpenInstancePublicPorts", body)
+
     # PeerVpc
     # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
     def peer_vpc(self) -> str:
         auto body = "{}"
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "PeerVpc", body)
+
+    # PutAlarm
+    # errors: AccessDeniedException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def put_alarm(self, PutAlarmRequest input) -> str:
+        auto body = put_alarm_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "PutAlarm", body)
+
+    # PutInstancePublicPorts
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def put_instance_public_ports(self, PutInstancePublicPortsRequest input) -> str:
+        auto body = put_instance_public_ports_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "PutInstancePublicPorts", body)
 
     # RebootInstance
     # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
@@ -4729,6 +6296,12 @@ struct LightsailClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "SetResourceAccessForBucket", body)
 
+    # SetupInstanceHttps
+    # errors: AccessDeniedException, InvalidInputException, NotFoundException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def setup_instance_https(self, SetupInstanceHttpsRequest input) -> str:
+        auto body = setup_instance_https_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "SetupInstanceHttps", body)
+
     # StartGUISession
     # errors: AccessDeniedException, InvalidInputException, NotFoundException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
     def start_gui_session(self, StartGUISessionRequest input) -> str:
@@ -4765,6 +6338,12 @@ struct LightsailClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "StopRelationalDatabase", body)
 
+    # TagResource
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "TagResource", body)
+
     # TestAlarm
     # errors: AccessDeniedException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
     def test_alarm(self, TestAlarmRequest input) -> str:
@@ -4777,17 +6356,47 @@ struct LightsailClient:
         auto body = "{}"
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "UnpeerVpc", body)
 
+    # UntagResource
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateBucket
+    # errors: AccessDeniedException, InvalidInputException, NotFoundException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def update_bucket(self, UpdateBucketRequest input) -> str:
+        auto body = update_bucket_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "UpdateBucket", body)
+
     # UpdateBucketBundle
     # errors: AccessDeniedException, InvalidInputException, NotFoundException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
     def update_bucket_bundle(self, UpdateBucketBundleRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "UpdateBucketBundle", body)
 
+    # UpdateContainerService
+    # errors: AccessDeniedException, InvalidInputException, NotFoundException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def update_container_service(self, UpdateContainerServiceRequest input) -> str:
+        auto body = update_container_service_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "UpdateContainerService", body)
+
+    # UpdateDistribution
+    # errors: AccessDeniedException, InvalidInputException, NotFoundException, OperationFailureException, ServiceException, UnauthenticatedException
+    def update_distribution(self, UpdateDistributionRequest input) -> str:
+        auto body = update_distribution_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "UpdateDistribution", body)
+
     # UpdateDistributionBundle
     # errors: AccessDeniedException, InvalidInputException, NotFoundException, OperationFailureException, ServiceException, UnauthenticatedException
     def update_distribution_bundle(self, UpdateDistributionBundleRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "UpdateDistributionBundle", body)
+
+    # UpdateDomainEntry
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def update_domain_entry(self, UpdateDomainEntryRequest input) -> str:
+        auto body = update_domain_entry_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "UpdateDomainEntry", body)
 
     # UpdateInstanceMetadataOptions
     # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
@@ -4806,6 +6415,12 @@ struct LightsailClient:
     def update_relational_database(self, UpdateRelationalDatabaseRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "UpdateRelationalDatabase", body)
+
+    # UpdateRelationalDatabaseParameters
+    # errors: AccessDeniedException, AccountSetupInProgressException, InvalidInputException, NotFoundException, OperationFailureException, RegionSetupInProgressException, ServiceException, UnauthenticatedException
+    def update_relational_database_parameters(self, UpdateRelationalDatabaseParametersRequest input) -> str:
+        auto body = update_relational_database_parameters_request_to_json(input)
+        return awsjson.awsjson_request_now(lightsail_protocol(), self.creds, self.region, "UpdateRelationalDatabaseParameters", body)
 
     # Paginator for GetActiveNames — yields each Response page, threading the
     # nextPageToken -> pageToken continuation token until the output token is absent (result key: activeNames).

@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 2 operations — 0 with a generated method,
-#   2 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 2 operations — 2 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   5 structs (3 @derive(Json)), 2 enums, 1 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -27,6 +27,7 @@
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
 import aws_core.awsjson
+import datetime
 
 # The Marketplace_Commerce_Analytics awsJson protocol: version 1.1, API id "MarketplaceCommerceAnalytics20150701".
 def marketplacecommerceanalytics_protocol() -> awsjson.AwsJson:
@@ -73,8 +74,9 @@ enum SupportDataSetType:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) customerDefinedValues: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customerDefinedValues: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GenerateDataSetRequest:
     DataSetType dataSetType
     DateTime dataSetPublicationDate
@@ -92,8 +94,9 @@ struct GenerateDataSetResult:
 struct MarketplaceCommerceAnalyticsException:
     Optional[str] message
 
-# no @derive(Json): member(s) customerDefinedValues: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customerDefinedValues: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartSupportDataExportRequest:
     SupportDataSetType dataSetType
     DateTime fromDate
@@ -123,17 +126,91 @@ def marketplacecommerceanalytics_error_from_code(str code) -> Marketplace_Commer
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   GenerateDataSet (input GenerateDataSetRequest)
-#   StartSupportDataExport (input StartSupportDataExportRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def marketplacecommerceanalytics_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def marketplacecommerceanalytics_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def marketplacecommerceanalytics_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize GenerateDataSetRequest to a compact JSON object (declaration order).
+def generate_data_set_request_to_json(GenerateDataSetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"dataSetType\":" + v.dataSetType.to_json())
+    parts.append("\"dataSetPublicationDate\":" + str(datetime.to_timestamp(v.dataSetPublicationDate)))
+    parts.append("\"roleNameArn\":" + marketplacecommerceanalytics_json_str(v.roleNameArn))
+    parts.append("\"destinationS3BucketName\":" + marketplacecommerceanalytics_json_str(v.destinationS3BucketName))
+    if v.destinationS3Prefix.is_some():
+        auto u0 = v.destinationS3Prefix.unwrap()
+        parts.append("\"destinationS3Prefix\":" + marketplacecommerceanalytics_json_str(u0))
+    parts.append("\"snsTopicArn\":" + marketplacecommerceanalytics_json_str(v.snsTopicArn))
+    if v.customerDefinedValues.is_some():
+        auto u1 = v.customerDefinedValues.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(marketplacecommerceanalytics_json_str(k2) + ":" + marketplacecommerceanalytics_json_str(u1[k2]))
+        parts.append("\"customerDefinedValues\":" + marketplacecommerceanalytics_json_obj(m2))
+    return marketplacecommerceanalytics_json_obj(parts)
+
+# Serialize StartSupportDataExportRequest to a compact JSON object (declaration order).
+def start_support_data_export_request_to_json(StartSupportDataExportRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"dataSetType\":" + v.dataSetType.to_json())
+    parts.append("\"fromDate\":" + str(datetime.to_timestamp(v.fromDate)))
+    parts.append("\"roleNameArn\":" + marketplacecommerceanalytics_json_str(v.roleNameArn))
+    parts.append("\"destinationS3BucketName\":" + marketplacecommerceanalytics_json_str(v.destinationS3BucketName))
+    if v.destinationS3Prefix.is_some():
+        auto u0 = v.destinationS3Prefix.unwrap()
+        parts.append("\"destinationS3Prefix\":" + marketplacecommerceanalytics_json_str(u0))
+    parts.append("\"snsTopicArn\":" + marketplacecommerceanalytics_json_str(v.snsTopicArn))
+    if v.customerDefinedValues.is_some():
+        auto u1 = v.customerDefinedValues.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(marketplacecommerceanalytics_json_str(k2) + ":" + marketplacecommerceanalytics_json_str(u1[k2]))
+        parts.append("\"customerDefinedValues\":" + marketplacecommerceanalytics_json_obj(m2))
+    return marketplacecommerceanalytics_json_obj(parts)
 
 # A bound Marketplace_Commerce_Analytics client: credentials + region, threaded into every operation.
 struct Marketplace_Commerce_AnalyticsClient:
     core.Credentials creds
     str region
 
-    # no derivable-input operations were generated for this service in v0
+    # GenerateDataSet
+    # errors: MarketplaceCommerceAnalyticsException
+    def generate_data_set(self, GenerateDataSetRequest input) -> str:
+        auto body = generate_data_set_request_to_json(input)
+        return awsjson.awsjson_request_now(marketplacecommerceanalytics_protocol(), self.creds, self.region, "GenerateDataSet", body)
+
+    # StartSupportDataExport
+    # errors: MarketplaceCommerceAnalyticsException
+    def start_support_data_export(self, StartSupportDataExportRequest input) -> str:
+        auto body = start_support_data_export_request_to_json(input)
+        return awsjson.awsjson_request_now(marketplacecommerceanalytics_protocol(), self.creds, self.region, "StartSupportDataExport", body)
+
 # Construct a Marketplace_Commerce_AnalyticsClient bound to credentials + region.
 def marketplacecommerceanalytics_client(core.Credentials creds, str region) -> Marketplace_Commerce_AnalyticsClient:
     return Marketplace_Commerce_AnalyticsClient(creds=creds, region=region)

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 31 operations — 22 with a generated method,
-#   9 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 31 operations — 30 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   86 structs (50 @derive(Json)), 10 enums, 6 error variants.
 #   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -161,8 +161,9 @@ struct CreateMigrationWorkflowRequest:
     Optional[list[str]] stepTargets
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) workflowInputs: dict[str, StepInput], stepTargets: list[str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workflowInputs: dict[str, StepInput], stepTargets: list[str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMigrationWorkflowResponse:
     Optional[str] id
     Optional[str] arn
@@ -185,8 +186,9 @@ struct CreateTemplateRequest:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTemplateResponse:
     Optional[str] templateId
     Optional[str] templateArn
@@ -201,8 +203,9 @@ struct CreateWorkflowStepGroupRequest:
     Optional[list[str]] next
     Optional[list[str]] previous
 
-# no @derive(Json): member(s) tools: list[Tool], next: list[str], previous: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tools: list[Tool], next: list[str], previous: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWorkflowStepGroupResponse:
     Optional[str] workflowId
     Optional[str] name
@@ -283,8 +286,9 @@ struct DeleteWorkflowStepResponse:
 struct GetMigrationWorkflowRequest:
     str id
 
-# no @derive(Json): member(s) tools: list[Tool], workflowInputs: dict[str, StepInput], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tools: list[Tool], workflowInputs: dict[str, StepInput], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMigrationWorkflowResponse:
     Optional[str] id
     Optional[str] arn
@@ -312,8 +316,9 @@ struct GetMigrationWorkflowResponse:
 struct GetMigrationWorkflowTemplateRequest:
     str id
 
-# no @derive(Json): member(s) inputs: list[TemplateInput], tools: list[Tool], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputs: list[TemplateInput], tools: list[Tool], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMigrationWorkflowTemplateResponse:
     Optional[str] id
     Optional[str] templateArn
@@ -334,8 +339,9 @@ struct GetTemplateStepGroupRequest:
     str templateId
     str id
 
-# no @derive(Json): member(s) tools: list[Tool], previous: list[str], next: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tools: list[Tool], previous: list[str], next: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTemplateStepGroupResponse:
     Optional[str] templateId
     Optional[str] id
@@ -355,8 +361,9 @@ struct GetTemplateStepRequest:
     str templateId
     str stepGroupId
 
-# no @derive(Json): member(s) previous: list[str], next: list[str], outputs: list[StepOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) previous: list[str], next: list[str], outputs: list[StepOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTemplateStepResponse:
     Optional[str] id
     Optional[str] stepGroupId
@@ -376,8 +383,9 @@ struct GetWorkflowStepGroupRequest:
     str id
     str workflowId
 
-# no @derive(Json): member(s) tools: list[Tool], previous: list[str], next: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tools: list[Tool], previous: list[str], next: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWorkflowStepGroupResponse:
     Optional[str] id
     Optional[str] workflowId
@@ -399,8 +407,9 @@ struct GetWorkflowStepRequest:
     str stepGroupId
     str id
 
-# no @derive(Json): member(s) stepTarget: list[str], outputs: list[WorkflowStepOutput], previous: list[str], next: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stepTarget: list[str], outputs: list[WorkflowStepOutput], previous: list[str], next: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWorkflowStepResponse:
     Optional[str] name
     Optional[str] stepGroupId
@@ -435,8 +444,9 @@ struct ListMigrationWorkflowTemplatesRequest:
     Optional[str] nextToken
     Optional[str] name
 
-# no @derive(Json): member(s) templateSummary: list[TemplateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) templateSummary: list[TemplateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMigrationWorkflowTemplatesResponse:
     Optional[str] nextToken
     list[TemplateSummary] templateSummary
@@ -452,8 +462,9 @@ struct ListMigrationWorkflowsRequest:
     Optional[str] status
     Optional[str] name
 
-# no @derive(Json): member(s) migrationWorkflowSummary: list[MigrationWorkflowSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) migrationWorkflowSummary: list[MigrationWorkflowSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMigrationWorkflowsResponse:
     Optional[str] nextToken
     list[MigrationWorkflowSummary] migrationWorkflowSummary
@@ -464,8 +475,9 @@ struct ListPluginsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) plugins: list[PluginSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) plugins: list[PluginSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPluginsResponse:
     Optional[str] nextToken
     Optional[list[PluginSummary]] plugins
@@ -475,8 +487,9 @@ struct ListPluginsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -487,8 +500,9 @@ struct ListTemplateStepGroupsRequest:
     Optional[str] nextToken
     str templateId
 
-# no @derive(Json): member(s) templateStepGroupSummary: list[TemplateStepGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) templateStepGroupSummary: list[TemplateStepGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTemplateStepGroupsResponse:
     Optional[str] nextToken
     list[TemplateStepGroupSummary] templateStepGroupSummary
@@ -501,8 +515,9 @@ struct ListTemplateStepsRequest:
     str templateId
     str stepGroupId
 
-# no @derive(Json): member(s) templateStepSummaryList: list[TemplateStepSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) templateStepSummaryList: list[TemplateStepSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTemplateStepsResponse:
     Optional[str] nextToken
     Optional[list[TemplateStepSummary]] templateStepSummaryList
@@ -514,8 +529,9 @@ struct ListWorkflowStepGroupsRequest:
     Optional[int64] maxResults
     str workflowId
 
-# no @derive(Json): member(s) workflowStepGroupsSummary: list[WorkflowStepGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workflowStepGroupsSummary: list[WorkflowStepGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkflowStepGroupsResponse:
     Optional[str] nextToken
     list[WorkflowStepGroupSummary] workflowStepGroupsSummary
@@ -528,8 +544,9 @@ struct ListWorkflowStepsRequest:
     str workflowId
     str stepGroupId
 
-# no @derive(Json): member(s) workflowStepsSummary: list[WorkflowStepSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workflowStepsSummary: list[WorkflowStepSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkflowStepsResponse:
     Optional[str] nextToken
     list[WorkflowStepSummary] workflowStepsSummary
@@ -605,8 +622,9 @@ struct StepAutomationConfiguration:
     Optional[RunEnvironment] runEnvironment
     Optional[TargetType] targetType
 
-# no @derive(Json): member(s) listOfStringsValue: list[str], mapOfStringValue: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) listOfStringsValue: list[str], mapOfStringValue: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StepInput:
     Optional[int64] integerValue
     Optional[str] stringValue
@@ -653,16 +671,18 @@ struct TemplateInput:
 struct TemplateSource:
     Optional[str] workflowId
 
-# no @derive(Json): member(s) previous: list[str], next: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) previous: list[str], next: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TemplateStepGroupSummary:
     Optional[str] id
     Optional[str] name
     Optional[list[str]] previous
     Optional[list[str]] next
 
-# no @derive(Json): member(s) previous: list[str], next: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) previous: list[str], next: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TemplateStepSummary:
     Optional[str] id
     Optional[str] stepGroupId
@@ -710,8 +730,9 @@ struct UpdateMigrationWorkflowRequest:
     Optional[dict[str, StepInput]] inputParameters
     Optional[list[str]] stepTargets
 
-# no @derive(Json): member(s) workflowInputs: dict[str, StepInput], stepTargets: list[str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workflowInputs: dict[str, StepInput], stepTargets: list[str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMigrationWorkflowResponse:
     Optional[str] id
     Optional[str] arn
@@ -734,8 +755,9 @@ struct UpdateTemplateRequest:
     Optional[str] templateDescription
     Optional[str] clientToken
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTemplateResponse:
     Optional[str] templateId
     Optional[str] templateArn
@@ -751,8 +773,9 @@ struct UpdateWorkflowStepGroupRequest:
     Optional[list[str]] next
     Optional[list[str]] previous
 
-# no @derive(Json): member(s) tools: list[Tool], next: list[str], previous: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tools: list[Tool], next: list[str], previous: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateWorkflowStepGroupResponse:
     Optional[str] workflowId
     Optional[str] name
@@ -798,8 +821,9 @@ struct WorkflowStepAutomationConfiguration:
     Optional[RunEnvironment] runEnvironment
     Optional[TargetType] targetType
 
-# no @derive(Json): member(s) previous: list[str], next: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) previous: list[str], next: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkflowStepGroupSummary:
     Optional[str] id
     Optional[str] name
@@ -808,23 +832,26 @@ struct WorkflowStepGroupSummary:
     Optional[list[str]] previous
     Optional[list[str]] next
 
-# no @derive(Json): member(s) value: WorkflowStepOutputUnion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: WorkflowStepOutputUnion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkflowStepOutput:
     Optional[str] name
     Optional[DataType] dataType
     Optional[bool] required
     Optional[WorkflowStepOutputUnion] value
 
-# no @derive(Json): member(s) listOfStringValue: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) listOfStringValue: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkflowStepOutputUnion:
     Optional[int64] integerValue
     Optional[str] stringValue
     Optional[list[str]] listOfStringValue
 
-# no @derive(Json): member(s) previous: list[str], next: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) previous: list[str], next: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkflowStepSummary:
     Optional[str] stepId
     Optional[str] name
@@ -875,15 +902,7 @@ def migrationhub_orchestrator_error_from_code(str code) -> MigrationHubOrchestra
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateTemplate (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateWorkflow (document member `inputParameters: dict[str, StepInput]` is not serializable by derive)
-#   CreateWorkflowStep (document member `stepTarget: list[str]` is not serializable by derive)
-#   CreateWorkflowStepGroup (document member `next: list[str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateWorkflow (document member `inputParameters: dict[str, StepInput]` is not serializable by derive)
-#   UpdateWorkflowStep (document member `stepTarget: list[str]` is not serializable by derive)
-#   UpdateWorkflowStepGroup (document member `next: list[str]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -895,10 +914,222 @@ struct UpdateTemplateDocument:
     Optional[str] templateDescription
     Optional[str] clientToken
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def migrationhub_orchestrator_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def migrationhub_orchestrator_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def migrationhub_orchestrator_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize StepInput to a compact JSON object (declaration order).
+def step_input_to_json(StepInput v) -> str:
+    list[str] parts = []
+    if v.integerValue.is_some():
+        auto u0 = v.integerValue.unwrap()
+        parts.append("\"integerValue\":" + str(u0))
+    if v.stringValue.is_some():
+        auto u1 = v.stringValue.unwrap()
+        parts.append("\"stringValue\":" + migrationhub_orchestrator_json_str(u1))
+    if v.listOfStringsValue.is_some():
+        auto u2 = v.listOfStringsValue.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(migrationhub_orchestrator_json_str(x3))
+        parts.append("\"listOfStringsValue\":" + migrationhub_orchestrator_json_arr(e3))
+    if v.mapOfStringValue.is_some():
+        auto u4 = v.mapOfStringValue.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(migrationhub_orchestrator_json_str(k5) + ":" + migrationhub_orchestrator_json_str(u4[k5]))
+        parts.append("\"mapOfStringValue\":" + migrationhub_orchestrator_json_obj(m5))
+    return migrationhub_orchestrator_json_obj(parts)
+
+# Serialize WorkflowStepOutput to a compact JSON object (declaration order).
+def workflow_step_output_to_json(WorkflowStepOutput v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + migrationhub_orchestrator_json_str(u0))
+    if v.dataType.is_some():
+        auto u1 = v.dataType.unwrap()
+        parts.append("\"dataType\":" + u1.to_json())
+    if v.required.is_some():
+        auto u2 = v.required.unwrap()
+        parts.append("\"required\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.value.is_some():
+        auto u3 = v.value.unwrap()
+        parts.append("\"value\":" + workflow_step_output_union_to_json(u3))
+    return migrationhub_orchestrator_json_obj(parts)
+
+# Serialize WorkflowStepOutputUnion to a compact JSON object (declaration order).
+def workflow_step_output_union_to_json(WorkflowStepOutputUnion v) -> str:
+    list[str] parts = []
+    if v.integerValue.is_some():
+        auto u0 = v.integerValue.unwrap()
+        parts.append("\"integerValue\":" + str(u0))
+    if v.stringValue.is_some():
+        auto u1 = v.stringValue.unwrap()
+        parts.append("\"stringValue\":" + migrationhub_orchestrator_json_str(u1))
+    if v.listOfStringValue.is_some():
+        auto u2 = v.listOfStringValue.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(migrationhub_orchestrator_json_str(x3))
+        parts.append("\"listOfStringValue\":" + migrationhub_orchestrator_json_arr(e3))
+    return migrationhub_orchestrator_json_obj(parts)
+
 # A bound MigrationHubOrchestrator client: credentials + region, threaded into every operation.
 struct MigrationHubOrchestratorClient:
     core.Credentials creds
     str region
+
+    # CreateTemplate  POST /template
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def create_template(self, CreateTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(migrationhub_orchestrator_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/template", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"templateName\":" + migrationhub_orchestrator_json_str(input.templateName))
+        if input.templateDescription.is_some():
+            auto u0 = input.templateDescription.unwrap()
+            parts.append("\"templateDescription\":" + migrationhub_orchestrator_json_str(u0))
+        parts.append("\"templateSource\":" + input.templateSource.to_json())
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + migrationhub_orchestrator_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(migrationhub_orchestrator_json_str(k3) + ":" + migrationhub_orchestrator_json_str(u2[k3]))
+            parts.append("\"tags\":" + migrationhub_orchestrator_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, migrationhub_orchestrator_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, migrationhub_orchestrator_service(), self.region, host)
+
+    # CreateWorkflow  POST /migrationworkflow/
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def create_workflow(self, CreateMigrationWorkflowRequest input) -> str:
+        auto host = endpoints.regional_host(migrationhub_orchestrator_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/migrationworkflow/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + migrationhub_orchestrator_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + migrationhub_orchestrator_json_str(u0))
+        parts.append("\"templateId\":" + migrationhub_orchestrator_json_str(input.templateId))
+        if input.applicationConfigurationId.is_some():
+            auto u1 = input.applicationConfigurationId.unwrap()
+            parts.append("\"applicationConfigurationId\":" + migrationhub_orchestrator_json_str(u1))
+        list[str] m2 = []
+        for k2 in sorted(input.inputParameters.keys()):
+            m2.append(migrationhub_orchestrator_json_str(k2) + ":" + step_input_to_json(input.inputParameters[k2]))
+        parts.append("\"inputParameters\":" + migrationhub_orchestrator_json_obj(m2))
+        if input.stepTargets.is_some():
+            auto u3 = input.stepTargets.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(migrationhub_orchestrator_json_str(x4))
+            parts.append("\"stepTargets\":" + migrationhub_orchestrator_json_arr(e4))
+        if input.tags.is_some():
+            auto u5 = input.tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(migrationhub_orchestrator_json_str(k6) + ":" + migrationhub_orchestrator_json_str(u5[k6]))
+            parts.append("\"tags\":" + migrationhub_orchestrator_json_obj(m6))
+        auto bp = restjson.rest_json_document(b, migrationhub_orchestrator_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, migrationhub_orchestrator_service(), self.region, host)
+
+    # CreateWorkflowStep  POST /workflowstep
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def create_workflow_step(self, CreateWorkflowStepRequest input) -> str:
+        auto host = endpoints.regional_host(migrationhub_orchestrator_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/workflowstep", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + migrationhub_orchestrator_json_str(input.name))
+        parts.append("\"stepGroupId\":" + migrationhub_orchestrator_json_str(input.stepGroupId))
+        parts.append("\"workflowId\":" + migrationhub_orchestrator_json_str(input.workflowId))
+        parts.append("\"stepActionType\":" + input.stepActionType.to_json())
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + migrationhub_orchestrator_json_str(u0))
+        if input.workflowStepAutomationConfiguration.is_some():
+            auto u1 = input.workflowStepAutomationConfiguration.unwrap()
+            parts.append("\"workflowStepAutomationConfiguration\":" + u1.to_json())
+        if input.stepTarget.is_some():
+            auto u2 = input.stepTarget.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(migrationhub_orchestrator_json_str(x3))
+            parts.append("\"stepTarget\":" + migrationhub_orchestrator_json_arr(e3))
+        if input.outputs.is_some():
+            auto u4 = input.outputs.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(workflow_step_output_to_json(x5))
+            parts.append("\"outputs\":" + migrationhub_orchestrator_json_arr(e5))
+        if input.previous.is_some():
+            auto u6 = input.previous.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(migrationhub_orchestrator_json_str(x7))
+            parts.append("\"previous\":" + migrationhub_orchestrator_json_arr(e7))
+        if input.next.is_some():
+            auto u8 = input.next.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(migrationhub_orchestrator_json_str(x9))
+            parts.append("\"next\":" + migrationhub_orchestrator_json_arr(e9))
+        auto bp = restjson.rest_json_document(b, migrationhub_orchestrator_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, migrationhub_orchestrator_service(), self.region, host)
+
+    # CreateWorkflowStepGroup  POST /workflowstepgroups
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def create_workflow_step_group(self, CreateWorkflowStepGroupRequest input) -> str:
+        auto host = endpoints.regional_host(migrationhub_orchestrator_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/workflowstepgroups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"workflowId\":" + migrationhub_orchestrator_json_str(input.workflowId))
+        parts.append("\"name\":" + migrationhub_orchestrator_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + migrationhub_orchestrator_json_str(u0))
+        if input.next.is_some():
+            auto u1 = input.next.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(migrationhub_orchestrator_json_str(x2))
+            parts.append("\"next\":" + migrationhub_orchestrator_json_arr(e2))
+        if input.previous.is_some():
+            auto u3 = input.previous.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(migrationhub_orchestrator_json_str(x4))
+            parts.append("\"previous\":" + migrationhub_orchestrator_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, migrationhub_orchestrator_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, migrationhub_orchestrator_service(), self.region, host)
 
     # DeleteTemplate  DELETE /template/{id}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1145,6 +1376,21 @@ struct MigrationHubOrchestratorClient:
         auto b = binding.HttpBinding(method="POST", path_template="/migrationworkflow/{id}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_orchestrator_service(), self.region, host)
 
+    # TagResource  POST /tags/{resourceArn}
+    # errors: ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(migrationhub_orchestrator_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(migrationhub_orchestrator_json_str(k0) + ":" + migrationhub_orchestrator_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + migrationhub_orchestrator_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, migrationhub_orchestrator_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, migrationhub_orchestrator_service(), self.region, host)
+
     # UpdateTemplate  POST /template/{id}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_template(self, UpdateTemplateRequest input) -> str:
@@ -1154,6 +1400,118 @@ struct MigrationHubOrchestratorClient:
         auto b = binding.HttpBinding(method="POST", path_template="/template/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateTemplateDocument(templateName=input.templateName, templateDescription=input.templateDescription, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, migrationhub_orchestrator_service(), self.region, host)
+
+    # UpdateWorkflow  POST /migrationworkflow/{id}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_workflow(self, UpdateMigrationWorkflowRequest input) -> str:
+        auto host = endpoints.regional_host(migrationhub_orchestrator_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.id
+        auto b = binding.HttpBinding(method="POST", path_template="/migrationworkflow/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + migrationhub_orchestrator_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + migrationhub_orchestrator_json_str(u1))
+        if input.inputParameters.is_some():
+            auto u2 = input.inputParameters.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(migrationhub_orchestrator_json_str(k3) + ":" + step_input_to_json(u2[k3]))
+            parts.append("\"inputParameters\":" + migrationhub_orchestrator_json_obj(m3))
+        if input.stepTargets.is_some():
+            auto u4 = input.stepTargets.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(migrationhub_orchestrator_json_str(x5))
+            parts.append("\"stepTargets\":" + migrationhub_orchestrator_json_arr(e5))
+        auto bp = restjson.rest_json_document(b, migrationhub_orchestrator_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, migrationhub_orchestrator_service(), self.region, host)
+
+    # UpdateWorkflowStep  POST /workflowstep/{id}
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def update_workflow_step(self, UpdateWorkflowStepRequest input) -> str:
+        auto host = endpoints.regional_host(migrationhub_orchestrator_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.id
+        auto b = binding.HttpBinding(method="POST", path_template="/workflowstep/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"stepGroupId\":" + migrationhub_orchestrator_json_str(input.stepGroupId))
+        parts.append("\"workflowId\":" + migrationhub_orchestrator_json_str(input.workflowId))
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + migrationhub_orchestrator_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + migrationhub_orchestrator_json_str(u1))
+        if input.stepActionType.is_some():
+            auto u2 = input.stepActionType.unwrap()
+            parts.append("\"stepActionType\":" + u2.to_json())
+        if input.workflowStepAutomationConfiguration.is_some():
+            auto u3 = input.workflowStepAutomationConfiguration.unwrap()
+            parts.append("\"workflowStepAutomationConfiguration\":" + u3.to_json())
+        if input.stepTarget.is_some():
+            auto u4 = input.stepTarget.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(migrationhub_orchestrator_json_str(x5))
+            parts.append("\"stepTarget\":" + migrationhub_orchestrator_json_arr(e5))
+        if input.outputs.is_some():
+            auto u6 = input.outputs.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(workflow_step_output_to_json(x7))
+            parts.append("\"outputs\":" + migrationhub_orchestrator_json_arr(e7))
+        if input.previous.is_some():
+            auto u8 = input.previous.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(migrationhub_orchestrator_json_str(x9))
+            parts.append("\"previous\":" + migrationhub_orchestrator_json_arr(e9))
+        if input.next.is_some():
+            auto u10 = input.next.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(migrationhub_orchestrator_json_str(x11))
+            parts.append("\"next\":" + migrationhub_orchestrator_json_arr(e11))
+        if input.status.is_some():
+            auto u12 = input.status.unwrap()
+            parts.append("\"status\":" + u12.to_json())
+        auto bp = restjson.rest_json_document(b, migrationhub_orchestrator_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, migrationhub_orchestrator_service(), self.region, host)
+
+    # UpdateWorkflowStepGroup  POST /workflowstepgroup/{id}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_workflow_step_group(self, UpdateWorkflowStepGroupRequest input) -> str:
+        auto host = endpoints.regional_host(migrationhub_orchestrator_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.id
+        dict[str, str] query = {}
+        query["workflowId"] = input.workflowId
+        auto b = binding.HttpBinding(method="POST", path_template="/workflowstepgroup/{id}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + migrationhub_orchestrator_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + migrationhub_orchestrator_json_str(u1))
+        if input.next.is_some():
+            auto u2 = input.next.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(migrationhub_orchestrator_json_str(x3))
+            parts.append("\"next\":" + migrationhub_orchestrator_json_arr(e3))
+        if input.previous.is_some():
+            auto u4 = input.previous.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(migrationhub_orchestrator_json_str(x5))
+            parts.append("\"previous\":" + migrationhub_orchestrator_json_arr(e5))
+        auto bp = restjson.rest_json_document(b, migrationhub_orchestrator_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, migrationhub_orchestrator_service(), self.region, host)
 
     # Paginator for ListPlugins — yields each Response page, threading the

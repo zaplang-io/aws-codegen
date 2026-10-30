@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 75 operations — 55 with a generated method,
-#   20 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 75 operations — 72 with a generated method,
+#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   204 structs (129 @derive(Json)), 19 enums, 8 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import base64
 
 # The WorkSpaces_Web rest-json protocol: SigV4 service "workspaces-web" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -334,8 +335,9 @@ struct AssociateUserSettingsResponse:
     str portalArn
     str userSettingsArn
 
-# no @derive(Json): member(s) localizedStrings: dict[Locale, LocalizedBrandingStrings] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) localizedStrings: dict[Locale, LocalizedBrandingStrings] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BrandingConfiguration:
     ImageMetadata logo
     Optional[ImageMetadata] wallpaper
@@ -344,8 +346,9 @@ struct BrandingConfiguration:
     ColorTheme colorTheme
     Optional[str] termsOfService
 
-# no @derive(Json): member(s) localizedStrings: dict[Locale, LocalizedBrandingStrings] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) localizedStrings: dict[Locale, LocalizedBrandingStrings] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BrandingConfigurationCreateInput:
     IconImageInput logo
     Optional[WallpaperImageInput] wallpaper
@@ -354,8 +357,9 @@ struct BrandingConfigurationCreateInput:
     ColorTheme colorTheme
     Optional[str] termsOfService
 
-# no @derive(Json): member(s) localizedStrings: dict[Locale, LocalizedBrandingStrings] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) localizedStrings: dict[Locale, LocalizedBrandingStrings] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BrandingConfigurationUpdateInput:
     Optional[IconImageInput] logo
     Optional[WallpaperImageInput] wallpaper
@@ -364,8 +368,9 @@ struct BrandingConfigurationUpdateInput:
     Optional[ColorTheme] colorTheme
     Optional[str] termsOfService
 
-# no @derive(Json): member(s) associatedPortalArns: list[str], additionalEncryptionContext: dict[str, str], webContentFilteringPolicy: WebContentFilteringPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedPortalArns: list[str], additionalEncryptionContext: dict[str, str], webContentFilteringPolicy: WebContentFilteringPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BrowserSettings:
     str browserSettingsArn
     Optional[list[str]] associatedPortalArns
@@ -407,8 +412,9 @@ struct CookieSpecification:
     Optional[str] name
     Optional[str] path
 
-# no @derive(Json): member(s) allowlist: list[CookieSpecification], blocklist: list[CookieSpecification] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowlist: list[CookieSpecification], blocklist: list[CookieSpecification] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CookieSynchronizationConfiguration:
     list[CookieSpecification] allowlist
     Optional[list[CookieSpecification]] blocklist
@@ -570,8 +576,9 @@ struct CustomPattern:
     Optional[str] patternDescription
     Optional[str] keywordRegex
 
-# no @derive(Json): member(s) inlineRedactionConfiguration: InlineRedactionConfiguration, associatedPortalArns: list[str], additionalEncryptionContext: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inlineRedactionConfiguration: InlineRedactionConfiguration, associatedPortalArns: list[str], additionalEncryptionContext: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataProtectionSettings:
     str dataProtectionSettingsArn
     Optional[InlineRedactionConfiguration] inlineRedactionConfiguration
@@ -769,8 +776,9 @@ struct DisassociateUserSettingsResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) include: list[Event] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) include: list[Event] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventFilter:
     Optional[Unit] all
     Optional[list[Event]] include
@@ -791,8 +799,9 @@ struct ExpireSessionResponse:
 struct GetBrowserSettingsRequest:
     str browserSettingsArn
 
-# no @derive(Json): member(s) browserSettings: BrowserSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) browserSettings: BrowserSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBrowserSettingsResponse:
     Optional[BrowserSettings] browserSettings
 
@@ -801,8 +810,9 @@ struct GetBrowserSettingsResponse:
 struct GetDataProtectionSettingsRequest:
     str dataProtectionSettingsArn
 
-# no @derive(Json): member(s) dataProtectionSettings: DataProtectionSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataProtectionSettings: DataProtectionSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataProtectionSettingsResponse:
     Optional[DataProtectionSettings] dataProtectionSettings
 
@@ -811,8 +821,9 @@ struct GetDataProtectionSettingsResponse:
 struct GetIdentityProviderRequest:
     str identityProviderArn
 
-# no @derive(Json): member(s) identityProvider: IdentityProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) identityProvider: IdentityProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIdentityProviderResponse:
     Optional[IdentityProvider] identityProvider
 
@@ -821,8 +832,9 @@ struct GetIdentityProviderResponse:
 struct GetIpAccessSettingsRequest:
     str ipAccessSettingsArn
 
-# no @derive(Json): member(s) ipAccessSettings: IpAccessSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ipAccessSettings: IpAccessSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIpAccessSettingsResponse:
     Optional[IpAccessSettings] ipAccessSettings
 
@@ -831,8 +843,9 @@ struct GetIpAccessSettingsResponse:
 struct GetNetworkSettingsRequest:
     str networkSettingsArn
 
-# no @derive(Json): member(s) networkSettings: NetworkSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkSettings: NetworkSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetNetworkSettingsResponse:
     Optional[NetworkSettings] networkSettings
 
@@ -841,8 +854,9 @@ struct GetNetworkSettingsResponse:
 struct GetPortalRequest:
     str portalArn
 
-# no @derive(Json): member(s) portal: Portal not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) portal: Portal not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPortalResponse:
     Optional[Portal] portal
 
@@ -861,8 +875,9 @@ struct GetPortalServiceProviderMetadataResponse:
 struct GetSessionLoggerRequest:
     str sessionLoggerArn
 
-# no @derive(Json): member(s) sessionLogger: SessionLogger not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sessionLogger: SessionLogger not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSessionLoggerResponse:
     Optional[SessionLogger] sessionLogger
 
@@ -872,8 +887,9 @@ struct GetSessionRequest:
     str portalId
     str sessionId
 
-# no @derive(Json): member(s) session: Session not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) session: Session not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSessionResponse:
     Optional[Session] session
 
@@ -893,8 +909,9 @@ struct GetTrustStoreCertificateResponse:
 struct GetTrustStoreRequest:
     str trustStoreArn
 
-# no @derive(Json): member(s) trustStore: TrustStore not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) trustStore: TrustStore not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTrustStoreResponse:
     Optional[TrustStore] trustStore
 
@@ -903,8 +920,9 @@ struct GetTrustStoreResponse:
 struct GetUserAccessLoggingSettingsRequest:
     str userAccessLoggingSettingsArn
 
-# no @derive(Json): member(s) userAccessLoggingSettings: UserAccessLoggingSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userAccessLoggingSettings: UserAccessLoggingSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUserAccessLoggingSettingsResponse:
     Optional[UserAccessLoggingSettings] userAccessLoggingSettings
 
@@ -913,8 +931,9 @@ struct GetUserAccessLoggingSettingsResponse:
 struct GetUserSettingsRequest:
     str userSettingsArn
 
-# no @derive(Json): member(s) userSettings: UserSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userSettings: UserSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUserSettingsResponse:
     Optional[UserSettings] userSettings
 
@@ -923,8 +942,9 @@ struct IconImageInput:
     Optional[bytes] blob
     Optional[str] s3Uri
 
-# no @derive(Json): member(s) identityProviderDetails: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) identityProviderDetails: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IdentityProvider:
     str identityProviderArn
     Optional[str] identityProviderName
@@ -943,16 +963,18 @@ struct ImageMetadata:
     str fileExtension
     DateTime lastUploadTimestamp
 
-# no @derive(Json): member(s) inlineRedactionPatterns: list[InlineRedactionPattern], globalEnforcedUrls: list[str], globalExemptUrls: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inlineRedactionPatterns: list[InlineRedactionPattern], globalEnforcedUrls: list[str], globalExemptUrls: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InlineRedactionConfiguration:
     list[InlineRedactionPattern] inlineRedactionPatterns
     Optional[list[str]] globalEnforcedUrls
     Optional[list[str]] globalExemptUrls
     Optional[int64] globalConfidenceLevel
 
-# no @derive(Json): member(s) enforcedUrls: list[str], exemptUrls: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) enforcedUrls: list[str], exemptUrls: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InlineRedactionPattern:
     Optional[str] builtInPatternId
     Optional[CustomPattern] customPattern
@@ -966,8 +988,9 @@ struct InternalServerException:
     Optional[str] message
     Optional[int64] retryAfterSeconds
 
-# no @derive(Json): member(s) associatedPortalArns: list[str], ipRules: list[IpRule], additionalEncryptionContext: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedPortalArns: list[str], ipRules: list[IpRule], additionalEncryptionContext: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IpAccessSettings:
     str ipAccessSettingsArn
     Optional[list[str]] associatedPortalArns
@@ -996,8 +1019,9 @@ struct ListBrowserSettingsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) browserSettings: list[BrowserSettingsSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) browserSettings: list[BrowserSettingsSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBrowserSettingsResponse:
     Optional[list[BrowserSettingsSummary]] browserSettings
     Optional[str] nextToken
@@ -1008,8 +1032,9 @@ struct ListDataProtectionSettingsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) dataProtectionSettings: list[DataProtectionSettingsSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataProtectionSettings: list[DataProtectionSettingsSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataProtectionSettingsResponse:
     Optional[list[DataProtectionSettingsSummary]] dataProtectionSettings
     Optional[str] nextToken
@@ -1021,8 +1046,9 @@ struct ListIdentityProvidersRequest:
     Optional[int64] maxResults
     str portalArn
 
-# no @derive(Json): member(s) identityProviders: list[IdentityProviderSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) identityProviders: list[IdentityProviderSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIdentityProvidersResponse:
     Optional[str] nextToken
     Optional[list[IdentityProviderSummary]] identityProviders
@@ -1033,8 +1059,9 @@ struct ListIpAccessSettingsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) ipAccessSettings: list[IpAccessSettingsSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ipAccessSettings: list[IpAccessSettingsSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIpAccessSettingsResponse:
     Optional[list[IpAccessSettingsSummary]] ipAccessSettings
     Optional[str] nextToken
@@ -1045,8 +1072,9 @@ struct ListNetworkSettingsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) networkSettings: list[NetworkSettingsSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkSettings: list[NetworkSettingsSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkSettingsResponse:
     Optional[list[NetworkSettingsSummary]] networkSettings
     Optional[str] nextToken
@@ -1057,8 +1085,9 @@ struct ListPortalsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) portals: list[PortalSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) portals: list[PortalSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPortalsResponse:
     Optional[list[PortalSummary]] portals
     Optional[str] nextToken
@@ -1069,8 +1098,9 @@ struct ListSessionLoggersRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) sessionLoggers: list[SessionLoggerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sessionLoggers: list[SessionLoggerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSessionLoggersResponse:
     Optional[list[SessionLoggerSummary]] sessionLoggers
     Optional[str] nextToken
@@ -1088,8 +1118,9 @@ struct ListSessionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) sessions: list[SessionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sessions: list[SessionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSessionsResponse:
     list[SessionSummary] sessions
     Optional[str] nextToken
@@ -1099,8 +1130,9 @@ struct ListSessionsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] tags
 
@@ -1111,8 +1143,9 @@ struct ListTrustStoreCertificatesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) certificateList: list[CertificateSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) certificateList: list[CertificateSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTrustStoreCertificatesResponse:
     Optional[list[CertificateSummary]] certificateList
     str trustStoreArn
@@ -1124,8 +1157,9 @@ struct ListTrustStoresRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) trustStores: list[TrustStoreSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) trustStores: list[TrustStoreSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTrustStoresResponse:
     Optional[list[TrustStoreSummary]] trustStores
     Optional[str] nextToken
@@ -1136,8 +1170,9 @@ struct ListUserAccessLoggingSettingsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) userAccessLoggingSettings: list[UserAccessLoggingSettingsSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userAccessLoggingSettings: list[UserAccessLoggingSettingsSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUserAccessLoggingSettingsResponse:
     Optional[list[UserAccessLoggingSettingsSummary]] userAccessLoggingSettings
     Optional[str] nextToken
@@ -1148,8 +1183,9 @@ struct ListUserSettingsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) userSettings: list[UserSettingsSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userSettings: list[UserSettingsSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUserSettingsResponse:
     Optional[list[UserSettingsSummary]] userSettings
     Optional[str] nextToken
@@ -1169,8 +1205,9 @@ struct LocalizedBrandingStrings:
 struct LogConfiguration:
     Optional[S3LogConfiguration] s3
 
-# no @derive(Json): member(s) associatedPortalArns: list[str], subnetIds: list[str], securityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedPortalArns: list[str], subnetIds: list[str], securityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkSettings:
     str networkSettingsArn
     Optional[list[str]] associatedPortalArns
@@ -1183,8 +1220,9 @@ struct NetworkSettingsSummary:
     str networkSettingsArn
     Optional[str] vpcId
 
-# no @derive(Json): member(s) additionalEncryptionContext: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) additionalEncryptionContext: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Portal:
     str portalArn
     Optional[str] rendererType
@@ -1258,8 +1296,9 @@ struct ServiceQuotaExceededException:
     Optional[str] serviceCode
     Optional[str] quotaCode
 
-# no @derive(Json): member(s) clientIpAddresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clientIpAddresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Session:
     Optional[str] portalArn
     Optional[str] sessionId
@@ -1269,8 +1308,9 @@ struct Session:
     Optional[DateTime] startTime
     Optional[DateTime] endTime
 
-# no @derive(Json): member(s) eventFilter: EventFilter, additionalEncryptionContext: dict[str, str], associatedPortalArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventFilter: EventFilter, additionalEncryptionContext: dict[str, str], associatedPortalArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SessionLogger:
     str sessionLoggerArn
     Optional[EventFilter] eventFilter
@@ -1326,16 +1366,18 @@ struct TooManyTagsException:
     Optional[str] message
     Optional[str] resourceName
 
-# no @derive(Json): member(s) hiddenToolbarItems: list[ToolbarItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) hiddenToolbarItems: list[ToolbarItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ToolbarConfiguration:
     Optional[ToolbarType] toolbarType
     Optional[VisualMode] visualMode
     Optional[list[ToolbarItem]] hiddenToolbarItems
     Optional[MaxDisplayResolution] maxDisplayResolution
 
-# no @derive(Json): member(s) associatedPortalArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedPortalArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrustStore:
     Optional[list[str]] associatedPortalArns
     str trustStoreArn
@@ -1368,8 +1410,9 @@ struct UpdateBrowserSettingsRequest:
     Optional[str] clientToken
     Optional[WebContentFilteringPolicy] webContentFilteringPolicy
 
-# no @derive(Json): member(s) browserSettings: BrowserSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) browserSettings: BrowserSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBrowserSettingsResponse:
     BrowserSettings browserSettings
 
@@ -1382,8 +1425,9 @@ struct UpdateDataProtectionSettingsRequest:
     Optional[str] description
     Optional[str] clientToken
 
-# no @derive(Json): member(s) dataProtectionSettings: DataProtectionSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataProtectionSettings: DataProtectionSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDataProtectionSettingsResponse:
     DataProtectionSettings dataProtectionSettings
 
@@ -1396,8 +1440,9 @@ struct UpdateIdentityProviderRequest:
     Optional[dict[str, str]] identityProviderDetails
     Optional[str] clientToken
 
-# no @derive(Json): member(s) identityProvider: IdentityProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) identityProvider: IdentityProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIdentityProviderResponse:
     IdentityProvider identityProvider
 
@@ -1410,8 +1455,9 @@ struct UpdateIpAccessSettingsRequest:
     Optional[list[IpRule]] ipRules
     Optional[str] clientToken
 
-# no @derive(Json): member(s) ipAccessSettings: IpAccessSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ipAccessSettings: IpAccessSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIpAccessSettingsResponse:
     IpAccessSettings ipAccessSettings
 
@@ -1424,8 +1470,9 @@ struct UpdateNetworkSettingsRequest:
     Optional[list[str]] securityGroupIds
     Optional[str] clientToken
 
-# no @derive(Json): member(s) networkSettings: NetworkSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkSettings: NetworkSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateNetworkSettingsResponse:
     NetworkSettings networkSettings
 
@@ -1439,8 +1486,9 @@ struct UpdatePortalRequest:
     Optional[int64] maxConcurrentSessions
     Optional[str] portalCustomDomain
 
-# no @derive(Json): member(s) portal: Portal not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) portal: Portal not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePortalResponse:
     Optional[Portal] portal
 
@@ -1452,8 +1500,9 @@ struct UpdateSessionLoggerRequest:
     Optional[LogConfiguration] logConfiguration
     Optional[str] displayName
 
-# no @derive(Json): member(s) sessionLogger: SessionLogger not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sessionLogger: SessionLogger not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSessionLoggerResponse:
     SessionLogger sessionLogger
 
@@ -1476,8 +1525,9 @@ struct UpdateUserAccessLoggingSettingsRequest:
     Optional[str] kinesisStreamArn
     Optional[str] clientToken
 
-# no @derive(Json): member(s) userAccessLoggingSettings: UserAccessLoggingSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userAccessLoggingSettings: UserAccessLoggingSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateUserAccessLoggingSettingsResponse:
     UserAccessLoggingSettings userAccessLoggingSettings
 
@@ -1499,13 +1549,15 @@ struct UpdateUserSettingsRequest:
     Optional[BrandingConfigurationUpdateInput] brandingConfigurationInput
     Optional[EnabledType] webAuthnAllowed
 
-# no @derive(Json): member(s) userSettings: UserSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userSettings: UserSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateUserSettingsResponse:
     UserSettings userSettings
 
-# no @derive(Json): member(s) associatedPortalArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedPortalArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserAccessLoggingSettings:
     str userAccessLoggingSettingsArn
     Optional[list[str]] associatedPortalArns
@@ -1516,8 +1568,9 @@ struct UserAccessLoggingSettingsSummary:
     str userAccessLoggingSettingsArn
     Optional[str] kinesisStreamArn
 
-# no @derive(Json): member(s) associatedPortalArns: list[str], cookieSynchronizationConfiguration: CookieSynchronizationConfiguration, additionalEncryptionContext: dict[str, str], toolbarConfiguration: ToolbarConfiguration, brandingConfiguration: BrandingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedPortalArns: list[str], cookieSynchronizationConfiguration: CookieSynchronizationConfiguration, additionalEncryptionContext: dict[str, str], toolbarConfiguration: ToolbarConfiguration, brandingConfiguration: BrandingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserSettings:
     str userSettingsArn
     Optional[list[str]] associatedPortalArns
@@ -1536,8 +1589,9 @@ struct UserSettings:
     Optional[BrandingConfiguration] brandingConfiguration
     Optional[EnabledType] webAuthnAllowed
 
-# no @derive(Json): member(s) cookieSynchronizationConfiguration: CookieSynchronizationConfiguration, toolbarConfiguration: ToolbarConfiguration, brandingConfiguration: BrandingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cookieSynchronizationConfiguration: CookieSynchronizationConfiguration, toolbarConfiguration: ToolbarConfiguration, brandingConfiguration: BrandingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserSettingsSummary:
     str userSettingsArn
     Optional[EnabledType] copyAllowed
@@ -1553,8 +1607,9 @@ struct UserSettingsSummary:
     Optional[BrandingConfiguration] brandingConfiguration
     Optional[EnabledType] webAuthnAllowed
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     Optional[str] message
     Optional[ValidationExceptionReason] reason
@@ -1570,8 +1625,9 @@ struct WallpaperImageInput:
     Optional[bytes] blob
     Optional[str] s3Uri
 
-# no @derive(Json): member(s) blockedCategories: list[Category], allowedUrls: list[str], blockedUrls: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) blockedCategories: list[Category], allowedUrls: list[str], blockedUrls: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WebContentFilteringPolicy:
     Optional[list[Category]] blockedCategories
     Optional[list[str]] allowedUrls
@@ -1618,26 +1674,9 @@ def workspaces_web_error_from_code(str code) -> WorkSpaces_WebError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateBrowserSettings (document member `tags: list[Tag]` is not serializable by derive)
-#   CreateDataProtectionSettings (document member `tags: list[Tag]` is not serializable by derive)
-#   CreateIdentityProvider (document member `identityProviderDetails: dict[str, str]` is not serializable by derive)
-#   CreateIpAccessSettings (document member `tags: list[Tag]` is not serializable by derive)
-#   CreateNetworkSettings (document member `subnetIds: list[str]` is not serializable by derive)
-#   CreatePortal (document member `tags: list[Tag]` is not serializable by derive)
-#   CreateSessionLogger (document member `eventFilter: EventFilter` is not serializable by derive)
-#   CreateTrustStore (document member `certificateList: list[bytes]` is not serializable by derive)
-#   CreateUserAccessLoggingSettings (document member `tags: list[Tag]` is not serializable by derive)
-#   CreateUserSettings (document member `tags: list[Tag]` is not serializable by derive)
-#   TagResource (document member `tags: list[Tag]` is not serializable by derive)
+#   CreateUserSettings (document member `brandingConfigurationInput: BrandingConfigurationCreateInput` is not serializable)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateBrowserSettings (document member `webContentFilteringPolicy: WebContentFilteringPolicy` is not serializable by derive)
-#   UpdateDataProtectionSettings (document member `inlineRedactionConfiguration: InlineRedactionConfiguration` is not serializable by derive)
-#   UpdateIdentityProvider (document member `identityProviderDetails: dict[str, str]` is not serializable by derive)
-#   UpdateIpAccessSettings (document member `ipRules: list[IpRule]` is not serializable by derive)
-#   UpdateNetworkSettings (document member `subnetIds: list[str]` is not serializable by derive)
-#   UpdateSessionLogger (document member `eventFilter: EventFilter` is not serializable by derive)
-#   UpdateTrustStore (document member `certificatesToAdd: list[bytes]` is not serializable by derive)
-#   UpdateUserSettings (document member `cookieSynchronizationConfiguration: CookieSynchronizationConfiguration` is not serializable by derive)
+#   UpdateUserSettings (document member `brandingConfigurationInput: BrandingConfigurationUpdateInput` is not serializable)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1656,6 +1695,124 @@ struct UpdateUserAccessLoggingSettingsDocument:
     # document members of UpdateUserAccessLoggingSettings
     Optional[str] kinesisStreamArn
     Optional[str] clientToken
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def workspaces_web_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def workspaces_web_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def workspaces_web_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize EventFilter to a compact JSON object (declaration order).
+def event_filter_to_json(EventFilter v) -> str:
+    list[str] parts = []
+    if v.all.is_some():
+        auto u0 = v.all.unwrap()
+        parts.append("\"all\":" + u0.to_json())
+    if v.include.is_some():
+        auto u1 = v.include.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"include\":" + workspaces_web_json_arr(e2))
+    return workspaces_web_json_obj(parts)
+
+# Serialize InlineRedactionConfiguration to a compact JSON object (declaration order).
+def inline_redaction_configuration_to_json(InlineRedactionConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.inlineRedactionPatterns:
+        e0.append(inline_redaction_pattern_to_json(x0))
+    parts.append("\"inlineRedactionPatterns\":" + workspaces_web_json_arr(e0))
+    if v.globalEnforcedUrls.is_some():
+        auto u1 = v.globalEnforcedUrls.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(workspaces_web_json_str(x2))
+        parts.append("\"globalEnforcedUrls\":" + workspaces_web_json_arr(e2))
+    if v.globalExemptUrls.is_some():
+        auto u3 = v.globalExemptUrls.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(workspaces_web_json_str(x4))
+        parts.append("\"globalExemptUrls\":" + workspaces_web_json_arr(e4))
+    if v.globalConfidenceLevel.is_some():
+        auto u5 = v.globalConfidenceLevel.unwrap()
+        parts.append("\"globalConfidenceLevel\":" + str(u5))
+    return workspaces_web_json_obj(parts)
+
+# Serialize InlineRedactionPattern to a compact JSON object (declaration order).
+def inline_redaction_pattern_to_json(InlineRedactionPattern v) -> str:
+    list[str] parts = []
+    if v.builtInPatternId.is_some():
+        auto u0 = v.builtInPatternId.unwrap()
+        parts.append("\"builtInPatternId\":" + workspaces_web_json_str(u0))
+    if v.customPattern.is_some():
+        auto u1 = v.customPattern.unwrap()
+        parts.append("\"customPattern\":" + u1.to_json())
+    parts.append("\"redactionPlaceHolder\":" + v.redactionPlaceHolder.to_json())
+    if v.enforcedUrls.is_some():
+        auto u2 = v.enforcedUrls.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(workspaces_web_json_str(x3))
+        parts.append("\"enforcedUrls\":" + workspaces_web_json_arr(e3))
+    if v.exemptUrls.is_some():
+        auto u4 = v.exemptUrls.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(workspaces_web_json_str(x5))
+        parts.append("\"exemptUrls\":" + workspaces_web_json_arr(e5))
+    if v.confidenceLevel.is_some():
+        auto u6 = v.confidenceLevel.unwrap()
+        parts.append("\"confidenceLevel\":" + str(u6))
+    return workspaces_web_json_obj(parts)
+
+# Serialize WebContentFilteringPolicy to a compact JSON object (declaration order).
+def web_content_filtering_policy_to_json(WebContentFilteringPolicy v) -> str:
+    list[str] parts = []
+    if v.blockedCategories.is_some():
+        auto u0 = v.blockedCategories.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"blockedCategories\":" + workspaces_web_json_arr(e1))
+    if v.allowedUrls.is_some():
+        auto u2 = v.allowedUrls.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(workspaces_web_json_str(x3))
+        parts.append("\"allowedUrls\":" + workspaces_web_json_arr(e3))
+    if v.blockedUrls.is_some():
+        auto u4 = v.blockedUrls.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(workspaces_web_json_str(x5))
+        parts.append("\"blockedUrls\":" + workspaces_web_json_arr(e5))
+    return workspaces_web_json_obj(parts)
 
 # A bound WorkSpaces_Web client: credentials + region, threaded into every operation.
 struct WorkSpaces_WebClient:
@@ -1749,6 +1906,279 @@ struct WorkSpaces_WebClient:
         query["userSettingsArn"] = input.userSettingsArn
         auto b = binding.HttpBinding(method="PUT", path_template="/portals/{portalArn+}/userSettings", labels={}, greedy_labels=greedy_labels, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
+
+    # CreateBrowserSettings  POST /browserSettings
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_browser_settings(self, CreateBrowserSettingsRequest input) -> str:
+        auto host = endpoints.regional_host(workspaces_web_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/browserSettings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"tags\":" + workspaces_web_json_arr(e1))
+        if input.customerManagedKey.is_some():
+            auto u2 = input.customerManagedKey.unwrap()
+            parts.append("\"customerManagedKey\":" + workspaces_web_json_str(u2))
+        if input.additionalEncryptionContext.is_some():
+            auto u3 = input.additionalEncryptionContext.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(workspaces_web_json_str(k4) + ":" + workspaces_web_json_str(u3[k4]))
+            parts.append("\"additionalEncryptionContext\":" + workspaces_web_json_obj(m4))
+        if input.browserPolicy.is_some():
+            auto u5 = input.browserPolicy.unwrap()
+            parts.append("\"browserPolicy\":" + workspaces_web_json_str(u5))
+        if input.clientToken.is_some():
+            auto u6 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + workspaces_web_json_str(u6))
+        if input.webContentFilteringPolicy.is_some():
+            auto u7 = input.webContentFilteringPolicy.unwrap()
+            parts.append("\"webContentFilteringPolicy\":" + web_content_filtering_policy_to_json(u7))
+        auto bp = restjson.rest_json_document(b, workspaces_web_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, workspaces_web_service(), self.region, host)
+
+    # CreateDataProtectionSettings  POST /dataProtectionSettings
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_data_protection_settings(self, CreateDataProtectionSettingsRequest input) -> str:
+        auto host = endpoints.regional_host(workspaces_web_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/dataProtectionSettings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.displayName.is_some():
+            auto u0 = input.displayName.unwrap()
+            parts.append("\"displayName\":" + workspaces_web_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + workspaces_web_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"tags\":" + workspaces_web_json_arr(e3))
+        if input.customerManagedKey.is_some():
+            auto u4 = input.customerManagedKey.unwrap()
+            parts.append("\"customerManagedKey\":" + workspaces_web_json_str(u4))
+        if input.additionalEncryptionContext.is_some():
+            auto u5 = input.additionalEncryptionContext.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(workspaces_web_json_str(k6) + ":" + workspaces_web_json_str(u5[k6]))
+            parts.append("\"additionalEncryptionContext\":" + workspaces_web_json_obj(m6))
+        if input.inlineRedactionConfiguration.is_some():
+            auto u7 = input.inlineRedactionConfiguration.unwrap()
+            parts.append("\"inlineRedactionConfiguration\":" + inline_redaction_configuration_to_json(u7))
+        if input.clientToken.is_some():
+            auto u8 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + workspaces_web_json_str(u8))
+        auto bp = restjson.rest_json_document(b, workspaces_web_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, workspaces_web_service(), self.region, host)
+
+    # CreateIdentityProvider  POST /identityProviders
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_identity_provider(self, CreateIdentityProviderRequest input) -> str:
+        auto host = endpoints.regional_host(workspaces_web_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/identityProviders", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"portalArn\":" + workspaces_web_json_str(input.portalArn))
+        parts.append("\"identityProviderName\":" + workspaces_web_json_str(input.identityProviderName))
+        parts.append("\"identityProviderType\":" + input.identityProviderType.to_json())
+        list[str] m0 = []
+        for k0 in sorted(input.identityProviderDetails.keys()):
+            m0.append(workspaces_web_json_str(k0) + ":" + workspaces_web_json_str(input.identityProviderDetails[k0]))
+        parts.append("\"identityProviderDetails\":" + workspaces_web_json_obj(m0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + workspaces_web_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"tags\":" + workspaces_web_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, workspaces_web_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, workspaces_web_service(), self.region, host)
+
+    # CreateIpAccessSettings  POST /ipAccessSettings
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_ip_access_settings(self, CreateIpAccessSettingsRequest input) -> str:
+        auto host = endpoints.regional_host(workspaces_web_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ipAccessSettings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.displayName.is_some():
+            auto u0 = input.displayName.unwrap()
+            parts.append("\"displayName\":" + workspaces_web_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + workspaces_web_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"tags\":" + workspaces_web_json_arr(e3))
+        if input.customerManagedKey.is_some():
+            auto u4 = input.customerManagedKey.unwrap()
+            parts.append("\"customerManagedKey\":" + workspaces_web_json_str(u4))
+        if input.additionalEncryptionContext.is_some():
+            auto u5 = input.additionalEncryptionContext.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(workspaces_web_json_str(k6) + ":" + workspaces_web_json_str(u5[k6]))
+            parts.append("\"additionalEncryptionContext\":" + workspaces_web_json_obj(m6))
+        list[str] e7 = []
+        for x7 in input.ipRules:
+            e7.append(x7.to_json())
+        parts.append("\"ipRules\":" + workspaces_web_json_arr(e7))
+        if input.clientToken.is_some():
+            auto u8 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + workspaces_web_json_str(u8))
+        auto bp = restjson.rest_json_document(b, workspaces_web_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, workspaces_web_service(), self.region, host)
+
+    # CreateNetworkSettings  POST /networkSettings
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_network_settings(self, CreateNetworkSettingsRequest input) -> str:
+        auto host = endpoints.regional_host(workspaces_web_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/networkSettings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"vpcId\":" + workspaces_web_json_str(input.vpcId))
+        list[str] e0 = []
+        for x0 in input.subnetIds:
+            e0.append(workspaces_web_json_str(x0))
+        parts.append("\"subnetIds\":" + workspaces_web_json_arr(e0))
+        list[str] e1 = []
+        for x1 in input.securityGroupIds:
+            e1.append(workspaces_web_json_str(x1))
+        parts.append("\"securityGroupIds\":" + workspaces_web_json_arr(e1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"tags\":" + workspaces_web_json_arr(e3))
+        if input.clientToken.is_some():
+            auto u4 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + workspaces_web_json_str(u4))
+        auto bp = restjson.rest_json_document(b, workspaces_web_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, workspaces_web_service(), self.region, host)
+
+    # CreatePortal  POST /portals
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_portal(self, CreatePortalRequest input) -> str:
+        auto host = endpoints.regional_host(workspaces_web_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/portals", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.displayName.is_some():
+            auto u0 = input.displayName.unwrap()
+            parts.append("\"displayName\":" + workspaces_web_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + workspaces_web_json_arr(e2))
+        if input.customerManagedKey.is_some():
+            auto u3 = input.customerManagedKey.unwrap()
+            parts.append("\"customerManagedKey\":" + workspaces_web_json_str(u3))
+        if input.additionalEncryptionContext.is_some():
+            auto u4 = input.additionalEncryptionContext.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(workspaces_web_json_str(k5) + ":" + workspaces_web_json_str(u4[k5]))
+            parts.append("\"additionalEncryptionContext\":" + workspaces_web_json_obj(m5))
+        if input.clientToken.is_some():
+            auto u6 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + workspaces_web_json_str(u6))
+        if input.authenticationType.is_some():
+            auto u7 = input.authenticationType.unwrap()
+            parts.append("\"authenticationType\":" + u7.to_json())
+        if input.instanceType.is_some():
+            auto u8 = input.instanceType.unwrap()
+            parts.append("\"instanceType\":" + u8.to_json())
+        if input.maxConcurrentSessions.is_some():
+            auto u9 = input.maxConcurrentSessions.unwrap()
+            parts.append("\"maxConcurrentSessions\":" + str(u9))
+        if input.portalCustomDomain.is_some():
+            auto u10 = input.portalCustomDomain.unwrap()
+            parts.append("\"portalCustomDomain\":" + workspaces_web_json_str(u10))
+        auto bp = restjson.rest_json_document(b, workspaces_web_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, workspaces_web_service(), self.region, host)
+
+    # CreateSessionLogger  POST /sessionLoggers
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_session_logger(self, CreateSessionLoggerRequest input) -> str:
+        auto host = endpoints.regional_host(workspaces_web_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/sessionLoggers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"eventFilter\":" + event_filter_to_json(input.eventFilter))
+        parts.append("\"logConfiguration\":" + input.logConfiguration.to_json())
+        if input.displayName.is_some():
+            auto u0 = input.displayName.unwrap()
+            parts.append("\"displayName\":" + workspaces_web_json_str(u0))
+        if input.customerManagedKey.is_some():
+            auto u1 = input.customerManagedKey.unwrap()
+            parts.append("\"customerManagedKey\":" + workspaces_web_json_str(u1))
+        if input.additionalEncryptionContext.is_some():
+            auto u2 = input.additionalEncryptionContext.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(workspaces_web_json_str(k3) + ":" + workspaces_web_json_str(u2[k3]))
+            parts.append("\"additionalEncryptionContext\":" + workspaces_web_json_obj(m3))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"tags\":" + workspaces_web_json_arr(e5))
+        if input.clientToken.is_some():
+            auto u6 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + workspaces_web_json_str(u6))
+        auto bp = restjson.rest_json_document(b, workspaces_web_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, workspaces_web_service(), self.region, host)
+
+    # CreateTrustStore  POST /trustStores
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_trust_store(self, CreateTrustStoreRequest input) -> str:
+        auto host = endpoints.regional_host(workspaces_web_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/trustStores", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.certificateList:
+            e0.append(workspaces_web_json_str(base64.encode(x0)))
+        parts.append("\"certificateList\":" + workspaces_web_json_arr(e0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + workspaces_web_json_arr(e2))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + workspaces_web_json_str(u3))
+        auto bp = restjson.rest_json_document(b, workspaces_web_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, workspaces_web_service(), self.region, host)
+
+    # CreateUserAccessLoggingSettings  POST /userAccessLoggingSettings
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_user_access_logging_settings(self, CreateUserAccessLoggingSettingsRequest input) -> str:
+        auto host = endpoints.regional_host(workspaces_web_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/userAccessLoggingSettings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"kinesisStreamArn\":" + workspaces_web_json_str(input.kinesisStreamArn))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"tags\":" + workspaces_web_json_arr(e1))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + workspaces_web_json_str(u2))
+        auto bp = restjson.rest_json_document(b, workspaces_web_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, workspaces_web_service(), self.region, host)
 
     # DeleteBrowserSettings  DELETE /browserSettings/{browserSettingsArn+}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
@@ -2209,6 +2639,148 @@ struct WorkSpaces_WebClient:
         auto b = binding.HttpBinding(method="GET", path_template="/userSettings", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
+    # TagResource  POST /tags/{resourceArn+}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, TooManyTagsException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(workspaces_web_service(), self.region)
+        dict[str, str] greedy_labels = {}
+        greedy_labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.tags:
+            e0.append(x0.to_json())
+        parts.append("\"tags\":" + workspaces_web_json_arr(e0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + workspaces_web_json_str(u1))
+        auto bp = restjson.rest_json_document(b, workspaces_web_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, workspaces_web_service(), self.region, host)
+
+    # UpdateBrowserSettings  PATCH /browserSettings/{browserSettingsArn+}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_browser_settings(self, UpdateBrowserSettingsRequest input) -> str:
+        auto host = endpoints.regional_host(workspaces_web_service(), self.region)
+        dict[str, str] greedy_labels = {}
+        greedy_labels["browserSettingsArn"] = input.browserSettingsArn
+        auto b = binding.HttpBinding(method="PATCH", path_template="/browserSettings/{browserSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.browserPolicy.is_some():
+            auto u0 = input.browserPolicy.unwrap()
+            parts.append("\"browserPolicy\":" + workspaces_web_json_str(u0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + workspaces_web_json_str(u1))
+        if input.webContentFilteringPolicy.is_some():
+            auto u2 = input.webContentFilteringPolicy.unwrap()
+            parts.append("\"webContentFilteringPolicy\":" + web_content_filtering_policy_to_json(u2))
+        auto bp = restjson.rest_json_document(b, workspaces_web_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, workspaces_web_service(), self.region, host)
+
+    # UpdateDataProtectionSettings  PATCH /dataProtectionSettings/{dataProtectionSettingsArn+}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_data_protection_settings(self, UpdateDataProtectionSettingsRequest input) -> str:
+        auto host = endpoints.regional_host(workspaces_web_service(), self.region)
+        dict[str, str] greedy_labels = {}
+        greedy_labels["dataProtectionSettingsArn"] = input.dataProtectionSettingsArn
+        auto b = binding.HttpBinding(method="PATCH", path_template="/dataProtectionSettings/{dataProtectionSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.inlineRedactionConfiguration.is_some():
+            auto u0 = input.inlineRedactionConfiguration.unwrap()
+            parts.append("\"inlineRedactionConfiguration\":" + inline_redaction_configuration_to_json(u0))
+        if input.displayName.is_some():
+            auto u1 = input.displayName.unwrap()
+            parts.append("\"displayName\":" + workspaces_web_json_str(u1))
+        if input.description.is_some():
+            auto u2 = input.description.unwrap()
+            parts.append("\"description\":" + workspaces_web_json_str(u2))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + workspaces_web_json_str(u3))
+        auto bp = restjson.rest_json_document(b, workspaces_web_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, workspaces_web_service(), self.region, host)
+
+    # UpdateIdentityProvider  PATCH /identityProviders/{identityProviderArn+}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_identity_provider(self, UpdateIdentityProviderRequest input) -> str:
+        auto host = endpoints.regional_host(workspaces_web_service(), self.region)
+        dict[str, str] greedy_labels = {}
+        greedy_labels["identityProviderArn"] = input.identityProviderArn
+        auto b = binding.HttpBinding(method="PATCH", path_template="/identityProviders/{identityProviderArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.identityProviderName.is_some():
+            auto u0 = input.identityProviderName.unwrap()
+            parts.append("\"identityProviderName\":" + workspaces_web_json_str(u0))
+        if input.identityProviderType.is_some():
+            auto u1 = input.identityProviderType.unwrap()
+            parts.append("\"identityProviderType\":" + u1.to_json())
+        if input.identityProviderDetails.is_some():
+            auto u2 = input.identityProviderDetails.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(workspaces_web_json_str(k3) + ":" + workspaces_web_json_str(u2[k3]))
+            parts.append("\"identityProviderDetails\":" + workspaces_web_json_obj(m3))
+        if input.clientToken.is_some():
+            auto u4 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + workspaces_web_json_str(u4))
+        auto bp = restjson.rest_json_document(b, workspaces_web_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, workspaces_web_service(), self.region, host)
+
+    # UpdateIpAccessSettings  PATCH /ipAccessSettings/{ipAccessSettingsArn+}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_ip_access_settings(self, UpdateIpAccessSettingsRequest input) -> str:
+        auto host = endpoints.regional_host(workspaces_web_service(), self.region)
+        dict[str, str] greedy_labels = {}
+        greedy_labels["ipAccessSettingsArn"] = input.ipAccessSettingsArn
+        auto b = binding.HttpBinding(method="PATCH", path_template="/ipAccessSettings/{ipAccessSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.displayName.is_some():
+            auto u0 = input.displayName.unwrap()
+            parts.append("\"displayName\":" + workspaces_web_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + workspaces_web_json_str(u1))
+        if input.ipRules.is_some():
+            auto u2 = input.ipRules.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"ipRules\":" + workspaces_web_json_arr(e3))
+        if input.clientToken.is_some():
+            auto u4 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + workspaces_web_json_str(u4))
+        auto bp = restjson.rest_json_document(b, workspaces_web_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, workspaces_web_service(), self.region, host)
+
+    # UpdateNetworkSettings  PATCH /networkSettings/{networkSettingsArn+}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_network_settings(self, UpdateNetworkSettingsRequest input) -> str:
+        auto host = endpoints.regional_host(workspaces_web_service(), self.region)
+        dict[str, str] greedy_labels = {}
+        greedy_labels["networkSettingsArn"] = input.networkSettingsArn
+        auto b = binding.HttpBinding(method="PATCH", path_template="/networkSettings/{networkSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.vpcId.is_some():
+            auto u0 = input.vpcId.unwrap()
+            parts.append("\"vpcId\":" + workspaces_web_json_str(u0))
+        if input.subnetIds.is_some():
+            auto u1 = input.subnetIds.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(workspaces_web_json_str(x2))
+            parts.append("\"subnetIds\":" + workspaces_web_json_arr(e2))
+        if input.securityGroupIds.is_some():
+            auto u3 = input.securityGroupIds.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(workspaces_web_json_str(x4))
+            parts.append("\"securityGroupIds\":" + workspaces_web_json_arr(e4))
+        if input.clientToken.is_some():
+            auto u5 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + workspaces_web_json_str(u5))
+        auto bp = restjson.rest_json_document(b, workspaces_web_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, workspaces_web_service(), self.region, host)
+
     # UpdatePortal  PUT /portals/{portalArn+}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_portal(self, UpdatePortalRequest input) -> str:
@@ -2218,6 +2790,52 @@ struct WorkSpaces_WebClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/portals/{portalArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePortalDocument(displayName=input.displayName, authenticationType=input.authenticationType, instanceType=input.instanceType, maxConcurrentSessions=input.maxConcurrentSessions, portalCustomDomain=input.portalCustomDomain)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, workspaces_web_service(), self.region, host)
+
+    # UpdateSessionLogger  POST /sessionLoggers/{sessionLoggerArn+}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_session_logger(self, UpdateSessionLoggerRequest input) -> str:
+        auto host = endpoints.regional_host(workspaces_web_service(), self.region)
+        dict[str, str] greedy_labels = {}
+        greedy_labels["sessionLoggerArn"] = input.sessionLoggerArn
+        auto b = binding.HttpBinding(method="POST", path_template="/sessionLoggers/{sessionLoggerArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.eventFilter.is_some():
+            auto u0 = input.eventFilter.unwrap()
+            parts.append("\"eventFilter\":" + event_filter_to_json(u0))
+        if input.logConfiguration.is_some():
+            auto u1 = input.logConfiguration.unwrap()
+            parts.append("\"logConfiguration\":" + u1.to_json())
+        if input.displayName.is_some():
+            auto u2 = input.displayName.unwrap()
+            parts.append("\"displayName\":" + workspaces_web_json_str(u2))
+        auto bp = restjson.rest_json_document(b, workspaces_web_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, workspaces_web_service(), self.region, host)
+
+    # UpdateTrustStore  PATCH /trustStores/{trustStoreArn+}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_trust_store(self, UpdateTrustStoreRequest input) -> str:
+        auto host = endpoints.regional_host(workspaces_web_service(), self.region)
+        dict[str, str] greedy_labels = {}
+        greedy_labels["trustStoreArn"] = input.trustStoreArn
+        auto b = binding.HttpBinding(method="PATCH", path_template="/trustStores/{trustStoreArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.certificatesToAdd.is_some():
+            auto u0 = input.certificatesToAdd.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(workspaces_web_json_str(base64.encode(x1)))
+            parts.append("\"certificatesToAdd\":" + workspaces_web_json_arr(e1))
+        if input.certificatesToDelete.is_some():
+            auto u2 = input.certificatesToDelete.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(workspaces_web_json_str(x3))
+            parts.append("\"certificatesToDelete\":" + workspaces_web_json_arr(e3))
+        if input.clientToken.is_some():
+            auto u4 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + workspaces_web_json_str(u4))
+        auto bp = restjson.rest_json_document(b, workspaces_web_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, workspaces_web_service(), self.region, host)
 
     # UpdateUserAccessLoggingSettings  PATCH /userAccessLoggingSettings/{userAccessLoggingSettingsArn+}

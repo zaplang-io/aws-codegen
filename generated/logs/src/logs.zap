@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 118 operations — 81 with a generated method,
-#   37 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 118 operations — 118 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   340 structs (209 @derive(Json)), 39 enums, 18 error variants.
-#   12 paginators generated (8 paginated ops skipped) from paginators-1.json.
+#   20 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -414,19 +414,22 @@ struct AddKeyEntry:
     str value
     Optional[bool] overwriteIfExists
 
-# no @derive(Json): member(s) entries: list[AddKeyEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entries: list[AddKeyEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddKeys:
     list[AddKeyEntry] entries
 
-# no @derive(Json): member(s) groupingIdentifiers: list[GroupingIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) groupingIdentifiers: list[GroupingIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AggregateLogGroupSummary:
     Optional[int64] logGroupCount
     Optional[list[GroupingIdentifier]] groupingIdentifiers
 
-# no @derive(Json): member(s) histogram: dict[str, int64], logSamples: list[LogEvent], patternTokens: list[PatternToken], logGroupArnList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) histogram: dict[str, int64], logSamples: list[LogEvent], patternTokens: list[PatternToken], logGroupArnList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Anomaly:
     str anomalyId
     str patternId
@@ -448,8 +451,9 @@ struct Anomaly:
     Optional[int64] suppressedUntil
     Optional[bool] isPatternLevelSuppression
 
-# no @derive(Json): member(s) logGroupArnList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logGroupArnList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnomalyDetector:
     Optional[str] anomalyDetectorArn
     Optional[str] detectorName
@@ -477,8 +481,9 @@ struct AssociateSourceToS3TableIntegrationRequest:
 struct AssociateSourceToS3TableIntegrationResponse:
     Optional[str] identifier
 
-# no @derive(Json): member(s) columns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) columns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CSV:
     Optional[str] quoteCharacter
     Optional[str] delimiter
@@ -502,8 +507,9 @@ struct CancelImportTaskResponse:
     Optional[int64] creationTime
     Optional[int64] lastUpdatedTime
 
-# no @derive(Json): member(s) defaultDeliveryConfigValues: ConfigurationTemplateDeliveryConfigValues, allowedFields: list[RecordField], allowedOutputFormats: list[OutputFormat], allowedFieldDelimiters: list[str], allowedSuffixPathFields: list[str], deliverySourceConfiguration: list[DeliverySourceConfigurationSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) defaultDeliveryConfigValues: ConfigurationTemplateDeliveryConfigValues, allowedFields: list[RecordField], allowedOutputFormats: list[OutputFormat], allowedFieldDelimiters: list[str], allowedSuffixPathFields: list[str], deliverySourceConfiguration: list[DeliverySourceConfigurationSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationTemplate:
     Optional[str] service
     Optional[str] logType
@@ -518,8 +524,9 @@ struct ConfigurationTemplate:
     Optional[list[DeliverySourceConfigurationSchema]] deliverySourceConfiguration
     Optional[S3TablesIntegration] s3TablesIntegration
 
-# no @derive(Json): member(s) recordFields: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recordFields: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationTemplateDeliveryConfigValues:
     Optional[list[str]] recordFields
     Optional[str] fieldDelimiter
@@ -530,8 +537,9 @@ struct ConflictException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) entries: list[CopyValueEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entries: list[CopyValueEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CopyValue:
     list[CopyValueEntry] entries
 
@@ -541,8 +549,9 @@ struct CopyValueEntry:
     str target
     Optional[bool] overwriteIfExists
 
-# no @derive(Json): member(s) recordFields: list[str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recordFields: list[str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDeliveryRequest:
     str deliverySourceName
     str deliveryDestinationArn
@@ -551,8 +560,9 @@ struct CreateDeliveryRequest:
     Optional[S3DeliveryConfiguration] s3DeliveryConfiguration
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) delivery: Delivery not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) delivery: Delivery not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDeliveryResponse:
     Optional[Delivery] delivery
 
@@ -582,8 +592,9 @@ struct CreateImportTaskResponse:
     Optional[str] importDestinationArn
     Optional[int64] creationTime
 
-# no @derive(Json): member(s) logGroupArnList: list[str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logGroupArnList: list[str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLogAnomalyDetectorRequest:
     list[str] logGroupArnList
     Optional[str] detectorName
@@ -597,8 +608,9 @@ struct CreateLogAnomalyDetectorRequest:
 struct CreateLogAnomalyDetectorResponse:
     Optional[str] anomalyDetectorArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLogGroupRequest:
     str logGroupName
     Optional[str] kmsKeyId
@@ -611,8 +623,9 @@ struct CreateLogStreamRequest:
     str logGroupName
     str logStreamName
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLookupTableRequest:
     str lookupTableName
     Optional[str] description
@@ -626,8 +639,9 @@ struct CreateLookupTableResponse:
     Optional[str] lookupTableArn
     Optional[int64] createdAt
 
-# no @derive(Json): member(s) logGroupIdentifiers: list[str], destinationConfiguration: DestinationConfiguration, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logGroupIdentifiers: list[str], destinationConfiguration: DestinationConfiguration, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateScheduledQueryRequest:
     str name
     Optional[str] description
@@ -664,8 +678,9 @@ struct DataSourceFilter:
     str name
     Optional[str] type
 
-# no @derive(Json): member(s) matchPatterns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) matchPatterns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DateTimeConverter:
     str source
     str target
@@ -723,8 +738,9 @@ struct DeleteIntegrationResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) withKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) withKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteKeys:
     list[str] withKeys
 
@@ -791,8 +807,9 @@ struct DeleteSyslogConfigurationRequest:
 struct DeleteTransformerRequest:
     str logGroupIdentifier
 
-# no @derive(Json): member(s) recordFields: list[str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recordFields: list[str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Delivery:
     Optional[str] id
     Optional[str] arn
@@ -804,8 +821,9 @@ struct Delivery:
     Optional[S3DeliveryConfiguration] s3DeliveryConfiguration
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeliveryDestination:
     Optional[str] name
     Optional[str] arn
@@ -819,8 +837,9 @@ struct DeliveryDestination:
 struct DeliveryDestinationConfiguration:
     str destinationResourceArn
 
-# no @derive(Json): member(s) resourceArns: list[str], tags: dict[str, str], deliverySourceConfiguration: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceArns: list[str], tags: dict[str, str], deliverySourceConfiguration: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeliverySource:
     Optional[str] name
     Optional[str] arn
@@ -832,8 +851,9 @@ struct DeliverySource:
     Optional[DeliverySourceStatus] status
     Optional[str] statusReason
 
-# no @derive(Json): member(s) supportedValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) supportedValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeliverySourceConfigurationSchema:
     str keyName
     DeliverySourceConfigurationSchemaValueType valueType
@@ -842,22 +862,25 @@ struct DeliverySourceConfigurationSchema:
     Optional[float64] minValue
     Optional[float64] maxValue
 
-# no @derive(Json): member(s) accountIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAccountPoliciesRequest:
     PolicyType policyType
     Optional[str] policyName
     Optional[list[str]] accountIdentifiers
     Optional[str] nextToken
 
-# no @derive(Json): member(s) accountPolicies: list[AccountPolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountPolicies: list[AccountPolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAccountPoliciesResponse:
     Optional[list[AccountPolicy]] accountPolicies
     Optional[str] nextToken
 
-# no @derive(Json): member(s) logTypes: list[str], resourceTypes: list[str], deliveryDestinationTypes: list[DeliveryDestinationType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logTypes: list[str], resourceTypes: list[str], deliveryDestinationTypes: list[DeliveryDestinationType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConfigurationTemplatesRequest:
     Optional[str] service
     Optional[list[str]] logTypes
@@ -866,47 +889,54 @@ struct DescribeConfigurationTemplatesRequest:
     Optional[str] nextToken
     Optional[int64] limit
 
-# no @derive(Json): member(s) configurationTemplates: list[ConfigurationTemplate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurationTemplates: list[ConfigurationTemplate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConfigurationTemplatesResponse:
     Optional[list[ConfigurationTemplate]] configurationTemplates
     Optional[str] nextToken
 
-# no @derive(Json): member(s) deliverySourceNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deliverySourceNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDeliveriesRequest:
     Optional[str] nextToken
     Optional[int64] limit
     Optional[list[str]] deliverySourceNames
 
-# no @derive(Json): member(s) deliveries: list[Delivery] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deliveries: list[Delivery] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDeliveriesResponse:
     Optional[list[Delivery]] deliveries
     Optional[str] nextToken
 
-# no @derive(Json): member(s) names: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) names: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDeliveryDestinationsRequest:
     Optional[str] nextToken
     Optional[int64] limit
     Optional[list[str]] names
 
-# no @derive(Json): member(s) deliveryDestinations: list[DeliveryDestination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deliveryDestinations: list[DeliveryDestination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDeliveryDestinationsResponse:
     Optional[list[DeliveryDestination]] deliveryDestinations
     Optional[str] nextToken
 
-# no @derive(Json): member(s) resourceArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDeliverySourcesRequest:
     Optional[str] nextToken
     Optional[int64] limit
     Optional[list[str]] resourceArns
 
-# no @derive(Json): member(s) deliverySources: list[DeliverySource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deliverySources: list[DeliverySource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDeliverySourcesResponse:
     Optional[list[DeliverySource]] deliverySources
     Optional[str] nextToken
@@ -917,8 +947,9 @@ struct DescribeDestinationsRequest:
     Optional[str] nextToken
     Optional[int64] limit
 
-# no @derive(Json): member(s) destinations: list[Destination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) destinations: list[Destination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDestinationsResponse:
     Optional[list[Destination]] destinations
     Optional[str] nextToken
@@ -930,35 +961,40 @@ struct DescribeExportTasksRequest:
     Optional[str] nextToken
     Optional[int64] limit
 
-# no @derive(Json): member(s) exportTasks: list[ExportTask] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exportTasks: list[ExportTask] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeExportTasksResponse:
     Optional[list[ExportTask]] exportTasks
     Optional[str] nextToken
 
-# no @derive(Json): member(s) logGroupIdentifiers: list[str], indexCategories: list[IndexCategory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logGroupIdentifiers: list[str], indexCategories: list[IndexCategory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFieldIndexesRequest:
     list[str] logGroupIdentifiers
     Optional[list[IndexCategory]] indexCategories
     Optional[str] nextToken
 
-# no @derive(Json): member(s) fieldIndexes: list[FieldIndex] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldIndexes: list[FieldIndex] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFieldIndexesResponse:
     Optional[list[FieldIndex]] fieldIndexes
     Optional[str] nextToken
 
-# no @derive(Json): member(s) batchImportStatus: list[ImportStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) batchImportStatus: list[ImportStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeImportTaskBatchesRequest:
     str importId
     Optional[list[ImportStatus]] batchImportStatus
     Optional[int64] limit
     Optional[str] nextToken
 
-# no @derive(Json): member(s) importBatches: list[ImportBatch] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) importBatches: list[ImportBatch] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeImportTaskBatchesResponse:
     Optional[str] importSourceArn
     Optional[str] importId
@@ -973,26 +1009,30 @@ struct DescribeImportTasksRequest:
     Optional[int64] limit
     Optional[str] nextToken
 
-# no @derive(Json): member(s) imports: list[Import] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imports: list[Import] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeImportTasksResponse:
     Optional[list[Import]] imports
     Optional[str] nextToken
 
-# no @derive(Json): member(s) logGroupIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logGroupIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeIndexPoliciesRequest:
     list[str] logGroupIdentifiers
     Optional[str] nextToken
 
-# no @derive(Json): member(s) indexPolicies: list[IndexPolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) indexPolicies: list[IndexPolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeIndexPoliciesResponse:
     Optional[list[IndexPolicy]] indexPolicies
     Optional[str] nextToken
 
-# no @derive(Json): member(s) accountIdentifiers: list[str], logGroupIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountIdentifiers: list[str], logGroupIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLogGroupsRequest:
     Optional[list[str]] accountIdentifiers
     Optional[str] logGroupNamePrefix
@@ -1003,8 +1043,9 @@ struct DescribeLogGroupsRequest:
     Optional[LogGroupClass] logGroupClass
     Optional[list[str]] logGroupIdentifiers
 
-# no @derive(Json): member(s) logGroups: list[LogGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logGroups: list[LogGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLogGroupsResponse:
     Optional[list[LogGroup]] logGroups
     Optional[str] nextToken
@@ -1019,8 +1060,9 @@ struct DescribeLogStreamsRequest:
     Optional[str] nextToken
     Optional[int64] limit
 
-# no @derive(Json): member(s) logStreams: list[LogStream] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logStreams: list[LogStream] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLogStreamsResponse:
     Optional[list[LogStream]] logStreams
     Optional[str] nextToken
@@ -1031,8 +1073,9 @@ struct DescribeLookupTablesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) lookupTables: list[LookupTable] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lookupTables: list[LookupTable] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLookupTablesResponse:
     Optional[list[LookupTable]] lookupTables
     Optional[str] nextToken
@@ -1046,8 +1089,9 @@ struct DescribeMetricFiltersRequest:
     Optional[str] metricName
     Optional[str] metricNamespace
 
-# no @derive(Json): member(s) metricFilters: list[MetricFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metricFilters: list[MetricFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMetricFiltersResponse:
     Optional[list[MetricFilter]] metricFilters
     Optional[str] nextToken
@@ -1060,8 +1104,9 @@ struct DescribeQueriesRequest:
     Optional[str] nextToken
     Optional[QueryLanguage] queryLanguage
 
-# no @derive(Json): member(s) queries: list[QueryInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) queries: list[QueryInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeQueriesResponse:
     Optional[list[QueryInfo]] queries
     Optional[str] nextToken
@@ -1073,8 +1118,9 @@ struct DescribeQueryDefinitionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) queryDefinitions: list[QueryDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) queryDefinitions: list[QueryDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeQueryDefinitionsResponse:
     Optional[list[QueryDefinition]] queryDefinitions
     Optional[str] nextToken
@@ -1086,8 +1132,9 @@ struct DescribeResourcePoliciesRequest:
     Optional[str] resourceArn
     Optional[PolicyScope] policyScope
 
-# no @derive(Json): member(s) resourcePolicies: list[ResourcePolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourcePolicies: list[ResourcePolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeResourcePoliciesResponse:
     Optional[list[ResourcePolicy]] resourcePolicies
     Optional[str] nextToken
@@ -1099,8 +1146,9 @@ struct DescribeSubscriptionFiltersRequest:
     Optional[str] nextToken
     Optional[int64] limit
 
-# no @derive(Json): member(s) subscriptionFilters: list[SubscriptionFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscriptionFilters: list[SubscriptionFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSubscriptionFiltersResponse:
     Optional[list[SubscriptionFilter]] subscriptionFilters
     Optional[str] nextToken
@@ -1114,8 +1162,9 @@ struct Destination:
     Optional[str] arn
     Optional[int64] creationTime
 
-# no @derive(Json): member(s) lookupTableConfiguration: LookupTableConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lookupTableConfiguration: LookupTableConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DestinationConfiguration:
     Optional[S3Configuration] s3Configuration
     Optional[LookupTableConfiguration] lookupTableConfiguration
@@ -1133,8 +1182,9 @@ struct DisassociateSourceFromS3TableIntegrationRequest:
 struct DisassociateSourceFromS3TableIntegrationResponse:
     Optional[str] identifier
 
-# no @derive(Json): member(s) keyAttributes: dict[str, str], attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) keyAttributes: dict[str, str], attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Entity:
     Optional[dict[str, str]] keyAttributes
     Optional[dict[str, str]] attributes
@@ -1175,8 +1225,9 @@ struct FieldIndex:
 struct FieldsData:
     Optional[bytes] data
 
-# no @derive(Json): member(s) logStreamNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logStreamNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterLogEventsRequest:
     Optional[str] logGroupName
     Optional[str] logGroupIdentifier
@@ -1191,8 +1242,9 @@ struct FilterLogEventsRequest:
     Optional[bool] interleaved
     Optional[bool] unmask
 
-# no @derive(Json): member(s) events: list[FilteredLogEvent], searchedLogStreams: list[SearchedLogStream] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) events: list[FilteredLogEvent], searchedLogStreams: list[SearchedLogStream] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterLogEventsResponse:
     Optional[list[FilteredLogEvent]] events
     Optional[list[SearchedLogStream]] searchedLogStreams
@@ -1228,8 +1280,9 @@ struct GetDeliveryDestinationPolicyResponse:
 struct GetDeliveryDestinationRequest:
     str name
 
-# no @derive(Json): member(s) deliveryDestination: DeliveryDestination not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deliveryDestination: DeliveryDestination not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeliveryDestinationResponse:
     Optional[DeliveryDestination] deliveryDestination
 
@@ -1237,8 +1290,9 @@ struct GetDeliveryDestinationResponse:
 struct GetDeliveryRequest:
     str id
 
-# no @derive(Json): member(s) delivery: Delivery not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) delivery: Delivery not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeliveryResponse:
     Optional[Delivery] delivery
 
@@ -1246,8 +1300,9 @@ struct GetDeliveryResponse:
 struct GetDeliverySourceRequest:
     str name
 
-# no @derive(Json): member(s) deliverySource: DeliverySource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deliverySource: DeliverySource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeliverySourceResponse:
     Optional[DeliverySource] deliverySource
 
@@ -1266,8 +1321,9 @@ struct GetIntegrationResponse:
 struct GetLogAnomalyDetectorRequest:
     str anomalyDetectorArn
 
-# no @derive(Json): member(s) logGroupArnList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logGroupArnList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLogAnomalyDetectorResponse:
     Optional[str] detectorName
     Optional[list[str]] logGroupArnList
@@ -1291,8 +1347,9 @@ struct GetLogEventsRequest:
     Optional[bool] startFromHead
     Optional[bool] unmask
 
-# no @derive(Json): member(s) events: list[OutputLogEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) events: list[OutputLogEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLogEventsResponse:
     Optional[list[OutputLogEvent]] events
     Optional[str] nextForwardToken
@@ -1303,8 +1360,9 @@ struct GetLogFieldsRequest:
     str dataSourceName
     str dataSourceType
 
-# no @derive(Json): member(s) logFields: list[LogFieldsListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logFields: list[LogFieldsListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLogFieldsResponse:
     Optional[list[LogFieldsListItem]] logFields
 
@@ -1314,8 +1372,9 @@ struct GetLogGroupFieldsRequest:
     Optional[int64] time
     Optional[str] logGroupIdentifier
 
-# no @derive(Json): member(s) logGroupFields: list[LogGroupField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logGroupFields: list[LogGroupField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLogGroupFieldsResponse:
     Optional[list[LogGroupField]] logGroupFields
 
@@ -1338,8 +1397,9 @@ struct GetLogRecordRequest:
     str logRecordPointer
     Optional[bool] unmask
 
-# no @derive(Json): member(s) logRecord: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logRecord: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLogRecordResponse:
     Optional[dict[str, str]] logRecord
 
@@ -1363,8 +1423,9 @@ struct GetQueryResultsRequest:
     Optional[str] nextToken
     Optional[int64] maxItems
 
-# no @derive(Json): member(s) results: list[list[ResultField]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) results: list[list[ResultField]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetQueryResultsResponse:
     Optional[QueryLanguage] queryLanguage
     Optional[list[list[ResultField]]] results
@@ -1373,8 +1434,9 @@ struct GetQueryResultsResponse:
     Optional[str] encryptionKey
     Optional[str] nextToken
 
-# no @derive(Json): member(s) executionStatuses: list[ExecutionStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) executionStatuses: list[ExecutionStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetScheduledQueryHistoryRequest:
     str identifier
     int64 startTime
@@ -1383,8 +1445,9 @@ struct GetScheduledQueryHistoryRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) triggerHistory: list[TriggerHistoryRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) triggerHistory: list[TriggerHistoryRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetScheduledQueryHistoryResponse:
     Optional[str] name
     Optional[str] scheduledQueryArn
@@ -1395,8 +1458,9 @@ struct GetScheduledQueryHistoryResponse:
 struct GetScheduledQueryRequest:
     str identifier
 
-# no @derive(Json): member(s) logGroupIdentifiers: list[str], destinationConfiguration: DestinationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logGroupIdentifiers: list[str], destinationConfiguration: DestinationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetScheduledQueryResponse:
     Optional[str] scheduledQueryArn
     Optional[str] name
@@ -1433,8 +1497,9 @@ struct GetStorageTierPolicyResponse:
 struct GetTransformerRequest:
     str logGroupIdentifier
 
-# no @derive(Json): member(s) transformerConfig: list[Processor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) transformerConfig: list[Processor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTransformerResponse:
     Optional[str] logGroupIdentifier
     Optional[int64] creationTime
@@ -1530,8 +1595,9 @@ struct LimitExceededException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) accountIdentifiers: list[str], dataSources: list[DataSourceFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountIdentifiers: list[str], dataSources: list[DataSourceFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAggregateLogGroupSummariesRequest:
     Optional[list[str]] accountIdentifiers
     Optional[bool] includeLinkedAccounts
@@ -1542,8 +1608,9 @@ struct ListAggregateLogGroupSummariesRequest:
     Optional[str] nextToken
     Optional[int64] limit
 
-# no @derive(Json): member(s) aggregateLogGroupSummaries: list[AggregateLogGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) aggregateLogGroupSummaries: list[AggregateLogGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAggregateLogGroupSummariesResponse:
     Optional[list[AggregateLogGroupSummary]] aggregateLogGroupSummaries
     Optional[str] nextToken
@@ -1555,8 +1622,9 @@ struct ListAnomaliesRequest:
     Optional[int64] limit
     Optional[str] nextToken
 
-# no @derive(Json): member(s) anomalies: list[Anomaly] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) anomalies: list[Anomaly] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAnomaliesResponse:
     Optional[list[Anomaly]] anomalies
     Optional[str] nextToken
@@ -1567,8 +1635,9 @@ struct ListIntegrationsRequest:
     Optional[str] integrationType
     Optional[IntegrationStatus] integrationStatus
 
-# no @derive(Json): member(s) integrationSummaries: list[IntegrationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) integrationSummaries: list[IntegrationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIntegrationsResponse:
     Optional[list[IntegrationSummary]] integrationSummaries
 
@@ -1578,8 +1647,9 @@ struct ListLogAnomalyDetectorsRequest:
     Optional[int64] limit
     Optional[str] nextToken
 
-# no @derive(Json): member(s) anomalyDetectors: list[AnomalyDetector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) anomalyDetectors: list[AnomalyDetector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLogAnomalyDetectorsResponse:
     Optional[list[AnomalyDetector]] anomalyDetectors
     Optional[str] nextToken
@@ -1590,14 +1660,16 @@ struct ListLogGroupsForQueryRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) logGroupIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logGroupIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLogGroupsForQueryResponse:
     Optional[list[str]] logGroupIdentifiers
     Optional[str] nextToken
 
-# no @derive(Json): member(s) accountIdentifiers: list[str], dataSources: list[DataSourceFilter], fieldIndexNames: list[str], logGroupTags: list[TagFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountIdentifiers: list[str], dataSources: list[DataSourceFilter], fieldIndexNames: list[str], logGroupTags: list[TagFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLogGroupsRequest:
     Optional[str] logGroupNamePattern
     Optional[LogGroupClass] logGroupClass
@@ -1609,8 +1681,9 @@ struct ListLogGroupsRequest:
     Optional[list[str]] fieldIndexNames
     Optional[list[TagFilter]] logGroupTags
 
-# no @derive(Json): member(s) logGroups: list[LogGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logGroups: list[LogGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLogGroupsResponse:
     Optional[list[LogGroupSummary]] logGroups
     Optional[str] nextToken
@@ -1622,8 +1695,9 @@ struct ListScheduledQueriesRequest:
     Optional[ScheduledQueryState] state
     Optional[ScheduleType] scheduleType
 
-# no @derive(Json): member(s) scheduledQueries: list[ScheduledQuerySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scheduledQueries: list[ScheduledQuerySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListScheduledQueriesResponse:
     Optional[str] nextToken
     Optional[list[ScheduledQuerySummary]] scheduledQueries
@@ -1634,8 +1708,9 @@ struct ListSourcesForS3TableIntegrationRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) sources: list[S3TableIntegrationSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sources: list[S3TableIntegrationSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSourcesForS3TableIntegrationResponse:
     Optional[list[S3TableIntegrationSource]] sources
     Optional[str] nextToken
@@ -1647,8 +1722,9 @@ struct ListSyslogConfigurationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) syslogConfigurations: list[SyslogConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) syslogConfigurations: list[SyslogConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSyslogConfigurationsResponse:
     Optional[list[SyslogConfiguration]] syslogConfigurations
     Optional[str] nextToken
@@ -1657,8 +1733,9 @@ struct ListSyslogConfigurationsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -1666,8 +1743,9 @@ struct ListTagsForResourceResponse:
 struct ListTagsLogGroupRequest:
     str logGroupName
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsLogGroupResponse:
     Optional[dict[str, str]] tags
 
@@ -1692,8 +1770,9 @@ struct LiveTailSessionLogEvent:
 struct LiveTailSessionMetadata:
     Optional[bool] sampled
 
-# no @derive(Json): member(s) logGroupIdentifiers: list[str], logStreamNames: list[str], logStreamNamePrefixes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logGroupIdentifiers: list[str], logStreamNames: list[str], logStreamNamePrefixes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LiveTailSessionStart:
     Optional[str] requestId
     Optional[str] sessionId
@@ -1702,8 +1781,9 @@ struct LiveTailSessionStart:
     Optional[list[str]] logStreamNamePrefixes
     Optional[str] logEventFilterPattern
 
-# no @derive(Json): member(s) sessionResults: list[LiveTailSessionLogEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sessionResults: list[LiveTailSessionLogEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LiveTailSessionUpdate:
     Optional[LiveTailSessionMetadata] sessionMetadata
     Optional[list[LiveTailSessionLogEvent]] sessionResults
@@ -1713,21 +1793,24 @@ struct LogEvent:
     Optional[int64] timestamp
     Optional[str] message
 
-# no @derive(Json): member(s) element: LogFieldType, fields: list[LogFieldsListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) element: LogFieldType, fields: list[LogFieldsListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LogFieldType:
     Optional[str] type
     Optional[LogFieldType] element
     Optional[list[LogFieldsListItem]] fields
 
-# no @derive(Json): member(s) logFieldType: LogFieldType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logFieldType: LogFieldType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LogFieldsListItem:
     Optional[str] logFieldName
     Optional[LogFieldType] logFieldType
 
-# no @derive(Json): member(s) inheritedProperties: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inheritedProperties: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LogGroup:
     Optional[str] logGroupName
     Optional[int64] creationTime
@@ -1765,8 +1848,9 @@ struct LogStream:
     Optional[str] arn
     Optional[int64] storedBytes
 
-# no @derive(Json): member(s) tableFields: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tableFields: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LookupTable:
     Optional[str] lookupTableArn
     Optional[str] lookupTableName
@@ -1777,8 +1861,9 @@ struct LookupTable:
     Optional[int64] lastUpdatedTime
     Optional[str] kmsKeyId
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LookupTableConfiguration:
     str tableName
     str roleArn
@@ -1786,8 +1871,9 @@ struct LookupTableConfiguration:
     Optional[str] kmsKeyId
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) withKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) withKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LowerCaseString:
     list[str] withKeys
 
@@ -1795,8 +1881,9 @@ struct LowerCaseString:
 struct MalformedQueryException:
     Optional[QueryCompileError] queryCompileError
 
-# no @derive(Json): member(s) metricTransformations: list[MetricTransformation], emitSystemFieldDimensions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metricTransformations: list[MetricTransformation], emitSystemFieldDimensions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricFilter:
     Optional[str] filterName
     Optional[str] filterPattern
@@ -1807,15 +1894,17 @@ struct MetricFilter:
     Optional[str] fieldSelectionCriteria
     Optional[list[str]] emitSystemFieldDimensions
 
-# no @derive(Json): member(s) extractedValues: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) extractedValues: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricFilterMatchRecord:
     Optional[int64] eventNumber
     Optional[str] eventMessage
     Optional[dict[str, str]] extractedValues
 
-# no @derive(Json): member(s) dimensions: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dimensions: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricTransformation:
     str metricName
     str metricNamespace
@@ -1830,8 +1919,9 @@ struct MoveKeyEntry:
     str target
     Optional[bool] overwriteIfExists
 
-# no @derive(Json): member(s) entries: list[MoveKeyEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entries: list[MoveKeyEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MoveKeys:
     list[MoveKeyEntry] entries
 
@@ -1884,8 +1974,9 @@ struct OpenSearchNetworkPolicy:
     Optional[str] policyName
     Optional[OpenSearchResourceStatus] status
 
-# no @derive(Json): member(s) dashboardViewerPrincipals: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dashboardViewerPrincipals: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenSearchResourceConfig:
     Optional[str] kmsKeyArn
     str dataSourceRoleArn
@@ -1956,8 +2047,9 @@ struct ParseVPC:
 struct ParseWAF:
     Optional[str] source
 
-# no @derive(Json): member(s) enumerations: dict[str, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) enumerations: dict[str, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PatternToken:
     Optional[int64] dynamicTokenPosition
     Optional[bool] isDynamic
@@ -1969,8 +2061,9 @@ struct PatternToken:
 struct Policy:
     Optional[str] deliveryDestinationPolicy
 
-# no @derive(Json): member(s) addKeys: AddKeys, copyValue: CopyValue, csv: CSV, dateTimeConverter: DateTimeConverter, deleteKeys: DeleteKeys, lowerCaseString: LowerCaseString, moveKeys: MoveKeys, renameKeys: RenameKeys, splitString: SplitString, substituteString: SubstituteString, trimString: TrimString, typeConverter: TypeConverter, upperCaseString: UpperCaseString not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) addKeys: AddKeys, copyValue: CopyValue, csv: CSV, dateTimeConverter: DateTimeConverter, deleteKeys: DeleteKeys, lowerCaseString: LowerCaseString, moveKeys: MoveKeys, renameKeys: RenameKeys, splitString: SplitString, substituteString: SubstituteString, trimString: TrimString, typeConverter: TypeConverter, upperCaseString: UpperCaseString not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Processor:
     Optional[AddKeys] addKeys
     Optional[CopyValue] copyValue
@@ -2034,8 +2127,9 @@ struct PutDeliveryDestinationPolicyRequest:
 struct PutDeliveryDestinationPolicyResponse:
     Optional[Policy] policy
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutDeliveryDestinationRequest:
     str name
     Optional[OutputFormat] outputFormat
@@ -2044,13 +2138,15 @@ struct PutDeliveryDestinationRequest:
     Optional[str] roleArn
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) deliveryDestination: DeliveryDestination not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deliveryDestination: DeliveryDestination not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutDeliveryDestinationResponse:
     Optional[DeliveryDestination] deliveryDestination
 
-# no @derive(Json): member(s) tags: dict[str, str], deliverySourceConfiguration: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], deliverySourceConfiguration: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutDeliverySourceRequest:
     str name
     str resourceArn
@@ -2058,8 +2154,9 @@ struct PutDeliverySourceRequest:
     Optional[dict[str, str]] tags
     Optional[dict[str, str]] deliverySourceConfiguration
 
-# no @derive(Json): member(s) deliverySource: DeliverySource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deliverySource: DeliverySource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutDeliverySourceResponse:
     Optional[DeliverySource] deliverySource
 
@@ -2069,8 +2166,9 @@ struct PutDestinationPolicyRequest:
     str accessPolicy
     Optional[bool] forceUpdate
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutDestinationRequest:
     str destinationName
     str targetArn
@@ -2090,8 +2188,9 @@ struct PutIndexPolicyRequest:
 struct PutIndexPolicyResponse:
     Optional[IndexPolicy] indexPolicy
 
-# no @derive(Json): member(s) resourceConfig: ResourceConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceConfig: ResourceConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutIntegrationRequest:
     str integrationName
     ResourceConfig resourceConfig
@@ -2102,8 +2201,9 @@ struct PutIntegrationResponse:
     Optional[str] integrationName
     Optional[IntegrationStatus] integrationStatus
 
-# no @derive(Json): member(s) logEvents: list[InputLogEvent], entity: Entity not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logEvents: list[InputLogEvent], entity: Entity not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutLogEventsRequest:
     str logGroupName
     str logStreamName
@@ -2122,8 +2222,9 @@ struct PutLogGroupDeletionProtectionRequest:
     str logGroupIdentifier
     bool deletionProtectionEnabled
 
-# no @derive(Json): member(s) metricTransformations: list[MetricTransformation], emitSystemFieldDimensions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metricTransformations: list[MetricTransformation], emitSystemFieldDimensions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutMetricFilterRequest:
     str logGroupName
     str filterName
@@ -2133,8 +2234,9 @@ struct PutMetricFilterRequest:
     Optional[str] fieldSelectionCriteria
     Optional[list[str]] emitSystemFieldDimensions
 
-# no @derive(Json): member(s) logGroupNames: list[str], parameters: list[QueryParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logGroupNames: list[str], parameters: list[QueryParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutQueryDefinitionRequest:
     Optional[QueryLanguage] queryLanguage
     str name
@@ -2174,8 +2276,9 @@ struct PutStorageTierPolicyResponse:
     Optional[StorageTier] storageTier
     Optional[int64] lastUpdatedTime
 
-# no @derive(Json): member(s) emitSystemFields: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) emitSystemFields: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutSubscriptionFilterRequest:
     str logGroupName
     str filterName
@@ -2192,8 +2295,9 @@ struct PutSyslogConfigurationRequest:
     str logGroupIdentifier
     Optional[str] vpcEndpointId
 
-# no @derive(Json): member(s) transformerConfig: list[Processor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) transformerConfig: list[Processor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutTransformerRequest:
     str logGroupIdentifier
     list[Processor] transformerConfig
@@ -2208,8 +2312,9 @@ struct QueryCompileErrorLocation:
     Optional[int64] startCharOffset
     Optional[int64] endCharOffset
 
-# no @derive(Json): member(s) logGroupNames: list[str], parameters: list[QueryParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logGroupNames: list[str], parameters: list[QueryParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryDefinition:
     Optional[QueryLanguage] queryLanguage
     Optional[str] queryDefinitionId
@@ -2268,8 +2373,9 @@ struct RenameKeyEntry:
     str renameTo
     Optional[bool] overwriteIfExists
 
-# no @derive(Json): member(s) entries: list[RenameKeyEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entries: list[RenameKeyEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RenameKeys:
     list[RenameKeyEntry] entries
 
@@ -2278,8 +2384,9 @@ struct ResourceAlreadyExistsException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) openSearchResourceConfig: OpenSearchResourceConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) openSearchResourceConfig: OpenSearchResourceConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceConfig:
     Optional[OpenSearchResourceConfig] openSearchResourceConfig
 
@@ -2336,8 +2443,9 @@ struct ScheduledQueryDestination:
     Optional[str] processedIdentifier
     Optional[str] errorMessage
 
-# no @derive(Json): member(s) destinationConfiguration: DestinationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) destinationConfiguration: DestinationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScheduledQuerySummary:
     Optional[str] scheduledQueryArn
     Optional[str] name
@@ -2374,8 +2482,9 @@ struct SessionStreamingException:
 struct SessionTimeoutException:
     Optional[str] message
 
-# no @derive(Json): member(s) entries: list[SplitStringEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entries: list[SplitStringEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SplitString:
     list[SplitStringEntry] entries
 
@@ -2384,29 +2493,33 @@ struct SplitStringEntry:
     str source
     str delimiter
 
-# no @derive(Json): member(s) logGroupIdentifiers: list[str], logStreamNames: list[str], logStreamNamePrefixes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logGroupIdentifiers: list[str], logStreamNames: list[str], logStreamNamePrefixes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartLiveTailRequest:
     list[str] logGroupIdentifiers
     Optional[list[str]] logStreamNames
     Optional[list[str]] logStreamNamePrefixes
     Optional[str] logEventFilterPattern
 
-# no @derive(Json): member(s) responseStream: StartLiveTailResponseStream not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) responseStream: StartLiveTailResponseStream not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartLiveTailResponse:
     Optional[StartLiveTailResponseStream] responseStream
 
-# no @derive(Json): member(s) sessionStart: LiveTailSessionStart, sessionUpdate: LiveTailSessionUpdate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sessionStart: LiveTailSessionStart, sessionUpdate: LiveTailSessionUpdate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartLiveTailResponseStream:
     Optional[LiveTailSessionStart] sessionStart
     Optional[LiveTailSessionUpdate] sessionUpdate
     Optional[SessionTimeoutException] SessionTimeoutException
     Optional[SessionStreamingException] SessionStreamingException
 
-# no @derive(Json): member(s) logGroupNames: list[str], logGroupIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logGroupNames: list[str], logGroupIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartQueryRequest:
     Optional[QueryLanguage] queryLanguage
     Optional[str] logGroupName
@@ -2429,8 +2542,9 @@ struct StopQueryRequest:
 struct StopQueryResponse:
     Optional[bool] success
 
-# no @derive(Json): member(s) emitSystemFields: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) emitSystemFields: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubscriptionFilter:
     Optional[str] filterName
     Optional[str] logGroupName
@@ -2443,8 +2557,9 @@ struct SubscriptionFilter:
     Optional[str] fieldSelectionCriteria
     Optional[list[str]] emitSystemFields
 
-# no @derive(Json): member(s) entries: list[SubstituteStringEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entries: list[SubstituteStringEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubstituteString:
     list[SubstituteStringEntry] entries
 
@@ -2466,43 +2581,50 @@ struct SyslogConfiguration:
     Optional[str] vpcEndpointId
     Optional[int64] createdAt
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagFilter:
     str key
     Optional[list[str]] values
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagLogGroupRequest:
     str logGroupName
     dict[str, str] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str resourceArn
     dict[str, str] tags
 
-# no @derive(Json): member(s) logEventMessages: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logEventMessages: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestMetricFilterRequest:
     str filterPattern
     list[str] logEventMessages
 
-# no @derive(Json): member(s) matches: list[MetricFilterMatchRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) matches: list[MetricFilterMatchRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestMetricFilterResponse:
     Optional[list[MetricFilterMatchRecord]] matches
 
-# no @derive(Json): member(s) transformerConfig: list[Processor], logEventMessages: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) transformerConfig: list[Processor], logEventMessages: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestTransformerRequest:
     list[Processor] transformerConfig
     list[str] logEventMessages
 
-# no @derive(Json): member(s) transformedLogs: list[TransformedLogRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) transformedLogs: list[TransformedLogRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestTransformerResponse:
     Optional[list[TransformedLogRecord]] transformedLogs
 
@@ -2522,8 +2644,9 @@ struct TransformedLogRecord:
     Optional[str] eventMessage
     Optional[str] transformedEventMessage
 
-# no @derive(Json): member(s) destinations: list[ScheduledQueryDestination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) destinations: list[ScheduledQueryDestination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TriggerHistoryRecord:
     Optional[str] queryId
     Optional[ExecutionStatus] executionStatus
@@ -2531,13 +2654,15 @@ struct TriggerHistoryRecord:
     Optional[str] errorMessage
     Optional[list[ScheduledQueryDestination]] destinations
 
-# no @derive(Json): member(s) withKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) withKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrimString:
     list[str] withKeys
 
-# no @derive(Json): member(s) entries: list[TypeConverterEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entries: list[TypeConverterEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TypeConverter:
     list[TypeConverterEntry] entries
 
@@ -2551,14 +2676,16 @@ struct UnrecognizedClientException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) tags: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagLogGroupRequest:
     str logGroupName
     list[str] tags
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str resourceArn
     list[str] tagKeys
@@ -2572,8 +2699,9 @@ struct UpdateAnomalyRequest:
     Optional[SuppressionPeriod] suppressionPeriod
     Optional[bool] baseline
 
-# no @derive(Json): member(s) recordFields: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recordFields: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDeliveryConfigurationRequest:
     str id
     Optional[list[str]] recordFields
@@ -2606,8 +2734,9 @@ struct UpdateLookupTableResponse:
     Optional[str] lookupTableArn
     Optional[int64] lastUpdatedTime
 
-# no @derive(Json): member(s) logGroupIdentifiers: list[str], destinationConfiguration: DestinationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logGroupIdentifiers: list[str], destinationConfiguration: DestinationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateScheduledQueryRequest:
     str identifier
     Optional[str] description
@@ -2624,8 +2753,9 @@ struct UpdateScheduledQueryRequest:
     str executionRoleArn
     Optional[ScheduledQueryState] state
 
-# no @derive(Json): member(s) logGroupIdentifiers: list[str], destinationConfiguration: DestinationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logGroupIdentifiers: list[str], destinationConfiguration: DestinationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateScheduledQueryResponse:
     Optional[str] scheduledQueryArn
     Optional[str] name
@@ -2648,8 +2778,9 @@ struct UpdateScheduledQueryResponse:
     Optional[int64] creationTime
     Optional[int64] lastUpdatedTime
 
-# no @derive(Json): member(s) withKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) withKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpperCaseString:
     list[str] withKeys
 
@@ -2725,56 +2856,1175 @@ def logs_error_from_code(str code) -> CloudWatch_LogsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateDelivery (input CreateDeliveryRequest)
-#   CreateLogAnomalyDetector (input CreateLogAnomalyDetectorRequest)
-#   CreateLogGroup (input CreateLogGroupRequest)
-#   CreateLookupTable (input CreateLookupTableRequest)
-#   CreateScheduledQuery (input CreateScheduledQueryRequest)
-#   DescribeAccountPolicies (input DescribeAccountPoliciesRequest)
-#   DescribeConfigurationTemplates (input DescribeConfigurationTemplatesRequest)
-#   DescribeDeliveries (input DescribeDeliveriesRequest)
-#   DescribeDeliveryDestinations (input DescribeDeliveryDestinationsRequest)
-#   DescribeDeliverySources (input DescribeDeliverySourcesRequest)
-#   DescribeFieldIndexes (input DescribeFieldIndexesRequest)
-#   DescribeImportTaskBatches (input DescribeImportTaskBatchesRequest)
-#   DescribeIndexPolicies (input DescribeIndexPoliciesRequest)
-#   DescribeLogGroups (input DescribeLogGroupsRequest)
-#   FilterLogEvents (input FilterLogEventsRequest)
-#   GetScheduledQueryHistory (input GetScheduledQueryHistoryRequest)
-#   ListAggregateLogGroupSummaries (input ListAggregateLogGroupSummariesRequest)
-#   ListLogGroups (input ListLogGroupsRequest)
-#   PutDeliveryDestination (input PutDeliveryDestinationRequest)
-#   PutDeliverySource (input PutDeliverySourceRequest)
-#   PutDestination (input PutDestinationRequest)
-#   PutIntegration (input PutIntegrationRequest)
-#   PutLogEvents (input PutLogEventsRequest)
-#   PutMetricFilter (input PutMetricFilterRequest)
-#   PutQueryDefinition (input PutQueryDefinitionRequest)
-#   PutSubscriptionFilter (input PutSubscriptionFilterRequest)
-#   PutTransformer (input PutTransformerRequest)
-#   StartLiveTail (input StartLiveTailRequest)
-#   StartQuery (input StartQueryRequest)
-#   TagLogGroup (input TagLogGroupRequest)
-#   TagResource (input TagResourceRequest)
-#   TestMetricFilter (input TestMetricFilterRequest)
-#   TestTransformer (input TestTransformerRequest)
-#   UntagLogGroup (input UntagLogGroupRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateDeliveryConfiguration (input UpdateDeliveryConfigurationRequest)
-#   UpdateScheduledQuery (input UpdateScheduledQueryRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def logs_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   DescribeConfigurationTemplates (input not derivable (no generated method))
-#   DescribeDeliveries (input not derivable (no generated method))
-#   DescribeDeliveryDestinations (input not derivable (no generated method))
-#   DescribeDeliverySources (input not derivable (no generated method))
-#   DescribeLogGroups (input not derivable (no generated method))
-#   FilterLogEvents (input not derivable (no generated method))
-#   GetScheduledQueryHistory (input not derivable (no generated method))
-#   ListAggregateLogGroupSummaries (input not derivable (no generated method))
+def logs_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def logs_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AddKeys to a compact JSON object (declaration order).
+def add_keys_to_json(AddKeys v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.entries:
+        e0.append(x0.to_json())
+    parts.append("\"entries\":" + logs_json_arr(e0))
+    return logs_json_obj(parts)
+
+# Serialize CSV to a compact JSON object (declaration order).
+def csv_to_json(CSV v) -> str:
+    list[str] parts = []
+    if v.quoteCharacter.is_some():
+        auto u0 = v.quoteCharacter.unwrap()
+        parts.append("\"quoteCharacter\":" + logs_json_str(u0))
+    if v.delimiter.is_some():
+        auto u1 = v.delimiter.unwrap()
+        parts.append("\"delimiter\":" + logs_json_str(u1))
+    if v.columns.is_some():
+        auto u2 = v.columns.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(logs_json_str(x3))
+        parts.append("\"columns\":" + logs_json_arr(e3))
+    if v.source.is_some():
+        auto u4 = v.source.unwrap()
+        parts.append("\"source\":" + logs_json_str(u4))
+    if v.destination.is_some():
+        auto u5 = v.destination.unwrap()
+        parts.append("\"destination\":" + logs_json_str(u5))
+    return logs_json_obj(parts)
+
+# Serialize CopyValue to a compact JSON object (declaration order).
+def copy_value_to_json(CopyValue v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.entries:
+        e0.append(x0.to_json())
+    parts.append("\"entries\":" + logs_json_arr(e0))
+    return logs_json_obj(parts)
+
+# Serialize CreateDeliveryRequest to a compact JSON object (declaration order).
+def create_delivery_request_to_json(CreateDeliveryRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"deliverySourceName\":" + logs_json_str(v.deliverySourceName))
+    parts.append("\"deliveryDestinationArn\":" + logs_json_str(v.deliveryDestinationArn))
+    if v.recordFields.is_some():
+        auto u0 = v.recordFields.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(logs_json_str(x1))
+        parts.append("\"recordFields\":" + logs_json_arr(e1))
+    if v.fieldDelimiter.is_some():
+        auto u2 = v.fieldDelimiter.unwrap()
+        parts.append("\"fieldDelimiter\":" + logs_json_str(u2))
+    if v.s3DeliveryConfiguration.is_some():
+        auto u3 = v.s3DeliveryConfiguration.unwrap()
+        parts.append("\"s3DeliveryConfiguration\":" + u3.to_json())
+    if v.tags.is_some():
+        auto u4 = v.tags.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(logs_json_str(k5) + ":" + logs_json_str(u4[k5]))
+        parts.append("\"tags\":" + logs_json_obj(m5))
+    return logs_json_obj(parts)
+
+# Serialize CreateLogAnomalyDetectorRequest to a compact JSON object (declaration order).
+def create_log_anomaly_detector_request_to_json(CreateLogAnomalyDetectorRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.logGroupArnList:
+        e0.append(logs_json_str(x0))
+    parts.append("\"logGroupArnList\":" + logs_json_arr(e0))
+    if v.detectorName.is_some():
+        auto u1 = v.detectorName.unwrap()
+        parts.append("\"detectorName\":" + logs_json_str(u1))
+    if v.evaluationFrequency.is_some():
+        auto u2 = v.evaluationFrequency.unwrap()
+        parts.append("\"evaluationFrequency\":" + u2.to_json())
+    if v.filterPattern.is_some():
+        auto u3 = v.filterPattern.unwrap()
+        parts.append("\"filterPattern\":" + logs_json_str(u3))
+    if v.kmsKeyId.is_some():
+        auto u4 = v.kmsKeyId.unwrap()
+        parts.append("\"kmsKeyId\":" + logs_json_str(u4))
+    if v.anomalyVisibilityTime.is_some():
+        auto u5 = v.anomalyVisibilityTime.unwrap()
+        parts.append("\"anomalyVisibilityTime\":" + str(u5))
+    if v.tags.is_some():
+        auto u6 = v.tags.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(logs_json_str(k7) + ":" + logs_json_str(u6[k7]))
+        parts.append("\"tags\":" + logs_json_obj(m7))
+    return logs_json_obj(parts)
+
+# Serialize CreateLogGroupRequest to a compact JSON object (declaration order).
+def create_log_group_request_to_json(CreateLogGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"logGroupName\":" + logs_json_str(v.logGroupName))
+    if v.kmsKeyId.is_some():
+        auto u0 = v.kmsKeyId.unwrap()
+        parts.append("\"kmsKeyId\":" + logs_json_str(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(logs_json_str(k2) + ":" + logs_json_str(u1[k2]))
+        parts.append("\"tags\":" + logs_json_obj(m2))
+    if v.logGroupClass.is_some():
+        auto u3 = v.logGroupClass.unwrap()
+        parts.append("\"logGroupClass\":" + u3.to_json())
+    if v.deletionProtectionEnabled.is_some():
+        auto u4 = v.deletionProtectionEnabled.unwrap()
+        parts.append("\"deletionProtectionEnabled\":" + json.dumps(JsonValue.Bool(u4)))
+    return logs_json_obj(parts)
+
+# Serialize CreateLookupTableRequest to a compact JSON object (declaration order).
+def create_lookup_table_request_to_json(CreateLookupTableRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"lookupTableName\":" + logs_json_str(v.lookupTableName))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + logs_json_str(u0))
+    if v.tableBody.is_some():
+        auto u1 = v.tableBody.unwrap()
+        parts.append("\"tableBody\":" + logs_json_str(u1))
+    if v.queryId.is_some():
+        auto u2 = v.queryId.unwrap()
+        parts.append("\"queryId\":" + logs_json_str(u2))
+    if v.kmsKeyId.is_some():
+        auto u3 = v.kmsKeyId.unwrap()
+        parts.append("\"kmsKeyId\":" + logs_json_str(u3))
+    if v.tags.is_some():
+        auto u4 = v.tags.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(logs_json_str(k5) + ":" + logs_json_str(u4[k5]))
+        parts.append("\"tags\":" + logs_json_obj(m5))
+    return logs_json_obj(parts)
+
+# Serialize CreateScheduledQueryRequest to a compact JSON object (declaration order).
+def create_scheduled_query_request_to_json(CreateScheduledQueryRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + logs_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + logs_json_str(u0))
+    parts.append("\"queryLanguage\":" + v.queryLanguage.to_json())
+    parts.append("\"queryString\":" + logs_json_str(v.queryString))
+    if v.logGroupIdentifiers.is_some():
+        auto u1 = v.logGroupIdentifiers.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(logs_json_str(x2))
+        parts.append("\"logGroupIdentifiers\":" + logs_json_arr(e2))
+    parts.append("\"scheduleExpression\":" + logs_json_str(v.scheduleExpression))
+    if v.timezone.is_some():
+        auto u3 = v.timezone.unwrap()
+        parts.append("\"timezone\":" + logs_json_str(u3))
+    if v.startTimeOffset.is_some():
+        auto u4 = v.startTimeOffset.unwrap()
+        parts.append("\"startTimeOffset\":" + str(u4))
+    if v.endTimeOffset.is_some():
+        auto u5 = v.endTimeOffset.unwrap()
+        parts.append("\"endTimeOffset\":" + str(u5))
+    if v.destinationConfiguration.is_some():
+        auto u6 = v.destinationConfiguration.unwrap()
+        parts.append("\"destinationConfiguration\":" + destination_configuration_to_json(u6))
+    if v.scheduleStartTime.is_some():
+        auto u7 = v.scheduleStartTime.unwrap()
+        parts.append("\"scheduleStartTime\":" + str(u7))
+    if v.scheduleEndTime.is_some():
+        auto u8 = v.scheduleEndTime.unwrap()
+        parts.append("\"scheduleEndTime\":" + str(u8))
+    parts.append("\"executionRoleArn\":" + logs_json_str(v.executionRoleArn))
+    if v.state.is_some():
+        auto u9 = v.state.unwrap()
+        parts.append("\"state\":" + u9.to_json())
+    if v.tags.is_some():
+        auto u10 = v.tags.unwrap()
+        list[str] m11 = []
+        for k11 in sorted(u10.keys()):
+            m11.append(logs_json_str(k11) + ":" + logs_json_str(u10[k11]))
+        parts.append("\"tags\":" + logs_json_obj(m11))
+    return logs_json_obj(parts)
+
+# Serialize DateTimeConverter to a compact JSON object (declaration order).
+def date_time_converter_to_json(DateTimeConverter v) -> str:
+    list[str] parts = []
+    parts.append("\"source\":" + logs_json_str(v.source))
+    parts.append("\"target\":" + logs_json_str(v.target))
+    if v.targetFormat.is_some():
+        auto u0 = v.targetFormat.unwrap()
+        parts.append("\"targetFormat\":" + logs_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.matchPatterns:
+        e1.append(logs_json_str(x1))
+    parts.append("\"matchPatterns\":" + logs_json_arr(e1))
+    if v.sourceTimezone.is_some():
+        auto u2 = v.sourceTimezone.unwrap()
+        parts.append("\"sourceTimezone\":" + logs_json_str(u2))
+    if v.targetTimezone.is_some():
+        auto u3 = v.targetTimezone.unwrap()
+        parts.append("\"targetTimezone\":" + logs_json_str(u3))
+    if v.locale.is_some():
+        auto u4 = v.locale.unwrap()
+        parts.append("\"locale\":" + logs_json_str(u4))
+    return logs_json_obj(parts)
+
+# Serialize DeleteKeys to a compact JSON object (declaration order).
+def delete_keys_to_json(DeleteKeys v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.withKeys:
+        e0.append(logs_json_str(x0))
+    parts.append("\"withKeys\":" + logs_json_arr(e0))
+    return logs_json_obj(parts)
+
+# Serialize DescribeAccountPoliciesRequest to a compact JSON object (declaration order).
+def describe_account_policies_request_to_json(DescribeAccountPoliciesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"policyType\":" + v.policyType.to_json())
+    if v.policyName.is_some():
+        auto u0 = v.policyName.unwrap()
+        parts.append("\"policyName\":" + logs_json_str(u0))
+    if v.accountIdentifiers.is_some():
+        auto u1 = v.accountIdentifiers.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(logs_json_str(x2))
+        parts.append("\"accountIdentifiers\":" + logs_json_arr(e2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + logs_json_str(u3))
+    return logs_json_obj(parts)
+
+# Serialize DescribeConfigurationTemplatesRequest to a compact JSON object (declaration order).
+def describe_configuration_templates_request_to_json(DescribeConfigurationTemplatesRequest v) -> str:
+    list[str] parts = []
+    if v.service.is_some():
+        auto u0 = v.service.unwrap()
+        parts.append("\"service\":" + logs_json_str(u0))
+    if v.logTypes.is_some():
+        auto u1 = v.logTypes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(logs_json_str(x2))
+        parts.append("\"logTypes\":" + logs_json_arr(e2))
+    if v.resourceTypes.is_some():
+        auto u3 = v.resourceTypes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(logs_json_str(x4))
+        parts.append("\"resourceTypes\":" + logs_json_arr(e4))
+    if v.deliveryDestinationTypes.is_some():
+        auto u5 = v.deliveryDestinationTypes.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"deliveryDestinationTypes\":" + logs_json_arr(e6))
+    if v.nextToken.is_some():
+        auto u7 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + logs_json_str(u7))
+    if v.limit.is_some():
+        auto u8 = v.limit.unwrap()
+        parts.append("\"limit\":" + str(u8))
+    return logs_json_obj(parts)
+
+# Serialize DescribeDeliveriesRequest to a compact JSON object (declaration order).
+def describe_deliveries_request_to_json(DescribeDeliveriesRequest v) -> str:
+    list[str] parts = []
+    if v.nextToken.is_some():
+        auto u0 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + logs_json_str(u0))
+    if v.limit.is_some():
+        auto u1 = v.limit.unwrap()
+        parts.append("\"limit\":" + str(u1))
+    if v.deliverySourceNames.is_some():
+        auto u2 = v.deliverySourceNames.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(logs_json_str(x3))
+        parts.append("\"deliverySourceNames\":" + logs_json_arr(e3))
+    return logs_json_obj(parts)
+
+# Serialize DescribeDeliveryDestinationsRequest to a compact JSON object (declaration order).
+def describe_delivery_destinations_request_to_json(DescribeDeliveryDestinationsRequest v) -> str:
+    list[str] parts = []
+    if v.nextToken.is_some():
+        auto u0 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + logs_json_str(u0))
+    if v.limit.is_some():
+        auto u1 = v.limit.unwrap()
+        parts.append("\"limit\":" + str(u1))
+    if v.names.is_some():
+        auto u2 = v.names.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(logs_json_str(x3))
+        parts.append("\"names\":" + logs_json_arr(e3))
+    return logs_json_obj(parts)
+
+# Serialize DescribeDeliverySourcesRequest to a compact JSON object (declaration order).
+def describe_delivery_sources_request_to_json(DescribeDeliverySourcesRequest v) -> str:
+    list[str] parts = []
+    if v.nextToken.is_some():
+        auto u0 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + logs_json_str(u0))
+    if v.limit.is_some():
+        auto u1 = v.limit.unwrap()
+        parts.append("\"limit\":" + str(u1))
+    if v.resourceArns.is_some():
+        auto u2 = v.resourceArns.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(logs_json_str(x3))
+        parts.append("\"resourceArns\":" + logs_json_arr(e3))
+    return logs_json_obj(parts)
+
+# Serialize DescribeFieldIndexesRequest to a compact JSON object (declaration order).
+def describe_field_indexes_request_to_json(DescribeFieldIndexesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.logGroupIdentifiers:
+        e0.append(logs_json_str(x0))
+    parts.append("\"logGroupIdentifiers\":" + logs_json_arr(e0))
+    if v.indexCategories.is_some():
+        auto u1 = v.indexCategories.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"indexCategories\":" + logs_json_arr(e2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + logs_json_str(u3))
+    return logs_json_obj(parts)
+
+# Serialize DescribeImportTaskBatchesRequest to a compact JSON object (declaration order).
+def describe_import_task_batches_request_to_json(DescribeImportTaskBatchesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"importId\":" + logs_json_str(v.importId))
+    if v.batchImportStatus.is_some():
+        auto u0 = v.batchImportStatus.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"batchImportStatus\":" + logs_json_arr(e1))
+    if v.limit.is_some():
+        auto u2 = v.limit.unwrap()
+        parts.append("\"limit\":" + str(u2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + logs_json_str(u3))
+    return logs_json_obj(parts)
+
+# Serialize DescribeIndexPoliciesRequest to a compact JSON object (declaration order).
+def describe_index_policies_request_to_json(DescribeIndexPoliciesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.logGroupIdentifiers:
+        e0.append(logs_json_str(x0))
+    parts.append("\"logGroupIdentifiers\":" + logs_json_arr(e0))
+    if v.nextToken.is_some():
+        auto u1 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + logs_json_str(u1))
+    return logs_json_obj(parts)
+
+# Serialize DescribeLogGroupsRequest to a compact JSON object (declaration order).
+def describe_log_groups_request_to_json(DescribeLogGroupsRequest v) -> str:
+    list[str] parts = []
+    if v.accountIdentifiers.is_some():
+        auto u0 = v.accountIdentifiers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(logs_json_str(x1))
+        parts.append("\"accountIdentifiers\":" + logs_json_arr(e1))
+    if v.logGroupNamePrefix.is_some():
+        auto u2 = v.logGroupNamePrefix.unwrap()
+        parts.append("\"logGroupNamePrefix\":" + logs_json_str(u2))
+    if v.logGroupNamePattern.is_some():
+        auto u3 = v.logGroupNamePattern.unwrap()
+        parts.append("\"logGroupNamePattern\":" + logs_json_str(u3))
+    if v.nextToken.is_some():
+        auto u4 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + logs_json_str(u4))
+    if v.limit.is_some():
+        auto u5 = v.limit.unwrap()
+        parts.append("\"limit\":" + str(u5))
+    if v.includeLinkedAccounts.is_some():
+        auto u6 = v.includeLinkedAccounts.unwrap()
+        parts.append("\"includeLinkedAccounts\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.logGroupClass.is_some():
+        auto u7 = v.logGroupClass.unwrap()
+        parts.append("\"logGroupClass\":" + u7.to_json())
+    if v.logGroupIdentifiers.is_some():
+        auto u8 = v.logGroupIdentifiers.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(logs_json_str(x9))
+        parts.append("\"logGroupIdentifiers\":" + logs_json_arr(e9))
+    return logs_json_obj(parts)
+
+# Serialize DestinationConfiguration to a compact JSON object (declaration order).
+def destination_configuration_to_json(DestinationConfiguration v) -> str:
+    list[str] parts = []
+    if v.s3Configuration.is_some():
+        auto u0 = v.s3Configuration.unwrap()
+        parts.append("\"s3Configuration\":" + u0.to_json())
+    if v.lookupTableConfiguration.is_some():
+        auto u1 = v.lookupTableConfiguration.unwrap()
+        parts.append("\"lookupTableConfiguration\":" + lookup_table_configuration_to_json(u1))
+    return logs_json_obj(parts)
+
+# Serialize Entity to a compact JSON object (declaration order).
+def entity_to_json(Entity v) -> str:
+    list[str] parts = []
+    if v.keyAttributes.is_some():
+        auto u0 = v.keyAttributes.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(logs_json_str(k1) + ":" + logs_json_str(u0[k1]))
+        parts.append("\"keyAttributes\":" + logs_json_obj(m1))
+    if v.attributes.is_some():
+        auto u2 = v.attributes.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(logs_json_str(k3) + ":" + logs_json_str(u2[k3]))
+        parts.append("\"attributes\":" + logs_json_obj(m3))
+    return logs_json_obj(parts)
+
+# Serialize FilterLogEventsRequest to a compact JSON object (declaration order).
+def filter_log_events_request_to_json(FilterLogEventsRequest v) -> str:
+    list[str] parts = []
+    if v.logGroupName.is_some():
+        auto u0 = v.logGroupName.unwrap()
+        parts.append("\"logGroupName\":" + logs_json_str(u0))
+    if v.logGroupIdentifier.is_some():
+        auto u1 = v.logGroupIdentifier.unwrap()
+        parts.append("\"logGroupIdentifier\":" + logs_json_str(u1))
+    if v.logStreamNames.is_some():
+        auto u2 = v.logStreamNames.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(logs_json_str(x3))
+        parts.append("\"logStreamNames\":" + logs_json_arr(e3))
+    if v.logStreamNamePrefix.is_some():
+        auto u4 = v.logStreamNamePrefix.unwrap()
+        parts.append("\"logStreamNamePrefix\":" + logs_json_str(u4))
+    if v.startTime.is_some():
+        auto u5 = v.startTime.unwrap()
+        parts.append("\"startTime\":" + str(u5))
+    if v.endTime.is_some():
+        auto u6 = v.endTime.unwrap()
+        parts.append("\"endTime\":" + str(u6))
+    if v.filterPattern.is_some():
+        auto u7 = v.filterPattern.unwrap()
+        parts.append("\"filterPattern\":" + logs_json_str(u7))
+    if v.nextToken.is_some():
+        auto u8 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + logs_json_str(u8))
+    if v.limit.is_some():
+        auto u9 = v.limit.unwrap()
+        parts.append("\"limit\":" + str(u9))
+    if v.startFromHead.is_some():
+        auto u10 = v.startFromHead.unwrap()
+        parts.append("\"startFromHead\":" + json.dumps(JsonValue.Bool(u10)))
+    if v.interleaved.is_some():
+        auto u11 = v.interleaved.unwrap()
+        parts.append("\"interleaved\":" + json.dumps(JsonValue.Bool(u11)))
+    if v.unmask.is_some():
+        auto u12 = v.unmask.unwrap()
+        parts.append("\"unmask\":" + json.dumps(JsonValue.Bool(u12)))
+    return logs_json_obj(parts)
+
+# Serialize GetScheduledQueryHistoryRequest to a compact JSON object (declaration order).
+def get_scheduled_query_history_request_to_json(GetScheduledQueryHistoryRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"identifier\":" + logs_json_str(v.identifier))
+    parts.append("\"startTime\":" + str(v.startTime))
+    parts.append("\"endTime\":" + str(v.endTime))
+    if v.executionStatuses.is_some():
+        auto u0 = v.executionStatuses.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"executionStatuses\":" + logs_json_arr(e1))
+    if v.maxResults.is_some():
+        auto u2 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + logs_json_str(u3))
+    return logs_json_obj(parts)
+
+# Serialize ListAggregateLogGroupSummariesRequest to a compact JSON object (declaration order).
+def list_aggregate_log_group_summaries_request_to_json(ListAggregateLogGroupSummariesRequest v) -> str:
+    list[str] parts = []
+    if v.accountIdentifiers.is_some():
+        auto u0 = v.accountIdentifiers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(logs_json_str(x1))
+        parts.append("\"accountIdentifiers\":" + logs_json_arr(e1))
+    if v.includeLinkedAccounts.is_some():
+        auto u2 = v.includeLinkedAccounts.unwrap()
+        parts.append("\"includeLinkedAccounts\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.logGroupClass.is_some():
+        auto u3 = v.logGroupClass.unwrap()
+        parts.append("\"logGroupClass\":" + u3.to_json())
+    if v.logGroupNamePattern.is_some():
+        auto u4 = v.logGroupNamePattern.unwrap()
+        parts.append("\"logGroupNamePattern\":" + logs_json_str(u4))
+    if v.dataSources.is_some():
+        auto u5 = v.dataSources.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"dataSources\":" + logs_json_arr(e6))
+    parts.append("\"groupBy\":" + v.groupBy.to_json())
+    if v.nextToken.is_some():
+        auto u7 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + logs_json_str(u7))
+    if v.limit.is_some():
+        auto u8 = v.limit.unwrap()
+        parts.append("\"limit\":" + str(u8))
+    return logs_json_obj(parts)
+
+# Serialize ListLogGroupsRequest to a compact JSON object (declaration order).
+def list_log_groups_request_to_json(ListLogGroupsRequest v) -> str:
+    list[str] parts = []
+    if v.logGroupNamePattern.is_some():
+        auto u0 = v.logGroupNamePattern.unwrap()
+        parts.append("\"logGroupNamePattern\":" + logs_json_str(u0))
+    if v.logGroupClass.is_some():
+        auto u1 = v.logGroupClass.unwrap()
+        parts.append("\"logGroupClass\":" + u1.to_json())
+    if v.includeLinkedAccounts.is_some():
+        auto u2 = v.includeLinkedAccounts.unwrap()
+        parts.append("\"includeLinkedAccounts\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.accountIdentifiers.is_some():
+        auto u3 = v.accountIdentifiers.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(logs_json_str(x4))
+        parts.append("\"accountIdentifiers\":" + logs_json_arr(e4))
+    if v.nextToken.is_some():
+        auto u5 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + logs_json_str(u5))
+    if v.limit.is_some():
+        auto u6 = v.limit.unwrap()
+        parts.append("\"limit\":" + str(u6))
+    if v.dataSources.is_some():
+        auto u7 = v.dataSources.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"dataSources\":" + logs_json_arr(e8))
+    if v.fieldIndexNames.is_some():
+        auto u9 = v.fieldIndexNames.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(logs_json_str(x10))
+        parts.append("\"fieldIndexNames\":" + logs_json_arr(e10))
+    if v.logGroupTags.is_some():
+        auto u11 = v.logGroupTags.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(tag_filter_to_json(x12))
+        parts.append("\"logGroupTags\":" + logs_json_arr(e12))
+    return logs_json_obj(parts)
+
+# Serialize LookupTableConfiguration to a compact JSON object (declaration order).
+def lookup_table_configuration_to_json(LookupTableConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"tableName\":" + logs_json_str(v.tableName))
+    parts.append("\"roleArn\":" + logs_json_str(v.roleArn))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + logs_json_str(u0))
+    if v.kmsKeyId.is_some():
+        auto u1 = v.kmsKeyId.unwrap()
+        parts.append("\"kmsKeyId\":" + logs_json_str(u1))
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(logs_json_str(k3) + ":" + logs_json_str(u2[k3]))
+        parts.append("\"tags\":" + logs_json_obj(m3))
+    return logs_json_obj(parts)
+
+# Serialize LowerCaseString to a compact JSON object (declaration order).
+def lower_case_string_to_json(LowerCaseString v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.withKeys:
+        e0.append(logs_json_str(x0))
+    parts.append("\"withKeys\":" + logs_json_arr(e0))
+    return logs_json_obj(parts)
+
+# Serialize MetricTransformation to a compact JSON object (declaration order).
+def metric_transformation_to_json(MetricTransformation v) -> str:
+    list[str] parts = []
+    parts.append("\"metricName\":" + logs_json_str(v.metricName))
+    parts.append("\"metricNamespace\":" + logs_json_str(v.metricNamespace))
+    parts.append("\"metricValue\":" + logs_json_str(v.metricValue))
+    if v.defaultValue.is_some():
+        auto u0 = v.defaultValue.unwrap()
+        parts.append("\"defaultValue\":" + str(u0))
+    if v.dimensions.is_some():
+        auto u1 = v.dimensions.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(logs_json_str(k2) + ":" + logs_json_str(u1[k2]))
+        parts.append("\"dimensions\":" + logs_json_obj(m2))
+    if v.unit.is_some():
+        auto u3 = v.unit.unwrap()
+        parts.append("\"unit\":" + u3.to_json())
+    return logs_json_obj(parts)
+
+# Serialize MoveKeys to a compact JSON object (declaration order).
+def move_keys_to_json(MoveKeys v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.entries:
+        e0.append(x0.to_json())
+    parts.append("\"entries\":" + logs_json_arr(e0))
+    return logs_json_obj(parts)
+
+# Serialize OpenSearchResourceConfig to a compact JSON object (declaration order).
+def open_search_resource_config_to_json(OpenSearchResourceConfig v) -> str:
+    list[str] parts = []
+    if v.kmsKeyArn.is_some():
+        auto u0 = v.kmsKeyArn.unwrap()
+        parts.append("\"kmsKeyArn\":" + logs_json_str(u0))
+    parts.append("\"dataSourceRoleArn\":" + logs_json_str(v.dataSourceRoleArn))
+    list[str] e1 = []
+    for x1 in v.dashboardViewerPrincipals:
+        e1.append(logs_json_str(x1))
+    parts.append("\"dashboardViewerPrincipals\":" + logs_json_arr(e1))
+    if v.applicationArn.is_some():
+        auto u2 = v.applicationArn.unwrap()
+        parts.append("\"applicationArn\":" + logs_json_str(u2))
+    parts.append("\"retentionDays\":" + str(v.retentionDays))
+    return logs_json_obj(parts)
+
+# Serialize Processor to a compact JSON object (declaration order).
+def processor_to_json(Processor v) -> str:
+    list[str] parts = []
+    if v.addKeys.is_some():
+        auto u0 = v.addKeys.unwrap()
+        parts.append("\"addKeys\":" + add_keys_to_json(u0))
+    if v.copyValue.is_some():
+        auto u1 = v.copyValue.unwrap()
+        parts.append("\"copyValue\":" + copy_value_to_json(u1))
+    if v.csv.is_some():
+        auto u2 = v.csv.unwrap()
+        parts.append("\"csv\":" + csv_to_json(u2))
+    if v.dateTimeConverter.is_some():
+        auto u3 = v.dateTimeConverter.unwrap()
+        parts.append("\"dateTimeConverter\":" + date_time_converter_to_json(u3))
+    if v.deleteKeys.is_some():
+        auto u4 = v.deleteKeys.unwrap()
+        parts.append("\"deleteKeys\":" + delete_keys_to_json(u4))
+    if v.grok.is_some():
+        auto u5 = v.grok.unwrap()
+        parts.append("\"grok\":" + u5.to_json())
+    if v.listToMap.is_some():
+        auto u6 = v.listToMap.unwrap()
+        parts.append("\"listToMap\":" + u6.to_json())
+    if v.lowerCaseString.is_some():
+        auto u7 = v.lowerCaseString.unwrap()
+        parts.append("\"lowerCaseString\":" + lower_case_string_to_json(u7))
+    if v.moveKeys.is_some():
+        auto u8 = v.moveKeys.unwrap()
+        parts.append("\"moveKeys\":" + move_keys_to_json(u8))
+    if v.parseCloudfront.is_some():
+        auto u9 = v.parseCloudfront.unwrap()
+        parts.append("\"parseCloudfront\":" + u9.to_json())
+    if v.parseJSON.is_some():
+        auto u10 = v.parseJSON.unwrap()
+        parts.append("\"parseJSON\":" + u10.to_json())
+    if v.parseKeyValue.is_some():
+        auto u11 = v.parseKeyValue.unwrap()
+        parts.append("\"parseKeyValue\":" + u11.to_json())
+    if v.parseRoute53.is_some():
+        auto u12 = v.parseRoute53.unwrap()
+        parts.append("\"parseRoute53\":" + u12.to_json())
+    if v.parseToOCSF.is_some():
+        auto u13 = v.parseToOCSF.unwrap()
+        parts.append("\"parseToOCSF\":" + u13.to_json())
+    if v.parsePostgres.is_some():
+        auto u14 = v.parsePostgres.unwrap()
+        parts.append("\"parsePostgres\":" + u14.to_json())
+    if v.parseVPC.is_some():
+        auto u15 = v.parseVPC.unwrap()
+        parts.append("\"parseVPC\":" + u15.to_json())
+    if v.parseWAF.is_some():
+        auto u16 = v.parseWAF.unwrap()
+        parts.append("\"parseWAF\":" + u16.to_json())
+    if v.renameKeys.is_some():
+        auto u17 = v.renameKeys.unwrap()
+        parts.append("\"renameKeys\":" + rename_keys_to_json(u17))
+    if v.splitString.is_some():
+        auto u18 = v.splitString.unwrap()
+        parts.append("\"splitString\":" + split_string_to_json(u18))
+    if v.substituteString.is_some():
+        auto u19 = v.substituteString.unwrap()
+        parts.append("\"substituteString\":" + substitute_string_to_json(u19))
+    if v.trimString.is_some():
+        auto u20 = v.trimString.unwrap()
+        parts.append("\"trimString\":" + trim_string_to_json(u20))
+    if v.typeConverter.is_some():
+        auto u21 = v.typeConverter.unwrap()
+        parts.append("\"typeConverter\":" + type_converter_to_json(u21))
+    if v.upperCaseString.is_some():
+        auto u22 = v.upperCaseString.unwrap()
+        parts.append("\"upperCaseString\":" + upper_case_string_to_json(u22))
+    return logs_json_obj(parts)
+
+# Serialize PutDeliveryDestinationRequest to a compact JSON object (declaration order).
+def put_delivery_destination_request_to_json(PutDeliveryDestinationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + logs_json_str(v.name))
+    if v.outputFormat.is_some():
+        auto u0 = v.outputFormat.unwrap()
+        parts.append("\"outputFormat\":" + u0.to_json())
+    if v.deliveryDestinationConfiguration.is_some():
+        auto u1 = v.deliveryDestinationConfiguration.unwrap()
+        parts.append("\"deliveryDestinationConfiguration\":" + u1.to_json())
+    if v.deliveryDestinationType.is_some():
+        auto u2 = v.deliveryDestinationType.unwrap()
+        parts.append("\"deliveryDestinationType\":" + u2.to_json())
+    if v.roleArn.is_some():
+        auto u3 = v.roleArn.unwrap()
+        parts.append("\"roleArn\":" + logs_json_str(u3))
+    if v.tags.is_some():
+        auto u4 = v.tags.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(logs_json_str(k5) + ":" + logs_json_str(u4[k5]))
+        parts.append("\"tags\":" + logs_json_obj(m5))
+    return logs_json_obj(parts)
+
+# Serialize PutDeliverySourceRequest to a compact JSON object (declaration order).
+def put_delivery_source_request_to_json(PutDeliverySourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + logs_json_str(v.name))
+    parts.append("\"resourceArn\":" + logs_json_str(v.resourceArn))
+    parts.append("\"logType\":" + logs_json_str(v.logType))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(logs_json_str(k1) + ":" + logs_json_str(u0[k1]))
+        parts.append("\"tags\":" + logs_json_obj(m1))
+    if v.deliverySourceConfiguration.is_some():
+        auto u2 = v.deliverySourceConfiguration.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(logs_json_str(k3) + ":" + logs_json_str(u2[k3]))
+        parts.append("\"deliverySourceConfiguration\":" + logs_json_obj(m3))
+    return logs_json_obj(parts)
+
+# Serialize PutDestinationRequest to a compact JSON object (declaration order).
+def put_destination_request_to_json(PutDestinationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"destinationName\":" + logs_json_str(v.destinationName))
+    parts.append("\"targetArn\":" + logs_json_str(v.targetArn))
+    parts.append("\"roleArn\":" + logs_json_str(v.roleArn))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(logs_json_str(k1) + ":" + logs_json_str(u0[k1]))
+        parts.append("\"tags\":" + logs_json_obj(m1))
+    return logs_json_obj(parts)
+
+# Serialize PutIntegrationRequest to a compact JSON object (declaration order).
+def put_integration_request_to_json(PutIntegrationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"integrationName\":" + logs_json_str(v.integrationName))
+    parts.append("\"resourceConfig\":" + resource_config_to_json(v.resourceConfig))
+    parts.append("\"integrationType\":" + logs_json_str(v.integrationType))
+    return logs_json_obj(parts)
+
+# Serialize PutLogEventsRequest to a compact JSON object (declaration order).
+def put_log_events_request_to_json(PutLogEventsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"logGroupName\":" + logs_json_str(v.logGroupName))
+    parts.append("\"logStreamName\":" + logs_json_str(v.logStreamName))
+    list[str] e0 = []
+    for x0 in v.logEvents:
+        e0.append(x0.to_json())
+    parts.append("\"logEvents\":" + logs_json_arr(e0))
+    if v.sequenceToken.is_some():
+        auto u1 = v.sequenceToken.unwrap()
+        parts.append("\"sequenceToken\":" + logs_json_str(u1))
+    if v.entity.is_some():
+        auto u2 = v.entity.unwrap()
+        parts.append("\"entity\":" + entity_to_json(u2))
+    return logs_json_obj(parts)
+
+# Serialize PutMetricFilterRequest to a compact JSON object (declaration order).
+def put_metric_filter_request_to_json(PutMetricFilterRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"logGroupName\":" + logs_json_str(v.logGroupName))
+    parts.append("\"filterName\":" + logs_json_str(v.filterName))
+    parts.append("\"filterPattern\":" + logs_json_str(v.filterPattern))
+    list[str] e0 = []
+    for x0 in v.metricTransformations:
+        e0.append(metric_transformation_to_json(x0))
+    parts.append("\"metricTransformations\":" + logs_json_arr(e0))
+    if v.applyOnTransformedLogs.is_some():
+        auto u1 = v.applyOnTransformedLogs.unwrap()
+        parts.append("\"applyOnTransformedLogs\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.fieldSelectionCriteria.is_some():
+        auto u2 = v.fieldSelectionCriteria.unwrap()
+        parts.append("\"fieldSelectionCriteria\":" + logs_json_str(u2))
+    if v.emitSystemFieldDimensions.is_some():
+        auto u3 = v.emitSystemFieldDimensions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(logs_json_str(x4))
+        parts.append("\"emitSystemFieldDimensions\":" + logs_json_arr(e4))
+    return logs_json_obj(parts)
+
+# Serialize PutQueryDefinitionRequest to a compact JSON object (declaration order).
+def put_query_definition_request_to_json(PutQueryDefinitionRequest v) -> str:
+    list[str] parts = []
+    if v.queryLanguage.is_some():
+        auto u0 = v.queryLanguage.unwrap()
+        parts.append("\"queryLanguage\":" + u0.to_json())
+    parts.append("\"name\":" + logs_json_str(v.name))
+    if v.queryDefinitionId.is_some():
+        auto u1 = v.queryDefinitionId.unwrap()
+        parts.append("\"queryDefinitionId\":" + logs_json_str(u1))
+    if v.logGroupNames.is_some():
+        auto u2 = v.logGroupNames.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(logs_json_str(x3))
+        parts.append("\"logGroupNames\":" + logs_json_arr(e3))
+    parts.append("\"queryString\":" + logs_json_str(v.queryString))
+    if v.clientToken.is_some():
+        auto u4 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + logs_json_str(u4))
+    if v.parameters.is_some():
+        auto u5 = v.parameters.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"parameters\":" + logs_json_arr(e6))
+    return logs_json_obj(parts)
+
+# Serialize PutSubscriptionFilterRequest to a compact JSON object (declaration order).
+def put_subscription_filter_request_to_json(PutSubscriptionFilterRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"logGroupName\":" + logs_json_str(v.logGroupName))
+    parts.append("\"filterName\":" + logs_json_str(v.filterName))
+    parts.append("\"filterPattern\":" + logs_json_str(v.filterPattern))
+    parts.append("\"destinationArn\":" + logs_json_str(v.destinationArn))
+    if v.roleArn.is_some():
+        auto u0 = v.roleArn.unwrap()
+        parts.append("\"roleArn\":" + logs_json_str(u0))
+    if v.distribution.is_some():
+        auto u1 = v.distribution.unwrap()
+        parts.append("\"distribution\":" + u1.to_json())
+    if v.applyOnTransformedLogs.is_some():
+        auto u2 = v.applyOnTransformedLogs.unwrap()
+        parts.append("\"applyOnTransformedLogs\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.fieldSelectionCriteria.is_some():
+        auto u3 = v.fieldSelectionCriteria.unwrap()
+        parts.append("\"fieldSelectionCriteria\":" + logs_json_str(u3))
+    if v.emitSystemFields.is_some():
+        auto u4 = v.emitSystemFields.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(logs_json_str(x5))
+        parts.append("\"emitSystemFields\":" + logs_json_arr(e5))
+    return logs_json_obj(parts)
+
+# Serialize PutTransformerRequest to a compact JSON object (declaration order).
+def put_transformer_request_to_json(PutTransformerRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"logGroupIdentifier\":" + logs_json_str(v.logGroupIdentifier))
+    list[str] e0 = []
+    for x0 in v.transformerConfig:
+        e0.append(processor_to_json(x0))
+    parts.append("\"transformerConfig\":" + logs_json_arr(e0))
+    return logs_json_obj(parts)
+
+# Serialize RenameKeys to a compact JSON object (declaration order).
+def rename_keys_to_json(RenameKeys v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.entries:
+        e0.append(x0.to_json())
+    parts.append("\"entries\":" + logs_json_arr(e0))
+    return logs_json_obj(parts)
+
+# Serialize ResourceConfig to a compact JSON object (declaration order).
+def resource_config_to_json(ResourceConfig v) -> str:
+    list[str] parts = []
+    if v.openSearchResourceConfig.is_some():
+        auto u0 = v.openSearchResourceConfig.unwrap()
+        parts.append("\"openSearchResourceConfig\":" + open_search_resource_config_to_json(u0))
+    return logs_json_obj(parts)
+
+# Serialize SplitString to a compact JSON object (declaration order).
+def split_string_to_json(SplitString v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.entries:
+        e0.append(x0.to_json())
+    parts.append("\"entries\":" + logs_json_arr(e0))
+    return logs_json_obj(parts)
+
+# Serialize StartLiveTailRequest to a compact JSON object (declaration order).
+def start_live_tail_request_to_json(StartLiveTailRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.logGroupIdentifiers:
+        e0.append(logs_json_str(x0))
+    parts.append("\"logGroupIdentifiers\":" + logs_json_arr(e0))
+    if v.logStreamNames.is_some():
+        auto u1 = v.logStreamNames.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(logs_json_str(x2))
+        parts.append("\"logStreamNames\":" + logs_json_arr(e2))
+    if v.logStreamNamePrefixes.is_some():
+        auto u3 = v.logStreamNamePrefixes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(logs_json_str(x4))
+        parts.append("\"logStreamNamePrefixes\":" + logs_json_arr(e4))
+    if v.logEventFilterPattern.is_some():
+        auto u5 = v.logEventFilterPattern.unwrap()
+        parts.append("\"logEventFilterPattern\":" + logs_json_str(u5))
+    return logs_json_obj(parts)
+
+# Serialize StartQueryRequest to a compact JSON object (declaration order).
+def start_query_request_to_json(StartQueryRequest v) -> str:
+    list[str] parts = []
+    if v.queryLanguage.is_some():
+        auto u0 = v.queryLanguage.unwrap()
+        parts.append("\"queryLanguage\":" + u0.to_json())
+    if v.logGroupName.is_some():
+        auto u1 = v.logGroupName.unwrap()
+        parts.append("\"logGroupName\":" + logs_json_str(u1))
+    if v.logGroupNames.is_some():
+        auto u2 = v.logGroupNames.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(logs_json_str(x3))
+        parts.append("\"logGroupNames\":" + logs_json_arr(e3))
+    if v.logGroupIdentifiers.is_some():
+        auto u4 = v.logGroupIdentifiers.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(logs_json_str(x5))
+        parts.append("\"logGroupIdentifiers\":" + logs_json_arr(e5))
+    parts.append("\"startTime\":" + str(v.startTime))
+    parts.append("\"endTime\":" + str(v.endTime))
+    parts.append("\"queryString\":" + logs_json_str(v.queryString))
+    if v.limit.is_some():
+        auto u6 = v.limit.unwrap()
+        parts.append("\"limit\":" + str(u6))
+    return logs_json_obj(parts)
+
+# Serialize SubstituteString to a compact JSON object (declaration order).
+def substitute_string_to_json(SubstituteString v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.entries:
+        e0.append(x0.to_json())
+    parts.append("\"entries\":" + logs_json_arr(e0))
+    return logs_json_obj(parts)
+
+# Serialize TagFilter to a compact JSON object (declaration order).
+def tag_filter_to_json(TagFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"key\":" + logs_json_str(v.key))
+    if v.values.is_some():
+        auto u0 = v.values.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(logs_json_str(x1))
+        parts.append("\"values\":" + logs_json_arr(e1))
+    return logs_json_obj(parts)
+
+# Serialize TagLogGroupRequest to a compact JSON object (declaration order).
+def tag_log_group_request_to_json(TagLogGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"logGroupName\":" + logs_json_str(v.logGroupName))
+    list[str] m0 = []
+    for k0 in sorted(v.tags.keys()):
+        m0.append(logs_json_str(k0) + ":" + logs_json_str(v.tags[k0]))
+    parts.append("\"tags\":" + logs_json_obj(m0))
+    return logs_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + logs_json_str(v.resourceArn))
+    list[str] m0 = []
+    for k0 in sorted(v.tags.keys()):
+        m0.append(logs_json_str(k0) + ":" + logs_json_str(v.tags[k0]))
+    parts.append("\"tags\":" + logs_json_obj(m0))
+    return logs_json_obj(parts)
+
+# Serialize TestMetricFilterRequest to a compact JSON object (declaration order).
+def test_metric_filter_request_to_json(TestMetricFilterRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"filterPattern\":" + logs_json_str(v.filterPattern))
+    list[str] e0 = []
+    for x0 in v.logEventMessages:
+        e0.append(logs_json_str(x0))
+    parts.append("\"logEventMessages\":" + logs_json_arr(e0))
+    return logs_json_obj(parts)
+
+# Serialize TestTransformerRequest to a compact JSON object (declaration order).
+def test_transformer_request_to_json(TestTransformerRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.transformerConfig:
+        e0.append(processor_to_json(x0))
+    parts.append("\"transformerConfig\":" + logs_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.logEventMessages:
+        e1.append(logs_json_str(x1))
+    parts.append("\"logEventMessages\":" + logs_json_arr(e1))
+    return logs_json_obj(parts)
+
+# Serialize TrimString to a compact JSON object (declaration order).
+def trim_string_to_json(TrimString v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.withKeys:
+        e0.append(logs_json_str(x0))
+    parts.append("\"withKeys\":" + logs_json_arr(e0))
+    return logs_json_obj(parts)
+
+# Serialize TypeConverter to a compact JSON object (declaration order).
+def type_converter_to_json(TypeConverter v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.entries:
+        e0.append(x0.to_json())
+    parts.append("\"entries\":" + logs_json_arr(e0))
+    return logs_json_obj(parts)
+
+# Serialize UntagLogGroupRequest to a compact JSON object (declaration order).
+def untag_log_group_request_to_json(UntagLogGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"logGroupName\":" + logs_json_str(v.logGroupName))
+    list[str] e0 = []
+    for x0 in v.tags:
+        e0.append(logs_json_str(x0))
+    parts.append("\"tags\":" + logs_json_arr(e0))
+    return logs_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + logs_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(logs_json_str(x0))
+    parts.append("\"tagKeys\":" + logs_json_arr(e0))
+    return logs_json_obj(parts)
+
+# Serialize UpdateDeliveryConfigurationRequest to a compact JSON object (declaration order).
+def update_delivery_configuration_request_to_json(UpdateDeliveryConfigurationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"id\":" + logs_json_str(v.id))
+    if v.recordFields.is_some():
+        auto u0 = v.recordFields.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(logs_json_str(x1))
+        parts.append("\"recordFields\":" + logs_json_arr(e1))
+    if v.fieldDelimiter.is_some():
+        auto u2 = v.fieldDelimiter.unwrap()
+        parts.append("\"fieldDelimiter\":" + logs_json_str(u2))
+    if v.s3DeliveryConfiguration.is_some():
+        auto u3 = v.s3DeliveryConfiguration.unwrap()
+        parts.append("\"s3DeliveryConfiguration\":" + u3.to_json())
+    return logs_json_obj(parts)
+
+# Serialize UpdateScheduledQueryRequest to a compact JSON object (declaration order).
+def update_scheduled_query_request_to_json(UpdateScheduledQueryRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"identifier\":" + logs_json_str(v.identifier))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + logs_json_str(u0))
+    parts.append("\"queryLanguage\":" + v.queryLanguage.to_json())
+    parts.append("\"queryString\":" + logs_json_str(v.queryString))
+    if v.logGroupIdentifiers.is_some():
+        auto u1 = v.logGroupIdentifiers.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(logs_json_str(x2))
+        parts.append("\"logGroupIdentifiers\":" + logs_json_arr(e2))
+    parts.append("\"scheduleExpression\":" + logs_json_str(v.scheduleExpression))
+    if v.timezone.is_some():
+        auto u3 = v.timezone.unwrap()
+        parts.append("\"timezone\":" + logs_json_str(u3))
+    if v.startTimeOffset.is_some():
+        auto u4 = v.startTimeOffset.unwrap()
+        parts.append("\"startTimeOffset\":" + str(u4))
+    if v.endTimeOffset.is_some():
+        auto u5 = v.endTimeOffset.unwrap()
+        parts.append("\"endTimeOffset\":" + str(u5))
+    if v.destinationConfiguration.is_some():
+        auto u6 = v.destinationConfiguration.unwrap()
+        parts.append("\"destinationConfiguration\":" + destination_configuration_to_json(u6))
+    if v.scheduleStartTime.is_some():
+        auto u7 = v.scheduleStartTime.unwrap()
+        parts.append("\"scheduleStartTime\":" + str(u7))
+    if v.scheduleEndTime.is_some():
+        auto u8 = v.scheduleEndTime.unwrap()
+        parts.append("\"scheduleEndTime\":" + str(u8))
+    parts.append("\"executionRoleArn\":" + logs_json_str(v.executionRoleArn))
+    if v.state.is_some():
+        auto u9 = v.state.unwrap()
+        parts.append("\"state\":" + u9.to_json())
+    return logs_json_obj(parts)
+
+# Serialize UpperCaseString to a compact JSON object (declaration order).
+def upper_case_string_to_json(UpperCaseString v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.withKeys:
+        e0.append(logs_json_str(x0))
+    parts.append("\"withKeys\":" + logs_json_arr(e0))
+    return logs_json_obj(parts)
 
 # A bound CloudWatch_Logs client: credentials + region, threaded into every operation.
 struct CloudWatch_LogsClient:
@@ -2805,6 +4055,12 @@ struct CloudWatch_LogsClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "CancelImportTask", body)
 
+    # CreateDelivery
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ServiceUnavailableException, ThrottlingException, ValidationException
+    def create_delivery(self, CreateDeliveryRequest input) -> str:
+        auto body = create_delivery_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "CreateDelivery", body)
+
     # CreateExportTask
     # errors: InvalidParameterException, LimitExceededException, OperationAbortedException, ResourceAlreadyExistsException, ResourceNotFoundException, ServiceUnavailableException
     def create_export_task(self, CreateExportTaskRequest input) -> str:
@@ -2817,11 +4073,35 @@ struct CloudWatch_LogsClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "CreateImportTask", body)
 
+    # CreateLogAnomalyDetector
+    # errors: InvalidParameterException, LimitExceededException, OperationAbortedException, ResourceNotFoundException, ServiceUnavailableException
+    def create_log_anomaly_detector(self, CreateLogAnomalyDetectorRequest input) -> str:
+        auto body = create_log_anomaly_detector_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "CreateLogAnomalyDetector", body)
+
+    # CreateLogGroup
+    # errors: InvalidParameterException, LimitExceededException, OperationAbortedException, ResourceAlreadyExistsException, ServiceUnavailableException
+    def create_log_group(self, CreateLogGroupRequest input) -> str:
+        auto body = create_log_group_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "CreateLogGroup", body)
+
     # CreateLogStream
     # errors: InvalidParameterException, ResourceAlreadyExistsException, ResourceNotFoundException, ServiceUnavailableException
     def create_log_stream(self, CreateLogStreamRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "CreateLogStream", body)
+
+    # CreateLookupTable
+    # errors: AccessDeniedException, InvalidParameterException, LimitExceededException, ResourceAlreadyExistsException, ServiceUnavailableException, ValidationException
+    def create_lookup_table(self, CreateLookupTableRequest input) -> str:
+        auto body = create_lookup_table_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "CreateLookupTable", body)
+
+    # CreateScheduledQuery
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_scheduled_query(self, CreateScheduledQueryRequest input) -> str:
+        auto body = create_scheduled_query_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "CreateScheduledQuery", body)
 
     # DeleteAccountPolicy
     # errors: InvalidParameterException, OperationAbortedException, ResourceNotFoundException, ServiceUnavailableException
@@ -2949,6 +4229,36 @@ struct CloudWatch_LogsClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "DeleteTransformer", body)
 
+    # DescribeAccountPolicies
+    # errors: InvalidParameterException, OperationAbortedException, ResourceNotFoundException, ServiceUnavailableException
+    def describe_account_policies(self, DescribeAccountPoliciesRequest input) -> str:
+        auto body = describe_account_policies_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "DescribeAccountPolicies", body)
+
+    # DescribeConfigurationTemplates
+    # errors: ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, ValidationException
+    def describe_configuration_templates(self, DescribeConfigurationTemplatesRequest input) -> str:
+        auto body = describe_configuration_templates_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "DescribeConfigurationTemplates", body)
+
+    # DescribeDeliveries
+    # errors: ServiceQuotaExceededException, ServiceUnavailableException, ThrottlingException, ValidationException
+    def describe_deliveries(self, DescribeDeliveriesRequest input) -> str:
+        auto body = describe_deliveries_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "DescribeDeliveries", body)
+
+    # DescribeDeliveryDestinations
+    # errors: ServiceQuotaExceededException, ServiceUnavailableException, ThrottlingException, ValidationException
+    def describe_delivery_destinations(self, DescribeDeliveryDestinationsRequest input) -> str:
+        auto body = describe_delivery_destinations_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "DescribeDeliveryDestinations", body)
+
+    # DescribeDeliverySources
+    # errors: ServiceQuotaExceededException, ServiceUnavailableException, ThrottlingException, ValidationException
+    def describe_delivery_sources(self, DescribeDeliverySourcesRequest input) -> str:
+        auto body = describe_delivery_sources_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "DescribeDeliverySources", body)
+
     # DescribeDestinations
     # errors: InvalidParameterException, ServiceUnavailableException
     def describe_destinations(self, DescribeDestinationsRequest input) -> str:
@@ -2961,11 +4271,35 @@ struct CloudWatch_LogsClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "DescribeExportTasks", body)
 
+    # DescribeFieldIndexes
+    # errors: InvalidParameterException, LimitExceededException, OperationAbortedException, ResourceNotFoundException, ServiceUnavailableException
+    def describe_field_indexes(self, DescribeFieldIndexesRequest input) -> str:
+        auto body = describe_field_indexes_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "DescribeFieldIndexes", body)
+
+    # DescribeImportTaskBatches
+    # errors: AccessDeniedException, InvalidOperationException, InvalidParameterException, ResourceNotFoundException, ThrottlingException
+    def describe_import_task_batches(self, DescribeImportTaskBatchesRequest input) -> str:
+        auto body = describe_import_task_batches_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "DescribeImportTaskBatches", body)
+
     # DescribeImportTasks
     # errors: AccessDeniedException, InvalidOperationException, InvalidParameterException, ResourceNotFoundException, ThrottlingException
     def describe_import_tasks(self, DescribeImportTasksRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "DescribeImportTasks", body)
+
+    # DescribeIndexPolicies
+    # errors: InvalidParameterException, LimitExceededException, OperationAbortedException, ResourceNotFoundException, ServiceUnavailableException
+    def describe_index_policies(self, DescribeIndexPoliciesRequest input) -> str:
+        auto body = describe_index_policies_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "DescribeIndexPolicies", body)
+
+    # DescribeLogGroups
+    # errors: InvalidParameterException, ServiceUnavailableException
+    def describe_log_groups(self, DescribeLogGroupsRequest input) -> str:
+        auto body = describe_log_groups_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "DescribeLogGroups", body)
 
     # DescribeLogStreams
     # errors: InvalidParameterException, ResourceNotFoundException, ServiceUnavailableException
@@ -3020,6 +4354,12 @@ struct CloudWatch_LogsClient:
     def disassociate_source_from_s3_table_integration(self, DisassociateSourceFromS3TableIntegrationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "DisassociateSourceFromS3TableIntegration", body)
+
+    # FilterLogEvents
+    # errors: InvalidParameterException, ResourceNotFoundException, ServiceUnavailableException
+    def filter_log_events(self, FilterLogEventsRequest input) -> str:
+        auto body = filter_log_events_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "FilterLogEvents", body)
 
     # GetDataProtectionPolicy
     # errors: InvalidParameterException, OperationAbortedException, ResourceNotFoundException, ServiceUnavailableException
@@ -3111,6 +4451,12 @@ struct CloudWatch_LogsClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "GetScheduledQuery", body)
 
+    # GetScheduledQueryHistory
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_scheduled_query_history(self, GetScheduledQueryHistoryRequest input) -> str:
+        auto body = get_scheduled_query_history_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "GetScheduledQueryHistory", body)
+
     # GetStorageTierPolicy
     # errors: AccessDeniedException, InvalidParameterException, OperationAbortedException, ResourceNotFoundException, ServiceUnavailableException
     def get_storage_tier_policy(self) -> str:
@@ -3122,6 +4468,12 @@ struct CloudWatch_LogsClient:
     def get_transformer(self, GetTransformerRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "GetTransformer", body)
+
+    # ListAggregateLogGroupSummaries
+    # errors: InvalidParameterException, ServiceUnavailableException, ValidationException
+    def list_aggregate_log_group_summaries(self, ListAggregateLogGroupSummariesRequest input) -> str:
+        auto body = list_aggregate_log_group_summaries_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "ListAggregateLogGroupSummaries", body)
 
     # ListAnomalies
     # errors: InvalidParameterException, OperationAbortedException, ResourceNotFoundException, ServiceUnavailableException
@@ -3140,6 +4492,12 @@ struct CloudWatch_LogsClient:
     def list_log_anomaly_detectors(self, ListLogAnomalyDetectorsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "ListLogAnomalyDetectors", body)
+
+    # ListLogGroups
+    # errors: InvalidParameterException, ServiceUnavailableException
+    def list_log_groups(self, ListLogGroupsRequest input) -> str:
+        auto body = list_log_groups_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "ListLogGroups", body)
 
     # ListLogGroupsForQuery
     # errors: AccessDeniedException, InvalidParameterException, ResourceNotFoundException, ServiceUnavailableException
@@ -3195,11 +4553,29 @@ struct CloudWatch_LogsClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "PutDataProtectionPolicy", body)
 
+    # PutDeliveryDestination
+    # errors: ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ServiceUnavailableException, ThrottlingException, ValidationException
+    def put_delivery_destination(self, PutDeliveryDestinationRequest input) -> str:
+        auto body = put_delivery_destination_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "PutDeliveryDestination", body)
+
     # PutDeliveryDestinationPolicy
     # errors: ConflictException, ResourceNotFoundException, ServiceUnavailableException, ValidationException
     def put_delivery_destination_policy(self, PutDeliveryDestinationPolicyRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "PutDeliveryDestinationPolicy", body)
+
+    # PutDeliverySource
+    # errors: ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ServiceUnavailableException, ThrottlingException, ValidationException
+    def put_delivery_source(self, PutDeliverySourceRequest input) -> str:
+        auto body = put_delivery_source_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "PutDeliverySource", body)
+
+    # PutDestination
+    # errors: InvalidParameterException, OperationAbortedException, ServiceUnavailableException
+    def put_destination(self, PutDestinationRequest input) -> str:
+        auto body = put_destination_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "PutDestination", body)
 
     # PutDestinationPolicy
     # errors: InvalidParameterException, OperationAbortedException, ServiceUnavailableException
@@ -3213,11 +4589,35 @@ struct CloudWatch_LogsClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "PutIndexPolicy", body)
 
+    # PutIntegration
+    # errors: InvalidParameterException, LimitExceededException, ServiceUnavailableException, ValidationException
+    def put_integration(self, PutIntegrationRequest input) -> str:
+        auto body = put_integration_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "PutIntegration", body)
+
+    # PutLogEvents
+    # errors: DataAlreadyAcceptedException, InvalidParameterException, InvalidSequenceTokenException, ResourceNotFoundException, ServiceUnavailableException, UnrecognizedClientException
+    def put_log_events(self, PutLogEventsRequest input) -> str:
+        auto body = put_log_events_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "PutLogEvents", body)
+
     # PutLogGroupDeletionProtection
     # errors: AccessDeniedException, InvalidOperationException, InvalidParameterException, OperationAbortedException, ResourceNotFoundException, ServiceUnavailableException
     def put_log_group_deletion_protection(self, PutLogGroupDeletionProtectionRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "PutLogGroupDeletionProtection", body)
+
+    # PutMetricFilter
+    # errors: InvalidOperationException, InvalidParameterException, LimitExceededException, OperationAbortedException, ResourceNotFoundException, ServiceUnavailableException
+    def put_metric_filter(self, PutMetricFilterRequest input) -> str:
+        auto body = put_metric_filter_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "PutMetricFilter", body)
+
+    # PutQueryDefinition
+    # errors: InvalidParameterException, LimitExceededException, ResourceNotFoundException, ServiceUnavailableException
+    def put_query_definition(self, PutQueryDefinitionRequest input) -> str:
+        auto body = put_query_definition_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "PutQueryDefinition", body)
 
     # PutResourcePolicy
     # errors: InvalidParameterException, LimitExceededException, OperationAbortedException, ResourceNotFoundException, ServiceUnavailableException
@@ -3237,11 +4637,35 @@ struct CloudWatch_LogsClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "PutStorageTierPolicy", body)
 
+    # PutSubscriptionFilter
+    # errors: InvalidOperationException, InvalidParameterException, LimitExceededException, OperationAbortedException, ResourceNotFoundException, ServiceUnavailableException
+    def put_subscription_filter(self, PutSubscriptionFilterRequest input) -> str:
+        auto body = put_subscription_filter_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "PutSubscriptionFilter", body)
+
     # PutSyslogConfiguration
     # errors: AccessDeniedException, InvalidOperationException, InvalidParameterException, OperationAbortedException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
     def put_syslog_configuration(self, PutSyslogConfigurationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "PutSyslogConfiguration", body)
+
+    # PutTransformer
+    # errors: InvalidOperationException, InvalidParameterException, LimitExceededException, OperationAbortedException, ResourceNotFoundException, ServiceUnavailableException
+    def put_transformer(self, PutTransformerRequest input) -> str:
+        auto body = put_transformer_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "PutTransformer", body)
+
+    # StartLiveTail
+    # errors: AccessDeniedException, InvalidOperationException, InvalidParameterException, LimitExceededException, ResourceNotFoundException
+    def start_live_tail(self, StartLiveTailRequest input) -> str:
+        auto body = start_live_tail_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "StartLiveTail", body)
+
+    # StartQuery
+    # errors: InvalidParameterException, LimitExceededException, MalformedQueryException, ResourceNotFoundException, ServiceUnavailableException
+    def start_query(self, StartQueryRequest input) -> str:
+        auto body = start_query_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "StartQuery", body)
 
     # StopQuery
     # errors: InvalidParameterException, ResourceNotFoundException, ServiceUnavailableException
@@ -3249,11 +4673,53 @@ struct CloudWatch_LogsClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "StopQuery", body)
 
+    # TagLogGroup
+    # errors: InvalidParameterException, ResourceNotFoundException
+    def tag_log_group(self, TagLogGroupRequest input) -> str:
+        auto body = tag_log_group_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "TagLogGroup", body)
+
+    # TagResource
+    # errors: InvalidParameterException, ResourceNotFoundException, ServiceUnavailableException, TooManyTagsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "TagResource", body)
+
+    # TestMetricFilter
+    # errors: InvalidParameterException, ServiceUnavailableException
+    def test_metric_filter(self, TestMetricFilterRequest input) -> str:
+        auto body = test_metric_filter_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "TestMetricFilter", body)
+
+    # TestTransformer
+    # errors: InvalidOperationException, InvalidParameterException, ServiceUnavailableException
+    def test_transformer(self, TestTransformerRequest input) -> str:
+        auto body = test_transformer_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "TestTransformer", body)
+
+    # UntagLogGroup
+    # errors: ResourceNotFoundException
+    def untag_log_group(self, UntagLogGroupRequest input) -> str:
+        auto body = untag_log_group_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "UntagLogGroup", body)
+
+    # UntagResource
+    # errors: InvalidParameterException, ResourceNotFoundException, ServiceUnavailableException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "UntagResource", body)
+
     # UpdateAnomaly
     # errors: InvalidParameterException, OperationAbortedException, ResourceNotFoundException, ServiceUnavailableException
     def update_anomaly(self, UpdateAnomalyRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "UpdateAnomaly", body)
+
+    # UpdateDeliveryConfiguration
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, ValidationException
+    def update_delivery_configuration(self, UpdateDeliveryConfigurationRequest input) -> str:
+        auto body = update_delivery_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "UpdateDeliveryConfiguration", body)
 
     # UpdateLogAnomalyDetector
     # errors: InvalidParameterException, OperationAbortedException, ResourceNotFoundException, ServiceUnavailableException
@@ -3266,6 +4732,68 @@ struct CloudWatch_LogsClient:
     def update_lookup_table(self, UpdateLookupTableRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "UpdateLookupTable", body)
+
+    # UpdateScheduledQuery
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_scheduled_query(self, UpdateScheduledQueryRequest input) -> str:
+        auto body = update_scheduled_query_request_to_json(input)
+        return awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "UpdateScheduledQuery", body)
+
+    # Paginator for DescribeConfigurationTemplates — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: configurationTemplates).
+    def paginate_describe_configuration_templates(self, DescribeConfigurationTemplatesRequest input):
+        auto host = endpoints.regional_host(logs_protocol().service, self.region)
+        while True:
+            auto body = describe_configuration_templates_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "DescribeConfigurationTemplates", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeDeliveries — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: deliveries).
+    def paginate_describe_deliveries(self, DescribeDeliveriesRequest input):
+        auto host = endpoints.regional_host(logs_protocol().service, self.region)
+        while True:
+            auto body = describe_deliveries_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "DescribeDeliveries", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeDeliveryDestinations — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: deliveryDestinations).
+    def paginate_describe_delivery_destinations(self, DescribeDeliveryDestinationsRequest input):
+        auto host = endpoints.regional_host(logs_protocol().service, self.region)
+        while True:
+            auto body = describe_delivery_destinations_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "DescribeDeliveryDestinations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeDeliverySources — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: deliverySources).
+    def paginate_describe_delivery_sources(self, DescribeDeliverySourcesRequest input):
+        auto host = endpoints.regional_host(logs_protocol().service, self.region)
+        while True:
+            auto body = describe_delivery_sources_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "DescribeDeliverySources", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
 
     # Paginator for DescribeDestinations — yields each Response page, threading the
     # nextToken -> nextToken continuation token until the output token is absent (result key: destinations).
@@ -3288,6 +4816,20 @@ struct CloudWatch_LogsClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "DescribeExportTasks", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeLogGroups — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: logGroups).
+    def paginate_describe_log_groups(self, DescribeLogGroupsRequest input):
+        auto host = endpoints.regional_host(logs_protocol().service, self.region)
+        while True:
+            auto body = describe_log_groups_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "DescribeLogGroups", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -3358,6 +4900,48 @@ struct CloudWatch_LogsClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "DescribeSubscriptionFilters", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for FilterLogEvents — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: events, searchedLogStreams).
+    def paginate_filter_log_events(self, FilterLogEventsRequest input):
+        auto host = endpoints.regional_host(logs_protocol().service, self.region)
+        while True:
+            auto body = filter_log_events_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "FilterLogEvents", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for GetScheduledQueryHistory — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: triggerHistory).
+    def paginate_get_scheduled_query_history(self, GetScheduledQueryHistoryRequest input):
+        auto host = endpoints.regional_host(logs_protocol().service, self.region)
+        while True:
+            auto body = get_scheduled_query_history_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "GetScheduledQueryHistory", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListAggregateLogGroupSummaries — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: aggregateLogGroupSummaries).
+    def paginate_list_aggregate_log_group_summaries(self, ListAggregateLogGroupSummariesRequest input):
+        auto host = endpoints.regional_host(logs_protocol().service, self.region)
+        while True:
+            auto body = list_aggregate_log_group_summaries_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(logs_protocol(), self.creds, self.region, "ListAggregateLogGroupSummaries", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

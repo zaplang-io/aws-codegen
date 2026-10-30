@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 10 operations — 5 with a generated method,
-#   5 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 10 operations — 9 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   31 structs (19 @derive(Json)), 4 enums, 5 error variants.
-#   0 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -88,8 +88,9 @@ struct CreateRuleRequest:
     Optional[LockConfiguration] LockConfiguration
     Optional[list[ResourceTag]] ExcludeResourceTags
 
-# no @derive(Json): member(s) Tags: list[Tag], ResourceTags: list[ResourceTag], ExcludeResourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], ResourceTags: list[ResourceTag], ExcludeResourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRuleResponse:
     Optional[str] Identifier
     Optional[RetentionPeriod] RetentionPeriod
@@ -118,8 +119,9 @@ struct DeleteRuleResponse:
 struct GetRuleRequest:
     str Identifier
 
-# no @derive(Json): member(s) ResourceTags: list[ResourceTag], ExcludeResourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTags: list[ResourceTag], ExcludeResourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRuleResponse:
     Optional[str] Identifier
     Optional[str] Description
@@ -147,8 +149,9 @@ struct ListRulesRequest:
     Optional[LockState] LockState
     Optional[list[ResourceTag]] ExcludeResourceTags
 
-# no @derive(Json): member(s) Rules: list[RuleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[RuleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRulesResponse:
     Optional[list[RuleSummary]] Rules
     Optional[str] NextToken
@@ -158,8 +161,9 @@ struct ListRulesResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -173,8 +177,9 @@ struct LockRuleRequest:
     str Identifier
     LockConfiguration LockConfiguration
 
-# no @derive(Json): member(s) ResourceTags: list[ResourceTag], ExcludeResourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTags: list[ResourceTag], ExcludeResourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LockRuleResponse:
     Optional[str] Identifier
     Optional[str] Description
@@ -241,8 +246,9 @@ struct UnlockDelay:
 struct UnlockRuleRequest:
     str Identifier
 
-# no @derive(Json): member(s) ResourceTags: list[ResourceTag], ExcludeResourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTags: list[ResourceTag], ExcludeResourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UnlockRuleResponse:
     Optional[str] Identifier
     Optional[str] Description
@@ -277,8 +283,9 @@ struct UpdateRuleRequest:
     Optional[list[ResourceTag]] ResourceTags
     Optional[list[ResourceTag]] ExcludeResourceTags
 
-# no @derive(Json): member(s) ResourceTags: list[ResourceTag], ExcludeResourceTags: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTags: list[ResourceTag], ExcludeResourceTags: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRuleResponse:
     Optional[str] Identifier
     Optional[RetentionPeriod] RetentionPeriod
@@ -328,15 +335,7 @@ def rbin_error_from_code(str code) -> rbinError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateRule (document member `Tags: list[Tag]` is not serializable by derive)
-#   ListRules (document member `ResourceTags: list[ResourceTag]` is not serializable by derive)
-#   TagResource (document member `Tags: list[Tag]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateRule (document member `ResourceTags: list[ResourceTag]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListRules (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -350,6 +349,41 @@ struct LockRuleDocument:
 struct rbinClient:
     core.Credentials creds
     str region
+
+    # CreateRule  POST /rules
+    # errors: InternalServerException, ServiceQuotaExceededException, ValidationException
+    def create_rule(self, CreateRuleRequest input) -> str:
+        auto host = endpoints.regional_host(rbin_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/rules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"RetentionPeriod\":" + input.RetentionPeriod.to_json())
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + rbin_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Tags\":" + rbin_json_arr(e2))
+        parts.append("\"ResourceType\":" + input.ResourceType.to_json())
+        if input.ResourceTags.is_some():
+            auto u3 = input.ResourceTags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"ResourceTags\":" + rbin_json_arr(e4))
+        if input.LockConfiguration.is_some():
+            auto u5 = input.LockConfiguration.unwrap()
+            parts.append("\"LockConfiguration\":" + u5.to_json())
+        if input.ExcludeResourceTags.is_some():
+            auto u6 = input.ExcludeResourceTags.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"ExcludeResourceTags\":" + rbin_json_arr(e7))
+        auto bp = restjson.rest_json_document(b, rbin_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rbin_service(), self.region, host)
 
     # DeleteRule  DELETE /rules/{identifier}
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
@@ -368,6 +402,37 @@ struct rbinClient:
         labels["identifier"] = input.Identifier
         auto b = binding.HttpBinding(method="GET", path_template="/rules/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rbin_service(), self.region, host)
+
+    # ListRules  POST /list-rules
+    # errors: InternalServerException, ValidationException
+    def list_rules(self, ListRulesRequest input) -> str:
+        auto host = endpoints.regional_host(rbin_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/list-rules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.MaxResults.is_some():
+            auto u0 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + rbin_json_str(u1))
+        parts.append("\"ResourceType\":" + input.ResourceType.to_json())
+        if input.ResourceTags.is_some():
+            auto u2 = input.ResourceTags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"ResourceTags\":" + rbin_json_arr(e3))
+        if input.LockState.is_some():
+            auto u4 = input.LockState.unwrap()
+            parts.append("\"LockState\":" + u4.to_json())
+        if input.ExcludeResourceTags.is_some():
+            auto u5 = input.ExcludeResourceTags.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"ExcludeResourceTags\":" + rbin_json_arr(e6))
+        auto bp = restjson.rest_json_document(b, rbin_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rbin_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
@@ -389,6 +454,21 @@ struct rbinClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, rbin_service(), self.region, host)
 
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(rbin_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Tags:
+            e0.append(x0.to_json())
+        parts.append("\"Tags\":" + rbin_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, rbin_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rbin_service(), self.region, host)
+
     # UnlockRule  PATCH /rules/{identifier}/unlock
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def unlock_rule(self, UnlockRuleRequest input) -> str:
@@ -397,6 +477,51 @@ struct rbinClient:
         labels["identifier"] = input.Identifier
         auto b = binding.HttpBinding(method="PATCH", path_template="/rules/{identifier}/unlock", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rbin_service(), self.region, host)
+
+    # UpdateRule  PATCH /rules/{identifier}
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def update_rule(self, UpdateRuleRequest input) -> str:
+        auto host = endpoints.regional_host(rbin_service(), self.region)
+        dict[str, str] labels = {}
+        labels["identifier"] = input.Identifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/rules/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.RetentionPeriod.is_some():
+            auto u0 = input.RetentionPeriod.unwrap()
+            parts.append("\"RetentionPeriod\":" + u0.to_json())
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + rbin_json_str(u1))
+        if input.ResourceType.is_some():
+            auto u2 = input.ResourceType.unwrap()
+            parts.append("\"ResourceType\":" + u2.to_json())
+        if input.ResourceTags.is_some():
+            auto u3 = input.ResourceTags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"ResourceTags\":" + rbin_json_arr(e4))
+        if input.ExcludeResourceTags.is_some():
+            auto u5 = input.ExcludeResourceTags.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"ExcludeResourceTags\":" + rbin_json_arr(e6))
+        auto bp = restjson.rest_json_document(b, rbin_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rbin_service(), self.region, host)
+
+    # Paginator for ListRules — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Rules).
+    def paginate_list_rules(self, ListRulesRequest input):
+        auto host = endpoints.regional_host(rbin_service(), self.region)
+        while True:
+            auto raw = self.list_rules(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
 # Construct a rbinClient bound to credentials + region.
 def rbin_client(core.Credentials creds, str region) -> rbinClient:

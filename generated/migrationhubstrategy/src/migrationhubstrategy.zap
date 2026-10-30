@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 22 operations — 15 with a generated method,
-#   7 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 22 operations — 22 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   106 structs (67 @derive(Json)), 42 enums, 9 error variants.
-#   4 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   6 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -505,8 +505,9 @@ struct AntipatternSeveritySummary:
 struct AppUnitError:
     Optional[AppUnitErrorCategory] appUnitErrorCategory
 
-# no @derive(Json): member(s) listAntipatternSeveritySummary: list[AntipatternSeveritySummary], resultList: list[Result], sourceCodeRepositories: list[SourceCodeRepository] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) listAntipatternSeveritySummary: list[AntipatternSeveritySummary], resultList: list[Result], sourceCodeRepositories: list[SourceCodeRepository] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationComponentDetail:
     Optional[SrcCodeOrDbAnalysisStatus] analysisStatus
     Optional[S3Object] antipatternReportS3Object
@@ -548,13 +549,15 @@ struct ApplicationComponentSummary:
     Optional[AppType] appType
     Optional[int64] count
 
-# no @derive(Json): member(s) managementPreference: ManagementPreference not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) managementPreference: ManagementPreference not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationPreferences:
     Optional[ManagementPreference] managementPreference
 
-# no @derive(Json): member(s) listAntipatternSeveritySummary: list[AntipatternSeveritySummary], listApplicationComponentStatusSummary: list[ApplicationComponentStatusSummary], listApplicationComponentStrategySummary: list[StrategySummary], listApplicationComponentSummary: list[ApplicationComponentSummary], listServerStatusSummary: list[ServerStatusSummary], listServerStrategySummary: list[StrategySummary], listServerSummary: list[ServerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) listAntipatternSeveritySummary: list[AntipatternSeveritySummary], listApplicationComponentStatusSummary: list[ApplicationComponentStatusSummary], listApplicationComponentStrategySummary: list[StrategySummary], listApplicationComponentSummary: list[ApplicationComponentSummary], listServerStatusSummary: list[ServerStatusSummary], listServerStrategySummary: list[StrategySummary], listServerSummary: list[ServerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssessmentSummary:
     Optional[S3Object] antipatternReportS3Object
     Optional[AntipatternReportStatus] antipatternReportStatus
@@ -568,8 +571,9 @@ struct AssessmentSummary:
     Optional[list[StrategySummary]] listServerStrategySummary
     Optional[list[ServerSummary]] listServerSummary
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssessmentTarget:
     Condition condition
     str name
@@ -580,8 +584,9 @@ struct AssociatedApplication:
     Optional[str] id
     Optional[str] name
 
-# no @derive(Json): member(s) targetDestination: list[AwsManagedTargetDestination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetDestination: list[AwsManagedTargetDestination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsManagedResources:
     list[AwsManagedTargetDestination] targetDestination
 
@@ -592,8 +597,9 @@ struct BusinessGoals:
     Optional[int64] reduceOperationalOverheadWithManagedServices
     Optional[int64] speedOfMigration
 
-# no @derive(Json): member(s) configurationSummary: ConfigurationSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurationSummary: ConfigurationSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Collector:
     Optional[CollectorHealth] collectorHealth
     Optional[str] collectorId
@@ -604,8 +610,9 @@ struct Collector:
     Optional[str] lastActivityTimeStamp
     Optional[str] registeredTimeStamp
 
-# no @derive(Json): member(s) ipAddressBasedRemoteInfoList: list[IPAddressBasedRemoteInfo], pipelineInfoList: list[PipelineInfo], vcenterBasedRemoteInfoList: list[VcenterBasedRemoteInfo], versionControlInfoList: list[VersionControlInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ipAddressBasedRemoteInfoList: list[IPAddressBasedRemoteInfo], pipelineInfoList: list[PipelineInfo], vcenterBasedRemoteInfoList: list[VcenterBasedRemoteInfo], versionControlInfoList: list[VersionControlInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationSummary:
     Optional[list[IPAddressBasedRemoteInfo]] ipAddressBasedRemoteInfoList
     Optional[list[PipelineInfo]] pipelineInfoList
@@ -632,15 +639,17 @@ struct DataCollectionDetails:
 struct DatabaseConfigDetail:
     Optional[str] secretName
 
-# no @derive(Json): member(s) heterogeneous: Heterogeneous, homogeneous: Homogeneous, noPreference: NoDatabaseMigrationPreference not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) heterogeneous: Heterogeneous, homogeneous: Homogeneous, noPreference: NoDatabaseMigrationPreference not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatabaseMigrationPreference:
     Optional[Heterogeneous] heterogeneous
     Optional[Homogeneous] homogeneous
     Optional[NoDatabaseMigrationPreference] noPreference
 
-# no @derive(Json): member(s) databaseMigrationPreference: DatabaseMigrationPreference not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) databaseMigrationPreference: DatabaseMigrationPreference not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatabasePreferences:
     Optional[DatabaseManagementPreference] databaseManagementPreference
     Optional[DatabaseMigrationPreference] databaseMigrationPreference
@@ -654,8 +663,9 @@ struct DependencyException:
 struct GetApplicationComponentDetailsRequest:
     str applicationComponentId
 
-# no @derive(Json): member(s) applicationComponentDetail: ApplicationComponentDetail, associatedApplications: list[AssociatedApplication], associatedServerIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) applicationComponentDetail: ApplicationComponentDetail, associatedApplications: list[AssociatedApplication], associatedServerIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetApplicationComponentDetailsResponse:
     Optional[ApplicationComponentDetail] applicationComponentDetail
     Optional[list[AssociatedApplication]] associatedApplications
@@ -667,8 +677,9 @@ struct GetApplicationComponentDetailsResponse:
 struct GetApplicationComponentStrategiesRequest:
     str applicationComponentId
 
-# no @derive(Json): member(s) applicationComponentStrategies: list[ApplicationComponentStrategy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) applicationComponentStrategies: list[ApplicationComponentStrategy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetApplicationComponentStrategiesResponse:
     Optional[list[ApplicationComponentStrategy]] applicationComponentStrategies
 
@@ -677,8 +688,9 @@ struct GetApplicationComponentStrategiesResponse:
 struct GetAssessmentRequest:
     str id
 
-# no @derive(Json): member(s) assessmentTargets: list[AssessmentTarget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessmentTargets: list[AssessmentTarget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAssessmentResponse:
     Optional[list[AssessmentTarget]] assessmentTargets
     Optional[DataCollectionDetails] dataCollectionDetails
@@ -719,8 +731,9 @@ struct GetPortfolioPreferencesRequest:
     # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) applicationPreferences: ApplicationPreferences, databasePreferences: DatabasePreferences not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) applicationPreferences: ApplicationPreferences, databasePreferences: DatabasePreferences not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPortfolioPreferencesResponse:
     Optional[ApplicationMode] applicationMode
     Optional[ApplicationPreferences] applicationPreferences
@@ -733,8 +746,9 @@ struct GetPortfolioSummaryRequest:
     # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) assessmentSummary: AssessmentSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessmentSummary: AssessmentSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPortfolioSummaryResponse:
     Optional[AssessmentSummary] assessmentSummary
 
@@ -743,8 +757,9 @@ struct GetPortfolioSummaryResponse:
 struct GetRecommendationReportDetailsRequest:
     str id
 
-# no @derive(Json): member(s) recommendationReportDetails: RecommendationReportDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommendationReportDetails: RecommendationReportDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecommendationReportDetailsResponse:
     Optional[str] id
     Optional[RecommendationReportDetails] recommendationReportDetails
@@ -756,8 +771,9 @@ struct GetServerDetailsRequest:
     Optional[str] nextToken
     str serverId
 
-# no @derive(Json): member(s) associatedApplications: list[AssociatedApplication], serverDetail: ServerDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedApplications: list[AssociatedApplication], serverDetail: ServerDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetServerDetailsResponse:
     Optional[list[AssociatedApplication]] associatedApplications
     Optional[str] nextToken
@@ -768,8 +784,9 @@ struct GetServerDetailsResponse:
 struct GetServerStrategiesRequest:
     str serverId
 
-# no @derive(Json): member(s) serverStrategies: list[ServerStrategy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serverStrategies: list[ServerStrategy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetServerStrategiesResponse:
     Optional[list[ServerStrategy]] serverStrategies
 
@@ -778,13 +795,15 @@ struct Group:
     Optional[GroupName] name
     Optional[str] value
 
-# no @derive(Json): member(s) targetDatabaseEngine: list[HeterogeneousTargetDatabaseEngine] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetDatabaseEngine: list[HeterogeneousTargetDatabaseEngine] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Heterogeneous:
     list[HeterogeneousTargetDatabaseEngine] targetDatabaseEngine
 
-# no @derive(Json): member(s) targetDatabaseEngine: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetDatabaseEngine: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Homogeneous:
     Optional[list[str]] targetDatabaseEngine
 
@@ -819,8 +838,9 @@ struct ListAnalyzableServersRequest:
     Optional[str] nextToken
     Optional[SortOrder] sort
 
-# no @derive(Json): member(s) analyzableServers: list[AnalyzableServerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) analyzableServers: list[AnalyzableServerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAnalyzableServersResponse:
     Optional[list[AnalyzableServerSummary]] analyzableServers
     Optional[str] nextToken
@@ -835,8 +855,9 @@ struct ListApplicationComponentsRequest:
     Optional[str] nextToken
     Optional[SortOrder] sort
 
-# no @derive(Json): member(s) applicationComponentInfos: list[ApplicationComponentDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) applicationComponentInfos: list[ApplicationComponentDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationComponentsResponse:
     Optional[list[ApplicationComponentDetail]] applicationComponentInfos
     Optional[str] nextToken
@@ -847,8 +868,9 @@ struct ListCollectorsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) Collectors: list[Collector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Collectors: list[Collector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCollectorsResponse:
     Optional[list[Collector]] Collectors
     Optional[str] nextToken
@@ -859,8 +881,9 @@ struct ListImportFileTaskRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) taskInfos: list[ImportFileTaskInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskInfos: list[ImportFileTaskInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImportFileTaskResponse:
     Optional[str] nextToken
     Optional[list[ImportFileTaskInformation]] taskInfos
@@ -875,14 +898,16 @@ struct ListServersRequest:
     Optional[ServerCriteria] serverCriteria
     Optional[SortOrder] sort
 
-# no @derive(Json): member(s) serverInfos: list[ServerDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serverInfos: list[ServerDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServersResponse:
     Optional[str] nextToken
     Optional[list[ServerDetail]] serverInfos
 
-# no @derive(Json): member(s) awsManagedResources: AwsManagedResources, noPreference: NoManagementPreference, selfManageResources: SelfManageResources not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) awsManagedResources: AwsManagedResources, noPreference: NoManagementPreference, selfManageResources: SelfManageResources not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagementPreference:
     Optional[AwsManagedResources] awsManagedResources
     Optional[NoManagementPreference] noPreference
@@ -895,13 +920,15 @@ struct NetworkInfo:
     str macAddress
     str netMask
 
-# no @derive(Json): member(s) targetDatabaseEngine: list[TargetDatabaseEngine] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetDatabaseEngine: list[TargetDatabaseEngine] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NoDatabaseMigrationPreference:
     list[TargetDatabaseEngine] targetDatabaseEngine
 
-# no @derive(Json): member(s) targetDestination: list[NoPreferenceTargetDestination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetDestination: list[NoPreferenceTargetDestination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NoManagementPreference:
     list[NoPreferenceTargetDestination] targetDestination
 
@@ -932,8 +959,9 @@ struct PutPortfolioPreferencesResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) s3Keys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) s3Keys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationReportDetails:
     Optional[DateTime] completionTime
     Optional[str] s3Bucket
@@ -956,8 +984,9 @@ struct RemoteSourceCodeAnalysisServerInfo:
 struct ResourceNotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) antipatternReportResultList: list[AntipatternReportResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) antipatternReportResultList: list[AntipatternReportResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Result:
     Optional[AnalysisStatusUnion] analysisStatus
     Optional[AnalysisType] analysisType
@@ -969,13 +998,15 @@ struct S3Object:
     Optional[str] s3Bucket
     Optional[str] s3key
 
-# no @derive(Json): member(s) targetDestination: list[SelfManageTargetDestination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetDestination: list[SelfManageTargetDestination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SelfManageResources:
     list[SelfManageTargetDestination] targetDestination
 
-# no @derive(Json): member(s) applicationComponentStrategySummary: list[StrategySummary], listAntipatternSeveritySummary: list[AntipatternSeveritySummary], systemInfo: SystemInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) applicationComponentStrategySummary: list[StrategySummary], listAntipatternSeveritySummary: list[AntipatternSeveritySummary], systemInfo: SystemInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServerDetail:
     Optional[S3Object] antipatternReportS3Object
     Optional[AntipatternReportStatus] antipatternReportStatus
@@ -1093,8 +1124,9 @@ struct StrategySummary:
     Optional[int64] count
     Optional[Strategy] strategy
 
-# no @derive(Json): member(s) networkInfoList: list[NetworkInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkInfoList: list[NetworkInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SystemInfo:
     Optional[str] cpuArchitecture
     Optional[str] fileSystemType
@@ -1193,22 +1225,6 @@ def migrationhub_strategy_error_from_code(str code) -> MigrationHubStrategyError
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   ListApplicationComponents (document member `groupIdFilter: list[Group]` is not serializable by derive)
-#   ListServers (document member `groupIdFilter: list[Group]` is not serializable by derive)
-#   PutPortfolioPreferences (document member `applicationPreferences: ApplicationPreferences` is not serializable by derive)
-#   StartAssessment (document member `assessmentTargets: list[AssessmentTarget]` is not serializable by derive)
-#   StartImportFileTask (document member `groupId: list[Group]` is not serializable by derive)
-#   StartRecommendationReportGeneration (document member `groupIdFilter: list[Group]` is not serializable by derive)
-#   UpdateApplicationComponentConfig (document member `sourceCodeList: list[SourceCode]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListApplicationComponents (operation not generated)
-#   ListServers (operation not generated)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1229,6 +1245,150 @@ struct UpdateServerConfigDocument:
     # document members of UpdateServerConfig
     str serverId
     Optional[StrategyOption] strategyOption
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def migrationhub_strategy_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def migrationhub_strategy_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def migrationhub_strategy_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ApplicationPreferences to a compact JSON object (declaration order).
+def application_preferences_to_json(ApplicationPreferences v) -> str:
+    list[str] parts = []
+    if v.managementPreference.is_some():
+        auto u0 = v.managementPreference.unwrap()
+        parts.append("\"managementPreference\":" + management_preference_to_json(u0))
+    return migrationhub_strategy_json_obj(parts)
+
+# Serialize AssessmentTarget to a compact JSON object (declaration order).
+def assessment_target_to_json(AssessmentTarget v) -> str:
+    list[str] parts = []
+    parts.append("\"condition\":" + v.condition.to_json())
+    parts.append("\"name\":" + migrationhub_strategy_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(migrationhub_strategy_json_str(x0))
+    parts.append("\"values\":" + migrationhub_strategy_json_arr(e0))
+    return migrationhub_strategy_json_obj(parts)
+
+# Serialize AwsManagedResources to a compact JSON object (declaration order).
+def aws_managed_resources_to_json(AwsManagedResources v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.targetDestination:
+        e0.append(x0.to_json())
+    parts.append("\"targetDestination\":" + migrationhub_strategy_json_arr(e0))
+    return migrationhub_strategy_json_obj(parts)
+
+# Serialize DatabaseMigrationPreference to a compact JSON object (declaration order).
+def database_migration_preference_to_json(DatabaseMigrationPreference v) -> str:
+    list[str] parts = []
+    if v.heterogeneous.is_some():
+        auto u0 = v.heterogeneous.unwrap()
+        parts.append("\"heterogeneous\":" + heterogeneous_to_json(u0))
+    if v.homogeneous.is_some():
+        auto u1 = v.homogeneous.unwrap()
+        parts.append("\"homogeneous\":" + homogeneous_to_json(u1))
+    if v.noPreference.is_some():
+        auto u2 = v.noPreference.unwrap()
+        parts.append("\"noPreference\":" + no_database_migration_preference_to_json(u2))
+    return migrationhub_strategy_json_obj(parts)
+
+# Serialize DatabasePreferences to a compact JSON object (declaration order).
+def database_preferences_to_json(DatabasePreferences v) -> str:
+    list[str] parts = []
+    if v.databaseManagementPreference.is_some():
+        auto u0 = v.databaseManagementPreference.unwrap()
+        parts.append("\"databaseManagementPreference\":" + u0.to_json())
+    if v.databaseMigrationPreference.is_some():
+        auto u1 = v.databaseMigrationPreference.unwrap()
+        parts.append("\"databaseMigrationPreference\":" + database_migration_preference_to_json(u1))
+    return migrationhub_strategy_json_obj(parts)
+
+# Serialize Heterogeneous to a compact JSON object (declaration order).
+def heterogeneous_to_json(Heterogeneous v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.targetDatabaseEngine:
+        e0.append(x0.to_json())
+    parts.append("\"targetDatabaseEngine\":" + migrationhub_strategy_json_arr(e0))
+    return migrationhub_strategy_json_obj(parts)
+
+# Serialize Homogeneous to a compact JSON object (declaration order).
+def homogeneous_to_json(Homogeneous v) -> str:
+    list[str] parts = []
+    if v.targetDatabaseEngine.is_some():
+        auto u0 = v.targetDatabaseEngine.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(migrationhub_strategy_json_str(x1))
+        parts.append("\"targetDatabaseEngine\":" + migrationhub_strategy_json_arr(e1))
+    return migrationhub_strategy_json_obj(parts)
+
+# Serialize ManagementPreference to a compact JSON object (declaration order).
+def management_preference_to_json(ManagementPreference v) -> str:
+    list[str] parts = []
+    if v.awsManagedResources.is_some():
+        auto u0 = v.awsManagedResources.unwrap()
+        parts.append("\"awsManagedResources\":" + aws_managed_resources_to_json(u0))
+    if v.noPreference.is_some():
+        auto u1 = v.noPreference.unwrap()
+        parts.append("\"noPreference\":" + no_management_preference_to_json(u1))
+    if v.selfManageResources.is_some():
+        auto u2 = v.selfManageResources.unwrap()
+        parts.append("\"selfManageResources\":" + self_manage_resources_to_json(u2))
+    return migrationhub_strategy_json_obj(parts)
+
+# Serialize NoDatabaseMigrationPreference to a compact JSON object (declaration order).
+def no_database_migration_preference_to_json(NoDatabaseMigrationPreference v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.targetDatabaseEngine:
+        e0.append(x0.to_json())
+    parts.append("\"targetDatabaseEngine\":" + migrationhub_strategy_json_arr(e0))
+    return migrationhub_strategy_json_obj(parts)
+
+# Serialize NoManagementPreference to a compact JSON object (declaration order).
+def no_management_preference_to_json(NoManagementPreference v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.targetDestination:
+        e0.append(x0.to_json())
+    parts.append("\"targetDestination\":" + migrationhub_strategy_json_arr(e0))
+    return migrationhub_strategy_json_obj(parts)
+
+# Serialize SelfManageResources to a compact JSON object (declaration order).
+def self_manage_resources_to_json(SelfManageResources v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.targetDestination:
+        e0.append(x0.to_json())
+    parts.append("\"targetDestination\":" + migrationhub_strategy_json_arr(e0))
+    return migrationhub_strategy_json_obj(parts)
 
 # A bound MigrationHubStrategy client: credentials + region, threaded into every operation.
 struct MigrationHubStrategyClient:
@@ -1333,6 +1493,36 @@ struct MigrationHubStrategyClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, migrationhub_strategy_service(), self.region, host)
 
+    # ListApplicationComponents  POST /list-applicationcomponents
+    # errors: AccessDeniedException, InternalServerException, ServiceLinkedRoleLockClientException, ValidationException
+    def list_application_components(self, ListApplicationComponentsRequest input) -> str:
+        auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/list-applicationcomponents", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.applicationComponentCriteria.is_some():
+            auto u0 = input.applicationComponentCriteria.unwrap()
+            parts.append("\"applicationComponentCriteria\":" + u0.to_json())
+        if input.filterValue.is_some():
+            auto u1 = input.filterValue.unwrap()
+            parts.append("\"filterValue\":" + migrationhub_strategy_json_str(u1))
+        if input.groupIdFilter.is_some():
+            auto u2 = input.groupIdFilter.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"groupIdFilter\":" + migrationhub_strategy_json_arr(e3))
+        if input.maxResults.is_some():
+            auto u4 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u4))
+        if input.nextToken.is_some():
+            auto u5 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + migrationhub_strategy_json_str(u5))
+        if input.sort.is_some():
+            auto u6 = input.sort.unwrap()
+            parts.append("\"sort\":" + u6.to_json())
+        auto bp = restjson.rest_json_document(b, migrationhub_strategy_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, migrationhub_strategy_service(), self.region, host)
+
     # ListCollectors  GET /list-collectors
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_collectors(self, ListCollectorsRequest input) -> str:
@@ -1357,6 +1547,123 @@ struct MigrationHubStrategyClient:
         auto b = binding.HttpBinding(method="GET", path_template="/list-import-file-task", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_strategy_service(), self.region, host)
 
+    # ListServers  POST /list-servers
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_servers(self, ListServersRequest input) -> str:
+        auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/list-servers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filterValue.is_some():
+            auto u0 = input.filterValue.unwrap()
+            parts.append("\"filterValue\":" + migrationhub_strategy_json_str(u0))
+        if input.groupIdFilter.is_some():
+            auto u1 = input.groupIdFilter.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"groupIdFilter\":" + migrationhub_strategy_json_arr(e2))
+        if input.maxResults.is_some():
+            auto u3 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u3))
+        if input.nextToken.is_some():
+            auto u4 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + migrationhub_strategy_json_str(u4))
+        if input.serverCriteria.is_some():
+            auto u5 = input.serverCriteria.unwrap()
+            parts.append("\"serverCriteria\":" + u5.to_json())
+        if input.sort.is_some():
+            auto u6 = input.sort.unwrap()
+            parts.append("\"sort\":" + u6.to_json())
+        auto bp = restjson.rest_json_document(b, migrationhub_strategy_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, migrationhub_strategy_service(), self.region, host)
+
+    # PutPortfolioPreferences  POST /put-portfolio-preferences
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def put_portfolio_preferences(self, PutPortfolioPreferencesRequest input) -> str:
+        auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/put-portfolio-preferences", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.applicationMode.is_some():
+            auto u0 = input.applicationMode.unwrap()
+            parts.append("\"applicationMode\":" + u0.to_json())
+        if input.applicationPreferences.is_some():
+            auto u1 = input.applicationPreferences.unwrap()
+            parts.append("\"applicationPreferences\":" + application_preferences_to_json(u1))
+        if input.databasePreferences.is_some():
+            auto u2 = input.databasePreferences.unwrap()
+            parts.append("\"databasePreferences\":" + database_preferences_to_json(u2))
+        if input.prioritizeBusinessGoals.is_some():
+            auto u3 = input.prioritizeBusinessGoals.unwrap()
+            parts.append("\"prioritizeBusinessGoals\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, migrationhub_strategy_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, migrationhub_strategy_service(), self.region, host)
+
+    # StartAssessment  POST /start-assessment
+    # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException
+    def start_assessment(self, StartAssessmentRequest input) -> str:
+        auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/start-assessment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.assessmentDataSourceType.is_some():
+            auto u0 = input.assessmentDataSourceType.unwrap()
+            parts.append("\"assessmentDataSourceType\":" + u0.to_json())
+        if input.assessmentTargets.is_some():
+            auto u1 = input.assessmentTargets.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(assessment_target_to_json(x2))
+            parts.append("\"assessmentTargets\":" + migrationhub_strategy_json_arr(e2))
+        if input.s3bucketForAnalysisData.is_some():
+            auto u3 = input.s3bucketForAnalysisData.unwrap()
+            parts.append("\"s3bucketForAnalysisData\":" + migrationhub_strategy_json_str(u3))
+        if input.s3bucketForReportData.is_some():
+            auto u4 = input.s3bucketForReportData.unwrap()
+            parts.append("\"s3bucketForReportData\":" + migrationhub_strategy_json_str(u4))
+        auto bp = restjson.rest_json_document(b, migrationhub_strategy_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, migrationhub_strategy_service(), self.region, host)
+
+    # StartImportFileTask  POST /start-import-file-task
+    # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_import_file_task(self, StartImportFileTaskRequest input) -> str:
+        auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/start-import-file-task", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"S3Bucket\":" + migrationhub_strategy_json_str(input.S3Bucket))
+        if input.dataSourceType.is_some():
+            auto u0 = input.dataSourceType.unwrap()
+            parts.append("\"dataSourceType\":" + u0.to_json())
+        if input.groupId.is_some():
+            auto u1 = input.groupId.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"groupId\":" + migrationhub_strategy_json_arr(e2))
+        parts.append("\"name\":" + migrationhub_strategy_json_str(input.name))
+        if input.s3bucketForReportData.is_some():
+            auto u3 = input.s3bucketForReportData.unwrap()
+            parts.append("\"s3bucketForReportData\":" + migrationhub_strategy_json_str(u3))
+        parts.append("\"s3key\":" + migrationhub_strategy_json_str(input.s3key))
+        auto bp = restjson.rest_json_document(b, migrationhub_strategy_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, migrationhub_strategy_service(), self.region, host)
+
+    # StartRecommendationReportGeneration  POST /start-recommendation-report-generation
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def start_recommendation_report_generation(self, StartRecommendationReportGenerationRequest input) -> str:
+        auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/start-recommendation-report-generation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.groupIdFilter.is_some():
+            auto u0 = input.groupIdFilter.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"groupIdFilter\":" + migrationhub_strategy_json_arr(e1))
+        if input.outputFormat.is_some():
+            auto u2 = input.outputFormat.unwrap()
+            parts.append("\"outputFormat\":" + u2.to_json())
+        auto bp = restjson.rest_json_document(b, migrationhub_strategy_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, migrationhub_strategy_service(), self.region, host)
+
     # StopAssessment  POST /stop-assessment
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def stop_assessment(self, StopAssessmentRequest input) -> str:
@@ -1364,6 +1671,37 @@ struct MigrationHubStrategyClient:
         auto b = binding.HttpBinding(method="POST", path_template="/stop-assessment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopAssessmentDocument(assessmentId=input.assessmentId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, migrationhub_strategy_service(), self.region, host)
+
+    # UpdateApplicationComponentConfig  POST /update-applicationcomponent-config/
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_application_component_config(self, UpdateApplicationComponentConfigRequest input) -> str:
+        auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/update-applicationcomponent-config/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.appType.is_some():
+            auto u0 = input.appType.unwrap()
+            parts.append("\"appType\":" + u0.to_json())
+        parts.append("\"applicationComponentId\":" + migrationhub_strategy_json_str(input.applicationComponentId))
+        if input.configureOnly.is_some():
+            auto u1 = input.configureOnly.unwrap()
+            parts.append("\"configureOnly\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.inclusionStatus.is_some():
+            auto u2 = input.inclusionStatus.unwrap()
+            parts.append("\"inclusionStatus\":" + u2.to_json())
+        if input.secretsManagerKey.is_some():
+            auto u3 = input.secretsManagerKey.unwrap()
+            parts.append("\"secretsManagerKey\":" + migrationhub_strategy_json_str(u3))
+        if input.sourceCodeList.is_some():
+            auto u4 = input.sourceCodeList.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"sourceCodeList\":" + migrationhub_strategy_json_arr(e5))
+        if input.strategyOption.is_some():
+            auto u6 = input.strategyOption.unwrap()
+            parts.append("\"strategyOption\":" + u6.to_json())
+        auto bp = restjson.rest_json_document(b, migrationhub_strategy_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, migrationhub_strategy_service(), self.region, host)
 
     # UpdateServerConfig  POST /update-server-config/
@@ -1401,6 +1739,19 @@ struct MigrationHubStrategyClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListApplicationComponents — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: applicationComponentInfos).
+    def paginate_list_application_components(self, ListApplicationComponentsRequest input):
+        auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
+        while True:
+            auto raw = self.list_application_components(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListCollectors — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: Collectors).
     def paginate_list_collectors(self, ListCollectorsRequest input):
@@ -1420,6 +1771,19 @@ struct MigrationHubStrategyClient:
         auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
         while True:
             auto raw = self.list_import_file_task(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListServers — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: serverInfos).
+    def paginate_list_servers(self, ListServersRequest input):
+        auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
+        while True:
+            auto raw = self.list_servers(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

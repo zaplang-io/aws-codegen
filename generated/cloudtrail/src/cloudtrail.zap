@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 60 operations — 40 with a generated method,
-#   20 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 60 operations — 59 with a generated method,
+#   1 skipped (input has a non-string-keyed map or free-form document member).
 #   241 structs (173 @derive(Json)), 21 enums, 86 error variants.
-#   4 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   6 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import datetime
 
 # The CloudTrail awsJson protocol: version 1.1, API id "com.amazonaws.cloudtrail.v20131101.CloudTrail_20131101".
 def cloudtrail_protocol() -> awsjson.AwsJson:
@@ -242,8 +243,9 @@ struct AccountRegisteredException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TagsList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagsList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddTagsRequest:
     str ResourceId
     list[Tag] TagsList
@@ -253,14 +255,16 @@ struct AddTagsResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) FieldSelectors: list[AdvancedFieldSelector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldSelectors: list[AdvancedFieldSelector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdvancedEventSelector:
     Optional[str] Name
     list[AdvancedFieldSelector] FieldSelectors
 
-# no @derive(Json): member(s) Equals: list[str], StartsWith: list[str], EndsWith: list[str], NotEquals: list[str], NotStartsWith: list[str], NotEndsWith: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Equals: list[str], StartsWith: list[str], EndsWith: list[str], NotEquals: list[str], NotStartsWith: list[str], NotEndsWith: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdvancedFieldSelector:
     str Field
     Optional[list[str]] Equals
@@ -270,8 +274,9 @@ struct AdvancedFieldSelector:
     Optional[list[str]] NotStartsWith
     Optional[list[str]] NotEndsWith
 
-# no @derive(Json): member(s) Templates: list[Template] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Templates: list[Template] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AggregationConfiguration:
     list[Template] Templates
     str EventCategory
@@ -353,22 +358,25 @@ struct ConflictException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Equals: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Equals: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContextKeySelector:
     Type Type
     list[str] Equals
 
-# no @derive(Json): member(s) Destinations: list[Destination], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[Destination], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateChannelRequest:
     str Name
     str Source
     list[Destination] Destinations
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Destinations: list[Destination], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[Destination], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateChannelResponse:
     Optional[str] ChannelArn
     Optional[str] Name
@@ -376,8 +384,9 @@ struct CreateChannelResponse:
     Optional[list[Destination]] Destinations
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) TagsList: list[Tag], Widgets: list[RequestWidget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagsList: list[Tag], Widgets: list[RequestWidget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDashboardRequest:
     str Name
     Optional[RefreshSchedule] RefreshSchedule
@@ -385,8 +394,9 @@ struct CreateDashboardRequest:
     Optional[bool] TerminationProtectionEnabled
     Optional[list[RequestWidget]] Widgets
 
-# no @derive(Json): member(s) Widgets: list[Widget], TagsList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Widgets: list[Widget], TagsList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDashboardResponse:
     Optional[str] DashboardArn
     Optional[str] Name
@@ -396,8 +406,9 @@ struct CreateDashboardResponse:
     Optional[RefreshSchedule] RefreshSchedule
     Optional[bool] TerminationProtectionEnabled
 
-# no @derive(Json): member(s) AdvancedEventSelectors: list[AdvancedEventSelector], TagsList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdvancedEventSelectors: list[AdvancedEventSelector], TagsList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEventDataStoreRequest:
     str Name
     Optional[list[AdvancedEventSelector]] AdvancedEventSelectors
@@ -410,8 +421,9 @@ struct CreateEventDataStoreRequest:
     Optional[bool] StartIngestion
     Optional[BillingMode] BillingMode
 
-# no @derive(Json): member(s) AdvancedEventSelectors: list[AdvancedEventSelector], TagsList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdvancedEventSelectors: list[AdvancedEventSelector], TagsList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEventDataStoreResponse:
     Optional[str] EventDataStoreArn
     Optional[str] Name
@@ -427,8 +439,9 @@ struct CreateEventDataStoreResponse:
     Optional[str] KmsKeyId
     Optional[BillingMode] BillingMode
 
-# no @derive(Json): member(s) TagsList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagsList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTrailRequest:
     str Name
     str S3BucketName
@@ -466,8 +479,9 @@ struct DashboardDetail:
     Optional[str] DashboardArn
     Optional[DashboardType] Type
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataResource:
     Optional[str] Type
     Optional[list[str]] Values
@@ -551,14 +565,16 @@ struct DescribeQueryResponse:
     Optional[str] Prompt
     Optional[str] EventDataStoreOwnerAccountId
 
-# no @derive(Json): member(s) trailNameList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) trailNameList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTrailsRequest:
     Optional[list[str]] trailNameList
     Optional[bool] includeShadowTrails
 
-# no @derive(Json): member(s) trailList: list[Trail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) trailList: list[Trail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTrailsResponse:
     Optional[list[Trail]] trailList
 
@@ -587,8 +603,9 @@ struct EnableFederationResponse:
     Optional[FederationStatus] FederationStatus
     Optional[str] FederationRoleArn
 
-# no @derive(Json): member(s) Resources: list[Resource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resources: list[Resource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Event:
     Optional[str] EventId
     Optional[str] EventName
@@ -600,8 +617,9 @@ struct Event:
     Optional[list[Resource]] Resources
     Optional[str] CloudTrailEvent
 
-# no @derive(Json): member(s) AdvancedEventSelectors: list[AdvancedEventSelector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdvancedEventSelectors: list[AdvancedEventSelector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventDataStore:
     Optional[str] EventDataStoreArn
     Optional[str] Name
@@ -649,16 +667,18 @@ struct EventDataStoreTerminationProtectedException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) DataResources: list[DataResource], ExcludeManagementEventSources: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataResources: list[DataResource], ExcludeManagementEventSources: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventSelector:
     Optional[ReadWriteType] ReadWriteType
     Optional[bool] IncludeManagementEvents
     Optional[list[DataResource]] DataResources
     Optional[list[str]] ExcludeManagementEventSources
 
-# no @derive(Json): member(s) EventDataStores: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventDataStores: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GenerateQueryRequest:
     list[str] EventDataStores
     str Prompt
@@ -678,8 +698,9 @@ struct GenerateResponseException:
 struct GetChannelRequest:
     str Channel
 
-# no @derive(Json): member(s) SourceConfig: SourceConfig, Destinations: list[Destination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceConfig: SourceConfig, Destinations: list[Destination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetChannelResponse:
     Optional[str] ChannelArn
     Optional[str] Name
@@ -692,8 +713,9 @@ struct GetChannelResponse:
 struct GetDashboardRequest:
     str DashboardId
 
-# no @derive(Json): member(s) Widgets: list[Widget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Widgets: list[Widget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDashboardResponse:
     Optional[str] DashboardArn
     Optional[DashboardType] Type
@@ -711,8 +733,9 @@ struct GetEventConfigurationRequest:
     Optional[str] TrailName
     Optional[str] EventDataStore
 
-# no @derive(Json): member(s) ContextKeySelectors: list[ContextKeySelector], AggregationConfigurations: list[AggregationConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContextKeySelectors: list[ContextKeySelector], AggregationConfigurations: list[AggregationConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEventConfigurationResponse:
     Optional[str] TrailARN
     Optional[str] EventDataStoreArn
@@ -724,8 +747,9 @@ struct GetEventConfigurationResponse:
 struct GetEventDataStoreRequest:
     str EventDataStore
 
-# no @derive(Json): member(s) AdvancedEventSelectors: list[AdvancedEventSelector], PartitionKeys: list[PartitionKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdvancedEventSelectors: list[AdvancedEventSelector], PartitionKeys: list[PartitionKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEventDataStoreResponse:
     Optional[str] EventDataStoreArn
     Optional[str] Name
@@ -747,8 +771,9 @@ struct GetEventDataStoreResponse:
 struct GetEventSelectorsRequest:
     str TrailName
 
-# no @derive(Json): member(s) EventSelectors: list[EventSelector], AdvancedEventSelectors: list[AdvancedEventSelector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventSelectors: list[EventSelector], AdvancedEventSelectors: list[AdvancedEventSelector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEventSelectorsResponse:
     Optional[str] TrailARN
     Optional[list[EventSelector]] EventSelectors
@@ -758,8 +783,9 @@ struct GetEventSelectorsResponse:
 struct GetImportRequest:
     str ImportId
 
-# no @derive(Json): member(s) Destinations: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetImportResponse:
     Optional[str] ImportId
     Optional[list[str]] Destinations
@@ -776,8 +802,9 @@ struct GetInsightSelectorsRequest:
     Optional[str] TrailName
     Optional[str] EventDataStore
 
-# no @derive(Json): member(s) InsightSelectors: list[InsightSelector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InsightSelectors: list[InsightSelector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInsightSelectorsResponse:
     Optional[str] TrailARN
     Optional[list[InsightSelector]] InsightSelectors
@@ -792,8 +819,9 @@ struct GetQueryResultsRequest:
     Optional[int64] MaxQueryResults
     Optional[str] EventDataStoreOwnerAccountId
 
-# no @derive(Json): member(s) QueryResultRows: list[list[dict[str, str]]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QueryResultRows: list[list[dict[str, str]]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetQueryResultsResponse:
     Optional[QueryStatus] QueryStatus
     Optional[QueryStatistics] QueryStatistics
@@ -868,8 +896,9 @@ struct ImportStatistics:
     Optional[int64] EventsCompleted
     Optional[int64] FailedEntries
 
-# no @derive(Json): member(s) Destinations: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportsListItem:
     Optional[str] ImportId
     Optional[ImportStatus] ImportStatus
@@ -900,8 +929,9 @@ struct InsightNotEnabledException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) EventCategories: list[SourceEventCategory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventCategories: list[SourceEventCategory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InsightSelector:
     Optional[InsightType] InsightType
     Optional[list[SourceEventCategory]] EventCategories
@@ -1081,8 +1111,9 @@ struct ListChannelsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Channels: list[Channel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channels: list[Channel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelsResponse:
     Optional[list[Channel]] Channels
     Optional[str] NextToken
@@ -1094,8 +1125,9 @@ struct ListDashboardsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Dashboards: list[DashboardDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dashboards: list[DashboardDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDashboardsResponse:
     Optional[list[DashboardDetail]] Dashboards
     Optional[str] NextToken
@@ -1105,8 +1137,9 @@ struct ListEventDataStoresRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) EventDataStores: list[EventDataStore] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventDataStores: list[EventDataStore] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventDataStoresResponse:
     Optional[list[EventDataStore]] EventDataStores
     Optional[str] NextToken
@@ -1117,8 +1150,9 @@ struct ListImportFailuresRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Failures: list[ImportFailureListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Failures: list[ImportFailureListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImportFailuresResponse:
     Optional[list[ImportFailureListItem]] Failures
     Optional[str] NextToken
@@ -1130,14 +1164,16 @@ struct ListImportsRequest:
     Optional[ImportStatus] ImportStatus
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Imports: list[ImportsListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Imports: list[ImportsListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImportsResponse:
     Optional[list[ImportsListItem]] Imports
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Dimensions: dict[ListInsightsDataDimensionKey, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: dict[ListInsightsDataDimensionKey, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInsightsDataRequest:
     str InsightSource
     str DataType
@@ -1147,8 +1183,9 @@ struct ListInsightsDataRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Events: list[Event] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Events: list[Event] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInsightsDataResponse:
     Optional[list[Event]] Events
     Optional[str] NextToken
@@ -1167,8 +1204,9 @@ struct ListInsightsMetricDataRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Timestamps: list[DateTime], Values: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Timestamps: list[DateTime], Values: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInsightsMetricDataResponse:
     Optional[str] TrailARN
     Optional[str] EventSource
@@ -1185,8 +1223,9 @@ struct ListPublicKeysRequest:
     Optional[DateTime] EndTime
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PublicKeyList: list[PublicKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PublicKeyList: list[PublicKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPublicKeysResponse:
     Optional[list[PublicKey]] PublicKeyList
     Optional[str] NextToken
@@ -1200,20 +1239,23 @@ struct ListQueriesRequest:
     Optional[DateTime] EndTime
     Optional[QueryStatus] QueryStatus
 
-# no @derive(Json): member(s) Queries: list[Query] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Queries: list[Query] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListQueriesResponse:
     Optional[list[Query]] Queries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ResourceIdList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceIdList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsRequest:
     list[str] ResourceIdList
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ResourceTagList: list[ResourceTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTagList: list[ResourceTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsResponse:
     Optional[list[ResourceTag]] ResourceTagList
     Optional[str] NextToken
@@ -1222,8 +1264,9 @@ struct ListTagsResponse:
 struct ListTrailsRequest:
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Trails: list[TrailInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Trails: list[TrailInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTrailsResponse:
     Optional[list[TrailInfo]] Trails
     Optional[str] NextToken
@@ -1233,8 +1276,9 @@ struct LookupAttribute:
     LookupAttributeKey AttributeKey
     str AttributeValue
 
-# no @derive(Json): member(s) LookupAttributes: list[LookupAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LookupAttributes: list[LookupAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LookupEventsRequest:
     Optional[list[LookupAttribute]] LookupAttributes
     Optional[DateTime] StartTime
@@ -1243,8 +1287,9 @@ struct LookupEventsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Events: list[Event] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Events: list[Event] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LookupEventsResponse:
     Optional[list[Event]] Events
     Optional[str] NextToken
@@ -1301,8 +1346,9 @@ struct PublicKey:
     Optional[DateTime] ValidityEndTime
     Optional[str] Fingerprint
 
-# no @derive(Json): member(s) ContextKeySelectors: list[ContextKeySelector], AggregationConfigurations: list[AggregationConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContextKeySelectors: list[ContextKeySelector], AggregationConfigurations: list[AggregationConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutEventConfigurationRequest:
     Optional[str] TrailName
     Optional[str] EventDataStore
@@ -1310,8 +1356,9 @@ struct PutEventConfigurationRequest:
     Optional[list[ContextKeySelector]] ContextKeySelectors
     Optional[list[AggregationConfiguration]] AggregationConfigurations
 
-# no @derive(Json): member(s) ContextKeySelectors: list[ContextKeySelector], AggregationConfigurations: list[AggregationConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContextKeySelectors: list[ContextKeySelector], AggregationConfigurations: list[AggregationConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutEventConfigurationResponse:
     Optional[str] TrailARN
     Optional[str] EventDataStoreArn
@@ -1319,30 +1366,34 @@ struct PutEventConfigurationResponse:
     Optional[list[ContextKeySelector]] ContextKeySelectors
     Optional[list[AggregationConfiguration]] AggregationConfigurations
 
-# no @derive(Json): member(s) EventSelectors: list[EventSelector], AdvancedEventSelectors: list[AdvancedEventSelector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventSelectors: list[EventSelector], AdvancedEventSelectors: list[AdvancedEventSelector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutEventSelectorsRequest:
     str TrailName
     Optional[list[EventSelector]] EventSelectors
     Optional[list[AdvancedEventSelector]] AdvancedEventSelectors
 
-# no @derive(Json): member(s) EventSelectors: list[EventSelector], AdvancedEventSelectors: list[AdvancedEventSelector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventSelectors: list[EventSelector], AdvancedEventSelectors: list[AdvancedEventSelector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutEventSelectorsResponse:
     Optional[str] TrailARN
     Optional[list[EventSelector]] EventSelectors
     Optional[list[AdvancedEventSelector]] AdvancedEventSelectors
 
-# no @derive(Json): member(s) InsightSelectors: list[InsightSelector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InsightSelectors: list[InsightSelector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutInsightSelectorsRequest:
     Optional[str] TrailName
     list[InsightSelector] InsightSelectors
     Optional[str] EventDataStore
     Optional[str] InsightsDestination
 
-# no @derive(Json): member(s) InsightSelectors: list[InsightSelector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InsightSelectors: list[InsightSelector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutInsightSelectorsResponse:
     Optional[str] TrailARN
     Optional[list[InsightSelector]] InsightSelectors
@@ -1405,8 +1456,9 @@ struct RegisterOrganizationDelegatedAdminResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TagsList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagsList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveTagsRequest:
     str ResourceId
     list[Tag] TagsList
@@ -1416,8 +1468,9 @@ struct RemoveTagsResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) QueryParameters: list[str], ViewProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QueryParameters: list[str], ViewProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RequestWidget:
     str QueryStatement
     Optional[list[str]] QueryParameters
@@ -1448,8 +1501,9 @@ struct ResourcePolicyNotValidException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TagsList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagsList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceTag:
     Optional[str] ResourceId
     Optional[list[Tag]] TagsList
@@ -1463,8 +1517,9 @@ struct ResourceTypeNotSupportedException:
 struct RestoreEventDataStoreRequest:
     str EventDataStore
 
-# no @derive(Json): member(s) AdvancedEventSelectors: list[AdvancedEventSelector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdvancedEventSelectors: list[AdvancedEventSelector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestoreEventDataStoreResponse:
     Optional[str] EventDataStoreArn
     Optional[str] Name
@@ -1496,8 +1551,9 @@ struct SearchSampleQueriesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SearchResults: list[SearchSampleQueriesSearchResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SearchResults: list[SearchSampleQueriesSearchResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchSampleQueriesResponse:
     Optional[list[SearchSampleQueriesSearchResult]] SearchResults
     Optional[str] NextToken
@@ -1514,14 +1570,16 @@ struct ServiceQuotaExceededException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) AdvancedEventSelectors: list[AdvancedEventSelector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdvancedEventSelectors: list[AdvancedEventSelector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceConfig:
     Optional[bool] ApplyToAllRegions
     Optional[list[AdvancedEventSelector]] AdvancedEventSelectors
 
-# no @derive(Json): member(s) QueryParameterValues: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QueryParameterValues: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartDashboardRefreshRequest:
     str DashboardId
     Optional[dict[str, str]] QueryParameterValues
@@ -1539,8 +1597,9 @@ struct StartEventDataStoreIngestionResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Destinations: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartImportRequest:
     Optional[list[str]] Destinations
     Optional[ImportSource] ImportSource
@@ -1548,8 +1607,9 @@ struct StartImportRequest:
     Optional[DateTime] EndEventTime
     Optional[str] ImportId
 
-# no @derive(Json): member(s) Destinations: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartImportResponse:
     Optional[str] ImportId
     Optional[list[str]] Destinations
@@ -1569,8 +1629,9 @@ struct StartLoggingResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) QueryParameters: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QueryParameters: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartQueryRequest:
     Optional[str] QueryStatement
     Optional[str] DeliveryS3Uri
@@ -1596,8 +1657,9 @@ struct StopEventDataStoreIngestionResponse:
 struct StopImportRequest:
     str ImportId
 
-# no @derive(Json): member(s) Destinations: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopImportResponse:
     Optional[str] ImportId
     Optional[ImportSource] ImportSource
@@ -1679,31 +1741,35 @@ struct UnsupportedOperationException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Destinations: list[Destination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[Destination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateChannelRequest:
     str Channel
     Optional[list[Destination]] Destinations
     Optional[str] Name
 
-# no @derive(Json): member(s) Destinations: list[Destination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[Destination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateChannelResponse:
     Optional[str] ChannelArn
     Optional[str] Name
     Optional[str] Source
     Optional[list[Destination]] Destinations
 
-# no @derive(Json): member(s) Widgets: list[RequestWidget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Widgets: list[RequestWidget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDashboardRequest:
     str DashboardId
     Optional[list[RequestWidget]] Widgets
     Optional[RefreshSchedule] RefreshSchedule
     Optional[bool] TerminationProtectionEnabled
 
-# no @derive(Json): member(s) Widgets: list[Widget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Widgets: list[Widget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDashboardResponse:
     Optional[str] DashboardArn
     Optional[str] Name
@@ -1714,8 +1780,9 @@ struct UpdateDashboardResponse:
     Optional[DateTime] CreatedTimestamp
     Optional[DateTime] UpdatedTimestamp
 
-# no @derive(Json): member(s) AdvancedEventSelectors: list[AdvancedEventSelector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdvancedEventSelectors: list[AdvancedEventSelector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEventDataStoreRequest:
     str EventDataStore
     Optional[str] Name
@@ -1727,8 +1794,9 @@ struct UpdateEventDataStoreRequest:
     Optional[str] KmsKeyId
     Optional[BillingMode] BillingMode
 
-# no @derive(Json): member(s) AdvancedEventSelectors: list[AdvancedEventSelector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdvancedEventSelectors: list[AdvancedEventSelector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEventDataStoreResponse:
     Optional[str] EventDataStoreArn
     Optional[str] Name
@@ -1777,8 +1845,9 @@ struct UpdateTrailResponse:
     Optional[bool] IsOrganizationTrail
     Optional[bool] RecursiveLogging
 
-# no @derive(Json): member(s) QueryParameters: list[str], ViewProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QueryParameters: list[str], ViewProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Widget:
     Optional[str] QueryAlias
     Optional[str] QueryStatement
@@ -2056,45 +2125,616 @@ def cloudtrail_error_from_code(str code) -> CloudTrailError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AddTags (input AddTagsRequest)
-#   CreateChannel (input CreateChannelRequest)
-#   CreateDashboard (input CreateDashboardRequest)
-#   CreateEventDataStore (input CreateEventDataStoreRequest)
-#   CreateTrail (input CreateTrailRequest)
-#   DescribeTrails (input DescribeTrailsRequest)
-#   GenerateQuery (input GenerateQueryRequest)
+# Operations skipped in v0 (a member type is not yet serializable — a map
+# with a non-string key, or a free-form document member):
 #   ListInsightsData (input ListInsightsDataRequest)
-#   ListTags (input ListTagsRequest)
-#   LookupEvents (input LookupEventsRequest)
-#   PutEventConfiguration (input PutEventConfigurationRequest)
-#   PutEventSelectors (input PutEventSelectorsRequest)
-#   PutInsightSelectors (input PutInsightSelectorsRequest)
-#   RemoveTags (input RemoveTagsRequest)
-#   StartDashboardRefresh (input StartDashboardRefreshRequest)
-#   StartImport (input StartImportRequest)
-#   StartQuery (input StartQueryRequest)
-#   UpdateChannel (input UpdateChannelRequest)
-#   UpdateDashboard (input UpdateDashboardRequest)
-#   UpdateEventDataStore (input UpdateEventDataStoreRequest)
 
 # Paginated operations (paginators-1.json) not surfaced in v0 — their input
 # is skipped above, or the continuation token is not a simple string field:
-#   ListInsightsData (input not derivable (no generated method))
-#   ListTags (input not derivable (no generated method))
-#   LookupEvents (input not derivable (no generated method))
+#   ListInsightsData (input not serializable (no generated method))
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def cloudtrail_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def cloudtrail_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def cloudtrail_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AddTagsRequest to a compact JSON object (declaration order).
+def add_tags_request_to_json(AddTagsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceId\":" + cloudtrail_json_str(v.ResourceId))
+    list[str] e0 = []
+    for x0 in v.TagsList:
+        e0.append(x0.to_json())
+    parts.append("\"TagsList\":" + cloudtrail_json_arr(e0))
+    return cloudtrail_json_obj(parts)
+
+# Serialize AdvancedEventSelector to a compact JSON object (declaration order).
+def advanced_event_selector_to_json(AdvancedEventSelector v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + cloudtrail_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.FieldSelectors:
+        e1.append(advanced_field_selector_to_json(x1))
+    parts.append("\"FieldSelectors\":" + cloudtrail_json_arr(e1))
+    return cloudtrail_json_obj(parts)
+
+# Serialize AdvancedFieldSelector to a compact JSON object (declaration order).
+def advanced_field_selector_to_json(AdvancedFieldSelector v) -> str:
+    list[str] parts = []
+    parts.append("\"Field\":" + cloudtrail_json_str(v.Field))
+    if v.Equals.is_some():
+        auto u0 = v.Equals.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(cloudtrail_json_str(x1))
+        parts.append("\"Equals\":" + cloudtrail_json_arr(e1))
+    if v.StartsWith.is_some():
+        auto u2 = v.StartsWith.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(cloudtrail_json_str(x3))
+        parts.append("\"StartsWith\":" + cloudtrail_json_arr(e3))
+    if v.EndsWith.is_some():
+        auto u4 = v.EndsWith.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(cloudtrail_json_str(x5))
+        parts.append("\"EndsWith\":" + cloudtrail_json_arr(e5))
+    if v.NotEquals.is_some():
+        auto u6 = v.NotEquals.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(cloudtrail_json_str(x7))
+        parts.append("\"NotEquals\":" + cloudtrail_json_arr(e7))
+    if v.NotStartsWith.is_some():
+        auto u8 = v.NotStartsWith.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(cloudtrail_json_str(x9))
+        parts.append("\"NotStartsWith\":" + cloudtrail_json_arr(e9))
+    if v.NotEndsWith.is_some():
+        auto u10 = v.NotEndsWith.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(cloudtrail_json_str(x11))
+        parts.append("\"NotEndsWith\":" + cloudtrail_json_arr(e11))
+    return cloudtrail_json_obj(parts)
+
+# Serialize AggregationConfiguration to a compact JSON object (declaration order).
+def aggregation_configuration_to_json(AggregationConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Templates:
+        e0.append(x0.to_json())
+    parts.append("\"Templates\":" + cloudtrail_json_arr(e0))
+    parts.append("\"EventCategory\":" + cloudtrail_json_str(v.EventCategory))
+    return cloudtrail_json_obj(parts)
+
+# Serialize ContextKeySelector to a compact JSON object (declaration order).
+def context_key_selector_to_json(ContextKeySelector v) -> str:
+    list[str] parts = []
+    parts.append("\"Type\":" + v.Type.to_json())
+    list[str] e0 = []
+    for x0 in v.Equals:
+        e0.append(cloudtrail_json_str(x0))
+    parts.append("\"Equals\":" + cloudtrail_json_arr(e0))
+    return cloudtrail_json_obj(parts)
+
+# Serialize CreateChannelRequest to a compact JSON object (declaration order).
+def create_channel_request_to_json(CreateChannelRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + cloudtrail_json_str(v.Name))
+    parts.append("\"Source\":" + cloudtrail_json_str(v.Source))
+    list[str] e0 = []
+    for x0 in v.Destinations:
+        e0.append(x0.to_json())
+    parts.append("\"Destinations\":" + cloudtrail_json_arr(e0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + cloudtrail_json_arr(e2))
+    return cloudtrail_json_obj(parts)
+
+# Serialize CreateDashboardRequest to a compact JSON object (declaration order).
+def create_dashboard_request_to_json(CreateDashboardRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + cloudtrail_json_str(v.Name))
+    if v.RefreshSchedule.is_some():
+        auto u0 = v.RefreshSchedule.unwrap()
+        parts.append("\"RefreshSchedule\":" + u0.to_json())
+    if v.TagsList.is_some():
+        auto u1 = v.TagsList.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"TagsList\":" + cloudtrail_json_arr(e2))
+    if v.TerminationProtectionEnabled.is_some():
+        auto u3 = v.TerminationProtectionEnabled.unwrap()
+        parts.append("\"TerminationProtectionEnabled\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.Widgets.is_some():
+        auto u4 = v.Widgets.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(request_widget_to_json(x5))
+        parts.append("\"Widgets\":" + cloudtrail_json_arr(e5))
+    return cloudtrail_json_obj(parts)
+
+# Serialize CreateEventDataStoreRequest to a compact JSON object (declaration order).
+def create_event_data_store_request_to_json(CreateEventDataStoreRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + cloudtrail_json_str(v.Name))
+    if v.AdvancedEventSelectors.is_some():
+        auto u0 = v.AdvancedEventSelectors.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(advanced_event_selector_to_json(x1))
+        parts.append("\"AdvancedEventSelectors\":" + cloudtrail_json_arr(e1))
+    if v.MultiRegionEnabled.is_some():
+        auto u2 = v.MultiRegionEnabled.unwrap()
+        parts.append("\"MultiRegionEnabled\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.OrganizationEnabled.is_some():
+        auto u3 = v.OrganizationEnabled.unwrap()
+        parts.append("\"OrganizationEnabled\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.RetentionPeriod.is_some():
+        auto u4 = v.RetentionPeriod.unwrap()
+        parts.append("\"RetentionPeriod\":" + str(u4))
+    if v.TerminationProtectionEnabled.is_some():
+        auto u5 = v.TerminationProtectionEnabled.unwrap()
+        parts.append("\"TerminationProtectionEnabled\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.TagsList.is_some():
+        auto u6 = v.TagsList.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"TagsList\":" + cloudtrail_json_arr(e7))
+    if v.KmsKeyId.is_some():
+        auto u8 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + cloudtrail_json_str(u8))
+    if v.StartIngestion.is_some():
+        auto u9 = v.StartIngestion.unwrap()
+        parts.append("\"StartIngestion\":" + json.dumps(JsonValue.Bool(u9)))
+    if v.BillingMode.is_some():
+        auto u10 = v.BillingMode.unwrap()
+        parts.append("\"BillingMode\":" + u10.to_json())
+    return cloudtrail_json_obj(parts)
+
+# Serialize CreateTrailRequest to a compact JSON object (declaration order).
+def create_trail_request_to_json(CreateTrailRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + cloudtrail_json_str(v.Name))
+    parts.append("\"S3BucketName\":" + cloudtrail_json_str(v.S3BucketName))
+    if v.S3KeyPrefix.is_some():
+        auto u0 = v.S3KeyPrefix.unwrap()
+        parts.append("\"S3KeyPrefix\":" + cloudtrail_json_str(u0))
+    if v.SnsTopicName.is_some():
+        auto u1 = v.SnsTopicName.unwrap()
+        parts.append("\"SnsTopicName\":" + cloudtrail_json_str(u1))
+    if v.IncludeGlobalServiceEvents.is_some():
+        auto u2 = v.IncludeGlobalServiceEvents.unwrap()
+        parts.append("\"IncludeGlobalServiceEvents\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.IsMultiRegionTrail.is_some():
+        auto u3 = v.IsMultiRegionTrail.unwrap()
+        parts.append("\"IsMultiRegionTrail\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.EnableLogFileValidation.is_some():
+        auto u4 = v.EnableLogFileValidation.unwrap()
+        parts.append("\"EnableLogFileValidation\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.CloudWatchLogsLogGroupArn.is_some():
+        auto u5 = v.CloudWatchLogsLogGroupArn.unwrap()
+        parts.append("\"CloudWatchLogsLogGroupArn\":" + cloudtrail_json_str(u5))
+    if v.CloudWatchLogsRoleArn.is_some():
+        auto u6 = v.CloudWatchLogsRoleArn.unwrap()
+        parts.append("\"CloudWatchLogsRoleArn\":" + cloudtrail_json_str(u6))
+    if v.KmsKeyId.is_some():
+        auto u7 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + cloudtrail_json_str(u7))
+    if v.IsOrganizationTrail.is_some():
+        auto u8 = v.IsOrganizationTrail.unwrap()
+        parts.append("\"IsOrganizationTrail\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.TagsList.is_some():
+        auto u9 = v.TagsList.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"TagsList\":" + cloudtrail_json_arr(e10))
+    if v.RecursiveLogging.is_some():
+        auto u11 = v.RecursiveLogging.unwrap()
+        parts.append("\"RecursiveLogging\":" + json.dumps(JsonValue.Bool(u11)))
+    return cloudtrail_json_obj(parts)
+
+# Serialize DataResource to a compact JSON object (declaration order).
+def data_resource_to_json(DataResource v) -> str:
+    list[str] parts = []
+    if v.Type.is_some():
+        auto u0 = v.Type.unwrap()
+        parts.append("\"Type\":" + cloudtrail_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(cloudtrail_json_str(x2))
+        parts.append("\"Values\":" + cloudtrail_json_arr(e2))
+    return cloudtrail_json_obj(parts)
+
+# Serialize DescribeTrailsRequest to a compact JSON object (declaration order).
+def describe_trails_request_to_json(DescribeTrailsRequest v) -> str:
+    list[str] parts = []
+    if v.trailNameList.is_some():
+        auto u0 = v.trailNameList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(cloudtrail_json_str(x1))
+        parts.append("\"trailNameList\":" + cloudtrail_json_arr(e1))
+    if v.includeShadowTrails.is_some():
+        auto u2 = v.includeShadowTrails.unwrap()
+        parts.append("\"includeShadowTrails\":" + json.dumps(JsonValue.Bool(u2)))
+    return cloudtrail_json_obj(parts)
+
+# Serialize EventSelector to a compact JSON object (declaration order).
+def event_selector_to_json(EventSelector v) -> str:
+    list[str] parts = []
+    if v.ReadWriteType.is_some():
+        auto u0 = v.ReadWriteType.unwrap()
+        parts.append("\"ReadWriteType\":" + u0.to_json())
+    if v.IncludeManagementEvents.is_some():
+        auto u1 = v.IncludeManagementEvents.unwrap()
+        parts.append("\"IncludeManagementEvents\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.DataResources.is_some():
+        auto u2 = v.DataResources.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(data_resource_to_json(x3))
+        parts.append("\"DataResources\":" + cloudtrail_json_arr(e3))
+    if v.ExcludeManagementEventSources.is_some():
+        auto u4 = v.ExcludeManagementEventSources.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(cloudtrail_json_str(x5))
+        parts.append("\"ExcludeManagementEventSources\":" + cloudtrail_json_arr(e5))
+    return cloudtrail_json_obj(parts)
+
+# Serialize GenerateQueryRequest to a compact JSON object (declaration order).
+def generate_query_request_to_json(GenerateQueryRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.EventDataStores:
+        e0.append(cloudtrail_json_str(x0))
+    parts.append("\"EventDataStores\":" + cloudtrail_json_arr(e0))
+    parts.append("\"Prompt\":" + cloudtrail_json_str(v.Prompt))
+    return cloudtrail_json_obj(parts)
+
+# Serialize InsightSelector to a compact JSON object (declaration order).
+def insight_selector_to_json(InsightSelector v) -> str:
+    list[str] parts = []
+    if v.InsightType.is_some():
+        auto u0 = v.InsightType.unwrap()
+        parts.append("\"InsightType\":" + u0.to_json())
+    if v.EventCategories.is_some():
+        auto u1 = v.EventCategories.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"EventCategories\":" + cloudtrail_json_arr(e2))
+    return cloudtrail_json_obj(parts)
+
+# Serialize ListTagsRequest to a compact JSON object (declaration order).
+def list_tags_request_to_json(ListTagsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ResourceIdList:
+        e0.append(cloudtrail_json_str(x0))
+    parts.append("\"ResourceIdList\":" + cloudtrail_json_arr(e0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + cloudtrail_json_str(u1))
+    return cloudtrail_json_obj(parts)
+
+# Serialize LookupEventsRequest to a compact JSON object (declaration order).
+def lookup_events_request_to_json(LookupEventsRequest v) -> str:
+    list[str] parts = []
+    if v.LookupAttributes.is_some():
+        auto u0 = v.LookupAttributes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"LookupAttributes\":" + cloudtrail_json_arr(e1))
+    if v.StartTime.is_some():
+        auto u2 = v.StartTime.unwrap()
+        parts.append("\"StartTime\":" + str(datetime.to_timestamp(u2)))
+    if v.EndTime.is_some():
+        auto u3 = v.EndTime.unwrap()
+        parts.append("\"EndTime\":" + str(datetime.to_timestamp(u3)))
+    if v.EventCategory.is_some():
+        auto u4 = v.EventCategory.unwrap()
+        parts.append("\"EventCategory\":" + cloudtrail_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    if v.NextToken.is_some():
+        auto u6 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + cloudtrail_json_str(u6))
+    return cloudtrail_json_obj(parts)
+
+# Serialize PutEventConfigurationRequest to a compact JSON object (declaration order).
+def put_event_configuration_request_to_json(PutEventConfigurationRequest v) -> str:
+    list[str] parts = []
+    if v.TrailName.is_some():
+        auto u0 = v.TrailName.unwrap()
+        parts.append("\"TrailName\":" + cloudtrail_json_str(u0))
+    if v.EventDataStore.is_some():
+        auto u1 = v.EventDataStore.unwrap()
+        parts.append("\"EventDataStore\":" + cloudtrail_json_str(u1))
+    if v.MaxEventSize.is_some():
+        auto u2 = v.MaxEventSize.unwrap()
+        parts.append("\"MaxEventSize\":" + u2.to_json())
+    if v.ContextKeySelectors.is_some():
+        auto u3 = v.ContextKeySelectors.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(context_key_selector_to_json(x4))
+        parts.append("\"ContextKeySelectors\":" + cloudtrail_json_arr(e4))
+    if v.AggregationConfigurations.is_some():
+        auto u5 = v.AggregationConfigurations.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(aggregation_configuration_to_json(x6))
+        parts.append("\"AggregationConfigurations\":" + cloudtrail_json_arr(e6))
+    return cloudtrail_json_obj(parts)
+
+# Serialize PutEventSelectorsRequest to a compact JSON object (declaration order).
+def put_event_selectors_request_to_json(PutEventSelectorsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TrailName\":" + cloudtrail_json_str(v.TrailName))
+    if v.EventSelectors.is_some():
+        auto u0 = v.EventSelectors.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(event_selector_to_json(x1))
+        parts.append("\"EventSelectors\":" + cloudtrail_json_arr(e1))
+    if v.AdvancedEventSelectors.is_some():
+        auto u2 = v.AdvancedEventSelectors.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(advanced_event_selector_to_json(x3))
+        parts.append("\"AdvancedEventSelectors\":" + cloudtrail_json_arr(e3))
+    return cloudtrail_json_obj(parts)
+
+# Serialize PutInsightSelectorsRequest to a compact JSON object (declaration order).
+def put_insight_selectors_request_to_json(PutInsightSelectorsRequest v) -> str:
+    list[str] parts = []
+    if v.TrailName.is_some():
+        auto u0 = v.TrailName.unwrap()
+        parts.append("\"TrailName\":" + cloudtrail_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.InsightSelectors:
+        e1.append(insight_selector_to_json(x1))
+    parts.append("\"InsightSelectors\":" + cloudtrail_json_arr(e1))
+    if v.EventDataStore.is_some():
+        auto u2 = v.EventDataStore.unwrap()
+        parts.append("\"EventDataStore\":" + cloudtrail_json_str(u2))
+    if v.InsightsDestination.is_some():
+        auto u3 = v.InsightsDestination.unwrap()
+        parts.append("\"InsightsDestination\":" + cloudtrail_json_str(u3))
+    return cloudtrail_json_obj(parts)
+
+# Serialize RemoveTagsRequest to a compact JSON object (declaration order).
+def remove_tags_request_to_json(RemoveTagsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceId\":" + cloudtrail_json_str(v.ResourceId))
+    list[str] e0 = []
+    for x0 in v.TagsList:
+        e0.append(x0.to_json())
+    parts.append("\"TagsList\":" + cloudtrail_json_arr(e0))
+    return cloudtrail_json_obj(parts)
+
+# Serialize RequestWidget to a compact JSON object (declaration order).
+def request_widget_to_json(RequestWidget v) -> str:
+    list[str] parts = []
+    parts.append("\"QueryStatement\":" + cloudtrail_json_str(v.QueryStatement))
+    if v.QueryParameters.is_some():
+        auto u0 = v.QueryParameters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(cloudtrail_json_str(x1))
+        parts.append("\"QueryParameters\":" + cloudtrail_json_arr(e1))
+    list[str] m2 = []
+    for k2 in sorted(v.ViewProperties.keys()):
+        m2.append(cloudtrail_json_str(k2) + ":" + cloudtrail_json_str(v.ViewProperties[k2]))
+    parts.append("\"ViewProperties\":" + cloudtrail_json_obj(m2))
+    return cloudtrail_json_obj(parts)
+
+# Serialize StartDashboardRefreshRequest to a compact JSON object (declaration order).
+def start_dashboard_refresh_request_to_json(StartDashboardRefreshRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DashboardId\":" + cloudtrail_json_str(v.DashboardId))
+    if v.QueryParameterValues.is_some():
+        auto u0 = v.QueryParameterValues.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(cloudtrail_json_str(k1) + ":" + cloudtrail_json_str(u0[k1]))
+        parts.append("\"QueryParameterValues\":" + cloudtrail_json_obj(m1))
+    return cloudtrail_json_obj(parts)
+
+# Serialize StartImportRequest to a compact JSON object (declaration order).
+def start_import_request_to_json(StartImportRequest v) -> str:
+    list[str] parts = []
+    if v.Destinations.is_some():
+        auto u0 = v.Destinations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(cloudtrail_json_str(x1))
+        parts.append("\"Destinations\":" + cloudtrail_json_arr(e1))
+    if v.ImportSource.is_some():
+        auto u2 = v.ImportSource.unwrap()
+        parts.append("\"ImportSource\":" + u2.to_json())
+    if v.StartEventTime.is_some():
+        auto u3 = v.StartEventTime.unwrap()
+        parts.append("\"StartEventTime\":" + str(datetime.to_timestamp(u3)))
+    if v.EndEventTime.is_some():
+        auto u4 = v.EndEventTime.unwrap()
+        parts.append("\"EndEventTime\":" + str(datetime.to_timestamp(u4)))
+    if v.ImportId.is_some():
+        auto u5 = v.ImportId.unwrap()
+        parts.append("\"ImportId\":" + cloudtrail_json_str(u5))
+    return cloudtrail_json_obj(parts)
+
+# Serialize StartQueryRequest to a compact JSON object (declaration order).
+def start_query_request_to_json(StartQueryRequest v) -> str:
+    list[str] parts = []
+    if v.QueryStatement.is_some():
+        auto u0 = v.QueryStatement.unwrap()
+        parts.append("\"QueryStatement\":" + cloudtrail_json_str(u0))
+    if v.DeliveryS3Uri.is_some():
+        auto u1 = v.DeliveryS3Uri.unwrap()
+        parts.append("\"DeliveryS3Uri\":" + cloudtrail_json_str(u1))
+    if v.QueryAlias.is_some():
+        auto u2 = v.QueryAlias.unwrap()
+        parts.append("\"QueryAlias\":" + cloudtrail_json_str(u2))
+    if v.QueryParameters.is_some():
+        auto u3 = v.QueryParameters.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(cloudtrail_json_str(x4))
+        parts.append("\"QueryParameters\":" + cloudtrail_json_arr(e4))
+    if v.EventDataStoreOwnerAccountId.is_some():
+        auto u5 = v.EventDataStoreOwnerAccountId.unwrap()
+        parts.append("\"EventDataStoreOwnerAccountId\":" + cloudtrail_json_str(u5))
+    return cloudtrail_json_obj(parts)
+
+# Serialize UpdateChannelRequest to a compact JSON object (declaration order).
+def update_channel_request_to_json(UpdateChannelRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Channel\":" + cloudtrail_json_str(v.Channel))
+    if v.Destinations.is_some():
+        auto u0 = v.Destinations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Destinations\":" + cloudtrail_json_arr(e1))
+    if v.Name.is_some():
+        auto u2 = v.Name.unwrap()
+        parts.append("\"Name\":" + cloudtrail_json_str(u2))
+    return cloudtrail_json_obj(parts)
+
+# Serialize UpdateDashboardRequest to a compact JSON object (declaration order).
+def update_dashboard_request_to_json(UpdateDashboardRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DashboardId\":" + cloudtrail_json_str(v.DashboardId))
+    if v.Widgets.is_some():
+        auto u0 = v.Widgets.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(request_widget_to_json(x1))
+        parts.append("\"Widgets\":" + cloudtrail_json_arr(e1))
+    if v.RefreshSchedule.is_some():
+        auto u2 = v.RefreshSchedule.unwrap()
+        parts.append("\"RefreshSchedule\":" + u2.to_json())
+    if v.TerminationProtectionEnabled.is_some():
+        auto u3 = v.TerminationProtectionEnabled.unwrap()
+        parts.append("\"TerminationProtectionEnabled\":" + json.dumps(JsonValue.Bool(u3)))
+    return cloudtrail_json_obj(parts)
+
+# Serialize UpdateEventDataStoreRequest to a compact JSON object (declaration order).
+def update_event_data_store_request_to_json(UpdateEventDataStoreRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"EventDataStore\":" + cloudtrail_json_str(v.EventDataStore))
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + cloudtrail_json_str(u0))
+    if v.AdvancedEventSelectors.is_some():
+        auto u1 = v.AdvancedEventSelectors.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(advanced_event_selector_to_json(x2))
+        parts.append("\"AdvancedEventSelectors\":" + cloudtrail_json_arr(e2))
+    if v.MultiRegionEnabled.is_some():
+        auto u3 = v.MultiRegionEnabled.unwrap()
+        parts.append("\"MultiRegionEnabled\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.OrganizationEnabled.is_some():
+        auto u4 = v.OrganizationEnabled.unwrap()
+        parts.append("\"OrganizationEnabled\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.RetentionPeriod.is_some():
+        auto u5 = v.RetentionPeriod.unwrap()
+        parts.append("\"RetentionPeriod\":" + str(u5))
+    if v.TerminationProtectionEnabled.is_some():
+        auto u6 = v.TerminationProtectionEnabled.unwrap()
+        parts.append("\"TerminationProtectionEnabled\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.KmsKeyId.is_some():
+        auto u7 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + cloudtrail_json_str(u7))
+    if v.BillingMode.is_some():
+        auto u8 = v.BillingMode.unwrap()
+        parts.append("\"BillingMode\":" + u8.to_json())
+    return cloudtrail_json_obj(parts)
 
 # A bound CloudTrail client: credentials + region, threaded into every operation.
 struct CloudTrailClient:
     core.Credentials creds
     str region
 
+    # AddTags
+    # errors: ChannelARNInvalidException, ChannelNotFoundException, CloudTrailARNInvalidException, ConflictException, EventDataStoreARNInvalidException, EventDataStoreNotFoundException, InactiveEventDataStoreException, InvalidTagParameterException, InvalidTrailNameException, NoManagementAccountSLRExistsException, NotOrganizationMasterAccountException, OperationNotPermittedException, ResourceNotFoundException, ResourceTypeNotSupportedException, TagsLimitExceededException, UnsupportedOperationException
+    def add_tags(self, AddTagsRequest input) -> str:
+        auto body = add_tags_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "AddTags", body)
+
     # CancelQuery
     # errors: ConflictException, EventDataStoreARNInvalidException, EventDataStoreNotFoundException, InactiveEventDataStoreException, InactiveQueryException, InvalidParameterException, NoManagementAccountSLRExistsException, OperationNotPermittedException, QueryIdNotFoundException, UnsupportedOperationException
     def cancel_query(self, CancelQueryRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "CancelQuery", body)
+
+    # CreateChannel
+    # errors: ChannelAlreadyExistsException, ChannelMaxLimitExceededException, EventDataStoreARNInvalidException, EventDataStoreNotFoundException, InactiveEventDataStoreException, InvalidEventDataStoreCategoryException, InvalidParameterException, InvalidSourceException, InvalidTagParameterException, OperationNotPermittedException, TagsLimitExceededException, UnsupportedOperationException
+    def create_channel(self, CreateChannelRequest input) -> str:
+        auto body = create_channel_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "CreateChannel", body)
+
+    # CreateDashboard
+    # errors: ConflictException, EventDataStoreNotFoundException, InactiveEventDataStoreException, InsufficientEncryptionPolicyException, InvalidQueryStatementException, InvalidTagParameterException, ServiceQuotaExceededException, UnsupportedOperationException
+    def create_dashboard(self, CreateDashboardRequest input) -> str:
+        auto body = create_dashboard_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "CreateDashboard", body)
+
+    # CreateEventDataStore
+    # errors: CloudTrailAccessNotEnabledException, ConflictException, EventDataStoreAlreadyExistsException, EventDataStoreMaxLimitExceededException, InsufficientDependencyServiceAccessPermissionException, InsufficientEncryptionPolicyException, InvalidEventSelectorsException, InvalidKmsKeyIdException, InvalidParameterException, InvalidTagParameterException, KmsException, KmsKeyNotFoundException, NoManagementAccountSLRExistsException, NotOrganizationMasterAccountException, OperationNotPermittedException, OrganizationNotInAllFeaturesModeException, OrganizationsNotInUseException, ThrottlingException, UnsupportedOperationException
+    def create_event_data_store(self, CreateEventDataStoreRequest input) -> str:
+        auto body = create_event_data_store_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "CreateEventDataStore", body)
+
+    # CreateTrail
+    # errors: CloudTrailAccessNotEnabledException, CloudTrailInvalidClientTokenIdException, CloudWatchLogsDeliveryUnavailableException, ConflictException, InsufficientDependencyServiceAccessPermissionException, InsufficientEncryptionPolicyException, InsufficientS3BucketPolicyException, InsufficientSnsTopicPolicyException, InvalidCloudWatchLogsLogGroupArnException, InvalidCloudWatchLogsRoleArnException, InvalidKmsKeyIdException, InvalidParameterCombinationException, InvalidParameterException, InvalidS3BucketNameException, InvalidS3PrefixException, InvalidSnsTopicNameException, InvalidTagParameterException, InvalidTrailNameException, KmsException, KmsKeyDisabledException, KmsKeyNotFoundException, MaximumNumberOfTrailsExceededException, NoManagementAccountSLRExistsException, NotOrganizationMasterAccountException, OperationNotPermittedException, OrganizationNotInAllFeaturesModeException, OrganizationsNotInUseException, S3BucketDoesNotExistException, TagsLimitExceededException, ThrottlingException, TrailAlreadyExistsException, TrailNotProvidedException, UnsupportedOperationException
+    def create_trail(self, CreateTrailRequest input) -> str:
+        auto body = create_trail_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "CreateTrail", body)
 
     # DeleteChannel
     # errors: ChannelARNInvalidException, ChannelNotFoundException, OperationNotPermittedException, UnsupportedOperationException
@@ -2138,6 +2778,12 @@ struct CloudTrailClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "DescribeQuery", body)
 
+    # DescribeTrails
+    # errors: CloudTrailARNInvalidException, InvalidTrailNameException, NoManagementAccountSLRExistsException, OperationNotPermittedException, UnsupportedOperationException
+    def describe_trails(self, DescribeTrailsRequest input) -> str:
+        auto body = describe_trails_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "DescribeTrails", body)
+
     # DisableFederation
     # errors: AccessDeniedException, CloudTrailAccessNotEnabledException, ConcurrentModificationException, EventDataStoreARNInvalidException, EventDataStoreNotFoundException, InactiveEventDataStoreException, InsufficientDependencyServiceAccessPermissionException, InvalidParameterException, NoManagementAccountSLRExistsException, NotOrganizationMasterAccountException, OperationNotPermittedException, OrganizationNotInAllFeaturesModeException, OrganizationsNotInUseException, UnsupportedOperationException
     def disable_federation(self, DisableFederationRequest input) -> str:
@@ -2149,6 +2795,12 @@ struct CloudTrailClient:
     def enable_federation(self, EnableFederationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "EnableFederation", body)
+
+    # GenerateQuery
+    # errors: EventDataStoreARNInvalidException, EventDataStoreNotFoundException, GenerateResponseException, InactiveEventDataStoreException, InvalidParameterException, NoManagementAccountSLRExistsException, OperationNotPermittedException, UnsupportedOperationException
+    def generate_query(self, GenerateQueryRequest input) -> str:
+        auto body = generate_query_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "GenerateQuery", body)
 
     # GetChannel
     # errors: ChannelARNInvalidException, ChannelNotFoundException, OperationNotPermittedException, UnsupportedOperationException
@@ -2264,11 +2916,41 @@ struct CloudTrailClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "ListQueries", body)
 
+    # ListTags
+    # errors: ChannelARNInvalidException, CloudTrailARNInvalidException, EventDataStoreARNInvalidException, EventDataStoreNotFoundException, InactiveEventDataStoreException, InvalidTokenException, InvalidTrailNameException, NoManagementAccountSLRExistsException, OperationNotPermittedException, ResourceNotFoundException, ResourceTypeNotSupportedException, UnsupportedOperationException
+    def list_tags(self, ListTagsRequest input) -> str:
+        auto body = list_tags_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "ListTags", body)
+
     # ListTrails
     # errors: OperationNotPermittedException, UnsupportedOperationException
     def list_trails(self, ListTrailsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "ListTrails", body)
+
+    # LookupEvents
+    # errors: InvalidEventCategoryException, InvalidLookupAttributesException, InvalidMaxResultsException, InvalidNextTokenException, InvalidTimeRangeException, OperationNotPermittedException, UnsupportedOperationException
+    def lookup_events(self, LookupEventsRequest input) -> str:
+        auto body = lookup_events_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "LookupEvents", body)
+
+    # PutEventConfiguration
+    # errors: CloudTrailARNInvalidException, ConflictException, EventDataStoreARNInvalidException, EventDataStoreNotFoundException, InactiveEventDataStoreException, InsufficientDependencyServiceAccessPermissionException, InsufficientIAMAccessPermissionException, InvalidEventDataStoreCategoryException, InvalidEventDataStoreStatusException, InvalidHomeRegionException, InvalidParameterCombinationException, InvalidParameterException, InvalidTrailNameException, NoManagementAccountSLRExistsException, NotOrganizationMasterAccountException, OperationNotPermittedException, ThrottlingException, TrailNotFoundException, UnsupportedOperationException
+    def put_event_configuration(self, PutEventConfigurationRequest input) -> str:
+        auto body = put_event_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "PutEventConfiguration", body)
+
+    # PutEventSelectors
+    # errors: CloudTrailARNInvalidException, ConflictException, InsufficientDependencyServiceAccessPermissionException, InvalidEventSelectorsException, InvalidHomeRegionException, InvalidTrailNameException, NoManagementAccountSLRExistsException, NotOrganizationMasterAccountException, OperationNotPermittedException, ThrottlingException, TrailNotFoundException, UnsupportedOperationException
+    def put_event_selectors(self, PutEventSelectorsRequest input) -> str:
+        auto body = put_event_selectors_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "PutEventSelectors", body)
+
+    # PutInsightSelectors
+    # errors: CloudTrailARNInvalidException, ConflictException, InsufficientEncryptionPolicyException, InsufficientS3BucketPolicyException, InvalidHomeRegionException, InvalidInsightSelectorsException, InvalidParameterCombinationException, InvalidParameterException, InvalidTrailNameException, KmsException, NoManagementAccountSLRExistsException, NotOrganizationMasterAccountException, OperationNotPermittedException, S3BucketDoesNotExistException, ThrottlingException, TrailNotFoundException, UnsupportedOperationException
+    def put_insight_selectors(self, PutInsightSelectorsRequest input) -> str:
+        auto body = put_insight_selectors_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "PutInsightSelectors", body)
 
     # PutResourcePolicy
     # errors: ConflictException, OperationNotPermittedException, ResourceARNNotValidException, ResourceNotFoundException, ResourcePolicyNotValidException, ResourceTypeNotSupportedException, UnsupportedOperationException
@@ -2282,6 +2964,12 @@ struct CloudTrailClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "RegisterOrganizationDelegatedAdmin", body)
 
+    # RemoveTags
+    # errors: ChannelARNInvalidException, ChannelNotFoundException, CloudTrailARNInvalidException, ConflictException, EventDataStoreARNInvalidException, EventDataStoreNotFoundException, InactiveEventDataStoreException, InvalidTagParameterException, InvalidTrailNameException, NoManagementAccountSLRExistsException, NotOrganizationMasterAccountException, OperationNotPermittedException, ResourceNotFoundException, ResourceTypeNotSupportedException, UnsupportedOperationException
+    def remove_tags(self, RemoveTagsRequest input) -> str:
+        auto body = remove_tags_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "RemoveTags", body)
+
     # RestoreEventDataStore
     # errors: CloudTrailAccessNotEnabledException, EventDataStoreARNInvalidException, EventDataStoreMaxLimitExceededException, EventDataStoreNotFoundException, InsufficientDependencyServiceAccessPermissionException, InvalidEventDataStoreStatusException, InvalidParameterException, NoManagementAccountSLRExistsException, NotOrganizationMasterAccountException, OperationNotPermittedException, OrganizationNotInAllFeaturesModeException, OrganizationsNotInUseException, UnsupportedOperationException
     def restore_event_data_store(self, RestoreEventDataStoreRequest input) -> str:
@@ -2294,17 +2982,35 @@ struct CloudTrailClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "SearchSampleQueries", body)
 
+    # StartDashboardRefresh
+    # errors: EventDataStoreNotFoundException, InactiveEventDataStoreException, ResourceNotFoundException, ServiceQuotaExceededException, UnsupportedOperationException
+    def start_dashboard_refresh(self, StartDashboardRefreshRequest input) -> str:
+        auto body = start_dashboard_refresh_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "StartDashboardRefresh", body)
+
     # StartEventDataStoreIngestion
     # errors: ConflictException, EventDataStoreARNInvalidException, EventDataStoreNotFoundException, InsufficientDependencyServiceAccessPermissionException, InvalidEventDataStoreCategoryException, InvalidEventDataStoreStatusException, InvalidParameterException, NoManagementAccountSLRExistsException, NotOrganizationMasterAccountException, OperationNotPermittedException, UnsupportedOperationException
     def start_event_data_store_ingestion(self, StartEventDataStoreIngestionRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "StartEventDataStoreIngestion", body)
 
+    # StartImport
+    # errors: AccountHasOngoingImportException, EventDataStoreARNInvalidException, EventDataStoreNotFoundException, ImportNotFoundException, InactiveEventDataStoreException, InsufficientEncryptionPolicyException, InvalidEventDataStoreCategoryException, InvalidEventDataStoreStatusException, InvalidImportSourceException, InvalidParameterException, OperationNotPermittedException, OperationNotPermittedException, UnsupportedOperationException, UnsupportedOperationException
+    def start_import(self, StartImportRequest input) -> str:
+        auto body = start_import_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "StartImport", body)
+
     # StartLogging
     # errors: CloudTrailARNInvalidException, ConflictException, InsufficientDependencyServiceAccessPermissionException, InvalidHomeRegionException, InvalidTrailNameException, NoManagementAccountSLRExistsException, NotOrganizationMasterAccountException, OperationNotPermittedException, ThrottlingException, TrailNotFoundException, UnsupportedOperationException
     def start_logging(self, StartLoggingRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "StartLogging", body)
+
+    # StartQuery
+    # errors: EventDataStoreARNInvalidException, EventDataStoreNotFoundException, InactiveEventDataStoreException, InsufficientEncryptionPolicyException, InsufficientS3BucketPolicyException, InvalidParameterException, InvalidQueryStatementException, InvalidS3BucketNameException, InvalidS3PrefixException, MaxConcurrentQueriesException, NoManagementAccountSLRExistsException, OperationNotPermittedException, S3BucketDoesNotExistException, UnsupportedOperationException
+    def start_query(self, StartQueryRequest input) -> str:
+        auto body = start_query_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "StartQuery", body)
 
     # StopEventDataStoreIngestion
     # errors: ConflictException, EventDataStoreARNInvalidException, EventDataStoreNotFoundException, InsufficientDependencyServiceAccessPermissionException, InvalidEventDataStoreCategoryException, InvalidEventDataStoreStatusException, InvalidParameterException, NoManagementAccountSLRExistsException, NotOrganizationMasterAccountException, OperationNotPermittedException, UnsupportedOperationException
@@ -2323,6 +3029,24 @@ struct CloudTrailClient:
     def stop_logging(self, StopLoggingRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "StopLogging", body)
+
+    # UpdateChannel
+    # errors: ChannelARNInvalidException, ChannelAlreadyExistsException, ChannelNotFoundException, EventDataStoreARNInvalidException, EventDataStoreNotFoundException, InactiveEventDataStoreException, InvalidEventDataStoreCategoryException, InvalidParameterException, OperationNotPermittedException, UnsupportedOperationException
+    def update_channel(self, UpdateChannelRequest input) -> str:
+        auto body = update_channel_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "UpdateChannel", body)
+
+    # UpdateDashboard
+    # errors: ConflictException, EventDataStoreNotFoundException, InactiveEventDataStoreException, InsufficientEncryptionPolicyException, InvalidQueryStatementException, ResourceNotFoundException, ServiceQuotaExceededException, UnsupportedOperationException
+    def update_dashboard(self, UpdateDashboardRequest input) -> str:
+        auto body = update_dashboard_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "UpdateDashboard", body)
+
+    # UpdateEventDataStore
+    # errors: CloudTrailAccessNotEnabledException, ConflictException, EventDataStoreARNInvalidException, EventDataStoreAlreadyExistsException, EventDataStoreHasOngoingImportException, EventDataStoreNotFoundException, InactiveEventDataStoreException, InsufficientDependencyServiceAccessPermissionException, InsufficientEncryptionPolicyException, InvalidEventSelectorsException, InvalidInsightSelectorsException, InvalidKmsKeyIdException, InvalidParameterException, KmsException, KmsKeyNotFoundException, NoManagementAccountSLRExistsException, NotOrganizationMasterAccountException, OperationNotPermittedException, OrganizationNotInAllFeaturesModeException, OrganizationsNotInUseException, ThrottlingException, UnsupportedOperationException
+    def update_event_data_store(self, UpdateEventDataStoreRequest input) -> str:
+        auto body = update_event_data_store_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "UpdateEventDataStore", body)
 
     # UpdateTrail
     # errors: CloudTrailARNInvalidException, CloudTrailAccessNotEnabledException, CloudTrailInvalidClientTokenIdException, CloudWatchLogsDeliveryUnavailableException, ConflictException, InsufficientDependencyServiceAccessPermissionException, InsufficientEncryptionPolicyException, InsufficientS3BucketPolicyException, InsufficientSnsTopicPolicyException, InvalidCloudWatchLogsLogGroupArnException, InvalidCloudWatchLogsRoleArnException, InvalidEventSelectorsException, InvalidHomeRegionException, InvalidKmsKeyIdException, InvalidParameterCombinationException, InvalidParameterException, InvalidS3BucketNameException, InvalidS3PrefixException, InvalidSnsTopicNameException, InvalidTrailNameException, KmsException, KmsKeyDisabledException, KmsKeyNotFoundException, NoManagementAccountSLRExistsException, NotOrganizationMasterAccountException, OperationNotPermittedException, OrganizationNotInAllFeaturesModeException, OrganizationsNotInUseException, S3BucketDoesNotExistException, ThrottlingException, TrailNotFoundException, TrailNotProvidedException, UnsupportedOperationException
@@ -2372,6 +3096,20 @@ struct CloudTrailClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListTags — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ResourceTagList).
+    def paginate_list_tags(self, ListTagsRequest input):
+        auto host = endpoints.regional_host(cloudtrail_protocol().service, self.region)
+        while True:
+            auto body = list_tags_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "ListTags", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListTrails — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: Trails).
     def paginate_list_trails(self, ListTrailsRequest input):
@@ -2379,6 +3117,20 @@ struct CloudTrailClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "ListTrails", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for LookupEvents — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Events).
+    def paginate_lookup_events(self, LookupEventsRequest input):
+        auto host = endpoints.regional_host(cloudtrail_protocol().service, self.region)
+        while True:
+            auto body = lookup_events_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(cloudtrail_protocol(), self.creds, self.region, "LookupEvents", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

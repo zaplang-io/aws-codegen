@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 15 operations — 10 with a generated method,
-#   5 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 15 operations — 14 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   44 structs (28 @derive(Json)), 1 enums, 8 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -68,8 +68,9 @@ struct CreateLinkInput:
     str SinkIdentifier
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) ResourceTypes: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTypes: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLinkOutput:
     Optional[str] Arn
     Optional[str] Id
@@ -86,8 +87,9 @@ struct CreateSinkInput:
     str Name
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSinkOutput:
     Optional[str] Arn
     Optional[str] Id
@@ -120,8 +122,9 @@ struct GetLinkInput:
     str Identifier
     Optional[bool] IncludeTags
 
-# no @derive(Json): member(s) ResourceTypes: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTypes: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLinkOutput:
     Optional[str] Arn
     Optional[str] Id
@@ -138,8 +141,9 @@ struct GetSinkInput:
     str Identifier
     Optional[bool] IncludeTags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSinkOutput:
     Optional[str] Arn
     Optional[str] Id
@@ -179,15 +183,17 @@ struct ListAttachedLinksInput:
     Optional[str] NextToken
     str SinkIdentifier
 
-# no @derive(Json): member(s) ResourceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAttachedLinksItem:
     Optional[str] Label
     Optional[str] LinkArn
     Optional[list[str]] ResourceTypes
 
-# no @derive(Json): member(s) Items: list[ListAttachedLinksItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ListAttachedLinksItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAttachedLinksOutput:
     list[ListAttachedLinksItem] Items
     Optional[str] NextToken
@@ -198,8 +204,9 @@ struct ListLinksInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ResourceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLinksItem:
     Optional[str] Arn
     Optional[str] Id
@@ -207,8 +214,9 @@ struct ListLinksItem:
     Optional[list[str]] ResourceTypes
     Optional[str] SinkArn
 
-# no @derive(Json): member(s) Items: list[ListLinksItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ListLinksItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLinksOutput:
     list[ListLinksItem] Items
     Optional[str] NextToken
@@ -225,8 +233,9 @@ struct ListSinksItem:
     Optional[str] Id
     Optional[str] Name
 
-# no @derive(Json): member(s) Items: list[ListSinksItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ListSinksItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSinksOutput:
     list[ListSinksItem] Items
     Optional[str] NextToken
@@ -236,8 +245,9 @@ struct ListSinksOutput:
 struct ListTagsForResourceInput:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[dict[str, str]] Tags
 
@@ -310,8 +320,9 @@ struct UpdateLinkInput:
     Optional[LinkConfiguration] LinkConfiguration
     list[ResourceType] ResourceTypes
 
-# no @derive(Json): member(s) ResourceTypes: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTypes: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateLinkOutput:
     Optional[str] Arn
     Optional[str] Id
@@ -367,11 +378,7 @@ def oam_error_from_code(str code) -> OAMError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateLink (document member `ResourceTypes: list[ResourceType]` is not serializable by derive)
-#   CreateSink (document member `Tags: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateLink (document member `ResourceTypes: list[ResourceType]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -432,6 +439,46 @@ struct PutSinkPolicyDocument:
 struct OAMClient:
     core.Credentials creds
     str region
+
+    # CreateLink  POST /CreateLink
+    # errors: ConflictException, InternalServiceFault, InvalidParameterException, MissingRequiredParameterException, ServiceQuotaExceededException
+    def create_link(self, CreateLinkInput input) -> str:
+        auto host = endpoints.regional_host(oam_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateLink", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"LabelTemplate\":" + oam_json_str(input.LabelTemplate))
+        if input.LinkConfiguration.is_some():
+            auto u0 = input.LinkConfiguration.unwrap()
+            parts.append("\"LinkConfiguration\":" + u0.to_json())
+        list[str] e1 = []
+        for x1 in input.ResourceTypes:
+            e1.append(x1.to_json())
+        parts.append("\"ResourceTypes\":" + oam_json_arr(e1))
+        parts.append("\"SinkIdentifier\":" + oam_json_str(input.SinkIdentifier))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(oam_json_str(k3) + ":" + oam_json_str(u2[k3]))
+            parts.append("\"Tags\":" + oam_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, oam_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, oam_service(), self.region, host)
+
+    # CreateSink  POST /CreateSink
+    # errors: ConflictException, InternalServiceFault, InvalidParameterException, MissingRequiredParameterException, ServiceQuotaExceededException
+    def create_sink(self, CreateSinkInput input) -> str:
+        auto host = endpoints.regional_host(oam_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateSink", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + oam_json_str(input.Name))
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(oam_json_str(k1) + ":" + oam_json_str(u0[k1]))
+            parts.append("\"Tags\":" + oam_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, oam_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, oam_service(), self.region, host)
 
     # DeleteLink  POST /DeleteLink
     # errors: InternalServiceFault, InvalidParameterException, MissingRequiredParameterException, ResourceNotFoundException
@@ -521,6 +568,41 @@ struct OAMClient:
         auto b = binding.HttpBinding(method="POST", path_template="/PutSinkPolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutSinkPolicyDocument(Policy=input.Policy, SinkIdentifier=input.SinkIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, oam_service(), self.region, host)
+
+    # TagResource  PUT /tags/{ResourceArn}
+    # errors: ResourceNotFoundException, TooManyTagsException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(oam_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(oam_json_str(k0) + ":" + oam_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + oam_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, oam_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, oam_service(), self.region, host)
+
+    # UpdateLink  POST /UpdateLink
+    # errors: InternalServiceFault, InvalidParameterException, MissingRequiredParameterException, ResourceNotFoundException
+    def update_link(self, UpdateLinkInput input) -> str:
+        auto host = endpoints.regional_host(oam_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateLink", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Identifier\":" + oam_json_str(input.Identifier))
+        if input.IncludeTags.is_some():
+            auto u0 = input.IncludeTags.unwrap()
+            parts.append("\"IncludeTags\":" + json.dumps(JsonValue.Bool(u0)))
+        if input.LinkConfiguration.is_some():
+            auto u1 = input.LinkConfiguration.unwrap()
+            parts.append("\"LinkConfiguration\":" + u1.to_json())
+        list[str] e2 = []
+        for x2 in input.ResourceTypes:
+            e2.append(x2.to_json())
+        parts.append("\"ResourceTypes\":" + oam_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, oam_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, oam_service(), self.region, host)
 
     # Paginator for ListAttachedLinks — yields each Response page, threading the

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 48 operations — 33 with a generated method,
-#   15 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 48 operations — 45 with a generated method,
+#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   122 structs (87 @derive(Json)), 15 enums, 7 error variants.
 #   7 paginators generated (3 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The Route53GlobalResolver rest-json protocol: SigV4 service "route53globalresolver" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -239,8 +240,9 @@ struct BatchCreateFirewallRuleInputItem:
     str dnsViewId
     Optional[str] qType
 
-# no @derive(Json): member(s) failures: list[BatchCreateFirewallRuleOutputItem], successes: list[BatchCreateFirewallRuleOutputItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failures: list[BatchCreateFirewallRuleOutputItem], successes: list[BatchCreateFirewallRuleOutputItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateFirewallRuleOutput:
     list[BatchCreateFirewallRuleOutputItem] failures
     list[BatchCreateFirewallRuleOutputItem] successes
@@ -284,8 +286,9 @@ struct BatchDeleteFirewallRuleInput:
 struct BatchDeleteFirewallRuleInputItem:
     str firewallRuleId
 
-# no @derive(Json): member(s) failures: list[BatchDeleteFirewallRuleOutputItem], successes: list[BatchDeleteFirewallRuleOutputItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failures: list[BatchDeleteFirewallRuleOutputItem], successes: list[BatchDeleteFirewallRuleOutputItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteFirewallRuleOutput:
     list[BatchDeleteFirewallRuleOutputItem] failures
     list[BatchDeleteFirewallRuleOutputItem] successes
@@ -322,8 +325,9 @@ struct BatchUpdateFirewallRuleInputItem:
     Optional[str] name
     Optional[int64] priority
 
-# no @derive(Json): member(s) failures: list[BatchUpdateFirewallRuleOutputItem], successes: list[BatchUpdateFirewallRuleOutputItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failures: list[BatchUpdateFirewallRuleOutputItem], successes: list[BatchUpdateFirewallRuleOutputItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateFirewallRuleOutput:
     list[BatchUpdateFirewallRuleOutputItem] failures
     list[BatchUpdateFirewallRuleOutputItem] successes
@@ -515,8 +519,9 @@ struct CreateGlobalResolverInput:
     list[str] regions
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) ipv4Addresses: list[str], ipv6Addresses: list[str], regions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ipv4Addresses: list[str], ipv6Addresses: list[str], regions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateGlobalResolverOutput:
     str id
     str arn
@@ -648,8 +653,9 @@ struct DeleteFirewallRuleOutput:
 struct DeleteGlobalResolverInput:
     str globalResolverId
 
-# no @derive(Json): member(s) regions: list[str], ipv4Addresses: list[str], ipv6Addresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) regions: list[str], ipv4Addresses: list[str], ipv6Addresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteGlobalResolverOutput:
     str id
     str arn
@@ -881,8 +887,9 @@ struct GetFirewallRuleOutput:
 struct GetGlobalResolverInput:
     str globalResolverId
 
-# no @derive(Json): member(s) regions: list[str], ipv4Addresses: list[str], ipv6Addresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) regions: list[str], ipv4Addresses: list[str], ipv6Addresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetGlobalResolverOutput:
     str id
     str arn
@@ -929,8 +936,9 @@ struct GetManagedFirewallDomainListOutput:
     str name
     str managedListType
 
-# no @derive(Json): member(s) regions: list[str], ipv4Addresses: list[str], ipv6Addresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) regions: list[str], ipv4Addresses: list[str], ipv6Addresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GlobalResolversItem:
     str id
     str arn
@@ -985,8 +993,9 @@ struct ListAccessSourcesInput:
     Optional[str] nextToken
     Optional[dict[str, list[str]]] filters
 
-# no @derive(Json): member(s) accessSources: list[AccessSourcesItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessSources: list[AccessSourcesItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccessSourcesOutput:
     Optional[str] nextToken
     list[AccessSourcesItem] accessSources
@@ -999,8 +1008,9 @@ struct ListAccessTokensInput:
     str dnsViewId
     Optional[dict[str, list[str]]] filters
 
-# no @derive(Json): member(s) accessTokens: list[AccessTokenItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessTokens: list[AccessTokenItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccessTokensOutput:
     Optional[str] nextToken
     Optional[list[AccessTokenItem]] accessTokens
@@ -1012,8 +1022,9 @@ struct ListDNSViewsInput:
     Optional[str] nextToken
     str globalResolverId
 
-# no @derive(Json): member(s) dnsViews: list[DNSViewSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dnsViews: list[DNSViewSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDNSViewsOutput:
     Optional[str] nextToken
     list[DNSViewSummary] dnsViews
@@ -1025,8 +1036,9 @@ struct ListFirewallDomainListsInput:
     Optional[str] nextToken
     Optional[str] globalResolverId
 
-# no @derive(Json): member(s) firewallDomainLists: list[FirewallDomainListsItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) firewallDomainLists: list[FirewallDomainListsItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFirewallDomainListsOutput:
     Optional[str] nextToken
     list[FirewallDomainListsItem] firewallDomainLists
@@ -1038,8 +1050,9 @@ struct ListFirewallDomainsInput:
     Optional[str] nextToken
     str firewallDomainListId
 
-# no @derive(Json): member(s) domains: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) domains: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFirewallDomainsOutput:
     Optional[str] nextToken
     list[str] domains
@@ -1052,8 +1065,9 @@ struct ListFirewallRulesInput:
     str dnsViewId
     Optional[dict[str, list[str]]] filters
 
-# no @derive(Json): member(s) firewallRules: list[FirewallRulesItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) firewallRules: list[FirewallRulesItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFirewallRulesOutput:
     Optional[str] nextToken
     list[FirewallRulesItem] firewallRules
@@ -1064,8 +1078,9 @@ struct ListGlobalResolversInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) globalResolvers: list[GlobalResolversItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) globalResolvers: list[GlobalResolversItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGlobalResolversOutput:
     Optional[str] nextToken
     list[GlobalResolversItem] globalResolvers
@@ -1077,8 +1092,9 @@ struct ListHostedZoneAssociationsInput:
     Optional[str] nextToken
     Optional[str] resourceArn
 
-# no @derive(Json): member(s) hostedZoneAssociations: list[HostedZoneAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) hostedZoneAssociations: list[HostedZoneAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListHostedZoneAssociationsOutput:
     Optional[str] nextToken
     list[HostedZoneAssociationSummary] hostedZoneAssociations
@@ -1090,8 +1106,9 @@ struct ListManagedFirewallDomainListsInput:
     Optional[str] nextToken
     str managedFirewallDomainListType
 
-# no @derive(Json): member(s) managedFirewallDomainLists: list[ManagedFirewallDomainListsItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) managedFirewallDomainLists: list[ManagedFirewallDomainListsItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListManagedFirewallDomainListsOutput:
     Optional[str] nextToken
     list[ManagedFirewallDomainListsItem] managedFirewallDomainLists
@@ -1102,8 +1119,9 @@ struct ListSharedDNSViewsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) dnsViews: list[SharedDNSViewSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dnsViews: list[SharedDNSViewSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSharedDNSViewsOutput:
     Optional[str] nextToken
     list[SharedDNSViewSummary] dnsViews
@@ -1113,8 +1131,9 @@ struct ListSharedDNSViewsOutput:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -1309,8 +1328,9 @@ struct UpdateGlobalResolverInput:
     Optional[GlobalResolverIpAddressType] ipAddressType
     Optional[list[str]] regions
 
-# no @derive(Json): member(s) regions: list[str], ipv4Addresses: list[str], ipv6Addresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) regions: list[str], ipv4Addresses: list[str], ipv6Addresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateGlobalResolverOutput:
     str id
     str arn
@@ -1346,8 +1366,9 @@ struct UpdateHostedZoneAssociationOutput:
     DateTime updatedAt
     HostedZoneAssociationStatus status
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -1396,21 +1417,9 @@ def route53globalresolver_error_from_code(str code) -> Route53GlobalResolverErro
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchCreateFirewallRule (document member `firewallRules: list[BatchCreateFirewallRuleInputItem]` is not serializable by derive)
-#   BatchDeleteFirewallRule (document member `firewallRules: list[BatchDeleteFirewallRuleInputItem]` is not serializable by derive)
-#   BatchUpdateFirewallRule (document member `firewallRules: list[BatchUpdateFirewallRuleInputItem]` is not serializable by derive)
-#   CreateAccessSource (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateAccessToken (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateDNSView (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateFirewallDomainList (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateGlobalResolver (document member `regions: list[str]` is not serializable by derive)
 #   ListAccessSources (httpQuery `filters` has unsupported type dict[str, list[str]])
 #   ListAccessTokens (httpQuery `filters` has unsupported type dict[str, list[str]])
 #   ListFirewallRules (httpQuery `filters` has unsupported type dict[str, list[str]])
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
-#   UntagResource (document member `tagKeys: list[str]` is not serializable by derive)
-#   UpdateFirewallDomains (document member `domains: list[str]` is not serializable by derive)
-#   UpdateGlobalResolver (document member `regions: list[str]` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -1514,6 +1523,155 @@ struct Route53GlobalResolverClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
 
+    # BatchCreateFirewallRule  POST /firewall-rules/batch-create
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def batch_create_firewall_rule(self, BatchCreateFirewallRuleInput input) -> str:
+        auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/firewall-rules/batch-create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.firewallRules:
+            e0.append(x0.to_json())
+        parts.append("\"firewallRules\":" + route53globalresolver_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, route53globalresolver_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
+
+    # BatchDeleteFirewallRule  POST /firewall-rules/batch-delete
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def batch_delete_firewall_rule(self, BatchDeleteFirewallRuleInput input) -> str:
+        auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/firewall-rules/batch-delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.firewallRules:
+            e0.append(x0.to_json())
+        parts.append("\"firewallRules\":" + route53globalresolver_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, route53globalresolver_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
+
+    # BatchUpdateFirewallRule  POST /firewall-rules/batch-update
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def batch_update_firewall_rule(self, BatchUpdateFirewallRuleInput input) -> str:
+        auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/firewall-rules/batch-update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.firewallRules:
+            e0.append(x0.to_json())
+        parts.append("\"firewallRules\":" + route53globalresolver_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, route53globalresolver_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
+
+    # CreateAccessSource  POST /access-sources
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_access_source(self, CreateAccessSourceInput input) -> str:
+        auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/access-sources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"cidr\":" + route53globalresolver_json_str(input.cidr))
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + route53globalresolver_json_str(u0))
+        if input.ipAddressType.is_some():
+            auto u1 = input.ipAddressType.unwrap()
+            parts.append("\"ipAddressType\":" + u1.to_json())
+        if input.name.is_some():
+            auto u2 = input.name.unwrap()
+            parts.append("\"name\":" + route53globalresolver_json_str(u2))
+        parts.append("\"dnsViewId\":" + route53globalresolver_json_str(input.dnsViewId))
+        parts.append("\"protocol\":" + input.protocol.to_json())
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(route53globalresolver_json_str(k4) + ":" + route53globalresolver_json_str(u3[k4]))
+            parts.append("\"tags\":" + route53globalresolver_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, route53globalresolver_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
+
+    # CreateAccessToken  POST /tokens/{dnsViewId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_access_token(self, CreateAccessTokenInput input) -> str:
+        auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
+        dict[str, str] labels = {}
+        labels["dnsViewId"] = input.dnsViewId
+        auto b = binding.HttpBinding(method="POST", path_template="/tokens/{dnsViewId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + route53globalresolver_json_str(u0))
+        if input.expiresAt.is_some():
+            auto u1 = input.expiresAt.unwrap()
+            parts.append("\"expiresAt\":" + route53globalresolver_json_ts_iso(u1))
+        if input.name.is_some():
+            auto u2 = input.name.unwrap()
+            parts.append("\"name\":" + route53globalresolver_json_str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(route53globalresolver_json_str(k4) + ":" + route53globalresolver_json_str(u3[k4]))
+            parts.append("\"tags\":" + route53globalresolver_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, route53globalresolver_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
+
+    # CreateDNSView  POST /dns-views/{globalResolverId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_dns_view(self, CreateDNSViewInput input) -> str:
+        auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
+        dict[str, str] labels = {}
+        labels["globalResolverId"] = input.globalResolverId
+        auto b = binding.HttpBinding(method="POST", path_template="/dns-views/{globalResolverId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + route53globalresolver_json_str(u0))
+        parts.append("\"name\":" + route53globalresolver_json_str(input.name))
+        if input.dnssecValidation.is_some():
+            auto u1 = input.dnssecValidation.unwrap()
+            parts.append("\"dnssecValidation\":" + u1.to_json())
+        if input.ednsClientSubnet.is_some():
+            auto u2 = input.ednsClientSubnet.unwrap()
+            parts.append("\"ednsClientSubnet\":" + u2.to_json())
+        if input.firewallRulesFailOpen.is_some():
+            auto u3 = input.firewallRulesFailOpen.unwrap()
+            parts.append("\"firewallRulesFailOpen\":" + u3.to_json())
+        if input.description.is_some():
+            auto u4 = input.description.unwrap()
+            parts.append("\"description\":" + route53globalresolver_json_str(u4))
+        if input.tags.is_some():
+            auto u5 = input.tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(route53globalresolver_json_str(k6) + ":" + route53globalresolver_json_str(u5[k6]))
+            parts.append("\"tags\":" + route53globalresolver_json_obj(m6))
+        auto bp = restjson.rest_json_document(b, route53globalresolver_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
+
+    # CreateFirewallDomainList  POST /firewall-domain-lists/{globalResolverId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_firewall_domain_list(self, CreateFirewallDomainListInput input) -> str:
+        auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
+        dict[str, str] labels = {}
+        labels["globalResolverId"] = input.globalResolverId
+        auto b = binding.HttpBinding(method="POST", path_template="/firewall-domain-lists/{globalResolverId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + route53globalresolver_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + route53globalresolver_json_str(u1))
+        parts.append("\"name\":" + route53globalresolver_json_str(input.name))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(route53globalresolver_json_str(k3) + ":" + route53globalresolver_json_str(u2[k3]))
+            parts.append("\"tags\":" + route53globalresolver_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, route53globalresolver_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
+
     # CreateFirewallRule  POST /firewall-rules
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_firewall_rule(self, CreateFirewallRuleInput input) -> str:
@@ -1521,6 +1679,38 @@ struct Route53GlobalResolverClient:
         auto b = binding.HttpBinding(method="POST", path_template="/firewall-rules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateFirewallRuleDocument(action=input.action, blockOverrideDnsType=input.blockOverrideDnsType, blockOverrideDomain=input.blockOverrideDomain, blockOverrideTtl=input.blockOverrideTtl, blockResponse=input.blockResponse, clientToken=input.clientToken, confidenceThreshold=input.confidenceThreshold, description=input.description, dnsAdvancedProtection=input.dnsAdvancedProtection, firewallDomainListId=input.firewallDomainListId, name=input.name, priority=input.priority, dnsViewId=input.dnsViewId, qType=input.qType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
+
+    # CreateGlobalResolver  POST /global-resolver
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_global_resolver(self, CreateGlobalResolverInput input) -> str:
+        auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/global-resolver", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + route53globalresolver_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + route53globalresolver_json_str(u1))
+        if input.ipAddressType.is_some():
+            auto u2 = input.ipAddressType.unwrap()
+            parts.append("\"ipAddressType\":" + u2.to_json())
+        parts.append("\"name\":" + route53globalresolver_json_str(input.name))
+        if input.observabilityRegion.is_some():
+            auto u3 = input.observabilityRegion.unwrap()
+            parts.append("\"observabilityRegion\":" + route53globalresolver_json_str(u3))
+        list[str] e4 = []
+        for x4 in input.regions:
+            e4.append(route53globalresolver_json_str(x4))
+        parts.append("\"regions\":" + route53globalresolver_json_arr(e4))
+        if input.tags.is_some():
+            auto u5 = input.tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(route53globalresolver_json_str(k6) + ":" + route53globalresolver_json_str(u5[k6]))
+            parts.append("\"tags\":" + route53globalresolver_json_obj(m6))
+        auto bp = restjson.rest_json_document(b, route53globalresolver_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
 
     # DeleteAccessSource  DELETE /access-sources/{accessSourceId}
@@ -1792,6 +1982,34 @@ struct Route53GlobalResolverClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
 
+    # TagResource  POST /tag-resource
+    # errors: ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/tag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceArn\":" + route53globalresolver_json_str(input.resourceArn))
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(route53globalresolver_json_str(k0) + ":" + route53globalresolver_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + route53globalresolver_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, route53globalresolver_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
+
+    # UntagResource  POST /untag-resource
+    # errors: ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/untag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceArn\":" + route53globalresolver_json_str(input.resourceArn))
+        list[str] e0 = []
+        for x0 in input.tagKeys:
+            e0.append(route53globalresolver_json_str(x0))
+        parts.append("\"tagKeys\":" + route53globalresolver_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, route53globalresolver_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
+
     # UpdateAccessSource  PATCH /access-sources/{accessSourceId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_access_source(self, UpdateAccessSourceInput input) -> str:
@@ -1825,6 +2043,22 @@ struct Route53GlobalResolverClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
 
+    # UpdateFirewallDomains  PATCH /firewall-domain-lists/{firewallDomainListId}/domains
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_firewall_domains(self, UpdateFirewallDomainsInput input) -> str:
+        auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
+        dict[str, str] labels = {}
+        labels["firewallDomainListId"] = input.firewallDomainListId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/firewall-domain-lists/{firewallDomainListId}/domains", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.domains:
+            e0.append(route53globalresolver_json_str(x0))
+        parts.append("\"domains\":" + route53globalresolver_json_arr(e0))
+        parts.append("\"operation\":" + route53globalresolver_json_str(input.operation))
+        auto bp = restjson.rest_json_document(b, route53globalresolver_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
+
     # UpdateFirewallRule  PATCH /firewall-rules/{firewallRuleId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_firewall_rule(self, UpdateFirewallRuleInput input) -> str:
@@ -1834,6 +2068,35 @@ struct Route53GlobalResolverClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/firewall-rules/{firewallRuleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateFirewallRuleDocument(action=input.action, blockOverrideDnsType=input.blockOverrideDnsType, blockOverrideDomain=input.blockOverrideDomain, blockOverrideTtl=input.blockOverrideTtl, blockResponse=input.blockResponse, clientToken=input.clientToken, confidenceThreshold=input.confidenceThreshold, description=input.description, dnsAdvancedProtection=input.dnsAdvancedProtection, name=input.name, priority=input.priority)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
+
+    # UpdateGlobalResolver  PATCH /global-resolver/{globalResolverId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_global_resolver(self, UpdateGlobalResolverInput input) -> str:
+        auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
+        dict[str, str] labels = {}
+        labels["globalResolverId"] = input.globalResolverId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/global-resolver/{globalResolverId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + route53globalresolver_json_str(u0))
+        if input.observabilityRegion.is_some():
+            auto u1 = input.observabilityRegion.unwrap()
+            parts.append("\"observabilityRegion\":" + route53globalresolver_json_str(u1))
+        if input.description.is_some():
+            auto u2 = input.description.unwrap()
+            parts.append("\"description\":" + route53globalresolver_json_str(u2))
+        if input.ipAddressType.is_some():
+            auto u3 = input.ipAddressType.unwrap()
+            parts.append("\"ipAddressType\":" + u3.to_json())
+        if input.regions.is_some():
+            auto u4 = input.regions.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(route53globalresolver_json_str(x5))
+            parts.append("\"regions\":" + route53globalresolver_json_arr(e5))
+        auto bp = restjson.rest_json_document(b, route53globalresolver_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
 
     # UpdateHostedZoneAssociation  PATCH /hosted-zone-associations/{hostedZoneAssociationId}

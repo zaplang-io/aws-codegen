@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 9 operations — 6 with a generated method,
-#   3 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 9 operations — 9 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   28 structs (14 @derive(Json)), 3 enums, 7 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -76,8 +76,9 @@ struct ApprovePaidSubscriptionInput:
     str ifMatch
     Optional[str] clientToken
 
-# no @derive(Json): member(s) subscription: Subscription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscription: Subscription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApprovePaidSubscriptionOutput:
     Subscription subscription
     str eTag
@@ -90,8 +91,9 @@ struct AssociateResourcesToSubscriptionInput:
     str ifMatch
     Optional[str] clientToken
 
-# no @derive(Json): member(s) subscription: Subscription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscription: Subscription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateResourcesToSubscriptionOutput:
     Subscription subscription
     str eTag
@@ -103,8 +105,9 @@ struct CancelSubscriptionChangeInput:
     str ifMatch
     Optional[str] clientToken
 
-# no @derive(Json): member(s) subscription: Subscription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscription: Subscription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CancelSubscriptionChangeOutput:
     Subscription subscription
     str eTag
@@ -116,8 +119,9 @@ struct CancelSubscriptionInput:
     str ifMatch
     Optional[str] clientToken
 
-# no @derive(Json): member(s) subscription: Subscription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscription: Subscription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CancelSubscriptionOutput:
     Subscription subscription
     str eTag
@@ -137,8 +141,9 @@ struct CreateSubscriptionInput:
     Optional[ApprovalMode] approvalMode
     Optional[str] clientToken
 
-# no @derive(Json): member(s) subscription: Subscription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscription: Subscription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSubscriptionOutput:
     Subscription subscription
     str eTag
@@ -151,8 +156,9 @@ struct DisassociateResourcesFromSubscriptionInput:
     str ifMatch
     Optional[str] clientToken
 
-# no @derive(Json): member(s) subscription: Subscription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscription: Subscription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateResourcesFromSubscriptionOutput:
     Subscription subscription
     str eTag
@@ -162,8 +168,9 @@ struct DisassociateResourcesFromSubscriptionOutput:
 struct GetSubscriptionInput:
     str arn
 
-# no @derive(Json): member(s) subscription: Subscription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscription: Subscription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSubscriptionOutput:
     Subscription subscription
     str eTag
@@ -177,8 +184,9 @@ struct InternalServerException:
 struct ListSubscriptionsInput:
     Optional[str] nextToken
 
-# no @derive(Json): member(s) subscriptionSummaries: list[SubscriptionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscriptionSummaries: list[SubscriptionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSubscriptionsOutput:
     list[SubscriptionSummary] subscriptionSummaries
     Optional[str] nextToken
@@ -200,8 +208,9 @@ struct ScheduledChange:
 struct ServiceQuotaExceededException:
     str message
 
-# no @derive(Json): member(s) resourceArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Subscription:
     str arn
     str planFamily
@@ -214,8 +223,9 @@ struct Subscription:
     DateTime createdAt
     DateTime updatedAt
 
-# no @derive(Json): member(s) resourceArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubscriptionSummary:
     str arn
     str planFamily
@@ -242,8 +252,9 @@ struct UpdateSubscriptionInput:
     str ifMatch
     Optional[str] clientToken
 
-# no @derive(Json): member(s) subscription: Subscription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscription: Subscription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSubscriptionOutput:
     Subscription subscription
     str eTag
@@ -287,13 +298,6 @@ def pricingplanmanager_error_from_code(str code) -> Pricing_Plan_ManagerError:
     return Pricing_Plan_ManagerError.Unknown(code=code)
 
 # --- client ----------------------------------------------------------------
-
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   AssociateResourcesToSubscription (document member `resourceArns: list[str]` is not serializable by derive)
-#   CreateSubscription (document member `resourceArns: list[str]` is not serializable by derive)
-#   DisassociateResourcesFromSubscription (document member `resourceArns: list[str]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -350,6 +354,25 @@ struct Pricing_Plan_ManagerClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, pricingplanmanager_service(), self.region, host)
 
+    # AssociateResourcesToSubscription  POST /v1/AssociateResourcesToSubscription
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def associate_resources_to_subscription(self, AssociateResourcesToSubscriptionInput input) -> str:
+        auto host = endpoints.regional_host(pricingplanmanager_service(), self.region)
+        dict[str, str] headers = {}
+        headers["If-Match"] = input.ifMatch
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/AssociateResourcesToSubscription", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"arn\":" + pricingplanmanager_json_str(input.arn))
+        list[str] e0 = []
+        for x0 in input.resourceArns:
+            e0.append(pricingplanmanager_json_str(x0))
+        parts.append("\"resourceArns\":" + pricingplanmanager_json_arr(e0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + pricingplanmanager_json_str(u1))
+        auto bp = restjson.rest_json_document(b, pricingplanmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, pricingplanmanager_service(), self.region, host)
+
     # CancelSubscription  POST /v1/CancelSubscription
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def cancel_subscription(self, CancelSubscriptionInput input) -> str:
@@ -370,6 +393,49 @@ struct Pricing_Plan_ManagerClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/CancelSubscriptionChange", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelSubscriptionChangeDocument(arn=input.arn, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, pricingplanmanager_service(), self.region, host)
+
+    # CreateSubscription  POST /v1/CreateSubscription
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_subscription(self, CreateSubscriptionInput input) -> str:
+        auto host = endpoints.regional_host(pricingplanmanager_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/CreateSubscription", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"planFamily\":" + pricingplanmanager_json_str(input.planFamily))
+        parts.append("\"planTier\":" + pricingplanmanager_json_str(input.planTier))
+        if input.usageLevel.is_some():
+            auto u0 = input.usageLevel.unwrap()
+            parts.append("\"usageLevel\":" + pricingplanmanager_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.resourceArns:
+            e1.append(pricingplanmanager_json_str(x1))
+        parts.append("\"resourceArns\":" + pricingplanmanager_json_arr(e1))
+        if input.approvalMode.is_some():
+            auto u2 = input.approvalMode.unwrap()
+            parts.append("\"approvalMode\":" + u2.to_json())
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + pricingplanmanager_json_str(u3))
+        auto bp = restjson.rest_json_document(b, pricingplanmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, pricingplanmanager_service(), self.region, host)
+
+    # DisassociateResourcesFromSubscription  POST /v1/DisassociateResourcesFromSubscription
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def disassociate_resources_from_subscription(self, DisassociateResourcesFromSubscriptionInput input) -> str:
+        auto host = endpoints.regional_host(pricingplanmanager_service(), self.region)
+        dict[str, str] headers = {}
+        headers["If-Match"] = input.ifMatch
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/DisassociateResourcesFromSubscription", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"arn\":" + pricingplanmanager_json_str(input.arn))
+        list[str] e0 = []
+        for x0 in input.resourceArns:
+            e0.append(pricingplanmanager_json_str(x0))
+        parts.append("\"resourceArns\":" + pricingplanmanager_json_arr(e0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + pricingplanmanager_json_str(u1))
+        auto bp = restjson.rest_json_document(b, pricingplanmanager_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, pricingplanmanager_service(), self.region, host)
 
     # GetSubscription  POST /v1/GetSubscription

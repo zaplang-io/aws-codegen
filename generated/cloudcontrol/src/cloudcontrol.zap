@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 8 operations — 7 with a generated method,
-#   1 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 8 operations — 8 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   41 structs (36 @derive(Json)), 3 enums, 21 error variants.
-#   1 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -145,8 +145,9 @@ struct GetResourceOutput:
 struct GetResourceRequestStatusInput:
     str RequestToken
 
-# no @derive(Json): member(s) HooksProgressEvent: list[HookProgressEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HooksProgressEvent: list[HookProgressEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourceRequestStatusOutput:
     Optional[ProgressEvent] ProgressEvent
     Optional[list[HookProgressEvent]] HooksProgressEvent
@@ -178,15 +179,17 @@ struct InvalidCredentialsException:
 struct InvalidRequestException:
     Optional[str] Message
 
-# no @derive(Json): member(s) ResourceRequestStatusFilter: ResourceRequestStatusFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceRequestStatusFilter: ResourceRequestStatusFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceRequestsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
     Optional[ResourceRequestStatusFilter] ResourceRequestStatusFilter
 
-# no @derive(Json): member(s) ResourceRequestStatusSummaries: list[ProgressEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceRequestStatusSummaries: list[ProgressEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceRequestsOutput:
     Optional[list[ProgressEvent]] ResourceRequestStatusSummaries
     Optional[str] NextToken
@@ -200,8 +203,9 @@ struct ListResourcesInput:
     Optional[int64] MaxResults
     Optional[str] ResourceModel
 
-# no @derive(Json): member(s) ResourceDescriptions: list[ResourceDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceDescriptions: list[ResourceDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourcesOutput:
     Optional[str] TypeName
     Optional[list[ResourceDescription]] ResourceDescriptions
@@ -254,8 +258,9 @@ struct ResourceDescription:
 struct ResourceNotFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Operations: list[Operation], OperationStatuses: list[OperationStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Operations: list[Operation], OperationStatuses: list[OperationStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceRequestStatusFilter:
     Optional[list[Operation]] Operations
     Optional[list[OperationStatus]] OperationStatuses
@@ -369,13 +374,66 @@ def cloudcontrolapi_error_from_code(str code) -> CloudControlError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   ListResourceRequests (input ListResourceRequestsInput)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def cloudcontrolapi_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListResourceRequests (input not derivable (no generated method))
+def cloudcontrolapi_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def cloudcontrolapi_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ListResourceRequestsInput to a compact JSON object (declaration order).
+def list_resource_requests_input_to_json(ListResourceRequestsInput v) -> str:
+    list[str] parts = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + cloudcontrolapi_json_str(u1))
+    if v.ResourceRequestStatusFilter.is_some():
+        auto u2 = v.ResourceRequestStatusFilter.unwrap()
+        parts.append("\"ResourceRequestStatusFilter\":" + resource_request_status_filter_to_json(u2))
+    return cloudcontrolapi_json_obj(parts)
+
+# Serialize ResourceRequestStatusFilter to a compact JSON object (declaration order).
+def resource_request_status_filter_to_json(ResourceRequestStatusFilter v) -> str:
+    list[str] parts = []
+    if v.Operations.is_some():
+        auto u0 = v.Operations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Operations\":" + cloudcontrolapi_json_arr(e1))
+    if v.OperationStatuses.is_some():
+        auto u2 = v.OperationStatuses.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"OperationStatuses\":" + cloudcontrolapi_json_arr(e3))
+    return cloudcontrolapi_json_obj(parts)
 
 # A bound CloudControl client: credentials + region, threaded into every operation.
 struct CloudControlClient:
@@ -412,6 +470,11 @@ struct CloudControlClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cloudcontrolapi_protocol(), self.creds, self.region, "GetResourceRequestStatus", body)
 
+    # ListResourceRequests
+    def list_resource_requests(self, ListResourceRequestsInput input) -> str:
+        auto body = list_resource_requests_input_to_json(input)
+        return awsjson.awsjson_request_now(cloudcontrolapi_protocol(), self.creds, self.region, "ListResourceRequests", body)
+
     # ListResources
     # errors: AlreadyExistsException, GeneralServiceException, HandlerFailureException, HandlerInternalFailureException, InvalidCredentialsException, InvalidRequestException, NetworkFailureException, NotStabilizedException, NotUpdatableException, PrivateTypeException, ResourceConflictException, ResourceNotFoundException, ServiceInternalErrorException, ServiceLimitExceededException, ThrottlingException, TypeNotFoundException, UnsupportedActionException
     def list_resources(self, ListResourcesInput input) -> str:
@@ -423,6 +486,20 @@ struct CloudControlClient:
     def update_resource(self, UpdateResourceInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cloudcontrolapi_protocol(), self.creds, self.region, "UpdateResource", body)
+
+    # Paginator for ListResourceRequests — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ResourceRequestStatusSummaries).
+    def paginate_list_resource_requests(self, ListResourceRequestsInput input):
+        auto host = endpoints.regional_host(cloudcontrolapi_protocol().service, self.region)
+        while True:
+            auto body = list_resource_requests_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(cloudcontrolapi_protocol(), self.creds, self.region, "ListResourceRequests", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
     # Paginator for ListResources — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: ResourceDescriptions).

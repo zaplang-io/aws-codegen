@@ -7,11 +7,13 @@
 //! `aws.awsjson` codec, returning ready-to-send signed request text.
 
 use crate::binding::{plan_operation, OpBinding, PayloadBody, ScalarBind};
+use crate::jsonbody::{compute_json_serializable, plan_enc, JsonSer};
 use crate::model::{Model, Paginators, Shape};
 use crate::naming::{escape_ident, snake_case};
 use crate::query::{plan_query, QueryFlavor, QueryMember, QueryOp, ScalarText};
 use crate::types::{compute_derivable, resolve, ZapType};
 use crate::xml::{plan_rest_xml, RawKind, RestXmlOp, XmlBody, XmlMember, XmlText};
+use std::cell::Cell;
 use std::collections::{HashMap, HashSet};
 
 /// The wire protocol the generator emits for a service.
@@ -101,6 +103,9 @@ struct Generator<'a> {
     model: &'a Model,
     paginators: &'a Paginators,
     derivable: HashMap<String, bool>,
+    /// Which structures the explicit JSON emitter can serialize (a superset of
+    /// `derivable` that also covers collections / nesting; zaplang-io/zap#424).
+    json_serializable: HashMap<String, bool>,
     /// Type-name prefix for client/error (serviceId, else PascalCase prefix).
     type_prefix: String,
     /// snake prefix for free functions (endpointPrefix).
@@ -111,6 +116,12 @@ struct Generator<'a> {
     /// (uri/query/header) members can be rendered as the plain wire type (a
     /// string enum becomes `str`) in the parameter-carrier struct.
     rest_input_shapes: HashSet<String>,
+    /// Set while emitting explicit JSON serializers (zaplang-io/zap#424): whether
+    /// the emitted code references the `base64` / `datetime` stdlib modules, so
+    /// `imports` can add them. Interior-mutable because emission runs under
+    /// `&self` before `imports`.
+    json_needs_base64: Cell<bool>,
+    json_needs_datetime: Cell<bool>,
 }
 
 impl<'a> Generator<'a> {
@@ -146,15 +157,50 @@ impl<'a> Generator<'a> {
         } else {
             HashSet::new()
         };
+        let derivable = compute_derivable(model);
+        let json_serializable = compute_json_serializable(model, &derivable);
         Generator {
             model,
             paginators,
-            derivable: compute_derivable(model),
+            derivable,
+            json_serializable,
             type_prefix,
             fn_prefix,
             protocol,
             rest_input_shapes,
+            json_needs_base64: Cell::new(false),
+            json_needs_datetime: Cell::new(false),
         }
+    }
+
+    fn is_json_serializable(&self, shape_name: &str) -> bool {
+        *self.json_serializable.get(shape_name).unwrap_or(&false)
+    }
+
+    /// The per-file JSON serialization helpers shared by the emitted explicit
+    /// `_to_json` serializers (zaplang-io/zap#424). `needs_iso` adds the ISO-8601
+    /// timestamp helper (only emitted when some member needs it).
+    fn json_helpers(&self, needs_iso: bool) -> String {
+        let p = &self.fn_prefix;
+        let mut out = String::new();
+        out.push_str(
+            "# JSON body helpers (compact, declaration-order objects): the collection\n# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`\n# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join\n# pre-serialized members.\n",
+        );
+        out.push_str(&format!(
+            "def {p}_json_str(str s) -> str:\n{IND}return json.dumps(JsonValue.Str(s))\n\n"
+        ));
+        out.push_str(&format!(
+            "def {p}_json_obj(list[str] parts) -> str:\n{IND}auto body = \"\"\n{IND}auto i = 0\n{IND}for part in parts:\n{IND}{IND}if i > 0:\n{IND}{IND}{IND}body = body + \",\"\n{IND}{IND}body = body + part\n{IND}{IND}i = i + 1\n{IND}return \"{{\" + body + \"}}\"\n\n"
+        ));
+        out.push_str(&format!(
+            "def {p}_json_arr(list[str] parts) -> str:\n{IND}auto body = \"\"\n{IND}auto i = 0\n{IND}for part in parts:\n{IND}{IND}if i > 0:\n{IND}{IND}{IND}body = body + \",\"\n{IND}{IND}body = body + part\n{IND}{IND}i = i + 1\n{IND}return \"[\" + body + \"]\"\n"
+        ));
+        if needs_iso {
+            out.push_str(&format!(
+                "\n# A timestamp as an ISO-8601 JSON string (`@json(timestamp=\"iso8601\")`).\ndef {p}_json_ts_iso(DateTime dt) -> str:\n{IND}return \"\\\"\" + datetime.strftime(dt, \"%Y-%m-%dT%H:%M:%SZ\") + \"\\\"\"\n"
+            ));
+        }
+        out
     }
 
     /// The SigV4 signing name: `signingName` when the model sets one, else the
@@ -300,8 +346,10 @@ impl<'a> Generator<'a> {
             cov.operations_total, cov.operations_methods
         ));
         let skip_reason = match self.protocol {
-            Protocol::AwsJson => "input uses collections not yet serializable by derive",
-            Protocol::RestJson => "a member type is not yet bindable/serializable by derive",
+            Protocol::AwsJson => "input has a non-string-keyed map or free-form document member",
+            Protocol::RestJson => {
+                "a non-scalar URI/query/header binding, or a non-derivable payload"
+            }
             Protocol::RestXml => "a body member is not yet serializable by the XML emitter",
             Protocol::Query | Protocol::Ec2 => {
                 "a member type is not yet serializable (nesting/map)"
@@ -328,8 +376,8 @@ impl<'a> Generator<'a> {
         ));
         if self.protocol.uses_json_derive() {
             h.push_str("# @derive(Json) is attached to structs whose members are all derive-\n");
-            h.push_str("# serializable; structs containing list/map members are emitted plain,\n");
-            h.push_str("# pending derive collection support (zaplang-io/zap#346 follow-up).\n");
+            h.push_str("# serializable; structs with list/map members stay plain and are\n");
+            h.push_str("# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).\n");
         } else {
             h.push_str("# Structs are plain data carriers (the body is built explicitly by each\n");
             h.push_str("# method); enum-typed members are carried as their plain wire string.\n");
@@ -375,6 +423,14 @@ impl<'a> Generator<'a> {
         );
         for m in &mods {
             s.push_str(&format!("import aws_core.{m}\n"));
+        }
+        // Stdlib modules used by the explicit JSON serializers (zaplang-io/
+        // zap#424): base64 for blob members, datetime for timestamp members.
+        if self.json_needs_base64.get() {
+            s.push_str("import base64\n");
+        }
+        if self.json_needs_datetime.get() {
+            s.push_str("import datetime\n");
         }
         s
     }
@@ -508,14 +564,14 @@ impl<'a> Generator<'a> {
                 })
                 .collect();
             out.push_str(&format!(
-                "# no @derive(Json): member(s) {} not yet serializable by derive\n",
+                "# no @derive(Json): member(s) {} not derivable (list/map collections);\n",
                 if blockers.is_empty() {
                     "(collection/nested)".to_string()
                 } else {
                     blockers.join(", ")
                 }
             ));
-            out.push_str("# (list/map collections — zaplang-io/zap#346 follow-up).\n");
+            out.push_str("# serialized (when used in a request) by an explicit `<shape>_to_json`\n# (zaplang-io/zap#424).\n");
         } else {
             out.push_str("@derive(Json)\n");
         }
@@ -745,6 +801,31 @@ impl<'a> Generator<'a> {
         let mut methods = String::new();
         let mut skipped: Vec<String> = Vec::new();
 
+        // Plan the explicit JSON serializers (serializable-but-not-derivable
+        // input shapes and everything they reach; zaplang-io/zap#424) up front,
+        // so method bodies can name them.
+        let ser_roots: Vec<String> = self
+            .model
+            .operations
+            .values()
+            .filter_map(|op| op.input.as_ref().map(|r| r.shape.clone()))
+            .filter(|s| {
+                self.model
+                    .shape(s)
+                    .map(|sh| sh.is_structure() && !sh.members.is_empty())
+                    .unwrap_or(false)
+                    && self.is_json_serializable(s)
+                    && !self.is_derivable(s)
+            })
+            .collect();
+        let mut ser = JsonSer::new(
+            self.model,
+            &self.fn_prefix,
+            &self.derivable,
+            &self.json_serializable,
+        );
+        ser.plan_roots(&ser_roots);
+
         for op_name in self.model.sorted_operation_names() {
             cov.operations_total += 1;
             let op = &self.model.operations[op_name];
@@ -800,7 +881,21 @@ impl<'a> Generator<'a> {
                     methods.push('\n');
                     cov.operations_methods += 1;
                 }
-                // Input with collection members -> skip (derive gap).
+                // Input with collection/nested members: serialize explicitly
+                // (zaplang-io/zap#424) when the emitter can; else skip.
+                Some((sname, _)) if self.is_json_serializable(sname) => {
+                    let ty = escape_ident(sname).0;
+                    let body = ser.body_expr(sname, "input");
+                    methods.push_str(&format!("{IND}# {op_name}\n"));
+                    methods.push_str(&errors_doc);
+                    methods.push_str(&format!(
+                        "{IND}def {method}(self, {ty} input) -> str:\n{IND}{IND}auto body = {body}\n"
+                    ));
+                    methods.push_str(&self.dispatch(op_name));
+                    methods.push('\n');
+                    cov.operations_methods += 1;
+                }
+                // A member type the emitter cannot serialize yet -> skip.
                 Some((sname, _)) => {
                     skipped.push(format!("{op_name} (input {sname})"));
                     cov.operations_skipped += 1;
@@ -808,16 +903,23 @@ impl<'a> Generator<'a> {
             }
         }
 
-        let (paginator_methods, paginators_skipped) = self.paginator_methods(cov);
+        let serializers = ser.emit_serializers();
+        let needs_iso_helper = ser.needs_iso();
+        if ser.needs_base64() {
+            self.json_needs_base64.set(true);
+        }
+        if ser.needs_datetime() {
+            self.json_needs_datetime.set(true);
+        }
+
+        let (paginator_methods, paginators_skipped) = self.paginator_methods(cov, &mut ser);
 
         let mut out = String::new();
         if !skipped.is_empty() {
             out.push_str(
-                "# Operations skipped in v0 (input shape has collection members not yet\n",
+                "# Operations skipped in v0 (a member type is not yet serializable — a map\n",
             );
-            out.push_str(
-                "# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):\n",
-            );
+            out.push_str("# with a non-string key, or a free-form document member):\n");
             for s in &skipped {
                 out.push_str(&format!("#   {s}\n"));
             }
@@ -834,6 +936,14 @@ impl<'a> Generator<'a> {
                 out.push_str(&format!("#   {s}\n"));
             }
             out.push('\n');
+        }
+        if !serializers.is_empty() {
+            out.push_str(&self.json_helpers(needs_iso_helper));
+            out.push('\n');
+            out.push_str(
+                "# Explicit JSON serializers for input shapes with collection/nested members\n# (the @derive(Json) collection follow-up, zaplang-io/zap#424).\n\n",
+            );
+            out.push_str(&serializers);
         }
         out.push_str(&format!(
             "# A bound {} client: credentials + region, threaded into every operation.\n",
@@ -879,17 +989,30 @@ impl<'a> Generator<'a> {
         let mut doc_structs = String::new();
         let mut skipped: Vec<String> = Vec::new();
 
+        // Plan every operation once; gather the serializer roots (the structs
+        // reachable from a non-derivable document member) up front so method
+        // bodies can name their inline serializers (zaplang-io/zap#424).
+        let mut plans: Vec<(&String, OpBinding)> = Vec::new();
+        let mut ser_roots: Vec<String> = Vec::new();
         for op_name in self.model.sorted_operation_names() {
             cov.operations_total += 1;
             let op = &self.model.operations[op_name];
-            match plan_operation(self.model, op, &self.derivable) {
+            match plan_operation(self.model, op, &self.derivable, &self.json_serializable) {
                 Ok(plan) => {
-                    if let Some(ds) = self.rest_doc_struct(op_name, &plan) {
-                        doc_structs.push_str(&ds);
-                        doc_structs.push('\n');
+                    if plan.has_document_body() && !plan.document_all_derivable {
+                        if let Some(input_raw) = op.input.as_ref().map(|r| &r.shape) {
+                            if let Some(input_shape) = self.model.shape(input_raw) {
+                                for m in &plan.document {
+                                    if let Some(r) = input_shape.members.get(&m.member) {
+                                        ser_roots.extend(crate::jsonbody::reachable_struct_names(
+                                            self.model, r,
+                                        ));
+                                    }
+                                }
+                            }
+                        }
                     }
-                    methods.push_str(&self.rest_method(op_name, op, &plan));
-                    methods.push('\n');
+                    plans.push((op_name, plan));
                     cov.operations_methods += 1;
                 }
                 Err(reason) => {
@@ -897,6 +1020,33 @@ impl<'a> Generator<'a> {
                     cov.operations_skipped += 1;
                 }
             }
+        }
+
+        let mut ser = JsonSer::new(
+            self.model,
+            &self.fn_prefix,
+            &self.derivable,
+            &self.json_serializable,
+        );
+        ser.plan_roots(&ser_roots);
+
+        for (op_name, plan) in &plans {
+            let op = &self.model.operations[*op_name];
+            if let Some(ds) = self.rest_doc_struct(op_name, plan) {
+                doc_structs.push_str(&ds);
+                doc_structs.push('\n');
+            }
+            methods.push_str(&self.rest_method(op_name, op, plan, &ser));
+            methods.push('\n');
+        }
+
+        let serializers = ser.emit_serializers();
+        let needs_iso_helper = ser.needs_iso();
+        if ser.needs_base64() {
+            self.json_needs_base64.set(true);
+        }
+        if ser.needs_datetime() {
+            self.json_needs_datetime.set(true);
         }
 
         let (paginator_methods, paginators_skipped) = self.rest_paginator_methods(cov);
@@ -935,6 +1085,15 @@ impl<'a> Generator<'a> {
             out.push_str(&doc_structs);
         }
 
+        if !serializers.is_empty() {
+            out.push_str(&self.json_helpers(needs_iso_helper));
+            out.push('\n');
+            out.push_str(
+                "# Explicit JSON serializers for document bodies with collection/nested\n# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).\n\n",
+            );
+            out.push_str(&serializers);
+        }
+
         out.push_str(&format!(
             "# A bound {} client: credentials + region, threaded into every operation.\n",
             self.type_prefix
@@ -962,7 +1121,8 @@ impl<'a> Generator<'a> {
     /// one field per unbound document member — or `None` when the operation has
     /// no document body (a GET/DELETE with everything bound, or a raw payload).
     fn rest_doc_struct(&self, op_name: &str, plan: &OpBinding) -> Option<String> {
-        if !plan.has_document_body() {
+        // A non-derivable body is serialized inline (no `@derive(Json)` struct).
+        if !plan.has_document_body() || !plan.document_all_derivable {
             return None;
         }
         let name = format!("{}Document", escape_ident(op_name).0);
@@ -983,7 +1143,13 @@ impl<'a> Generator<'a> {
 
     /// Emit one rest-json operation method: assemble the labels/query/headers,
     /// attach the body (raw httpPayload, JSON document, or none), and sign.
-    fn rest_method(&self, op_name: &str, op: &crate::model::Operation, plan: &OpBinding) -> String {
+    fn rest_method(
+        &self,
+        op_name: &str,
+        op: &crate::model::Operation,
+        plan: &OpBinding,
+        ser: &JsonSer,
+    ) -> String {
         let i2 = format!("{IND}{IND}");
         let i3 = format!("{IND}{IND}{IND}");
         let svc = &self.fn_prefix;
@@ -1065,7 +1231,7 @@ impl<'a> Generator<'a> {
                 "{i2}auto bp = restjson.rest_json_raw_payload(b, {expr}, \"{ct}\")\n"
             ));
             "bp"
-        } else if plan.has_document_body() {
+        } else if plan.has_document_body() && plan.document_all_derivable {
             let doc = format!("{}Document", escape_ident(op_name).0);
             let fields: Vec<String> = plan
                 .document
@@ -1075,6 +1241,35 @@ impl<'a> Generator<'a> {
             b.push_str(&format!("{i2}auto doc = {doc}({})\n", fields.join(", ")));
             b.push_str(&format!(
                 "{i2}auto bp = restjson.rest_json_document(b, doc.to_json())\n"
+            ));
+            "bp"
+        } else if plan.has_document_body() {
+            // Collection/nested document body: serialize the members inline
+            // (zaplang-io/zap#424). Look each member's ShapeRef up on the input
+            // shape to recover its JSON encoding.
+            let input_shape = op
+                .input
+                .as_ref()
+                .and_then(|r| self.model.shape(&r.shape))
+                .expect("a document body implies a structure input shape");
+            b.push_str(&format!("{i2}list[str] parts = []\n"));
+            let mut ctr: u32 = 0;
+            for m in &plan.document {
+                let r = match input_shape.members.get(&m.member) {
+                    Some(r) => r,
+                    None => continue,
+                };
+                let enc = match plan_enc(self.model, r, &self.derivable, &self.json_serializable) {
+                    Some(e) => e,
+                    None => continue,
+                };
+                ser.append_member(
+                    &mut b, &i2, "parts", "input", &m.field, &m.wire, m.optional, &enc, &mut ctr,
+                );
+            }
+            b.push_str(&format!(
+                "{i2}auto bp = restjson.rest_json_document(b, {}(parts))\n",
+                ser.obj_helper()
             ));
             "bp"
         } else {
@@ -1656,7 +1851,7 @@ impl<'a> Generator<'a> {
             .get(op_name)
             .ok_or("not in service-2.json")?;
         // The operation must have a generated method.
-        plan_operation(self.model, op, &self.derivable)
+        plan_operation(self.model, op, &self.derivable, &self.json_serializable)
             .map_err(|_| "operation not generated".to_string())?;
 
         let input_ref = op.input.as_ref().ok_or("operation has no input")?;
@@ -1745,13 +1940,13 @@ impl<'a> Generator<'a> {
     /// `str` member of the input shape. That rules out DynamoDB's `Query`/`Scan`
     /// (non-derivable `AttributeValue`-map input; `ExclusiveStartKey` is a map,
     /// not a string) while surfacing the `List*` listings.
-    fn paginator_methods(&self, cov: &mut Coverage) -> (String, Vec<String>) {
+    fn paginator_methods(&self, cov: &mut Coverage, ser: &mut JsonSer) -> (String, Vec<String>) {
         let mut methods = String::new();
         let mut skipped: Vec<String> = Vec::new();
 
         for op_name in self.paginators.sorted_operation_names() {
             let pag = &self.paginators.pagination[op_name];
-            match self.plan_paginator(op_name, pag) {
+            match self.plan_paginator(op_name, pag, ser) {
                 Ok(plan) => {
                     methods.push_str(&plan.emit(&self.fn_prefix));
                     methods.push('\n');
@@ -1772,6 +1967,7 @@ impl<'a> Generator<'a> {
         &self,
         op_name: &str,
         pag: &crate::model::Paginator,
+        ser: &mut JsonSer,
     ) -> Result<PaginatorPlan, String> {
         let op = self
             .model
@@ -1787,8 +1983,15 @@ impl<'a> Generator<'a> {
                 .map(|sh| (s, sh))
         });
         let (input_name, input_sh) = match input_struct {
-            Some((n, sh)) if !sh.members.is_empty() && self.is_derivable(n) => (n, sh),
-            _ => return Err("input not derivable (no generated method)".to_string()),
+            // The op must have a generated method: derivable (`input.to_json()`)
+            // or explicitly serializable (`<shape>_to_json(input)`; #424).
+            Some((n, sh))
+                if !sh.members.is_empty()
+                    && (self.is_derivable(n) || self.is_json_serializable(n)) =>
+            {
+                (n, sh)
+            }
+            _ => return Err("input not serializable (no generated method)".to_string()),
         };
 
         let input_token = pag
@@ -1833,6 +2036,9 @@ impl<'a> Generator<'a> {
             token_optional,
             output_token: output_token.to_string(),
             result_keys: pag.result_key.0.clone(),
+            // `input.to_json()` for a derivable input, else the explicit
+            // `<shape>_to_json(input)` collection serializer (#424).
+            body_expr: ser.body_expr(input_name, "input"),
         })
     }
 }
@@ -1850,6 +2056,8 @@ struct PaginatorPlan {
     output_token: String,
     /// Result key(s) the page's items live under — documentation only in v0.
     result_keys: Vec<String>,
+    /// The Zap expression that serializes `input` to the JSON body.
+    body_expr: String,
 }
 
 impl PaginatorPlan {
@@ -1881,7 +2089,7 @@ impl PaginatorPlan {
             "{IND}{IND}auto host = endpoints.regional_host({fn_prefix}_protocol().service, self.region)\n"
         ));
         out.push_str(&format!("{IND}{IND}while True:\n"));
-        out.push_str(&format!("{IND}{IND}{IND}auto body = input.to_json()\n"));
+        out.push_str(&format!("{IND}{IND}{IND}auto body = {}\n", self.body_expr));
         out.push_str(&format!(
             "{IND}{IND}{IND}auto raw = awsjson.awsjson_request_now({fn_prefix}_protocol(), self.creds, self.region, \"{}\", body)\n",
             self.op_name

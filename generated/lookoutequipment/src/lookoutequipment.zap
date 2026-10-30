@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 49 operations — 40 with a generated method,
-#   9 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 49 operations — 49 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   134 structs (109 @derive(Json)), 18 enums, 7 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -27,6 +27,7 @@
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
 import aws_core.awsjson
+import datetime
 
 # The LookoutEquipment awsJson protocol: version 1.0, API id "AWSLookoutEquipmentFrontendService".
 def lookoutequipment_protocol() -> awsjson.AwsJson:
@@ -214,8 +215,9 @@ struct CountPercent:
     int64 Count
     float64 Percentage
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDatasetRequest:
     str DatasetName
     Optional[DatasetSchema] DatasetSchema
@@ -229,8 +231,9 @@ struct CreateDatasetResponse:
     Optional[str] DatasetArn
     Optional[DatasetStatus] Status
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateInferenceSchedulerRequest:
     str ModelName
     str InferenceSchedulerName
@@ -250,8 +253,9 @@ struct CreateInferenceSchedulerResponse:
     Optional[InferenceSchedulerStatus] Status
     Optional[ModelQuality] ModelQuality
 
-# no @derive(Json): member(s) FaultCodes: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FaultCodes: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLabelGroupRequest:
     str LabelGroupName
     Optional[list[str]] FaultCodes
@@ -278,8 +282,9 @@ struct CreateLabelRequest:
 struct CreateLabelResponse:
     Optional[str] LabelId
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateModelRequest:
     str ModelName
     str DatasetName
@@ -381,8 +386,9 @@ struct DeleteRetrainingSchedulerRequest:
 struct DescribeDataIngestionJobRequest:
     str JobId
 
-# no @derive(Json): member(s) IngestedFilesSummary: IngestedFilesSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IngestedFilesSummary: IngestedFilesSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDataIngestionJobResponse:
     Optional[str] JobId
     Optional[str] DatasetArn
@@ -403,8 +409,9 @@ struct DescribeDataIngestionJobResponse:
 struct DescribeDatasetRequest:
     str DatasetName
 
-# no @derive(Json): member(s) IngestedFilesSummary: IngestedFilesSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IngestedFilesSummary: IngestedFilesSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDatasetResponse:
     Optional[str] DatasetName
     Optional[str] DatasetArn
@@ -446,8 +453,9 @@ struct DescribeInferenceSchedulerResponse:
 struct DescribeLabelGroupRequest:
     str LabelGroupName
 
-# no @derive(Json): member(s) FaultCodes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FaultCodes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLabelGroupResponse:
     Optional[str] LabelGroupName
     Optional[str] LabelGroupArn
@@ -596,8 +604,9 @@ struct DescribeRetrainingSchedulerResponse:
 struct DuplicateTimestamps:
     int64 TotalNumberOfDuplicateTimestamps
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportDatasetRequest:
     str SourceDatasetArn
     Optional[str] DatasetName
@@ -612,8 +621,9 @@ struct ImportDatasetResponse:
     Optional[DatasetStatus] Status
     Optional[str] JobId
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportModelVersionRequest:
     str SourceModelVersionArn
     Optional[str] ModelName
@@ -696,8 +706,9 @@ struct InferenceSchedulerSummary:
     Optional[DataUploadFrequency] DataUploadFrequency
     Optional[LatestInferenceResult] LatestInferenceResult
 
-# no @derive(Json): member(s) DiscardedFiles: list[S3Object] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DiscardedFiles: list[S3Object] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IngestedFilesSummary:
     int64 TotalNumberOfFiles
     int64 IngestedNumberOfFiles
@@ -769,8 +780,9 @@ struct ListDataIngestionJobsRequest:
     Optional[int64] MaxResults
     Optional[IngestionJobStatus] Status
 
-# no @derive(Json): member(s) DataIngestionJobSummaries: list[DataIngestionJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataIngestionJobSummaries: list[DataIngestionJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataIngestionJobsResponse:
     Optional[str] NextToken
     Optional[list[DataIngestionJobSummary]] DataIngestionJobSummaries
@@ -781,8 +793,9 @@ struct ListDatasetsRequest:
     Optional[int64] MaxResults
     Optional[str] DatasetNameBeginsWith
 
-# no @derive(Json): member(s) DatasetSummaries: list[DatasetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatasetSummaries: list[DatasetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatasetsResponse:
     Optional[str] NextToken
     Optional[list[DatasetSummary]] DatasetSummaries
@@ -795,8 +808,9 @@ struct ListInferenceEventsRequest:
     DateTime IntervalStartTime
     DateTime IntervalEndTime
 
-# no @derive(Json): member(s) InferenceEventSummaries: list[InferenceEventSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InferenceEventSummaries: list[InferenceEventSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInferenceEventsResponse:
     Optional[str] NextToken
     Optional[list[InferenceEventSummary]] InferenceEventSummaries
@@ -810,8 +824,9 @@ struct ListInferenceExecutionsRequest:
     Optional[DateTime] DataEndTimeBefore
     Optional[InferenceExecutionStatus] Status
 
-# no @derive(Json): member(s) InferenceExecutionSummaries: list[InferenceExecutionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InferenceExecutionSummaries: list[InferenceExecutionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInferenceExecutionsResponse:
     Optional[str] NextToken
     Optional[list[InferenceExecutionSummary]] InferenceExecutionSummaries
@@ -824,8 +839,9 @@ struct ListInferenceSchedulersRequest:
     Optional[str] ModelName
     Optional[InferenceSchedulerStatus] Status
 
-# no @derive(Json): member(s) InferenceSchedulerSummaries: list[InferenceSchedulerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InferenceSchedulerSummaries: list[InferenceSchedulerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInferenceSchedulersResponse:
     Optional[str] NextToken
     Optional[list[InferenceSchedulerSummary]] InferenceSchedulerSummaries
@@ -836,8 +852,9 @@ struct ListLabelGroupsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) LabelGroupSummaries: list[LabelGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LabelGroupSummaries: list[LabelGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLabelGroupsResponse:
     Optional[str] NextToken
     Optional[list[LabelGroupSummary]] LabelGroupSummaries
@@ -852,8 +869,9 @@ struct ListLabelsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) LabelSummaries: list[LabelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LabelSummaries: list[LabelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLabelsResponse:
     Optional[str] NextToken
     Optional[list[LabelSummary]] LabelSummaries
@@ -870,8 +888,9 @@ struct ListModelVersionsRequest:
     Optional[int64] MaxModelVersion
     Optional[int64] MinModelVersion
 
-# no @derive(Json): member(s) ModelVersionSummaries: list[ModelVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelVersionSummaries: list[ModelVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListModelVersionsResponse:
     Optional[str] NextToken
     Optional[list[ModelVersionSummary]] ModelVersionSummaries
@@ -884,8 +903,9 @@ struct ListModelsRequest:
     Optional[str] ModelNameBeginsWith
     Optional[str] DatasetNameBeginsWith
 
-# no @derive(Json): member(s) ModelSummaries: list[ModelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModelSummaries: list[ModelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListModelsResponse:
     Optional[str] NextToken
     Optional[list[ModelSummary]] ModelSummaries
@@ -897,8 +917,9 @@ struct ListRetrainingSchedulersRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) RetrainingSchedulerSummaries: list[RetrainingSchedulerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RetrainingSchedulerSummaries: list[RetrainingSchedulerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRetrainingSchedulersResponse:
     Optional[list[RetrainingSchedulerSummary]] RetrainingSchedulerSummaries
     Optional[str] NextToken
@@ -910,8 +931,9 @@ struct ListSensorStatisticsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SensorStatisticsSummaries: list[SensorStatisticsSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SensorStatisticsSummaries: list[SensorStatisticsSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSensorStatisticsResponse:
     Optional[list[SensorStatisticsSummary]] SensorStatisticsSummaries
     Optional[str] NextToken
@@ -920,8 +942,9 @@ struct ListSensorStatisticsResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -1097,8 +1120,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[Tag] Tags
@@ -1116,8 +1140,9 @@ struct ThrottlingException:
 struct UnsupportedTimestamps:
     int64 TotalNumberOfUnsupportedTimestamps
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] TagKeys
@@ -1150,8 +1175,9 @@ struct UpdateInferenceSchedulerRequest:
     Optional[InferenceOutputConfiguration] DataOutputConfiguration
     Optional[str] RoleArn
 
-# no @derive(Json): member(s) FaultCodes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FaultCodes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateLabelGroupRequest:
     str LabelGroupName
     Optional[list[str]] FaultCodes
@@ -1209,28 +1235,259 @@ def lookoutequipment_error_from_code(str code) -> LookoutEquipmentError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateDataset (input CreateDatasetRequest)
-#   CreateInferenceScheduler (input CreateInferenceSchedulerRequest)
-#   CreateLabelGroup (input CreateLabelGroupRequest)
-#   CreateModel (input CreateModelRequest)
-#   ImportDataset (input ImportDatasetRequest)
-#   ImportModelVersion (input ImportModelVersionRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateLabelGroup (input UpdateLabelGroupRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def lookoutequipment_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def lookoutequipment_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def lookoutequipment_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateDatasetRequest to a compact JSON object (declaration order).
+def create_dataset_request_to_json(CreateDatasetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DatasetName\":" + lookoutequipment_json_str(v.DatasetName))
+    if v.DatasetSchema.is_some():
+        auto u0 = v.DatasetSchema.unwrap()
+        parts.append("\"DatasetSchema\":" + u0.to_json())
+    if v.ServerSideKmsKeyId.is_some():
+        auto u1 = v.ServerSideKmsKeyId.unwrap()
+        parts.append("\"ServerSideKmsKeyId\":" + lookoutequipment_json_str(u1))
+    parts.append("\"ClientToken\":" + lookoutequipment_json_str(v.ClientToken))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + lookoutequipment_json_arr(e3))
+    return lookoutequipment_json_obj(parts)
+
+# Serialize CreateInferenceSchedulerRequest to a compact JSON object (declaration order).
+def create_inference_scheduler_request_to_json(CreateInferenceSchedulerRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ModelName\":" + lookoutequipment_json_str(v.ModelName))
+    parts.append("\"InferenceSchedulerName\":" + lookoutequipment_json_str(v.InferenceSchedulerName))
+    if v.DataDelayOffsetInMinutes.is_some():
+        auto u0 = v.DataDelayOffsetInMinutes.unwrap()
+        parts.append("\"DataDelayOffsetInMinutes\":" + str(u0))
+    parts.append("\"DataUploadFrequency\":" + v.DataUploadFrequency.to_json())
+    parts.append("\"DataInputConfiguration\":" + v.DataInputConfiguration.to_json())
+    parts.append("\"DataOutputConfiguration\":" + v.DataOutputConfiguration.to_json())
+    parts.append("\"RoleArn\":" + lookoutequipment_json_str(v.RoleArn))
+    if v.ServerSideKmsKeyId.is_some():
+        auto u1 = v.ServerSideKmsKeyId.unwrap()
+        parts.append("\"ServerSideKmsKeyId\":" + lookoutequipment_json_str(u1))
+    parts.append("\"ClientToken\":" + lookoutequipment_json_str(v.ClientToken))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + lookoutequipment_json_arr(e3))
+    return lookoutequipment_json_obj(parts)
+
+# Serialize CreateLabelGroupRequest to a compact JSON object (declaration order).
+def create_label_group_request_to_json(CreateLabelGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"LabelGroupName\":" + lookoutequipment_json_str(v.LabelGroupName))
+    if v.FaultCodes.is_some():
+        auto u0 = v.FaultCodes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(lookoutequipment_json_str(x1))
+        parts.append("\"FaultCodes\":" + lookoutequipment_json_arr(e1))
+    parts.append("\"ClientToken\":" + lookoutequipment_json_str(v.ClientToken))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + lookoutequipment_json_arr(e3))
+    return lookoutequipment_json_obj(parts)
+
+# Serialize CreateModelRequest to a compact JSON object (declaration order).
+def create_model_request_to_json(CreateModelRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ModelName\":" + lookoutequipment_json_str(v.ModelName))
+    parts.append("\"DatasetName\":" + lookoutequipment_json_str(v.DatasetName))
+    if v.DatasetSchema.is_some():
+        auto u0 = v.DatasetSchema.unwrap()
+        parts.append("\"DatasetSchema\":" + u0.to_json())
+    if v.LabelsInputConfiguration.is_some():
+        auto u1 = v.LabelsInputConfiguration.unwrap()
+        parts.append("\"LabelsInputConfiguration\":" + u1.to_json())
+    parts.append("\"ClientToken\":" + lookoutequipment_json_str(v.ClientToken))
+    if v.TrainingDataStartTime.is_some():
+        auto u2 = v.TrainingDataStartTime.unwrap()
+        parts.append("\"TrainingDataStartTime\":" + str(datetime.to_timestamp(u2)))
+    if v.TrainingDataEndTime.is_some():
+        auto u3 = v.TrainingDataEndTime.unwrap()
+        parts.append("\"TrainingDataEndTime\":" + str(datetime.to_timestamp(u3)))
+    if v.EvaluationDataStartTime.is_some():
+        auto u4 = v.EvaluationDataStartTime.unwrap()
+        parts.append("\"EvaluationDataStartTime\":" + str(datetime.to_timestamp(u4)))
+    if v.EvaluationDataEndTime.is_some():
+        auto u5 = v.EvaluationDataEndTime.unwrap()
+        parts.append("\"EvaluationDataEndTime\":" + str(datetime.to_timestamp(u5)))
+    if v.RoleArn.is_some():
+        auto u6 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + lookoutequipment_json_str(u6))
+    if v.DataPreProcessingConfiguration.is_some():
+        auto u7 = v.DataPreProcessingConfiguration.unwrap()
+        parts.append("\"DataPreProcessingConfiguration\":" + u7.to_json())
+    if v.ServerSideKmsKeyId.is_some():
+        auto u8 = v.ServerSideKmsKeyId.unwrap()
+        parts.append("\"ServerSideKmsKeyId\":" + lookoutequipment_json_str(u8))
+    if v.Tags.is_some():
+        auto u9 = v.Tags.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"Tags\":" + lookoutequipment_json_arr(e10))
+    if v.OffCondition.is_some():
+        auto u11 = v.OffCondition.unwrap()
+        parts.append("\"OffCondition\":" + lookoutequipment_json_str(u11))
+    if v.ModelDiagnosticsOutputConfiguration.is_some():
+        auto u12 = v.ModelDiagnosticsOutputConfiguration.unwrap()
+        parts.append("\"ModelDiagnosticsOutputConfiguration\":" + u12.to_json())
+    return lookoutequipment_json_obj(parts)
+
+# Serialize ImportDatasetRequest to a compact JSON object (declaration order).
+def import_dataset_request_to_json(ImportDatasetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SourceDatasetArn\":" + lookoutequipment_json_str(v.SourceDatasetArn))
+    if v.DatasetName.is_some():
+        auto u0 = v.DatasetName.unwrap()
+        parts.append("\"DatasetName\":" + lookoutequipment_json_str(u0))
+    parts.append("\"ClientToken\":" + lookoutequipment_json_str(v.ClientToken))
+    if v.ServerSideKmsKeyId.is_some():
+        auto u1 = v.ServerSideKmsKeyId.unwrap()
+        parts.append("\"ServerSideKmsKeyId\":" + lookoutequipment_json_str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + lookoutequipment_json_arr(e3))
+    return lookoutequipment_json_obj(parts)
+
+# Serialize ImportModelVersionRequest to a compact JSON object (declaration order).
+def import_model_version_request_to_json(ImportModelVersionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SourceModelVersionArn\":" + lookoutequipment_json_str(v.SourceModelVersionArn))
+    if v.ModelName.is_some():
+        auto u0 = v.ModelName.unwrap()
+        parts.append("\"ModelName\":" + lookoutequipment_json_str(u0))
+    parts.append("\"DatasetName\":" + lookoutequipment_json_str(v.DatasetName))
+    if v.LabelsInputConfiguration.is_some():
+        auto u1 = v.LabelsInputConfiguration.unwrap()
+        parts.append("\"LabelsInputConfiguration\":" + u1.to_json())
+    parts.append("\"ClientToken\":" + lookoutequipment_json_str(v.ClientToken))
+    if v.RoleArn.is_some():
+        auto u2 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + lookoutequipment_json_str(u2))
+    if v.ServerSideKmsKeyId.is_some():
+        auto u3 = v.ServerSideKmsKeyId.unwrap()
+        parts.append("\"ServerSideKmsKeyId\":" + lookoutequipment_json_str(u3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + lookoutequipment_json_arr(e5))
+    if v.InferenceDataImportStrategy.is_some():
+        auto u6 = v.InferenceDataImportStrategy.unwrap()
+        parts.append("\"InferenceDataImportStrategy\":" + u6.to_json())
+    return lookoutequipment_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + lookoutequipment_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + lookoutequipment_json_arr(e0))
+    return lookoutequipment_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + lookoutequipment_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(lookoutequipment_json_str(x0))
+    parts.append("\"TagKeys\":" + lookoutequipment_json_arr(e0))
+    return lookoutequipment_json_obj(parts)
+
+# Serialize UpdateLabelGroupRequest to a compact JSON object (declaration order).
+def update_label_group_request_to_json(UpdateLabelGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"LabelGroupName\":" + lookoutequipment_json_str(v.LabelGroupName))
+    if v.FaultCodes.is_some():
+        auto u0 = v.FaultCodes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(lookoutequipment_json_str(x1))
+        parts.append("\"FaultCodes\":" + lookoutequipment_json_arr(e1))
+    return lookoutequipment_json_obj(parts)
 
 # A bound LookoutEquipment client: credentials + region, threaded into every operation.
 struct LookoutEquipmentClient:
     core.Credentials creds
     str region
 
+    # CreateDataset
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_dataset(self, CreateDatasetRequest input) -> str:
+        auto body = create_dataset_request_to_json(input)
+        return awsjson.awsjson_request_now(lookoutequipment_protocol(), self.creds, self.region, "CreateDataset", body)
+
+    # CreateInferenceScheduler
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_inference_scheduler(self, CreateInferenceSchedulerRequest input) -> str:
+        auto body = create_inference_scheduler_request_to_json(input)
+        return awsjson.awsjson_request_now(lookoutequipment_protocol(), self.creds, self.region, "CreateInferenceScheduler", body)
+
     # CreateLabel
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_label(self, CreateLabelRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lookoutequipment_protocol(), self.creds, self.region, "CreateLabel", body)
+
+    # CreateLabelGroup
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_label_group(self, CreateLabelGroupRequest input) -> str:
+        auto body = create_label_group_request_to_json(input)
+        return awsjson.awsjson_request_now(lookoutequipment_protocol(), self.creds, self.region, "CreateLabelGroup", body)
+
+    # CreateModel
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_model(self, CreateModelRequest input) -> str:
+        auto body = create_model_request_to_json(input)
+        return awsjson.awsjson_request_now(lookoutequipment_protocol(), self.creds, self.region, "CreateModel", body)
 
     # CreateRetrainingScheduler
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1333,6 +1590,18 @@ struct LookoutEquipmentClient:
     def describe_retraining_scheduler(self, DescribeRetrainingSchedulerRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lookoutequipment_protocol(), self.creds, self.region, "DescribeRetrainingScheduler", body)
+
+    # ImportDataset
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def import_dataset(self, ImportDatasetRequest input) -> str:
+        auto body = import_dataset_request_to_json(input)
+        return awsjson.awsjson_request_now(lookoutequipment_protocol(), self.creds, self.region, "ImportDataset", body)
+
+    # ImportModelVersion
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def import_model_version(self, ImportModelVersionRequest input) -> str:
+        auto body = import_model_version_request_to_json(input)
+        return awsjson.awsjson_request_now(lookoutequipment_protocol(), self.creds, self.region, "ImportModelVersion", body)
 
     # ListDataIngestionJobs
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
@@ -1442,6 +1711,18 @@ struct LookoutEquipmentClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lookoutequipment_protocol(), self.creds, self.region, "StopRetrainingScheduler", body)
 
+    # TagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(lookoutequipment_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(lookoutequipment_protocol(), self.creds, self.region, "UntagResource", body)
+
     # UpdateActiveModelVersion
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_active_model_version(self, UpdateActiveModelVersionRequest input) -> str:
@@ -1453,6 +1734,12 @@ struct LookoutEquipmentClient:
     def update_inference_scheduler(self, UpdateInferenceSchedulerRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(lookoutequipment_protocol(), self.creds, self.region, "UpdateInferenceScheduler", body)
+
+    # UpdateLabelGroup
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_label_group(self, UpdateLabelGroupRequest input) -> str:
+        auto body = update_label_group_request_to_json(input)
+        return awsjson.awsjson_request_now(lookoutequipment_protocol(), self.creds, self.region, "UpdateLabelGroup", body)
 
     # UpdateModel
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException

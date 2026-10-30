@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 45 operations — 24 with a generated method,
-#   21 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 45 operations — 45 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   182 structs (106 @derive(Json)), 41 enums, 7 error variants.
-#   4 paginators generated (8 paginated ops skipped) from paginators-1.json.
+#   12 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import datetime
 
 # The PartnerCentral_Selling awsJson protocol: version 1.0, API id "AWSPartnerCentralSelling".
 def partnercentral_selling_protocol() -> awsjson.AwsJson:
@@ -1026,13 +1027,15 @@ struct AssociateOpportunityRequest:
     RelatedEntityType RelatedEntityType
     str RelatedEntityIdentifier
 
-# no @derive(Json): member(s) Contacts: list[Contact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Contacts: list[Contact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsOpportunityCustomer:
     Optional[list[Contact]] Contacts
 
-# no @derive(Json): member(s) AwsProductsSpendInsightsBySource: AwsProductsSpendInsightsBySource, Recommendations: list[Recommendation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AwsProductsSpendInsightsBySource: AwsProductsSpendInsightsBySource, Recommendations: list[Recommendation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsOpportunityInsights:
     Optional[str] NextBestActions
     Optional[EngagementScore] EngagementScore
@@ -1040,8 +1043,9 @@ struct AwsOpportunityInsights:
     Optional[OpportunityQuality] OpportunityQuality
     Optional[list[Recommendation]] Recommendations
 
-# no @derive(Json): member(s) NextStepsHistory: list[ProfileNextStepsHistory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NextStepsHistory: list[ProfileNextStepsHistory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsOpportunityLifeCycle:
     Optional[str] TargetCloseDate
     Optional[AwsClosedLostReason] ClosedLostReason
@@ -1049,22 +1053,25 @@ struct AwsOpportunityLifeCycle:
     Optional[str] NextSteps
     Optional[list[ProfileNextStepsHistory]] NextStepsHistory
 
-# no @derive(Json): member(s) ExpectedCustomerSpend: list[ExpectedCustomerSpend] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExpectedCustomerSpend: list[ExpectedCustomerSpend] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsOpportunityProject:
     Optional[list[ExpectedCustomerSpend]] ExpectedCustomerSpend
     Optional[str] AwsPartition
 
-# no @derive(Json): member(s) AwsProducts: list[str], Solutions: list[str], AwsMarketplaceSolutions: list[str], AwsMarketplaceProducts: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AwsProducts: list[str], Solutions: list[str], AwsMarketplaceSolutions: list[str], AwsMarketplaceProducts: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsOpportunityRelatedEntities:
     Optional[list[str]] AwsProducts
     Optional[list[str]] Solutions
     Optional[list[str]] AwsMarketplaceSolutions
     Optional[list[str]] AwsMarketplaceProducts
 
-# no @derive(Json): member(s) LifeCycle: AwsOpportunityLifeCycle, OpportunityTeam: list[AwsTeamMember], Insights: AwsOpportunityInsights, RelatedEntityIds: AwsOpportunityRelatedEntities, Customer: AwsOpportunityCustomer, Project: AwsOpportunityProject not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LifeCycle: AwsOpportunityLifeCycle, OpportunityTeam: list[AwsTeamMember], Insights: AwsOpportunityInsights, RelatedEntityIds: AwsOpportunityRelatedEntities, Customer: AwsOpportunityCustomer, Project: AwsOpportunityProject not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsOpportunitySummaryFullView:
     Optional[str] RelatedOpportunityId
     Optional[OpportunityOrigin] Origin
@@ -1080,8 +1087,9 @@ struct AwsOpportunitySummaryFullView:
     Optional[str] CosellMotion
     Optional[AwsSoftwareRevenue] SoftwareRevenue
 
-# no @derive(Json): member(s) Categories: list[str], Optimizations: list[AwsProductOptimization] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Categories: list[str], Optimizations: list[AwsProductOptimization] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsProductDetails:
     str ProductCode
     Optional[str] ServiceCode
@@ -1091,8 +1099,9 @@ struct AwsProductDetails:
     Optional[str] PotentialSavingsAmount
     list[AwsProductOptimization] Optimizations
 
-# no @derive(Json): member(s) TotalAmountByCategory: dict[str, str], AwsProducts: list[AwsProductDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TotalAmountByCategory: dict[str, str], AwsProducts: list[AwsProductDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsProductInsights:
     CurrencyCode CurrencyCode
     str Frequency
@@ -1107,8 +1116,9 @@ struct AwsProductOptimization:
     str Description
     str SavingsAmount
 
-# no @derive(Json): member(s) Partner: AwsProductInsights, AWS: AwsProductInsights not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Partner: AwsProductInsights, AWS: AwsProductInsights not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsProductsSpendInsightsBySource:
     Optional[AwsProductInsights] Partner
     Optional[AwsProductInsights] AWS
@@ -1144,8 +1154,9 @@ struct Contact:
     Optional[str] BusinessTitle
     Optional[str] Phone
 
-# no @derive(Json): member(s) Payload: EngagementContextPayload not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Payload: EngagementContextPayload not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEngagementContextRequest:
     str Catalog
     str EngagementIdentifier
@@ -1161,8 +1172,9 @@ struct CreateEngagementContextResponse:
     Optional[DateTime] EngagementLastModifiedAt
     Optional[str] ContextId
 
-# no @derive(Json): member(s) Invitation: Invitation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Invitation: Invitation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEngagementInvitationRequest:
     str Catalog
     str ClientToken
@@ -1174,8 +1186,9 @@ struct CreateEngagementInvitationResponse:
     str Id
     str Arn
 
-# no @derive(Json): member(s) Contexts: list[EngagementContextDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Contexts: list[EngagementContextDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEngagementRequest:
     str Catalog
     str ClientToken
@@ -1190,8 +1203,9 @@ struct CreateEngagementResponse:
     @json(timestamp="iso8601")
     Optional[DateTime] ModifiedAt
 
-# no @derive(Json): member(s) PrimaryNeedsFromAws: list[PrimaryNeedFromAws], Customer: Customer, Project: Project, Marketing: Marketing, LifeCycle: LifeCycle, OpportunityTeam: list[Contact], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryNeedsFromAws: list[PrimaryNeedFromAws], Customer: Customer, Project: Project, Marketing: Marketing, LifeCycle: LifeCycle, OpportunityTeam: list[Contact], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateOpportunityRequest:
     str Catalog
     Optional[list[PrimaryNeedFromAws]] PrimaryNeedsFromAws
@@ -1215,8 +1229,9 @@ struct CreateOpportunityResponse:
     @json(timestamp="iso8601")
     Optional[DateTime] LastModifiedDate
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateResourceSnapshotJobRequest:
     str Catalog
     str ClientToken
@@ -1252,8 +1267,9 @@ struct CreatedDateFilter:
     @json(timestamp="iso8601")
     Optional[DateTime] BeforeCreatedDate
 
-# no @derive(Json): member(s) Contacts: list[Contact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Contacts: list[Contact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Customer:
     Optional[Account] Account
     Optional[list[Contact]] Contacts
@@ -1279,15 +1295,17 @@ struct DisassociateOpportunityRequest:
     RelatedEntityType RelatedEntityType
     str RelatedEntityIdentifier
 
-# no @derive(Json): member(s) Payload: EngagementContextPayload not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Payload: EngagementContextPayload not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EngagementContextDetails:
     Optional[str] Id
     EngagementContextType Type
     Optional[EngagementContextPayload] Payload
 
-# no @derive(Json): member(s) Lead: LeadContext, ProspectingResult: ProspectingResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Lead: LeadContext, ProspectingResult: ProspectingResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EngagementContextPayload:
     Optional[CustomerProjectsContext] CustomerProject
     Optional[LeadContext] Lead
@@ -1356,8 +1374,9 @@ struct EngagementSort:
     SortOrder SortOrder
     str SortBy
 
-# no @derive(Json): member(s) ContextTypes: list[EngagementContextType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContextTypes: list[EngagementContextType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EngagementSummary:
     Optional[str] Arn
     Optional[str] Id
@@ -1369,8 +1388,9 @@ struct EngagementSummary:
     Optional[str] ModifiedBy
     Optional[list[EngagementContextType]] ContextTypes
 
-# no @derive(Json): member(s) ProspectingResultAws: InvitationProspectingResultAws not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProspectingResultAws: InvitationProspectingResultAws not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnrichmentContext:
     Optional[InvitationProspectingResultAws] ProspectingResultAws
     Optional[LeadInsights] LeadInsights
@@ -1393,8 +1413,9 @@ struct GetAwsOpportunitySummaryRequest:
     str Catalog
     str RelatedOpportunityIdentifier
 
-# no @derive(Json): member(s) LifeCycle: AwsOpportunityLifeCycle, OpportunityTeam: list[AwsTeamMember], Insights: AwsOpportunityInsights, RelatedEntityIds: AwsOpportunityRelatedEntities, Customer: AwsOpportunityCustomer, Project: AwsOpportunityProject not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LifeCycle: AwsOpportunityLifeCycle, OpportunityTeam: list[AwsTeamMember], Insights: AwsOpportunityInsights, RelatedEntityIds: AwsOpportunityRelatedEntities, Customer: AwsOpportunityCustomer, Project: AwsOpportunityProject not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAwsOpportunitySummaryResponse:
     Optional[str] RelatedOpportunityId
     Optional[OpportunityOrigin] Origin
@@ -1416,8 +1437,9 @@ struct GetEngagementInvitationRequest:
     str Catalog
     str Identifier
 
-# no @derive(Json): member(s) Payload: Payload, ExistingMembers: list[EngagementMemberSummary], EnrichmentContext: EnrichmentContext not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Payload: Payload, ExistingMembers: list[EngagementMemberSummary], EnrichmentContext: EnrichmentContext not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEngagementInvitationResponse:
     Optional[str] Arn
     Optional[EngagementInvitationPayloadType] PayloadType
@@ -1443,8 +1465,9 @@ struct GetEngagementRequest:
     str Catalog
     str Identifier
 
-# no @derive(Json): member(s) Contexts: list[EngagementContextDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Contexts: list[EngagementContextDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEngagementResponse:
     Optional[str] Id
     Optional[str] Arn
@@ -1462,8 +1485,9 @@ struct GetOpportunityRequest:
     str Catalog
     str Identifier
 
-# no @derive(Json): member(s) PrimaryNeedsFromAws: list[PrimaryNeedFromAws], Customer: Customer, Project: Project, Marketing: Marketing, RelatedEntityIdentifiers: RelatedEntityIdentifiers, LifeCycle: LifeCycle, OpportunityTeam: list[Contact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryNeedsFromAws: list[PrimaryNeedFromAws], Customer: Customer, Project: Project, Marketing: Marketing, RelatedEntityIdentifiers: RelatedEntityIdentifiers, LifeCycle: LifeCycle, OpportunityTeam: list[Contact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOpportunityResponse:
     str Catalog
     Optional[list[PrimaryNeedFromAws]] PrimaryNeedsFromAws
@@ -1487,8 +1511,9 @@ struct GetProspectingFromEngagementTaskRequest:
     str Catalog
     str TaskIdentifier
 
-# no @derive(Json): member(s) Engagements: list[EngagementProspectingResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Engagements: list[EngagementProspectingResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProspectingFromEngagementTaskResponse:
     str TaskId
     str TaskArn
@@ -1528,8 +1553,9 @@ struct GetResourceSnapshotRequest:
     str ResourceSnapshotTemplateIdentifier
     Optional[int64] Revision
 
-# no @derive(Json): member(s) Payload: ResourceSnapshotPayload, TargetMemberAccounts: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Payload: ResourceSnapshotPayload, TargetMemberAccounts: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourceSnapshotResponse:
     str Catalog
     Optional[str] Arn
@@ -1556,15 +1582,17 @@ struct GetSellingSystemSettingsResponse:
 struct InternalServerException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Payload: Payload not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Payload: Payload not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Invitation:
     str Message
     Receiver Receiver
     Payload Payload
 
-# no @derive(Json): member(s) Customer: ProspectingResultCustomer not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Customer: ProspectingResultCustomer not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvitationProspectingResultAws:
     Optional[ProspectingResultCustomer] Customer
     Optional[ProspectingInsights] Insights
@@ -1591,8 +1619,9 @@ struct LeadContact:
     str LastName
     Optional[str] Phone
 
-# no @derive(Json): member(s) Interactions: list[LeadInteraction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Interactions: list[LeadInteraction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LeadContext:
     Optional[LeadInsights] Insights
     Optional[str] QualificationStatus
@@ -1646,8 +1675,9 @@ struct LeadInvitationPayload:
     LeadInvitationCustomer Customer
     LeadInvitationInteraction Interaction
 
-# no @derive(Json): member(s) NextStepsHistory: list[NextStepsHistory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NextStepsHistory: list[NextStepsHistory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LifeCycle:
     Optional[Stage] Stage
     Optional[ClosedLostReason] ClosedLostReason
@@ -1688,8 +1718,9 @@ struct ListEngagementByAcceptingInvitationTaskSummary:
     Optional[str] ResourceSnapshotJobId
     Optional[str] EngagementInvitationId
 
-# no @derive(Json): member(s) TaskStatus: list[TaskStatus], OpportunityIdentifier: list[str], EngagementInvitationIdentifier: list[str], TaskIdentifier: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskStatus: list[TaskStatus], OpportunityIdentifier: list[str], EngagementInvitationIdentifier: list[str], TaskIdentifier: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEngagementByAcceptingInvitationTasksRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
@@ -1700,8 +1731,9 @@ struct ListEngagementByAcceptingInvitationTasksRequest:
     Optional[list[str]] EngagementInvitationIdentifier
     Optional[list[str]] TaskIdentifier
 
-# no @derive(Json): member(s) TaskSummaries: list[ListEngagementByAcceptingInvitationTaskSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskSummaries: list[ListEngagementByAcceptingInvitationTaskSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEngagementByAcceptingInvitationTasksResponse:
     Optional[list[ListEngagementByAcceptingInvitationTaskSummary]] TaskSummaries
     Optional[str] NextToken
@@ -1720,8 +1752,9 @@ struct ListEngagementFromOpportunityTaskSummary:
     Optional[str] EngagementId
     Optional[str] EngagementInvitationId
 
-# no @derive(Json): member(s) TaskStatus: list[TaskStatus], TaskIdentifier: list[str], OpportunityIdentifier: list[str], EngagementIdentifier: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskStatus: list[TaskStatus], TaskIdentifier: list[str], OpportunityIdentifier: list[str], EngagementIdentifier: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEngagementFromOpportunityTasksRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
@@ -1732,14 +1765,16 @@ struct ListEngagementFromOpportunityTasksRequest:
     Optional[list[str]] OpportunityIdentifier
     Optional[list[str]] EngagementIdentifier
 
-# no @derive(Json): member(s) TaskSummaries: list[ListEngagementFromOpportunityTaskSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskSummaries: list[ListEngagementFromOpportunityTaskSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEngagementFromOpportunityTasksResponse:
     Optional[list[ListEngagementFromOpportunityTaskSummary]] TaskSummaries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PayloadType: list[EngagementInvitationPayloadType], Status: list[InvitationStatus], EngagementIdentifier: list[str], SenderAwsAccountId: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PayloadType: list[EngagementInvitationPayloadType], Status: list[InvitationStatus], EngagementIdentifier: list[str], SenderAwsAccountId: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEngagementInvitationsRequest:
     str Catalog
     Optional[int64] MaxResults
@@ -1751,8 +1786,9 @@ struct ListEngagementInvitationsRequest:
     Optional[list[str]] EngagementIdentifier
     Optional[list[str]] SenderAwsAccountId
 
-# no @derive(Json): member(s) EngagementInvitationSummaries: list[EngagementInvitationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EngagementInvitationSummaries: list[EngagementInvitationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEngagementInvitationsResponse:
     Optional[list[EngagementInvitationSummary]] EngagementInvitationSummaries
     Optional[str] NextToken
@@ -1764,8 +1800,9 @@ struct ListEngagementMembersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) EngagementMemberList: list[EngagementMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EngagementMemberList: list[EngagementMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEngagementMembersResponse:
     list[EngagementMember] EngagementMemberList
     Optional[str] NextToken
@@ -1780,14 +1817,16 @@ struct ListEngagementResourceAssociationsRequest:
     Optional[str] ResourceIdentifier
     Optional[str] CreatedBy
 
-# no @derive(Json): member(s) EngagementResourceAssociationSummaries: list[EngagementResourceAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EngagementResourceAssociationSummaries: list[EngagementResourceAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEngagementResourceAssociationsResponse:
     list[EngagementResourceAssociationSummary] EngagementResourceAssociationSummaries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CreatedBy: list[str], ExcludeCreatedBy: list[str], ContextTypes: list[EngagementContextType], ExcludeContextTypes: list[EngagementContextType], EngagementIdentifier: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CreatedBy: list[str], ExcludeCreatedBy: list[str], ContextTypes: list[EngagementContextType], ExcludeContextTypes: list[EngagementContextType], EngagementIdentifier: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEngagementsRequest:
     str Catalog
     Optional[list[str]] CreatedBy
@@ -1799,14 +1838,16 @@ struct ListEngagementsRequest:
     Optional[str] NextToken
     Optional[list[str]] EngagementIdentifier
 
-# no @derive(Json): member(s) EngagementSummaryList: list[EngagementSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EngagementSummaryList: list[EngagementSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEngagementsResponse:
     list[EngagementSummary] EngagementSummaryList
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Identifier: list[str], LifeCycleStage: list[Stage], LifeCycleReviewStatus: list[ReviewStatus], CustomerCompanyName: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Identifier: list[str], LifeCycleStage: list[Stage], LifeCycleReviewStatus: list[ReviewStatus], CustomerCompanyName: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOpportunitiesRequest:
     str Catalog
     Optional[int64] MaxResults
@@ -1820,8 +1861,9 @@ struct ListOpportunitiesRequest:
     Optional[CreatedDateFilter] CreatedDate
     Optional[TargetCloseDateFilter] TargetCloseDate
 
-# no @derive(Json): member(s) OpportunitySummaries: list[OpportunitySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OpportunitySummaries: list[OpportunitySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOpportunitiesResponse:
     list[OpportunitySummary] OpportunitySummaries
     Optional[str] NextToken
@@ -1840,8 +1882,9 @@ struct ListOpportunityFromEngagementTaskSummary:
     Optional[str] EngagementId
     Optional[str] ContextId
 
-# no @derive(Json): member(s) TaskStatus: list[TaskStatus], TaskIdentifier: list[str], OpportunityIdentifier: list[str], EngagementIdentifier: list[str], ContextIdentifier: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskStatus: list[TaskStatus], TaskIdentifier: list[str], OpportunityIdentifier: list[str], EngagementIdentifier: list[str], ContextIdentifier: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOpportunityFromEngagementTasksRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
@@ -1853,14 +1896,16 @@ struct ListOpportunityFromEngagementTasksRequest:
     Optional[list[str]] EngagementIdentifier
     Optional[list[str]] ContextIdentifier
 
-# no @derive(Json): member(s) TaskSummaries: list[ListOpportunityFromEngagementTaskSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskSummaries: list[ListOpportunityFromEngagementTaskSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOpportunityFromEngagementTasksResponse:
     Optional[list[ListOpportunityFromEngagementTaskSummary]] TaskSummaries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TaskIdentifier: list[str], TaskName: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskIdentifier: list[str], TaskName: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProspectingFromEngagementTasksRequest:
     str Catalog
     Optional[int64] MaxResults
@@ -1871,8 +1916,9 @@ struct ListProspectingFromEngagementTasksRequest:
     Optional[DateTime] StartBefore
     Optional[ProspectingFromEngagementTaskSort] Sort
 
-# no @derive(Json): member(s) TaskSummaries: list[ProspectingTaskSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskSummaries: list[ProspectingTaskSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProspectingFromEngagementTasksResponse:
     Optional[str] NextToken
     list[ProspectingTaskSummary] TaskSummaries
@@ -1886,8 +1932,9 @@ struct ListResourceSnapshotJobsRequest:
     Optional[ResourceSnapshotJobStatus] Status
     Optional[SortObject] Sort
 
-# no @derive(Json): member(s) ResourceSnapshotJobSummaries: list[ResourceSnapshotJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceSnapshotJobSummaries: list[ResourceSnapshotJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceSnapshotJobsResponse:
     list[ResourceSnapshotJobSummary] ResourceSnapshotJobSummaries
     Optional[str] NextToken
@@ -1903,14 +1950,16 @@ struct ListResourceSnapshotsRequest:
     Optional[str] ResourceSnapshotTemplateIdentifier
     Optional[str] CreatedBy
 
-# no @derive(Json): member(s) ResourceSnapshotSummaries: list[ResourceSnapshotSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceSnapshotSummaries: list[ResourceSnapshotSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceSnapshotsResponse:
     list[ResourceSnapshotSummary] ResourceSnapshotSummaries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Status: list[SolutionStatus], Identifier: list[str], Category: list[str], AwsMarketplaceSolutionArn: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Status: list[SolutionStatus], Identifier: list[str], Category: list[str], AwsMarketplaceSolutionArn: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSolutionsRequest:
     str Catalog
     Optional[int64] MaxResults
@@ -1921,8 +1970,9 @@ struct ListSolutionsRequest:
     Optional[list[str]] Category
     Optional[list[str]] AwsMarketplaceSolutionArn
 
-# no @derive(Json): member(s) SolutionSummaries: list[SolutionBase] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SolutionSummaries: list[SolutionBase] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSolutionsResponse:
     list[SolutionBase] SolutionSummaries
     Optional[str] NextToken
@@ -1931,8 +1981,9 @@ struct ListSolutionsResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     list[Tag] Tags
 
@@ -1941,8 +1992,9 @@ struct ListTasksSortBase:
     SortOrder SortOrder
     str SortBy
 
-# no @derive(Json): member(s) UseCases: list[str], Channels: list[Channel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UseCases: list[str], Channels: list[Channel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Marketing:
     Optional[str] CampaignName
     Optional[MarketingSource] Source
@@ -1966,8 +2018,9 @@ struct OpportunityEngagementInvitationSort:
     SortOrder SortOrder
     str SortBy
 
-# no @derive(Json): member(s) SenderContacts: list[SenderContact], ReceiverResponsibilities: list[ReceiverResponsibility], Project: ProjectDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SenderContacts: list[SenderContact], ReceiverResponsibilities: list[ReceiverResponsibility], Project: ProjectDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpportunityInvitationPayload:
     Optional[list[SenderContact]] SenderContacts
     list[ReceiverResponsibility] ReceiverResponsibilities
@@ -1984,8 +2037,9 @@ struct OpportunitySort:
     SortOrder SortOrder
     OpportunitySortName SortBy
 
-# no @derive(Json): member(s) Project: ProjectSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Project: ProjectSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpportunitySummary:
     str Catalog
     Optional[str] Id
@@ -1998,8 +2052,9 @@ struct OpportunitySummary:
     Optional[CustomerSummary] Customer
     Optional[ProjectSummary] Project
 
-# no @derive(Json): member(s) OpportunityTeam: list[Contact], PrimaryNeedsFromAws: list[PrimaryNeedFromAws], Customer: Customer, Project: ProjectView, RelatedEntityIdentifiers: RelatedEntityIdentifiers not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OpportunityTeam: list[Contact], PrimaryNeedsFromAws: list[PrimaryNeedFromAws], Customer: Customer, Project: ProjectView, RelatedEntityIdentifiers: RelatedEntityIdentifiers not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpportunitySummaryView:
     Optional[OpportunityType] OpportunityType
     Optional[LifeCycleForView] Lifecycle
@@ -2009,8 +2064,9 @@ struct OpportunitySummaryView:
     Optional[ProjectView] Project
     Optional[RelatedEntityIdentifiers] RelatedEntityIdentifiers
 
-# no @derive(Json): member(s) OpportunityInvitation: OpportunityInvitationPayload not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OpportunityInvitation: OpportunityInvitationPayload not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Payload:
     Optional[OpportunityInvitationPayload] OpportunityInvitation
     Optional[LeadInvitationPayload] LeadInvitation
@@ -2021,8 +2077,9 @@ struct ProfileNextStepsHistory:
     @json(timestamp="iso8601")
     DateTime Time
 
-# no @derive(Json): member(s) DeliveryModels: list[DeliveryModel], ExpectedCustomerSpend: list[ExpectedCustomerSpend], ApnPrograms: list[str], SalesActivities: list[SalesActivity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeliveryModels: list[DeliveryModel], ExpectedCustomerSpend: list[ExpectedCustomerSpend], ApnPrograms: list[str], SalesActivities: list[SalesActivity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Project:
     Optional[list[DeliveryModel]] DeliveryModels
     Optional[list[ExpectedCustomerSpend]] ExpectedCustomerSpend
@@ -2039,23 +2096,26 @@ struct Project:
     Optional[str] AdditionalComments
     Optional[str] AwsPartition
 
-# no @derive(Json): member(s) ExpectedCustomerSpend: list[ExpectedCustomerSpend] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExpectedCustomerSpend: list[ExpectedCustomerSpend] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProjectDetails:
     str BusinessProblem
     str Title
     str TargetCompletionDate
     list[ExpectedCustomerSpend] ExpectedCustomerSpend
 
-# no @derive(Json): member(s) DeliveryModels: list[DeliveryModel], ExpectedCustomerSpend: list[ExpectedCustomerSpend] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeliveryModels: list[DeliveryModel], ExpectedCustomerSpend: list[ExpectedCustomerSpend] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProjectSummary:
     Optional[list[DeliveryModel]] DeliveryModels
     Optional[list[ExpectedCustomerSpend]] ExpectedCustomerSpend
     Optional[ExpectedContractDuration] ExpectedContractDuration
 
-# no @derive(Json): member(s) DeliveryModels: list[DeliveryModel], ExpectedCustomerSpend: list[ExpectedCustomerSpend], SalesActivities: list[SalesActivity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeliveryModels: list[DeliveryModel], ExpectedCustomerSpend: list[ExpectedCustomerSpend], SalesActivities: list[SalesActivity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProjectView:
     Optional[list[DeliveryModel]] DeliveryModels
     Optional[list[ExpectedCustomerSpend]] ExpectedCustomerSpend
@@ -2076,13 +2136,15 @@ struct ProspectingInsights:
     Optional[str] SolutionCategory
     Optional[str] SolutionSubCategory
 
-# no @derive(Json): member(s) Aws: ProspectingResultAws not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Aws: ProspectingResultAws not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProspectingResult:
     Optional[ProspectingResultAws] Aws
 
-# no @derive(Json): member(s) Customer: ProspectingResultCustomer not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Customer: ProspectingResultCustomer not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProspectingResultAws:
     Optional[ProspectingResultCustomer] Customer
     Optional[ProspectingInsights] Insights
@@ -2092,8 +2154,9 @@ struct ProspectingResultAws:
     Optional[str] TaskArn
     Optional[str] TaskName
 
-# no @derive(Json): member(s) EligiblePrograms: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EligiblePrograms: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProspectingResultCustomer:
     Optional[str] AccountName
     Optional[str] Geo
@@ -2134,8 +2197,9 @@ struct PutSellingSystemSettingsResponse:
 struct Receiver:
     Optional[AccountReceiver] Account
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Recommendation:
     str Type
     str Details
@@ -2147,8 +2211,9 @@ struct RejectEngagementInvitationRequest:
     str Identifier
     Optional[str] RejectionReason
 
-# no @derive(Json): member(s) AwsMarketplaceOffers: list[str], AwsMarketplaceOfferSets: list[str], Solutions: list[str], AwsProducts: list[str], AwsMarketplaceSolutions: list[str], AwsMarketplaceProducts: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AwsMarketplaceOffers: list[str], AwsMarketplaceOfferSets: list[str], Solutions: list[str], AwsProducts: list[str], AwsMarketplaceSolutions: list[str], AwsMarketplaceProducts: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RelatedEntityIdentifiers:
     Optional[list[str]] AwsMarketplaceOffers
     Optional[list[str]] AwsMarketplaceOfferSets
@@ -2168,8 +2233,9 @@ struct ResourceSnapshotJobSummary:
     Optional[str] EngagementId
     Optional[ResourceSnapshotJobStatus] Status
 
-# no @derive(Json): member(s) OpportunitySummary: OpportunitySummaryView, AwsOpportunitySummaryFullView: AwsOpportunitySummaryFullView not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OpportunitySummary: OpportunitySummaryView, AwsOpportunitySummaryFullView: AwsOpportunitySummaryFullView not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceSnapshotPayload:
     Optional[OpportunitySummaryView] OpportunitySummary
     Optional[AwsOpportunitySummaryFullView] AwsOpportunitySummaryFullView
@@ -2224,8 +2290,9 @@ struct SortObject:
     Optional[str] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartEngagementByAcceptingInvitationTaskRequest:
     str Catalog
     str ClientToken
@@ -2245,8 +2312,9 @@ struct StartEngagementByAcceptingInvitationTaskResponse:
     Optional[str] ResourceSnapshotJobId
     Optional[str] EngagementInvitationId
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartEngagementFromOpportunityTaskRequest:
     str Catalog
     str ClientToken
@@ -2268,8 +2336,9 @@ struct StartEngagementFromOpportunityTaskResponse:
     Optional[str] EngagementId
     Optional[str] EngagementInvitationId
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartOpportunityFromEngagementTaskRequest:
     str Catalog
     str ClientToken
@@ -2291,16 +2360,18 @@ struct StartOpportunityFromEngagementTaskResponse:
     Optional[str] EngagementId
     Optional[str] ContextId
 
-# no @derive(Json): member(s) Identifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Identifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartProspectingFromEngagementTaskRequest:
     str Catalog
     list[str] Identifiers
     str TaskName
     str ClientToken
 
-# no @derive(Json): member(s) Identifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Identifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartProspectingFromEngagementTaskResponse:
     list[str] Identifiers
     str TaskName
@@ -2333,8 +2404,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[Tag] Tags
@@ -2353,8 +2425,9 @@ struct TargetCloseDateFilter:
 struct ThrottlingException:
     Optional[str] Message
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] TagKeys
@@ -2364,15 +2437,17 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ProspectingResult: ProspectingResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProspectingResult: ProspectingResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEngagementContextPayload:
     Optional[UpdateLeadContext] Lead
     Optional[CustomerProjectsContext] CustomerProject
     Optional[ProspectingResult] ProspectingResult
 
-# no @derive(Json): member(s) Payload: UpdateEngagementContextPayload not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Payload: UpdateEngagementContextPayload not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEngagementContextRequest:
     str Catalog
     str EngagementIdentifier
@@ -2396,8 +2471,9 @@ struct UpdateLeadContext:
     Optional[LeadInteraction] Interaction
     Optional[LeadInsights] Insights
 
-# no @derive(Json): member(s) PrimaryNeedsFromAws: list[PrimaryNeedFromAws], Customer: Customer, Project: Project, Marketing: Marketing, LifeCycle: LifeCycle not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PrimaryNeedsFromAws: list[PrimaryNeedFromAws], Customer: Customer, Project: Project, Marketing: Marketing, LifeCycle: LifeCycle not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateOpportunityRequest:
     str Catalog
     Optional[list[PrimaryNeedFromAws]] PrimaryNeedsFromAws
@@ -2418,8 +2494,9 @@ struct UpdateOpportunityResponse:
     @json(timestamp="iso8601")
     DateTime LastModifiedDate
 
-# no @derive(Json): member(s) ErrorList: list[ValidationExceptionError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ErrorList: list[ValidationExceptionError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str Message
     ValidationExceptionReason Reason
@@ -2465,40 +2542,909 @@ def partnercentral_selling_error_from_code(str code) -> PartnerCentral_SellingEr
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateEngagement (input CreateEngagementRequest)
-#   CreateEngagementContext (input CreateEngagementContextRequest)
-#   CreateEngagementInvitation (input CreateEngagementInvitationRequest)
-#   CreateOpportunity (input CreateOpportunityRequest)
-#   CreateResourceSnapshotJob (input CreateResourceSnapshotJobRequest)
-#   ListEngagementByAcceptingInvitationTasks (input ListEngagementByAcceptingInvitationTasksRequest)
-#   ListEngagementFromOpportunityTasks (input ListEngagementFromOpportunityTasksRequest)
-#   ListEngagementInvitations (input ListEngagementInvitationsRequest)
-#   ListEngagements (input ListEngagementsRequest)
-#   ListOpportunities (input ListOpportunitiesRequest)
-#   ListOpportunityFromEngagementTasks (input ListOpportunityFromEngagementTasksRequest)
-#   ListProspectingFromEngagementTasks (input ListProspectingFromEngagementTasksRequest)
-#   ListSolutions (input ListSolutionsRequest)
-#   StartEngagementByAcceptingInvitationTask (input StartEngagementByAcceptingInvitationTaskRequest)
-#   StartEngagementFromOpportunityTask (input StartEngagementFromOpportunityTaskRequest)
-#   StartOpportunityFromEngagementTask (input StartOpportunityFromEngagementTaskRequest)
-#   StartProspectingFromEngagementTask (input StartProspectingFromEngagementTaskRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateEngagementContext (input UpdateEngagementContextRequest)
-#   UpdateOpportunity (input UpdateOpportunityRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def partnercentral_selling_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListEngagementByAcceptingInvitationTasks (input not derivable (no generated method))
-#   ListEngagementFromOpportunityTasks (input not derivable (no generated method))
-#   ListEngagementInvitations (input not derivable (no generated method))
-#   ListEngagements (input not derivable (no generated method))
-#   ListOpportunities (input not derivable (no generated method))
-#   ListOpportunityFromEngagementTasks (input not derivable (no generated method))
-#   ListProspectingFromEngagementTasks (input not derivable (no generated method))
-#   ListSolutions (input not derivable (no generated method))
+def partnercentral_selling_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def partnercentral_selling_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# A timestamp as an ISO-8601 JSON string (`@json(timestamp="iso8601")`).
+def partnercentral_selling_json_ts_iso(DateTime dt) -> str:
+    return "\"" + datetime.strftime(dt, "%Y-%m-%dT%H:%M:%SZ") + "\""
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateEngagementContextRequest to a compact JSON object (declaration order).
+def create_engagement_context_request_to_json(CreateEngagementContextRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_selling_json_str(v.Catalog))
+    parts.append("\"EngagementIdentifier\":" + partnercentral_selling_json_str(v.EngagementIdentifier))
+    parts.append("\"ClientToken\":" + partnercentral_selling_json_str(v.ClientToken))
+    parts.append("\"Type\":" + v.Type.to_json())
+    parts.append("\"Payload\":" + engagement_context_payload_to_json(v.Payload))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize CreateEngagementInvitationRequest to a compact JSON object (declaration order).
+def create_engagement_invitation_request_to_json(CreateEngagementInvitationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_selling_json_str(v.Catalog))
+    parts.append("\"ClientToken\":" + partnercentral_selling_json_str(v.ClientToken))
+    parts.append("\"EngagementIdentifier\":" + partnercentral_selling_json_str(v.EngagementIdentifier))
+    parts.append("\"Invitation\":" + invitation_to_json(v.Invitation))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize CreateEngagementRequest to a compact JSON object (declaration order).
+def create_engagement_request_to_json(CreateEngagementRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_selling_json_str(v.Catalog))
+    parts.append("\"ClientToken\":" + partnercentral_selling_json_str(v.ClientToken))
+    if v.Title.is_some():
+        auto u0 = v.Title.unwrap()
+        parts.append("\"Title\":" + partnercentral_selling_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + partnercentral_selling_json_str(u1))
+    if v.Contexts.is_some():
+        auto u2 = v.Contexts.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(engagement_context_details_to_json(x3))
+        parts.append("\"Contexts\":" + partnercentral_selling_json_arr(e3))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize CreateOpportunityRequest to a compact JSON object (declaration order).
+def create_opportunity_request_to_json(CreateOpportunityRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_selling_json_str(v.Catalog))
+    if v.PrimaryNeedsFromAws.is_some():
+        auto u0 = v.PrimaryNeedsFromAws.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"PrimaryNeedsFromAws\":" + partnercentral_selling_json_arr(e1))
+    if v.NationalSecurity.is_some():
+        auto u2 = v.NationalSecurity.unwrap()
+        parts.append("\"NationalSecurity\":" + u2.to_json())
+    if v.PartnerOpportunityIdentifier.is_some():
+        auto u3 = v.PartnerOpportunityIdentifier.unwrap()
+        parts.append("\"PartnerOpportunityIdentifier\":" + partnercentral_selling_json_str(u3))
+    if v.Customer.is_some():
+        auto u4 = v.Customer.unwrap()
+        parts.append("\"Customer\":" + customer_to_json(u4))
+    if v.Project.is_some():
+        auto u5 = v.Project.unwrap()
+        parts.append("\"Project\":" + project_to_json(u5))
+    if v.OpportunityType.is_some():
+        auto u6 = v.OpportunityType.unwrap()
+        parts.append("\"OpportunityType\":" + u6.to_json())
+    if v.Marketing.is_some():
+        auto u7 = v.Marketing.unwrap()
+        parts.append("\"Marketing\":" + marketing_to_json(u7))
+    if v.SoftwareRevenue.is_some():
+        auto u8 = v.SoftwareRevenue.unwrap()
+        parts.append("\"SoftwareRevenue\":" + u8.to_json())
+    parts.append("\"ClientToken\":" + partnercentral_selling_json_str(v.ClientToken))
+    if v.LifeCycle.is_some():
+        auto u9 = v.LifeCycle.unwrap()
+        parts.append("\"LifeCycle\":" + life_cycle_to_json(u9))
+    if v.Origin.is_some():
+        auto u10 = v.Origin.unwrap()
+        parts.append("\"Origin\":" + u10.to_json())
+    if v.OpportunityTeam.is_some():
+        auto u11 = v.OpportunityTeam.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"OpportunityTeam\":" + partnercentral_selling_json_arr(e12))
+    if v.Tags.is_some():
+        auto u13 = v.Tags.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(x14.to_json())
+        parts.append("\"Tags\":" + partnercentral_selling_json_arr(e14))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize CreateResourceSnapshotJobRequest to a compact JSON object (declaration order).
+def create_resource_snapshot_job_request_to_json(CreateResourceSnapshotJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_selling_json_str(v.Catalog))
+    parts.append("\"ClientToken\":" + partnercentral_selling_json_str(v.ClientToken))
+    parts.append("\"EngagementIdentifier\":" + partnercentral_selling_json_str(v.EngagementIdentifier))
+    parts.append("\"ResourceType\":" + partnercentral_selling_json_str(v.ResourceType))
+    parts.append("\"ResourceIdentifier\":" + partnercentral_selling_json_str(v.ResourceIdentifier))
+    parts.append("\"ResourceSnapshotTemplateIdentifier\":" + partnercentral_selling_json_str(v.ResourceSnapshotTemplateIdentifier))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + partnercentral_selling_json_arr(e1))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize Customer to a compact JSON object (declaration order).
+def customer_to_json(Customer v) -> str:
+    list[str] parts = []
+    if v.Account.is_some():
+        auto u0 = v.Account.unwrap()
+        parts.append("\"Account\":" + u0.to_json())
+    if v.Contacts.is_some():
+        auto u1 = v.Contacts.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Contacts\":" + partnercentral_selling_json_arr(e2))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize EngagementContextDetails to a compact JSON object (declaration order).
+def engagement_context_details_to_json(EngagementContextDetails v) -> str:
+    list[str] parts = []
+    if v.Id.is_some():
+        auto u0 = v.Id.unwrap()
+        parts.append("\"Id\":" + partnercentral_selling_json_str(u0))
+    parts.append("\"Type\":" + v.Type.to_json())
+    if v.Payload.is_some():
+        auto u1 = v.Payload.unwrap()
+        parts.append("\"Payload\":" + engagement_context_payload_to_json(u1))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize EngagementContextPayload to a compact JSON object (declaration order).
+def engagement_context_payload_to_json(EngagementContextPayload v) -> str:
+    list[str] parts = []
+    if v.CustomerProject.is_some():
+        auto u0 = v.CustomerProject.unwrap()
+        parts.append("\"CustomerProject\":" + u0.to_json())
+    if v.Lead.is_some():
+        auto u1 = v.Lead.unwrap()
+        parts.append("\"Lead\":" + lead_context_to_json(u1))
+    if v.ProspectingResult.is_some():
+        auto u2 = v.ProspectingResult.unwrap()
+        parts.append("\"ProspectingResult\":" + prospecting_result_to_json(u2))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize Invitation to a compact JSON object (declaration order).
+def invitation_to_json(Invitation v) -> str:
+    list[str] parts = []
+    parts.append("\"Message\":" + partnercentral_selling_json_str(v.Message))
+    parts.append("\"Receiver\":" + v.Receiver.to_json())
+    parts.append("\"Payload\":" + payload_to_json(v.Payload))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize LeadContext to a compact JSON object (declaration order).
+def lead_context_to_json(LeadContext v) -> str:
+    list[str] parts = []
+    if v.Insights.is_some():
+        auto u0 = v.Insights.unwrap()
+        parts.append("\"Insights\":" + u0.to_json())
+    if v.QualificationStatus.is_some():
+        auto u1 = v.QualificationStatus.unwrap()
+        parts.append("\"QualificationStatus\":" + partnercentral_selling_json_str(u1))
+    parts.append("\"Customer\":" + v.Customer.to_json())
+    list[str] e2 = []
+    for x2 in v.Interactions:
+        e2.append(x2.to_json())
+    parts.append("\"Interactions\":" + partnercentral_selling_json_arr(e2))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize LifeCycle to a compact JSON object (declaration order).
+def life_cycle_to_json(LifeCycle v) -> str:
+    list[str] parts = []
+    if v.Stage.is_some():
+        auto u0 = v.Stage.unwrap()
+        parts.append("\"Stage\":" + u0.to_json())
+    if v.ClosedLostReason.is_some():
+        auto u1 = v.ClosedLostReason.unwrap()
+        parts.append("\"ClosedLostReason\":" + u1.to_json())
+    if v.NextSteps.is_some():
+        auto u2 = v.NextSteps.unwrap()
+        parts.append("\"NextSteps\":" + partnercentral_selling_json_str(u2))
+    if v.TargetCloseDate.is_some():
+        auto u3 = v.TargetCloseDate.unwrap()
+        parts.append("\"TargetCloseDate\":" + partnercentral_selling_json_str(u3))
+    if v.ReviewStatus.is_some():
+        auto u4 = v.ReviewStatus.unwrap()
+        parts.append("\"ReviewStatus\":" + u4.to_json())
+    if v.ReviewComments.is_some():
+        auto u5 = v.ReviewComments.unwrap()
+        parts.append("\"ReviewComments\":" + partnercentral_selling_json_str(u5))
+    if v.ReviewStatusReason.is_some():
+        auto u6 = v.ReviewStatusReason.unwrap()
+        parts.append("\"ReviewStatusReason\":" + partnercentral_selling_json_str(u6))
+    if v.NextStepsHistory.is_some():
+        auto u7 = v.NextStepsHistory.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"NextStepsHistory\":" + partnercentral_selling_json_arr(e8))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize ListEngagementByAcceptingInvitationTasksRequest to a compact JSON object (declaration order).
+def list_engagement_by_accepting_invitation_tasks_request_to_json(ListEngagementByAcceptingInvitationTasksRequest v) -> str:
+    list[str] parts = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + partnercentral_selling_json_str(u1))
+    if v.Sort.is_some():
+        auto u2 = v.Sort.unwrap()
+        parts.append("\"Sort\":" + u2.to_json())
+    parts.append("\"Catalog\":" + partnercentral_selling_json_str(v.Catalog))
+    if v.TaskStatus.is_some():
+        auto u3 = v.TaskStatus.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"TaskStatus\":" + partnercentral_selling_json_arr(e4))
+    if v.OpportunityIdentifier.is_some():
+        auto u5 = v.OpportunityIdentifier.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(partnercentral_selling_json_str(x6))
+        parts.append("\"OpportunityIdentifier\":" + partnercentral_selling_json_arr(e6))
+    if v.EngagementInvitationIdentifier.is_some():
+        auto u7 = v.EngagementInvitationIdentifier.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(partnercentral_selling_json_str(x8))
+        parts.append("\"EngagementInvitationIdentifier\":" + partnercentral_selling_json_arr(e8))
+    if v.TaskIdentifier.is_some():
+        auto u9 = v.TaskIdentifier.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(partnercentral_selling_json_str(x10))
+        parts.append("\"TaskIdentifier\":" + partnercentral_selling_json_arr(e10))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize ListEngagementFromOpportunityTasksRequest to a compact JSON object (declaration order).
+def list_engagement_from_opportunity_tasks_request_to_json(ListEngagementFromOpportunityTasksRequest v) -> str:
+    list[str] parts = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + partnercentral_selling_json_str(u1))
+    if v.Sort.is_some():
+        auto u2 = v.Sort.unwrap()
+        parts.append("\"Sort\":" + u2.to_json())
+    parts.append("\"Catalog\":" + partnercentral_selling_json_str(v.Catalog))
+    if v.TaskStatus.is_some():
+        auto u3 = v.TaskStatus.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"TaskStatus\":" + partnercentral_selling_json_arr(e4))
+    if v.TaskIdentifier.is_some():
+        auto u5 = v.TaskIdentifier.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(partnercentral_selling_json_str(x6))
+        parts.append("\"TaskIdentifier\":" + partnercentral_selling_json_arr(e6))
+    if v.OpportunityIdentifier.is_some():
+        auto u7 = v.OpportunityIdentifier.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(partnercentral_selling_json_str(x8))
+        parts.append("\"OpportunityIdentifier\":" + partnercentral_selling_json_arr(e8))
+    if v.EngagementIdentifier.is_some():
+        auto u9 = v.EngagementIdentifier.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(partnercentral_selling_json_str(x10))
+        parts.append("\"EngagementIdentifier\":" + partnercentral_selling_json_arr(e10))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize ListEngagementInvitationsRequest to a compact JSON object (declaration order).
+def list_engagement_invitations_request_to_json(ListEngagementInvitationsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_selling_json_str(v.Catalog))
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + partnercentral_selling_json_str(u1))
+    if v.Sort.is_some():
+        auto u2 = v.Sort.unwrap()
+        parts.append("\"Sort\":" + u2.to_json())
+    if v.PayloadType.is_some():
+        auto u3 = v.PayloadType.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"PayloadType\":" + partnercentral_selling_json_arr(e4))
+    parts.append("\"ParticipantType\":" + v.ParticipantType.to_json())
+    if v.Status.is_some():
+        auto u5 = v.Status.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Status\":" + partnercentral_selling_json_arr(e6))
+    if v.EngagementIdentifier.is_some():
+        auto u7 = v.EngagementIdentifier.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(partnercentral_selling_json_str(x8))
+        parts.append("\"EngagementIdentifier\":" + partnercentral_selling_json_arr(e8))
+    if v.SenderAwsAccountId.is_some():
+        auto u9 = v.SenderAwsAccountId.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(partnercentral_selling_json_str(x10))
+        parts.append("\"SenderAwsAccountId\":" + partnercentral_selling_json_arr(e10))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize ListEngagementsRequest to a compact JSON object (declaration order).
+def list_engagements_request_to_json(ListEngagementsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_selling_json_str(v.Catalog))
+    if v.CreatedBy.is_some():
+        auto u0 = v.CreatedBy.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(partnercentral_selling_json_str(x1))
+        parts.append("\"CreatedBy\":" + partnercentral_selling_json_arr(e1))
+    if v.ExcludeCreatedBy.is_some():
+        auto u2 = v.ExcludeCreatedBy.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(partnercentral_selling_json_str(x3))
+        parts.append("\"ExcludeCreatedBy\":" + partnercentral_selling_json_arr(e3))
+    if v.ContextTypes.is_some():
+        auto u4 = v.ContextTypes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"ContextTypes\":" + partnercentral_selling_json_arr(e5))
+    if v.ExcludeContextTypes.is_some():
+        auto u6 = v.ExcludeContextTypes.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"ExcludeContextTypes\":" + partnercentral_selling_json_arr(e7))
+    if v.Sort.is_some():
+        auto u8 = v.Sort.unwrap()
+        parts.append("\"Sort\":" + u8.to_json())
+    if v.MaxResults.is_some():
+        auto u9 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u9))
+    if v.NextToken.is_some():
+        auto u10 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + partnercentral_selling_json_str(u10))
+    if v.EngagementIdentifier.is_some():
+        auto u11 = v.EngagementIdentifier.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(partnercentral_selling_json_str(x12))
+        parts.append("\"EngagementIdentifier\":" + partnercentral_selling_json_arr(e12))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize ListOpportunitiesRequest to a compact JSON object (declaration order).
+def list_opportunities_request_to_json(ListOpportunitiesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_selling_json_str(v.Catalog))
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + partnercentral_selling_json_str(u1))
+    if v.Sort.is_some():
+        auto u2 = v.Sort.unwrap()
+        parts.append("\"Sort\":" + u2.to_json())
+    if v.LastModifiedDate.is_some():
+        auto u3 = v.LastModifiedDate.unwrap()
+        parts.append("\"LastModifiedDate\":" + u3.to_json())
+    if v.Identifier.is_some():
+        auto u4 = v.Identifier.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(partnercentral_selling_json_str(x5))
+        parts.append("\"Identifier\":" + partnercentral_selling_json_arr(e5))
+    if v.LifeCycleStage.is_some():
+        auto u6 = v.LifeCycleStage.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"LifeCycleStage\":" + partnercentral_selling_json_arr(e7))
+    if v.LifeCycleReviewStatus.is_some():
+        auto u8 = v.LifeCycleReviewStatus.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"LifeCycleReviewStatus\":" + partnercentral_selling_json_arr(e9))
+    if v.CustomerCompanyName.is_some():
+        auto u10 = v.CustomerCompanyName.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(partnercentral_selling_json_str(x11))
+        parts.append("\"CustomerCompanyName\":" + partnercentral_selling_json_arr(e11))
+    if v.CreatedDate.is_some():
+        auto u12 = v.CreatedDate.unwrap()
+        parts.append("\"CreatedDate\":" + u12.to_json())
+    if v.TargetCloseDate.is_some():
+        auto u13 = v.TargetCloseDate.unwrap()
+        parts.append("\"TargetCloseDate\":" + u13.to_json())
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize ListOpportunityFromEngagementTasksRequest to a compact JSON object (declaration order).
+def list_opportunity_from_engagement_tasks_request_to_json(ListOpportunityFromEngagementTasksRequest v) -> str:
+    list[str] parts = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + partnercentral_selling_json_str(u1))
+    if v.Sort.is_some():
+        auto u2 = v.Sort.unwrap()
+        parts.append("\"Sort\":" + u2.to_json())
+    parts.append("\"Catalog\":" + partnercentral_selling_json_str(v.Catalog))
+    if v.TaskStatus.is_some():
+        auto u3 = v.TaskStatus.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"TaskStatus\":" + partnercentral_selling_json_arr(e4))
+    if v.TaskIdentifier.is_some():
+        auto u5 = v.TaskIdentifier.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(partnercentral_selling_json_str(x6))
+        parts.append("\"TaskIdentifier\":" + partnercentral_selling_json_arr(e6))
+    if v.OpportunityIdentifier.is_some():
+        auto u7 = v.OpportunityIdentifier.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(partnercentral_selling_json_str(x8))
+        parts.append("\"OpportunityIdentifier\":" + partnercentral_selling_json_arr(e8))
+    if v.EngagementIdentifier.is_some():
+        auto u9 = v.EngagementIdentifier.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(partnercentral_selling_json_str(x10))
+        parts.append("\"EngagementIdentifier\":" + partnercentral_selling_json_arr(e10))
+    if v.ContextIdentifier.is_some():
+        auto u11 = v.ContextIdentifier.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(partnercentral_selling_json_str(x12))
+        parts.append("\"ContextIdentifier\":" + partnercentral_selling_json_arr(e12))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize ListProspectingFromEngagementTasksRequest to a compact JSON object (declaration order).
+def list_prospecting_from_engagement_tasks_request_to_json(ListProspectingFromEngagementTasksRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_selling_json_str(v.Catalog))
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + partnercentral_selling_json_str(u1))
+    if v.TaskIdentifier.is_some():
+        auto u2 = v.TaskIdentifier.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(partnercentral_selling_json_str(x3))
+        parts.append("\"TaskIdentifier\":" + partnercentral_selling_json_arr(e3))
+    if v.TaskName.is_some():
+        auto u4 = v.TaskName.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(partnercentral_selling_json_str(x5))
+        parts.append("\"TaskName\":" + partnercentral_selling_json_arr(e5))
+    if v.StartAfter.is_some():
+        auto u6 = v.StartAfter.unwrap()
+        parts.append("\"StartAfter\":" + partnercentral_selling_json_ts_iso(u6))
+    if v.StartBefore.is_some():
+        auto u7 = v.StartBefore.unwrap()
+        parts.append("\"StartBefore\":" + partnercentral_selling_json_ts_iso(u7))
+    if v.Sort.is_some():
+        auto u8 = v.Sort.unwrap()
+        parts.append("\"Sort\":" + u8.to_json())
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize ListSolutionsRequest to a compact JSON object (declaration order).
+def list_solutions_request_to_json(ListSolutionsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_selling_json_str(v.Catalog))
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + partnercentral_selling_json_str(u1))
+    if v.Sort.is_some():
+        auto u2 = v.Sort.unwrap()
+        parts.append("\"Sort\":" + u2.to_json())
+    if v.Status.is_some():
+        auto u3 = v.Status.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Status\":" + partnercentral_selling_json_arr(e4))
+    if v.Identifier.is_some():
+        auto u5 = v.Identifier.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(partnercentral_selling_json_str(x6))
+        parts.append("\"Identifier\":" + partnercentral_selling_json_arr(e6))
+    if v.Category.is_some():
+        auto u7 = v.Category.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(partnercentral_selling_json_str(x8))
+        parts.append("\"Category\":" + partnercentral_selling_json_arr(e8))
+    if v.AwsMarketplaceSolutionArn.is_some():
+        auto u9 = v.AwsMarketplaceSolutionArn.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(partnercentral_selling_json_str(x10))
+        parts.append("\"AwsMarketplaceSolutionArn\":" + partnercentral_selling_json_arr(e10))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize Marketing to a compact JSON object (declaration order).
+def marketing_to_json(Marketing v) -> str:
+    list[str] parts = []
+    if v.CampaignName.is_some():
+        auto u0 = v.CampaignName.unwrap()
+        parts.append("\"CampaignName\":" + partnercentral_selling_json_str(u0))
+    if v.Source.is_some():
+        auto u1 = v.Source.unwrap()
+        parts.append("\"Source\":" + u1.to_json())
+    if v.UseCases.is_some():
+        auto u2 = v.UseCases.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(partnercentral_selling_json_str(x3))
+        parts.append("\"UseCases\":" + partnercentral_selling_json_arr(e3))
+    if v.Channels.is_some():
+        auto u4 = v.Channels.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Channels\":" + partnercentral_selling_json_arr(e5))
+    if v.AwsFundingUsed.is_some():
+        auto u6 = v.AwsFundingUsed.unwrap()
+        parts.append("\"AwsFundingUsed\":" + u6.to_json())
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize OpportunityInvitationPayload to a compact JSON object (declaration order).
+def opportunity_invitation_payload_to_json(OpportunityInvitationPayload v) -> str:
+    list[str] parts = []
+    if v.SenderContacts.is_some():
+        auto u0 = v.SenderContacts.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"SenderContacts\":" + partnercentral_selling_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.ReceiverResponsibilities:
+        e2.append(x2.to_json())
+    parts.append("\"ReceiverResponsibilities\":" + partnercentral_selling_json_arr(e2))
+    parts.append("\"Customer\":" + v.Customer.to_json())
+    parts.append("\"Project\":" + project_details_to_json(v.Project))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize Payload to a compact JSON object (declaration order).
+def payload_to_json(Payload v) -> str:
+    list[str] parts = []
+    if v.OpportunityInvitation.is_some():
+        auto u0 = v.OpportunityInvitation.unwrap()
+        parts.append("\"OpportunityInvitation\":" + opportunity_invitation_payload_to_json(u0))
+    if v.LeadInvitation.is_some():
+        auto u1 = v.LeadInvitation.unwrap()
+        parts.append("\"LeadInvitation\":" + u1.to_json())
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize Project to a compact JSON object (declaration order).
+def project_to_json(Project v) -> str:
+    list[str] parts = []
+    if v.DeliveryModels.is_some():
+        auto u0 = v.DeliveryModels.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"DeliveryModels\":" + partnercentral_selling_json_arr(e1))
+    if v.ExpectedCustomerSpend.is_some():
+        auto u2 = v.ExpectedCustomerSpend.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ExpectedCustomerSpend\":" + partnercentral_selling_json_arr(e3))
+    if v.ExpectedContractDuration.is_some():
+        auto u4 = v.ExpectedContractDuration.unwrap()
+        parts.append("\"ExpectedContractDuration\":" + u4.to_json())
+    if v.Title.is_some():
+        auto u5 = v.Title.unwrap()
+        parts.append("\"Title\":" + partnercentral_selling_json_str(u5))
+    if v.ApnPrograms.is_some():
+        auto u6 = v.ApnPrograms.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(partnercentral_selling_json_str(x7))
+        parts.append("\"ApnPrograms\":" + partnercentral_selling_json_arr(e7))
+    if v.CustomerBusinessProblem.is_some():
+        auto u8 = v.CustomerBusinessProblem.unwrap()
+        parts.append("\"CustomerBusinessProblem\":" + partnercentral_selling_json_str(u8))
+    if v.CustomerUseCase.is_some():
+        auto u9 = v.CustomerUseCase.unwrap()
+        parts.append("\"CustomerUseCase\":" + partnercentral_selling_json_str(u9))
+    if v.RelatedOpportunityIdentifier.is_some():
+        auto u10 = v.RelatedOpportunityIdentifier.unwrap()
+        parts.append("\"RelatedOpportunityIdentifier\":" + partnercentral_selling_json_str(u10))
+    if v.SalesActivities.is_some():
+        auto u11 = v.SalesActivities.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"SalesActivities\":" + partnercentral_selling_json_arr(e12))
+    if v.CompetitorName.is_some():
+        auto u13 = v.CompetitorName.unwrap()
+        parts.append("\"CompetitorName\":" + u13.to_json())
+    if v.OtherCompetitorNames.is_some():
+        auto u14 = v.OtherCompetitorNames.unwrap()
+        parts.append("\"OtherCompetitorNames\":" + partnercentral_selling_json_str(u14))
+    if v.OtherSolutionDescription.is_some():
+        auto u15 = v.OtherSolutionDescription.unwrap()
+        parts.append("\"OtherSolutionDescription\":" + partnercentral_selling_json_str(u15))
+    if v.AdditionalComments.is_some():
+        auto u16 = v.AdditionalComments.unwrap()
+        parts.append("\"AdditionalComments\":" + partnercentral_selling_json_str(u16))
+    if v.AwsPartition.is_some():
+        auto u17 = v.AwsPartition.unwrap()
+        parts.append("\"AwsPartition\":" + partnercentral_selling_json_str(u17))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize ProjectDetails to a compact JSON object (declaration order).
+def project_details_to_json(ProjectDetails v) -> str:
+    list[str] parts = []
+    parts.append("\"BusinessProblem\":" + partnercentral_selling_json_str(v.BusinessProblem))
+    parts.append("\"Title\":" + partnercentral_selling_json_str(v.Title))
+    parts.append("\"TargetCompletionDate\":" + partnercentral_selling_json_str(v.TargetCompletionDate))
+    list[str] e0 = []
+    for x0 in v.ExpectedCustomerSpend:
+        e0.append(x0.to_json())
+    parts.append("\"ExpectedCustomerSpend\":" + partnercentral_selling_json_arr(e0))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize ProspectingResult to a compact JSON object (declaration order).
+def prospecting_result_to_json(ProspectingResult v) -> str:
+    list[str] parts = []
+    if v.Aws.is_some():
+        auto u0 = v.Aws.unwrap()
+        parts.append("\"Aws\":" + prospecting_result_aws_to_json(u0))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize ProspectingResultAws to a compact JSON object (declaration order).
+def prospecting_result_aws_to_json(ProspectingResultAws v) -> str:
+    list[str] parts = []
+    if v.Customer.is_some():
+        auto u0 = v.Customer.unwrap()
+        parts.append("\"Customer\":" + prospecting_result_customer_to_json(u0))
+    if v.Insights.is_some():
+        auto u1 = v.Insights.unwrap()
+        parts.append("\"Insights\":" + u1.to_json())
+    if v.StartTime.is_some():
+        auto u2 = v.StartTime.unwrap()
+        parts.append("\"StartTime\":" + partnercentral_selling_json_ts_iso(u2))
+    if v.EndTime.is_some():
+        auto u3 = v.EndTime.unwrap()
+        parts.append("\"EndTime\":" + partnercentral_selling_json_ts_iso(u3))
+    if v.TaskId.is_some():
+        auto u4 = v.TaskId.unwrap()
+        parts.append("\"TaskId\":" + partnercentral_selling_json_str(u4))
+    if v.TaskArn.is_some():
+        auto u5 = v.TaskArn.unwrap()
+        parts.append("\"TaskArn\":" + partnercentral_selling_json_str(u5))
+    if v.TaskName.is_some():
+        auto u6 = v.TaskName.unwrap()
+        parts.append("\"TaskName\":" + partnercentral_selling_json_str(u6))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize ProspectingResultCustomer to a compact JSON object (declaration order).
+def prospecting_result_customer_to_json(ProspectingResultCustomer v) -> str:
+    list[str] parts = []
+    if v.AccountName.is_some():
+        auto u0 = v.AccountName.unwrap()
+        parts.append("\"AccountName\":" + partnercentral_selling_json_str(u0))
+    if v.Geo.is_some():
+        auto u1 = v.Geo.unwrap()
+        parts.append("\"Geo\":" + partnercentral_selling_json_str(u1))
+    if v.Region.is_some():
+        auto u2 = v.Region.unwrap()
+        parts.append("\"Region\":" + partnercentral_selling_json_str(u2))
+    if v.SubRegion.is_some():
+        auto u3 = v.SubRegion.unwrap()
+        parts.append("\"SubRegion\":" + partnercentral_selling_json_str(u3))
+    if v.Country.is_some():
+        auto u4 = v.Country.unwrap()
+        parts.append("\"Country\":" + u4.to_json())
+    if v.Industry.is_some():
+        auto u5 = v.Industry.unwrap()
+        parts.append("\"Industry\":" + u5.to_json())
+    if v.SubIndustry.is_some():
+        auto u6 = v.SubIndustry.unwrap()
+        parts.append("\"SubIndustry\":" + partnercentral_selling_json_str(u6))
+    if v.Segment.is_some():
+        auto u7 = v.Segment.unwrap()
+        parts.append("\"Segment\":" + partnercentral_selling_json_str(u7))
+    if v.CompanySize.is_some():
+        auto u8 = v.CompanySize.unwrap()
+        parts.append("\"CompanySize\":" + partnercentral_selling_json_str(u8))
+    if v.EligiblePrograms.is_some():
+        auto u9 = v.EligiblePrograms.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(partnercentral_selling_json_str(x10))
+        parts.append("\"EligiblePrograms\":" + partnercentral_selling_json_arr(e10))
+    if v.PublicProfileSummary.is_some():
+        auto u11 = v.PublicProfileSummary.unwrap()
+        parts.append("\"PublicProfileSummary\":" + partnercentral_selling_json_str(u11))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize StartEngagementByAcceptingInvitationTaskRequest to a compact JSON object (declaration order).
+def start_engagement_by_accepting_invitation_task_request_to_json(StartEngagementByAcceptingInvitationTaskRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_selling_json_str(v.Catalog))
+    parts.append("\"ClientToken\":" + partnercentral_selling_json_str(v.ClientToken))
+    parts.append("\"Identifier\":" + partnercentral_selling_json_str(v.Identifier))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + partnercentral_selling_json_arr(e1))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize StartEngagementFromOpportunityTaskRequest to a compact JSON object (declaration order).
+def start_engagement_from_opportunity_task_request_to_json(StartEngagementFromOpportunityTaskRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_selling_json_str(v.Catalog))
+    parts.append("\"ClientToken\":" + partnercentral_selling_json_str(v.ClientToken))
+    parts.append("\"Identifier\":" + partnercentral_selling_json_str(v.Identifier))
+    parts.append("\"AwsSubmission\":" + v.AwsSubmission.to_json())
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + partnercentral_selling_json_arr(e1))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize StartOpportunityFromEngagementTaskRequest to a compact JSON object (declaration order).
+def start_opportunity_from_engagement_task_request_to_json(StartOpportunityFromEngagementTaskRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_selling_json_str(v.Catalog))
+    parts.append("\"ClientToken\":" + partnercentral_selling_json_str(v.ClientToken))
+    parts.append("\"Identifier\":" + partnercentral_selling_json_str(v.Identifier))
+    parts.append("\"ContextIdentifier\":" + partnercentral_selling_json_str(v.ContextIdentifier))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + partnercentral_selling_json_arr(e1))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize StartProspectingFromEngagementTaskRequest to a compact JSON object (declaration order).
+def start_prospecting_from_engagement_task_request_to_json(StartProspectingFromEngagementTaskRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_selling_json_str(v.Catalog))
+    list[str] e0 = []
+    for x0 in v.Identifiers:
+        e0.append(partnercentral_selling_json_str(x0))
+    parts.append("\"Identifiers\":" + partnercentral_selling_json_arr(e0))
+    parts.append("\"TaskName\":" + partnercentral_selling_json_str(v.TaskName))
+    parts.append("\"ClientToken\":" + partnercentral_selling_json_str(v.ClientToken))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + partnercentral_selling_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + partnercentral_selling_json_arr(e0))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + partnercentral_selling_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(partnercentral_selling_json_str(x0))
+    parts.append("\"TagKeys\":" + partnercentral_selling_json_arr(e0))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize UpdateEngagementContextPayload to a compact JSON object (declaration order).
+def update_engagement_context_payload_to_json(UpdateEngagementContextPayload v) -> str:
+    list[str] parts = []
+    if v.Lead.is_some():
+        auto u0 = v.Lead.unwrap()
+        parts.append("\"Lead\":" + u0.to_json())
+    if v.CustomerProject.is_some():
+        auto u1 = v.CustomerProject.unwrap()
+        parts.append("\"CustomerProject\":" + u1.to_json())
+    if v.ProspectingResult.is_some():
+        auto u2 = v.ProspectingResult.unwrap()
+        parts.append("\"ProspectingResult\":" + prospecting_result_to_json(u2))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize UpdateEngagementContextRequest to a compact JSON object (declaration order).
+def update_engagement_context_request_to_json(UpdateEngagementContextRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_selling_json_str(v.Catalog))
+    parts.append("\"EngagementIdentifier\":" + partnercentral_selling_json_str(v.EngagementIdentifier))
+    parts.append("\"ContextIdentifier\":" + partnercentral_selling_json_str(v.ContextIdentifier))
+    parts.append("\"EngagementLastModifiedAt\":" + partnercentral_selling_json_ts_iso(v.EngagementLastModifiedAt))
+    parts.append("\"Type\":" + v.Type.to_json())
+    parts.append("\"Payload\":" + update_engagement_context_payload_to_json(v.Payload))
+    return partnercentral_selling_json_obj(parts)
+
+# Serialize UpdateOpportunityRequest to a compact JSON object (declaration order).
+def update_opportunity_request_to_json(UpdateOpportunityRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_selling_json_str(v.Catalog))
+    if v.PrimaryNeedsFromAws.is_some():
+        auto u0 = v.PrimaryNeedsFromAws.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"PrimaryNeedsFromAws\":" + partnercentral_selling_json_arr(e1))
+    if v.NationalSecurity.is_some():
+        auto u2 = v.NationalSecurity.unwrap()
+        parts.append("\"NationalSecurity\":" + u2.to_json())
+    if v.PartnerOpportunityIdentifier.is_some():
+        auto u3 = v.PartnerOpportunityIdentifier.unwrap()
+        parts.append("\"PartnerOpportunityIdentifier\":" + partnercentral_selling_json_str(u3))
+    if v.Customer.is_some():
+        auto u4 = v.Customer.unwrap()
+        parts.append("\"Customer\":" + customer_to_json(u4))
+    if v.Project.is_some():
+        auto u5 = v.Project.unwrap()
+        parts.append("\"Project\":" + project_to_json(u5))
+    if v.OpportunityType.is_some():
+        auto u6 = v.OpportunityType.unwrap()
+        parts.append("\"OpportunityType\":" + u6.to_json())
+    if v.Marketing.is_some():
+        auto u7 = v.Marketing.unwrap()
+        parts.append("\"Marketing\":" + marketing_to_json(u7))
+    if v.SoftwareRevenue.is_some():
+        auto u8 = v.SoftwareRevenue.unwrap()
+        parts.append("\"SoftwareRevenue\":" + u8.to_json())
+    parts.append("\"LastModifiedDate\":" + partnercentral_selling_json_ts_iso(v.LastModifiedDate))
+    parts.append("\"Identifier\":" + partnercentral_selling_json_str(v.Identifier))
+    if v.LifeCycle.is_some():
+        auto u9 = v.LifeCycle.unwrap()
+        parts.append("\"LifeCycle\":" + life_cycle_to_json(u9))
+    return partnercentral_selling_json_obj(parts)
 
 # A bound PartnerCentral_Selling client: credentials + region, threaded into every operation.
 struct PartnerCentral_SellingClient:
@@ -2523,11 +3469,41 @@ struct PartnerCentral_SellingClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "AssociateOpportunity", body)
 
+    # CreateEngagement
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_engagement(self, CreateEngagementRequest input) -> str:
+        auto body = create_engagement_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "CreateEngagement", body)
+
+    # CreateEngagementContext
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_engagement_context(self, CreateEngagementContextRequest input) -> str:
+        auto body = create_engagement_context_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "CreateEngagementContext", body)
+
+    # CreateEngagementInvitation
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_engagement_invitation(self, CreateEngagementInvitationRequest input) -> str:
+        auto body = create_engagement_invitation_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "CreateEngagementInvitation", body)
+
+    # CreateOpportunity
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_opportunity(self, CreateOpportunityRequest input) -> str:
+        auto body = create_opportunity_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "CreateOpportunity", body)
+
     # CreateResourceSnapshot
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_resource_snapshot(self, CreateResourceSnapshotRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "CreateResourceSnapshot", body)
+
+    # CreateResourceSnapshotJob
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_resource_snapshot_job(self, CreateResourceSnapshotJobRequest input) -> str:
+        auto body = create_resource_snapshot_job_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "CreateResourceSnapshotJob", body)
 
     # DeleteResourceSnapshotJob
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -2589,6 +3565,24 @@ struct PartnerCentral_SellingClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "GetSellingSystemSettings", body)
 
+    # ListEngagementByAcceptingInvitationTasks
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_engagement_by_accepting_invitation_tasks(self, ListEngagementByAcceptingInvitationTasksRequest input) -> str:
+        auto body = list_engagement_by_accepting_invitation_tasks_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "ListEngagementByAcceptingInvitationTasks", body)
+
+    # ListEngagementFromOpportunityTasks
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_engagement_from_opportunity_tasks(self, ListEngagementFromOpportunityTasksRequest input) -> str:
+        auto body = list_engagement_from_opportunity_tasks_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "ListEngagementFromOpportunityTasks", body)
+
+    # ListEngagementInvitations
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_engagement_invitations(self, ListEngagementInvitationsRequest input) -> str:
+        auto body = list_engagement_invitations_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "ListEngagementInvitations", body)
+
     # ListEngagementMembers
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_engagement_members(self, ListEngagementMembersRequest input) -> str:
@@ -2601,6 +3595,30 @@ struct PartnerCentral_SellingClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "ListEngagementResourceAssociations", body)
 
+    # ListEngagements
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_engagements(self, ListEngagementsRequest input) -> str:
+        auto body = list_engagements_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "ListEngagements", body)
+
+    # ListOpportunities
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_opportunities(self, ListOpportunitiesRequest input) -> str:
+        auto body = list_opportunities_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "ListOpportunities", body)
+
+    # ListOpportunityFromEngagementTasks
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_opportunity_from_engagement_tasks(self, ListOpportunityFromEngagementTasksRequest input) -> str:
+        auto body = list_opportunity_from_engagement_tasks_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "ListOpportunityFromEngagementTasks", body)
+
+    # ListProspectingFromEngagementTasks
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_prospecting_from_engagement_tasks(self, ListProspectingFromEngagementTasksRequest input) -> str:
+        auto body = list_prospecting_from_engagement_tasks_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "ListProspectingFromEngagementTasks", body)
+
     # ListResourceSnapshotJobs
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_resource_snapshot_jobs(self, ListResourceSnapshotJobsRequest input) -> str:
@@ -2612,6 +3630,12 @@ struct PartnerCentral_SellingClient:
     def list_resource_snapshots(self, ListResourceSnapshotsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "ListResourceSnapshots", body)
+
+    # ListSolutions
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_solutions(self, ListSolutionsRequest input) -> str:
+        auto body = list_solutions_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "ListSolutions", body)
 
     # ListTagsForResource
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -2631,6 +3655,30 @@ struct PartnerCentral_SellingClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "RejectEngagementInvitation", body)
 
+    # StartEngagementByAcceptingInvitationTask
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_engagement_by_accepting_invitation_task(self, StartEngagementByAcceptingInvitationTaskRequest input) -> str:
+        auto body = start_engagement_by_accepting_invitation_task_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "StartEngagementByAcceptingInvitationTask", body)
+
+    # StartEngagementFromOpportunityTask
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_engagement_from_opportunity_task(self, StartEngagementFromOpportunityTaskRequest input) -> str:
+        auto body = start_engagement_from_opportunity_task_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "StartEngagementFromOpportunityTask", body)
+
+    # StartOpportunityFromEngagementTask
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_opportunity_from_engagement_task(self, StartOpportunityFromEngagementTaskRequest input) -> str:
+        auto body = start_opportunity_from_engagement_task_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "StartOpportunityFromEngagementTask", body)
+
+    # StartProspectingFromEngagementTask
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def start_prospecting_from_engagement_task(self, StartProspectingFromEngagementTaskRequest input) -> str:
+        auto body = start_prospecting_from_engagement_task_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "StartProspectingFromEngagementTask", body)
+
     # StartResourceSnapshotJob
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_resource_snapshot_job(self, StartResourceSnapshotJobRequest input) -> str:
@@ -2648,6 +3696,72 @@ struct PartnerCentral_SellingClient:
     def submit_opportunity(self, SubmitOpportunityRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "SubmitOpportunity", body)
+
+    # TagResource
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateEngagementContext
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_engagement_context(self, UpdateEngagementContextRequest input) -> str:
+        auto body = update_engagement_context_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "UpdateEngagementContext", body)
+
+    # UpdateOpportunity
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_opportunity(self, UpdateOpportunityRequest input) -> str:
+        auto body = update_opportunity_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "UpdateOpportunity", body)
+
+    # Paginator for ListEngagementByAcceptingInvitationTasks — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: TaskSummaries).
+    def paginate_list_engagement_by_accepting_invitation_tasks(self, ListEngagementByAcceptingInvitationTasksRequest input):
+        auto host = endpoints.regional_host(partnercentral_selling_protocol().service, self.region)
+        while True:
+            auto body = list_engagement_by_accepting_invitation_tasks_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "ListEngagementByAcceptingInvitationTasks", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListEngagementFromOpportunityTasks — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: TaskSummaries).
+    def paginate_list_engagement_from_opportunity_tasks(self, ListEngagementFromOpportunityTasksRequest input):
+        auto host = endpoints.regional_host(partnercentral_selling_protocol().service, self.region)
+        while True:
+            auto body = list_engagement_from_opportunity_tasks_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "ListEngagementFromOpportunityTasks", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListEngagementInvitations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: EngagementInvitationSummaries).
+    def paginate_list_engagement_invitations(self, ListEngagementInvitationsRequest input):
+        auto host = endpoints.regional_host(partnercentral_selling_protocol().service, self.region)
+        while True:
+            auto body = list_engagement_invitations_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "ListEngagementInvitations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
     # Paginator for ListEngagementMembers — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: EngagementMemberList).
@@ -2677,6 +3791,62 @@ struct PartnerCentral_SellingClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListEngagements — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: EngagementSummaryList).
+    def paginate_list_engagements(self, ListEngagementsRequest input):
+        auto host = endpoints.regional_host(partnercentral_selling_protocol().service, self.region)
+        while True:
+            auto body = list_engagements_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "ListEngagements", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListOpportunities — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: OpportunitySummaries).
+    def paginate_list_opportunities(self, ListOpportunitiesRequest input):
+        auto host = endpoints.regional_host(partnercentral_selling_protocol().service, self.region)
+        while True:
+            auto body = list_opportunities_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "ListOpportunities", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListOpportunityFromEngagementTasks — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: TaskSummaries).
+    def paginate_list_opportunity_from_engagement_tasks(self, ListOpportunityFromEngagementTasksRequest input):
+        auto host = endpoints.regional_host(partnercentral_selling_protocol().service, self.region)
+        while True:
+            auto body = list_opportunity_from_engagement_tasks_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "ListOpportunityFromEngagementTasks", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListProspectingFromEngagementTasks — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: TaskSummaries).
+    def paginate_list_prospecting_from_engagement_tasks(self, ListProspectingFromEngagementTasksRequest input):
+        auto host = endpoints.regional_host(partnercentral_selling_protocol().service, self.region)
+        while True:
+            auto body = list_prospecting_from_engagement_tasks_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "ListProspectingFromEngagementTasks", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListResourceSnapshotJobs — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: ResourceSnapshotJobSummaries).
     def paginate_list_resource_snapshot_jobs(self, ListResourceSnapshotJobsRequest input):
@@ -2698,6 +3868,20 @@ struct PartnerCentral_SellingClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "ListResourceSnapshots", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListSolutions — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: SolutionSummaries).
+    def paginate_list_solutions(self, ListSolutionsRequest input):
+        auto host = endpoints.regional_host(partnercentral_selling_protocol().service, self.region)
+        while True:
+            auto body = list_solutions_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(partnercentral_selling_protocol(), self.creds, self.region, "ListSolutions", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

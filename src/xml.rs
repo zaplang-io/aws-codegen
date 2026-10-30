@@ -381,6 +381,7 @@ pub fn plan_rest_xml(model: &Model, op: &Operation) -> Result<RestXmlOp, String>
                     greedy: http.label_is_greedy(&wire),
                     ty: bound_wire_type(&ty),
                     optional,
+                    member: mn.clone(),
                 });
             }
             Some("querystring") => {
@@ -396,6 +397,7 @@ pub fn plan_rest_xml(model: &Model, op: &Operation) -> Result<RestXmlOp, String>
                     ty: bound_wire_type(&ty),
                     optional,
                     greedy: false,
+                    member: mn.clone(),
                 });
             }
             Some("header") => {
@@ -411,6 +413,7 @@ pub fn plan_rest_xml(model: &Model, op: &Operation) -> Result<RestXmlOp, String>
                     ty: bound_wire_type(&ty),
                     optional,
                     greedy: false,
+                    member: mn.clone(),
                 });
             }
             Some("headers") => match &ty {

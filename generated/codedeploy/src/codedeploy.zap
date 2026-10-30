@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 47 operations — 28 with a generated method,
-#   19 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 47 operations — 46 with a generated method,
+#   1 skipped (input has a non-string-keyed map or free-form document member).
 #   255 structs (189 @derive(Json)), 36 enums, 111 error variants.
-#   5 paginators generated (4 paginated ops skipped) from paginators-1.json.
+#   8 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -376,8 +376,9 @@ enum TriggerEventType:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) tags: list[Tag], instanceNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag], instanceNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddTagsToOnPremisesInstancesInput:
     list[Tag] tags
     list[str] instanceNames
@@ -386,8 +387,9 @@ struct AddTagsToOnPremisesInstancesInput:
 struct Alarm:
     Optional[str] name
 
-# no @derive(Json): member(s) alarms: list[Alarm] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) alarms: list[Alarm] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AlarmConfiguration:
     Optional[bool] enabled
     Optional[bool] ignorePollAlarmFailure
@@ -437,8 +439,9 @@ struct ArnNotSupportedException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) events: list[AutoRollbackEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) events: list[AutoRollbackEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoRollbackConfiguration:
     Optional[bool] enabled
     Optional[list[AutoRollbackEvent]] events
@@ -449,81 +452,95 @@ struct AutoScalingGroup:
     Optional[str] hook
     Optional[str] terminationHook
 
-# no @derive(Json): member(s) revisions: list[RevisionLocation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) revisions: list[RevisionLocation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetApplicationRevisionsInput:
     str applicationName
     list[RevisionLocation] revisions
 
-# no @derive(Json): member(s) revisions: list[RevisionInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) revisions: list[RevisionInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetApplicationRevisionsOutput:
     Optional[str] applicationName
     Optional[str] errorMessage
     Optional[list[RevisionInfo]] revisions
 
-# no @derive(Json): member(s) applicationNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) applicationNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetApplicationsInput:
     list[str] applicationNames
 
-# no @derive(Json): member(s) applicationsInfo: list[ApplicationInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) applicationsInfo: list[ApplicationInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetApplicationsOutput:
     Optional[list[ApplicationInfo]] applicationsInfo
 
-# no @derive(Json): member(s) deploymentGroupNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deploymentGroupNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetDeploymentGroupsInput:
     str applicationName
     list[str] deploymentGroupNames
 
-# no @derive(Json): member(s) deploymentGroupsInfo: list[DeploymentGroupInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deploymentGroupsInfo: list[DeploymentGroupInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetDeploymentGroupsOutput:
     Optional[list[DeploymentGroupInfo]] deploymentGroupsInfo
     Optional[str] errorMessage
 
-# no @derive(Json): member(s) instanceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetDeploymentInstancesInput:
     str deploymentId
     list[str] instanceIds
 
-# no @derive(Json): member(s) instancesSummary: list[InstanceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instancesSummary: list[InstanceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetDeploymentInstancesOutput:
     Optional[list[InstanceSummary]] instancesSummary
     Optional[str] errorMessage
 
-# no @derive(Json): member(s) targetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetDeploymentTargetsInput:
     str deploymentId
     list[str] targetIds
 
-# no @derive(Json): member(s) deploymentTargets: list[DeploymentTarget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deploymentTargets: list[DeploymentTarget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetDeploymentTargetsOutput:
     Optional[list[DeploymentTarget]] deploymentTargets
 
-# no @derive(Json): member(s) deploymentIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deploymentIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetDeploymentsInput:
     list[str] deploymentIds
 
-# no @derive(Json): member(s) deploymentsInfo: list[DeploymentInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deploymentsInfo: list[DeploymentInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetDeploymentsOutput:
     Optional[list[DeploymentInfo]] deploymentsInfo
 
-# no @derive(Json): member(s) instanceNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetOnPremisesInstancesInput:
     list[str] instanceNames
 
-# no @derive(Json): member(s) instanceInfos: list[InstanceInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceInfos: list[InstanceInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetOnPremisesInstancesOutput:
     Optional[list[InstanceInfo]] instanceInfos
 
@@ -548,8 +565,9 @@ struct BucketNameFilterRequiredException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) lifecycleEvents: list[LifecycleEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lifecycleEvents: list[LifecycleEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudFormationTarget:
     Optional[str] deploymentId
     Optional[str] targetId
@@ -564,8 +582,9 @@ struct ContinueDeploymentInput:
     Optional[str] deploymentId
     Optional[DeploymentWaitType] deploymentWaitType
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateApplicationInput:
     str applicationName
     Optional[ComputePlatform] computePlatform
@@ -587,8 +606,9 @@ struct CreateDeploymentConfigInput:
 struct CreateDeploymentConfigOutput:
     Optional[str] deploymentConfigId
 
-# no @derive(Json): member(s) ec2TagFilters: list[EC2TagFilter], onPremisesInstanceTagFilters: list[TagFilter], autoScalingGroups: list[str], triggerConfigurations: list[TriggerConfig], alarmConfiguration: AlarmConfiguration, autoRollbackConfiguration: AutoRollbackConfiguration, loadBalancerInfo: LoadBalancerInfo, ec2TagSet: EC2TagSet, ecsServices: list[ECSService], onPremisesTagSet: OnPremisesTagSet, tags: list[Tag], ec2DeploymentOptions: EC2DeploymentOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ec2TagFilters: list[EC2TagFilter], onPremisesInstanceTagFilters: list[TagFilter], autoScalingGroups: list[str], triggerConfigurations: list[TriggerConfig], alarmConfiguration: AlarmConfiguration, autoRollbackConfiguration: AutoRollbackConfiguration, loadBalancerInfo: LoadBalancerInfo, ec2TagSet: EC2TagSet, ecsServices: list[ECSService], onPremisesTagSet: OnPremisesTagSet, tags: list[Tag], ec2DeploymentOptions: EC2DeploymentOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDeploymentGroupInput:
     str applicationName
     str deploymentGroupName
@@ -615,8 +635,9 @@ struct CreateDeploymentGroupInput:
 struct CreateDeploymentGroupOutput:
     Optional[str] deploymentGroupId
 
-# no @derive(Json): member(s) targetInstances: TargetInstances, autoRollbackConfiguration: AutoRollbackConfiguration, overrideAlarmConfiguration: AlarmConfiguration, ec2DeploymentOptions: EC2DeploymentOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetInstances: TargetInstances, autoRollbackConfiguration: AutoRollbackConfiguration, overrideAlarmConfiguration: AlarmConfiguration, ec2DeploymentOptions: EC2DeploymentOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDeploymentInput:
     str applicationName
     Optional[str] deploymentGroupName
@@ -649,8 +670,9 @@ struct DeleteDeploymentGroupInput:
     str applicationName
     str deploymentGroupName
 
-# no @derive(Json): member(s) hooksNotCleanedUp: list[AutoScalingGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) hooksNotCleanedUp: list[AutoScalingGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteDeploymentGroupOutput:
     Optional[list[AutoScalingGroup]] hooksNotCleanedUp
 
@@ -731,8 +753,9 @@ struct DeploymentGroupDoesNotExistException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ec2TagFilters: list[EC2TagFilter], onPremisesInstanceTagFilters: list[TagFilter], autoScalingGroups: list[AutoScalingGroup], triggerConfigurations: list[TriggerConfig], alarmConfiguration: AlarmConfiguration, autoRollbackConfiguration: AutoRollbackConfiguration, loadBalancerInfo: LoadBalancerInfo, ec2TagSet: EC2TagSet, onPremisesTagSet: OnPremisesTagSet, ecsServices: list[ECSService], ec2DeploymentOptions: EC2DeploymentOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ec2TagFilters: list[EC2TagFilter], onPremisesInstanceTagFilters: list[TagFilter], autoScalingGroups: list[AutoScalingGroup], triggerConfigurations: list[TriggerConfig], alarmConfiguration: AlarmConfiguration, autoRollbackConfiguration: AutoRollbackConfiguration, loadBalancerInfo: LoadBalancerInfo, ec2TagSet: EC2TagSet, onPremisesTagSet: OnPremisesTagSet, ecsServices: list[ECSService], ec2DeploymentOptions: EC2DeploymentOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeploymentGroupInfo:
     Optional[str] applicationName
     Optional[str] deploymentGroupId
@@ -774,8 +797,9 @@ struct DeploymentIdRequiredException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) autoRollbackConfiguration: AutoRollbackConfiguration, targetInstances: TargetInstances, loadBalancerInfo: LoadBalancerInfo, deploymentStatusMessages: list[str], relatedDeployments: RelatedDeployments, overrideAlarmConfiguration: AlarmConfiguration, ec2DeploymentOptions: EC2DeploymentOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) autoRollbackConfiguration: AutoRollbackConfiguration, targetInstances: TargetInstances, loadBalancerInfo: LoadBalancerInfo, deploymentStatusMessages: list[str], relatedDeployments: RelatedDeployments, overrideAlarmConfiguration: AlarmConfiguration, ec2DeploymentOptions: EC2DeploymentOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeploymentInfo:
     Optional[str] applicationName
     Optional[str] deploymentGroupName
@@ -844,8 +868,9 @@ struct DeploymentStyle:
     Optional[DeploymentType] deploymentType
     Optional[DeploymentOption] deploymentOption
 
-# no @derive(Json): member(s) instanceTarget: InstanceTarget, lambdaTarget: LambdaTarget, ecsTarget: ECSTarget, cloudFormationTarget: CloudFormationTarget not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceTarget: InstanceTarget, lambdaTarget: LambdaTarget, ecsTarget: ECSTarget, cloudFormationTarget: CloudFormationTarget not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeploymentTarget:
     Optional[DeploymentTargetType] deploymentTargetType
     Optional[InstanceTarget] instanceTarget
@@ -884,8 +909,9 @@ struct Diagnostics:
     Optional[str] message
     Optional[str] logTail
 
-# no @derive(Json): member(s) autoScalingGroupProcessesToSuspend: list[AutoScalingGroupProcess] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) autoScalingGroupProcessesToSuspend: list[AutoScalingGroupProcess] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EC2DeploymentOptions:
     Optional[list[AutoScalingGroupProcess]] autoScalingGroupProcessesToSuspend
 
@@ -895,8 +921,9 @@ struct EC2TagFilter:
     Optional[str] Value
     Optional[EC2TagFilterType] Type
 
-# no @derive(Json): member(s) ec2TagSetList: list[list[EC2TagFilter]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ec2TagSetList: list[list[EC2TagFilter]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EC2TagSet:
     Optional[list[list[EC2TagFilter]]] ec2TagSetList
 
@@ -910,8 +937,9 @@ struct ECSServiceMappingLimitExceededException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) lifecycleEvents: list[LifecycleEvent], taskSetsInfo: list[ECSTaskSet] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lifecycleEvents: list[LifecycleEvent], taskSetsInfo: list[ECSTaskSet] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ECSTarget:
     Optional[str] deploymentId
     Optional[str] targetId
@@ -941,8 +969,9 @@ struct ErrorInformation:
     Optional[ErrorCode] code
     Optional[str] message
 
-# no @derive(Json): member(s) deploymentGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deploymentGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GenericRevisionInfo:
     Optional[str] description
     Optional[list[str]] deploymentGroups
@@ -963,8 +992,9 @@ struct GetApplicationRevisionInput:
     str applicationName
     RevisionLocation revision
 
-# no @derive(Json): member(s) revisionInfo: GenericRevisionInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) revisionInfo: GenericRevisionInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetApplicationRevisionOutput:
     Optional[str] applicationName
     Optional[RevisionLocation] revision
@@ -983,8 +1013,9 @@ struct GetDeploymentGroupInput:
     str applicationName
     str deploymentGroupName
 
-# no @derive(Json): member(s) deploymentGroupInfo: DeploymentGroupInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deploymentGroupInfo: DeploymentGroupInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeploymentGroupOutput:
     Optional[DeploymentGroupInfo] deploymentGroupInfo
 
@@ -997,13 +1028,15 @@ struct GetDeploymentInstanceInput:
     str deploymentId
     str instanceId
 
-# no @derive(Json): member(s) instanceSummary: InstanceSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceSummary: InstanceSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeploymentInstanceOutput:
     Optional[InstanceSummary] instanceSummary
 
-# no @derive(Json): member(s) deploymentInfo: DeploymentInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deploymentInfo: DeploymentInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeploymentOutput:
     Optional[DeploymentInfo] deploymentInfo
 
@@ -1012,8 +1045,9 @@ struct GetDeploymentTargetInput:
     str deploymentId
     str targetId
 
-# no @derive(Json): member(s) deploymentTarget: DeploymentTarget not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deploymentTarget: DeploymentTarget not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeploymentTargetOutput:
     Optional[DeploymentTarget] deploymentTarget
 
@@ -1021,8 +1055,9 @@ struct GetDeploymentTargetOutput:
 struct GetOnPremisesInstanceInput:
     str instanceName
 
-# no @derive(Json): member(s) instanceInfo: InstanceInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceInfo: InstanceInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOnPremisesInstanceOutput:
     Optional[InstanceInfo] instanceInfo
 
@@ -1075,8 +1110,9 @@ struct InstanceIdRequiredException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceInfo:
     Optional[str] instanceName
     Optional[str] iamSessionArn
@@ -1106,8 +1142,9 @@ struct InstanceNotRegisteredException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) lifecycleEvents: list[LifecycleEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lifecycleEvents: list[LifecycleEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceSummary:
     Optional[str] deploymentId
     Optional[str] instanceId
@@ -1116,8 +1153,9 @@ struct InstanceSummary:
     Optional[list[LifecycleEvent]] lifecycleEvents
     Optional[InstanceType] instanceType
 
-# no @derive(Json): member(s) lifecycleEvents: list[LifecycleEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lifecycleEvents: list[LifecycleEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceTarget:
     Optional[str] deploymentId
     Optional[str] targetId
@@ -1425,8 +1463,9 @@ struct LambdaFunctionInfo:
     Optional[str] targetVersion
     Optional[float64] targetVersionWeight
 
-# no @derive(Json): member(s) lifecycleEvents: list[LifecycleEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lifecycleEvents: list[LifecycleEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LambdaTarget:
     Optional[str] deploymentId
     Optional[str] targetId
@@ -1471,8 +1510,9 @@ struct ListApplicationRevisionsInput:
     Optional[ListStateFilterAction] deployed
     Optional[str] nextToken
 
-# no @derive(Json): member(s) revisions: list[RevisionLocation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) revisions: list[RevisionLocation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationRevisionsOutput:
     Optional[list[RevisionLocation]] revisions
     Optional[str] nextToken
@@ -1481,8 +1521,9 @@ struct ListApplicationRevisionsOutput:
 struct ListApplicationsInput:
     Optional[str] nextToken
 
-# no @derive(Json): member(s) applications: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) applications: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationsOutput:
     Optional[list[str]] applications
     Optional[str] nextToken
@@ -1491,8 +1532,9 @@ struct ListApplicationsOutput:
 struct ListDeploymentConfigsInput:
     Optional[str] nextToken
 
-# no @derive(Json): member(s) deploymentConfigsList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deploymentConfigsList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeploymentConfigsOutput:
     Optional[list[str]] deploymentConfigsList
     Optional[str] nextToken
@@ -1502,42 +1544,48 @@ struct ListDeploymentGroupsInput:
     str applicationName
     Optional[str] nextToken
 
-# no @derive(Json): member(s) deploymentGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deploymentGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeploymentGroupsOutput:
     Optional[str] applicationName
     Optional[list[str]] deploymentGroups
     Optional[str] nextToken
 
-# no @derive(Json): member(s) instanceStatusFilter: list[InstanceStatus], instanceTypeFilter: list[InstanceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceStatusFilter: list[InstanceStatus], instanceTypeFilter: list[InstanceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeploymentInstancesInput:
     str deploymentId
     Optional[str] nextToken
     Optional[list[InstanceStatus]] instanceStatusFilter
     Optional[list[InstanceType]] instanceTypeFilter
 
-# no @derive(Json): member(s) instancesList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instancesList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeploymentInstancesOutput:
     Optional[list[str]] instancesList
     Optional[str] nextToken
 
-# no @derive(Json): member(s) targetFilters: dict[TargetFilterName, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetFilters: dict[TargetFilterName, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeploymentTargetsInput:
     str deploymentId
     Optional[str] nextToken
     Optional[dict[TargetFilterName, list[str]]] targetFilters
 
-# no @derive(Json): member(s) targetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeploymentTargetsOutput:
     Optional[list[str]] targetIds
     Optional[str] nextToken
 
-# no @derive(Json): member(s) includeOnlyStatuses: list[DeploymentStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) includeOnlyStatuses: list[DeploymentStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeploymentsInput:
     Optional[str] applicationName
     Optional[str] deploymentGroupName
@@ -1546,8 +1594,9 @@ struct ListDeploymentsInput:
     Optional[TimeRange] createTimeRange
     Optional[str] nextToken
 
-# no @derive(Json): member(s) deployments: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deployments: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeploymentsOutput:
     Optional[list[str]] deployments
     Optional[str] nextToken
@@ -1556,21 +1605,24 @@ struct ListDeploymentsOutput:
 struct ListGitHubAccountTokenNamesInput:
     Optional[str] nextToken
 
-# no @derive(Json): member(s) tokenNameList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tokenNameList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGitHubAccountTokenNamesOutput:
     Optional[list[str]] tokenNameList
     Optional[str] nextToken
 
-# no @derive(Json): member(s) tagFilters: list[TagFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagFilters: list[TagFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOnPremisesInstancesInput:
     Optional[RegistrationStatus] registrationStatus
     Optional[list[TagFilter]] tagFilters
     Optional[str] nextToken
 
-# no @derive(Json): member(s) instanceNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOnPremisesInstancesOutput:
     Optional[list[str]] instanceNames
     Optional[str] nextToken
@@ -1580,14 +1632,16 @@ struct ListTagsForResourceInput:
     str ResourceArn
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[list[Tag]] Tags
     Optional[str] NextToken
 
-# no @derive(Json): member(s) elbInfoList: list[ELBInfo], targetGroupInfoList: list[TargetGroupInfo], targetGroupPairInfoList: list[TargetGroupPairInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) elbInfoList: list[ELBInfo], targetGroupInfoList: list[TargetGroupInfo], targetGroupPairInfoList: list[TargetGroupPairInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LoadBalancerInfo:
     Optional[list[ELBInfo]] elbInfoList
     Optional[list[TargetGroupInfo]] targetGroupInfoList
@@ -1608,8 +1662,9 @@ struct MultipleIamArnsProvidedException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) onPremisesTagSetList: list[list[TagFilter]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) onPremisesTagSetList: list[list[TagFilter]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OnPremisesTagSet:
     Optional[list[list[TagFilter]]] onPremisesTagSetList
 
@@ -1645,14 +1700,16 @@ struct RegisterOnPremisesInstanceInput:
     Optional[str] iamSessionArn
     Optional[str] iamUserArn
 
-# no @derive(Json): member(s) autoUpdateOutdatedInstancesDeploymentIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) autoUpdateOutdatedInstancesDeploymentIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RelatedDeployments:
     Optional[str] autoUpdateOutdatedInstancesRootDeploymentId
     Optional[list[str]] autoUpdateOutdatedInstancesDeploymentIds
 
-# no @derive(Json): member(s) tags: list[Tag], instanceNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag], instanceNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveTagsFromOnPremisesInstancesInput:
     list[Tag] tags
     list[str] instanceNames
@@ -1672,8 +1729,9 @@ struct RevisionDoesNotExistException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) genericRevisionInfo: GenericRevisionInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) genericRevisionInfo: GenericRevisionInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RevisionInfo:
     Optional[RevisionLocation] revisionLocation
     Optional[GenericRevisionInfo] genericRevisionInfo
@@ -1745,8 +1803,9 @@ struct TagRequiredException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceInput:
     str ResourceArn
     list[Tag] Tags
@@ -1765,15 +1824,17 @@ struct TagSetListLimitExceededException:
 struct TargetGroupInfo:
     Optional[str] name
 
-# no @derive(Json): member(s) targetGroups: list[TargetGroupInfo], prodTrafficRoute: TrafficRoute, testTrafficRoute: TrafficRoute not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetGroups: list[TargetGroupInfo], prodTrafficRoute: TrafficRoute, testTrafficRoute: TrafficRoute not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TargetGroupPairInfo:
     Optional[list[TargetGroupInfo]] targetGroups
     Optional[TrafficRoute] prodTrafficRoute
     Optional[TrafficRoute] testTrafficRoute
 
-# no @derive(Json): member(s) tagFilters: list[EC2TagFilter], autoScalingGroups: list[str], ec2TagSet: EC2TagSet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagFilters: list[EC2TagFilter], autoScalingGroups: list[str], ec2TagSet: EC2TagSet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TargetInstances:
     Optional[list[EC2TagFilter]] tagFilters
     Optional[list[str]] autoScalingGroups
@@ -1799,8 +1860,9 @@ struct TimeRange:
     Optional[DateTime] start
     Optional[DateTime] end
 
-# no @derive(Json): member(s) listenerArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) listenerArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrafficRoute:
     Optional[list[str]] listenerArns
 
@@ -1810,8 +1872,9 @@ struct TrafficRoutingConfig:
     Optional[TimeBasedCanary] timeBasedCanary
     Optional[TimeBasedLinear] timeBasedLinear
 
-# no @derive(Json): member(s) triggerEvents: list[TriggerEventType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) triggerEvents: list[TriggerEventType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TriggerConfig:
     Optional[str] triggerName
     Optional[str] triggerTargetArn
@@ -1827,8 +1890,9 @@ struct UnsupportedActionForDeploymentTypeException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceInput:
     str ResourceArn
     list[str] TagKeys
@@ -1843,8 +1907,9 @@ struct UpdateApplicationInput:
     Optional[str] applicationName
     Optional[str] newApplicationName
 
-# no @derive(Json): member(s) ec2TagFilters: list[EC2TagFilter], onPremisesInstanceTagFilters: list[TagFilter], autoScalingGroups: list[str], triggerConfigurations: list[TriggerConfig], alarmConfiguration: AlarmConfiguration, autoRollbackConfiguration: AutoRollbackConfiguration, loadBalancerInfo: LoadBalancerInfo, ec2TagSet: EC2TagSet, ecsServices: list[ECSService], onPremisesTagSet: OnPremisesTagSet, ec2DeploymentOptions: EC2DeploymentOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ec2TagFilters: list[EC2TagFilter], onPremisesInstanceTagFilters: list[TagFilter], autoScalingGroups: list[str], triggerConfigurations: list[TriggerConfig], alarmConfiguration: AlarmConfiguration, autoRollbackConfiguration: AutoRollbackConfiguration, loadBalancerInfo: LoadBalancerInfo, ec2TagSet: EC2TagSet, ecsServices: list[ECSService], onPremisesTagSet: OnPremisesTagSet, ec2DeploymentOptions: EC2DeploymentOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDeploymentGroupInput:
     str applicationName
     str currentDeploymentGroupName
@@ -1867,8 +1932,9 @@ struct UpdateDeploymentGroupInput:
     Optional[EC2DeploymentOptions] ec2DeploymentOptions
     Optional[bool] terminationHookEnabled
 
-# no @derive(Json): member(s) hooksNotCleanedUp: list[AutoScalingGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) hooksNotCleanedUp: list[AutoScalingGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDeploymentGroupOutput:
     Optional[list[AutoScalingGroup]] hooksNotCleanedUp
 
@@ -2224,39 +2290,641 @@ def codedeploy_error_from_code(str code) -> CodeDeployError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AddTagsToOnPremisesInstances (input AddTagsToOnPremisesInstancesInput)
-#   BatchGetApplicationRevisions (input BatchGetApplicationRevisionsInput)
-#   BatchGetApplications (input BatchGetApplicationsInput)
-#   BatchGetDeploymentGroups (input BatchGetDeploymentGroupsInput)
-#   BatchGetDeploymentInstances (input BatchGetDeploymentInstancesInput)
-#   BatchGetDeploymentTargets (input BatchGetDeploymentTargetsInput)
-#   BatchGetDeployments (input BatchGetDeploymentsInput)
-#   BatchGetOnPremisesInstances (input BatchGetOnPremisesInstancesInput)
-#   CreateApplication (input CreateApplicationInput)
-#   CreateDeployment (input CreateDeploymentInput)
-#   CreateDeploymentGroup (input CreateDeploymentGroupInput)
-#   ListDeploymentInstances (input ListDeploymentInstancesInput)
+# Operations skipped in v0 (a member type is not yet serializable — a map
+# with a non-string key, or a free-form document member):
 #   ListDeploymentTargets (input ListDeploymentTargetsInput)
-#   ListDeployments (input ListDeploymentsInput)
-#   ListOnPremisesInstances (input ListOnPremisesInstancesInput)
-#   RemoveTagsFromOnPremisesInstances (input RemoveTagsFromOnPremisesInstancesInput)
-#   TagResource (input TagResourceInput)
-#   UntagResource (input UntagResourceInput)
-#   UpdateDeploymentGroup (input UpdateDeploymentGroupInput)
 
 # Paginated operations (paginators-1.json) not surfaced in v0 — their input
 # is skipped above, or the continuation token is not a simple string field:
-#   ListDeploymentInstances (input not derivable (no generated method))
-#   ListDeploymentTargets (input not derivable (no generated method))
-#   ListDeployments (input not derivable (no generated method))
-#   ListOnPremisesInstances (input not derivable (no generated method))
+#   ListDeploymentTargets (input not serializable (no generated method))
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def codedeploy_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def codedeploy_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def codedeploy_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AddTagsToOnPremisesInstancesInput to a compact JSON object (declaration order).
+def add_tags_to_on_premises_instances_input_to_json(AddTagsToOnPremisesInstancesInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.tags:
+        e0.append(x0.to_json())
+    parts.append("\"tags\":" + codedeploy_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.instanceNames:
+        e1.append(codedeploy_json_str(x1))
+    parts.append("\"instanceNames\":" + codedeploy_json_arr(e1))
+    return codedeploy_json_obj(parts)
+
+# Serialize AlarmConfiguration to a compact JSON object (declaration order).
+def alarm_configuration_to_json(AlarmConfiguration v) -> str:
+    list[str] parts = []
+    if v.enabled.is_some():
+        auto u0 = v.enabled.unwrap()
+        parts.append("\"enabled\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.ignorePollAlarmFailure.is_some():
+        auto u1 = v.ignorePollAlarmFailure.unwrap()
+        parts.append("\"ignorePollAlarmFailure\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.alarms.is_some():
+        auto u2 = v.alarms.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"alarms\":" + codedeploy_json_arr(e3))
+    return codedeploy_json_obj(parts)
+
+# Serialize AutoRollbackConfiguration to a compact JSON object (declaration order).
+def auto_rollback_configuration_to_json(AutoRollbackConfiguration v) -> str:
+    list[str] parts = []
+    if v.enabled.is_some():
+        auto u0 = v.enabled.unwrap()
+        parts.append("\"enabled\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.events.is_some():
+        auto u1 = v.events.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"events\":" + codedeploy_json_arr(e2))
+    return codedeploy_json_obj(parts)
+
+# Serialize BatchGetApplicationRevisionsInput to a compact JSON object (declaration order).
+def batch_get_application_revisions_input_to_json(BatchGetApplicationRevisionsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"applicationName\":" + codedeploy_json_str(v.applicationName))
+    list[str] e0 = []
+    for x0 in v.revisions:
+        e0.append(x0.to_json())
+    parts.append("\"revisions\":" + codedeploy_json_arr(e0))
+    return codedeploy_json_obj(parts)
+
+# Serialize BatchGetApplicationsInput to a compact JSON object (declaration order).
+def batch_get_applications_input_to_json(BatchGetApplicationsInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.applicationNames:
+        e0.append(codedeploy_json_str(x0))
+    parts.append("\"applicationNames\":" + codedeploy_json_arr(e0))
+    return codedeploy_json_obj(parts)
+
+# Serialize BatchGetDeploymentGroupsInput to a compact JSON object (declaration order).
+def batch_get_deployment_groups_input_to_json(BatchGetDeploymentGroupsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"applicationName\":" + codedeploy_json_str(v.applicationName))
+    list[str] e0 = []
+    for x0 in v.deploymentGroupNames:
+        e0.append(codedeploy_json_str(x0))
+    parts.append("\"deploymentGroupNames\":" + codedeploy_json_arr(e0))
+    return codedeploy_json_obj(parts)
+
+# Serialize BatchGetDeploymentInstancesInput to a compact JSON object (declaration order).
+def batch_get_deployment_instances_input_to_json(BatchGetDeploymentInstancesInput v) -> str:
+    list[str] parts = []
+    parts.append("\"deploymentId\":" + codedeploy_json_str(v.deploymentId))
+    list[str] e0 = []
+    for x0 in v.instanceIds:
+        e0.append(codedeploy_json_str(x0))
+    parts.append("\"instanceIds\":" + codedeploy_json_arr(e0))
+    return codedeploy_json_obj(parts)
+
+# Serialize BatchGetDeploymentTargetsInput to a compact JSON object (declaration order).
+def batch_get_deployment_targets_input_to_json(BatchGetDeploymentTargetsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"deploymentId\":" + codedeploy_json_str(v.deploymentId))
+    list[str] e0 = []
+    for x0 in v.targetIds:
+        e0.append(codedeploy_json_str(x0))
+    parts.append("\"targetIds\":" + codedeploy_json_arr(e0))
+    return codedeploy_json_obj(parts)
+
+# Serialize BatchGetDeploymentsInput to a compact JSON object (declaration order).
+def batch_get_deployments_input_to_json(BatchGetDeploymentsInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.deploymentIds:
+        e0.append(codedeploy_json_str(x0))
+    parts.append("\"deploymentIds\":" + codedeploy_json_arr(e0))
+    return codedeploy_json_obj(parts)
+
+# Serialize BatchGetOnPremisesInstancesInput to a compact JSON object (declaration order).
+def batch_get_on_premises_instances_input_to_json(BatchGetOnPremisesInstancesInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.instanceNames:
+        e0.append(codedeploy_json_str(x0))
+    parts.append("\"instanceNames\":" + codedeploy_json_arr(e0))
+    return codedeploy_json_obj(parts)
+
+# Serialize CreateApplicationInput to a compact JSON object (declaration order).
+def create_application_input_to_json(CreateApplicationInput v) -> str:
+    list[str] parts = []
+    parts.append("\"applicationName\":" + codedeploy_json_str(v.applicationName))
+    if v.computePlatform.is_some():
+        auto u0 = v.computePlatform.unwrap()
+        parts.append("\"computePlatform\":" + u0.to_json())
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + codedeploy_json_arr(e2))
+    return codedeploy_json_obj(parts)
+
+# Serialize CreateDeploymentGroupInput to a compact JSON object (declaration order).
+def create_deployment_group_input_to_json(CreateDeploymentGroupInput v) -> str:
+    list[str] parts = []
+    parts.append("\"applicationName\":" + codedeploy_json_str(v.applicationName))
+    parts.append("\"deploymentGroupName\":" + codedeploy_json_str(v.deploymentGroupName))
+    if v.deploymentConfigName.is_some():
+        auto u0 = v.deploymentConfigName.unwrap()
+        parts.append("\"deploymentConfigName\":" + codedeploy_json_str(u0))
+    if v.ec2TagFilters.is_some():
+        auto u1 = v.ec2TagFilters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"ec2TagFilters\":" + codedeploy_json_arr(e2))
+    if v.onPremisesInstanceTagFilters.is_some():
+        auto u3 = v.onPremisesInstanceTagFilters.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"onPremisesInstanceTagFilters\":" + codedeploy_json_arr(e4))
+    if v.autoScalingGroups.is_some():
+        auto u5 = v.autoScalingGroups.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(codedeploy_json_str(x6))
+        parts.append("\"autoScalingGroups\":" + codedeploy_json_arr(e6))
+    parts.append("\"serviceRoleArn\":" + codedeploy_json_str(v.serviceRoleArn))
+    if v.triggerConfigurations.is_some():
+        auto u7 = v.triggerConfigurations.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(trigger_config_to_json(x8))
+        parts.append("\"triggerConfigurations\":" + codedeploy_json_arr(e8))
+    if v.alarmConfiguration.is_some():
+        auto u9 = v.alarmConfiguration.unwrap()
+        parts.append("\"alarmConfiguration\":" + alarm_configuration_to_json(u9))
+    if v.autoRollbackConfiguration.is_some():
+        auto u10 = v.autoRollbackConfiguration.unwrap()
+        parts.append("\"autoRollbackConfiguration\":" + auto_rollback_configuration_to_json(u10))
+    if v.outdatedInstancesStrategy.is_some():
+        auto u11 = v.outdatedInstancesStrategy.unwrap()
+        parts.append("\"outdatedInstancesStrategy\":" + u11.to_json())
+    if v.deploymentStyle.is_some():
+        auto u12 = v.deploymentStyle.unwrap()
+        parts.append("\"deploymentStyle\":" + u12.to_json())
+    if v.blueGreenDeploymentConfiguration.is_some():
+        auto u13 = v.blueGreenDeploymentConfiguration.unwrap()
+        parts.append("\"blueGreenDeploymentConfiguration\":" + u13.to_json())
+    if v.loadBalancerInfo.is_some():
+        auto u14 = v.loadBalancerInfo.unwrap()
+        parts.append("\"loadBalancerInfo\":" + load_balancer_info_to_json(u14))
+    if v.ec2TagSet.is_some():
+        auto u15 = v.ec2TagSet.unwrap()
+        parts.append("\"ec2TagSet\":" + ec2_tag_set_to_json(u15))
+    if v.ecsServices.is_some():
+        auto u16 = v.ecsServices.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"ecsServices\":" + codedeploy_json_arr(e17))
+    if v.onPremisesTagSet.is_some():
+        auto u18 = v.onPremisesTagSet.unwrap()
+        parts.append("\"onPremisesTagSet\":" + on_premises_tag_set_to_json(u18))
+    if v.tags.is_some():
+        auto u19 = v.tags.unwrap()
+        list[str] e20 = []
+        for x20 in u19:
+            e20.append(x20.to_json())
+        parts.append("\"tags\":" + codedeploy_json_arr(e20))
+    if v.ec2DeploymentOptions.is_some():
+        auto u21 = v.ec2DeploymentOptions.unwrap()
+        parts.append("\"ec2DeploymentOptions\":" + ec2_deployment_options_to_json(u21))
+    if v.terminationHookEnabled.is_some():
+        auto u22 = v.terminationHookEnabled.unwrap()
+        parts.append("\"terminationHookEnabled\":" + json.dumps(JsonValue.Bool(u22)))
+    return codedeploy_json_obj(parts)
+
+# Serialize CreateDeploymentInput to a compact JSON object (declaration order).
+def create_deployment_input_to_json(CreateDeploymentInput v) -> str:
+    list[str] parts = []
+    parts.append("\"applicationName\":" + codedeploy_json_str(v.applicationName))
+    if v.deploymentGroupName.is_some():
+        auto u0 = v.deploymentGroupName.unwrap()
+        parts.append("\"deploymentGroupName\":" + codedeploy_json_str(u0))
+    if v.revision.is_some():
+        auto u1 = v.revision.unwrap()
+        parts.append("\"revision\":" + u1.to_json())
+    if v.deploymentConfigName.is_some():
+        auto u2 = v.deploymentConfigName.unwrap()
+        parts.append("\"deploymentConfigName\":" + codedeploy_json_str(u2))
+    if v.description.is_some():
+        auto u3 = v.description.unwrap()
+        parts.append("\"description\":" + codedeploy_json_str(u3))
+    if v.ignoreApplicationStopFailures.is_some():
+        auto u4 = v.ignoreApplicationStopFailures.unwrap()
+        parts.append("\"ignoreApplicationStopFailures\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.targetInstances.is_some():
+        auto u5 = v.targetInstances.unwrap()
+        parts.append("\"targetInstances\":" + target_instances_to_json(u5))
+    if v.autoRollbackConfiguration.is_some():
+        auto u6 = v.autoRollbackConfiguration.unwrap()
+        parts.append("\"autoRollbackConfiguration\":" + auto_rollback_configuration_to_json(u6))
+    if v.updateOutdatedInstancesOnly.is_some():
+        auto u7 = v.updateOutdatedInstancesOnly.unwrap()
+        parts.append("\"updateOutdatedInstancesOnly\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.fileExistsBehavior.is_some():
+        auto u8 = v.fileExistsBehavior.unwrap()
+        parts.append("\"fileExistsBehavior\":" + u8.to_json())
+    if v.deploymentMode.is_some():
+        auto u9 = v.deploymentMode.unwrap()
+        parts.append("\"deploymentMode\":" + u9.to_json())
+    if v.overrideAlarmConfiguration.is_some():
+        auto u10 = v.overrideAlarmConfiguration.unwrap()
+        parts.append("\"overrideAlarmConfiguration\":" + alarm_configuration_to_json(u10))
+    if v.ec2DeploymentOptions.is_some():
+        auto u11 = v.ec2DeploymentOptions.unwrap()
+        parts.append("\"ec2DeploymentOptions\":" + ec2_deployment_options_to_json(u11))
+    return codedeploy_json_obj(parts)
+
+# Serialize EC2DeploymentOptions to a compact JSON object (declaration order).
+def ec2_deployment_options_to_json(EC2DeploymentOptions v) -> str:
+    list[str] parts = []
+    if v.autoScalingGroupProcessesToSuspend.is_some():
+        auto u0 = v.autoScalingGroupProcessesToSuspend.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"autoScalingGroupProcessesToSuspend\":" + codedeploy_json_arr(e1))
+    return codedeploy_json_obj(parts)
+
+# Serialize EC2TagSet to a compact JSON object (declaration order).
+def ec2_tag_set_to_json(EC2TagSet v) -> str:
+    list[str] parts = []
+    if v.ec2TagSetList.is_some():
+        auto u0 = v.ec2TagSetList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            list[str] e2 = []
+            for x2 in x1:
+                e2.append(x2.to_json())
+            e1.append(codedeploy_json_arr(e2))
+        parts.append("\"ec2TagSetList\":" + codedeploy_json_arr(e1))
+    return codedeploy_json_obj(parts)
+
+# Serialize ListDeploymentInstancesInput to a compact JSON object (declaration order).
+def list_deployment_instances_input_to_json(ListDeploymentInstancesInput v) -> str:
+    list[str] parts = []
+    parts.append("\"deploymentId\":" + codedeploy_json_str(v.deploymentId))
+    if v.nextToken.is_some():
+        auto u0 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + codedeploy_json_str(u0))
+    if v.instanceStatusFilter.is_some():
+        auto u1 = v.instanceStatusFilter.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"instanceStatusFilter\":" + codedeploy_json_arr(e2))
+    if v.instanceTypeFilter.is_some():
+        auto u3 = v.instanceTypeFilter.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"instanceTypeFilter\":" + codedeploy_json_arr(e4))
+    return codedeploy_json_obj(parts)
+
+# Serialize ListDeploymentsInput to a compact JSON object (declaration order).
+def list_deployments_input_to_json(ListDeploymentsInput v) -> str:
+    list[str] parts = []
+    if v.applicationName.is_some():
+        auto u0 = v.applicationName.unwrap()
+        parts.append("\"applicationName\":" + codedeploy_json_str(u0))
+    if v.deploymentGroupName.is_some():
+        auto u1 = v.deploymentGroupName.unwrap()
+        parts.append("\"deploymentGroupName\":" + codedeploy_json_str(u1))
+    if v.externalId.is_some():
+        auto u2 = v.externalId.unwrap()
+        parts.append("\"externalId\":" + codedeploy_json_str(u2))
+    if v.includeOnlyStatuses.is_some():
+        auto u3 = v.includeOnlyStatuses.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"includeOnlyStatuses\":" + codedeploy_json_arr(e4))
+    if v.createTimeRange.is_some():
+        auto u5 = v.createTimeRange.unwrap()
+        parts.append("\"createTimeRange\":" + u5.to_json())
+    if v.nextToken.is_some():
+        auto u6 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + codedeploy_json_str(u6))
+    return codedeploy_json_obj(parts)
+
+# Serialize ListOnPremisesInstancesInput to a compact JSON object (declaration order).
+def list_on_premises_instances_input_to_json(ListOnPremisesInstancesInput v) -> str:
+    list[str] parts = []
+    if v.registrationStatus.is_some():
+        auto u0 = v.registrationStatus.unwrap()
+        parts.append("\"registrationStatus\":" + u0.to_json())
+    if v.tagFilters.is_some():
+        auto u1 = v.tagFilters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tagFilters\":" + codedeploy_json_arr(e2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + codedeploy_json_str(u3))
+    return codedeploy_json_obj(parts)
+
+# Serialize LoadBalancerInfo to a compact JSON object (declaration order).
+def load_balancer_info_to_json(LoadBalancerInfo v) -> str:
+    list[str] parts = []
+    if v.elbInfoList.is_some():
+        auto u0 = v.elbInfoList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"elbInfoList\":" + codedeploy_json_arr(e1))
+    if v.targetGroupInfoList.is_some():
+        auto u2 = v.targetGroupInfoList.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"targetGroupInfoList\":" + codedeploy_json_arr(e3))
+    if v.targetGroupPairInfoList.is_some():
+        auto u4 = v.targetGroupPairInfoList.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(target_group_pair_info_to_json(x5))
+        parts.append("\"targetGroupPairInfoList\":" + codedeploy_json_arr(e5))
+    return codedeploy_json_obj(parts)
+
+# Serialize OnPremisesTagSet to a compact JSON object (declaration order).
+def on_premises_tag_set_to_json(OnPremisesTagSet v) -> str:
+    list[str] parts = []
+    if v.onPremisesTagSetList.is_some():
+        auto u0 = v.onPremisesTagSetList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            list[str] e2 = []
+            for x2 in x1:
+                e2.append(x2.to_json())
+            e1.append(codedeploy_json_arr(e2))
+        parts.append("\"onPremisesTagSetList\":" + codedeploy_json_arr(e1))
+    return codedeploy_json_obj(parts)
+
+# Serialize RemoveTagsFromOnPremisesInstancesInput to a compact JSON object (declaration order).
+def remove_tags_from_on_premises_instances_input_to_json(RemoveTagsFromOnPremisesInstancesInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.tags:
+        e0.append(x0.to_json())
+    parts.append("\"tags\":" + codedeploy_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.instanceNames:
+        e1.append(codedeploy_json_str(x1))
+    parts.append("\"instanceNames\":" + codedeploy_json_arr(e1))
+    return codedeploy_json_obj(parts)
+
+# Serialize TagResourceInput to a compact JSON object (declaration order).
+def tag_resource_input_to_json(TagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + codedeploy_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + codedeploy_json_arr(e0))
+    return codedeploy_json_obj(parts)
+
+# Serialize TargetGroupPairInfo to a compact JSON object (declaration order).
+def target_group_pair_info_to_json(TargetGroupPairInfo v) -> str:
+    list[str] parts = []
+    if v.targetGroups.is_some():
+        auto u0 = v.targetGroups.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"targetGroups\":" + codedeploy_json_arr(e1))
+    if v.prodTrafficRoute.is_some():
+        auto u2 = v.prodTrafficRoute.unwrap()
+        parts.append("\"prodTrafficRoute\":" + traffic_route_to_json(u2))
+    if v.testTrafficRoute.is_some():
+        auto u3 = v.testTrafficRoute.unwrap()
+        parts.append("\"testTrafficRoute\":" + traffic_route_to_json(u3))
+    return codedeploy_json_obj(parts)
+
+# Serialize TargetInstances to a compact JSON object (declaration order).
+def target_instances_to_json(TargetInstances v) -> str:
+    list[str] parts = []
+    if v.tagFilters.is_some():
+        auto u0 = v.tagFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tagFilters\":" + codedeploy_json_arr(e1))
+    if v.autoScalingGroups.is_some():
+        auto u2 = v.autoScalingGroups.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(codedeploy_json_str(x3))
+        parts.append("\"autoScalingGroups\":" + codedeploy_json_arr(e3))
+    if v.ec2TagSet.is_some():
+        auto u4 = v.ec2TagSet.unwrap()
+        parts.append("\"ec2TagSet\":" + ec2_tag_set_to_json(u4))
+    return codedeploy_json_obj(parts)
+
+# Serialize TrafficRoute to a compact JSON object (declaration order).
+def traffic_route_to_json(TrafficRoute v) -> str:
+    list[str] parts = []
+    if v.listenerArns.is_some():
+        auto u0 = v.listenerArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(codedeploy_json_str(x1))
+        parts.append("\"listenerArns\":" + codedeploy_json_arr(e1))
+    return codedeploy_json_obj(parts)
+
+# Serialize TriggerConfig to a compact JSON object (declaration order).
+def trigger_config_to_json(TriggerConfig v) -> str:
+    list[str] parts = []
+    if v.triggerName.is_some():
+        auto u0 = v.triggerName.unwrap()
+        parts.append("\"triggerName\":" + codedeploy_json_str(u0))
+    if v.triggerTargetArn.is_some():
+        auto u1 = v.triggerTargetArn.unwrap()
+        parts.append("\"triggerTargetArn\":" + codedeploy_json_str(u1))
+    if v.triggerEvents.is_some():
+        auto u2 = v.triggerEvents.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"triggerEvents\":" + codedeploy_json_arr(e3))
+    return codedeploy_json_obj(parts)
+
+# Serialize UntagResourceInput to a compact JSON object (declaration order).
+def untag_resource_input_to_json(UntagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + codedeploy_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(codedeploy_json_str(x0))
+    parts.append("\"TagKeys\":" + codedeploy_json_arr(e0))
+    return codedeploy_json_obj(parts)
+
+# Serialize UpdateDeploymentGroupInput to a compact JSON object (declaration order).
+def update_deployment_group_input_to_json(UpdateDeploymentGroupInput v) -> str:
+    list[str] parts = []
+    parts.append("\"applicationName\":" + codedeploy_json_str(v.applicationName))
+    parts.append("\"currentDeploymentGroupName\":" + codedeploy_json_str(v.currentDeploymentGroupName))
+    if v.newDeploymentGroupName.is_some():
+        auto u0 = v.newDeploymentGroupName.unwrap()
+        parts.append("\"newDeploymentGroupName\":" + codedeploy_json_str(u0))
+    if v.deploymentConfigName.is_some():
+        auto u1 = v.deploymentConfigName.unwrap()
+        parts.append("\"deploymentConfigName\":" + codedeploy_json_str(u1))
+    if v.ec2TagFilters.is_some():
+        auto u2 = v.ec2TagFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ec2TagFilters\":" + codedeploy_json_arr(e3))
+    if v.onPremisesInstanceTagFilters.is_some():
+        auto u4 = v.onPremisesInstanceTagFilters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"onPremisesInstanceTagFilters\":" + codedeploy_json_arr(e5))
+    if v.autoScalingGroups.is_some():
+        auto u6 = v.autoScalingGroups.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(codedeploy_json_str(x7))
+        parts.append("\"autoScalingGroups\":" + codedeploy_json_arr(e7))
+    if v.serviceRoleArn.is_some():
+        auto u8 = v.serviceRoleArn.unwrap()
+        parts.append("\"serviceRoleArn\":" + codedeploy_json_str(u8))
+    if v.triggerConfigurations.is_some():
+        auto u9 = v.triggerConfigurations.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(trigger_config_to_json(x10))
+        parts.append("\"triggerConfigurations\":" + codedeploy_json_arr(e10))
+    if v.alarmConfiguration.is_some():
+        auto u11 = v.alarmConfiguration.unwrap()
+        parts.append("\"alarmConfiguration\":" + alarm_configuration_to_json(u11))
+    if v.autoRollbackConfiguration.is_some():
+        auto u12 = v.autoRollbackConfiguration.unwrap()
+        parts.append("\"autoRollbackConfiguration\":" + auto_rollback_configuration_to_json(u12))
+    if v.outdatedInstancesStrategy.is_some():
+        auto u13 = v.outdatedInstancesStrategy.unwrap()
+        parts.append("\"outdatedInstancesStrategy\":" + u13.to_json())
+    if v.deploymentStyle.is_some():
+        auto u14 = v.deploymentStyle.unwrap()
+        parts.append("\"deploymentStyle\":" + u14.to_json())
+    if v.blueGreenDeploymentConfiguration.is_some():
+        auto u15 = v.blueGreenDeploymentConfiguration.unwrap()
+        parts.append("\"blueGreenDeploymentConfiguration\":" + u15.to_json())
+    if v.loadBalancerInfo.is_some():
+        auto u16 = v.loadBalancerInfo.unwrap()
+        parts.append("\"loadBalancerInfo\":" + load_balancer_info_to_json(u16))
+    if v.ec2TagSet.is_some():
+        auto u17 = v.ec2TagSet.unwrap()
+        parts.append("\"ec2TagSet\":" + ec2_tag_set_to_json(u17))
+    if v.ecsServices.is_some():
+        auto u18 = v.ecsServices.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(x19.to_json())
+        parts.append("\"ecsServices\":" + codedeploy_json_arr(e19))
+    if v.onPremisesTagSet.is_some():
+        auto u20 = v.onPremisesTagSet.unwrap()
+        parts.append("\"onPremisesTagSet\":" + on_premises_tag_set_to_json(u20))
+    if v.ec2DeploymentOptions.is_some():
+        auto u21 = v.ec2DeploymentOptions.unwrap()
+        parts.append("\"ec2DeploymentOptions\":" + ec2_deployment_options_to_json(u21))
+    if v.terminationHookEnabled.is_some():
+        auto u22 = v.terminationHookEnabled.unwrap()
+        parts.append("\"terminationHookEnabled\":" + json.dumps(JsonValue.Bool(u22)))
+    return codedeploy_json_obj(parts)
 
 # A bound CodeDeploy client: credentials + region, threaded into every operation.
 struct CodeDeployClient:
     core.Credentials creds
     str region
+
+    # AddTagsToOnPremisesInstances
+    # errors: InstanceLimitExceededException, InstanceNameRequiredException, InstanceNotRegisteredException, InvalidInstanceNameException, InvalidTagException, TagLimitExceededException, TagRequiredException
+    def add_tags_to_on_premises_instances(self, AddTagsToOnPremisesInstancesInput input) -> str:
+        auto body = add_tags_to_on_premises_instances_input_to_json(input)
+        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "AddTagsToOnPremisesInstances", body)
+
+    # BatchGetApplicationRevisions
+    # errors: ApplicationDoesNotExistException, ApplicationNameRequiredException, BatchLimitExceededException, InvalidApplicationNameException, InvalidRevisionException, RevisionRequiredException
+    def batch_get_application_revisions(self, BatchGetApplicationRevisionsInput input) -> str:
+        auto body = batch_get_application_revisions_input_to_json(input)
+        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "BatchGetApplicationRevisions", body)
+
+    # BatchGetApplications
+    # errors: ApplicationDoesNotExistException, ApplicationNameRequiredException, BatchLimitExceededException, InvalidApplicationNameException
+    def batch_get_applications(self, BatchGetApplicationsInput input) -> str:
+        auto body = batch_get_applications_input_to_json(input)
+        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "BatchGetApplications", body)
+
+    # BatchGetDeploymentGroups
+    # errors: ApplicationDoesNotExistException, ApplicationNameRequiredException, BatchLimitExceededException, DeploymentConfigDoesNotExistException, DeploymentGroupNameRequiredException, InvalidApplicationNameException, InvalidDeploymentGroupNameException
+    def batch_get_deployment_groups(self, BatchGetDeploymentGroupsInput input) -> str:
+        auto body = batch_get_deployment_groups_input_to_json(input)
+        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "BatchGetDeploymentGroups", body)
+
+    # BatchGetDeploymentInstances
+    # errors: BatchLimitExceededException, DeploymentDoesNotExistException, DeploymentIdRequiredException, InstanceIdRequiredException, InvalidComputePlatformException, InvalidDeploymentIdException, InvalidInstanceNameException
+    def batch_get_deployment_instances(self, BatchGetDeploymentInstancesInput input) -> str:
+        auto body = batch_get_deployment_instances_input_to_json(input)
+        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "BatchGetDeploymentInstances", body)
+
+    # BatchGetDeploymentTargets
+    # errors: DeploymentDoesNotExistException, DeploymentIdRequiredException, DeploymentNotStartedException, DeploymentTargetDoesNotExistException, DeploymentTargetIdRequiredException, DeploymentTargetListSizeExceededException, InstanceDoesNotExistException, InvalidDeploymentIdException, InvalidDeploymentTargetIdException
+    def batch_get_deployment_targets(self, BatchGetDeploymentTargetsInput input) -> str:
+        auto body = batch_get_deployment_targets_input_to_json(input)
+        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "BatchGetDeploymentTargets", body)
+
+    # BatchGetDeployments
+    # errors: BatchLimitExceededException, DeploymentIdRequiredException, InvalidDeploymentIdException
+    def batch_get_deployments(self, BatchGetDeploymentsInput input) -> str:
+        auto body = batch_get_deployments_input_to_json(input)
+        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "BatchGetDeployments", body)
+
+    # BatchGetOnPremisesInstances
+    # errors: BatchLimitExceededException, InstanceNameRequiredException, InvalidInstanceNameException
+    def batch_get_on_premises_instances(self, BatchGetOnPremisesInstancesInput input) -> str:
+        auto body = batch_get_on_premises_instances_input_to_json(input)
+        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "BatchGetOnPremisesInstances", body)
 
     # ContinueDeployment
     # errors: DeploymentAlreadyCompletedException, DeploymentDoesNotExistException, DeploymentIdRequiredException, DeploymentIsNotInReadyStateException, InvalidDeploymentIdException, InvalidDeploymentStatusException, InvalidDeploymentWaitTypeException, UnsupportedActionForDeploymentTypeException
@@ -2264,11 +2932,29 @@ struct CodeDeployClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ContinueDeployment", body)
 
+    # CreateApplication
+    # errors: ApplicationAlreadyExistsException, ApplicationLimitExceededException, ApplicationNameRequiredException, InvalidApplicationNameException, InvalidComputePlatformException, InvalidTagsToAddException, ThrottlingException
+    def create_application(self, CreateApplicationInput input) -> str:
+        auto body = create_application_input_to_json(input)
+        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "CreateApplication", body)
+
+    # CreateDeployment
+    # errors: AlarmsLimitExceededException, ApplicationDoesNotExistException, ApplicationNameRequiredException, DeploymentConfigDoesNotExistException, DeploymentGroupDoesNotExistException, DeploymentGroupNameRequiredException, DeploymentLimitExceededException, DescriptionTooLongException, InvalidAlarmConfigException, InvalidApplicationNameException, InvalidAutoRollbackConfigException, InvalidAutoScalingGroupException, InvalidAutoScalingGroupProcessToSuspendException, InvalidComputePlatformException, InvalidDeploymentConfigNameException, InvalidDeploymentGroupNameException, InvalidECSServiceException, InvalidFileExistsBehaviorException, InvalidGitHubAccountTokenException, InvalidIgnoreApplicationStopFailuresValueException, InvalidInputException, InvalidLoadBalancerInfoException, InvalidRevisionException, InvalidRoleException, InvalidTargetInstancesException, InvalidTrafficRoutingConfigurationException, InvalidUpdateOutdatedInstancesOnlyValueException, RevisionDoesNotExistException, RevisionRequiredException, ThrottlingException
+    def create_deployment(self, CreateDeploymentInput input) -> str:
+        auto body = create_deployment_input_to_json(input)
+        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "CreateDeployment", body)
+
     # CreateDeploymentConfig
     # errors: DeploymentConfigAlreadyExistsException, DeploymentConfigLimitExceededException, DeploymentConfigNameRequiredException, InvalidComputePlatformException, InvalidDeploymentConfigNameException, InvalidMinimumHealthyHostValueException, InvalidTrafficRoutingConfigurationException, InvalidZonalDeploymentConfigurationException
     def create_deployment_config(self, CreateDeploymentConfigInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "CreateDeploymentConfig", body)
+
+    # CreateDeploymentGroup
+    # errors: AlarmsLimitExceededException, ApplicationDoesNotExistException, ApplicationNameRequiredException, DeploymentConfigDoesNotExistException, DeploymentGroupAlreadyExistsException, DeploymentGroupLimitExceededException, DeploymentGroupNameRequiredException, ECSServiceMappingLimitExceededException, InvalidAlarmConfigException, InvalidApplicationNameException, InvalidAutoRollbackConfigException, InvalidAutoScalingGroupException, InvalidAutoScalingGroupProcessToSuspendException, InvalidBlueGreenDeploymentConfigurationException, InvalidDeploymentConfigNameException, InvalidDeploymentGroupNameException, InvalidDeploymentStyleException, InvalidEC2TagCombinationException, InvalidEC2TagException, InvalidECSServiceException, InvalidInputException, InvalidLoadBalancerInfoException, InvalidOnPremisesTagCombinationException, InvalidRoleException, InvalidTagException, InvalidTagsToAddException, InvalidTargetGroupPairException, InvalidTrafficRoutingConfigurationException, InvalidTriggerConfigException, LifecycleHookLimitExceededException, RoleRequiredException, TagSetListLimitExceededException, ThrottlingException, TriggerTargetsLimitExceededException
+    def create_deployment_group(self, CreateDeploymentGroupInput input) -> str:
+        auto body = create_deployment_group_input_to_json(input)
+        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "CreateDeploymentGroup", body)
 
     # DeleteApplication
     # errors: ApplicationNameRequiredException, InvalidApplicationNameException, InvalidRoleException
@@ -2377,11 +3063,29 @@ struct CodeDeployClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListDeploymentGroups", body)
 
+    # ListDeploymentInstances
+    # errors: ApplicationDoesNotExistException, DeploymentDoesNotExistException, DeploymentGroupDoesNotExistException, DeploymentIdRequiredException, DeploymentNotStartedException, InvalidComputePlatformException, InvalidDeploymentIdException, InvalidDeploymentInstanceTypeException, InvalidInstanceStatusException, InvalidInstanceTypeException, InvalidNextTokenException, InvalidTargetFilterNameException
+    def list_deployment_instances(self, ListDeploymentInstancesInput input) -> str:
+        auto body = list_deployment_instances_input_to_json(input)
+        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListDeploymentInstances", body)
+
+    # ListDeployments
+    # errors: ApplicationDoesNotExistException, ApplicationNameRequiredException, DeploymentGroupDoesNotExistException, DeploymentGroupNameRequiredException, InvalidApplicationNameException, InvalidDeploymentGroupNameException, InvalidDeploymentStatusException, InvalidExternalIdException, InvalidInputException, InvalidNextTokenException, InvalidTimeRangeException
+    def list_deployments(self, ListDeploymentsInput input) -> str:
+        auto body = list_deployments_input_to_json(input)
+        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListDeployments", body)
+
     # ListGitHubAccountTokenNames
     # errors: InvalidNextTokenException, OperationNotSupportedException, ResourceValidationException
     def list_git_hub_account_token_names(self, ListGitHubAccountTokenNamesInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListGitHubAccountTokenNames", body)
+
+    # ListOnPremisesInstances
+    # errors: InvalidNextTokenException, InvalidRegistrationStatusException, InvalidTagFilterException
+    def list_on_premises_instances(self, ListOnPremisesInstancesInput input) -> str:
+        auto body = list_on_premises_instances_input_to_json(input)
+        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListOnPremisesInstances", body)
 
     # ListTagsForResource
     # errors: ArnNotSupportedException, InvalidArnException, ResourceArnRequiredException
@@ -2407,6 +3111,12 @@ struct CodeDeployClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "RegisterOnPremisesInstance", body)
 
+    # RemoveTagsFromOnPremisesInstances
+    # errors: InstanceLimitExceededException, InstanceNameRequiredException, InstanceNotRegisteredException, InvalidInstanceNameException, InvalidTagException, TagLimitExceededException, TagRequiredException
+    def remove_tags_from_on_premises_instances(self, RemoveTagsFromOnPremisesInstancesInput input) -> str:
+        auto body = remove_tags_from_on_premises_instances_input_to_json(input)
+        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "RemoveTagsFromOnPremisesInstances", body)
+
     # SkipWaitTimeForInstanceTermination
     # errors: DeploymentAlreadyCompletedException, DeploymentDoesNotExistException, DeploymentIdRequiredException, DeploymentNotStartedException, InvalidDeploymentIdException, UnsupportedActionForDeploymentTypeException
     def skip_wait_time_for_instance_termination(self, SkipWaitTimeForInstanceTerminationInput input) -> str:
@@ -2419,11 +3129,29 @@ struct CodeDeployClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "StopDeployment", body)
 
+    # TagResource
+    # errors: ApplicationDoesNotExistException, ArnNotSupportedException, DeploymentConfigDoesNotExistException, DeploymentGroupDoesNotExistException, InvalidArnException, InvalidTagsToAddException, ResourceArnRequiredException, TagRequiredException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto body = tag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: ApplicationDoesNotExistException, ArnNotSupportedException, DeploymentConfigDoesNotExistException, DeploymentGroupDoesNotExistException, InvalidArnException, InvalidTagsToAddException, ResourceArnRequiredException, TagRequiredException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto body = untag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "UntagResource", body)
+
     # UpdateApplication
     # errors: ApplicationAlreadyExistsException, ApplicationDoesNotExistException, ApplicationNameRequiredException, InvalidApplicationNameException
     def update_application(self, UpdateApplicationInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "UpdateApplication", body)
+
+    # UpdateDeploymentGroup
+    # errors: AlarmsLimitExceededException, ApplicationDoesNotExistException, ApplicationNameRequiredException, DeploymentConfigDoesNotExistException, DeploymentGroupAlreadyExistsException, DeploymentGroupDoesNotExistException, DeploymentGroupNameRequiredException, ECSServiceMappingLimitExceededException, InvalidAlarmConfigException, InvalidApplicationNameException, InvalidAutoRollbackConfigException, InvalidAutoScalingGroupException, InvalidAutoScalingGroupProcessToSuspendException, InvalidBlueGreenDeploymentConfigurationException, InvalidDeploymentConfigNameException, InvalidDeploymentGroupNameException, InvalidDeploymentStyleException, InvalidEC2TagCombinationException, InvalidEC2TagException, InvalidECSServiceException, InvalidInputException, InvalidLoadBalancerInfoException, InvalidOnPremisesTagCombinationException, InvalidRoleException, InvalidTagException, InvalidTargetGroupPairException, InvalidTrafficRoutingConfigurationException, InvalidTriggerConfigException, LifecycleHookLimitExceededException, TagSetListLimitExceededException, ThrottlingException, TriggerTargetsLimitExceededException
+    def update_deployment_group(self, UpdateDeploymentGroupInput input) -> str:
+        auto body = update_deployment_group_input_to_json(input)
+        return awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "UpdateDeploymentGroup", body)
 
     # Paginator for ListApplicationRevisions — yields each Response page, threading the
     # nextToken -> nextToken continuation token until the output token is absent (result key: revisions).
@@ -2481,6 +3209,34 @@ struct CodeDeployClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListDeploymentInstances — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: instancesList).
+    def paginate_list_deployment_instances(self, ListDeploymentInstancesInput input):
+        auto host = endpoints.regional_host(codedeploy_protocol().service, self.region)
+        while True:
+            auto body = list_deployment_instances_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListDeploymentInstances", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListDeployments — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: deployments).
+    def paginate_list_deployments(self, ListDeploymentsInput input):
+        auto host = endpoints.regional_host(codedeploy_protocol().service, self.region)
+        while True:
+            auto body = list_deployments_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListDeployments", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListGitHubAccountTokenNames — yields each Response page, threading the
     # nextToken -> nextToken continuation token until the output token is absent (result key: tokenNameList).
     def paginate_list_git_hub_account_token_names(self, ListGitHubAccountTokenNamesInput input):
@@ -2488,6 +3244,20 @@ struct CodeDeployClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListGitHubAccountTokenNames", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListOnPremisesInstances — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: instanceNames).
+    def paginate_list_on_premises_instances(self, ListOnPremisesInstancesInput input):
+        auto host = endpoints.regional_host(codedeploy_protocol().service, self.region)
+        while True:
+            auto body = list_on_premises_instances_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(codedeploy_protocol(), self.creds, self.region, "ListOnPremisesInstances", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

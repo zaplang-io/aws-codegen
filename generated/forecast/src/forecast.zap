@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 63 operations — 34 with a generated method,
-#   29 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 63 operations — 63 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   179 structs (99 @derive(Json)), 16 enums, 6 error variants.
-#   2 paginators generated (12 paginated ops skipped) from paginators-1.json.
+#   14 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -188,20 +188,23 @@ struct Action:
     Operation Operation
     float64 Value
 
-# no @derive(Json): member(s) Configuration: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdditionalDataset:
     str Name
     Optional[dict[str, list[str]]] Configuration
 
-# no @derive(Json): member(s) Transformations: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Transformations: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributeConfig:
     str AttributeName
     dict[str, str] Transformations
 
-# no @derive(Json): member(s) PredictorBaseline: PredictorBaseline not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PredictorBaseline: PredictorBaseline not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Baseline:
     Optional[PredictorBaseline] PredictorBaseline
 
@@ -210,8 +213,9 @@ struct BaselineMetric:
     Optional[str] Name
     Optional[float64] Value
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CategoricalParameterRange:
     str Name
     list[str] Values
@@ -223,8 +227,9 @@ struct ContinuousParameterRange:
     float64 MinValue
     Optional[ScalingType] ScalingType
 
-# no @derive(Json): member(s) ForecastTypes: list[str], ForecastDimensions: list[str], DataConfig: DataConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ForecastTypes: list[str], ForecastDimensions: list[str], DataConfig: DataConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAutoPredictorRequest:
     str PredictorName
     Optional[int64] ForecastHorizon
@@ -244,8 +249,9 @@ struct CreateAutoPredictorRequest:
 struct CreateAutoPredictorResponse:
     Optional[str] PredictorArn
 
-# no @derive(Json): member(s) DatasetArns: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatasetArns: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDatasetGroupRequest:
     str DatasetGroupName
     Domain Domain
@@ -256,8 +262,9 @@ struct CreateDatasetGroupRequest:
 struct CreateDatasetGroupResponse:
     Optional[str] DatasetGroupArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDatasetImportJobRequest:
     str DatasetImportJobName
     str DatasetArn
@@ -274,8 +281,9 @@ struct CreateDatasetImportJobRequest:
 struct CreateDatasetImportJobResponse:
     Optional[str] DatasetImportJobArn
 
-# no @derive(Json): member(s) Schema: Schema, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Schema: Schema, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDatasetRequest:
     str DatasetName
     Domain Domain
@@ -289,8 +297,9 @@ struct CreateDatasetRequest:
 struct CreateDatasetResponse:
     Optional[str] DatasetArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateExplainabilityExportRequest:
     str ExplainabilityExportName
     str ExplainabilityArn
@@ -302,8 +311,9 @@ struct CreateExplainabilityExportRequest:
 struct CreateExplainabilityExportResponse:
     Optional[str] ExplainabilityExportArn
 
-# no @derive(Json): member(s) Schema: Schema, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Schema: Schema, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateExplainabilityRequest:
     str ExplainabilityName
     str ResourceArn
@@ -319,8 +329,9 @@ struct CreateExplainabilityRequest:
 struct CreateExplainabilityResponse:
     Optional[str] ExplainabilityArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateForecastExportJobRequest:
     str ForecastExportJobName
     str ForecastArn
@@ -332,8 +343,9 @@ struct CreateForecastExportJobRequest:
 struct CreateForecastExportJobResponse:
     Optional[str] ForecastExportJobArn
 
-# no @derive(Json): member(s) ForecastTypes: list[str], Tags: list[Tag], TimeSeriesSelector: TimeSeriesSelector not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ForecastTypes: list[str], Tags: list[Tag], TimeSeriesSelector: TimeSeriesSelector not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateForecastRequest:
     str ForecastName
     str PredictorArn
@@ -345,8 +357,9 @@ struct CreateForecastRequest:
 struct CreateForecastResponse:
     Optional[str] ForecastArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMonitorRequest:
     str MonitorName
     str ResourceArn
@@ -356,8 +369,9 @@ struct CreateMonitorRequest:
 struct CreateMonitorResponse:
     Optional[str] MonitorArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePredictorBacktestExportJobRequest:
     str PredictorBacktestExportJobName
     str PredictorArn
@@ -369,8 +383,9 @@ struct CreatePredictorBacktestExportJobRequest:
 struct CreatePredictorBacktestExportJobResponse:
     Optional[str] PredictorBacktestExportJobArn
 
-# no @derive(Json): member(s) ForecastTypes: list[str], TrainingParameters: dict[str, str], HPOConfig: HyperParameterTuningJobConfig, InputDataConfig: InputDataConfig, FeaturizationConfig: FeaturizationConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ForecastTypes: list[str], TrainingParameters: dict[str, str], HPOConfig: HyperParameterTuningJobConfig, InputDataConfig: InputDataConfig, FeaturizationConfig: FeaturizationConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePredictorRequest:
     str PredictorName
     Optional[str] AlgorithmArn
@@ -392,8 +407,9 @@ struct CreatePredictorRequest:
 struct CreatePredictorResponse:
     Optional[str] PredictorArn
 
-# no @derive(Json): member(s) TimeSeriesSelector: TimeSeriesSelector, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TimeSeriesSelector: TimeSeriesSelector, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWhatIfAnalysisRequest:
     str WhatIfAnalysisName
     str ForecastArn
@@ -404,8 +420,9 @@ struct CreateWhatIfAnalysisRequest:
 struct CreateWhatIfAnalysisResponse:
     Optional[str] WhatIfAnalysisArn
 
-# no @derive(Json): member(s) WhatIfForecastArns: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WhatIfForecastArns: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWhatIfForecastExportRequest:
     str WhatIfForecastExportName
     list[str] WhatIfForecastArns
@@ -417,8 +434,9 @@ struct CreateWhatIfForecastExportRequest:
 struct CreateWhatIfForecastExportResponse:
     Optional[str] WhatIfForecastExportArn
 
-# no @derive(Json): member(s) TimeSeriesTransformations: list[TimeSeriesTransformation], TimeSeriesReplacementsDataSource: TimeSeriesReplacementsDataSource, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TimeSeriesTransformations: list[TimeSeriesTransformation], TimeSeriesReplacementsDataSource: TimeSeriesReplacementsDataSource, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWhatIfForecastRequest:
     str WhatIfForecastName
     str WhatIfAnalysisArn
@@ -430,8 +448,9 @@ struct CreateWhatIfForecastRequest:
 struct CreateWhatIfForecastResponse:
     Optional[str] WhatIfForecastArn
 
-# no @derive(Json): member(s) AttributeConfigs: list[AttributeConfig], AdditionalDatasets: list[AdditionalDataset] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeConfigs: list[AttributeConfig], AdditionalDatasets: list[AdditionalDataset] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataConfig:
     str DatasetGroupArn
     Optional[list[AttributeConfig]] AttributeConfigs
@@ -532,8 +551,9 @@ struct DeleteWhatIfForecastRequest:
 struct DescribeAutoPredictorRequest:
     str PredictorArn
 
-# no @derive(Json): member(s) ForecastTypes: list[str], ForecastDimensions: list[str], DatasetImportJobArns: list[str], DataConfig: DataConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ForecastTypes: list[str], ForecastDimensions: list[str], DatasetImportJobArns: list[str], DataConfig: DataConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAutoPredictorResponse:
     Optional[str] PredictorArn
     Optional[str] PredictorName
@@ -559,8 +579,9 @@ struct DescribeAutoPredictorResponse:
 struct DescribeDatasetGroupRequest:
     str DatasetGroupArn
 
-# no @derive(Json): member(s) DatasetArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatasetArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDatasetGroupResponse:
     Optional[str] DatasetGroupName
     Optional[str] DatasetGroupArn
@@ -574,8 +595,9 @@ struct DescribeDatasetGroupResponse:
 struct DescribeDatasetImportJobRequest:
     str DatasetImportJobArn
 
-# no @derive(Json): member(s) FieldStatistics: dict[str, Statistics] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldStatistics: dict[str, Statistics] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDatasetImportJobResponse:
     Optional[str] DatasetImportJobName
     Optional[str] DatasetImportJobArn
@@ -599,8 +621,9 @@ struct DescribeDatasetImportJobResponse:
 struct DescribeDatasetRequest:
     str DatasetArn
 
-# no @derive(Json): member(s) Schema: Schema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Schema: Schema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDatasetResponse:
     Optional[str] DatasetArn
     Optional[str] DatasetName
@@ -633,8 +656,9 @@ struct DescribeExplainabilityExportResponse:
 struct DescribeExplainabilityRequest:
     str ExplainabilityArn
 
-# no @derive(Json): member(s) Schema: Schema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Schema: Schema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeExplainabilityResponse:
     Optional[str] ExplainabilityArn
     Optional[str] ExplainabilityName
@@ -671,8 +695,9 @@ struct DescribeForecastExportJobResponse:
 struct DescribeForecastRequest:
     str ForecastArn
 
-# no @derive(Json): member(s) ForecastTypes: list[str], TimeSeriesSelector: TimeSeriesSelector not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ForecastTypes: list[str], TimeSeriesSelector: TimeSeriesSelector not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeForecastResponse:
     Optional[str] ForecastArn
     Optional[str] ForecastName
@@ -690,8 +715,9 @@ struct DescribeForecastResponse:
 struct DescribeMonitorRequest:
     str MonitorArn
 
-# no @derive(Json): member(s) Baseline: Baseline not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Baseline: Baseline not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMonitorResponse:
     Optional[str] MonitorName
     Optional[str] MonitorArn
@@ -725,8 +751,9 @@ struct DescribePredictorBacktestExportJobResponse:
 struct DescribePredictorRequest:
     str PredictorArn
 
-# no @derive(Json): member(s) AutoMLAlgorithmArns: list[str], ForecastTypes: list[str], TrainingParameters: dict[str, str], HPOConfig: HyperParameterTuningJobConfig, InputDataConfig: InputDataConfig, FeaturizationConfig: FeaturizationConfig, PredictorExecutionDetails: PredictorExecutionDetails, DatasetImportJobArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AutoMLAlgorithmArns: list[str], ForecastTypes: list[str], TrainingParameters: dict[str, str], HPOConfig: HyperParameterTuningJobConfig, InputDataConfig: InputDataConfig, FeaturizationConfig: FeaturizationConfig, PredictorExecutionDetails: PredictorExecutionDetails, DatasetImportJobArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePredictorResponse:
     Optional[str] PredictorArn
     Optional[str] PredictorName
@@ -757,8 +784,9 @@ struct DescribePredictorResponse:
 struct DescribeWhatIfAnalysisRequest:
     str WhatIfAnalysisArn
 
-# no @derive(Json): member(s) TimeSeriesSelector: TimeSeriesSelector not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TimeSeriesSelector: TimeSeriesSelector not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWhatIfAnalysisResponse:
     Optional[str] WhatIfAnalysisName
     Optional[str] WhatIfAnalysisArn
@@ -774,8 +802,9 @@ struct DescribeWhatIfAnalysisResponse:
 struct DescribeWhatIfForecastExportRequest:
     str WhatIfForecastExportArn
 
-# no @derive(Json): member(s) WhatIfForecastArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WhatIfForecastArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWhatIfForecastExportResponse:
     Optional[str] WhatIfForecastExportArn
     Optional[str] WhatIfForecastExportName
@@ -792,8 +821,9 @@ struct DescribeWhatIfForecastExportResponse:
 struct DescribeWhatIfForecastRequest:
     str WhatIfForecastArn
 
-# no @derive(Json): member(s) TimeSeriesTransformations: list[TimeSeriesTransformation], TimeSeriesReplacementsDataSource: TimeSeriesReplacementsDataSource, ForecastTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TimeSeriesTransformations: list[TimeSeriesTransformation], TimeSeriesReplacementsDataSource: TimeSeriesReplacementsDataSource, ForecastTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWhatIfForecastResponse:
     Optional[str] WhatIfForecastName
     Optional[str] WhatIfForecastArn
@@ -825,8 +855,9 @@ struct EvaluationParameters:
     Optional[int64] NumberOfBacktestWindows
     Optional[int64] BackTestWindowOffset
 
-# no @derive(Json): member(s) TestWindows: list[WindowSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TestWindows: list[WindowSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationResult:
     Optional[str] AlgorithmArn
     Optional[list[WindowSummary]] TestWindows
@@ -862,21 +893,24 @@ struct ExplainabilitySummary:
     Optional[DateTime] CreationTime
     Optional[DateTime] LastModificationTime
 
-# no @derive(Json): member(s) FeaturizationPipeline: list[FeaturizationMethod] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FeaturizationPipeline: list[FeaturizationMethod] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Featurization:
     str AttributeName
     Optional[list[FeaturizationMethod]] FeaturizationPipeline
 
-# no @derive(Json): member(s) ForecastDimensions: list[str], Featurizations: list[Featurization] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ForecastDimensions: list[str], Featurizations: list[Featurization] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FeaturizationConfig:
     str ForecastFrequency
     Optional[list[str]] ForecastDimensions
     Optional[list[Featurization]] Featurizations
 
-# no @derive(Json): member(s) FeaturizationMethodParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FeaturizationMethodParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FeaturizationMethod:
     str FeaturizationMethodName
     Optional[dict[str, str]] FeaturizationMethodParameters
@@ -913,21 +947,24 @@ struct ForecastSummary:
 struct GetAccuracyMetricsRequest:
     str PredictorArn
 
-# no @derive(Json): member(s) PredictorEvaluationResults: list[EvaluationResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PredictorEvaluationResults: list[EvaluationResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAccuracyMetricsResponse:
     Optional[list[EvaluationResult]] PredictorEvaluationResults
     Optional[bool] IsAutoPredictor
     Optional[AutoMLOverrideStrategy] AutoMLOverrideStrategy
     Optional[OptimizationMetric] OptimizationMetric
 
-# no @derive(Json): member(s) ParameterRanges: ParameterRanges not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParameterRanges: ParameterRanges not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HyperParameterTuningJobConfig:
     Optional[ParameterRanges] ParameterRanges
 
-# no @derive(Json): member(s) SupplementaryFeatures: list[SupplementaryFeature] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupplementaryFeatures: list[SupplementaryFeature] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputDataConfig:
     str DatasetGroupArn
     Optional[list[SupplementaryFeature]] SupplementaryFeatures
@@ -956,21 +993,24 @@ struct ListDatasetGroupsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DatasetGroups: list[DatasetGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatasetGroups: list[DatasetGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatasetGroupsResponse:
     Optional[list[DatasetGroupSummary]] DatasetGroups
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatasetImportJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) DatasetImportJobs: list[DatasetImportJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatasetImportJobs: list[DatasetImportJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatasetImportJobsResponse:
     Optional[list[DatasetImportJobSummary]] DatasetImportJobs
     Optional[str] NextToken
@@ -980,113 +1020,130 @@ struct ListDatasetsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Datasets: list[DatasetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Datasets: list[DatasetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatasetsResponse:
     Optional[list[DatasetSummary]] Datasets
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExplainabilitiesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) Explainabilities: list[ExplainabilitySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Explainabilities: list[ExplainabilitySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExplainabilitiesResponse:
     Optional[list[ExplainabilitySummary]] Explainabilities
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExplainabilityExportsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) ExplainabilityExports: list[ExplainabilityExportSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExplainabilityExports: list[ExplainabilityExportSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExplainabilityExportsResponse:
     Optional[list[ExplainabilityExportSummary]] ExplainabilityExports
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListForecastExportJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) ForecastExportJobs: list[ForecastExportJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ForecastExportJobs: list[ForecastExportJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListForecastExportJobsResponse:
     Optional[list[ForecastExportJobSummary]] ForecastExportJobs
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListForecastsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) Forecasts: list[ForecastSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Forecasts: list[ForecastSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListForecastsResponse:
     Optional[list[ForecastSummary]] Forecasts
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMonitorEvaluationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     str MonitorArn
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) PredictorMonitorEvaluations: list[PredictorMonitorEvaluation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PredictorMonitorEvaluations: list[PredictorMonitorEvaluation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMonitorEvaluationsResponse:
     Optional[str] NextToken
     Optional[list[PredictorMonitorEvaluation]] PredictorMonitorEvaluations
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMonitorsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) Monitors: list[MonitorSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Monitors: list[MonitorSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMonitorsResponse:
     Optional[list[MonitorSummary]] Monitors
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPredictorBacktestExportJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) PredictorBacktestExportJobs: list[PredictorBacktestExportJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PredictorBacktestExportJobs: list[PredictorBacktestExportJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPredictorBacktestExportJobsResponse:
     Optional[list[PredictorBacktestExportJobSummary]] PredictorBacktestExportJobs
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPredictorsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) Predictors: list[PredictorSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Predictors: list[PredictorSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPredictorsResponse:
     Optional[list[PredictorSummary]] Predictors
     Optional[str] NextToken
@@ -1095,46 +1152,53 @@ struct ListPredictorsResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWhatIfAnalysesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) WhatIfAnalyses: list[WhatIfAnalysisSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WhatIfAnalyses: list[WhatIfAnalysisSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWhatIfAnalysesResponse:
     Optional[list[WhatIfAnalysisSummary]] WhatIfAnalyses
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWhatIfForecastExportsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) WhatIfForecastExports: list[WhatIfForecastExportSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WhatIfForecastExports: list[WhatIfForecastExportSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWhatIfForecastExportsResponse:
     Optional[list[WhatIfForecastExportSummary]] WhatIfForecastExports
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWhatIfForecastsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) WhatIfForecasts: list[WhatIfForecastSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WhatIfForecasts: list[WhatIfForecastSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWhatIfForecastsResponse:
     Optional[list[WhatIfForecastSummary]] WhatIfForecasts
     Optional[str] NextToken
@@ -1144,8 +1208,9 @@ struct MetricResult:
     Optional[str] MetricName
     Optional[float64] MetricValue
 
-# no @derive(Json): member(s) WeightedQuantileLosses: list[WeightedQuantileLoss], ErrorMetrics: list[ErrorMetric] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WeightedQuantileLosses: list[WeightedQuantileLoss], ErrorMetrics: list[ErrorMetric] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Metrics:
     Optional[float64] RMSE
     Optional[list[WeightedQuantileLoss]] WeightedQuantileLosses
@@ -1176,8 +1241,9 @@ struct MonitorSummary:
     Optional[DateTime] CreationTime
     Optional[DateTime] LastModificationTime
 
-# no @derive(Json): member(s) CategoricalParameterRanges: list[CategoricalParameterRange], ContinuousParameterRanges: list[ContinuousParameterRange], IntegerParameterRanges: list[IntegerParameterRange] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CategoricalParameterRanges: list[CategoricalParameterRange], ContinuousParameterRanges: list[ContinuousParameterRange], IntegerParameterRanges: list[IntegerParameterRange] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParameterRanges:
     Optional[list[CategoricalParameterRange]] CategoricalParameterRanges
     Optional[list[ContinuousParameterRange]] ContinuousParameterRanges
@@ -1193,8 +1259,9 @@ struct PredictorBacktestExportJobSummary:
     Optional[DateTime] CreationTime
     Optional[DateTime] LastModificationTime
 
-# no @derive(Json): member(s) BaselineMetrics: list[BaselineMetric] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BaselineMetrics: list[BaselineMetric] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PredictorBaseline:
     Optional[list[BaselineMetric]] BaselineMetrics
 
@@ -1203,19 +1270,22 @@ struct PredictorEvent:
     Optional[str] Detail
     Optional[DateTime] Datetime
 
-# no @derive(Json): member(s) TestWindows: list[TestWindowSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TestWindows: list[TestWindowSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PredictorExecution:
     Optional[str] AlgorithmArn
     Optional[list[TestWindowSummary]] TestWindows
 
-# no @derive(Json): member(s) PredictorExecutions: list[PredictorExecution] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PredictorExecutions: list[PredictorExecution] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PredictorExecutionDetails:
     Optional[list[PredictorExecution]] PredictorExecutions
 
-# no @derive(Json): member(s) MetricResults: list[MetricResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricResults: list[MetricResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PredictorMonitorEvaluation:
     Optional[str] ResourceArn
     Optional[str] MonitorArn
@@ -1268,8 +1338,9 @@ struct S3Config:
     str RoleArn
     Optional[str] KMSKeyArn
 
-# no @derive(Json): member(s) Attributes: list[SchemaAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[SchemaAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Schema:
     Optional[list[SchemaAttribute]] Attributes
 
@@ -1307,8 +1378,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[Tag] Tags
@@ -1338,34 +1410,39 @@ struct TimeSeriesCondition:
     str AttributeValue
     Condition Condition
 
-# no @derive(Json): member(s) Schema: Schema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Schema: Schema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TimeSeriesIdentifiers:
     Optional[DataSource] DataSource
     Optional[Schema] Schema
     Optional[str] Format
 
-# no @derive(Json): member(s) Schema: Schema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Schema: Schema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TimeSeriesReplacementsDataSource:
     S3Config S3Config
     Schema Schema
     Optional[str] Format
     Optional[str] TimestampFormat
 
-# no @derive(Json): member(s) TimeSeriesIdentifiers: TimeSeriesIdentifiers not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TimeSeriesIdentifiers: TimeSeriesIdentifiers not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TimeSeriesSelector:
     Optional[TimeSeriesIdentifiers] TimeSeriesIdentifiers
 
-# no @derive(Json): member(s) TimeSeriesConditions: list[TimeSeriesCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TimeSeriesConditions: list[TimeSeriesCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TimeSeriesTransformation:
     Optional[Action] Action
     Optional[list[TimeSeriesCondition]] TimeSeriesConditions
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] TagKeys
@@ -1375,8 +1452,9 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) DatasetArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatasetArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDatasetGroupRequest:
     str DatasetGroupArn
     list[str] DatasetArns
@@ -1401,8 +1479,9 @@ struct WhatIfAnalysisSummary:
     Optional[DateTime] CreationTime
     Optional[DateTime] LastModificationTime
 
-# no @derive(Json): member(s) WhatIfForecastArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WhatIfForecastArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WhatIfForecastExportSummary:
     Optional[str] WhatIfForecastExportArn
     Optional[list[str]] WhatIfForecastArns
@@ -1423,8 +1502,9 @@ struct WhatIfForecastSummary:
     Optional[DateTime] CreationTime
     Optional[DateTime] LastModificationTime
 
-# no @derive(Json): member(s) Metrics: Metrics not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metrics: Metrics not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WindowSummary:
     Optional[DateTime] TestWindowStart
     Optional[DateTime] TestWindowEnd
@@ -1463,57 +1543,904 @@ def forecast_error_from_code(str code) -> forecastError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateAutoPredictor (input CreateAutoPredictorRequest)
-#   CreateDataset (input CreateDatasetRequest)
-#   CreateDatasetGroup (input CreateDatasetGroupRequest)
-#   CreateDatasetImportJob (input CreateDatasetImportJobRequest)
-#   CreateExplainability (input CreateExplainabilityRequest)
-#   CreateExplainabilityExport (input CreateExplainabilityExportRequest)
-#   CreateForecast (input CreateForecastRequest)
-#   CreateForecastExportJob (input CreateForecastExportJobRequest)
-#   CreateMonitor (input CreateMonitorRequest)
-#   CreatePredictor (input CreatePredictorRequest)
-#   CreatePredictorBacktestExportJob (input CreatePredictorBacktestExportJobRequest)
-#   CreateWhatIfAnalysis (input CreateWhatIfAnalysisRequest)
-#   CreateWhatIfForecast (input CreateWhatIfForecastRequest)
-#   CreateWhatIfForecastExport (input CreateWhatIfForecastExportRequest)
-#   ListDatasetImportJobs (input ListDatasetImportJobsRequest)
-#   ListExplainabilities (input ListExplainabilitiesRequest)
-#   ListExplainabilityExports (input ListExplainabilityExportsRequest)
-#   ListForecastExportJobs (input ListForecastExportJobsRequest)
-#   ListForecasts (input ListForecastsRequest)
-#   ListMonitorEvaluations (input ListMonitorEvaluationsRequest)
-#   ListMonitors (input ListMonitorsRequest)
-#   ListPredictorBacktestExportJobs (input ListPredictorBacktestExportJobsRequest)
-#   ListPredictors (input ListPredictorsRequest)
-#   ListWhatIfAnalyses (input ListWhatIfAnalysesRequest)
-#   ListWhatIfForecastExports (input ListWhatIfForecastExportsRequest)
-#   ListWhatIfForecasts (input ListWhatIfForecastsRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateDatasetGroup (input UpdateDatasetGroupRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def forecast_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListDatasetImportJobs (input not derivable (no generated method))
-#   ListExplainabilities (input not derivable (no generated method))
-#   ListExplainabilityExports (input not derivable (no generated method))
-#   ListForecastExportJobs (input not derivable (no generated method))
-#   ListForecasts (input not derivable (no generated method))
-#   ListMonitorEvaluations (input not derivable (no generated method))
-#   ListMonitors (input not derivable (no generated method))
-#   ListPredictorBacktestExportJobs (input not derivable (no generated method))
-#   ListPredictors (input not derivable (no generated method))
-#   ListWhatIfAnalyses (input not derivable (no generated method))
-#   ListWhatIfForecastExports (input not derivable (no generated method))
-#   ListWhatIfForecasts (input not derivable (no generated method))
+def forecast_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def forecast_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AdditionalDataset to a compact JSON object (declaration order).
+def additional_dataset_to_json(AdditionalDataset v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + forecast_json_str(v.Name))
+    if v.Configuration.is_some():
+        auto u0 = v.Configuration.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            list[str] e2 = []
+            for x2 in u0[k1]:
+                e2.append(forecast_json_str(x2))
+            m1.append(forecast_json_str(k1) + ":" + forecast_json_arr(e2))
+        parts.append("\"Configuration\":" + forecast_json_obj(m1))
+    return forecast_json_obj(parts)
+
+# Serialize AttributeConfig to a compact JSON object (declaration order).
+def attribute_config_to_json(AttributeConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"AttributeName\":" + forecast_json_str(v.AttributeName))
+    list[str] m0 = []
+    for k0 in sorted(v.Transformations.keys()):
+        m0.append(forecast_json_str(k0) + ":" + forecast_json_str(v.Transformations[k0]))
+    parts.append("\"Transformations\":" + forecast_json_obj(m0))
+    return forecast_json_obj(parts)
+
+# Serialize CategoricalParameterRange to a compact JSON object (declaration order).
+def categorical_parameter_range_to_json(CategoricalParameterRange v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + forecast_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(forecast_json_str(x0))
+    parts.append("\"Values\":" + forecast_json_arr(e0))
+    return forecast_json_obj(parts)
+
+# Serialize CreateAutoPredictorRequest to a compact JSON object (declaration order).
+def create_auto_predictor_request_to_json(CreateAutoPredictorRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"PredictorName\":" + forecast_json_str(v.PredictorName))
+    if v.ForecastHorizon.is_some():
+        auto u0 = v.ForecastHorizon.unwrap()
+        parts.append("\"ForecastHorizon\":" + str(u0))
+    if v.ForecastTypes.is_some():
+        auto u1 = v.ForecastTypes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(forecast_json_str(x2))
+        parts.append("\"ForecastTypes\":" + forecast_json_arr(e2))
+    if v.ForecastDimensions.is_some():
+        auto u3 = v.ForecastDimensions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(forecast_json_str(x4))
+        parts.append("\"ForecastDimensions\":" + forecast_json_arr(e4))
+    if v.ForecastFrequency.is_some():
+        auto u5 = v.ForecastFrequency.unwrap()
+        parts.append("\"ForecastFrequency\":" + forecast_json_str(u5))
+    if v.DataConfig.is_some():
+        auto u6 = v.DataConfig.unwrap()
+        parts.append("\"DataConfig\":" + data_config_to_json(u6))
+    if v.EncryptionConfig.is_some():
+        auto u7 = v.EncryptionConfig.unwrap()
+        parts.append("\"EncryptionConfig\":" + u7.to_json())
+    if v.ReferencePredictorArn.is_some():
+        auto u8 = v.ReferencePredictorArn.unwrap()
+        parts.append("\"ReferencePredictorArn\":" + forecast_json_str(u8))
+    if v.OptimizationMetric.is_some():
+        auto u9 = v.OptimizationMetric.unwrap()
+        parts.append("\"OptimizationMetric\":" + u9.to_json())
+    if v.ExplainPredictor.is_some():
+        auto u10 = v.ExplainPredictor.unwrap()
+        parts.append("\"ExplainPredictor\":" + json.dumps(JsonValue.Bool(u10)))
+    if v.Tags.is_some():
+        auto u11 = v.Tags.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"Tags\":" + forecast_json_arr(e12))
+    if v.MonitorConfig.is_some():
+        auto u13 = v.MonitorConfig.unwrap()
+        parts.append("\"MonitorConfig\":" + u13.to_json())
+    if v.TimeAlignmentBoundary.is_some():
+        auto u14 = v.TimeAlignmentBoundary.unwrap()
+        parts.append("\"TimeAlignmentBoundary\":" + u14.to_json())
+    return forecast_json_obj(parts)
+
+# Serialize CreateDatasetGroupRequest to a compact JSON object (declaration order).
+def create_dataset_group_request_to_json(CreateDatasetGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DatasetGroupName\":" + forecast_json_str(v.DatasetGroupName))
+    parts.append("\"Domain\":" + v.Domain.to_json())
+    if v.DatasetArns.is_some():
+        auto u0 = v.DatasetArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(forecast_json_str(x1))
+        parts.append("\"DatasetArns\":" + forecast_json_arr(e1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + forecast_json_arr(e3))
+    return forecast_json_obj(parts)
+
+# Serialize CreateDatasetImportJobRequest to a compact JSON object (declaration order).
+def create_dataset_import_job_request_to_json(CreateDatasetImportJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DatasetImportJobName\":" + forecast_json_str(v.DatasetImportJobName))
+    parts.append("\"DatasetArn\":" + forecast_json_str(v.DatasetArn))
+    parts.append("\"DataSource\":" + v.DataSource.to_json())
+    if v.TimestampFormat.is_some():
+        auto u0 = v.TimestampFormat.unwrap()
+        parts.append("\"TimestampFormat\":" + forecast_json_str(u0))
+    if v.TimeZone.is_some():
+        auto u1 = v.TimeZone.unwrap()
+        parts.append("\"TimeZone\":" + forecast_json_str(u1))
+    if v.UseGeolocationForTimeZone.is_some():
+        auto u2 = v.UseGeolocationForTimeZone.unwrap()
+        parts.append("\"UseGeolocationForTimeZone\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.GeolocationFormat.is_some():
+        auto u3 = v.GeolocationFormat.unwrap()
+        parts.append("\"GeolocationFormat\":" + forecast_json_str(u3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + forecast_json_arr(e5))
+    if v.Format.is_some():
+        auto u6 = v.Format.unwrap()
+        parts.append("\"Format\":" + forecast_json_str(u6))
+    if v.ImportMode.is_some():
+        auto u7 = v.ImportMode.unwrap()
+        parts.append("\"ImportMode\":" + u7.to_json())
+    return forecast_json_obj(parts)
+
+# Serialize CreateDatasetRequest to a compact JSON object (declaration order).
+def create_dataset_request_to_json(CreateDatasetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DatasetName\":" + forecast_json_str(v.DatasetName))
+    parts.append("\"Domain\":" + v.Domain.to_json())
+    parts.append("\"DatasetType\":" + v.DatasetType.to_json())
+    if v.DataFrequency.is_some():
+        auto u0 = v.DataFrequency.unwrap()
+        parts.append("\"DataFrequency\":" + forecast_json_str(u0))
+    parts.append("\"Schema\":" + schema_to_json(v.Schema))
+    if v.EncryptionConfig.is_some():
+        auto u1 = v.EncryptionConfig.unwrap()
+        parts.append("\"EncryptionConfig\":" + u1.to_json())
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + forecast_json_arr(e3))
+    return forecast_json_obj(parts)
+
+# Serialize CreateExplainabilityExportRequest to a compact JSON object (declaration order).
+def create_explainability_export_request_to_json(CreateExplainabilityExportRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ExplainabilityExportName\":" + forecast_json_str(v.ExplainabilityExportName))
+    parts.append("\"ExplainabilityArn\":" + forecast_json_str(v.ExplainabilityArn))
+    parts.append("\"Destination\":" + v.Destination.to_json())
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + forecast_json_arr(e1))
+    if v.Format.is_some():
+        auto u2 = v.Format.unwrap()
+        parts.append("\"Format\":" + forecast_json_str(u2))
+    return forecast_json_obj(parts)
+
+# Serialize CreateExplainabilityRequest to a compact JSON object (declaration order).
+def create_explainability_request_to_json(CreateExplainabilityRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ExplainabilityName\":" + forecast_json_str(v.ExplainabilityName))
+    parts.append("\"ResourceArn\":" + forecast_json_str(v.ResourceArn))
+    parts.append("\"ExplainabilityConfig\":" + v.ExplainabilityConfig.to_json())
+    if v.DataSource.is_some():
+        auto u0 = v.DataSource.unwrap()
+        parts.append("\"DataSource\":" + u0.to_json())
+    if v.Schema.is_some():
+        auto u1 = v.Schema.unwrap()
+        parts.append("\"Schema\":" + schema_to_json(u1))
+    if v.EnableVisualization.is_some():
+        auto u2 = v.EnableVisualization.unwrap()
+        parts.append("\"EnableVisualization\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.StartDateTime.is_some():
+        auto u3 = v.StartDateTime.unwrap()
+        parts.append("\"StartDateTime\":" + forecast_json_str(u3))
+    if v.EndDateTime.is_some():
+        auto u4 = v.EndDateTime.unwrap()
+        parts.append("\"EndDateTime\":" + forecast_json_str(u4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + forecast_json_arr(e6))
+    return forecast_json_obj(parts)
+
+# Serialize CreateForecastExportJobRequest to a compact JSON object (declaration order).
+def create_forecast_export_job_request_to_json(CreateForecastExportJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ForecastExportJobName\":" + forecast_json_str(v.ForecastExportJobName))
+    parts.append("\"ForecastArn\":" + forecast_json_str(v.ForecastArn))
+    parts.append("\"Destination\":" + v.Destination.to_json())
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + forecast_json_arr(e1))
+    if v.Format.is_some():
+        auto u2 = v.Format.unwrap()
+        parts.append("\"Format\":" + forecast_json_str(u2))
+    return forecast_json_obj(parts)
+
+# Serialize CreateForecastRequest to a compact JSON object (declaration order).
+def create_forecast_request_to_json(CreateForecastRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ForecastName\":" + forecast_json_str(v.ForecastName))
+    parts.append("\"PredictorArn\":" + forecast_json_str(v.PredictorArn))
+    if v.ForecastTypes.is_some():
+        auto u0 = v.ForecastTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(forecast_json_str(x1))
+        parts.append("\"ForecastTypes\":" + forecast_json_arr(e1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + forecast_json_arr(e3))
+    if v.TimeSeriesSelector.is_some():
+        auto u4 = v.TimeSeriesSelector.unwrap()
+        parts.append("\"TimeSeriesSelector\":" + time_series_selector_to_json(u4))
+    return forecast_json_obj(parts)
+
+# Serialize CreateMonitorRequest to a compact JSON object (declaration order).
+def create_monitor_request_to_json(CreateMonitorRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"MonitorName\":" + forecast_json_str(v.MonitorName))
+    parts.append("\"ResourceArn\":" + forecast_json_str(v.ResourceArn))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + forecast_json_arr(e1))
+    return forecast_json_obj(parts)
+
+# Serialize CreatePredictorBacktestExportJobRequest to a compact JSON object (declaration order).
+def create_predictor_backtest_export_job_request_to_json(CreatePredictorBacktestExportJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"PredictorBacktestExportJobName\":" + forecast_json_str(v.PredictorBacktestExportJobName))
+    parts.append("\"PredictorArn\":" + forecast_json_str(v.PredictorArn))
+    parts.append("\"Destination\":" + v.Destination.to_json())
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + forecast_json_arr(e1))
+    if v.Format.is_some():
+        auto u2 = v.Format.unwrap()
+        parts.append("\"Format\":" + forecast_json_str(u2))
+    return forecast_json_obj(parts)
+
+# Serialize CreatePredictorRequest to a compact JSON object (declaration order).
+def create_predictor_request_to_json(CreatePredictorRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"PredictorName\":" + forecast_json_str(v.PredictorName))
+    if v.AlgorithmArn.is_some():
+        auto u0 = v.AlgorithmArn.unwrap()
+        parts.append("\"AlgorithmArn\":" + forecast_json_str(u0))
+    parts.append("\"ForecastHorizon\":" + str(v.ForecastHorizon))
+    if v.ForecastTypes.is_some():
+        auto u1 = v.ForecastTypes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(forecast_json_str(x2))
+        parts.append("\"ForecastTypes\":" + forecast_json_arr(e2))
+    if v.PerformAutoML.is_some():
+        auto u3 = v.PerformAutoML.unwrap()
+        parts.append("\"PerformAutoML\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.AutoMLOverrideStrategy.is_some():
+        auto u4 = v.AutoMLOverrideStrategy.unwrap()
+        parts.append("\"AutoMLOverrideStrategy\":" + u4.to_json())
+    if v.PerformHPO.is_some():
+        auto u5 = v.PerformHPO.unwrap()
+        parts.append("\"PerformHPO\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.TrainingParameters.is_some():
+        auto u6 = v.TrainingParameters.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(forecast_json_str(k7) + ":" + forecast_json_str(u6[k7]))
+        parts.append("\"TrainingParameters\":" + forecast_json_obj(m7))
+    if v.EvaluationParameters.is_some():
+        auto u8 = v.EvaluationParameters.unwrap()
+        parts.append("\"EvaluationParameters\":" + u8.to_json())
+    if v.HPOConfig.is_some():
+        auto u9 = v.HPOConfig.unwrap()
+        parts.append("\"HPOConfig\":" + hyper_parameter_tuning_job_config_to_json(u9))
+    parts.append("\"InputDataConfig\":" + input_data_config_to_json(v.InputDataConfig))
+    parts.append("\"FeaturizationConfig\":" + featurization_config_to_json(v.FeaturizationConfig))
+    if v.EncryptionConfig.is_some():
+        auto u10 = v.EncryptionConfig.unwrap()
+        parts.append("\"EncryptionConfig\":" + u10.to_json())
+    if v.Tags.is_some():
+        auto u11 = v.Tags.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"Tags\":" + forecast_json_arr(e12))
+    if v.OptimizationMetric.is_some():
+        auto u13 = v.OptimizationMetric.unwrap()
+        parts.append("\"OptimizationMetric\":" + u13.to_json())
+    return forecast_json_obj(parts)
+
+# Serialize CreateWhatIfAnalysisRequest to a compact JSON object (declaration order).
+def create_what_if_analysis_request_to_json(CreateWhatIfAnalysisRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"WhatIfAnalysisName\":" + forecast_json_str(v.WhatIfAnalysisName))
+    parts.append("\"ForecastArn\":" + forecast_json_str(v.ForecastArn))
+    if v.TimeSeriesSelector.is_some():
+        auto u0 = v.TimeSeriesSelector.unwrap()
+        parts.append("\"TimeSeriesSelector\":" + time_series_selector_to_json(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + forecast_json_arr(e2))
+    return forecast_json_obj(parts)
+
+# Serialize CreateWhatIfForecastExportRequest to a compact JSON object (declaration order).
+def create_what_if_forecast_export_request_to_json(CreateWhatIfForecastExportRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"WhatIfForecastExportName\":" + forecast_json_str(v.WhatIfForecastExportName))
+    list[str] e0 = []
+    for x0 in v.WhatIfForecastArns:
+        e0.append(forecast_json_str(x0))
+    parts.append("\"WhatIfForecastArns\":" + forecast_json_arr(e0))
+    parts.append("\"Destination\":" + v.Destination.to_json())
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + forecast_json_arr(e2))
+    if v.Format.is_some():
+        auto u3 = v.Format.unwrap()
+        parts.append("\"Format\":" + forecast_json_str(u3))
+    return forecast_json_obj(parts)
+
+# Serialize CreateWhatIfForecastRequest to a compact JSON object (declaration order).
+def create_what_if_forecast_request_to_json(CreateWhatIfForecastRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"WhatIfForecastName\":" + forecast_json_str(v.WhatIfForecastName))
+    parts.append("\"WhatIfAnalysisArn\":" + forecast_json_str(v.WhatIfAnalysisArn))
+    if v.TimeSeriesTransformations.is_some():
+        auto u0 = v.TimeSeriesTransformations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(time_series_transformation_to_json(x1))
+        parts.append("\"TimeSeriesTransformations\":" + forecast_json_arr(e1))
+    if v.TimeSeriesReplacementsDataSource.is_some():
+        auto u2 = v.TimeSeriesReplacementsDataSource.unwrap()
+        parts.append("\"TimeSeriesReplacementsDataSource\":" + time_series_replacements_data_source_to_json(u2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + forecast_json_arr(e4))
+    return forecast_json_obj(parts)
+
+# Serialize DataConfig to a compact JSON object (declaration order).
+def data_config_to_json(DataConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"DatasetGroupArn\":" + forecast_json_str(v.DatasetGroupArn))
+    if v.AttributeConfigs.is_some():
+        auto u0 = v.AttributeConfigs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(attribute_config_to_json(x1))
+        parts.append("\"AttributeConfigs\":" + forecast_json_arr(e1))
+    if v.AdditionalDatasets.is_some():
+        auto u2 = v.AdditionalDatasets.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(additional_dataset_to_json(x3))
+        parts.append("\"AdditionalDatasets\":" + forecast_json_arr(e3))
+    return forecast_json_obj(parts)
+
+# Serialize Featurization to a compact JSON object (declaration order).
+def featurization_to_json(Featurization v) -> str:
+    list[str] parts = []
+    parts.append("\"AttributeName\":" + forecast_json_str(v.AttributeName))
+    if v.FeaturizationPipeline.is_some():
+        auto u0 = v.FeaturizationPipeline.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(featurization_method_to_json(x1))
+        parts.append("\"FeaturizationPipeline\":" + forecast_json_arr(e1))
+    return forecast_json_obj(parts)
+
+# Serialize FeaturizationConfig to a compact JSON object (declaration order).
+def featurization_config_to_json(FeaturizationConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"ForecastFrequency\":" + forecast_json_str(v.ForecastFrequency))
+    if v.ForecastDimensions.is_some():
+        auto u0 = v.ForecastDimensions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(forecast_json_str(x1))
+        parts.append("\"ForecastDimensions\":" + forecast_json_arr(e1))
+    if v.Featurizations.is_some():
+        auto u2 = v.Featurizations.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(featurization_to_json(x3))
+        parts.append("\"Featurizations\":" + forecast_json_arr(e3))
+    return forecast_json_obj(parts)
+
+# Serialize FeaturizationMethod to a compact JSON object (declaration order).
+def featurization_method_to_json(FeaturizationMethod v) -> str:
+    list[str] parts = []
+    parts.append("\"FeaturizationMethodName\":" + forecast_json_str(v.FeaturizationMethodName))
+    if v.FeaturizationMethodParameters.is_some():
+        auto u0 = v.FeaturizationMethodParameters.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(forecast_json_str(k1) + ":" + forecast_json_str(u0[k1]))
+        parts.append("\"FeaturizationMethodParameters\":" + forecast_json_obj(m1))
+    return forecast_json_obj(parts)
+
+# Serialize HyperParameterTuningJobConfig to a compact JSON object (declaration order).
+def hyper_parameter_tuning_job_config_to_json(HyperParameterTuningJobConfig v) -> str:
+    list[str] parts = []
+    if v.ParameterRanges.is_some():
+        auto u0 = v.ParameterRanges.unwrap()
+        parts.append("\"ParameterRanges\":" + parameter_ranges_to_json(u0))
+    return forecast_json_obj(parts)
+
+# Serialize InputDataConfig to a compact JSON object (declaration order).
+def input_data_config_to_json(InputDataConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"DatasetGroupArn\":" + forecast_json_str(v.DatasetGroupArn))
+    if v.SupplementaryFeatures.is_some():
+        auto u0 = v.SupplementaryFeatures.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"SupplementaryFeatures\":" + forecast_json_arr(e1))
+    return forecast_json_obj(parts)
+
+# Serialize ListDatasetImportJobsRequest to a compact JSON object (declaration order).
+def list_dataset_import_jobs_request_to_json(ListDatasetImportJobsRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + forecast_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Filters\":" + forecast_json_arr(e3))
+    return forecast_json_obj(parts)
+
+# Serialize ListExplainabilitiesRequest to a compact JSON object (declaration order).
+def list_explainabilities_request_to_json(ListExplainabilitiesRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + forecast_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Filters\":" + forecast_json_arr(e3))
+    return forecast_json_obj(parts)
+
+# Serialize ListExplainabilityExportsRequest to a compact JSON object (declaration order).
+def list_explainability_exports_request_to_json(ListExplainabilityExportsRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + forecast_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Filters\":" + forecast_json_arr(e3))
+    return forecast_json_obj(parts)
+
+# Serialize ListForecastExportJobsRequest to a compact JSON object (declaration order).
+def list_forecast_export_jobs_request_to_json(ListForecastExportJobsRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + forecast_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Filters\":" + forecast_json_arr(e3))
+    return forecast_json_obj(parts)
+
+# Serialize ListForecastsRequest to a compact JSON object (declaration order).
+def list_forecasts_request_to_json(ListForecastsRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + forecast_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Filters\":" + forecast_json_arr(e3))
+    return forecast_json_obj(parts)
+
+# Serialize ListMonitorEvaluationsRequest to a compact JSON object (declaration order).
+def list_monitor_evaluations_request_to_json(ListMonitorEvaluationsRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + forecast_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    parts.append("\"MonitorArn\":" + forecast_json_str(v.MonitorArn))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Filters\":" + forecast_json_arr(e3))
+    return forecast_json_obj(parts)
+
+# Serialize ListMonitorsRequest to a compact JSON object (declaration order).
+def list_monitors_request_to_json(ListMonitorsRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + forecast_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Filters\":" + forecast_json_arr(e3))
+    return forecast_json_obj(parts)
+
+# Serialize ListPredictorBacktestExportJobsRequest to a compact JSON object (declaration order).
+def list_predictor_backtest_export_jobs_request_to_json(ListPredictorBacktestExportJobsRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + forecast_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Filters\":" + forecast_json_arr(e3))
+    return forecast_json_obj(parts)
+
+# Serialize ListPredictorsRequest to a compact JSON object (declaration order).
+def list_predictors_request_to_json(ListPredictorsRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + forecast_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Filters\":" + forecast_json_arr(e3))
+    return forecast_json_obj(parts)
+
+# Serialize ListWhatIfAnalysesRequest to a compact JSON object (declaration order).
+def list_what_if_analyses_request_to_json(ListWhatIfAnalysesRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + forecast_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Filters\":" + forecast_json_arr(e3))
+    return forecast_json_obj(parts)
+
+# Serialize ListWhatIfForecastExportsRequest to a compact JSON object (declaration order).
+def list_what_if_forecast_exports_request_to_json(ListWhatIfForecastExportsRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + forecast_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Filters\":" + forecast_json_arr(e3))
+    return forecast_json_obj(parts)
+
+# Serialize ListWhatIfForecastsRequest to a compact JSON object (declaration order).
+def list_what_if_forecasts_request_to_json(ListWhatIfForecastsRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + forecast_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Filters\":" + forecast_json_arr(e3))
+    return forecast_json_obj(parts)
+
+# Serialize ParameterRanges to a compact JSON object (declaration order).
+def parameter_ranges_to_json(ParameterRanges v) -> str:
+    list[str] parts = []
+    if v.CategoricalParameterRanges.is_some():
+        auto u0 = v.CategoricalParameterRanges.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(categorical_parameter_range_to_json(x1))
+        parts.append("\"CategoricalParameterRanges\":" + forecast_json_arr(e1))
+    if v.ContinuousParameterRanges.is_some():
+        auto u2 = v.ContinuousParameterRanges.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ContinuousParameterRanges\":" + forecast_json_arr(e3))
+    if v.IntegerParameterRanges.is_some():
+        auto u4 = v.IntegerParameterRanges.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"IntegerParameterRanges\":" + forecast_json_arr(e5))
+    return forecast_json_obj(parts)
+
+# Serialize Schema to a compact JSON object (declaration order).
+def schema_to_json(Schema v) -> str:
+    list[str] parts = []
+    if v.Attributes.is_some():
+        auto u0 = v.Attributes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Attributes\":" + forecast_json_arr(e1))
+    return forecast_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + forecast_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + forecast_json_arr(e0))
+    return forecast_json_obj(parts)
+
+# Serialize TimeSeriesIdentifiers to a compact JSON object (declaration order).
+def time_series_identifiers_to_json(TimeSeriesIdentifiers v) -> str:
+    list[str] parts = []
+    if v.DataSource.is_some():
+        auto u0 = v.DataSource.unwrap()
+        parts.append("\"DataSource\":" + u0.to_json())
+    if v.Schema.is_some():
+        auto u1 = v.Schema.unwrap()
+        parts.append("\"Schema\":" + schema_to_json(u1))
+    if v.Format.is_some():
+        auto u2 = v.Format.unwrap()
+        parts.append("\"Format\":" + forecast_json_str(u2))
+    return forecast_json_obj(parts)
+
+# Serialize TimeSeriesReplacementsDataSource to a compact JSON object (declaration order).
+def time_series_replacements_data_source_to_json(TimeSeriesReplacementsDataSource v) -> str:
+    list[str] parts = []
+    parts.append("\"S3Config\":" + v.S3Config.to_json())
+    parts.append("\"Schema\":" + schema_to_json(v.Schema))
+    if v.Format.is_some():
+        auto u0 = v.Format.unwrap()
+        parts.append("\"Format\":" + forecast_json_str(u0))
+    if v.TimestampFormat.is_some():
+        auto u1 = v.TimestampFormat.unwrap()
+        parts.append("\"TimestampFormat\":" + forecast_json_str(u1))
+    return forecast_json_obj(parts)
+
+# Serialize TimeSeriesSelector to a compact JSON object (declaration order).
+def time_series_selector_to_json(TimeSeriesSelector v) -> str:
+    list[str] parts = []
+    if v.TimeSeriesIdentifiers.is_some():
+        auto u0 = v.TimeSeriesIdentifiers.unwrap()
+        parts.append("\"TimeSeriesIdentifiers\":" + time_series_identifiers_to_json(u0))
+    return forecast_json_obj(parts)
+
+# Serialize TimeSeriesTransformation to a compact JSON object (declaration order).
+def time_series_transformation_to_json(TimeSeriesTransformation v) -> str:
+    list[str] parts = []
+    if v.Action.is_some():
+        auto u0 = v.Action.unwrap()
+        parts.append("\"Action\":" + u0.to_json())
+    if v.TimeSeriesConditions.is_some():
+        auto u1 = v.TimeSeriesConditions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"TimeSeriesConditions\":" + forecast_json_arr(e2))
+    return forecast_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + forecast_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(forecast_json_str(x0))
+    parts.append("\"TagKeys\":" + forecast_json_arr(e0))
+    return forecast_json_obj(parts)
+
+# Serialize UpdateDatasetGroupRequest to a compact JSON object (declaration order).
+def update_dataset_group_request_to_json(UpdateDatasetGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DatasetGroupArn\":" + forecast_json_str(v.DatasetGroupArn))
+    list[str] e0 = []
+    for x0 in v.DatasetArns:
+        e0.append(forecast_json_str(x0))
+    parts.append("\"DatasetArns\":" + forecast_json_arr(e0))
+    return forecast_json_obj(parts)
 
 # A bound forecast client: credentials + region, threaded into every operation.
 struct forecastClient:
     core.Credentials creds
     str region
+
+    # CreateAutoPredictor
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException
+    def create_auto_predictor(self, CreateAutoPredictorRequest input) -> str:
+        auto body = create_auto_predictor_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "CreateAutoPredictor", body)
+
+    # CreateDataset
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException
+    def create_dataset(self, CreateDatasetRequest input) -> str:
+        auto body = create_dataset_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "CreateDataset", body)
+
+    # CreateDatasetGroup
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException
+    def create_dataset_group(self, CreateDatasetGroupRequest input) -> str:
+        auto body = create_dataset_group_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "CreateDatasetGroup", body)
+
+    # CreateDatasetImportJob
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException
+    def create_dataset_import_job(self, CreateDatasetImportJobRequest input) -> str:
+        auto body = create_dataset_import_job_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "CreateDatasetImportJob", body)
+
+    # CreateExplainability
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException
+    def create_explainability(self, CreateExplainabilityRequest input) -> str:
+        auto body = create_explainability_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "CreateExplainability", body)
+
+    # CreateExplainabilityExport
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException
+    def create_explainability_export(self, CreateExplainabilityExportRequest input) -> str:
+        auto body = create_explainability_export_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "CreateExplainabilityExport", body)
+
+    # CreateForecast
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException
+    def create_forecast(self, CreateForecastRequest input) -> str:
+        auto body = create_forecast_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "CreateForecast", body)
+
+    # CreateForecastExportJob
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException
+    def create_forecast_export_job(self, CreateForecastExportJobRequest input) -> str:
+        auto body = create_forecast_export_job_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "CreateForecastExportJob", body)
+
+    # CreateMonitor
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException
+    def create_monitor(self, CreateMonitorRequest input) -> str:
+        auto body = create_monitor_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "CreateMonitor", body)
+
+    # CreatePredictor
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException
+    def create_predictor(self, CreatePredictorRequest input) -> str:
+        auto body = create_predictor_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "CreatePredictor", body)
+
+    # CreatePredictorBacktestExportJob
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException
+    def create_predictor_backtest_export_job(self, CreatePredictorBacktestExportJobRequest input) -> str:
+        auto body = create_predictor_backtest_export_job_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "CreatePredictorBacktestExportJob", body)
+
+    # CreateWhatIfAnalysis
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException
+    def create_what_if_analysis(self, CreateWhatIfAnalysisRequest input) -> str:
+        auto body = create_what_if_analysis_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "CreateWhatIfAnalysis", body)
+
+    # CreateWhatIfForecast
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException
+    def create_what_if_forecast(self, CreateWhatIfForecastRequest input) -> str:
+        auto body = create_what_if_forecast_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "CreateWhatIfForecast", body)
+
+    # CreateWhatIfForecastExport
+    # errors: InvalidInputException, LimitExceededException, ResourceAlreadyExistsException, ResourceInUseException, ResourceNotFoundException
+    def create_what_if_forecast_export(self, CreateWhatIfForecastExportRequest input) -> str:
+        auto body = create_what_if_forecast_export_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "CreateWhatIfForecastExport", body)
 
     # DeleteDataset
     # errors: InvalidInputException, ResourceInUseException, ResourceNotFoundException
@@ -1695,17 +2622,89 @@ struct forecastClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListDatasetGroups", body)
 
+    # ListDatasetImportJobs
+    # errors: InvalidInputException, InvalidNextTokenException
+    def list_dataset_import_jobs(self, ListDatasetImportJobsRequest input) -> str:
+        auto body = list_dataset_import_jobs_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListDatasetImportJobs", body)
+
     # ListDatasets
     # errors: InvalidNextTokenException
     def list_datasets(self, ListDatasetsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListDatasets", body)
 
+    # ListExplainabilities
+    # errors: InvalidInputException, InvalidNextTokenException
+    def list_explainabilities(self, ListExplainabilitiesRequest input) -> str:
+        auto body = list_explainabilities_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListExplainabilities", body)
+
+    # ListExplainabilityExports
+    # errors: InvalidInputException, InvalidNextTokenException
+    def list_explainability_exports(self, ListExplainabilityExportsRequest input) -> str:
+        auto body = list_explainability_exports_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListExplainabilityExports", body)
+
+    # ListForecastExportJobs
+    # errors: InvalidInputException, InvalidNextTokenException
+    def list_forecast_export_jobs(self, ListForecastExportJobsRequest input) -> str:
+        auto body = list_forecast_export_jobs_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListForecastExportJobs", body)
+
+    # ListForecasts
+    # errors: InvalidInputException, InvalidNextTokenException
+    def list_forecasts(self, ListForecastsRequest input) -> str:
+        auto body = list_forecasts_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListForecasts", body)
+
+    # ListMonitorEvaluations
+    # errors: InvalidInputException, InvalidNextTokenException, ResourceNotFoundException
+    def list_monitor_evaluations(self, ListMonitorEvaluationsRequest input) -> str:
+        auto body = list_monitor_evaluations_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListMonitorEvaluations", body)
+
+    # ListMonitors
+    # errors: InvalidInputException, InvalidNextTokenException
+    def list_monitors(self, ListMonitorsRequest input) -> str:
+        auto body = list_monitors_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListMonitors", body)
+
+    # ListPredictorBacktestExportJobs
+    # errors: InvalidInputException, InvalidNextTokenException
+    def list_predictor_backtest_export_jobs(self, ListPredictorBacktestExportJobsRequest input) -> str:
+        auto body = list_predictor_backtest_export_jobs_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListPredictorBacktestExportJobs", body)
+
+    # ListPredictors
+    # errors: InvalidInputException, InvalidNextTokenException
+    def list_predictors(self, ListPredictorsRequest input) -> str:
+        auto body = list_predictors_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListPredictors", body)
+
     # ListTagsForResource
     # errors: InvalidInputException, ResourceNotFoundException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListTagsForResource", body)
+
+    # ListWhatIfAnalyses
+    # errors: InvalidInputException, InvalidNextTokenException
+    def list_what_if_analyses(self, ListWhatIfAnalysesRequest input) -> str:
+        auto body = list_what_if_analyses_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListWhatIfAnalyses", body)
+
+    # ListWhatIfForecastExports
+    # errors: InvalidInputException, InvalidNextTokenException
+    def list_what_if_forecast_exports(self, ListWhatIfForecastExportsRequest input) -> str:
+        auto body = list_what_if_forecast_exports_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListWhatIfForecastExports", body)
+
+    # ListWhatIfForecasts
+    # errors: InvalidInputException, InvalidNextTokenException
+    def list_what_if_forecasts(self, ListWhatIfForecastsRequest input) -> str:
+        auto body = list_what_if_forecasts_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListWhatIfForecasts", body)
 
     # ResumeResource
     # errors: InvalidInputException, LimitExceededException, ResourceInUseException, ResourceNotFoundException
@@ -1718,6 +2717,24 @@ struct forecastClient:
     def stop_resource(self, StopResourceRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "StopResource", body)
+
+    # TagResource
+    # errors: InvalidInputException, LimitExceededException, ResourceNotFoundException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: InvalidInputException, ResourceNotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateDatasetGroup
+    # errors: InvalidInputException, ResourceInUseException, ResourceNotFoundException
+    def update_dataset_group(self, UpdateDatasetGroupRequest input) -> str:
+        auto body = update_dataset_group_request_to_json(input)
+        return awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "UpdateDatasetGroup", body)
 
     # Paginator for ListDatasetGroups — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: DatasetGroups).
@@ -1733,6 +2750,20 @@ struct forecastClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListDatasetImportJobs — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: DatasetImportJobs).
+    def paginate_list_dataset_import_jobs(self, ListDatasetImportJobsRequest input):
+        auto host = endpoints.regional_host(forecast_protocol().service, self.region)
+        while True:
+            auto body = list_dataset_import_jobs_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListDatasetImportJobs", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListDatasets — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: Datasets).
     def paginate_list_datasets(self, ListDatasetsRequest input):
@@ -1740,6 +2771,160 @@ struct forecastClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListDatasets", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListExplainabilities — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Explainabilities).
+    def paginate_list_explainabilities(self, ListExplainabilitiesRequest input):
+        auto host = endpoints.regional_host(forecast_protocol().service, self.region)
+        while True:
+            auto body = list_explainabilities_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListExplainabilities", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListExplainabilityExports — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ExplainabilityExports).
+    def paginate_list_explainability_exports(self, ListExplainabilityExportsRequest input):
+        auto host = endpoints.regional_host(forecast_protocol().service, self.region)
+        while True:
+            auto body = list_explainability_exports_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListExplainabilityExports", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListForecastExportJobs — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ForecastExportJobs).
+    def paginate_list_forecast_export_jobs(self, ListForecastExportJobsRequest input):
+        auto host = endpoints.regional_host(forecast_protocol().service, self.region)
+        while True:
+            auto body = list_forecast_export_jobs_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListForecastExportJobs", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListForecasts — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Forecasts).
+    def paginate_list_forecasts(self, ListForecastsRequest input):
+        auto host = endpoints.regional_host(forecast_protocol().service, self.region)
+        while True:
+            auto body = list_forecasts_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListForecasts", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListMonitorEvaluations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: PredictorMonitorEvaluations).
+    def paginate_list_monitor_evaluations(self, ListMonitorEvaluationsRequest input):
+        auto host = endpoints.regional_host(forecast_protocol().service, self.region)
+        while True:
+            auto body = list_monitor_evaluations_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListMonitorEvaluations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListMonitors — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Monitors).
+    def paginate_list_monitors(self, ListMonitorsRequest input):
+        auto host = endpoints.regional_host(forecast_protocol().service, self.region)
+        while True:
+            auto body = list_monitors_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListMonitors", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListPredictorBacktestExportJobs — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: PredictorBacktestExportJobs).
+    def paginate_list_predictor_backtest_export_jobs(self, ListPredictorBacktestExportJobsRequest input):
+        auto host = endpoints.regional_host(forecast_protocol().service, self.region)
+        while True:
+            auto body = list_predictor_backtest_export_jobs_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListPredictorBacktestExportJobs", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListPredictors — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Predictors).
+    def paginate_list_predictors(self, ListPredictorsRequest input):
+        auto host = endpoints.regional_host(forecast_protocol().service, self.region)
+        while True:
+            auto body = list_predictors_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListPredictors", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListWhatIfAnalyses — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: WhatIfAnalyses).
+    def paginate_list_what_if_analyses(self, ListWhatIfAnalysesRequest input):
+        auto host = endpoints.regional_host(forecast_protocol().service, self.region)
+        while True:
+            auto body = list_what_if_analyses_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListWhatIfAnalyses", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListWhatIfForecastExports — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: WhatIfForecastExports).
+    def paginate_list_what_if_forecast_exports(self, ListWhatIfForecastExportsRequest input):
+        auto host = endpoints.regional_host(forecast_protocol().service, self.region)
+        while True:
+            auto body = list_what_if_forecast_exports_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListWhatIfForecastExports", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListWhatIfForecasts — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: WhatIfForecasts).
+    def paginate_list_what_if_forecasts(self, ListWhatIfForecastsRequest input):
+        auto host = endpoints.regional_host(forecast_protocol().service, self.region)
+        while True:
+            auto body = list_what_if_forecasts_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(forecast_protocol(), self.creds, self.region, "ListWhatIfForecasts", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

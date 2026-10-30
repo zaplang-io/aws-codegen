@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 102 operations — 47 with a generated method,
-#   55 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 102 operations — 102 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   357 structs (205 @derive(Json)), 32 enums, 57 error variants.
-#   13 paginators generated (21 paginated ops skipped) from paginators-1.json.
+#   34 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import datetime
 
 # The Config_Service awsJson protocol: version 1.1, API id "StarlingDoveService".
 def config_protocol() -> awsjson.AwsJson:
@@ -852,8 +853,9 @@ enum SortOrder:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) AccountIds: list[str], AwsRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountIds: list[str], AwsRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccountAggregationSource:
     list[str] AccountIds
     Optional[bool] AllAwsRegions
@@ -942,32 +944,37 @@ struct AggregationAuthorization:
     Optional[str] AuthorizedAwsRegion
     Optional[DateTime] CreationTime
 
-# no @derive(Json): member(s) Value: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Value: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AggregatorFilterResourceType:
     Optional[str] Type
     Optional[list[str]] Value
 
-# no @derive(Json): member(s) Value: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Value: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AggregatorFilterServicePrincipal:
     Optional[str] Type
     Optional[list[str]] Value
 
-# no @derive(Json): member(s) ResourceType: AggregatorFilterResourceType, ServicePrincipal: AggregatorFilterServicePrincipal not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceType: AggregatorFilterResourceType, ServicePrincipal: AggregatorFilterServicePrincipal not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AggregatorFilters:
     Optional[AggregatorFilterResourceType] ResourceType
     Optional[AggregatorFilterServicePrincipal] ServicePrincipal
 
-# no @derive(Json): member(s) ResourceTypes: list[ResourceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTypes: list[ResourceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateResourceTypesRequest:
     str ConfigurationRecorderArn
     list[ResourceType] ResourceTypes
 
-# no @derive(Json): member(s) ConfigurationRecorder: ConfigurationRecorder not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationRecorder: ConfigurationRecorder not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateResourceTypesResponse:
     ConfigurationRecorder ConfigurationRecorder
 
@@ -976,8 +983,9 @@ struct AzureConnectorConfiguration:
     str tenantIdentifier
     str clientIdentifier
 
-# no @derive(Json): member(s) supplementaryConfiguration: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) supplementaryConfiguration: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BaseConfigurationItem:
     Optional[str] version
     Optional[str] accountId
@@ -996,25 +1004,29 @@ struct BaseConfigurationItem:
     Optional[RecordingFrequency] recordingFrequency
     Optional[DateTime] configurationItemDeliveryTime
 
-# no @derive(Json): member(s) ResourceIdentifiers: list[AggregateResourceIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceIdentifiers: list[AggregateResourceIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetAggregateResourceConfigRequest:
     str ConfigurationAggregatorName
     list[AggregateResourceIdentifier] ResourceIdentifiers
 
-# no @derive(Json): member(s) BaseConfigurationItems: list[BaseConfigurationItem], UnprocessedResourceIdentifiers: list[AggregateResourceIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BaseConfigurationItems: list[BaseConfigurationItem], UnprocessedResourceIdentifiers: list[AggregateResourceIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetAggregateResourceConfigResponse:
     Optional[list[BaseConfigurationItem]] BaseConfigurationItems
     Optional[list[AggregateResourceIdentifier]] UnprocessedResourceIdentifiers
 
-# no @derive(Json): member(s) resourceKeys: list[ResourceKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceKeys: list[ResourceKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetResourceConfigRequest:
     list[ResourceKey] resourceKeys
 
-# no @derive(Json): member(s) baseConfigurationItems: list[BaseConfigurationItem], unprocessedResourceKeys: list[ResourceKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) baseConfigurationItems: list[BaseConfigurationItem], unprocessedResourceKeys: list[ResourceKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetResourceConfigResponse:
     Optional[list[BaseConfigurationItem]] baseConfigurationItems
     Optional[list[ResourceKey]] unprocessedResourceKeys
@@ -1060,8 +1072,9 @@ struct ConfigExportDeliveryInfo:
     Optional[DateTime] lastSuccessfulTime
     Optional[DateTime] nextDeliveryTime
 
-# no @derive(Json): member(s) Scope: Scope, Source: Source, EvaluationModes: list[EvaluationModeConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Scope: Scope, Source: Source, EvaluationModes: list[EvaluationModeConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigRule:
     Optional[str] ConfigRuleName
     Optional[str] ConfigRuleArn
@@ -1117,8 +1130,9 @@ struct ConfigStreamDeliveryInfo:
     Optional[str] lastErrorMessage
     Optional[DateTime] lastStatusChangeTime
 
-# no @derive(Json): member(s) AccountAggregationSources: list[AccountAggregationSource], OrganizationAggregationSource: OrganizationAggregationSource, AggregatorFilters: AggregatorFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountAggregationSources: list[AccountAggregationSource], OrganizationAggregationSource: OrganizationAggregationSource, AggregatorFilters: AggregatorFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationAggregator:
     Optional[str] ConfigurationAggregatorName
     Optional[str] ConfigurationAggregatorArn
@@ -1129,8 +1143,9 @@ struct ConfigurationAggregator:
     Optional[str] CreatedBy
     Optional[AggregatorFilters] AggregatorFilters
 
-# no @derive(Json): member(s) tags: dict[str, str], relatedEvents: list[str], relationships: list[Relationship], supplementaryConfiguration: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], relatedEvents: list[str], relationships: list[Relationship], supplementaryConfiguration: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationItem:
     Optional[str] version
     Optional[str] accountId
@@ -1153,8 +1168,9 @@ struct ConfigurationItem:
     Optional[RecordingFrequency] recordingFrequency
     Optional[DateTime] configurationItemDeliveryTime
 
-# no @derive(Json): member(s) recordingGroup: RecordingGroup, recordingMode: RecordingMode, scopeConfiguration: ScopeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recordingGroup: RecordingGroup, recordingMode: RecordingMode, scopeConfiguration: ScopeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationRecorder:
     Optional[str] arn
     Optional[str] name
@@ -1166,8 +1182,9 @@ struct ConfigurationRecorder:
     Optional[str] connectorArn
     Optional[ScopeConfiguration] scopeConfiguration
 
-# no @derive(Json): member(s) filterValue: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filterValue: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationRecorderFilter:
     Optional[str] filterName
     Optional[list[str]] filterValue
@@ -1198,8 +1215,9 @@ struct ConflictException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ConfigRuleNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigRuleNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConformancePackComplianceFilters:
     Optional[list[str]] ConfigRuleNames
     Optional[ConformancePackComplianceType] ComplianceType
@@ -1210,8 +1228,9 @@ struct ConformancePackComplianceScore:
     Optional[str] ConformancePackName
     Optional[DateTime] LastUpdatedTime
 
-# no @derive(Json): member(s) ConformancePackNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConformancePackNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConformancePackComplianceScoresFilters:
     list[str] ConformancePackNames
 
@@ -1220,8 +1239,9 @@ struct ConformancePackComplianceSummary:
     str ConformancePackName
     ConformancePackComplianceType ConformancePackComplianceStatus
 
-# no @derive(Json): member(s) ConformancePackInputParameters: list[ConformancePackInputParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConformancePackInputParameters: list[ConformancePackInputParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConformancePackDetail:
     str ConformancePackName
     str ConformancePackArn
@@ -1233,8 +1253,9 @@ struct ConformancePackDetail:
     Optional[str] CreatedBy
     Optional[TemplateSSMDocumentDetails] TemplateSSMDocumentDetails
 
-# no @derive(Json): member(s) ConfigRuleNames: list[str], ResourceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigRuleNames: list[str], ResourceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConformancePackEvaluationFilters:
     Optional[list[str]] ConfigRuleNames
     Optional[ConformancePackComplianceType] ComplianceType
@@ -1254,8 +1275,9 @@ struct ConformancePackInputParameter:
     str ParameterName
     str ParameterValue
 
-# no @derive(Json): member(s) Controls: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Controls: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConformancePackRuleCompliance:
     Optional[str] ConfigRuleName
     Optional[ConformancePackComplianceType] ComplianceType
@@ -1288,8 +1310,9 @@ struct Connector:
 struct ConnectorConfiguration:
     Optional[AzureConnectorConfiguration] azure
 
-# no @derive(Json): member(s) filterValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filterValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectorFilter:
     Optional[str] filterName
     Optional[list[str]] filterValues
@@ -1369,14 +1392,16 @@ struct DeleteRemediationConfigurationResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ResourceKeys: list[RemediationExceptionResourceKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceKeys: list[RemediationExceptionResourceKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteRemediationExceptionsRequest:
     str ConfigRuleName
     list[RemediationExceptionResourceKey] ResourceKeys
 
-# no @derive(Json): member(s) FailedBatches: list[FailedDeleteRemediationExceptionsBatch] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedBatches: list[FailedDeleteRemediationExceptionsBatch] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteRemediationExceptionsResponse:
     Optional[list[FailedDeleteRemediationExceptionsBatch]] FailedBatches
 
@@ -1439,8 +1464,9 @@ struct DescribeAggregateComplianceByConfigRulesRequest:
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AggregateComplianceByConfigRules: list[AggregateComplianceByConfigRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AggregateComplianceByConfigRules: list[AggregateComplianceByConfigRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAggregateComplianceByConfigRulesResponse:
     Optional[list[AggregateComplianceByConfigRule]] AggregateComplianceByConfigRules
     Optional[str] NextToken
@@ -1452,8 +1478,9 @@ struct DescribeAggregateComplianceByConformancePacksRequest:
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AggregateComplianceByConformancePacks: list[AggregateComplianceByConformancePack] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AggregateComplianceByConformancePacks: list[AggregateComplianceByConformancePack] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAggregateComplianceByConformancePacksResponse:
     Optional[list[AggregateComplianceByConformancePack]] AggregateComplianceByConformancePacks
     Optional[str] NextToken
@@ -1463,27 +1490,31 @@ struct DescribeAggregationAuthorizationsRequest:
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AggregationAuthorizations: list[AggregationAuthorization] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AggregationAuthorizations: list[AggregationAuthorization] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAggregationAuthorizationsResponse:
     Optional[list[AggregationAuthorization]] AggregationAuthorizations
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConfigRuleNames: list[str], ComplianceTypes: list[ComplianceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigRuleNames: list[str], ComplianceTypes: list[ComplianceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeComplianceByConfigRuleRequest:
     Optional[list[str]] ConfigRuleNames
     Optional[list[ComplianceType]] ComplianceTypes
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ComplianceByConfigRules: list[ComplianceByConfigRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ComplianceByConfigRules: list[ComplianceByConfigRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeComplianceByConfigRuleResponse:
     Optional[list[ComplianceByConfigRule]] ComplianceByConfigRules
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ComplianceTypes: list[ComplianceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ComplianceTypes: list[ComplianceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeComplianceByResourceRequest:
     Optional[str] ResourceType
     Optional[str] ResourceId
@@ -1491,21 +1522,24 @@ struct DescribeComplianceByResourceRequest:
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ComplianceByResources: list[ComplianceByResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ComplianceByResources: list[ComplianceByResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeComplianceByResourceResponse:
     Optional[list[ComplianceByResource]] ComplianceByResources
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConfigRuleNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigRuleNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConfigRuleEvaluationStatusRequest:
     Optional[list[str]] ConfigRuleNames
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) ConfigRulesEvaluationStatus: list[ConfigRuleEvaluationStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigRulesEvaluationStatus: list[ConfigRuleEvaluationStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConfigRuleEvaluationStatusResponse:
     Optional[list[ConfigRuleEvaluationStatus]] ConfigRulesEvaluationStatus
     Optional[str] NextToken
@@ -1515,179 +1549,207 @@ struct DescribeConfigRulesFilters:
     Optional[EvaluationMode] EvaluationMode
     Optional[RuleEvaluationVisibility] RuleEvaluationVisibility
 
-# no @derive(Json): member(s) ConfigRuleNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigRuleNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConfigRulesRequest:
     Optional[list[str]] ConfigRuleNames
     Optional[DescribeConfigRulesFilters] Filters
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConfigRules: list[ConfigRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigRules: list[ConfigRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConfigRulesResponse:
     Optional[list[ConfigRule]] ConfigRules
     Optional[str] NextToken
 
-# no @derive(Json): member(s) UpdateStatus: list[AggregatedSourceStatusType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UpdateStatus: list[AggregatedSourceStatusType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConfigurationAggregatorSourcesStatusRequest:
     str ConfigurationAggregatorName
     Optional[list[AggregatedSourceStatusType]] UpdateStatus
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) AggregatedSourceStatusList: list[AggregatedSourceStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AggregatedSourceStatusList: list[AggregatedSourceStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConfigurationAggregatorSourcesStatusResponse:
     Optional[list[AggregatedSourceStatus]] AggregatedSourceStatusList
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConfigurationAggregatorNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationAggregatorNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConfigurationAggregatorsRequest:
     Optional[list[str]] ConfigurationAggregatorNames
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) ConfigurationAggregators: list[ConfigurationAggregator] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationAggregators: list[ConfigurationAggregator] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConfigurationAggregatorsResponse:
     Optional[list[ConfigurationAggregator]] ConfigurationAggregators
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConfigurationRecorderNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationRecorderNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConfigurationRecorderStatusRequest:
     Optional[list[str]] ConfigurationRecorderNames
     Optional[str] ServicePrincipal
     Optional[str] Arn
 
-# no @derive(Json): member(s) ConfigurationRecordersStatus: list[ConfigurationRecorderStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationRecordersStatus: list[ConfigurationRecorderStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConfigurationRecorderStatusResponse:
     Optional[list[ConfigurationRecorderStatus]] ConfigurationRecordersStatus
 
-# no @derive(Json): member(s) ConfigurationRecorderNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationRecorderNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConfigurationRecordersRequest:
     Optional[list[str]] ConfigurationRecorderNames
     Optional[str] ServicePrincipal
     Optional[str] Arn
 
-# no @derive(Json): member(s) ConfigurationRecorders: list[ConfigurationRecorder] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationRecorders: list[ConfigurationRecorder] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConfigurationRecordersResponse:
     Optional[list[ConfigurationRecorder]] ConfigurationRecorders
 
-# no @derive(Json): member(s) Filters: ConformancePackComplianceFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: ConformancePackComplianceFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConformancePackComplianceRequest:
     str ConformancePackName
     Optional[ConformancePackComplianceFilters] Filters
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConformancePackRuleComplianceList: list[ConformancePackRuleCompliance] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConformancePackRuleComplianceList: list[ConformancePackRuleCompliance] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConformancePackComplianceResponse:
     str ConformancePackName
     list[ConformancePackRuleCompliance] ConformancePackRuleComplianceList
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConformancePackNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConformancePackNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConformancePackStatusRequest:
     Optional[list[str]] ConformancePackNames
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConformancePackStatusDetails: list[ConformancePackStatusDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConformancePackStatusDetails: list[ConformancePackStatusDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConformancePackStatusResponse:
     Optional[list[ConformancePackStatusDetail]] ConformancePackStatusDetails
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConformancePackNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConformancePackNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConformancePacksRequest:
     Optional[list[str]] ConformancePackNames
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConformancePackDetails: list[ConformancePackDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConformancePackDetails: list[ConformancePackDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConformancePacksResponse:
     Optional[list[ConformancePackDetail]] ConformancePackDetails
     Optional[str] NextToken
 
-# no @derive(Json): member(s) DeliveryChannelNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeliveryChannelNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDeliveryChannelStatusRequest:
     Optional[list[str]] DeliveryChannelNames
 
-# no @derive(Json): member(s) DeliveryChannelsStatus: list[DeliveryChannelStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeliveryChannelsStatus: list[DeliveryChannelStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDeliveryChannelStatusResponse:
     Optional[list[DeliveryChannelStatus]] DeliveryChannelsStatus
 
-# no @derive(Json): member(s) DeliveryChannelNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeliveryChannelNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDeliveryChannelsRequest:
     Optional[list[str]] DeliveryChannelNames
 
-# no @derive(Json): member(s) DeliveryChannels: list[DeliveryChannel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeliveryChannels: list[DeliveryChannel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDeliveryChannelsResponse:
     Optional[list[DeliveryChannel]] DeliveryChannels
 
-# no @derive(Json): member(s) OrganizationConfigRuleNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrganizationConfigRuleNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeOrganizationConfigRuleStatusesRequest:
     Optional[list[str]] OrganizationConfigRuleNames
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) OrganizationConfigRuleStatuses: list[OrganizationConfigRuleStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrganizationConfigRuleStatuses: list[OrganizationConfigRuleStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeOrganizationConfigRuleStatusesResponse:
     Optional[list[OrganizationConfigRuleStatus]] OrganizationConfigRuleStatuses
     Optional[str] NextToken
 
-# no @derive(Json): member(s) OrganizationConfigRuleNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrganizationConfigRuleNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeOrganizationConfigRulesRequest:
     Optional[list[str]] OrganizationConfigRuleNames
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) OrganizationConfigRules: list[OrganizationConfigRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrganizationConfigRules: list[OrganizationConfigRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeOrganizationConfigRulesResponse:
     Optional[list[OrganizationConfigRule]] OrganizationConfigRules
     Optional[str] NextToken
 
-# no @derive(Json): member(s) OrganizationConformancePackNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrganizationConformancePackNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeOrganizationConformancePackStatusesRequest:
     Optional[list[str]] OrganizationConformancePackNames
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) OrganizationConformancePackStatuses: list[OrganizationConformancePackStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrganizationConformancePackStatuses: list[OrganizationConformancePackStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeOrganizationConformancePackStatusesResponse:
     Optional[list[OrganizationConformancePackStatus]] OrganizationConformancePackStatuses
     Optional[str] NextToken
 
-# no @derive(Json): member(s) OrganizationConformancePackNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrganizationConformancePackNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeOrganizationConformancePacksRequest:
     Optional[list[str]] OrganizationConformancePackNames
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) OrganizationConformancePacks: list[OrganizationConformancePack] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrganizationConformancePacks: list[OrganizationConformancePack] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeOrganizationConformancePacksResponse:
     Optional[list[OrganizationConformancePack]] OrganizationConformancePacks
     Optional[str] NextToken
@@ -1697,70 +1759,81 @@ struct DescribePendingAggregationRequestsRequest:
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PendingAggregationRequests: list[PendingAggregationRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PendingAggregationRequests: list[PendingAggregationRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePendingAggregationRequestsResponse:
     Optional[list[PendingAggregationRequest]] PendingAggregationRequests
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConfigRuleNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigRuleNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRemediationConfigurationsRequest:
     list[str] ConfigRuleNames
 
-# no @derive(Json): member(s) RemediationConfigurations: list[RemediationConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RemediationConfigurations: list[RemediationConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRemediationConfigurationsResponse:
     Optional[list[RemediationConfiguration]] RemediationConfigurations
 
-# no @derive(Json): member(s) ResourceKeys: list[RemediationExceptionResourceKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceKeys: list[RemediationExceptionResourceKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRemediationExceptionsRequest:
     str ConfigRuleName
     Optional[list[RemediationExceptionResourceKey]] ResourceKeys
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RemediationExceptions: list[RemediationException] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RemediationExceptions: list[RemediationException] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRemediationExceptionsResponse:
     Optional[list[RemediationException]] RemediationExceptions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ResourceKeys: list[ResourceKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceKeys: list[ResourceKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRemediationExecutionStatusRequest:
     str ConfigRuleName
     Optional[list[ResourceKey]] ResourceKeys
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RemediationExecutionStatuses: list[RemediationExecutionStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RemediationExecutionStatuses: list[RemediationExecutionStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRemediationExecutionStatusResponse:
     Optional[list[RemediationExecutionStatus]] RemediationExecutionStatuses
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RetentionConfigurationNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RetentionConfigurationNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRetentionConfigurationsRequest:
     Optional[list[str]] RetentionConfigurationNames
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RetentionConfigurations: list[RetentionConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RetentionConfigurations: list[RetentionConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRetentionConfigurationsResponse:
     Optional[list[RetentionConfiguration]] RetentionConfigurations
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ResourceTypes: list[ResourceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTypes: list[ResourceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateResourceTypesRequest:
     str ConfigurationRecorderArn
     list[ResourceType] ResourceTypes
 
-# no @derive(Json): member(s) ConfigurationRecorder: ConfigurationRecorder not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationRecorder: ConfigurationRecorder not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateResourceTypesResponse:
     ConfigurationRecorder ConfigurationRecorder
 
@@ -1807,8 +1880,9 @@ struct EvaluationStatus:
     ResourceEvaluationStatus Status
     Optional[str] FailureReason
 
-# no @derive(Json): member(s) resourceTypes: list[ResourceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceTypes: list[ResourceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExclusionByResourceTypes:
     Optional[list[ResourceType]] resourceTypes
 
@@ -1824,20 +1898,23 @@ struct ExternalEvaluation:
     Optional[str] Annotation
     DateTime OrderingTimestamp
 
-# no @derive(Json): member(s) FailedItems: list[RemediationExceptionResourceKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedItems: list[RemediationExceptionResourceKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FailedDeleteRemediationExceptionsBatch:
     Optional[str] FailureMessage
     Optional[list[RemediationExceptionResourceKey]] FailedItems
 
-# no @derive(Json): member(s) FailedItems: list[RemediationConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedItems: list[RemediationConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FailedRemediationBatch:
     Optional[str] FailureMessage
     Optional[list[RemediationConfiguration]] FailedItems
 
-# no @derive(Json): member(s) FailedItems: list[RemediationException] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedItems: list[RemediationException] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FailedRemediationExceptionBatch:
     Optional[str] FailureMessage
     Optional[list[RemediationException]] FailedItems
@@ -1856,8 +1933,9 @@ struct GetAggregateComplianceDetailsByConfigRuleRequest:
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AggregateEvaluationResults: list[AggregateEvaluationResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AggregateEvaluationResults: list[AggregateEvaluationResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAggregateComplianceDetailsByConfigRuleResponse:
     Optional[list[AggregateEvaluationResult]] AggregateEvaluationResults
     Optional[str] NextToken
@@ -1870,8 +1948,9 @@ struct GetAggregateConfigRuleComplianceSummaryRequest:
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AggregateComplianceCounts: list[AggregateComplianceCount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AggregateComplianceCounts: list[AggregateComplianceCount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAggregateConfigRuleComplianceSummaryResponse:
     Optional[str] GroupByKey
     Optional[list[AggregateComplianceCount]] AggregateComplianceCounts
@@ -1885,8 +1964,9 @@ struct GetAggregateConformancePackComplianceSummaryRequest:
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AggregateConformancePackComplianceSummaries: list[AggregateConformancePackComplianceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AggregateConformancePackComplianceSummaries: list[AggregateConformancePackComplianceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAggregateConformancePackComplianceSummaryResponse:
     Optional[list[AggregateConformancePackComplianceSummary]] AggregateConformancePackComplianceSummaries
     Optional[str] GroupByKey
@@ -1900,8 +1980,9 @@ struct GetAggregateDiscoveredResourceCountsRequest:
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) GroupedResourceCounts: list[GroupedResourceCount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupedResourceCounts: list[GroupedResourceCount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAggregateDiscoveredResourceCountsResponse:
     int64 TotalDiscoveredResources
     Optional[str] GroupByKey
@@ -1913,27 +1994,31 @@ struct GetAggregateResourceConfigRequest:
     str ConfigurationAggregatorName
     AggregateResourceIdentifier ResourceIdentifier
 
-# no @derive(Json): member(s) ConfigurationItem: ConfigurationItem not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationItem: ConfigurationItem not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAggregateResourceConfigResponse:
     Optional[ConfigurationItem] ConfigurationItem
 
-# no @derive(Json): member(s) ComplianceTypes: list[ComplianceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ComplianceTypes: list[ComplianceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetComplianceDetailsByConfigRuleRequest:
     str ConfigRuleName
     Optional[list[ComplianceType]] ComplianceTypes
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) EvaluationResults: list[EvaluationResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EvaluationResults: list[EvaluationResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetComplianceDetailsByConfigRuleResponse:
     Optional[list[EvaluationResult]] EvaluationResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ComplianceTypes: list[ComplianceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ComplianceTypes: list[ComplianceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetComplianceDetailsByResourceRequest:
     Optional[str] ResourceType
     Optional[str] ResourceId
@@ -1941,8 +2026,9 @@ struct GetComplianceDetailsByResourceRequest:
     Optional[str] NextToken
     Optional[str] ResourceEvaluationId
 
-# no @derive(Json): member(s) EvaluationResults: list[EvaluationResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EvaluationResults: list[EvaluationResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetComplianceDetailsByResourceResponse:
     Optional[list[EvaluationResult]] EvaluationResults
     Optional[str] NextToken
@@ -1951,40 +2037,46 @@ struct GetComplianceDetailsByResourceResponse:
 struct GetComplianceSummaryByConfigRuleResponse:
     Optional[ComplianceSummary] ComplianceSummary
 
-# no @derive(Json): member(s) ResourceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetComplianceSummaryByResourceTypeRequest:
     Optional[list[str]] ResourceTypes
 
-# no @derive(Json): member(s) ComplianceSummariesByResourceType: list[ComplianceSummaryByResourceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ComplianceSummariesByResourceType: list[ComplianceSummaryByResourceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetComplianceSummaryByResourceTypeResponse:
     Optional[list[ComplianceSummaryByResourceType]] ComplianceSummariesByResourceType
 
-# no @derive(Json): member(s) Filters: ConformancePackEvaluationFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: ConformancePackEvaluationFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConformancePackComplianceDetailsRequest:
     str ConformancePackName
     Optional[ConformancePackEvaluationFilters] Filters
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConformancePackRuleEvaluationResults: list[ConformancePackEvaluationResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConformancePackRuleEvaluationResults: list[ConformancePackEvaluationResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConformancePackComplianceDetailsResponse:
     str ConformancePackName
     Optional[list[ConformancePackEvaluationResult]] ConformancePackRuleEvaluationResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConformancePackNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConformancePackNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConformancePackComplianceSummaryRequest:
     list[str] ConformancePackNames
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConformancePackComplianceSummaryList: list[ConformancePackComplianceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConformancePackComplianceSummaryList: list[ConformancePackComplianceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConformancePackComplianceSummaryResponse:
     Optional[list[ConformancePackComplianceSummary]] ConformancePackComplianceSummaryList
     Optional[str] NextToken
@@ -2005,15 +2097,17 @@ struct GetCustomRulePolicyRequest:
 struct GetCustomRulePolicyResponse:
     Optional[str] PolicyText
 
-# no @derive(Json): member(s) resourceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDiscoveredResourceCountsRequest:
     Optional[list[str]] resourceTypes
     Optional[int64] limit
     Optional[str] nextToken
 
-# no @derive(Json): member(s) resourceCounts: list[ResourceCount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceCounts: list[ResourceCount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDiscoveredResourceCountsResponse:
     Optional[int64] totalDiscoveredResources
     Optional[list[ResourceCount]] resourceCounts
@@ -2026,8 +2120,9 @@ struct GetOrganizationConfigRuleDetailedStatusRequest:
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) OrganizationConfigRuleDetailedStatus: list[MemberAccountStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrganizationConfigRuleDetailedStatus: list[MemberAccountStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOrganizationConfigRuleDetailedStatusResponse:
     Optional[list[MemberAccountStatus]] OrganizationConfigRuleDetailedStatus
     Optional[str] NextToken
@@ -2039,8 +2134,9 @@ struct GetOrganizationConformancePackDetailedStatusRequest:
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) OrganizationConformancePackDetailedStatuses: list[OrganizationConformancePackDetailedStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrganizationConformancePackDetailedStatuses: list[OrganizationConformancePackDetailedStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOrganizationConformancePackDetailedStatusResponse:
     Optional[list[OrganizationConformancePackDetailedStatus]] OrganizationConformancePackDetailedStatuses
     Optional[str] NextToken
@@ -2063,8 +2159,9 @@ struct GetResourceConfigHistoryRequest:
     Optional[int64] limit
     Optional[str] nextToken
 
-# no @derive(Json): member(s) configurationItems: list[ConfigurationItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurationItems: list[ConfigurationItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourceConfigHistoryResponse:
     Optional[list[ConfigurationItem]] configurationItems
     Optional[str] nextToken
@@ -2193,27 +2290,31 @@ struct ListAggregateDiscoveredResourcesRequest:
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ResourceIdentifiers: list[AggregateResourceIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceIdentifiers: list[AggregateResourceIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAggregateDiscoveredResourcesResponse:
     Optional[list[AggregateResourceIdentifier]] ResourceIdentifiers
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[ConfigurationRecorderFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[ConfigurationRecorderFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfigurationRecordersRequest:
     Optional[list[ConfigurationRecorderFilter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConfigurationRecorderSummaries: list[ConfigurationRecorderSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationRecorderSummaries: list[ConfigurationRecorderSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfigurationRecordersResponse:
     list[ConfigurationRecorderSummary] ConfigurationRecorderSummaries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: ConformancePackComplianceScoresFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: ConformancePackComplianceScoresFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConformancePackComplianceScoresRequest:
     Optional[ConformancePackComplianceScoresFilters] Filters
     Optional[SortOrder] SortOrder
@@ -2221,27 +2322,31 @@ struct ListConformancePackComplianceScoresRequest:
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConformancePackComplianceScores: list[ConformancePackComplianceScore] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConformancePackComplianceScores: list[ConformancePackComplianceScore] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConformancePackComplianceScoresResponse:
     Optional[str] NextToken
     list[ConformancePackComplianceScore] ConformancePackComplianceScores
 
-# no @derive(Json): member(s) Filters: list[ConnectorFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[ConnectorFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectorsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
     Optional[list[ConnectorFilter]] Filters
 
-# no @derive(Json): member(s) ConnectorSummaries: list[ConnectorSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectorSummaries: list[ConnectorSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectorsResponse:
     list[ConnectorSummary] ConnectorSummaries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) resourceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDiscoveredResourcesRequest:
     ResourceType resourceType
     Optional[list[str]] resourceIds
@@ -2250,8 +2355,9 @@ struct ListDiscoveredResourcesRequest:
     Optional[bool] includeDeletedResources
     Optional[str] nextToken
 
-# no @derive(Json): member(s) resourceIdentifiers: list[ResourceIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceIdentifiers: list[ResourceIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDiscoveredResourcesResponse:
     Optional[list[ResourceIdentifier]] resourceIdentifiers
     Optional[str] nextToken
@@ -2262,8 +2368,9 @@ struct ListResourceEvaluationsRequest:
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ResourceEvaluations: list[ResourceEvaluation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceEvaluations: list[ResourceEvaluation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceEvaluationsResponse:
     Optional[list[ResourceEvaluation]] ResourceEvaluations
     Optional[str] NextToken
@@ -2273,8 +2380,9 @@ struct ListStoredQueriesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) StoredQueryMetadata: list[StoredQueryMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StoredQueryMetadata: list[StoredQueryMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStoredQueriesResponse:
     Optional[list[StoredQueryMetadata]] StoredQueryMetadata
     Optional[str] NextToken
@@ -2285,8 +2393,9 @@ struct ListTagsForResourceRequest:
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
     Optional[str] NextToken
@@ -2430,8 +2539,9 @@ struct OrganizationAccessDeniedException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) AwsRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AwsRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OrganizationAggregationSource:
     str RoleArn
     Optional[list[str]] AwsRegions
@@ -2442,8 +2552,9 @@ struct OrganizationAllFeaturesNotEnabledException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) OrganizationManagedRuleMetadata: OrganizationManagedRuleMetadata, OrganizationCustomRuleMetadata: OrganizationCustomRuleMetadata, ExcludedAccounts: list[str], OrganizationCustomPolicyRuleMetadata: OrganizationCustomPolicyRuleMetadataNoPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrganizationManagedRuleMetadata: OrganizationManagedRuleMetadata, OrganizationCustomRuleMetadata: OrganizationCustomRuleMetadata, ExcludedAccounts: list[str], OrganizationCustomPolicyRuleMetadata: OrganizationCustomPolicyRuleMetadataNoPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OrganizationConfigRule:
     str OrganizationConfigRuleName
     str OrganizationConfigRuleArn
@@ -2461,8 +2572,9 @@ struct OrganizationConfigRuleStatus:
     Optional[str] ErrorMessage
     Optional[DateTime] LastUpdateTime
 
-# no @derive(Json): member(s) ConformancePackInputParameters: list[ConformancePackInputParameter], ExcludedAccounts: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConformancePackInputParameters: list[ConformancePackInputParameter], ExcludedAccounts: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OrganizationConformancePack:
     str OrganizationConformancePackName
     str OrganizationConformancePackArn
@@ -2494,8 +2606,9 @@ struct OrganizationConformancePackTemplateValidationException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) OrganizationConfigRuleTriggerTypes: list[OrganizationConfigRuleTriggerTypeNoSN], ResourceTypesScope: list[str], DebugLogDeliveryAccounts: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrganizationConfigRuleTriggerTypes: list[OrganizationConfigRuleTriggerTypeNoSN], ResourceTypesScope: list[str], DebugLogDeliveryAccounts: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OrganizationCustomPolicyRuleMetadata:
     Optional[str] Description
     Optional[list[OrganizationConfigRuleTriggerTypeNoSN]] OrganizationConfigRuleTriggerTypes
@@ -2509,8 +2622,9 @@ struct OrganizationCustomPolicyRuleMetadata:
     str PolicyText
     Optional[list[str]] DebugLogDeliveryAccounts
 
-# no @derive(Json): member(s) OrganizationConfigRuleTriggerTypes: list[OrganizationConfigRuleTriggerTypeNoSN], ResourceTypesScope: list[str], DebugLogDeliveryAccounts: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrganizationConfigRuleTriggerTypes: list[OrganizationConfigRuleTriggerTypeNoSN], ResourceTypesScope: list[str], DebugLogDeliveryAccounts: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OrganizationCustomPolicyRuleMetadataNoPolicy:
     Optional[str] Description
     Optional[list[OrganizationConfigRuleTriggerTypeNoSN]] OrganizationConfigRuleTriggerTypes
@@ -2523,8 +2637,9 @@ struct OrganizationCustomPolicyRuleMetadataNoPolicy:
     Optional[str] PolicyRuntime
     Optional[list[str]] DebugLogDeliveryAccounts
 
-# no @derive(Json): member(s) OrganizationConfigRuleTriggerTypes: list[OrganizationConfigRuleTriggerType], ResourceTypesScope: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrganizationConfigRuleTriggerTypes: list[OrganizationConfigRuleTriggerType], ResourceTypesScope: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OrganizationCustomRuleMetadata:
     Optional[str] Description
     str LambdaFunctionArn
@@ -2536,8 +2651,9 @@ struct OrganizationCustomRuleMetadata:
     Optional[str] TagKeyScope
     Optional[str] TagValueScope
 
-# no @derive(Json): member(s) ResourceTypesScope: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceTypesScope: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OrganizationManagedRuleMetadata:
     Optional[str] Description
     str RuleIdentifier
@@ -2563,8 +2679,9 @@ struct PendingAggregationRequest:
     Optional[str] RequesterAccountId
     Optional[str] RequesterAwsRegion
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutAggregationAuthorizationRequest:
     str AuthorizedAccountId
     str AuthorizedAwsRegion
@@ -2574,14 +2691,16 @@ struct PutAggregationAuthorizationRequest:
 struct PutAggregationAuthorizationResponse:
     Optional[AggregationAuthorization] AggregationAuthorization
 
-# no @derive(Json): member(s) ConfigRule: ConfigRule, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigRule: ConfigRule, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutConfigRuleRequest:
     ConfigRule ConfigRule
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) AccountAggregationSources: list[AccountAggregationSource], OrganizationAggregationSource: OrganizationAggregationSource, Tags: list[Tag], AggregatorFilters: AggregatorFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountAggregationSources: list[AccountAggregationSource], OrganizationAggregationSource: OrganizationAggregationSource, Tags: list[Tag], AggregatorFilters: AggregatorFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutConfigurationAggregatorRequest:
     str ConfigurationAggregatorName
     Optional[list[AccountAggregationSource]] AccountAggregationSources
@@ -2589,19 +2708,22 @@ struct PutConfigurationAggregatorRequest:
     Optional[list[Tag]] Tags
     Optional[AggregatorFilters] AggregatorFilters
 
-# no @derive(Json): member(s) ConfigurationAggregator: ConfigurationAggregator not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationAggregator: ConfigurationAggregator not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutConfigurationAggregatorResponse:
     Optional[ConfigurationAggregator] ConfigurationAggregator
 
-# no @derive(Json): member(s) ConfigurationRecorder: ConfigurationRecorder, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationRecorder: ConfigurationRecorder, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutConfigurationRecorderRequest:
     ConfigurationRecorder ConfigurationRecorder
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) ConformancePackInputParameters: list[ConformancePackInputParameter], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConformancePackInputParameters: list[ConformancePackInputParameter], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutConformancePackRequest:
     str ConformancePackName
     Optional[str] TemplateS3Uri
@@ -2616,8 +2738,9 @@ struct PutConformancePackRequest:
 struct PutConformancePackResponse:
     Optional[str] ConformancePackArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutConnectorRequest:
     ConnectorConfiguration ConnectorConfiguration
     Optional[list[Tag]] Tags
@@ -2630,15 +2753,17 @@ struct PutConnectorResponse:
 struct PutDeliveryChannelRequest:
     DeliveryChannel DeliveryChannel
 
-# no @derive(Json): member(s) Evaluations: list[Evaluation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Evaluations: list[Evaluation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutEvaluationsRequest:
     Optional[list[Evaluation]] Evaluations
     str ResultToken
     Optional[bool] TestMode
 
-# no @derive(Json): member(s) FailedEvaluations: list[Evaluation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedEvaluations: list[Evaluation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutEvaluationsResponse:
     Optional[list[Evaluation]] FailedEvaluations
 
@@ -2652,8 +2777,9 @@ struct PutExternalEvaluationResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) OrganizationManagedRuleMetadata: OrganizationManagedRuleMetadata, OrganizationCustomRuleMetadata: OrganizationCustomRuleMetadata, ExcludedAccounts: list[str], OrganizationCustomPolicyRuleMetadata: OrganizationCustomPolicyRuleMetadata, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrganizationManagedRuleMetadata: OrganizationManagedRuleMetadata, OrganizationCustomRuleMetadata: OrganizationCustomRuleMetadata, ExcludedAccounts: list[str], OrganizationCustomPolicyRuleMetadata: OrganizationCustomPolicyRuleMetadata, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutOrganizationConfigRuleRequest:
     str OrganizationConfigRuleName
     Optional[OrganizationManagedRuleMetadata] OrganizationManagedRuleMetadata
@@ -2666,8 +2792,9 @@ struct PutOrganizationConfigRuleRequest:
 struct PutOrganizationConfigRuleResponse:
     Optional[str] OrganizationConfigRuleArn
 
-# no @derive(Json): member(s) ConformancePackInputParameters: list[ConformancePackInputParameter], ExcludedAccounts: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConformancePackInputParameters: list[ConformancePackInputParameter], ExcludedAccounts: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutOrganizationConformancePackRequest:
     str OrganizationConformancePackName
     Optional[str] TemplateS3Uri
@@ -2682,31 +2809,36 @@ struct PutOrganizationConformancePackRequest:
 struct PutOrganizationConformancePackResponse:
     Optional[str] OrganizationConformancePackArn
 
-# no @derive(Json): member(s) RemediationConfigurations: list[RemediationConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RemediationConfigurations: list[RemediationConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutRemediationConfigurationsRequest:
     list[RemediationConfiguration] RemediationConfigurations
 
-# no @derive(Json): member(s) FailedBatches: list[FailedRemediationBatch] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedBatches: list[FailedRemediationBatch] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutRemediationConfigurationsResponse:
     Optional[list[FailedRemediationBatch]] FailedBatches
 
-# no @derive(Json): member(s) ResourceKeys: list[RemediationExceptionResourceKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceKeys: list[RemediationExceptionResourceKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutRemediationExceptionsRequest:
     str ConfigRuleName
     list[RemediationExceptionResourceKey] ResourceKeys
     Optional[str] Message
     Optional[DateTime] ExpirationTime
 
-# no @derive(Json): member(s) FailedBatches: list[FailedRemediationExceptionBatch] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedBatches: list[FailedRemediationExceptionBatch] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutRemediationExceptionsResponse:
     Optional[list[FailedRemediationExceptionBatch]] FailedBatches
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutResourceConfigRequest:
     str ResourceType
     str SchemaVersionId
@@ -2723,8 +2855,9 @@ struct PutRetentionConfigurationRequest:
 struct PutRetentionConfigurationResponse:
     Optional[RetentionConfiguration] RetentionConfiguration
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutServiceLinkedConfigurationRecorderRequest:
     str ServicePrincipal
     Optional[list[Tag]] Tags
@@ -2734,8 +2867,9 @@ struct PutServiceLinkedConfigurationRecorderResponse:
     Optional[str] Arn
     Optional[str] Name
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutStoredQueryRequest:
     StoredQuery StoredQuery
     Optional[list[Tag]] Tags
@@ -2744,8 +2878,9 @@ struct PutStoredQueryRequest:
 struct PutStoredQueryResponse:
     Optional[str] QueryArn
 
-# no @derive(Json): member(s) ScopeConfiguration: ScopeConfiguration, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScopeConfiguration: ScopeConfiguration, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutThirdPartyServiceLinkedConfigurationRecorderRequest:
     str ServicePrincipal
     str ConnectorArn
@@ -2757,13 +2892,15 @@ struct PutThirdPartyServiceLinkedConfigurationRecorderResponse:
     str Arn
     str Name
 
-# no @derive(Json): member(s) SelectFields: list[FieldInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectFields: list[FieldInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryInfo:
     Optional[list[FieldInfo]] SelectFields
 
-# no @derive(Json): member(s) resourceTypes: list[ResourceType], exclusionByResourceTypes: ExclusionByResourceTypes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceTypes: list[ResourceType], exclusionByResourceTypes: ExclusionByResourceTypes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecordingGroup:
     Optional[bool] allSupported
     Optional[bool] includeGlobalResourceTypes
@@ -2771,14 +2908,16 @@ struct RecordingGroup:
     Optional[ExclusionByResourceTypes] exclusionByResourceTypes
     Optional[RecordingStrategy] recordingStrategy
 
-# no @derive(Json): member(s) recordingModeOverrides: list[RecordingModeOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recordingModeOverrides: list[RecordingModeOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecordingMode:
     RecordingFrequency recordingFrequency
     Optional[list[RecordingModeOverride]] recordingModeOverrides
 
-# no @derive(Json): member(s) resourceTypes: list[ResourceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceTypes: list[ResourceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecordingModeOverride:
     Optional[str] description
     list[ResourceType] resourceTypes
@@ -2795,8 +2934,9 @@ struct Relationship:
     Optional[str] resourceName
     Optional[str] relationshipName
 
-# no @derive(Json): member(s) Parameters: dict[str, RemediationParameterValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, RemediationParameterValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemediationConfiguration:
     str ConfigRuleName
     str TargetType
@@ -2824,8 +2964,9 @@ struct RemediationExceptionResourceKey:
     Optional[str] ResourceType
     Optional[str] ResourceId
 
-# no @derive(Json): member(s) StepDetails: list[RemediationExecutionStep] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StepDetails: list[RemediationExecutionStep] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemediationExecutionStatus:
     Optional[ResourceKey] ResourceKey
     Optional[RemediationExecutionState] State
@@ -2846,8 +2987,9 @@ struct RemediationInProgressException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) StaticValue: StaticValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StaticValue: StaticValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemediationParameterValue:
     Optional[ResourceValue] ResourceValue
     Optional[StaticValue] StaticValue
@@ -2929,8 +3071,9 @@ struct RetentionConfiguration:
     str Name
     int64 RetentionPeriodInDays
 
-# no @derive(Json): member(s) ComplianceResourceTypes: list[str], ServicePrincipals: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ComplianceResourceTypes: list[str], ServicePrincipals: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Scope:
     Optional[list[str]] ComplianceResourceTypes
     Optional[str] TagKey
@@ -2938,8 +3081,9 @@ struct Scope:
     Optional[str] ComplianceResourceId
     Optional[list[str]] ServicePrincipals
 
-# no @derive(Json): member(s) scopeValues: list[str], includedRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scopeValues: list[str], includedRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScopeConfiguration:
     str scopeType
     Optional[list[str]] scopeValues
@@ -2954,8 +3098,9 @@ struct SelectAggregateResourceConfigRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Results: list[str], QueryInfo: QueryInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[str], QueryInfo: QueryInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SelectAggregateResourceConfigResponse:
     Optional[list[str]] Results
     Optional[QueryInfo] QueryInfo
@@ -2967,15 +3112,17 @@ struct SelectResourceConfigRequest:
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Results: list[str], QueryInfo: QueryInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[str], QueryInfo: QueryInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SelectResourceConfigResponse:
     Optional[list[str]] Results
     Optional[QueryInfo] QueryInfo
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SourceDetails: list[SourceDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceDetails: list[SourceDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Source:
     Owner Owner
     Optional[str] SourceIdentifier
@@ -2993,8 +3140,9 @@ struct SsmControls:
     Optional[int64] ConcurrentExecutionRatePercentage
     Optional[int64] ErrorPercentage
 
-# no @derive(Json): member(s) ConfigRuleNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigRuleNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartConfigRulesEvaluationRequest:
     Optional[list[str]] ConfigRuleNames
 
@@ -3007,14 +3155,16 @@ struct StartConfigRulesEvaluationResponse:
 struct StartConfigurationRecorderRequest:
     str ConfigurationRecorderName
 
-# no @derive(Json): member(s) ResourceKeys: list[ResourceKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceKeys: list[ResourceKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartRemediationExecutionRequest:
     str ConfigRuleName
     list[ResourceKey] ResourceKeys
 
-# no @derive(Json): member(s) FailedItems: list[ResourceKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedItems: list[ResourceKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartRemediationExecutionResponse:
     Optional[str] FailureMessage
     Optional[list[ResourceKey]] FailedItems
@@ -3031,8 +3181,9 @@ struct StartResourceEvaluationRequest:
 struct StartResourceEvaluationResponse:
     Optional[str] ResourceEvaluationId
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StaticValue:
     list[str] Values
 
@@ -3065,8 +3216,9 @@ struct Tag:
     Optional[str] Key
     Optional[str] Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[Tag] Tags
@@ -3091,8 +3243,9 @@ struct UnmodifiableEntityException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] TagKeys
@@ -3286,92 +3439,1441 @@ def config_error_from_code(str code) -> Config_ServiceError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AssociateResourceTypes (input AssociateResourceTypesRequest)
-#   BatchGetAggregateResourceConfig (input BatchGetAggregateResourceConfigRequest)
-#   BatchGetResourceConfig (input BatchGetResourceConfigRequest)
-#   DeleteRemediationExceptions (input DeleteRemediationExceptionsRequest)
-#   DescribeComplianceByConfigRule (input DescribeComplianceByConfigRuleRequest)
-#   DescribeComplianceByResource (input DescribeComplianceByResourceRequest)
-#   DescribeConfigRuleEvaluationStatus (input DescribeConfigRuleEvaluationStatusRequest)
-#   DescribeConfigRules (input DescribeConfigRulesRequest)
-#   DescribeConfigurationAggregatorSourcesStatus (input DescribeConfigurationAggregatorSourcesStatusRequest)
-#   DescribeConfigurationAggregators (input DescribeConfigurationAggregatorsRequest)
-#   DescribeConfigurationRecorderStatus (input DescribeConfigurationRecorderStatusRequest)
-#   DescribeConfigurationRecorders (input DescribeConfigurationRecordersRequest)
-#   DescribeConformancePackCompliance (input DescribeConformancePackComplianceRequest)
-#   DescribeConformancePackStatus (input DescribeConformancePackStatusRequest)
-#   DescribeConformancePacks (input DescribeConformancePacksRequest)
-#   DescribeDeliveryChannelStatus (input DescribeDeliveryChannelStatusRequest)
-#   DescribeDeliveryChannels (input DescribeDeliveryChannelsRequest)
-#   DescribeOrganizationConfigRuleStatuses (input DescribeOrganizationConfigRuleStatusesRequest)
-#   DescribeOrganizationConfigRules (input DescribeOrganizationConfigRulesRequest)
-#   DescribeOrganizationConformancePackStatuses (input DescribeOrganizationConformancePackStatusesRequest)
-#   DescribeOrganizationConformancePacks (input DescribeOrganizationConformancePacksRequest)
-#   DescribeRemediationConfigurations (input DescribeRemediationConfigurationsRequest)
-#   DescribeRemediationExceptions (input DescribeRemediationExceptionsRequest)
-#   DescribeRemediationExecutionStatus (input DescribeRemediationExecutionStatusRequest)
-#   DescribeRetentionConfigurations (input DescribeRetentionConfigurationsRequest)
-#   DisassociateResourceTypes (input DisassociateResourceTypesRequest)
-#   GetComplianceDetailsByConfigRule (input GetComplianceDetailsByConfigRuleRequest)
-#   GetComplianceDetailsByResource (input GetComplianceDetailsByResourceRequest)
-#   GetComplianceSummaryByResourceType (input GetComplianceSummaryByResourceTypeRequest)
-#   GetConformancePackComplianceDetails (input GetConformancePackComplianceDetailsRequest)
-#   GetConformancePackComplianceSummary (input GetConformancePackComplianceSummaryRequest)
-#   GetDiscoveredResourceCounts (input GetDiscoveredResourceCountsRequest)
-#   ListConfigurationRecorders (input ListConfigurationRecordersRequest)
-#   ListConformancePackComplianceScores (input ListConformancePackComplianceScoresRequest)
-#   ListConnectors (input ListConnectorsRequest)
-#   ListDiscoveredResources (input ListDiscoveredResourcesRequest)
-#   PutAggregationAuthorization (input PutAggregationAuthorizationRequest)
-#   PutConfigRule (input PutConfigRuleRequest)
-#   PutConfigurationAggregator (input PutConfigurationAggregatorRequest)
-#   PutConfigurationRecorder (input PutConfigurationRecorderRequest)
-#   PutConformancePack (input PutConformancePackRequest)
-#   PutConnector (input PutConnectorRequest)
-#   PutEvaluations (input PutEvaluationsRequest)
-#   PutOrganizationConfigRule (input PutOrganizationConfigRuleRequest)
-#   PutOrganizationConformancePack (input PutOrganizationConformancePackRequest)
-#   PutRemediationConfigurations (input PutRemediationConfigurationsRequest)
-#   PutRemediationExceptions (input PutRemediationExceptionsRequest)
-#   PutResourceConfig (input PutResourceConfigRequest)
-#   PutServiceLinkedConfigurationRecorder (input PutServiceLinkedConfigurationRecorderRequest)
-#   PutStoredQuery (input PutStoredQueryRequest)
-#   PutThirdPartyServiceLinkedConfigurationRecorder (input PutThirdPartyServiceLinkedConfigurationRecorderRequest)
-#   StartConfigRulesEvaluation (input StartConfigRulesEvaluationRequest)
-#   StartRemediationExecution (input StartRemediationExecutionRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def config_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   DescribeComplianceByConfigRule (input not derivable (no generated method))
-#   DescribeComplianceByResource (input not derivable (no generated method))
-#   DescribeConfigRuleEvaluationStatus (input not derivable (no generated method))
-#   DescribeConfigRules (input not derivable (no generated method))
-#   DescribeConfigurationAggregatorSourcesStatus (input not derivable (no generated method))
-#   DescribeConfigurationAggregators (input not derivable (no generated method))
-#   DescribeConformancePackCompliance (input not derivable (no generated method))
-#   DescribeConformancePackStatus (input not derivable (no generated method))
-#   DescribeConformancePacks (input not derivable (no generated method))
-#   DescribeOrganizationConfigRuleStatuses (input not derivable (no generated method))
-#   DescribeOrganizationConfigRules (input not derivable (no generated method))
-#   DescribeOrganizationConformancePackStatuses (input not derivable (no generated method))
-#   DescribeOrganizationConformancePacks (input not derivable (no generated method))
-#   DescribeRemediationExecutionStatus (input not derivable (no generated method))
-#   DescribeRetentionConfigurations (input not derivable (no generated method))
-#   GetComplianceDetailsByConfigRule (input not derivable (no generated method))
-#   GetComplianceDetailsByResource (input not derivable (no generated method))
-#   GetConformancePackComplianceSummary (input not derivable (no generated method))
-#   ListConfigurationRecorders (input not derivable (no generated method))
-#   ListConnectors (input not derivable (no generated method))
-#   ListDiscoveredResources (input not derivable (no generated method))
+def config_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def config_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AccountAggregationSource to a compact JSON object (declaration order).
+def account_aggregation_source_to_json(AccountAggregationSource v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AccountIds:
+        e0.append(config_json_str(x0))
+    parts.append("\"AccountIds\":" + config_json_arr(e0))
+    if v.AllAwsRegions.is_some():
+        auto u1 = v.AllAwsRegions.unwrap()
+        parts.append("\"AllAwsRegions\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.AwsRegions.is_some():
+        auto u2 = v.AwsRegions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(config_json_str(x3))
+        parts.append("\"AwsRegions\":" + config_json_arr(e3))
+    return config_json_obj(parts)
+
+# Serialize AggregatorFilterResourceType to a compact JSON object (declaration order).
+def aggregator_filter_resource_type_to_json(AggregatorFilterResourceType v) -> str:
+    list[str] parts = []
+    if v.Type.is_some():
+        auto u0 = v.Type.unwrap()
+        parts.append("\"Type\":" + config_json_str(u0))
+    if v.Value.is_some():
+        auto u1 = v.Value.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(config_json_str(x2))
+        parts.append("\"Value\":" + config_json_arr(e2))
+    return config_json_obj(parts)
+
+# Serialize AggregatorFilterServicePrincipal to a compact JSON object (declaration order).
+def aggregator_filter_service_principal_to_json(AggregatorFilterServicePrincipal v) -> str:
+    list[str] parts = []
+    if v.Type.is_some():
+        auto u0 = v.Type.unwrap()
+        parts.append("\"Type\":" + config_json_str(u0))
+    if v.Value.is_some():
+        auto u1 = v.Value.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(config_json_str(x2))
+        parts.append("\"Value\":" + config_json_arr(e2))
+    return config_json_obj(parts)
+
+# Serialize AggregatorFilters to a compact JSON object (declaration order).
+def aggregator_filters_to_json(AggregatorFilters v) -> str:
+    list[str] parts = []
+    if v.ResourceType.is_some():
+        auto u0 = v.ResourceType.unwrap()
+        parts.append("\"ResourceType\":" + aggregator_filter_resource_type_to_json(u0))
+    if v.ServicePrincipal.is_some():
+        auto u1 = v.ServicePrincipal.unwrap()
+        parts.append("\"ServicePrincipal\":" + aggregator_filter_service_principal_to_json(u1))
+    return config_json_obj(parts)
+
+# Serialize AssociateResourceTypesRequest to a compact JSON object (declaration order).
+def associate_resource_types_request_to_json(AssociateResourceTypesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConfigurationRecorderArn\":" + config_json_str(v.ConfigurationRecorderArn))
+    list[str] e0 = []
+    for x0 in v.ResourceTypes:
+        e0.append(x0.to_json())
+    parts.append("\"ResourceTypes\":" + config_json_arr(e0))
+    return config_json_obj(parts)
+
+# Serialize BatchGetAggregateResourceConfigRequest to a compact JSON object (declaration order).
+def batch_get_aggregate_resource_config_request_to_json(BatchGetAggregateResourceConfigRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConfigurationAggregatorName\":" + config_json_str(v.ConfigurationAggregatorName))
+    list[str] e0 = []
+    for x0 in v.ResourceIdentifiers:
+        e0.append(x0.to_json())
+    parts.append("\"ResourceIdentifiers\":" + config_json_arr(e0))
+    return config_json_obj(parts)
+
+# Serialize BatchGetResourceConfigRequest to a compact JSON object (declaration order).
+def batch_get_resource_config_request_to_json(BatchGetResourceConfigRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.resourceKeys:
+        e0.append(x0.to_json())
+    parts.append("\"resourceKeys\":" + config_json_arr(e0))
+    return config_json_obj(parts)
+
+# Serialize ConfigRule to a compact JSON object (declaration order).
+def config_rule_to_json(ConfigRule v) -> str:
+    list[str] parts = []
+    if v.ConfigRuleName.is_some():
+        auto u0 = v.ConfigRuleName.unwrap()
+        parts.append("\"ConfigRuleName\":" + config_json_str(u0))
+    if v.ConfigRuleArn.is_some():
+        auto u1 = v.ConfigRuleArn.unwrap()
+        parts.append("\"ConfigRuleArn\":" + config_json_str(u1))
+    if v.ConfigRuleId.is_some():
+        auto u2 = v.ConfigRuleId.unwrap()
+        parts.append("\"ConfigRuleId\":" + config_json_str(u2))
+    if v.Description.is_some():
+        auto u3 = v.Description.unwrap()
+        parts.append("\"Description\":" + config_json_str(u3))
+    if v.Scope.is_some():
+        auto u4 = v.Scope.unwrap()
+        parts.append("\"Scope\":" + scope__to_json(u4))
+    parts.append("\"Source\":" + source_to_json(v.Source))
+    if v.InputParameters.is_some():
+        auto u5 = v.InputParameters.unwrap()
+        parts.append("\"InputParameters\":" + config_json_str(u5))
+    if v.MaximumExecutionFrequency.is_some():
+        auto u6 = v.MaximumExecutionFrequency.unwrap()
+        parts.append("\"MaximumExecutionFrequency\":" + u6.to_json())
+    if v.ConfigRuleState.is_some():
+        auto u7 = v.ConfigRuleState.unwrap()
+        parts.append("\"ConfigRuleState\":" + u7.to_json())
+    if v.CreatedBy.is_some():
+        auto u8 = v.CreatedBy.unwrap()
+        parts.append("\"CreatedBy\":" + config_json_str(u8))
+    if v.EvaluationModes.is_some():
+        auto u9 = v.EvaluationModes.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"EvaluationModes\":" + config_json_arr(e10))
+    if v.RuleEvaluationVisibility.is_some():
+        auto u11 = v.RuleEvaluationVisibility.unwrap()
+        parts.append("\"RuleEvaluationVisibility\":" + u11.to_json())
+    return config_json_obj(parts)
+
+# Serialize ConfigurationRecorder to a compact JSON object (declaration order).
+def configuration_recorder_to_json(ConfigurationRecorder v) -> str:
+    list[str] parts = []
+    if v.arn.is_some():
+        auto u0 = v.arn.unwrap()
+        parts.append("\"arn\":" + config_json_str(u0))
+    if v.name.is_some():
+        auto u1 = v.name.unwrap()
+        parts.append("\"name\":" + config_json_str(u1))
+    if v.roleARN.is_some():
+        auto u2 = v.roleARN.unwrap()
+        parts.append("\"roleARN\":" + config_json_str(u2))
+    if v.recordingGroup.is_some():
+        auto u3 = v.recordingGroup.unwrap()
+        parts.append("\"recordingGroup\":" + recording_group_to_json(u3))
+    if v.recordingMode.is_some():
+        auto u4 = v.recordingMode.unwrap()
+        parts.append("\"recordingMode\":" + recording_mode_to_json(u4))
+    if v.recordingScope.is_some():
+        auto u5 = v.recordingScope.unwrap()
+        parts.append("\"recordingScope\":" + u5.to_json())
+    if v.servicePrincipal.is_some():
+        auto u6 = v.servicePrincipal.unwrap()
+        parts.append("\"servicePrincipal\":" + config_json_str(u6))
+    if v.connectorArn.is_some():
+        auto u7 = v.connectorArn.unwrap()
+        parts.append("\"connectorArn\":" + config_json_str(u7))
+    if v.scopeConfiguration.is_some():
+        auto u8 = v.scopeConfiguration.unwrap()
+        parts.append("\"scopeConfiguration\":" + scope_configuration_to_json(u8))
+    return config_json_obj(parts)
+
+# Serialize ConfigurationRecorderFilter to a compact JSON object (declaration order).
+def configuration_recorder_filter_to_json(ConfigurationRecorderFilter v) -> str:
+    list[str] parts = []
+    if v.filterName.is_some():
+        auto u0 = v.filterName.unwrap()
+        parts.append("\"filterName\":" + config_json_str(u0))
+    if v.filterValue.is_some():
+        auto u1 = v.filterValue.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(config_json_str(x2))
+        parts.append("\"filterValue\":" + config_json_arr(e2))
+    return config_json_obj(parts)
+
+# Serialize ConformancePackComplianceFilters to a compact JSON object (declaration order).
+def conformance_pack_compliance_filters_to_json(ConformancePackComplianceFilters v) -> str:
+    list[str] parts = []
+    if v.ConfigRuleNames.is_some():
+        auto u0 = v.ConfigRuleNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(config_json_str(x1))
+        parts.append("\"ConfigRuleNames\":" + config_json_arr(e1))
+    if v.ComplianceType.is_some():
+        auto u2 = v.ComplianceType.unwrap()
+        parts.append("\"ComplianceType\":" + u2.to_json())
+    return config_json_obj(parts)
+
+# Serialize ConformancePackComplianceScoresFilters to a compact JSON object (declaration order).
+def conformance_pack_compliance_scores_filters_to_json(ConformancePackComplianceScoresFilters v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ConformancePackNames:
+        e0.append(config_json_str(x0))
+    parts.append("\"ConformancePackNames\":" + config_json_arr(e0))
+    return config_json_obj(parts)
+
+# Serialize ConformancePackEvaluationFilters to a compact JSON object (declaration order).
+def conformance_pack_evaluation_filters_to_json(ConformancePackEvaluationFilters v) -> str:
+    list[str] parts = []
+    if v.ConfigRuleNames.is_some():
+        auto u0 = v.ConfigRuleNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(config_json_str(x1))
+        parts.append("\"ConfigRuleNames\":" + config_json_arr(e1))
+    if v.ComplianceType.is_some():
+        auto u2 = v.ComplianceType.unwrap()
+        parts.append("\"ComplianceType\":" + u2.to_json())
+    if v.ResourceType.is_some():
+        auto u3 = v.ResourceType.unwrap()
+        parts.append("\"ResourceType\":" + config_json_str(u3))
+    if v.ResourceIds.is_some():
+        auto u4 = v.ResourceIds.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(config_json_str(x5))
+        parts.append("\"ResourceIds\":" + config_json_arr(e5))
+    return config_json_obj(parts)
+
+# Serialize ConnectorFilter to a compact JSON object (declaration order).
+def connector_filter_to_json(ConnectorFilter v) -> str:
+    list[str] parts = []
+    if v.filterName.is_some():
+        auto u0 = v.filterName.unwrap()
+        parts.append("\"filterName\":" + config_json_str(u0))
+    if v.filterValues.is_some():
+        auto u1 = v.filterValues.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(config_json_str(x2))
+        parts.append("\"filterValues\":" + config_json_arr(e2))
+    return config_json_obj(parts)
+
+# Serialize DeleteRemediationExceptionsRequest to a compact JSON object (declaration order).
+def delete_remediation_exceptions_request_to_json(DeleteRemediationExceptionsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConfigRuleName\":" + config_json_str(v.ConfigRuleName))
+    list[str] e0 = []
+    for x0 in v.ResourceKeys:
+        e0.append(x0.to_json())
+    parts.append("\"ResourceKeys\":" + config_json_arr(e0))
+    return config_json_obj(parts)
+
+# Serialize DescribeComplianceByConfigRuleRequest to a compact JSON object (declaration order).
+def describe_compliance_by_config_rule_request_to_json(DescribeComplianceByConfigRuleRequest v) -> str:
+    list[str] parts = []
+    if v.ConfigRuleNames.is_some():
+        auto u0 = v.ConfigRuleNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(config_json_str(x1))
+        parts.append("\"ConfigRuleNames\":" + config_json_arr(e1))
+    if v.ComplianceTypes.is_some():
+        auto u2 = v.ComplianceTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ComplianceTypes\":" + config_json_arr(e3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + config_json_str(u4))
+    return config_json_obj(parts)
+
+# Serialize DescribeComplianceByResourceRequest to a compact JSON object (declaration order).
+def describe_compliance_by_resource_request_to_json(DescribeComplianceByResourceRequest v) -> str:
+    list[str] parts = []
+    if v.ResourceType.is_some():
+        auto u0 = v.ResourceType.unwrap()
+        parts.append("\"ResourceType\":" + config_json_str(u0))
+    if v.ResourceId.is_some():
+        auto u1 = v.ResourceId.unwrap()
+        parts.append("\"ResourceId\":" + config_json_str(u1))
+    if v.ComplianceTypes.is_some():
+        auto u2 = v.ComplianceTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ComplianceTypes\":" + config_json_arr(e3))
+    if v.Limit.is_some():
+        auto u4 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u4))
+    if v.NextToken.is_some():
+        auto u5 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + config_json_str(u5))
+    return config_json_obj(parts)
+
+# Serialize DescribeConfigRuleEvaluationStatusRequest to a compact JSON object (declaration order).
+def describe_config_rule_evaluation_status_request_to_json(DescribeConfigRuleEvaluationStatusRequest v) -> str:
+    list[str] parts = []
+    if v.ConfigRuleNames.is_some():
+        auto u0 = v.ConfigRuleNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(config_json_str(x1))
+        parts.append("\"ConfigRuleNames\":" + config_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + config_json_str(u2))
+    if v.Limit.is_some():
+        auto u3 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u3))
+    return config_json_obj(parts)
+
+# Serialize DescribeConfigRulesRequest to a compact JSON object (declaration order).
+def describe_config_rules_request_to_json(DescribeConfigRulesRequest v) -> str:
+    list[str] parts = []
+    if v.ConfigRuleNames.is_some():
+        auto u0 = v.ConfigRuleNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(config_json_str(x1))
+        parts.append("\"ConfigRuleNames\":" + config_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        parts.append("\"Filters\":" + u2.to_json())
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + config_json_str(u3))
+    return config_json_obj(parts)
+
+# Serialize DescribeConfigurationAggregatorSourcesStatusRequest to a compact JSON object (declaration order).
+def describe_configuration_aggregator_sources_status_request_to_json(DescribeConfigurationAggregatorSourcesStatusRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConfigurationAggregatorName\":" + config_json_str(v.ConfigurationAggregatorName))
+    if v.UpdateStatus.is_some():
+        auto u0 = v.UpdateStatus.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"UpdateStatus\":" + config_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + config_json_str(u2))
+    if v.Limit.is_some():
+        auto u3 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u3))
+    return config_json_obj(parts)
+
+# Serialize DescribeConfigurationAggregatorsRequest to a compact JSON object (declaration order).
+def describe_configuration_aggregators_request_to_json(DescribeConfigurationAggregatorsRequest v) -> str:
+    list[str] parts = []
+    if v.ConfigurationAggregatorNames.is_some():
+        auto u0 = v.ConfigurationAggregatorNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(config_json_str(x1))
+        parts.append("\"ConfigurationAggregatorNames\":" + config_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + config_json_str(u2))
+    if v.Limit.is_some():
+        auto u3 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u3))
+    return config_json_obj(parts)
+
+# Serialize DescribeConfigurationRecorderStatusRequest to a compact JSON object (declaration order).
+def describe_configuration_recorder_status_request_to_json(DescribeConfigurationRecorderStatusRequest v) -> str:
+    list[str] parts = []
+    if v.ConfigurationRecorderNames.is_some():
+        auto u0 = v.ConfigurationRecorderNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(config_json_str(x1))
+        parts.append("\"ConfigurationRecorderNames\":" + config_json_arr(e1))
+    if v.ServicePrincipal.is_some():
+        auto u2 = v.ServicePrincipal.unwrap()
+        parts.append("\"ServicePrincipal\":" + config_json_str(u2))
+    if v.Arn.is_some():
+        auto u3 = v.Arn.unwrap()
+        parts.append("\"Arn\":" + config_json_str(u3))
+    return config_json_obj(parts)
+
+# Serialize DescribeConfigurationRecordersRequest to a compact JSON object (declaration order).
+def describe_configuration_recorders_request_to_json(DescribeConfigurationRecordersRequest v) -> str:
+    list[str] parts = []
+    if v.ConfigurationRecorderNames.is_some():
+        auto u0 = v.ConfigurationRecorderNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(config_json_str(x1))
+        parts.append("\"ConfigurationRecorderNames\":" + config_json_arr(e1))
+    if v.ServicePrincipal.is_some():
+        auto u2 = v.ServicePrincipal.unwrap()
+        parts.append("\"ServicePrincipal\":" + config_json_str(u2))
+    if v.Arn.is_some():
+        auto u3 = v.Arn.unwrap()
+        parts.append("\"Arn\":" + config_json_str(u3))
+    return config_json_obj(parts)
+
+# Serialize DescribeConformancePackComplianceRequest to a compact JSON object (declaration order).
+def describe_conformance_pack_compliance_request_to_json(DescribeConformancePackComplianceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConformancePackName\":" + config_json_str(v.ConformancePackName))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        parts.append("\"Filters\":" + conformance_pack_compliance_filters_to_json(u0))
+    if v.Limit.is_some():
+        auto u1 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + config_json_str(u2))
+    return config_json_obj(parts)
+
+# Serialize DescribeConformancePackStatusRequest to a compact JSON object (declaration order).
+def describe_conformance_pack_status_request_to_json(DescribeConformancePackStatusRequest v) -> str:
+    list[str] parts = []
+    if v.ConformancePackNames.is_some():
+        auto u0 = v.ConformancePackNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(config_json_str(x1))
+        parts.append("\"ConformancePackNames\":" + config_json_arr(e1))
+    if v.Limit.is_some():
+        auto u2 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + config_json_str(u3))
+    return config_json_obj(parts)
+
+# Serialize DescribeConformancePacksRequest to a compact JSON object (declaration order).
+def describe_conformance_packs_request_to_json(DescribeConformancePacksRequest v) -> str:
+    list[str] parts = []
+    if v.ConformancePackNames.is_some():
+        auto u0 = v.ConformancePackNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(config_json_str(x1))
+        parts.append("\"ConformancePackNames\":" + config_json_arr(e1))
+    if v.Limit.is_some():
+        auto u2 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + config_json_str(u3))
+    return config_json_obj(parts)
+
+# Serialize DescribeDeliveryChannelStatusRequest to a compact JSON object (declaration order).
+def describe_delivery_channel_status_request_to_json(DescribeDeliveryChannelStatusRequest v) -> str:
+    list[str] parts = []
+    if v.DeliveryChannelNames.is_some():
+        auto u0 = v.DeliveryChannelNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(config_json_str(x1))
+        parts.append("\"DeliveryChannelNames\":" + config_json_arr(e1))
+    return config_json_obj(parts)
+
+# Serialize DescribeDeliveryChannelsRequest to a compact JSON object (declaration order).
+def describe_delivery_channels_request_to_json(DescribeDeliveryChannelsRequest v) -> str:
+    list[str] parts = []
+    if v.DeliveryChannelNames.is_some():
+        auto u0 = v.DeliveryChannelNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(config_json_str(x1))
+        parts.append("\"DeliveryChannelNames\":" + config_json_arr(e1))
+    return config_json_obj(parts)
+
+# Serialize DescribeOrganizationConfigRuleStatusesRequest to a compact JSON object (declaration order).
+def describe_organization_config_rule_statuses_request_to_json(DescribeOrganizationConfigRuleStatusesRequest v) -> str:
+    list[str] parts = []
+    if v.OrganizationConfigRuleNames.is_some():
+        auto u0 = v.OrganizationConfigRuleNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(config_json_str(x1))
+        parts.append("\"OrganizationConfigRuleNames\":" + config_json_arr(e1))
+    if v.Limit.is_some():
+        auto u2 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + config_json_str(u3))
+    return config_json_obj(parts)
+
+# Serialize DescribeOrganizationConfigRulesRequest to a compact JSON object (declaration order).
+def describe_organization_config_rules_request_to_json(DescribeOrganizationConfigRulesRequest v) -> str:
+    list[str] parts = []
+    if v.OrganizationConfigRuleNames.is_some():
+        auto u0 = v.OrganizationConfigRuleNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(config_json_str(x1))
+        parts.append("\"OrganizationConfigRuleNames\":" + config_json_arr(e1))
+    if v.Limit.is_some():
+        auto u2 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + config_json_str(u3))
+    return config_json_obj(parts)
+
+# Serialize DescribeOrganizationConformancePackStatusesRequest to a compact JSON object (declaration order).
+def describe_organization_conformance_pack_statuses_request_to_json(DescribeOrganizationConformancePackStatusesRequest v) -> str:
+    list[str] parts = []
+    if v.OrganizationConformancePackNames.is_some():
+        auto u0 = v.OrganizationConformancePackNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(config_json_str(x1))
+        parts.append("\"OrganizationConformancePackNames\":" + config_json_arr(e1))
+    if v.Limit.is_some():
+        auto u2 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + config_json_str(u3))
+    return config_json_obj(parts)
+
+# Serialize DescribeOrganizationConformancePacksRequest to a compact JSON object (declaration order).
+def describe_organization_conformance_packs_request_to_json(DescribeOrganizationConformancePacksRequest v) -> str:
+    list[str] parts = []
+    if v.OrganizationConformancePackNames.is_some():
+        auto u0 = v.OrganizationConformancePackNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(config_json_str(x1))
+        parts.append("\"OrganizationConformancePackNames\":" + config_json_arr(e1))
+    if v.Limit.is_some():
+        auto u2 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + config_json_str(u3))
+    return config_json_obj(parts)
+
+# Serialize DescribeRemediationConfigurationsRequest to a compact JSON object (declaration order).
+def describe_remediation_configurations_request_to_json(DescribeRemediationConfigurationsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ConfigRuleNames:
+        e0.append(config_json_str(x0))
+    parts.append("\"ConfigRuleNames\":" + config_json_arr(e0))
+    return config_json_obj(parts)
+
+# Serialize DescribeRemediationExceptionsRequest to a compact JSON object (declaration order).
+def describe_remediation_exceptions_request_to_json(DescribeRemediationExceptionsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConfigRuleName\":" + config_json_str(v.ConfigRuleName))
+    if v.ResourceKeys.is_some():
+        auto u0 = v.ResourceKeys.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ResourceKeys\":" + config_json_arr(e1))
+    if v.Limit.is_some():
+        auto u2 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + config_json_str(u3))
+    return config_json_obj(parts)
+
+# Serialize DescribeRemediationExecutionStatusRequest to a compact JSON object (declaration order).
+def describe_remediation_execution_status_request_to_json(DescribeRemediationExecutionStatusRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConfigRuleName\":" + config_json_str(v.ConfigRuleName))
+    if v.ResourceKeys.is_some():
+        auto u0 = v.ResourceKeys.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ResourceKeys\":" + config_json_arr(e1))
+    if v.Limit.is_some():
+        auto u2 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + config_json_str(u3))
+    return config_json_obj(parts)
+
+# Serialize DescribeRetentionConfigurationsRequest to a compact JSON object (declaration order).
+def describe_retention_configurations_request_to_json(DescribeRetentionConfigurationsRequest v) -> str:
+    list[str] parts = []
+    if v.RetentionConfigurationNames.is_some():
+        auto u0 = v.RetentionConfigurationNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(config_json_str(x1))
+        parts.append("\"RetentionConfigurationNames\":" + config_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + config_json_str(u2))
+    return config_json_obj(parts)
+
+# Serialize DisassociateResourceTypesRequest to a compact JSON object (declaration order).
+def disassociate_resource_types_request_to_json(DisassociateResourceTypesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConfigurationRecorderArn\":" + config_json_str(v.ConfigurationRecorderArn))
+    list[str] e0 = []
+    for x0 in v.ResourceTypes:
+        e0.append(x0.to_json())
+    parts.append("\"ResourceTypes\":" + config_json_arr(e0))
+    return config_json_obj(parts)
+
+# Serialize ExclusionByResourceTypes to a compact JSON object (declaration order).
+def exclusion_by_resource_types_to_json(ExclusionByResourceTypes v) -> str:
+    list[str] parts = []
+    if v.resourceTypes.is_some():
+        auto u0 = v.resourceTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"resourceTypes\":" + config_json_arr(e1))
+    return config_json_obj(parts)
+
+# Serialize GetComplianceDetailsByConfigRuleRequest to a compact JSON object (declaration order).
+def get_compliance_details_by_config_rule_request_to_json(GetComplianceDetailsByConfigRuleRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConfigRuleName\":" + config_json_str(v.ConfigRuleName))
+    if v.ComplianceTypes.is_some():
+        auto u0 = v.ComplianceTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ComplianceTypes\":" + config_json_arr(e1))
+    if v.Limit.is_some():
+        auto u2 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + config_json_str(u3))
+    return config_json_obj(parts)
+
+# Serialize GetComplianceDetailsByResourceRequest to a compact JSON object (declaration order).
+def get_compliance_details_by_resource_request_to_json(GetComplianceDetailsByResourceRequest v) -> str:
+    list[str] parts = []
+    if v.ResourceType.is_some():
+        auto u0 = v.ResourceType.unwrap()
+        parts.append("\"ResourceType\":" + config_json_str(u0))
+    if v.ResourceId.is_some():
+        auto u1 = v.ResourceId.unwrap()
+        parts.append("\"ResourceId\":" + config_json_str(u1))
+    if v.ComplianceTypes.is_some():
+        auto u2 = v.ComplianceTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ComplianceTypes\":" + config_json_arr(e3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + config_json_str(u4))
+    if v.ResourceEvaluationId.is_some():
+        auto u5 = v.ResourceEvaluationId.unwrap()
+        parts.append("\"ResourceEvaluationId\":" + config_json_str(u5))
+    return config_json_obj(parts)
+
+# Serialize GetComplianceSummaryByResourceTypeRequest to a compact JSON object (declaration order).
+def get_compliance_summary_by_resource_type_request_to_json(GetComplianceSummaryByResourceTypeRequest v) -> str:
+    list[str] parts = []
+    if v.ResourceTypes.is_some():
+        auto u0 = v.ResourceTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(config_json_str(x1))
+        parts.append("\"ResourceTypes\":" + config_json_arr(e1))
+    return config_json_obj(parts)
+
+# Serialize GetConformancePackComplianceDetailsRequest to a compact JSON object (declaration order).
+def get_conformance_pack_compliance_details_request_to_json(GetConformancePackComplianceDetailsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConformancePackName\":" + config_json_str(v.ConformancePackName))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        parts.append("\"Filters\":" + conformance_pack_evaluation_filters_to_json(u0))
+    if v.Limit.is_some():
+        auto u1 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + config_json_str(u2))
+    return config_json_obj(parts)
+
+# Serialize GetConformancePackComplianceSummaryRequest to a compact JSON object (declaration order).
+def get_conformance_pack_compliance_summary_request_to_json(GetConformancePackComplianceSummaryRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ConformancePackNames:
+        e0.append(config_json_str(x0))
+    parts.append("\"ConformancePackNames\":" + config_json_arr(e0))
+    if v.Limit.is_some():
+        auto u1 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + config_json_str(u2))
+    return config_json_obj(parts)
+
+# Serialize GetDiscoveredResourceCountsRequest to a compact JSON object (declaration order).
+def get_discovered_resource_counts_request_to_json(GetDiscoveredResourceCountsRequest v) -> str:
+    list[str] parts = []
+    if v.resourceTypes.is_some():
+        auto u0 = v.resourceTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(config_json_str(x1))
+        parts.append("\"resourceTypes\":" + config_json_arr(e1))
+    if v.limit.is_some():
+        auto u2 = v.limit.unwrap()
+        parts.append("\"limit\":" + str(u2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + config_json_str(u3))
+    return config_json_obj(parts)
+
+# Serialize ListConfigurationRecordersRequest to a compact JSON object (declaration order).
+def list_configuration_recorders_request_to_json(ListConfigurationRecordersRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(configuration_recorder_filter_to_json(x1))
+        parts.append("\"Filters\":" + config_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + config_json_str(u3))
+    return config_json_obj(parts)
+
+# Serialize ListConformancePackComplianceScoresRequest to a compact JSON object (declaration order).
+def list_conformance_pack_compliance_scores_request_to_json(ListConformancePackComplianceScoresRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        parts.append("\"Filters\":" + conformance_pack_compliance_scores_filters_to_json(u0))
+    if v.SortOrder.is_some():
+        auto u1 = v.SortOrder.unwrap()
+        parts.append("\"SortOrder\":" + u1.to_json())
+    if v.SortBy.is_some():
+        auto u2 = v.SortBy.unwrap()
+        parts.append("\"SortBy\":" + config_json_str(u2))
+    if v.Limit.is_some():
+        auto u3 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + config_json_str(u4))
+    return config_json_obj(parts)
+
+# Serialize ListConnectorsRequest to a compact JSON object (declaration order).
+def list_connectors_request_to_json(ListConnectorsRequest v) -> str:
+    list[str] parts = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + config_json_str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(connector_filter_to_json(x3))
+        parts.append("\"Filters\":" + config_json_arr(e3))
+    return config_json_obj(parts)
+
+# Serialize ListDiscoveredResourcesRequest to a compact JSON object (declaration order).
+def list_discovered_resources_request_to_json(ListDiscoveredResourcesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceType\":" + v.resourceType.to_json())
+    if v.resourceIds.is_some():
+        auto u0 = v.resourceIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(config_json_str(x1))
+        parts.append("\"resourceIds\":" + config_json_arr(e1))
+    if v.resourceName.is_some():
+        auto u2 = v.resourceName.unwrap()
+        parts.append("\"resourceName\":" + config_json_str(u2))
+    if v.limit.is_some():
+        auto u3 = v.limit.unwrap()
+        parts.append("\"limit\":" + str(u3))
+    if v.includeDeletedResources.is_some():
+        auto u4 = v.includeDeletedResources.unwrap()
+        parts.append("\"includeDeletedResources\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.nextToken.is_some():
+        auto u5 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + config_json_str(u5))
+    return config_json_obj(parts)
+
+# Serialize OrganizationAggregationSource to a compact JSON object (declaration order).
+def organization_aggregation_source_to_json(OrganizationAggregationSource v) -> str:
+    list[str] parts = []
+    parts.append("\"RoleArn\":" + config_json_str(v.RoleArn))
+    if v.AwsRegions.is_some():
+        auto u0 = v.AwsRegions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(config_json_str(x1))
+        parts.append("\"AwsRegions\":" + config_json_arr(e1))
+    if v.AllAwsRegions.is_some():
+        auto u2 = v.AllAwsRegions.unwrap()
+        parts.append("\"AllAwsRegions\":" + json.dumps(JsonValue.Bool(u2)))
+    return config_json_obj(parts)
+
+# Serialize OrganizationCustomPolicyRuleMetadata to a compact JSON object (declaration order).
+def organization_custom_policy_rule_metadata_to_json(OrganizationCustomPolicyRuleMetadata v) -> str:
+    list[str] parts = []
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + config_json_str(u0))
+    if v.OrganizationConfigRuleTriggerTypes.is_some():
+        auto u1 = v.OrganizationConfigRuleTriggerTypes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"OrganizationConfigRuleTriggerTypes\":" + config_json_arr(e2))
+    if v.InputParameters.is_some():
+        auto u3 = v.InputParameters.unwrap()
+        parts.append("\"InputParameters\":" + config_json_str(u3))
+    if v.MaximumExecutionFrequency.is_some():
+        auto u4 = v.MaximumExecutionFrequency.unwrap()
+        parts.append("\"MaximumExecutionFrequency\":" + u4.to_json())
+    if v.ResourceTypesScope.is_some():
+        auto u5 = v.ResourceTypesScope.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(config_json_str(x6))
+        parts.append("\"ResourceTypesScope\":" + config_json_arr(e6))
+    if v.ResourceIdScope.is_some():
+        auto u7 = v.ResourceIdScope.unwrap()
+        parts.append("\"ResourceIdScope\":" + config_json_str(u7))
+    if v.TagKeyScope.is_some():
+        auto u8 = v.TagKeyScope.unwrap()
+        parts.append("\"TagKeyScope\":" + config_json_str(u8))
+    if v.TagValueScope.is_some():
+        auto u9 = v.TagValueScope.unwrap()
+        parts.append("\"TagValueScope\":" + config_json_str(u9))
+    parts.append("\"PolicyRuntime\":" + config_json_str(v.PolicyRuntime))
+    parts.append("\"PolicyText\":" + config_json_str(v.PolicyText))
+    if v.DebugLogDeliveryAccounts.is_some():
+        auto u10 = v.DebugLogDeliveryAccounts.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(config_json_str(x11))
+        parts.append("\"DebugLogDeliveryAccounts\":" + config_json_arr(e11))
+    return config_json_obj(parts)
+
+# Serialize OrganizationCustomRuleMetadata to a compact JSON object (declaration order).
+def organization_custom_rule_metadata_to_json(OrganizationCustomRuleMetadata v) -> str:
+    list[str] parts = []
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + config_json_str(u0))
+    parts.append("\"LambdaFunctionArn\":" + config_json_str(v.LambdaFunctionArn))
+    list[str] e1 = []
+    for x1 in v.OrganizationConfigRuleTriggerTypes:
+        e1.append(x1.to_json())
+    parts.append("\"OrganizationConfigRuleTriggerTypes\":" + config_json_arr(e1))
+    if v.InputParameters.is_some():
+        auto u2 = v.InputParameters.unwrap()
+        parts.append("\"InputParameters\":" + config_json_str(u2))
+    if v.MaximumExecutionFrequency.is_some():
+        auto u3 = v.MaximumExecutionFrequency.unwrap()
+        parts.append("\"MaximumExecutionFrequency\":" + u3.to_json())
+    if v.ResourceTypesScope.is_some():
+        auto u4 = v.ResourceTypesScope.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(config_json_str(x5))
+        parts.append("\"ResourceTypesScope\":" + config_json_arr(e5))
+    if v.ResourceIdScope.is_some():
+        auto u6 = v.ResourceIdScope.unwrap()
+        parts.append("\"ResourceIdScope\":" + config_json_str(u6))
+    if v.TagKeyScope.is_some():
+        auto u7 = v.TagKeyScope.unwrap()
+        parts.append("\"TagKeyScope\":" + config_json_str(u7))
+    if v.TagValueScope.is_some():
+        auto u8 = v.TagValueScope.unwrap()
+        parts.append("\"TagValueScope\":" + config_json_str(u8))
+    return config_json_obj(parts)
+
+# Serialize OrganizationManagedRuleMetadata to a compact JSON object (declaration order).
+def organization_managed_rule_metadata_to_json(OrganizationManagedRuleMetadata v) -> str:
+    list[str] parts = []
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + config_json_str(u0))
+    parts.append("\"RuleIdentifier\":" + config_json_str(v.RuleIdentifier))
+    if v.InputParameters.is_some():
+        auto u1 = v.InputParameters.unwrap()
+        parts.append("\"InputParameters\":" + config_json_str(u1))
+    if v.MaximumExecutionFrequency.is_some():
+        auto u2 = v.MaximumExecutionFrequency.unwrap()
+        parts.append("\"MaximumExecutionFrequency\":" + u2.to_json())
+    if v.ResourceTypesScope.is_some():
+        auto u3 = v.ResourceTypesScope.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(config_json_str(x4))
+        parts.append("\"ResourceTypesScope\":" + config_json_arr(e4))
+    if v.ResourceIdScope.is_some():
+        auto u5 = v.ResourceIdScope.unwrap()
+        parts.append("\"ResourceIdScope\":" + config_json_str(u5))
+    if v.TagKeyScope.is_some():
+        auto u6 = v.TagKeyScope.unwrap()
+        parts.append("\"TagKeyScope\":" + config_json_str(u6))
+    if v.TagValueScope.is_some():
+        auto u7 = v.TagValueScope.unwrap()
+        parts.append("\"TagValueScope\":" + config_json_str(u7))
+    return config_json_obj(parts)
+
+# Serialize PutAggregationAuthorizationRequest to a compact JSON object (declaration order).
+def put_aggregation_authorization_request_to_json(PutAggregationAuthorizationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AuthorizedAccountId\":" + config_json_str(v.AuthorizedAccountId))
+    parts.append("\"AuthorizedAwsRegion\":" + config_json_str(v.AuthorizedAwsRegion))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + config_json_arr(e1))
+    return config_json_obj(parts)
+
+# Serialize PutConfigRuleRequest to a compact JSON object (declaration order).
+def put_config_rule_request_to_json(PutConfigRuleRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConfigRule\":" + config_rule_to_json(v.ConfigRule))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + config_json_arr(e1))
+    return config_json_obj(parts)
+
+# Serialize PutConfigurationAggregatorRequest to a compact JSON object (declaration order).
+def put_configuration_aggregator_request_to_json(PutConfigurationAggregatorRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConfigurationAggregatorName\":" + config_json_str(v.ConfigurationAggregatorName))
+    if v.AccountAggregationSources.is_some():
+        auto u0 = v.AccountAggregationSources.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(account_aggregation_source_to_json(x1))
+        parts.append("\"AccountAggregationSources\":" + config_json_arr(e1))
+    if v.OrganizationAggregationSource.is_some():
+        auto u2 = v.OrganizationAggregationSource.unwrap()
+        parts.append("\"OrganizationAggregationSource\":" + organization_aggregation_source_to_json(u2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + config_json_arr(e4))
+    if v.AggregatorFilters.is_some():
+        auto u5 = v.AggregatorFilters.unwrap()
+        parts.append("\"AggregatorFilters\":" + aggregator_filters_to_json(u5))
+    return config_json_obj(parts)
+
+# Serialize PutConfigurationRecorderRequest to a compact JSON object (declaration order).
+def put_configuration_recorder_request_to_json(PutConfigurationRecorderRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConfigurationRecorder\":" + configuration_recorder_to_json(v.ConfigurationRecorder))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + config_json_arr(e1))
+    return config_json_obj(parts)
+
+# Serialize PutConformancePackRequest to a compact JSON object (declaration order).
+def put_conformance_pack_request_to_json(PutConformancePackRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConformancePackName\":" + config_json_str(v.ConformancePackName))
+    if v.TemplateS3Uri.is_some():
+        auto u0 = v.TemplateS3Uri.unwrap()
+        parts.append("\"TemplateS3Uri\":" + config_json_str(u0))
+    if v.TemplateBody.is_some():
+        auto u1 = v.TemplateBody.unwrap()
+        parts.append("\"TemplateBody\":" + config_json_str(u1))
+    if v.DeliveryS3Bucket.is_some():
+        auto u2 = v.DeliveryS3Bucket.unwrap()
+        parts.append("\"DeliveryS3Bucket\":" + config_json_str(u2))
+    if v.DeliveryS3KeyPrefix.is_some():
+        auto u3 = v.DeliveryS3KeyPrefix.unwrap()
+        parts.append("\"DeliveryS3KeyPrefix\":" + config_json_str(u3))
+    if v.ConformancePackInputParameters.is_some():
+        auto u4 = v.ConformancePackInputParameters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"ConformancePackInputParameters\":" + config_json_arr(e5))
+    if v.TemplateSSMDocumentDetails.is_some():
+        auto u6 = v.TemplateSSMDocumentDetails.unwrap()
+        parts.append("\"TemplateSSMDocumentDetails\":" + u6.to_json())
+    if v.Tags.is_some():
+        auto u7 = v.Tags.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"Tags\":" + config_json_arr(e8))
+    return config_json_obj(parts)
+
+# Serialize PutConnectorRequest to a compact JSON object (declaration order).
+def put_connector_request_to_json(PutConnectorRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConnectorConfiguration\":" + v.ConnectorConfiguration.to_json())
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + config_json_arr(e1))
+    return config_json_obj(parts)
+
+# Serialize PutEvaluationsRequest to a compact JSON object (declaration order).
+def put_evaluations_request_to_json(PutEvaluationsRequest v) -> str:
+    list[str] parts = []
+    if v.Evaluations.is_some():
+        auto u0 = v.Evaluations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Evaluations\":" + config_json_arr(e1))
+    parts.append("\"ResultToken\":" + config_json_str(v.ResultToken))
+    if v.TestMode.is_some():
+        auto u2 = v.TestMode.unwrap()
+        parts.append("\"TestMode\":" + json.dumps(JsonValue.Bool(u2)))
+    return config_json_obj(parts)
+
+# Serialize PutOrganizationConfigRuleRequest to a compact JSON object (declaration order).
+def put_organization_config_rule_request_to_json(PutOrganizationConfigRuleRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"OrganizationConfigRuleName\":" + config_json_str(v.OrganizationConfigRuleName))
+    if v.OrganizationManagedRuleMetadata.is_some():
+        auto u0 = v.OrganizationManagedRuleMetadata.unwrap()
+        parts.append("\"OrganizationManagedRuleMetadata\":" + organization_managed_rule_metadata_to_json(u0))
+    if v.OrganizationCustomRuleMetadata.is_some():
+        auto u1 = v.OrganizationCustomRuleMetadata.unwrap()
+        parts.append("\"OrganizationCustomRuleMetadata\":" + organization_custom_rule_metadata_to_json(u1))
+    if v.ExcludedAccounts.is_some():
+        auto u2 = v.ExcludedAccounts.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(config_json_str(x3))
+        parts.append("\"ExcludedAccounts\":" + config_json_arr(e3))
+    if v.OrganizationCustomPolicyRuleMetadata.is_some():
+        auto u4 = v.OrganizationCustomPolicyRuleMetadata.unwrap()
+        parts.append("\"OrganizationCustomPolicyRuleMetadata\":" + organization_custom_policy_rule_metadata_to_json(u4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + config_json_arr(e6))
+    return config_json_obj(parts)
+
+# Serialize PutOrganizationConformancePackRequest to a compact JSON object (declaration order).
+def put_organization_conformance_pack_request_to_json(PutOrganizationConformancePackRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"OrganizationConformancePackName\":" + config_json_str(v.OrganizationConformancePackName))
+    if v.TemplateS3Uri.is_some():
+        auto u0 = v.TemplateS3Uri.unwrap()
+        parts.append("\"TemplateS3Uri\":" + config_json_str(u0))
+    if v.TemplateBody.is_some():
+        auto u1 = v.TemplateBody.unwrap()
+        parts.append("\"TemplateBody\":" + config_json_str(u1))
+    if v.DeliveryS3Bucket.is_some():
+        auto u2 = v.DeliveryS3Bucket.unwrap()
+        parts.append("\"DeliveryS3Bucket\":" + config_json_str(u2))
+    if v.DeliveryS3KeyPrefix.is_some():
+        auto u3 = v.DeliveryS3KeyPrefix.unwrap()
+        parts.append("\"DeliveryS3KeyPrefix\":" + config_json_str(u3))
+    if v.ConformancePackInputParameters.is_some():
+        auto u4 = v.ConformancePackInputParameters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"ConformancePackInputParameters\":" + config_json_arr(e5))
+    if v.ExcludedAccounts.is_some():
+        auto u6 = v.ExcludedAccounts.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(config_json_str(x7))
+        parts.append("\"ExcludedAccounts\":" + config_json_arr(e7))
+    if v.Tags.is_some():
+        auto u8 = v.Tags.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"Tags\":" + config_json_arr(e9))
+    return config_json_obj(parts)
+
+# Serialize PutRemediationConfigurationsRequest to a compact JSON object (declaration order).
+def put_remediation_configurations_request_to_json(PutRemediationConfigurationsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.RemediationConfigurations:
+        e0.append(remediation_configuration_to_json(x0))
+    parts.append("\"RemediationConfigurations\":" + config_json_arr(e0))
+    return config_json_obj(parts)
+
+# Serialize PutRemediationExceptionsRequest to a compact JSON object (declaration order).
+def put_remediation_exceptions_request_to_json(PutRemediationExceptionsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConfigRuleName\":" + config_json_str(v.ConfigRuleName))
+    list[str] e0 = []
+    for x0 in v.ResourceKeys:
+        e0.append(x0.to_json())
+    parts.append("\"ResourceKeys\":" + config_json_arr(e0))
+    if v.Message.is_some():
+        auto u1 = v.Message.unwrap()
+        parts.append("\"Message\":" + config_json_str(u1))
+    if v.ExpirationTime.is_some():
+        auto u2 = v.ExpirationTime.unwrap()
+        parts.append("\"ExpirationTime\":" + str(datetime.to_timestamp(u2)))
+    return config_json_obj(parts)
+
+# Serialize PutResourceConfigRequest to a compact JSON object (declaration order).
+def put_resource_config_request_to_json(PutResourceConfigRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceType\":" + config_json_str(v.ResourceType))
+    parts.append("\"SchemaVersionId\":" + config_json_str(v.SchemaVersionId))
+    parts.append("\"ResourceId\":" + config_json_str(v.ResourceId))
+    if v.ResourceName.is_some():
+        auto u0 = v.ResourceName.unwrap()
+        parts.append("\"ResourceName\":" + config_json_str(u0))
+    parts.append("\"Configuration\":" + config_json_str(v.Configuration))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(config_json_str(k2) + ":" + config_json_str(u1[k2]))
+        parts.append("\"Tags\":" + config_json_obj(m2))
+    return config_json_obj(parts)
+
+# Serialize PutServiceLinkedConfigurationRecorderRequest to a compact JSON object (declaration order).
+def put_service_linked_configuration_recorder_request_to_json(PutServiceLinkedConfigurationRecorderRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ServicePrincipal\":" + config_json_str(v.ServicePrincipal))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + config_json_arr(e1))
+    return config_json_obj(parts)
+
+# Serialize PutStoredQueryRequest to a compact JSON object (declaration order).
+def put_stored_query_request_to_json(PutStoredQueryRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"StoredQuery\":" + v.StoredQuery.to_json())
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + config_json_arr(e1))
+    return config_json_obj(parts)
+
+# Serialize PutThirdPartyServiceLinkedConfigurationRecorderRequest to a compact JSON object (declaration order).
+def put_third_party_service_linked_configuration_recorder_request_to_json(PutThirdPartyServiceLinkedConfigurationRecorderRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ServicePrincipal\":" + config_json_str(v.ServicePrincipal))
+    parts.append("\"ConnectorArn\":" + config_json_str(v.ConnectorArn))
+    parts.append("\"ScopeConfiguration\":" + scope_configuration_to_json(v.ScopeConfiguration))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + config_json_arr(e1))
+    return config_json_obj(parts)
+
+# Serialize RecordingGroup to a compact JSON object (declaration order).
+def recording_group_to_json(RecordingGroup v) -> str:
+    list[str] parts = []
+    if v.allSupported.is_some():
+        auto u0 = v.allSupported.unwrap()
+        parts.append("\"allSupported\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.includeGlobalResourceTypes.is_some():
+        auto u1 = v.includeGlobalResourceTypes.unwrap()
+        parts.append("\"includeGlobalResourceTypes\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.resourceTypes.is_some():
+        auto u2 = v.resourceTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"resourceTypes\":" + config_json_arr(e3))
+    if v.exclusionByResourceTypes.is_some():
+        auto u4 = v.exclusionByResourceTypes.unwrap()
+        parts.append("\"exclusionByResourceTypes\":" + exclusion_by_resource_types_to_json(u4))
+    if v.recordingStrategy.is_some():
+        auto u5 = v.recordingStrategy.unwrap()
+        parts.append("\"recordingStrategy\":" + u5.to_json())
+    return config_json_obj(parts)
+
+# Serialize RecordingMode to a compact JSON object (declaration order).
+def recording_mode_to_json(RecordingMode v) -> str:
+    list[str] parts = []
+    parts.append("\"recordingFrequency\":" + v.recordingFrequency.to_json())
+    if v.recordingModeOverrides.is_some():
+        auto u0 = v.recordingModeOverrides.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(recording_mode_override_to_json(x1))
+        parts.append("\"recordingModeOverrides\":" + config_json_arr(e1))
+    return config_json_obj(parts)
+
+# Serialize RecordingModeOverride to a compact JSON object (declaration order).
+def recording_mode_override_to_json(RecordingModeOverride v) -> str:
+    list[str] parts = []
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + config_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.resourceTypes:
+        e1.append(x1.to_json())
+    parts.append("\"resourceTypes\":" + config_json_arr(e1))
+    parts.append("\"recordingFrequency\":" + v.recordingFrequency.to_json())
+    return config_json_obj(parts)
+
+# Serialize RemediationConfiguration to a compact JSON object (declaration order).
+def remediation_configuration_to_json(RemediationConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"ConfigRuleName\":" + config_json_str(v.ConfigRuleName))
+    parts.append("\"TargetType\":" + config_json_str(v.TargetType))
+    parts.append("\"TargetId\":" + config_json_str(v.TargetId))
+    if v.TargetVersion.is_some():
+        auto u0 = v.TargetVersion.unwrap()
+        parts.append("\"TargetVersion\":" + config_json_str(u0))
+    if v.Parameters.is_some():
+        auto u1 = v.Parameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(config_json_str(k2) + ":" + remediation_parameter_value_to_json(u1[k2]))
+        parts.append("\"Parameters\":" + config_json_obj(m2))
+    if v.ResourceType.is_some():
+        auto u3 = v.ResourceType.unwrap()
+        parts.append("\"ResourceType\":" + config_json_str(u3))
+    if v.Automatic.is_some():
+        auto u4 = v.Automatic.unwrap()
+        parts.append("\"Automatic\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.ExecutionControls.is_some():
+        auto u5 = v.ExecutionControls.unwrap()
+        parts.append("\"ExecutionControls\":" + u5.to_json())
+    if v.MaximumAutomaticAttempts.is_some():
+        auto u6 = v.MaximumAutomaticAttempts.unwrap()
+        parts.append("\"MaximumAutomaticAttempts\":" + str(u6))
+    if v.RetryAttemptSeconds.is_some():
+        auto u7 = v.RetryAttemptSeconds.unwrap()
+        parts.append("\"RetryAttemptSeconds\":" + str(u7))
+    if v.Arn.is_some():
+        auto u8 = v.Arn.unwrap()
+        parts.append("\"Arn\":" + config_json_str(u8))
+    if v.CreatedByService.is_some():
+        auto u9 = v.CreatedByService.unwrap()
+        parts.append("\"CreatedByService\":" + config_json_str(u9))
+    return config_json_obj(parts)
+
+# Serialize RemediationParameterValue to a compact JSON object (declaration order).
+def remediation_parameter_value_to_json(RemediationParameterValue v) -> str:
+    list[str] parts = []
+    if v.ResourceValue.is_some():
+        auto u0 = v.ResourceValue.unwrap()
+        parts.append("\"ResourceValue\":" + u0.to_json())
+    if v.StaticValue.is_some():
+        auto u1 = v.StaticValue.unwrap()
+        parts.append("\"StaticValue\":" + static_value_to_json(u1))
+    return config_json_obj(parts)
+
+# Serialize Scope to a compact JSON object (declaration order).
+def scope__to_json(Scope v) -> str:
+    list[str] parts = []
+    if v.ComplianceResourceTypes.is_some():
+        auto u0 = v.ComplianceResourceTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(config_json_str(x1))
+        parts.append("\"ComplianceResourceTypes\":" + config_json_arr(e1))
+    if v.TagKey.is_some():
+        auto u2 = v.TagKey.unwrap()
+        parts.append("\"TagKey\":" + config_json_str(u2))
+    if v.TagValue.is_some():
+        auto u3 = v.TagValue.unwrap()
+        parts.append("\"TagValue\":" + config_json_str(u3))
+    if v.ComplianceResourceId.is_some():
+        auto u4 = v.ComplianceResourceId.unwrap()
+        parts.append("\"ComplianceResourceId\":" + config_json_str(u4))
+    if v.ServicePrincipals.is_some():
+        auto u5 = v.ServicePrincipals.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(config_json_str(x6))
+        parts.append("\"ServicePrincipals\":" + config_json_arr(e6))
+    return config_json_obj(parts)
+
+# Serialize ScopeConfiguration to a compact JSON object (declaration order).
+def scope_configuration_to_json(ScopeConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"scopeType\":" + config_json_str(v.scopeType))
+    if v.scopeValues.is_some():
+        auto u0 = v.scopeValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(config_json_str(x1))
+        parts.append("\"scopeValues\":" + config_json_arr(e1))
+    parts.append("\"allRegions\":" + json.dumps(JsonValue.Bool(v.allRegions)))
+    if v.includedRegions.is_some():
+        auto u2 = v.includedRegions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(config_json_str(x3))
+        parts.append("\"includedRegions\":" + config_json_arr(e3))
+    return config_json_obj(parts)
+
+# Serialize Source to a compact JSON object (declaration order).
+def source_to_json(Source v) -> str:
+    list[str] parts = []
+    parts.append("\"Owner\":" + v.Owner.to_json())
+    if v.SourceIdentifier.is_some():
+        auto u0 = v.SourceIdentifier.unwrap()
+        parts.append("\"SourceIdentifier\":" + config_json_str(u0))
+    if v.SourceDetails.is_some():
+        auto u1 = v.SourceDetails.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"SourceDetails\":" + config_json_arr(e2))
+    if v.CustomPolicyDetails.is_some():
+        auto u3 = v.CustomPolicyDetails.unwrap()
+        parts.append("\"CustomPolicyDetails\":" + u3.to_json())
+    return config_json_obj(parts)
+
+# Serialize StartConfigRulesEvaluationRequest to a compact JSON object (declaration order).
+def start_config_rules_evaluation_request_to_json(StartConfigRulesEvaluationRequest v) -> str:
+    list[str] parts = []
+    if v.ConfigRuleNames.is_some():
+        auto u0 = v.ConfigRuleNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(config_json_str(x1))
+        parts.append("\"ConfigRuleNames\":" + config_json_arr(e1))
+    return config_json_obj(parts)
+
+# Serialize StartRemediationExecutionRequest to a compact JSON object (declaration order).
+def start_remediation_execution_request_to_json(StartRemediationExecutionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConfigRuleName\":" + config_json_str(v.ConfigRuleName))
+    list[str] e0 = []
+    for x0 in v.ResourceKeys:
+        e0.append(x0.to_json())
+    parts.append("\"ResourceKeys\":" + config_json_arr(e0))
+    return config_json_obj(parts)
+
+# Serialize StaticValue to a compact JSON object (declaration order).
+def static_value_to_json(StaticValue v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(config_json_str(x0))
+    parts.append("\"Values\":" + config_json_arr(e0))
+    return config_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + config_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + config_json_arr(e0))
+    return config_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + config_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(config_json_str(x0))
+    parts.append("\"TagKeys\":" + config_json_arr(e0))
+    return config_json_obj(parts)
 
 # A bound Config_Service client: credentials + region, threaded into every operation.
 struct Config_ServiceClient:
     core.Credentials creds
     str region
+
+    # AssociateResourceTypes
+    # errors: ConflictException, NoSuchConfigurationRecorderException, ValidationException
+    def associate_resource_types(self, AssociateResourceTypesRequest input) -> str:
+        auto body = associate_resource_types_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "AssociateResourceTypes", body)
+
+    # BatchGetAggregateResourceConfig
+    # errors: NoSuchConfigurationAggregatorException, ValidationException
+    def batch_get_aggregate_resource_config(self, BatchGetAggregateResourceConfigRequest input) -> str:
+        auto body = batch_get_aggregate_resource_config_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "BatchGetAggregateResourceConfig", body)
+
+    # BatchGetResourceConfig
+    # errors: NoAvailableConfigurationRecorderException, ValidationException
+    def batch_get_resource_config(self, BatchGetResourceConfigRequest input) -> str:
+        auto body = batch_get_resource_config_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "BatchGetResourceConfig", body)
 
     # DeleteAggregationAuthorization
     # errors: InvalidParameterValueException
@@ -3445,6 +4947,12 @@ struct Config_ServiceClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DeleteRemediationConfiguration", body)
 
+    # DeleteRemediationExceptions
+    # errors: NoSuchRemediationExceptionException
+    def delete_remediation_exceptions(self, DeleteRemediationExceptionsRequest input) -> str:
+        auto body = delete_remediation_exceptions_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DeleteRemediationExceptions", body)
+
     # DeleteResourceConfig
     # errors: NoRunningConfigurationRecorderException, ValidationException
     def delete_resource_config(self, DeleteResourceConfigRequest input) -> str:
@@ -3493,11 +5001,142 @@ struct Config_ServiceClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeAggregationAuthorizations", body)
 
+    # DescribeComplianceByConfigRule
+    # errors: InvalidNextTokenException, InvalidParameterValueException, NoSuchConfigRuleException
+    def describe_compliance_by_config_rule(self, DescribeComplianceByConfigRuleRequest input) -> str:
+        auto body = describe_compliance_by_config_rule_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeComplianceByConfigRule", body)
+
+    # DescribeComplianceByResource
+    # errors: InvalidNextTokenException, InvalidParameterValueException
+    def describe_compliance_by_resource(self, DescribeComplianceByResourceRequest input) -> str:
+        auto body = describe_compliance_by_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeComplianceByResource", body)
+
+    # DescribeConfigRuleEvaluationStatus
+    # errors: InvalidNextTokenException, InvalidParameterValueException, NoSuchConfigRuleException
+    def describe_config_rule_evaluation_status(self, DescribeConfigRuleEvaluationStatusRequest input) -> str:
+        auto body = describe_config_rule_evaluation_status_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeConfigRuleEvaluationStatus", body)
+
+    # DescribeConfigRules
+    # errors: InvalidNextTokenException, InvalidParameterValueException, NoSuchConfigRuleException
+    def describe_config_rules(self, DescribeConfigRulesRequest input) -> str:
+        auto body = describe_config_rules_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeConfigRules", body)
+
+    # DescribeConfigurationAggregatorSourcesStatus
+    # errors: InvalidLimitException, InvalidNextTokenException, InvalidParameterValueException, NoSuchConfigurationAggregatorException
+    def describe_configuration_aggregator_sources_status(self, DescribeConfigurationAggregatorSourcesStatusRequest input) -> str:
+        auto body = describe_configuration_aggregator_sources_status_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeConfigurationAggregatorSourcesStatus", body)
+
+    # DescribeConfigurationAggregators
+    # errors: InvalidLimitException, InvalidNextTokenException, InvalidParameterValueException, NoSuchConfigurationAggregatorException
+    def describe_configuration_aggregators(self, DescribeConfigurationAggregatorsRequest input) -> str:
+        auto body = describe_configuration_aggregators_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeConfigurationAggregators", body)
+
+    # DescribeConfigurationRecorderStatus
+    # errors: NoSuchConfigurationRecorderException, ValidationException
+    def describe_configuration_recorder_status(self, DescribeConfigurationRecorderStatusRequest input) -> str:
+        auto body = describe_configuration_recorder_status_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeConfigurationRecorderStatus", body)
+
+    # DescribeConfigurationRecorders
+    # errors: NoSuchConfigurationRecorderException, ValidationException
+    def describe_configuration_recorders(self, DescribeConfigurationRecordersRequest input) -> str:
+        auto body = describe_configuration_recorders_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeConfigurationRecorders", body)
+
+    # DescribeConformancePackCompliance
+    # errors: InvalidLimitException, InvalidNextTokenException, InvalidParameterValueException, NoSuchConfigRuleInConformancePackException, NoSuchConformancePackException
+    def describe_conformance_pack_compliance(self, DescribeConformancePackComplianceRequest input) -> str:
+        auto body = describe_conformance_pack_compliance_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeConformancePackCompliance", body)
+
+    # DescribeConformancePackStatus
+    # errors: InvalidLimitException, InvalidNextTokenException, InvalidParameterValueException
+    def describe_conformance_pack_status(self, DescribeConformancePackStatusRequest input) -> str:
+        auto body = describe_conformance_pack_status_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeConformancePackStatus", body)
+
+    # DescribeConformancePacks
+    # errors: InvalidLimitException, InvalidNextTokenException, InvalidParameterValueException, NoSuchConformancePackException
+    def describe_conformance_packs(self, DescribeConformancePacksRequest input) -> str:
+        auto body = describe_conformance_packs_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeConformancePacks", body)
+
+    # DescribeDeliveryChannelStatus
+    # errors: NoSuchDeliveryChannelException
+    def describe_delivery_channel_status(self, DescribeDeliveryChannelStatusRequest input) -> str:
+        auto body = describe_delivery_channel_status_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeDeliveryChannelStatus", body)
+
+    # DescribeDeliveryChannels
+    # errors: NoSuchDeliveryChannelException
+    def describe_delivery_channels(self, DescribeDeliveryChannelsRequest input) -> str:
+        auto body = describe_delivery_channels_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeDeliveryChannels", body)
+
+    # DescribeOrganizationConfigRuleStatuses
+    # errors: InvalidLimitException, InvalidNextTokenException, NoSuchOrganizationConfigRuleException, OrganizationAccessDeniedException
+    def describe_organization_config_rule_statuses(self, DescribeOrganizationConfigRuleStatusesRequest input) -> str:
+        auto body = describe_organization_config_rule_statuses_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeOrganizationConfigRuleStatuses", body)
+
+    # DescribeOrganizationConfigRules
+    # errors: InvalidLimitException, InvalidNextTokenException, NoSuchOrganizationConfigRuleException, OrganizationAccessDeniedException
+    def describe_organization_config_rules(self, DescribeOrganizationConfigRulesRequest input) -> str:
+        auto body = describe_organization_config_rules_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeOrganizationConfigRules", body)
+
+    # DescribeOrganizationConformancePackStatuses
+    # errors: InvalidLimitException, InvalidNextTokenException, NoSuchOrganizationConformancePackException, OrganizationAccessDeniedException
+    def describe_organization_conformance_pack_statuses(self, DescribeOrganizationConformancePackStatusesRequest input) -> str:
+        auto body = describe_organization_conformance_pack_statuses_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeOrganizationConformancePackStatuses", body)
+
+    # DescribeOrganizationConformancePacks
+    # errors: InvalidLimitException, InvalidNextTokenException, NoSuchOrganizationConformancePackException, OrganizationAccessDeniedException
+    def describe_organization_conformance_packs(self, DescribeOrganizationConformancePacksRequest input) -> str:
+        auto body = describe_organization_conformance_packs_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeOrganizationConformancePacks", body)
+
     # DescribePendingAggregationRequests
     # errors: InvalidLimitException, InvalidNextTokenException, InvalidParameterValueException
     def describe_pending_aggregation_requests(self, DescribePendingAggregationRequestsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribePendingAggregationRequests", body)
+
+    # DescribeRemediationConfigurations
+    def describe_remediation_configurations(self, DescribeRemediationConfigurationsRequest input) -> str:
+        auto body = describe_remediation_configurations_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeRemediationConfigurations", body)
+
+    # DescribeRemediationExceptions
+    # errors: InvalidNextTokenException, InvalidParameterValueException
+    def describe_remediation_exceptions(self, DescribeRemediationExceptionsRequest input) -> str:
+        auto body = describe_remediation_exceptions_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeRemediationExceptions", body)
+
+    # DescribeRemediationExecutionStatus
+    # errors: InvalidNextTokenException, InvalidParameterValueException, NoSuchRemediationConfigurationException
+    def describe_remediation_execution_status(self, DescribeRemediationExecutionStatusRequest input) -> str:
+        auto body = describe_remediation_execution_status_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeRemediationExecutionStatus", body)
+
+    # DescribeRetentionConfigurations
+    # errors: InvalidNextTokenException, InvalidParameterValueException, NoSuchRetentionConfigurationException
+    def describe_retention_configurations(self, DescribeRetentionConfigurationsRequest input) -> str:
+        auto body = describe_retention_configurations_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeRetentionConfigurations", body)
+
+    # DisassociateResourceTypes
+    # errors: ConflictException, NoSuchConfigurationRecorderException, ValidationException
+    def disassociate_resource_types(self, DisassociateResourceTypesRequest input) -> str:
+        auto body = disassociate_resource_types_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DisassociateResourceTypes", body)
 
     # GetAggregateComplianceDetailsByConfigRule
     # errors: InvalidLimitException, InvalidNextTokenException, NoSuchConfigurationAggregatorException, ValidationException
@@ -3529,10 +5168,40 @@ struct Config_ServiceClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "GetAggregateResourceConfig", body)
 
+    # GetComplianceDetailsByConfigRule
+    # errors: InvalidNextTokenException, InvalidParameterValueException, NoSuchConfigRuleException
+    def get_compliance_details_by_config_rule(self, GetComplianceDetailsByConfigRuleRequest input) -> str:
+        auto body = get_compliance_details_by_config_rule_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "GetComplianceDetailsByConfigRule", body)
+
+    # GetComplianceDetailsByResource
+    # errors: InvalidParameterValueException
+    def get_compliance_details_by_resource(self, GetComplianceDetailsByResourceRequest input) -> str:
+        auto body = get_compliance_details_by_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "GetComplianceDetailsByResource", body)
+
     # GetComplianceSummaryByConfigRule
     def get_compliance_summary_by_config_rule(self) -> str:
         auto body = "{}"
         return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "GetComplianceSummaryByConfigRule", body)
+
+    # GetComplianceSummaryByResourceType
+    # errors: InvalidParameterValueException
+    def get_compliance_summary_by_resource_type(self, GetComplianceSummaryByResourceTypeRequest input) -> str:
+        auto body = get_compliance_summary_by_resource_type_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "GetComplianceSummaryByResourceType", body)
+
+    # GetConformancePackComplianceDetails
+    # errors: InvalidLimitException, InvalidNextTokenException, InvalidParameterValueException, NoSuchConfigRuleInConformancePackException, NoSuchConformancePackException
+    def get_conformance_pack_compliance_details(self, GetConformancePackComplianceDetailsRequest input) -> str:
+        auto body = get_conformance_pack_compliance_details_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "GetConformancePackComplianceDetails", body)
+
+    # GetConformancePackComplianceSummary
+    # errors: InvalidLimitException, InvalidNextTokenException, NoSuchConformancePackException
+    def get_conformance_pack_compliance_summary(self, GetConformancePackComplianceSummaryRequest input) -> str:
+        auto body = get_conformance_pack_compliance_summary_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "GetConformancePackComplianceSummary", body)
 
     # GetConnector
     # errors: ResourceNotFoundException, ValidationException
@@ -3545,6 +5214,12 @@ struct Config_ServiceClient:
     def get_custom_rule_policy(self, GetCustomRulePolicyRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "GetCustomRulePolicy", body)
+
+    # GetDiscoveredResourceCounts
+    # errors: InvalidLimitException, InvalidNextTokenException, ValidationException
+    def get_discovered_resource_counts(self, GetDiscoveredResourceCountsRequest input) -> str:
+        auto body = get_discovered_resource_counts_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "GetDiscoveredResourceCounts", body)
 
     # GetOrganizationConfigRuleDetailedStatus
     # errors: InvalidLimitException, InvalidNextTokenException, NoSuchOrganizationConfigRuleException, OrganizationAccessDeniedException
@@ -3588,6 +5263,30 @@ struct Config_ServiceClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "ListAggregateDiscoveredResources", body)
 
+    # ListConfigurationRecorders
+    # errors: ValidationException
+    def list_configuration_recorders(self, ListConfigurationRecordersRequest input) -> str:
+        auto body = list_configuration_recorders_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "ListConfigurationRecorders", body)
+
+    # ListConformancePackComplianceScores
+    # errors: InvalidLimitException, InvalidNextTokenException, InvalidParameterValueException
+    def list_conformance_pack_compliance_scores(self, ListConformancePackComplianceScoresRequest input) -> str:
+        auto body = list_conformance_pack_compliance_scores_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "ListConformancePackComplianceScores", body)
+
+    # ListConnectors
+    # errors: ValidationException
+    def list_connectors(self, ListConnectorsRequest input) -> str:
+        auto body = list_connectors_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "ListConnectors", body)
+
+    # ListDiscoveredResources
+    # errors: InvalidLimitException, InvalidNextTokenException, NoAvailableConfigurationRecorderException, ValidationException
+    def list_discovered_resources(self, ListDiscoveredResourcesRequest input) -> str:
+        auto body = list_discovered_resources_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "ListDiscoveredResources", body)
+
     # ListResourceEvaluations
     # errors: InvalidNextTokenException, InvalidParameterValueException, InvalidTimeRangeException
     def list_resource_evaluations(self, ListResourceEvaluationsRequest input) -> str:
@@ -3606,11 +5305,53 @@ struct Config_ServiceClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "ListTagsForResource", body)
 
+    # PutAggregationAuthorization
+    # errors: InvalidParameterValueException
+    def put_aggregation_authorization(self, PutAggregationAuthorizationRequest input) -> str:
+        auto body = put_aggregation_authorization_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "PutAggregationAuthorization", body)
+
+    # PutConfigRule
+    # errors: InsufficientPermissionsException, InvalidParameterValueException, MaxNumberOfConfigRulesExceededException, NoAvailableConfigurationRecorderException, ResourceInUseException
+    def put_config_rule(self, PutConfigRuleRequest input) -> str:
+        auto body = put_config_rule_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "PutConfigRule", body)
+
+    # PutConfigurationAggregator
+    # errors: InvalidParameterValueException, InvalidRoleException, LimitExceededException, NoAvailableOrganizationException, OrganizationAccessDeniedException, OrganizationAllFeaturesNotEnabledException
+    def put_configuration_aggregator(self, PutConfigurationAggregatorRequest input) -> str:
+        auto body = put_configuration_aggregator_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "PutConfigurationAggregator", body)
+
+    # PutConfigurationRecorder
+    # errors: InvalidConfigurationRecorderNameException, InvalidRecordingGroupException, InvalidRoleException, MaxNumberOfConfigurationRecordersExceededException, UnmodifiableEntityException, ValidationException
+    def put_configuration_recorder(self, PutConfigurationRecorderRequest input) -> str:
+        auto body = put_configuration_recorder_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "PutConfigurationRecorder", body)
+
+    # PutConformancePack
+    # errors: ConformancePackTemplateValidationException, InsufficientPermissionsException, InvalidParameterValueException, MaxNumberOfConformancePacksExceededException, ResourceInUseException
+    def put_conformance_pack(self, PutConformancePackRequest input) -> str:
+        auto body = put_conformance_pack_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "PutConformancePack", body)
+
+    # PutConnector
+    # errors: ConflictException, InsufficientPermissionsException, MaxNumberOfConnectorsExceededException, ValidationException
+    def put_connector(self, PutConnectorRequest input) -> str:
+        auto body = put_connector_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "PutConnector", body)
+
     # PutDeliveryChannel
     # errors: InsufficientDeliveryPolicyException, InvalidDeliveryChannelNameException, InvalidS3KeyPrefixException, InvalidS3KmsKeyArnException, InvalidSNSTopicARNException, MaxNumberOfDeliveryChannelsExceededException, NoAvailableConfigurationRecorderException, NoSuchBucketException
     def put_delivery_channel(self, PutDeliveryChannelRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "PutDeliveryChannel", body)
+
+    # PutEvaluations
+    # errors: InvalidParameterValueException, InvalidResultTokenException, NoSuchConfigRuleException
+    def put_evaluations(self, PutEvaluationsRequest input) -> str:
+        auto body = put_evaluations_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "PutEvaluations", body)
 
     # PutExternalEvaluation
     # errors: InvalidParameterValueException, NoSuchConfigRuleException
@@ -3618,11 +5359,59 @@ struct Config_ServiceClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "PutExternalEvaluation", body)
 
+    # PutOrganizationConfigRule
+    # errors: InsufficientPermissionsException, InvalidParameterValueException, MaxNumberOfOrganizationConfigRulesExceededException, NoAvailableOrganizationException, OrganizationAccessDeniedException, OrganizationAllFeaturesNotEnabledException, ResourceInUseException, ValidationException
+    def put_organization_config_rule(self, PutOrganizationConfigRuleRequest input) -> str:
+        auto body = put_organization_config_rule_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "PutOrganizationConfigRule", body)
+
+    # PutOrganizationConformancePack
+    # errors: InsufficientPermissionsException, MaxNumberOfOrganizationConformancePacksExceededException, NoAvailableOrganizationException, OrganizationAccessDeniedException, OrganizationAllFeaturesNotEnabledException, OrganizationConformancePackTemplateValidationException, ResourceInUseException, ValidationException
+    def put_organization_conformance_pack(self, PutOrganizationConformancePackRequest input) -> str:
+        auto body = put_organization_conformance_pack_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "PutOrganizationConformancePack", body)
+
+    # PutRemediationConfigurations
+    # errors: InsufficientPermissionsException, InvalidParameterValueException
+    def put_remediation_configurations(self, PutRemediationConfigurationsRequest input) -> str:
+        auto body = put_remediation_configurations_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "PutRemediationConfigurations", body)
+
+    # PutRemediationExceptions
+    # errors: InsufficientPermissionsException, InvalidParameterValueException
+    def put_remediation_exceptions(self, PutRemediationExceptionsRequest input) -> str:
+        auto body = put_remediation_exceptions_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "PutRemediationExceptions", body)
+
+    # PutResourceConfig
+    # errors: InsufficientPermissionsException, MaxActiveResourcesExceededException, NoRunningConfigurationRecorderException, ValidationException
+    def put_resource_config(self, PutResourceConfigRequest input) -> str:
+        auto body = put_resource_config_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "PutResourceConfig", body)
+
     # PutRetentionConfiguration
     # errors: InvalidParameterValueException, MaxNumberOfRetentionConfigurationsExceededException
     def put_retention_configuration(self, PutRetentionConfigurationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "PutRetentionConfiguration", body)
+
+    # PutServiceLinkedConfigurationRecorder
+    # errors: ConflictException, InsufficientPermissionsException, LimitExceededException, ValidationException
+    def put_service_linked_configuration_recorder(self, PutServiceLinkedConfigurationRecorderRequest input) -> str:
+        auto body = put_service_linked_configuration_recorder_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "PutServiceLinkedConfigurationRecorder", body)
+
+    # PutStoredQuery
+    # errors: ResourceConcurrentModificationException, TooManyTagsException, ValidationException
+    def put_stored_query(self, PutStoredQueryRequest input) -> str:
+        auto body = put_stored_query_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "PutStoredQuery", body)
+
+    # PutThirdPartyServiceLinkedConfigurationRecorder
+    # errors: ConflictException, InsufficientPermissionsException, ValidationException
+    def put_third_party_service_linked_configuration_recorder(self, PutThirdPartyServiceLinkedConfigurationRecorderRequest input) -> str:
+        auto body = put_third_party_service_linked_configuration_recorder_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "PutThirdPartyServiceLinkedConfigurationRecorder", body)
 
     # SelectAggregateResourceConfig
     # errors: InvalidExpressionException, InvalidLimitException, InvalidNextTokenException, NoSuchConfigurationAggregatorException
@@ -3636,11 +5425,23 @@ struct Config_ServiceClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "SelectResourceConfig", body)
 
+    # StartConfigRulesEvaluation
+    # errors: InvalidParameterValueException, LimitExceededException, NoSuchConfigRuleException, ResourceInUseException
+    def start_config_rules_evaluation(self, StartConfigRulesEvaluationRequest input) -> str:
+        auto body = start_config_rules_evaluation_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "StartConfigRulesEvaluation", body)
+
     # StartConfigurationRecorder
     # errors: NoAvailableDeliveryChannelException, NoSuchConfigurationRecorderException, UnmodifiableEntityException
     def start_configuration_recorder(self, StartConfigurationRecorderRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "StartConfigurationRecorder", body)
+
+    # StartRemediationExecution
+    # errors: InsufficientPermissionsException, InvalidParameterValueException, NoSuchRemediationConfigurationException
+    def start_remediation_execution(self, StartRemediationExecutionRequest input) -> str:
+        auto body = start_remediation_execution_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "StartRemediationExecution", body)
 
     # StartResourceEvaluation
     # errors: IdempotentParameterMismatch, InvalidParameterValueException
@@ -3653,6 +5454,18 @@ struct Config_ServiceClient:
     def stop_configuration_recorder(self, StopConfigurationRecorderRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "StopConfigurationRecorder", body)
+
+    # TagResource
+    # errors: ResourceNotFoundException, TooManyTagsException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "UntagResource", body)
 
     # Paginator for DescribeAggregateComplianceByConfigRules — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: AggregateComplianceByConfigRules).
@@ -3696,6 +5509,188 @@ struct Config_ServiceClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for DescribeComplianceByConfigRule — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ComplianceByConfigRules).
+    def paginate_describe_compliance_by_config_rule(self, DescribeComplianceByConfigRuleRequest input):
+        auto host = endpoints.regional_host(config_protocol().service, self.region)
+        while True:
+            auto body = describe_compliance_by_config_rule_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeComplianceByConfigRule", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeComplianceByResource — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ComplianceByResources).
+    def paginate_describe_compliance_by_resource(self, DescribeComplianceByResourceRequest input):
+        auto host = endpoints.regional_host(config_protocol().service, self.region)
+        while True:
+            auto body = describe_compliance_by_resource_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeComplianceByResource", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeConfigRuleEvaluationStatus — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ConfigRulesEvaluationStatus).
+    def paginate_describe_config_rule_evaluation_status(self, DescribeConfigRuleEvaluationStatusRequest input):
+        auto host = endpoints.regional_host(config_protocol().service, self.region)
+        while True:
+            auto body = describe_config_rule_evaluation_status_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeConfigRuleEvaluationStatus", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeConfigRules — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ConfigRules).
+    def paginate_describe_config_rules(self, DescribeConfigRulesRequest input):
+        auto host = endpoints.regional_host(config_protocol().service, self.region)
+        while True:
+            auto body = describe_config_rules_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeConfigRules", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeConfigurationAggregatorSourcesStatus — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: AggregatedSourceStatusList).
+    def paginate_describe_configuration_aggregator_sources_status(self, DescribeConfigurationAggregatorSourcesStatusRequest input):
+        auto host = endpoints.regional_host(config_protocol().service, self.region)
+        while True:
+            auto body = describe_configuration_aggregator_sources_status_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeConfigurationAggregatorSourcesStatus", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeConfigurationAggregators — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ConfigurationAggregators).
+    def paginate_describe_configuration_aggregators(self, DescribeConfigurationAggregatorsRequest input):
+        auto host = endpoints.regional_host(config_protocol().service, self.region)
+        while True:
+            auto body = describe_configuration_aggregators_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeConfigurationAggregators", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeConformancePackCompliance — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ConformancePackRuleComplianceList).
+    def paginate_describe_conformance_pack_compliance(self, DescribeConformancePackComplianceRequest input):
+        auto host = endpoints.regional_host(config_protocol().service, self.region)
+        while True:
+            auto body = describe_conformance_pack_compliance_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeConformancePackCompliance", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeConformancePackStatus — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ConformancePackStatusDetails).
+    def paginate_describe_conformance_pack_status(self, DescribeConformancePackStatusRequest input):
+        auto host = endpoints.regional_host(config_protocol().service, self.region)
+        while True:
+            auto body = describe_conformance_pack_status_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeConformancePackStatus", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeConformancePacks — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ConformancePackDetails).
+    def paginate_describe_conformance_packs(self, DescribeConformancePacksRequest input):
+        auto host = endpoints.regional_host(config_protocol().service, self.region)
+        while True:
+            auto body = describe_conformance_packs_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeConformancePacks", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeOrganizationConfigRuleStatuses — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: OrganizationConfigRuleStatuses).
+    def paginate_describe_organization_config_rule_statuses(self, DescribeOrganizationConfigRuleStatusesRequest input):
+        auto host = endpoints.regional_host(config_protocol().service, self.region)
+        while True:
+            auto body = describe_organization_config_rule_statuses_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeOrganizationConfigRuleStatuses", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeOrganizationConfigRules — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: OrganizationConfigRules).
+    def paginate_describe_organization_config_rules(self, DescribeOrganizationConfigRulesRequest input):
+        auto host = endpoints.regional_host(config_protocol().service, self.region)
+        while True:
+            auto body = describe_organization_config_rules_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeOrganizationConfigRules", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeOrganizationConformancePackStatuses — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: OrganizationConformancePackStatuses).
+    def paginate_describe_organization_conformance_pack_statuses(self, DescribeOrganizationConformancePackStatusesRequest input):
+        auto host = endpoints.regional_host(config_protocol().service, self.region)
+        while True:
+            auto body = describe_organization_conformance_pack_statuses_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeOrganizationConformancePackStatuses", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeOrganizationConformancePacks — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: OrganizationConformancePacks).
+    def paginate_describe_organization_conformance_packs(self, DescribeOrganizationConformancePacksRequest input):
+        auto host = endpoints.regional_host(config_protocol().service, self.region)
+        while True:
+            auto body = describe_organization_conformance_packs_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeOrganizationConformancePacks", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for DescribePendingAggregationRequests — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: PendingAggregationRequests).
     def paginate_describe_pending_aggregation_requests(self, DescribePendingAggregationRequestsRequest input):
@@ -3710,6 +5705,34 @@ struct Config_ServiceClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for DescribeRemediationExecutionStatus — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: RemediationExecutionStatuses).
+    def paginate_describe_remediation_execution_status(self, DescribeRemediationExecutionStatusRequest input):
+        auto host = endpoints.regional_host(config_protocol().service, self.region)
+        while True:
+            auto body = describe_remediation_execution_status_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeRemediationExecutionStatus", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeRetentionConfigurations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: RetentionConfigurations).
+    def paginate_describe_retention_configurations(self, DescribeRetentionConfigurationsRequest input):
+        auto host = endpoints.regional_host(config_protocol().service, self.region)
+        while True:
+            auto body = describe_retention_configurations_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "DescribeRetentionConfigurations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for GetAggregateComplianceDetailsByConfigRule — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: AggregateEvaluationResults).
     def paginate_get_aggregate_compliance_details_by_config_rule(self, GetAggregateComplianceDetailsByConfigRuleRequest input):
@@ -3717,6 +5740,48 @@ struct Config_ServiceClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "GetAggregateComplianceDetailsByConfigRule", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetComplianceDetailsByConfigRule — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: EvaluationResults).
+    def paginate_get_compliance_details_by_config_rule(self, GetComplianceDetailsByConfigRuleRequest input):
+        auto host = endpoints.regional_host(config_protocol().service, self.region)
+        while True:
+            auto body = get_compliance_details_by_config_rule_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "GetComplianceDetailsByConfigRule", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetComplianceDetailsByResource — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: EvaluationResults).
+    def paginate_get_compliance_details_by_resource(self, GetComplianceDetailsByResourceRequest input):
+        auto host = endpoints.regional_host(config_protocol().service, self.region)
+        while True:
+            auto body = get_compliance_details_by_resource_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "GetComplianceDetailsByResource", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetConformancePackComplianceSummary — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ConformancePackComplianceSummaryList).
+    def paginate_get_conformance_pack_compliance_summary(self, GetConformancePackComplianceSummaryRequest input):
+        auto host = endpoints.regional_host(config_protocol().service, self.region)
+        while True:
+            auto body = get_conformance_pack_compliance_summary_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "GetConformancePackComplianceSummary", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")
@@ -3779,6 +5844,48 @@ struct Config_ServiceClient:
             if not np.has_more:
                 break
             input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListConfigurationRecorders — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ConfigurationRecorderSummaries).
+    def paginate_list_configuration_recorders(self, ListConfigurationRecordersRequest input):
+        auto host = endpoints.regional_host(config_protocol().service, self.region)
+        while True:
+            auto body = list_configuration_recorders_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "ListConfigurationRecorders", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListConnectors — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ConnectorSummaries).
+    def paginate_list_connectors(self, ListConnectorsRequest input):
+        auto host = endpoints.regional_host(config_protocol().service, self.region)
+        while True:
+            auto body = list_connectors_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "ListConnectors", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListDiscoveredResources — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: resourceIdentifiers).
+    def paginate_list_discovered_resources(self, ListDiscoveredResourcesRequest input):
+        auto host = endpoints.regional_host(config_protocol().service, self.region)
+        while True:
+            auto body = list_discovered_resources_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(config_protocol(), self.creds, self.region, "ListDiscoveredResources", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
 
     # Paginator for ListResourceEvaluations — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: ResourceEvaluations).

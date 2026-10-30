@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 85 operations — 52 with a generated method,
-#   33 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 85 operations — 85 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   289 structs (142 @derive(Json)), 40 enums, 12 error variants.
-#   13 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   14 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -404,8 +404,9 @@ struct AcceptNetworkFirewallTransitGatewayAttachmentResponse:
     str TransitGatewayAttachmentId
     TransitGatewayAttachmentStatus TransitGatewayAttachmentStatus
 
-# no @derive(Json): member(s) PublishMetricAction: PublishMetricAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PublishMetricAction: PublishMetricAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActionDefinition:
     Optional[PublishMetricAction] PublishMetricAction
 
@@ -420,8 +421,9 @@ struct AnalysisReport:
     Optional[DateTime] ReportTime
     Optional[str] Status
 
-# no @derive(Json): member(s) IdentifiedRuleIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentifiedRuleIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalysisResult:
     Optional[list[str]] IdentifiedRuleIds
     Optional[IdentifiedType] IdentifiedType
@@ -436,16 +438,18 @@ struct AnalysisTypeReportResult:
     Optional[Hits] Hits
     Optional[UniqueSources] UniqueSources
 
-# no @derive(Json): member(s) AvailabilityZoneMappings: list[AvailabilityZoneMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZoneMappings: list[AvailabilityZoneMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateAvailabilityZonesRequest:
     Optional[str] UpdateToken
     Optional[str] FirewallArn
     Optional[str] FirewallName
     list[AvailabilityZoneMapping] AvailabilityZoneMappings
 
-# no @derive(Json): member(s) AvailabilityZoneMappings: list[AvailabilityZoneMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZoneMappings: list[AvailabilityZoneMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateAvailabilityZonesResponse:
     Optional[str] FirewallArn
     Optional[str] FirewallName
@@ -466,32 +470,36 @@ struct AssociateFirewallPolicyResponse:
     Optional[str] FirewallPolicyArn
     Optional[str] UpdateToken
 
-# no @derive(Json): member(s) SubnetMappings: list[SubnetMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetMappings: list[SubnetMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateSubnetsRequest:
     Optional[str] UpdateToken
     Optional[str] FirewallArn
     Optional[str] FirewallName
     list[SubnetMapping] SubnetMappings
 
-# no @derive(Json): member(s) SubnetMappings: list[SubnetMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetMappings: list[SubnetMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateSubnetsResponse:
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[list[SubnetMapping]] SubnetMappings
     Optional[str] UpdateToken
 
-# no @derive(Json): member(s) RuleGroups: list[ProxyRuleGroupAttachment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleGroups: list[ProxyRuleGroupAttachment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttachRuleGroupsToProxyConfigurationRequest:
     Optional[str] ProxyConfigurationName
     Optional[str] ProxyConfigurationArn
     list[ProxyRuleGroupAttachment] RuleGroups
     str UpdateToken
 
-# no @derive(Json): member(s) ProxyConfiguration: ProxyConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProxyConfiguration: ProxyConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttachRuleGroupsToProxyConfigurationResponse:
     Optional[ProxyConfiguration] ProxyConfiguration
     Optional[str] UpdateToken
@@ -512,15 +520,17 @@ struct AvailabilityZoneMapping:
 struct AvailabilityZoneMetadata:
     Optional[IPAddressType] IPAddressType
 
-# no @derive(Json): member(s) IPSetReferences: dict[str, IPSetMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IPSetReferences: dict[str, IPSetMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CIDRSummary:
     Optional[int64] AvailableCIDRCount
     Optional[int64] UtilizedCIDRCount
     Optional[dict[str, IPSetMetadata]] IPSetReferences
 
-# no @derive(Json): member(s) CIDRs: CIDRSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CIDRs: CIDRSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CapacityUsageSummary:
     Optional[CIDRSummary] CIDRs
 
@@ -539,14 +549,16 @@ struct ContainerAttribute:
     str Key
     str Value
 
-# no @derive(Json): member(s) AttributeFilters: list[ContainerAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeFilters: list[ContainerAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerMonitoringConfiguration:
     str ClusterArn
     Optional[list[ContainerAttribute]] AttributeFilters
 
-# no @derive(Json): member(s) ContainerMonitoringConfigurations: list[ContainerMonitoringConfiguration], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContainerMonitoringConfigurations: list[ContainerMonitoringConfiguration], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateContainerAssociationRequest:
     str ContainerAssociationName
     Optional[str] Description
@@ -554,8 +566,9 @@ struct CreateContainerAssociationRequest:
     list[ContainerMonitoringConfiguration] ContainerMonitoringConfigurations
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) ContainerMonitoringConfigurations: list[ContainerMonitoringConfiguration], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContainerMonitoringConfigurations: list[ContainerMonitoringConfiguration], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateContainerAssociationResponse:
     Optional[str] ContainerAssociationName
     Optional[str] ContainerAssociationArn
@@ -566,8 +579,9 @@ struct CreateContainerAssociationResponse:
     Optional[list[Tag]] Tags
     Optional[str] UpdateToken
 
-# no @derive(Json): member(s) FirewallPolicy: FirewallPolicy, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FirewallPolicy: FirewallPolicy, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFirewallPolicyRequest:
     str FirewallPolicyName
     FirewallPolicy FirewallPolicy
@@ -576,14 +590,16 @@ struct CreateFirewallPolicyRequest:
     Optional[bool] DryRun
     Optional[EncryptionConfiguration] EncryptionConfiguration
 
-# no @derive(Json): member(s) FirewallPolicyResponse: FirewallPolicyResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FirewallPolicyResponse: FirewallPolicyResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFirewallPolicyResponse:
     str UpdateToken
     FirewallPolicyResponse FirewallPolicyResponse
 
-# no @derive(Json): member(s) SubnetMappings: list[SubnetMapping], Tags: list[Tag], EnabledAnalysisTypes: list[EnabledAnalysisType], AvailabilityZoneMappings: list[AvailabilityZoneMapping], NatGatewayMappings: list[NatGatewayMapping], ProxySettings: ProxySettings, VpcEndpoint: VpcEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetMappings: list[SubnetMapping], Tags: list[Tag], EnabledAnalysisTypes: list[EnabledAnalysisType], AvailabilityZoneMappings: list[AvailabilityZoneMapping], NatGatewayMappings: list[NatGatewayMapping], ProxySettings: ProxySettings, VpcEndpoint: VpcEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFirewallRequest:
     str FirewallName
     str FirewallPolicyArn
@@ -604,14 +620,16 @@ struct CreateFirewallRequest:
     Optional[bool] NoSourcePreservation
     Optional[VpcEndpoint] VpcEndpoint
 
-# no @derive(Json): member(s) Firewall: Firewall, FirewallStatus: FirewallStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Firewall: Firewall, FirewallStatus: FirewallStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFirewallResponse:
     Optional[Firewall] Firewall
     Optional[FirewallStatus] FirewallStatus
 
-# no @derive(Json): member(s) RuleGroupNames: list[str], RuleGroupArns: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleGroupNames: list[str], RuleGroupArns: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProxyConfigurationRequest:
     str ProxyConfigurationName
     Optional[str] Description
@@ -620,14 +638,16 @@ struct CreateProxyConfigurationRequest:
     ProxyConfigDefaultRulePhaseActionsRequest DefaultRulePhaseActions
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) ProxyConfiguration: ProxyConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProxyConfiguration: ProxyConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProxyConfigurationResponse:
     Optional[ProxyConfiguration] ProxyConfiguration
     Optional[str] UpdateToken
 
-# no @derive(Json): member(s) ListenerProperties: list[ListenerPropertyRequest], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ListenerProperties: list[ListenerPropertyRequest], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProxyRequest:
     str ProxyName
     str NatGatewayId
@@ -637,14 +657,16 @@ struct CreateProxyRequest:
     TlsInterceptPropertiesRequest TlsInterceptProperties
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Proxy: Proxy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Proxy: Proxy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProxyResponse:
     Optional[Proxy] Proxy
     Optional[str] UpdateToken
 
-# no @derive(Json): member(s) Conditions: list[ProxyRuleCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Conditions: list[ProxyRuleCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProxyRule:
     Optional[str] ProxyRuleName
     Optional[str] Description
@@ -652,42 +674,48 @@ struct CreateProxyRule:
     Optional[list[ProxyRuleCondition]] Conditions
     Optional[int64] InsertPosition
 
-# no @derive(Json): member(s) Rules: ProxyRulesByRequestPhase, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: ProxyRulesByRequestPhase, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProxyRuleGroupRequest:
     str ProxyRuleGroupName
     Optional[str] Description
     Optional[ProxyRulesByRequestPhase] Rules
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) ProxyRuleGroup: ProxyRuleGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProxyRuleGroup: ProxyRuleGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProxyRuleGroupResponse:
     Optional[ProxyRuleGroup] ProxyRuleGroup
     Optional[str] UpdateToken
 
-# no @derive(Json): member(s) PreDNS: list[CreateProxyRule], PreREQUEST: list[CreateProxyRule], PostRESPONSE: list[CreateProxyRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PreDNS: list[CreateProxyRule], PreREQUEST: list[CreateProxyRule], PostRESPONSE: list[CreateProxyRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProxyRulesByRequestPhase:
     Optional[list[CreateProxyRule]] PreDNS
     Optional[list[CreateProxyRule]] PreREQUEST
     Optional[list[CreateProxyRule]] PostRESPONSE
 
-# no @derive(Json): member(s) Rules: CreateProxyRulesByRequestPhase not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: CreateProxyRulesByRequestPhase not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProxyRulesRequest:
     Optional[str] ProxyRuleGroupArn
     Optional[str] ProxyRuleGroupName
     CreateProxyRulesByRequestPhase Rules
 
-# no @derive(Json): member(s) ProxyRuleGroup: ProxyRuleGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProxyRuleGroup: ProxyRuleGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProxyRulesResponse:
     Optional[ProxyRuleGroup] ProxyRuleGroup
     Optional[str] UpdateToken
 
-# no @derive(Json): member(s) RuleGroup: RuleGroup, Tags: list[Tag], SummaryConfiguration: SummaryConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleGroup: RuleGroup, Tags: list[Tag], SummaryConfiguration: SummaryConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRuleGroupRequest:
     str RuleGroupName
     Optional[RuleGroup] RuleGroup
@@ -702,14 +730,16 @@ struct CreateRuleGroupRequest:
     Optional[bool] AnalyzeRuleGroup
     Optional[SummaryConfiguration] SummaryConfiguration
 
-# no @derive(Json): member(s) RuleGroupResponse: RuleGroupResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleGroupResponse: RuleGroupResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRuleGroupResponse:
     str UpdateToken
     RuleGroupResponse RuleGroupResponse
 
-# no @derive(Json): member(s) TLSInspectionConfiguration: TLSInspectionConfiguration, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TLSInspectionConfiguration: TLSInspectionConfiguration, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTLSInspectionConfigurationRequest:
     str TLSInspectionConfigurationName
     TLSInspectionConfiguration TLSInspectionConfiguration
@@ -717,14 +747,16 @@ struct CreateTLSInspectionConfigurationRequest:
     Optional[list[Tag]] Tags
     Optional[EncryptionConfiguration] EncryptionConfiguration
 
-# no @derive(Json): member(s) TLSInspectionConfigurationResponse: TLSInspectionConfigurationResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TLSInspectionConfigurationResponse: TLSInspectionConfigurationResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTLSInspectionConfigurationResponse:
     str UpdateToken
     TLSInspectionConfigurationResponse TLSInspectionConfigurationResponse
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVpcEndpointAssociationRequest:
     str FirewallArn
     str VpcId
@@ -732,14 +764,16 @@ struct CreateVpcEndpointAssociationRequest:
     Optional[str] Description
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) VpcEndpointAssociation: VpcEndpointAssociation, VpcEndpointAssociationStatus: VpcEndpointAssociationStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcEndpointAssociation: VpcEndpointAssociation, VpcEndpointAssociationStatus: VpcEndpointAssociationStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVpcEndpointAssociationResponse:
     Optional[VpcEndpointAssociation] VpcEndpointAssociation
     Optional[VpcEndpointAssociationStatus] VpcEndpointAssociationStatus
 
-# no @derive(Json): member(s) ActionDefinition: ActionDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActionDefinition: ActionDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomAction:
     str ActionName
     ActionDefinition ActionDefinition
@@ -760,8 +794,9 @@ struct DeleteFirewallPolicyRequest:
     Optional[str] FirewallPolicyName
     Optional[str] FirewallPolicyArn
 
-# no @derive(Json): member(s) FirewallPolicyResponse: FirewallPolicyResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FirewallPolicyResponse: FirewallPolicyResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteFirewallPolicyResponse:
     FirewallPolicyResponse FirewallPolicyResponse
 
@@ -770,8 +805,9 @@ struct DeleteFirewallRequest:
     Optional[str] FirewallName
     Optional[str] FirewallArn
 
-# no @derive(Json): member(s) Firewall: Firewall, FirewallStatus: FirewallStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Firewall: Firewall, FirewallStatus: FirewallStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteFirewallResponse:
     Optional[Firewall] Firewall
     Optional[FirewallStatus] FirewallStatus
@@ -817,15 +853,17 @@ struct DeleteProxyRuleGroupResponse:
     Optional[str] ProxyRuleGroupName
     Optional[str] ProxyRuleGroupArn
 
-# no @derive(Json): member(s) Rules: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteProxyRulesRequest:
     Optional[str] ProxyRuleGroupArn
     Optional[str] ProxyRuleGroupName
     list[str] Rules
 
-# no @derive(Json): member(s) ProxyRuleGroup: ProxyRuleGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProxyRuleGroup: ProxyRuleGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteProxyRulesResponse:
     Optional[ProxyRuleGroup] ProxyRuleGroup
 
@@ -844,8 +882,9 @@ struct DeleteRuleGroupRequest:
     Optional[str] RuleGroupArn
     Optional[RuleGroupType] Type
 
-# no @derive(Json): member(s) RuleGroupResponse: RuleGroupResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleGroupResponse: RuleGroupResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteRuleGroupResponse:
     RuleGroupResponse RuleGroupResponse
 
@@ -854,8 +893,9 @@ struct DeleteTLSInspectionConfigurationRequest:
     Optional[str] TLSInspectionConfigurationArn
     Optional[str] TLSInspectionConfigurationName
 
-# no @derive(Json): member(s) TLSInspectionConfigurationResponse: TLSInspectionConfigurationResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TLSInspectionConfigurationResponse: TLSInspectionConfigurationResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteTLSInspectionConfigurationResponse:
     TLSInspectionConfigurationResponse TLSInspectionConfigurationResponse
 
@@ -863,8 +903,9 @@ struct DeleteTLSInspectionConfigurationResponse:
 struct DeleteVpcEndpointAssociationRequest:
     str VpcEndpointAssociationArn
 
-# no @derive(Json): member(s) VpcEndpointAssociation: VpcEndpointAssociation, VpcEndpointAssociationStatus: VpcEndpointAssociationStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcEndpointAssociation: VpcEndpointAssociation, VpcEndpointAssociationStatus: VpcEndpointAssociationStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteVpcEndpointAssociationResponse:
     Optional[VpcEndpointAssociation] VpcEndpointAssociation
     Optional[VpcEndpointAssociationStatus] VpcEndpointAssociationStatus
@@ -874,8 +915,9 @@ struct DescribeContainerAssociationRequest:
     Optional[str] ContainerAssociationName
     Optional[str] ContainerAssociationArn
 
-# no @derive(Json): member(s) ContainerMonitoringConfigurations: list[ContainerMonitoringConfiguration], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContainerMonitoringConfigurations: list[ContainerMonitoringConfiguration], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeContainerAssociationResponse:
     Optional[str] ContainerAssociationName
     Optional[str] ContainerAssociationArn
@@ -892,8 +934,9 @@ struct DescribeContainerAssociationResponse:
 struct DescribeFirewallMetadataRequest:
     Optional[str] FirewallArn
 
-# no @derive(Json): member(s) SupportedAvailabilityZones: dict[str, AvailabilityZoneMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupportedAvailabilityZones: dict[str, AvailabilityZoneMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFirewallMetadataResponse:
     Optional[str] FirewallArn
     Optional[str] FirewallPolicyArn
@@ -907,8 +950,9 @@ struct DescribeFirewallPolicyRequest:
     Optional[str] FirewallPolicyName
     Optional[str] FirewallPolicyArn
 
-# no @derive(Json): member(s) FirewallPolicyResponse: FirewallPolicyResponse, FirewallPolicy: FirewallPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FirewallPolicyResponse: FirewallPolicyResponse, FirewallPolicy: FirewallPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFirewallPolicyResponse:
     str UpdateToken
     FirewallPolicyResponse FirewallPolicyResponse
@@ -919,8 +963,9 @@ struct DescribeFirewallRequest:
     Optional[str] FirewallName
     Optional[str] FirewallArn
 
-# no @derive(Json): member(s) Firewall: Firewall, FirewallStatus: FirewallStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Firewall: Firewall, FirewallStatus: FirewallStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFirewallResponse:
     Optional[str] UpdateToken
     Optional[Firewall] Firewall
@@ -935,8 +980,9 @@ struct DescribeFlowOperationRequest:
     Optional[str] VpcEndpointId
     str FlowOperationId
 
-# no @derive(Json): member(s) FlowOperation: FlowOperation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FlowOperation: FlowOperation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFlowOperationResponse:
     Optional[str] FirewallArn
     Optional[str] AvailabilityZone
@@ -955,8 +1001,9 @@ struct DescribeLoggingConfigurationRequest:
     Optional[str] FirewallArn
     Optional[str] FirewallName
 
-# no @derive(Json): member(s) LoggingConfiguration: LoggingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LoggingConfiguration: LoggingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLoggingConfigurationResponse:
     Optional[str] FirewallArn
     Optional[LoggingConfiguration] LoggingConfiguration
@@ -967,8 +1014,9 @@ struct DescribeProxyConfigurationRequest:
     Optional[str] ProxyConfigurationName
     Optional[str] ProxyConfigurationArn
 
-# no @derive(Json): member(s) ProxyConfiguration: ProxyConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProxyConfiguration: ProxyConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProxyConfigurationResponse:
     Optional[ProxyConfiguration] ProxyConfiguration
     Optional[str] UpdateToken
@@ -978,8 +1026,9 @@ struct DescribeProxyRequest:
     Optional[str] ProxyName
     Optional[str] ProxyArn
 
-# no @derive(Json): member(s) ListenerProperties: list[ListenerProperty], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ListenerProperties: list[ListenerProperty], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProxyResource:
     Optional[str] ProxyName
     Optional[str] ProxyArn
@@ -999,8 +1048,9 @@ struct DescribeProxyResource:
     Optional[str] FailureMessage
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Proxy: DescribeProxyResource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Proxy: DescribeProxyResource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProxyResponse:
     Optional[DescribeProxyResource] Proxy
     Optional[str] UpdateToken
@@ -1010,8 +1060,9 @@ struct DescribeProxyRuleGroupRequest:
     Optional[str] ProxyRuleGroupName
     Optional[str] ProxyRuleGroupArn
 
-# no @derive(Json): member(s) ProxyRuleGroup: ProxyRuleGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProxyRuleGroup: ProxyRuleGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProxyRuleGroupResponse:
     Optional[ProxyRuleGroup] ProxyRuleGroup
     Optional[str] UpdateToken
@@ -1022,8 +1073,9 @@ struct DescribeProxyRuleRequest:
     Optional[str] ProxyRuleGroupName
     Optional[str] ProxyRuleGroupArn
 
-# no @derive(Json): member(s) ProxyRule: ProxyRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProxyRule: ProxyRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeProxyRuleResponse:
     Optional[ProxyRule] ProxyRule
     Optional[str] UpdateToken
@@ -1062,8 +1114,9 @@ struct DescribeRuleGroupRequest:
     Optional[RuleGroupType] Type
     Optional[bool] AnalyzeRuleGroup
 
-# no @derive(Json): member(s) RuleGroup: RuleGroup, RuleGroupResponse: RuleGroupResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleGroup: RuleGroup, RuleGroupResponse: RuleGroupResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRuleGroupResponse:
     str UpdateToken
     Optional[RuleGroup] RuleGroup
@@ -1075,8 +1128,9 @@ struct DescribeRuleGroupSummaryRequest:
     Optional[str] RuleGroupArn
     Optional[RuleGroupType] Type
 
-# no @derive(Json): member(s) Summary: Summary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Summary: Summary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRuleGroupSummaryResponse:
     str RuleGroupName
     Optional[str] Description
@@ -1087,8 +1141,9 @@ struct DescribeTLSInspectionConfigurationRequest:
     Optional[str] TLSInspectionConfigurationArn
     Optional[str] TLSInspectionConfigurationName
 
-# no @derive(Json): member(s) TLSInspectionConfiguration: TLSInspectionConfiguration, TLSInspectionConfigurationResponse: TLSInspectionConfigurationResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TLSInspectionConfiguration: TLSInspectionConfiguration, TLSInspectionConfigurationResponse: TLSInspectionConfigurationResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTLSInspectionConfigurationResponse:
     str UpdateToken
     Optional[TLSInspectionConfiguration] TLSInspectionConfiguration
@@ -1098,14 +1153,16 @@ struct DescribeTLSInspectionConfigurationResponse:
 struct DescribeVpcEndpointAssociationRequest:
     str VpcEndpointAssociationArn
 
-# no @derive(Json): member(s) VpcEndpointAssociation: VpcEndpointAssociation, VpcEndpointAssociationStatus: VpcEndpointAssociationStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcEndpointAssociation: VpcEndpointAssociation, VpcEndpointAssociationStatus: VpcEndpointAssociationStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeVpcEndpointAssociationResponse:
     Optional[VpcEndpointAssociation] VpcEndpointAssociation
     Optional[VpcEndpointAssociationStatus] VpcEndpointAssociationStatus
 
-# no @derive(Json): member(s) RuleGroupNames: list[str], RuleGroupArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleGroupNames: list[str], RuleGroupArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetachRuleGroupsFromProxyConfigurationRequest:
     Optional[str] ProxyConfigurationName
     Optional[str] ProxyConfigurationArn
@@ -1113,8 +1170,9 @@ struct DetachRuleGroupsFromProxyConfigurationRequest:
     Optional[list[str]] RuleGroupArns
     str UpdateToken
 
-# no @derive(Json): member(s) ProxyConfiguration: ProxyConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProxyConfiguration: ProxyConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetachRuleGroupsFromProxyConfigurationResponse:
     Optional[ProxyConfiguration] ProxyConfiguration
     Optional[str] UpdateToken
@@ -1123,32 +1181,36 @@ struct DetachRuleGroupsFromProxyConfigurationResponse:
 struct Dimension:
     str Value
 
-# no @derive(Json): member(s) AvailabilityZoneMappings: list[AvailabilityZoneMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZoneMappings: list[AvailabilityZoneMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateAvailabilityZonesRequest:
     Optional[str] UpdateToken
     Optional[str] FirewallArn
     Optional[str] FirewallName
     list[AvailabilityZoneMapping] AvailabilityZoneMappings
 
-# no @derive(Json): member(s) AvailabilityZoneMappings: list[AvailabilityZoneMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZoneMappings: list[AvailabilityZoneMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateAvailabilityZonesResponse:
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[list[AvailabilityZoneMapping]] AvailabilityZoneMappings
     Optional[str] UpdateToken
 
-# no @derive(Json): member(s) SubnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateSubnetsRequest:
     Optional[str] UpdateToken
     Optional[str] FirewallArn
     Optional[str] FirewallName
     list[str] SubnetIds
 
-# no @derive(Json): member(s) SubnetMappings: list[SubnetMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetMappings: list[SubnetMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateSubnetsResponse:
     Optional[str] FirewallArn
     Optional[str] FirewallName
@@ -1160,8 +1222,9 @@ struct EncryptionConfiguration:
     Optional[str] KeyId
     EncryptionType Type
 
-# no @derive(Json): member(s) SubnetMappings: list[SubnetMapping], Tags: list[Tag], EnabledAnalysisTypes: list[EnabledAnalysisType], AvailabilityZoneMappings: list[AvailabilityZoneMapping], NatGatewayMappings: list[NatGatewayMapping], ProxySettings: ProxySettings, VpcEndpoint: VpcEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetMappings: list[SubnetMapping], Tags: list[Tag], EnabledAnalysisTypes: list[EnabledAnalysisType], AvailabilityZoneMappings: list[AvailabilityZoneMapping], NatGatewayMappings: list[NatGatewayMapping], ProxySettings: ProxySettings, VpcEndpoint: VpcEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Firewall:
     Optional[str] FirewallName
     Optional[str] FirewallArn
@@ -1192,8 +1255,9 @@ struct FirewallMetadata:
     Optional[str] FirewallArn
     Optional[str] TransitGatewayAttachmentId
 
-# no @derive(Json): member(s) StatelessRuleGroupReferences: list[StatelessRuleGroupReference], StatelessDefaultActions: list[str], StatelessFragmentDefaultActions: list[str], StatelessCustomActions: list[CustomAction], StatefulRuleGroupReferences: list[StatefulRuleGroupReference], StatefulDefaultActions: list[str], PolicyVariables: PolicyVariables, Route53ResolvedIPValidation: Route53ResolvedIPValidation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StatelessRuleGroupReferences: list[StatelessRuleGroupReference], StatelessDefaultActions: list[str], StatelessFragmentDefaultActions: list[str], StatelessCustomActions: list[CustomAction], StatefulRuleGroupReferences: list[StatefulRuleGroupReference], StatefulDefaultActions: list[str], PolicyVariables: PolicyVariables, Route53ResolvedIPValidation: Route53ResolvedIPValidation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FirewallPolicy:
     Optional[list[StatelessRuleGroupReference]] StatelessRuleGroupReferences
     list[str] StatelessDefaultActions
@@ -1218,8 +1282,9 @@ struct FirewallPolicyMetadata:
     Optional[str] Name
     Optional[str] Arn
 
-# no @derive(Json): member(s) Tags: list[Tag], Errors: list[FirewallPolicyError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], Errors: list[FirewallPolicyError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FirewallPolicyResponse:
     str FirewallPolicyName
     str FirewallPolicyArn
@@ -1236,8 +1301,9 @@ struct FirewallPolicyResponse:
     Optional[list[FirewallPolicyError]] Errors
     Optional[DateTime] LastModifiedTime
 
-# no @derive(Json): member(s) SyncStates: dict[str, SyncState], CapacityUsageSummary: CapacityUsageSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SyncStates: dict[str, SyncState], CapacityUsageSummary: CapacityUsageSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FirewallStatus:
     FirewallStatusValue Status
     ConfigurationSyncState ConfigurationSyncStateSummary
@@ -1256,8 +1322,9 @@ struct Flow:
     Optional[int64] PacketCount
     Optional[int64] ByteCount
 
-# no @derive(Json): member(s) Protocols: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Protocols: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FlowFilter:
     Optional[Address] SourceAddress
     Optional[Address] DestinationAddress
@@ -1265,8 +1332,9 @@ struct FlowFilter:
     Optional[str] DestinationPort
     Optional[list[str]] Protocols
 
-# no @derive(Json): member(s) FlowFilters: list[FlowFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FlowFilters: list[FlowFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FlowOperation:
     Optional[int64] MinimumFlowAgeInSeconds
     Optional[list[FlowFilter]] FlowFilters
@@ -1290,8 +1358,9 @@ struct GetAnalysisReportResultsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AnalysisReportResults: list[AnalysisTypeReportResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AnalysisReportResults: list[AnalysisTypeReportResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAnalysisReportResultsResponse:
     Optional[str] Status
     Optional[DateTime] StartTime
@@ -1314,8 +1383,9 @@ struct Header:
 struct Hits:
     Optional[int64] Count
 
-# no @derive(Json): member(s) Definition: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definition: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IPSet:
     list[str] Definition
 
@@ -1362,8 +1432,9 @@ struct ListAnalysisReportsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AnalysisReports: list[AnalysisReport] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AnalysisReports: list[AnalysisReport] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAnalysisReportsResponse:
     Optional[list[AnalysisReport]] AnalysisReports
     Optional[str] NextToken
@@ -1373,8 +1444,9 @@ struct ListContainerAssociationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ContainerAssociations: list[ContainerAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContainerAssociations: list[ContainerAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListContainerAssociationsResponse:
     Optional[list[ContainerAssociationSummary]] ContainerAssociations
     Optional[str] NextToken
@@ -1384,21 +1456,24 @@ struct ListFirewallPoliciesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) FirewallPolicies: list[FirewallPolicyMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FirewallPolicies: list[FirewallPolicyMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFirewallPoliciesResponse:
     Optional[str] NextToken
     Optional[list[FirewallPolicyMetadata]] FirewallPolicies
 
-# no @derive(Json): member(s) VpcIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFirewallsRequest:
     Optional[str] NextToken
     Optional[list[str]] VpcIds
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Firewalls: list[FirewallMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Firewalls: list[FirewallMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFirewallsResponse:
     Optional[str] NextToken
     Optional[list[FirewallMetadata]] Firewalls
@@ -1414,8 +1489,9 @@ struct ListFlowOperationResultsRequest:
     Optional[str] VpcEndpointId
     Optional[str] VpcEndpointAssociationArn
 
-# no @derive(Json): member(s) Flows: list[Flow] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Flows: list[Flow] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFlowOperationResultsResponse:
     Optional[str] FirewallArn
     Optional[str] AvailabilityZone
@@ -1440,8 +1516,9 @@ struct ListFlowOperationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) FlowOperations: list[FlowOperationMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FlowOperations: list[FlowOperationMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFlowOperationsResponse:
     Optional[list[FlowOperationMetadata]] FlowOperations
     Optional[str] NextToken
@@ -1451,8 +1528,9 @@ struct ListProxiesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Proxies: list[ProxyMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Proxies: list[ProxyMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProxiesResponse:
     Optional[list[ProxyMetadata]] Proxies
     Optional[str] NextToken
@@ -1462,8 +1540,9 @@ struct ListProxyConfigurationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ProxyConfigurations: list[ProxyConfigurationMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProxyConfigurations: list[ProxyConfigurationMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProxyConfigurationsResponse:
     Optional[list[ProxyConfigurationMetadata]] ProxyConfigurations
     Optional[str] NextToken
@@ -1473,8 +1552,9 @@ struct ListProxyRuleGroupsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ProxyRuleGroups: list[ProxyRuleGroupMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProxyRuleGroups: list[ProxyRuleGroupMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProxyRuleGroupsResponse:
     Optional[list[ProxyRuleGroupMetadata]] ProxyRuleGroups
     Optional[str] NextToken
@@ -1488,8 +1568,9 @@ struct ListRuleGroupsRequest:
     Optional[SubscriptionStatus] SubscriptionStatus
     Optional[RuleGroupType] Type
 
-# no @derive(Json): member(s) RuleGroups: list[RuleGroupMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleGroups: list[RuleGroupMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRuleGroupsResponse:
     Optional[str] NextToken
     Optional[list[RuleGroupMetadata]] RuleGroups
@@ -1499,8 +1580,9 @@ struct ListTLSInspectionConfigurationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TLSInspectionConfigurations: list[TLSInspectionConfigurationMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TLSInspectionConfigurations: list[TLSInspectionConfigurationMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTLSInspectionConfigurationsResponse:
     Optional[str] NextToken
     Optional[list[TLSInspectionConfigurationMetadata]] TLSInspectionConfigurations
@@ -1511,8 +1593,9 @@ struct ListTagsForResourceRequest:
     Optional[int64] MaxResults
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[str] NextToken
     Optional[list[Tag]] Tags
@@ -1523,8 +1606,9 @@ struct ListVpcEndpointAssociationsRequest:
     Optional[int64] MaxResults
     Optional[str] FirewallArn
 
-# no @derive(Json): member(s) VpcEndpointAssociations: list[VpcEndpointAssociationMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcEndpointAssociations: list[VpcEndpointAssociationMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVpcEndpointAssociationsResponse:
     Optional[str] NextToken
     Optional[list[VpcEndpointAssociationMetadata]] VpcEndpointAssociations
@@ -1539,8 +1623,9 @@ struct ListenerPropertyRequest:
     int64 Port
     ListenerPropertyType Type
 
-# no @derive(Json): member(s) LogDestination: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LogDestination: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LogDestinationConfig:
     LogType LogType
     LogDestinationType LogDestinationType
@@ -1550,13 +1635,15 @@ struct LogDestinationConfig:
 struct LogDestinationPermissionException:
     Optional[str] Message
 
-# no @derive(Json): member(s) LogDestinationConfigs: list[LogDestinationConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LogDestinationConfigs: list[LogDestinationConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LoggingConfiguration:
     list[LogDestinationConfig] LogDestinationConfigs
 
-# no @derive(Json): member(s) Sources: list[Address], Destinations: list[Address], SourcePorts: list[PortRange], DestinationPorts: list[PortRange], Protocols: list[int64], TCPFlags: list[TCPFlagField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sources: list[Address], Destinations: list[Address], SourcePorts: list[PortRange], DestinationPorts: list[PortRange], Protocols: list[int64], TCPFlags: list[TCPFlagField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MatchAttributes:
     Optional[list[Address]] Sources
     Optional[list[Address]] Destinations
@@ -1581,8 +1668,9 @@ struct PerObjectStatus:
     Optional[PerObjectSyncStatus] SyncStatus
     Optional[str] UpdateToken
 
-# no @derive(Json): member(s) RuleVariables: dict[str, IPSet] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleVariables: dict[str, IPSet] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PolicyVariables:
     Optional[dict[str, IPSet]] RuleVariables
 
@@ -1591,13 +1679,15 @@ struct PortRange:
     int64 FromPort
     int64 ToPort
 
-# no @derive(Json): member(s) Definition: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Definition: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PortSet:
     Optional[list[str]] Definition
 
-# no @derive(Json): member(s) ListenerProperties: list[ListenerProperty], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ListenerProperties: list[ListenerProperty], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Proxy:
     Optional[DateTime] CreateTime
     Optional[DateTime] DeleteTime
@@ -1628,8 +1718,9 @@ struct ProxyConfigRuleGroup:
     Optional[str] Type
     Optional[int64] Priority
 
-# no @derive(Json): member(s) RuleGroups: list[ProxyConfigRuleGroup], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleGroups: list[ProxyConfigRuleGroup], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProxyConfiguration:
     Optional[str] ProxyConfigurationName
     Optional[str] ProxyConfigurationArn
@@ -1650,23 +1741,26 @@ struct ProxyMetadata:
     Optional[str] Name
     Optional[str] Arn
 
-# no @derive(Json): member(s) Conditions: list[ProxyRuleCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Conditions: list[ProxyRuleCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProxyRule:
     Optional[str] ProxyRuleName
     Optional[str] Description
     Optional[ProxyRulePhaseAction] Action
     Optional[list[ProxyRuleCondition]] Conditions
 
-# no @derive(Json): member(s) ConditionValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConditionValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProxyRuleCondition:
     Optional[str] ConditionOperator
     Optional[str] ConditionKey
     Optional[list[str]] ConditionValues
 
-# no @derive(Json): member(s) Rules: ProxyRulesByRequestPhase, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: ProxyRulesByRequestPhase, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProxyRuleGroup:
     Optional[str] ProxyRuleGroupName
     Optional[str] ProxyRuleGroupArn
@@ -1701,20 +1795,23 @@ struct ProxyRulePriority:
     Optional[str] ProxyRuleName
     Optional[int64] NewPosition
 
-# no @derive(Json): member(s) PreDNS: list[ProxyRule], PreREQUEST: list[ProxyRule], PostRESPONSE: list[ProxyRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PreDNS: list[ProxyRule], PreREQUEST: list[ProxyRule], PostRESPONSE: list[ProxyRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProxyRulesByRequestPhase:
     Optional[list[ProxyRule]] PreDNS
     Optional[list[ProxyRule]] PreREQUEST
     Optional[list[ProxyRule]] PostRESPONSE
 
-# no @derive(Json): member(s) ListenerProperties: list[ListenerProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ListenerProperties: list[ListenerProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProxySettings:
     list[ListenerProperty] ListenerProperties
 
-# no @derive(Json): member(s) Dimensions: list[Dimension] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: list[Dimension] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PublishMetricAction:
     list[Dimension] Dimensions
 
@@ -1728,8 +1825,9 @@ struct PutResourcePolicyResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) IPSetReferences: dict[str, IPSetReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IPSetReferences: dict[str, IPSetReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReferenceSets:
     Optional[dict[str, IPSetReference]] IPSetReferences
 
@@ -1750,8 +1848,9 @@ struct ResourceNotFoundException:
 struct ResourceOwnerCheckException:
     Optional[str] Message
 
-# no @derive(Json): member(s) BypassDestinationValidationIPRanges: list[Address], SourceIPRanges: list[Address] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BypassDestinationValidationIPRanges: list[Address], SourceIPRanges: list[Address] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Route53ResolvedIPValidation:
     Route53ResolvedIPValidationAction Action
     str DNSFirewallRuleGroupId
@@ -1759,14 +1858,16 @@ struct Route53ResolvedIPValidation:
     Optional[list[Address]] BypassDestinationValidationIPRanges
     Optional[list[Address]] SourceIPRanges
 
-# no @derive(Json): member(s) MatchAttributes: MatchAttributes, Actions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchAttributes: MatchAttributes, Actions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleDefinition:
     MatchAttributes MatchAttributes
     list[str] Actions
 
-# no @derive(Json): member(s) RuleVariables: RuleVariables, ReferenceSets: ReferenceSets, RulesSource: RulesSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleVariables: RuleVariables, ReferenceSets: ReferenceSets, RulesSource: RulesSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleGroup:
     Optional[RuleVariables] RuleVariables
     Optional[ReferenceSets] ReferenceSets
@@ -1779,8 +1880,9 @@ struct RuleGroupMetadata:
     Optional[str] Arn
     Optional[str] VendorName
 
-# no @derive(Json): member(s) Tags: list[Tag], AnalysisResults: list[AnalysisResult], SummaryConfiguration: SummaryConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], AnalysisResults: list[AnalysisResult], SummaryConfiguration: SummaryConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleGroupResponse:
     str RuleGroupArn
     str RuleGroupName
@@ -1799,8 +1901,9 @@ struct RuleGroupResponse:
     Optional[list[AnalysisResult]] AnalysisResults
     Optional[SummaryConfiguration] SummaryConfiguration
 
-# no @derive(Json): member(s) Settings: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Settings: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleOption:
     str Keyword
     Optional[list[str]] Settings
@@ -1811,22 +1914,25 @@ struct RuleSummary:
     Optional[str] Msg
     Optional[str] Metadata
 
-# no @derive(Json): member(s) IPSets: dict[str, IPSet], PortSets: dict[str, PortSet] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IPSets: dict[str, IPSet], PortSets: dict[str, PortSet] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleVariables:
     Optional[dict[str, IPSet]] IPSets
     Optional[dict[str, PortSet]] PortSets
 
-# no @derive(Json): member(s) RulesSourceList: RulesSourceList, StatefulRules: list[StatefulRule], StatelessRulesAndCustomActions: StatelessRulesAndCustomActions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RulesSourceList: RulesSourceList, StatefulRules: list[StatefulRule], StatelessRulesAndCustomActions: StatelessRulesAndCustomActions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RulesSource:
     Optional[str] RulesString
     Optional[RulesSourceList] RulesSourceList
     Optional[list[StatefulRule]] StatefulRules
     Optional[StatelessRulesAndCustomActions] StatelessRulesAndCustomActions
 
-# no @derive(Json): member(s) Targets: list[str], TargetTypes: list[TargetType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: list[str], TargetTypes: list[TargetType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RulesSourceList:
     list[str] Targets
     list[TargetType] TargetTypes
@@ -1836,16 +1942,18 @@ struct RulesSourceList:
 struct ServerCertificate:
     Optional[str] ResourceArn
 
-# no @derive(Json): member(s) ServerCertificates: list[ServerCertificate], Scopes: list[ServerCertificateScope] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServerCertificates: list[ServerCertificate], Scopes: list[ServerCertificateScope] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServerCertificateConfiguration:
     Optional[list[ServerCertificate]] ServerCertificates
     Optional[list[ServerCertificateScope]] Scopes
     Optional[str] CertificateAuthorityArn
     Optional[CheckCertificateRevocationStatusActions] CheckCertificateRevocationStatus
 
-# no @derive(Json): member(s) Sources: list[Address], Destinations: list[Address], SourcePorts: list[PortRange], DestinationPorts: list[PortRange], Protocols: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sources: list[Address], Destinations: list[Address], SourcePorts: list[PortRange], DestinationPorts: list[PortRange], Protocols: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServerCertificateScope:
     Optional[list[Address]] Sources
     Optional[list[Address]] Destinations
@@ -1868,8 +1976,9 @@ struct StartAnalysisReportRequest:
 struct StartAnalysisReportResponse:
     str AnalysisReportId
 
-# no @derive(Json): member(s) FlowFilters: list[FlowFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FlowFilters: list[FlowFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartFlowCaptureRequest:
     str FirewallArn
     Optional[str] AvailabilityZone
@@ -1885,8 +1994,9 @@ struct StartFlowCaptureResponse:
     Optional[str] FlowOperationId
     Optional[FlowOperationStatus] FlowOperationStatus
 
-# no @derive(Json): member(s) FlowFilters: list[FlowFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FlowFilters: list[FlowFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartFlowFlushRequest:
     str FirewallArn
     Optional[str] AvailabilityZone
@@ -1908,8 +2018,9 @@ struct StatefulEngineOptions:
     Optional[StreamExceptionPolicy] StreamExceptionPolicy
     Optional[FlowTimeouts] FlowTimeouts
 
-# no @derive(Json): member(s) RuleOptions: list[RuleOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleOptions: list[RuleOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StatefulRule:
     StatefulAction Action
     Header Header
@@ -1930,8 +2041,9 @@ struct StatefulRuleGroupReference:
 struct StatefulRuleOptions:
     Optional[RuleOrder] RuleOrder
 
-# no @derive(Json): member(s) RuleDefinition: RuleDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleDefinition: RuleDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StatelessRule:
     RuleDefinition RuleDefinition
     int64 Priority
@@ -1941,8 +2053,9 @@ struct StatelessRuleGroupReference:
     str ResourceArn
     int64 Priority
 
-# no @derive(Json): member(s) StatelessRules: list[StatelessRule], CustomActions: list[CustomAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StatelessRules: list[StatelessRule], CustomActions: list[CustomAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StatelessRulesAndCustomActions:
     list[StatelessRule] StatelessRules
     Optional[list[CustomAction]] CustomActions
@@ -1952,31 +2065,36 @@ struct SubnetMapping:
     str SubnetId
     Optional[IPAddressType] IPAddressType
 
-# no @derive(Json): member(s) RuleSummaries: list[RuleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleSummaries: list[RuleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Summary:
     Optional[list[RuleSummary]] RuleSummaries
 
-# no @derive(Json): member(s) RuleOptions: list[SummaryRuleOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleOptions: list[SummaryRuleOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SummaryConfiguration:
     Optional[list[SummaryRuleOption]] RuleOptions
 
-# no @derive(Json): member(s) Config: dict[str, PerObjectStatus], NatGatewayAttachments: list[NatGatewayAttachment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Config: dict[str, PerObjectStatus], NatGatewayAttachments: list[NatGatewayAttachment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SyncState:
     Optional[Attachment] Attachment
     Optional[dict[str, PerObjectStatus]] Config
     Optional[list[NatGatewayAttachment]] NatGatewayAttachments
 
-# no @derive(Json): member(s) Flags: list[TCPFlag], Masks: list[TCPFlag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Flags: list[TCPFlag], Masks: list[TCPFlag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TCPFlagField:
     list[TCPFlag] Flags
     Optional[list[TCPFlag]] Masks
 
-# no @derive(Json): member(s) ServerCertificateConfigurations: list[ServerCertificateConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServerCertificateConfigurations: list[ServerCertificateConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TLSInspectionConfiguration:
     Optional[list[ServerCertificateConfiguration]] ServerCertificateConfigurations
 
@@ -1985,8 +2103,9 @@ struct TLSInspectionConfigurationMetadata:
     Optional[str] Name
     Optional[str] Arn
 
-# no @derive(Json): member(s) Tags: list[Tag], Certificates: list[TlsCertificateData] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], Certificates: list[TlsCertificateData] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TLSInspectionConfigurationResponse:
     str TLSInspectionConfigurationArn
     str TLSInspectionConfigurationName
@@ -2005,8 +2124,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[Tag] Tags
@@ -2051,8 +2171,9 @@ struct UniqueSources:
 struct UnsupportedOperationException:
     Optional[str] Message
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] TagKeys
@@ -2076,8 +2197,9 @@ struct UpdateAvailabilityZoneChangeProtectionResponse:
     Optional[str] FirewallName
     Optional[bool] AvailabilityZoneChangeProtection
 
-# no @derive(Json): member(s) ContainerMonitoringConfigurations: list[ContainerMonitoringConfiguration], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContainerMonitoringConfigurations: list[ContainerMonitoringConfiguration], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateContainerAssociationRequest:
     Optional[str] ContainerAssociationName
     Optional[str] ContainerAssociationArn
@@ -2087,8 +2209,9 @@ struct UpdateContainerAssociationRequest:
     Optional[list[Tag]] Tags
     str UpdateToken
 
-# no @derive(Json): member(s) ContainerMonitoringConfigurations: list[ContainerMonitoringConfiguration], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContainerMonitoringConfigurations: list[ContainerMonitoringConfiguration], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateContainerAssociationResponse:
     Optional[str] ContainerAssociationName
     Optional[str] ContainerAssociationArn
@@ -2099,16 +2222,18 @@ struct UpdateContainerAssociationResponse:
     Optional[list[Tag]] Tags
     Optional[str] UpdateToken
 
-# no @derive(Json): member(s) EnabledAnalysisTypes: list[EnabledAnalysisType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnabledAnalysisTypes: list[EnabledAnalysisType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFirewallAnalysisSettingsRequest:
     Optional[list[EnabledAnalysisType]] EnabledAnalysisTypes
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[str] UpdateToken
 
-# no @derive(Json): member(s) EnabledAnalysisTypes: list[EnabledAnalysisType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnabledAnalysisTypes: list[EnabledAnalysisType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFirewallAnalysisSettingsResponse:
     Optional[list[EnabledAnalysisType]] EnabledAnalysisTypes
     Optional[str] FirewallArn
@@ -2171,8 +2296,9 @@ struct UpdateFirewallPolicyChangeProtectionResponse:
     Optional[str] FirewallName
     Optional[bool] FirewallPolicyChangeProtection
 
-# no @derive(Json): member(s) FirewallPolicy: FirewallPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FirewallPolicy: FirewallPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFirewallPolicyRequest:
     str UpdateToken
     Optional[str] FirewallPolicyArn
@@ -2182,22 +2308,25 @@ struct UpdateFirewallPolicyRequest:
     Optional[bool] DryRun
     Optional[EncryptionConfiguration] EncryptionConfiguration
 
-# no @derive(Json): member(s) FirewallPolicyResponse: FirewallPolicyResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FirewallPolicyResponse: FirewallPolicyResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFirewallPolicyResponse:
     str UpdateToken
     FirewallPolicyResponse FirewallPolicyResponse
 
-# no @derive(Json): member(s) LoggingConfiguration: LoggingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LoggingConfiguration: LoggingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateLoggingConfigurationRequest:
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[LoggingConfiguration] LoggingConfiguration
     Optional[bool] EnableMonitoringDashboard
 
-# no @derive(Json): member(s) LoggingConfiguration: LoggingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LoggingConfiguration: LoggingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateLoggingConfigurationResponse:
     Optional[str] FirewallArn
     Optional[str] FirewallName
@@ -2211,14 +2340,16 @@ struct UpdateProxyConfigurationRequest:
     ProxyConfigDefaultRulePhaseActionsRequest DefaultRulePhaseActions
     str UpdateToken
 
-# no @derive(Json): member(s) ProxyConfiguration: ProxyConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProxyConfiguration: ProxyConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProxyConfigurationResponse:
     Optional[ProxyConfiguration] ProxyConfiguration
     Optional[str] UpdateToken
 
-# no @derive(Json): member(s) ListenerPropertiesToAdd: list[ListenerPropertyRequest], ListenerPropertiesToRemove: list[ListenerPropertyRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ListenerPropertiesToAdd: list[ListenerPropertyRequest], ListenerPropertiesToRemove: list[ListenerPropertyRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProxyRequest:
     str NatGatewayId
     Optional[str] ProxyName
@@ -2228,28 +2359,32 @@ struct UpdateProxyRequest:
     Optional[TlsInterceptPropertiesRequest] TlsInterceptProperties
     str UpdateToken
 
-# no @derive(Json): member(s) Proxy: Proxy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Proxy: Proxy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProxyResponse:
     Optional[Proxy] Proxy
     Optional[str] UpdateToken
 
-# no @derive(Json): member(s) RuleGroups: list[ProxyRuleGroupPriority] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleGroups: list[ProxyRuleGroupPriority] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProxyRuleGroupPrioritiesRequest:
     Optional[str] ProxyConfigurationName
     Optional[str] ProxyConfigurationArn
     list[ProxyRuleGroupPriority] RuleGroups
     str UpdateToken
 
-# no @derive(Json): member(s) ProxyRuleGroups: list[ProxyRuleGroupPriorityResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProxyRuleGroups: list[ProxyRuleGroupPriorityResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProxyRuleGroupPrioritiesResponse:
     Optional[list[ProxyRuleGroupPriorityResult]] ProxyRuleGroups
     Optional[str] UpdateToken
 
-# no @derive(Json): member(s) Rules: list[ProxyRulePriority] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[ProxyRulePriority] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProxyRulePrioritiesRequest:
     Optional[str] ProxyRuleGroupName
     Optional[str] ProxyRuleGroupArn
@@ -2257,8 +2392,9 @@ struct UpdateProxyRulePrioritiesRequest:
     list[ProxyRulePriority] Rules
     str UpdateToken
 
-# no @derive(Json): member(s) Rules: list[ProxyRulePriority] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[ProxyRulePriority] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProxyRulePrioritiesResponse:
     Optional[str] ProxyRuleGroupName
     Optional[str] ProxyRuleGroupArn
@@ -2266,8 +2402,9 @@ struct UpdateProxyRulePrioritiesResponse:
     Optional[list[ProxyRulePriority]] Rules
     Optional[str] UpdateToken
 
-# no @derive(Json): member(s) AddConditions: list[ProxyRuleCondition], RemoveConditions: list[ProxyRuleCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AddConditions: list[ProxyRuleCondition], RemoveConditions: list[ProxyRuleCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProxyRuleRequest:
     Optional[str] ProxyRuleGroupName
     Optional[str] ProxyRuleGroupArn
@@ -2278,31 +2415,35 @@ struct UpdateProxyRuleRequest:
     Optional[list[ProxyRuleCondition]] RemoveConditions
     str UpdateToken
 
-# no @derive(Json): member(s) ProxyRule: ProxyRule, RemovedConditions: list[ProxyRuleCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProxyRule: ProxyRule, RemovedConditions: list[ProxyRuleCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProxyRuleResponse:
     Optional[ProxyRule] ProxyRule
     Optional[list[ProxyRuleCondition]] RemovedConditions
     Optional[str] UpdateToken
 
-# no @derive(Json): member(s) ProxySettings: ProxySettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProxySettings: ProxySettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProxySettingsRequest:
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[str] UpdateToken
     Optional[ProxySettings] ProxySettings
 
-# no @derive(Json): member(s) ProxySettings: ProxySettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProxySettings: ProxySettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProxySettingsResponse:
     Optional[str] FirewallArn
     Optional[str] FirewallName
     Optional[str] UpdateToken
     Optional[ProxySettings] ProxySettings
 
-# no @derive(Json): member(s) RuleGroup: RuleGroup, SummaryConfiguration: SummaryConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleGroup: RuleGroup, SummaryConfiguration: SummaryConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRuleGroupRequest:
     str UpdateToken
     Optional[str] RuleGroupArn
@@ -2317,8 +2458,9 @@ struct UpdateRuleGroupRequest:
     Optional[bool] AnalyzeRuleGroup
     Optional[SummaryConfiguration] SummaryConfiguration
 
-# no @derive(Json): member(s) RuleGroupResponse: RuleGroupResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleGroupResponse: RuleGroupResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRuleGroupResponse:
     str UpdateToken
     RuleGroupResponse RuleGroupResponse
@@ -2337,8 +2479,9 @@ struct UpdateSubnetChangeProtectionResponse:
     Optional[str] FirewallName
     Optional[bool] SubnetChangeProtection
 
-# no @derive(Json): member(s) TLSInspectionConfiguration: TLSInspectionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TLSInspectionConfiguration: TLSInspectionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTLSInspectionConfigurationRequest:
     Optional[str] TLSInspectionConfigurationArn
     Optional[str] TLSInspectionConfigurationName
@@ -2347,20 +2490,23 @@ struct UpdateTLSInspectionConfigurationRequest:
     Optional[EncryptionConfiguration] EncryptionConfiguration
     str UpdateToken
 
-# no @derive(Json): member(s) TLSInspectionConfigurationResponse: TLSInspectionConfigurationResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TLSInspectionConfigurationResponse: TLSInspectionConfigurationResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTLSInspectionConfigurationResponse:
     str UpdateToken
     TLSInspectionConfigurationResponse TLSInspectionConfigurationResponse
 
-# no @derive(Json): member(s) SubnetMappings: list[SubnetMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetMappings: list[SubnetMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcEndpoint:
     str VpcId
     list[SubnetMapping] SubnetMappings
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcEndpointAssociation:
     Optional[str] VpcEndpointAssociationId
     str VpcEndpointAssociationArn
@@ -2374,8 +2520,9 @@ struct VpcEndpointAssociation:
 struct VpcEndpointAssociationMetadata:
     Optional[str] VpcEndpointAssociationArn
 
-# no @derive(Json): member(s) AssociationSyncState: dict[str, AZSyncState] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociationSyncState: dict[str, AZSyncState] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcEndpointAssociationStatus:
     FirewallStatusValue Status
     Optional[dict[str, AZSyncState]] AssociationSyncState
@@ -2429,45 +2576,1346 @@ def network_firewall_error_from_code(str code) -> Network_FirewallError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AssociateAvailabilityZones (input AssociateAvailabilityZonesRequest)
-#   AssociateSubnets (input AssociateSubnetsRequest)
-#   AttachRuleGroupsToProxyConfiguration (input AttachRuleGroupsToProxyConfigurationRequest)
-#   CreateContainerAssociation (input CreateContainerAssociationRequest)
-#   CreateFirewall (input CreateFirewallRequest)
-#   CreateFirewallPolicy (input CreateFirewallPolicyRequest)
-#   CreateProxy (input CreateProxyRequest)
-#   CreateProxyConfiguration (input CreateProxyConfigurationRequest)
-#   CreateProxyRuleGroup (input CreateProxyRuleGroupRequest)
-#   CreateProxyRules (input CreateProxyRulesRequest)
-#   CreateRuleGroup (input CreateRuleGroupRequest)
-#   CreateTLSInspectionConfiguration (input CreateTLSInspectionConfigurationRequest)
-#   CreateVpcEndpointAssociation (input CreateVpcEndpointAssociationRequest)
-#   DeleteProxyRules (input DeleteProxyRulesRequest)
-#   DetachRuleGroupsFromProxyConfiguration (input DetachRuleGroupsFromProxyConfigurationRequest)
-#   DisassociateAvailabilityZones (input DisassociateAvailabilityZonesRequest)
-#   DisassociateSubnets (input DisassociateSubnetsRequest)
-#   ListFirewalls (input ListFirewallsRequest)
-#   StartFlowCapture (input StartFlowCaptureRequest)
-#   StartFlowFlush (input StartFlowFlushRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateContainerAssociation (input UpdateContainerAssociationRequest)
-#   UpdateFirewallAnalysisSettings (input UpdateFirewallAnalysisSettingsRequest)
-#   UpdateFirewallPolicy (input UpdateFirewallPolicyRequest)
-#   UpdateLoggingConfiguration (input UpdateLoggingConfigurationRequest)
-#   UpdateProxy (input UpdateProxyRequest)
-#   UpdateProxyRule (input UpdateProxyRuleRequest)
-#   UpdateProxyRuleGroupPriorities (input UpdateProxyRuleGroupPrioritiesRequest)
-#   UpdateProxyRulePriorities (input UpdateProxyRulePrioritiesRequest)
-#   UpdateProxySettings (input UpdateProxySettingsRequest)
-#   UpdateRuleGroup (input UpdateRuleGroupRequest)
-#   UpdateTLSInspectionConfiguration (input UpdateTLSInspectionConfigurationRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def network_firewall_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListFirewalls (input not derivable (no generated method))
+def network_firewall_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def network_firewall_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ActionDefinition to a compact JSON object (declaration order).
+def action_definition_to_json(ActionDefinition v) -> str:
+    list[str] parts = []
+    if v.PublishMetricAction.is_some():
+        auto u0 = v.PublishMetricAction.unwrap()
+        parts.append("\"PublishMetricAction\":" + publish_metric_action_to_json(u0))
+    return network_firewall_json_obj(parts)
+
+# Serialize AssociateAvailabilityZonesRequest to a compact JSON object (declaration order).
+def associate_availability_zones_request_to_json(AssociateAvailabilityZonesRequest v) -> str:
+    list[str] parts = []
+    if v.UpdateToken.is_some():
+        auto u0 = v.UpdateToken.unwrap()
+        parts.append("\"UpdateToken\":" + network_firewall_json_str(u0))
+    if v.FirewallArn.is_some():
+        auto u1 = v.FirewallArn.unwrap()
+        parts.append("\"FirewallArn\":" + network_firewall_json_str(u1))
+    if v.FirewallName.is_some():
+        auto u2 = v.FirewallName.unwrap()
+        parts.append("\"FirewallName\":" + network_firewall_json_str(u2))
+    list[str] e3 = []
+    for x3 in v.AvailabilityZoneMappings:
+        e3.append(x3.to_json())
+    parts.append("\"AvailabilityZoneMappings\":" + network_firewall_json_arr(e3))
+    return network_firewall_json_obj(parts)
+
+# Serialize AssociateSubnetsRequest to a compact JSON object (declaration order).
+def associate_subnets_request_to_json(AssociateSubnetsRequest v) -> str:
+    list[str] parts = []
+    if v.UpdateToken.is_some():
+        auto u0 = v.UpdateToken.unwrap()
+        parts.append("\"UpdateToken\":" + network_firewall_json_str(u0))
+    if v.FirewallArn.is_some():
+        auto u1 = v.FirewallArn.unwrap()
+        parts.append("\"FirewallArn\":" + network_firewall_json_str(u1))
+    if v.FirewallName.is_some():
+        auto u2 = v.FirewallName.unwrap()
+        parts.append("\"FirewallName\":" + network_firewall_json_str(u2))
+    list[str] e3 = []
+    for x3 in v.SubnetMappings:
+        e3.append(x3.to_json())
+    parts.append("\"SubnetMappings\":" + network_firewall_json_arr(e3))
+    return network_firewall_json_obj(parts)
+
+# Serialize AttachRuleGroupsToProxyConfigurationRequest to a compact JSON object (declaration order).
+def attach_rule_groups_to_proxy_configuration_request_to_json(AttachRuleGroupsToProxyConfigurationRequest v) -> str:
+    list[str] parts = []
+    if v.ProxyConfigurationName.is_some():
+        auto u0 = v.ProxyConfigurationName.unwrap()
+        parts.append("\"ProxyConfigurationName\":" + network_firewall_json_str(u0))
+    if v.ProxyConfigurationArn.is_some():
+        auto u1 = v.ProxyConfigurationArn.unwrap()
+        parts.append("\"ProxyConfigurationArn\":" + network_firewall_json_str(u1))
+    list[str] e2 = []
+    for x2 in v.RuleGroups:
+        e2.append(x2.to_json())
+    parts.append("\"RuleGroups\":" + network_firewall_json_arr(e2))
+    parts.append("\"UpdateToken\":" + network_firewall_json_str(v.UpdateToken))
+    return network_firewall_json_obj(parts)
+
+# Serialize ContainerMonitoringConfiguration to a compact JSON object (declaration order).
+def container_monitoring_configuration_to_json(ContainerMonitoringConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterArn\":" + network_firewall_json_str(v.ClusterArn))
+    if v.AttributeFilters.is_some():
+        auto u0 = v.AttributeFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AttributeFilters\":" + network_firewall_json_arr(e1))
+    return network_firewall_json_obj(parts)
+
+# Serialize CreateContainerAssociationRequest to a compact JSON object (declaration order).
+def create_container_association_request_to_json(CreateContainerAssociationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ContainerAssociationName\":" + network_firewall_json_str(v.ContainerAssociationName))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + network_firewall_json_str(u0))
+    parts.append("\"Type\":" + v.Type.to_json())
+    list[str] e1 = []
+    for x1 in v.ContainerMonitoringConfigurations:
+        e1.append(container_monitoring_configuration_to_json(x1))
+    parts.append("\"ContainerMonitoringConfigurations\":" + network_firewall_json_arr(e1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + network_firewall_json_arr(e3))
+    return network_firewall_json_obj(parts)
+
+# Serialize CreateFirewallPolicyRequest to a compact JSON object (declaration order).
+def create_firewall_policy_request_to_json(CreateFirewallPolicyRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"FirewallPolicyName\":" + network_firewall_json_str(v.FirewallPolicyName))
+    parts.append("\"FirewallPolicy\":" + firewall_policy_to_json(v.FirewallPolicy))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + network_firewall_json_str(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + network_firewall_json_arr(e2))
+    if v.DryRun.is_some():
+        auto u3 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.EncryptionConfiguration.is_some():
+        auto u4 = v.EncryptionConfiguration.unwrap()
+        parts.append("\"EncryptionConfiguration\":" + u4.to_json())
+    return network_firewall_json_obj(parts)
+
+# Serialize CreateFirewallRequest to a compact JSON object (declaration order).
+def create_firewall_request_to_json(CreateFirewallRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"FirewallName\":" + network_firewall_json_str(v.FirewallName))
+    parts.append("\"FirewallPolicyArn\":" + network_firewall_json_str(v.FirewallPolicyArn))
+    if v.VpcId.is_some():
+        auto u0 = v.VpcId.unwrap()
+        parts.append("\"VpcId\":" + network_firewall_json_str(u0))
+    if v.SubnetMappings.is_some():
+        auto u1 = v.SubnetMappings.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"SubnetMappings\":" + network_firewall_json_arr(e2))
+    if v.DeleteProtection.is_some():
+        auto u3 = v.DeleteProtection.unwrap()
+        parts.append("\"DeleteProtection\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.SubnetChangeProtection.is_some():
+        auto u4 = v.SubnetChangeProtection.unwrap()
+        parts.append("\"SubnetChangeProtection\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.FirewallPolicyChangeProtection.is_some():
+        auto u5 = v.FirewallPolicyChangeProtection.unwrap()
+        parts.append("\"FirewallPolicyChangeProtection\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.Description.is_some():
+        auto u6 = v.Description.unwrap()
+        parts.append("\"Description\":" + network_firewall_json_str(u6))
+    if v.Tags.is_some():
+        auto u7 = v.Tags.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"Tags\":" + network_firewall_json_arr(e8))
+    if v.EncryptionConfiguration.is_some():
+        auto u9 = v.EncryptionConfiguration.unwrap()
+        parts.append("\"EncryptionConfiguration\":" + u9.to_json())
+    if v.EnabledAnalysisTypes.is_some():
+        auto u10 = v.EnabledAnalysisTypes.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"EnabledAnalysisTypes\":" + network_firewall_json_arr(e11))
+    if v.TransitGatewayId.is_some():
+        auto u12 = v.TransitGatewayId.unwrap()
+        parts.append("\"TransitGatewayId\":" + network_firewall_json_str(u12))
+    if v.AvailabilityZoneMappings.is_some():
+        auto u13 = v.AvailabilityZoneMappings.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(x14.to_json())
+        parts.append("\"AvailabilityZoneMappings\":" + network_firewall_json_arr(e14))
+    if v.AvailabilityZoneChangeProtection.is_some():
+        auto u15 = v.AvailabilityZoneChangeProtection.unwrap()
+        parts.append("\"AvailabilityZoneChangeProtection\":" + json.dumps(JsonValue.Bool(u15)))
+    if v.NatGatewayMappings.is_some():
+        auto u16 = v.NatGatewayMappings.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"NatGatewayMappings\":" + network_firewall_json_arr(e17))
+    if v.ProxySettings.is_some():
+        auto u18 = v.ProxySettings.unwrap()
+        parts.append("\"ProxySettings\":" + proxy_settings_to_json(u18))
+    if v.NoSourcePreservation.is_some():
+        auto u19 = v.NoSourcePreservation.unwrap()
+        parts.append("\"NoSourcePreservation\":" + json.dumps(JsonValue.Bool(u19)))
+    if v.VpcEndpoint.is_some():
+        auto u20 = v.VpcEndpoint.unwrap()
+        parts.append("\"VpcEndpoint\":" + vpc_endpoint_to_json(u20))
+    return network_firewall_json_obj(parts)
+
+# Serialize CreateProxyConfigurationRequest to a compact JSON object (declaration order).
+def create_proxy_configuration_request_to_json(CreateProxyConfigurationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ProxyConfigurationName\":" + network_firewall_json_str(v.ProxyConfigurationName))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + network_firewall_json_str(u0))
+    if v.RuleGroupNames.is_some():
+        auto u1 = v.RuleGroupNames.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(network_firewall_json_str(x2))
+        parts.append("\"RuleGroupNames\":" + network_firewall_json_arr(e2))
+    if v.RuleGroupArns.is_some():
+        auto u3 = v.RuleGroupArns.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(network_firewall_json_str(x4))
+        parts.append("\"RuleGroupArns\":" + network_firewall_json_arr(e4))
+    parts.append("\"DefaultRulePhaseActions\":" + v.DefaultRulePhaseActions.to_json())
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + network_firewall_json_arr(e6))
+    return network_firewall_json_obj(parts)
+
+# Serialize CreateProxyRequest to a compact JSON object (declaration order).
+def create_proxy_request_to_json(CreateProxyRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ProxyName\":" + network_firewall_json_str(v.ProxyName))
+    parts.append("\"NatGatewayId\":" + network_firewall_json_str(v.NatGatewayId))
+    if v.ProxyConfigurationName.is_some():
+        auto u0 = v.ProxyConfigurationName.unwrap()
+        parts.append("\"ProxyConfigurationName\":" + network_firewall_json_str(u0))
+    if v.ProxyConfigurationArn.is_some():
+        auto u1 = v.ProxyConfigurationArn.unwrap()
+        parts.append("\"ProxyConfigurationArn\":" + network_firewall_json_str(u1))
+    if v.ListenerProperties.is_some():
+        auto u2 = v.ListenerProperties.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ListenerProperties\":" + network_firewall_json_arr(e3))
+    parts.append("\"TlsInterceptProperties\":" + v.TlsInterceptProperties.to_json())
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + network_firewall_json_arr(e5))
+    return network_firewall_json_obj(parts)
+
+# Serialize CreateProxyRule to a compact JSON object (declaration order).
+def create_proxy_rule_to_json(CreateProxyRule v) -> str:
+    list[str] parts = []
+    if v.ProxyRuleName.is_some():
+        auto u0 = v.ProxyRuleName.unwrap()
+        parts.append("\"ProxyRuleName\":" + network_firewall_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + network_firewall_json_str(u1))
+    if v.Action.is_some():
+        auto u2 = v.Action.unwrap()
+        parts.append("\"Action\":" + u2.to_json())
+    if v.Conditions.is_some():
+        auto u3 = v.Conditions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(proxy_rule_condition_to_json(x4))
+        parts.append("\"Conditions\":" + network_firewall_json_arr(e4))
+    if v.InsertPosition.is_some():
+        auto u5 = v.InsertPosition.unwrap()
+        parts.append("\"InsertPosition\":" + str(u5))
+    return network_firewall_json_obj(parts)
+
+# Serialize CreateProxyRuleGroupRequest to a compact JSON object (declaration order).
+def create_proxy_rule_group_request_to_json(CreateProxyRuleGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ProxyRuleGroupName\":" + network_firewall_json_str(v.ProxyRuleGroupName))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + network_firewall_json_str(u0))
+    if v.Rules.is_some():
+        auto u1 = v.Rules.unwrap()
+        parts.append("\"Rules\":" + proxy_rules_by_request_phase_to_json(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + network_firewall_json_arr(e3))
+    return network_firewall_json_obj(parts)
+
+# Serialize CreateProxyRulesByRequestPhase to a compact JSON object (declaration order).
+def create_proxy_rules_by_request_phase_to_json(CreateProxyRulesByRequestPhase v) -> str:
+    list[str] parts = []
+    if v.PreDNS.is_some():
+        auto u0 = v.PreDNS.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(create_proxy_rule_to_json(x1))
+        parts.append("\"PreDNS\":" + network_firewall_json_arr(e1))
+    if v.PreREQUEST.is_some():
+        auto u2 = v.PreREQUEST.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(create_proxy_rule_to_json(x3))
+        parts.append("\"PreREQUEST\":" + network_firewall_json_arr(e3))
+    if v.PostRESPONSE.is_some():
+        auto u4 = v.PostRESPONSE.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(create_proxy_rule_to_json(x5))
+        parts.append("\"PostRESPONSE\":" + network_firewall_json_arr(e5))
+    return network_firewall_json_obj(parts)
+
+# Serialize CreateProxyRulesRequest to a compact JSON object (declaration order).
+def create_proxy_rules_request_to_json(CreateProxyRulesRequest v) -> str:
+    list[str] parts = []
+    if v.ProxyRuleGroupArn.is_some():
+        auto u0 = v.ProxyRuleGroupArn.unwrap()
+        parts.append("\"ProxyRuleGroupArn\":" + network_firewall_json_str(u0))
+    if v.ProxyRuleGroupName.is_some():
+        auto u1 = v.ProxyRuleGroupName.unwrap()
+        parts.append("\"ProxyRuleGroupName\":" + network_firewall_json_str(u1))
+    parts.append("\"Rules\":" + create_proxy_rules_by_request_phase_to_json(v.Rules))
+    return network_firewall_json_obj(parts)
+
+# Serialize CreateRuleGroupRequest to a compact JSON object (declaration order).
+def create_rule_group_request_to_json(CreateRuleGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"RuleGroupName\":" + network_firewall_json_str(v.RuleGroupName))
+    if v.RuleGroup.is_some():
+        auto u0 = v.RuleGroup.unwrap()
+        parts.append("\"RuleGroup\":" + rule_group_to_json(u0))
+    if v.Rules.is_some():
+        auto u1 = v.Rules.unwrap()
+        parts.append("\"Rules\":" + network_firewall_json_str(u1))
+    parts.append("\"Type\":" + v.Type.to_json())
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"Description\":" + network_firewall_json_str(u2))
+    parts.append("\"Capacity\":" + str(v.Capacity))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + network_firewall_json_arr(e4))
+    if v.DryRun.is_some():
+        auto u5 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.EncryptionConfiguration.is_some():
+        auto u6 = v.EncryptionConfiguration.unwrap()
+        parts.append("\"EncryptionConfiguration\":" + u6.to_json())
+    if v.SourceMetadata.is_some():
+        auto u7 = v.SourceMetadata.unwrap()
+        parts.append("\"SourceMetadata\":" + u7.to_json())
+    if v.AnalyzeRuleGroup.is_some():
+        auto u8 = v.AnalyzeRuleGroup.unwrap()
+        parts.append("\"AnalyzeRuleGroup\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.SummaryConfiguration.is_some():
+        auto u9 = v.SummaryConfiguration.unwrap()
+        parts.append("\"SummaryConfiguration\":" + summary_configuration_to_json(u9))
+    return network_firewall_json_obj(parts)
+
+# Serialize CreateTLSInspectionConfigurationRequest to a compact JSON object (declaration order).
+def create_tls_inspection_configuration_request_to_json(CreateTLSInspectionConfigurationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TLSInspectionConfigurationName\":" + network_firewall_json_str(v.TLSInspectionConfigurationName))
+    parts.append("\"TLSInspectionConfiguration\":" + tls_inspection_configuration_to_json(v.TLSInspectionConfiguration))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + network_firewall_json_str(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + network_firewall_json_arr(e2))
+    if v.EncryptionConfiguration.is_some():
+        auto u3 = v.EncryptionConfiguration.unwrap()
+        parts.append("\"EncryptionConfiguration\":" + u3.to_json())
+    return network_firewall_json_obj(parts)
+
+# Serialize CreateVpcEndpointAssociationRequest to a compact JSON object (declaration order).
+def create_vpc_endpoint_association_request_to_json(CreateVpcEndpointAssociationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"FirewallArn\":" + network_firewall_json_str(v.FirewallArn))
+    parts.append("\"VpcId\":" + network_firewall_json_str(v.VpcId))
+    parts.append("\"SubnetMapping\":" + v.SubnetMapping.to_json())
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + network_firewall_json_str(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + network_firewall_json_arr(e2))
+    return network_firewall_json_obj(parts)
+
+# Serialize CustomAction to a compact JSON object (declaration order).
+def custom_action_to_json(CustomAction v) -> str:
+    list[str] parts = []
+    parts.append("\"ActionName\":" + network_firewall_json_str(v.ActionName))
+    parts.append("\"ActionDefinition\":" + action_definition_to_json(v.ActionDefinition))
+    return network_firewall_json_obj(parts)
+
+# Serialize DeleteProxyRulesRequest to a compact JSON object (declaration order).
+def delete_proxy_rules_request_to_json(DeleteProxyRulesRequest v) -> str:
+    list[str] parts = []
+    if v.ProxyRuleGroupArn.is_some():
+        auto u0 = v.ProxyRuleGroupArn.unwrap()
+        parts.append("\"ProxyRuleGroupArn\":" + network_firewall_json_str(u0))
+    if v.ProxyRuleGroupName.is_some():
+        auto u1 = v.ProxyRuleGroupName.unwrap()
+        parts.append("\"ProxyRuleGroupName\":" + network_firewall_json_str(u1))
+    list[str] e2 = []
+    for x2 in v.Rules:
+        e2.append(network_firewall_json_str(x2))
+    parts.append("\"Rules\":" + network_firewall_json_arr(e2))
+    return network_firewall_json_obj(parts)
+
+# Serialize DetachRuleGroupsFromProxyConfigurationRequest to a compact JSON object (declaration order).
+def detach_rule_groups_from_proxy_configuration_request_to_json(DetachRuleGroupsFromProxyConfigurationRequest v) -> str:
+    list[str] parts = []
+    if v.ProxyConfigurationName.is_some():
+        auto u0 = v.ProxyConfigurationName.unwrap()
+        parts.append("\"ProxyConfigurationName\":" + network_firewall_json_str(u0))
+    if v.ProxyConfigurationArn.is_some():
+        auto u1 = v.ProxyConfigurationArn.unwrap()
+        parts.append("\"ProxyConfigurationArn\":" + network_firewall_json_str(u1))
+    if v.RuleGroupNames.is_some():
+        auto u2 = v.RuleGroupNames.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(network_firewall_json_str(x3))
+        parts.append("\"RuleGroupNames\":" + network_firewall_json_arr(e3))
+    if v.RuleGroupArns.is_some():
+        auto u4 = v.RuleGroupArns.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(network_firewall_json_str(x5))
+        parts.append("\"RuleGroupArns\":" + network_firewall_json_arr(e5))
+    parts.append("\"UpdateToken\":" + network_firewall_json_str(v.UpdateToken))
+    return network_firewall_json_obj(parts)
+
+# Serialize DisassociateAvailabilityZonesRequest to a compact JSON object (declaration order).
+def disassociate_availability_zones_request_to_json(DisassociateAvailabilityZonesRequest v) -> str:
+    list[str] parts = []
+    if v.UpdateToken.is_some():
+        auto u0 = v.UpdateToken.unwrap()
+        parts.append("\"UpdateToken\":" + network_firewall_json_str(u0))
+    if v.FirewallArn.is_some():
+        auto u1 = v.FirewallArn.unwrap()
+        parts.append("\"FirewallArn\":" + network_firewall_json_str(u1))
+    if v.FirewallName.is_some():
+        auto u2 = v.FirewallName.unwrap()
+        parts.append("\"FirewallName\":" + network_firewall_json_str(u2))
+    list[str] e3 = []
+    for x3 in v.AvailabilityZoneMappings:
+        e3.append(x3.to_json())
+    parts.append("\"AvailabilityZoneMappings\":" + network_firewall_json_arr(e3))
+    return network_firewall_json_obj(parts)
+
+# Serialize DisassociateSubnetsRequest to a compact JSON object (declaration order).
+def disassociate_subnets_request_to_json(DisassociateSubnetsRequest v) -> str:
+    list[str] parts = []
+    if v.UpdateToken.is_some():
+        auto u0 = v.UpdateToken.unwrap()
+        parts.append("\"UpdateToken\":" + network_firewall_json_str(u0))
+    if v.FirewallArn.is_some():
+        auto u1 = v.FirewallArn.unwrap()
+        parts.append("\"FirewallArn\":" + network_firewall_json_str(u1))
+    if v.FirewallName.is_some():
+        auto u2 = v.FirewallName.unwrap()
+        parts.append("\"FirewallName\":" + network_firewall_json_str(u2))
+    list[str] e3 = []
+    for x3 in v.SubnetIds:
+        e3.append(network_firewall_json_str(x3))
+    parts.append("\"SubnetIds\":" + network_firewall_json_arr(e3))
+    return network_firewall_json_obj(parts)
+
+# Serialize FirewallPolicy to a compact JSON object (declaration order).
+def firewall_policy_to_json(FirewallPolicy v) -> str:
+    list[str] parts = []
+    if v.StatelessRuleGroupReferences.is_some():
+        auto u0 = v.StatelessRuleGroupReferences.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"StatelessRuleGroupReferences\":" + network_firewall_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.StatelessDefaultActions:
+        e2.append(network_firewall_json_str(x2))
+    parts.append("\"StatelessDefaultActions\":" + network_firewall_json_arr(e2))
+    list[str] e3 = []
+    for x3 in v.StatelessFragmentDefaultActions:
+        e3.append(network_firewall_json_str(x3))
+    parts.append("\"StatelessFragmentDefaultActions\":" + network_firewall_json_arr(e3))
+    if v.StatelessCustomActions.is_some():
+        auto u4 = v.StatelessCustomActions.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(custom_action_to_json(x5))
+        parts.append("\"StatelessCustomActions\":" + network_firewall_json_arr(e5))
+    if v.StatefulRuleGroupReferences.is_some():
+        auto u6 = v.StatefulRuleGroupReferences.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"StatefulRuleGroupReferences\":" + network_firewall_json_arr(e7))
+    if v.StatefulDefaultActions.is_some():
+        auto u8 = v.StatefulDefaultActions.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(network_firewall_json_str(x9))
+        parts.append("\"StatefulDefaultActions\":" + network_firewall_json_arr(e9))
+    if v.StatefulEngineOptions.is_some():
+        auto u10 = v.StatefulEngineOptions.unwrap()
+        parts.append("\"StatefulEngineOptions\":" + u10.to_json())
+    if v.TLSInspectionConfigurationArn.is_some():
+        auto u11 = v.TLSInspectionConfigurationArn.unwrap()
+        parts.append("\"TLSInspectionConfigurationArn\":" + network_firewall_json_str(u11))
+    if v.PolicyVariables.is_some():
+        auto u12 = v.PolicyVariables.unwrap()
+        parts.append("\"PolicyVariables\":" + policy_variables_to_json(u12))
+    if v.EnableTLSSessionHolding.is_some():
+        auto u13 = v.EnableTLSSessionHolding.unwrap()
+        parts.append("\"EnableTLSSessionHolding\":" + json.dumps(JsonValue.Bool(u13)))
+    if v.Route53ResolvedIPValidation.is_some():
+        auto u14 = v.Route53ResolvedIPValidation.unwrap()
+        parts.append("\"Route53ResolvedIPValidation\":" + route53_resolved_ip_validation_to_json(u14))
+    return network_firewall_json_obj(parts)
+
+# Serialize FlowFilter to a compact JSON object (declaration order).
+def flow_filter_to_json(FlowFilter v) -> str:
+    list[str] parts = []
+    if v.SourceAddress.is_some():
+        auto u0 = v.SourceAddress.unwrap()
+        parts.append("\"SourceAddress\":" + u0.to_json())
+    if v.DestinationAddress.is_some():
+        auto u1 = v.DestinationAddress.unwrap()
+        parts.append("\"DestinationAddress\":" + u1.to_json())
+    if v.SourcePort.is_some():
+        auto u2 = v.SourcePort.unwrap()
+        parts.append("\"SourcePort\":" + network_firewall_json_str(u2))
+    if v.DestinationPort.is_some():
+        auto u3 = v.DestinationPort.unwrap()
+        parts.append("\"DestinationPort\":" + network_firewall_json_str(u3))
+    if v.Protocols.is_some():
+        auto u4 = v.Protocols.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(network_firewall_json_str(x5))
+        parts.append("\"Protocols\":" + network_firewall_json_arr(e5))
+    return network_firewall_json_obj(parts)
+
+# Serialize IPSet to a compact JSON object (declaration order).
+def ip_set_to_json(IPSet v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Definition:
+        e0.append(network_firewall_json_str(x0))
+    parts.append("\"Definition\":" + network_firewall_json_arr(e0))
+    return network_firewall_json_obj(parts)
+
+# Serialize ListFirewallsRequest to a compact JSON object (declaration order).
+def list_firewalls_request_to_json(ListFirewallsRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + network_firewall_json_str(u0))
+    if v.VpcIds.is_some():
+        auto u1 = v.VpcIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(network_firewall_json_str(x2))
+        parts.append("\"VpcIds\":" + network_firewall_json_arr(e2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    return network_firewall_json_obj(parts)
+
+# Serialize LogDestinationConfig to a compact JSON object (declaration order).
+def log_destination_config_to_json(LogDestinationConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"LogType\":" + v.LogType.to_json())
+    parts.append("\"LogDestinationType\":" + v.LogDestinationType.to_json())
+    list[str] m0 = []
+    for k0 in sorted(v.LogDestination.keys()):
+        m0.append(network_firewall_json_str(k0) + ":" + network_firewall_json_str(v.LogDestination[k0]))
+    parts.append("\"LogDestination\":" + network_firewall_json_obj(m0))
+    return network_firewall_json_obj(parts)
+
+# Serialize LoggingConfiguration to a compact JSON object (declaration order).
+def logging_configuration_to_json(LoggingConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.LogDestinationConfigs:
+        e0.append(log_destination_config_to_json(x0))
+    parts.append("\"LogDestinationConfigs\":" + network_firewall_json_arr(e0))
+    return network_firewall_json_obj(parts)
+
+# Serialize MatchAttributes to a compact JSON object (declaration order).
+def match_attributes_to_json(MatchAttributes v) -> str:
+    list[str] parts = []
+    if v.Sources.is_some():
+        auto u0 = v.Sources.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Sources\":" + network_firewall_json_arr(e1))
+    if v.Destinations.is_some():
+        auto u2 = v.Destinations.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Destinations\":" + network_firewall_json_arr(e3))
+    if v.SourcePorts.is_some():
+        auto u4 = v.SourcePorts.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"SourcePorts\":" + network_firewall_json_arr(e5))
+    if v.DestinationPorts.is_some():
+        auto u6 = v.DestinationPorts.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"DestinationPorts\":" + network_firewall_json_arr(e7))
+    if v.Protocols.is_some():
+        auto u8 = v.Protocols.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(str(x9))
+        parts.append("\"Protocols\":" + network_firewall_json_arr(e9))
+    if v.TCPFlags.is_some():
+        auto u10 = v.TCPFlags.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(tcp_flag_field_to_json(x11))
+        parts.append("\"TCPFlags\":" + network_firewall_json_arr(e11))
+    return network_firewall_json_obj(parts)
+
+# Serialize PolicyVariables to a compact JSON object (declaration order).
+def policy_variables_to_json(PolicyVariables v) -> str:
+    list[str] parts = []
+    if v.RuleVariables.is_some():
+        auto u0 = v.RuleVariables.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(network_firewall_json_str(k1) + ":" + ip_set_to_json(u0[k1]))
+        parts.append("\"RuleVariables\":" + network_firewall_json_obj(m1))
+    return network_firewall_json_obj(parts)
+
+# Serialize PortSet to a compact JSON object (declaration order).
+def port_set_to_json(PortSet v) -> str:
+    list[str] parts = []
+    if v.Definition.is_some():
+        auto u0 = v.Definition.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(network_firewall_json_str(x1))
+        parts.append("\"Definition\":" + network_firewall_json_arr(e1))
+    return network_firewall_json_obj(parts)
+
+# Serialize ProxyRule to a compact JSON object (declaration order).
+def proxy_rule_to_json(ProxyRule v) -> str:
+    list[str] parts = []
+    if v.ProxyRuleName.is_some():
+        auto u0 = v.ProxyRuleName.unwrap()
+        parts.append("\"ProxyRuleName\":" + network_firewall_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + network_firewall_json_str(u1))
+    if v.Action.is_some():
+        auto u2 = v.Action.unwrap()
+        parts.append("\"Action\":" + u2.to_json())
+    if v.Conditions.is_some():
+        auto u3 = v.Conditions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(proxy_rule_condition_to_json(x4))
+        parts.append("\"Conditions\":" + network_firewall_json_arr(e4))
+    return network_firewall_json_obj(parts)
+
+# Serialize ProxyRuleCondition to a compact JSON object (declaration order).
+def proxy_rule_condition_to_json(ProxyRuleCondition v) -> str:
+    list[str] parts = []
+    if v.ConditionOperator.is_some():
+        auto u0 = v.ConditionOperator.unwrap()
+        parts.append("\"ConditionOperator\":" + network_firewall_json_str(u0))
+    if v.ConditionKey.is_some():
+        auto u1 = v.ConditionKey.unwrap()
+        parts.append("\"ConditionKey\":" + network_firewall_json_str(u1))
+    if v.ConditionValues.is_some():
+        auto u2 = v.ConditionValues.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(network_firewall_json_str(x3))
+        parts.append("\"ConditionValues\":" + network_firewall_json_arr(e3))
+    return network_firewall_json_obj(parts)
+
+# Serialize ProxyRulesByRequestPhase to a compact JSON object (declaration order).
+def proxy_rules_by_request_phase_to_json(ProxyRulesByRequestPhase v) -> str:
+    list[str] parts = []
+    if v.PreDNS.is_some():
+        auto u0 = v.PreDNS.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(proxy_rule_to_json(x1))
+        parts.append("\"PreDNS\":" + network_firewall_json_arr(e1))
+    if v.PreREQUEST.is_some():
+        auto u2 = v.PreREQUEST.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(proxy_rule_to_json(x3))
+        parts.append("\"PreREQUEST\":" + network_firewall_json_arr(e3))
+    if v.PostRESPONSE.is_some():
+        auto u4 = v.PostRESPONSE.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(proxy_rule_to_json(x5))
+        parts.append("\"PostRESPONSE\":" + network_firewall_json_arr(e5))
+    return network_firewall_json_obj(parts)
+
+# Serialize ProxySettings to a compact JSON object (declaration order).
+def proxy_settings_to_json(ProxySettings v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ListenerProperties:
+        e0.append(x0.to_json())
+    parts.append("\"ListenerProperties\":" + network_firewall_json_arr(e0))
+    return network_firewall_json_obj(parts)
+
+# Serialize PublishMetricAction to a compact JSON object (declaration order).
+def publish_metric_action_to_json(PublishMetricAction v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Dimensions:
+        e0.append(x0.to_json())
+    parts.append("\"Dimensions\":" + network_firewall_json_arr(e0))
+    return network_firewall_json_obj(parts)
+
+# Serialize ReferenceSets to a compact JSON object (declaration order).
+def reference_sets_to_json(ReferenceSets v) -> str:
+    list[str] parts = []
+    if v.IPSetReferences.is_some():
+        auto u0 = v.IPSetReferences.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(network_firewall_json_str(k1) + ":" + u0[k1].to_json())
+        parts.append("\"IPSetReferences\":" + network_firewall_json_obj(m1))
+    return network_firewall_json_obj(parts)
+
+# Serialize Route53ResolvedIPValidation to a compact JSON object (declaration order).
+def route53_resolved_ip_validation_to_json(Route53ResolvedIPValidation v) -> str:
+    list[str] parts = []
+    parts.append("\"Action\":" + v.Action.to_json())
+    parts.append("\"DNSFirewallRuleGroupId\":" + network_firewall_json_str(v.DNSFirewallRuleGroupId))
+    parts.append("\"DNSExpiryExceptionPolicy\":" + v.DNSExpiryExceptionPolicy.to_json())
+    if v.BypassDestinationValidationIPRanges.is_some():
+        auto u0 = v.BypassDestinationValidationIPRanges.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"BypassDestinationValidationIPRanges\":" + network_firewall_json_arr(e1))
+    if v.SourceIPRanges.is_some():
+        auto u2 = v.SourceIPRanges.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"SourceIPRanges\":" + network_firewall_json_arr(e3))
+    return network_firewall_json_obj(parts)
+
+# Serialize RuleDefinition to a compact JSON object (declaration order).
+def rule_definition_to_json(RuleDefinition v) -> str:
+    list[str] parts = []
+    parts.append("\"MatchAttributes\":" + match_attributes_to_json(v.MatchAttributes))
+    list[str] e0 = []
+    for x0 in v.Actions:
+        e0.append(network_firewall_json_str(x0))
+    parts.append("\"Actions\":" + network_firewall_json_arr(e0))
+    return network_firewall_json_obj(parts)
+
+# Serialize RuleGroup to a compact JSON object (declaration order).
+def rule_group_to_json(RuleGroup v) -> str:
+    list[str] parts = []
+    if v.RuleVariables.is_some():
+        auto u0 = v.RuleVariables.unwrap()
+        parts.append("\"RuleVariables\":" + rule_variables_to_json(u0))
+    if v.ReferenceSets.is_some():
+        auto u1 = v.ReferenceSets.unwrap()
+        parts.append("\"ReferenceSets\":" + reference_sets_to_json(u1))
+    parts.append("\"RulesSource\":" + rules_source_to_json(v.RulesSource))
+    if v.StatefulRuleOptions.is_some():
+        auto u2 = v.StatefulRuleOptions.unwrap()
+        parts.append("\"StatefulRuleOptions\":" + u2.to_json())
+    return network_firewall_json_obj(parts)
+
+# Serialize RuleOption to a compact JSON object (declaration order).
+def rule_option_to_json(RuleOption v) -> str:
+    list[str] parts = []
+    parts.append("\"Keyword\":" + network_firewall_json_str(v.Keyword))
+    if v.Settings.is_some():
+        auto u0 = v.Settings.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(network_firewall_json_str(x1))
+        parts.append("\"Settings\":" + network_firewall_json_arr(e1))
+    return network_firewall_json_obj(parts)
+
+# Serialize RuleVariables to a compact JSON object (declaration order).
+def rule_variables_to_json(RuleVariables v) -> str:
+    list[str] parts = []
+    if v.IPSets.is_some():
+        auto u0 = v.IPSets.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(network_firewall_json_str(k1) + ":" + ip_set_to_json(u0[k1]))
+        parts.append("\"IPSets\":" + network_firewall_json_obj(m1))
+    if v.PortSets.is_some():
+        auto u2 = v.PortSets.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(network_firewall_json_str(k3) + ":" + port_set_to_json(u2[k3]))
+        parts.append("\"PortSets\":" + network_firewall_json_obj(m3))
+    return network_firewall_json_obj(parts)
+
+# Serialize RulesSource to a compact JSON object (declaration order).
+def rules_source_to_json(RulesSource v) -> str:
+    list[str] parts = []
+    if v.RulesString.is_some():
+        auto u0 = v.RulesString.unwrap()
+        parts.append("\"RulesString\":" + network_firewall_json_str(u0))
+    if v.RulesSourceList.is_some():
+        auto u1 = v.RulesSourceList.unwrap()
+        parts.append("\"RulesSourceList\":" + rules_source_list_to_json(u1))
+    if v.StatefulRules.is_some():
+        auto u2 = v.StatefulRules.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(stateful_rule_to_json(x3))
+        parts.append("\"StatefulRules\":" + network_firewall_json_arr(e3))
+    if v.StatelessRulesAndCustomActions.is_some():
+        auto u4 = v.StatelessRulesAndCustomActions.unwrap()
+        parts.append("\"StatelessRulesAndCustomActions\":" + stateless_rules_and_custom_actions_to_json(u4))
+    return network_firewall_json_obj(parts)
+
+# Serialize RulesSourceList to a compact JSON object (declaration order).
+def rules_source_list_to_json(RulesSourceList v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Targets:
+        e0.append(network_firewall_json_str(x0))
+    parts.append("\"Targets\":" + network_firewall_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.TargetTypes:
+        e1.append(x1.to_json())
+    parts.append("\"TargetTypes\":" + network_firewall_json_arr(e1))
+    parts.append("\"GeneratedRulesType\":" + v.GeneratedRulesType.to_json())
+    return network_firewall_json_obj(parts)
+
+# Serialize ServerCertificateConfiguration to a compact JSON object (declaration order).
+def server_certificate_configuration_to_json(ServerCertificateConfiguration v) -> str:
+    list[str] parts = []
+    if v.ServerCertificates.is_some():
+        auto u0 = v.ServerCertificates.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ServerCertificates\":" + network_firewall_json_arr(e1))
+    if v.Scopes.is_some():
+        auto u2 = v.Scopes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(server_certificate_scope_to_json(x3))
+        parts.append("\"Scopes\":" + network_firewall_json_arr(e3))
+    if v.CertificateAuthorityArn.is_some():
+        auto u4 = v.CertificateAuthorityArn.unwrap()
+        parts.append("\"CertificateAuthorityArn\":" + network_firewall_json_str(u4))
+    if v.CheckCertificateRevocationStatus.is_some():
+        auto u5 = v.CheckCertificateRevocationStatus.unwrap()
+        parts.append("\"CheckCertificateRevocationStatus\":" + u5.to_json())
+    return network_firewall_json_obj(parts)
+
+# Serialize ServerCertificateScope to a compact JSON object (declaration order).
+def server_certificate_scope_to_json(ServerCertificateScope v) -> str:
+    list[str] parts = []
+    if v.Sources.is_some():
+        auto u0 = v.Sources.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Sources\":" + network_firewall_json_arr(e1))
+    if v.Destinations.is_some():
+        auto u2 = v.Destinations.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Destinations\":" + network_firewall_json_arr(e3))
+    if v.SourcePorts.is_some():
+        auto u4 = v.SourcePorts.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"SourcePorts\":" + network_firewall_json_arr(e5))
+    if v.DestinationPorts.is_some():
+        auto u6 = v.DestinationPorts.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"DestinationPorts\":" + network_firewall_json_arr(e7))
+    if v.Protocols.is_some():
+        auto u8 = v.Protocols.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(str(x9))
+        parts.append("\"Protocols\":" + network_firewall_json_arr(e9))
+    return network_firewall_json_obj(parts)
+
+# Serialize StartFlowCaptureRequest to a compact JSON object (declaration order).
+def start_flow_capture_request_to_json(StartFlowCaptureRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"FirewallArn\":" + network_firewall_json_str(v.FirewallArn))
+    if v.AvailabilityZone.is_some():
+        auto u0 = v.AvailabilityZone.unwrap()
+        parts.append("\"AvailabilityZone\":" + network_firewall_json_str(u0))
+    if v.AvailabilityZoneId.is_some():
+        auto u1 = v.AvailabilityZoneId.unwrap()
+        parts.append("\"AvailabilityZoneId\":" + network_firewall_json_str(u1))
+    if v.VpcEndpointAssociationArn.is_some():
+        auto u2 = v.VpcEndpointAssociationArn.unwrap()
+        parts.append("\"VpcEndpointAssociationArn\":" + network_firewall_json_str(u2))
+    if v.VpcEndpointId.is_some():
+        auto u3 = v.VpcEndpointId.unwrap()
+        parts.append("\"VpcEndpointId\":" + network_firewall_json_str(u3))
+    if v.MinimumFlowAgeInSeconds.is_some():
+        auto u4 = v.MinimumFlowAgeInSeconds.unwrap()
+        parts.append("\"MinimumFlowAgeInSeconds\":" + str(u4))
+    list[str] e5 = []
+    for x5 in v.FlowFilters:
+        e5.append(flow_filter_to_json(x5))
+    parts.append("\"FlowFilters\":" + network_firewall_json_arr(e5))
+    return network_firewall_json_obj(parts)
+
+# Serialize StartFlowFlushRequest to a compact JSON object (declaration order).
+def start_flow_flush_request_to_json(StartFlowFlushRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"FirewallArn\":" + network_firewall_json_str(v.FirewallArn))
+    if v.AvailabilityZone.is_some():
+        auto u0 = v.AvailabilityZone.unwrap()
+        parts.append("\"AvailabilityZone\":" + network_firewall_json_str(u0))
+    if v.AvailabilityZoneId.is_some():
+        auto u1 = v.AvailabilityZoneId.unwrap()
+        parts.append("\"AvailabilityZoneId\":" + network_firewall_json_str(u1))
+    if v.VpcEndpointAssociationArn.is_some():
+        auto u2 = v.VpcEndpointAssociationArn.unwrap()
+        parts.append("\"VpcEndpointAssociationArn\":" + network_firewall_json_str(u2))
+    if v.VpcEndpointId.is_some():
+        auto u3 = v.VpcEndpointId.unwrap()
+        parts.append("\"VpcEndpointId\":" + network_firewall_json_str(u3))
+    if v.MinimumFlowAgeInSeconds.is_some():
+        auto u4 = v.MinimumFlowAgeInSeconds.unwrap()
+        parts.append("\"MinimumFlowAgeInSeconds\":" + str(u4))
+    list[str] e5 = []
+    for x5 in v.FlowFilters:
+        e5.append(flow_filter_to_json(x5))
+    parts.append("\"FlowFilters\":" + network_firewall_json_arr(e5))
+    return network_firewall_json_obj(parts)
+
+# Serialize StatefulRule to a compact JSON object (declaration order).
+def stateful_rule_to_json(StatefulRule v) -> str:
+    list[str] parts = []
+    parts.append("\"Action\":" + v.Action.to_json())
+    parts.append("\"Header\":" + v.Header.to_json())
+    list[str] e0 = []
+    for x0 in v.RuleOptions:
+        e0.append(rule_option_to_json(x0))
+    parts.append("\"RuleOptions\":" + network_firewall_json_arr(e0))
+    return network_firewall_json_obj(parts)
+
+# Serialize StatelessRule to a compact JSON object (declaration order).
+def stateless_rule_to_json(StatelessRule v) -> str:
+    list[str] parts = []
+    parts.append("\"RuleDefinition\":" + rule_definition_to_json(v.RuleDefinition))
+    parts.append("\"Priority\":" + str(v.Priority))
+    return network_firewall_json_obj(parts)
+
+# Serialize StatelessRulesAndCustomActions to a compact JSON object (declaration order).
+def stateless_rules_and_custom_actions_to_json(StatelessRulesAndCustomActions v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.StatelessRules:
+        e0.append(stateless_rule_to_json(x0))
+    parts.append("\"StatelessRules\":" + network_firewall_json_arr(e0))
+    if v.CustomActions.is_some():
+        auto u1 = v.CustomActions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(custom_action_to_json(x2))
+        parts.append("\"CustomActions\":" + network_firewall_json_arr(e2))
+    return network_firewall_json_obj(parts)
+
+# Serialize SummaryConfiguration to a compact JSON object (declaration order).
+def summary_configuration_to_json(SummaryConfiguration v) -> str:
+    list[str] parts = []
+    if v.RuleOptions.is_some():
+        auto u0 = v.RuleOptions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"RuleOptions\":" + network_firewall_json_arr(e1))
+    return network_firewall_json_obj(parts)
+
+# Serialize TCPFlagField to a compact JSON object (declaration order).
+def tcp_flag_field_to_json(TCPFlagField v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Flags:
+        e0.append(x0.to_json())
+    parts.append("\"Flags\":" + network_firewall_json_arr(e0))
+    if v.Masks.is_some():
+        auto u1 = v.Masks.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Masks\":" + network_firewall_json_arr(e2))
+    return network_firewall_json_obj(parts)
+
+# Serialize TLSInspectionConfiguration to a compact JSON object (declaration order).
+def tls_inspection_configuration_to_json(TLSInspectionConfiguration v) -> str:
+    list[str] parts = []
+    if v.ServerCertificateConfigurations.is_some():
+        auto u0 = v.ServerCertificateConfigurations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(server_certificate_configuration_to_json(x1))
+        parts.append("\"ServerCertificateConfigurations\":" + network_firewall_json_arr(e1))
+    return network_firewall_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + network_firewall_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + network_firewall_json_arr(e0))
+    return network_firewall_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + network_firewall_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(network_firewall_json_str(x0))
+    parts.append("\"TagKeys\":" + network_firewall_json_arr(e0))
+    return network_firewall_json_obj(parts)
+
+# Serialize UpdateContainerAssociationRequest to a compact JSON object (declaration order).
+def update_container_association_request_to_json(UpdateContainerAssociationRequest v) -> str:
+    list[str] parts = []
+    if v.ContainerAssociationName.is_some():
+        auto u0 = v.ContainerAssociationName.unwrap()
+        parts.append("\"ContainerAssociationName\":" + network_firewall_json_str(u0))
+    if v.ContainerAssociationArn.is_some():
+        auto u1 = v.ContainerAssociationArn.unwrap()
+        parts.append("\"ContainerAssociationArn\":" + network_firewall_json_str(u1))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"Description\":" + network_firewall_json_str(u2))
+    parts.append("\"Type\":" + v.Type.to_json())
+    list[str] e3 = []
+    for x3 in v.ContainerMonitoringConfigurations:
+        e3.append(container_monitoring_configuration_to_json(x3))
+    parts.append("\"ContainerMonitoringConfigurations\":" + network_firewall_json_arr(e3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + network_firewall_json_arr(e5))
+    parts.append("\"UpdateToken\":" + network_firewall_json_str(v.UpdateToken))
+    return network_firewall_json_obj(parts)
+
+# Serialize UpdateFirewallAnalysisSettingsRequest to a compact JSON object (declaration order).
+def update_firewall_analysis_settings_request_to_json(UpdateFirewallAnalysisSettingsRequest v) -> str:
+    list[str] parts = []
+    if v.EnabledAnalysisTypes.is_some():
+        auto u0 = v.EnabledAnalysisTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"EnabledAnalysisTypes\":" + network_firewall_json_arr(e1))
+    if v.FirewallArn.is_some():
+        auto u2 = v.FirewallArn.unwrap()
+        parts.append("\"FirewallArn\":" + network_firewall_json_str(u2))
+    if v.FirewallName.is_some():
+        auto u3 = v.FirewallName.unwrap()
+        parts.append("\"FirewallName\":" + network_firewall_json_str(u3))
+    if v.UpdateToken.is_some():
+        auto u4 = v.UpdateToken.unwrap()
+        parts.append("\"UpdateToken\":" + network_firewall_json_str(u4))
+    return network_firewall_json_obj(parts)
+
+# Serialize UpdateFirewallPolicyRequest to a compact JSON object (declaration order).
+def update_firewall_policy_request_to_json(UpdateFirewallPolicyRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UpdateToken\":" + network_firewall_json_str(v.UpdateToken))
+    if v.FirewallPolicyArn.is_some():
+        auto u0 = v.FirewallPolicyArn.unwrap()
+        parts.append("\"FirewallPolicyArn\":" + network_firewall_json_str(u0))
+    if v.FirewallPolicyName.is_some():
+        auto u1 = v.FirewallPolicyName.unwrap()
+        parts.append("\"FirewallPolicyName\":" + network_firewall_json_str(u1))
+    parts.append("\"FirewallPolicy\":" + firewall_policy_to_json(v.FirewallPolicy))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"Description\":" + network_firewall_json_str(u2))
+    if v.DryRun.is_some():
+        auto u3 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.EncryptionConfiguration.is_some():
+        auto u4 = v.EncryptionConfiguration.unwrap()
+        parts.append("\"EncryptionConfiguration\":" + u4.to_json())
+    return network_firewall_json_obj(parts)
+
+# Serialize UpdateLoggingConfigurationRequest to a compact JSON object (declaration order).
+def update_logging_configuration_request_to_json(UpdateLoggingConfigurationRequest v) -> str:
+    list[str] parts = []
+    if v.FirewallArn.is_some():
+        auto u0 = v.FirewallArn.unwrap()
+        parts.append("\"FirewallArn\":" + network_firewall_json_str(u0))
+    if v.FirewallName.is_some():
+        auto u1 = v.FirewallName.unwrap()
+        parts.append("\"FirewallName\":" + network_firewall_json_str(u1))
+    if v.LoggingConfiguration.is_some():
+        auto u2 = v.LoggingConfiguration.unwrap()
+        parts.append("\"LoggingConfiguration\":" + logging_configuration_to_json(u2))
+    if v.EnableMonitoringDashboard.is_some():
+        auto u3 = v.EnableMonitoringDashboard.unwrap()
+        parts.append("\"EnableMonitoringDashboard\":" + json.dumps(JsonValue.Bool(u3)))
+    return network_firewall_json_obj(parts)
+
+# Serialize UpdateProxyRequest to a compact JSON object (declaration order).
+def update_proxy_request_to_json(UpdateProxyRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"NatGatewayId\":" + network_firewall_json_str(v.NatGatewayId))
+    if v.ProxyName.is_some():
+        auto u0 = v.ProxyName.unwrap()
+        parts.append("\"ProxyName\":" + network_firewall_json_str(u0))
+    if v.ProxyArn.is_some():
+        auto u1 = v.ProxyArn.unwrap()
+        parts.append("\"ProxyArn\":" + network_firewall_json_str(u1))
+    if v.ListenerPropertiesToAdd.is_some():
+        auto u2 = v.ListenerPropertiesToAdd.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ListenerPropertiesToAdd\":" + network_firewall_json_arr(e3))
+    if v.ListenerPropertiesToRemove.is_some():
+        auto u4 = v.ListenerPropertiesToRemove.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"ListenerPropertiesToRemove\":" + network_firewall_json_arr(e5))
+    if v.TlsInterceptProperties.is_some():
+        auto u6 = v.TlsInterceptProperties.unwrap()
+        parts.append("\"TlsInterceptProperties\":" + u6.to_json())
+    parts.append("\"UpdateToken\":" + network_firewall_json_str(v.UpdateToken))
+    return network_firewall_json_obj(parts)
+
+# Serialize UpdateProxyRuleGroupPrioritiesRequest to a compact JSON object (declaration order).
+def update_proxy_rule_group_priorities_request_to_json(UpdateProxyRuleGroupPrioritiesRequest v) -> str:
+    list[str] parts = []
+    if v.ProxyConfigurationName.is_some():
+        auto u0 = v.ProxyConfigurationName.unwrap()
+        parts.append("\"ProxyConfigurationName\":" + network_firewall_json_str(u0))
+    if v.ProxyConfigurationArn.is_some():
+        auto u1 = v.ProxyConfigurationArn.unwrap()
+        parts.append("\"ProxyConfigurationArn\":" + network_firewall_json_str(u1))
+    list[str] e2 = []
+    for x2 in v.RuleGroups:
+        e2.append(x2.to_json())
+    parts.append("\"RuleGroups\":" + network_firewall_json_arr(e2))
+    parts.append("\"UpdateToken\":" + network_firewall_json_str(v.UpdateToken))
+    return network_firewall_json_obj(parts)
+
+# Serialize UpdateProxyRulePrioritiesRequest to a compact JSON object (declaration order).
+def update_proxy_rule_priorities_request_to_json(UpdateProxyRulePrioritiesRequest v) -> str:
+    list[str] parts = []
+    if v.ProxyRuleGroupName.is_some():
+        auto u0 = v.ProxyRuleGroupName.unwrap()
+        parts.append("\"ProxyRuleGroupName\":" + network_firewall_json_str(u0))
+    if v.ProxyRuleGroupArn.is_some():
+        auto u1 = v.ProxyRuleGroupArn.unwrap()
+        parts.append("\"ProxyRuleGroupArn\":" + network_firewall_json_str(u1))
+    parts.append("\"RuleGroupRequestPhase\":" + v.RuleGroupRequestPhase.to_json())
+    list[str] e2 = []
+    for x2 in v.Rules:
+        e2.append(x2.to_json())
+    parts.append("\"Rules\":" + network_firewall_json_arr(e2))
+    parts.append("\"UpdateToken\":" + network_firewall_json_str(v.UpdateToken))
+    return network_firewall_json_obj(parts)
+
+# Serialize UpdateProxyRuleRequest to a compact JSON object (declaration order).
+def update_proxy_rule_request_to_json(UpdateProxyRuleRequest v) -> str:
+    list[str] parts = []
+    if v.ProxyRuleGroupName.is_some():
+        auto u0 = v.ProxyRuleGroupName.unwrap()
+        parts.append("\"ProxyRuleGroupName\":" + network_firewall_json_str(u0))
+    if v.ProxyRuleGroupArn.is_some():
+        auto u1 = v.ProxyRuleGroupArn.unwrap()
+        parts.append("\"ProxyRuleGroupArn\":" + network_firewall_json_str(u1))
+    parts.append("\"ProxyRuleName\":" + network_firewall_json_str(v.ProxyRuleName))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"Description\":" + network_firewall_json_str(u2))
+    if v.Action.is_some():
+        auto u3 = v.Action.unwrap()
+        parts.append("\"Action\":" + u3.to_json())
+    if v.AddConditions.is_some():
+        auto u4 = v.AddConditions.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(proxy_rule_condition_to_json(x5))
+        parts.append("\"AddConditions\":" + network_firewall_json_arr(e5))
+    if v.RemoveConditions.is_some():
+        auto u6 = v.RemoveConditions.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(proxy_rule_condition_to_json(x7))
+        parts.append("\"RemoveConditions\":" + network_firewall_json_arr(e7))
+    parts.append("\"UpdateToken\":" + network_firewall_json_str(v.UpdateToken))
+    return network_firewall_json_obj(parts)
+
+# Serialize UpdateProxySettingsRequest to a compact JSON object (declaration order).
+def update_proxy_settings_request_to_json(UpdateProxySettingsRequest v) -> str:
+    list[str] parts = []
+    if v.FirewallArn.is_some():
+        auto u0 = v.FirewallArn.unwrap()
+        parts.append("\"FirewallArn\":" + network_firewall_json_str(u0))
+    if v.FirewallName.is_some():
+        auto u1 = v.FirewallName.unwrap()
+        parts.append("\"FirewallName\":" + network_firewall_json_str(u1))
+    if v.UpdateToken.is_some():
+        auto u2 = v.UpdateToken.unwrap()
+        parts.append("\"UpdateToken\":" + network_firewall_json_str(u2))
+    if v.ProxySettings.is_some():
+        auto u3 = v.ProxySettings.unwrap()
+        parts.append("\"ProxySettings\":" + proxy_settings_to_json(u3))
+    return network_firewall_json_obj(parts)
+
+# Serialize UpdateRuleGroupRequest to a compact JSON object (declaration order).
+def update_rule_group_request_to_json(UpdateRuleGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UpdateToken\":" + network_firewall_json_str(v.UpdateToken))
+    if v.RuleGroupArn.is_some():
+        auto u0 = v.RuleGroupArn.unwrap()
+        parts.append("\"RuleGroupArn\":" + network_firewall_json_str(u0))
+    if v.RuleGroupName.is_some():
+        auto u1 = v.RuleGroupName.unwrap()
+        parts.append("\"RuleGroupName\":" + network_firewall_json_str(u1))
+    if v.RuleGroup.is_some():
+        auto u2 = v.RuleGroup.unwrap()
+        parts.append("\"RuleGroup\":" + rule_group_to_json(u2))
+    if v.Rules.is_some():
+        auto u3 = v.Rules.unwrap()
+        parts.append("\"Rules\":" + network_firewall_json_str(u3))
+    if v.Type.is_some():
+        auto u4 = v.Type.unwrap()
+        parts.append("\"Type\":" + u4.to_json())
+    if v.Description.is_some():
+        auto u5 = v.Description.unwrap()
+        parts.append("\"Description\":" + network_firewall_json_str(u5))
+    if v.DryRun.is_some():
+        auto u6 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.EncryptionConfiguration.is_some():
+        auto u7 = v.EncryptionConfiguration.unwrap()
+        parts.append("\"EncryptionConfiguration\":" + u7.to_json())
+    if v.SourceMetadata.is_some():
+        auto u8 = v.SourceMetadata.unwrap()
+        parts.append("\"SourceMetadata\":" + u8.to_json())
+    if v.AnalyzeRuleGroup.is_some():
+        auto u9 = v.AnalyzeRuleGroup.unwrap()
+        parts.append("\"AnalyzeRuleGroup\":" + json.dumps(JsonValue.Bool(u9)))
+    if v.SummaryConfiguration.is_some():
+        auto u10 = v.SummaryConfiguration.unwrap()
+        parts.append("\"SummaryConfiguration\":" + summary_configuration_to_json(u10))
+    return network_firewall_json_obj(parts)
+
+# Serialize UpdateTLSInspectionConfigurationRequest to a compact JSON object (declaration order).
+def update_tls_inspection_configuration_request_to_json(UpdateTLSInspectionConfigurationRequest v) -> str:
+    list[str] parts = []
+    if v.TLSInspectionConfigurationArn.is_some():
+        auto u0 = v.TLSInspectionConfigurationArn.unwrap()
+        parts.append("\"TLSInspectionConfigurationArn\":" + network_firewall_json_str(u0))
+    if v.TLSInspectionConfigurationName.is_some():
+        auto u1 = v.TLSInspectionConfigurationName.unwrap()
+        parts.append("\"TLSInspectionConfigurationName\":" + network_firewall_json_str(u1))
+    parts.append("\"TLSInspectionConfiguration\":" + tls_inspection_configuration_to_json(v.TLSInspectionConfiguration))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"Description\":" + network_firewall_json_str(u2))
+    if v.EncryptionConfiguration.is_some():
+        auto u3 = v.EncryptionConfiguration.unwrap()
+        parts.append("\"EncryptionConfiguration\":" + u3.to_json())
+    parts.append("\"UpdateToken\":" + network_firewall_json_str(v.UpdateToken))
+    return network_firewall_json_obj(parts)
+
+# Serialize VpcEndpoint to a compact JSON object (declaration order).
+def vpc_endpoint_to_json(VpcEndpoint v) -> str:
+    list[str] parts = []
+    parts.append("\"VpcId\":" + network_firewall_json_str(v.VpcId))
+    list[str] e0 = []
+    for x0 in v.SubnetMappings:
+        e0.append(x0.to_json())
+    parts.append("\"SubnetMappings\":" + network_firewall_json_arr(e0))
+    return network_firewall_json_obj(parts)
 
 # A bound Network_Firewall client: credentials + region, threaded into every operation.
 struct Network_FirewallClient:
@@ -2480,11 +3928,89 @@ struct Network_FirewallClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "AcceptNetworkFirewallTransitGatewayAttachment", body)
 
+    # AssociateAvailabilityZones
+    # errors: InsufficientCapacityException, InternalServerError, InvalidOperationException, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ThrottlingException
+    def associate_availability_zones(self, AssociateAvailabilityZonesRequest input) -> str:
+        auto body = associate_availability_zones_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "AssociateAvailabilityZones", body)
+
     # AssociateFirewallPolicy
     # errors: InternalServerError, InvalidOperationException, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ThrottlingException
     def associate_firewall_policy(self, AssociateFirewallPolicyRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "AssociateFirewallPolicy", body)
+
+    # AssociateSubnets
+    # errors: InsufficientCapacityException, InternalServerError, InvalidOperationException, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ThrottlingException
+    def associate_subnets(self, AssociateSubnetsRequest input) -> str:
+        auto body = associate_subnets_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "AssociateSubnets", body)
+
+    # AttachRuleGroupsToProxyConfiguration
+    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def attach_rule_groups_to_proxy_configuration(self, AttachRuleGroupsToProxyConfigurationRequest input) -> str:
+        auto body = attach_rule_groups_to_proxy_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "AttachRuleGroupsToProxyConfiguration", body)
+
+    # CreateContainerAssociation
+    # errors: InsufficientCapacityException, InternalServerError, InvalidRequestException, LimitExceededException, ThrottlingException
+    def create_container_association(self, CreateContainerAssociationRequest input) -> str:
+        auto body = create_container_association_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "CreateContainerAssociation", body)
+
+    # CreateFirewall
+    # errors: InsufficientCapacityException, InternalServerError, InvalidOperationException, InvalidRequestException, LimitExceededException, ThrottlingException
+    def create_firewall(self, CreateFirewallRequest input) -> str:
+        auto body = create_firewall_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "CreateFirewall", body)
+
+    # CreateFirewallPolicy
+    # errors: InsufficientCapacityException, InternalServerError, InvalidOperationException, InvalidRequestException, LimitExceededException, ThrottlingException
+    def create_firewall_policy(self, CreateFirewallPolicyRequest input) -> str:
+        auto body = create_firewall_policy_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "CreateFirewallPolicy", body)
+
+    # CreateProxy
+    # errors: InternalServerError, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException, UnsupportedOperationException
+    def create_proxy(self, CreateProxyRequest input) -> str:
+        auto body = create_proxy_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "CreateProxy", body)
+
+    # CreateProxyConfiguration
+    # errors: InternalServerError, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def create_proxy_configuration(self, CreateProxyConfigurationRequest input) -> str:
+        auto body = create_proxy_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "CreateProxyConfiguration", body)
+
+    # CreateProxyRuleGroup
+    # errors: InternalServerError, InvalidRequestException, LimitExceededException, ThrottlingException
+    def create_proxy_rule_group(self, CreateProxyRuleGroupRequest input) -> str:
+        auto body = create_proxy_rule_group_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "CreateProxyRuleGroup", body)
+
+    # CreateProxyRules
+    # errors: InternalServerError, InvalidRequestException, ThrottlingException
+    def create_proxy_rules(self, CreateProxyRulesRequest input) -> str:
+        auto body = create_proxy_rules_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "CreateProxyRules", body)
+
+    # CreateRuleGroup
+    # errors: InsufficientCapacityException, InternalServerError, InvalidRequestException, LimitExceededException, ThrottlingException
+    def create_rule_group(self, CreateRuleGroupRequest input) -> str:
+        auto body = create_rule_group_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "CreateRuleGroup", body)
+
+    # CreateTLSInspectionConfiguration
+    # errors: InsufficientCapacityException, InternalServerError, InvalidRequestException, LimitExceededException, ThrottlingException
+    def create_tls_inspection_configuration(self, CreateTLSInspectionConfigurationRequest input) -> str:
+        auto body = create_tls_inspection_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "CreateTLSInspectionConfiguration", body)
+
+    # CreateVpcEndpointAssociation
+    # errors: InsufficientCapacityException, InternalServerError, InvalidOperationException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def create_vpc_endpoint_association(self, CreateVpcEndpointAssociationRequest input) -> str:
+        auto body = create_vpc_endpoint_association_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "CreateVpcEndpointAssociation", body)
 
     # DeleteContainerAssociation
     # errors: InternalServerError, InvalidOperationException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
@@ -2527,6 +4053,12 @@ struct Network_FirewallClient:
     def delete_proxy_rule_group(self, DeleteProxyRuleGroupRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DeleteProxyRuleGroup", body)
+
+    # DeleteProxyRules
+    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def delete_proxy_rules(self, DeleteProxyRulesRequest input) -> str:
+        auto body = delete_proxy_rules_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DeleteProxyRules", body)
 
     # DeleteResourcePolicy
     # errors: InternalServerError, InvalidRequestException, InvalidResourcePolicyException, ResourceNotFoundException, ThrottlingException
@@ -2648,6 +4180,24 @@ struct Network_FirewallClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DescribeVpcEndpointAssociation", body)
 
+    # DetachRuleGroupsFromProxyConfiguration
+    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def detach_rule_groups_from_proxy_configuration(self, DetachRuleGroupsFromProxyConfigurationRequest input) -> str:
+        auto body = detach_rule_groups_from_proxy_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DetachRuleGroupsFromProxyConfiguration", body)
+
+    # DisassociateAvailabilityZones
+    # errors: InternalServerError, InvalidOperationException, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ThrottlingException
+    def disassociate_availability_zones(self, DisassociateAvailabilityZonesRequest input) -> str:
+        auto body = disassociate_availability_zones_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DisassociateAvailabilityZones", body)
+
+    # DisassociateSubnets
+    # errors: InternalServerError, InvalidOperationException, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ThrottlingException
+    def disassociate_subnets(self, DisassociateSubnetsRequest input) -> str:
+        auto body = disassociate_subnets_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "DisassociateSubnets", body)
+
     # GetAnalysisReportResults
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def get_analysis_report_results(self, GetAnalysisReportResultsRequest input) -> str:
@@ -2671,6 +4221,12 @@ struct Network_FirewallClient:
     def list_firewall_policies(self, ListFirewallPoliciesRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListFirewallPolicies", body)
+
+    # ListFirewalls
+    # errors: InternalServerError, InvalidRequestException, ThrottlingException
+    def list_firewalls(self, ListFirewallsRequest input) -> str:
+        auto body = list_firewalls_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListFirewalls", body)
 
     # ListFlowOperationResults
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
@@ -2744,11 +4300,47 @@ struct Network_FirewallClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "StartAnalysisReport", body)
 
+    # StartFlowCapture
+    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def start_flow_capture(self, StartFlowCaptureRequest input) -> str:
+        auto body = start_flow_capture_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "StartFlowCapture", body)
+
+    # StartFlowFlush
+    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def start_flow_flush(self, StartFlowFlushRequest input) -> str:
+        auto body = start_flow_flush_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "StartFlowFlush", body)
+
+    # TagResource
+    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UntagResource", body)
+
     # UpdateAvailabilityZoneChangeProtection
     # errors: InternalServerError, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ResourceOwnerCheckException, ThrottlingException
     def update_availability_zone_change_protection(self, UpdateAvailabilityZoneChangeProtectionRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateAvailabilityZoneChangeProtection", body)
+
+    # UpdateContainerAssociation
+    # errors: InternalServerError, InvalidRequestException, InvalidTokenException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def update_container_association(self, UpdateContainerAssociationRequest input) -> str:
+        auto body = update_container_association_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateContainerAssociation", body)
+
+    # UpdateFirewallAnalysisSettings
+    # errors: InternalServerError, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ThrottlingException
+    def update_firewall_analysis_settings(self, UpdateFirewallAnalysisSettingsRequest input) -> str:
+        auto body = update_firewall_analysis_settings_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateFirewallAnalysisSettings", body)
 
     # UpdateFirewallDeleteProtection
     # errors: InternalServerError, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ResourceOwnerCheckException, ThrottlingException
@@ -2768,11 +4360,29 @@ struct Network_FirewallClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateFirewallEncryptionConfiguration", body)
 
+    # UpdateFirewallPolicy
+    # errors: InternalServerError, InvalidOperationException, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ThrottlingException
+    def update_firewall_policy(self, UpdateFirewallPolicyRequest input) -> str:
+        auto body = update_firewall_policy_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateFirewallPolicy", body)
+
     # UpdateFirewallPolicyChangeProtection
     # errors: InternalServerError, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ResourceOwnerCheckException, ThrottlingException
     def update_firewall_policy_change_protection(self, UpdateFirewallPolicyChangeProtectionRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateFirewallPolicyChangeProtection", body)
+
+    # UpdateLoggingConfiguration
+    # errors: InternalServerError, InvalidRequestException, InvalidTokenException, LogDestinationPermissionException, ResourceNotFoundException, ThrottlingException
+    def update_logging_configuration(self, UpdateLoggingConfigurationRequest input) -> str:
+        auto body = update_logging_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateLoggingConfiguration", body)
+
+    # UpdateProxy
+    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException, UnsupportedOperationException
+    def update_proxy(self, UpdateProxyRequest input) -> str:
+        auto body = update_proxy_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateProxy", body)
 
     # UpdateProxyConfiguration
     # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
@@ -2780,11 +4390,47 @@ struct Network_FirewallClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateProxyConfiguration", body)
 
+    # UpdateProxyRule
+    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_proxy_rule(self, UpdateProxyRuleRequest input) -> str:
+        auto body = update_proxy_rule_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateProxyRule", body)
+
+    # UpdateProxyRuleGroupPriorities
+    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_proxy_rule_group_priorities(self, UpdateProxyRuleGroupPrioritiesRequest input) -> str:
+        auto body = update_proxy_rule_group_priorities_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateProxyRuleGroupPriorities", body)
+
+    # UpdateProxyRulePriorities
+    # errors: InternalServerError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_proxy_rule_priorities(self, UpdateProxyRulePrioritiesRequest input) -> str:
+        auto body = update_proxy_rule_priorities_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateProxyRulePriorities", body)
+
+    # UpdateProxySettings
+    # errors: InternalServerError, InvalidOperationException, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ResourceOwnerCheckException, ThrottlingException
+    def update_proxy_settings(self, UpdateProxySettingsRequest input) -> str:
+        auto body = update_proxy_settings_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateProxySettings", body)
+
+    # UpdateRuleGroup
+    # errors: InternalServerError, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ThrottlingException
+    def update_rule_group(self, UpdateRuleGroupRequest input) -> str:
+        auto body = update_rule_group_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateRuleGroup", body)
+
     # UpdateSubnetChangeProtection
     # errors: InternalServerError, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ResourceOwnerCheckException, ThrottlingException
     def update_subnet_change_protection(self, UpdateSubnetChangeProtectionRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateSubnetChangeProtection", body)
+
+    # UpdateTLSInspectionConfiguration
+    # errors: InternalServerError, InvalidRequestException, InvalidTokenException, ResourceNotFoundException, ThrottlingException
+    def update_tls_inspection_configuration(self, UpdateTLSInspectionConfigurationRequest input) -> str:
+        auto body = update_tls_inspection_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "UpdateTLSInspectionConfiguration", body)
 
     # Paginator for GetAnalysisReportResults — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: AnalysisReportResults).
@@ -2835,6 +4481,20 @@ struct Network_FirewallClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListFirewallPolicies", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListFirewalls — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Firewalls).
+    def paginate_list_firewalls(self, ListFirewallsRequest input):
+        auto host = endpoints.regional_host(network_firewall_protocol().service, self.region)
+        while True:
+            auto body = list_firewalls_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(network_firewall_protocol(), self.creds, self.region, "ListFirewalls", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

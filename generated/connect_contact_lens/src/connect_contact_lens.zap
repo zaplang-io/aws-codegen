@@ -16,12 +16,12 @@
 # Response.
 #
 # Coverage (rest-json): 1 operations — 1 with a generated method,
-#   0 skipped (a member type is not yet bindable/serializable by derive).
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   17 structs (10 @derive(Json)), 4 enums, 5 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -81,14 +81,16 @@ enum SentimentValue:
 struct AccessDeniedException:
     str Message
 
-# no @derive(Json): member(s) MatchedCategories: list[str], MatchedDetails: dict[str, CategoryDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchedCategories: list[str], MatchedDetails: dict[str, CategoryDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Categories:
     list[str] MatchedCategories
     dict[str, CategoryDetails] MatchedDetails
 
-# no @derive(Json): member(s) PointsOfInterest: list[PointOfInterest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PointsOfInterest: list[PointOfInterest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CategoryDetails:
     list[PointOfInterest] PointsOfInterest
 
@@ -97,8 +99,9 @@ struct CharacterOffsets:
     int64 BeginOffsetChar
     int64 EndOffsetChar
 
-# no @derive(Json): member(s) ExtractedValues: list[ExtractedInformationValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExtractedValues: list[ExtractedInformationValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExtractedInformation:
     str ExtractionDefinitionId
     str ExtractionDefinitionName
@@ -106,8 +109,9 @@ struct ExtractedInformation:
     Optional[list[ExtractedInformationValue]] ExtractedValues
     Optional[ExtractedInformationFailureCode] FailureCode
 
-# no @derive(Json): member(s) PointsOfInterest: list[PointOfInterest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PointsOfInterest: list[PointOfInterest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExtractedInformationValue:
     str Content
     list[PointOfInterest] PointsOfInterest
@@ -132,8 +136,9 @@ struct ListRealtimeContactAnalysisSegmentsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Segments: list[RealtimeContactAnalysisSegment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Segments: list[RealtimeContactAnalysisSegment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRealtimeContactAnalysisSegmentsResponse:
     list[RealtimeContactAnalysisSegment] Segments
     Optional[str] NextToken
@@ -149,8 +154,9 @@ struct PostContactSummary:
     PostContactSummaryStatus Status
     Optional[PostContactSummaryFailureCode] FailureCode
 
-# no @derive(Json): member(s) Transcript: Transcript, Categories: Categories, ExtractedInformation: ExtractedInformation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Transcript: Transcript, Categories: Categories, ExtractedInformation: ExtractedInformation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RealtimeContactAnalysisSegment:
     Optional[Transcript] Transcript
     Optional[Categories] Categories
@@ -165,8 +171,9 @@ struct ResourceNotFoundException:
 struct ThrottlingException:
     str Message
 
-# no @derive(Json): member(s) IssuesDetected: list[IssueDetected] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IssuesDetected: list[IssueDetected] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Transcript:
     str Id
     str ParticipantId

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 62 operations — 48 with a generated method,
-#   14 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 62 operations — 61 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   183 structs (115 @derive(Json)), 26 enums, 6 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -283,8 +283,9 @@ struct AWSService:
 struct AccessDeniedException:
     str message
 
-# no @derive(Json): member(s) metadata: AssessmentMetadata, framework: AssessmentFramework, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadata: AssessmentMetadata, framework: AssessmentFramework, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Assessment:
     Optional[str] arn
     Optional[AWSAccount] awsAccount
@@ -292,8 +293,9 @@ struct Assessment:
     Optional[AssessmentFramework] framework
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) comments: list[ControlComment], evidenceSources: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) comments: list[ControlComment], evidenceSources: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssessmentControl:
     Optional[str] id
     Optional[str] name
@@ -305,8 +307,9 @@ struct AssessmentControl:
     Optional[int64] evidenceCount
     Optional[int64] assessmentReportEvidenceCount
 
-# no @derive(Json): member(s) roles: list[Role], controls: list[AssessmentControl], delegations: list[Delegation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) roles: list[Role], controls: list[AssessmentControl], delegations: list[Delegation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssessmentControlSet:
     Optional[str] id
     Optional[str] description
@@ -338,8 +341,9 @@ struct AssessmentEvidenceFolder:
     Optional[int64] evidenceByTypeUserActivityCount
     Optional[int64] evidenceAwsServiceSourceCount
 
-# no @derive(Json): member(s) controlSets: list[AssessmentControlSet] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) controlSets: list[AssessmentControlSet] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssessmentFramework:
     Optional[str] id
     Optional[str] arn
@@ -378,8 +382,9 @@ struct AssessmentFrameworkShareRequest:
     Optional[int64] customControlsCount
     Optional[str] complianceType
 
-# no @derive(Json): member(s) scope: Scope, roles: list[Role], delegations: list[Delegation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scope: Scope, roles: list[Role], delegations: list[Delegation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssessmentMetadata:
     Optional[str] name
     Optional[str] id
@@ -394,8 +399,9 @@ struct AssessmentMetadata:
     Optional[DateTime] creationTime
     Optional[DateTime] lastUpdated
 
-# no @derive(Json): member(s) roles: list[Role], delegations: list[Delegation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) roles: list[Role], delegations: list[Delegation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssessmentMetadataItem:
     Optional[str] name
     Optional[str] id
@@ -458,8 +464,9 @@ struct BatchAssociateAssessmentReportEvidenceRequest:
     str evidenceFolderId
     list[str] evidenceIds
 
-# no @derive(Json): member(s) evidenceIds: list[str], errors: list[AssessmentReportEvidenceError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) evidenceIds: list[str], errors: list[AssessmentReportEvidenceError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchAssociateAssessmentReportEvidenceResponse:
     Optional[list[str]] evidenceIds
     Optional[list[AssessmentReportEvidenceError]] errors
@@ -476,8 +483,9 @@ struct BatchCreateDelegationByAssessmentRequest:
     list[CreateDelegationRequest] createDelegationRequests
     str assessmentId
 
-# no @derive(Json): member(s) delegations: list[Delegation], errors: list[BatchCreateDelegationByAssessmentError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) delegations: list[Delegation], errors: list[BatchCreateDelegationByAssessmentError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateDelegationByAssessmentResponse:
     Optional[list[Delegation]] delegations
     Optional[list[BatchCreateDelegationByAssessmentError]] errors
@@ -494,8 +502,9 @@ struct BatchDeleteDelegationByAssessmentRequest:
     list[str] delegationIds
     str assessmentId
 
-# no @derive(Json): member(s) errors: list[BatchDeleteDelegationByAssessmentError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[BatchDeleteDelegationByAssessmentError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteDelegationByAssessmentResponse:
     Optional[list[BatchDeleteDelegationByAssessmentError]] errors
 
@@ -506,8 +515,9 @@ struct BatchDisassociateAssessmentReportEvidenceRequest:
     str evidenceFolderId
     list[str] evidenceIds
 
-# no @derive(Json): member(s) evidenceIds: list[str], errors: list[AssessmentReportEvidenceError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) evidenceIds: list[str], errors: list[AssessmentReportEvidenceError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDisassociateAssessmentReportEvidenceResponse:
     Optional[list[str]] evidenceIds
     Optional[list[AssessmentReportEvidenceError]] errors
@@ -526,8 +536,9 @@ struct BatchImportEvidenceToAssessmentControlRequest:
     str controlId
     list[ManualEvidence] manualEvidence
 
-# no @derive(Json): member(s) errors: list[BatchImportEvidenceToAssessmentControlError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[BatchImportEvidenceToAssessmentControlError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchImportEvidenceToAssessmentControlResponse:
     Optional[list[BatchImportEvidenceToAssessmentControlError]] errors
 
@@ -539,8 +550,9 @@ struct ChangeLog:
     Optional[DateTime] createdAt
     Optional[str] createdBy
 
-# no @derive(Json): member(s) controlMappingSources: list[ControlMappingSource], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) controlMappingSources: list[ControlMappingSource], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Control:
     Optional[str] arn
     Optional[str] id
@@ -609,8 +621,9 @@ struct ControlMetadata:
     Optional[DateTime] createdAt
     Optional[DateTime] lastUpdatedAt
 
-# no @derive(Json): member(s) controls: list[Control] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) controls: list[Control] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ControlSet:
     Optional[str] id
     Optional[str] name
@@ -620,8 +633,9 @@ struct ControlSet:
 struct CreateAssessmentFrameworkControl:
     str id
 
-# no @derive(Json): member(s) controls: list[CreateAssessmentFrameworkControl] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) controls: list[CreateAssessmentFrameworkControl] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAssessmentFrameworkControlSet:
     str name
     Optional[list[CreateAssessmentFrameworkControl]] controls
@@ -635,8 +649,9 @@ struct CreateAssessmentFrameworkRequest:
     list[CreateAssessmentFrameworkControlSet] controlSets
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) framework: Framework not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) framework: Framework not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAssessmentFrameworkResponse:
     Optional[Framework] framework
 
@@ -664,8 +679,9 @@ struct CreateAssessmentRequest:
     str frameworkId
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) assessment: Assessment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessment: Assessment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAssessmentResponse:
     Optional[Assessment] assessment
 
@@ -690,8 +706,9 @@ struct CreateControlRequest:
     list[CreateControlMappingSource] controlMappingSources
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) control: Control not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) control: Control not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateControlResponse:
     Optional[Control] control
 
@@ -819,8 +836,9 @@ struct DisassociateAssessmentReportEvidenceFolderResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) resourcesIncluded: list[Resource], attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourcesIncluded: list[Resource], attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Evidence:
     Optional[str] dataSource
     Optional[str] evidenceAwsAccountId
@@ -851,8 +869,9 @@ struct EvidenceInsights:
     Optional[int64] compliantEvidenceCount
     Optional[int64] inconclusiveEvidenceCount
 
-# no @derive(Json): member(s) controlSets: list[ControlSet], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) controlSets: list[ControlSet], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Framework:
     Optional[str] arn
     Optional[str] id
@@ -891,8 +910,9 @@ struct GetAccountStatusResponse:
 struct GetAssessmentFrameworkRequest:
     str frameworkId
 
-# no @derive(Json): member(s) framework: Framework not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) framework: Framework not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAssessmentFrameworkResponse:
     Optional[Framework] framework
 
@@ -911,8 +931,9 @@ struct GetAssessmentReportUrlResponse:
 struct GetAssessmentRequest:
     str assessmentId
 
-# no @derive(Json): member(s) assessment: Assessment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessment: Assessment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAssessmentResponse:
     Optional[Assessment] assessment
     Optional[Role] userRole
@@ -926,8 +947,9 @@ struct GetChangeLogsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) changeLogs: list[ChangeLog] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) changeLogs: list[ChangeLog] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetChangeLogsResponse:
     Optional[list[ChangeLog]] changeLogs
     Optional[str] nextToken
@@ -937,8 +959,9 @@ struct GetChangeLogsResponse:
 struct GetControlRequest:
     str controlId
 
-# no @derive(Json): member(s) control: Control not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) control: Control not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetControlResponse:
     Optional[Control] control
 
@@ -948,8 +971,9 @@ struct GetDelegationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) delegations: list[DelegationMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) delegations: list[DelegationMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDelegationsResponse:
     Optional[list[DelegationMetadata]] delegations
     Optional[str] nextToken
@@ -963,8 +987,9 @@ struct GetEvidenceByEvidenceFolderRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) evidence: list[Evidence] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) evidence: list[Evidence] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEvidenceByEvidenceFolderResponse:
     Optional[list[Evidence]] evidence
     Optional[str] nextToken
@@ -999,8 +1024,9 @@ struct GetEvidenceFoldersByAssessmentControlRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) evidenceFolders: list[AssessmentEvidenceFolder] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) evidenceFolders: list[AssessmentEvidenceFolder] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEvidenceFoldersByAssessmentControlResponse:
     Optional[list[AssessmentEvidenceFolder]] evidenceFolders
     Optional[str] nextToken
@@ -1012,8 +1038,9 @@ struct GetEvidenceFoldersByAssessmentRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) evidenceFolders: list[AssessmentEvidenceFolder] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) evidenceFolders: list[AssessmentEvidenceFolder] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEvidenceFoldersByAssessmentResponse:
     Optional[list[AssessmentEvidenceFolder]] evidenceFolders
     Optional[str] nextToken
@@ -1026,8 +1053,9 @@ struct GetEvidenceRequest:
     str evidenceFolderId
     str evidenceId
 
-# no @derive(Json): member(s) evidence: Evidence not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) evidence: Evidence not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEvidenceResponse:
     Optional[Evidence] evidence
 
@@ -1067,8 +1095,9 @@ struct GetServicesInScopeRequest:
     # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) serviceMetadata: list[ServiceMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceMetadata: list[ServiceMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetServicesInScopeResponse:
     Optional[list[ServiceMetadata]] serviceMetadata
 
@@ -1078,8 +1107,9 @@ struct GetSettingsRequest:
     # wire string of the SettingAttribute enum (uri binding)
     str attribute
 
-# no @derive(Json): member(s) settings: Settings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) settings: Settings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSettingsResponse:
     Optional[Settings] settings
 
@@ -1114,8 +1144,9 @@ struct ListAssessmentControlInsightsByControlDomainRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) controlInsightsByAssessment: list[ControlInsightsMetadataByAssessmentItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) controlInsightsByAssessment: list[ControlInsightsMetadataByAssessmentItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssessmentControlInsightsByControlDomainResponse:
     Optional[list[ControlInsightsMetadataByAssessmentItem]] controlInsightsByAssessment
     Optional[str] nextToken
@@ -1128,8 +1159,9 @@ struct ListAssessmentFrameworkShareRequestsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) assessmentFrameworkShareRequests: list[AssessmentFrameworkShareRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessmentFrameworkShareRequests: list[AssessmentFrameworkShareRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssessmentFrameworkShareRequestsResponse:
     Optional[list[AssessmentFrameworkShareRequest]] assessmentFrameworkShareRequests
     Optional[str] nextToken
@@ -1142,8 +1174,9 @@ struct ListAssessmentFrameworksRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) frameworkMetadataList: list[AssessmentFrameworkMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) frameworkMetadataList: list[AssessmentFrameworkMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssessmentFrameworksResponse:
     Optional[list[AssessmentFrameworkMetadata]] frameworkMetadataList
     Optional[str] nextToken
@@ -1154,8 +1187,9 @@ struct ListAssessmentReportsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) assessmentReports: list[AssessmentReportMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessmentReports: list[AssessmentReportMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssessmentReportsResponse:
     Optional[list[AssessmentReportMetadata]] assessmentReports
     Optional[str] nextToken
@@ -1168,8 +1202,9 @@ struct ListAssessmentsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) assessmentMetadata: list[AssessmentMetadataItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessmentMetadata: list[AssessmentMetadataItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssessmentsResponse:
     Optional[list[AssessmentMetadataItem]] assessmentMetadata
     Optional[str] nextToken
@@ -1181,8 +1216,9 @@ struct ListControlDomainInsightsByAssessmentRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) controlDomainInsights: list[ControlDomainInsights] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) controlDomainInsights: list[ControlDomainInsights] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListControlDomainInsightsByAssessmentResponse:
     Optional[list[ControlDomainInsights]] controlDomainInsights
     Optional[str] nextToken
@@ -1193,8 +1229,9 @@ struct ListControlDomainInsightsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) controlDomainInsights: list[ControlDomainInsights] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) controlDomainInsights: list[ControlDomainInsights] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListControlDomainInsightsResponse:
     Optional[list[ControlDomainInsights]] controlDomainInsights
     Optional[str] nextToken
@@ -1206,8 +1243,9 @@ struct ListControlInsightsByControlDomainRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) controlInsightsMetadata: list[ControlInsightsMetadataItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) controlInsightsMetadata: list[ControlInsightsMetadataItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListControlInsightsByControlDomainResponse:
     Optional[list[ControlInsightsMetadataItem]] controlInsightsMetadata
     Optional[str] nextToken
@@ -1221,8 +1259,9 @@ struct ListControlsRequest:
     Optional[int64] maxResults
     Optional[str] controlCatalogId
 
-# no @derive(Json): member(s) controlMetadataList: list[ControlMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) controlMetadataList: list[ControlMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListControlsResponse:
     Optional[list[ControlMetadata]] controlMetadataList
     Optional[str] nextToken
@@ -1235,8 +1274,9 @@ struct ListKeywordsForDataSourceRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) keywords: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) keywords: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListKeywordsForDataSourceResponse:
     Optional[list[str]] keywords
     Optional[str] nextToken
@@ -1247,8 +1287,9 @@ struct ListNotificationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) notifications: list[Notification] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) notifications: list[Notification] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNotificationsResponse:
     Optional[list[Notification]] notifications
     Optional[str] nextToken
@@ -1258,8 +1299,9 @@ struct ListNotificationsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -1317,8 +1359,9 @@ struct Role:
     RoleType roleType
     str roleArn
 
-# no @derive(Json): member(s) awsAccounts: list[AWSAccount], awsServices: list[AWSService] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) awsAccounts: list[AWSAccount], awsServices: list[AWSService] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Scope:
     Optional[list[AWSAccount]] awsAccounts
     Optional[list[AWSService]] awsServices
@@ -1334,8 +1377,9 @@ struct ServiceMetadata:
 struct ServiceQuotaExceededException:
     str message
 
-# no @derive(Json): member(s) defaultProcessOwners: list[Role] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) defaultProcessOwners: list[Role] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Settings:
     Optional[bool] isAwsOrgEnabled
     Optional[str] snsTopic
@@ -1403,8 +1447,9 @@ struct UpdateAssessmentControlRequest:
     Optional[ControlStatus] controlStatus
     Optional[str] commentBody
 
-# no @derive(Json): member(s) control: AssessmentControl not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) control: AssessmentControl not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAssessmentControlResponse:
     Optional[AssessmentControl] control
 
@@ -1416,13 +1461,15 @@ struct UpdateAssessmentControlSetStatusRequest:
     ControlSetStatus status
     str comment
 
-# no @derive(Json): member(s) controlSet: AssessmentControlSet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) controlSet: AssessmentControlSet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAssessmentControlSetStatusResponse:
     Optional[AssessmentControlSet] controlSet
 
-# no @derive(Json): member(s) controls: list[CreateAssessmentFrameworkControl] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) controls: list[CreateAssessmentFrameworkControl] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAssessmentFrameworkControlSet:
     Optional[str] id
     str name
@@ -1437,8 +1484,9 @@ struct UpdateAssessmentFrameworkRequest:
     Optional[str] complianceType
     list[UpdateAssessmentFrameworkControlSet] controlSets
 
-# no @derive(Json): member(s) framework: Framework not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) framework: Framework not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAssessmentFrameworkResponse:
     Optional[Framework] framework
 
@@ -1464,8 +1512,9 @@ struct UpdateAssessmentRequest:
     Optional[AssessmentReportsDestination] assessmentReportsDestination
     Optional[list[Role]] roles
 
-# no @derive(Json): member(s) assessment: Assessment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessment: Assessment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAssessmentResponse:
     Optional[Assessment] assessment
 
@@ -1475,8 +1524,9 @@ struct UpdateAssessmentStatusRequest:
     str assessmentId
     AssessmentStatus status
 
-# no @derive(Json): member(s) assessment: Assessment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessment: Assessment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAssessmentStatusResponse:
     Optional[Assessment] assessment
 
@@ -1491,8 +1541,9 @@ struct UpdateControlRequest:
     Optional[str] actionPlanInstructions
     list[ControlMappingSource] controlMappingSources
 
-# no @derive(Json): member(s) control: Control not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) control: Control not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateControlResponse:
     Optional[Control] control
 
@@ -1507,8 +1558,9 @@ struct UpdateSettingsRequest:
     Optional[DeregistrationPolicy] deregistrationPolicy
     Optional[DefaultExportDestination] defaultExportDestination
 
-# no @derive(Json): member(s) settings: Settings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) settings: Settings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSettingsResponse:
     Optional[Settings] settings
 
@@ -1517,8 +1569,9 @@ struct UpdateSettingsResponse:
 struct ValidateAssessmentReportIntegrityRequest:
     str s3RelativePath
 
-# no @derive(Json): member(s) validationErrors: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) validationErrors: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidateAssessmentReportIntegrityResponse:
     Optional[bool] signatureValid
     Optional[str] signatureAlgorithm
@@ -1526,8 +1579,9 @@ struct ValidateAssessmentReportIntegrityResponse:
     Optional[str] signatureKeyId
     Optional[list[str]] validationErrors
 
-# no @derive(Json): member(s) fields: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     Optional[ValidationExceptionReason] reason
@@ -1573,20 +1627,7 @@ def auditmanager_error_from_code(str code) -> AuditManagerError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchAssociateAssessmentReportEvidence (document member `evidenceIds: list[str]` is not serializable by derive)
-#   BatchCreateDelegationByAssessment (document member `createDelegationRequests: list[CreateDelegationRequest]` is not serializable by derive)
-#   BatchDeleteDelegationByAssessment (document member `delegationIds: list[str]` is not serializable by derive)
-#   BatchDisassociateAssessmentReportEvidence (document member `evidenceIds: list[str]` is not serializable by derive)
-#   BatchImportEvidenceToAssessmentControl (document member `manualEvidence: list[ManualEvidence]` is not serializable by derive)
-#   CreateAssessment (document member `scope: Scope` is not serializable by derive)
-#   CreateAssessmentFramework (document member `controlSets: list[CreateAssessmentFrameworkControlSet]` is not serializable by derive)
-#   CreateControl (document member `controlMappingSources: list[CreateControlMappingSource]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateAssessment (document member `scope: Scope` is not serializable by derive)
-#   UpdateAssessmentFramework (document member `controlSets: list[UpdateAssessmentFrameworkControlSet]` is not serializable by derive)
-#   UpdateControl (document member `controlMappingSources: list[ControlMappingSource]` is not serializable by derive)
-#   UpdateSettings (document member `defaultProcessOwners: list[Role]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1659,6 +1700,78 @@ struct ValidateAssessmentReportIntegrityDocument:
     # document members of ValidateAssessmentReportIntegrity
     str s3RelativePath
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def auditmanager_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def auditmanager_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def auditmanager_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateAssessmentFrameworkControlSet to a compact JSON object (declaration order).
+def create_assessment_framework_control_set_to_json(CreateAssessmentFrameworkControlSet v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + auditmanager_json_str(v.name))
+    if v.controls.is_some():
+        auto u0 = v.controls.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"controls\":" + auditmanager_json_arr(e1))
+    return auditmanager_json_obj(parts)
+
+# Serialize Scope to a compact JSON object (declaration order).
+def scope__to_json(Scope v) -> str:
+    list[str] parts = []
+    if v.awsAccounts.is_some():
+        auto u0 = v.awsAccounts.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"awsAccounts\":" + auditmanager_json_arr(e1))
+    if v.awsServices.is_some():
+        auto u2 = v.awsServices.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"awsServices\":" + auditmanager_json_arr(e3))
+    return auditmanager_json_obj(parts)
+
+# Serialize UpdateAssessmentFrameworkControlSet to a compact JSON object (declaration order).
+def update_assessment_framework_control_set_to_json(UpdateAssessmentFrameworkControlSet v) -> str:
+    list[str] parts = []
+    if v.id.is_some():
+        auto u0 = v.id.unwrap()
+        parts.append("\"id\":" + auditmanager_json_str(u0))
+    parts.append("\"name\":" + auditmanager_json_str(v.name))
+    list[str] e1 = []
+    for x1 in v.controls:
+        e1.append(x1.to_json())
+    parts.append("\"controls\":" + auditmanager_json_arr(e1))
+    return auditmanager_json_obj(parts)
+
 # A bound AuditManager client: credentials + region, threaded into every operation.
 struct AuditManagerClient:
     core.Credentials creds
@@ -1675,6 +1788,137 @@ struct AuditManagerClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
 
+    # BatchAssociateAssessmentReportEvidence  PUT /assessments/{assessmentId}/batchAssociateToAssessmentReport
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
+    def batch_associate_assessment_report_evidence(self, BatchAssociateAssessmentReportEvidenceRequest input) -> str:
+        auto host = endpoints.regional_host(auditmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["assessmentId"] = input.assessmentId
+        auto b = binding.HttpBinding(method="PUT", path_template="/assessments/{assessmentId}/batchAssociateToAssessmentReport", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"evidenceFolderId\":" + auditmanager_json_str(input.evidenceFolderId))
+        list[str] e0 = []
+        for x0 in input.evidenceIds:
+            e0.append(auditmanager_json_str(x0))
+        parts.append("\"evidenceIds\":" + auditmanager_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, auditmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
+
+    # BatchCreateDelegationByAssessment  POST /assessments/{assessmentId}/delegations
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
+    def batch_create_delegation_by_assessment(self, BatchCreateDelegationByAssessmentRequest input) -> str:
+        auto host = endpoints.regional_host(auditmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["assessmentId"] = input.assessmentId
+        auto b = binding.HttpBinding(method="POST", path_template="/assessments/{assessmentId}/delegations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.createDelegationRequests:
+            e0.append(x0.to_json())
+        parts.append("\"createDelegationRequests\":" + auditmanager_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, auditmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
+
+    # BatchDeleteDelegationByAssessment  PUT /assessments/{assessmentId}/delegations
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
+    def batch_delete_delegation_by_assessment(self, BatchDeleteDelegationByAssessmentRequest input) -> str:
+        auto host = endpoints.regional_host(auditmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["assessmentId"] = input.assessmentId
+        auto b = binding.HttpBinding(method="PUT", path_template="/assessments/{assessmentId}/delegations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.delegationIds:
+            e0.append(auditmanager_json_str(x0))
+        parts.append("\"delegationIds\":" + auditmanager_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, auditmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
+
+    # BatchDisassociateAssessmentReportEvidence  PUT /assessments/{assessmentId}/batchDisassociateFromAssessmentReport
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
+    def batch_disassociate_assessment_report_evidence(self, BatchDisassociateAssessmentReportEvidenceRequest input) -> str:
+        auto host = endpoints.regional_host(auditmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["assessmentId"] = input.assessmentId
+        auto b = binding.HttpBinding(method="PUT", path_template="/assessments/{assessmentId}/batchDisassociateFromAssessmentReport", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"evidenceFolderId\":" + auditmanager_json_str(input.evidenceFolderId))
+        list[str] e0 = []
+        for x0 in input.evidenceIds:
+            e0.append(auditmanager_json_str(x0))
+        parts.append("\"evidenceIds\":" + auditmanager_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, auditmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
+
+    # BatchImportEvidenceToAssessmentControl  POST /assessments/{assessmentId}/controlSets/{controlSetId}/controls/{controlId}/evidence
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_import_evidence_to_assessment_control(self, BatchImportEvidenceToAssessmentControlRequest input) -> str:
+        auto host = endpoints.regional_host(auditmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["assessmentId"] = input.assessmentId
+        labels["controlSetId"] = input.controlSetId
+        labels["controlId"] = input.controlId
+        auto b = binding.HttpBinding(method="POST", path_template="/assessments/{assessmentId}/controlSets/{controlSetId}/controls/{controlId}/evidence", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.manualEvidence:
+            e0.append(x0.to_json())
+        parts.append("\"manualEvidence\":" + auditmanager_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, auditmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
+
+    # CreateAssessment  POST /assessments
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_assessment(self, CreateAssessmentRequest input) -> str:
+        auto host = endpoints.regional_host(auditmanager_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/assessments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + auditmanager_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + auditmanager_json_str(u0))
+        parts.append("\"assessmentReportsDestination\":" + input.assessmentReportsDestination.to_json())
+        parts.append("\"scope\":" + scope__to_json(input.scope_))
+        list[str] e1 = []
+        for x1 in input.roles:
+            e1.append(x1.to_json())
+        parts.append("\"roles\":" + auditmanager_json_arr(e1))
+        parts.append("\"frameworkId\":" + auditmanager_json_str(input.frameworkId))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(auditmanager_json_str(k3) + ":" + auditmanager_json_str(u2[k3]))
+            parts.append("\"tags\":" + auditmanager_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, auditmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
+
+    # CreateAssessmentFramework  POST /assessmentFrameworks
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def create_assessment_framework(self, CreateAssessmentFrameworkRequest input) -> str:
+        auto host = endpoints.regional_host(auditmanager_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/assessmentFrameworks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + auditmanager_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + auditmanager_json_str(u0))
+        if input.complianceType.is_some():
+            auto u1 = input.complianceType.unwrap()
+            parts.append("\"complianceType\":" + auditmanager_json_str(u1))
+        list[str] e2 = []
+        for x2 in input.controlSets:
+            e2.append(create_assessment_framework_control_set_to_json(x2))
+        parts.append("\"controlSets\":" + auditmanager_json_arr(e2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(auditmanager_json_str(k4) + ":" + auditmanager_json_str(u3[k4]))
+            parts.append("\"tags\":" + auditmanager_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, auditmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
+
     # CreateAssessmentReport  POST /assessments/{assessmentId}/reports
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
     def create_assessment_report(self, CreateAssessmentReportRequest input) -> str:
@@ -1684,6 +1928,38 @@ struct AuditManagerClient:
         auto b = binding.HttpBinding(method="POST", path_template="/assessments/{assessmentId}/reports", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateAssessmentReportDocument(name=input.name, description=input.description, queryStatement=input.queryStatement)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
+
+    # CreateControl  POST /controls
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def create_control(self, CreateControlRequest input) -> str:
+        auto host = endpoints.regional_host(auditmanager_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/controls", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + auditmanager_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + auditmanager_json_str(u0))
+        if input.testingInformation.is_some():
+            auto u1 = input.testingInformation.unwrap()
+            parts.append("\"testingInformation\":" + auditmanager_json_str(u1))
+        if input.actionPlanTitle.is_some():
+            auto u2 = input.actionPlanTitle.unwrap()
+            parts.append("\"actionPlanTitle\":" + auditmanager_json_str(u2))
+        if input.actionPlanInstructions.is_some():
+            auto u3 = input.actionPlanInstructions.unwrap()
+            parts.append("\"actionPlanInstructions\":" + auditmanager_json_str(u3))
+        list[str] e4 = []
+        for x4 in input.controlMappingSources:
+            e4.append(x4.to_json())
+        parts.append("\"controlMappingSources\":" + auditmanager_json_arr(e4))
+        if input.tags.is_some():
+            auto u5 = input.tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(auditmanager_json_str(k6) + ":" + auditmanager_json_str(u5[k6]))
+            parts.append("\"tags\":" + auditmanager_json_obj(m6))
+        auto bp = restjson.rest_json_document(b, auditmanager_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
 
     # DeleteAssessment  DELETE /assessments/{assessmentId}
@@ -2134,6 +2410,48 @@ struct AuditManagerClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
 
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(auditmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(auditmanager_json_str(k0) + ":" + auditmanager_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + auditmanager_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, auditmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
+
+    # UpdateAssessment  PUT /assessments/{assessmentId}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_assessment(self, UpdateAssessmentRequest input) -> str:
+        auto host = endpoints.regional_host(auditmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["assessmentId"] = input.assessmentId
+        auto b = binding.HttpBinding(method="PUT", path_template="/assessments/{assessmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.assessmentName.is_some():
+            auto u0 = input.assessmentName.unwrap()
+            parts.append("\"assessmentName\":" + auditmanager_json_str(u0))
+        if input.assessmentDescription.is_some():
+            auto u1 = input.assessmentDescription.unwrap()
+            parts.append("\"assessmentDescription\":" + auditmanager_json_str(u1))
+        parts.append("\"scope\":" + scope__to_json(input.scope_))
+        if input.assessmentReportsDestination.is_some():
+            auto u2 = input.assessmentReportsDestination.unwrap()
+            parts.append("\"assessmentReportsDestination\":" + u2.to_json())
+        if input.roles.is_some():
+            auto u3 = input.roles.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"roles\":" + auditmanager_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, auditmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
+
     # UpdateAssessmentControl  PUT /assessments/{assessmentId}/controlSets/{controlSetId}/controls/{controlId}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
     def update_assessment_control(self, UpdateAssessmentControlRequest input) -> str:
@@ -2159,6 +2477,28 @@ struct AuditManagerClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
 
+    # UpdateAssessmentFramework  PUT /assessmentFrameworks/{frameworkId}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def update_assessment_framework(self, UpdateAssessmentFrameworkRequest input) -> str:
+        auto host = endpoints.regional_host(auditmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["frameworkId"] = input.frameworkId
+        auto b = binding.HttpBinding(method="PUT", path_template="/assessmentFrameworks/{frameworkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + auditmanager_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + auditmanager_json_str(u0))
+        if input.complianceType.is_some():
+            auto u1 = input.complianceType.unwrap()
+            parts.append("\"complianceType\":" + auditmanager_json_str(u1))
+        list[str] e2 = []
+        for x2 in input.controlSets:
+            e2.append(update_assessment_framework_control_set_to_json(x2))
+        parts.append("\"controlSets\":" + auditmanager_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, auditmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
+
     # UpdateAssessmentFrameworkShare  PUT /assessmentFrameworkShareRequests/{requestId}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def update_assessment_framework_share(self, UpdateAssessmentFrameworkShareRequest input) -> str:
@@ -2179,6 +2519,67 @@ struct AuditManagerClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/assessments/{assessmentId}/status", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAssessmentStatusDocument(status=input.status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
+
+    # UpdateControl  PUT /controls/{controlId}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
+    def update_control(self, UpdateControlRequest input) -> str:
+        auto host = endpoints.regional_host(auditmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["controlId"] = input.controlId
+        auto b = binding.HttpBinding(method="PUT", path_template="/controls/{controlId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + auditmanager_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + auditmanager_json_str(u0))
+        if input.testingInformation.is_some():
+            auto u1 = input.testingInformation.unwrap()
+            parts.append("\"testingInformation\":" + auditmanager_json_str(u1))
+        if input.actionPlanTitle.is_some():
+            auto u2 = input.actionPlanTitle.unwrap()
+            parts.append("\"actionPlanTitle\":" + auditmanager_json_str(u2))
+        if input.actionPlanInstructions.is_some():
+            auto u3 = input.actionPlanInstructions.unwrap()
+            parts.append("\"actionPlanInstructions\":" + auditmanager_json_str(u3))
+        list[str] e4 = []
+        for x4 in input.controlMappingSources:
+            e4.append(x4.to_json())
+        parts.append("\"controlMappingSources\":" + auditmanager_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, auditmanager_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
+
+    # UpdateSettings  PUT /settings
+    # errors: AccessDeniedException, InternalServerException, ValidationException
+    def update_settings(self, UpdateSettingsRequest input) -> str:
+        auto host = endpoints.regional_host(auditmanager_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.snsTopic.is_some():
+            auto u0 = input.snsTopic.unwrap()
+            parts.append("\"snsTopic\":" + auditmanager_json_str(u0))
+        if input.defaultAssessmentReportsDestination.is_some():
+            auto u1 = input.defaultAssessmentReportsDestination.unwrap()
+            parts.append("\"defaultAssessmentReportsDestination\":" + u1.to_json())
+        if input.defaultProcessOwners.is_some():
+            auto u2 = input.defaultProcessOwners.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"defaultProcessOwners\":" + auditmanager_json_arr(e3))
+        if input.kmsKey.is_some():
+            auto u4 = input.kmsKey.unwrap()
+            parts.append("\"kmsKey\":" + auditmanager_json_str(u4))
+        if input.evidenceFinderEnabled.is_some():
+            auto u5 = input.evidenceFinderEnabled.unwrap()
+            parts.append("\"evidenceFinderEnabled\":" + json.dumps(JsonValue.Bool(u5)))
+        if input.deregistrationPolicy.is_some():
+            auto u6 = input.deregistrationPolicy.unwrap()
+            parts.append("\"deregistrationPolicy\":" + u6.to_json())
+        if input.defaultExportDestination.is_some():
+            auto u7 = input.defaultExportDestination.unwrap()
+            parts.append("\"defaultExportDestination\":" + u7.to_json())
+        auto bp = restjson.rest_json_document(b, auditmanager_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
 
     # ValidateAssessmentReportIntegrity  POST /assessmentReports/integrity

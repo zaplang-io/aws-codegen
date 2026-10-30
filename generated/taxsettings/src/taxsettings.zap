@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 16 operations — 11 with a generated method,
-#   5 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 16 operations — 16 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   93 structs (67 @derive(Json)), 21 enums, 7 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -222,16 +222,18 @@ enum ValidationExceptionErrorCode:
 struct AccessDeniedException:
     str message
 
-# no @derive(Json): member(s) taxRegistration: TaxRegistrationWithJurisdiction, accountMetaData: AccountMetaData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taxRegistration: TaxRegistrationWithJurisdiction, accountMetaData: AccountMetaData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccountDetails:
     Optional[str] accountId
     Optional[TaxRegistrationWithJurisdiction] taxRegistration
     Optional[TaxInheritanceDetails] taxInheritanceDetails
     Optional[AccountMetaData] accountMetaData
 
-# no @derive(Json): member(s) addressRoleMap: dict[AddressRoleType, Jurisdiction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) addressRoleMap: dict[AddressRoleType, Jurisdiction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccountMetaData:
     Optional[str] accountName
     Optional[str] seller
@@ -239,8 +241,9 @@ struct AccountMetaData:
     Optional[AddressRoleType] addressType
     Optional[dict[AddressRoleType, Jurisdiction]] addressRoleMap
 
-# no @derive(Json): member(s) malaysiaAdditionalInfo: MalaysiaAdditionalInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) malaysiaAdditionalInfo: MalaysiaAdditionalInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdditionalInfoRequest:
     Optional[MalaysiaAdditionalInfo] malaysiaAdditionalInfo
     Optional[IsraelAdditionalInfo] israelAdditionalInfo
@@ -269,8 +272,9 @@ struct AdditionalInfoRequest:
     Optional[GermanyAdditionalInfo] germanyAdditionalInfo
     Optional[MexicoAdditionalInfo] mexicoAdditionalInfo
 
-# no @derive(Json): member(s) malaysiaAdditionalInfo: MalaysiaAdditionalInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) malaysiaAdditionalInfo: MalaysiaAdditionalInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdditionalInfoResponse:
     Optional[MalaysiaAdditionalInfo] malaysiaAdditionalInfo
     Optional[IsraelAdditionalInfo] israelAdditionalInfo
@@ -332,8 +336,9 @@ struct BatchDeleteTaxRegistrationError:
 struct BatchDeleteTaxRegistrationRequest:
     list[str] accountIds
 
-# no @derive(Json): member(s) errors: list[BatchDeleteTaxRegistrationError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[BatchDeleteTaxRegistrationError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteTaxRegistrationResponse:
     list[BatchDeleteTaxRegistrationError] errors
 
@@ -342,8 +347,9 @@ struct BatchDeleteTaxRegistrationResponse:
 struct BatchGetTaxExemptionsRequest:
     list[str] accountIds
 
-# no @derive(Json): member(s) taxExemptionDetailsMap: dict[str, TaxExemptionDetails], failedAccounts: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taxExemptionDetailsMap: dict[str, TaxExemptionDetails], failedAccounts: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetTaxExemptionsResponse:
     Optional[dict[str, TaxExemptionDetails]] taxExemptionDetailsMap
     Optional[list[str]] failedAccounts
@@ -360,8 +366,9 @@ struct BatchPutTaxRegistrationRequest:
     list[str] accountIds
     TaxRegistrationEntry taxRegistrationEntry
 
-# no @derive(Json): member(s) errors: list[BatchPutTaxRegistrationError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[BatchPutTaxRegistrationError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchPutTaxRegistrationResponse:
     Optional[TaxRegistrationStatus] status
     list[BatchPutTaxRegistrationError] errors
@@ -456,8 +463,9 @@ struct GetTaxExemptionTypesRequest:
     # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) taxExemptionTypes: list[TaxExemptionType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taxExemptionTypes: list[TaxExemptionType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTaxExemptionTypesResponse:
     Optional[list[TaxExemptionType]] taxExemptionTypes
 
@@ -487,8 +495,9 @@ struct GetTaxRegistrationDocumentResponse:
 struct GetTaxRegistrationRequest:
     Optional[str] accountId
 
-# no @derive(Json): member(s) taxRegistration: TaxRegistration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taxRegistration: TaxRegistration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTaxRegistrationResponse:
     Optional[TaxRegistration] taxRegistration
 
@@ -539,8 +548,9 @@ struct ListSupplementalTaxRegistrationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) taxRegistrations: list[SupplementalTaxRegistration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taxRegistrations: list[SupplementalTaxRegistration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSupplementalTaxRegistrationsResponse:
     list[SupplementalTaxRegistration] taxRegistrations
     Optional[str] nextToken
@@ -551,8 +561,9 @@ struct ListTaxExemptionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) taxExemptionDetailsMap: dict[str, TaxExemptionDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taxExemptionDetailsMap: dict[str, TaxExemptionDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTaxExemptionsResponse:
     Optional[str] nextToken
     Optional[dict[str, TaxExemptionDetails]] taxExemptionDetailsMap
@@ -563,14 +574,16 @@ struct ListTaxRegistrationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) accountDetails: list[AccountDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountDetails: list[AccountDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTaxRegistrationsResponse:
     list[AccountDetails] accountDetails
     Optional[str] nextToken
 
-# no @derive(Json): member(s) serviceTaxCodes: list[MalaysiaServiceTaxCode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceTaxCodes: list[MalaysiaServiceTaxCode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MalaysiaAdditionalInfo:
     Optional[list[MalaysiaServiceTaxCode]] serviceTaxCodes
     Optional[str] taxInformationNumber
@@ -687,8 +700,9 @@ struct TaxDocumentMetadata:
     str taxDocumentAccessToken
     str taxDocumentName
 
-# no @derive(Json): member(s) taxExemptionType: TaxExemptionType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taxExemptionType: TaxExemptionType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaxExemption:
     Authority authority
     TaxExemptionType taxExemptionType
@@ -697,16 +711,18 @@ struct TaxExemption:
     Optional[DateTime] systemEffectiveDate
     Optional[EntityExemptionAccountStatus] status
 
-# no @derive(Json): member(s) taxExemptions: list[TaxExemption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taxExemptions: list[TaxExemption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaxExemptionDetails:
     Optional[list[TaxExemption]] taxExemptions
     Optional[bool] heritageObtainedDetails
     Optional[str] heritageObtainedParentEntity
     Optional[str] heritageObtainedReason
 
-# no @derive(Json): member(s) applicableJurisdictions: list[Authority] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) applicableJurisdictions: list[Authority] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaxExemptionType:
     Optional[str] displayName
     Optional[str] description
@@ -717,8 +733,9 @@ struct TaxInheritanceDetails:
     Optional[str] parentEntityId
     Optional[str] inheritanceObtainedReason
 
-# no @derive(Json): member(s) taxDocumentMetadatas: list[TaxDocumentMetadata], additionalTaxInformation: AdditionalInfoResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taxDocumentMetadatas: list[TaxDocumentMetadata], additionalTaxInformation: AdditionalInfoResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaxRegistration:
     str registrationId
     TaxRegistrationType registrationType
@@ -740,8 +757,9 @@ struct TaxRegistrationDocument:
     Optional[SourceS3Location] s3Location
     Optional[TaxRegistrationDocFile] file
 
-# no @derive(Json): member(s) additionalTaxInformation: AdditionalInfoRequest, verificationDetails: VerificationDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) additionalTaxInformation: AdditionalInfoRequest, verificationDetails: VerificationDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaxRegistrationEntry:
     str registrationId
     TaxRegistrationType registrationType
@@ -752,8 +770,9 @@ struct TaxRegistrationEntry:
     Optional[VerificationDetails] verificationDetails
     Optional[str] certifiedEmailId
 
-# no @derive(Json): member(s) taxDocumentMetadatas: list[TaxDocumentMetadata], additionalTaxInformation: AdditionalInfoResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taxDocumentMetadatas: list[TaxDocumentMetadata], additionalTaxInformation: AdditionalInfoResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaxRegistrationWithJurisdiction:
     str registrationId
     TaxRegistrationType registrationType
@@ -781,8 +800,9 @@ struct UzbekistanAdditionalInfo:
     Optional[UzbekistanTaxRegistrationNumberType] taxRegistrationNumberType
     Optional[str] vatRegistrationNumber
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionErrorCode errorCode
@@ -792,8 +812,9 @@ struct ValidationException:
 struct ValidationExceptionField:
     str name
 
-# no @derive(Json): member(s) taxRegistrationDocuments: list[TaxRegistrationDocument] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taxRegistrationDocuments: list[TaxRegistrationDocument] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VerificationDetails:
     Optional[str] dateOfBirth
     Optional[list[TaxRegistrationDocument]] taxRegistrationDocuments
@@ -839,15 +860,6 @@ def tax_error_from_code(str code) -> TaxSettingsError:
     return TaxSettingsError.Unknown(code=code)
 
 # --- client ----------------------------------------------------------------
-
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   BatchDeleteTaxRegistration (document member `accountIds: list[str]` is not serializable by derive)
-#   BatchGetTaxExemptions (document member `accountIds: list[str]` is not serializable by derive)
-#   BatchPutTaxRegistration (document member `accountIds: list[str]` is not serializable by derive)
-#   PutTaxExemption (document member `accountIds: list[str]` is not serializable by derive)
-#   PutTaxRegistration (document member `taxRegistrationEntry: TaxRegistrationEntry` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -901,10 +913,219 @@ struct PutTaxInheritanceDocument:
     # document members of PutTaxInheritance
     Optional[HeritageStatus] heritageStatus
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def tax_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def tax_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def tax_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AdditionalInfoRequest to a compact JSON object (declaration order).
+def additional_info_request_to_json(AdditionalInfoRequest v) -> str:
+    list[str] parts = []
+    if v.malaysiaAdditionalInfo.is_some():
+        auto u0 = v.malaysiaAdditionalInfo.unwrap()
+        parts.append("\"malaysiaAdditionalInfo\":" + malaysia_additional_info_to_json(u0))
+    if v.israelAdditionalInfo.is_some():
+        auto u1 = v.israelAdditionalInfo.unwrap()
+        parts.append("\"israelAdditionalInfo\":" + u1.to_json())
+    if v.estoniaAdditionalInfo.is_some():
+        auto u2 = v.estoniaAdditionalInfo.unwrap()
+        parts.append("\"estoniaAdditionalInfo\":" + u2.to_json())
+    if v.canadaAdditionalInfo.is_some():
+        auto u3 = v.canadaAdditionalInfo.unwrap()
+        parts.append("\"canadaAdditionalInfo\":" + u3.to_json())
+    if v.spainAdditionalInfo.is_some():
+        auto u4 = v.spainAdditionalInfo.unwrap()
+        parts.append("\"spainAdditionalInfo\":" + u4.to_json())
+    if v.kenyaAdditionalInfo.is_some():
+        auto u5 = v.kenyaAdditionalInfo.unwrap()
+        parts.append("\"kenyaAdditionalInfo\":" + u5.to_json())
+    if v.southKoreaAdditionalInfo.is_some():
+        auto u6 = v.southKoreaAdditionalInfo.unwrap()
+        parts.append("\"southKoreaAdditionalInfo\":" + u6.to_json())
+    if v.turkeyAdditionalInfo.is_some():
+        auto u7 = v.turkeyAdditionalInfo.unwrap()
+        parts.append("\"turkeyAdditionalInfo\":" + u7.to_json())
+    if v.georgiaAdditionalInfo.is_some():
+        auto u8 = v.georgiaAdditionalInfo.unwrap()
+        parts.append("\"georgiaAdditionalInfo\":" + u8.to_json())
+    if v.italyAdditionalInfo.is_some():
+        auto u9 = v.italyAdditionalInfo.unwrap()
+        parts.append("\"italyAdditionalInfo\":" + u9.to_json())
+    if v.romaniaAdditionalInfo.is_some():
+        auto u10 = v.romaniaAdditionalInfo.unwrap()
+        parts.append("\"romaniaAdditionalInfo\":" + u10.to_json())
+    if v.ukraineAdditionalInfo.is_some():
+        auto u11 = v.ukraineAdditionalInfo.unwrap()
+        parts.append("\"ukraineAdditionalInfo\":" + u11.to_json())
+    if v.polandAdditionalInfo.is_some():
+        auto u12 = v.polandAdditionalInfo.unwrap()
+        parts.append("\"polandAdditionalInfo\":" + u12.to_json())
+    if v.saudiArabiaAdditionalInfo.is_some():
+        auto u13 = v.saudiArabiaAdditionalInfo.unwrap()
+        parts.append("\"saudiArabiaAdditionalInfo\":" + u13.to_json())
+    if v.indonesiaAdditionalInfo.is_some():
+        auto u14 = v.indonesiaAdditionalInfo.unwrap()
+        parts.append("\"indonesiaAdditionalInfo\":" + u14.to_json())
+    if v.vietnamAdditionalInfo.is_some():
+        auto u15 = v.vietnamAdditionalInfo.unwrap()
+        parts.append("\"vietnamAdditionalInfo\":" + u15.to_json())
+    if v.egyptAdditionalInfo.is_some():
+        auto u16 = v.egyptAdditionalInfo.unwrap()
+        parts.append("\"egyptAdditionalInfo\":" + u16.to_json())
+    if v.greeceAdditionalInfo.is_some():
+        auto u17 = v.greeceAdditionalInfo.unwrap()
+        parts.append("\"greeceAdditionalInfo\":" + u17.to_json())
+    if v.uzbekistanAdditionalInfo.is_some():
+        auto u18 = v.uzbekistanAdditionalInfo.unwrap()
+        parts.append("\"uzbekistanAdditionalInfo\":" + u18.to_json())
+    if v.philippinesAdditionalInfo.is_some():
+        auto u19 = v.philippinesAdditionalInfo.unwrap()
+        parts.append("\"philippinesAdditionalInfo\":" + u19.to_json())
+    if v.belgiumAdditionalInfo.is_some():
+        auto u20 = v.belgiumAdditionalInfo.unwrap()
+        parts.append("\"belgiumAdditionalInfo\":" + u20.to_json())
+    if v.chileAdditionalInfo.is_some():
+        auto u21 = v.chileAdditionalInfo.unwrap()
+        parts.append("\"chileAdditionalInfo\":" + u21.to_json())
+    if v.franceAdditionalInfo.is_some():
+        auto u22 = v.franceAdditionalInfo.unwrap()
+        parts.append("\"franceAdditionalInfo\":" + u22.to_json())
+    if v.monacoAdditionalInfo.is_some():
+        auto u23 = v.monacoAdditionalInfo.unwrap()
+        parts.append("\"monacoAdditionalInfo\":" + u23.to_json())
+    if v.germanyAdditionalInfo.is_some():
+        auto u24 = v.germanyAdditionalInfo.unwrap()
+        parts.append("\"germanyAdditionalInfo\":" + u24.to_json())
+    if v.mexicoAdditionalInfo.is_some():
+        auto u25 = v.mexicoAdditionalInfo.unwrap()
+        parts.append("\"mexicoAdditionalInfo\":" + u25.to_json())
+    return tax_json_obj(parts)
+
+# Serialize MalaysiaAdditionalInfo to a compact JSON object (declaration order).
+def malaysia_additional_info_to_json(MalaysiaAdditionalInfo v) -> str:
+    list[str] parts = []
+    if v.serviceTaxCodes.is_some():
+        auto u0 = v.serviceTaxCodes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"serviceTaxCodes\":" + tax_json_arr(e1))
+    if v.taxInformationNumber.is_some():
+        auto u2 = v.taxInformationNumber.unwrap()
+        parts.append("\"taxInformationNumber\":" + tax_json_str(u2))
+    if v.businessRegistrationNumber.is_some():
+        auto u3 = v.businessRegistrationNumber.unwrap()
+        parts.append("\"businessRegistrationNumber\":" + tax_json_str(u3))
+    return tax_json_obj(parts)
+
+# Serialize TaxRegistrationEntry to a compact JSON object (declaration order).
+def tax_registration_entry_to_json(TaxRegistrationEntry v) -> str:
+    list[str] parts = []
+    parts.append("\"registrationId\":" + tax_json_str(v.registrationId))
+    parts.append("\"registrationType\":" + v.registrationType.to_json())
+    if v.legalName.is_some():
+        auto u0 = v.legalName.unwrap()
+        parts.append("\"legalName\":" + tax_json_str(u0))
+    if v.legalAddress.is_some():
+        auto u1 = v.legalAddress.unwrap()
+        parts.append("\"legalAddress\":" + u1.to_json())
+    if v.sector.is_some():
+        auto u2 = v.sector.unwrap()
+        parts.append("\"sector\":" + u2.to_json())
+    if v.additionalTaxInformation.is_some():
+        auto u3 = v.additionalTaxInformation.unwrap()
+        parts.append("\"additionalTaxInformation\":" + additional_info_request_to_json(u3))
+    if v.verificationDetails.is_some():
+        auto u4 = v.verificationDetails.unwrap()
+        parts.append("\"verificationDetails\":" + verification_details_to_json(u4))
+    if v.certifiedEmailId.is_some():
+        auto u5 = v.certifiedEmailId.unwrap()
+        parts.append("\"certifiedEmailId\":" + tax_json_str(u5))
+    return tax_json_obj(parts)
+
+# Serialize VerificationDetails to a compact JSON object (declaration order).
+def verification_details_to_json(VerificationDetails v) -> str:
+    list[str] parts = []
+    if v.dateOfBirth.is_some():
+        auto u0 = v.dateOfBirth.unwrap()
+        parts.append("\"dateOfBirth\":" + tax_json_str(u0))
+    if v.taxRegistrationDocuments.is_some():
+        auto u1 = v.taxRegistrationDocuments.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"taxRegistrationDocuments\":" + tax_json_arr(e2))
+    return tax_json_obj(parts)
+
 # A bound TaxSettings client: credentials + region, threaded into every operation.
 struct TaxSettingsClient:
     core.Credentials creds
     str region
+
+    # BatchDeleteTaxRegistration  POST /BatchDeleteTaxRegistration
+    # errors: ConflictException, InternalServerException, ValidationException
+    def batch_delete_tax_registration(self, BatchDeleteTaxRegistrationRequest input) -> str:
+        auto host = endpoints.regional_host(tax_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchDeleteTaxRegistration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.accountIds:
+            e0.append(tax_json_str(x0))
+        parts.append("\"accountIds\":" + tax_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, tax_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, tax_service(), self.region, host)
+
+    # BatchGetTaxExemptions  POST /BatchGetTaxExemptions
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def batch_get_tax_exemptions(self, BatchGetTaxExemptionsRequest input) -> str:
+        auto host = endpoints.regional_host(tax_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetTaxExemptions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.accountIds:
+            e0.append(tax_json_str(x0))
+        parts.append("\"accountIds\":" + tax_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, tax_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, tax_service(), self.region, host)
+
+    # BatchPutTaxRegistration  POST /BatchPutTaxRegistration
+    # errors: ConflictException, InternalServerException, ValidationException
+    def batch_put_tax_registration(self, BatchPutTaxRegistrationRequest input) -> str:
+        auto host = endpoints.regional_host(tax_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchPutTaxRegistration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.accountIds:
+            e0.append(tax_json_str(x0))
+        parts.append("\"accountIds\":" + tax_json_arr(e0))
+        parts.append("\"taxRegistrationEntry\":" + tax_registration_entry_to_json(input.taxRegistrationEntry))
+        auto bp = restjson.rest_json_document(b, tax_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, tax_service(), self.region, host)
 
     # DeleteSupplementalTaxRegistration  POST /DeleteSupplementalTaxRegistration
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
@@ -992,6 +1213,22 @@ struct TaxSettingsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, tax_service(), self.region, host)
 
+    # PutTaxExemption  POST /PutTaxExemption
+    # errors: AccessDeniedException, AttachmentUploadException, CaseCreationLimitExceededException, InternalServerException, ResourceNotFoundException, ValidationException
+    def put_tax_exemption(self, PutTaxExemptionRequest input) -> str:
+        auto host = endpoints.regional_host(tax_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/PutTaxExemption", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.accountIds:
+            e0.append(tax_json_str(x0))
+        parts.append("\"accountIds\":" + tax_json_arr(e0))
+        parts.append("\"authority\":" + input.authority.to_json())
+        parts.append("\"exemptionType\":" + tax_json_str(input.exemptionType))
+        parts.append("\"exemptionCertificate\":" + input.exemptionCertificate.to_json())
+        auto bp = restjson.rest_json_document(b, tax_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, tax_service(), self.region, host)
+
     # PutTaxInheritance  POST /PutTaxInheritance
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def put_tax_inheritance(self, PutTaxInheritanceRequest input) -> str:
@@ -999,6 +1236,19 @@ struct TaxSettingsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/PutTaxInheritance", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutTaxInheritanceDocument(heritageStatus=input.heritageStatus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, tax_service(), self.region, host)
+
+    # PutTaxRegistration  POST /PutTaxRegistration
+    # errors: ConflictException, InternalServerException, ValidationException
+    def put_tax_registration(self, PutTaxRegistrationRequest input) -> str:
+        auto host = endpoints.regional_host(tax_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/PutTaxRegistration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.accountId.is_some():
+            auto u0 = input.accountId.unwrap()
+            parts.append("\"accountId\":" + tax_json_str(u0))
+        parts.append("\"taxRegistrationEntry\":" + tax_registration_entry_to_json(input.taxRegistrationEntry))
+        auto bp = restjson.rest_json_document(b, tax_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, tax_service(), self.region, host)
 
     # Paginator for ListSupplementalTaxRegistrations — yields each Response page, threading the

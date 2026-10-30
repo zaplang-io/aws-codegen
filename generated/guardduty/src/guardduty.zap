@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 102 operations — 59 with a generated method,
-#   43 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 102 operations — 101 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   484 structs (294 @derive(Json)), 80 enums, 5 error variants.
-#   12 paginators generated (5 paginated ops skipped) from paginators-1.json.
+#   17 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -912,8 +912,9 @@ struct AccountDetail:
     str AccountId
     str Email
 
-# no @derive(Json): member(s) Features: list[FreeTrialFeatureConfigurationResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Features: list[FreeTrialFeatureConfigurationResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccountFreeTrialInfo:
     Optional[str] AccountId
     Optional[DataSourcesFreeTrial] DataSources
@@ -929,8 +930,9 @@ struct AccountStatistics:
     Optional[DateTime] LastGeneratedAt
     Optional[int64] TotalFindings
 
-# no @derive(Json): member(s) AwsApiCallAction: AwsApiCallAction, PortProbeAction: PortProbeAction, KubernetesApiCallAction: KubernetesApiCallAction, RdsLoginAttemptAction: RdsLoginAttemptAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AwsApiCallAction: AwsApiCallAction, PortProbeAction: PortProbeAction, KubernetesApiCallAction: KubernetesApiCallAction, RdsLoginAttemptAction: RdsLoginAttemptAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Action:
     Optional[str] ActionType
     Optional[AwsApiCallAction] AwsApiCallAction
@@ -987,21 +989,24 @@ struct Administrator:
 struct AgentDetails:
     Optional[str] Version
 
-# no @derive(Json): member(s) Profiles: dict[str, dict[str, list[AnomalyObject]]], Unusual: AnomalyUnusual not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Profiles: dict[str, dict[str, list[AnomalyObject]]], Unusual: AnomalyUnusual not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Anomaly:
     Optional[dict[str, dict[str, list[AnomalyObject]]]] Profiles
     Optional[AnomalyUnusual] Unusual
 
-# no @derive(Json): member(s) Observations: Observations not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Observations: Observations not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnomalyObject:
     Optional[ProfileType] ProfileType
     Optional[ProfileSubtype] ProfileSubtype
     Optional[Observations] Observations
 
-# no @derive(Json): member(s) Behavior: dict[str, dict[str, AnomalyObject]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Behavior: dict[str, dict[str, AnomalyObject]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnomalyUnusual:
     Optional[dict[str, dict[str, AnomalyObject]]] Behavior
 
@@ -1049,13 +1054,15 @@ struct AutonomousSystem:
     str Name
     int64 Number
 
-# no @derive(Json): member(s) Ec2InstanceUids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Ec2InstanceUids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoscalingAutoScalingGroup:
     Optional[list[str]] Ec2InstanceUids
 
-# no @derive(Json): member(s) AffectedResources: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AffectedResources: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsApiCallAction:
     Optional[str] Api
     Optional[str] CallerType
@@ -1077,8 +1084,9 @@ struct BedrockGuardrail:
     Optional[str] Arn
     Optional[str] Version
 
-# no @derive(Json): member(s) Guardrails: list[BedrockGuardrail], ContentPolicyFilters: list[ContentPolicyFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Guardrails: list[BedrockGuardrail], ContentPolicyFilters: list[ContentPolicyFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BedrockGuardrailDetails:
     Optional[str] GuardrailArn
     Optional[str] GuardrailVersion
@@ -1125,13 +1133,15 @@ struct CloudDetails:
 struct CloudTrailConfigurationResult:
     DataSourceStatus Status
 
-# no @derive(Json): member(s) Ec2InstanceUids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Ec2InstanceUids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudformationStack:
     Optional[list[str]] Ec2InstanceUids
 
-# no @derive(Json): member(s) Eq: list[str], Neq: list[str], Equals: list[str], NotEquals: list[str], Matches: list[str], NotMatches: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Eq: list[str], Neq: list[str], Equals: list[str], NotEquals: list[str], Matches: list[str], NotMatches: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Condition:
     Optional[list[str]] Eq
     Optional[list[str]] Neq
@@ -1153,8 +1163,9 @@ struct ConflictException:
     Optional[str] Message
     Optional[str] Type
 
-# no @derive(Json): member(s) VolumeMounts: list[VolumeMount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VolumeMounts: list[VolumeMount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Container:
     Optional[str] ContainerRuntime
     Optional[str] Id
@@ -1198,8 +1209,9 @@ struct CoverageEc2InstanceDetails:
     Optional[AgentDetails] AgentDetails
     Optional[ManagementType] ManagementType
 
-# no @derive(Json): member(s) FargateDetails: FargateDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FargateDetails: FargateDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CoverageEcsClusterDetails:
     Optional[str] ClusterName
     Optional[FargateDetails] FargateDetails
@@ -1213,25 +1225,29 @@ struct CoverageEksClusterDetails:
     Optional[AddonDetails] AddonDetails
     Optional[ManagementType] ManagementType
 
-# no @derive(Json): member(s) Equals: list[str], NotEquals: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Equals: list[str], NotEquals: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CoverageFilterCondition:
     Optional[list[str]] Equals
     Optional[list[str]] NotEquals
 
-# no @derive(Json): member(s) FilterCriterion: list[CoverageFilterCriterion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterCriterion: list[CoverageFilterCriterion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CoverageFilterCriteria:
     Optional[list[CoverageFilterCriterion]] FilterCriterion
 
-# no @derive(Json): member(s) FilterCondition: CoverageFilterCondition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterCondition: CoverageFilterCondition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CoverageFilterCriterion:
     Optional[CoverageFilterCriterionKey] CriterionKey
     Optional[CoverageFilterCondition] FilterCondition
 
-# no @derive(Json): member(s) ResourceDetails: CoverageResourceDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceDetails: CoverageResourceDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CoverageResource:
     Optional[str] ResourceId
     Optional[str] DetectorId
@@ -1241,8 +1257,9 @@ struct CoverageResource:
     Optional[str] Issue
     Optional[DateTime] UpdatedAt
 
-# no @derive(Json): member(s) EcsClusterDetails: CoverageEcsClusterDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EcsClusterDetails: CoverageEcsClusterDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CoverageResourceDetails:
     Optional[CoverageEksClusterDetails] EksClusterDetails
     Optional[CoverageEcsClusterDetails] EcsClusterDetails
@@ -1254,8 +1271,9 @@ struct CoverageSortCriteria:
     Optional[CoverageSortKey] AttributeName
     Optional[OrderBy] OrderBy
 
-# no @derive(Json): member(s) CountByResourceType: dict[ResourceType, int64], CountByCoverageStatus: dict[CoverageStatus, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CountByResourceType: dict[ResourceType, int64], CountByCoverageStatus: dict[CoverageStatus, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CoverageStatistics:
     Optional[dict[ResourceType, int64]] CountByResourceType
     Optional[dict[CoverageStatus, int64]] CountByCoverageStatus
@@ -1363,13 +1381,15 @@ struct CreateMembersRequest:
     str DetectorId
     list[AccountDetail] AccountDetails
 
-# no @derive(Json): member(s) UnprocessedAccounts: list[UnprocessedAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UnprocessedAccounts: list[UnprocessedAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMembersResponse:
     list[UnprocessedAccount] UnprocessedAccounts
 
-# no @derive(Json): member(s) S3Bucket: CreateS3BucketResource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3Bucket: CreateS3BucketResource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProtectedResource:
     Optional[CreateS3BucketResource] S3Bucket
 
@@ -1386,8 +1406,9 @@ struct CreatePublishingDestinationRequest:
 struct CreatePublishingDestinationResponse:
     str DestinationId
 
-# no @derive(Json): member(s) ObjectPrefixes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ObjectPrefixes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateS3BucketResource:
     Optional[str] BucketName
     Optional[list[str]] ObjectPrefixes
@@ -1495,8 +1516,9 @@ struct DateStatistics:
 struct DeclineInvitationsRequest:
     list[str] AccountIds
 
-# no @derive(Json): member(s) UnprocessedAccounts: list[UnprocessedAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UnprocessedAccounts: list[UnprocessedAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeclineInvitationsResponse:
     list[UnprocessedAccount] UnprocessedAccounts
 
@@ -1565,8 +1587,9 @@ struct DeleteIPSetResponse:
 struct DeleteInvitationsRequest:
     list[str] AccountIds
 
-# no @derive(Json): member(s) UnprocessedAccounts: list[UnprocessedAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UnprocessedAccounts: list[UnprocessedAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteInvitationsResponse:
     list[UnprocessedAccount] UnprocessedAccounts
 
@@ -1581,8 +1604,9 @@ struct DeleteMembersRequest:
     str DetectorId
     list[str] AccountIds
 
-# no @derive(Json): member(s) UnprocessedAccounts: list[UnprocessedAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UnprocessedAccounts: list[UnprocessedAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteMembersResponse:
     list[UnprocessedAccount] UnprocessedAccounts
 
@@ -1639,8 +1663,9 @@ struct DescribeMalwareScansRequest:
     Optional[FilterCriteria] FilterCriteria
     Optional[SortCriteria] SortCriteria
 
-# no @derive(Json): member(s) Scans: list[Scan] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Scans: list[Scan] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMalwareScansResponse:
     list[Scan] Scans
     Optional[str] NextToken
@@ -1652,8 +1677,9 @@ struct DescribeOrganizationConfigurationRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Features: list[OrganizationFeatureConfigurationResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Features: list[OrganizationFeatureConfigurationResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeOrganizationConfigurationResponse:
     Optional[bool] AutoEnable
     bool MemberAccountLimitReached
@@ -1668,8 +1694,9 @@ struct DescribePublishingDestinationRequest:
     str DetectorId
     str DestinationId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePublishingDestinationResponse:
     str DestinationId
     str DestinationType
@@ -1690,8 +1717,9 @@ struct DestinationProperties:
     Optional[str] KmsKeyArn
     Optional[str] ExpectedBucketOwner
 
-# no @derive(Json): member(s) Anomaly: Anomaly, Sequence: Sequence not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Anomaly: Anomaly, Sequence: Sequence not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Detection:
     Optional[Anomaly] Anomaly
     Optional[Sequence] Sequence
@@ -1708,15 +1736,17 @@ struct DetectionRuleEcsFargateRequirements:
 struct DetectionRuleEksRequirements:
     Optional[str] MinAgentVersion
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectionRuleFilter:
     FilterFieldName Name
     list[str] Values
     Optional[DetectionRuleFilterCondition] Condition
 
-# no @derive(Json): member(s) IncludeAccountIds: list[str], ExcludeAccountIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IncludeAccountIds: list[str], ExcludeAccountIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectionRuleOrgConfiguration:
     str RuleId
     AssociationMode Mode
@@ -1760,15 +1790,17 @@ struct DetectorAdditionalConfigurationResult:
     Optional[DateTime] UpdatedAt
     Optional[str] ManagedBy
 
-# no @derive(Json): member(s) AdditionalConfiguration: list[DetectorAdditionalConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalConfiguration: list[DetectorAdditionalConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectorFeatureConfiguration:
     Optional[DetectorFeature] Name
     Optional[FeatureStatus] Status
     Optional[list[DetectorAdditionalConfiguration]] AdditionalConfiguration
 
-# no @derive(Json): member(s) AdditionalConfiguration: list[DetectorAdditionalConfigurationResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalConfiguration: list[DetectorAdditionalConfigurationResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectorFeatureConfigurationResult:
     Optional[DetectorFeatureResult] Name
     Optional[FeatureStatus] Status
@@ -1812,8 +1844,9 @@ struct DisassociateMembersRequest:
     str DetectorId
     list[str] AccountIds
 
-# no @derive(Json): member(s) UnprocessedAccounts: list[UnprocessedAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UnprocessedAccounts: list[UnprocessedAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateMembersResponse:
     list[UnprocessedAccount] UnprocessedAccounts
 
@@ -1837,14 +1870,16 @@ struct EbsSnapshot:
 struct EbsSnapshotDetails:
     Optional[str] SnapshotArn
 
-# no @derive(Json): member(s) ScannedVolumeDetails: list[VolumeDetail], SkippedVolumeDetails: list[VolumeDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScannedVolumeDetails: list[VolumeDetail], SkippedVolumeDetails: list[VolumeDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EbsVolumeDetails:
     Optional[list[VolumeDetail]] ScannedVolumeDetails
     Optional[list[VolumeDetail]] SkippedVolumeDetails
 
-# no @derive(Json): member(s) Sources: list[str], ScanDetections: ScanDetections not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sources: list[str], ScanDetections: ScanDetections not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EbsVolumeScanDetails:
     Optional[str] ScanId
     Optional[DateTime] ScanStartedAt
@@ -1859,8 +1894,9 @@ struct EbsVolumesResult:
     Optional[DataSourceStatus] Status
     Optional[str] Reason
 
-# no @derive(Json): member(s) Ec2InstanceUids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Ec2InstanceUids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Ec2Image:
     Optional[list[str]] Ec2InstanceUids
 
@@ -1868,8 +1904,9 @@ struct Ec2Image:
 struct Ec2ImageDetails:
     Optional[str] ImageArn
 
-# no @derive(Json): member(s) ProductCodes: list[ProductCode], Ec2NetworkInterfaceUids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProductCodes: list[ProductCode], Ec2NetworkInterfaceUids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Ec2Instance:
     Optional[str] AvailabilityZone
     Optional[str] ImageDescription
@@ -1881,14 +1918,16 @@ struct Ec2Instance:
     Optional[list[ProductCode]] ProductCodes
     Optional[list[str]] Ec2NetworkInterfaceUids
 
-# no @derive(Json): member(s) Ec2InstanceUids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Ec2InstanceUids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Ec2LaunchTemplate:
     Optional[list[str]] Ec2InstanceUids
     Optional[str] Version
 
-# no @derive(Json): member(s) Ipv6Addresses: list[str], PrivateIpAddresses: list[PrivateIpAddressDetails], SecurityGroups: list[SecurityGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Ipv6Addresses: list[str], PrivateIpAddresses: list[PrivateIpAddressDetails], SecurityGroups: list[SecurityGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Ec2NetworkInterface:
     Optional[list[str]] Ipv6Addresses
     Optional[list[PrivateIpAddressDetails]] PrivateIpAddresses
@@ -1897,19 +1936,22 @@ struct Ec2NetworkInterface:
     Optional[str] SubNetId
     Optional[str] VpcId
 
-# no @derive(Json): member(s) Ec2InstanceUids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Ec2InstanceUids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Ec2Vpc:
     Optional[list[str]] Ec2InstanceUids
 
-# no @derive(Json): member(s) Ec2InstanceUids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Ec2InstanceUids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EcsCluster:
     Optional[EcsClusterStatus] Status
     Optional[list[str]] Ec2InstanceUids
 
-# no @derive(Json): member(s) Tags: list[Tag], TaskDetails: EcsTaskDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], TaskDetails: EcsTaskDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EcsClusterDetails:
     Optional[str] Name
     Optional[str] Arn
@@ -1920,16 +1962,18 @@ struct EcsClusterDetails:
     Optional[list[Tag]] Tags
     Optional[EcsTaskDetails] TaskDetails
 
-# no @derive(Json): member(s) ContainerUids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContainerUids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EcsTask:
     Optional[DateTime] CreatedAt
     Optional[str] TaskDefinitionArn
     Optional[EcsLaunchType] LaunchType
     Optional[list[str]] ContainerUids
 
-# no @derive(Json): member(s) Tags: list[Tag], Volumes: list[Volume], Containers: list[Container] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], Volumes: list[Volume], Containers: list[Container] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EcsTaskDetails:
     Optional[str] Arn
     Optional[str] DefinitionArn
@@ -1943,8 +1987,9 @@ struct EcsTaskDetails:
     Optional[str] Group
     Optional[str] LaunchType
 
-# no @derive(Json): member(s) Ec2InstanceUids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Ec2InstanceUids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EksCluster:
     Optional[str] Arn
     Optional[DateTime] CreatedAt
@@ -1952,8 +1997,9 @@ struct EksCluster:
     Optional[str] VpcId
     Optional[list[str]] Ec2InstanceUids
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EksClusterDetails:
     Optional[str] Name
     Optional[str] Arn
@@ -1972,13 +2018,15 @@ struct EnableOrganizationAdminAccountResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ThreatIntelligenceDetails: list[ThreatIntelligenceDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ThreatIntelligenceDetails: list[ThreatIntelligenceDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Evidence:
     Optional[list[ThreatIntelligenceDetail]] ThreatIntelligenceDetails
 
-# no @derive(Json): member(s) Issues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Issues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FargateDetails:
     Optional[list[str]] Issues
     Optional[ManagementType] ManagementType
@@ -1989,8 +2037,9 @@ struct FilterCondition:
     Optional[int64] GreaterThan
     Optional[int64] LessThan
 
-# no @derive(Json): member(s) FilterCriterion: list[FilterCriterion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterCriterion: list[FilterCriterion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterCriteria:
     Optional[list[FilterCriterion]] FilterCriterion
 
@@ -1999,8 +2048,9 @@ struct FilterCriterion:
     Optional[CriterionKey] CriterionKey
     Optional[FilterCondition] FilterCondition
 
-# no @derive(Json): member(s) Resource: Resource, Service: Service not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resource: Resource, Service: Service not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Finding:
     str AccountId
     str Arn
@@ -2020,13 +2070,15 @@ struct Finding:
     Optional[str] AssociatedAttackSequenceArn
     Optional[str] CustomDetectionRuleName
 
-# no @derive(Json): member(s) Criterion: dict[str, Condition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Criterion: dict[str, Condition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FindingCriteria:
     Optional[dict[str, Condition]] Criterion
 
-# no @derive(Json): member(s) CountBySeverity: dict[str, int64], GroupedByAccount: list[AccountStatistics], GroupedByDate: list[DateStatistics], GroupedByFindingType: list[FindingTypeStatistics], GroupedByResource: list[ResourceStatistics], GroupedBySeverity: list[SeverityStatistics] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CountBySeverity: dict[str, int64], GroupedByAccount: list[AccountStatistics], GroupedByDate: list[DateStatistics], GroupedByFindingType: list[FindingTypeStatistics], GroupedByResource: list[ResourceStatistics], GroupedBySeverity: list[SeverityStatistics] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FindingStatistics:
     Optional[dict[str, int64]] CountBySeverity
     Optional[list[AccountStatistics]] GroupedByAccount
@@ -2071,8 +2123,9 @@ struct GetCoverageStatisticsRequest:
     Optional[CoverageFilterCriteria] FilterCriteria
     list[CoverageStatisticsType] StatisticsType
 
-# no @derive(Json): member(s) CoverageStatistics: CoverageStatistics not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CoverageStatistics: CoverageStatistics not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCoverageStatisticsResponse:
     Optional[CoverageStatistics] CoverageStatistics
 
@@ -2082,8 +2135,9 @@ struct GetCustomDetectionRuleAssociationRequest:
     str RuleId
     str AssociationId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCustomDetectionRuleAssociationResponse:
     AssociationDetail RuleAssociation
     Optional[dict[str, str]] Tags
@@ -2095,8 +2149,9 @@ struct GetCustomDetectionRuleOrgConfigurationRequest:
     # wire string of the AssociationMode enum (querystring binding)
     str Mode
 
-# no @derive(Json): member(s) Configuration: DetectionRuleOrgConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: DetectionRuleOrgConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCustomDetectionRuleOrgConfigurationResponse:
     DetectionRuleOrgConfiguration Configuration
 
@@ -2114,8 +2169,9 @@ struct GetCustomDetectionRuleResponse:
 struct GetDetectorRequest:
     str DetectorId
 
-# no @derive(Json): member(s) Tags: dict[str, str], Features: list[DetectorFeatureConfigurationResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str], Features: list[DetectorFeatureConfigurationResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDetectorResponse:
     Optional[str] CreatedAt
     Optional[FindingPublishingFrequency] FindingPublishingFrequency
@@ -2132,8 +2188,9 @@ struct GetFilterRequest:
     str DetectorId
     str FilterName
 
-# no @derive(Json): member(s) FindingCriteria: FindingCriteria, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FindingCriteria: FindingCriteria, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFilterResponse:
     str Name
     Optional[str] Description
@@ -2152,8 +2209,9 @@ struct GetFindingsRequest:
     list[str] FindingIds
     Optional[SortCriteria] SortCriteria
 
-# no @derive(Json): member(s) Findings: list[Finding] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Findings: list[Finding] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFindingsResponse:
     list[Finding] Findings
 
@@ -2167,8 +2225,9 @@ struct GetFindingsStatisticsRequest:
     Optional[OrderBy] OrderBy
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) FindingStatistics: FindingStatistics not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FindingStatistics: FindingStatistics not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFindingsStatisticsResponse:
     FindingStatistics FindingStatistics
     Optional[str] NextToken
@@ -2179,8 +2238,9 @@ struct GetIPSetRequest:
     str DetectorId
     str IpSetId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIPSetResponse:
     str Name
     IpSetFormat Format
@@ -2214,8 +2274,9 @@ struct GetInvitationsCountResponse:
 struct GetMalwareProtectionPlanRequest:
     str MalwareProtectionPlanId
 
-# no @derive(Json): member(s) ProtectedResource: CreateProtectedResource, StatusReasons: list[MalwareProtectionPlanStatusReason], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProtectedResource: CreateProtectedResource, StatusReasons: list[MalwareProtectionPlanStatusReason], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMalwareProtectionPlanResponse:
     Optional[str] Arn
     Optional[str] Role
@@ -2231,8 +2292,9 @@ struct GetMalwareProtectionPlanResponse:
 struct GetMalwareScanRequest:
     str ScanId
 
-# no @derive(Json): member(s) ScannedResources: list[ScannedResource], ScanResultDetails: GetMalwareScanResultDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScannedResources: list[ScannedResource], ScanResultDetails: GetMalwareScanResultDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMalwareScanResponse:
     Optional[str] ScanId
     Optional[str] DetectorId
@@ -2252,8 +2314,9 @@ struct GetMalwareScanResponse:
     Optional[DateTime] ScanCompletedAt
     Optional[GetMalwareScanResultDetails] ScanResultDetails
 
-# no @derive(Json): member(s) Threats: list[ScanResultThreat] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Threats: list[ScanResultThreat] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMalwareScanResultDetails:
     Optional[ScanResultStatus] ScanResultStatus
     Optional[int64] SkippedFileCount
@@ -2269,8 +2332,9 @@ struct GetMalwareScanResultDetails:
 struct GetMalwareScanSettingsRequest:
     str DetectorId
 
-# no @derive(Json): member(s) ScanResourceCriteria: ScanResourceCriteria not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScanResourceCriteria: ScanResourceCriteria not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMalwareScanSettingsResponse:
     Optional[ScanResourceCriteria] ScanResourceCriteria
     Optional[EbsSnapshotPreservation] EbsSnapshotPreservation
@@ -2290,8 +2354,9 @@ struct GetMemberDetectorsRequest:
     str DetectorId
     list[str] AccountIds
 
-# no @derive(Json): member(s) MemberDataSourceConfigurations: list[MemberDataSourceConfiguration], UnprocessedAccounts: list[UnprocessedAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MemberDataSourceConfigurations: list[MemberDataSourceConfiguration], UnprocessedAccounts: list[UnprocessedAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMemberDetectorsResponse:
     list[MemberDataSourceConfiguration] MemberDataSourceConfigurations
     list[UnprocessedAccount] UnprocessedAccounts
@@ -2302,14 +2367,16 @@ struct GetMembersRequest:
     str DetectorId
     list[str] AccountIds
 
-# no @derive(Json): member(s) Members: list[Member], UnprocessedAccounts: list[UnprocessedAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Members: list[Member], UnprocessedAccounts: list[UnprocessedAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMembersResponse:
     list[Member] Members
     list[UnprocessedAccount] UnprocessedAccounts
 
-# no @derive(Json): member(s) OrganizationDetails: OrganizationDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrganizationDetails: OrganizationDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOrganizationStatisticsResponse:
     Optional[OrganizationDetails] OrganizationDetails
 
@@ -2319,8 +2386,9 @@ struct GetRemainingFreeTrialDaysRequest:
     str DetectorId
     list[str] AccountIds
 
-# no @derive(Json): member(s) Accounts: list[AccountFreeTrialInfo], UnprocessedAccounts: list[UnprocessedAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Accounts: list[AccountFreeTrialInfo], UnprocessedAccounts: list[UnprocessedAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRemainingFreeTrialDaysResponse:
     Optional[list[AccountFreeTrialInfo]] Accounts
     Optional[list[UnprocessedAccount]] UnprocessedAccounts
@@ -2331,8 +2399,9 @@ struct GetThreatEntitySetRequest:
     str DetectorId
     str ThreatEntitySetId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetThreatEntitySetResponse:
     str Name
     ThreatEntitySetFormat Format
@@ -2350,8 +2419,9 @@ struct GetThreatIntelSetRequest:
     str DetectorId
     str ThreatIntelSetId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetThreatIntelSetResponse:
     str Name
     ThreatIntelSetFormat Format
@@ -2366,8 +2436,9 @@ struct GetTrustedEntitySetRequest:
     str DetectorId
     str TrustedEntitySetId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTrustedEntitySetResponse:
     str Name
     TrustedEntitySetFormat Format
@@ -2389,8 +2460,9 @@ struct GetUsageStatisticsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) UsageStatistics: UsageStatistics not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UsageStatistics: UsageStatistics not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUsageStatisticsResponse:
     Optional[UsageStatistics] UsageStatistics
     Optional[str] NextToken
@@ -2410,13 +2482,15 @@ struct IamInstanceProfile:
     Optional[str] Arn
     Optional[str] Id
 
-# no @derive(Json): member(s) Ec2InstanceUids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Ec2InstanceUids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IamInstanceProfileV2:
     Optional[list[str]] Ec2InstanceUids
 
-# no @derive(Json): member(s) Groups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImpersonatedUser:
     Optional[str] Username
     Optional[list[str]] Groups
@@ -2425,15 +2499,17 @@ struct ImpersonatedUser:
 struct IncrementalScanDetails:
     str BaselineResourceArn
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Indicator:
     IndicatorType Key
     Optional[list[str]] Values
     Optional[str] Title
 
-# no @derive(Json): member(s) NetworkInterfaces: list[NetworkInterface], ProductCodes: list[ProductCode], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkInterfaces: list[NetworkInterface], ProductCodes: list[ProductCode], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceDetails:
     Optional[str] AvailabilityZone
     Optional[IamInstanceProfile] IamInstanceProfile
@@ -2507,8 +2583,9 @@ struct InviteMembersRequest:
     Optional[bool] DisableEmailNotification
     Optional[str] Message
 
-# no @derive(Json): member(s) UnprocessedAccounts: list[UnprocessedAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UnprocessedAccounts: list[UnprocessedAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InviteMembersResponse:
     list[UnprocessedAccount] UnprocessedAccounts
 
@@ -2524,8 +2601,9 @@ struct ItemPath:
     Optional[str] NestedItemPath
     Optional[str] Hash
 
-# no @derive(Json): member(s) SourceIps: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceIps: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KubernetesApiCallAction:
     Optional[str] RequestUri
     Optional[str] Verb
@@ -2559,8 +2637,9 @@ struct KubernetesConfigurationResult:
 struct KubernetesDataSourceFreeTrial:
     Optional[DataSourceFreeTrial] AuditLogs
 
-# no @derive(Json): member(s) KubernetesUserDetails: KubernetesUserDetails, KubernetesWorkloadDetails: KubernetesWorkloadDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KubernetesUserDetails: KubernetesUserDetails, KubernetesWorkloadDetails: KubernetesWorkloadDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KubernetesDetails:
     Optional[KubernetesUserDetails] KubernetesUserDetails
     Optional[KubernetesWorkloadDetails] KubernetesWorkloadDetails
@@ -2586,8 +2665,9 @@ struct KubernetesRoleDetails:
     Optional[str] Name
     Optional[str] Uid
 
-# no @derive(Json): member(s) Groups: list[str], SessionName: list[str], ImpersonatedUser: ImpersonatedUser not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[str], SessionName: list[str], ImpersonatedUser: ImpersonatedUser not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KubernetesUserDetails:
     Optional[str] Username
     Optional[str] Uid
@@ -2595,15 +2675,17 @@ struct KubernetesUserDetails:
     Optional[list[str]] SessionName
     Optional[ImpersonatedUser] ImpersonatedUser
 
-# no @derive(Json): member(s) ContainerUids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContainerUids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KubernetesWorkload:
     Optional[list[str]] ContainerUids
     Optional[str] Namespace
     Optional[KubernetesResourcesTypes] KubernetesResourcesTypes
 
-# no @derive(Json): member(s) Containers: list[Container], Volumes: list[Volume] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Containers: list[Container], Volumes: list[Volume] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KubernetesWorkloadDetails:
     Optional[str] Name
     Optional[str] Type
@@ -2616,8 +2698,9 @@ struct KubernetesWorkloadDetails:
     Optional[bool] HostIPC
     Optional[bool] HostPID
 
-# no @derive(Json): member(s) VpcConfig: VpcConfig, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfig: VpcConfig, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LambdaDetails:
     Optional[str] FunctionArn
     Optional[str] FunctionName
@@ -2650,8 +2733,9 @@ struct ListCoverageRequest:
     Optional[CoverageFilterCriteria] FilterCriteria
     Optional[CoverageSortCriteria] SortCriteria
 
-# no @derive(Json): member(s) Resources: list[CoverageResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resources: list[CoverageResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCoverageResponse:
     list[CoverageResource] Resources
     Optional[str] NextToken
@@ -2665,8 +2749,9 @@ struct ListCustomDetectionRuleAssociationsRequest:
     # wire string of the AssociationMode enum (querystring binding)
     Optional[str] Mode
 
-# no @derive(Json): member(s) RuleAssociations: list[AssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleAssociations: list[AssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomDetectionRuleAssociationsResponse:
     list[AssociationSummary] RuleAssociations
     Optional[str] NextToken
@@ -2679,8 +2764,9 @@ struct ListCustomDetectionRuleOrgConfigurationsRequest:
     # wire string of the DetectionRuleConfigurationStatus enum (querystring binding)
     Optional[str] Status
 
-# no @derive(Json): member(s) Configurations: list[DetectionRuleOrgConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configurations: list[DetectionRuleOrgConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomDetectionRuleOrgConfigurationsResponse:
     list[DetectionRuleOrgConfigurationSummary] Configurations
     Optional[str] NextToken
@@ -2692,8 +2778,9 @@ struct ListCustomDetectionRulesRequest:
     Optional[str] NextToken
     Optional[list[DetectionRuleFilter]] Filters
 
-# no @derive(Json): member(s) Rules: list[RuleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[RuleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomDetectionRulesResponse:
     list[RuleSummary] Rules
     Optional[str] NextToken
@@ -2704,8 +2791,9 @@ struct ListDetectorsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) DetectorIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DetectorIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDetectorsResponse:
     list[str] DetectorIds
     Optional[str] NextToken
@@ -2717,8 +2805,9 @@ struct ListFiltersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) FilterNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFiltersResponse:
     list[str] FilterNames
     Optional[str] NextToken
@@ -2732,8 +2821,9 @@ struct ListFindingsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) FindingIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FindingIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFindingsResponse:
     list[str] FindingIds
     Optional[str] NextToken
@@ -2745,8 +2835,9 @@ struct ListIPSetsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) IpSetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IpSetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIPSetsResponse:
     list[str] IpSetIds
     Optional[str] NextToken
@@ -2759,8 +2850,9 @@ struct ListInvestigationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Investigations: list[InvestigationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Investigations: list[InvestigationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInvestigationsResponse:
     list[InvestigationSummary] Investigations
     Optional[str] NextToken
@@ -2771,8 +2863,9 @@ struct ListInvitationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Invitations: list[Invitation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Invitations: list[Invitation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInvitationsResponse:
     Optional[list[Invitation]] Invitations
     Optional[str] NextToken
@@ -2782,14 +2875,16 @@ struct ListInvitationsResponse:
 struct ListMalwareProtectionPlansRequest:
     Optional[str] NextToken
 
-# no @derive(Json): member(s) MalwareProtectionPlans: list[MalwareProtectionPlanSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MalwareProtectionPlans: list[MalwareProtectionPlanSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMalwareProtectionPlansResponse:
     Optional[list[MalwareProtectionPlanSummary]] MalwareProtectionPlans
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ListMalwareScansFilterCriterion: list[ListMalwareScansFilterCriterion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ListMalwareScansFilterCriterion: list[ListMalwareScansFilterCriterion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMalwareScansFilterCriteria:
     Optional[list[ListMalwareScansFilterCriterion]] ListMalwareScansFilterCriterion
 
@@ -2806,8 +2901,9 @@ struct ListMalwareScansRequest:
     Optional[ListMalwareScansFilterCriteria] FilterCriteria
     Optional[SortCriteria] SortCriteria
 
-# no @derive(Json): member(s) Scans: list[MalwareScan] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Scans: list[MalwareScan] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMalwareScansResponse:
     list[MalwareScan] Scans
     Optional[str] NextToken
@@ -2820,8 +2916,9 @@ struct ListMembersRequest:
     Optional[str] NextToken
     Optional[str] OnlyAssociated
 
-# no @derive(Json): member(s) Members: list[Member] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Members: list[Member] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMembersResponse:
     Optional[list[Member]] Members
     Optional[str] NextToken
@@ -2832,8 +2929,9 @@ struct ListOrganizationAdminAccountsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AdminAccounts: list[AdminAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdminAccounts: list[AdminAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOrganizationAdminAccountsResponse:
     Optional[list[AdminAccount]] AdminAccounts
     Optional[str] NextToken
@@ -2845,8 +2943,9 @@ struct ListPublishingDestinationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Destinations: list[Destination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[Destination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPublishingDestinationsResponse:
     list[Destination] Destinations
     Optional[str] NextToken
@@ -2856,8 +2955,9 @@ struct ListPublishingDestinationsResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -2868,8 +2968,9 @@ struct ListThreatEntitySetsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ThreatEntitySetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ThreatEntitySetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListThreatEntitySetsResponse:
     list[str] ThreatEntitySetIds
     Optional[str] NextToken
@@ -2881,8 +2982,9 @@ struct ListThreatIntelSetsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ThreatIntelSetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ThreatIntelSetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListThreatIntelSetsResponse:
     list[str] ThreatIntelSetIds
     Optional[str] NextToken
@@ -2894,8 +2996,9 @@ struct ListTrustedEntitySetsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TrustedEntitySetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TrustedEntitySetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTrustedEntitySetsResponse:
     list[str] TrustedEntitySetIds
     Optional[str] NextToken
@@ -2963,8 +3066,9 @@ struct MalwareScan:
     Optional[DateTime] ScanStartedAt
     Optional[DateTime] ScanCompletedAt
 
-# no @derive(Json): member(s) Threats: list[Threat] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Threats: list[Threat] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MalwareScanDetails:
     Optional[list[Threat]] Threats
     Optional[str] ScanId
@@ -3003,22 +3107,25 @@ struct MemberAdditionalConfigurationResult:
     Optional[DateTime] UpdatedAt
     Optional[str] ManagedBy
 
-# no @derive(Json): member(s) Features: list[MemberFeaturesConfigurationResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Features: list[MemberFeaturesConfigurationResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MemberDataSourceConfiguration:
     str AccountId
     DataSourceConfigurationsResult DataSources
     Optional[list[MemberFeaturesConfigurationResult]] Features
 
-# no @derive(Json): member(s) AdditionalConfiguration: list[MemberAdditionalConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalConfiguration: list[MemberAdditionalConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MemberFeaturesConfiguration:
     Optional[OrgFeature] Name
     Optional[FeatureStatus] Status
     Optional[list[MemberAdditionalConfiguration]] AdditionalConfiguration
 
-# no @derive(Json): member(s) AdditionalConfiguration: list[MemberAdditionalConfigurationResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalConfiguration: list[MemberAdditionalConfigurationResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MemberFeaturesConfigurationResult:
     Optional[OrgFeature] Name
     Optional[FeatureStatus] Status
@@ -3062,8 +3169,9 @@ struct NetworkGeoLocation:
     float64 Latitude
     float64 Longitude
 
-# no @derive(Json): member(s) Ipv6Addresses: list[str], PrivateIpAddresses: list[PrivateIpAddressDetails], SecurityGroups: list[SecurityGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Ipv6Addresses: list[str], PrivateIpAddresses: list[PrivateIpAddressDetails], SecurityGroups: list[SecurityGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkInterface:
     Optional[list[str]] Ipv6Addresses
     Optional[str] NetworkInterfaceId
@@ -3076,8 +3184,9 @@ struct NetworkInterface:
     Optional[str] SubnetId
     Optional[str] VpcId
 
-# no @derive(Json): member(s) Text: list[str], Number: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Text: list[str], Number: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Observations:
     Optional[list[str]] Text
     Optional[list[int64]] Number
@@ -3111,8 +3220,9 @@ struct OrganizationDataSourceConfigurationsResult:
     Optional[OrganizationKubernetesConfigurationResult] Kubernetes
     Optional[OrganizationMalwareProtectionConfigurationResult] MalwareProtection
 
-# no @derive(Json): member(s) OrganizationStatistics: OrganizationStatistics not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrganizationStatistics: OrganizationStatistics not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OrganizationDetails:
     Optional[DateTime] UpdatedAt
     Optional[OrganizationStatistics] OrganizationStatistics
@@ -3125,22 +3235,25 @@ struct OrganizationEbsVolumes:
 struct OrganizationEbsVolumesResult:
     Optional[bool] AutoEnable
 
-# no @derive(Json): member(s) AdditionalConfiguration: list[OrganizationAdditionalConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalConfiguration: list[OrganizationAdditionalConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OrganizationFeatureConfiguration:
     Optional[OrgFeature] Name
     Optional[OrgFeatureStatus] AutoEnable
     Optional[list[OrganizationAdditionalConfiguration]] AdditionalConfiguration
 
-# no @derive(Json): member(s) AdditionalConfiguration: list[OrganizationAdditionalConfigurationResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalConfiguration: list[OrganizationAdditionalConfigurationResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OrganizationFeatureConfigurationResult:
     Optional[OrgFeature] Name
     Optional[OrgFeatureStatus] AutoEnable
     Optional[list[OrganizationAdditionalConfigurationResult]] AdditionalConfiguration
 
-# no @derive(Json): member(s) AdditionalConfiguration: list[OrganizationFeatureStatisticsAdditionalConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalConfiguration: list[OrganizationFeatureStatisticsAdditionalConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OrganizationFeatureStatistics:
     Optional[OrgFeature] Name
     Optional[int64] EnabledAccountsCount
@@ -3191,8 +3304,9 @@ struct OrganizationScanEc2InstanceWithFindings:
 struct OrganizationScanEc2InstanceWithFindingsResult:
     Optional[OrganizationEbsVolumesResult] EbsVolumes
 
-# no @derive(Json): member(s) CountByFeature: list[OrganizationFeatureStatistics] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CountByFeature: list[OrganizationFeatureStatistics] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OrganizationStatistics:
     Optional[int64] TotalAccountsCount
     Optional[int64] MemberAccountsCount
@@ -3209,8 +3323,9 @@ struct PermissionConfiguration:
     Optional[BucketLevelPermissions] BucketLevelPermissions
     Optional[AccountLevelPermissions] AccountLevelPermissions
 
-# no @derive(Json): member(s) PortProbeDetails: list[PortProbeDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PortProbeDetails: list[PortProbeDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PortProbeAction:
     Optional[bool] Blocked
     Optional[list[PortProbeDetail]] PortProbeDetails
@@ -3226,8 +3341,9 @@ struct PrivateIpAddressDetails:
     Optional[str] PrivateDnsName
     Optional[str] PrivateIpAddress
 
-# no @derive(Json): member(s) Lineage: list[LineageObject] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Lineage: list[LineageObject] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProcessDetails:
     Optional[str] Name
     Optional[str] ExecutablePath
@@ -3265,8 +3381,9 @@ struct PublicAccessConfiguration:
     Optional[PublicAclIgnoreBehavior] PublicAclIgnoreBehavior
     Optional[PublicBucketRestrictBehavior] PublicBucketRestrictBehavior
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RdsDbInstanceDetails:
     Optional[str] DbInstanceIdentifier
     Optional[str] Engine
@@ -3284,8 +3401,9 @@ struct RdsDbUserDetails:
     Optional[str] Ssl
     Optional[str] AuthMethod
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RdsLimitlessDbDetails:
     Optional[str] DbShardGroupIdentifier
     Optional[str] DbShardGroupResourceId
@@ -3295,8 +3413,9 @@ struct RdsLimitlessDbDetails:
     Optional[str] DbClusterIdentifier
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) LoginAttributes: list[LoginAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LoginAttributes: list[LoginAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RdsLoginAttemptAction:
     Optional[RemoteIpDetails] RemoteIpDetails
     Optional[list[LoginAttribute]] LoginAttributes
@@ -3332,8 +3451,9 @@ struct RemotePortDetails:
     Optional[int64] Port
     Optional[str] PortName
 
-# no @derive(Json): member(s) S3BucketDetails: list[S3BucketDetail], InstanceDetails: InstanceDetails, EksClusterDetails: EksClusterDetails, KubernetesDetails: KubernetesDetails, EbsVolumeDetails: EbsVolumeDetails, EcsClusterDetails: EcsClusterDetails, ContainerDetails: Container, LambdaDetails: LambdaDetails, RdsDbInstanceDetails: RdsDbInstanceDetails, RdsLimitlessDbDetails: RdsLimitlessDbDetails, BedrockGuardrailDetails: BedrockGuardrailDetails, ModelDetails: list[ModelDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3BucketDetails: list[S3BucketDetail], InstanceDetails: InstanceDetails, EksClusterDetails: EksClusterDetails, KubernetesDetails: KubernetesDetails, EbsVolumeDetails: EbsVolumeDetails, EcsClusterDetails: EcsClusterDetails, ContainerDetails: Container, LambdaDetails: LambdaDetails, RdsDbInstanceDetails: RdsDbInstanceDetails, RdsLimitlessDbDetails: RdsLimitlessDbDetails, BedrockGuardrailDetails: BedrockGuardrailDetails, ModelDetails: list[ModelDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Resource:
     Optional[AccessKeyDetails] AccessKeyDetails
     Optional[list[S3BucketDetail]] S3BucketDetails
@@ -3354,8 +3474,9 @@ struct Resource:
     Optional[BedrockGuardrailDetails] BedrockGuardrailDetails
     Optional[list[ModelDetail]] ModelDetails
 
-# no @derive(Json): member(s) S3Bucket: S3Bucket, Ec2Instance: Ec2Instance, Ec2NetworkInterface: Ec2NetworkInterface, EksCluster: EksCluster, KubernetesWorkload: KubernetesWorkload, EcsCluster: EcsCluster, EcsTask: EcsTask, IamInstanceProfile: IamInstanceProfileV2, AutoscalingAutoScalingGroup: AutoscalingAutoScalingGroup, Ec2LaunchTemplate: Ec2LaunchTemplate, Ec2Vpc: Ec2Vpc, Ec2Image: Ec2Image, CloudformationStack: CloudformationStack not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3Bucket: S3Bucket, Ec2Instance: Ec2Instance, Ec2NetworkInterface: Ec2NetworkInterface, EksCluster: EksCluster, KubernetesWorkload: KubernetesWorkload, EcsCluster: EcsCluster, EcsTask: EcsTask, IamInstanceProfile: IamInstanceProfileV2, AutoscalingAutoScalingGroup: AutoscalingAutoScalingGroup, Ec2LaunchTemplate: Ec2LaunchTemplate, Ec2Vpc: Ec2Vpc, Ec2Image: Ec2Image, CloudformationStack: CloudformationStack not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceData:
     Optional[S3Bucket] S3Bucket
     Optional[Ec2Instance] Ec2Instance
@@ -3392,8 +3513,9 @@ struct ResourceStatistics:
     Optional[str] ResourceType
     Optional[int64] TotalFindings
 
-# no @derive(Json): member(s) Tags: list[Tag], Data: ResourceData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], Data: ResourceData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceV2:
     str Uid
     Optional[str] Name
@@ -3443,8 +3565,9 @@ struct RuleSummary:
     DateTime CreatedAt
     Optional[DateTime] UpdatedAt
 
-# no @derive(Json): member(s) ModifyingProcess: ProcessDetails, Flags: list[str], TargetProcess: ProcessDetails, MemoryRegions: list[str], RelatedFilePaths: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ModifyingProcess: ProcessDetails, Flags: list[str], TargetProcess: ProcessDetails, MemoryRegions: list[str], RelatedFilePaths: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuntimeContext:
     Optional[ProcessDetails] ModifyingProcess
     Optional[DateTime] ModifiedAt
@@ -3475,14 +3598,16 @@ struct RuntimeContext:
     Optional[str] FilePath
     Optional[list[str]] RelatedFilePaths
 
-# no @derive(Json): member(s) Process: ProcessDetails, Context: RuntimeContext not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Process: ProcessDetails, Context: RuntimeContext not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuntimeDetails:
     Optional[ProcessDetails] Process
     Optional[RuntimeContext] Context
 
-# no @derive(Json): member(s) S3ObjectUids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3ObjectUids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3Bucket:
     Optional[str] OwnerId
     Optional[DateTime] CreatedAt
@@ -3495,8 +3620,9 @@ struct S3Bucket:
     Optional[PublicAccessConfiguration] BucketPublicAccess
     Optional[list[str]] S3ObjectUids
 
-# no @derive(Json): member(s) Tags: list[Tag], S3ObjectDetails: list[S3ObjectDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], S3ObjectDetails: list[S3ObjectDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3BucketDetail:
     Optional[str] Arn
     Optional[str] Name
@@ -3536,8 +3662,9 @@ struct S3ObjectForSendObjectMalwareScan:
     Optional[str] Key
     Optional[str] VersionId
 
-# no @derive(Json): member(s) AttachedVolumes: list[VolumeDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttachedVolumes: list[VolumeDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Scan:
     Optional[str] DetectorId
     Optional[str] AdminDetectorId
@@ -3555,8 +3682,9 @@ struct Scan:
     Optional[list[VolumeDetail]] AttachedVolumes
     Optional[ScanType] ScanType
 
-# no @derive(Json): member(s) MapEquals: list[ScanConditionPair] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MapEquals: list[ScanConditionPair] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScanCondition:
     list[ScanConditionPair] MapEquals
 
@@ -3582,8 +3710,9 @@ struct ScanConfigurationRecoveryPoint:
     Optional[str] BackupVaultName
     Optional[ScanConfigurationContinuousScanDetails] ContinuousScanDetails
 
-# no @derive(Json): member(s) ThreatDetectedByName: ThreatDetectedByName not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ThreatDetectedByName: ThreatDetectedByName not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScanDetections:
     Optional[ScannedItemCount] ScannedItemCount
     Optional[ThreatsDetectedItemCount] ThreatsDetectedItemCount
@@ -3605,8 +3734,9 @@ struct ScanFilePath:
     Optional[str] Hash
     Optional[str] FileName
 
-# no @derive(Json): member(s) Include: dict[str, ScanCondition], Exclude: dict[str, ScanCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Include: dict[str, ScanCondition], Exclude: dict[str, ScanCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScanResourceCriteria:
     Optional[dict[str, ScanCondition]] Include
     Optional[dict[str, ScanCondition]] Exclude
@@ -3615,8 +3745,9 @@ struct ScanResourceCriteria:
 struct ScanResultDetails:
     Optional[ScanResult] ScanResult
 
-# no @derive(Json): member(s) ItemDetails: list[ItemDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ItemDetails: list[ItemDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScanResultThreat:
     Optional[str] Name
     Optional[DetectionSource] Source
@@ -3624,8 +3755,9 @@ struct ScanResultThreat:
     Optional[str] Hash
     Optional[list[ItemDetails]] ItemDetails
 
-# no @derive(Json): member(s) FilePaths: list[ScanFilePath] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilePaths: list[ScanFilePath] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScanThreatName:
     Optional[str] Name
     Optional[str] Severity
@@ -3671,8 +3803,9 @@ struct SendObjectMalwareScanResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Actors: list[Actor], Resources: list[ResourceV2], Endpoints: list[NetworkEndpoint], Signals: list[Signal], SequenceIndicators: list[Indicator], AdditionalSequenceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actors: list[Actor], Resources: list[ResourceV2], Endpoints: list[NetworkEndpoint], Signals: list[Signal], SequenceIndicators: list[Indicator], AdditionalSequenceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Sequence:
     str Uid
     str Description
@@ -3683,8 +3816,9 @@ struct Sequence:
     Optional[list[Indicator]] SequenceIndicators
     Optional[list[str]] AdditionalSequenceTypes
 
-# no @derive(Json): member(s) Action: Action, Evidence: Evidence, EbsVolumeScanDetails: EbsVolumeScanDetails, RuntimeDetails: RuntimeDetails, Detection: Detection, MalwareScanDetails: MalwareScanDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Action: Action, Evidence: Evidence, EbsVolumeScanDetails: EbsVolumeScanDetails, RuntimeDetails: RuntimeDetails, Detection: Detection, MalwareScanDetails: MalwareScanDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Service:
     Optional[Action] Action
     Optional[Evidence] Evidence
@@ -3721,8 +3855,9 @@ struct SeverityStatistics:
     Optional[float64] Severity
     Optional[int64] TotalFindings
 
-# no @derive(Json): member(s) ResourceUids: list[str], ActorIds: list[str], EndpointIds: list[str], SignalIndicators: list[Indicator], Activities: list[Activity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceUids: list[str], ActorIds: list[str], EndpointIds: list[str], SignalIndicators: list[Indicator], Activities: list[Activity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Signal:
     str Uid
     SignalType Type
@@ -3768,8 +3903,9 @@ struct StartMonitoringMembersRequest:
     str DetectorId
     list[str] AccountIds
 
-# no @derive(Json): member(s) UnprocessedAccounts: list[UnprocessedAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UnprocessedAccounts: list[UnprocessedAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartMonitoringMembersResponse:
     list[UnprocessedAccount] UnprocessedAccounts
 
@@ -3779,8 +3915,9 @@ struct StopMonitoringMembersRequest:
     str DetectorId
     list[str] AccountIds
 
-# no @derive(Json): member(s) UnprocessedAccounts: list[UnprocessedAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UnprocessedAccounts: list[UnprocessedAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopMonitoringMembersResponse:
     list[UnprocessedAccount] UnprocessedAccounts
 
@@ -3800,8 +3937,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ItemPaths: list[ItemPath], ItemDetails: list[ItemDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ItemPaths: list[ItemPath], ItemDetails: list[ItemDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Threat:
     Optional[str] Name
     Optional[str] Source
@@ -3810,16 +3948,18 @@ struct Threat:
     Optional[str] Hash
     Optional[list[ItemDetails]] ItemDetails
 
-# no @derive(Json): member(s) ThreatNames: list[ScanThreatName] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ThreatNames: list[ScanThreatName] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThreatDetectedByName:
     Optional[int64] ItemCount
     Optional[int64] UniqueThreatNameCount
     Optional[bool] Shortened
     Optional[list[ScanThreatName]] ThreatNames
 
-# no @derive(Json): member(s) ThreatNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ThreatNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThreatIntelligenceDetail:
     Optional[str] ThreatListName
     Optional[list[str]] ThreatNames
@@ -3980,8 +4120,9 @@ struct UpdateMemberDetectorsRequest:
     Optional[DataSourceConfigurations] DataSources
     Optional[list[MemberFeaturesConfiguration]] Features
 
-# no @derive(Json): member(s) UnprocessedAccounts: list[UnprocessedAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UnprocessedAccounts: list[UnprocessedAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMemberDetectorsResponse:
     list[UnprocessedAccount] UnprocessedAccounts
 
@@ -3999,8 +4140,9 @@ struct UpdateOrganizationConfigurationResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) S3Bucket: UpdateS3BucketResource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3Bucket: UpdateS3BucketResource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProtectedResource:
     Optional[UpdateS3BucketResource] S3Bucket
 
@@ -4016,8 +4158,9 @@ struct UpdatePublishingDestinationResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ObjectPrefixes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ObjectPrefixes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateS3BucketResource:
     Optional[list[str]] ObjectPrefixes
 
@@ -4071,8 +4214,9 @@ struct UsageAccountResult:
     Optional[str] AccountId
     Optional[Total] Total
 
-# no @derive(Json): member(s) AccountIds: list[str], DataSources: list[DataSource], Resources: list[str], Features: list[UsageFeature] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountIds: list[str], DataSources: list[DataSource], Resources: list[str], Features: list[UsageFeature] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UsageCriteria:
     Optional[list[str]] AccountIds
     Optional[list[DataSource]] DataSources
@@ -4094,8 +4238,9 @@ struct UsageResourceResult:
     Optional[str] Resource
     Optional[Total] Total
 
-# no @derive(Json): member(s) SumByAccount: list[UsageAccountResult], TopAccountsByFeature: list[UsageTopAccountsResult], SumByDataSource: list[UsageDataSourceResult], SumByResource: list[UsageResourceResult], TopResources: list[UsageResourceResult], SumByFeature: list[UsageFeatureResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SumByAccount: list[UsageAccountResult], TopAccountsByFeature: list[UsageTopAccountsResult], SumByDataSource: list[UsageDataSourceResult], SumByResource: list[UsageResourceResult], TopResources: list[UsageResourceResult], SumByFeature: list[UsageFeatureResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UsageStatistics:
     Optional[list[UsageAccountResult]] SumByAccount
     Optional[list[UsageTopAccountsResult]] TopAccountsByFeature
@@ -4109,8 +4254,9 @@ struct UsageTopAccountResult:
     Optional[str] AccountId
     Optional[Total] Total
 
-# no @derive(Json): member(s) Accounts: list[UsageTopAccountResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Accounts: list[UsageTopAccountResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UsageTopAccountsResult:
     Optional[UsageFeature] Feature
     Optional[list[UsageTopAccountResult]] Accounts
@@ -4143,8 +4289,9 @@ struct VolumeMount:
     Optional[str] Name
     Optional[str] MountPath
 
-# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroups: list[SecurityGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroups: list[SecurityGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfig:
     Optional[list[str]] SubnetIds
     Optional[str] VpcId
@@ -4182,57 +4329,7 @@ def guardduty_error_from_code(str code) -> GuardDutyError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   ArchiveFindings (document member `FindingIds: list[str]` is not serializable by derive)
-#   CreateCustomDetectionRuleAssociation (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateCustomDetectionRuleOrgConfiguration (document member `IncludeAccountIds: list[str]` is not serializable by derive)
-#   CreateDetector (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateFilter (document member `FindingCriteria: FindingCriteria` is not serializable by derive)
-#   CreateIPSet (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateMalwareProtectionPlan (document member `ProtectedResource: CreateProtectedResource` is not serializable by derive)
-#   CreateMembers (document member `AccountDetails: list[AccountDetail]` is not serializable by derive)
-#   CreatePublishingDestination (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateSampleFindings (document member `FindingTypes: list[str]` is not serializable by derive)
-#   CreateThreatEntitySet (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateThreatIntelSet (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateTrustedEntitySet (document member `Tags: dict[str, str]` is not serializable by derive)
-#   DeclineInvitations (document member `AccountIds: list[str]` is not serializable by derive)
-#   DeleteInvitations (document member `AccountIds: list[str]` is not serializable by derive)
-#   DeleteMembers (document member `AccountIds: list[str]` is not serializable by derive)
-#   DescribeMalwareScans (document member `FilterCriteria: FilterCriteria` is not serializable by derive)
-#   DisassociateMembers (document member `AccountIds: list[str]` is not serializable by derive)
-#   GetCoverageStatistics (document member `FilterCriteria: CoverageFilterCriteria` is not serializable by derive)
-#   GetFindings (document member `FindingIds: list[str]` is not serializable by derive)
-#   GetFindingsStatistics (document member `FindingStatisticTypes: list[str]` is not serializable by derive)
-#   GetMemberDetectors (document member `AccountIds: list[str]` is not serializable by derive)
-#   GetMembers (document member `AccountIds: list[str]` is not serializable by derive)
-#   GetRemainingFreeTrialDays (document member `AccountIds: list[str]` is not serializable by derive)
-#   GetUsageStatistics (document member `UsageCriteria: UsageCriteria` is not serializable by derive)
-#   InviteMembers (document member `AccountIds: list[str]` is not serializable by derive)
-#   ListCoverage (document member `FilterCriteria: CoverageFilterCriteria` is not serializable by derive)
-#   ListCustomDetectionRules (document member `Filters: list[DetectionRuleFilter]` is not serializable by derive)
-#   ListFindings (document member `FindingCriteria: FindingCriteria` is not serializable by derive)
-#   ListMalwareScans (document member `FilterCriteria: ListMalwareScansFilterCriteria` is not serializable by derive)
-#   StartMonitoringMembers (document member `AccountIds: list[str]` is not serializable by derive)
-#   StopMonitoringMembers (document member `AccountIds: list[str]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
-#   UnarchiveFindings (document member `FindingIds: list[str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateCustomDetectionRuleOrgConfiguration (document member `IncludeAccountIds: list[str]` is not serializable by derive)
-#   UpdateDetector (document member `Features: list[DetectorFeatureConfiguration]` is not serializable by derive)
-#   UpdateFilter (document member `FindingCriteria: FindingCriteria` is not serializable by derive)
-#   UpdateFindingsFeedback (document member `FindingIds: list[str]` is not serializable by derive)
-#   UpdateMalwareProtectionPlan (document member `ProtectedResource: UpdateProtectedResource` is not serializable by derive)
-#   UpdateMalwareScanSettings (document member `ScanResourceCriteria: ScanResourceCriteria` is not serializable by derive)
-#   UpdateMemberDetectors (document member `AccountIds: list[str]` is not serializable by derive)
-#   UpdateOrganizationConfiguration (document member `Features: list[OrganizationFeatureConfiguration]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   DescribeMalwareScans (operation not generated)
-#   ListCoverage (operation not generated)
-#   ListCustomDetectionRules (operation not generated)
-#   ListFindings (operation not generated)
-#   ListMalwareScans (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -4326,6 +4423,333 @@ struct UpdateTrustedEntitySetDocument:
     Optional[str] ExpectedBucketOwner
     Optional[bool] Activate
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def guardduty_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def guardduty_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def guardduty_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize Condition to a compact JSON object (declaration order).
+def condition_to_json(Condition v) -> str:
+    list[str] parts = []
+    if v.Eq.is_some():
+        auto u0 = v.Eq.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(guardduty_json_str(x1))
+        parts.append("\"eq\":" + guardduty_json_arr(e1))
+    if v.Neq.is_some():
+        auto u2 = v.Neq.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(guardduty_json_str(x3))
+        parts.append("\"neq\":" + guardduty_json_arr(e3))
+    if v.Gt.is_some():
+        auto u4 = v.Gt.unwrap()
+        parts.append("\"gt\":" + str(u4))
+    if v.Gte.is_some():
+        auto u5 = v.Gte.unwrap()
+        parts.append("\"gte\":" + str(u5))
+    if v.Lt.is_some():
+        auto u6 = v.Lt.unwrap()
+        parts.append("\"lt\":" + str(u6))
+    if v.Lte.is_some():
+        auto u7 = v.Lte.unwrap()
+        parts.append("\"lte\":" + str(u7))
+    if v.Equals.is_some():
+        auto u8 = v.Equals.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(guardduty_json_str(x9))
+        parts.append("\"equals\":" + guardduty_json_arr(e9))
+    if v.NotEquals.is_some():
+        auto u10 = v.NotEquals.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(guardduty_json_str(x11))
+        parts.append("\"notEquals\":" + guardduty_json_arr(e11))
+    if v.GreaterThan.is_some():
+        auto u12 = v.GreaterThan.unwrap()
+        parts.append("\"greaterThan\":" + str(u12))
+    if v.GreaterThanOrEqual.is_some():
+        auto u13 = v.GreaterThanOrEqual.unwrap()
+        parts.append("\"greaterThanOrEqual\":" + str(u13))
+    if v.LessThan.is_some():
+        auto u14 = v.LessThan.unwrap()
+        parts.append("\"lessThan\":" + str(u14))
+    if v.LessThanOrEqual.is_some():
+        auto u15 = v.LessThanOrEqual.unwrap()
+        parts.append("\"lessThanOrEqual\":" + str(u15))
+    if v.Matches.is_some():
+        auto u16 = v.Matches.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(guardduty_json_str(x17))
+        parts.append("\"matches\":" + guardduty_json_arr(e17))
+    if v.NotMatches.is_some():
+        auto u18 = v.NotMatches.unwrap()
+        list[str] e19 = []
+        for x19 in u18:
+            e19.append(guardduty_json_str(x19))
+        parts.append("\"notMatches\":" + guardduty_json_arr(e19))
+    return guardduty_json_obj(parts)
+
+# Serialize CoverageFilterCondition to a compact JSON object (declaration order).
+def coverage_filter_condition_to_json(CoverageFilterCondition v) -> str:
+    list[str] parts = []
+    if v.Equals.is_some():
+        auto u0 = v.Equals.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(guardduty_json_str(x1))
+        parts.append("\"equals\":" + guardduty_json_arr(e1))
+    if v.NotEquals.is_some():
+        auto u2 = v.NotEquals.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(guardduty_json_str(x3))
+        parts.append("\"notEquals\":" + guardduty_json_arr(e3))
+    return guardduty_json_obj(parts)
+
+# Serialize CoverageFilterCriteria to a compact JSON object (declaration order).
+def coverage_filter_criteria_to_json(CoverageFilterCriteria v) -> str:
+    list[str] parts = []
+    if v.FilterCriterion.is_some():
+        auto u0 = v.FilterCriterion.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(coverage_filter_criterion_to_json(x1))
+        parts.append("\"filterCriterion\":" + guardduty_json_arr(e1))
+    return guardduty_json_obj(parts)
+
+# Serialize CoverageFilterCriterion to a compact JSON object (declaration order).
+def coverage_filter_criterion_to_json(CoverageFilterCriterion v) -> str:
+    list[str] parts = []
+    if v.CriterionKey.is_some():
+        auto u0 = v.CriterionKey.unwrap()
+        parts.append("\"criterionKey\":" + u0.to_json())
+    if v.FilterCondition.is_some():
+        auto u1 = v.FilterCondition.unwrap()
+        parts.append("\"filterCondition\":" + coverage_filter_condition_to_json(u1))
+    return guardduty_json_obj(parts)
+
+# Serialize CreateProtectedResource to a compact JSON object (declaration order).
+def create_protected_resource_to_json(CreateProtectedResource v) -> str:
+    list[str] parts = []
+    if v.S3Bucket.is_some():
+        auto u0 = v.S3Bucket.unwrap()
+        parts.append("\"s3Bucket\":" + create_s3_bucket_resource_to_json(u0))
+    return guardduty_json_obj(parts)
+
+# Serialize CreateS3BucketResource to a compact JSON object (declaration order).
+def create_s3_bucket_resource_to_json(CreateS3BucketResource v) -> str:
+    list[str] parts = []
+    if v.BucketName.is_some():
+        auto u0 = v.BucketName.unwrap()
+        parts.append("\"bucketName\":" + guardduty_json_str(u0))
+    if v.ObjectPrefixes.is_some():
+        auto u1 = v.ObjectPrefixes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(guardduty_json_str(x2))
+        parts.append("\"objectPrefixes\":" + guardduty_json_arr(e2))
+    return guardduty_json_obj(parts)
+
+# Serialize DetectionRuleFilter to a compact JSON object (declaration order).
+def detection_rule_filter_to_json(DetectionRuleFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + v.Name.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(guardduty_json_str(x0))
+    parts.append("\"values\":" + guardduty_json_arr(e0))
+    if v.Condition.is_some():
+        auto u1 = v.Condition.unwrap()
+        parts.append("\"condition\":" + u1.to_json())
+    return guardduty_json_obj(parts)
+
+# Serialize DetectorFeatureConfiguration to a compact JSON object (declaration order).
+def detector_feature_configuration_to_json(DetectorFeatureConfiguration v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"name\":" + u0.to_json())
+    if v.Status.is_some():
+        auto u1 = v.Status.unwrap()
+        parts.append("\"status\":" + u1.to_json())
+    if v.AdditionalConfiguration.is_some():
+        auto u2 = v.AdditionalConfiguration.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"additionalConfiguration\":" + guardduty_json_arr(e3))
+    return guardduty_json_obj(parts)
+
+# Serialize FilterCriteria to a compact JSON object (declaration order).
+def filter_criteria_to_json(FilterCriteria v) -> str:
+    list[str] parts = []
+    if v.FilterCriterion.is_some():
+        auto u0 = v.FilterCriterion.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"filterCriterion\":" + guardduty_json_arr(e1))
+    return guardduty_json_obj(parts)
+
+# Serialize FindingCriteria to a compact JSON object (declaration order).
+def finding_criteria_to_json(FindingCriteria v) -> str:
+    list[str] parts = []
+    if v.Criterion.is_some():
+        auto u0 = v.Criterion.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(guardduty_json_str(k1) + ":" + condition_to_json(u0[k1]))
+        parts.append("\"criterion\":" + guardduty_json_obj(m1))
+    return guardduty_json_obj(parts)
+
+# Serialize ListMalwareScansFilterCriteria to a compact JSON object (declaration order).
+def list_malware_scans_filter_criteria_to_json(ListMalwareScansFilterCriteria v) -> str:
+    list[str] parts = []
+    if v.ListMalwareScansFilterCriterion.is_some():
+        auto u0 = v.ListMalwareScansFilterCriterion.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"filterCriterion\":" + guardduty_json_arr(e1))
+    return guardduty_json_obj(parts)
+
+# Serialize MemberFeaturesConfiguration to a compact JSON object (declaration order).
+def member_features_configuration_to_json(MemberFeaturesConfiguration v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"name\":" + u0.to_json())
+    if v.Status.is_some():
+        auto u1 = v.Status.unwrap()
+        parts.append("\"status\":" + u1.to_json())
+    if v.AdditionalConfiguration.is_some():
+        auto u2 = v.AdditionalConfiguration.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"additionalConfiguration\":" + guardduty_json_arr(e3))
+    return guardduty_json_obj(parts)
+
+# Serialize OrganizationFeatureConfiguration to a compact JSON object (declaration order).
+def organization_feature_configuration_to_json(OrganizationFeatureConfiguration v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"name\":" + u0.to_json())
+    if v.AutoEnable.is_some():
+        auto u1 = v.AutoEnable.unwrap()
+        parts.append("\"autoEnable\":" + u1.to_json())
+    if v.AdditionalConfiguration.is_some():
+        auto u2 = v.AdditionalConfiguration.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"additionalConfiguration\":" + guardduty_json_arr(e3))
+    return guardduty_json_obj(parts)
+
+# Serialize ScanCondition to a compact JSON object (declaration order).
+def scan_condition_to_json(ScanCondition v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.MapEquals:
+        e0.append(x0.to_json())
+    parts.append("\"mapEquals\":" + guardduty_json_arr(e0))
+    return guardduty_json_obj(parts)
+
+# Serialize ScanResourceCriteria to a compact JSON object (declaration order).
+def scan_resource_criteria_to_json(ScanResourceCriteria v) -> str:
+    list[str] parts = []
+    if v.Include.is_some():
+        auto u0 = v.Include.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(guardduty_json_str(k1) + ":" + scan_condition_to_json(u0[k1]))
+        parts.append("\"include\":" + guardduty_json_obj(m1))
+    if v.Exclude.is_some():
+        auto u2 = v.Exclude.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(guardduty_json_str(k3) + ":" + scan_condition_to_json(u2[k3]))
+        parts.append("\"exclude\":" + guardduty_json_obj(m3))
+    return guardduty_json_obj(parts)
+
+# Serialize UpdateProtectedResource to a compact JSON object (declaration order).
+def update_protected_resource_to_json(UpdateProtectedResource v) -> str:
+    list[str] parts = []
+    if v.S3Bucket.is_some():
+        auto u0 = v.S3Bucket.unwrap()
+        parts.append("\"s3Bucket\":" + update_s3_bucket_resource_to_json(u0))
+    return guardduty_json_obj(parts)
+
+# Serialize UpdateS3BucketResource to a compact JSON object (declaration order).
+def update_s3_bucket_resource_to_json(UpdateS3BucketResource v) -> str:
+    list[str] parts = []
+    if v.ObjectPrefixes.is_some():
+        auto u0 = v.ObjectPrefixes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(guardduty_json_str(x1))
+        parts.append("\"objectPrefixes\":" + guardduty_json_arr(e1))
+    return guardduty_json_obj(parts)
+
+# Serialize UsageCriteria to a compact JSON object (declaration order).
+def usage_criteria_to_json(UsageCriteria v) -> str:
+    list[str] parts = []
+    if v.AccountIds.is_some():
+        auto u0 = v.AccountIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(guardduty_json_str(x1))
+        parts.append("\"accountIds\":" + guardduty_json_arr(e1))
+    if v.DataSources.is_some():
+        auto u2 = v.DataSources.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"dataSources\":" + guardduty_json_arr(e3))
+    if v.Resources.is_some():
+        auto u4 = v.Resources.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(guardduty_json_str(x5))
+        parts.append("\"resources\":" + guardduty_json_arr(e5))
+    if v.Features.is_some():
+        auto u6 = v.Features.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"features\":" + guardduty_json_arr(e7))
+    return guardduty_json_obj(parts)
+
 # A bound GuardDuty client: credentials + region, threaded into every operation.
 struct GuardDutyClient:
     core.Credentials creds
@@ -4353,6 +4777,156 @@ struct GuardDutyClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
 
+    # ArchiveFindings  POST /detector/{DetectorId}/findings/archive
+    # errors: BadRequestException, InternalServerErrorException
+    def archive_findings(self, ArchiveFindingsRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/findings/archive", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.FindingIds:
+            e0.append(guardduty_json_str(x0))
+        parts.append("\"findingIds\":" + guardduty_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # CreateCustomDetectionRuleAssociation  POST /custom-detection-rule/association
+    # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerErrorException, ResourceNotFoundException
+    def create_custom_detection_rule_association(self, CreateCustomDetectionRuleAssociationRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/custom-detection-rule/association", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ruleId\":" + guardduty_json_str(input.RuleId))
+        parts.append("\"mode\":" + input.Mode.to_json())
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"clientToken\":" + guardduty_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(guardduty_json_str(k2) + ":" + guardduty_json_str(u1[k2]))
+            parts.append("\"tags\":" + guardduty_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # CreateCustomDetectionRuleOrgConfiguration  POST /custom-detection-rule/org-configuration
+    # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerErrorException, ResourceNotFoundException
+    def create_custom_detection_rule_org_configuration(self, CreateCustomDetectionRuleOrgConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/custom-detection-rule/org-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ruleId\":" + guardduty_json_str(input.RuleId))
+        parts.append("\"mode\":" + input.Mode.to_json())
+        if input.IncludeAccountIds.is_some():
+            auto u0 = input.IncludeAccountIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(guardduty_json_str(x1))
+            parts.append("\"includeAccountIds\":" + guardduty_json_arr(e1))
+        if input.ExcludeAccountIds.is_some():
+            auto u2 = input.ExcludeAccountIds.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(guardduty_json_str(x3))
+            parts.append("\"excludeAccountIds\":" + guardduty_json_arr(e3))
+        if input.ClientToken.is_some():
+            auto u4 = input.ClientToken.unwrap()
+            parts.append("\"clientToken\":" + guardduty_json_str(u4))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # CreateDetector  POST /detector
+    # errors: BadRequestException, InternalServerErrorException
+    def create_detector(self, CreateDetectorRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/detector", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"enable\":" + json.dumps(JsonValue.Bool(input.Enable)))
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"clientToken\":" + guardduty_json_str(u0))
+        if input.FindingPublishingFrequency.is_some():
+            auto u1 = input.FindingPublishingFrequency.unwrap()
+            parts.append("\"findingPublishingFrequency\":" + u1.to_json())
+        if input.DataSources.is_some():
+            auto u2 = input.DataSources.unwrap()
+            parts.append("\"dataSources\":" + u2.to_json())
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(guardduty_json_str(k4) + ":" + guardduty_json_str(u3[k4]))
+            parts.append("\"tags\":" + guardduty_json_obj(m4))
+        if input.Features.is_some():
+            auto u5 = input.Features.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(detector_feature_configuration_to_json(x6))
+            parts.append("\"features\":" + guardduty_json_arr(e6))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # CreateFilter  POST /detector/{DetectorId}/filter
+    # errors: BadRequestException, InternalServerErrorException
+    def create_filter(self, CreateFilterRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/filter", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + guardduty_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"description\":" + guardduty_json_str(u0))
+        if input.Action.is_some():
+            auto u1 = input.Action.unwrap()
+            parts.append("\"action\":" + u1.to_json())
+        if input.Rank.is_some():
+            auto u2 = input.Rank.unwrap()
+            parts.append("\"rank\":" + str(u2))
+        parts.append("\"findingCriteria\":" + finding_criteria_to_json(input.FindingCriteria))
+        if input.ClientToken.is_some():
+            auto u3 = input.ClientToken.unwrap()
+            parts.append("\"clientToken\":" + guardduty_json_str(u3))
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(guardduty_json_str(k5) + ":" + guardduty_json_str(u4[k5]))
+            parts.append("\"tags\":" + guardduty_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # CreateIPSet  POST /detector/{DetectorId}/ipset
+    # errors: AccessDeniedException, BadRequestException, InternalServerErrorException
+    def create_ip_set(self, CreateIPSetRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/ipset", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + guardduty_json_str(input.Name))
+        parts.append("\"format\":" + input.Format.to_json())
+        parts.append("\"location\":" + guardduty_json_str(input.Location))
+        parts.append("\"activate\":" + json.dumps(JsonValue.Bool(input.Activate)))
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"clientToken\":" + guardduty_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(guardduty_json_str(k2) + ":" + guardduty_json_str(u1[k2]))
+            parts.append("\"tags\":" + guardduty_json_obj(m2))
+        if input.ExpectedBucketOwner.is_some():
+            auto u3 = input.ExpectedBucketOwner.unwrap()
+            parts.append("\"expectedBucketOwner\":" + guardduty_json_str(u3))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
     # CreateInvestigation  POST /detector/{DetectorId}/investigation
     # errors: AccessDeniedException, BadRequestException, InternalServerErrorException
     def create_investigation(self, CreateInvestigationRequest input) -> str:
@@ -4362,6 +4936,177 @@ struct GuardDutyClient:
         auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/investigation", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateInvestigationDocument(TriggerPrompt=input.TriggerPrompt, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # CreateMalwareProtectionPlan  POST /malware-protection-plan
+    # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerErrorException
+    def create_malware_protection_plan(self, CreateMalwareProtectionPlanRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/malware-protection-plan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"clientToken\":" + guardduty_json_str(u0))
+        parts.append("\"role\":" + guardduty_json_str(input.Role))
+        parts.append("\"protectedResource\":" + create_protected_resource_to_json(input.ProtectedResource))
+        if input.Actions.is_some():
+            auto u1 = input.Actions.unwrap()
+            parts.append("\"actions\":" + u1.to_json())
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(guardduty_json_str(k3) + ":" + guardduty_json_str(u2[k3]))
+            parts.append("\"tags\":" + guardduty_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # CreateMembers  POST /detector/{DetectorId}/member
+    # errors: BadRequestException, InternalServerErrorException
+    def create_members(self, CreateMembersRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AccountDetails:
+            e0.append(x0.to_json())
+        parts.append("\"accountDetails\":" + guardduty_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # CreatePublishingDestination  POST /detector/{DetectorId}/publishingDestination
+    # errors: BadRequestException, InternalServerErrorException
+    def create_publishing_destination(self, CreatePublishingDestinationRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/publishingDestination", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"destinationType\":" + guardduty_json_str(input.DestinationType))
+        parts.append("\"destinationProperties\":" + input.DestinationProperties.to_json())
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"clientToken\":" + guardduty_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(guardduty_json_str(k2) + ":" + guardduty_json_str(u1[k2]))
+            parts.append("\"tags\":" + guardduty_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # CreateSampleFindings  POST /detector/{DetectorId}/findings/create
+    # errors: BadRequestException, InternalServerErrorException
+    def create_sample_findings(self, CreateSampleFindingsRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/findings/create", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.FindingTypes.is_some():
+            auto u0 = input.FindingTypes.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(guardduty_json_str(x1))
+            parts.append("\"findingTypes\":" + guardduty_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # CreateThreatEntitySet  POST /detector/{DetectorId}/threatentityset
+    # errors: BadRequestException, InternalServerErrorException
+    def create_threat_entity_set(self, CreateThreatEntitySetRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/threatentityset", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + guardduty_json_str(input.Name))
+        parts.append("\"format\":" + input.Format.to_json())
+        parts.append("\"location\":" + guardduty_json_str(input.Location))
+        if input.ExpectedBucketOwner.is_some():
+            auto u0 = input.ExpectedBucketOwner.unwrap()
+            parts.append("\"expectedBucketOwner\":" + guardduty_json_str(u0))
+        parts.append("\"activate\":" + json.dumps(JsonValue.Bool(input.Activate)))
+        if input.ClientToken.is_some():
+            auto u1 = input.ClientToken.unwrap()
+            parts.append("\"clientToken\":" + guardduty_json_str(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(guardduty_json_str(k3) + ":" + guardduty_json_str(u2[k3]))
+            parts.append("\"tags\":" + guardduty_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # CreateThreatIntelSet  POST /detector/{DetectorId}/threatintelset
+    # errors: AccessDeniedException, BadRequestException, InternalServerErrorException
+    def create_threat_intel_set(self, CreateThreatIntelSetRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/threatintelset", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + guardduty_json_str(input.Name))
+        parts.append("\"format\":" + input.Format.to_json())
+        parts.append("\"location\":" + guardduty_json_str(input.Location))
+        parts.append("\"activate\":" + json.dumps(JsonValue.Bool(input.Activate)))
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"clientToken\":" + guardduty_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(guardduty_json_str(k2) + ":" + guardduty_json_str(u1[k2]))
+            parts.append("\"tags\":" + guardduty_json_obj(m2))
+        if input.ExpectedBucketOwner.is_some():
+            auto u3 = input.ExpectedBucketOwner.unwrap()
+            parts.append("\"expectedBucketOwner\":" + guardduty_json_str(u3))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # CreateTrustedEntitySet  POST /detector/{DetectorId}/trustedentityset
+    # errors: BadRequestException, InternalServerErrorException
+    def create_trusted_entity_set(self, CreateTrustedEntitySetRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/trustedentityset", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + guardduty_json_str(input.Name))
+        parts.append("\"format\":" + input.Format.to_json())
+        parts.append("\"location\":" + guardduty_json_str(input.Location))
+        if input.ExpectedBucketOwner.is_some():
+            auto u0 = input.ExpectedBucketOwner.unwrap()
+            parts.append("\"expectedBucketOwner\":" + guardduty_json_str(u0))
+        parts.append("\"activate\":" + json.dumps(JsonValue.Bool(input.Activate)))
+        if input.ClientToken.is_some():
+            auto u1 = input.ClientToken.unwrap()
+            parts.append("\"clientToken\":" + guardduty_json_str(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(guardduty_json_str(k3) + ":" + guardduty_json_str(u2[k3]))
+            parts.append("\"tags\":" + guardduty_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # DeclineInvitations  POST /invitation/decline
+    # errors: BadRequestException, InternalServerErrorException
+    def decline_invitations(self, DeclineInvitationsRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/invitation/decline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AccountIds:
+            e0.append(guardduty_json_str(x0))
+        parts.append("\"accountIds\":" + guardduty_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
 
     # DeleteCustomDetectionRuleAssociation  DELETE /custom-detection-rule/rule/{RuleId}/association/{AssociationId}
@@ -4414,6 +5159,19 @@ struct GuardDutyClient:
         auto b = binding.HttpBinding(method="DELETE", path_template="/detector/{DetectorId}/ipset/{IpSetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
+    # DeleteInvitations  POST /invitation/delete
+    # errors: BadRequestException, InternalServerErrorException
+    def delete_invitations(self, DeleteInvitationsRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/invitation/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AccountIds:
+            e0.append(guardduty_json_str(x0))
+        parts.append("\"accountIds\":" + guardduty_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
     # DeleteMalwareProtectionPlan  DELETE /malware-protection-plan/{MalwareProtectionPlanId}
     # errors: AccessDeniedException, BadRequestException, InternalServerErrorException, ResourceNotFoundException
     def delete_malware_protection_plan(self, DeleteMalwareProtectionPlanRequest input) -> str:
@@ -4422,6 +5180,21 @@ struct GuardDutyClient:
         labels["MalwareProtectionPlanId"] = input.MalwareProtectionPlanId
         auto b = binding.HttpBinding(method="DELETE", path_template="/malware-protection-plan/{MalwareProtectionPlanId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
+
+    # DeleteMembers  POST /detector/{DetectorId}/member/delete
+    # errors: BadRequestException, InternalServerErrorException
+    def delete_members(self, DeleteMembersRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member/delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AccountIds:
+            e0.append(guardduty_json_str(x0))
+        parts.append("\"accountIds\":" + guardduty_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
 
     # DeletePublishingDestination  DELETE /detector/{DetectorId}/publishingDestination/{DestinationId}
     # errors: BadRequestException, InternalServerErrorException
@@ -4462,6 +5235,29 @@ struct GuardDutyClient:
         labels["TrustedEntitySetId"] = input.TrustedEntitySetId
         auto b = binding.HttpBinding(method="DELETE", path_template="/detector/{DetectorId}/trustedentityset/{TrustedEntitySetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
+
+    # DescribeMalwareScans  POST /detector/{DetectorId}/malware-scans
+    # errors: BadRequestException, InternalServerErrorException
+    def describe_malware_scans(self, DescribeMalwareScansRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/malware-scans", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"nextToken\":" + guardduty_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.FilterCriteria.is_some():
+            auto u2 = input.FilterCriteria.unwrap()
+            parts.append("\"filterCriteria\":" + filter_criteria_to_json(u2))
+        if input.SortCriteria.is_some():
+            auto u3 = input.SortCriteria.unwrap()
+            parts.append("\"sortCriteria\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
 
     # DescribeOrganizationConfiguration  GET /detector/{DetectorId}/admin
     # errors: BadRequestException, InternalServerErrorException
@@ -4514,6 +5310,21 @@ struct GuardDutyClient:
         auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/master/disassociate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
+    # DisassociateMembers  POST /detector/{DetectorId}/member/disassociate
+    # errors: BadRequestException, InternalServerErrorException
+    def disassociate_members(self, DisassociateMembersRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member/disassociate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AccountIds:
+            e0.append(guardduty_json_str(x0))
+        parts.append("\"accountIds\":" + guardduty_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
     # EnableOrganizationAdminAccount  POST /admin/enable
     # errors: BadRequestException, InternalServerErrorException
     def enable_organization_admin_account(self, EnableOrganizationAdminAccountRequest input) -> str:
@@ -4531,6 +5342,24 @@ struct GuardDutyClient:
         labels["DetectorId"] = input.DetectorId
         auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/administrator", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
+
+    # GetCoverageStatistics  POST /detector/{DetectorId}/coverage/statistics
+    # errors: BadRequestException, InternalServerErrorException
+    def get_coverage_statistics(self, GetCoverageStatisticsRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/coverage/statistics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.FilterCriteria.is_some():
+            auto u0 = input.FilterCriteria.unwrap()
+            parts.append("\"filterCriteria\":" + coverage_filter_criteria_to_json(u0))
+        list[str] e1 = []
+        for x1 in input.StatisticsType:
+            e1.append(x1.to_json())
+        parts.append("\"statisticsType\":" + guardduty_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
 
     # GetCustomDetectionRule  GET /custom-detection-rule/rule/{RuleId}
     # errors: AccessDeniedException, BadRequestException, InternalServerErrorException, ResourceNotFoundException
@@ -4580,6 +5409,53 @@ struct GuardDutyClient:
         labels["FilterName"] = input.FilterName
         auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/filter/{FilterName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
+
+    # GetFindings  POST /detector/{DetectorId}/findings/get
+    # errors: BadRequestException, InternalServerErrorException
+    def get_findings(self, GetFindingsRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/findings/get", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.FindingIds:
+            e0.append(guardduty_json_str(x0))
+        parts.append("\"findingIds\":" + guardduty_json_arr(e0))
+        if input.SortCriteria.is_some():
+            auto u1 = input.SortCriteria.unwrap()
+            parts.append("\"sortCriteria\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # GetFindingsStatistics  POST /detector/{DetectorId}/findings/statistics
+    # errors: BadRequestException, InternalServerErrorException
+    def get_findings_statistics(self, GetFindingsStatisticsRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/findings/statistics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.FindingStatisticTypes.is_some():
+            auto u0 = input.FindingStatisticTypes.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(guardduty_json_str(x1))
+            parts.append("\"findingStatisticTypes\":" + guardduty_json_arr(e1))
+        if input.FindingCriteria.is_some():
+            auto u2 = input.FindingCriteria.unwrap()
+            parts.append("\"findingCriteria\":" + finding_criteria_to_json(u2))
+        if input.GroupBy.is_some():
+            auto u3 = input.GroupBy.unwrap()
+            parts.append("\"groupBy\":" + u3.to_json())
+        if input.OrderBy.is_some():
+            auto u4 = input.OrderBy.unwrap()
+            parts.append("\"orderBy\":" + u4.to_json())
+        if input.MaxResults.is_some():
+            auto u5 = input.MaxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u5))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
 
     # GetIPSet  GET /detector/{DetectorId}/ipset/{IpSetId}
     # errors: BadRequestException, InternalServerErrorException
@@ -4644,12 +5520,57 @@ struct GuardDutyClient:
         auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/master", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
+    # GetMemberDetectors  POST /detector/{DetectorId}/member/detector/get
+    # errors: BadRequestException, InternalServerErrorException
+    def get_member_detectors(self, GetMemberDetectorsRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member/detector/get", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AccountIds:
+            e0.append(guardduty_json_str(x0))
+        parts.append("\"accountIds\":" + guardduty_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # GetMembers  POST /detector/{DetectorId}/member/get
+    # errors: BadRequestException, InternalServerErrorException
+    def get_members(self, GetMembersRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member/get", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AccountIds:
+            e0.append(guardduty_json_str(x0))
+        parts.append("\"accountIds\":" + guardduty_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
     # GetOrganizationStatistics  GET /organization/statistics
     # errors: BadRequestException, InternalServerErrorException
     def get_organization_statistics(self) -> str:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         auto b = binding.HttpBinding(method="GET", path_template="/organization/statistics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
+
+    # GetRemainingFreeTrialDays  POST /detector/{DetectorId}/freeTrial/daysRemaining
+    # errors: BadRequestException, InternalServerErrorException
+    def get_remaining_free_trial_days(self, GetRemainingFreeTrialDaysRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/freeTrial/daysRemaining", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AccountIds:
+            e0.append(guardduty_json_str(x0))
+        parts.append("\"accountIds\":" + guardduty_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
 
     # GetThreatEntitySet  GET /detector/{DetectorId}/threatentityset/{ThreatEntitySetId}
     # errors: BadRequestException, InternalServerErrorException
@@ -4681,6 +5602,72 @@ struct GuardDutyClient:
         auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/trustedentityset/{TrustedEntitySetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
+    # GetUsageStatistics  POST /detector/{DetectorId}/usage/statistics
+    # errors: BadRequestException, InternalServerErrorException
+    def get_usage_statistics(self, GetUsageStatisticsRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/usage/statistics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"usageStatisticsType\":" + input.UsageStatisticType.to_json())
+        parts.append("\"usageCriteria\":" + usage_criteria_to_json(input.UsageCriteria))
+        if input.Unit.is_some():
+            auto u0 = input.Unit.unwrap()
+            parts.append("\"unit\":" + guardduty_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.NextToken.is_some():
+            auto u2 = input.NextToken.unwrap()
+            parts.append("\"nextToken\":" + guardduty_json_str(u2))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # InviteMembers  POST /detector/{DetectorId}/member/invite
+    # errors: BadRequestException, InternalServerErrorException
+    def invite_members(self, InviteMembersRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member/invite", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AccountIds:
+            e0.append(guardduty_json_str(x0))
+        parts.append("\"accountIds\":" + guardduty_json_arr(e0))
+        if input.DisableEmailNotification.is_some():
+            auto u1 = input.DisableEmailNotification.unwrap()
+            parts.append("\"disableEmailNotification\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.Message.is_some():
+            auto u2 = input.Message.unwrap()
+            parts.append("\"message\":" + guardduty_json_str(u2))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # ListCoverage  POST /detector/{DetectorId}/coverage
+    # errors: BadRequestException, InternalServerErrorException
+    def list_coverage(self, ListCoverageRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/coverage", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"nextToken\":" + guardduty_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.FilterCriteria.is_some():
+            auto u2 = input.FilterCriteria.unwrap()
+            parts.append("\"filterCriteria\":" + coverage_filter_criteria_to_json(u2))
+        if input.SortCriteria.is_some():
+            auto u3 = input.SortCriteria.unwrap()
+            parts.append("\"sortCriteria\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
     # ListCustomDetectionRuleAssociations  GET /custom-detection-rule/association
     # errors: AccessDeniedException, BadRequestException, InternalServerErrorException
     def list_custom_detection_rule_associations(self, ListCustomDetectionRuleAssociationsRequest input) -> str:
@@ -4711,6 +5698,27 @@ struct GuardDutyClient:
         auto b = binding.HttpBinding(method="GET", path_template="/custom-detection-rule/org-configuration", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
+    # ListCustomDetectionRules  POST /custom-detection-rule/rule
+    # errors: AccessDeniedException, BadRequestException, InternalServerErrorException
+    def list_custom_detection_rules(self, ListCustomDetectionRulesRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/custom-detection-rule/rule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.MaxResults.is_some():
+            auto u0 = input.MaxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"nextToken\":" + guardduty_json_str(u1))
+        if input.Filters.is_some():
+            auto u2 = input.Filters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(detection_rule_filter_to_json(x3))
+            parts.append("\"filters\":" + guardduty_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
     # ListDetectors  GET /detector
     # errors: BadRequestException, InternalServerErrorException
     def list_detectors(self, ListDetectorsRequest input) -> str:
@@ -4736,6 +5744,29 @@ struct GuardDutyClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/filter", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
+
+    # ListFindings  POST /detector/{DetectorId}/findings
+    # errors: BadRequestException, InternalServerErrorException
+    def list_findings(self, ListFindingsRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/findings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.FindingCriteria.is_some():
+            auto u0 = input.FindingCriteria.unwrap()
+            parts.append("\"findingCriteria\":" + finding_criteria_to_json(u0))
+        if input.SortCriteria.is_some():
+            auto u1 = input.SortCriteria.unwrap()
+            parts.append("\"sortCriteria\":" + u1.to_json())
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"nextToken\":" + guardduty_json_str(u3))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
 
     # ListIPSets  GET /detector/{DetectorId}/ipset
     # errors: BadRequestException, InternalServerErrorException
@@ -4783,6 +5814,26 @@ struct GuardDutyClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         auto b = binding.HttpBinding(method="GET", path_template="/malware-protection-plan", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
+
+    # ListMalwareScans  POST /malware-scan
+    # errors: BadRequestException, InternalServerErrorException
+    def list_malware_scans(self, ListMalwareScansRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] query = {}
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/malware-scan", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.FilterCriteria.is_some():
+            auto u0 = input.FilterCriteria.unwrap()
+            parts.append("\"filterCriteria\":" + list_malware_scans_filter_criteria_to_json(u0))
+        if input.SortCriteria.is_some():
+            auto u1 = input.SortCriteria.unwrap()
+            parts.append("\"sortCriteria\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
 
     # ListMembers  GET /detector/{DetectorId}/member
     # errors: BadRequestException, InternalServerErrorException
@@ -4895,6 +5946,66 @@ struct GuardDutyClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
 
+    # StartMonitoringMembers  POST /detector/{DetectorId}/member/start
+    # errors: BadRequestException, InternalServerErrorException
+    def start_monitoring_members(self, StartMonitoringMembersRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AccountIds:
+            e0.append(guardduty_json_str(x0))
+        parts.append("\"accountIds\":" + guardduty_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # StopMonitoringMembers  POST /detector/{DetectorId}/member/stop
+    # errors: BadRequestException, InternalServerErrorException
+    def stop_monitoring_members(self, StopMonitoringMembersRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AccountIds:
+            e0.append(guardduty_json_str(x0))
+        parts.append("\"accountIds\":" + guardduty_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # TagResource  POST /tags/{ResourceArn}
+    # errors: AccessDeniedException, BadRequestException, InternalServerErrorException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(guardduty_json_str(k0) + ":" + guardduty_json_str(input.Tags[k0]))
+        parts.append("\"tags\":" + guardduty_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # UnarchiveFindings  POST /detector/{DetectorId}/findings/unarchive
+    # errors: BadRequestException, InternalServerErrorException
+    def unarchive_findings(self, UnarchiveFindingsRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/findings/unarchive", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.FindingIds:
+            e0.append(guardduty_json_str(x0))
+        parts.append("\"findingIds\":" + guardduty_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
     # UpdateCustomDetectionRuleAssociation  PUT /custom-detection-rule/rule/{RuleId}/association/{AssociationId}
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerErrorException, ResourceNotFoundException
     def update_custom_detection_rule_association(self, UpdateCustomDetectionRuleAssociationRequest input) -> str:
@@ -4907,6 +6018,99 @@ struct GuardDutyClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
 
+    # UpdateCustomDetectionRuleOrgConfiguration  PUT /custom-detection-rule/org-configuration/{RuleId}
+    # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerErrorException, ResourceNotFoundException
+    def update_custom_detection_rule_org_configuration(self, UpdateCustomDetectionRuleOrgConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["RuleId"] = input.RuleId
+        auto b = binding.HttpBinding(method="PUT", path_template="/custom-detection-rule/org-configuration/{RuleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"mode\":" + input.Mode.to_json())
+        if input.IncludeAccountIds.is_some():
+            auto u0 = input.IncludeAccountIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(guardduty_json_str(x1))
+            parts.append("\"includeAccountIds\":" + guardduty_json_arr(e1))
+        if input.ExcludeAccountIds.is_some():
+            auto u2 = input.ExcludeAccountIds.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(guardduty_json_str(x3))
+            parts.append("\"excludeAccountIds\":" + guardduty_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # UpdateDetector  POST /detector/{DetectorId}
+    # errors: BadRequestException, InternalServerErrorException
+    def update_detector(self, UpdateDetectorRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Enable.is_some():
+            auto u0 = input.Enable.unwrap()
+            parts.append("\"enable\":" + json.dumps(JsonValue.Bool(u0)))
+        if input.FindingPublishingFrequency.is_some():
+            auto u1 = input.FindingPublishingFrequency.unwrap()
+            parts.append("\"findingPublishingFrequency\":" + u1.to_json())
+        if input.DataSources.is_some():
+            auto u2 = input.DataSources.unwrap()
+            parts.append("\"dataSources\":" + u2.to_json())
+        if input.Features.is_some():
+            auto u3 = input.Features.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(detector_feature_configuration_to_json(x4))
+            parts.append("\"features\":" + guardduty_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # UpdateFilter  POST /detector/{DetectorId}/filter/{FilterName}
+    # errors: BadRequestException, InternalServerErrorException
+    def update_filter(self, UpdateFilterRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        labels["FilterName"] = input.FilterName
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/filter/{FilterName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"description\":" + guardduty_json_str(u0))
+        if input.Action.is_some():
+            auto u1 = input.Action.unwrap()
+            parts.append("\"action\":" + u1.to_json())
+        if input.Rank.is_some():
+            auto u2 = input.Rank.unwrap()
+            parts.append("\"rank\":" + str(u2))
+        if input.FindingCriteria.is_some():
+            auto u3 = input.FindingCriteria.unwrap()
+            parts.append("\"findingCriteria\":" + finding_criteria_to_json(u3))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # UpdateFindingsFeedback  POST /detector/{DetectorId}/findings/feedback
+    # errors: BadRequestException, InternalServerErrorException
+    def update_findings_feedback(self, UpdateFindingsFeedbackRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/findings/feedback", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.FindingIds:
+            e0.append(guardduty_json_str(x0))
+        parts.append("\"findingIds\":" + guardduty_json_arr(e0))
+        parts.append("\"feedback\":" + input.Feedback.to_json())
+        if input.Comments.is_some():
+            auto u1 = input.Comments.unwrap()
+            parts.append("\"comments\":" + guardduty_json_str(u1))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
     # UpdateIPSet  POST /detector/{DetectorId}/ipset/{IpSetId}
     # errors: AccessDeniedException, BadRequestException, InternalServerErrorException
     def update_ip_set(self, UpdateIPSetRequest input) -> str:
@@ -4917,6 +6121,93 @@ struct GuardDutyClient:
         auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/ipset/{IpSetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateIPSetDocument(Name=input.Name, Location=input.Location, Activate=input.Activate, ExpectedBucketOwner=input.ExpectedBucketOwner)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # UpdateMalwareProtectionPlan  PATCH /malware-protection-plan/{MalwareProtectionPlanId}
+    # errors: AccessDeniedException, BadRequestException, InternalServerErrorException, ResourceNotFoundException
+    def update_malware_protection_plan(self, UpdateMalwareProtectionPlanRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["MalwareProtectionPlanId"] = input.MalwareProtectionPlanId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/malware-protection-plan/{MalwareProtectionPlanId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Role.is_some():
+            auto u0 = input.Role.unwrap()
+            parts.append("\"role\":" + guardduty_json_str(u0))
+        if input.Actions.is_some():
+            auto u1 = input.Actions.unwrap()
+            parts.append("\"actions\":" + u1.to_json())
+        if input.ProtectedResource.is_some():
+            auto u2 = input.ProtectedResource.unwrap()
+            parts.append("\"protectedResource\":" + update_protected_resource_to_json(u2))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # UpdateMalwareScanSettings  POST /detector/{DetectorId}/malware-scan-settings
+    # errors: BadRequestException, InternalServerErrorException
+    def update_malware_scan_settings(self, UpdateMalwareScanSettingsRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/malware-scan-settings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ScanResourceCriteria.is_some():
+            auto u0 = input.ScanResourceCriteria.unwrap()
+            parts.append("\"scanResourceCriteria\":" + scan_resource_criteria_to_json(u0))
+        if input.EbsSnapshotPreservation.is_some():
+            auto u1 = input.EbsSnapshotPreservation.unwrap()
+            parts.append("\"ebsSnapshotPreservation\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # UpdateMemberDetectors  POST /detector/{DetectorId}/member/detector/update
+    # errors: BadRequestException, InternalServerErrorException
+    def update_member_detectors(self, UpdateMemberDetectorsRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member/detector/update", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AccountIds:
+            e0.append(guardduty_json_str(x0))
+        parts.append("\"accountIds\":" + guardduty_json_arr(e0))
+        if input.DataSources.is_some():
+            auto u1 = input.DataSources.unwrap()
+            parts.append("\"dataSources\":" + u1.to_json())
+        if input.Features.is_some():
+            auto u2 = input.Features.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(member_features_configuration_to_json(x3))
+            parts.append("\"features\":" + guardduty_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
+
+    # UpdateOrganizationConfiguration  POST /detector/{DetectorId}/admin
+    # errors: BadRequestException, InternalServerErrorException
+    def update_organization_configuration(self, UpdateOrganizationConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DetectorId"] = input.DetectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/admin", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AutoEnable.is_some():
+            auto u0 = input.AutoEnable.unwrap()
+            parts.append("\"autoEnable\":" + json.dumps(JsonValue.Bool(u0)))
+        if input.DataSources.is_some():
+            auto u1 = input.DataSources.unwrap()
+            parts.append("\"dataSources\":" + u1.to_json())
+        if input.Features.is_some():
+            auto u2 = input.Features.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(organization_feature_configuration_to_json(x3))
+            parts.append("\"features\":" + guardduty_json_arr(e3))
+        if input.AutoEnableOrganizationMembers.is_some():
+            auto u4 = input.AutoEnableOrganizationMembers.unwrap()
+            parts.append("\"autoEnableOrganizationMembers\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
 
     # UpdatePublishingDestination  POST /detector/{DetectorId}/publishingDestination/{DestinationId}
@@ -4967,6 +6258,32 @@ struct GuardDutyClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
 
+    # Paginator for DescribeMalwareScans — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Scans).
+    def paginate_describe_malware_scans(self, DescribeMalwareScansRequest input):
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        while True:
+            auto raw = self.describe_malware_scans(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListCoverage — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Resources).
+    def paginate_list_coverage(self, ListCoverageRequest input):
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        while True:
+            auto raw = self.list_coverage(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListCustomDetectionRuleAssociations — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: RuleAssociations).
     def paginate_list_custom_detection_rule_associations(self, ListCustomDetectionRuleAssociationsRequest input):
@@ -4993,6 +6310,19 @@ struct GuardDutyClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListCustomDetectionRules — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Rules).
+    def paginate_list_custom_detection_rules(self, ListCustomDetectionRulesRequest input):
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        while True:
+            auto raw = self.list_custom_detection_rules(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListDetectors — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: DetectorIds).
     def paginate_list_detectors(self, ListDetectorsRequest input):
@@ -5012,6 +6342,19 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         while True:
             auto raw = self.list_filters(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListFindings — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: FindingIds).
+    def paginate_list_findings(self, ListFindingsRequest input):
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        while True:
+            auto raw = self.list_findings(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")
@@ -5051,6 +6394,19 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         while True:
             auto raw = self.list_invitations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListMalwareScans — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Scans).
+    def paginate_list_malware_scans(self, ListMalwareScansRequest input):
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        while True:
+            auto raw = self.list_malware_scans(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

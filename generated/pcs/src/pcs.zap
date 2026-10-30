@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 19 operations — 11 with a generated method,
-#   8 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 19 operations — 19 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   92 structs (50 @derive(Json)), 14 enums, 7 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -187,8 +187,9 @@ struct CgroupCustomSetting:
     str parameterName
     str parameterValue
 
-# no @derive(Json): member(s) slurmConfiguration: ClusterSlurmConfiguration, networking: Networking, endpoints: list[Endpoint], errorInfo: list[ErrorInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slurmConfiguration: ClusterSlurmConfiguration, networking: Networking, endpoints: list[Endpoint], errorInfo: list[ErrorInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Cluster:
     str name
     str id
@@ -203,8 +204,9 @@ struct Cluster:
     Optional[list[Endpoint]] endpoints
     Optional[list[ErrorInfo]] errorInfo
 
-# no @derive(Json): member(s) slurmCustomSettings: list[SlurmCustomSetting], slurmdbdCustomSettings: list[SlurmdbdCustomSetting], cgroupCustomSettings: list[CgroupCustomSetting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slurmCustomSettings: list[SlurmCustomSetting], slurmdbdCustomSettings: list[SlurmdbdCustomSetting], cgroupCustomSettings: list[CgroupCustomSetting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterSlurmConfiguration:
     Optional[int64] scaleDownIdleTimeInSeconds
     Optional[list[SlurmCustomSetting]] slurmCustomSettings
@@ -215,8 +217,9 @@ struct ClusterSlurmConfiguration:
     Optional[Accounting] accounting
     Optional[SlurmRest] slurmRest
 
-# no @derive(Json): member(s) slurmCustomSettings: list[SlurmCustomSetting], slurmdbdCustomSettings: list[SlurmdbdCustomSetting], cgroupCustomSettings: list[CgroupCustomSetting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slurmCustomSettings: list[SlurmCustomSetting], slurmdbdCustomSettings: list[SlurmdbdCustomSetting], cgroupCustomSettings: list[CgroupCustomSetting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterSlurmConfigurationRequest:
     Optional[int64] scaleDownIdleTimeInSeconds
     Optional[list[SlurmCustomSetting]] slurmCustomSettings
@@ -236,8 +239,9 @@ struct ClusterSummary:
     DateTime modifiedAt
     ClusterStatus status
 
-# no @derive(Json): member(s) subnetIds: list[str], instanceConfigs: list[InstanceConfig], slurmConfiguration: ComputeNodeGroupSlurmConfiguration, nodeLifecycleActions: NodeLifecycleActions, errorInfo: list[ErrorInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], instanceConfigs: list[InstanceConfig], slurmConfiguration: ComputeNodeGroupSlurmConfiguration, nodeLifecycleActions: NodeLifecycleActions, errorInfo: list[ErrorInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputeNodeGroup:
     str name
     str id
@@ -262,15 +266,17 @@ struct ComputeNodeGroup:
 struct ComputeNodeGroupConfiguration:
     Optional[str] computeNodeGroupId
 
-# no @derive(Json): member(s) slurmCustomSettings: list[SlurmCustomSetting], gresCustomSettings: list[dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slurmCustomSettings: list[SlurmCustomSetting], gresCustomSettings: list[dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputeNodeGroupSlurmConfiguration:
     Optional[int64] scaleDownIdleTimeInSeconds
     Optional[list[SlurmCustomSetting]] slurmCustomSettings
     Optional[list[dict[str, str]]] gresCustomSettings
 
-# no @derive(Json): member(s) slurmCustomSettings: list[SlurmCustomSetting], gresCustomSettings: list[dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slurmCustomSettings: list[SlurmCustomSetting], gresCustomSettings: list[dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputeNodeGroupSlurmConfigurationRequest:
     Optional[int64] scaleDownIdleTimeInSeconds
     Optional[list[SlurmCustomSetting]] slurmCustomSettings
@@ -294,8 +300,9 @@ struct ConflictException:
     str resourceId
     str resourceType
 
-# no @derive(Json): member(s) networking: NetworkingRequest, slurmConfiguration: ClusterSlurmConfigurationRequest, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networking: NetworkingRequest, slurmConfiguration: ClusterSlurmConfigurationRequest, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateClusterRequest:
     str clusterName
     SchedulerRequest scheduler
@@ -305,13 +312,15 @@ struct CreateClusterRequest:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateClusterResponse:
     Optional[Cluster] cluster
 
-# no @derive(Json): member(s) subnetIds: list[str], instanceConfigs: list[InstanceConfig], slurmConfiguration: ComputeNodeGroupSlurmConfigurationRequest, nodeLifecycleActions: NodeLifecycleActionsRequest, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], instanceConfigs: list[InstanceConfig], slurmConfiguration: ComputeNodeGroupSlurmConfigurationRequest, nodeLifecycleActions: NodeLifecycleActionsRequest, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateComputeNodeGroupRequest:
     str clusterIdentifier
     str computeNodeGroupName
@@ -328,13 +337,15 @@ struct CreateComputeNodeGroupRequest:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) computeNodeGroup: ComputeNodeGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) computeNodeGroup: ComputeNodeGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateComputeNodeGroupResponse:
     Optional[ComputeNodeGroup] computeNodeGroup
 
-# no @derive(Json): member(s) computeNodeGroupConfigurations: list[ComputeNodeGroupConfiguration], slurmConfiguration: QueueSlurmConfigurationRequest, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) computeNodeGroupConfigurations: list[ComputeNodeGroupConfiguration], slurmConfiguration: QueueSlurmConfigurationRequest, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateQueueRequest:
     str clusterIdentifier
     str queueName
@@ -343,8 +354,9 @@ struct CreateQueueRequest:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) queue: Queue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) queue: Queue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateQueueResponse:
     Optional[Queue] queue
 
@@ -402,8 +414,9 @@ struct ErrorInfo:
 struct GetClusterRequest:
     str clusterIdentifier
 
-# no @derive(Json): member(s) cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetClusterResponse:
     Optional[Cluster] cluster
 
@@ -412,8 +425,9 @@ struct GetComputeNodeGroupRequest:
     str clusterIdentifier
     str computeNodeGroupIdentifier
 
-# no @derive(Json): member(s) computeNodeGroup: ComputeNodeGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) computeNodeGroup: ComputeNodeGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetComputeNodeGroupResponse:
     Optional[ComputeNodeGroup] computeNodeGroup
 
@@ -422,8 +436,9 @@ struct GetQueueRequest:
     str clusterIdentifier
     str queueIdentifier
 
-# no @derive(Json): member(s) queue: Queue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) queue: Queue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetQueueResponse:
     Optional[Queue] queue
 
@@ -449,8 +464,9 @@ struct ListClustersRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) clusters: list[ClusterSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clusters: list[ClusterSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListClustersResponse:
     list[ClusterSummary] clusters
     Optional[str] nextToken
@@ -461,8 +477,9 @@ struct ListComputeNodeGroupsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) computeNodeGroups: list[ComputeNodeGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) computeNodeGroups: list[ComputeNodeGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListComputeNodeGroupsResponse:
     list[ComputeNodeGroupSummary] computeNodeGroups
     Optional[str] nextToken
@@ -473,8 +490,9 @@ struct ListQueuesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) queues: list[QueueSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) queues: list[QueueSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListQueuesResponse:
     list[QueueSummary] queues
     Optional[str] nextToken
@@ -483,39 +501,45 @@ struct ListQueuesResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Networking:
     Optional[list[str]] subnetIds
     Optional[list[str]] securityGroupIds
     Optional[NetworkType] networkType
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkingRequest:
     Optional[list[str]] subnetIds
     Optional[list[str]] securityGroupIds
     Optional[NetworkType] networkType
 
-# no @derive(Json): member(s) stages: NodeLifecycleStages not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stages: NodeLifecycleStages not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NodeLifecycleActions:
     NodeLifecycleStages stages
     Optional[ScriptCachingPolicy] scriptCachingPolicy
 
-# no @derive(Json): member(s) stages: NodeLifecycleStages not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stages: NodeLifecycleStages not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NodeLifecycleActionsRequest:
     NodeLifecycleStages stages
     Optional[ScriptCachingPolicy] scriptCachingPolicy
 
-# no @derive(Json): member(s) arguments: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) arguments: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NodeLifecycleScript:
     str name
     ScriptSource scriptSource
@@ -523,14 +547,16 @@ struct NodeLifecycleScript:
     Optional[OnError] onError
     Optional[ExecutionPolicy] executionPolicy
 
-# no @derive(Json): member(s) nodeBootstrapped: list[NodeLifecycleScript], nodeReady: list[NodeLifecycleScript] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodeBootstrapped: list[NodeLifecycleScript], nodeReady: list[NodeLifecycleScript] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NodeLifecycleStages:
     Optional[list[NodeLifecycleScript]] nodeBootstrapped
     Optional[list[NodeLifecycleScript]] nodeReady
 
-# no @derive(Json): member(s) computeNodeGroupConfigurations: list[ComputeNodeGroupConfiguration], slurmConfiguration: QueueSlurmConfiguration, errorInfo: list[ErrorInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) computeNodeGroupConfigurations: list[ComputeNodeGroupConfiguration], slurmConfiguration: QueueSlurmConfiguration, errorInfo: list[ErrorInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Queue:
     str name
     str id
@@ -543,13 +569,15 @@ struct Queue:
     Optional[QueueSlurmConfiguration] slurmConfiguration
     Optional[list[ErrorInfo]] errorInfo
 
-# no @derive(Json): member(s) slurmCustomSettings: list[SlurmCustomSetting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slurmCustomSettings: list[SlurmCustomSetting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueueSlurmConfiguration:
     Optional[list[SlurmCustomSetting]] slurmCustomSettings
 
-# no @derive(Json): member(s) slurmCustomSettings: list[SlurmCustomSetting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slurmCustomSettings: list[SlurmCustomSetting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueueSlurmConfigurationRequest:
     Optional[list[SlurmCustomSetting]] slurmCustomSettings
 
@@ -570,8 +598,9 @@ struct RegisterComputeNodeGroupInstanceRequest:
     str clusterIdentifier
     str bootstrapId
 
-# no @derive(Json): member(s) endpoints: list[Endpoint], nodeLifecycleActions: NodeLifecycleActions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) endpoints: list[Endpoint], nodeLifecycleActions: NodeLifecycleActions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterComputeNodeGroupInstanceResponse:
     str nodeID
     str sharedSecret
@@ -649,8 +678,9 @@ struct SlurmdbdCustomSetting:
 struct SpotOptions:
     Optional[SpotAllocationStrategy] allocationStrategy
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str resourceArn
     dict[str, str] tags
@@ -665,8 +695,9 @@ struct ThrottlingException:
     str message
     Optional[int64] retryAfterSeconds
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str resourceArn
     list[str] tagKeys
@@ -681,21 +712,24 @@ struct UpdateAccountingRequest:
     Optional[int64] defaultPurgeTimeInDays
     Optional[AccountingMode] mode
 
-# no @derive(Json): member(s) slurmConfiguration: UpdateClusterSlurmConfigurationRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slurmConfiguration: UpdateClusterSlurmConfigurationRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateClusterRequest:
     str clusterIdentifier
     Optional[str] clientToken
     Optional[UpdateClusterSlurmConfigurationRequest] slurmConfiguration
     Optional[UpdateSchedulerRequest] scheduler
 
-# no @derive(Json): member(s) cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateClusterResponse:
     Optional[Cluster] cluster
 
-# no @derive(Json): member(s) slurmCustomSettings: list[SlurmCustomSetting], slurmdbdCustomSettings: list[SlurmdbdCustomSetting], cgroupCustomSettings: list[CgroupCustomSetting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slurmCustomSettings: list[SlurmCustomSetting], slurmdbdCustomSettings: list[SlurmdbdCustomSetting], cgroupCustomSettings: list[CgroupCustomSetting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateClusterSlurmConfigurationRequest:
     Optional[int64] scaleDownIdleTimeInSeconds
     Optional[list[SlurmCustomSetting]] slurmCustomSettings
@@ -704,8 +738,9 @@ struct UpdateClusterSlurmConfigurationRequest:
     Optional[UpdateAccountingRequest] accounting
     Optional[UpdateSlurmRestRequest] slurmRest
 
-# no @derive(Json): member(s) subnetIds: list[str], slurmConfiguration: UpdateComputeNodeGroupSlurmConfigurationRequest, nodeLifecycleActions: UpdateNodeLifecycleActionsRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], slurmConfiguration: UpdateComputeNodeGroupSlurmConfigurationRequest, nodeLifecycleActions: UpdateNodeLifecycleActionsRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateComputeNodeGroupRequest:
     str clusterIdentifier
     str computeNodeGroupIdentifier
@@ -720,26 +755,30 @@ struct UpdateComputeNodeGroupRequest:
     Optional[UpdateNodeLifecycleActionsRequest] nodeLifecycleActions
     Optional[str] clientToken
 
-# no @derive(Json): member(s) computeNodeGroup: ComputeNodeGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) computeNodeGroup: ComputeNodeGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateComputeNodeGroupResponse:
     Optional[ComputeNodeGroup] computeNodeGroup
 
-# no @derive(Json): member(s) slurmCustomSettings: list[SlurmCustomSetting], gresCustomSettings: list[dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slurmCustomSettings: list[SlurmCustomSetting], gresCustomSettings: list[dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateComputeNodeGroupSlurmConfigurationRequest:
     Optional[int64] scaleDownIdleTimeInSeconds
     Optional[list[SlurmCustomSetting]] slurmCustomSettings
     Optional[list[dict[str, str]]] gresCustomSettings
 
-# no @derive(Json): member(s) stages: NodeLifecycleStages not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stages: NodeLifecycleStages not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateNodeLifecycleActionsRequest:
     NodeLifecycleStages stages
     Optional[ScriptCachingPolicy] scriptCachingPolicy
 
-# no @derive(Json): member(s) computeNodeGroupConfigurations: list[ComputeNodeGroupConfiguration], slurmConfiguration: UpdateQueueSlurmConfigurationRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) computeNodeGroupConfigurations: list[ComputeNodeGroupConfiguration], slurmConfiguration: UpdateQueueSlurmConfigurationRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateQueueRequest:
     str clusterIdentifier
     str queueIdentifier
@@ -747,13 +786,15 @@ struct UpdateQueueRequest:
     Optional[UpdateQueueSlurmConfigurationRequest] slurmConfiguration
     Optional[str] clientToken
 
-# no @derive(Json): member(s) queue: Queue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) queue: Queue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateQueueResponse:
     Optional[Queue] queue
 
-# no @derive(Json): member(s) slurmCustomSettings: list[SlurmCustomSetting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) slurmCustomSettings: list[SlurmCustomSetting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateQueueSlurmConfigurationRequest:
     Optional[list[SlurmCustomSetting]] slurmCustomSettings
 
@@ -765,8 +806,9 @@ struct UpdateSchedulerRequest:
 struct UpdateSlurmRestRequest:
     Optional[SlurmRestMode] mode
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -811,21 +853,446 @@ def pcs_error_from_code(str code) -> PCSError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateCluster (input CreateClusterRequest)
-#   CreateComputeNodeGroup (input CreateComputeNodeGroupRequest)
-#   CreateQueue (input CreateQueueRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateCluster (input UpdateClusterRequest)
-#   UpdateComputeNodeGroup (input UpdateComputeNodeGroupRequest)
-#   UpdateQueue (input UpdateQueueRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def pcs_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def pcs_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def pcs_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ClusterSlurmConfigurationRequest to a compact JSON object (declaration order).
+def cluster_slurm_configuration_request_to_json(ClusterSlurmConfigurationRequest v) -> str:
+    list[str] parts = []
+    if v.scaleDownIdleTimeInSeconds.is_some():
+        auto u0 = v.scaleDownIdleTimeInSeconds.unwrap()
+        parts.append("\"scaleDownIdleTimeInSeconds\":" + str(u0))
+    if v.slurmCustomSettings.is_some():
+        auto u1 = v.slurmCustomSettings.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"slurmCustomSettings\":" + pcs_json_arr(e2))
+    if v.slurmdbdCustomSettings.is_some():
+        auto u3 = v.slurmdbdCustomSettings.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"slurmdbdCustomSettings\":" + pcs_json_arr(e4))
+    if v.cgroupCustomSettings.is_some():
+        auto u5 = v.cgroupCustomSettings.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"cgroupCustomSettings\":" + pcs_json_arr(e6))
+    if v.accounting.is_some():
+        auto u7 = v.accounting.unwrap()
+        parts.append("\"accounting\":" + u7.to_json())
+    if v.slurmRest.is_some():
+        auto u8 = v.slurmRest.unwrap()
+        parts.append("\"slurmRest\":" + u8.to_json())
+    return pcs_json_obj(parts)
+
+# Serialize ComputeNodeGroupSlurmConfigurationRequest to a compact JSON object (declaration order).
+def compute_node_group_slurm_configuration_request_to_json(ComputeNodeGroupSlurmConfigurationRequest v) -> str:
+    list[str] parts = []
+    if v.scaleDownIdleTimeInSeconds.is_some():
+        auto u0 = v.scaleDownIdleTimeInSeconds.unwrap()
+        parts.append("\"scaleDownIdleTimeInSeconds\":" + str(u0))
+    if v.slurmCustomSettings.is_some():
+        auto u1 = v.slurmCustomSettings.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"slurmCustomSettings\":" + pcs_json_arr(e2))
+    if v.gresCustomSettings.is_some():
+        auto u3 = v.gresCustomSettings.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            list[str] m5 = []
+            for k5 in sorted(x4.keys()):
+                m5.append(pcs_json_str(k5) + ":" + pcs_json_str(x4[k5]))
+            e4.append(pcs_json_obj(m5))
+        parts.append("\"gresCustomSettings\":" + pcs_json_arr(e4))
+    return pcs_json_obj(parts)
+
+# Serialize CreateClusterRequest to a compact JSON object (declaration order).
+def create_cluster_request_to_json(CreateClusterRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"clusterName\":" + pcs_json_str(v.clusterName))
+    parts.append("\"scheduler\":" + v.scheduler.to_json())
+    parts.append("\"size\":" + v.size.to_json())
+    parts.append("\"networking\":" + networking_request_to_json(v.networking))
+    if v.slurmConfiguration.is_some():
+        auto u0 = v.slurmConfiguration.unwrap()
+        parts.append("\"slurmConfiguration\":" + cluster_slurm_configuration_request_to_json(u0))
+    if v.clientToken.is_some():
+        auto u1 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + pcs_json_str(u1))
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(pcs_json_str(k3) + ":" + pcs_json_str(u2[k3]))
+        parts.append("\"tags\":" + pcs_json_obj(m3))
+    return pcs_json_obj(parts)
+
+# Serialize CreateComputeNodeGroupRequest to a compact JSON object (declaration order).
+def create_compute_node_group_request_to_json(CreateComputeNodeGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"clusterIdentifier\":" + pcs_json_str(v.clusterIdentifier))
+    parts.append("\"computeNodeGroupName\":" + pcs_json_str(v.computeNodeGroupName))
+    if v.amiId.is_some():
+        auto u0 = v.amiId.unwrap()
+        parts.append("\"amiId\":" + pcs_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.subnetIds:
+        e1.append(pcs_json_str(x1))
+    parts.append("\"subnetIds\":" + pcs_json_arr(e1))
+    if v.purchaseOption.is_some():
+        auto u2 = v.purchaseOption.unwrap()
+        parts.append("\"purchaseOption\":" + u2.to_json())
+    parts.append("\"customLaunchTemplate\":" + v.customLaunchTemplate.to_json())
+    parts.append("\"iamInstanceProfileArn\":" + pcs_json_str(v.iamInstanceProfileArn))
+    parts.append("\"scalingConfiguration\":" + v.scalingConfiguration.to_json())
+    list[str] e3 = []
+    for x3 in v.instanceConfigs:
+        e3.append(x3.to_json())
+    parts.append("\"instanceConfigs\":" + pcs_json_arr(e3))
+    if v.spotOptions.is_some():
+        auto u4 = v.spotOptions.unwrap()
+        parts.append("\"spotOptions\":" + u4.to_json())
+    if v.slurmConfiguration.is_some():
+        auto u5 = v.slurmConfiguration.unwrap()
+        parts.append("\"slurmConfiguration\":" + compute_node_group_slurm_configuration_request_to_json(u5))
+    if v.nodeLifecycleActions.is_some():
+        auto u6 = v.nodeLifecycleActions.unwrap()
+        parts.append("\"nodeLifecycleActions\":" + node_lifecycle_actions_request_to_json(u6))
+    if v.clientToken.is_some():
+        auto u7 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + pcs_json_str(u7))
+    if v.tags.is_some():
+        auto u8 = v.tags.unwrap()
+        list[str] m9 = []
+        for k9 in sorted(u8.keys()):
+            m9.append(pcs_json_str(k9) + ":" + pcs_json_str(u8[k9]))
+        parts.append("\"tags\":" + pcs_json_obj(m9))
+    return pcs_json_obj(parts)
+
+# Serialize CreateQueueRequest to a compact JSON object (declaration order).
+def create_queue_request_to_json(CreateQueueRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"clusterIdentifier\":" + pcs_json_str(v.clusterIdentifier))
+    parts.append("\"queueName\":" + pcs_json_str(v.queueName))
+    if v.computeNodeGroupConfigurations.is_some():
+        auto u0 = v.computeNodeGroupConfigurations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"computeNodeGroupConfigurations\":" + pcs_json_arr(e1))
+    if v.slurmConfiguration.is_some():
+        auto u2 = v.slurmConfiguration.unwrap()
+        parts.append("\"slurmConfiguration\":" + queue_slurm_configuration_request_to_json(u2))
+    if v.clientToken.is_some():
+        auto u3 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + pcs_json_str(u3))
+    if v.tags.is_some():
+        auto u4 = v.tags.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(pcs_json_str(k5) + ":" + pcs_json_str(u4[k5]))
+        parts.append("\"tags\":" + pcs_json_obj(m5))
+    return pcs_json_obj(parts)
+
+# Serialize NetworkingRequest to a compact JSON object (declaration order).
+def networking_request_to_json(NetworkingRequest v) -> str:
+    list[str] parts = []
+    if v.subnetIds.is_some():
+        auto u0 = v.subnetIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(pcs_json_str(x1))
+        parts.append("\"subnetIds\":" + pcs_json_arr(e1))
+    if v.securityGroupIds.is_some():
+        auto u2 = v.securityGroupIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(pcs_json_str(x3))
+        parts.append("\"securityGroupIds\":" + pcs_json_arr(e3))
+    if v.networkType.is_some():
+        auto u4 = v.networkType.unwrap()
+        parts.append("\"networkType\":" + u4.to_json())
+    return pcs_json_obj(parts)
+
+# Serialize NodeLifecycleActionsRequest to a compact JSON object (declaration order).
+def node_lifecycle_actions_request_to_json(NodeLifecycleActionsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"stages\":" + node_lifecycle_stages_to_json(v.stages))
+    if v.scriptCachingPolicy.is_some():
+        auto u0 = v.scriptCachingPolicy.unwrap()
+        parts.append("\"scriptCachingPolicy\":" + u0.to_json())
+    return pcs_json_obj(parts)
+
+# Serialize NodeLifecycleScript to a compact JSON object (declaration order).
+def node_lifecycle_script_to_json(NodeLifecycleScript v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + pcs_json_str(v.name))
+    parts.append("\"scriptSource\":" + v.scriptSource.to_json())
+    if v.arguments.is_some():
+        auto u0 = v.arguments.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(pcs_json_str(x1))
+        parts.append("\"arguments\":" + pcs_json_arr(e1))
+    if v.onError.is_some():
+        auto u2 = v.onError.unwrap()
+        parts.append("\"onError\":" + u2.to_json())
+    if v.executionPolicy.is_some():
+        auto u3 = v.executionPolicy.unwrap()
+        parts.append("\"executionPolicy\":" + u3.to_json())
+    return pcs_json_obj(parts)
+
+# Serialize NodeLifecycleStages to a compact JSON object (declaration order).
+def node_lifecycle_stages_to_json(NodeLifecycleStages v) -> str:
+    list[str] parts = []
+    if v.nodeBootstrapped.is_some():
+        auto u0 = v.nodeBootstrapped.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(node_lifecycle_script_to_json(x1))
+        parts.append("\"nodeBootstrapped\":" + pcs_json_arr(e1))
+    if v.nodeReady.is_some():
+        auto u2 = v.nodeReady.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(node_lifecycle_script_to_json(x3))
+        parts.append("\"nodeReady\":" + pcs_json_arr(e3))
+    return pcs_json_obj(parts)
+
+# Serialize QueueSlurmConfigurationRequest to a compact JSON object (declaration order).
+def queue_slurm_configuration_request_to_json(QueueSlurmConfigurationRequest v) -> str:
+    list[str] parts = []
+    if v.slurmCustomSettings.is_some():
+        auto u0 = v.slurmCustomSettings.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"slurmCustomSettings\":" + pcs_json_arr(e1))
+    return pcs_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + pcs_json_str(v.resourceArn))
+    list[str] m0 = []
+    for k0 in sorted(v.tags.keys()):
+        m0.append(pcs_json_str(k0) + ":" + pcs_json_str(v.tags[k0]))
+    parts.append("\"tags\":" + pcs_json_obj(m0))
+    return pcs_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + pcs_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(pcs_json_str(x0))
+    parts.append("\"tagKeys\":" + pcs_json_arr(e0))
+    return pcs_json_obj(parts)
+
+# Serialize UpdateClusterRequest to a compact JSON object (declaration order).
+def update_cluster_request_to_json(UpdateClusterRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"clusterIdentifier\":" + pcs_json_str(v.clusterIdentifier))
+    if v.clientToken.is_some():
+        auto u0 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + pcs_json_str(u0))
+    if v.slurmConfiguration.is_some():
+        auto u1 = v.slurmConfiguration.unwrap()
+        parts.append("\"slurmConfiguration\":" + update_cluster_slurm_configuration_request_to_json(u1))
+    if v.scheduler.is_some():
+        auto u2 = v.scheduler.unwrap()
+        parts.append("\"scheduler\":" + u2.to_json())
+    return pcs_json_obj(parts)
+
+# Serialize UpdateClusterSlurmConfigurationRequest to a compact JSON object (declaration order).
+def update_cluster_slurm_configuration_request_to_json(UpdateClusterSlurmConfigurationRequest v) -> str:
+    list[str] parts = []
+    if v.scaleDownIdleTimeInSeconds.is_some():
+        auto u0 = v.scaleDownIdleTimeInSeconds.unwrap()
+        parts.append("\"scaleDownIdleTimeInSeconds\":" + str(u0))
+    if v.slurmCustomSettings.is_some():
+        auto u1 = v.slurmCustomSettings.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"slurmCustomSettings\":" + pcs_json_arr(e2))
+    if v.slurmdbdCustomSettings.is_some():
+        auto u3 = v.slurmdbdCustomSettings.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"slurmdbdCustomSettings\":" + pcs_json_arr(e4))
+    if v.cgroupCustomSettings.is_some():
+        auto u5 = v.cgroupCustomSettings.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"cgroupCustomSettings\":" + pcs_json_arr(e6))
+    if v.accounting.is_some():
+        auto u7 = v.accounting.unwrap()
+        parts.append("\"accounting\":" + u7.to_json())
+    if v.slurmRest.is_some():
+        auto u8 = v.slurmRest.unwrap()
+        parts.append("\"slurmRest\":" + u8.to_json())
+    return pcs_json_obj(parts)
+
+# Serialize UpdateComputeNodeGroupRequest to a compact JSON object (declaration order).
+def update_compute_node_group_request_to_json(UpdateComputeNodeGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"clusterIdentifier\":" + pcs_json_str(v.clusterIdentifier))
+    parts.append("\"computeNodeGroupIdentifier\":" + pcs_json_str(v.computeNodeGroupIdentifier))
+    if v.amiId.is_some():
+        auto u0 = v.amiId.unwrap()
+        parts.append("\"amiId\":" + pcs_json_str(u0))
+    if v.subnetIds.is_some():
+        auto u1 = v.subnetIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(pcs_json_str(x2))
+        parts.append("\"subnetIds\":" + pcs_json_arr(e2))
+    if v.customLaunchTemplate.is_some():
+        auto u3 = v.customLaunchTemplate.unwrap()
+        parts.append("\"customLaunchTemplate\":" + u3.to_json())
+    if v.purchaseOption.is_some():
+        auto u4 = v.purchaseOption.unwrap()
+        parts.append("\"purchaseOption\":" + u4.to_json())
+    if v.spotOptions.is_some():
+        auto u5 = v.spotOptions.unwrap()
+        parts.append("\"spotOptions\":" + u5.to_json())
+    if v.scalingConfiguration.is_some():
+        auto u6 = v.scalingConfiguration.unwrap()
+        parts.append("\"scalingConfiguration\":" + u6.to_json())
+    if v.iamInstanceProfileArn.is_some():
+        auto u7 = v.iamInstanceProfileArn.unwrap()
+        parts.append("\"iamInstanceProfileArn\":" + pcs_json_str(u7))
+    if v.slurmConfiguration.is_some():
+        auto u8 = v.slurmConfiguration.unwrap()
+        parts.append("\"slurmConfiguration\":" + update_compute_node_group_slurm_configuration_request_to_json(u8))
+    if v.nodeLifecycleActions.is_some():
+        auto u9 = v.nodeLifecycleActions.unwrap()
+        parts.append("\"nodeLifecycleActions\":" + update_node_lifecycle_actions_request_to_json(u9))
+    if v.clientToken.is_some():
+        auto u10 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + pcs_json_str(u10))
+    return pcs_json_obj(parts)
+
+# Serialize UpdateComputeNodeGroupSlurmConfigurationRequest to a compact JSON object (declaration order).
+def update_compute_node_group_slurm_configuration_request_to_json(UpdateComputeNodeGroupSlurmConfigurationRequest v) -> str:
+    list[str] parts = []
+    if v.scaleDownIdleTimeInSeconds.is_some():
+        auto u0 = v.scaleDownIdleTimeInSeconds.unwrap()
+        parts.append("\"scaleDownIdleTimeInSeconds\":" + str(u0))
+    if v.slurmCustomSettings.is_some():
+        auto u1 = v.slurmCustomSettings.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"slurmCustomSettings\":" + pcs_json_arr(e2))
+    if v.gresCustomSettings.is_some():
+        auto u3 = v.gresCustomSettings.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            list[str] m5 = []
+            for k5 in sorted(x4.keys()):
+                m5.append(pcs_json_str(k5) + ":" + pcs_json_str(x4[k5]))
+            e4.append(pcs_json_obj(m5))
+        parts.append("\"gresCustomSettings\":" + pcs_json_arr(e4))
+    return pcs_json_obj(parts)
+
+# Serialize UpdateNodeLifecycleActionsRequest to a compact JSON object (declaration order).
+def update_node_lifecycle_actions_request_to_json(UpdateNodeLifecycleActionsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"stages\":" + node_lifecycle_stages_to_json(v.stages))
+    if v.scriptCachingPolicy.is_some():
+        auto u0 = v.scriptCachingPolicy.unwrap()
+        parts.append("\"scriptCachingPolicy\":" + u0.to_json())
+    return pcs_json_obj(parts)
+
+# Serialize UpdateQueueRequest to a compact JSON object (declaration order).
+def update_queue_request_to_json(UpdateQueueRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"clusterIdentifier\":" + pcs_json_str(v.clusterIdentifier))
+    parts.append("\"queueIdentifier\":" + pcs_json_str(v.queueIdentifier))
+    if v.computeNodeGroupConfigurations.is_some():
+        auto u0 = v.computeNodeGroupConfigurations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"computeNodeGroupConfigurations\":" + pcs_json_arr(e1))
+    if v.slurmConfiguration.is_some():
+        auto u2 = v.slurmConfiguration.unwrap()
+        parts.append("\"slurmConfiguration\":" + update_queue_slurm_configuration_request_to_json(u2))
+    if v.clientToken.is_some():
+        auto u3 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + pcs_json_str(u3))
+    return pcs_json_obj(parts)
+
+# Serialize UpdateQueueSlurmConfigurationRequest to a compact JSON object (declaration order).
+def update_queue_slurm_configuration_request_to_json(UpdateQueueSlurmConfigurationRequest v) -> str:
+    list[str] parts = []
+    if v.slurmCustomSettings.is_some():
+        auto u0 = v.slurmCustomSettings.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"slurmCustomSettings\":" + pcs_json_arr(e1))
+    return pcs_json_obj(parts)
 
 # A bound PCS client: credentials + region, threaded into every operation.
 struct PCSClient:
     core.Credentials creds
     str region
+
+    # CreateCluster
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_cluster(self, CreateClusterRequest input) -> str:
+        auto body = create_cluster_request_to_json(input)
+        return awsjson.awsjson_request_now(pcs_protocol(), self.creds, self.region, "CreateCluster", body)
+
+    # CreateComputeNodeGroup
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_compute_node_group(self, CreateComputeNodeGroupRequest input) -> str:
+        auto body = create_compute_node_group_request_to_json(input)
+        return awsjson.awsjson_request_now(pcs_protocol(), self.creds, self.region, "CreateComputeNodeGroup", body)
+
+    # CreateQueue
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_queue(self, CreateQueueRequest input) -> str:
+        auto body = create_queue_request_to_json(input)
+        return awsjson.awsjson_request_now(pcs_protocol(), self.creds, self.region, "CreateQueue", body)
 
     # DeleteCluster
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -892,6 +1359,36 @@ struct PCSClient:
     def register_compute_node_group_instance(self, RegisterComputeNodeGroupInstanceRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(pcs_protocol(), self.creds, self.region, "RegisterComputeNodeGroupInstance", body)
+
+    # TagResource
+    # errors: ResourceNotFoundException, ServiceQuotaExceededException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(pcs_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: ResourceNotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(pcs_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateCluster
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_cluster(self, UpdateClusterRequest input) -> str:
+        auto body = update_cluster_request_to_json(input)
+        return awsjson.awsjson_request_now(pcs_protocol(), self.creds, self.region, "UpdateCluster", body)
+
+    # UpdateComputeNodeGroup
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_compute_node_group(self, UpdateComputeNodeGroupRequest input) -> str:
+        auto body = update_compute_node_group_request_to_json(input)
+        return awsjson.awsjson_request_now(pcs_protocol(), self.creds, self.region, "UpdateComputeNodeGroup", body)
+
+    # UpdateQueue
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_queue(self, UpdateQueueRequest input) -> str:
+        auto body = update_queue_request_to_json(input)
+        return awsjson.awsjson_request_now(pcs_protocol(), self.creds, self.region, "UpdateQueue", body)
 
     # Paginator for ListClusters — yields each Response page, threading the
     # nextToken -> nextToken continuation token until the output token is absent (result key: clusters).

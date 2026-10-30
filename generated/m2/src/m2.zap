@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 37 operations — 27 with a generated method,
-#   10 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 37 operations — 33 with a generated method,
+#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   133 structs (98 @derive(Json)), 11 enums, 9 error variants.
 #   7 paginators generated (3 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -303,8 +303,9 @@ struct CreateEnvironmentRequest:
 struct CreateEnvironmentResponse:
     str environmentId
 
-# no @derive(Json): member(s) datasetOrg: DatasetOrgAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) datasetOrg: DatasetOrgAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSet:
     str datasetName
     DatasetOrgAttributes datasetOrg
@@ -312,8 +313,9 @@ struct DataSet:
     Optional[str] relativePath
     Optional[str] storageType
 
-# no @derive(Json): member(s) dataSets: list[DataSetExportItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataSets: list[DataSetExportItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSetExportConfig:
     Optional[list[DataSetExportItem]] dataSets
     Optional[str] s3Location
@@ -338,14 +340,16 @@ struct DataSetExportTask:
     DataSetExportSummary summary
     str taskId
 
-# no @derive(Json): member(s) dataSets: list[DataSetImportItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataSets: list[DataSetImportItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSetImportConfig:
     Optional[list[DataSetImportItem]] dataSets
     Optional[str] s3Location
 
-# no @derive(Json): member(s) dataSet: DataSet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataSet: DataSet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSetImportItem:
     DataSet dataSet
     ExternalLocation externalLocation
@@ -374,16 +378,18 @@ struct DataSetSummary:
     Optional[DateTime] lastReferencedTime
     Optional[DateTime] lastUpdatedTime
 
-# no @derive(Json): member(s) vsam: VsamDetailAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vsam: VsamDetailAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatasetDetailOrgAttributes:
     Optional[GdgDetailAttributes] gdg
     Optional[PoDetailAttributes] po
     Optional[PsDetailAttributes] ps
     Optional[VsamDetailAttributes] vsam
 
-# no @derive(Json): member(s) po: PoAttributes, vsam: VsamAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) po: PoAttributes, vsam: VsamAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatasetOrgAttributes:
     Optional[GdgAttributes] gdg
     Optional[PoAttributes] po
@@ -502,8 +508,9 @@ struct GdgDetailAttributes:
 struct GetApplicationRequest:
     str applicationId
 
-# no @derive(Json): member(s) listenerArns: list[str], listenerPorts: list[int64], logGroups: list[LogGroupSummary], tags: dict[str, str], targetGroupArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) listenerArns: list[str], listenerPorts: list[int64], logGroups: list[LogGroupSummary], tags: dict[str, str], targetGroupArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetApplicationResponse:
     str applicationArn
     str applicationId
@@ -570,8 +577,9 @@ struct GetDataSetDetailsRequest:
     str applicationId
     str dataSetName
 
-# no @derive(Json): member(s) dataSetOrg: DatasetDetailOrgAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataSetOrg: DatasetDetailOrgAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataSetDetailsResponse:
     Optional[int64] blocksize
     Optional[DateTime] creationTime
@@ -630,8 +638,9 @@ struct GetDeploymentResponse:
 struct GetEnvironmentRequest:
     str environmentId
 
-# no @derive(Json): member(s) securityGroupIds: list[str], storageConfigurations: list[StorageConfiguration], subnetIds: list[str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroupIds: list[str], storageConfigurations: list[StorageConfiguration], subnetIds: list[str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEnvironmentResponse:
     Optional[int64] actualCapacity
     DateTime creationTime
@@ -703,8 +712,9 @@ struct ListApplicationVersionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) applicationVersions: list[ApplicationVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) applicationVersions: list[ApplicationVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationVersionsResponse:
     list[ApplicationVersionSummary] applicationVersions
     Optional[str] nextToken
@@ -717,8 +727,9 @@ struct ListApplicationsRequest:
     Optional[list[str]] names
     Optional[str] nextToken
 
-# no @derive(Json): member(s) applications: list[ApplicationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) applications: list[ApplicationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationsResponse:
     list[ApplicationSummary] applications
     Optional[str] nextToken
@@ -731,8 +742,9 @@ struct ListBatchJobDefinitionsRequest:
     Optional[str] nextToken
     Optional[str] prefix
 
-# no @derive(Json): member(s) batchJobDefinitions: list[BatchJobDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) batchJobDefinitions: list[BatchJobDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBatchJobDefinitionsResponse:
     list[BatchJobDefinition] batchJobDefinitions
     Optional[str] nextToken
@@ -750,8 +762,9 @@ struct ListBatchJobExecutionsRequest:
     # wire string of the BatchJobExecutionStatus enum (querystring binding)
     Optional[str] status
 
-# no @derive(Json): member(s) batchJobExecutions: list[BatchJobExecutionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) batchJobExecutions: list[BatchJobExecutionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBatchJobExecutionsResponse:
     list[BatchJobExecutionSummary] batchJobExecutions
     Optional[str] nextToken
@@ -763,8 +776,9 @@ struct ListBatchJobRestartPointsRequest:
     Optional[str] authSecretsManagerArn
     str executionId
 
-# no @derive(Json): member(s) batchJobSteps: list[JobStep] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) batchJobSteps: list[JobStep] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBatchJobRestartPointsResponse:
     Optional[list[JobStep]] batchJobSteps
 
@@ -775,8 +789,9 @@ struct ListDataSetExportHistoryRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) dataSetExportTasks: list[DataSetExportTask] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataSetExportTasks: list[DataSetExportTask] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataSetExportHistoryResponse:
     list[DataSetExportTask] dataSetExportTasks
     Optional[str] nextToken
@@ -788,8 +803,9 @@ struct ListDataSetImportHistoryRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) dataSetImportTasks: list[DataSetImportTask] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataSetImportTasks: list[DataSetImportTask] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataSetImportHistoryResponse:
     list[DataSetImportTask] dataSetImportTasks
     Optional[str] nextToken
@@ -803,8 +819,9 @@ struct ListDataSetsRequest:
     Optional[str] nextToken
     Optional[str] prefix
 
-# no @derive(Json): member(s) dataSets: list[DataSetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataSets: list[DataSetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataSetsResponse:
     list[DataSetSummary] dataSets
     Optional[str] nextToken
@@ -816,8 +833,9 @@ struct ListDeploymentsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) deployments: list[DeploymentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deployments: list[DeploymentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeploymentsResponse:
     list[DeploymentSummary] deployments
     Optional[str] nextToken
@@ -830,8 +848,9 @@ struct ListEngineVersionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) engineVersions: list[EngineVersionsSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) engineVersions: list[EngineVersionsSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEngineVersionsResponse:
     list[EngineVersionsSummary] engineVersions
     Optional[str] nextToken
@@ -845,8 +864,9 @@ struct ListEnvironmentsRequest:
     Optional[list[str]] names
     Optional[str] nextToken
 
-# no @derive(Json): member(s) environments: list[EnvironmentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environments: list[EnvironmentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentsResponse:
     list[EnvironmentSummary] environments
     Optional[str] nextToken
@@ -856,8 +876,9 @@ struct ListEnvironmentsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     dict[str, str] tags
 
@@ -876,8 +897,9 @@ struct PendingMaintenance:
     Optional[str] engineVersion
     Optional[MaintenanceSchedule] schedule
 
-# no @derive(Json): member(s) memberFileExtensions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) memberFileExtensions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PoAttributes:
     Optional[str] encoding
     str format
@@ -1040,8 +1062,9 @@ struct UpdateEnvironmentRequest:
 struct UpdateEnvironmentResponse:
     str environmentId
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     Optional[list[ValidationExceptionField]] fieldList
     str message
@@ -1052,8 +1075,9 @@ struct ValidationExceptionField:
     str message
     str name
 
-# no @derive(Json): member(s) alternateKeys: list[AlternateKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) alternateKeys: list[AlternateKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VsamAttributes:
     Optional[list[AlternateKey]] alternateKeys
     Optional[bool] compressed
@@ -1061,8 +1085,9 @@ struct VsamAttributes:
     str format
     Optional[PrimaryKey] primaryKey
 
-# no @derive(Json): member(s) alternateKeys: list[AlternateKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) alternateKeys: list[AlternateKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VsamDetailAttributes:
     Optional[list[AlternateKey]] alternateKeys
     Optional[bool] cacheAtStartup
@@ -1115,15 +1140,9 @@ def m2_error_from_code(str code) -> m2Error:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateApplication (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateDataSetExportTask (document member `exportConfig: DataSetExportConfig` is not serializable by derive)
-#   CreateDataSetImportTask (document member `importConfig: DataSetImportConfig` is not serializable by derive)
-#   CreateEnvironment (document member `securityGroupIds: list[str]` is not serializable by derive)
 #   ListApplications (httpQuery `names` has unsupported type list[str])
 #   ListBatchJobExecutions (httpQuery `executionIds` has unsupported type list[str])
 #   ListEnvironments (httpQuery `names` has unsupported type list[str])
-#   StartBatchJob (document member `jobParams: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
@@ -1169,6 +1188,136 @@ struct UpdateEnvironmentDocument:
     Optional[str] instanceType
     Optional[str] preferredMaintenanceWindow
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def m2_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def m2_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def m2_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize DataSet to a compact JSON object (declaration order).
+def data_set_to_json(DataSet v) -> str:
+    list[str] parts = []
+    parts.append("\"datasetName\":" + m2_json_str(v.datasetName))
+    parts.append("\"datasetOrg\":" + dataset_org_attributes_to_json(v.datasetOrg))
+    parts.append("\"recordLength\":" + v.recordLength.to_json())
+    if v.relativePath.is_some():
+        auto u0 = v.relativePath.unwrap()
+        parts.append("\"relativePath\":" + m2_json_str(u0))
+    if v.storageType.is_some():
+        auto u1 = v.storageType.unwrap()
+        parts.append("\"storageType\":" + m2_json_str(u1))
+    return m2_json_obj(parts)
+
+# Serialize DataSetExportConfig to a compact JSON object (declaration order).
+def data_set_export_config_to_json(DataSetExportConfig v) -> str:
+    list[str] parts = []
+    if v.dataSets.is_some():
+        auto u0 = v.dataSets.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"dataSets\":" + m2_json_arr(e1))
+    if v.s3Location.is_some():
+        auto u2 = v.s3Location.unwrap()
+        parts.append("\"s3Location\":" + m2_json_str(u2))
+    return m2_json_obj(parts)
+
+# Serialize DataSetImportConfig to a compact JSON object (declaration order).
+def data_set_import_config_to_json(DataSetImportConfig v) -> str:
+    list[str] parts = []
+    if v.dataSets.is_some():
+        auto u0 = v.dataSets.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(data_set_import_item_to_json(x1))
+        parts.append("\"dataSets\":" + m2_json_arr(e1))
+    if v.s3Location.is_some():
+        auto u2 = v.s3Location.unwrap()
+        parts.append("\"s3Location\":" + m2_json_str(u2))
+    return m2_json_obj(parts)
+
+# Serialize DataSetImportItem to a compact JSON object (declaration order).
+def data_set_import_item_to_json(DataSetImportItem v) -> str:
+    list[str] parts = []
+    parts.append("\"dataSet\":" + data_set_to_json(v.dataSet))
+    parts.append("\"externalLocation\":" + v.externalLocation.to_json())
+    return m2_json_obj(parts)
+
+# Serialize DatasetOrgAttributes to a compact JSON object (declaration order).
+def dataset_org_attributes_to_json(DatasetOrgAttributes v) -> str:
+    list[str] parts = []
+    if v.gdg.is_some():
+        auto u0 = v.gdg.unwrap()
+        parts.append("\"gdg\":" + u0.to_json())
+    if v.po.is_some():
+        auto u1 = v.po.unwrap()
+        parts.append("\"po\":" + po_attributes_to_json(u1))
+    if v.ps.is_some():
+        auto u2 = v.ps.unwrap()
+        parts.append("\"ps\":" + u2.to_json())
+    if v.vsam.is_some():
+        auto u3 = v.vsam.unwrap()
+        parts.append("\"vsam\":" + vsam_attributes_to_json(u3))
+    return m2_json_obj(parts)
+
+# Serialize PoAttributes to a compact JSON object (declaration order).
+def po_attributes_to_json(PoAttributes v) -> str:
+    list[str] parts = []
+    if v.encoding.is_some():
+        auto u0 = v.encoding.unwrap()
+        parts.append("\"encoding\":" + m2_json_str(u0))
+    parts.append("\"format\":" + m2_json_str(v.format))
+    list[str] e1 = []
+    for x1 in v.memberFileExtensions:
+        e1.append(m2_json_str(x1))
+    parts.append("\"memberFileExtensions\":" + m2_json_arr(e1))
+    return m2_json_obj(parts)
+
+# Serialize VsamAttributes to a compact JSON object (declaration order).
+def vsam_attributes_to_json(VsamAttributes v) -> str:
+    list[str] parts = []
+    if v.alternateKeys.is_some():
+        auto u0 = v.alternateKeys.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"alternateKeys\":" + m2_json_arr(e1))
+    if v.compressed.is_some():
+        auto u2 = v.compressed.unwrap()
+        parts.append("\"compressed\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.encoding.is_some():
+        auto u3 = v.encoding.unwrap()
+        parts.append("\"encoding\":" + m2_json_str(u3))
+    parts.append("\"format\":" + m2_json_str(v.format))
+    if v.primaryKey.is_some():
+        auto u4 = v.primaryKey.unwrap()
+        parts.append("\"primaryKey\":" + u4.to_json())
+    return m2_json_obj(parts)
+
 # A bound m2 client: credentials + region, threaded into every operation.
 struct m2Client:
     core.Credentials creds
@@ -1186,6 +1335,69 @@ struct m2Client:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, m2_service(), self.region, host)
 
+    # CreateApplication  POST /applications
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_application(self, CreateApplicationRequest input) -> str:
+        auto host = endpoints.regional_host(m2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + m2_json_str(u0))
+        parts.append("\"definition\":" + input.definition.to_json())
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + m2_json_str(u1))
+        parts.append("\"engineType\":" + input.engineType.to_json())
+        if input.kmsKeyId.is_some():
+            auto u2 = input.kmsKeyId.unwrap()
+            parts.append("\"kmsKeyId\":" + m2_json_str(u2))
+        parts.append("\"name\":" + m2_json_str(input.name))
+        if input.roleArn.is_some():
+            auto u3 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + m2_json_str(u3))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(m2_json_str(k5) + ":" + m2_json_str(u4[k5]))
+            parts.append("\"tags\":" + m2_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, m2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, m2_service(), self.region, host)
+
+    # CreateDataSetExportTask  POST /applications/{applicationId}/dataset-export-task
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_data_set_export_task(self, CreateDataSetExportTaskRequest input) -> str:
+        auto host = endpoints.regional_host(m2_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/dataset-export-task", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + m2_json_str(u0))
+        parts.append("\"exportConfig\":" + data_set_export_config_to_json(input.exportConfig))
+        if input.kmsKeyId.is_some():
+            auto u1 = input.kmsKeyId.unwrap()
+            parts.append("\"kmsKeyId\":" + m2_json_str(u1))
+        auto bp = restjson.rest_json_document(b, m2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, m2_service(), self.region, host)
+
+    # CreateDataSetImportTask  POST /applications/{applicationId}/dataset-import-task
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_data_set_import_task(self, CreateDataSetImportTaskRequest input) -> str:
+        auto host = endpoints.regional_host(m2_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/dataset-import-task", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + m2_json_str(u0))
+        parts.append("\"importConfig\":" + data_set_import_config_to_json(input.importConfig))
+        auto bp = restjson.rest_json_document(b, m2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, m2_service(), self.region, host)
+
     # CreateDeployment  POST /applications/{applicationId}/deployments
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_deployment(self, CreateDeploymentRequest input) -> str:
@@ -1195,6 +1407,66 @@ struct m2Client:
         auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/deployments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateDeploymentDocument(applicationVersion=input.applicationVersion, clientToken=input.clientToken, environmentId=input.environmentId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, m2_service(), self.region, host)
+
+    # CreateEnvironment  POST /environments
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_environment(self, CreateEnvironmentRequest input) -> str:
+        auto host = endpoints.regional_host(m2_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/environments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + m2_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + m2_json_str(u1))
+        parts.append("\"engineType\":" + input.engineType.to_json())
+        if input.engineVersion.is_some():
+            auto u2 = input.engineVersion.unwrap()
+            parts.append("\"engineVersion\":" + m2_json_str(u2))
+        if input.highAvailabilityConfig.is_some():
+            auto u3 = input.highAvailabilityConfig.unwrap()
+            parts.append("\"highAvailabilityConfig\":" + u3.to_json())
+        parts.append("\"instanceType\":" + m2_json_str(input.instanceType))
+        if input.kmsKeyId.is_some():
+            auto u4 = input.kmsKeyId.unwrap()
+            parts.append("\"kmsKeyId\":" + m2_json_str(u4))
+        parts.append("\"name\":" + m2_json_str(input.name))
+        if input.networkType.is_some():
+            auto u5 = input.networkType.unwrap()
+            parts.append("\"networkType\":" + u5.to_json())
+        if input.preferredMaintenanceWindow.is_some():
+            auto u6 = input.preferredMaintenanceWindow.unwrap()
+            parts.append("\"preferredMaintenanceWindow\":" + m2_json_str(u6))
+        if input.publiclyAccessible.is_some():
+            auto u7 = input.publiclyAccessible.unwrap()
+            parts.append("\"publiclyAccessible\":" + json.dumps(JsonValue.Bool(u7)))
+        if input.securityGroupIds.is_some():
+            auto u8 = input.securityGroupIds.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(m2_json_str(x9))
+            parts.append("\"securityGroupIds\":" + m2_json_arr(e9))
+        if input.storageConfigurations.is_some():
+            auto u10 = input.storageConfigurations.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(x11.to_json())
+            parts.append("\"storageConfigurations\":" + m2_json_arr(e11))
+        if input.subnetIds.is_some():
+            auto u12 = input.subnetIds.unwrap()
+            list[str] e13 = []
+            for x13 in u12:
+                e13.append(m2_json_str(x13))
+            parts.append("\"subnetIds\":" + m2_json_arr(e13))
+        if input.tags.is_some():
+            auto u14 = input.tags.unwrap()
+            list[str] m15 = []
+            for k15 in sorted(u14.keys()):
+                m15.append(m2_json_str(k15) + ":" + m2_json_str(u14[k15]))
+            parts.append("\"tags\":" + m2_json_obj(m15))
+        auto bp = restjson.rest_json_document(b, m2_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, m2_service(), self.region, host)
 
     # DeleteApplication  DELETE /applications/{applicationId}
@@ -1445,6 +1717,27 @@ struct m2Client:
         auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
 
+    # StartBatchJob  POST /applications/{applicationId}/batch-job
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def start_batch_job(self, StartBatchJobRequest input) -> str:
+        auto host = endpoints.regional_host(m2_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/batch-job", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.authSecretsManagerArn.is_some():
+            auto u0 = input.authSecretsManagerArn.unwrap()
+            parts.append("\"authSecretsManagerArn\":" + m2_json_str(u0))
+        parts.append("\"batchJobIdentifier\":" + input.batchJobIdentifier.to_json())
+        if input.jobParams.is_some():
+            auto u1 = input.jobParams.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(m2_json_str(k2) + ":" + m2_json_str(u1[k2]))
+            parts.append("\"jobParams\":" + m2_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, m2_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, m2_service(), self.region, host)
+
     # StopApplication  POST /applications/{applicationId}/stop
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def stop_application(self, StopApplicationRequest input) -> str:
@@ -1454,6 +1747,21 @@ struct m2Client:
         auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopApplicationDocument(forceStop=input.forceStop)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, m2_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(m2_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(m2_json_str(k0) + ":" + m2_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + m2_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, m2_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, m2_service(), self.region, host)
 
     # UpdateApplication  PATCH /applications/{applicationId}

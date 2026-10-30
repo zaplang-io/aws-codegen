@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 27 operations — 18 with a generated method,
-#   9 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 27 operations — 26 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   82 structs (45 @derive(Json)), 19 enums, 5 error variants.
-#   5 paginators generated (4 paginated ops skipped) from paginators-1.json.
+#   9 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -220,8 +220,9 @@ enum RuleResultStatus:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) Components: list[str], AssociatedApplicationArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Components: list[str], AssociatedApplicationArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Application:
     Optional[str] Id
     Optional[ApplicationType] Type
@@ -240,8 +241,9 @@ struct ApplicationCredential:
     str CredentialType
     str SecretId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationSummary:
     Optional[str] Id
     Optional[ApplicationDiscoveryStatus] DiscoveryStatus
@@ -249,8 +251,9 @@ struct ApplicationSummary:
     Optional[str] Arn
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) IpAddresses: list[IpAddressMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IpAddresses: list[IpAddressMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociatedHost:
     Optional[str] Hostname
     Optional[str] Ec2InstanceId
@@ -262,8 +265,9 @@ struct BackintConfig:
     str BackintMode
     bool EnsureNoBackupInProcess
 
-# no @derive(Json): member(s) ChildComponents: list[str], AssociatedHost: AssociatedHost, Databases: list[str], Hosts: list[Host] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChildComponents: list[str], AssociatedHost: AssociatedHost, Databases: list[str], Hosts: list[Host] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Component:
     Optional[str] ComponentId
     Optional[str] Sid
@@ -292,8 +296,9 @@ struct ComponentInfo:
     str Sid
     str Ec2InstanceId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComponentSummary:
     Optional[str] ApplicationId
     Optional[str] ComponentId
@@ -301,8 +306,9 @@ struct ComponentSummary:
     Optional[dict[str, str]] Tags
     Optional[str] Arn
 
-# no @derive(Json): member(s) ApplicableApplicationTypes: list[ApplicationType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicableApplicationTypes: list[ApplicationType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationCheckDefinition:
     Optional[ConfigurationCheckType] Id
     Optional[str] Name
@@ -326,8 +332,9 @@ struct ConfigurationCheckOperation:
 struct ConflictException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Credentials: list[ApplicationCredential], ConnectedComponentArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Credentials: list[ApplicationCredential], ConnectedComponentArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Database:
     Optional[str] ApplicationId
     Optional[str] ComponentId
@@ -348,8 +355,9 @@ struct DatabaseConnection:
     Optional[str] DatabaseArn
     Optional[str] ConnectionIp
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatabaseSummary:
     Optional[str] ApplicationId
     Optional[str] ComponentId
@@ -392,8 +400,9 @@ struct GetApplicationInput:
     Optional[str] ApplicationArn
     Optional[str] AppRegistryArn
 
-# no @derive(Json): member(s) Application: Application, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Application: Application, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetApplicationOutput:
     Optional[Application] Application
     Optional[dict[str, str]] Tags
@@ -404,8 +413,9 @@ struct GetComponentInput:
     str ApplicationId
     str ComponentId
 
-# no @derive(Json): member(s) Component: Component, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Component: Component, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetComponentOutput:
     Optional[Component] Component
     Optional[dict[str, str]] Tags
@@ -427,8 +437,9 @@ struct GetDatabaseInput:
     Optional[str] DatabaseId
     Optional[str] DatabaseArn
 
-# no @derive(Json): member(s) Database: Database, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Database: Database, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDatabaseOutput:
     Optional[Database] Database
     Optional[dict[str, str]] Tags
@@ -438,8 +449,9 @@ struct GetDatabaseOutput:
 struct GetOperationInput:
     str OperationId
 
-# no @derive(Json): member(s) Operation: Operation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Operation: Operation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOperationOutput:
     Optional[Operation] Operation
 
@@ -479,8 +491,9 @@ struct ListApplicationsInput:
     Optional[int64] MaxResults
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) Applications: list[ApplicationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Applications: list[ApplicationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationsOutput:
     Optional[list[ApplicationSummary]] Applications
     Optional[str] NextToken
@@ -492,8 +505,9 @@ struct ListComponentsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Components: list[ComponentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Components: list[ComponentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListComponentsOutput:
     Optional[list[ComponentSummary]] Components
     Optional[str] NextToken
@@ -504,8 +518,9 @@ struct ListConfigurationCheckDefinitionsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConfigurationChecks: list[ConfigurationCheckDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationChecks: list[ConfigurationCheckDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfigurationCheckDefinitionsOutput:
     Optional[list[ConfigurationCheckDefinition]] ConfigurationChecks
     Optional[str] NextToken
@@ -519,8 +534,9 @@ struct ListConfigurationCheckOperationsInput:
     Optional[str] NextToken
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) ConfigurationCheckOperations: list[ConfigurationCheckOperation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationCheckOperations: list[ConfigurationCheckOperation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfigurationCheckOperationsOutput:
     Optional[list[ConfigurationCheckOperation]] ConfigurationCheckOperations
     Optional[str] NextToken
@@ -533,8 +549,9 @@ struct ListDatabasesInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Databases: list[DatabaseSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Databases: list[DatabaseSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatabasesOutput:
     Optional[list[DatabaseSummary]] Databases
     Optional[str] NextToken
@@ -547,8 +564,9 @@ struct ListOperationEventsInput:
     Optional[str] NextToken
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) OperationEvents: list[OperationEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OperationEvents: list[OperationEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOperationEventsOutput:
     Optional[list[OperationEvent]] OperationEvents
     Optional[str] NextToken
@@ -561,8 +579,9 @@ struct ListOperationsInput:
     Optional[str] NextToken
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) Operations: list[Operation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Operations: list[Operation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOperationsOutput:
     Optional[list[Operation]] Operations
     Optional[str] NextToken
@@ -574,8 +593,9 @@ struct ListSubCheckResultsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SubCheckResults: list[SubCheckResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubCheckResults: list[SubCheckResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSubCheckResultsOutput:
     Optional[list[SubCheckResult]] SubCheckResults
     Optional[str] NextToken
@@ -587,8 +607,9 @@ struct ListSubCheckRuleResultsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RuleResults: list[RuleResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleResults: list[RuleResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSubCheckRuleResultsOutput:
     Optional[list[RuleResult]] RuleResults
     Optional[str] NextToken
@@ -598,13 +619,15 @@ struct ListSubCheckRuleResultsOutput:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) Properties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Operation:
     Optional[str] Id
     Optional[str] Type
@@ -650,8 +673,9 @@ struct RegisterApplicationInput:
     Optional[str] DatabaseArn
     Optional[list[ComponentInfo]] ComponentsInfo
 
-# no @derive(Json): member(s) Application: Application not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Application: Application not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterApplicationOutput:
     Optional[Application] Application
     Optional[str] OperationId
@@ -673,8 +697,9 @@ struct Resource:
 struct ResourceNotFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Metadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleResult:
     Optional[str] Id
     Optional[str] Description
@@ -714,8 +739,9 @@ struct StartConfigurationChecksInput:
     str ApplicationId
     Optional[list[ConfigurationCheckType]] ConfigurationCheckIds
 
-# no @derive(Json): member(s) ConfigurationCheckOperations: list[ConfigurationCheckOperation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationCheckOperations: list[ConfigurationCheckOperation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartConfigurationChecksOutput:
     Optional[list[ConfigurationCheckOperation]] ConfigurationCheckOperations
 
@@ -730,8 +756,9 @@ struct StopApplicationInput:
 struct StopApplicationOutput:
     Optional[str] OperationId
 
-# no @derive(Json): member(s) References: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) References: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubCheckResult:
     Optional[str] Id
     Optional[str] Name
@@ -773,8 +800,9 @@ struct UpdateApplicationSettingsInput:
     Optional[BackintConfig] Backint
     Optional[str] DatabaseArn
 
-# no @derive(Json): member(s) OperationIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OperationIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateApplicationSettingsOutput:
     Optional[str] Message
     Optional[list[str]] OperationIds
@@ -815,22 +843,7 @@ def ssm_sap_error_from_code(str code) -> Ssm_SapError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   ListApplications (document member `Filters: list[Filter]` is not serializable by derive)
-#   ListConfigurationCheckOperations (document member `Filters: list[Filter]` is not serializable by derive)
-#   ListOperationEvents (document member `Filters: list[Filter]` is not serializable by derive)
-#   ListOperations (document member `Filters: list[Filter]` is not serializable by derive)
-#   RegisterApplication (document member `Instances: list[str]` is not serializable by derive)
-#   StartConfigurationChecks (document member `ConfigurationCheckIds: list[ConfigurationCheckType]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateApplicationSettings (document member `CredentialsToAddOrUpdate: list[ApplicationCredential]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListApplications (operation not generated)
-#   ListConfigurationCheckOperations (operation not generated)
-#   ListOperationEvents (operation not generated)
-#   ListOperations (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1020,6 +1033,27 @@ struct Ssm_SapClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
 
+    # ListApplications  POST /list-applications
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def list_applications(self, ListApplicationsInput input) -> str:
+        auto host = endpoints.regional_host(ssm_sap_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/list-applications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.NextToken.is_some():
+            auto u0 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + ssm_sap_json_str(u0))
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.Filters.is_some():
+            auto u2 = input.Filters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"Filters\":" + ssm_sap_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, ssm_sap_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
+
     # ListComponents  POST /list-components
     # errors: InternalServerException, ResourceNotFoundException, UnauthorizedException, ValidationException
     def list_components(self, ListComponentsInput input) -> str:
@@ -1038,6 +1072,31 @@ struct Ssm_SapClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
 
+    # ListConfigurationCheckOperations  POST /list-configuration-check-operations
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def list_configuration_check_operations(self, ListConfigurationCheckOperationsInput input) -> str:
+        auto host = endpoints.regional_host(ssm_sap_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/list-configuration-check-operations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ApplicationId\":" + ssm_sap_json_str(input.ApplicationId))
+        if input.ListMode.is_some():
+            auto u0 = input.ListMode.unwrap()
+            parts.append("\"ListMode\":" + u0.to_json())
+        if input.MaxResults.is_some():
+            auto u1 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u1))
+        if input.NextToken.is_some():
+            auto u2 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + ssm_sap_json_str(u2))
+        if input.Filters.is_some():
+            auto u3 = input.Filters.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"Filters\":" + ssm_sap_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, ssm_sap_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
+
     # ListDatabases  POST /list-databases
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def list_databases(self, ListDatabasesInput input) -> str:
@@ -1045,6 +1104,50 @@ struct Ssm_SapClient:
         auto b = binding.HttpBinding(method="POST", path_template="/list-databases", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListDatabasesDocument(ApplicationId=input.ApplicationId, ComponentId=input.ComponentId, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
+
+    # ListOperationEvents  POST /list-operation-events
+    # errors: InternalServerException, ValidationException
+    def list_operation_events(self, ListOperationEventsInput input) -> str:
+        auto host = endpoints.regional_host(ssm_sap_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/list-operation-events", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"OperationId\":" + ssm_sap_json_str(input.OperationId))
+        if input.MaxResults.is_some():
+            auto u0 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + ssm_sap_json_str(u1))
+        if input.Filters.is_some():
+            auto u2 = input.Filters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"Filters\":" + ssm_sap_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, ssm_sap_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
+
+    # ListOperations  POST /list-operations
+    # errors: InternalServerException, ValidationException
+    def list_operations(self, ListOperationsInput input) -> str:
+        auto host = endpoints.regional_host(ssm_sap_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/list-operations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ApplicationId\":" + ssm_sap_json_str(input.ApplicationId))
+        if input.MaxResults.is_some():
+            auto u0 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + ssm_sap_json_str(u1))
+        if input.Filters.is_some():
+            auto u2 = input.Filters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"Filters\":" + ssm_sap_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, ssm_sap_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
 
     # ListSubCheckResults  POST /list-sub-check-results
@@ -1083,6 +1186,48 @@ struct Ssm_SapClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
 
+    # RegisterApplication  POST /register-application
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
+    def register_application(self, RegisterApplicationInput input) -> str:
+        auto host = endpoints.regional_host(ssm_sap_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/register-application", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ApplicationId\":" + ssm_sap_json_str(input.ApplicationId))
+        parts.append("\"ApplicationType\":" + input.ApplicationType.to_json())
+        list[str] e0 = []
+        for x0 in input.Instances:
+            e0.append(ssm_sap_json_str(x0))
+        parts.append("\"Instances\":" + ssm_sap_json_arr(e0))
+        if input.SapInstanceNumber.is_some():
+            auto u1 = input.SapInstanceNumber.unwrap()
+            parts.append("\"SapInstanceNumber\":" + ssm_sap_json_str(u1))
+        if input.Sid.is_some():
+            auto u2 = input.Sid.unwrap()
+            parts.append("\"Sid\":" + ssm_sap_json_str(u2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(ssm_sap_json_str(k4) + ":" + ssm_sap_json_str(u3[k4]))
+            parts.append("\"Tags\":" + ssm_sap_json_obj(m4))
+        if input.Credentials.is_some():
+            auto u5 = input.Credentials.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"Credentials\":" + ssm_sap_json_arr(e6))
+        if input.DatabaseArn.is_some():
+            auto u7 = input.DatabaseArn.unwrap()
+            parts.append("\"DatabaseArn\":" + ssm_sap_json_str(u7))
+        if input.ComponentsInfo.is_some():
+            auto u8 = input.ComponentsInfo.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"ComponentsInfo\":" + ssm_sap_json_arr(e9))
+        auto bp = restjson.rest_json_document(b, ssm_sap_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
+
     # StartApplication  POST /start-application
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def start_application(self, StartApplicationInput input) -> str:
@@ -1101,6 +1246,22 @@ struct Ssm_SapClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
 
+    # StartConfigurationChecks  POST /start-configuration-checks
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
+    def start_configuration_checks(self, StartConfigurationChecksInput input) -> str:
+        auto host = endpoints.regional_host(ssm_sap_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/start-configuration-checks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ApplicationId\":" + ssm_sap_json_str(input.ApplicationId))
+        if input.ConfigurationCheckIds.is_some():
+            auto u0 = input.ConfigurationCheckIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"ConfigurationCheckIds\":" + ssm_sap_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, ssm_sap_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
+
     # StopApplication  POST /stop-application
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def stop_application(self, StopApplicationInput input) -> str:
@@ -1109,6 +1270,62 @@ struct Ssm_SapClient:
         auto doc = StopApplicationDocument(ApplicationId=input.ApplicationId, StopConnectedEntity=input.StopConnectedEntity, IncludeEc2InstanceShutdown=input.IncludeEc2InstanceShutdown)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: ConflictException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(ssm_sap_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(ssm_sap_json_str(k0) + ":" + ssm_sap_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + ssm_sap_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, ssm_sap_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
+
+    # UpdateApplicationSettings  POST /update-application-settings
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, UnauthorizedException, ValidationException
+    def update_application_settings(self, UpdateApplicationSettingsInput input) -> str:
+        auto host = endpoints.regional_host(ssm_sap_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/update-application-settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ApplicationId\":" + ssm_sap_json_str(input.ApplicationId))
+        if input.CredentialsToAddOrUpdate.is_some():
+            auto u0 = input.CredentialsToAddOrUpdate.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"CredentialsToAddOrUpdate\":" + ssm_sap_json_arr(e1))
+        if input.CredentialsToRemove.is_some():
+            auto u2 = input.CredentialsToRemove.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"CredentialsToRemove\":" + ssm_sap_json_arr(e3))
+        if input.Backint.is_some():
+            auto u4 = input.Backint.unwrap()
+            parts.append("\"Backint\":" + u4.to_json())
+        if input.DatabaseArn.is_some():
+            auto u5 = input.DatabaseArn.unwrap()
+            parts.append("\"DatabaseArn\":" + ssm_sap_json_str(u5))
+        auto bp = restjson.rest_json_document(b, ssm_sap_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
+
+    # Paginator for ListApplications — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Applications).
+    def paginate_list_applications(self, ListApplicationsInput input):
+        auto host = endpoints.regional_host(ssm_sap_service(), self.region)
+        while True:
+            auto raw = self.list_applications(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
     # Paginator for ListComponents — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: Components).
@@ -1136,12 +1353,51 @@ struct Ssm_SapClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListConfigurationCheckOperations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: ConfigurationCheckOperations).
+    def paginate_list_configuration_check_operations(self, ListConfigurationCheckOperationsInput input):
+        auto host = endpoints.regional_host(ssm_sap_service(), self.region)
+        while True:
+            auto raw = self.list_configuration_check_operations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListDatabases — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: Databases).
     def paginate_list_databases(self, ListDatabasesInput input):
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
         while True:
             auto raw = self.list_databases(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListOperationEvents — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: OperationEvents).
+    def paginate_list_operation_events(self, ListOperationEventsInput input):
+        auto host = endpoints.regional_host(ssm_sap_service(), self.region)
+        while True:
+            auto raw = self.list_operation_events(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListOperations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Operations).
+    def paginate_list_operations(self, ListOperationsInput input):
+        auto host = endpoints.regional_host(ssm_sap_service(), self.region)
+        while True:
+            auto raw = self.list_operations(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 20 operations — 11 with a generated method,
-#   9 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 20 operations — 19 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   61 structs (36 @derive(Json)), 9 enums, 7 error variants.
-#   0 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -161,8 +161,9 @@ struct CreateWebFunctionEndpointRequest:
     Optional[ScalingConfig] scalingConfig
     Optional[ThrottleConfig] throttleConfig
 
-# no @derive(Json): member(s) revisionWeights: list[RevisionWeight], regions: list[str], regionalEndpoints: dict[str, RegionalEndpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) revisionWeights: list[RevisionWeight], regions: list[str], regionalEndpoints: dict[str, RegionalEndpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWebFunctionEndpointResponse:
     str functionArn
     str endpointArn
@@ -192,8 +193,9 @@ struct CreateWebFunctionRequest:
     Optional[EndpointConfig] endpointConfig
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) endpoint: FunctionEndpointSummary, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) endpoint: FunctionEndpointSummary, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWebFunctionResponse:
     str functionName
     str functionArn
@@ -214,8 +216,9 @@ struct CreateWebFunctionRevisionRequest:
     BuildConfig buildConfig
     ServiceConfig serviceConfig
 
-# no @derive(Json): member(s) serviceConfig: ServiceConfig, errors: list[RevisionError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceConfig: ServiceConfig, errors: list[RevisionError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWebFunctionRevisionResponse:
     str functionArn
     str revisionArn
@@ -252,8 +255,9 @@ struct DeleteWebFunctionRevisionRequest:
     str functionName
     str revisionId
 
-# no @derive(Json): member(s) regions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) regions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EndpointConfig:
     str endpointName
     Optional[str] description
@@ -264,14 +268,16 @@ struct EndpointConfig:
     Optional[ScalingConfig] scalingConfig
     Optional[ThrottleConfig] throttleConfig
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filter:
     str name
     list[str] values
 
-# no @derive(Json): member(s) revisionWeights: list[RevisionWeight], regions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) revisionWeights: list[RevisionWeight], regions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FunctionEndpointSummary:
     str endpointArn
     str endpointName
@@ -339,8 +345,9 @@ struct GetWebFunctionEndpointRequest:
     str functionName
     str endpointName
 
-# no @derive(Json): member(s) revisionWeights: list[RevisionWeight], regions: list[str], regionalEndpoints: dict[str, RegionalEndpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) revisionWeights: list[RevisionWeight], regions: list[str], regionalEndpoints: dict[str, RegionalEndpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWebFunctionEndpointResponse:
     str functionArn
     str endpointArn
@@ -384,8 +391,9 @@ struct GetWebFunctionRevisionRequest:
     str functionName
     str revisionId
 
-# no @derive(Json): member(s) serviceConfig: ServiceConfig, errors: list[RevisionError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceConfig: ServiceConfig, errors: list[RevisionError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWebFunctionRevisionResponse:
     str functionArn
     str revisionArn
@@ -408,8 +416,9 @@ struct InternalServerException:
 struct ListTagsRequest:
     str resource
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsResponse:
     Optional[dict[str, str]] tags
 
@@ -421,8 +430,9 @@ struct ListWebFunctionEndpointsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) endpoints: list[FunctionEndpointSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) endpoints: list[FunctionEndpointSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWebFunctionEndpointsResponse:
     list[FunctionEndpointSummary] endpoints
     Optional[str] nextToken
@@ -435,8 +445,9 @@ struct ListWebFunctionRevisionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) revisions: list[FunctionRevisionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) revisions: list[FunctionRevisionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWebFunctionRevisionsResponse:
     list[FunctionRevisionSummary] revisions
     Optional[str] nextToken
@@ -448,8 +459,9 @@ struct ListWebFunctionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) functions: list[FunctionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) functions: list[FunctionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWebFunctionsResponse:
     list[FunctionSummary] functions
     Optional[str] nextToken
@@ -472,8 +484,9 @@ struct PutResourcePolicyResponse:
     str policy
     str revisionId
 
-# no @derive(Json): member(s) revisionWeights: list[RevisionWeight] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) revisionWeights: list[RevisionWeight] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegionalEndpoint:
     Optional[str] domainName
     AuthType authType
@@ -491,8 +504,9 @@ struct ResourceNotFoundException:
     Optional[str] resourceId
     Optional[str] resourceType
 
-# no @derive(Json): member(s) serviceConfig: ServiceConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serviceConfig: ServiceConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RevisionConfig:
     Optional[str] description
     Optional[str] kmsKeyArn
@@ -524,8 +538,9 @@ struct S3Object:
 struct ScalingConfig:
     Optional[int64] maxEnvironments
 
-# no @derive(Json): member(s) environmentVariables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environmentVariables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceConfig:
     str executionRoleArn
     Optional[int64] timeoutSeconds
@@ -581,8 +596,9 @@ struct UpdateWebFunctionEndpointRequest:
     Optional[ScalingConfig] scalingConfig
     Optional[ThrottleConfig] throttleConfig
 
-# no @derive(Json): member(s) revisionWeights: list[RevisionWeight], regions: list[str], regionalEndpoints: dict[str, RegionalEndpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) revisionWeights: list[RevisionWeight], regions: list[str], regionalEndpoints: dict[str, RegionalEndpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateWebFunctionEndpointResponse:
     str functionArn
     str endpointArn
@@ -646,21 +662,7 @@ def lambda__error_from_code(str code) -> Lambda_WebError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateWebFunction (document member `revisionConfig: RevisionConfig` is not serializable by derive)
-#   CreateWebFunctionEndpoint (document member `revisionWeights: list[RevisionWeight]` is not serializable by derive)
-#   CreateWebFunctionRevision (document member `serviceConfig: ServiceConfig` is not serializable by derive)
-#   ListWebFunctionEndpoints (document member `filters: list[Filter]` is not serializable by derive)
-#   ListWebFunctionRevisions (document member `filters: list[Filter]` is not serializable by derive)
-#   ListWebFunctions (document member `filters: list[Filter]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateWebFunctionEndpoint (document member `revisionWeights: list[RevisionWeight]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListWebFunctionEndpoints (operation not generated)
-#   ListWebFunctionRevisions (operation not generated)
-#   ListWebFunctions (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -671,10 +673,192 @@ struct PutResourcePolicyDocument:
     str policy
     Optional[str] revisionId
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def lambda__json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def lambda__json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def lambda__json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize EndpointConfig to a compact JSON object (declaration order).
+def endpoint_config_to_json(EndpointConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"endpointName\":" + lambda__json_str(v.endpointName))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + lambda__json_str(u0))
+    parts.append("\"endpointType\":" + v.endpointType.to_json())
+    parts.append("\"authType\":" + v.authType.to_json())
+    if v.autoDeploymentMode.is_some():
+        auto u1 = v.autoDeploymentMode.unwrap()
+        parts.append("\"autoDeploymentMode\":" + u1.to_json())
+    if v.regions.is_some():
+        auto u2 = v.regions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(lambda__json_str(x3))
+        parts.append("\"regions\":" + lambda__json_arr(e3))
+    if v.scalingConfig.is_some():
+        auto u4 = v.scalingConfig.unwrap()
+        parts.append("\"scalingConfig\":" + u4.to_json())
+    if v.throttleConfig.is_some():
+        auto u5 = v.throttleConfig.unwrap()
+        parts.append("\"throttleConfig\":" + u5.to_json())
+    return lambda__json_obj(parts)
+
+# Serialize Filter to a compact JSON object (declaration order).
+def filter_to_json(Filter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + lambda__json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(lambda__json_str(x0))
+    parts.append("\"values\":" + lambda__json_arr(e0))
+    return lambda__json_obj(parts)
+
+# Serialize RevisionConfig to a compact JSON object (declaration order).
+def revision_config_to_json(RevisionConfig v) -> str:
+    list[str] parts = []
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + lambda__json_str(u0))
+    if v.kmsKeyArn.is_some():
+        auto u1 = v.kmsKeyArn.unwrap()
+        parts.append("\"kmsKeyArn\":" + lambda__json_str(u1))
+    parts.append("\"buildConfig\":" + v.buildConfig.to_json())
+    parts.append("\"serviceConfig\":" + service_config_to_json(v.serviceConfig))
+    return lambda__json_obj(parts)
+
+# Serialize ServiceConfig to a compact JSON object (declaration order).
+def service_config_to_json(ServiceConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"executionRoleArn\":" + lambda__json_str(v.executionRoleArn))
+    if v.timeoutSeconds.is_some():
+        auto u0 = v.timeoutSeconds.unwrap()
+        parts.append("\"timeoutSeconds\":" + str(u0))
+    if v.egressNetworkConnectorArn.is_some():
+        auto u1 = v.egressNetworkConnectorArn.unwrap()
+        parts.append("\"egressNetworkConnectorArn\":" + lambda__json_str(u1))
+    if v.maxConcurrencyPerEnvironment.is_some():
+        auto u2 = v.maxConcurrencyPerEnvironment.unwrap()
+        parts.append("\"maxConcurrencyPerEnvironment\":" + str(u2))
+    if v.environmentVariables.is_some():
+        auto u3 = v.environmentVariables.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(lambda__json_str(k4) + ":" + lambda__json_str(u3[k4]))
+        parts.append("\"environmentVariables\":" + lambda__json_obj(m4))
+    if v.telemetryConfig.is_some():
+        auto u5 = v.telemetryConfig.unwrap()
+        parts.append("\"telemetryConfig\":" + u5.to_json())
+    return lambda__json_obj(parts)
+
 # A bound Lambda_Web client: credentials + region, threaded into every operation.
 struct Lambda_WebClient:
     core.Credentials creds
     str region
+
+    # CreateWebFunction  PUT /2025-03-07/web-functions
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_web_function(self, CreateWebFunctionRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/2025-03-07/web-functions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"functionName\":" + lambda__json_str(input.functionName))
+        if input.revisionConfig.is_some():
+            auto u0 = input.revisionConfig.unwrap()
+            parts.append("\"revisionConfig\":" + revision_config_to_json(u0))
+        if input.endpointConfig.is_some():
+            auto u1 = input.endpointConfig.unwrap()
+            parts.append("\"endpointConfig\":" + endpoint_config_to_json(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(lambda__json_str(k3) + ":" + lambda__json_str(u2[k3]))
+            parts.append("\"tags\":" + lambda__json_obj(m3))
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # CreateWebFunctionEndpoint  PUT /2025-03-07/web-functions/{functionName}/endpoints
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_web_function_endpoint(self, CreateWebFunctionEndpointRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["functionName"] = input.functionName
+        auto b = binding.HttpBinding(method="PUT", path_template="/2025-03-07/web-functions/{functionName}/endpoints", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"endpointName\":" + lambda__json_str(input.endpointName))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + lambda__json_str(u0))
+        parts.append("\"endpointType\":" + input.endpointType.to_json())
+        parts.append("\"authType\":" + input.authType.to_json())
+        if input.autoDeploymentMode.is_some():
+            auto u1 = input.autoDeploymentMode.unwrap()
+            parts.append("\"autoDeploymentMode\":" + u1.to_json())
+        if input.revisionWeights.is_some():
+            auto u2 = input.revisionWeights.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"revisionWeights\":" + lambda__json_arr(e3))
+        if input.regions.is_some():
+            auto u4 = input.regions.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(lambda__json_str(x5))
+            parts.append("\"regions\":" + lambda__json_arr(e5))
+        if input.scalingConfig.is_some():
+            auto u6 = input.scalingConfig.unwrap()
+            parts.append("\"scalingConfig\":" + u6.to_json())
+        if input.throttleConfig.is_some():
+            auto u7 = input.throttleConfig.unwrap()
+            parts.append("\"throttleConfig\":" + u7.to_json())
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # CreateWebFunctionRevision  POST /2025-03-07/web-functions/{functionName}/revisions
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_web_function_revision(self, CreateWebFunctionRevisionRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["functionName"] = input.functionName
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-03-07/web-functions/{functionName}/revisions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + lambda__json_str(u0))
+        if input.kmsKeyArn.is_some():
+            auto u1 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + lambda__json_str(u1))
+        parts.append("\"buildConfig\":" + input.buildConfig.to_json())
+        parts.append("\"serviceConfig\":" + service_config_to_json(input.serviceConfig))
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
 
     # DeleteResourcePolicy  DELETE /2025-03-07/resource-policy/{resourceArn}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -771,6 +955,73 @@ struct Lambda_WebClient:
         auto b = binding.HttpBinding(method="GET", path_template="/2025-03-07/tags/{resource}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
+    # ListWebFunctionEndpoints  POST /2025-03-07/web-functions/{functionName}/list-endpoints
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_web_function_endpoints(self, ListWebFunctionEndpointsRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["functionName"] = input.functionName
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-03-07/web-functions/{functionName}/list-endpoints", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(filter_to_json(x1))
+            parts.append("\"filters\":" + lambda__json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + lambda__json_str(u3))
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # ListWebFunctionRevisions  POST /2025-03-07/web-functions/{functionName}/list-revisions
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_web_function_revisions(self, ListWebFunctionRevisionsRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["functionName"] = input.functionName
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-03-07/web-functions/{functionName}/list-revisions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(filter_to_json(x1))
+            parts.append("\"filters\":" + lambda__json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + lambda__json_str(u3))
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # ListWebFunctions  POST /2025-03-07/web-functions
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_web_functions(self, ListWebFunctionsRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-03-07/web-functions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(filter_to_json(x1))
+            parts.append("\"filters\":" + lambda__json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + lambda__json_str(u3))
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
     # PutResourcePolicy  PUT /2025-03-07/resource-policy/{resourceArn}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def put_resource_policy(self, PutResourcePolicyRequest input) -> str:
@@ -781,6 +1032,93 @@ struct Lambda_WebClient:
         auto doc = PutResourcePolicyDocument(policy=input.policy, revisionId=input.revisionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # TagResource  POST /2025-03-07/tags/{resource}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["resource"] = input.resource
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-03-07/tags/{resource}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(lambda__json_str(k0) + ":" + lambda__json_str(input.tags[k0]))
+        parts.append("\"Tags\":" + lambda__json_obj(m0))
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # UpdateWebFunctionEndpoint  PATCH /2025-03-07/web-functions/{functionName}/endpoints/{endpointName}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_web_function_endpoint(self, UpdateWebFunctionEndpointRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["functionName"] = input.functionName
+        labels["endpointName"] = input.endpointName
+        auto b = binding.HttpBinding(method="PATCH", path_template="/2025-03-07/web-functions/{functionName}/endpoints/{endpointName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + lambda__json_str(u0))
+        if input.authType.is_some():
+            auto u1 = input.authType.unwrap()
+            parts.append("\"authType\":" + u1.to_json())
+        if input.autoDeploymentMode.is_some():
+            auto u2 = input.autoDeploymentMode.unwrap()
+            parts.append("\"autoDeploymentMode\":" + u2.to_json())
+        if input.revisionWeights.is_some():
+            auto u3 = input.revisionWeights.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"revisionWeights\":" + lambda__json_arr(e4))
+        if input.scalingConfig.is_some():
+            auto u5 = input.scalingConfig.unwrap()
+            parts.append("\"scalingConfig\":" + u5.to_json())
+        if input.throttleConfig.is_some():
+            auto u6 = input.throttleConfig.unwrap()
+            parts.append("\"throttleConfig\":" + u6.to_json())
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # Paginator for ListWebFunctionEndpoints — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: endpoints).
+    def paginate_list_web_function_endpoints(self, ListWebFunctionEndpointsRequest input):
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        while True:
+            auto raw = self.list_web_function_endpoints(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListWebFunctionRevisions — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: revisions).
+    def paginate_list_web_function_revisions(self, ListWebFunctionRevisionsRequest input):
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        while True:
+            auto raw = self.list_web_function_revisions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListWebFunctions — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: functions).
+    def paginate_list_web_functions(self, ListWebFunctionsRequest input):
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        while True:
+            auto raw = self.list_web_functions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
 
 # Construct a Lambda_WebClient bound to credentials + region.
 def lambda__client(core.Credentials creds, str region) -> Lambda_WebClient:

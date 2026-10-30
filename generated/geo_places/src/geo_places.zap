@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 7 operations — 0 with a generated method,
-#   7 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 7 operations — 6 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   80 structs (26 @derive(Json)), 30 enums, 4 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -328,22 +328,25 @@ enum ZipClassificationCode:
 struct AccessDeniedException:
     str Message
 
-# no @derive(Json): member(s) Position: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Position: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccessPoint:
     Optional[list[float64]] Position
     Optional[AccessPointType] Type
     Optional[bool] Primary
     Optional[str] Label
 
-# no @derive(Json): member(s) Categories: list[Category] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Categories: list[Category] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccessRestriction:
     Optional[bool] Restricted
     Optional[list[Category]] Categories
 
-# no @derive(Json): member(s) Intersection: list[str], StreetComponents: list[StreetComponents], SecondaryAddressComponents: list[SecondaryAddressComponent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Intersection: list[str], StreetComponents: list[StreetComponents], SecondaryAddressComponents: list[SecondaryAddressComponent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Address:
     Optional[str] Label
     Optional[Country] Country
@@ -362,8 +365,9 @@ struct Address:
     Optional[str] Building
     Optional[list[SecondaryAddressComponent]] SecondaryAddressComponents
 
-# no @derive(Json): member(s) Intersection: list[float64], SecondaryAddressComponents: list[SecondaryAddressComponentMatchScore] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Intersection: list[float64], SecondaryAddressComponents: list[SecondaryAddressComponentMatchScore] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddressComponentMatchScores:
     Optional[float64] Country
     Optional[float64] Region
@@ -379,8 +383,9 @@ struct AddressComponentMatchScores:
     Optional[float64] Building
     Optional[list[SecondaryAddressComponentMatchScore]] SecondaryAddressComponents
 
-# no @derive(Json): member(s) Country: list[PhonemeTranscription], Region: list[PhonemeTranscription], SubRegion: list[PhonemeTranscription], Locality: list[PhonemeTranscription], District: list[PhonemeTranscription], SubDistrict: list[PhonemeTranscription], Block: list[PhonemeTranscription], SubBlock: list[PhonemeTranscription], Street: list[PhonemeTranscription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Country: list[PhonemeTranscription], Region: list[PhonemeTranscription], SubRegion: list[PhonemeTranscription], Locality: list[PhonemeTranscription], District: list[PhonemeTranscription], SubDistrict: list[PhonemeTranscription], Block: list[PhonemeTranscription], SubBlock: list[PhonemeTranscription], Street: list[PhonemeTranscription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddressComponentPhonemes:
     Optional[list[PhonemeTranscription]] Country
     Optional[list[PhonemeTranscription]] Region
@@ -392,14 +397,16 @@ struct AddressComponentPhonemes:
     Optional[list[PhonemeTranscription]] SubBlock
     Optional[list[PhonemeTranscription]] Street
 
-# no @derive(Json): member(s) Names: list[TranslationName] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Names: list[TranslationName] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdminNames:
     list[TranslationName] Names
     Optional[AdminNamesPreference] Preference
 
-# no @derive(Json): member(s) Label: list[Highlight], Country: CountryHighlights, Region: RegionHighlights, SubRegion: SubRegionHighlights, Locality: list[Highlight], District: list[Highlight], SubDistrict: list[Highlight], Street: list[Highlight], Block: list[Highlight], SubBlock: list[Highlight], Intersection: list[list[Highlight]], PostalCode: list[Highlight], AddressNumber: list[Highlight], Building: list[Highlight] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Label: list[Highlight], Country: CountryHighlights, Region: RegionHighlights, SubRegion: SubRegionHighlights, Locality: list[Highlight], District: list[Highlight], SubDistrict: list[Highlight], Street: list[Highlight], Block: list[Highlight], SubBlock: list[Highlight], Intersection: list[list[Highlight]], PostalCode: list[Highlight], AddressNumber: list[Highlight], Building: list[Highlight] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutocompleteAddressHighlights:
     Optional[list[Highlight]] Label
     Optional[CountryHighlights] Country
@@ -416,16 +423,18 @@ struct AutocompleteAddressHighlights:
     Optional[list[Highlight]] AddressNumber
     Optional[list[Highlight]] Building
 
-# no @derive(Json): member(s) BoundingBox: list[float64], Circle: FilterCircle, IncludeCountries: list[str], IncludePlaceTypes: list[AutocompleteFilterPlaceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BoundingBox: list[float64], Circle: FilterCircle, IncludeCountries: list[str], IncludePlaceTypes: list[AutocompleteFilterPlaceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutocompleteFilter:
     Optional[list[float64]] BoundingBox
     Optional[FilterCircle] Circle
     Optional[list[str]] IncludeCountries
     Optional[list[AutocompleteFilterPlaceType]] IncludePlaceTypes
 
-# no @derive(Json): member(s) Title: list[Highlight], Address: AutocompleteAddressHighlights not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Title: list[Highlight], Address: AutocompleteAddressHighlights not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutocompleteHighlights:
     Optional[list[Highlight]] Title
     Optional[AutocompleteAddressHighlights] Address
@@ -444,14 +453,16 @@ struct AutocompleteRequest:
     Optional[str] IntendedUse
     Optional[str] Key
 
-# no @derive(Json): member(s) ResultItems: list[AutocompleteResultItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResultItems: list[AutocompleteResultItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutocompleteResponse:
     str PricingBucket
     Optional[list[AutocompleteResultItem]] ResultItems
 
-# no @derive(Json): member(s) Address: Address, Highlights: AutocompleteHighlights not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Address: Address, Highlights: AutocompleteHighlights not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutocompleteResultItem:
     str PlaceId
     PlaceType PlaceType
@@ -475,21 +486,24 @@ struct Category:
     Optional[str] LocalizedName
     Optional[bool] Primary
 
-# no @derive(Json): member(s) Address: AddressComponentMatchScores not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Address: AddressComponentMatchScores not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComponentMatchScores:
     Optional[float64] Title
     Optional[AddressComponentMatchScores] Address
 
-# no @derive(Json): member(s) Categories: list[Category] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Categories: list[Category] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContactDetails:
     Optional[str] Label
     Optional[str] Value
     Optional[list[Category]] Categories
 
-# no @derive(Json): member(s) Phones: list[ContactDetails], Faxes: list[ContactDetails], Websites: list[ContactDetails], Emails: list[ContactDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Phones: list[ContactDetails], Faxes: list[ContactDetails], Websites: list[ContactDetails], Emails: list[ContactDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Contacts:
     Optional[list[ContactDetails]] Phones
     Optional[list[ContactDetails]] Faxes
@@ -502,21 +516,24 @@ struct Country:
     Optional[str] Code3
     Optional[str] Name
 
-# no @derive(Json): member(s) Code: list[Highlight], Name: list[Highlight] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Code: list[Highlight], Name: list[Highlight] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CountryHighlights:
     Optional[list[Highlight]] Code
     Optional[list[Highlight]] Name
 
-# no @derive(Json): member(s) SourceCategories: list[Category] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceCategories: list[Category] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CrossReference:
     str Source
     str SourcePlaceId
     Optional[list[Category]] SourceCategories
 
-# no @derive(Json): member(s) Center: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Center: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterCircle:
     list[float64] Center
     int64 Radius
@@ -527,20 +544,23 @@ struct FoodType:
     Optional[str] Id
     Optional[bool] Primary
 
-# no @derive(Json): member(s) IncludeCountries: list[str], IncludePlaceTypes: list[GeocodeFilterPlaceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IncludeCountries: list[str], IncludePlaceTypes: list[GeocodeFilterPlaceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeocodeFilter:
     Optional[list[str]] IncludeCountries
     Optional[list[GeocodeFilterPlaceType]] IncludePlaceTypes
 
-# no @derive(Json): member(s) Title: list[ParsedQueryComponent], Address: GeocodeParsedQueryAddressComponents not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Title: list[ParsedQueryComponent], Address: GeocodeParsedQueryAddressComponents not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeocodeParsedQuery:
     Optional[list[ParsedQueryComponent]] Title
     Optional[GeocodeParsedQueryAddressComponents] Address
 
-# no @derive(Json): member(s) Country: list[ParsedQueryComponent], Region: list[ParsedQueryComponent], SubRegion: list[ParsedQueryComponent], Locality: list[ParsedQueryComponent], District: list[ParsedQueryComponent], SubDistrict: list[ParsedQueryComponent], PostalCode: list[ParsedQueryComponent], Block: list[ParsedQueryComponent], SubBlock: list[ParsedQueryComponent], Street: list[ParsedQueryComponent], AddressNumber: list[ParsedQueryComponent], Building: list[ParsedQueryComponent], SecondaryAddressComponents: list[ParsedQuerySecondaryAddressComponent], OtherComponents: list[ParsedQueryComponent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Country: list[ParsedQueryComponent], Region: list[ParsedQueryComponent], SubRegion: list[ParsedQueryComponent], Locality: list[ParsedQueryComponent], District: list[ParsedQueryComponent], SubDistrict: list[ParsedQueryComponent], PostalCode: list[ParsedQueryComponent], Block: list[ParsedQueryComponent], SubBlock: list[ParsedQueryComponent], Street: list[ParsedQueryComponent], AddressNumber: list[ParsedQueryComponent], Building: list[ParsedQueryComponent], SecondaryAddressComponents: list[ParsedQuerySecondaryAddressComponent], OtherComponents: list[ParsedQueryComponent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeocodeParsedQueryAddressComponents:
     Optional[list[ParsedQueryComponent]] Country
     Optional[list[ParsedQueryComponent]] Region
@@ -585,14 +605,16 @@ struct GeocodeRequest:
     Optional[list[AddressTranslationComponent]] AddressTranslations
     Optional[GeocodeAddressNamesMode] AddressNamesMode
 
-# no @derive(Json): member(s) ResultItems: list[GeocodeResultItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResultItems: list[GeocodeResultItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeocodeResponse:
     str PricingBucket
     Optional[list[GeocodeResultItem]] ResultItems
 
-# no @derive(Json): member(s) Address: Address, PostalCodeDetails: list[PostalCodeDetails], Position: list[float64], MapView: list[float64], Categories: list[Category], FoodTypes: list[FoodType], AccessPoints: list[AccessPoint], MatchScores: MatchScoreDetails, ParsedQuery: GeocodeParsedQuery, Intersections: list[Intersection], MainAddress: RelatedPlace, SecondaryAddresses: list[RelatedPlace], Translations: TranslationDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Address: Address, PostalCodeDetails: list[PostalCodeDetails], Position: list[float64], MapView: list[float64], Categories: list[Category], FoodTypes: list[FoodType], AccessPoints: list[AccessPoint], MatchScores: MatchScoreDetails, ParsedQuery: GeocodeParsedQuery, Intersections: list[Intersection], MainAddress: RelatedPlace, SecondaryAddresses: list[RelatedPlace], Translations: TranslationDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeocodeResultItem:
     str PlaceId
     PlaceType PlaceType
@@ -628,8 +650,9 @@ struct GetPlaceRequest:
     Optional[str] Key
     Optional[str] AddressNamesMode
 
-# no @derive(Json): member(s) Address: Address, PostalCodeDetails: list[PostalCodeDetails], Position: list[float64], MapView: list[float64], Categories: list[Category], FoodTypes: list[FoodType], BusinessChains: list[BusinessChain], Contacts: Contacts, OpeningHours: list[OpeningHours], AccessPoints: list[AccessPoint], AccessRestrictions: list[AccessRestriction], Phonemes: PhonemeDetails, MainAddress: RelatedPlace, SecondaryAddresses: list[RelatedPlace], PlaceAttributes: list[str], CrossReferences: list[CrossReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Address: Address, PostalCodeDetails: list[PostalCodeDetails], Position: list[float64], MapView: list[float64], Categories: list[Category], FoodTypes: list[FoodType], BusinessChains: list[BusinessChain], Contacts: Contacts, OpeningHours: list[OpeningHours], AccessPoints: list[AccessPoint], AccessRestrictions: list[AccessRestriction], Phonemes: PhonemeDetails, MainAddress: RelatedPlace, SecondaryAddresses: list[RelatedPlace], PlaceAttributes: list[str], CrossReferences: list[CrossReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPlaceResponse:
     str PlaceId
     PlaceType PlaceType
@@ -666,8 +689,9 @@ struct Highlight:
 struct InternalServerException:
     str Message
 
-# no @derive(Json): member(s) Address: Address, Position: list[float64], MapView: list[float64], AccessPoints: list[AccessPoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Address: Address, Position: list[float64], MapView: list[float64], AccessPoints: list[AccessPoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Intersection:
     str PlaceId
     str Title
@@ -678,14 +702,16 @@ struct Intersection:
     Optional[list[float64]] MapView
     Optional[list[AccessPoint]] AccessPoints
 
-# no @derive(Json): member(s) Components: ComponentMatchScores not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Components: ComponentMatchScores not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MatchScoreDetails:
     Optional[float64] Overall
     Optional[ComponentMatchScores] Components
 
-# no @derive(Json): member(s) Display: list[str], Components: list[OpeningHoursComponents], Categories: list[Category] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Display: list[str], Components: list[OpeningHoursComponents], Categories: list[Category] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpeningHours:
     Optional[list[str]] Display
     Optional[bool] OpenNow
@@ -713,8 +739,9 @@ struct ParsedQuerySecondaryAddressComponent:
     str Number
     str Designator
 
-# no @derive(Json): member(s) Title: list[PhonemeTranscription], Address: AddressComponentPhonemes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Title: list[PhonemeTranscription], Address: AddressComponentPhonemes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PhonemeDetails:
     Optional[list[PhonemeTranscription]] Title
     Optional[AddressComponentPhonemes] Address
@@ -745,14 +772,16 @@ struct Region:
     Optional[str] Code
     Optional[str] Name
 
-# no @derive(Json): member(s) Code: list[Highlight], Name: list[Highlight] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Code: list[Highlight], Name: list[Highlight] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegionHighlights:
     Optional[list[Highlight]] Code
     Optional[list[Highlight]] Name
 
-# no @derive(Json): member(s) Address: Address, Position: list[float64], AccessPoints: list[AccessPoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Address: Address, Position: list[float64], AccessPoints: list[AccessPoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RelatedPlace:
     str PlaceId
     PlaceType PlaceType
@@ -761,8 +790,9 @@ struct RelatedPlace:
     Optional[list[float64]] Position
     Optional[list[AccessPoint]] AccessPoints
 
-# no @derive(Json): member(s) IncludePlaceTypes: list[ReverseGeocodeFilterPlaceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IncludePlaceTypes: list[ReverseGeocodeFilterPlaceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReverseGeocodeFilter:
     Optional[list[ReverseGeocodeFilterPlaceType]] IncludePlaceTypes
 
@@ -781,14 +811,16 @@ struct ReverseGeocodeRequest:
     Optional[float64] Heading
     Optional[str] AddressNamesMode
 
-# no @derive(Json): member(s) ResultItems: list[ReverseGeocodeResultItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResultItems: list[ReverseGeocodeResultItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReverseGeocodeResponse:
     str PricingBucket
     Optional[list[ReverseGeocodeResultItem]] ResultItems
 
-# no @derive(Json): member(s) Address: Address, PostalCodeDetails: list[PostalCodeDetails], Position: list[float64], MapView: list[float64], Categories: list[Category], FoodTypes: list[FoodType], AccessPoints: list[AccessPoint], Intersections: list[Intersection], MainAddress: RelatedPlace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Address: Address, PostalCodeDetails: list[PostalCodeDetails], Position: list[float64], MapView: list[float64], Categories: list[Category], FoodTypes: list[FoodType], AccessPoints: list[AccessPoint], Intersections: list[Intersection], MainAddress: RelatedPlace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReverseGeocodeResultItem:
     str PlaceId
     PlaceType PlaceType
@@ -808,8 +840,9 @@ struct ReverseGeocodeResultItem:
     Optional[RelatedPlace] MainAddress
     Optional[bool] EstimatedPointAddress
 
-# no @derive(Json): member(s) BoundingBox: list[float64], IncludeCountries: list[str], IncludeCategories: list[str], ExcludeCategories: list[str], IncludeBusinessChains: list[str], ExcludeBusinessChains: list[str], IncludeFoodTypes: list[str], ExcludeFoodTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BoundingBox: list[float64], IncludeCountries: list[str], IncludeCategories: list[str], ExcludeCategories: list[str], IncludeBusinessChains: list[str], ExcludeBusinessChains: list[str], IncludeFoodTypes: list[str], ExcludeFoodTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchNearbyFilter:
     Optional[list[float64]] BoundingBox
     Optional[list[str]] IncludeCountries
@@ -834,15 +867,17 @@ struct SearchNearbyRequest:
     Optional[str] NextToken
     Optional[str] Key
 
-# no @derive(Json): member(s) ResultItems: list[SearchNearbyResultItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResultItems: list[SearchNearbyResultItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchNearbyResponse:
     str PricingBucket
     Optional[list[SearchNearbyResultItem]] ResultItems
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Address: Address, Position: list[float64], MapView: list[float64], Categories: list[Category], FoodTypes: list[FoodType], BusinessChains: list[BusinessChain], Contacts: Contacts, OpeningHours: list[OpeningHours], AccessPoints: list[AccessPoint], AccessRestrictions: list[AccessRestriction], Phonemes: PhonemeDetails, PlaceAttributes: list[str], CrossReferences: list[CrossReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Address: Address, Position: list[float64], MapView: list[float64], Categories: list[Category], FoodTypes: list[FoodType], BusinessChains: list[BusinessChain], Contacts: Contacts, OpeningHours: list[OpeningHours], AccessPoints: list[AccessPoint], AccessRestrictions: list[AccessRestriction], Phonemes: PhonemeDetails, PlaceAttributes: list[str], CrossReferences: list[CrossReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchNearbyResultItem:
     str PlaceId
     PlaceType PlaceType
@@ -865,8 +900,9 @@ struct SearchNearbyResultItem:
     Optional[list[str]] PlaceAttributes
     Optional[list[CrossReference]] CrossReferences
 
-# no @derive(Json): member(s) BoundingBox: list[float64], Circle: FilterCircle, IncludeCountries: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BoundingBox: list[float64], Circle: FilterCircle, IncludeCountries: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchTextFilter:
     Optional[list[float64]] BoundingBox
     Optional[FilterCircle] Circle
@@ -888,15 +924,17 @@ struct SearchTextRequest:
     Optional[SearchTextTravelMode] TravelMode
     Optional[str] Key
 
-# no @derive(Json): member(s) ResultItems: list[SearchTextResultItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResultItems: list[SearchTextResultItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchTextResponse:
     str PricingBucket
     Optional[list[SearchTextResultItem]] ResultItems
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Address: Address, Position: list[float64], MapView: list[float64], Categories: list[Category], FoodTypes: list[FoodType], BusinessChains: list[BusinessChain], Contacts: Contacts, OpeningHours: list[OpeningHours], AccessPoints: list[AccessPoint], AccessRestrictions: list[AccessRestriction], Phonemes: PhonemeDetails, PlaceAttributes: list[str], CrossReferences: list[CrossReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Address: Address, Position: list[float64], MapView: list[float64], Categories: list[Category], FoodTypes: list[FoodType], BusinessChains: list[BusinessChain], Contacts: Contacts, OpeningHours: list[OpeningHours], AccessPoints: list[AccessPoint], AccessRestrictions: list[AccessRestriction], Phonemes: PhonemeDetails, PlaceAttributes: list[str], CrossReferences: list[CrossReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchTextResultItem:
     str PlaceId
     PlaceType PlaceType
@@ -944,32 +982,37 @@ struct SubRegion:
     Optional[str] Code
     Optional[str] Name
 
-# no @derive(Json): member(s) Code: list[Highlight], Name: list[Highlight] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Code: list[Highlight], Name: list[Highlight] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubRegionHighlights:
     Optional[list[Highlight]] Code
     Optional[list[Highlight]] Name
 
-# no @derive(Json): member(s) Label: list[Highlight] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Label: list[Highlight] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SuggestAddressHighlights:
     Optional[list[Highlight]] Label
 
-# no @derive(Json): member(s) BoundingBox: list[float64], Circle: FilterCircle, IncludeCountries: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BoundingBox: list[float64], Circle: FilterCircle, IncludeCountries: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SuggestFilter:
     Optional[list[float64]] BoundingBox
     Optional[FilterCircle] Circle
     Optional[list[str]] IncludeCountries
 
-# no @derive(Json): member(s) Title: list[Highlight], Address: SuggestAddressHighlights not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Title: list[Highlight], Address: SuggestAddressHighlights not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SuggestHighlights:
     Optional[list[Highlight]] Title
     Optional[SuggestAddressHighlights] Address
 
-# no @derive(Json): member(s) Address: Address, Position: list[float64], MapView: list[float64], Categories: list[Category], FoodTypes: list[FoodType], BusinessChains: list[BusinessChain], AccessPoints: list[AccessPoint], AccessRestrictions: list[AccessRestriction], Phonemes: PhonemeDetails, PlaceAttributes: list[str], CrossReferences: list[CrossReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Address: Address, Position: list[float64], MapView: list[float64], Categories: list[Category], FoodTypes: list[FoodType], BusinessChains: list[BusinessChain], AccessPoints: list[AccessPoint], AccessRestrictions: list[AccessRestriction], Phonemes: PhonemeDetails, PlaceAttributes: list[str], CrossReferences: list[CrossReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SuggestPlaceResult:
     Optional[str] PlaceId
     Optional[PlaceType] PlaceType
@@ -1008,15 +1051,17 @@ struct SuggestRequest:
     Optional[SuggestTravelMode] TravelMode
     Optional[str] Key
 
-# no @derive(Json): member(s) ResultItems: list[SuggestResultItem], QueryRefinements: list[QueryRefinement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResultItems: list[SuggestResultItem], QueryRefinements: list[QueryRefinement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SuggestResponse:
     str PricingBucket
     Optional[list[SuggestResultItem]] ResultItems
     Optional[list[QueryRefinement]] QueryRefinements
 
-# no @derive(Json): member(s) Place: SuggestPlaceResult, Highlights: SuggestHighlights not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Place: SuggestPlaceResult, Highlights: SuggestHighlights not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SuggestResultItem:
     str Title
     SuggestResultItemType SuggestResultItemType
@@ -1034,8 +1079,9 @@ struct TimeZone:
     Optional[str] Offset
     Optional[int64] OffsetSeconds
 
-# no @derive(Json): member(s) Locality: list[AdminNames], Region: list[AdminNames], District: list[AdminNames], SubRegion: list[AdminNames] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Locality: list[AdminNames], Region: list[AdminNames], District: list[AdminNames], SubRegion: list[AdminNames] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TranslationDetails:
     Optional[list[AdminNames]] Locality
     Optional[list[AdminNames]] Region
@@ -1058,8 +1104,9 @@ struct UspsZip:
 struct UspsZipPlus4:
     Optional[RecordTypeCode] RecordTypeCode
 
-# no @derive(Json): member(s) FieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str Message
     ValidationExceptionReason Reason
@@ -1099,20 +1146,486 @@ def geo_places_error_from_code(str code) -> Geo_PlacesError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   Autocomplete (document member `BiasPosition: list[float64]` is not serializable by derive)
-#   Geocode (document member `BiasPosition: list[float64]` is not serializable by derive)
 #   GetPlace (httpQuery `AdditionalFeatures` has unsupported type list[GetPlaceAdditionalFeature])
-#   ReverseGeocode (document member `QueryPosition: list[float64]` is not serializable by derive)
-#   SearchNearby (document member `QueryPosition: list[float64]` is not serializable by derive)
-#   SearchText (document member `BiasPosition: list[float64]` is not serializable by derive)
-#   Suggest (document member `BiasPosition: list[float64]` is not serializable by derive)
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def geo_places_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def geo_places_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def geo_places_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AutocompleteFilter to a compact JSON object (declaration order).
+def autocomplete_filter_to_json(AutocompleteFilter v) -> str:
+    list[str] parts = []
+    if v.BoundingBox.is_some():
+        auto u0 = v.BoundingBox.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"BoundingBox\":" + geo_places_json_arr(e1))
+    if v.Circle.is_some():
+        auto u2 = v.Circle.unwrap()
+        parts.append("\"Circle\":" + filter_circle_to_json(u2))
+    if v.IncludeCountries.is_some():
+        auto u3 = v.IncludeCountries.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(geo_places_json_str(x4))
+        parts.append("\"IncludeCountries\":" + geo_places_json_arr(e4))
+    if v.IncludePlaceTypes.is_some():
+        auto u5 = v.IncludePlaceTypes.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"IncludePlaceTypes\":" + geo_places_json_arr(e6))
+    return geo_places_json_obj(parts)
+
+# Serialize FilterCircle to a compact JSON object (declaration order).
+def filter_circle_to_json(FilterCircle v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Center:
+        e0.append(str(x0))
+    parts.append("\"Center\":" + geo_places_json_arr(e0))
+    parts.append("\"Radius\":" + str(v.Radius))
+    return geo_places_json_obj(parts)
+
+# Serialize GeocodeFilter to a compact JSON object (declaration order).
+def geocode_filter_to_json(GeocodeFilter v) -> str:
+    list[str] parts = []
+    if v.IncludeCountries.is_some():
+        auto u0 = v.IncludeCountries.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(geo_places_json_str(x1))
+        parts.append("\"IncludeCountries\":" + geo_places_json_arr(e1))
+    if v.IncludePlaceTypes.is_some():
+        auto u2 = v.IncludePlaceTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"IncludePlaceTypes\":" + geo_places_json_arr(e3))
+    return geo_places_json_obj(parts)
+
+# Serialize ReverseGeocodeFilter to a compact JSON object (declaration order).
+def reverse_geocode_filter_to_json(ReverseGeocodeFilter v) -> str:
+    list[str] parts = []
+    if v.IncludePlaceTypes.is_some():
+        auto u0 = v.IncludePlaceTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"IncludePlaceTypes\":" + geo_places_json_arr(e1))
+    return geo_places_json_obj(parts)
+
+# Serialize SearchNearbyFilter to a compact JSON object (declaration order).
+def search_nearby_filter_to_json(SearchNearbyFilter v) -> str:
+    list[str] parts = []
+    if v.BoundingBox.is_some():
+        auto u0 = v.BoundingBox.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"BoundingBox\":" + geo_places_json_arr(e1))
+    if v.IncludeCountries.is_some():
+        auto u2 = v.IncludeCountries.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(geo_places_json_str(x3))
+        parts.append("\"IncludeCountries\":" + geo_places_json_arr(e3))
+    if v.IncludeCategories.is_some():
+        auto u4 = v.IncludeCategories.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(geo_places_json_str(x5))
+        parts.append("\"IncludeCategories\":" + geo_places_json_arr(e5))
+    if v.ExcludeCategories.is_some():
+        auto u6 = v.ExcludeCategories.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(geo_places_json_str(x7))
+        parts.append("\"ExcludeCategories\":" + geo_places_json_arr(e7))
+    if v.IncludeBusinessChains.is_some():
+        auto u8 = v.IncludeBusinessChains.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(geo_places_json_str(x9))
+        parts.append("\"IncludeBusinessChains\":" + geo_places_json_arr(e9))
+    if v.ExcludeBusinessChains.is_some():
+        auto u10 = v.ExcludeBusinessChains.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(geo_places_json_str(x11))
+        parts.append("\"ExcludeBusinessChains\":" + geo_places_json_arr(e11))
+    if v.IncludeFoodTypes.is_some():
+        auto u12 = v.IncludeFoodTypes.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(geo_places_json_str(x13))
+        parts.append("\"IncludeFoodTypes\":" + geo_places_json_arr(e13))
+    if v.ExcludeFoodTypes.is_some():
+        auto u14 = v.ExcludeFoodTypes.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(geo_places_json_str(x15))
+        parts.append("\"ExcludeFoodTypes\":" + geo_places_json_arr(e15))
+    return geo_places_json_obj(parts)
+
+# Serialize SearchTextFilter to a compact JSON object (declaration order).
+def search_text_filter_to_json(SearchTextFilter v) -> str:
+    list[str] parts = []
+    if v.BoundingBox.is_some():
+        auto u0 = v.BoundingBox.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"BoundingBox\":" + geo_places_json_arr(e1))
+    if v.Circle.is_some():
+        auto u2 = v.Circle.unwrap()
+        parts.append("\"Circle\":" + filter_circle_to_json(u2))
+    if v.IncludeCountries.is_some():
+        auto u3 = v.IncludeCountries.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(geo_places_json_str(x4))
+        parts.append("\"IncludeCountries\":" + geo_places_json_arr(e4))
+    return geo_places_json_obj(parts)
+
+# Serialize SuggestFilter to a compact JSON object (declaration order).
+def suggest_filter_to_json(SuggestFilter v) -> str:
+    list[str] parts = []
+    if v.BoundingBox.is_some():
+        auto u0 = v.BoundingBox.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"BoundingBox\":" + geo_places_json_arr(e1))
+    if v.Circle.is_some():
+        auto u2 = v.Circle.unwrap()
+        parts.append("\"Circle\":" + filter_circle_to_json(u2))
+    if v.IncludeCountries.is_some():
+        auto u3 = v.IncludeCountries.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(geo_places_json_str(x4))
+        parts.append("\"IncludeCountries\":" + geo_places_json_arr(e4))
+    return geo_places_json_obj(parts)
 
 # A bound Geo_Places client: credentials + region, threaded into every operation.
 struct Geo_PlacesClient:
     core.Credentials creds
     str region
 
-    # no bindable operations were generated for this service in v0
+    # Autocomplete  POST /v2/autocomplete
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def autocomplete(self, AutocompleteRequest input) -> str:
+        auto host = endpoints.regional_host(geo_places_service(), self.region)
+        dict[str, str] query = {}
+        if input.Key.is_some():
+            query["key"] = input.Key.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/autocomplete", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"QueryText\":" + geo_places_json_str(input.QueryText))
+        if input.MaxResults.is_some():
+            auto u0 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u0))
+        if input.BiasPosition.is_some():
+            auto u1 = input.BiasPosition.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(str(x2))
+            parts.append("\"BiasPosition\":" + geo_places_json_arr(e2))
+        if input.Filter.is_some():
+            auto u3 = input.Filter.unwrap()
+            parts.append("\"Filter\":" + autocomplete_filter_to_json(u3))
+        if input.PostalCodeMode.is_some():
+            auto u4 = input.PostalCodeMode.unwrap()
+            parts.append("\"PostalCodeMode\":" + u4.to_json())
+        if input.AdditionalFeatures.is_some():
+            auto u5 = input.AdditionalFeatures.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(geo_places_json_str(x6))
+            parts.append("\"AdditionalFeatures\":" + geo_places_json_arr(e6))
+        if input.Language.is_some():
+            auto u7 = input.Language.unwrap()
+            parts.append("\"Language\":" + geo_places_json_str(u7))
+        if input.PoliticalView.is_some():
+            auto u8 = input.PoliticalView.unwrap()
+            parts.append("\"PoliticalView\":" + geo_places_json_str(u8))
+        if input.IntendedUse.is_some():
+            auto u9 = input.IntendedUse.unwrap()
+            parts.append("\"IntendedUse\":" + geo_places_json_str(u9))
+        auto bp = restjson.rest_json_document(b, geo_places_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_places_service(), self.region, host)
+
+    # Geocode  POST /v2/geocode
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def geocode(self, GeocodeRequest input) -> str:
+        auto host = endpoints.regional_host(geo_places_service(), self.region)
+        dict[str, str] query = {}
+        if input.Key.is_some():
+            query["key"] = input.Key.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/geocode", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.QueryText.is_some():
+            auto u0 = input.QueryText.unwrap()
+            parts.append("\"QueryText\":" + geo_places_json_str(u0))
+        if input.QueryComponents.is_some():
+            auto u1 = input.QueryComponents.unwrap()
+            parts.append("\"QueryComponents\":" + u1.to_json())
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        if input.BiasPosition.is_some():
+            auto u3 = input.BiasPosition.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(str(x4))
+            parts.append("\"BiasPosition\":" + geo_places_json_arr(e4))
+        if input.Filter.is_some():
+            auto u5 = input.Filter.unwrap()
+            parts.append("\"Filter\":" + geocode_filter_to_json(u5))
+        if input.AdditionalFeatures.is_some():
+            auto u6 = input.AdditionalFeatures.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"AdditionalFeatures\":" + geo_places_json_arr(e7))
+        if input.Language.is_some():
+            auto u8 = input.Language.unwrap()
+            parts.append("\"Language\":" + geo_places_json_str(u8))
+        if input.PoliticalView.is_some():
+            auto u9 = input.PoliticalView.unwrap()
+            parts.append("\"PoliticalView\":" + geo_places_json_str(u9))
+        if input.IntendedUse.is_some():
+            auto u10 = input.IntendedUse.unwrap()
+            parts.append("\"IntendedUse\":" + u10.to_json())
+        if input.PostalCodeMode.is_some():
+            auto u11 = input.PostalCodeMode.unwrap()
+            parts.append("\"PostalCodeMode\":" + u11.to_json())
+        if input.AddressTranslations.is_some():
+            auto u12 = input.AddressTranslations.unwrap()
+            list[str] e13 = []
+            for x13 in u12:
+                e13.append(x13.to_json())
+            parts.append("\"AddressTranslations\":" + geo_places_json_arr(e13))
+        if input.AddressNamesMode.is_some():
+            auto u14 = input.AddressNamesMode.unwrap()
+            parts.append("\"AddressNamesMode\":" + u14.to_json())
+        auto bp = restjson.rest_json_document(b, geo_places_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_places_service(), self.region, host)
+
+    # ReverseGeocode  POST /v2/reverse-geocode
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def reverse_geocode(self, ReverseGeocodeRequest input) -> str:
+        auto host = endpoints.regional_host(geo_places_service(), self.region)
+        dict[str, str] query = {}
+        if input.Key.is_some():
+            query["key"] = input.Key.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/reverse-geocode", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.QueryPosition:
+            e0.append(str(x0))
+        parts.append("\"QueryPosition\":" + geo_places_json_arr(e0))
+        if input.QueryRadius.is_some():
+            auto u1 = input.QueryRadius.unwrap()
+            parts.append("\"QueryRadius\":" + str(u1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        if input.Filter.is_some():
+            auto u3 = input.Filter.unwrap()
+            parts.append("\"Filter\":" + reverse_geocode_filter_to_json(u3))
+        if input.AdditionalFeatures.is_some():
+            auto u4 = input.AdditionalFeatures.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"AdditionalFeatures\":" + geo_places_json_arr(e5))
+        if input.Language.is_some():
+            auto u6 = input.Language.unwrap()
+            parts.append("\"Language\":" + geo_places_json_str(u6))
+        if input.PoliticalView.is_some():
+            auto u7 = input.PoliticalView.unwrap()
+            parts.append("\"PoliticalView\":" + geo_places_json_str(u7))
+        if input.IntendedUse.is_some():
+            auto u8 = input.IntendedUse.unwrap()
+            parts.append("\"IntendedUse\":" + u8.to_json())
+        if input.Heading.is_some():
+            auto u9 = input.Heading.unwrap()
+            parts.append("\"Heading\":" + str(u9))
+        if input.AddressNamesMode.is_some():
+            auto u10 = input.AddressNamesMode.unwrap()
+            parts.append("\"AddressNamesMode\":" + geo_places_json_str(u10))
+        auto bp = restjson.rest_json_document(b, geo_places_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_places_service(), self.region, host)
+
+    # SearchNearby  POST /v2/search-nearby
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def search_nearby(self, SearchNearbyRequest input) -> str:
+        auto host = endpoints.regional_host(geo_places_service(), self.region)
+        dict[str, str] query = {}
+        if input.Key.is_some():
+            query["key"] = input.Key.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/search-nearby", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.QueryPosition:
+            e0.append(str(x0))
+        parts.append("\"QueryPosition\":" + geo_places_json_arr(e0))
+        if input.QueryRadius.is_some():
+            auto u1 = input.QueryRadius.unwrap()
+            parts.append("\"QueryRadius\":" + str(u1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        if input.Filter.is_some():
+            auto u3 = input.Filter.unwrap()
+            parts.append("\"Filter\":" + search_nearby_filter_to_json(u3))
+        if input.AdditionalFeatures.is_some():
+            auto u4 = input.AdditionalFeatures.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"AdditionalFeatures\":" + geo_places_json_arr(e5))
+        if input.Language.is_some():
+            auto u6 = input.Language.unwrap()
+            parts.append("\"Language\":" + geo_places_json_str(u6))
+        if input.PoliticalView.is_some():
+            auto u7 = input.PoliticalView.unwrap()
+            parts.append("\"PoliticalView\":" + geo_places_json_str(u7))
+        if input.IntendedUse.is_some():
+            auto u8 = input.IntendedUse.unwrap()
+            parts.append("\"IntendedUse\":" + u8.to_json())
+        if input.NextToken.is_some():
+            auto u9 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + geo_places_json_str(u9))
+        auto bp = restjson.rest_json_document(b, geo_places_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_places_service(), self.region, host)
+
+    # SearchText  POST /v2/search-text
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def search_text(self, SearchTextRequest input) -> str:
+        auto host = endpoints.regional_host(geo_places_service(), self.region)
+        dict[str, str] query = {}
+        if input.Key.is_some():
+            query["key"] = input.Key.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/search-text", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.QueryText.is_some():
+            auto u0 = input.QueryText.unwrap()
+            parts.append("\"QueryText\":" + geo_places_json_str(u0))
+        if input.QueryId.is_some():
+            auto u1 = input.QueryId.unwrap()
+            parts.append("\"QueryId\":" + geo_places_json_str(u1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        if input.BiasPosition.is_some():
+            auto u3 = input.BiasPosition.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(str(x4))
+            parts.append("\"BiasPosition\":" + geo_places_json_arr(e4))
+        if input.Filter.is_some():
+            auto u5 = input.Filter.unwrap()
+            parts.append("\"Filter\":" + search_text_filter_to_json(u5))
+        if input.AdditionalFeatures.is_some():
+            auto u6 = input.AdditionalFeatures.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"AdditionalFeatures\":" + geo_places_json_arr(e7))
+        if input.Language.is_some():
+            auto u8 = input.Language.unwrap()
+            parts.append("\"Language\":" + geo_places_json_str(u8))
+        if input.PoliticalView.is_some():
+            auto u9 = input.PoliticalView.unwrap()
+            parts.append("\"PoliticalView\":" + geo_places_json_str(u9))
+        if input.IntendedUse.is_some():
+            auto u10 = input.IntendedUse.unwrap()
+            parts.append("\"IntendedUse\":" + u10.to_json())
+        if input.NextToken.is_some():
+            auto u11 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + geo_places_json_str(u11))
+        if input.TravelMode.is_some():
+            auto u12 = input.TravelMode.unwrap()
+            parts.append("\"TravelMode\":" + u12.to_json())
+        auto bp = restjson.rest_json_document(b, geo_places_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_places_service(), self.region, host)
+
+    # Suggest  POST /v2/suggest
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def suggest(self, SuggestRequest input) -> str:
+        auto host = endpoints.regional_host(geo_places_service(), self.region)
+        dict[str, str] query = {}
+        if input.Key.is_some():
+            query["key"] = input.Key.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/suggest", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"QueryText\":" + geo_places_json_str(input.QueryText))
+        if input.MaxResults.is_some():
+            auto u0 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u0))
+        if input.MaxQueryRefinements.is_some():
+            auto u1 = input.MaxQueryRefinements.unwrap()
+            parts.append("\"MaxQueryRefinements\":" + str(u1))
+        if input.BiasPosition.is_some():
+            auto u2 = input.BiasPosition.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(str(x3))
+            parts.append("\"BiasPosition\":" + geo_places_json_arr(e3))
+        if input.Filter.is_some():
+            auto u4 = input.Filter.unwrap()
+            parts.append("\"Filter\":" + suggest_filter_to_json(u4))
+        if input.AdditionalFeatures.is_some():
+            auto u5 = input.AdditionalFeatures.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"AdditionalFeatures\":" + geo_places_json_arr(e6))
+        if input.Language.is_some():
+            auto u7 = input.Language.unwrap()
+            parts.append("\"Language\":" + geo_places_json_str(u7))
+        if input.PoliticalView.is_some():
+            auto u8 = input.PoliticalView.unwrap()
+            parts.append("\"PoliticalView\":" + geo_places_json_str(u8))
+        if input.IntendedUse.is_some():
+            auto u9 = input.IntendedUse.unwrap()
+            parts.append("\"IntendedUse\":" + geo_places_json_str(u9))
+        if input.TravelMode.is_some():
+            auto u10 = input.TravelMode.unwrap()
+            parts.append("\"TravelMode\":" + u10.to_json())
+        auto bp = restjson.rest_json_document(b, geo_places_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_places_service(), self.region, host)
+
 # Construct a Geo_PlacesClient bound to credentials + region.
 def geo_places_client(core.Credentials creds, str region) -> Geo_PlacesClient:
     return Geo_PlacesClient(creds=creds, region=region)

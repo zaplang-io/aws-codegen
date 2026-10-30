@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 30 operations — 18 with a generated method,
-#   12 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 30 operations — 28 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   79 structs (42 @derive(Json)), 15 enums, 8 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -208,8 +208,9 @@ struct AddStreamGroupLocationsInput:
     str Identifier
     list[LocationConfiguration] LocationConfigurations
 
-# no @derive(Json): member(s) Locations: list[LocationState] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Locations: list[LocationState] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddStreamGroupLocationsOutput:
     str Identifier
     list[LocationState] Locations
@@ -230,8 +231,9 @@ struct AssociateApplicationsInput:
     str Identifier
     list[str] ApplicationIdentifiers
 
-# no @derive(Json): member(s) ApplicationArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateApplicationsOutput:
     Optional[str] Arn
     Optional[list[str]] ApplicationArns
@@ -252,8 +254,9 @@ struct CreateApplicationInput:
     Optional[dict[str, str]] Tags
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) ApplicationLogPaths: list[str], ReplicationStatuses: list[ReplicationStatus], AssociatedStreamGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationLogPaths: list[str], ReplicationStatuses: list[ReplicationStatus], AssociatedStreamGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateApplicationOutput:
     str Arn
     Optional[str] Description
@@ -280,8 +283,9 @@ struct CreateStreamGroupInput:
     Optional[dict[str, str]] Tags
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) LocationStates: list[LocationState], AssociatedApplications: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LocationStates: list[LocationState], AssociatedApplications: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateStreamGroupOutput:
     str Arn
     Optional[str] Description
@@ -337,8 +341,9 @@ struct CreateStreamUrlInput:
     Optional[DisplayConfiguration] DisplayConfiguration
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) Locations: list[str], AdditionalLaunchArgs: list[str], AdditionalEnvironmentVariables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Locations: list[str], AdditionalLaunchArgs: list[str], AdditionalEnvironmentVariables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateStreamUrlOutput:
     str Arn
     Optional[str] StreamUrlId
@@ -381,8 +386,9 @@ struct DisassociateApplicationsInput:
     str Identifier
     list[str] ApplicationIdentifiers
 
-# no @derive(Json): member(s) ApplicationArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateApplicationsOutput:
     Optional[str] Arn
     Optional[list[str]] ApplicationArns
@@ -414,8 +420,9 @@ struct ExportStreamSessionFilesOutput:
 struct GetApplicationInput:
     str Identifier
 
-# no @derive(Json): member(s) ApplicationLogPaths: list[str], ReplicationStatuses: list[ReplicationStatus], AssociatedStreamGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationLogPaths: list[str], ReplicationStatuses: list[ReplicationStatus], AssociatedStreamGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetApplicationOutput:
     str Arn
     Optional[str] Description
@@ -437,8 +444,9 @@ struct GetApplicationOutput:
 struct GetStreamGroupInput:
     str Identifier
 
-# no @derive(Json): member(s) LocationStates: list[LocationState], AssociatedApplications: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LocationStates: list[LocationState], AssociatedApplications: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetStreamGroupOutput:
     str Arn
     Optional[str] Description
@@ -459,8 +467,9 @@ struct GetStreamSessionInput:
     str Identifier
     str StreamSessionIdentifier
 
-# no @derive(Json): member(s) AdditionalLaunchArgs: list[str], AdditionalEnvironmentVariables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalLaunchArgs: list[str], AdditionalEnvironmentVariables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetStreamSessionOutput:
     Optional[str] Arn
     Optional[str] Description
@@ -492,8 +501,9 @@ struct GetStreamUrlInput:
     str Identifier
     str StreamUrlIdentifier
 
-# no @derive(Json): member(s) Locations: list[str], AdditionalLaunchArgs: list[str], AdditionalEnvironmentVariables: dict[str, str], StreamSessions: list[StreamSessionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Locations: list[str], AdditionalLaunchArgs: list[str], AdditionalEnvironmentVariables: dict[str, str], StreamSessions: list[StreamSessionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetStreamUrlOutput:
     str Arn
     Optional[str] StreamUrlId
@@ -525,8 +535,9 @@ struct InternalServerException:
 struct ListApplicationShaderCachesInput:
     str Identifier
 
-# no @derive(Json): member(s) Items: list[ShaderCacheSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ShaderCacheSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationShaderCachesOutput:
     Optional[list[ShaderCacheSummary]] Items
 
@@ -536,8 +547,9 @@ struct ListApplicationsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Items: list[ApplicationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ApplicationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationsOutput:
     Optional[list[ApplicationSummary]] Items
     Optional[str] NextToken
@@ -548,8 +560,9 @@ struct ListStreamGroupsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Items: list[StreamGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[StreamGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStreamGroupsOutput:
     Optional[list[StreamGroupSummary]] Items
     Optional[str] NextToken
@@ -564,8 +577,9 @@ struct ListStreamSessionsByAccountInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Items: list[StreamSessionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[StreamSessionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStreamSessionsByAccountOutput:
     Optional[list[StreamSessionSummary]] Items
     Optional[str] NextToken
@@ -581,8 +595,9 @@ struct ListStreamSessionsInput:
     Optional[int64] MaxResults
     str Identifier
 
-# no @derive(Json): member(s) Items: list[StreamSessionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[StreamSessionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStreamSessionsOutput:
     Optional[list[StreamSessionSummary]] Items
     Optional[str] NextToken
@@ -596,8 +611,9 @@ struct ListStreamUrlsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Items: list[StreamUrlSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[StreamUrlSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStreamUrlsOutput:
     Optional[list[StreamUrlSummary]] Items
     Optional[str] NextToken
@@ -607,13 +623,15 @@ struct ListStreamUrlsOutput:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) VpcTransitConfiguration: VpcTransitConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcTransitConfiguration: VpcTransitConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LocationConfiguration:
     str LocationName
     Optional[int64] AlwaysOnCapacity
@@ -622,8 +640,9 @@ struct LocationConfiguration:
     Optional[int64] MaximumCapacity
     Optional[VpcTransitConfiguration] VpcTransitConfiguration
 
-# no @derive(Json): member(s) VpcTransitConfiguration: VpcTransitConfigurationResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcTransitConfiguration: VpcTransitConfigurationResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LocationState:
     Optional[str] LocationName
     Optional[StreamGroupLocationStatus] Status
@@ -677,8 +696,9 @@ struct RuntimeEnvironment:
 struct ServiceQuotaExceededException:
     str Message
 
-# no @derive(Json): member(s) AssociatedStreamGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociatedStreamGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ShaderCacheSummary:
     str Identifier
     str ApplicationArn
@@ -706,8 +726,9 @@ struct StartStreamSessionInput:
     Optional[str] RoleArn
     Optional[DisplayConfiguration] DisplayConfiguration
 
-# no @derive(Json): member(s) AdditionalLaunchArgs: list[str], AdditionalEnvironmentVariables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalLaunchArgs: list[str], AdditionalEnvironmentVariables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartStreamSessionOutput:
     Optional[str] Arn
     Optional[str] Description
@@ -819,8 +840,9 @@ struct UpdateApplicationInput:
     Optional[list[str]] ApplicationLogPaths
     Optional[str] ApplicationLogOutputUri
 
-# no @derive(Json): member(s) ApplicationLogPaths: list[str], ReplicationStatuses: list[ReplicationStatus], AssociatedStreamGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationLogPaths: list[str], ReplicationStatuses: list[ReplicationStatus], AssociatedStreamGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateApplicationOutput:
     str Arn
     Optional[str] Description
@@ -845,8 +867,9 @@ struct UpdateStreamGroupInput:
     Optional[str] Description
     Optional[str] DefaultApplicationIdentifier
 
-# no @derive(Json): member(s) LocationStates: list[LocationState], AssociatedApplications: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LocationStates: list[LocationState], AssociatedApplications: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateStreamGroupOutput:
     str Arn
     Optional[str] Description
@@ -865,14 +888,16 @@ struct UpdateStreamGroupOutput:
 struct ValidationException:
     str Message
 
-# no @derive(Json): member(s) Ipv4CidrBlocks: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Ipv4CidrBlocks: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcTransitConfiguration:
     str VpcId
     list[str] Ipv4CidrBlocks
 
-# no @derive(Json): member(s) Ipv4CidrBlocks: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Ipv4CidrBlocks: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcTransitConfigurationResponse:
     Optional[str] VpcId
     Optional[list[str]] Ipv4CidrBlocks
@@ -920,18 +945,8 @@ def gameliftstreams_error_from_code(str code) -> GameLiftStreamsError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AddStreamGroupLocations (document member `LocationConfigurations: list[LocationConfiguration]` is not serializable by derive)
-#   AssociateApplications (document member `ApplicationIdentifiers: list[str]` is not serializable by derive)
-#   CreateApplication (document member `ApplicationLogPaths: list[str]` is not serializable by derive)
-#   CreateStreamGroup (document member `LocationConfigurations: list[LocationConfiguration]` is not serializable by derive)
-#   CreateStreamUrl (document member `Locations: list[str]` is not serializable by derive)
-#   DisassociateApplications (document member `ApplicationIdentifiers: list[str]` is not serializable by derive)
 #   RemoveStreamGroupLocations (httpQuery `Locations` has unsupported type list[str])
-#   StartStreamSession (document member `Locations: list[str]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateApplication (document member `ApplicationLogPaths: list[str]` is not serializable by derive)
-#   UpdateStreamGroup (document member `LocationConfigurations: list[LocationConfiguration]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -952,10 +967,161 @@ struct RevokeStreamUrlDocument:
     # document members of RevokeStreamUrl
     Optional[RevocationMode] RevocationMode
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def gameliftstreams_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def gameliftstreams_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def gameliftstreams_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize LocationConfiguration to a compact JSON object (declaration order).
+def location_configuration_to_json(LocationConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"LocationName\":" + gameliftstreams_json_str(v.LocationName))
+    if v.AlwaysOnCapacity.is_some():
+        auto u0 = v.AlwaysOnCapacity.unwrap()
+        parts.append("\"AlwaysOnCapacity\":" + str(u0))
+    if v.OnDemandCapacity.is_some():
+        auto u1 = v.OnDemandCapacity.unwrap()
+        parts.append("\"OnDemandCapacity\":" + str(u1))
+    if v.TargetIdleCapacity.is_some():
+        auto u2 = v.TargetIdleCapacity.unwrap()
+        parts.append("\"TargetIdleCapacity\":" + str(u2))
+    if v.MaximumCapacity.is_some():
+        auto u3 = v.MaximumCapacity.unwrap()
+        parts.append("\"MaximumCapacity\":" + str(u3))
+    if v.VpcTransitConfiguration.is_some():
+        auto u4 = v.VpcTransitConfiguration.unwrap()
+        parts.append("\"VpcTransitConfiguration\":" + vpc_transit_configuration_to_json(u4))
+    return gameliftstreams_json_obj(parts)
+
+# Serialize VpcTransitConfiguration to a compact JSON object (declaration order).
+def vpc_transit_configuration_to_json(VpcTransitConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"VpcId\":" + gameliftstreams_json_str(v.VpcId))
+    list[str] e0 = []
+    for x0 in v.Ipv4CidrBlocks:
+        e0.append(gameliftstreams_json_str(x0))
+    parts.append("\"Ipv4CidrBlocks\":" + gameliftstreams_json_arr(e0))
+    return gameliftstreams_json_obj(parts)
+
 # A bound GameLiftStreams client: credentials + region, threaded into every operation.
 struct GameLiftStreamsClient:
     core.Credentials creds
     str region
+
+    # AddStreamGroupLocations  POST /streamgroups/{Identifier}/locations
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def add_stream_group_locations(self, AddStreamGroupLocationsInput input) -> str:
+        auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Identifier"] = input.Identifier
+        auto b = binding.HttpBinding(method="POST", path_template="/streamgroups/{Identifier}/locations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.LocationConfigurations:
+            e0.append(location_configuration_to_json(x0))
+        parts.append("\"LocationConfigurations\":" + gameliftstreams_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, gameliftstreams_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, gameliftstreams_service(), self.region, host)
+
+    # AssociateApplications  POST /streamgroups/{Identifier}/associations
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def associate_applications(self, AssociateApplicationsInput input) -> str:
+        auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Identifier"] = input.Identifier
+        auto b = binding.HttpBinding(method="POST", path_template="/streamgroups/{Identifier}/associations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.ApplicationIdentifiers:
+            e0.append(gameliftstreams_json_str(x0))
+        parts.append("\"ApplicationIdentifiers\":" + gameliftstreams_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, gameliftstreams_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, gameliftstreams_service(), self.region, host)
+
+    # CreateApplication  POST /applications
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_application(self, CreateApplicationInput input) -> str:
+        auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Description\":" + gameliftstreams_json_str(input.Description))
+        parts.append("\"RuntimeEnvironment\":" + input.RuntimeEnvironment.to_json())
+        parts.append("\"ExecutablePath\":" + gameliftstreams_json_str(input.ExecutablePath))
+        parts.append("\"ApplicationSourceUri\":" + gameliftstreams_json_str(input.ApplicationSourceUri))
+        if input.ApplicationLogPaths.is_some():
+            auto u0 = input.ApplicationLogPaths.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(gameliftstreams_json_str(x1))
+            parts.append("\"ApplicationLogPaths\":" + gameliftstreams_json_arr(e1))
+        if input.ApplicationLogOutputUri.is_some():
+            auto u2 = input.ApplicationLogOutputUri.unwrap()
+            parts.append("\"ApplicationLogOutputUri\":" + gameliftstreams_json_str(u2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(gameliftstreams_json_str(k4) + ":" + gameliftstreams_json_str(u3[k4]))
+            parts.append("\"Tags\":" + gameliftstreams_json_obj(m4))
+        if input.ClientToken.is_some():
+            auto u5 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + gameliftstreams_json_str(u5))
+        auto bp = restjson.rest_json_document(b, gameliftstreams_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, gameliftstreams_service(), self.region, host)
+
+    # CreateStreamGroup  POST /streamgroups
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_stream_group(self, CreateStreamGroupInput input) -> str:
+        auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/streamgroups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Description\":" + gameliftstreams_json_str(input.Description))
+        parts.append("\"StreamClass\":" + input.StreamClass.to_json())
+        if input.DefaultApplicationIdentifier.is_some():
+            auto u0 = input.DefaultApplicationIdentifier.unwrap()
+            parts.append("\"DefaultApplicationIdentifier\":" + gameliftstreams_json_str(u0))
+        if input.LocationConfigurations.is_some():
+            auto u1 = input.LocationConfigurations.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(location_configuration_to_json(x2))
+            parts.append("\"LocationConfigurations\":" + gameliftstreams_json_arr(e2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(gameliftstreams_json_str(k4) + ":" + gameliftstreams_json_str(u3[k4]))
+            parts.append("\"Tags\":" + gameliftstreams_json_obj(m4))
+        if input.ClientToken.is_some():
+            auto u5 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + gameliftstreams_json_str(u5))
+        auto bp = restjson.rest_json_document(b, gameliftstreams_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, gameliftstreams_service(), self.region, host)
 
     # CreateStreamSessionAdminShell  POST /streamgroups/{Identifier}/streamsessions/{StreamSessionIdentifier}/access
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, StreamSessionAccessNotReadyException, ThrottlingException, ValidationException
@@ -979,6 +1145,54 @@ struct GameLiftStreamsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, gameliftstreams_service(), self.region, host)
 
+    # CreateStreamUrl  POST /streamgroups/{Identifier}/streamurls
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_stream_url(self, CreateStreamUrlInput input) -> str:
+        auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Identifier"] = input.Identifier
+        auto b = binding.HttpBinding(method="POST", path_template="/streamgroups/{Identifier}/streamurls", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ApplicationIdentifier\":" + gameliftstreams_json_str(input.ApplicationIdentifier))
+        parts.append("\"Protocol\":" + gameliftstreams_json_str(input.Protocol))
+        parts.append("\"UrlExpiresAfterMinutes\":" + str(input.UrlExpiresAfterMinutes))
+        if input.UsageLimit.is_some():
+            auto u0 = input.UsageLimit.unwrap()
+            parts.append("\"UsageLimit\":" + str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + gameliftstreams_json_str(u1))
+        list[str] e2 = []
+        for x2 in input.Locations:
+            e2.append(gameliftstreams_json_str(x2))
+        parts.append("\"Locations\":" + gameliftstreams_json_arr(e2))
+        if input.SessionLengthSeconds.is_some():
+            auto u3 = input.SessionLengthSeconds.unwrap()
+            parts.append("\"SessionLengthSeconds\":" + str(u3))
+        if input.AdditionalLaunchArgs.is_some():
+            auto u4 = input.AdditionalLaunchArgs.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(gameliftstreams_json_str(x5))
+            parts.append("\"AdditionalLaunchArgs\":" + gameliftstreams_json_arr(e5))
+        if input.AdditionalEnvironmentVariables.is_some():
+            auto u6 = input.AdditionalEnvironmentVariables.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(gameliftstreams_json_str(k7) + ":" + gameliftstreams_json_str(u6[k7]))
+            parts.append("\"AdditionalEnvironmentVariables\":" + gameliftstreams_json_obj(m7))
+        if input.RoleArn.is_some():
+            auto u8 = input.RoleArn.unwrap()
+            parts.append("\"RoleArn\":" + gameliftstreams_json_str(u8))
+        if input.DisplayConfiguration.is_some():
+            auto u9 = input.DisplayConfiguration.unwrap()
+            parts.append("\"DisplayConfiguration\":" + u9.to_json())
+        if input.ClientToken.is_some():
+            auto u10 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + gameliftstreams_json_str(u10))
+        auto bp = restjson.rest_json_document(b, gameliftstreams_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, gameliftstreams_service(), self.region, host)
+
     # DeleteApplication  DELETE /applications/{Identifier}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_application(self, DeleteApplicationInput input) -> str:
@@ -996,6 +1210,21 @@ struct GameLiftStreamsClient:
         labels["Identifier"] = input.Identifier
         auto b = binding.HttpBinding(method="DELETE", path_template="/streamgroups/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, gameliftstreams_service(), self.region, host)
+
+    # DisassociateApplications  POST /streamgroups/{Identifier}/disassociations
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def disassociate_applications(self, DisassociateApplicationsInput input) -> str:
+        auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Identifier"] = input.Identifier
+        auto b = binding.HttpBinding(method="POST", path_template="/streamgroups/{Identifier}/disassociations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.ApplicationIdentifiers:
+            e0.append(gameliftstreams_json_str(x0))
+        parts.append("\"ApplicationIdentifiers\":" + gameliftstreams_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, gameliftstreams_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, gameliftstreams_service(), self.region, host)
 
     # ExportStreamSessionFiles  PUT /streamgroups/{Identifier}/streamsessions/{StreamSessionIdentifier}/exportfiles
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1151,6 +1380,77 @@ struct GameLiftStreamsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, gameliftstreams_service(), self.region, host)
 
+    # StartStreamSession  POST /streamgroups/{Identifier}/streamsessions
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def start_stream_session(self, StartStreamSessionInput input) -> str:
+        auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Identifier"] = input.Identifier
+        auto b = binding.HttpBinding(method="POST", path_template="/streamgroups/{Identifier}/streamsessions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + gameliftstreams_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + gameliftstreams_json_str(u1))
+        parts.append("\"Protocol\":" + gameliftstreams_json_str(input.Protocol))
+        parts.append("\"SignalRequest\":" + gameliftstreams_json_str(input.SignalRequest))
+        parts.append("\"ApplicationIdentifier\":" + gameliftstreams_json_str(input.ApplicationIdentifier))
+        if input.UserId.is_some():
+            auto u2 = input.UserId.unwrap()
+            parts.append("\"UserId\":" + gameliftstreams_json_str(u2))
+        if input.Locations.is_some():
+            auto u3 = input.Locations.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(gameliftstreams_json_str(x4))
+            parts.append("\"Locations\":" + gameliftstreams_json_arr(e4))
+        if input.ConnectionTimeoutSeconds.is_some():
+            auto u5 = input.ConnectionTimeoutSeconds.unwrap()
+            parts.append("\"ConnectionTimeoutSeconds\":" + str(u5))
+        if input.SessionLengthSeconds.is_some():
+            auto u6 = input.SessionLengthSeconds.unwrap()
+            parts.append("\"SessionLengthSeconds\":" + str(u6))
+        if input.AdditionalLaunchArgs.is_some():
+            auto u7 = input.AdditionalLaunchArgs.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(gameliftstreams_json_str(x8))
+            parts.append("\"AdditionalLaunchArgs\":" + gameliftstreams_json_arr(e8))
+        if input.AdditionalEnvironmentVariables.is_some():
+            auto u9 = input.AdditionalEnvironmentVariables.unwrap()
+            list[str] m10 = []
+            for k10 in sorted(u9.keys()):
+                m10.append(gameliftstreams_json_str(k10) + ":" + gameliftstreams_json_str(u9[k10]))
+            parts.append("\"AdditionalEnvironmentVariables\":" + gameliftstreams_json_obj(m10))
+        if input.PerformanceStatsConfiguration.is_some():
+            auto u11 = input.PerformanceStatsConfiguration.unwrap()
+            parts.append("\"PerformanceStatsConfiguration\":" + u11.to_json())
+        if input.RoleArn.is_some():
+            auto u12 = input.RoleArn.unwrap()
+            parts.append("\"RoleArn\":" + gameliftstreams_json_str(u12))
+        if input.DisplayConfiguration.is_some():
+            auto u13 = input.DisplayConfiguration.unwrap()
+            parts.append("\"DisplayConfiguration\":" + u13.to_json())
+        auto bp = restjson.rest_json_document(b, gameliftstreams_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, gameliftstreams_service(), self.region, host)
+
+    # TagResource  POST /tags/{ResourceArn}
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(gameliftstreams_json_str(k0) + ":" + gameliftstreams_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + gameliftstreams_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, gameliftstreams_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, gameliftstreams_service(), self.region, host)
+
     # TerminateStreamSession  DELETE /streamgroups/{Identifier}/streamsessions/{StreamSessionIdentifier}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def terminate_stream_session(self, TerminateStreamSessionInput input) -> str:
@@ -1160,6 +1460,52 @@ struct GameLiftStreamsClient:
         labels["StreamSessionIdentifier"] = input.StreamSessionIdentifier
         auto b = binding.HttpBinding(method="DELETE", path_template="/streamgroups/{Identifier}/streamsessions/{StreamSessionIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, gameliftstreams_service(), self.region, host)
+
+    # UpdateApplication  PATCH /applications/{Identifier}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_application(self, UpdateApplicationInput input) -> str:
+        auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Identifier"] = input.Identifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + gameliftstreams_json_str(u0))
+        if input.ApplicationLogPaths.is_some():
+            auto u1 = input.ApplicationLogPaths.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(gameliftstreams_json_str(x2))
+            parts.append("\"ApplicationLogPaths\":" + gameliftstreams_json_arr(e2))
+        if input.ApplicationLogOutputUri.is_some():
+            auto u3 = input.ApplicationLogOutputUri.unwrap()
+            parts.append("\"ApplicationLogOutputUri\":" + gameliftstreams_json_str(u3))
+        auto bp = restjson.rest_json_document(b, gameliftstreams_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, gameliftstreams_service(), self.region, host)
+
+    # UpdateStreamGroup  PATCH /streamgroups/{Identifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_stream_group(self, UpdateStreamGroupInput input) -> str:
+        auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Identifier"] = input.Identifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/streamgroups/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.LocationConfigurations.is_some():
+            auto u0 = input.LocationConfigurations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(location_configuration_to_json(x1))
+            parts.append("\"LocationConfigurations\":" + gameliftstreams_json_arr(e1))
+        if input.Description.is_some():
+            auto u2 = input.Description.unwrap()
+            parts.append("\"Description\":" + gameliftstreams_json_str(u2))
+        if input.DefaultApplicationIdentifier.is_some():
+            auto u3 = input.DefaultApplicationIdentifier.unwrap()
+            parts.append("\"DefaultApplicationIdentifier\":" + gameliftstreams_json_str(u3))
+        auto bp = restjson.rest_json_document(b, gameliftstreams_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, gameliftstreams_service(), self.region, host)
 
     # Paginator for ListApplications — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: Items).

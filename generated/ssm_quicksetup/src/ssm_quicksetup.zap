@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 14 operations — 8 with a generated method,
-#   6 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 14 operations — 13 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   36 structs (17 @derive(Json)), 2 enums, 6 error variants.
-#   0 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -68,8 +68,9 @@ enum StatusType:
 struct AccessDeniedException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationDefinition:
     Optional[str] Id
     Optional[str] LocalDeploymentAdministrationRoleArn
@@ -78,8 +79,9 @@ struct ConfigurationDefinition:
     str Type
     Optional[str] TypeVersion
 
-# no @derive(Json): member(s) Parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationDefinitionInput:
     Optional[str] LocalDeploymentAdministrationRoleArn
     Optional[str] LocalDeploymentExecutionRoleName
@@ -87,16 +89,18 @@ struct ConfigurationDefinitionInput:
     str Type
     Optional[str] TypeVersion
 
-# no @derive(Json): member(s) FirstClassParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FirstClassParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationDefinitionSummary:
     Optional[dict[str, str]] FirstClassParameters
     Optional[str] Id
     Optional[str] Type
     Optional[str] TypeVersion
 
-# no @derive(Json): member(s) ConfigurationDefinitionSummaries: list[ConfigurationDefinitionSummary], StatusSummaries: list[StatusSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationDefinitionSummaries: list[ConfigurationDefinitionSummary], StatusSummaries: list[StatusSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationManagerSummary:
     Optional[list[ConfigurationDefinitionSummary]] ConfigurationDefinitionSummaries
     Optional[str] Description
@@ -104,8 +108,9 @@ struct ConfigurationManagerSummary:
     Optional[str] Name
     Optional[list[StatusSummary]] StatusSummaries
 
-# no @derive(Json): member(s) FirstClassParameters: dict[str, str], StatusSummaries: list[StatusSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FirstClassParameters: dict[str, str], StatusSummaries: list[StatusSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationSummary:
     Optional[str] Account
     Optional[str] ConfigurationDefinitionId
@@ -139,8 +144,9 @@ struct CreateConfigurationManagerOutput:
 struct DeleteConfigurationManagerInput:
     str ManagerArn
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filter:
     str Key
     list[str] Values
@@ -155,8 +161,9 @@ struct GetConfigurationInput:
 struct GetConfigurationManagerInput:
     str ManagerArn
 
-# no @derive(Json): member(s) ConfigurationDefinitions: list[ConfigurationDefinition], StatusSummaries: list[StatusSummary], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationDefinitions: list[ConfigurationDefinition], StatusSummaries: list[StatusSummary], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConfigurationManagerOutput:
     Optional[list[ConfigurationDefinition]] ConfigurationDefinitions
     Optional[DateTime] CreatedAt
@@ -167,8 +174,9 @@ struct GetConfigurationManagerOutput:
     Optional[list[StatusSummary]] StatusSummaries
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Parameters: dict[str, str], StatusSummaries: list[StatusSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, str], StatusSummaries: list[StatusSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConfigurationOutput:
     Optional[str] Account
     Optional[str] ConfigurationDefinitionId
@@ -197,8 +205,9 @@ struct ListConfigurationManagersInput:
     Optional[int64] MaxItems
     Optional[str] StartingToken
 
-# no @derive(Json): member(s) ConfigurationManagersList: list[ConfigurationManagerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationManagersList: list[ConfigurationManagerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfigurationManagersOutput:
     Optional[list[ConfigurationManagerSummary]] ConfigurationManagersList
     Optional[str] NextToken
@@ -212,14 +221,16 @@ struct ListConfigurationsInput:
     Optional[int64] MaxItems
     Optional[str] StartingToken
 
-# no @derive(Json): member(s) ConfigurationsList: list[ConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConfigurationsList: list[ConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfigurationsOutput:
     Optional[list[ConfigurationSummary]] ConfigurationsList
     Optional[str] NextToken
 
-# no @derive(Json): member(s) QuickSetupTypeList: list[QuickSetupTypeOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QuickSetupTypeList: list[QuickSetupTypeOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListQuickSetupTypesOutput:
     Optional[list[QuickSetupTypeOutput]] QuickSetupTypeList
 
@@ -228,8 +239,9 @@ struct ListQuickSetupTypesOutput:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[TagEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[TagEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[TagEntry]] Tags
 
@@ -246,8 +258,9 @@ struct ResourceNotFoundException:
 struct ServiceSettings:
     Optional[str] ExplorerEnablingRoleArn
 
-# no @derive(Json): member(s) StatusDetails: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StatusDetails: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StatusSummary:
     DateTime LastUpdatedAt
     Optional[Status] Status
@@ -337,17 +350,7 @@ def ssm_quicksetup_error_from_code(str code) -> SSM_QuickSetupError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateConfigurationManager (document member `ConfigurationDefinitions: list[ConfigurationDefinitionInput]` is not serializable by derive)
-#   ListConfigurationManagers (document member `Filters: list[Filter]` is not serializable by derive)
-#   ListConfigurations (document member `Filters: list[Filter]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateConfigurationDefinition (document member `Parameters: dict[str, str]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListConfigurationManagers (operation not generated)
-#   ListConfigurations (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -363,10 +366,94 @@ struct UpdateServiceSettingsDocument:
     # document members of UpdateServiceSettings
     Optional[str] ExplorerEnablingRoleArn
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def ssm_quicksetup_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def ssm_quicksetup_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def ssm_quicksetup_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ConfigurationDefinitionInput to a compact JSON object (declaration order).
+def configuration_definition_input_to_json(ConfigurationDefinitionInput v) -> str:
+    list[str] parts = []
+    if v.LocalDeploymentAdministrationRoleArn.is_some():
+        auto u0 = v.LocalDeploymentAdministrationRoleArn.unwrap()
+        parts.append("\"LocalDeploymentAdministrationRoleArn\":" + ssm_quicksetup_json_str(u0))
+    if v.LocalDeploymentExecutionRoleName.is_some():
+        auto u1 = v.LocalDeploymentExecutionRoleName.unwrap()
+        parts.append("\"LocalDeploymentExecutionRoleName\":" + ssm_quicksetup_json_str(u1))
+    list[str] m2 = []
+    for k2 in sorted(v.Parameters.keys()):
+        m2.append(ssm_quicksetup_json_str(k2) + ":" + ssm_quicksetup_json_str(v.Parameters[k2]))
+    parts.append("\"Parameters\":" + ssm_quicksetup_json_obj(m2))
+    parts.append("\"Type\":" + ssm_quicksetup_json_str(v.Type))
+    if v.TypeVersion.is_some():
+        auto u3 = v.TypeVersion.unwrap()
+        parts.append("\"TypeVersion\":" + ssm_quicksetup_json_str(u3))
+    return ssm_quicksetup_json_obj(parts)
+
+# Serialize Filter to a compact JSON object (declaration order).
+def filter_to_json(Filter v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + ssm_quicksetup_json_str(v.Key))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(ssm_quicksetup_json_str(x0))
+    parts.append("\"Values\":" + ssm_quicksetup_json_arr(e0))
+    return ssm_quicksetup_json_obj(parts)
+
 # A bound SSM_QuickSetup client: credentials + region, threaded into every operation.
 struct SSM_QuickSetupClient:
     core.Credentials creds
     str region
+
+    # CreateConfigurationManager  POST /configurationManager
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def create_configuration_manager(self, CreateConfigurationManagerInput input) -> str:
+        auto host = endpoints.regional_host(ssm_quicksetup_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/configurationManager", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.ConfigurationDefinitions:
+            e0.append(configuration_definition_input_to_json(x0))
+        parts.append("\"ConfigurationDefinitions\":" + ssm_quicksetup_json_arr(e0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + ssm_quicksetup_json_str(u1))
+        if input.Name.is_some():
+            auto u2 = input.Name.unwrap()
+            parts.append("\"Name\":" + ssm_quicksetup_json_str(u2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(ssm_quicksetup_json_str(k4) + ":" + ssm_quicksetup_json_str(u3[k4]))
+            parts.append("\"Tags\":" + ssm_quicksetup_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, ssm_quicksetup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ssm_quicksetup_service(), self.region, host)
 
     # DeleteConfigurationManager  DELETE /configurationManager/{ManagerArn}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -402,6 +489,54 @@ struct SSM_QuickSetupClient:
         auto b = binding.HttpBinding(method="GET", path_template="/serviceSettings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ssm_quicksetup_service(), self.region, host)
 
+    # ListConfigurationManagers  POST /listConfigurationManagers
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def list_configuration_managers(self, ListConfigurationManagersInput input) -> str:
+        auto host = endpoints.regional_host(ssm_quicksetup_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/listConfigurationManagers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(filter_to_json(x1))
+            parts.append("\"Filters\":" + ssm_quicksetup_json_arr(e1))
+        if input.MaxItems.is_some():
+            auto u2 = input.MaxItems.unwrap()
+            parts.append("\"MaxItems\":" + str(u2))
+        if input.StartingToken.is_some():
+            auto u3 = input.StartingToken.unwrap()
+            parts.append("\"StartingToken\":" + ssm_quicksetup_json_str(u3))
+        auto bp = restjson.rest_json_document(b, ssm_quicksetup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ssm_quicksetup_service(), self.region, host)
+
+    # ListConfigurations  POST /listConfigurations
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_configurations(self, ListConfigurationsInput input) -> str:
+        auto host = endpoints.regional_host(ssm_quicksetup_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/listConfigurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ConfigurationDefinitionId.is_some():
+            auto u0 = input.ConfigurationDefinitionId.unwrap()
+            parts.append("\"ConfigurationDefinitionId\":" + ssm_quicksetup_json_str(u0))
+        if input.Filters.is_some():
+            auto u1 = input.Filters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(filter_to_json(x2))
+            parts.append("\"Filters\":" + ssm_quicksetup_json_arr(e2))
+        if input.ManagerArn.is_some():
+            auto u3 = input.ManagerArn.unwrap()
+            parts.append("\"ManagerArn\":" + ssm_quicksetup_json_str(u3))
+        if input.MaxItems.is_some():
+            auto u4 = input.MaxItems.unwrap()
+            parts.append("\"MaxItems\":" + str(u4))
+        if input.StartingToken.is_some():
+            auto u5 = input.StartingToken.unwrap()
+            parts.append("\"StartingToken\":" + ssm_quicksetup_json_str(u5))
+        auto bp = restjson.rest_json_document(b, ssm_quicksetup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ssm_quicksetup_service(), self.region, host)
+
     # ListQuickSetupTypes  GET /listQuickSetupTypes
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException
     def list_quick_setup_types(self) -> str:
@@ -417,6 +552,48 @@ struct SSM_QuickSetupClient:
         labels["ResourceArn"] = input.ResourceArn
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ssm_quicksetup_service(), self.region, host)
+
+    # TagResource  PUT /tags/{ResourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(ssm_quicksetup_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(ssm_quicksetup_json_str(k0) + ":" + ssm_quicksetup_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + ssm_quicksetup_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, ssm_quicksetup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ssm_quicksetup_service(), self.region, host)
+
+    # UpdateConfigurationDefinition  PUT /configurationDefinition/{ManagerArn}/{Id}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_configuration_definition(self, UpdateConfigurationDefinitionInput input) -> str:
+        auto host = endpoints.regional_host(ssm_quicksetup_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.Id
+        labels["ManagerArn"] = input.ManagerArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/configurationDefinition/{ManagerArn}/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.LocalDeploymentAdministrationRoleArn.is_some():
+            auto u0 = input.LocalDeploymentAdministrationRoleArn.unwrap()
+            parts.append("\"LocalDeploymentAdministrationRoleArn\":" + ssm_quicksetup_json_str(u0))
+        if input.LocalDeploymentExecutionRoleName.is_some():
+            auto u1 = input.LocalDeploymentExecutionRoleName.unwrap()
+            parts.append("\"LocalDeploymentExecutionRoleName\":" + ssm_quicksetup_json_str(u1))
+        if input.Parameters.is_some():
+            auto u2 = input.Parameters.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(ssm_quicksetup_json_str(k3) + ":" + ssm_quicksetup_json_str(u2[k3]))
+            parts.append("\"Parameters\":" + ssm_quicksetup_json_obj(m3))
+        if input.TypeVersion.is_some():
+            auto u4 = input.TypeVersion.unwrap()
+            parts.append("\"TypeVersion\":" + ssm_quicksetup_json_str(u4))
+        auto bp = restjson.rest_json_document(b, ssm_quicksetup_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ssm_quicksetup_service(), self.region, host)
 
     # UpdateConfigurationManager  PUT /configurationManager/{ManagerArn}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -437,6 +614,32 @@ struct SSM_QuickSetupClient:
         auto doc = UpdateServiceSettingsDocument(ExplorerEnablingRoleArn=input.ExplorerEnablingRoleArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_quicksetup_service(), self.region, host)
+
+    # Paginator for ListConfigurationManagers — yields each Response page, threading the
+    # NextToken -> StartingToken continuation token until it is absent (result key: ConfigurationManagersList).
+    def paginate_list_configuration_managers(self, ListConfigurationManagersInput input):
+        auto host = endpoints.regional_host(ssm_quicksetup_service(), self.region)
+        while True:
+            auto raw = self.list_configuration_managers(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.StartingToken = Optional.Some(np.token)
+
+    # Paginator for ListConfigurations — yields each Response page, threading the
+    # NextToken -> StartingToken continuation token until it is absent (result key: ConfigurationsList).
+    def paginate_list_configurations(self, ListConfigurationsInput input):
+        auto host = endpoints.regional_host(ssm_quicksetup_service(), self.region)
+        while True:
+            auto raw = self.list_configurations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.StartingToken = Optional.Some(np.token)
 
 # Construct a SSM_QuickSetupClient bound to credentials + region.
 def ssm_quicksetup_client(core.Credentials creds, str region) -> SSM_QuickSetupClient:

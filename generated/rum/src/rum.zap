@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 20 operations — 11 with a generated method,
-#   9 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 20 operations — 18 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   69 structs (46 @derive(Json)), 6 enums, 11 error variants.
-#   3 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -91,8 +91,9 @@ enum Telemetry:
 struct AccessDeniedException:
     str message
 
-# no @derive(Json): member(s) DomainList: list[str], Tags: dict[str, str], AppMonitorConfiguration: AppMonitorConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainList: list[str], Tags: dict[str, str], AppMonitorConfiguration: AppMonitorConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AppMonitor:
     Optional[str] Name
     Optional[str] Domain
@@ -108,8 +109,9 @@ struct AppMonitor:
     Optional[DeobfuscationConfiguration] DeobfuscationConfiguration
     Optional[AppMonitorPlatform] Platform
 
-# no @derive(Json): member(s) ExcludedPages: list[str], IncludedPages: list[str], FavoritePages: list[str], Telemetries: list[Telemetry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExcludedPages: list[str], IncludedPages: list[str], FavoritePages: list[str], Telemetries: list[Telemetry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AppMonitorConfiguration:
     Optional[str] IdentityPoolId
     Optional[list[str]] ExcludedPages
@@ -136,8 +138,9 @@ struct AppMonitorSummary:
     Optional[StateEnum] State
     Optional[AppMonitorPlatform] Platform
 
-# no @derive(Json): member(s) MetricDefinition: MetricDefinitionRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricDefinition: MetricDefinitionRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateRumMetricDefinitionsError:
     MetricDefinitionRequest MetricDefinition
     str ErrorCode
@@ -151,8 +154,9 @@ struct BatchCreateRumMetricDefinitionsRequest:
     Optional[str] DestinationArn
     list[MetricDefinitionRequest] MetricDefinitions
 
-# no @derive(Json): member(s) Errors: list[BatchCreateRumMetricDefinitionsError], MetricDefinitions: list[MetricDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[BatchCreateRumMetricDefinitionsError], MetricDefinitions: list[MetricDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateRumMetricDefinitionsResponse:
     list[BatchCreateRumMetricDefinitionsError] Errors
     Optional[list[MetricDefinition]] MetricDefinitions
@@ -172,8 +176,9 @@ struct BatchDeleteRumMetricDefinitionsRequest:
     Optional[str] DestinationArn
     list[str] MetricDefinitionIds
 
-# no @derive(Json): member(s) Errors: list[BatchDeleteRumMetricDefinitionsError], MetricDefinitionIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[BatchDeleteRumMetricDefinitionsError], MetricDefinitionIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteRumMetricDefinitionsResponse:
     list[BatchDeleteRumMetricDefinitionsError] Errors
     Optional[list[str]] MetricDefinitionIds
@@ -188,8 +193,9 @@ struct BatchGetRumMetricDefinitionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) MetricDefinitions: list[MetricDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricDefinitions: list[MetricDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetRumMetricDefinitionsResponse:
     Optional[list[MetricDefinition]] MetricDefinitions
     Optional[str] NextToken
@@ -276,8 +282,9 @@ struct GetAppMonitorDataRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Events: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Events: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAppMonitorDataResponse:
     Optional[list[str]] Events
     Optional[str] NextToken
@@ -287,8 +294,9 @@ struct GetAppMonitorDataResponse:
 struct GetAppMonitorRequest:
     str Name
 
-# no @derive(Json): member(s) AppMonitor: AppMonitor not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AppMonitor: AppMonitor not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAppMonitorResponse:
     Optional[AppMonitor] AppMonitor
 
@@ -322,8 +330,9 @@ struct ListAppMonitorsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AppMonitorSummaries: list[AppMonitorSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AppMonitorSummaries: list[AppMonitorSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAppMonitorsResponse:
     Optional[str] NextToken
     Optional[list[AppMonitorSummary]] AppMonitorSummaries
@@ -335,8 +344,9 @@ struct ListRumMetricsDestinationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Destinations: list[MetricDestinationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destinations: list[MetricDestinationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRumMetricsDestinationsResponse:
     Optional[list[MetricDestinationSummary]] Destinations
     Optional[str] NextToken
@@ -346,8 +356,9 @@ struct ListRumMetricsDestinationsResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     str ResourceArn
     dict[str, str] Tags
@@ -356,8 +367,9 @@ struct ListTagsForResourceResponse:
 struct MalformedPolicyDocumentException:
     str message
 
-# no @derive(Json): member(s) DimensionKeys: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DimensionKeys: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricDefinition:
     str MetricDefinitionId
     str Name
@@ -367,8 +379,9 @@ struct MetricDefinition:
     Optional[str] EventPattern
     Optional[str] Namespace
 
-# no @derive(Json): member(s) DimensionKeys: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DimensionKeys: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricDefinitionRequest:
     str Name
     Optional[str] ValueKey
@@ -431,8 +444,9 @@ struct PutRumMetricsDestinationResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryFilter:
     Optional[str] Name
     Optional[list[str]] Values
@@ -578,19 +592,8 @@ def rum_error_from_code(str code) -> RUMError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchCreateRumMetricDefinitions (document member `MetricDefinitions: list[MetricDefinitionRequest]` is not serializable by derive)
 #   BatchDeleteRumMetricDefinitions (httpQuery `MetricDefinitionIds` has unsupported type list[str])
-#   CreateAppMonitor (document member `DomainList: list[str]` is not serializable by derive)
-#   GetAppMonitorData (document member `Filters: list[QueryFilter]` is not serializable by derive)
-#   PutRumEvents (document member `RumEvents: list[RumEvent]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateAppMonitor (document member `DomainList: list[str]` is not serializable by derive)
-#   UpdateRumMetricDefinition (document member `MetricDefinition: MetricDefinitionRequest` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   GetAppMonitorData (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -608,10 +611,141 @@ struct PutRumMetricsDestinationDocument:
     Optional[str] DestinationArn
     Optional[str] IamRoleArn
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def rum_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def rum_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def rum_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AppMonitorConfiguration to a compact JSON object (declaration order).
+def app_monitor_configuration_to_json(AppMonitorConfiguration v) -> str:
+    list[str] parts = []
+    if v.IdentityPoolId.is_some():
+        auto u0 = v.IdentityPoolId.unwrap()
+        parts.append("\"IdentityPoolId\":" + rum_json_str(u0))
+    if v.ExcludedPages.is_some():
+        auto u1 = v.ExcludedPages.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(rum_json_str(x2))
+        parts.append("\"ExcludedPages\":" + rum_json_arr(e2))
+    if v.IncludedPages.is_some():
+        auto u3 = v.IncludedPages.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(rum_json_str(x4))
+        parts.append("\"IncludedPages\":" + rum_json_arr(e4))
+    if v.FavoritePages.is_some():
+        auto u5 = v.FavoritePages.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(rum_json_str(x6))
+        parts.append("\"FavoritePages\":" + rum_json_arr(e6))
+    if v.SessionSampleRate.is_some():
+        auto u7 = v.SessionSampleRate.unwrap()
+        parts.append("\"SessionSampleRate\":" + str(u7))
+    if v.GuestRoleArn.is_some():
+        auto u8 = v.GuestRoleArn.unwrap()
+        parts.append("\"GuestRoleArn\":" + rum_json_str(u8))
+    if v.AllowCookies.is_some():
+        auto u9 = v.AllowCookies.unwrap()
+        parts.append("\"AllowCookies\":" + json.dumps(JsonValue.Bool(u9)))
+    if v.Telemetries.is_some():
+        auto u10 = v.Telemetries.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"Telemetries\":" + rum_json_arr(e11))
+    if v.EnableXRay.is_some():
+        auto u12 = v.EnableXRay.unwrap()
+        parts.append("\"EnableXRay\":" + json.dumps(JsonValue.Bool(u12)))
+    return rum_json_obj(parts)
+
+# Serialize MetricDefinitionRequest to a compact JSON object (declaration order).
+def metric_definition_request_to_json(MetricDefinitionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + rum_json_str(v.Name))
+    if v.ValueKey.is_some():
+        auto u0 = v.ValueKey.unwrap()
+        parts.append("\"ValueKey\":" + rum_json_str(u0))
+    if v.UnitLabel.is_some():
+        auto u1 = v.UnitLabel.unwrap()
+        parts.append("\"UnitLabel\":" + rum_json_str(u1))
+    if v.DimensionKeys.is_some():
+        auto u2 = v.DimensionKeys.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(rum_json_str(k3) + ":" + rum_json_str(u2[k3]))
+        parts.append("\"DimensionKeys\":" + rum_json_obj(m3))
+    if v.EventPattern.is_some():
+        auto u4 = v.EventPattern.unwrap()
+        parts.append("\"EventPattern\":" + rum_json_str(u4))
+    if v.Namespace.is_some():
+        auto u5 = v.Namespace.unwrap()
+        parts.append("\"Namespace\":" + rum_json_str(u5))
+    return rum_json_obj(parts)
+
+# Serialize QueryFilter to a compact JSON object (declaration order).
+def query_filter_to_json(QueryFilter v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + rum_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(rum_json_str(x2))
+        parts.append("\"Values\":" + rum_json_arr(e2))
+    return rum_json_obj(parts)
+
 # A bound RUM client: credentials + region, threaded into every operation.
 struct RUMClient:
     core.Credentials creds
     str region
+
+    # BatchCreateRumMetricDefinitions  POST /rummetrics/{AppMonitorName}/metrics
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def batch_create_rum_metric_definitions(self, BatchCreateRumMetricDefinitionsRequest input) -> str:
+        auto host = endpoints.regional_host(rum_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AppMonitorName"] = input.AppMonitorName
+        auto b = binding.HttpBinding(method="POST", path_template="/rummetrics/{AppMonitorName}/metrics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Destination\":" + input.Destination.to_json())
+        if input.DestinationArn.is_some():
+            auto u0 = input.DestinationArn.unwrap()
+            parts.append("\"DestinationArn\":" + rum_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.MetricDefinitions:
+            e1.append(metric_definition_request_to_json(x1))
+        parts.append("\"MetricDefinitions\":" + rum_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, rum_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rum_service(), self.region, host)
 
     # BatchGetRumMetricDefinitions  GET /rummetrics/{AppMonitorName}/metrics
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
@@ -629,6 +763,46 @@ struct RUMClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         auto b = binding.HttpBinding(method="GET", path_template="/rummetrics/{AppMonitorName}/metrics", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rum_service(), self.region, host)
+
+    # CreateAppMonitor  POST /appmonitor
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_app_monitor(self, CreateAppMonitorRequest input) -> str:
+        auto host = endpoints.regional_host(rum_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/appmonitor", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + rum_json_str(input.Name))
+        if input.Domain.is_some():
+            auto u0 = input.Domain.unwrap()
+            parts.append("\"Domain\":" + rum_json_str(u0))
+        if input.DomainList.is_some():
+            auto u1 = input.DomainList.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(rum_json_str(x2))
+            parts.append("\"DomainList\":" + rum_json_arr(e2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(rum_json_str(k4) + ":" + rum_json_str(u3[k4]))
+            parts.append("\"Tags\":" + rum_json_obj(m4))
+        if input.AppMonitorConfiguration.is_some():
+            auto u5 = input.AppMonitorConfiguration.unwrap()
+            parts.append("\"AppMonitorConfiguration\":" + app_monitor_configuration_to_json(u5))
+        if input.CwLogEnabled.is_some():
+            auto u6 = input.CwLogEnabled.unwrap()
+            parts.append("\"CwLogEnabled\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.CustomEvents.is_some():
+            auto u7 = input.CustomEvents.unwrap()
+            parts.append("\"CustomEvents\":" + u7.to_json())
+        if input.DeobfuscationConfiguration.is_some():
+            auto u8 = input.DeobfuscationConfiguration.unwrap()
+            parts.append("\"DeobfuscationConfiguration\":" + u8.to_json())
+        if input.Platform.is_some():
+            auto u9 = input.Platform.unwrap()
+            parts.append("\"Platform\":" + u9.to_json())
+        auto bp = restjson.rest_json_document(b, rum_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rum_service(), self.region, host)
 
     # DeleteAppMonitor  DELETE /appmonitor/{Name}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -672,6 +846,30 @@ struct RUMClient:
         labels["Name"] = input.Name
         auto b = binding.HttpBinding(method="GET", path_template="/appmonitor/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rum_service(), self.region, host)
+
+    # GetAppMonitorData  POST /appmonitor/{Name}/data
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_app_monitor_data(self, GetAppMonitorDataRequest input) -> str:
+        auto host = endpoints.regional_host(rum_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Name"] = input.Name
+        auto b = binding.HttpBinding(method="POST", path_template="/appmonitor/{Name}/data", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"TimeRange\":" + input.TimeRange.to_json())
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(query_filter_to_json(x1))
+            parts.append("\"Filters\":" + rum_json_arr(e1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + rum_json_str(u3))
+        auto bp = restjson.rest_json_document(b, rum_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rum_service(), self.region, host)
 
     # GetResourcePolicy  GET /appmonitor/{Name}/policy
     # errors: AccessDeniedException, ConflictException, InternalServerException, PolicyNotFoundException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -728,6 +926,27 @@ struct RUMClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, rum_service(), self.region, host)
 
+    # PutRumEvents  POST /appmonitors/{Id}/
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def put_rum_events(self, PutRumEventsRequest input) -> str:
+        auto host = endpoints.regional_host(rum_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.Id
+        auto b = binding.HttpBinding(method="POST", path_template="/appmonitors/{Id}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"BatchId\":" + rum_json_str(input.BatchId))
+        parts.append("\"AppMonitorDetails\":" + input.AppMonitorDetails.to_json())
+        parts.append("\"UserDetails\":" + input.UserDetails.to_json())
+        list[str] e0 = []
+        for x0 in input.RumEvents:
+            e0.append(x0.to_json())
+        parts.append("\"RumEvents\":" + rum_json_arr(e0))
+        if input.Alias.is_some():
+            auto u1 = input.Alias.unwrap()
+            parts.append("\"Alias\":" + rum_json_str(u1))
+        auto bp = restjson.rest_json_document(b, rum_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rum_service(), self.region, host)
+
     # PutRumMetricsDestination  POST /rummetrics/{AppMonitorName}/metricsdestination
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def put_rum_metrics_destination(self, PutRumMetricsDestinationRequest input) -> str:
@@ -739,12 +958,89 @@ struct RUMClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, rum_service(), self.region, host)
 
+    # TagResource  POST /tags/{ResourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(rum_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(rum_json_str(k0) + ":" + rum_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + rum_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, rum_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rum_service(), self.region, host)
+
+    # UpdateAppMonitor  PATCH /appmonitor/{Name}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_app_monitor(self, UpdateAppMonitorRequest input) -> str:
+        auto host = endpoints.regional_host(rum_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Name"] = input.Name
+        auto b = binding.HttpBinding(method="PATCH", path_template="/appmonitor/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Domain.is_some():
+            auto u0 = input.Domain.unwrap()
+            parts.append("\"Domain\":" + rum_json_str(u0))
+        if input.DomainList.is_some():
+            auto u1 = input.DomainList.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(rum_json_str(x2))
+            parts.append("\"DomainList\":" + rum_json_arr(e2))
+        if input.AppMonitorConfiguration.is_some():
+            auto u3 = input.AppMonitorConfiguration.unwrap()
+            parts.append("\"AppMonitorConfiguration\":" + app_monitor_configuration_to_json(u3))
+        if input.CwLogEnabled.is_some():
+            auto u4 = input.CwLogEnabled.unwrap()
+            parts.append("\"CwLogEnabled\":" + json.dumps(JsonValue.Bool(u4)))
+        if input.CustomEvents.is_some():
+            auto u5 = input.CustomEvents.unwrap()
+            parts.append("\"CustomEvents\":" + u5.to_json())
+        if input.DeobfuscationConfiguration.is_some():
+            auto u6 = input.DeobfuscationConfiguration.unwrap()
+            parts.append("\"DeobfuscationConfiguration\":" + u6.to_json())
+        auto bp = restjson.rest_json_document(b, rum_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rum_service(), self.region, host)
+
+    # UpdateRumMetricDefinition  PATCH /rummetrics/{AppMonitorName}/metrics
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_rum_metric_definition(self, UpdateRumMetricDefinitionRequest input) -> str:
+        auto host = endpoints.regional_host(rum_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AppMonitorName"] = input.AppMonitorName
+        auto b = binding.HttpBinding(method="PATCH", path_template="/rummetrics/{AppMonitorName}/metrics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Destination\":" + input.Destination.to_json())
+        if input.DestinationArn.is_some():
+            auto u0 = input.DestinationArn.unwrap()
+            parts.append("\"DestinationArn\":" + rum_json_str(u0))
+        parts.append("\"MetricDefinition\":" + metric_definition_request_to_json(input.MetricDefinition))
+        parts.append("\"MetricDefinitionId\":" + rum_json_str(input.MetricDefinitionId))
+        auto bp = restjson.rest_json_document(b, rum_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, rum_service(), self.region, host)
+
     # Paginator for BatchGetRumMetricDefinitions — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: MetricDefinitions).
     def paginate_batch_get_rum_metric_definitions(self, BatchGetRumMetricDefinitionsRequest input):
         auto host = endpoints.regional_host(rum_service(), self.region)
         while True:
             auto raw = self.batch_get_rum_metric_definitions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetAppMonitorData — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Events).
+    def paginate_get_app_monitor_data(self, GetAppMonitorDataRequest input):
+        auto host = endpoints.regional_host(rum_service(), self.region)
+        while True:
+            auto raw = self.get_app_monitor_data(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

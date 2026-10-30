@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 33 operations — 25 with a generated method,
-#   8 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 33 operations — 33 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   209 structs (157 @derive(Json)), 15 enums, 13 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -180,8 +180,9 @@ struct AddApplicationCloudWatchLoggingOptionRequest:
     CloudWatchLoggingOption CloudWatchLoggingOption
     Optional[str] ConditionalToken
 
-# no @derive(Json): member(s) CloudWatchLoggingOptionDescriptions: list[CloudWatchLoggingOptionDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchLoggingOptionDescriptions: list[CloudWatchLoggingOptionDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddApplicationCloudWatchLoggingOptionResponse:
     Optional[str] ApplicationARN
     Optional[int64] ApplicationVersionId
@@ -202,15 +203,17 @@ struct AddApplicationInputProcessingConfigurationResponse:
     Optional[str] InputId
     Optional[InputProcessingConfigurationDescription] InputProcessingConfigurationDescription
 
-# no @derive(Json): member(s) Input: Input not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Input: Input not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddApplicationInputRequest:
     str ApplicationName
     int64 CurrentApplicationVersionId
     Input Input
 
-# no @derive(Json): member(s) InputDescriptions: list[InputDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDescriptions: list[InputDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddApplicationInputResponse:
     Optional[str] ApplicationARN
     Optional[int64] ApplicationVersionId
@@ -222,37 +225,42 @@ struct AddApplicationOutputRequest:
     int64 CurrentApplicationVersionId
     Output Output
 
-# no @derive(Json): member(s) OutputDescriptions: list[OutputDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OutputDescriptions: list[OutputDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddApplicationOutputResponse:
     Optional[str] ApplicationARN
     Optional[int64] ApplicationVersionId
     Optional[list[OutputDescription]] OutputDescriptions
 
-# no @derive(Json): member(s) ReferenceDataSource: ReferenceDataSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReferenceDataSource: ReferenceDataSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddApplicationReferenceDataSourceRequest:
     str ApplicationName
     int64 CurrentApplicationVersionId
     ReferenceDataSource ReferenceDataSource
 
-# no @derive(Json): member(s) ReferenceDataSourceDescriptions: list[ReferenceDataSourceDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReferenceDataSourceDescriptions: list[ReferenceDataSourceDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddApplicationReferenceDataSourceResponse:
     Optional[str] ApplicationARN
     Optional[int64] ApplicationVersionId
     Optional[list[ReferenceDataSourceDescription]] ReferenceDataSourceDescriptions
 
-# no @derive(Json): member(s) VpcConfiguration: VpcConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfiguration: VpcConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddApplicationVpcConfigurationRequest:
     str ApplicationName
     Optional[int64] CurrentApplicationVersionId
     VpcConfiguration VpcConfiguration
     Optional[str] ConditionalToken
 
-# no @derive(Json): member(s) VpcConfigurationDescription: VpcConfigurationDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfigurationDescription: VpcConfigurationDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddApplicationVpcConfigurationResponse:
     Optional[str] ApplicationARN
     Optional[int64] ApplicationVersionId
@@ -274,8 +282,9 @@ struct ApplicationCodeConfigurationUpdate:
     Optional[CodeContentType] CodeContentTypeUpdate
     Optional[CodeContentUpdate] CodeContentUpdate
 
-# no @derive(Json): member(s) SqlApplicationConfiguration: SqlApplicationConfiguration, EnvironmentProperties: EnvironmentProperties, VpcConfigurations: list[VpcConfiguration], ZeppelinApplicationConfiguration: ZeppelinApplicationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SqlApplicationConfiguration: SqlApplicationConfiguration, EnvironmentProperties: EnvironmentProperties, VpcConfigurations: list[VpcConfiguration], ZeppelinApplicationConfiguration: ZeppelinApplicationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationConfiguration:
     Optional[SqlApplicationConfiguration] SqlApplicationConfiguration
     Optional[FlinkApplicationConfiguration] FlinkApplicationConfiguration
@@ -287,8 +296,9 @@ struct ApplicationConfiguration:
     Optional[ZeppelinApplicationConfiguration] ZeppelinApplicationConfiguration
     Optional[ApplicationEncryptionConfiguration] ApplicationEncryptionConfiguration
 
-# no @derive(Json): member(s) SqlApplicationConfigurationDescription: SqlApplicationConfigurationDescription, EnvironmentPropertyDescriptions: EnvironmentPropertyDescriptions, VpcConfigurationDescriptions: list[VpcConfigurationDescription], ZeppelinApplicationConfigurationDescription: ZeppelinApplicationConfigurationDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SqlApplicationConfigurationDescription: SqlApplicationConfigurationDescription, EnvironmentPropertyDescriptions: EnvironmentPropertyDescriptions, VpcConfigurationDescriptions: list[VpcConfigurationDescription], ZeppelinApplicationConfigurationDescription: ZeppelinApplicationConfigurationDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationConfigurationDescription:
     Optional[SqlApplicationConfigurationDescription] SqlApplicationConfigurationDescription
     Optional[ApplicationCodeConfigurationDescription] ApplicationCodeConfigurationDescription
@@ -301,8 +311,9 @@ struct ApplicationConfigurationDescription:
     Optional[ZeppelinApplicationConfigurationDescription] ZeppelinApplicationConfigurationDescription
     Optional[ApplicationEncryptionConfigurationDescription] ApplicationEncryptionConfigurationDescription
 
-# no @derive(Json): member(s) SqlApplicationConfigurationUpdate: SqlApplicationConfigurationUpdate, EnvironmentPropertyUpdates: EnvironmentPropertyUpdates, VpcConfigurationUpdates: list[VpcConfigurationUpdate], ZeppelinApplicationConfigurationUpdate: ZeppelinApplicationConfigurationUpdate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SqlApplicationConfigurationUpdate: SqlApplicationConfigurationUpdate, EnvironmentPropertyUpdates: EnvironmentPropertyUpdates, VpcConfigurationUpdates: list[VpcConfigurationUpdate], ZeppelinApplicationConfigurationUpdate: ZeppelinApplicationConfigurationUpdate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationConfigurationUpdate:
     Optional[SqlApplicationConfigurationUpdate] SqlApplicationConfigurationUpdate
     Optional[ApplicationCodeConfigurationUpdate] ApplicationCodeConfigurationUpdate
@@ -314,8 +325,9 @@ struct ApplicationConfigurationUpdate:
     Optional[ZeppelinApplicationConfigurationUpdate] ZeppelinApplicationConfigurationUpdate
     Optional[ApplicationEncryptionConfigurationUpdate] ApplicationEncryptionConfigurationUpdate
 
-# no @derive(Json): member(s) ApplicationConfigurationDescription: ApplicationConfigurationDescription, CloudWatchLoggingOptionDescriptions: list[CloudWatchLoggingOptionDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationConfigurationDescription: ApplicationConfigurationDescription, CloudWatchLoggingOptionDescriptions: list[CloudWatchLoggingOptionDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationDetail:
     str ApplicationARN
     Optional[str] ApplicationDescription
@@ -515,8 +527,9 @@ struct CreateApplicationPresignedUrlRequest:
 struct CreateApplicationPresignedUrlResponse:
     Optional[str] AuthorizedUrl
 
-# no @derive(Json): member(s) ApplicationConfiguration: ApplicationConfiguration, CloudWatchLoggingOptions: list[CloudWatchLoggingOption], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationConfiguration: ApplicationConfiguration, CloudWatchLoggingOptions: list[CloudWatchLoggingOption], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateApplicationRequest:
     str ApplicationName
     Optional[str] ApplicationDescription
@@ -527,8 +540,9 @@ struct CreateApplicationRequest:
     Optional[list[Tag]] Tags
     Optional[ApplicationMode] ApplicationMode
 
-# no @derive(Json): member(s) ApplicationDetail: ApplicationDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationDetail: ApplicationDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateApplicationResponse:
     ApplicationDetail ApplicationDetail
 
@@ -561,8 +575,9 @@ struct DeleteApplicationCloudWatchLoggingOptionRequest:
     str CloudWatchLoggingOptionId
     Optional[str] ConditionalToken
 
-# no @derive(Json): member(s) CloudWatchLoggingOptionDescriptions: list[CloudWatchLoggingOptionDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchLoggingOptionDescriptions: list[CloudWatchLoggingOptionDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteApplicationCloudWatchLoggingOptionResponse:
     Optional[str] ApplicationARN
     Optional[int64] ApplicationVersionId
@@ -662,8 +677,9 @@ struct DescribeApplicationRequest:
     str ApplicationName
     Optional[bool] IncludeAdditionalDetails
 
-# no @derive(Json): member(s) ApplicationDetail: ApplicationDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationDetail: ApplicationDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeApplicationResponse:
     ApplicationDetail ApplicationDetail
 
@@ -681,8 +697,9 @@ struct DescribeApplicationVersionRequest:
     str ApplicationName
     int64 ApplicationVersionId
 
-# no @derive(Json): member(s) ApplicationVersionDetail: ApplicationDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationVersionDetail: ApplicationDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeApplicationVersionResponse:
     Optional[ApplicationDetail] ApplicationVersionDetail
 
@@ -698,26 +715,30 @@ struct DiscoverInputSchemaRequest:
     Optional[S3Configuration] S3Configuration
     Optional[InputProcessingConfiguration] InputProcessingConfiguration
 
-# no @derive(Json): member(s) InputSchema: SourceSchema, ParsedInputRecords: list[list[str]], ProcessedInputRecords: list[str], RawInputRecords: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputSchema: SourceSchema, ParsedInputRecords: list[list[str]], ProcessedInputRecords: list[str], RawInputRecords: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DiscoverInputSchemaResponse:
     Optional[SourceSchema] InputSchema
     Optional[list[list[str]]] ParsedInputRecords
     Optional[list[str]] ProcessedInputRecords
     Optional[list[str]] RawInputRecords
 
-# no @derive(Json): member(s) PropertyGroups: list[PropertyGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PropertyGroups: list[PropertyGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnvironmentProperties:
     list[PropertyGroup] PropertyGroups
 
-# no @derive(Json): member(s) PropertyGroupDescriptions: list[PropertyGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PropertyGroupDescriptions: list[PropertyGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnvironmentPropertyDescriptions:
     Optional[list[PropertyGroup]] PropertyGroupDescriptions
 
-# no @derive(Json): member(s) PropertyGroups: list[PropertyGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PropertyGroups: list[PropertyGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnvironmentPropertyUpdates:
     list[PropertyGroup] PropertyGroups
 
@@ -760,8 +781,9 @@ struct GlueDataCatalogConfigurationDescription:
 struct GlueDataCatalogConfigurationUpdate:
     str DatabaseARNUpdate
 
-# no @derive(Json): member(s) InputSchema: SourceSchema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputSchema: SourceSchema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Input:
     str NamePrefix
     Optional[InputProcessingConfiguration] InputProcessingConfiguration
@@ -770,8 +792,9 @@ struct Input:
     Optional[InputParallelism] InputParallelism
     SourceSchema InputSchema
 
-# no @derive(Json): member(s) InAppStreamNames: list[str], InputSchema: SourceSchema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InAppStreamNames: list[str], InputSchema: SourceSchema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputDescription:
     Optional[str] InputId
     Optional[str] NamePrefix
@@ -816,8 +839,9 @@ struct InputProcessingConfigurationDescription:
 struct InputProcessingConfigurationUpdate:
     InputLambdaProcessorUpdate InputLambdaProcessorUpdate
 
-# no @derive(Json): member(s) RecordColumnUpdates: list[RecordColumn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecordColumnUpdates: list[RecordColumn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputSchemaUpdate:
     Optional[RecordFormat] RecordFormatUpdate
     Optional[str] RecordEncodingUpdate
@@ -827,8 +851,9 @@ struct InputSchemaUpdate:
 struct InputStartingPositionConfiguration:
     Optional[InputStartingPosition] InputStartingPosition
 
-# no @derive(Json): member(s) InputSchemaUpdate: InputSchemaUpdate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputSchemaUpdate: InputSchemaUpdate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputUpdate:
     str InputId
     Optional[str] NamePrefixUpdate
@@ -931,8 +956,9 @@ struct ListApplicationOperationsRequest:
     Optional[str] Operation
     Optional[OperationStatus] OperationStatus
 
-# no @derive(Json): member(s) ApplicationOperationInfoList: list[ApplicationOperationInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationOperationInfoList: list[ApplicationOperationInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationOperationsResponse:
     Optional[list[ApplicationOperationInfo]] ApplicationOperationInfoList
     Optional[str] NextToken
@@ -943,8 +969,9 @@ struct ListApplicationSnapshotsRequest:
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SnapshotSummaries: list[SnapshotDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SnapshotSummaries: list[SnapshotDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationSnapshotsResponse:
     Optional[list[SnapshotDetails]] SnapshotSummaries
     Optional[str] NextToken
@@ -955,8 +982,9 @@ struct ListApplicationVersionsRequest:
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ApplicationVersionSummaries: list[ApplicationVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationVersionSummaries: list[ApplicationVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationVersionsResponse:
     Optional[list[ApplicationVersionSummary]] ApplicationVersionSummaries
     Optional[str] NextToken
@@ -966,8 +994,9 @@ struct ListApplicationsRequest:
     Optional[int64] Limit
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ApplicationSummaries: list[ApplicationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationSummaries: list[ApplicationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationsResponse:
     list[ApplicationSummary] ApplicationSummaries
     Optional[str] NextToken
@@ -976,8 +1005,9 @@ struct ListApplicationsResponse:
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -1063,8 +1093,9 @@ struct ParallelismConfigurationUpdate:
     Optional[int64] ParallelismPerKPUUpdate
     Optional[bool] AutoScalingEnabledUpdate
 
-# no @derive(Json): member(s) PropertyMap: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PropertyMap: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PropertyGroup:
     str PropertyGroupId
     dict[str, str] PropertyMap
@@ -1080,23 +1111,26 @@ struct RecordFormat:
     RecordFormatType RecordFormatType
     Optional[MappingParameters] MappingParameters
 
-# no @derive(Json): member(s) ReferenceSchema: SourceSchema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReferenceSchema: SourceSchema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReferenceDataSource:
     str TableName
     Optional[S3ReferenceDataSource] S3ReferenceDataSource
     SourceSchema ReferenceSchema
 
-# no @derive(Json): member(s) ReferenceSchema: SourceSchema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReferenceSchema: SourceSchema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReferenceDataSourceDescription:
     str ReferenceId
     str TableName
     S3ReferenceDataSourceDescription S3ReferenceDataSourceDescription
     Optional[SourceSchema] ReferenceSchema
 
-# no @derive(Json): member(s) ReferenceSchemaUpdate: SourceSchema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReferenceSchemaUpdate: SourceSchema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReferenceDataSourceUpdate:
     str ReferenceId
     Optional[str] TableNameUpdate
@@ -1120,14 +1154,16 @@ struct RollbackApplicationRequest:
     str ApplicationName
     int64 CurrentApplicationVersionId
 
-# no @derive(Json): member(s) ApplicationDetail: ApplicationDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationDetail: ApplicationDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RollbackApplicationResponse:
     ApplicationDetail ApplicationDetail
     Optional[str] OperationId
 
-# no @derive(Json): member(s) SqlRunConfigurations: list[SqlRunConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SqlRunConfigurations: list[SqlRunConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RunConfiguration:
     Optional[FlinkRunConfiguration] FlinkRunConfiguration
     Optional[list[SqlRunConfiguration]] SqlRunConfigurations
@@ -1210,29 +1246,33 @@ struct SnapshotDetails:
     Optional[RuntimeEnvironment] RuntimeEnvironment
     Optional[ApplicationEncryptionConfigurationDescription] ApplicationEncryptionConfigurationDescription
 
-# no @derive(Json): member(s) RecordColumns: list[RecordColumn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecordColumns: list[RecordColumn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceSchema:
     RecordFormat RecordFormat
     Optional[str] RecordEncoding
     list[RecordColumn] RecordColumns
 
-# no @derive(Json): member(s) Inputs: list[Input], Outputs: list[Output], ReferenceDataSources: list[ReferenceDataSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[Input], Outputs: list[Output], ReferenceDataSources: list[ReferenceDataSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SqlApplicationConfiguration:
     Optional[list[Input]] Inputs
     Optional[list[Output]] Outputs
     Optional[list[ReferenceDataSource]] ReferenceDataSources
 
-# no @derive(Json): member(s) InputDescriptions: list[InputDescription], OutputDescriptions: list[OutputDescription], ReferenceDataSourceDescriptions: list[ReferenceDataSourceDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputDescriptions: list[InputDescription], OutputDescriptions: list[OutputDescription], ReferenceDataSourceDescriptions: list[ReferenceDataSourceDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SqlApplicationConfigurationDescription:
     Optional[list[InputDescription]] InputDescriptions
     Optional[list[OutputDescription]] OutputDescriptions
     Optional[list[ReferenceDataSourceDescription]] ReferenceDataSourceDescriptions
 
-# no @derive(Json): member(s) InputUpdates: list[InputUpdate], OutputUpdates: list[OutputUpdate], ReferenceDataSourceUpdates: list[ReferenceDataSourceUpdate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputUpdates: list[InputUpdate], OutputUpdates: list[OutputUpdate], ReferenceDataSourceUpdates: list[ReferenceDataSourceUpdate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SqlApplicationConfigurationUpdate:
     Optional[list[InputUpdate]] InputUpdates
     Optional[list[OutputUpdate]] OutputUpdates
@@ -1243,8 +1283,9 @@ struct SqlRunConfiguration:
     str InputId
     InputStartingPositionConfiguration InputStartingPositionConfiguration
 
-# no @derive(Json): member(s) RunConfiguration: RunConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RunConfiguration: RunConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartApplicationRequest:
     str ApplicationName
     Optional[RunConfiguration] RunConfiguration
@@ -1267,8 +1308,9 @@ struct Tag:
     str Key
     Optional[str] Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceARN
     list[Tag] Tags
@@ -1282,8 +1324,9 @@ struct TagResourceResponse:
 struct TooManyTagsException:
     Optional[str] message
 
-# no @derive(Json): member(s) RawInputRecords: list[str], ProcessedInputRecords: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RawInputRecords: list[str], ProcessedInputRecords: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UnableToDetectSchemaException:
     Optional[str] Message
     Optional[list[str]] RawInputRecords
@@ -1293,8 +1336,9 @@ struct UnableToDetectSchemaException:
 struct UnsupportedOperationException:
     Optional[str] Message
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceARN
     list[str] TagKeys
@@ -1314,8 +1358,9 @@ struct UpdateApplicationMaintenanceConfigurationResponse:
     Optional[str] ApplicationARN
     Optional[ApplicationMaintenanceConfigurationDescription] ApplicationMaintenanceConfigurationDescription
 
-# no @derive(Json): member(s) ApplicationConfigurationUpdate: ApplicationConfigurationUpdate, CloudWatchLoggingOptionUpdates: list[CloudWatchLoggingOptionUpdate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationConfigurationUpdate: ApplicationConfigurationUpdate, CloudWatchLoggingOptionUpdates: list[CloudWatchLoggingOptionUpdate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateApplicationRequest:
     str ApplicationName
     Optional[int64] CurrentApplicationVersionId
@@ -1326,51 +1371,58 @@ struct UpdateApplicationRequest:
     Optional[str] ConditionalToken
     Optional[RuntimeEnvironment] RuntimeEnvironmentUpdate
 
-# no @derive(Json): member(s) ApplicationDetail: ApplicationDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationDetail: ApplicationDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateApplicationResponse:
     ApplicationDetail ApplicationDetail
     Optional[str] OperationId
 
-# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfiguration:
     list[str] SubnetIds
     list[str] SecurityGroupIds
 
-# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfigurationDescription:
     str VpcConfigurationId
     str VpcId
     list[str] SubnetIds
     list[str] SecurityGroupIds
 
-# no @derive(Json): member(s) SubnetIdUpdates: list[str], SecurityGroupIdUpdates: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIdUpdates: list[str], SecurityGroupIdUpdates: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfigurationUpdate:
     str VpcConfigurationId
     Optional[list[str]] SubnetIdUpdates
     Optional[list[str]] SecurityGroupIdUpdates
 
-# no @derive(Json): member(s) CustomArtifactsConfiguration: list[CustomArtifactConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomArtifactsConfiguration: list[CustomArtifactConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ZeppelinApplicationConfiguration:
     Optional[ZeppelinMonitoringConfiguration] MonitoringConfiguration
     Optional[CatalogConfiguration] CatalogConfiguration
     Optional[DeployAsApplicationConfiguration] DeployAsApplicationConfiguration
     Optional[list[CustomArtifactConfiguration]] CustomArtifactsConfiguration
 
-# no @derive(Json): member(s) CustomArtifactsConfigurationDescription: list[CustomArtifactConfigurationDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomArtifactsConfigurationDescription: list[CustomArtifactConfigurationDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ZeppelinApplicationConfigurationDescription:
     ZeppelinMonitoringConfigurationDescription MonitoringConfigurationDescription
     Optional[CatalogConfigurationDescription] CatalogConfigurationDescription
     Optional[DeployAsApplicationConfigurationDescription] DeployAsApplicationConfigurationDescription
     Optional[list[CustomArtifactConfigurationDescription]] CustomArtifactsConfigurationDescription
 
-# no @derive(Json): member(s) CustomArtifactsConfigurationUpdate: list[CustomArtifactConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomArtifactsConfigurationUpdate: list[CustomArtifactConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ZeppelinApplicationConfigurationUpdate:
     Optional[ZeppelinMonitoringConfigurationUpdate] MonitoringConfigurationUpdate
     Optional[CatalogConfigurationUpdate] CatalogConfigurationUpdate
@@ -1441,16 +1493,482 @@ def kinesisanalytics_error_from_code(str code) -> Kinesis_Analytics_V2Error:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AddApplicationInput (input AddApplicationInputRequest)
-#   AddApplicationReferenceDataSource (input AddApplicationReferenceDataSourceRequest)
-#   AddApplicationVpcConfiguration (input AddApplicationVpcConfigurationRequest)
-#   CreateApplication (input CreateApplicationRequest)
-#   StartApplication (input StartApplicationRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateApplication (input UpdateApplicationRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def kinesisanalytics_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def kinesisanalytics_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def kinesisanalytics_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AddApplicationInputRequest to a compact JSON object (declaration order).
+def add_application_input_request_to_json(AddApplicationInputRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ApplicationName\":" + kinesisanalytics_json_str(v.ApplicationName))
+    parts.append("\"CurrentApplicationVersionId\":" + str(v.CurrentApplicationVersionId))
+    parts.append("\"Input\":" + input_to_json(v.Input))
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize AddApplicationReferenceDataSourceRequest to a compact JSON object (declaration order).
+def add_application_reference_data_source_request_to_json(AddApplicationReferenceDataSourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ApplicationName\":" + kinesisanalytics_json_str(v.ApplicationName))
+    parts.append("\"CurrentApplicationVersionId\":" + str(v.CurrentApplicationVersionId))
+    parts.append("\"ReferenceDataSource\":" + reference_data_source_to_json(v.ReferenceDataSource))
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize AddApplicationVpcConfigurationRequest to a compact JSON object (declaration order).
+def add_application_vpc_configuration_request_to_json(AddApplicationVpcConfigurationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ApplicationName\":" + kinesisanalytics_json_str(v.ApplicationName))
+    if v.CurrentApplicationVersionId.is_some():
+        auto u0 = v.CurrentApplicationVersionId.unwrap()
+        parts.append("\"CurrentApplicationVersionId\":" + str(u0))
+    parts.append("\"VpcConfiguration\":" + vpc_configuration_to_json(v.VpcConfiguration))
+    if v.ConditionalToken.is_some():
+        auto u1 = v.ConditionalToken.unwrap()
+        parts.append("\"ConditionalToken\":" + kinesisanalytics_json_str(u1))
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize ApplicationConfiguration to a compact JSON object (declaration order).
+def application_configuration_to_json(ApplicationConfiguration v) -> str:
+    list[str] parts = []
+    if v.SqlApplicationConfiguration.is_some():
+        auto u0 = v.SqlApplicationConfiguration.unwrap()
+        parts.append("\"SqlApplicationConfiguration\":" + sql_application_configuration_to_json(u0))
+    if v.FlinkApplicationConfiguration.is_some():
+        auto u1 = v.FlinkApplicationConfiguration.unwrap()
+        parts.append("\"FlinkApplicationConfiguration\":" + u1.to_json())
+    if v.EnvironmentProperties.is_some():
+        auto u2 = v.EnvironmentProperties.unwrap()
+        parts.append("\"EnvironmentProperties\":" + environment_properties_to_json(u2))
+    if v.ApplicationCodeConfiguration.is_some():
+        auto u3 = v.ApplicationCodeConfiguration.unwrap()
+        parts.append("\"ApplicationCodeConfiguration\":" + u3.to_json())
+    if v.ApplicationSnapshotConfiguration.is_some():
+        auto u4 = v.ApplicationSnapshotConfiguration.unwrap()
+        parts.append("\"ApplicationSnapshotConfiguration\":" + u4.to_json())
+    if v.ApplicationSystemRollbackConfiguration.is_some():
+        auto u5 = v.ApplicationSystemRollbackConfiguration.unwrap()
+        parts.append("\"ApplicationSystemRollbackConfiguration\":" + u5.to_json())
+    if v.VpcConfigurations.is_some():
+        auto u6 = v.VpcConfigurations.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(vpc_configuration_to_json(x7))
+        parts.append("\"VpcConfigurations\":" + kinesisanalytics_json_arr(e7))
+    if v.ZeppelinApplicationConfiguration.is_some():
+        auto u8 = v.ZeppelinApplicationConfiguration.unwrap()
+        parts.append("\"ZeppelinApplicationConfiguration\":" + zeppelin_application_configuration_to_json(u8))
+    if v.ApplicationEncryptionConfiguration.is_some():
+        auto u9 = v.ApplicationEncryptionConfiguration.unwrap()
+        parts.append("\"ApplicationEncryptionConfiguration\":" + u9.to_json())
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize ApplicationConfigurationUpdate to a compact JSON object (declaration order).
+def application_configuration_update_to_json(ApplicationConfigurationUpdate v) -> str:
+    list[str] parts = []
+    if v.SqlApplicationConfigurationUpdate.is_some():
+        auto u0 = v.SqlApplicationConfigurationUpdate.unwrap()
+        parts.append("\"SqlApplicationConfigurationUpdate\":" + sql_application_configuration_update_to_json(u0))
+    if v.ApplicationCodeConfigurationUpdate.is_some():
+        auto u1 = v.ApplicationCodeConfigurationUpdate.unwrap()
+        parts.append("\"ApplicationCodeConfigurationUpdate\":" + u1.to_json())
+    if v.FlinkApplicationConfigurationUpdate.is_some():
+        auto u2 = v.FlinkApplicationConfigurationUpdate.unwrap()
+        parts.append("\"FlinkApplicationConfigurationUpdate\":" + u2.to_json())
+    if v.EnvironmentPropertyUpdates.is_some():
+        auto u3 = v.EnvironmentPropertyUpdates.unwrap()
+        parts.append("\"EnvironmentPropertyUpdates\":" + environment_property_updates_to_json(u3))
+    if v.ApplicationSnapshotConfigurationUpdate.is_some():
+        auto u4 = v.ApplicationSnapshotConfigurationUpdate.unwrap()
+        parts.append("\"ApplicationSnapshotConfigurationUpdate\":" + u4.to_json())
+    if v.ApplicationSystemRollbackConfigurationUpdate.is_some():
+        auto u5 = v.ApplicationSystemRollbackConfigurationUpdate.unwrap()
+        parts.append("\"ApplicationSystemRollbackConfigurationUpdate\":" + u5.to_json())
+    if v.VpcConfigurationUpdates.is_some():
+        auto u6 = v.VpcConfigurationUpdates.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(vpc_configuration_update_to_json(x7))
+        parts.append("\"VpcConfigurationUpdates\":" + kinesisanalytics_json_arr(e7))
+    if v.ZeppelinApplicationConfigurationUpdate.is_some():
+        auto u8 = v.ZeppelinApplicationConfigurationUpdate.unwrap()
+        parts.append("\"ZeppelinApplicationConfigurationUpdate\":" + zeppelin_application_configuration_update_to_json(u8))
+    if v.ApplicationEncryptionConfigurationUpdate.is_some():
+        auto u9 = v.ApplicationEncryptionConfigurationUpdate.unwrap()
+        parts.append("\"ApplicationEncryptionConfigurationUpdate\":" + u9.to_json())
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize CreateApplicationRequest to a compact JSON object (declaration order).
+def create_application_request_to_json(CreateApplicationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ApplicationName\":" + kinesisanalytics_json_str(v.ApplicationName))
+    if v.ApplicationDescription.is_some():
+        auto u0 = v.ApplicationDescription.unwrap()
+        parts.append("\"ApplicationDescription\":" + kinesisanalytics_json_str(u0))
+    parts.append("\"RuntimeEnvironment\":" + v.RuntimeEnvironment.to_json())
+    parts.append("\"ServiceExecutionRole\":" + kinesisanalytics_json_str(v.ServiceExecutionRole))
+    if v.ApplicationConfiguration.is_some():
+        auto u1 = v.ApplicationConfiguration.unwrap()
+        parts.append("\"ApplicationConfiguration\":" + application_configuration_to_json(u1))
+    if v.CloudWatchLoggingOptions.is_some():
+        auto u2 = v.CloudWatchLoggingOptions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"CloudWatchLoggingOptions\":" + kinesisanalytics_json_arr(e3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + kinesisanalytics_json_arr(e5))
+    if v.ApplicationMode.is_some():
+        auto u6 = v.ApplicationMode.unwrap()
+        parts.append("\"ApplicationMode\":" + u6.to_json())
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize EnvironmentProperties to a compact JSON object (declaration order).
+def environment_properties_to_json(EnvironmentProperties v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.PropertyGroups:
+        e0.append(property_group_to_json(x0))
+    parts.append("\"PropertyGroups\":" + kinesisanalytics_json_arr(e0))
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize EnvironmentPropertyUpdates to a compact JSON object (declaration order).
+def environment_property_updates_to_json(EnvironmentPropertyUpdates v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.PropertyGroups:
+        e0.append(property_group_to_json(x0))
+    parts.append("\"PropertyGroups\":" + kinesisanalytics_json_arr(e0))
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize Input to a compact JSON object (declaration order).
+def input_to_json(Input v) -> str:
+    list[str] parts = []
+    parts.append("\"NamePrefix\":" + kinesisanalytics_json_str(v.NamePrefix))
+    if v.InputProcessingConfiguration.is_some():
+        auto u0 = v.InputProcessingConfiguration.unwrap()
+        parts.append("\"InputProcessingConfiguration\":" + u0.to_json())
+    if v.KinesisStreamsInput.is_some():
+        auto u1 = v.KinesisStreamsInput.unwrap()
+        parts.append("\"KinesisStreamsInput\":" + u1.to_json())
+    if v.KinesisFirehoseInput.is_some():
+        auto u2 = v.KinesisFirehoseInput.unwrap()
+        parts.append("\"KinesisFirehoseInput\":" + u2.to_json())
+    if v.InputParallelism.is_some():
+        auto u3 = v.InputParallelism.unwrap()
+        parts.append("\"InputParallelism\":" + u3.to_json())
+    parts.append("\"InputSchema\":" + source_schema_to_json(v.InputSchema))
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize InputSchemaUpdate to a compact JSON object (declaration order).
+def input_schema_update_to_json(InputSchemaUpdate v) -> str:
+    list[str] parts = []
+    if v.RecordFormatUpdate.is_some():
+        auto u0 = v.RecordFormatUpdate.unwrap()
+        parts.append("\"RecordFormatUpdate\":" + u0.to_json())
+    if v.RecordEncodingUpdate.is_some():
+        auto u1 = v.RecordEncodingUpdate.unwrap()
+        parts.append("\"RecordEncodingUpdate\":" + kinesisanalytics_json_str(u1))
+    if v.RecordColumnUpdates.is_some():
+        auto u2 = v.RecordColumnUpdates.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"RecordColumnUpdates\":" + kinesisanalytics_json_arr(e3))
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize InputUpdate to a compact JSON object (declaration order).
+def input_update_to_json(InputUpdate v) -> str:
+    list[str] parts = []
+    parts.append("\"InputId\":" + kinesisanalytics_json_str(v.InputId))
+    if v.NamePrefixUpdate.is_some():
+        auto u0 = v.NamePrefixUpdate.unwrap()
+        parts.append("\"NamePrefixUpdate\":" + kinesisanalytics_json_str(u0))
+    if v.InputProcessingConfigurationUpdate.is_some():
+        auto u1 = v.InputProcessingConfigurationUpdate.unwrap()
+        parts.append("\"InputProcessingConfigurationUpdate\":" + u1.to_json())
+    if v.KinesisStreamsInputUpdate.is_some():
+        auto u2 = v.KinesisStreamsInputUpdate.unwrap()
+        parts.append("\"KinesisStreamsInputUpdate\":" + u2.to_json())
+    if v.KinesisFirehoseInputUpdate.is_some():
+        auto u3 = v.KinesisFirehoseInputUpdate.unwrap()
+        parts.append("\"KinesisFirehoseInputUpdate\":" + u3.to_json())
+    if v.InputSchemaUpdate.is_some():
+        auto u4 = v.InputSchemaUpdate.unwrap()
+        parts.append("\"InputSchemaUpdate\":" + input_schema_update_to_json(u4))
+    if v.InputParallelismUpdate.is_some():
+        auto u5 = v.InputParallelismUpdate.unwrap()
+        parts.append("\"InputParallelismUpdate\":" + u5.to_json())
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize PropertyGroup to a compact JSON object (declaration order).
+def property_group_to_json(PropertyGroup v) -> str:
+    list[str] parts = []
+    parts.append("\"PropertyGroupId\":" + kinesisanalytics_json_str(v.PropertyGroupId))
+    list[str] m0 = []
+    for k0 in sorted(v.PropertyMap.keys()):
+        m0.append(kinesisanalytics_json_str(k0) + ":" + kinesisanalytics_json_str(v.PropertyMap[k0]))
+    parts.append("\"PropertyMap\":" + kinesisanalytics_json_obj(m0))
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize ReferenceDataSource to a compact JSON object (declaration order).
+def reference_data_source_to_json(ReferenceDataSource v) -> str:
+    list[str] parts = []
+    parts.append("\"TableName\":" + kinesisanalytics_json_str(v.TableName))
+    if v.S3ReferenceDataSource.is_some():
+        auto u0 = v.S3ReferenceDataSource.unwrap()
+        parts.append("\"S3ReferenceDataSource\":" + u0.to_json())
+    parts.append("\"ReferenceSchema\":" + source_schema_to_json(v.ReferenceSchema))
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize ReferenceDataSourceUpdate to a compact JSON object (declaration order).
+def reference_data_source_update_to_json(ReferenceDataSourceUpdate v) -> str:
+    list[str] parts = []
+    parts.append("\"ReferenceId\":" + kinesisanalytics_json_str(v.ReferenceId))
+    if v.TableNameUpdate.is_some():
+        auto u0 = v.TableNameUpdate.unwrap()
+        parts.append("\"TableNameUpdate\":" + kinesisanalytics_json_str(u0))
+    if v.S3ReferenceDataSourceUpdate.is_some():
+        auto u1 = v.S3ReferenceDataSourceUpdate.unwrap()
+        parts.append("\"S3ReferenceDataSourceUpdate\":" + u1.to_json())
+    if v.ReferenceSchemaUpdate.is_some():
+        auto u2 = v.ReferenceSchemaUpdate.unwrap()
+        parts.append("\"ReferenceSchemaUpdate\":" + source_schema_to_json(u2))
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize RunConfiguration to a compact JSON object (declaration order).
+def run_configuration_to_json(RunConfiguration v) -> str:
+    list[str] parts = []
+    if v.FlinkRunConfiguration.is_some():
+        auto u0 = v.FlinkRunConfiguration.unwrap()
+        parts.append("\"FlinkRunConfiguration\":" + u0.to_json())
+    if v.SqlRunConfigurations.is_some():
+        auto u1 = v.SqlRunConfigurations.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"SqlRunConfigurations\":" + kinesisanalytics_json_arr(e2))
+    if v.ApplicationRestoreConfiguration.is_some():
+        auto u3 = v.ApplicationRestoreConfiguration.unwrap()
+        parts.append("\"ApplicationRestoreConfiguration\":" + u3.to_json())
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize SourceSchema to a compact JSON object (declaration order).
+def source_schema_to_json(SourceSchema v) -> str:
+    list[str] parts = []
+    parts.append("\"RecordFormat\":" + v.RecordFormat.to_json())
+    if v.RecordEncoding.is_some():
+        auto u0 = v.RecordEncoding.unwrap()
+        parts.append("\"RecordEncoding\":" + kinesisanalytics_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.RecordColumns:
+        e1.append(x1.to_json())
+    parts.append("\"RecordColumns\":" + kinesisanalytics_json_arr(e1))
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize SqlApplicationConfiguration to a compact JSON object (declaration order).
+def sql_application_configuration_to_json(SqlApplicationConfiguration v) -> str:
+    list[str] parts = []
+    if v.Inputs.is_some():
+        auto u0 = v.Inputs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(input_to_json(x1))
+        parts.append("\"Inputs\":" + kinesisanalytics_json_arr(e1))
+    if v.Outputs.is_some():
+        auto u2 = v.Outputs.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Outputs\":" + kinesisanalytics_json_arr(e3))
+    if v.ReferenceDataSources.is_some():
+        auto u4 = v.ReferenceDataSources.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(reference_data_source_to_json(x5))
+        parts.append("\"ReferenceDataSources\":" + kinesisanalytics_json_arr(e5))
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize SqlApplicationConfigurationUpdate to a compact JSON object (declaration order).
+def sql_application_configuration_update_to_json(SqlApplicationConfigurationUpdate v) -> str:
+    list[str] parts = []
+    if v.InputUpdates.is_some():
+        auto u0 = v.InputUpdates.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(input_update_to_json(x1))
+        parts.append("\"InputUpdates\":" + kinesisanalytics_json_arr(e1))
+    if v.OutputUpdates.is_some():
+        auto u2 = v.OutputUpdates.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"OutputUpdates\":" + kinesisanalytics_json_arr(e3))
+    if v.ReferenceDataSourceUpdates.is_some():
+        auto u4 = v.ReferenceDataSourceUpdates.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(reference_data_source_update_to_json(x5))
+        parts.append("\"ReferenceDataSourceUpdates\":" + kinesisanalytics_json_arr(e5))
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize StartApplicationRequest to a compact JSON object (declaration order).
+def start_application_request_to_json(StartApplicationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ApplicationName\":" + kinesisanalytics_json_str(v.ApplicationName))
+    if v.RunConfiguration.is_some():
+        auto u0 = v.RunConfiguration.unwrap()
+        parts.append("\"RunConfiguration\":" + run_configuration_to_json(u0))
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + kinesisanalytics_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + kinesisanalytics_json_arr(e0))
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + kinesisanalytics_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(kinesisanalytics_json_str(x0))
+    parts.append("\"TagKeys\":" + kinesisanalytics_json_arr(e0))
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize UpdateApplicationRequest to a compact JSON object (declaration order).
+def update_application_request_to_json(UpdateApplicationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ApplicationName\":" + kinesisanalytics_json_str(v.ApplicationName))
+    if v.CurrentApplicationVersionId.is_some():
+        auto u0 = v.CurrentApplicationVersionId.unwrap()
+        parts.append("\"CurrentApplicationVersionId\":" + str(u0))
+    if v.ApplicationConfigurationUpdate.is_some():
+        auto u1 = v.ApplicationConfigurationUpdate.unwrap()
+        parts.append("\"ApplicationConfigurationUpdate\":" + application_configuration_update_to_json(u1))
+    if v.ServiceExecutionRoleUpdate.is_some():
+        auto u2 = v.ServiceExecutionRoleUpdate.unwrap()
+        parts.append("\"ServiceExecutionRoleUpdate\":" + kinesisanalytics_json_str(u2))
+    if v.RunConfigurationUpdate.is_some():
+        auto u3 = v.RunConfigurationUpdate.unwrap()
+        parts.append("\"RunConfigurationUpdate\":" + u3.to_json())
+    if v.CloudWatchLoggingOptionUpdates.is_some():
+        auto u4 = v.CloudWatchLoggingOptionUpdates.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"CloudWatchLoggingOptionUpdates\":" + kinesisanalytics_json_arr(e5))
+    if v.ConditionalToken.is_some():
+        auto u6 = v.ConditionalToken.unwrap()
+        parts.append("\"ConditionalToken\":" + kinesisanalytics_json_str(u6))
+    if v.RuntimeEnvironmentUpdate.is_some():
+        auto u7 = v.RuntimeEnvironmentUpdate.unwrap()
+        parts.append("\"RuntimeEnvironmentUpdate\":" + u7.to_json())
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize VpcConfiguration to a compact JSON object (declaration order).
+def vpc_configuration_to_json(VpcConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SubnetIds:
+        e0.append(kinesisanalytics_json_str(x0))
+    parts.append("\"SubnetIds\":" + kinesisanalytics_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.SecurityGroupIds:
+        e1.append(kinesisanalytics_json_str(x1))
+    parts.append("\"SecurityGroupIds\":" + kinesisanalytics_json_arr(e1))
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize VpcConfigurationUpdate to a compact JSON object (declaration order).
+def vpc_configuration_update_to_json(VpcConfigurationUpdate v) -> str:
+    list[str] parts = []
+    parts.append("\"VpcConfigurationId\":" + kinesisanalytics_json_str(v.VpcConfigurationId))
+    if v.SubnetIdUpdates.is_some():
+        auto u0 = v.SubnetIdUpdates.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(kinesisanalytics_json_str(x1))
+        parts.append("\"SubnetIdUpdates\":" + kinesisanalytics_json_arr(e1))
+    if v.SecurityGroupIdUpdates.is_some():
+        auto u2 = v.SecurityGroupIdUpdates.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(kinesisanalytics_json_str(x3))
+        parts.append("\"SecurityGroupIdUpdates\":" + kinesisanalytics_json_arr(e3))
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize ZeppelinApplicationConfiguration to a compact JSON object (declaration order).
+def zeppelin_application_configuration_to_json(ZeppelinApplicationConfiguration v) -> str:
+    list[str] parts = []
+    if v.MonitoringConfiguration.is_some():
+        auto u0 = v.MonitoringConfiguration.unwrap()
+        parts.append("\"MonitoringConfiguration\":" + u0.to_json())
+    if v.CatalogConfiguration.is_some():
+        auto u1 = v.CatalogConfiguration.unwrap()
+        parts.append("\"CatalogConfiguration\":" + u1.to_json())
+    if v.DeployAsApplicationConfiguration.is_some():
+        auto u2 = v.DeployAsApplicationConfiguration.unwrap()
+        parts.append("\"DeployAsApplicationConfiguration\":" + u2.to_json())
+    if v.CustomArtifactsConfiguration.is_some():
+        auto u3 = v.CustomArtifactsConfiguration.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"CustomArtifactsConfiguration\":" + kinesisanalytics_json_arr(e4))
+    return kinesisanalytics_json_obj(parts)
+
+# Serialize ZeppelinApplicationConfigurationUpdate to a compact JSON object (declaration order).
+def zeppelin_application_configuration_update_to_json(ZeppelinApplicationConfigurationUpdate v) -> str:
+    list[str] parts = []
+    if v.MonitoringConfigurationUpdate.is_some():
+        auto u0 = v.MonitoringConfigurationUpdate.unwrap()
+        parts.append("\"MonitoringConfigurationUpdate\":" + u0.to_json())
+    if v.CatalogConfigurationUpdate.is_some():
+        auto u1 = v.CatalogConfigurationUpdate.unwrap()
+        parts.append("\"CatalogConfigurationUpdate\":" + u1.to_json())
+    if v.DeployAsApplicationConfigurationUpdate.is_some():
+        auto u2 = v.DeployAsApplicationConfigurationUpdate.unwrap()
+        parts.append("\"DeployAsApplicationConfigurationUpdate\":" + u2.to_json())
+    if v.CustomArtifactsConfigurationUpdate.is_some():
+        auto u3 = v.CustomArtifactsConfigurationUpdate.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"CustomArtifactsConfigurationUpdate\":" + kinesisanalytics_json_arr(e4))
+    return kinesisanalytics_json_obj(parts)
 
 # A bound Kinesis_Analytics_V2 client: credentials + region, threaded into every operation.
 struct Kinesis_Analytics_V2Client:
@@ -1463,6 +1981,12 @@ struct Kinesis_Analytics_V2Client:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "AddApplicationCloudWatchLoggingOption", body)
 
+    # AddApplicationInput
+    # errors: CodeValidationException, ConcurrentModificationException, InvalidArgumentException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException
+    def add_application_input(self, AddApplicationInputRequest input) -> str:
+        auto body = add_application_input_request_to_json(input)
+        return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "AddApplicationInput", body)
+
     # AddApplicationInputProcessingConfiguration
     # errors: ConcurrentModificationException, InvalidArgumentException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException
     def add_application_input_processing_configuration(self, AddApplicationInputProcessingConfigurationRequest input) -> str:
@@ -1474,6 +1998,24 @@ struct Kinesis_Analytics_V2Client:
     def add_application_output(self, AddApplicationOutputRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "AddApplicationOutput", body)
+
+    # AddApplicationReferenceDataSource
+    # errors: ConcurrentModificationException, InvalidArgumentException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException
+    def add_application_reference_data_source(self, AddApplicationReferenceDataSourceRequest input) -> str:
+        auto body = add_application_reference_data_source_request_to_json(input)
+        return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "AddApplicationReferenceDataSource", body)
+
+    # AddApplicationVpcConfiguration
+    # errors: ConcurrentModificationException, InvalidApplicationConfigurationException, InvalidArgumentException, ResourceInUseException, ResourceNotFoundException
+    def add_application_vpc_configuration(self, AddApplicationVpcConfigurationRequest input) -> str:
+        auto body = add_application_vpc_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "AddApplicationVpcConfiguration", body)
+
+    # CreateApplication
+    # errors: CodeValidationException, ConcurrentModificationException, InvalidArgumentException, InvalidRequestException, LimitExceededException, ResourceInUseException, TooManyTagsException, UnsupportedOperationException
+    def create_application(self, CreateApplicationRequest input) -> str:
+        auto body = create_application_request_to_json(input)
+        return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "CreateApplication", body)
 
     # CreateApplicationPresignedUrl
     # errors: InvalidArgumentException, ResourceInUseException, ResourceNotFoundException
@@ -1595,11 +2137,35 @@ struct Kinesis_Analytics_V2Client:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "RollbackApplication", body)
 
+    # StartApplication
+    # errors: InvalidApplicationConfigurationException, InvalidArgumentException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException
+    def start_application(self, StartApplicationRequest input) -> str:
+        auto body = start_application_request_to_json(input)
+        return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "StartApplication", body)
+
     # StopApplication
     # errors: ConcurrentModificationException, InvalidApplicationConfigurationException, InvalidArgumentException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException
     def stop_application(self, StopApplicationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "StopApplication", body)
+
+    # TagResource
+    # errors: ConcurrentModificationException, InvalidArgumentException, ResourceInUseException, ResourceNotFoundException, TooManyTagsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: ConcurrentModificationException, InvalidArgumentException, ResourceInUseException, ResourceNotFoundException, TooManyTagsException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateApplication
+    # errors: CodeValidationException, ConcurrentModificationException, InvalidApplicationConfigurationException, InvalidArgumentException, InvalidRequestException, LimitExceededException, ResourceInUseException, ResourceNotFoundException
+    def update_application(self, UpdateApplicationRequest input) -> str:
+        auto body = update_application_request_to_json(input)
+        return awsjson.awsjson_request_now(kinesisanalytics_protocol(), self.creds, self.region, "UpdateApplication", body)
 
     # UpdateApplicationMaintenanceConfiguration
     # errors: ConcurrentModificationException, InvalidArgumentException, ResourceInUseException, ResourceNotFoundException, UnsupportedOperationException

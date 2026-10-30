@@ -16,12 +16,12 @@
 # Response.
 #
 # Coverage (rest-json): 1 operations — 1 with a generated method,
-#   0 skipped (a member type is not yet bindable/serializable by derive).
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   12 structs (8 @derive(Json)), 3 enums, 4 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -82,8 +82,9 @@ struct Document:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) context: dict[str, Document], matchedPolicies: list[MatchedPolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) context: dict[str, Document], matchedPolicies: list[MatchedPolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Evaluation:
     str action
     str resource
@@ -97,8 +98,9 @@ struct GetRequestAuthorizationDetailsInput:
     str authorizationId
     Optional[str] nextToken
 
-# no @derive(Json): member(s) requestContext: dict[str, Document], evaluations: list[Evaluation], policies: list[PolicyInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) requestContext: dict[str, Document], evaluations: list[Evaluation], policies: list[PolicyInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRequestAuthorizationDetailsOutput:
     dict[str, Document] requestContext
     list[Evaluation] evaluations
@@ -109,8 +111,9 @@ struct GetRequestAuthorizationDetailsOutput:
 struct InternalServerException:
     str message
 
-# no @derive(Json): member(s) matchedStatements: list[MatchedStatement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) matchedStatements: list[MatchedStatement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MatchedPolicy:
     str uri
     Optional[list[MatchedStatement]] matchedStatements
@@ -120,8 +123,9 @@ struct MatchedStatement:
     Optional[str] sid
     Optional[StatementEffect] evaluatedEffect
 
-# no @derive(Json): member(s) attachedTo: list[AttachedTo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attachedTo: list[AttachedTo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PolicyInfo:
     Optional[PolicyType] type
     Optional[bool] inline

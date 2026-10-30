@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 6 operations — 4 with a generated method,
-#   2 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 6 operations — 6 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   22 structs (12 @derive(Json)), 7 enums, 6 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -121,8 +121,9 @@ struct CreateNetworkConnectorRequest:
     Optional[str] ClientToken
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Configuration: NetworkConnectorConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: NetworkConnectorConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateNetworkConnectorResponse:
     str Arn
     str Name
@@ -138,8 +139,9 @@ struct CreateNetworkConnectorResponse:
 struct DeleteNetworkConnectorRequest:
     str Identifier
 
-# no @derive(Json): member(s) Configuration: NetworkConnectorConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: NetworkConnectorConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteNetworkConnectorResponse:
     str Arn
     str Name
@@ -155,8 +157,9 @@ struct DeleteNetworkConnectorResponse:
 struct GetNetworkConnectorRequest:
     str Identifier
 
-# no @derive(Json): member(s) Configuration: NetworkConnectorConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: NetworkConnectorConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetNetworkConnectorResponse:
     str Arn
     str Name
@@ -189,8 +192,9 @@ struct ListNetworkConnectorVersionsRequest:
     Optional[str] Marker
     Optional[int64] MaxItems
 
-# no @derive(Json): member(s) NetworkConnectorVersions: list[NetworkConnectorVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkConnectorVersions: list[NetworkConnectorVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkConnectorVersionsResponse:
     list[NetworkConnectorVersionSummary] NetworkConnectorVersions
     Optional[str] NextMarker
@@ -203,14 +207,16 @@ struct ListNetworkConnectorsRequest:
     Optional[str] Marker
     Optional[int64] MaxItems
 
-# no @derive(Json): member(s) NetworkConnectors: list[NetworkConnectorSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkConnectors: list[NetworkConnectorSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkConnectorsResponse:
     list[NetworkConnectorSummary] NetworkConnectors
     Optional[str] NextMarker
 
-# no @derive(Json): member(s) VpcEgressConfiguration: NetworkConnectorVpcEgressConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcEgressConfiguration: NetworkConnectorVpcEgressConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkConnectorConfiguration:
     Optional[NetworkConnectorVpcEgressConfiguration] VpcEgressConfiguration
 
@@ -244,8 +250,9 @@ struct NetworkConnectorVersionSummary:
     @json(timestamp="iso8601")
     Optional[DateTime] LastModified
 
-# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str], AssociatedComputeResourceTypes: list[ComputeResourceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str], AssociatedComputeResourceTypes: list[ComputeResourceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkConnectorVpcEgressConfiguration:
     Optional[list[str]] SubnetIds
     Optional[list[str]] SecurityGroupIds
@@ -282,8 +289,9 @@ struct UpdateNetworkConnectorRequest:
     Optional[str] OperatorRole
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) Configuration: NetworkConnectorConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: NetworkConnectorConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateNetworkConnectorResponse:
     str Arn
     str Name
@@ -329,16 +337,97 @@ def lambda__error_from_code(str code) -> Lambda_CoreError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CreateNetworkConnector (document member `Configuration: NetworkConnectorConfiguration` is not serializable by derive)
-#   UpdateNetworkConnector (document member `Configuration: NetworkConnectorConfiguration` is not serializable by derive)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def lambda__json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def lambda__json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def lambda__json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize NetworkConnectorConfiguration to a compact JSON object (declaration order).
+def network_connector_configuration_to_json(NetworkConnectorConfiguration v) -> str:
+    list[str] parts = []
+    if v.VpcEgressConfiguration.is_some():
+        auto u0 = v.VpcEgressConfiguration.unwrap()
+        parts.append("\"VpcEgressConfiguration\":" + network_connector_vpc_egress_configuration_to_json(u0))
+    return lambda__json_obj(parts)
+
+# Serialize NetworkConnectorVpcEgressConfiguration to a compact JSON object (declaration order).
+def network_connector_vpc_egress_configuration_to_json(NetworkConnectorVpcEgressConfiguration v) -> str:
+    list[str] parts = []
+    if v.SubnetIds.is_some():
+        auto u0 = v.SubnetIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(lambda__json_str(x1))
+        parts.append("\"SubnetIds\":" + lambda__json_arr(e1))
+    if v.SecurityGroupIds.is_some():
+        auto u2 = v.SecurityGroupIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(lambda__json_str(x3))
+        parts.append("\"SecurityGroupIds\":" + lambda__json_arr(e3))
+    if v.NetworkProtocol.is_some():
+        auto u4 = v.NetworkProtocol.unwrap()
+        parts.append("\"NetworkProtocol\":" + u4.to_json())
+    if v.AssociatedComputeResourceTypes.is_some():
+        auto u5 = v.AssociatedComputeResourceTypes.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"AssociatedComputeResourceTypes\":" + lambda__json_arr(e6))
+    return lambda__json_obj(parts)
 
 # A bound Lambda_Core client: credentials + region, threaded into every operation.
 struct Lambda_CoreClient:
     core.Credentials creds
     str region
+
+    # CreateNetworkConnector  POST /2026-04-04/network-connectors
+    # errors: InvalidParameterValueException, NetworkConnectorLimitExceededException, ResourceConflictException, ServiceException, TooManyRequestsException
+    def create_network_connector(self, CreateNetworkConnectorRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2026-04-04/network-connectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + lambda__json_str(input.Name))
+        parts.append("\"Configuration\":" + network_connector_configuration_to_json(input.Configuration))
+        if input.OperatorRole.is_some():
+            auto u0 = input.OperatorRole.unwrap()
+            parts.append("\"OperatorRole\":" + lambda__json_str(u0))
+        if input.ClientToken.is_some():
+            auto u1 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + lambda__json_str(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(lambda__json_str(k3) + ":" + lambda__json_str(u2[k3]))
+            parts.append("\"Tags\":" + lambda__json_obj(m3))
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
 
     # DeleteNetworkConnector  DELETE /2026-04-04/network-connectors/{Identifier}
     # errors: InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
@@ -387,6 +476,26 @@ struct Lambda_CoreClient:
             query["MaxItems"] = str(input.MaxItems.unwrap_or(0))
         auto b = binding.HttpBinding(method="GET", path_template="/2026-04-04/network-connectors", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
+
+    # UpdateNetworkConnector  PUT /2026-04-04/network-connectors/{Identifier}
+    # errors: InvalidParameterValueException, NetworkConnectorLimitExceededException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def update_network_connector(self, UpdateNetworkConnectorRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["Identifier"] = input.Identifier
+        auto b = binding.HttpBinding(method="PUT", path_template="/2026-04-04/network-connectors/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Configuration.is_some():
+            auto u0 = input.Configuration.unwrap()
+            parts.append("\"Configuration\":" + network_connector_configuration_to_json(u0))
+        if input.OperatorRole.is_some():
+            auto u1 = input.OperatorRole.unwrap()
+            parts.append("\"OperatorRole\":" + lambda__json_str(u1))
+        if input.ClientToken.is_some():
+            auto u2 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + lambda__json_str(u2))
+        auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
 
     # Paginator for ListNetworkConnectorVersions — yields each Response page, threading the
     # NextMarker -> Marker continuation token until it is absent (result key: NetworkConnectorVersions).

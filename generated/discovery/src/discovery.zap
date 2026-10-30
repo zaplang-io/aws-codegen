@@ -13,20 +13,22 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 28 operations — 8 with a generated method,
-#   20 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 28 operations — 28 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   93 structs (49 @derive(Json)), 15 enums, 10 error variants.
-#   0 paginators generated (7 paginated ops skipped) from paginators-1.json.
+#   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.endpoints
 import aws_core.awsjson
+import datetime
 
 # The Application_Discovery_Service awsJson protocol: version 1.1, API id "AWSPoseidonService_V2015_11_01".
 def discovery_protocol() -> awsjson.AwsJson:
@@ -179,8 +181,9 @@ struct AgentConfigurationStatus:
     Optional[bool] operationSucceeded
     Optional[str] description
 
-# no @derive(Json): member(s) agentNetworkInfoList: list[AgentNetworkInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentNetworkInfoList: list[AgentNetworkInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentInfo:
     Optional[str] agentId
     Optional[str] hostName
@@ -198,8 +201,9 @@ struct AgentNetworkInfo:
     Optional[str] ipAddress
     Optional[str] macAddress
 
-# no @derive(Json): member(s) configurationIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurationIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateConfigurationItemsToApplicationRequest:
     str applicationConfigurationId
     list[str] configurationIds
@@ -219,18 +223,21 @@ struct BatchDeleteAgentError:
     str errorMessage
     DeleteAgentErrorCode errorCode
 
-# no @derive(Json): member(s) deleteAgents: list[DeleteAgent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deleteAgents: list[DeleteAgent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteAgentsRequest:
     list[DeleteAgent] deleteAgents
 
-# no @derive(Json): member(s) errors: list[BatchDeleteAgentError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[BatchDeleteAgentError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteAgentsResponse:
     Optional[list[BatchDeleteAgentError]] errors
 
-# no @derive(Json): member(s) requestedConfigurations: list[str], deletedConfigurations: list[str], failedConfigurations: list[FailedConfiguration], deletionWarnings: list[DeletionWarning] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) requestedConfigurations: list[str], deletedConfigurations: list[str], failedConfigurations: list[FailedConfiguration], deletionWarnings: list[DeletionWarning] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteConfigurationTask:
     Optional[str] taskId
     Optional[BatchDeleteConfigurationTaskStatus] status
@@ -248,14 +255,16 @@ struct BatchDeleteImportDataError:
     Optional[BatchDeleteImportDataErrorCode] errorCode
     Optional[str] errorDescription
 
-# no @derive(Json): member(s) importTaskIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) importTaskIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteImportDataRequest:
     list[str] importTaskIds
     Optional[bool] deleteHistory
 
-# no @derive(Json): member(s) errors: list[BatchDeleteImportDataError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[BatchDeleteImportDataError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteImportDataResponse:
     Optional[list[BatchDeleteImportDataError]] errors
 
@@ -271,8 +280,9 @@ struct ConfigurationTag:
 struct ConflictErrorException:
     Optional[str] message
 
-# no @derive(Json): member(s) schemaStorageConfig: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) schemaStorageConfig: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContinuousExportDescription:
     Optional[str] exportId
     Optional[ContinuousExportStatus] status
@@ -293,8 +303,9 @@ struct CreateApplicationRequest:
 struct CreateApplicationResponse:
     Optional[str] configurationId
 
-# no @derive(Json): member(s) configurationIds: list[str], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurationIds: list[str], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTagsRequest:
     list[str] configurationIds
     list[Tag] tags
@@ -349,8 +360,9 @@ struct DeleteAgent:
     str agentId
     Optional[bool] force
 
-# no @derive(Json): member(s) configurationIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurationIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteApplicationsRequest:
     list[str] configurationIds
 
@@ -359,8 +371,9 @@ struct DeleteApplicationsResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) configurationIds: list[str], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurationIds: list[str], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteTagsRequest:
     list[str] configurationIds
     Optional[list[Tag]] tags
@@ -376,16 +389,18 @@ struct DeletionWarning:
     Optional[int64] warningCode
     Optional[str] warningText
 
-# no @derive(Json): member(s) agentIds: list[str], filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentIds: list[str], filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAgentsRequest:
     Optional[list[str]] agentIds
     Optional[list[Filter]] filters
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) agentsInfo: list[AgentInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentsInfo: list[AgentInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAgentsResponse:
     Optional[list[AgentInfo]] agentsInfo
     Optional[str] nextToken
@@ -394,89 +409,103 @@ struct DescribeAgentsResponse:
 struct DescribeBatchDeleteConfigurationTaskRequest:
     str taskId
 
-# no @derive(Json): member(s) task: BatchDeleteConfigurationTask not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) task: BatchDeleteConfigurationTask not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBatchDeleteConfigurationTaskResponse:
     Optional[BatchDeleteConfigurationTask] task
 
-# no @derive(Json): member(s) configurationIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurationIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConfigurationsRequest:
     list[str] configurationIds
 
-# no @derive(Json): member(s) configurations: list[dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurations: list[dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConfigurationsResponse:
     Optional[list[dict[str, str]]] configurations
 
-# no @derive(Json): member(s) exportIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exportIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeContinuousExportsRequest:
     Optional[list[str]] exportIds
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) descriptions: list[ContinuousExportDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) descriptions: list[ContinuousExportDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeContinuousExportsResponse:
     Optional[list[ContinuousExportDescription]] descriptions
     Optional[str] nextToken
 
-# no @derive(Json): member(s) exportIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exportIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeExportConfigurationsRequest:
     Optional[list[str]] exportIds
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) exportsInfo: list[ExportInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exportsInfo: list[ExportInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeExportConfigurationsResponse:
     Optional[list[ExportInfo]] exportsInfo
     Optional[str] nextToken
 
-# no @derive(Json): member(s) exportIds: list[str], filters: list[ExportFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exportIds: list[str], filters: list[ExportFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeExportTasksRequest:
     Optional[list[str]] exportIds
     Optional[list[ExportFilter]] filters
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) exportsInfo: list[ExportInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exportsInfo: list[ExportInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeExportTasksResponse:
     Optional[list[ExportInfo]] exportsInfo
     Optional[str] nextToken
 
-# no @derive(Json): member(s) filters: list[ImportTaskFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[ImportTaskFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeImportTasksRequest:
     Optional[list[ImportTaskFilter]] filters
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) tasks: list[ImportTask] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tasks: list[ImportTask] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeImportTasksResponse:
     Optional[str] nextToken
     Optional[list[ImportTask]] tasks
 
-# no @derive(Json): member(s) filters: list[TagFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[TagFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTagsRequest:
     Optional[list[TagFilter]] filters
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) tags: list[ConfigurationTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[ConfigurationTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTagsResponse:
     Optional[list[ConfigurationTag]] tags
     Optional[str] nextToken
 
-# no @derive(Json): member(s) configurationIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurationIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateConfigurationItemsFromApplicationRequest:
     str applicationConfigurationId
     list[str] configurationIds
@@ -486,8 +515,9 @@ struct DisassociateConfigurationItemsFromApplicationResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) excludedInstanceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) excludedInstanceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Ec2RecommendationsExportPreferences:
     Optional[bool] enabled
     Optional[UsageMetricBasis] cpuPerformanceMetricBasis
@@ -501,8 +531,9 @@ struct Ec2RecommendationsExportPreferences:
 struct ExportConfigurationsResponse:
     Optional[str] exportId
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportFilter:
     str name
     list[str] values
@@ -519,8 +550,9 @@ struct ExportInfo:
     Optional[DateTime] requestedStartTime
     Optional[DateTime] requestedEndTime
 
-# no @derive(Json): member(s) ec2RecommendationsPreferences: Ec2RecommendationsExportPreferences not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ec2RecommendationsPreferences: Ec2RecommendationsExportPreferences not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportPreferences:
     Optional[Ec2RecommendationsExportPreferences] ec2RecommendationsPreferences
 
@@ -530,8 +562,9 @@ struct FailedConfiguration:
     Optional[int64] errorStatusCode
     Optional[str] errorMessage
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filter:
     str name
     list[str] values
@@ -574,8 +607,9 @@ struct ImportTask:
     Optional[int64] applicationImportFailure
     Optional[str] errorsAndFailedEntriesZip
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportTaskFilter:
     Optional[ImportTaskFilterName] name
     Optional[list[str]] values
@@ -592,8 +626,9 @@ struct InvalidParameterValueException:
 struct LimitExceededException:
     Optional[str] message
 
-# no @derive(Json): member(s) filters: list[Filter], orderBy: list[OrderByElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[Filter], orderBy: list[OrderByElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfigurationsRequest:
     ConfigurationItemType configurationType
     Optional[list[Filter]] filters
@@ -601,14 +636,16 @@ struct ListConfigurationsRequest:
     Optional[str] nextToken
     Optional[list[OrderByElement]] orderBy
 
-# no @derive(Json): member(s) configurations: list[dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurations: list[dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfigurationsResponse:
     Optional[list[dict[str, str]]] configurations
     Optional[str] nextToken
 
-# no @derive(Json): member(s) neighborConfigurationIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) neighborConfigurationIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServerNeighborsRequest:
     str configurationId
     Optional[bool] portInformationNeeded
@@ -616,8 +653,9 @@ struct ListServerNeighborsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) neighbors: list[NeighborConnectionDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) neighbors: list[NeighborConnectionDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListServerNeighborsResponse:
     list[NeighborConnectionDetail] neighbors
     Optional[str] nextToken
@@ -658,8 +696,9 @@ struct ResourceNotFoundException:
 struct ServerInternalErrorException:
     Optional[str] message
 
-# no @derive(Json): member(s) configurationIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurationIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartBatchDeleteConfigurationTaskRequest:
     str configurationType
     list[str] configurationIds
@@ -673,8 +712,9 @@ struct StartContinuousExportRequest:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) schemaStorageConfig: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) schemaStorageConfig: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartContinuousExportResponse:
     Optional[str] exportId
     Optional[str] s3Bucket
@@ -682,18 +722,21 @@ struct StartContinuousExportResponse:
     Optional[str] dataSource
     Optional[dict[str, str]] schemaStorageConfig
 
-# no @derive(Json): member(s) agentIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartDataCollectionByAgentIdsRequest:
     list[str] agentIds
 
-# no @derive(Json): member(s) agentsConfigurationStatus: list[AgentConfigurationStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentsConfigurationStatus: list[AgentConfigurationStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartDataCollectionByAgentIdsResponse:
     Optional[list[AgentConfigurationStatus]] agentsConfigurationStatus
 
-# no @derive(Json): member(s) exportDataFormat: list[str], filters: list[ExportFilter], preferences: ExportPreferences not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exportDataFormat: list[str], filters: list[ExportFilter], preferences: ExportPreferences not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartExportTaskRequest:
     Optional[list[str]] exportDataFormat
     Optional[list[ExportFilter]] filters
@@ -724,13 +767,15 @@ struct StopContinuousExportResponse:
     Optional[DateTime] startTime
     Optional[DateTime] stopTime
 
-# no @derive(Json): member(s) agentIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopDataCollectionByAgentIdsRequest:
     list[str] agentIds
 
-# no @derive(Json): member(s) agentsConfigurationStatus: list[AgentConfigurationStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentsConfigurationStatus: list[AgentConfigurationStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopDataCollectionByAgentIdsResponse:
     Optional[list[AgentConfigurationStatus]] agentsConfigurationStatus
 
@@ -739,8 +784,9 @@ struct Tag:
     str key
     str value
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagFilter:
     str name
     list[str] values
@@ -805,43 +851,441 @@ def discovery_error_from_code(str code) -> Application_Discovery_ServiceError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AssociateConfigurationItemsToApplication (input AssociateConfigurationItemsToApplicationRequest)
-#   BatchDeleteAgents (input BatchDeleteAgentsRequest)
-#   BatchDeleteImportData (input BatchDeleteImportDataRequest)
-#   CreateTags (input CreateTagsRequest)
-#   DeleteApplications (input DeleteApplicationsRequest)
-#   DeleteTags (input DeleteTagsRequest)
-#   DescribeAgents (input DescribeAgentsRequest)
-#   DescribeConfigurations (input DescribeConfigurationsRequest)
-#   DescribeContinuousExports (input DescribeContinuousExportsRequest)
-#   DescribeExportConfigurations (input DescribeExportConfigurationsRequest)
-#   DescribeExportTasks (input DescribeExportTasksRequest)
-#   DescribeImportTasks (input DescribeImportTasksRequest)
-#   DescribeTags (input DescribeTagsRequest)
-#   DisassociateConfigurationItemsFromApplication (input DisassociateConfigurationItemsFromApplicationRequest)
-#   ListConfigurations (input ListConfigurationsRequest)
-#   ListServerNeighbors (input ListServerNeighborsRequest)
-#   StartBatchDeleteConfigurationTask (input StartBatchDeleteConfigurationTaskRequest)
-#   StartDataCollectionByAgentIds (input StartDataCollectionByAgentIdsRequest)
-#   StartExportTask (input StartExportTaskRequest)
-#   StopDataCollectionByAgentIds (input StopDataCollectionByAgentIdsRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def discovery_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   DescribeAgents (input not derivable (no generated method))
-#   DescribeContinuousExports (input not derivable (no generated method))
-#   DescribeExportConfigurations (input not derivable (no generated method))
-#   DescribeExportTasks (input not derivable (no generated method))
-#   DescribeImportTasks (input not derivable (no generated method))
-#   DescribeTags (input not derivable (no generated method))
-#   ListConfigurations (input not derivable (no generated method))
+def discovery_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def discovery_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AssociateConfigurationItemsToApplicationRequest to a compact JSON object (declaration order).
+def associate_configuration_items_to_application_request_to_json(AssociateConfigurationItemsToApplicationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"applicationConfigurationId\":" + discovery_json_str(v.applicationConfigurationId))
+    list[str] e0 = []
+    for x0 in v.configurationIds:
+        e0.append(discovery_json_str(x0))
+    parts.append("\"configurationIds\":" + discovery_json_arr(e0))
+    return discovery_json_obj(parts)
+
+# Serialize BatchDeleteAgentsRequest to a compact JSON object (declaration order).
+def batch_delete_agents_request_to_json(BatchDeleteAgentsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.deleteAgents:
+        e0.append(x0.to_json())
+    parts.append("\"deleteAgents\":" + discovery_json_arr(e0))
+    return discovery_json_obj(parts)
+
+# Serialize BatchDeleteImportDataRequest to a compact JSON object (declaration order).
+def batch_delete_import_data_request_to_json(BatchDeleteImportDataRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.importTaskIds:
+        e0.append(discovery_json_str(x0))
+    parts.append("\"importTaskIds\":" + discovery_json_arr(e0))
+    if v.deleteHistory.is_some():
+        auto u1 = v.deleteHistory.unwrap()
+        parts.append("\"deleteHistory\":" + json.dumps(JsonValue.Bool(u1)))
+    return discovery_json_obj(parts)
+
+# Serialize CreateTagsRequest to a compact JSON object (declaration order).
+def create_tags_request_to_json(CreateTagsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.configurationIds:
+        e0.append(discovery_json_str(x0))
+    parts.append("\"configurationIds\":" + discovery_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.tags:
+        e1.append(x1.to_json())
+    parts.append("\"tags\":" + discovery_json_arr(e1))
+    return discovery_json_obj(parts)
+
+# Serialize DeleteApplicationsRequest to a compact JSON object (declaration order).
+def delete_applications_request_to_json(DeleteApplicationsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.configurationIds:
+        e0.append(discovery_json_str(x0))
+    parts.append("\"configurationIds\":" + discovery_json_arr(e0))
+    return discovery_json_obj(parts)
+
+# Serialize DeleteTagsRequest to a compact JSON object (declaration order).
+def delete_tags_request_to_json(DeleteTagsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.configurationIds:
+        e0.append(discovery_json_str(x0))
+    parts.append("\"configurationIds\":" + discovery_json_arr(e0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + discovery_json_arr(e2))
+    return discovery_json_obj(parts)
+
+# Serialize DescribeAgentsRequest to a compact JSON object (declaration order).
+def describe_agents_request_to_json(DescribeAgentsRequest v) -> str:
+    list[str] parts = []
+    if v.agentIds.is_some():
+        auto u0 = v.agentIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(discovery_json_str(x1))
+        parts.append("\"agentIds\":" + discovery_json_arr(e1))
+    if v.filters.is_some():
+        auto u2 = v.filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(filter_to_json(x3))
+        parts.append("\"filters\":" + discovery_json_arr(e3))
+    if v.maxResults.is_some():
+        auto u4 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u4))
+    if v.nextToken.is_some():
+        auto u5 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + discovery_json_str(u5))
+    return discovery_json_obj(parts)
+
+# Serialize DescribeConfigurationsRequest to a compact JSON object (declaration order).
+def describe_configurations_request_to_json(DescribeConfigurationsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.configurationIds:
+        e0.append(discovery_json_str(x0))
+    parts.append("\"configurationIds\":" + discovery_json_arr(e0))
+    return discovery_json_obj(parts)
+
+# Serialize DescribeContinuousExportsRequest to a compact JSON object (declaration order).
+def describe_continuous_exports_request_to_json(DescribeContinuousExportsRequest v) -> str:
+    list[str] parts = []
+    if v.exportIds.is_some():
+        auto u0 = v.exportIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(discovery_json_str(x1))
+        parts.append("\"exportIds\":" + discovery_json_arr(e1))
+    if v.maxResults.is_some():
+        auto u2 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + discovery_json_str(u3))
+    return discovery_json_obj(parts)
+
+# Serialize DescribeExportConfigurationsRequest to a compact JSON object (declaration order).
+def describe_export_configurations_request_to_json(DescribeExportConfigurationsRequest v) -> str:
+    list[str] parts = []
+    if v.exportIds.is_some():
+        auto u0 = v.exportIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(discovery_json_str(x1))
+        parts.append("\"exportIds\":" + discovery_json_arr(e1))
+    if v.maxResults.is_some():
+        auto u2 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + discovery_json_str(u3))
+    return discovery_json_obj(parts)
+
+# Serialize DescribeExportTasksRequest to a compact JSON object (declaration order).
+def describe_export_tasks_request_to_json(DescribeExportTasksRequest v) -> str:
+    list[str] parts = []
+    if v.exportIds.is_some():
+        auto u0 = v.exportIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(discovery_json_str(x1))
+        parts.append("\"exportIds\":" + discovery_json_arr(e1))
+    if v.filters.is_some():
+        auto u2 = v.filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(export_filter_to_json(x3))
+        parts.append("\"filters\":" + discovery_json_arr(e3))
+    if v.maxResults.is_some():
+        auto u4 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u4))
+    if v.nextToken.is_some():
+        auto u5 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + discovery_json_str(u5))
+    return discovery_json_obj(parts)
+
+# Serialize DescribeImportTasksRequest to a compact JSON object (declaration order).
+def describe_import_tasks_request_to_json(DescribeImportTasksRequest v) -> str:
+    list[str] parts = []
+    if v.filters.is_some():
+        auto u0 = v.filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(import_task_filter_to_json(x1))
+        parts.append("\"filters\":" + discovery_json_arr(e1))
+    if v.maxResults.is_some():
+        auto u2 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + discovery_json_str(u3))
+    return discovery_json_obj(parts)
+
+# Serialize DescribeTagsRequest to a compact JSON object (declaration order).
+def describe_tags_request_to_json(DescribeTagsRequest v) -> str:
+    list[str] parts = []
+    if v.filters.is_some():
+        auto u0 = v.filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(tag_filter_to_json(x1))
+        parts.append("\"filters\":" + discovery_json_arr(e1))
+    if v.maxResults.is_some():
+        auto u2 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + discovery_json_str(u3))
+    return discovery_json_obj(parts)
+
+# Serialize DisassociateConfigurationItemsFromApplicationRequest to a compact JSON object (declaration order).
+def disassociate_configuration_items_from_application_request_to_json(DisassociateConfigurationItemsFromApplicationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"applicationConfigurationId\":" + discovery_json_str(v.applicationConfigurationId))
+    list[str] e0 = []
+    for x0 in v.configurationIds:
+        e0.append(discovery_json_str(x0))
+    parts.append("\"configurationIds\":" + discovery_json_arr(e0))
+    return discovery_json_obj(parts)
+
+# Serialize Ec2RecommendationsExportPreferences to a compact JSON object (declaration order).
+def ec2_recommendations_export_preferences_to_json(Ec2RecommendationsExportPreferences v) -> str:
+    list[str] parts = []
+    if v.enabled.is_some():
+        auto u0 = v.enabled.unwrap()
+        parts.append("\"enabled\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.cpuPerformanceMetricBasis.is_some():
+        auto u1 = v.cpuPerformanceMetricBasis.unwrap()
+        parts.append("\"cpuPerformanceMetricBasis\":" + u1.to_json())
+    if v.ramPerformanceMetricBasis.is_some():
+        auto u2 = v.ramPerformanceMetricBasis.unwrap()
+        parts.append("\"ramPerformanceMetricBasis\":" + u2.to_json())
+    if v.tenancy.is_some():
+        auto u3 = v.tenancy.unwrap()
+        parts.append("\"tenancy\":" + u3.to_json())
+    if v.excludedInstanceTypes.is_some():
+        auto u4 = v.excludedInstanceTypes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(discovery_json_str(x5))
+        parts.append("\"excludedInstanceTypes\":" + discovery_json_arr(e5))
+    if v.preferredRegion.is_some():
+        auto u6 = v.preferredRegion.unwrap()
+        parts.append("\"preferredRegion\":" + discovery_json_str(u6))
+    if v.reservedInstanceOptions.is_some():
+        auto u7 = v.reservedInstanceOptions.unwrap()
+        parts.append("\"reservedInstanceOptions\":" + u7.to_json())
+    return discovery_json_obj(parts)
+
+# Serialize ExportFilter to a compact JSON object (declaration order).
+def export_filter_to_json(ExportFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + discovery_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(discovery_json_str(x0))
+    parts.append("\"values\":" + discovery_json_arr(e0))
+    parts.append("\"condition\":" + discovery_json_str(v.condition))
+    return discovery_json_obj(parts)
+
+# Serialize ExportPreferences to a compact JSON object (declaration order).
+def export_preferences_to_json(ExportPreferences v) -> str:
+    list[str] parts = []
+    if v.ec2RecommendationsPreferences.is_some():
+        auto u0 = v.ec2RecommendationsPreferences.unwrap()
+        parts.append("\"ec2RecommendationsPreferences\":" + ec2_recommendations_export_preferences_to_json(u0))
+    return discovery_json_obj(parts)
+
+# Serialize Filter to a compact JSON object (declaration order).
+def filter_to_json(Filter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + discovery_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(discovery_json_str(x0))
+    parts.append("\"values\":" + discovery_json_arr(e0))
+    parts.append("\"condition\":" + discovery_json_str(v.condition))
+    return discovery_json_obj(parts)
+
+# Serialize ImportTaskFilter to a compact JSON object (declaration order).
+def import_task_filter_to_json(ImportTaskFilter v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + u0.to_json())
+    if v.values.is_some():
+        auto u1 = v.values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(discovery_json_str(x2))
+        parts.append("\"values\":" + discovery_json_arr(e2))
+    return discovery_json_obj(parts)
+
+# Serialize ListConfigurationsRequest to a compact JSON object (declaration order).
+def list_configurations_request_to_json(ListConfigurationsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"configurationType\":" + v.configurationType.to_json())
+    if v.filters.is_some():
+        auto u0 = v.filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"filters\":" + discovery_json_arr(e1))
+    if v.maxResults.is_some():
+        auto u2 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + discovery_json_str(u3))
+    if v.orderBy.is_some():
+        auto u4 = v.orderBy.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"orderBy\":" + discovery_json_arr(e5))
+    return discovery_json_obj(parts)
+
+# Serialize ListServerNeighborsRequest to a compact JSON object (declaration order).
+def list_server_neighbors_request_to_json(ListServerNeighborsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"configurationId\":" + discovery_json_str(v.configurationId))
+    if v.portInformationNeeded.is_some():
+        auto u0 = v.portInformationNeeded.unwrap()
+        parts.append("\"portInformationNeeded\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.neighborConfigurationIds.is_some():
+        auto u1 = v.neighborConfigurationIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(discovery_json_str(x2))
+        parts.append("\"neighborConfigurationIds\":" + discovery_json_arr(e2))
+    if v.maxResults.is_some():
+        auto u3 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u3))
+    if v.nextToken.is_some():
+        auto u4 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + discovery_json_str(u4))
+    return discovery_json_obj(parts)
+
+# Serialize StartBatchDeleteConfigurationTaskRequest to a compact JSON object (declaration order).
+def start_batch_delete_configuration_task_request_to_json(StartBatchDeleteConfigurationTaskRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"configurationType\":" + discovery_json_str(v.configurationType))
+    list[str] e0 = []
+    for x0 in v.configurationIds:
+        e0.append(discovery_json_str(x0))
+    parts.append("\"configurationIds\":" + discovery_json_arr(e0))
+    return discovery_json_obj(parts)
+
+# Serialize StartDataCollectionByAgentIdsRequest to a compact JSON object (declaration order).
+def start_data_collection_by_agent_ids_request_to_json(StartDataCollectionByAgentIdsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.agentIds:
+        e0.append(discovery_json_str(x0))
+    parts.append("\"agentIds\":" + discovery_json_arr(e0))
+    return discovery_json_obj(parts)
+
+# Serialize StartExportTaskRequest to a compact JSON object (declaration order).
+def start_export_task_request_to_json(StartExportTaskRequest v) -> str:
+    list[str] parts = []
+    if v.exportDataFormat.is_some():
+        auto u0 = v.exportDataFormat.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(discovery_json_str(x1))
+        parts.append("\"exportDataFormat\":" + discovery_json_arr(e1))
+    if v.filters.is_some():
+        auto u2 = v.filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(export_filter_to_json(x3))
+        parts.append("\"filters\":" + discovery_json_arr(e3))
+    if v.startTime.is_some():
+        auto u4 = v.startTime.unwrap()
+        parts.append("\"startTime\":" + str(datetime.to_timestamp(u4)))
+    if v.endTime.is_some():
+        auto u5 = v.endTime.unwrap()
+        parts.append("\"endTime\":" + str(datetime.to_timestamp(u5)))
+    if v.preferences.is_some():
+        auto u6 = v.preferences.unwrap()
+        parts.append("\"preferences\":" + export_preferences_to_json(u6))
+    return discovery_json_obj(parts)
+
+# Serialize StopDataCollectionByAgentIdsRequest to a compact JSON object (declaration order).
+def stop_data_collection_by_agent_ids_request_to_json(StopDataCollectionByAgentIdsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.agentIds:
+        e0.append(discovery_json_str(x0))
+    parts.append("\"agentIds\":" + discovery_json_arr(e0))
+    return discovery_json_obj(parts)
+
+# Serialize TagFilter to a compact JSON object (declaration order).
+def tag_filter_to_json(TagFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + discovery_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(discovery_json_str(x0))
+    parts.append("\"values\":" + discovery_json_arr(e0))
+    return discovery_json_obj(parts)
 
 # A bound Application_Discovery_Service client: credentials + region, threaded into every operation.
 struct Application_Discovery_ServiceClient:
     core.Credentials creds
     str region
+
+    # AssociateConfigurationItemsToApplication
+    # errors: AuthorizationErrorException, HomeRegionNotSetException, InvalidParameterException, InvalidParameterValueException, ServerInternalErrorException
+    def associate_configuration_items_to_application(self, AssociateConfigurationItemsToApplicationRequest input) -> str:
+        auto body = associate_configuration_items_to_application_request_to_json(input)
+        return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "AssociateConfigurationItemsToApplication", body)
+
+    # BatchDeleteAgents
+    # errors: AuthorizationErrorException, InvalidParameterException, InvalidParameterValueException, ServerInternalErrorException
+    def batch_delete_agents(self, BatchDeleteAgentsRequest input) -> str:
+        auto body = batch_delete_agents_request_to_json(input)
+        return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "BatchDeleteAgents", body)
+
+    # BatchDeleteImportData
+    # errors: AuthorizationErrorException, HomeRegionNotSetException, InvalidParameterException, InvalidParameterValueException, ServerInternalErrorException
+    def batch_delete_import_data(self, BatchDeleteImportDataRequest input) -> str:
+        auto body = batch_delete_import_data_request_to_json(input)
+        return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "BatchDeleteImportData", body)
 
     # CreateApplication
     # errors: AuthorizationErrorException, HomeRegionNotSetException, InvalidParameterException, InvalidParameterValueException, ServerInternalErrorException
@@ -849,11 +1293,77 @@ struct Application_Discovery_ServiceClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "CreateApplication", body)
 
+    # CreateTags
+    # errors: AuthorizationErrorException, HomeRegionNotSetException, InvalidParameterException, InvalidParameterValueException, ResourceNotFoundException, ServerInternalErrorException
+    def create_tags(self, CreateTagsRequest input) -> str:
+        auto body = create_tags_request_to_json(input)
+        return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "CreateTags", body)
+
+    # DeleteApplications
+    # errors: AuthorizationErrorException, HomeRegionNotSetException, InvalidParameterException, InvalidParameterValueException, ServerInternalErrorException
+    def delete_applications(self, DeleteApplicationsRequest input) -> str:
+        auto body = delete_applications_request_to_json(input)
+        return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "DeleteApplications", body)
+
+    # DeleteTags
+    # errors: AuthorizationErrorException, HomeRegionNotSetException, InvalidParameterException, InvalidParameterValueException, ResourceNotFoundException, ServerInternalErrorException
+    def delete_tags(self, DeleteTagsRequest input) -> str:
+        auto body = delete_tags_request_to_json(input)
+        return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "DeleteTags", body)
+
+    # DescribeAgents
+    # errors: AuthorizationErrorException, HomeRegionNotSetException, InvalidParameterException, InvalidParameterValueException, ServerInternalErrorException
+    def describe_agents(self, DescribeAgentsRequest input) -> str:
+        auto body = describe_agents_request_to_json(input)
+        return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "DescribeAgents", body)
+
     # DescribeBatchDeleteConfigurationTask
     # errors: AuthorizationErrorException, HomeRegionNotSetException, InvalidParameterValueException, ServerInternalErrorException
     def describe_batch_delete_configuration_task(self, DescribeBatchDeleteConfigurationTaskRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "DescribeBatchDeleteConfigurationTask", body)
+
+    # DescribeConfigurations
+    # errors: AuthorizationErrorException, HomeRegionNotSetException, InvalidParameterException, InvalidParameterValueException, ServerInternalErrorException
+    def describe_configurations(self, DescribeConfigurationsRequest input) -> str:
+        auto body = describe_configurations_request_to_json(input)
+        return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "DescribeConfigurations", body)
+
+    # DescribeContinuousExports
+    # errors: AuthorizationErrorException, HomeRegionNotSetException, InvalidParameterException, InvalidParameterValueException, OperationNotPermittedException, ResourceNotFoundException, ServerInternalErrorException
+    def describe_continuous_exports(self, DescribeContinuousExportsRequest input) -> str:
+        auto body = describe_continuous_exports_request_to_json(input)
+        return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "DescribeContinuousExports", body)
+
+    # DescribeExportConfigurations
+    # errors: AuthorizationErrorException, HomeRegionNotSetException, InvalidParameterException, InvalidParameterValueException, ResourceNotFoundException, ServerInternalErrorException
+    def describe_export_configurations(self, DescribeExportConfigurationsRequest input) -> str:
+        auto body = describe_export_configurations_request_to_json(input)
+        return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "DescribeExportConfigurations", body)
+
+    # DescribeExportTasks
+    # errors: AuthorizationErrorException, HomeRegionNotSetException, InvalidParameterException, InvalidParameterValueException, ServerInternalErrorException
+    def describe_export_tasks(self, DescribeExportTasksRequest input) -> str:
+        auto body = describe_export_tasks_request_to_json(input)
+        return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "DescribeExportTasks", body)
+
+    # DescribeImportTasks
+    # errors: AuthorizationErrorException, HomeRegionNotSetException, InvalidParameterException, InvalidParameterValueException, ServerInternalErrorException
+    def describe_import_tasks(self, DescribeImportTasksRequest input) -> str:
+        auto body = describe_import_tasks_request_to_json(input)
+        return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "DescribeImportTasks", body)
+
+    # DescribeTags
+    # errors: AuthorizationErrorException, HomeRegionNotSetException, InvalidParameterException, InvalidParameterValueException, ResourceNotFoundException, ServerInternalErrorException
+    def describe_tags(self, DescribeTagsRequest input) -> str:
+        auto body = describe_tags_request_to_json(input)
+        return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "DescribeTags", body)
+
+    # DisassociateConfigurationItemsFromApplication
+    # errors: AuthorizationErrorException, HomeRegionNotSetException, InvalidParameterException, InvalidParameterValueException, ServerInternalErrorException
+    def disassociate_configuration_items_from_application(self, DisassociateConfigurationItemsFromApplicationRequest input) -> str:
+        auto body = disassociate_configuration_items_from_application_request_to_json(input)
+        return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "DisassociateConfigurationItemsFromApplication", body)
 
     # ExportConfigurations
     # errors: AuthorizationErrorException, HomeRegionNotSetException, InvalidParameterException, InvalidParameterValueException, OperationNotPermittedException, ServerInternalErrorException
@@ -867,11 +1377,41 @@ struct Application_Discovery_ServiceClient:
         auto body = "{}"
         return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "GetDiscoverySummary", body)
 
+    # ListConfigurations
+    # errors: AuthorizationErrorException, HomeRegionNotSetException, InvalidParameterException, InvalidParameterValueException, ResourceNotFoundException, ServerInternalErrorException
+    def list_configurations(self, ListConfigurationsRequest input) -> str:
+        auto body = list_configurations_request_to_json(input)
+        return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "ListConfigurations", body)
+
+    # ListServerNeighbors
+    # errors: AuthorizationErrorException, HomeRegionNotSetException, InvalidParameterException, InvalidParameterValueException, ServerInternalErrorException
+    def list_server_neighbors(self, ListServerNeighborsRequest input) -> str:
+        auto body = list_server_neighbors_request_to_json(input)
+        return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "ListServerNeighbors", body)
+
+    # StartBatchDeleteConfigurationTask
+    # errors: AuthorizationErrorException, HomeRegionNotSetException, InvalidParameterException, InvalidParameterValueException, LimitExceededException, OperationNotPermittedException, ServerInternalErrorException
+    def start_batch_delete_configuration_task(self, StartBatchDeleteConfigurationTaskRequest input) -> str:
+        auto body = start_batch_delete_configuration_task_request_to_json(input)
+        return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "StartBatchDeleteConfigurationTask", body)
+
     # StartContinuousExport
     # errors: AuthorizationErrorException, ConflictErrorException, HomeRegionNotSetException, InvalidParameterException, InvalidParameterValueException, OperationNotPermittedException, ResourceInUseException, ServerInternalErrorException
     def start_continuous_export(self) -> str:
         auto body = "{}"
         return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "StartContinuousExport", body)
+
+    # StartDataCollectionByAgentIds
+    # errors: AuthorizationErrorException, HomeRegionNotSetException, InvalidParameterException, InvalidParameterValueException, ServerInternalErrorException
+    def start_data_collection_by_agent_ids(self, StartDataCollectionByAgentIdsRequest input) -> str:
+        auto body = start_data_collection_by_agent_ids_request_to_json(input)
+        return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "StartDataCollectionByAgentIds", body)
+
+    # StartExportTask
+    # errors: AuthorizationErrorException, HomeRegionNotSetException, InvalidParameterException, InvalidParameterValueException, OperationNotPermittedException, ServerInternalErrorException
+    def start_export_task(self, StartExportTaskRequest input) -> str:
+        auto body = start_export_task_request_to_json(input)
+        return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "StartExportTask", body)
 
     # StartImportTask
     # errors: AuthorizationErrorException, HomeRegionNotSetException, InvalidParameterException, InvalidParameterValueException, ResourceInUseException, ServerInternalErrorException
@@ -885,11 +1425,115 @@ struct Application_Discovery_ServiceClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "StopContinuousExport", body)
 
+    # StopDataCollectionByAgentIds
+    # errors: AuthorizationErrorException, HomeRegionNotSetException, InvalidParameterException, InvalidParameterValueException, ServerInternalErrorException
+    def stop_data_collection_by_agent_ids(self, StopDataCollectionByAgentIdsRequest input) -> str:
+        auto body = stop_data_collection_by_agent_ids_request_to_json(input)
+        return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "StopDataCollectionByAgentIds", body)
+
     # UpdateApplication
     # errors: AuthorizationErrorException, HomeRegionNotSetException, InvalidParameterException, InvalidParameterValueException, ServerInternalErrorException
     def update_application(self, UpdateApplicationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "UpdateApplication", body)
+
+    # Paginator for DescribeAgents — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: agentsInfo).
+    def paginate_describe_agents(self, DescribeAgentsRequest input):
+        auto host = endpoints.regional_host(discovery_protocol().service, self.region)
+        while True:
+            auto body = describe_agents_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "DescribeAgents", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeContinuousExports — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: descriptions).
+    def paginate_describe_continuous_exports(self, DescribeContinuousExportsRequest input):
+        auto host = endpoints.regional_host(discovery_protocol().service, self.region)
+        while True:
+            auto body = describe_continuous_exports_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "DescribeContinuousExports", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeExportConfigurations — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: exportsInfo).
+    def paginate_describe_export_configurations(self, DescribeExportConfigurationsRequest input):
+        auto host = endpoints.regional_host(discovery_protocol().service, self.region)
+        while True:
+            auto body = describe_export_configurations_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "DescribeExportConfigurations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeExportTasks — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: exportsInfo).
+    def paginate_describe_export_tasks(self, DescribeExportTasksRequest input):
+        auto host = endpoints.regional_host(discovery_protocol().service, self.region)
+        while True:
+            auto body = describe_export_tasks_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "DescribeExportTasks", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeImportTasks — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: tasks).
+    def paginate_describe_import_tasks(self, DescribeImportTasksRequest input):
+        auto host = endpoints.regional_host(discovery_protocol().service, self.region)
+        while True:
+            auto body = describe_import_tasks_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "DescribeImportTasks", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeTags — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: tags).
+    def paginate_describe_tags(self, DescribeTagsRequest input):
+        auto host = endpoints.regional_host(discovery_protocol().service, self.region)
+        while True:
+            auto body = describe_tags_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "DescribeTags", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListConfigurations — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: configurations).
+    def paginate_list_configurations(self, ListConfigurationsRequest input):
+        auto host = endpoints.regional_host(discovery_protocol().service, self.region)
+        while True:
+            auto body = list_configurations_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(discovery_protocol(), self.creds, self.region, "ListConfigurations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
 
 # Construct a Application_Discovery_ServiceClient bound to credentials + region.
 def discovery_client(core.Credentials creds, str region) -> Application_Discovery_ServiceClient:

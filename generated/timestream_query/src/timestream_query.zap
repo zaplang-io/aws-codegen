@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 15 operations — 12 with a generated method,
-#   3 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 15 operations — 15 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   79 structs (53 @derive(Json)), 11 enums, 9 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -149,8 +149,9 @@ struct CancelQueryRequest:
 struct CancelQueryResponse:
     Optional[str] CancellationMessage
 
-# no @derive(Json): member(s) Type: Type not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Type: Type not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ColumnInfo:
     Optional[str] Name
     Type Type
@@ -159,8 +160,9 @@ struct ColumnInfo:
 struct ConflictException:
     Optional[str] Message
 
-# no @derive(Json): member(s) TargetConfiguration: TargetConfiguration, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetConfiguration: TargetConfiguration, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateScheduledQueryRequest:
     str Name
     str QueryString
@@ -177,8 +179,9 @@ struct CreateScheduledQueryRequest:
 struct CreateScheduledQueryResponse:
     str Arn
 
-# no @derive(Json): member(s) TimeSeriesValue: list[TimeSeriesDataPoint], ArrayValue: list[Datum], RowValue: Row not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TimeSeriesValue: list[TimeSeriesDataPoint], ArrayValue: list[Datum], RowValue: Row not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Datum:
     Optional[str] ScalarValue
     Optional[list[TimeSeriesDataPoint]] TimeSeriesValue
@@ -206,8 +209,9 @@ struct DescribeEndpointsRequest:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Endpoints: list[Endpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoints: list[Endpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEndpointsResponse:
     list[Endpoint] Endpoints
 
@@ -215,8 +219,9 @@ struct DescribeEndpointsResponse:
 struct DescribeScheduledQueryRequest:
     str ScheduledQueryArn
 
-# no @derive(Json): member(s) ScheduledQuery: ScheduledQueryDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScheduledQuery: ScheduledQueryDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeScheduledQueryResponse:
     ScheduledQueryDescription ScheduledQuery
 
@@ -273,8 +278,9 @@ struct ListScheduledQueriesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ScheduledQueries: list[ScheduledQuery] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScheduledQueries: list[ScheduledQuery] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListScheduledQueriesResponse:
     list[ScheduledQuery] ScheduledQueries
     Optional[str] NextToken
@@ -285,14 +291,16 @@ struct ListTagsForResourceRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     list[Tag] Tags
     Optional[str] NextToken
 
-# no @derive(Json): member(s) MultiMeasureAttributeMappings: list[MultiMeasureAttributeMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MultiMeasureAttributeMappings: list[MultiMeasureAttributeMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MixedMeasureMapping:
     Optional[str] MeasureName
     Optional[str] SourceColumn
@@ -306,8 +314,9 @@ struct MultiMeasureAttributeMapping:
     Optional[str] TargetMultiMeasureAttributeName
     ScalarMeasureValueType MeasureValueType
 
-# no @derive(Json): member(s) MultiMeasureAttributeMappings: list[MultiMeasureAttributeMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MultiMeasureAttributeMappings: list[MultiMeasureAttributeMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MultiMeasureMappings:
     Optional[str] TargetMultiMeasureName
     list[MultiMeasureAttributeMapping] MultiMeasureAttributeMappings
@@ -316,8 +325,9 @@ struct MultiMeasureMappings:
 struct NotificationConfiguration:
     SnsConfiguration SnsConfiguration
 
-# no @derive(Json): member(s) Type: Type not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Type: Type not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParameterMapping:
     str Name
     Type Type
@@ -327,8 +337,9 @@ struct PrepareQueryRequest:
     str QueryString
     Optional[bool] ValidateOnly
 
-# no @derive(Json): member(s) Columns: list[SelectColumn], Parameters: list[ParameterMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Columns: list[SelectColumn], Parameters: list[ParameterMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrepareQueryResponse:
     str QueryString
     list[SelectColumn] Columns
@@ -363,8 +374,9 @@ struct QueryExecutionException:
 struct QueryInsights:
     QueryInsightsMode Mode
 
-# no @derive(Json): member(s) QuerySpatialCoverage: QuerySpatialCoverage not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QuerySpatialCoverage: QuerySpatialCoverage not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryInsightsResponse:
     Optional[QuerySpatialCoverage] QuerySpatialCoverage
     Optional[QueryTemporalRange] QueryTemporalRange
@@ -383,8 +395,9 @@ struct QueryRequest:
     Optional[int64] MaxRows
     Optional[QueryInsights] QueryInsights
 
-# no @derive(Json): member(s) Rows: list[Row], ColumnInfo: list[ColumnInfo], QueryInsightsResponse: QueryInsightsResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rows: list[Row], ColumnInfo: list[ColumnInfo], QueryInsightsResponse: QueryInsightsResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryResponse:
     str QueryId
     Optional[str] NextToken
@@ -393,13 +406,15 @@ struct QueryResponse:
     Optional[QueryStatus] QueryStatus
     Optional[QueryInsightsResponse] QueryInsightsResponse
 
-# no @derive(Json): member(s) Max: QuerySpatialCoverageMax not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Max: QuerySpatialCoverageMax not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuerySpatialCoverage:
     Optional[QuerySpatialCoverageMax] Max
 
-# no @derive(Json): member(s) PartitionKey: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionKey: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuerySpatialCoverageMax:
     Optional[float64] Value
     Optional[str] TableArn
@@ -425,8 +440,9 @@ struct ResourceNotFoundException:
     Optional[str] Message
     Optional[str] ScheduledQueryArn
 
-# no @derive(Json): member(s) Data: list[Datum] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Data: list[Datum] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Row:
     list[Datum] Data
 
@@ -457,8 +473,9 @@ struct ScheduledQuery:
     Optional[TargetDestination] TargetDestination
     Optional[ScheduledQueryRunStatus] LastRunStatus
 
-# no @derive(Json): member(s) TargetConfiguration: TargetConfiguration, LastRunSummary: ScheduledQueryRunSummary, RecentlyFailedRuns: list[ScheduledQueryRunSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetConfiguration: TargetConfiguration, LastRunSummary: ScheduledQueryRunSummary, RecentlyFailedRuns: list[ScheduledQueryRunSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScheduledQueryDescription:
     str Arn
     str Name
@@ -480,8 +497,9 @@ struct ScheduledQueryDescription:
 struct ScheduledQueryInsights:
     ScheduledQueryInsightsMode Mode
 
-# no @derive(Json): member(s) QuerySpatialCoverage: QuerySpatialCoverage not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QuerySpatialCoverage: QuerySpatialCoverage not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScheduledQueryInsightsResponse:
     Optional[QuerySpatialCoverage] QuerySpatialCoverage
     Optional[QueryTemporalRange] QueryTemporalRange
@@ -489,8 +507,9 @@ struct ScheduledQueryInsightsResponse:
     Optional[int64] OutputRows
     Optional[int64] OutputBytes
 
-# no @derive(Json): member(s) QueryInsightsResponse: ScheduledQueryInsightsResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) QueryInsightsResponse: ScheduledQueryInsightsResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScheduledQueryRunSummary:
     Optional[DateTime] InvocationTime
     Optional[DateTime] TriggerTime
@@ -500,8 +519,9 @@ struct ScheduledQueryRunSummary:
     Optional[ErrorReportLocation] ErrorReportLocation
     Optional[str] FailureReason
 
-# no @derive(Json): member(s) Type: Type not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Type: Type not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SelectColumn:
     Optional[str] Name
     Optional[Type] Type
@@ -522,8 +542,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceARN
     list[Tag] Tags
@@ -533,8 +554,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TimestreamConfiguration: TimestreamConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TimestreamConfiguration: TimestreamConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TargetConfiguration:
     TimestreamConfiguration TimestreamConfiguration
 
@@ -546,14 +568,16 @@ struct TargetDestination:
 struct ThrottlingException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Value: Datum not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Value: Datum not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TimeSeriesDataPoint:
     str Time
     Datum Value
 
-# no @derive(Json): member(s) DimensionMappings: list[DimensionMapping], MultiMeasureMappings: MultiMeasureMappings, MixedMeasureMappings: list[MixedMeasureMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DimensionMappings: list[DimensionMapping], MultiMeasureMappings: MultiMeasureMappings, MixedMeasureMappings: list[MixedMeasureMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TimestreamConfiguration:
     str DatabaseName
     str TableName
@@ -568,16 +592,18 @@ struct TimestreamDestination:
     Optional[str] DatabaseName
     Optional[str] TableName
 
-# no @derive(Json): member(s) ArrayColumnInfo: ColumnInfo, TimeSeriesMeasureValueColumnInfo: ColumnInfo, RowColumnInfo: list[ColumnInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ArrayColumnInfo: ColumnInfo, TimeSeriesMeasureValueColumnInfo: ColumnInfo, RowColumnInfo: list[ColumnInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Type:
     Optional[ScalarType] ScalarType
     Optional[ColumnInfo] ArrayColumnInfo
     Optional[ColumnInfo] TimeSeriesMeasureValueColumnInfo
     Optional[list[ColumnInfo]] RowColumnInfo
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceARN
     list[str] TagKeys
@@ -648,11 +674,144 @@ def query_timestream_error_from_code(str code) -> Timestream_QueryError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateScheduledQuery (input CreateScheduledQueryRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def query_timestream_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def query_timestream_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def query_timestream_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateScheduledQueryRequest to a compact JSON object (declaration order).
+def create_scheduled_query_request_to_json(CreateScheduledQueryRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + query_timestream_json_str(v.Name))
+    parts.append("\"QueryString\":" + query_timestream_json_str(v.QueryString))
+    parts.append("\"ScheduleConfiguration\":" + v.ScheduleConfiguration.to_json())
+    parts.append("\"NotificationConfiguration\":" + v.NotificationConfiguration.to_json())
+    if v.TargetConfiguration.is_some():
+        auto u0 = v.TargetConfiguration.unwrap()
+        parts.append("\"TargetConfiguration\":" + target_configuration_to_json(u0))
+    if v.ClientToken.is_some():
+        auto u1 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + query_timestream_json_str(u1))
+    parts.append("\"ScheduledQueryExecutionRoleArn\":" + query_timestream_json_str(v.ScheduledQueryExecutionRoleArn))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + query_timestream_json_arr(e3))
+    if v.KmsKeyId.is_some():
+        auto u4 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + query_timestream_json_str(u4))
+    parts.append("\"ErrorReportConfiguration\":" + v.ErrorReportConfiguration.to_json())
+    return query_timestream_json_obj(parts)
+
+# Serialize MixedMeasureMapping to a compact JSON object (declaration order).
+def mixed_measure_mapping_to_json(MixedMeasureMapping v) -> str:
+    list[str] parts = []
+    if v.MeasureName.is_some():
+        auto u0 = v.MeasureName.unwrap()
+        parts.append("\"MeasureName\":" + query_timestream_json_str(u0))
+    if v.SourceColumn.is_some():
+        auto u1 = v.SourceColumn.unwrap()
+        parts.append("\"SourceColumn\":" + query_timestream_json_str(u1))
+    if v.TargetMeasureName.is_some():
+        auto u2 = v.TargetMeasureName.unwrap()
+        parts.append("\"TargetMeasureName\":" + query_timestream_json_str(u2))
+    parts.append("\"MeasureValueType\":" + v.MeasureValueType.to_json())
+    if v.MultiMeasureAttributeMappings.is_some():
+        auto u3 = v.MultiMeasureAttributeMappings.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"MultiMeasureAttributeMappings\":" + query_timestream_json_arr(e4))
+    return query_timestream_json_obj(parts)
+
+# Serialize MultiMeasureMappings to a compact JSON object (declaration order).
+def multi_measure_mappings_to_json(MultiMeasureMappings v) -> str:
+    list[str] parts = []
+    if v.TargetMultiMeasureName.is_some():
+        auto u0 = v.TargetMultiMeasureName.unwrap()
+        parts.append("\"TargetMultiMeasureName\":" + query_timestream_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.MultiMeasureAttributeMappings:
+        e1.append(x1.to_json())
+    parts.append("\"MultiMeasureAttributeMappings\":" + query_timestream_json_arr(e1))
+    return query_timestream_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + query_timestream_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + query_timestream_json_arr(e0))
+    return query_timestream_json_obj(parts)
+
+# Serialize TargetConfiguration to a compact JSON object (declaration order).
+def target_configuration_to_json(TargetConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"TimestreamConfiguration\":" + timestream_configuration_to_json(v.TimestreamConfiguration))
+    return query_timestream_json_obj(parts)
+
+# Serialize TimestreamConfiguration to a compact JSON object (declaration order).
+def timestream_configuration_to_json(TimestreamConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"DatabaseName\":" + query_timestream_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + query_timestream_json_str(v.TableName))
+    parts.append("\"TimeColumn\":" + query_timestream_json_str(v.TimeColumn))
+    list[str] e0 = []
+    for x0 in v.DimensionMappings:
+        e0.append(x0.to_json())
+    parts.append("\"DimensionMappings\":" + query_timestream_json_arr(e0))
+    if v.MultiMeasureMappings.is_some():
+        auto u1 = v.MultiMeasureMappings.unwrap()
+        parts.append("\"MultiMeasureMappings\":" + multi_measure_mappings_to_json(u1))
+    if v.MixedMeasureMappings.is_some():
+        auto u2 = v.MixedMeasureMappings.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(mixed_measure_mapping_to_json(x3))
+        parts.append("\"MixedMeasureMappings\":" + query_timestream_json_arr(e3))
+    if v.MeasureNameColumn.is_some():
+        auto u4 = v.MeasureNameColumn.unwrap()
+        parts.append("\"MeasureNameColumn\":" + query_timestream_json_str(u4))
+    return query_timestream_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + query_timestream_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(query_timestream_json_str(x0))
+    parts.append("\"TagKeys\":" + query_timestream_json_arr(e0))
+    return query_timestream_json_obj(parts)
 
 # A bound Timestream_Query client: credentials + region, threaded into every operation.
 struct Timestream_QueryClient:
@@ -664,6 +823,12 @@ struct Timestream_QueryClient:
     def cancel_query(self, CancelQueryRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(query_timestream_protocol(), self.creds, self.region, "CancelQuery", body)
+
+    # CreateScheduledQuery
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidEndpointException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_scheduled_query(self, CreateScheduledQueryRequest input) -> str:
+        auto body = create_scheduled_query_request_to_json(input)
+        return awsjson.awsjson_request_now(query_timestream_protocol(), self.creds, self.region, "CreateScheduledQuery", body)
 
     # DeleteScheduledQuery
     # errors: AccessDeniedException, InternalServerException, InvalidEndpointException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -718,6 +883,18 @@ struct Timestream_QueryClient:
     def query(self, QueryRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(query_timestream_protocol(), self.creds, self.region, "Query", body)
+
+    # TagResource
+    # errors: InvalidEndpointException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(query_timestream_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: InvalidEndpointException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(query_timestream_protocol(), self.creds, self.region, "UntagResource", body)
 
     # UpdateAccountSettings
     # errors: AccessDeniedException, InternalServerException, InvalidEndpointException, ThrottlingException, ValidationException

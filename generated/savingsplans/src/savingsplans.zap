@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 10 operations — 3 with a generated method,
-#   7 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 10 operations — 10 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   36 structs (16 @derive(Json)), 13 enums, 4 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The savingsplans rest-json protocol: SigV4 service "savingsplans" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -236,8 +237,9 @@ struct DescribeSavingsPlanRatesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) searchResults: list[SavingsPlanRate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) searchResults: list[SavingsPlanRate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSavingsPlanRatesResponse:
     Optional[str] savingsPlanId
     Optional[list[SavingsPlanRate]] searchResults
@@ -257,8 +259,9 @@ struct DescribeSavingsPlansOfferingRatesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) searchResults: list[SavingsPlanOfferingRate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) searchResults: list[SavingsPlanOfferingRate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSavingsPlansOfferingRatesResponse:
     Optional[list[SavingsPlanOfferingRate]] searchResults
     Optional[str] nextToken
@@ -280,8 +283,9 @@ struct DescribeSavingsPlansOfferingsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) searchResults: list[SavingsPlanOffering] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) searchResults: list[SavingsPlanOffering] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSavingsPlansOfferingsResponse:
     Optional[list[SavingsPlanOffering]] searchResults
     Optional[str] nextToken
@@ -296,8 +300,9 @@ struct DescribeSavingsPlansRequest:
     Optional[list[SavingsPlanState]] states
     Optional[list[SavingsPlanFilter]] filters
 
-# no @derive(Json): member(s) savingsPlans: list[SavingsPlan] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) savingsPlans: list[SavingsPlan] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSavingsPlansResponse:
     Optional[list[SavingsPlan]] savingsPlans
     Optional[str] nextToken
@@ -311,8 +316,9 @@ struct InternalServerException:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -339,8 +345,9 @@ struct ReturnSavingsPlanRequest:
 struct ReturnSavingsPlanResponse:
     Optional[str] savingsPlanId
 
-# no @derive(Json): member(s) productTypes: list[SavingsPlanProductType], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) productTypes: list[SavingsPlanProductType], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SavingsPlan:
     Optional[str] offeringId
     Optional[str] savingsPlanId
@@ -362,14 +369,16 @@ struct SavingsPlan:
     Optional[dict[str, str]] tags
     Optional[str] returnableUntil
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SavingsPlanFilter:
     Optional[SavingsPlansFilterName] name
     Optional[list[str]] values
 
-# no @derive(Json): member(s) productTypes: list[SavingsPlanProductType], properties: list[SavingsPlanOfferingProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) productTypes: list[SavingsPlanProductType], properties: list[SavingsPlanOfferingProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SavingsPlanOffering:
     Optional[str] offeringId
     Optional[list[SavingsPlanProductType]] productTypes
@@ -383,8 +392,9 @@ struct SavingsPlanOffering:
     Optional[str] operation
     Optional[list[SavingsPlanOfferingProperty]] properties
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SavingsPlanOfferingFilterElement:
     Optional[SavingsPlanOfferingFilterAttribute] name
     Optional[list[str]] values
@@ -394,8 +404,9 @@ struct SavingsPlanOfferingProperty:
     Optional[SavingsPlanOfferingPropertyKey] name
     Optional[str] value
 
-# no @derive(Json): member(s) properties: list[SavingsPlanOfferingRateProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: list[SavingsPlanOfferingRateProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SavingsPlanOfferingRate:
     Optional[ParentSavingsPlanOffering] savingsPlanOffering
     Optional[str] rate
@@ -406,8 +417,9 @@ struct SavingsPlanOfferingRate:
     Optional[str] operation
     Optional[list[SavingsPlanOfferingRateProperty]] properties
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SavingsPlanOfferingRateFilterElement:
     Optional[SavingsPlanRateFilterAttribute] name
     Optional[list[str]] values
@@ -417,8 +429,9 @@ struct SavingsPlanOfferingRateProperty:
     Optional[str] name
     Optional[str] value
 
-# no @derive(Json): member(s) properties: list[SavingsPlanRateProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: list[SavingsPlanRateProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SavingsPlanRate:
     Optional[str] rate
     Optional[CurrencyCode] currency
@@ -429,8 +442,9 @@ struct SavingsPlanRate:
     Optional[str] operation
     Optional[list[SavingsPlanRateProperty]] properties
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SavingsPlanRateFilter:
     Optional[SavingsPlanRateFilterName] name
     Optional[list[str]] values
@@ -496,17 +510,6 @@ def savingsplans_error_from_code(str code) -> savingsplansError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CreateSavingsPlan (document member `tags: dict[str, str]` is not serializable by derive)
-#   DescribeSavingsPlanRates (document member `filters: list[SavingsPlanRateFilter]` is not serializable by derive)
-#   DescribeSavingsPlans (document member `savingsPlanArns: list[str]` is not serializable by derive)
-#   DescribeSavingsPlansOfferingRates (document member `savingsPlanOfferingIds: list[str]` is not serializable by derive)
-#   DescribeSavingsPlansOfferings (document member `offeringIds: list[str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
-#   UntagResource (document member `tagKeys: list[str]` is not serializable by derive)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -526,10 +529,122 @@ struct ReturnSavingsPlanDocument:
     str savingsPlanId
     Optional[str] clientToken
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def savingsplans_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def savingsplans_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def savingsplans_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize SavingsPlanFilter to a compact JSON object (declaration order).
+def savings_plan_filter_to_json(SavingsPlanFilter v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + u0.to_json())
+    if v.values.is_some():
+        auto u1 = v.values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(savingsplans_json_str(x2))
+        parts.append("\"values\":" + savingsplans_json_arr(e2))
+    return savingsplans_json_obj(parts)
+
+# Serialize SavingsPlanOfferingFilterElement to a compact JSON object (declaration order).
+def savings_plan_offering_filter_element_to_json(SavingsPlanOfferingFilterElement v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + u0.to_json())
+    if v.values.is_some():
+        auto u1 = v.values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(savingsplans_json_str(x2))
+        parts.append("\"values\":" + savingsplans_json_arr(e2))
+    return savingsplans_json_obj(parts)
+
+# Serialize SavingsPlanOfferingRateFilterElement to a compact JSON object (declaration order).
+def savings_plan_offering_rate_filter_element_to_json(SavingsPlanOfferingRateFilterElement v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + u0.to_json())
+    if v.values.is_some():
+        auto u1 = v.values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(savingsplans_json_str(x2))
+        parts.append("\"values\":" + savingsplans_json_arr(e2))
+    return savingsplans_json_obj(parts)
+
+# Serialize SavingsPlanRateFilter to a compact JSON object (declaration order).
+def savings_plan_rate_filter_to_json(SavingsPlanRateFilter v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + u0.to_json())
+    if v.values.is_some():
+        auto u1 = v.values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(savingsplans_json_str(x2))
+        parts.append("\"values\":" + savingsplans_json_arr(e2))
+    return savingsplans_json_obj(parts)
+
 # A bound savingsplans client: credentials + region, threaded into every operation.
 struct savingsplansClient:
     core.Credentials creds
     str region
+
+    # CreateSavingsPlan  POST /CreateSavingsPlan
+    # errors: InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def create_savings_plan(self, CreateSavingsPlanRequest input) -> str:
+        auto host = endpoints.regional_host(savingsplans_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateSavingsPlan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"savingsPlanOfferingId\":" + savingsplans_json_str(input.savingsPlanOfferingId))
+        parts.append("\"commitment\":" + savingsplans_json_str(input.commitment))
+        if input.upfrontPaymentAmount.is_some():
+            auto u0 = input.upfrontPaymentAmount.unwrap()
+            parts.append("\"upfrontPaymentAmount\":" + savingsplans_json_str(u0))
+        if input.purchaseTime.is_some():
+            auto u1 = input.purchaseTime.unwrap()
+            parts.append("\"purchaseTime\":" + str(datetime.to_timestamp(u1)))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + savingsplans_json_str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(savingsplans_json_str(k4) + ":" + savingsplans_json_str(u3[k4]))
+            parts.append("\"tags\":" + savingsplans_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, savingsplans_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, savingsplans_service(), self.region, host)
 
     # DeleteQueuedSavingsPlan  POST /DeleteQueuedSavingsPlan
     # errors: InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
@@ -538,6 +653,208 @@ struct savingsplansClient:
         auto b = binding.HttpBinding(method="POST", path_template="/DeleteQueuedSavingsPlan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteQueuedSavingsPlanDocument(savingsPlanId=input.savingsPlanId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, savingsplans_service(), self.region, host)
+
+    # DescribeSavingsPlanRates  POST /DescribeSavingsPlanRates
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def describe_savings_plan_rates(self, DescribeSavingsPlanRatesRequest input) -> str:
+        auto host = endpoints.regional_host(savingsplans_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeSavingsPlanRates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"savingsPlanId\":" + savingsplans_json_str(input.savingsPlanId))
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(savings_plan_rate_filter_to_json(x1))
+            parts.append("\"filters\":" + savingsplans_json_arr(e1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + savingsplans_json_str(u2))
+        if input.maxResults.is_some():
+            auto u3 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u3))
+        auto bp = restjson.rest_json_document(b, savingsplans_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, savingsplans_service(), self.region, host)
+
+    # DescribeSavingsPlans  POST /DescribeSavingsPlans
+    # errors: InternalServerException, ValidationException
+    def describe_savings_plans(self, DescribeSavingsPlansRequest input) -> str:
+        auto host = endpoints.regional_host(savingsplans_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeSavingsPlans", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.savingsPlanArns.is_some():
+            auto u0 = input.savingsPlanArns.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(savingsplans_json_str(x1))
+            parts.append("\"savingsPlanArns\":" + savingsplans_json_arr(e1))
+        if input.savingsPlanIds.is_some():
+            auto u2 = input.savingsPlanIds.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(savingsplans_json_str(x3))
+            parts.append("\"savingsPlanIds\":" + savingsplans_json_arr(e3))
+        if input.nextToken.is_some():
+            auto u4 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + savingsplans_json_str(u4))
+        if input.maxResults.is_some():
+            auto u5 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u5))
+        if input.states.is_some():
+            auto u6 = input.states.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"states\":" + savingsplans_json_arr(e7))
+        if input.filters.is_some():
+            auto u8 = input.filters.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(savings_plan_filter_to_json(x9))
+            parts.append("\"filters\":" + savingsplans_json_arr(e9))
+        auto bp = restjson.rest_json_document(b, savingsplans_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, savingsplans_service(), self.region, host)
+
+    # DescribeSavingsPlansOfferingRates  POST /DescribeSavingsPlansOfferingRates
+    # errors: InternalServerException, ValidationException
+    def describe_savings_plans_offering_rates(self, DescribeSavingsPlansOfferingRatesRequest input) -> str:
+        auto host = endpoints.regional_host(savingsplans_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeSavingsPlansOfferingRates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.savingsPlanOfferingIds.is_some():
+            auto u0 = input.savingsPlanOfferingIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(savingsplans_json_str(x1))
+            parts.append("\"savingsPlanOfferingIds\":" + savingsplans_json_arr(e1))
+        if input.savingsPlanPaymentOptions.is_some():
+            auto u2 = input.savingsPlanPaymentOptions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"savingsPlanPaymentOptions\":" + savingsplans_json_arr(e3))
+        if input.savingsPlanTypes.is_some():
+            auto u4 = input.savingsPlanTypes.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"savingsPlanTypes\":" + savingsplans_json_arr(e5))
+        if input.products.is_some():
+            auto u6 = input.products.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"products\":" + savingsplans_json_arr(e7))
+        if input.serviceCodes.is_some():
+            auto u8 = input.serviceCodes.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"serviceCodes\":" + savingsplans_json_arr(e9))
+        if input.usageTypes.is_some():
+            auto u10 = input.usageTypes.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(savingsplans_json_str(x11))
+            parts.append("\"usageTypes\":" + savingsplans_json_arr(e11))
+        if input.operations.is_some():
+            auto u12 = input.operations.unwrap()
+            list[str] e13 = []
+            for x13 in u12:
+                e13.append(savingsplans_json_str(x13))
+            parts.append("\"operations\":" + savingsplans_json_arr(e13))
+        if input.filters.is_some():
+            auto u14 = input.filters.unwrap()
+            list[str] e15 = []
+            for x15 in u14:
+                e15.append(savings_plan_offering_rate_filter_element_to_json(x15))
+            parts.append("\"filters\":" + savingsplans_json_arr(e15))
+        if input.nextToken.is_some():
+            auto u16 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + savingsplans_json_str(u16))
+        if input.maxResults.is_some():
+            auto u17 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u17))
+        auto bp = restjson.rest_json_document(b, savingsplans_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, savingsplans_service(), self.region, host)
+
+    # DescribeSavingsPlansOfferings  POST /DescribeSavingsPlansOfferings
+    # errors: InternalServerException, ValidationException
+    def describe_savings_plans_offerings(self, DescribeSavingsPlansOfferingsRequest input) -> str:
+        auto host = endpoints.regional_host(savingsplans_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeSavingsPlansOfferings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.offeringIds.is_some():
+            auto u0 = input.offeringIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(savingsplans_json_str(x1))
+            parts.append("\"offeringIds\":" + savingsplans_json_arr(e1))
+        if input.paymentOptions.is_some():
+            auto u2 = input.paymentOptions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"paymentOptions\":" + savingsplans_json_arr(e3))
+        if input.productType.is_some():
+            auto u4 = input.productType.unwrap()
+            parts.append("\"productType\":" + u4.to_json())
+        if input.planTypes.is_some():
+            auto u5 = input.planTypes.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"planTypes\":" + savingsplans_json_arr(e6))
+        if input.durations.is_some():
+            auto u7 = input.durations.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(str(x8))
+            parts.append("\"durations\":" + savingsplans_json_arr(e8))
+        if input.currencies.is_some():
+            auto u9 = input.currencies.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(x10.to_json())
+            parts.append("\"currencies\":" + savingsplans_json_arr(e10))
+        if input.descriptions.is_some():
+            auto u11 = input.descriptions.unwrap()
+            list[str] e12 = []
+            for x12 in u11:
+                e12.append(savingsplans_json_str(x12))
+            parts.append("\"descriptions\":" + savingsplans_json_arr(e12))
+        if input.serviceCodes.is_some():
+            auto u13 = input.serviceCodes.unwrap()
+            list[str] e14 = []
+            for x14 in u13:
+                e14.append(savingsplans_json_str(x14))
+            parts.append("\"serviceCodes\":" + savingsplans_json_arr(e14))
+        if input.usageTypes.is_some():
+            auto u15 = input.usageTypes.unwrap()
+            list[str] e16 = []
+            for x16 in u15:
+                e16.append(savingsplans_json_str(x16))
+            parts.append("\"usageTypes\":" + savingsplans_json_arr(e16))
+        if input.operations.is_some():
+            auto u17 = input.operations.unwrap()
+            list[str] e18 = []
+            for x18 in u17:
+                e18.append(savingsplans_json_str(x18))
+            parts.append("\"operations\":" + savingsplans_json_arr(e18))
+        if input.filters.is_some():
+            auto u19 = input.filters.unwrap()
+            list[str] e20 = []
+            for x20 in u19:
+                e20.append(savings_plan_offering_filter_element_to_json(x20))
+            parts.append("\"filters\":" + savingsplans_json_arr(e20))
+        if input.nextToken.is_some():
+            auto u21 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + savingsplans_json_str(u21))
+        if input.maxResults.is_some():
+            auto u22 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u22))
+        auto bp = restjson.rest_json_document(b, savingsplans_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, savingsplans_service(), self.region, host)
 
     # ListTagsForResource  POST /ListTagsForResource
@@ -556,6 +873,34 @@ struct savingsplansClient:
         auto b = binding.HttpBinding(method="POST", path_template="/ReturnSavingsPlan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ReturnSavingsPlanDocument(savingsPlanId=input.savingsPlanId, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, savingsplans_service(), self.region, host)
+
+    # TagResource  POST /TagResource
+    # errors: InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(savingsplans_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/TagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceArn\":" + savingsplans_json_str(input.resourceArn))
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(savingsplans_json_str(k0) + ":" + savingsplans_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + savingsplans_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, savingsplans_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, savingsplans_service(), self.region, host)
+
+    # UntagResource  POST /UntagResource
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(savingsplans_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UntagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceArn\":" + savingsplans_json_str(input.resourceArn))
+        list[str] e0 = []
+        for x0 in input.tagKeys:
+            e0.append(savingsplans_json_str(x0))
+        parts.append("\"tagKeys\":" + savingsplans_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, savingsplans_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, savingsplans_service(), self.region, host)
 
 # Construct a savingsplansClient bound to credentials + region.

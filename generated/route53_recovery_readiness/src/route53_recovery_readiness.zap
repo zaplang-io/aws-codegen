@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 32 operations — 23 with a generated method,
-#   9 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 32 operations — 31 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   80 structs (41 @derive(Json)), 1 enums, 6 error variants.
 #   10 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -55,8 +55,9 @@ enum Readiness:
 struct AccessDeniedException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Cells: list[str], ParentReadinessScopes: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cells: list[str], ParentReadinessScopes: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CellOutput:
     str CellArn
     str CellName
@@ -75,8 +76,9 @@ struct CreateCellRequest:
     Optional[list[str]] Cells
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Cells: list[str], ParentReadinessScopes: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cells: list[str], ParentReadinessScopes: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCellResponse:
     Optional[str] CellArn
     Optional[str] CellName
@@ -100,8 +102,9 @@ struct CreateReadinessCheckRequest:
     str ResourceSetName
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateReadinessCheckResponse:
     Optional[str] ReadinessCheckArn
     Optional[str] ReadinessCheckName
@@ -115,8 +118,9 @@ struct CreateRecoveryGroupRequest:
     str RecoveryGroupName
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Cells: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cells: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRecoveryGroupResponse:
     Optional[list[str]] Cells
     Optional[str] RecoveryGroupArn
@@ -131,8 +135,9 @@ struct CreateResourceSetRequest:
     list[Resource] Resources
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Resources: list[Resource], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resources: list[Resource], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateResourceSetResponse:
     Optional[str] ResourceSetArn
     Optional[str] ResourceSetName
@@ -185,8 +190,9 @@ struct GetArchitectureRecommendationsRequest:
     Optional[str] NextToken
     str RecoveryGroupName
 
-# no @derive(Json): member(s) Recommendations: list[Recommendation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Recommendations: list[Recommendation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetArchitectureRecommendationsResponse:
     Optional[DateTime] LastAuditTimestamp
     Optional[str] NextToken
@@ -199,8 +205,9 @@ struct GetCellReadinessSummaryRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ReadinessChecks: list[ReadinessCheckSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReadinessChecks: list[ReadinessCheckSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCellReadinessSummaryResponse:
     Optional[str] NextToken
     Optional[Readiness] Readiness
@@ -211,8 +218,9 @@ struct GetCellReadinessSummaryResponse:
 struct GetCellRequest:
     str CellName
 
-# no @derive(Json): member(s) Cells: list[str], ParentReadinessScopes: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cells: list[str], ParentReadinessScopes: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCellResponse:
     Optional[str] CellArn
     Optional[str] CellName
@@ -233,15 +241,17 @@ struct GetReadinessCheckResourceStatusRequest:
     str ReadinessCheckName
     str ResourceIdentifier
 
-# no @derive(Json): member(s) Rules: list[RuleResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[RuleResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetReadinessCheckResourceStatusResponse:
     Optional[str] NextToken
     Optional[Readiness] Readiness
     Optional[list[RuleResult]] Rules
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetReadinessCheckResponse:
     Optional[str] ReadinessCheckArn
     Optional[str] ReadinessCheckName
@@ -255,8 +265,9 @@ struct GetReadinessCheckStatusRequest:
     Optional[str] NextToken
     str ReadinessCheckName
 
-# no @derive(Json): member(s) Messages: list[Message], Resources: list[ResourceResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Messages: list[Message], Resources: list[ResourceResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetReadinessCheckStatusResponse:
     Optional[list[Message]] Messages
     Optional[str] NextToken
@@ -270,8 +281,9 @@ struct GetRecoveryGroupReadinessSummaryRequest:
     Optional[str] NextToken
     str RecoveryGroupName
 
-# no @derive(Json): member(s) ReadinessChecks: list[ReadinessCheckSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReadinessChecks: list[ReadinessCheckSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecoveryGroupReadinessSummaryResponse:
     Optional[str] NextToken
     Optional[Readiness] Readiness
@@ -282,8 +294,9 @@ struct GetRecoveryGroupReadinessSummaryResponse:
 struct GetRecoveryGroupRequest:
     str RecoveryGroupName
 
-# no @derive(Json): member(s) Cells: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cells: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecoveryGroupResponse:
     Optional[list[str]] Cells
     Optional[str] RecoveryGroupArn
@@ -295,8 +308,9 @@ struct GetRecoveryGroupResponse:
 struct GetResourceSetRequest:
     str ResourceSetName
 
-# no @derive(Json): member(s) Resources: list[Resource], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resources: list[Resource], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourceSetResponse:
     Optional[str] ResourceSetArn
     Optional[str] ResourceSetName
@@ -314,8 +328,9 @@ struct ListCellsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Cells: list[CellOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cells: list[CellOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCellsResponse:
     Optional[list[CellOutput]] Cells
     Optional[str] NextToken
@@ -326,8 +341,9 @@ struct ListCrossAccountAuthorizationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CrossAccountAuthorizations: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CrossAccountAuthorizations: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCrossAccountAuthorizationsResponse:
     Optional[list[str]] CrossAccountAuthorizations
     Optional[str] NextToken
@@ -338,8 +354,9 @@ struct ListReadinessChecksRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ReadinessChecks: list[ReadinessCheckOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReadinessChecks: list[ReadinessCheckOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReadinessChecksResponse:
     Optional[str] NextToken
     Optional[list[ReadinessCheckOutput]] ReadinessChecks
@@ -350,8 +367,9 @@ struct ListRecoveryGroupsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RecoveryGroups: list[RecoveryGroupOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecoveryGroups: list[RecoveryGroupOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecoveryGroupsResponse:
     Optional[str] NextToken
     Optional[list[RecoveryGroupOutput]] RecoveryGroups
@@ -362,8 +380,9 @@ struct ListResourceSetsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ResourceSets: list[ResourceSetOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceSets: list[ResourceSetOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceSetsResponse:
     Optional[str] NextToken
     Optional[list[ResourceSetOutput]] ResourceSets
@@ -381,8 +400,9 @@ struct ListRulesRequest:
     Optional[str] NextToken
     Optional[str] ResourceType
 
-# no @derive(Json): member(s) Rules: list[ListRulesOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[ListRulesOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRulesResponse:
     Optional[str] NextToken
     Optional[list[ListRulesOutput]] Rules
@@ -392,8 +412,9 @@ struct ListRulesResponse:
 struct ListTagsForResourcesRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourcesResponse:
     Optional[dict[str, str]] Tags
 
@@ -410,8 +431,9 @@ struct R53ResourceRecord:
     Optional[str] DomainName
     Optional[str] RecordSetId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReadinessCheckOutput:
     str ReadinessCheckArn
     Optional[str] ReadinessCheckName
@@ -427,16 +449,18 @@ struct ReadinessCheckSummary:
 struct Recommendation:
     str RecommendationText
 
-# no @derive(Json): member(s) Cells: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cells: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecoveryGroupOutput:
     list[str] Cells
     str RecoveryGroupArn
     str RecoveryGroupName
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) ReadinessScopes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReadinessScopes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Resource:
     Optional[str] ComponentId
     Optional[DNSTargetResource] DnsTargetResource
@@ -455,8 +479,9 @@ struct ResourceResult:
     Readiness Readiness
     Optional[str] ResourceArn
 
-# no @derive(Json): member(s) Resources: list[Resource], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resources: list[Resource], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceSetOutput:
     str ResourceSetArn
     str ResourceSetName
@@ -464,8 +489,9 @@ struct ResourceSetOutput:
     list[Resource] Resources
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Messages: list[Message] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Messages: list[Message] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleResult:
     DateTime LastCheckedTimestamp
     list[Message] Messages
@@ -504,8 +530,9 @@ struct UpdateCellRequest:
     str CellName
     list[str] Cells
 
-# no @derive(Json): member(s) Cells: list[str], ParentReadinessScopes: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cells: list[str], ParentReadinessScopes: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCellResponse:
     Optional[str] CellArn
     Optional[str] CellName
@@ -519,8 +546,9 @@ struct UpdateReadinessCheckRequest:
     str ReadinessCheckName
     str ResourceSetName
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateReadinessCheckResponse:
     Optional[str] ReadinessCheckArn
     Optional[str] ReadinessCheckName
@@ -533,8 +561,9 @@ struct UpdateRecoveryGroupRequest:
     list[str] Cells
     str RecoveryGroupName
 
-# no @derive(Json): member(s) Cells: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cells: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRecoveryGroupResponse:
     Optional[list[str]] Cells
     Optional[str] RecoveryGroupArn
@@ -548,8 +577,9 @@ struct UpdateResourceSetRequest:
     str ResourceSetType
     list[Resource] Resources
 
-# no @derive(Json): member(s) Resources: list[Resource], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resources: list[Resource], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateResourceSetResponse:
     Optional[str] ResourceSetArn
     Optional[str] ResourceSetName
@@ -596,15 +626,7 @@ def route53_recovery_readiness_error_from_code(str code) -> Route53_Recovery_Rea
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateCell (document member `Cells: list[str]` is not serializable by derive)
-#   CreateReadinessCheck (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateRecoveryGroup (document member `Cells: list[str]` is not serializable by derive)
-#   CreateResourceSet (document member `Resources: list[Resource]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateCell (document member `Cells: list[str]` is not serializable by derive)
-#   UpdateRecoveryGroup (document member `Cells: list[str]` is not serializable by derive)
-#   UpdateResourceSet (document member `Resources: list[Resource]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -619,10 +641,82 @@ struct UpdateReadinessCheckDocument:
     # document members of UpdateReadinessCheck
     str ResourceSetName
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def route53_recovery_readiness_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def route53_recovery_readiness_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def route53_recovery_readiness_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize Resource to a compact JSON object (declaration order).
+def resource_to_json(Resource v) -> str:
+    list[str] parts = []
+    if v.ComponentId.is_some():
+        auto u0 = v.ComponentId.unwrap()
+        parts.append("\"componentId\":" + route53_recovery_readiness_json_str(u0))
+    if v.DnsTargetResource.is_some():
+        auto u1 = v.DnsTargetResource.unwrap()
+        parts.append("\"dnsTargetResource\":" + u1.to_json())
+    if v.ReadinessScopes.is_some():
+        auto u2 = v.ReadinessScopes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(route53_recovery_readiness_json_str(x3))
+        parts.append("\"readinessScopes\":" + route53_recovery_readiness_json_arr(e3))
+    if v.ResourceArn.is_some():
+        auto u4 = v.ResourceArn.unwrap()
+        parts.append("\"resourceArn\":" + route53_recovery_readiness_json_str(u4))
+    return route53_recovery_readiness_json_obj(parts)
+
 # A bound Route53_Recovery_Readiness client: credentials + region, threaded into every operation.
 struct Route53_Recovery_ReadinessClient:
     core.Credentials creds
     str region
+
+    # CreateCell  POST /cells
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def create_cell(self, CreateCellRequest input) -> str:
+        auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/cells", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"cellName\":" + route53_recovery_readiness_json_str(input.CellName))
+        if input.Cells.is_some():
+            auto u0 = input.Cells.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(route53_recovery_readiness_json_str(x1))
+            parts.append("\"cells\":" + route53_recovery_readiness_json_arr(e1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(route53_recovery_readiness_json_str(k3) + ":" + route53_recovery_readiness_json_str(u2[k3]))
+            parts.append("\"tags\":" + route53_recovery_readiness_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, route53_recovery_readiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, route53_recovery_readiness_service(), self.region, host)
 
     # CreateCrossAccountAuthorization  POST /crossaccountauthorizations
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
@@ -631,6 +725,66 @@ struct Route53_Recovery_ReadinessClient:
         auto b = binding.HttpBinding(method="POST", path_template="/crossaccountauthorizations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateCrossAccountAuthorizationDocument(CrossAccountAuthorization=input.CrossAccountAuthorization)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, route53_recovery_readiness_service(), self.region, host)
+
+    # CreateReadinessCheck  POST /readinesschecks
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def create_readiness_check(self, CreateReadinessCheckRequest input) -> str:
+        auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/readinesschecks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"readinessCheckName\":" + route53_recovery_readiness_json_str(input.ReadinessCheckName))
+        parts.append("\"resourceSetName\":" + route53_recovery_readiness_json_str(input.ResourceSetName))
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(route53_recovery_readiness_json_str(k1) + ":" + route53_recovery_readiness_json_str(u0[k1]))
+            parts.append("\"tags\":" + route53_recovery_readiness_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, route53_recovery_readiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, route53_recovery_readiness_service(), self.region, host)
+
+    # CreateRecoveryGroup  POST /recoverygroups
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def create_recovery_group(self, CreateRecoveryGroupRequest input) -> str:
+        auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/recoverygroups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Cells.is_some():
+            auto u0 = input.Cells.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(route53_recovery_readiness_json_str(x1))
+            parts.append("\"cells\":" + route53_recovery_readiness_json_arr(e1))
+        parts.append("\"recoveryGroupName\":" + route53_recovery_readiness_json_str(input.RecoveryGroupName))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(route53_recovery_readiness_json_str(k3) + ":" + route53_recovery_readiness_json_str(u2[k3]))
+            parts.append("\"tags\":" + route53_recovery_readiness_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, route53_recovery_readiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, route53_recovery_readiness_service(), self.region, host)
+
+    # CreateResourceSet  POST /resourcesets
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def create_resource_set(self, CreateResourceSetRequest input) -> str:
+        auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/resourcesets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceSetName\":" + route53_recovery_readiness_json_str(input.ResourceSetName))
+        parts.append("\"resourceSetType\":" + route53_recovery_readiness_json_str(input.ResourceSetType))
+        list[str] e0 = []
+        for x0 in input.Resources:
+            e0.append(resource_to_json(x0))
+        parts.append("\"resources\":" + route53_recovery_readiness_json_arr(e0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(route53_recovery_readiness_json_str(k2) + ":" + route53_recovery_readiness_json_str(u1[k2]))
+            parts.append("\"tags\":" + route53_recovery_readiness_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, route53_recovery_readiness_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, route53_recovery_readiness_service(), self.region, host)
 
     # DeleteCell  DELETE /cells/{cellName}
@@ -868,6 +1022,36 @@ struct Route53_Recovery_ReadinessClient:
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_readiness_service(), self.region, host)
 
+    # TagResource  POST /tags/{resource-arn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resource-arn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(route53_recovery_readiness_json_str(k0) + ":" + route53_recovery_readiness_json_str(input.Tags[k0]))
+        parts.append("\"tags\":" + route53_recovery_readiness_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, route53_recovery_readiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, route53_recovery_readiness_service(), self.region, host)
+
+    # UpdateCell  PUT /cells/{cellName}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_cell(self, UpdateCellRequest input) -> str:
+        auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["cellName"] = input.CellName
+        auto b = binding.HttpBinding(method="PUT", path_template="/cells/{cellName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Cells:
+            e0.append(route53_recovery_readiness_json_str(x0))
+        parts.append("\"cells\":" + route53_recovery_readiness_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, route53_recovery_readiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, route53_recovery_readiness_service(), self.region, host)
+
     # UpdateReadinessCheck  PUT /readinesschecks/{readinessCheckName}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_readiness_check(self, UpdateReadinessCheckRequest input) -> str:
@@ -877,6 +1061,37 @@ struct Route53_Recovery_ReadinessClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/readinesschecks/{readinessCheckName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateReadinessCheckDocument(ResourceSetName=input.ResourceSetName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, route53_recovery_readiness_service(), self.region, host)
+
+    # UpdateRecoveryGroup  PUT /recoverygroups/{recoveryGroupName}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_recovery_group(self, UpdateRecoveryGroupRequest input) -> str:
+        auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["recoveryGroupName"] = input.RecoveryGroupName
+        auto b = binding.HttpBinding(method="PUT", path_template="/recoverygroups/{recoveryGroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Cells:
+            e0.append(route53_recovery_readiness_json_str(x0))
+        parts.append("\"cells\":" + route53_recovery_readiness_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, route53_recovery_readiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, route53_recovery_readiness_service(), self.region, host)
+
+    # UpdateResourceSet  PUT /resourcesets/{resourceSetName}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_resource_set(self, UpdateResourceSetRequest input) -> str:
+        auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceSetName"] = input.ResourceSetName
+        auto b = binding.HttpBinding(method="PUT", path_template="/resourcesets/{resourceSetName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceSetType\":" + route53_recovery_readiness_json_str(input.ResourceSetType))
+        list[str] e0 = []
+        for x0 in input.Resources:
+            e0.append(resource_to_json(x0))
+        parts.append("\"resources\":" + route53_recovery_readiness_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, route53_recovery_readiness_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, route53_recovery_readiness_service(), self.region, host)
 
     # Paginator for GetCellReadinessSummary — yields each Response page, threading the

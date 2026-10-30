@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 96 operations — 61 with a generated method,
-#   35 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 96 operations — 96 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   229 structs (149 @derive(Json)), 16 enums, 3 error variants.
-#   7 paginators generated (5 paginated ops skipped) from paginators-1.json.
+#   12 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -233,8 +233,9 @@ enum TapeStorageClass:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActivateGatewayInput:
     str ActivationKey
     str GatewayName
@@ -249,8 +250,9 @@ struct ActivateGatewayInput:
 struct ActivateGatewayOutput:
     Optional[str] GatewayARN
 
-# no @derive(Json): member(s) DiskIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DiskIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddCacheInput:
     str GatewayARN
     list[str] DiskIds
@@ -259,8 +261,9 @@ struct AddCacheInput:
 struct AddCacheOutput:
     Optional[str] GatewayARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddTagsToResourceInput:
     str ResourceARN
     list[Tag] Tags
@@ -269,8 +272,9 @@ struct AddTagsToResourceInput:
 struct AddTagsToResourceOutput:
     Optional[str] ResourceARN
 
-# no @derive(Json): member(s) DiskIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DiskIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddUploadBufferInput:
     str GatewayARN
     list[str] DiskIds
@@ -279,8 +283,9 @@ struct AddUploadBufferInput:
 struct AddUploadBufferOutput:
     Optional[str] GatewayARN
 
-# no @derive(Json): member(s) DiskIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DiskIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddWorkingStorageInput:
     str GatewayARN
     list[str] DiskIds
@@ -299,8 +304,9 @@ struct AssignTapePoolInput:
 struct AssignTapePoolOutput:
     Optional[str] TapeARN
 
-# no @derive(Json): member(s) Tags: list[Tag], EndpointNetworkConfiguration: EndpointNetworkConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], EndpointNetworkConfiguration: EndpointNetworkConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateFileSystemInput:
     str UserName
     str Password
@@ -329,8 +335,9 @@ struct AttachVolumeOutput:
     Optional[str] VolumeARN
     Optional[str] TargetARN
 
-# no @derive(Json): member(s) AutomaticTapeCreationRules: list[AutomaticTapeCreationRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AutomaticTapeCreationRules: list[AutomaticTapeCreationRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutomaticTapeCreationPolicyInfo:
     Optional[list[AutomaticTapeCreationRule]] AutomaticTapeCreationRules
     Optional[str] GatewayARN
@@ -343,8 +350,9 @@ struct AutomaticTapeCreationRule:
     int64 MinimumNumTapes
     Optional[bool] Worm
 
-# no @derive(Json): member(s) DaysOfWeek: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DaysOfWeek: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BandwidthRateLimitInterval:
     int64 StartHourOfDay
     int64 StartMinuteOfHour
@@ -358,14 +366,16 @@ struct BandwidthRateLimitInterval:
 struct CacheAttributes:
     Optional[int64] CacheStaleTimeoutInSeconds
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CacheReportFilter:
     CacheReportFilterName Name
     list[str] Values
 
-# no @derive(Json): member(s) InclusionFilters: list[CacheReportFilter], ExclusionFilters: list[CacheReportFilter], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InclusionFilters: list[CacheReportFilter], ExclusionFilters: list[CacheReportFilter], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CacheReportInfo:
     Optional[str] CacheReportARN
     Optional[CacheReportStatus] CacheReportStatus
@@ -429,8 +439,9 @@ struct ChapInfo:
     Optional[str] InitiatorName
     Optional[str] SecretToAuthenticateTarget
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCachediSCSIVolumeInput:
     str GatewayARN
     int64 VolumeSizeInBytes
@@ -448,8 +459,9 @@ struct CreateCachediSCSIVolumeOutput:
     Optional[str] VolumeARN
     Optional[str] TargetARN
 
-# no @derive(Json): member(s) ClientList: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClientList: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateNFSFileShareInput:
     str ClientToken
     Optional[NFSFileShareDefaults] NFSFileShareDefaults
@@ -478,8 +490,9 @@ struct CreateNFSFileShareInput:
 struct CreateNFSFileShareOutput:
     Optional[str] FileShareARN
 
-# no @derive(Json): member(s) AdminUserList: list[str], ValidUserList: list[str], InvalidUserList: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdminUserList: list[str], ValidUserList: list[str], InvalidUserList: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSMBFileShareInput:
     str ClientToken
     str GatewayARN
@@ -513,8 +526,9 @@ struct CreateSMBFileShareInput:
 struct CreateSMBFileShareOutput:
     Optional[str] FileShareARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSnapshotFromVolumeRecoveryPointInput:
     str VolumeARN
     str SnapshotDescription
@@ -526,8 +540,9 @@ struct CreateSnapshotFromVolumeRecoveryPointOutput:
     Optional[str] VolumeARN
     Optional[str] VolumeRecoveryPointTime
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSnapshotInput:
     str VolumeARN
     str SnapshotDescription
@@ -538,8 +553,9 @@ struct CreateSnapshotOutput:
     Optional[str] VolumeARN
     Optional[str] SnapshotId
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateStorediSCSIVolumeInput:
     str GatewayARN
     str DiskId
@@ -557,8 +573,9 @@ struct CreateStorediSCSIVolumeOutput:
     Optional[int64] VolumeSizeInBytes
     Optional[str] TargetARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTapePoolInput:
     str PoolName
     TapeStorageClass StorageClass
@@ -570,8 +587,9 @@ struct CreateTapePoolInput:
 struct CreateTapePoolOutput:
     Optional[str] PoolARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTapeWithBarcodeInput:
     str GatewayARN
     int64 TapeSizeInBytes
@@ -586,8 +604,9 @@ struct CreateTapeWithBarcodeInput:
 struct CreateTapeWithBarcodeOutput:
     Optional[str] TapeARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTapesInput:
     str GatewayARN
     int64 TapeSizeInBytes
@@ -600,8 +619,9 @@ struct CreateTapesInput:
     Optional[bool] Worm
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) TapeARNs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TapeARNs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTapesOutput:
     Optional[list[str]] TapeARNs
 
@@ -724,8 +744,9 @@ struct DescribeBandwidthRateLimitOutput:
 struct DescribeBandwidthRateLimitScheduleInput:
     str GatewayARN
 
-# no @derive(Json): member(s) BandwidthRateLimitIntervals: list[BandwidthRateLimitInterval] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BandwidthRateLimitIntervals: list[BandwidthRateLimitInterval] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBandwidthRateLimitScheduleOutput:
     Optional[str] GatewayARN
     Optional[list[BandwidthRateLimitInterval]] BandwidthRateLimitIntervals
@@ -734,8 +755,9 @@ struct DescribeBandwidthRateLimitScheduleOutput:
 struct DescribeCacheInput:
     str GatewayARN
 
-# no @derive(Json): member(s) DiskIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DiskIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCacheOutput:
     Optional[str] GatewayARN
     Optional[list[str]] DiskIds
@@ -749,18 +771,21 @@ struct DescribeCacheOutput:
 struct DescribeCacheReportInput:
     str CacheReportARN
 
-# no @derive(Json): member(s) CacheReportInfo: CacheReportInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CacheReportInfo: CacheReportInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCacheReportOutput:
     Optional[CacheReportInfo] CacheReportInfo
 
-# no @derive(Json): member(s) VolumeARNs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VolumeARNs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCachediSCSIVolumesInput:
     list[str] VolumeARNs
 
-# no @derive(Json): member(s) CachediSCSIVolumes: list[CachediSCSIVolume] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CachediSCSIVolumes: list[CachediSCSIVolume] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCachediSCSIVolumesOutput:
     Optional[list[CachediSCSIVolume]] CachediSCSIVolumes
 
@@ -768,18 +793,21 @@ struct DescribeCachediSCSIVolumesOutput:
 struct DescribeChapCredentialsInput:
     str TargetARN
 
-# no @derive(Json): member(s) ChapCredentials: list[ChapInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChapCredentials: list[ChapInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeChapCredentialsOutput:
     Optional[list[ChapInfo]] ChapCredentials
 
-# no @derive(Json): member(s) FileSystemAssociationARNList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileSystemAssociationARNList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFileSystemAssociationsInput:
     list[str] FileSystemAssociationARNList
 
-# no @derive(Json): member(s) FileSystemAssociationInfoList: list[FileSystemAssociationInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileSystemAssociationInfoList: list[FileSystemAssociationInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFileSystemAssociationsOutput:
     Optional[list[FileSystemAssociationInfo]] FileSystemAssociationInfoList
 
@@ -787,8 +815,9 @@ struct DescribeFileSystemAssociationsOutput:
 struct DescribeGatewayInformationInput:
     str GatewayARN
 
-# no @derive(Json): member(s) GatewayNetworkInterfaces: list[NetworkInterface], Tags: list[Tag], SupportedGatewayCapacities: list[GatewayCapacity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GatewayNetworkInterfaces: list[NetworkInterface], Tags: list[Tag], SupportedGatewayCapacities: list[GatewayCapacity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeGatewayInformationOutput:
     Optional[str] GatewayARN
     Optional[str] GatewayId
@@ -827,23 +856,27 @@ struct DescribeMaintenanceStartTimeOutput:
     Optional[str] Timezone
     Optional[SoftwareUpdatePreferences] SoftwareUpdatePreferences
 
-# no @derive(Json): member(s) FileShareARNList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileShareARNList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeNFSFileSharesInput:
     list[str] FileShareARNList
 
-# no @derive(Json): member(s) NFSFileShareInfoList: list[NFSFileShareInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NFSFileShareInfoList: list[NFSFileShareInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeNFSFileSharesOutput:
     Optional[list[NFSFileShareInfo]] NFSFileShareInfoList
 
-# no @derive(Json): member(s) FileShareARNList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileShareARNList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSMBFileSharesInput:
     list[str] FileShareARNList
 
-# no @derive(Json): member(s) SMBFileShareInfoList: list[SMBFileShareInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SMBFileShareInfoList: list[SMBFileShareInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSMBFileSharesOutput:
     Optional[list[SMBFileShareInfo]] SMBFileShareInfoList
 
@@ -851,8 +884,9 @@ struct DescribeSMBFileSharesOutput:
 struct DescribeSMBSettingsInput:
     str GatewayARN
 
-# no @derive(Json): member(s) SMBLocalGroups: SMBLocalGroups not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SMBLocalGroups: SMBLocalGroups not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSMBSettingsOutput:
     Optional[str] GatewayARN
     Optional[str] DomainName
@@ -866,8 +900,9 @@ struct DescribeSMBSettingsOutput:
 struct DescribeSnapshotScheduleInput:
     str VolumeARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSnapshotScheduleOutput:
     Optional[str] VolumeARN
     Optional[int64] StartAt
@@ -876,25 +911,29 @@ struct DescribeSnapshotScheduleOutput:
     Optional[str] Timezone
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) VolumeARNs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VolumeARNs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeStorediSCSIVolumesInput:
     list[str] VolumeARNs
 
-# no @derive(Json): member(s) StorediSCSIVolumes: list[StorediSCSIVolume] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StorediSCSIVolumes: list[StorediSCSIVolume] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeStorediSCSIVolumesOutput:
     Optional[list[StorediSCSIVolume]] StorediSCSIVolumes
 
-# no @derive(Json): member(s) TapeARNs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TapeARNs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTapeArchivesInput:
     Optional[list[str]] TapeARNs
     Optional[str] Marker
     Optional[int64] Limit
 
-# no @derive(Json): member(s) TapeArchives: list[TapeArchive] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TapeArchives: list[TapeArchive] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTapeArchivesOutput:
     Optional[list[TapeArchive]] TapeArchives
     Optional[str] Marker
@@ -905,23 +944,26 @@ struct DescribeTapeRecoveryPointsInput:
     Optional[str] Marker
     Optional[int64] Limit
 
-# no @derive(Json): member(s) TapeRecoveryPointInfos: list[TapeRecoveryPointInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TapeRecoveryPointInfos: list[TapeRecoveryPointInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTapeRecoveryPointsOutput:
     Optional[str] GatewayARN
     Optional[list[TapeRecoveryPointInfo]] TapeRecoveryPointInfos
     Optional[str] Marker
 
-# no @derive(Json): member(s) TapeARNs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TapeARNs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTapesInput:
     str GatewayARN
     Optional[list[str]] TapeARNs
     Optional[str] Marker
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Tapes: list[Tape] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tapes: list[Tape] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTapesOutput:
     Optional[list[Tape]] Tapes
     Optional[str] Marker
@@ -930,24 +972,27 @@ struct DescribeTapesOutput:
 struct DescribeUploadBufferInput:
     str GatewayARN
 
-# no @derive(Json): member(s) DiskIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DiskIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeUploadBufferOutput:
     Optional[str] GatewayARN
     Optional[list[str]] DiskIds
     Optional[int64] UploadBufferUsedInBytes
     Optional[int64] UploadBufferAllocatedInBytes
 
-# no @derive(Json): member(s) VTLDeviceARNs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VTLDeviceARNs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeVTLDevicesInput:
     str GatewayARN
     Optional[list[str]] VTLDeviceARNs
     Optional[str] Marker
     Optional[int64] Limit
 
-# no @derive(Json): member(s) VTLDevices: list[VTLDevice] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VTLDevices: list[VTLDevice] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeVTLDevicesOutput:
     Optional[str] GatewayARN
     Optional[list[VTLDevice]] VTLDevices
@@ -957,8 +1002,9 @@ struct DescribeVTLDevicesOutput:
 struct DescribeWorkingStorageInput:
     str GatewayARN
 
-# no @derive(Json): member(s) DiskIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DiskIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeWorkingStorageOutput:
     Optional[str] GatewayARN
     Optional[list[str]] DiskIds
@@ -998,8 +1044,9 @@ struct DisassociateFileSystemInput:
 struct DisassociateFileSystemOutput:
     Optional[str] FileSystemAssociationARN
 
-# no @derive(Json): member(s) DiskAttributeList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DiskAttributeList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Disk:
     Optional[str] DiskId
     Optional[str] DiskPath
@@ -1010,8 +1057,9 @@ struct Disk:
     Optional[str] DiskAllocationResource
     Optional[list[str]] DiskAttributeList
 
-# no @derive(Json): member(s) IpAddresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IpAddresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EndpointNetworkConfiguration:
     Optional[list[str]] IpAddresses
 
@@ -1032,8 +1080,9 @@ struct FileShareInfo:
     Optional[str] FileShareStatus
     Optional[str] GatewayARN
 
-# no @derive(Json): member(s) Tags: list[Tag], EndpointNetworkConfiguration: EndpointNetworkConfiguration, FileSystemAssociationStatusDetails: list[FileSystemAssociationStatusDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], EndpointNetworkConfiguration: EndpointNetworkConfiguration, FileSystemAssociationStatusDetails: list[FileSystemAssociationStatusDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FileSystemAssociationInfo:
     Optional[str] FileSystemAssociationARN
     Optional[str] LocationARN
@@ -1070,20 +1119,23 @@ struct GatewayInfo:
     Optional[str] DeprecationDate
     Optional[str] SoftwareVersion
 
-# no @derive(Json): member(s) error: StorageGatewayError not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) error: StorageGatewayError not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InternalServerError:
     Optional[str] message
     Optional[StorageGatewayError] error
 
-# no @derive(Json): member(s) error: StorageGatewayError not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) error: StorageGatewayError not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvalidGatewayRequestException:
     Optional[str] message
     Optional[StorageGatewayError] error
 
-# no @derive(Json): member(s) DomainControllers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DomainControllers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JoinDomainInput:
     str GatewayARN
     str DomainName
@@ -1102,8 +1154,9 @@ struct JoinDomainOutput:
 struct ListAutomaticTapeCreationPoliciesInput:
     Optional[str] GatewayARN
 
-# no @derive(Json): member(s) AutomaticTapeCreationPolicyInfos: list[AutomaticTapeCreationPolicyInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AutomaticTapeCreationPolicyInfos: list[AutomaticTapeCreationPolicyInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAutomaticTapeCreationPoliciesOutput:
     Optional[list[AutomaticTapeCreationPolicyInfo]] AutomaticTapeCreationPolicyInfos
 
@@ -1111,8 +1164,9 @@ struct ListAutomaticTapeCreationPoliciesOutput:
 struct ListCacheReportsInput:
     Optional[str] Marker
 
-# no @derive(Json): member(s) CacheReportList: list[CacheReportInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CacheReportList: list[CacheReportInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCacheReportsOutput:
     Optional[list[CacheReportInfo]] CacheReportList
     Optional[str] Marker
@@ -1123,8 +1177,9 @@ struct ListFileSharesInput:
     Optional[int64] Limit
     Optional[str] Marker
 
-# no @derive(Json): member(s) FileShareInfoList: list[FileShareInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileShareInfoList: list[FileShareInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFileSharesOutput:
     Optional[str] Marker
     Optional[str] NextMarker
@@ -1136,8 +1191,9 @@ struct ListFileSystemAssociationsInput:
     Optional[int64] Limit
     Optional[str] Marker
 
-# no @derive(Json): member(s) FileSystemAssociationSummaryList: list[FileSystemAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileSystemAssociationSummaryList: list[FileSystemAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFileSystemAssociationsOutput:
     Optional[str] Marker
     Optional[str] NextMarker
@@ -1148,8 +1204,9 @@ struct ListGatewaysInput:
     Optional[str] Marker
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Gateways: list[GatewayInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Gateways: list[GatewayInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGatewaysOutput:
     Optional[list[GatewayInfo]] Gateways
     Optional[str] Marker
@@ -1158,8 +1215,9 @@ struct ListGatewaysOutput:
 struct ListLocalDisksInput:
     str GatewayARN
 
-# no @derive(Json): member(s) Disks: list[Disk] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Disks: list[Disk] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLocalDisksOutput:
     Optional[str] GatewayARN
     Optional[list[Disk]] Disks
@@ -1170,35 +1228,40 @@ struct ListTagsForResourceInput:
     Optional[str] Marker
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[str] ResourceARN
     Optional[str] Marker
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) PoolARNs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PoolARNs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTapePoolsInput:
     Optional[list[str]] PoolARNs
     Optional[str] Marker
     Optional[int64] Limit
 
-# no @derive(Json): member(s) PoolInfos: list[PoolInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PoolInfos: list[PoolInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTapePoolsOutput:
     Optional[list[PoolInfo]] PoolInfos
     Optional[str] Marker
 
-# no @derive(Json): member(s) TapeARNs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TapeARNs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTapesInput:
     Optional[list[str]] TapeARNs
     Optional[str] Marker
     Optional[int64] Limit
 
-# no @derive(Json): member(s) TapeInfos: list[TapeInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TapeInfos: list[TapeInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTapesOutput:
     Optional[list[TapeInfo]] TapeInfos
     Optional[str] Marker
@@ -1207,8 +1270,9 @@ struct ListTapesOutput:
 struct ListVolumeInitiatorsInput:
     str VolumeARN
 
-# no @derive(Json): member(s) Initiators: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Initiators: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVolumeInitiatorsOutput:
     Optional[list[str]] Initiators
 
@@ -1216,8 +1280,9 @@ struct ListVolumeInitiatorsOutput:
 struct ListVolumeRecoveryPointsInput:
     str GatewayARN
 
-# no @derive(Json): member(s) VolumeRecoveryPointInfos: list[VolumeRecoveryPointInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VolumeRecoveryPointInfos: list[VolumeRecoveryPointInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVolumeRecoveryPointsOutput:
     Optional[str] GatewayARN
     Optional[list[VolumeRecoveryPointInfo]] VolumeRecoveryPointInfos
@@ -1228,8 +1293,9 @@ struct ListVolumesInput:
     Optional[str] Marker
     Optional[int64] Limit
 
-# no @derive(Json): member(s) VolumeInfos: list[VolumeInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VolumeInfos: list[VolumeInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVolumesOutput:
     Optional[str] GatewayARN
     Optional[str] Marker
@@ -1242,8 +1308,9 @@ struct NFSFileShareDefaults:
     Optional[int64] GroupId
     Optional[int64] OwnerId
 
-# no @derive(Json): member(s) ClientList: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClientList: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NFSFileShareInfo:
     Optional[NFSFileShareDefaults] NFSFileShareDefaults
     Optional[str] FileShareARN
@@ -1295,8 +1362,9 @@ struct PoolInfo:
     Optional[int64] RetentionLockTimeInDays
     Optional[PoolStatus] PoolStatus
 
-# no @derive(Json): member(s) FolderList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FolderList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RefreshCacheInput:
     str FileShareARN
     Optional[list[str]] FolderList
@@ -1307,8 +1375,9 @@ struct RefreshCacheOutput:
     Optional[str] FileShareARN
     Optional[str] NotificationId
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveTagsFromResourceInput:
     str ResourceARN
     list[str] TagKeys
@@ -1343,8 +1412,9 @@ struct RetrieveTapeRecoveryPointInput:
 struct RetrieveTapeRecoveryPointOutput:
     Optional[str] TapeARN
 
-# no @derive(Json): member(s) AdminUserList: list[str], ValidUserList: list[str], InvalidUserList: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdminUserList: list[str], ValidUserList: list[str], InvalidUserList: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SMBFileShareInfo:
     Optional[str] FileShareARN
     Optional[str] FileShareId
@@ -1377,13 +1447,15 @@ struct SMBFileShareInfo:
     Optional[str] BucketRegion
     Optional[bool] OplocksEnabled
 
-# no @derive(Json): member(s) GatewayAdmins: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GatewayAdmins: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SMBLocalGroups:
     Optional[list[str]] GatewayAdmins
 
-# no @derive(Json): member(s) error: StorageGatewayError not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) error: StorageGatewayError not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceUnavailableError:
     Optional[str] message
     Optional[StorageGatewayError] error
@@ -1426,8 +1498,9 @@ struct StartAvailabilityMonitorTestInput:
 struct StartAvailabilityMonitorTestOutput:
     Optional[str] GatewayARN
 
-# no @derive(Json): member(s) InclusionFilters: list[CacheReportFilter], ExclusionFilters: list[CacheReportFilter], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InclusionFilters: list[CacheReportFilter], ExclusionFilters: list[CacheReportFilter], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartCacheReportInput:
     str FileShareARN
     str Role
@@ -1451,8 +1524,9 @@ struct StartGatewayInput:
 struct StartGatewayOutput:
     Optional[str] GatewayARN
 
-# no @derive(Json): member(s) errorDetails: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errorDetails: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StorageGatewayError:
     Optional[ErrorCode] errorCode
     Optional[dict[str, str]] errorDetails
@@ -1530,8 +1604,9 @@ struct TapeRecoveryPointInfo:
     Optional[int64] TapeSizeInBytes
     Optional[str] TapeStatus
 
-# no @derive(Json): member(s) AutomaticTapeCreationRules: list[AutomaticTapeCreationRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AutomaticTapeCreationRules: list[AutomaticTapeCreationRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAutomaticTapeCreationPolicyInput:
     list[AutomaticTapeCreationRule] AutomaticTapeCreationRules
     str GatewayARN
@@ -1550,8 +1625,9 @@ struct UpdateBandwidthRateLimitInput:
 struct UpdateBandwidthRateLimitOutput:
     Optional[str] GatewayARN
 
-# no @derive(Json): member(s) BandwidthRateLimitIntervals: list[BandwidthRateLimitInterval] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BandwidthRateLimitIntervals: list[BandwidthRateLimitInterval] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBandwidthRateLimitScheduleInput:
     str GatewayARN
     list[BandwidthRateLimitInterval] BandwidthRateLimitIntervals
@@ -1618,8 +1694,9 @@ struct UpdateMaintenanceStartTimeInput:
 struct UpdateMaintenanceStartTimeOutput:
     Optional[str] GatewayARN
 
-# no @derive(Json): member(s) ClientList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClientList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateNFSFileShareInput:
     str FileShareARN
     Optional[EncryptionType] EncryptionType
@@ -1642,8 +1719,9 @@ struct UpdateNFSFileShareInput:
 struct UpdateNFSFileShareOutput:
     Optional[str] FileShareARN
 
-# no @derive(Json): member(s) AdminUserList: list[str], ValidUserList: list[str], InvalidUserList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdminUserList: list[str], ValidUserList: list[str], InvalidUserList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSMBFileShareInput:
     str FileShareARN
     Optional[EncryptionType] EncryptionType
@@ -1679,8 +1757,9 @@ struct UpdateSMBFileShareVisibilityInput:
 struct UpdateSMBFileShareVisibilityOutput:
     Optional[str] GatewayARN
 
-# no @derive(Json): member(s) SMBLocalGroups: SMBLocalGroups not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SMBLocalGroups: SMBLocalGroups not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSMBLocalGroupsInput:
     str GatewayARN
     SMBLocalGroups SMBLocalGroups
@@ -1698,8 +1777,9 @@ struct UpdateSMBSecurityStrategyInput:
 struct UpdateSMBSecurityStrategyOutput:
     Optional[str] GatewayARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSnapshotScheduleInput:
     str VolumeARN
     int64 StartAt
@@ -1775,62 +1855,912 @@ def storagegateway_error_from_code(str code) -> Storage_GatewayError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   ActivateGateway (input ActivateGatewayInput)
-#   AddCache (input AddCacheInput)
-#   AddTagsToResource (input AddTagsToResourceInput)
-#   AddUploadBuffer (input AddUploadBufferInput)
-#   AddWorkingStorage (input AddWorkingStorageInput)
-#   AssociateFileSystem (input AssociateFileSystemInput)
-#   CreateCachediSCSIVolume (input CreateCachediSCSIVolumeInput)
-#   CreateNFSFileShare (input CreateNFSFileShareInput)
-#   CreateSMBFileShare (input CreateSMBFileShareInput)
-#   CreateSnapshot (input CreateSnapshotInput)
-#   CreateSnapshotFromVolumeRecoveryPoint (input CreateSnapshotFromVolumeRecoveryPointInput)
-#   CreateStorediSCSIVolume (input CreateStorediSCSIVolumeInput)
-#   CreateTapePool (input CreateTapePoolInput)
-#   CreateTapeWithBarcode (input CreateTapeWithBarcodeInput)
-#   CreateTapes (input CreateTapesInput)
-#   DescribeCachediSCSIVolumes (input DescribeCachediSCSIVolumesInput)
-#   DescribeFileSystemAssociations (input DescribeFileSystemAssociationsInput)
-#   DescribeNFSFileShares (input DescribeNFSFileSharesInput)
-#   DescribeSMBFileShares (input DescribeSMBFileSharesInput)
-#   DescribeStorediSCSIVolumes (input DescribeStorediSCSIVolumesInput)
-#   DescribeTapeArchives (input DescribeTapeArchivesInput)
-#   DescribeTapes (input DescribeTapesInput)
-#   DescribeVTLDevices (input DescribeVTLDevicesInput)
-#   JoinDomain (input JoinDomainInput)
-#   ListTapePools (input ListTapePoolsInput)
-#   ListTapes (input ListTapesInput)
-#   RefreshCache (input RefreshCacheInput)
-#   RemoveTagsFromResource (input RemoveTagsFromResourceInput)
-#   StartCacheReport (input StartCacheReportInput)
-#   UpdateAutomaticTapeCreationPolicy (input UpdateAutomaticTapeCreationPolicyInput)
-#   UpdateBandwidthRateLimitSchedule (input UpdateBandwidthRateLimitScheduleInput)
-#   UpdateNFSFileShare (input UpdateNFSFileShareInput)
-#   UpdateSMBFileShare (input UpdateSMBFileShareInput)
-#   UpdateSMBLocalGroups (input UpdateSMBLocalGroupsInput)
-#   UpdateSnapshotSchedule (input UpdateSnapshotScheduleInput)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def storagegateway_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   DescribeTapeArchives (input not derivable (no generated method))
-#   DescribeTapes (input not derivable (no generated method))
-#   DescribeVTLDevices (input not derivable (no generated method))
-#   ListTapePools (input not derivable (no generated method))
-#   ListTapes (input not derivable (no generated method))
+def storagegateway_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def storagegateway_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ActivateGatewayInput to a compact JSON object (declaration order).
+def activate_gateway_input_to_json(ActivateGatewayInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ActivationKey\":" + storagegateway_json_str(v.ActivationKey))
+    parts.append("\"GatewayName\":" + storagegateway_json_str(v.GatewayName))
+    parts.append("\"GatewayTimezone\":" + storagegateway_json_str(v.GatewayTimezone))
+    parts.append("\"GatewayRegion\":" + storagegateway_json_str(v.GatewayRegion))
+    if v.GatewayType.is_some():
+        auto u0 = v.GatewayType.unwrap()
+        parts.append("\"GatewayType\":" + storagegateway_json_str(u0))
+    if v.TapeDriveType.is_some():
+        auto u1 = v.TapeDriveType.unwrap()
+        parts.append("\"TapeDriveType\":" + storagegateway_json_str(u1))
+    if v.MediumChangerType.is_some():
+        auto u2 = v.MediumChangerType.unwrap()
+        parts.append("\"MediumChangerType\":" + storagegateway_json_str(u2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + storagegateway_json_arr(e4))
+    return storagegateway_json_obj(parts)
+
+# Serialize AddCacheInput to a compact JSON object (declaration order).
+def add_cache_input_to_json(AddCacheInput v) -> str:
+    list[str] parts = []
+    parts.append("\"GatewayARN\":" + storagegateway_json_str(v.GatewayARN))
+    list[str] e0 = []
+    for x0 in v.DiskIds:
+        e0.append(storagegateway_json_str(x0))
+    parts.append("\"DiskIds\":" + storagegateway_json_arr(e0))
+    return storagegateway_json_obj(parts)
+
+# Serialize AddTagsToResourceInput to a compact JSON object (declaration order).
+def add_tags_to_resource_input_to_json(AddTagsToResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + storagegateway_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + storagegateway_json_arr(e0))
+    return storagegateway_json_obj(parts)
+
+# Serialize AddUploadBufferInput to a compact JSON object (declaration order).
+def add_upload_buffer_input_to_json(AddUploadBufferInput v) -> str:
+    list[str] parts = []
+    parts.append("\"GatewayARN\":" + storagegateway_json_str(v.GatewayARN))
+    list[str] e0 = []
+    for x0 in v.DiskIds:
+        e0.append(storagegateway_json_str(x0))
+    parts.append("\"DiskIds\":" + storagegateway_json_arr(e0))
+    return storagegateway_json_obj(parts)
+
+# Serialize AddWorkingStorageInput to a compact JSON object (declaration order).
+def add_working_storage_input_to_json(AddWorkingStorageInput v) -> str:
+    list[str] parts = []
+    parts.append("\"GatewayARN\":" + storagegateway_json_str(v.GatewayARN))
+    list[str] e0 = []
+    for x0 in v.DiskIds:
+        e0.append(storagegateway_json_str(x0))
+    parts.append("\"DiskIds\":" + storagegateway_json_arr(e0))
+    return storagegateway_json_obj(parts)
+
+# Serialize AssociateFileSystemInput to a compact JSON object (declaration order).
+def associate_file_system_input_to_json(AssociateFileSystemInput v) -> str:
+    list[str] parts = []
+    parts.append("\"UserName\":" + storagegateway_json_str(v.UserName))
+    parts.append("\"Password\":" + storagegateway_json_str(v.Password))
+    parts.append("\"ClientToken\":" + storagegateway_json_str(v.ClientToken))
+    parts.append("\"GatewayARN\":" + storagegateway_json_str(v.GatewayARN))
+    parts.append("\"LocationARN\":" + storagegateway_json_str(v.LocationARN))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + storagegateway_json_arr(e1))
+    if v.AuditDestinationARN.is_some():
+        auto u2 = v.AuditDestinationARN.unwrap()
+        parts.append("\"AuditDestinationARN\":" + storagegateway_json_str(u2))
+    if v.CacheAttributes.is_some():
+        auto u3 = v.CacheAttributes.unwrap()
+        parts.append("\"CacheAttributes\":" + u3.to_json())
+    if v.EndpointNetworkConfiguration.is_some():
+        auto u4 = v.EndpointNetworkConfiguration.unwrap()
+        parts.append("\"EndpointNetworkConfiguration\":" + endpoint_network_configuration_to_json(u4))
+    return storagegateway_json_obj(parts)
+
+# Serialize BandwidthRateLimitInterval to a compact JSON object (declaration order).
+def bandwidth_rate_limit_interval_to_json(BandwidthRateLimitInterval v) -> str:
+    list[str] parts = []
+    parts.append("\"StartHourOfDay\":" + str(v.StartHourOfDay))
+    parts.append("\"StartMinuteOfHour\":" + str(v.StartMinuteOfHour))
+    parts.append("\"EndHourOfDay\":" + str(v.EndHourOfDay))
+    parts.append("\"EndMinuteOfHour\":" + str(v.EndMinuteOfHour))
+    list[str] e0 = []
+    for x0 in v.DaysOfWeek:
+        e0.append(str(x0))
+    parts.append("\"DaysOfWeek\":" + storagegateway_json_arr(e0))
+    if v.AverageUploadRateLimitInBitsPerSec.is_some():
+        auto u1 = v.AverageUploadRateLimitInBitsPerSec.unwrap()
+        parts.append("\"AverageUploadRateLimitInBitsPerSec\":" + str(u1))
+    if v.AverageDownloadRateLimitInBitsPerSec.is_some():
+        auto u2 = v.AverageDownloadRateLimitInBitsPerSec.unwrap()
+        parts.append("\"AverageDownloadRateLimitInBitsPerSec\":" + str(u2))
+    return storagegateway_json_obj(parts)
+
+# Serialize CacheReportFilter to a compact JSON object (declaration order).
+def cache_report_filter_to_json(CacheReportFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + v.Name.to_json())
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(storagegateway_json_str(x0))
+    parts.append("\"Values\":" + storagegateway_json_arr(e0))
+    return storagegateway_json_obj(parts)
+
+# Serialize CreateCachediSCSIVolumeInput to a compact JSON object (declaration order).
+def create_cachedi_scsi_volume_input_to_json(CreateCachediSCSIVolumeInput v) -> str:
+    list[str] parts = []
+    parts.append("\"GatewayARN\":" + storagegateway_json_str(v.GatewayARN))
+    parts.append("\"VolumeSizeInBytes\":" + str(v.VolumeSizeInBytes))
+    if v.SnapshotId.is_some():
+        auto u0 = v.SnapshotId.unwrap()
+        parts.append("\"SnapshotId\":" + storagegateway_json_str(u0))
+    parts.append("\"TargetName\":" + storagegateway_json_str(v.TargetName))
+    if v.SourceVolumeARN.is_some():
+        auto u1 = v.SourceVolumeARN.unwrap()
+        parts.append("\"SourceVolumeARN\":" + storagegateway_json_str(u1))
+    parts.append("\"NetworkInterfaceId\":" + storagegateway_json_str(v.NetworkInterfaceId))
+    parts.append("\"ClientToken\":" + storagegateway_json_str(v.ClientToken))
+    if v.KMSEncrypted.is_some():
+        auto u2 = v.KMSEncrypted.unwrap()
+        parts.append("\"KMSEncrypted\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.KMSKey.is_some():
+        auto u3 = v.KMSKey.unwrap()
+        parts.append("\"KMSKey\":" + storagegateway_json_str(u3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + storagegateway_json_arr(e5))
+    return storagegateway_json_obj(parts)
+
+# Serialize CreateNFSFileShareInput to a compact JSON object (declaration order).
+def create_nfs_file_share_input_to_json(CreateNFSFileShareInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ClientToken\":" + storagegateway_json_str(v.ClientToken))
+    if v.NFSFileShareDefaults.is_some():
+        auto u0 = v.NFSFileShareDefaults.unwrap()
+        parts.append("\"NFSFileShareDefaults\":" + u0.to_json())
+    parts.append("\"GatewayARN\":" + storagegateway_json_str(v.GatewayARN))
+    if v.EncryptionType.is_some():
+        auto u1 = v.EncryptionType.unwrap()
+        parts.append("\"EncryptionType\":" + u1.to_json())
+    if v.KMSEncrypted.is_some():
+        auto u2 = v.KMSEncrypted.unwrap()
+        parts.append("\"KMSEncrypted\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.KMSKey.is_some():
+        auto u3 = v.KMSKey.unwrap()
+        parts.append("\"KMSKey\":" + storagegateway_json_str(u3))
+    parts.append("\"Role\":" + storagegateway_json_str(v.Role))
+    parts.append("\"LocationARN\":" + storagegateway_json_str(v.LocationARN))
+    if v.DefaultStorageClass.is_some():
+        auto u4 = v.DefaultStorageClass.unwrap()
+        parts.append("\"DefaultStorageClass\":" + storagegateway_json_str(u4))
+    if v.ObjectACL.is_some():
+        auto u5 = v.ObjectACL.unwrap()
+        parts.append("\"ObjectACL\":" + u5.to_json())
+    if v.ClientList.is_some():
+        auto u6 = v.ClientList.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(storagegateway_json_str(x7))
+        parts.append("\"ClientList\":" + storagegateway_json_arr(e7))
+    if v.Squash.is_some():
+        auto u8 = v.Squash.unwrap()
+        parts.append("\"Squash\":" + storagegateway_json_str(u8))
+    if v.ReadOnly.is_some():
+        auto u9 = v.ReadOnly.unwrap()
+        parts.append("\"ReadOnly\":" + json.dumps(JsonValue.Bool(u9)))
+    if v.GuessMIMETypeEnabled.is_some():
+        auto u10 = v.GuessMIMETypeEnabled.unwrap()
+        parts.append("\"GuessMIMETypeEnabled\":" + json.dumps(JsonValue.Bool(u10)))
+    if v.RequesterPays.is_some():
+        auto u11 = v.RequesterPays.unwrap()
+        parts.append("\"RequesterPays\":" + json.dumps(JsonValue.Bool(u11)))
+    if v.Tags.is_some():
+        auto u12 = v.Tags.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"Tags\":" + storagegateway_json_arr(e13))
+    if v.FileShareName.is_some():
+        auto u14 = v.FileShareName.unwrap()
+        parts.append("\"FileShareName\":" + storagegateway_json_str(u14))
+    if v.CacheAttributes.is_some():
+        auto u15 = v.CacheAttributes.unwrap()
+        parts.append("\"CacheAttributes\":" + u15.to_json())
+    if v.NotificationPolicy.is_some():
+        auto u16 = v.NotificationPolicy.unwrap()
+        parts.append("\"NotificationPolicy\":" + storagegateway_json_str(u16))
+    if v.VPCEndpointDNSName.is_some():
+        auto u17 = v.VPCEndpointDNSName.unwrap()
+        parts.append("\"VPCEndpointDNSName\":" + storagegateway_json_str(u17))
+    if v.BucketRegion.is_some():
+        auto u18 = v.BucketRegion.unwrap()
+        parts.append("\"BucketRegion\":" + storagegateway_json_str(u18))
+    if v.AuditDestinationARN.is_some():
+        auto u19 = v.AuditDestinationARN.unwrap()
+        parts.append("\"AuditDestinationARN\":" + storagegateway_json_str(u19))
+    return storagegateway_json_obj(parts)
+
+# Serialize CreateSMBFileShareInput to a compact JSON object (declaration order).
+def create_smb_file_share_input_to_json(CreateSMBFileShareInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ClientToken\":" + storagegateway_json_str(v.ClientToken))
+    parts.append("\"GatewayARN\":" + storagegateway_json_str(v.GatewayARN))
+    if v.EncryptionType.is_some():
+        auto u0 = v.EncryptionType.unwrap()
+        parts.append("\"EncryptionType\":" + u0.to_json())
+    if v.KMSEncrypted.is_some():
+        auto u1 = v.KMSEncrypted.unwrap()
+        parts.append("\"KMSEncrypted\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.KMSKey.is_some():
+        auto u2 = v.KMSKey.unwrap()
+        parts.append("\"KMSKey\":" + storagegateway_json_str(u2))
+    parts.append("\"Role\":" + storagegateway_json_str(v.Role))
+    parts.append("\"LocationARN\":" + storagegateway_json_str(v.LocationARN))
+    if v.DefaultStorageClass.is_some():
+        auto u3 = v.DefaultStorageClass.unwrap()
+        parts.append("\"DefaultStorageClass\":" + storagegateway_json_str(u3))
+    if v.ObjectACL.is_some():
+        auto u4 = v.ObjectACL.unwrap()
+        parts.append("\"ObjectACL\":" + u4.to_json())
+    if v.ReadOnly.is_some():
+        auto u5 = v.ReadOnly.unwrap()
+        parts.append("\"ReadOnly\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.GuessMIMETypeEnabled.is_some():
+        auto u6 = v.GuessMIMETypeEnabled.unwrap()
+        parts.append("\"GuessMIMETypeEnabled\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.RequesterPays.is_some():
+        auto u7 = v.RequesterPays.unwrap()
+        parts.append("\"RequesterPays\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.SMBACLEnabled.is_some():
+        auto u8 = v.SMBACLEnabled.unwrap()
+        parts.append("\"SMBACLEnabled\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.AccessBasedEnumeration.is_some():
+        auto u9 = v.AccessBasedEnumeration.unwrap()
+        parts.append("\"AccessBasedEnumeration\":" + json.dumps(JsonValue.Bool(u9)))
+    if v.AdminUserList.is_some():
+        auto u10 = v.AdminUserList.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(storagegateway_json_str(x11))
+        parts.append("\"AdminUserList\":" + storagegateway_json_arr(e11))
+    if v.ValidUserList.is_some():
+        auto u12 = v.ValidUserList.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(storagegateway_json_str(x13))
+        parts.append("\"ValidUserList\":" + storagegateway_json_arr(e13))
+    if v.InvalidUserList.is_some():
+        auto u14 = v.InvalidUserList.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(storagegateway_json_str(x15))
+        parts.append("\"InvalidUserList\":" + storagegateway_json_arr(e15))
+    if v.AuditDestinationARN.is_some():
+        auto u16 = v.AuditDestinationARN.unwrap()
+        parts.append("\"AuditDestinationARN\":" + storagegateway_json_str(u16))
+    if v.Authentication.is_some():
+        auto u17 = v.Authentication.unwrap()
+        parts.append("\"Authentication\":" + storagegateway_json_str(u17))
+    if v.CaseSensitivity.is_some():
+        auto u18 = v.CaseSensitivity.unwrap()
+        parts.append("\"CaseSensitivity\":" + u18.to_json())
+    if v.Tags.is_some():
+        auto u19 = v.Tags.unwrap()
+        list[str] e20 = []
+        for x20 in u19:
+            e20.append(x20.to_json())
+        parts.append("\"Tags\":" + storagegateway_json_arr(e20))
+    if v.FileShareName.is_some():
+        auto u21 = v.FileShareName.unwrap()
+        parts.append("\"FileShareName\":" + storagegateway_json_str(u21))
+    if v.CacheAttributes.is_some():
+        auto u22 = v.CacheAttributes.unwrap()
+        parts.append("\"CacheAttributes\":" + u22.to_json())
+    if v.NotificationPolicy.is_some():
+        auto u23 = v.NotificationPolicy.unwrap()
+        parts.append("\"NotificationPolicy\":" + storagegateway_json_str(u23))
+    if v.VPCEndpointDNSName.is_some():
+        auto u24 = v.VPCEndpointDNSName.unwrap()
+        parts.append("\"VPCEndpointDNSName\":" + storagegateway_json_str(u24))
+    if v.BucketRegion.is_some():
+        auto u25 = v.BucketRegion.unwrap()
+        parts.append("\"BucketRegion\":" + storagegateway_json_str(u25))
+    if v.OplocksEnabled.is_some():
+        auto u26 = v.OplocksEnabled.unwrap()
+        parts.append("\"OplocksEnabled\":" + json.dumps(JsonValue.Bool(u26)))
+    return storagegateway_json_obj(parts)
+
+# Serialize CreateSnapshotFromVolumeRecoveryPointInput to a compact JSON object (declaration order).
+def create_snapshot_from_volume_recovery_point_input_to_json(CreateSnapshotFromVolumeRecoveryPointInput v) -> str:
+    list[str] parts = []
+    parts.append("\"VolumeARN\":" + storagegateway_json_str(v.VolumeARN))
+    parts.append("\"SnapshotDescription\":" + storagegateway_json_str(v.SnapshotDescription))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + storagegateway_json_arr(e1))
+    return storagegateway_json_obj(parts)
+
+# Serialize CreateSnapshotInput to a compact JSON object (declaration order).
+def create_snapshot_input_to_json(CreateSnapshotInput v) -> str:
+    list[str] parts = []
+    parts.append("\"VolumeARN\":" + storagegateway_json_str(v.VolumeARN))
+    parts.append("\"SnapshotDescription\":" + storagegateway_json_str(v.SnapshotDescription))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + storagegateway_json_arr(e1))
+    return storagegateway_json_obj(parts)
+
+# Serialize CreateStorediSCSIVolumeInput to a compact JSON object (declaration order).
+def create_storedi_scsi_volume_input_to_json(CreateStorediSCSIVolumeInput v) -> str:
+    list[str] parts = []
+    parts.append("\"GatewayARN\":" + storagegateway_json_str(v.GatewayARN))
+    parts.append("\"DiskId\":" + storagegateway_json_str(v.DiskId))
+    if v.SnapshotId.is_some():
+        auto u0 = v.SnapshotId.unwrap()
+        parts.append("\"SnapshotId\":" + storagegateway_json_str(u0))
+    parts.append("\"PreserveExistingData\":" + json.dumps(JsonValue.Bool(v.PreserveExistingData)))
+    parts.append("\"TargetName\":" + storagegateway_json_str(v.TargetName))
+    parts.append("\"NetworkInterfaceId\":" + storagegateway_json_str(v.NetworkInterfaceId))
+    if v.KMSEncrypted.is_some():
+        auto u1 = v.KMSEncrypted.unwrap()
+        parts.append("\"KMSEncrypted\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.KMSKey.is_some():
+        auto u2 = v.KMSKey.unwrap()
+        parts.append("\"KMSKey\":" + storagegateway_json_str(u2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + storagegateway_json_arr(e4))
+    return storagegateway_json_obj(parts)
+
+# Serialize CreateTapePoolInput to a compact JSON object (declaration order).
+def create_tape_pool_input_to_json(CreateTapePoolInput v) -> str:
+    list[str] parts = []
+    parts.append("\"PoolName\":" + storagegateway_json_str(v.PoolName))
+    parts.append("\"StorageClass\":" + v.StorageClass.to_json())
+    if v.RetentionLockType.is_some():
+        auto u0 = v.RetentionLockType.unwrap()
+        parts.append("\"RetentionLockType\":" + u0.to_json())
+    if v.RetentionLockTimeInDays.is_some():
+        auto u1 = v.RetentionLockTimeInDays.unwrap()
+        parts.append("\"RetentionLockTimeInDays\":" + str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + storagegateway_json_arr(e3))
+    return storagegateway_json_obj(parts)
+
+# Serialize CreateTapeWithBarcodeInput to a compact JSON object (declaration order).
+def create_tape_with_barcode_input_to_json(CreateTapeWithBarcodeInput v) -> str:
+    list[str] parts = []
+    parts.append("\"GatewayARN\":" + storagegateway_json_str(v.GatewayARN))
+    parts.append("\"TapeSizeInBytes\":" + str(v.TapeSizeInBytes))
+    parts.append("\"TapeBarcode\":" + storagegateway_json_str(v.TapeBarcode))
+    if v.KMSEncrypted.is_some():
+        auto u0 = v.KMSEncrypted.unwrap()
+        parts.append("\"KMSEncrypted\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.KMSKey.is_some():
+        auto u1 = v.KMSKey.unwrap()
+        parts.append("\"KMSKey\":" + storagegateway_json_str(u1))
+    if v.PoolId.is_some():
+        auto u2 = v.PoolId.unwrap()
+        parts.append("\"PoolId\":" + storagegateway_json_str(u2))
+    if v.Worm.is_some():
+        auto u3 = v.Worm.unwrap()
+        parts.append("\"Worm\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + storagegateway_json_arr(e5))
+    return storagegateway_json_obj(parts)
+
+# Serialize CreateTapesInput to a compact JSON object (declaration order).
+def create_tapes_input_to_json(CreateTapesInput v) -> str:
+    list[str] parts = []
+    parts.append("\"GatewayARN\":" + storagegateway_json_str(v.GatewayARN))
+    parts.append("\"TapeSizeInBytes\":" + str(v.TapeSizeInBytes))
+    parts.append("\"ClientToken\":" + storagegateway_json_str(v.ClientToken))
+    parts.append("\"NumTapesToCreate\":" + str(v.NumTapesToCreate))
+    parts.append("\"TapeBarcodePrefix\":" + storagegateway_json_str(v.TapeBarcodePrefix))
+    if v.KMSEncrypted.is_some():
+        auto u0 = v.KMSEncrypted.unwrap()
+        parts.append("\"KMSEncrypted\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.KMSKey.is_some():
+        auto u1 = v.KMSKey.unwrap()
+        parts.append("\"KMSKey\":" + storagegateway_json_str(u1))
+    if v.PoolId.is_some():
+        auto u2 = v.PoolId.unwrap()
+        parts.append("\"PoolId\":" + storagegateway_json_str(u2))
+    if v.Worm.is_some():
+        auto u3 = v.Worm.unwrap()
+        parts.append("\"Worm\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + storagegateway_json_arr(e5))
+    return storagegateway_json_obj(parts)
+
+# Serialize DescribeCachediSCSIVolumesInput to a compact JSON object (declaration order).
+def describe_cachedi_scsi_volumes_input_to_json(DescribeCachediSCSIVolumesInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.VolumeARNs:
+        e0.append(storagegateway_json_str(x0))
+    parts.append("\"VolumeARNs\":" + storagegateway_json_arr(e0))
+    return storagegateway_json_obj(parts)
+
+# Serialize DescribeFileSystemAssociationsInput to a compact JSON object (declaration order).
+def describe_file_system_associations_input_to_json(DescribeFileSystemAssociationsInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.FileSystemAssociationARNList:
+        e0.append(storagegateway_json_str(x0))
+    parts.append("\"FileSystemAssociationARNList\":" + storagegateway_json_arr(e0))
+    return storagegateway_json_obj(parts)
+
+# Serialize DescribeNFSFileSharesInput to a compact JSON object (declaration order).
+def describe_nfs_file_shares_input_to_json(DescribeNFSFileSharesInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.FileShareARNList:
+        e0.append(storagegateway_json_str(x0))
+    parts.append("\"FileShareARNList\":" + storagegateway_json_arr(e0))
+    return storagegateway_json_obj(parts)
+
+# Serialize DescribeSMBFileSharesInput to a compact JSON object (declaration order).
+def describe_smb_file_shares_input_to_json(DescribeSMBFileSharesInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.FileShareARNList:
+        e0.append(storagegateway_json_str(x0))
+    parts.append("\"FileShareARNList\":" + storagegateway_json_arr(e0))
+    return storagegateway_json_obj(parts)
+
+# Serialize DescribeStorediSCSIVolumesInput to a compact JSON object (declaration order).
+def describe_storedi_scsi_volumes_input_to_json(DescribeStorediSCSIVolumesInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.VolumeARNs:
+        e0.append(storagegateway_json_str(x0))
+    parts.append("\"VolumeARNs\":" + storagegateway_json_arr(e0))
+    return storagegateway_json_obj(parts)
+
+# Serialize DescribeTapeArchivesInput to a compact JSON object (declaration order).
+def describe_tape_archives_input_to_json(DescribeTapeArchivesInput v) -> str:
+    list[str] parts = []
+    if v.TapeARNs.is_some():
+        auto u0 = v.TapeARNs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(storagegateway_json_str(x1))
+        parts.append("\"TapeARNs\":" + storagegateway_json_arr(e1))
+    if v.Marker.is_some():
+        auto u2 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + storagegateway_json_str(u2))
+    if v.Limit.is_some():
+        auto u3 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u3))
+    return storagegateway_json_obj(parts)
+
+# Serialize DescribeTapesInput to a compact JSON object (declaration order).
+def describe_tapes_input_to_json(DescribeTapesInput v) -> str:
+    list[str] parts = []
+    parts.append("\"GatewayARN\":" + storagegateway_json_str(v.GatewayARN))
+    if v.TapeARNs.is_some():
+        auto u0 = v.TapeARNs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(storagegateway_json_str(x1))
+        parts.append("\"TapeARNs\":" + storagegateway_json_arr(e1))
+    if v.Marker.is_some():
+        auto u2 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + storagegateway_json_str(u2))
+    if v.Limit.is_some():
+        auto u3 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u3))
+    return storagegateway_json_obj(parts)
+
+# Serialize DescribeVTLDevicesInput to a compact JSON object (declaration order).
+def describe_vtl_devices_input_to_json(DescribeVTLDevicesInput v) -> str:
+    list[str] parts = []
+    parts.append("\"GatewayARN\":" + storagegateway_json_str(v.GatewayARN))
+    if v.VTLDeviceARNs.is_some():
+        auto u0 = v.VTLDeviceARNs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(storagegateway_json_str(x1))
+        parts.append("\"VTLDeviceARNs\":" + storagegateway_json_arr(e1))
+    if v.Marker.is_some():
+        auto u2 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + storagegateway_json_str(u2))
+    if v.Limit.is_some():
+        auto u3 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u3))
+    return storagegateway_json_obj(parts)
+
+# Serialize EndpointNetworkConfiguration to a compact JSON object (declaration order).
+def endpoint_network_configuration_to_json(EndpointNetworkConfiguration v) -> str:
+    list[str] parts = []
+    if v.IpAddresses.is_some():
+        auto u0 = v.IpAddresses.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(storagegateway_json_str(x1))
+        parts.append("\"IpAddresses\":" + storagegateway_json_arr(e1))
+    return storagegateway_json_obj(parts)
+
+# Serialize JoinDomainInput to a compact JSON object (declaration order).
+def join_domain_input_to_json(JoinDomainInput v) -> str:
+    list[str] parts = []
+    parts.append("\"GatewayARN\":" + storagegateway_json_str(v.GatewayARN))
+    parts.append("\"DomainName\":" + storagegateway_json_str(v.DomainName))
+    if v.OrganizationalUnit.is_some():
+        auto u0 = v.OrganizationalUnit.unwrap()
+        parts.append("\"OrganizationalUnit\":" + storagegateway_json_str(u0))
+    if v.DomainControllers.is_some():
+        auto u1 = v.DomainControllers.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(storagegateway_json_str(x2))
+        parts.append("\"DomainControllers\":" + storagegateway_json_arr(e2))
+    if v.TimeoutInSeconds.is_some():
+        auto u3 = v.TimeoutInSeconds.unwrap()
+        parts.append("\"TimeoutInSeconds\":" + str(u3))
+    parts.append("\"UserName\":" + storagegateway_json_str(v.UserName))
+    parts.append("\"Password\":" + storagegateway_json_str(v.Password))
+    return storagegateway_json_obj(parts)
+
+# Serialize ListTapePoolsInput to a compact JSON object (declaration order).
+def list_tape_pools_input_to_json(ListTapePoolsInput v) -> str:
+    list[str] parts = []
+    if v.PoolARNs.is_some():
+        auto u0 = v.PoolARNs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(storagegateway_json_str(x1))
+        parts.append("\"PoolARNs\":" + storagegateway_json_arr(e1))
+    if v.Marker.is_some():
+        auto u2 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + storagegateway_json_str(u2))
+    if v.Limit.is_some():
+        auto u3 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u3))
+    return storagegateway_json_obj(parts)
+
+# Serialize ListTapesInput to a compact JSON object (declaration order).
+def list_tapes_input_to_json(ListTapesInput v) -> str:
+    list[str] parts = []
+    if v.TapeARNs.is_some():
+        auto u0 = v.TapeARNs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(storagegateway_json_str(x1))
+        parts.append("\"TapeARNs\":" + storagegateway_json_arr(e1))
+    if v.Marker.is_some():
+        auto u2 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + storagegateway_json_str(u2))
+    if v.Limit.is_some():
+        auto u3 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u3))
+    return storagegateway_json_obj(parts)
+
+# Serialize RefreshCacheInput to a compact JSON object (declaration order).
+def refresh_cache_input_to_json(RefreshCacheInput v) -> str:
+    list[str] parts = []
+    parts.append("\"FileShareARN\":" + storagegateway_json_str(v.FileShareARN))
+    if v.FolderList.is_some():
+        auto u0 = v.FolderList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(storagegateway_json_str(x1))
+        parts.append("\"FolderList\":" + storagegateway_json_arr(e1))
+    if v.Recursive.is_some():
+        auto u2 = v.Recursive.unwrap()
+        parts.append("\"Recursive\":" + json.dumps(JsonValue.Bool(u2)))
+    return storagegateway_json_obj(parts)
+
+# Serialize RemoveTagsFromResourceInput to a compact JSON object (declaration order).
+def remove_tags_from_resource_input_to_json(RemoveTagsFromResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + storagegateway_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(storagegateway_json_str(x0))
+    parts.append("\"TagKeys\":" + storagegateway_json_arr(e0))
+    return storagegateway_json_obj(parts)
+
+# Serialize SMBLocalGroups to a compact JSON object (declaration order).
+def smb_local_groups_to_json(SMBLocalGroups v) -> str:
+    list[str] parts = []
+    if v.GatewayAdmins.is_some():
+        auto u0 = v.GatewayAdmins.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(storagegateway_json_str(x1))
+        parts.append("\"GatewayAdmins\":" + storagegateway_json_arr(e1))
+    return storagegateway_json_obj(parts)
+
+# Serialize StartCacheReportInput to a compact JSON object (declaration order).
+def start_cache_report_input_to_json(StartCacheReportInput v) -> str:
+    list[str] parts = []
+    parts.append("\"FileShareARN\":" + storagegateway_json_str(v.FileShareARN))
+    parts.append("\"Role\":" + storagegateway_json_str(v.Role))
+    parts.append("\"LocationARN\":" + storagegateway_json_str(v.LocationARN))
+    parts.append("\"BucketRegion\":" + storagegateway_json_str(v.BucketRegion))
+    if v.VPCEndpointDNSName.is_some():
+        auto u0 = v.VPCEndpointDNSName.unwrap()
+        parts.append("\"VPCEndpointDNSName\":" + storagegateway_json_str(u0))
+    if v.InclusionFilters.is_some():
+        auto u1 = v.InclusionFilters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(cache_report_filter_to_json(x2))
+        parts.append("\"InclusionFilters\":" + storagegateway_json_arr(e2))
+    if v.ExclusionFilters.is_some():
+        auto u3 = v.ExclusionFilters.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(cache_report_filter_to_json(x4))
+        parts.append("\"ExclusionFilters\":" + storagegateway_json_arr(e4))
+    parts.append("\"ClientToken\":" + storagegateway_json_str(v.ClientToken))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + storagegateway_json_arr(e6))
+    return storagegateway_json_obj(parts)
+
+# Serialize UpdateAutomaticTapeCreationPolicyInput to a compact JSON object (declaration order).
+def update_automatic_tape_creation_policy_input_to_json(UpdateAutomaticTapeCreationPolicyInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AutomaticTapeCreationRules:
+        e0.append(x0.to_json())
+    parts.append("\"AutomaticTapeCreationRules\":" + storagegateway_json_arr(e0))
+    parts.append("\"GatewayARN\":" + storagegateway_json_str(v.GatewayARN))
+    return storagegateway_json_obj(parts)
+
+# Serialize UpdateBandwidthRateLimitScheduleInput to a compact JSON object (declaration order).
+def update_bandwidth_rate_limit_schedule_input_to_json(UpdateBandwidthRateLimitScheduleInput v) -> str:
+    list[str] parts = []
+    parts.append("\"GatewayARN\":" + storagegateway_json_str(v.GatewayARN))
+    list[str] e0 = []
+    for x0 in v.BandwidthRateLimitIntervals:
+        e0.append(bandwidth_rate_limit_interval_to_json(x0))
+    parts.append("\"BandwidthRateLimitIntervals\":" + storagegateway_json_arr(e0))
+    return storagegateway_json_obj(parts)
+
+# Serialize UpdateNFSFileShareInput to a compact JSON object (declaration order).
+def update_nfs_file_share_input_to_json(UpdateNFSFileShareInput v) -> str:
+    list[str] parts = []
+    parts.append("\"FileShareARN\":" + storagegateway_json_str(v.FileShareARN))
+    if v.EncryptionType.is_some():
+        auto u0 = v.EncryptionType.unwrap()
+        parts.append("\"EncryptionType\":" + u0.to_json())
+    if v.KMSEncrypted.is_some():
+        auto u1 = v.KMSEncrypted.unwrap()
+        parts.append("\"KMSEncrypted\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.KMSKey.is_some():
+        auto u2 = v.KMSKey.unwrap()
+        parts.append("\"KMSKey\":" + storagegateway_json_str(u2))
+    if v.NFSFileShareDefaults.is_some():
+        auto u3 = v.NFSFileShareDefaults.unwrap()
+        parts.append("\"NFSFileShareDefaults\":" + u3.to_json())
+    if v.DefaultStorageClass.is_some():
+        auto u4 = v.DefaultStorageClass.unwrap()
+        parts.append("\"DefaultStorageClass\":" + storagegateway_json_str(u4))
+    if v.ObjectACL.is_some():
+        auto u5 = v.ObjectACL.unwrap()
+        parts.append("\"ObjectACL\":" + u5.to_json())
+    if v.ClientList.is_some():
+        auto u6 = v.ClientList.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(storagegateway_json_str(x7))
+        parts.append("\"ClientList\":" + storagegateway_json_arr(e7))
+    if v.Squash.is_some():
+        auto u8 = v.Squash.unwrap()
+        parts.append("\"Squash\":" + storagegateway_json_str(u8))
+    if v.ReadOnly.is_some():
+        auto u9 = v.ReadOnly.unwrap()
+        parts.append("\"ReadOnly\":" + json.dumps(JsonValue.Bool(u9)))
+    if v.GuessMIMETypeEnabled.is_some():
+        auto u10 = v.GuessMIMETypeEnabled.unwrap()
+        parts.append("\"GuessMIMETypeEnabled\":" + json.dumps(JsonValue.Bool(u10)))
+    if v.RequesterPays.is_some():
+        auto u11 = v.RequesterPays.unwrap()
+        parts.append("\"RequesterPays\":" + json.dumps(JsonValue.Bool(u11)))
+    if v.FileShareName.is_some():
+        auto u12 = v.FileShareName.unwrap()
+        parts.append("\"FileShareName\":" + storagegateway_json_str(u12))
+    if v.CacheAttributes.is_some():
+        auto u13 = v.CacheAttributes.unwrap()
+        parts.append("\"CacheAttributes\":" + u13.to_json())
+    if v.NotificationPolicy.is_some():
+        auto u14 = v.NotificationPolicy.unwrap()
+        parts.append("\"NotificationPolicy\":" + storagegateway_json_str(u14))
+    if v.AuditDestinationARN.is_some():
+        auto u15 = v.AuditDestinationARN.unwrap()
+        parts.append("\"AuditDestinationARN\":" + storagegateway_json_str(u15))
+    return storagegateway_json_obj(parts)
+
+# Serialize UpdateSMBFileShareInput to a compact JSON object (declaration order).
+def update_smb_file_share_input_to_json(UpdateSMBFileShareInput v) -> str:
+    list[str] parts = []
+    parts.append("\"FileShareARN\":" + storagegateway_json_str(v.FileShareARN))
+    if v.EncryptionType.is_some():
+        auto u0 = v.EncryptionType.unwrap()
+        parts.append("\"EncryptionType\":" + u0.to_json())
+    if v.KMSEncrypted.is_some():
+        auto u1 = v.KMSEncrypted.unwrap()
+        parts.append("\"KMSEncrypted\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.KMSKey.is_some():
+        auto u2 = v.KMSKey.unwrap()
+        parts.append("\"KMSKey\":" + storagegateway_json_str(u2))
+    if v.DefaultStorageClass.is_some():
+        auto u3 = v.DefaultStorageClass.unwrap()
+        parts.append("\"DefaultStorageClass\":" + storagegateway_json_str(u3))
+    if v.ObjectACL.is_some():
+        auto u4 = v.ObjectACL.unwrap()
+        parts.append("\"ObjectACL\":" + u4.to_json())
+    if v.ReadOnly.is_some():
+        auto u5 = v.ReadOnly.unwrap()
+        parts.append("\"ReadOnly\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.GuessMIMETypeEnabled.is_some():
+        auto u6 = v.GuessMIMETypeEnabled.unwrap()
+        parts.append("\"GuessMIMETypeEnabled\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.RequesterPays.is_some():
+        auto u7 = v.RequesterPays.unwrap()
+        parts.append("\"RequesterPays\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.SMBACLEnabled.is_some():
+        auto u8 = v.SMBACLEnabled.unwrap()
+        parts.append("\"SMBACLEnabled\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.AccessBasedEnumeration.is_some():
+        auto u9 = v.AccessBasedEnumeration.unwrap()
+        parts.append("\"AccessBasedEnumeration\":" + json.dumps(JsonValue.Bool(u9)))
+    if v.AdminUserList.is_some():
+        auto u10 = v.AdminUserList.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(storagegateway_json_str(x11))
+        parts.append("\"AdminUserList\":" + storagegateway_json_arr(e11))
+    if v.ValidUserList.is_some():
+        auto u12 = v.ValidUserList.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(storagegateway_json_str(x13))
+        parts.append("\"ValidUserList\":" + storagegateway_json_arr(e13))
+    if v.InvalidUserList.is_some():
+        auto u14 = v.InvalidUserList.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(storagegateway_json_str(x15))
+        parts.append("\"InvalidUserList\":" + storagegateway_json_arr(e15))
+    if v.AuditDestinationARN.is_some():
+        auto u16 = v.AuditDestinationARN.unwrap()
+        parts.append("\"AuditDestinationARN\":" + storagegateway_json_str(u16))
+    if v.CaseSensitivity.is_some():
+        auto u17 = v.CaseSensitivity.unwrap()
+        parts.append("\"CaseSensitivity\":" + u17.to_json())
+    if v.FileShareName.is_some():
+        auto u18 = v.FileShareName.unwrap()
+        parts.append("\"FileShareName\":" + storagegateway_json_str(u18))
+    if v.CacheAttributes.is_some():
+        auto u19 = v.CacheAttributes.unwrap()
+        parts.append("\"CacheAttributes\":" + u19.to_json())
+    if v.NotificationPolicy.is_some():
+        auto u20 = v.NotificationPolicy.unwrap()
+        parts.append("\"NotificationPolicy\":" + storagegateway_json_str(u20))
+    if v.OplocksEnabled.is_some():
+        auto u21 = v.OplocksEnabled.unwrap()
+        parts.append("\"OplocksEnabled\":" + json.dumps(JsonValue.Bool(u21)))
+    return storagegateway_json_obj(parts)
+
+# Serialize UpdateSMBLocalGroupsInput to a compact JSON object (declaration order).
+def update_smb_local_groups_input_to_json(UpdateSMBLocalGroupsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"GatewayARN\":" + storagegateway_json_str(v.GatewayARN))
+    parts.append("\"SMBLocalGroups\":" + smb_local_groups_to_json(v.SMBLocalGroups))
+    return storagegateway_json_obj(parts)
+
+# Serialize UpdateSnapshotScheduleInput to a compact JSON object (declaration order).
+def update_snapshot_schedule_input_to_json(UpdateSnapshotScheduleInput v) -> str:
+    list[str] parts = []
+    parts.append("\"VolumeARN\":" + storagegateway_json_str(v.VolumeARN))
+    parts.append("\"StartAt\":" + str(v.StartAt))
+    parts.append("\"RecurrenceInHours\":" + str(v.RecurrenceInHours))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + storagegateway_json_str(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + storagegateway_json_arr(e2))
+    return storagegateway_json_obj(parts)
 
 # A bound Storage_Gateway client: credentials + region, threaded into every operation.
 struct Storage_GatewayClient:
     core.Credentials creds
     str region
 
+    # ActivateGateway
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def activate_gateway(self, ActivateGatewayInput input) -> str:
+        auto body = activate_gateway_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "ActivateGateway", body)
+
+    # AddCache
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def add_cache(self, AddCacheInput input) -> str:
+        auto body = add_cache_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "AddCache", body)
+
+    # AddTagsToResource
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def add_tags_to_resource(self, AddTagsToResourceInput input) -> str:
+        auto body = add_tags_to_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "AddTagsToResource", body)
+
+    # AddUploadBuffer
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def add_upload_buffer(self, AddUploadBufferInput input) -> str:
+        auto body = add_upload_buffer_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "AddUploadBuffer", body)
+
+    # AddWorkingStorage
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def add_working_storage(self, AddWorkingStorageInput input) -> str:
+        auto body = add_working_storage_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "AddWorkingStorage", body)
+
     # AssignTapePool
     # errors: InternalServerError, InvalidGatewayRequestException
     def assign_tape_pool(self, AssignTapePoolInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "AssignTapePool", body)
+
+    # AssociateFileSystem
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def associate_file_system(self, AssociateFileSystemInput input) -> str:
+        auto body = associate_file_system_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "AssociateFileSystem", body)
 
     # AttachVolume
     # errors: InternalServerError, InvalidGatewayRequestException
@@ -1855,6 +2785,60 @@ struct Storage_GatewayClient:
     def cancel_retrieval(self, CancelRetrievalInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "CancelRetrieval", body)
+
+    # CreateCachediSCSIVolume
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def create_cachedi_scsi_volume(self, CreateCachediSCSIVolumeInput input) -> str:
+        auto body = create_cachedi_scsi_volume_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "CreateCachediSCSIVolume", body)
+
+    # CreateNFSFileShare
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def create_nfs_file_share(self, CreateNFSFileShareInput input) -> str:
+        auto body = create_nfs_file_share_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "CreateNFSFileShare", body)
+
+    # CreateSMBFileShare
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def create_smb_file_share(self, CreateSMBFileShareInput input) -> str:
+        auto body = create_smb_file_share_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "CreateSMBFileShare", body)
+
+    # CreateSnapshot
+    # errors: InternalServerError, InvalidGatewayRequestException, ServiceUnavailableError
+    def create_snapshot(self, CreateSnapshotInput input) -> str:
+        auto body = create_snapshot_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "CreateSnapshot", body)
+
+    # CreateSnapshotFromVolumeRecoveryPoint
+    # errors: InternalServerError, InvalidGatewayRequestException, ServiceUnavailableError
+    def create_snapshot_from_volume_recovery_point(self, CreateSnapshotFromVolumeRecoveryPointInput input) -> str:
+        auto body = create_snapshot_from_volume_recovery_point_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "CreateSnapshotFromVolumeRecoveryPoint", body)
+
+    # CreateStorediSCSIVolume
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def create_storedi_scsi_volume(self, CreateStorediSCSIVolumeInput input) -> str:
+        auto body = create_storedi_scsi_volume_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "CreateStorediSCSIVolume", body)
+
+    # CreateTapePool
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def create_tape_pool(self, CreateTapePoolInput input) -> str:
+        auto body = create_tape_pool_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "CreateTapePool", body)
+
+    # CreateTapeWithBarcode
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def create_tape_with_barcode(self, CreateTapeWithBarcodeInput input) -> str:
+        auto body = create_tape_with_barcode_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "CreateTapeWithBarcode", body)
+
+    # CreateTapes
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def create_tapes(self, CreateTapesInput input) -> str:
+        auto body = create_tapes_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "CreateTapes", body)
 
     # DeleteAutomaticTapeCreationPolicy
     # errors: InternalServerError, InvalidGatewayRequestException
@@ -1952,11 +2936,23 @@ struct Storage_GatewayClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "DescribeCacheReport", body)
 
+    # DescribeCachediSCSIVolumes
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def describe_cachedi_scsi_volumes(self, DescribeCachediSCSIVolumesInput input) -> str:
+        auto body = describe_cachedi_scsi_volumes_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "DescribeCachediSCSIVolumes", body)
+
     # DescribeChapCredentials
     # errors: InternalServerError, InvalidGatewayRequestException
     def describe_chap_credentials(self, DescribeChapCredentialsInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "DescribeChapCredentials", body)
+
+    # DescribeFileSystemAssociations
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def describe_file_system_associations(self, DescribeFileSystemAssociationsInput input) -> str:
+        auto body = describe_file_system_associations_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "DescribeFileSystemAssociations", body)
 
     # DescribeGatewayInformation
     # errors: InternalServerError, InvalidGatewayRequestException
@@ -1970,6 +2966,18 @@ struct Storage_GatewayClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "DescribeMaintenanceStartTime", body)
 
+    # DescribeNFSFileShares
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def describe_nfs_file_shares(self, DescribeNFSFileSharesInput input) -> str:
+        auto body = describe_nfs_file_shares_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "DescribeNFSFileShares", body)
+
+    # DescribeSMBFileShares
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def describe_smb_file_shares(self, DescribeSMBFileSharesInput input) -> str:
+        auto body = describe_smb_file_shares_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "DescribeSMBFileShares", body)
+
     # DescribeSMBSettings
     # errors: InternalServerError, InvalidGatewayRequestException
     def describe_smb_settings(self, DescribeSMBSettingsInput input) -> str:
@@ -1982,17 +2990,41 @@ struct Storage_GatewayClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "DescribeSnapshotSchedule", body)
 
+    # DescribeStorediSCSIVolumes
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def describe_storedi_scsi_volumes(self, DescribeStorediSCSIVolumesInput input) -> str:
+        auto body = describe_storedi_scsi_volumes_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "DescribeStorediSCSIVolumes", body)
+
+    # DescribeTapeArchives
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def describe_tape_archives(self, DescribeTapeArchivesInput input) -> str:
+        auto body = describe_tape_archives_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "DescribeTapeArchives", body)
+
     # DescribeTapeRecoveryPoints
     # errors: InternalServerError, InvalidGatewayRequestException
     def describe_tape_recovery_points(self, DescribeTapeRecoveryPointsInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "DescribeTapeRecoveryPoints", body)
 
+    # DescribeTapes
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def describe_tapes(self, DescribeTapesInput input) -> str:
+        auto body = describe_tapes_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "DescribeTapes", body)
+
     # DescribeUploadBuffer
     # errors: InternalServerError, InvalidGatewayRequestException
     def describe_upload_buffer(self, DescribeUploadBufferInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "DescribeUploadBuffer", body)
+
+    # DescribeVTLDevices
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def describe_vtl_devices(self, DescribeVTLDevicesInput input) -> str:
+        auto body = describe_vtl_devices_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "DescribeVTLDevices", body)
 
     # DescribeWorkingStorage
     # errors: InternalServerError, InvalidGatewayRequestException
@@ -2023,6 +3055,12 @@ struct Storage_GatewayClient:
     def evict_files_failing_upload(self, EvictFilesFailingUploadInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "EvictFilesFailingUpload", body)
+
+    # JoinDomain
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def join_domain(self, JoinDomainInput input) -> str:
+        auto body = join_domain_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "JoinDomain", body)
 
     # ListAutomaticTapeCreationPolicies
     # errors: InternalServerError, InvalidGatewayRequestException
@@ -2066,6 +3104,18 @@ struct Storage_GatewayClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "ListTagsForResource", body)
 
+    # ListTapePools
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def list_tape_pools(self, ListTapePoolsInput input) -> str:
+        auto body = list_tape_pools_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "ListTapePools", body)
+
+    # ListTapes
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def list_tapes(self, ListTapesInput input) -> str:
+        auto body = list_tapes_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "ListTapes", body)
+
     # ListVolumeInitiators
     # errors: InternalServerError, InvalidGatewayRequestException
     def list_volume_initiators(self, ListVolumeInitiatorsInput input) -> str:
@@ -2089,6 +3139,18 @@ struct Storage_GatewayClient:
     def notify_when_uploaded(self, NotifyWhenUploadedInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "NotifyWhenUploaded", body)
+
+    # RefreshCache
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def refresh_cache(self, RefreshCacheInput input) -> str:
+        auto body = refresh_cache_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "RefreshCache", body)
+
+    # RemoveTagsFromResource
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def remove_tags_from_resource(self, RemoveTagsFromResourceInput input) -> str:
+        auto body = remove_tags_from_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "RemoveTagsFromResource", body)
 
     # ResetCache
     # errors: InternalServerError, InvalidGatewayRequestException
@@ -2132,17 +3194,35 @@ struct Storage_GatewayClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "StartAvailabilityMonitorTest", body)
 
+    # StartCacheReport
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def start_cache_report(self, StartCacheReportInput input) -> str:
+        auto body = start_cache_report_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "StartCacheReport", body)
+
     # StartGateway
     # errors: InternalServerError, InvalidGatewayRequestException
     def start_gateway(self, StartGatewayInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "StartGateway", body)
 
+    # UpdateAutomaticTapeCreationPolicy
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def update_automatic_tape_creation_policy(self, UpdateAutomaticTapeCreationPolicyInput input) -> str:
+        auto body = update_automatic_tape_creation_policy_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "UpdateAutomaticTapeCreationPolicy", body)
+
     # UpdateBandwidthRateLimit
     # errors: InternalServerError, InvalidGatewayRequestException
     def update_bandwidth_rate_limit(self, UpdateBandwidthRateLimitInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "UpdateBandwidthRateLimit", body)
+
+    # UpdateBandwidthRateLimitSchedule
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def update_bandwidth_rate_limit_schedule(self, UpdateBandwidthRateLimitScheduleInput input) -> str:
+        auto body = update_bandwidth_rate_limit_schedule_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "UpdateBandwidthRateLimitSchedule", body)
 
     # UpdateChapCredentials
     # errors: InternalServerError, InvalidGatewayRequestException
@@ -2174,11 +3254,29 @@ struct Storage_GatewayClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "UpdateMaintenanceStartTime", body)
 
+    # UpdateNFSFileShare
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def update_nfs_file_share(self, UpdateNFSFileShareInput input) -> str:
+        auto body = update_nfs_file_share_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "UpdateNFSFileShare", body)
+
+    # UpdateSMBFileShare
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def update_smb_file_share(self, UpdateSMBFileShareInput input) -> str:
+        auto body = update_smb_file_share_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "UpdateSMBFileShare", body)
+
     # UpdateSMBFileShareVisibility
     # errors: InternalServerError, InvalidGatewayRequestException
     def update_smb_file_share_visibility(self, UpdateSMBFileShareVisibilityInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "UpdateSMBFileShareVisibility", body)
+
+    # UpdateSMBLocalGroups
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def update_smb_local_groups(self, UpdateSMBLocalGroupsInput input) -> str:
+        auto body = update_smb_local_groups_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "UpdateSMBLocalGroups", body)
 
     # UpdateSMBSecurityStrategy
     # errors: InternalServerError, InvalidGatewayRequestException
@@ -2186,11 +3284,31 @@ struct Storage_GatewayClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "UpdateSMBSecurityStrategy", body)
 
+    # UpdateSnapshotSchedule
+    # errors: InternalServerError, InvalidGatewayRequestException
+    def update_snapshot_schedule(self, UpdateSnapshotScheduleInput input) -> str:
+        auto body = update_snapshot_schedule_input_to_json(input)
+        return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "UpdateSnapshotSchedule", body)
+
     # UpdateVTLDeviceType
     # errors: InternalServerError, InvalidGatewayRequestException
     def update_vtl_device_type(self, UpdateVTLDeviceTypeInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "UpdateVTLDeviceType", body)
+
+    # Paginator for DescribeTapeArchives — yields each Response page, threading the
+    # Marker -> Marker continuation token until the output token is absent (result key: TapeArchives).
+    def paginate_describe_tape_archives(self, DescribeTapeArchivesInput input):
+        auto host = endpoints.regional_host(storagegateway_protocol().service, self.region)
+        while True:
+            auto body = describe_tape_archives_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "DescribeTapeArchives", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "Marker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
 
     # Paginator for DescribeTapeRecoveryPoints — yields each Response page, threading the
     # Marker -> Marker continuation token until the output token is absent (result key: TapeRecoveryPointInfos).
@@ -2199,6 +3317,34 @@ struct Storage_GatewayClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "DescribeTapeRecoveryPoints", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "Marker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
+
+    # Paginator for DescribeTapes — yields each Response page, threading the
+    # Marker -> Marker continuation token until the output token is absent (result key: Tapes).
+    def paginate_describe_tapes(self, DescribeTapesInput input):
+        auto host = endpoints.regional_host(storagegateway_protocol().service, self.region)
+        while True:
+            auto body = describe_tapes_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "DescribeTapes", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "Marker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
+
+    # Paginator for DescribeVTLDevices — yields each Response page, threading the
+    # Marker -> Marker continuation token until the output token is absent (result key: VTLDevices).
+    def paginate_describe_vtl_devices(self, DescribeVTLDevicesInput input):
+        auto host = endpoints.regional_host(storagegateway_protocol().service, self.region)
+        while True:
+            auto body = describe_vtl_devices_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "DescribeVTLDevices", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "Marker")
@@ -2269,6 +3415,34 @@ struct Storage_GatewayClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "ListTagsForResource", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "Marker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
+
+    # Paginator for ListTapePools — yields each Response page, threading the
+    # Marker -> Marker continuation token until the output token is absent (result key: PoolInfos).
+    def paginate_list_tape_pools(self, ListTapePoolsInput input):
+        auto host = endpoints.regional_host(storagegateway_protocol().service, self.region)
+        while True:
+            auto body = list_tape_pools_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "ListTapePools", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "Marker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
+
+    # Paginator for ListTapes — yields each Response page, threading the
+    # Marker -> Marker continuation token until the output token is absent (result key: TapeInfos).
+    def paginate_list_tapes(self, ListTapesInput input):
+        auto host = endpoints.regional_host(storagegateway_protocol().service, self.region)
+        while True:
+            auto body = list_tapes_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(storagegateway_protocol(), self.creds, self.region, "ListTapes", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "Marker")

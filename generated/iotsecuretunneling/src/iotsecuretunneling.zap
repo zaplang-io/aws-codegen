@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 8 operations — 4 with a generated method,
-#   4 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 8 operations — 8 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   24 structs (15 @derive(Json)), 3 enums, 2 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -77,13 +77,15 @@ struct ConnectionState:
 struct DescribeTunnelRequest:
     str tunnelId
 
-# no @derive(Json): member(s) tunnel: Tunnel not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tunnel: Tunnel not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTunnelResponse:
     Optional[Tunnel] tunnel
 
-# no @derive(Json): member(s) services: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) services: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DestinationConfig:
     Optional[str] thingName
     list[str] services
@@ -96,8 +98,9 @@ struct LimitExceededException:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] tags
 
@@ -107,14 +110,16 @@ struct ListTunnelsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) tunnelSummaries: list[TunnelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tunnelSummaries: list[TunnelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTunnelsResponse:
     Optional[list[TunnelSummary]] tunnelSummaries
     Optional[str] nextToken
 
-# no @derive(Json): member(s) tags: list[Tag], destinationConfig: DestinationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag], destinationConfig: DestinationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenTunnelRequest:
     Optional[str] description
     Optional[list[Tag]] tags
@@ -132,8 +137,9 @@ struct OpenTunnelResponse:
 struct ResourceNotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) destinationConfig: DestinationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) destinationConfig: DestinationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RotateTunnelAccessTokenRequest:
     str tunnelId
     ClientMode clientMode
@@ -150,8 +156,9 @@ struct Tag:
     str key
     str value
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str resourceArn
     list[Tag] tags
@@ -165,8 +172,9 @@ struct TagResourceResponse:
 struct TimeoutConfig:
     Optional[int64] maxLifetimeTimeoutMinutes
 
-# no @derive(Json): member(s) destinationConfig: DestinationConfig, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) destinationConfig: DestinationConfig, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Tunnel:
     Optional[str] tunnelId
     Optional[str] tunnelArn
@@ -189,8 +197,9 @@ struct TunnelSummary:
     Optional[DateTime] createdAt
     Optional[DateTime] lastUpdatedAt
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str resourceArn
     list[str] tagKeys
@@ -219,12 +228,97 @@ def api_tunneling_iot_error_from_code(str code) -> IoTSecureTunnelingError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   OpenTunnel (input OpenTunnelRequest)
-#   RotateTunnelAccessToken (input RotateTunnelAccessTokenRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def api_tunneling_iot_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def api_tunneling_iot_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def api_tunneling_iot_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize DestinationConfig to a compact JSON object (declaration order).
+def destination_config_to_json(DestinationConfig v) -> str:
+    list[str] parts = []
+    if v.thingName.is_some():
+        auto u0 = v.thingName.unwrap()
+        parts.append("\"thingName\":" + api_tunneling_iot_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.services:
+        e1.append(api_tunneling_iot_json_str(x1))
+    parts.append("\"services\":" + api_tunneling_iot_json_arr(e1))
+    return api_tunneling_iot_json_obj(parts)
+
+# Serialize OpenTunnelRequest to a compact JSON object (declaration order).
+def open_tunnel_request_to_json(OpenTunnelRequest v) -> str:
+    list[str] parts = []
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + api_tunneling_iot_json_str(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + api_tunneling_iot_json_arr(e2))
+    if v.destinationConfig.is_some():
+        auto u3 = v.destinationConfig.unwrap()
+        parts.append("\"destinationConfig\":" + destination_config_to_json(u3))
+    if v.timeoutConfig.is_some():
+        auto u4 = v.timeoutConfig.unwrap()
+        parts.append("\"timeoutConfig\":" + u4.to_json())
+    return api_tunneling_iot_json_obj(parts)
+
+# Serialize RotateTunnelAccessTokenRequest to a compact JSON object (declaration order).
+def rotate_tunnel_access_token_request_to_json(RotateTunnelAccessTokenRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"tunnelId\":" + api_tunneling_iot_json_str(v.tunnelId))
+    parts.append("\"clientMode\":" + v.clientMode.to_json())
+    if v.destinationConfig.is_some():
+        auto u0 = v.destinationConfig.unwrap()
+        parts.append("\"destinationConfig\":" + destination_config_to_json(u0))
+    return api_tunneling_iot_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + api_tunneling_iot_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tags:
+        e0.append(x0.to_json())
+    parts.append("\"tags\":" + api_tunneling_iot_json_arr(e0))
+    return api_tunneling_iot_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + api_tunneling_iot_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(api_tunneling_iot_json_str(x0))
+    parts.append("\"tagKeys\":" + api_tunneling_iot_json_arr(e0))
+    return api_tunneling_iot_json_obj(parts)
 
 # A bound IoTSecureTunneling client: credentials + region, threaded into every operation.
 struct IoTSecureTunnelingClient:
@@ -253,6 +347,30 @@ struct IoTSecureTunnelingClient:
     def list_tunnels(self, ListTunnelsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_tunneling_iot_protocol(), self.creds, self.region, "ListTunnels", body)
+
+    # OpenTunnel
+    # errors: LimitExceededException
+    def open_tunnel(self, OpenTunnelRequest input) -> str:
+        auto body = open_tunnel_request_to_json(input)
+        return awsjson.awsjson_request_now(api_tunneling_iot_protocol(), self.creds, self.region, "OpenTunnel", body)
+
+    # RotateTunnelAccessToken
+    # errors: ResourceNotFoundException
+    def rotate_tunnel_access_token(self, RotateTunnelAccessTokenRequest input) -> str:
+        auto body = rotate_tunnel_access_token_request_to_json(input)
+        return awsjson.awsjson_request_now(api_tunneling_iot_protocol(), self.creds, self.region, "RotateTunnelAccessToken", body)
+
+    # TagResource
+    # errors: ResourceNotFoundException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(api_tunneling_iot_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: ResourceNotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(api_tunneling_iot_protocol(), self.creds, self.region, "UntagResource", body)
 
 # Construct a IoTSecureTunnelingClient bound to credentials + region.
 def api_tunneling_iot_client(core.Credentials creds, str region) -> IoTSecureTunnelingClient:

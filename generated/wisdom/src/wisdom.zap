@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 41 operations — 26 with a generated method,
-#   15 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 41 operations — 40 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   137 structs (64 @derive(Json)), 12 enums, 8 error variants.
-#   7 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   10 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -157,14 +157,16 @@ enum RelevanceLevel:
 struct AccessDeniedException:
     Optional[str] message
 
-# no @derive(Json): member(s) objectFields: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) objectFields: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AppIntegrationsConfiguration:
     str appIntegrationArn
     Optional[list[str]] objectFields
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssistantAssociationData:
     str assistantArn
     str assistantAssociationArn
@@ -182,8 +184,9 @@ struct AssistantAssociationInputData:
 struct AssistantAssociationOutputData:
     Optional[KnowledgeBaseAssociationData] knowledgeBaseAssociation
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssistantAssociationSummary:
     str assistantArn
     str assistantAssociationArn
@@ -193,8 +196,9 @@ struct AssistantAssociationSummary:
     str associationType
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssistantData:
     str assistantArn
     str assistantId
@@ -210,8 +214,9 @@ struct AssistantData:
 struct AssistantIntegrationConfiguration:
     Optional[str] topicIntegrationArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssistantSummary:
     str assistantArn
     str assistantId
@@ -235,8 +240,9 @@ struct ConflictException:
 struct ConnectConfiguration:
     Optional[str] instanceId
 
-# no @derive(Json): member(s) metadata: dict[str, str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadata: dict[str, str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContentData:
     str contentArn
     str contentId
@@ -260,8 +266,9 @@ struct ContentReference:
     Optional[str] knowledgeBaseArn
     Optional[str] knowledgeBaseId
 
-# no @derive(Json): member(s) metadata: dict[str, str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadata: dict[str, str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContentSummary:
     str contentArn
     str contentId
@@ -284,8 +291,9 @@ struct CreateAssistantAssociationRequest:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) assistantAssociation: AssistantAssociationData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assistantAssociation: AssistantAssociationData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAssistantAssociationResponse:
     Optional[AssistantAssociationData] assistantAssociation
 
@@ -299,8 +307,9 @@ struct CreateAssistantRequest:
     Optional[dict[str, str]] tags
     str type
 
-# no @derive(Json): member(s) assistant: AssistantData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assistant: AssistantData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAssistantResponse:
     Optional[AssistantData] assistant
 
@@ -316,8 +325,9 @@ struct CreateContentRequest:
     Optional[str] title
     str uploadId
 
-# no @derive(Json): member(s) content: ContentData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) content: ContentData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateContentResponse:
     Optional[ContentData] content
 
@@ -333,8 +343,9 @@ struct CreateKnowledgeBaseRequest:
     Optional[SourceConfiguration] sourceConfiguration
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) knowledgeBase: KnowledgeBaseData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) knowledgeBase: KnowledgeBaseData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateKnowledgeBaseResponse:
     Optional[KnowledgeBaseData] knowledgeBase
 
@@ -354,8 +365,9 @@ struct CreateQuickResponseRequest:
     Optional[str] shortcutKey
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) quickResponse: QuickResponseData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) quickResponse: QuickResponseData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateQuickResponseResponse:
     Optional[QuickResponseData] quickResponse
 
@@ -368,8 +380,9 @@ struct CreateSessionRequest:
     str name
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) session: SessionData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) session: SessionData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSessionResponse:
     Optional[SessionData] session
 
@@ -437,15 +450,17 @@ struct DeleteQuickResponseResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) excerpt: DocumentText, title: DocumentText not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) excerpt: DocumentText, title: DocumentText not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Document:
     ContentReference contentReference
     Optional[DocumentText] excerpt
     Optional[DocumentText] title
 
-# no @derive(Json): member(s) highlights: list[Highlight] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) highlights: list[Highlight] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentText:
     Optional[list[Highlight]] highlights
     Optional[str] text
@@ -467,8 +482,9 @@ struct GetAssistantAssociationRequest:
     str assistantAssociationId
     str assistantId
 
-# no @derive(Json): member(s) assistantAssociation: AssistantAssociationData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assistantAssociation: AssistantAssociationData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAssistantAssociationResponse:
     Optional[AssistantAssociationData] assistantAssociation
 
@@ -477,8 +493,9 @@ struct GetAssistantAssociationResponse:
 struct GetAssistantRequest:
     str assistantId
 
-# no @derive(Json): member(s) assistant: AssistantData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assistant: AssistantData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAssistantResponse:
     Optional[AssistantData] assistant
 
@@ -488,8 +505,9 @@ struct GetContentRequest:
     str contentId
     str knowledgeBaseId
 
-# no @derive(Json): member(s) content: ContentData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) content: ContentData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetContentResponse:
     Optional[ContentData] content
 
@@ -499,8 +517,9 @@ struct GetContentSummaryRequest:
     str contentId
     str knowledgeBaseId
 
-# no @derive(Json): member(s) contentSummary: ContentSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) contentSummary: ContentSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetContentSummaryResponse:
     Optional[ContentSummary] contentSummary
 
@@ -510,8 +529,9 @@ struct GetImportJobRequest:
     str importJobId
     str knowledgeBaseId
 
-# no @derive(Json): member(s) importJob: ImportJobData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) importJob: ImportJobData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetImportJobResponse:
     Optional[ImportJobData] importJob
 
@@ -520,8 +540,9 @@ struct GetImportJobResponse:
 struct GetKnowledgeBaseRequest:
     str knowledgeBaseId
 
-# no @derive(Json): member(s) knowledgeBase: KnowledgeBaseData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) knowledgeBase: KnowledgeBaseData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetKnowledgeBaseResponse:
     Optional[KnowledgeBaseData] knowledgeBase
 
@@ -531,8 +552,9 @@ struct GetQuickResponseRequest:
     str knowledgeBaseId
     str quickResponseId
 
-# no @derive(Json): member(s) quickResponse: QuickResponseData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) quickResponse: QuickResponseData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetQuickResponseResponse:
     Optional[QuickResponseData] quickResponse
 
@@ -544,8 +566,9 @@ struct GetRecommendationsRequest:
     str sessionId
     Optional[int64] waitTimeSeconds
 
-# no @derive(Json): member(s) recommendations: list[RecommendationData], triggers: list[RecommendationTrigger] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommendations: list[RecommendationData], triggers: list[RecommendationTrigger] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecommendationsResponse:
     list[RecommendationData] recommendations
     Optional[list[RecommendationTrigger]] triggers
@@ -556,13 +579,15 @@ struct GetSessionRequest:
     str assistantId
     str sessionId
 
-# no @derive(Json): member(s) session: SessionData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) session: SessionData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSessionResponse:
     Optional[SessionData] session
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GroupingConfiguration:
     Optional[str] criteria
     Optional[list[str]] values
@@ -572,8 +597,9 @@ struct Highlight:
     Optional[int64] beginOffsetInclusive
     Optional[int64] endOffsetExclusive
 
-# no @derive(Json): member(s) metadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportJobData:
     DateTime createdTime
     Optional[ExternalSourceConfiguration] externalSourceConfiguration
@@ -589,8 +615,9 @@ struct ImportJobData:
     str url
     DateTime urlExpiry
 
-# no @derive(Json): member(s) metadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportJobSummary:
     DateTime createdTime
     Optional[ExternalSourceConfiguration] externalSourceConfiguration
@@ -608,8 +635,9 @@ struct KnowledgeBaseAssociationData:
     Optional[str] knowledgeBaseArn
     Optional[str] knowledgeBaseId
 
-# no @derive(Json): member(s) sourceConfiguration: SourceConfiguration, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceConfiguration: SourceConfiguration, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KnowledgeBaseData:
     Optional[str] description
     str knowledgeBaseArn
@@ -623,8 +651,9 @@ struct KnowledgeBaseData:
     KnowledgeBaseStatus status
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) sourceConfiguration: SourceConfiguration, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceConfiguration: SourceConfiguration, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KnowledgeBaseSummary:
     Optional[str] description
     str knowledgeBaseArn
@@ -644,8 +673,9 @@ struct ListAssistantAssociationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) assistantAssociationSummaries: list[AssistantAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assistantAssociationSummaries: list[AssistantAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssistantAssociationsResponse:
     list[AssistantAssociationSummary] assistantAssociationSummaries
     Optional[str] nextToken
@@ -656,8 +686,9 @@ struct ListAssistantsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) assistantSummaries: list[AssistantSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assistantSummaries: list[AssistantSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssistantsResponse:
     list[AssistantSummary] assistantSummaries
     Optional[str] nextToken
@@ -669,8 +700,9 @@ struct ListContentsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) contentSummaries: list[ContentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) contentSummaries: list[ContentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListContentsResponse:
     list[ContentSummary] contentSummaries
     Optional[str] nextToken
@@ -682,8 +714,9 @@ struct ListImportJobsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) importJobSummaries: list[ImportJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) importJobSummaries: list[ImportJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImportJobsResponse:
     list[ImportJobSummary] importJobSummaries
     Optional[str] nextToken
@@ -694,8 +727,9 @@ struct ListKnowledgeBasesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) knowledgeBaseSummaries: list[KnowledgeBaseSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) knowledgeBaseSummaries: list[KnowledgeBaseSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListKnowledgeBasesResponse:
     list[KnowledgeBaseSummary] knowledgeBaseSummaries
     Optional[str] nextToken
@@ -707,8 +741,9 @@ struct ListQuickResponsesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) quickResponseSummaries: list[QuickResponseSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) quickResponseSummaries: list[QuickResponseSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListQuickResponsesResponse:
     Optional[str] nextToken
     list[QuickResponseSummary] quickResponseSummaries
@@ -718,8 +753,9 @@ struct ListQuickResponsesResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -735,8 +771,9 @@ struct NotifyRecommendationsReceivedRequest:
     list[str] recommendationIds
     str sessionId
 
-# no @derive(Json): member(s) errors: list[NotifyRecommendationsReceivedError], recommendationIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[NotifyRecommendationsReceivedError], recommendationIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotifyRecommendationsReceivedResponse:
     Optional[list[NotifyRecommendationsReceivedError]] errors
     Optional[list[str]] recommendationIds
@@ -753,8 +790,9 @@ struct QueryAssistantRequest:
     Optional[str] nextToken
     str queryText
 
-# no @derive(Json): member(s) results: list[ResultData] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) results: list[ResultData] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryAssistantResponse:
     Optional[str] nextToken
     list[ResultData] results
@@ -772,8 +810,9 @@ struct QuickResponseContents:
     Optional[QuickResponseContentProvider] markdown
     Optional[QuickResponseContentProvider] plainText
 
-# no @derive(Json): member(s) channels: list[str], groupingConfiguration: GroupingConfiguration, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) channels: list[str], groupingConfiguration: GroupingConfiguration, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuickResponseData:
     Optional[list[str]] channels
     str contentType
@@ -798,8 +837,9 @@ struct QuickResponseData:
 struct QuickResponseDataProvider:
     Optional[str] content
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuickResponseFilterField:
     Optional[bool] includeNoExistence
     str name
@@ -811,8 +851,9 @@ struct QuickResponseOrderField:
     str name
     Optional[Order] order
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuickResponseQueryField:
     Optional[bool] allowFuzziness
     str name
@@ -820,15 +861,17 @@ struct QuickResponseQueryField:
     Optional[Priority] priority
     list[str] values
 
-# no @derive(Json): member(s) filters: list[QuickResponseFilterField], queries: list[QuickResponseQueryField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[QuickResponseFilterField], queries: list[QuickResponseQueryField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuickResponseSearchExpression:
     Optional[list[QuickResponseFilterField]] filters
     Optional[QuickResponseOrderField] orderOnField
     Optional[list[QuickResponseQueryField]] queries
 
-# no @derive(Json): member(s) attributesInterpolated: list[str], attributesNotInterpolated: list[str], channels: list[str], groupingConfiguration: GroupingConfiguration, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributesInterpolated: list[str], attributesNotInterpolated: list[str], channels: list[str], groupingConfiguration: GroupingConfiguration, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuickResponseSearchResultData:
     Optional[list[str]] attributesInterpolated
     Optional[list[str]] attributesNotInterpolated
@@ -851,8 +894,9 @@ struct QuickResponseSearchResultData:
     QuickResponseStatus status
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) channels: list[str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) channels: list[str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuickResponseSummary:
     Optional[list[str]] channels
     str contentType
@@ -869,8 +913,9 @@ struct QuickResponseSummary:
     QuickResponseStatus status
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) document: Document not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) document: Document not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationData:
     Document document
     str recommendationId
@@ -878,8 +923,9 @@ struct RecommendationData:
     Optional[float64] relevanceScore
     Optional[str] type
 
-# no @derive(Json): member(s) recommendationIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommendationIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationTrigger:
     RecommendationTriggerData data
     str id
@@ -914,8 +960,9 @@ struct ResourceNotFoundException:
     Optional[str] message
     Optional[str] resourceName
 
-# no @derive(Json): member(s) document: Document not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) document: Document not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResultData:
     Document document
     Optional[float64] relevanceScore
@@ -929,14 +976,16 @@ struct SearchContentRequest:
     Optional[str] nextToken
     SearchExpression searchExpression
 
-# no @derive(Json): member(s) contentSummaries: list[ContentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) contentSummaries: list[ContentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchContentResponse:
     list[ContentSummary] contentSummaries
     Optional[str] nextToken
 
-# no @derive(Json): member(s) filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchExpression:
     list[Filter] filters
 
@@ -949,8 +998,9 @@ struct SearchQuickResponsesRequest:
     Optional[str] nextToken
     QuickResponseSearchExpression searchExpression
 
-# no @derive(Json): member(s) results: list[QuickResponseSearchResultData] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) results: list[QuickResponseSearchResultData] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchQuickResponsesResponse:
     Optional[str] nextToken
     list[QuickResponseSearchResultData] results
@@ -963,8 +1013,9 @@ struct SearchSessionsRequest:
     Optional[str] nextToken
     SearchExpression searchExpression
 
-# no @derive(Json): member(s) sessionSummaries: list[SessionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sessionSummaries: list[SessionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchSessionsResponse:
     Optional[str] nextToken
     list[SessionSummary] sessionSummaries
@@ -977,8 +1028,9 @@ struct ServerSideEncryptionConfiguration:
 struct ServiceQuotaExceededException:
     Optional[str] message
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SessionData:
     Optional[str] description
     Optional[SessionIntegrationConfiguration] integrationConfiguration
@@ -998,8 +1050,9 @@ struct SessionSummary:
     str sessionArn
     str sessionId
 
-# no @derive(Json): member(s) appIntegrations: AppIntegrationsConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) appIntegrations: AppIntegrationsConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceConfiguration:
     Optional[AppIntegrationsConfiguration] appIntegrations
 
@@ -1010,8 +1063,9 @@ struct StartContentUploadRequest:
     str knowledgeBaseId
     Optional[int64] presignedUrlTimeToLive
 
-# no @derive(Json): member(s) headersToInclude: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) headersToInclude: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartContentUploadResponse:
     dict[str, str] headersToInclude
     str uploadId
@@ -1028,8 +1082,9 @@ struct StartImportJobRequest:
     Optional[dict[str, str]] metadata
     str uploadId
 
-# no @derive(Json): member(s) importJob: ImportJobData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) importJob: ImportJobData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartImportJobResponse:
     Optional[ImportJobData] importJob
 
@@ -1072,8 +1127,9 @@ struct UpdateContentRequest:
     Optional[str] title
     Optional[str] uploadId
 
-# no @derive(Json): member(s) content: ContentData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) content: ContentData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateContentResponse:
     Optional[ContentData] content
 
@@ -1083,8 +1139,9 @@ struct UpdateKnowledgeBaseTemplateUriRequest:
     str knowledgeBaseId
     str templateUri
 
-# no @derive(Json): member(s) knowledgeBase: KnowledgeBaseData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) knowledgeBase: KnowledgeBaseData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateKnowledgeBaseTemplateUriResponse:
     Optional[KnowledgeBaseData] knowledgeBase
 
@@ -1106,8 +1163,9 @@ struct UpdateQuickResponseRequest:
     Optional[bool] removeShortcutKey
     Optional[str] shortcutKey
 
-# no @derive(Json): member(s) quickResponse: QuickResponseData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) quickResponse: QuickResponseData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateQuickResponseResponse:
     Optional[QuickResponseData] quickResponse
 
@@ -1156,27 +1214,7 @@ def wisdom_error_from_code(str code) -> WisdomError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateAssistant (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateAssistantAssociation (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateContent (document member `metadata: dict[str, str]` is not serializable by derive)
-#   CreateKnowledgeBase (document member `sourceConfiguration: SourceConfiguration` is not serializable by derive)
-#   CreateQuickResponse (document member `channels: list[str]` is not serializable by derive)
-#   CreateSession (document member `tags: dict[str, str]` is not serializable by derive)
-#   NotifyRecommendationsReceived (document member `recommendationIds: list[str]` is not serializable by derive)
-#   SearchContent (document member `searchExpression: SearchExpression` is not serializable by derive)
-#   SearchQuickResponses (document member `attributes: dict[str, str]` is not serializable by derive)
-#   SearchSessions (document member `searchExpression: SearchExpression` is not serializable by derive)
-#   StartImportJob (document member `metadata: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateContent (document member `metadata: dict[str, str]` is not serializable by derive)
-#   UpdateQuickResponse (document member `channels: list[str]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   SearchContent (operation not generated)
-#   SearchQuickResponses (operation not generated)
-#   SearchSessions (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1199,10 +1237,320 @@ struct UpdateKnowledgeBaseTemplateUriDocument:
     # document members of UpdateKnowledgeBaseTemplateUri
     str templateUri
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def wisdom_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def wisdom_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def wisdom_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AppIntegrationsConfiguration to a compact JSON object (declaration order).
+def app_integrations_configuration_to_json(AppIntegrationsConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"appIntegrationArn\":" + wisdom_json_str(v.appIntegrationArn))
+    if v.objectFields.is_some():
+        auto u0 = v.objectFields.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(wisdom_json_str(x1))
+        parts.append("\"objectFields\":" + wisdom_json_arr(e1))
+    return wisdom_json_obj(parts)
+
+# Serialize GroupingConfiguration to a compact JSON object (declaration order).
+def grouping_configuration_to_json(GroupingConfiguration v) -> str:
+    list[str] parts = []
+    if v.criteria.is_some():
+        auto u0 = v.criteria.unwrap()
+        parts.append("\"criteria\":" + wisdom_json_str(u0))
+    if v.values.is_some():
+        auto u1 = v.values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(wisdom_json_str(x2))
+        parts.append("\"values\":" + wisdom_json_arr(e2))
+    return wisdom_json_obj(parts)
+
+# Serialize QuickResponseFilterField to a compact JSON object (declaration order).
+def quick_response_filter_field_to_json(QuickResponseFilterField v) -> str:
+    list[str] parts = []
+    if v.includeNoExistence.is_some():
+        auto u0 = v.includeNoExistence.unwrap()
+        parts.append("\"includeNoExistence\":" + json.dumps(JsonValue.Bool(u0)))
+    parts.append("\"name\":" + wisdom_json_str(v.name))
+    parts.append("\"operator\":" + v.operator.to_json())
+    if v.values.is_some():
+        auto u1 = v.values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(wisdom_json_str(x2))
+        parts.append("\"values\":" + wisdom_json_arr(e2))
+    return wisdom_json_obj(parts)
+
+# Serialize QuickResponseQueryField to a compact JSON object (declaration order).
+def quick_response_query_field_to_json(QuickResponseQueryField v) -> str:
+    list[str] parts = []
+    if v.allowFuzziness.is_some():
+        auto u0 = v.allowFuzziness.unwrap()
+        parts.append("\"allowFuzziness\":" + json.dumps(JsonValue.Bool(u0)))
+    parts.append("\"name\":" + wisdom_json_str(v.name))
+    parts.append("\"operator\":" + v.operator.to_json())
+    if v.priority.is_some():
+        auto u1 = v.priority.unwrap()
+        parts.append("\"priority\":" + u1.to_json())
+    list[str] e2 = []
+    for x2 in v.values:
+        e2.append(wisdom_json_str(x2))
+    parts.append("\"values\":" + wisdom_json_arr(e2))
+    return wisdom_json_obj(parts)
+
+# Serialize QuickResponseSearchExpression to a compact JSON object (declaration order).
+def quick_response_search_expression_to_json(QuickResponseSearchExpression v) -> str:
+    list[str] parts = []
+    if v.filters.is_some():
+        auto u0 = v.filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(quick_response_filter_field_to_json(x1))
+        parts.append("\"filters\":" + wisdom_json_arr(e1))
+    if v.orderOnField.is_some():
+        auto u2 = v.orderOnField.unwrap()
+        parts.append("\"orderOnField\":" + u2.to_json())
+    if v.queries.is_some():
+        auto u3 = v.queries.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(quick_response_query_field_to_json(x4))
+        parts.append("\"queries\":" + wisdom_json_arr(e4))
+    return wisdom_json_obj(parts)
+
+# Serialize SearchExpression to a compact JSON object (declaration order).
+def search_expression_to_json(SearchExpression v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.filters:
+        e0.append(x0.to_json())
+    parts.append("\"filters\":" + wisdom_json_arr(e0))
+    return wisdom_json_obj(parts)
+
+# Serialize SourceConfiguration to a compact JSON object (declaration order).
+def source_configuration_to_json(SourceConfiguration v) -> str:
+    list[str] parts = []
+    if v.appIntegrations.is_some():
+        auto u0 = v.appIntegrations.unwrap()
+        parts.append("\"appIntegrations\":" + app_integrations_configuration_to_json(u0))
+    return wisdom_json_obj(parts)
+
 # A bound Wisdom client: credentials + region, threaded into every operation.
 struct WisdomClient:
     core.Credentials creds
     str region
+
+    # CreateAssistant  POST /assistants
+    # errors: AccessDeniedException, ConflictException, ServiceQuotaExceededException, ValidationException
+    def create_assistant(self, CreateAssistantRequest input) -> str:
+        auto host = endpoints.regional_host(wisdom_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + wisdom_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + wisdom_json_str(u1))
+        parts.append("\"name\":" + wisdom_json_str(input.name))
+        if input.serverSideEncryptionConfiguration.is_some():
+            auto u2 = input.serverSideEncryptionConfiguration.unwrap()
+            parts.append("\"serverSideEncryptionConfiguration\":" + u2.to_json())
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(wisdom_json_str(k4) + ":" + wisdom_json_str(u3[k4]))
+            parts.append("\"tags\":" + wisdom_json_obj(m4))
+        parts.append("\"type\":" + wisdom_json_str(input.type))
+        auto bp = restjson.rest_json_document(b, wisdom_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
+
+    # CreateAssistantAssociation  POST /assistants/{assistantId}/associations
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def create_assistant_association(self, CreateAssistantAssociationRequest input) -> str:
+        auto host = endpoints.regional_host(wisdom_service(), self.region)
+        dict[str, str] labels = {}
+        labels["assistantId"] = input.assistantId
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/associations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"association\":" + input.association.to_json())
+        parts.append("\"associationType\":" + wisdom_json_str(input.associationType))
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + wisdom_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(wisdom_json_str(k2) + ":" + wisdom_json_str(u1[k2]))
+            parts.append("\"tags\":" + wisdom_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, wisdom_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
+
+    # CreateContent  POST /knowledgeBases/{knowledgeBaseId}/contents
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def create_content(self, CreateContentRequest input) -> str:
+        auto host = endpoints.regional_host(wisdom_service(), self.region)
+        dict[str, str] labels = {}
+        labels["knowledgeBaseId"] = input.knowledgeBaseId
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/contents", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + wisdom_json_str(u0))
+        if input.metadata.is_some():
+            auto u1 = input.metadata.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(wisdom_json_str(k2) + ":" + wisdom_json_str(u1[k2]))
+            parts.append("\"metadata\":" + wisdom_json_obj(m2))
+        parts.append("\"name\":" + wisdom_json_str(input.name))
+        if input.overrideLinkOutUri.is_some():
+            auto u3 = input.overrideLinkOutUri.unwrap()
+            parts.append("\"overrideLinkOutUri\":" + wisdom_json_str(u3))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(wisdom_json_str(k5) + ":" + wisdom_json_str(u4[k5]))
+            parts.append("\"tags\":" + wisdom_json_obj(m5))
+        if input.title.is_some():
+            auto u6 = input.title.unwrap()
+            parts.append("\"title\":" + wisdom_json_str(u6))
+        parts.append("\"uploadId\":" + wisdom_json_str(input.uploadId))
+        auto bp = restjson.rest_json_document(b, wisdom_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
+
+    # CreateKnowledgeBase  POST /knowledgeBases
+    # errors: AccessDeniedException, ConflictException, ServiceQuotaExceededException, ValidationException
+    def create_knowledge_base(self, CreateKnowledgeBaseRequest input) -> str:
+        auto host = endpoints.regional_host(wisdom_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + wisdom_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + wisdom_json_str(u1))
+        parts.append("\"knowledgeBaseType\":" + input.knowledgeBaseType.to_json())
+        parts.append("\"name\":" + wisdom_json_str(input.name))
+        if input.renderingConfiguration.is_some():
+            auto u2 = input.renderingConfiguration.unwrap()
+            parts.append("\"renderingConfiguration\":" + u2.to_json())
+        if input.serverSideEncryptionConfiguration.is_some():
+            auto u3 = input.serverSideEncryptionConfiguration.unwrap()
+            parts.append("\"serverSideEncryptionConfiguration\":" + u3.to_json())
+        if input.sourceConfiguration.is_some():
+            auto u4 = input.sourceConfiguration.unwrap()
+            parts.append("\"sourceConfiguration\":" + source_configuration_to_json(u4))
+        if input.tags.is_some():
+            auto u5 = input.tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(wisdom_json_str(k6) + ":" + wisdom_json_str(u5[k6]))
+            parts.append("\"tags\":" + wisdom_json_obj(m6))
+        auto bp = restjson.rest_json_document(b, wisdom_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
+
+    # CreateQuickResponse  POST /knowledgeBases/{knowledgeBaseId}/quickResponses
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def create_quick_response(self, CreateQuickResponseRequest input) -> str:
+        auto host = endpoints.regional_host(wisdom_service(), self.region)
+        dict[str, str] labels = {}
+        labels["knowledgeBaseId"] = input.knowledgeBaseId
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/quickResponses", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.channels.is_some():
+            auto u0 = input.channels.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(wisdom_json_str(x1))
+            parts.append("\"channels\":" + wisdom_json_arr(e1))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + wisdom_json_str(u2))
+        parts.append("\"content\":" + input.content.to_json())
+        if input.contentType.is_some():
+            auto u3 = input.contentType.unwrap()
+            parts.append("\"contentType\":" + wisdom_json_str(u3))
+        if input.description.is_some():
+            auto u4 = input.description.unwrap()
+            parts.append("\"description\":" + wisdom_json_str(u4))
+        if input.groupingConfiguration.is_some():
+            auto u5 = input.groupingConfiguration.unwrap()
+            parts.append("\"groupingConfiguration\":" + grouping_configuration_to_json(u5))
+        if input.isActive.is_some():
+            auto u6 = input.isActive.unwrap()
+            parts.append("\"isActive\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.language.is_some():
+            auto u7 = input.language.unwrap()
+            parts.append("\"language\":" + wisdom_json_str(u7))
+        parts.append("\"name\":" + wisdom_json_str(input.name))
+        if input.shortcutKey.is_some():
+            auto u8 = input.shortcutKey.unwrap()
+            parts.append("\"shortcutKey\":" + wisdom_json_str(u8))
+        if input.tags.is_some():
+            auto u9 = input.tags.unwrap()
+            list[str] m10 = []
+            for k10 in sorted(u9.keys()):
+                m10.append(wisdom_json_str(k10) + ":" + wisdom_json_str(u9[k10]))
+            parts.append("\"tags\":" + wisdom_json_obj(m10))
+        auto bp = restjson.rest_json_document(b, wisdom_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
+
+    # CreateSession  POST /assistants/{assistantId}/sessions
+    # errors: ConflictException, ResourceNotFoundException, ValidationException
+    def create_session(self, CreateSessionRequest input) -> str:
+        auto host = endpoints.regional_host(wisdom_service(), self.region)
+        dict[str, str] labels = {}
+        labels["assistantId"] = input.assistantId
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/sessions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + wisdom_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + wisdom_json_str(u1))
+        parts.append("\"name\":" + wisdom_json_str(input.name))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(wisdom_json_str(k3) + ":" + wisdom_json_str(u2[k3]))
+            parts.append("\"tags\":" + wisdom_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, wisdom_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
 
     # DeleteAssistant  DELETE /assistants/{assistantId}
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
@@ -1444,6 +1792,22 @@ struct WisdomClient:
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
+    # NotifyRecommendationsReceived  POST /assistants/{assistantId}/sessions/{sessionId}/recommendations/notify
+    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    def notify_recommendations_received(self, NotifyRecommendationsReceivedRequest input) -> str:
+        auto host = endpoints.regional_host(wisdom_service(), self.region)
+        dict[str, str] labels = {}
+        labels["assistantId"] = input.assistantId
+        labels["sessionId"] = input.sessionId
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/sessions/{sessionId}/recommendations/notify", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.recommendationIds:
+            e0.append(wisdom_json_str(x0))
+        parts.append("\"recommendationIds\":" + wisdom_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, wisdom_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
+
     # QueryAssistant  POST /assistants/{assistantId}/query
     # errors: AccessDeniedException, RequestTimeoutException, ResourceNotFoundException, ValidationException
     def query_assistant(self, QueryAssistantRequest input) -> str:
@@ -1464,6 +1828,63 @@ struct WisdomClient:
         auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}/templateUri", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
+    # SearchContent  POST /knowledgeBases/{knowledgeBaseId}/search
+    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    def search_content(self, SearchContentRequest input) -> str:
+        auto host = endpoints.regional_host(wisdom_service(), self.region)
+        dict[str, str] labels = {}
+        labels["knowledgeBaseId"] = input.knowledgeBaseId
+        dict[str, str] query = {}
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/search", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"searchExpression\":" + search_expression_to_json(input.searchExpression))
+        auto bp = restjson.rest_json_document(b, wisdom_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
+
+    # SearchQuickResponses  POST /knowledgeBases/{knowledgeBaseId}/search/quickResponses
+    # errors: AccessDeniedException, RequestTimeoutException, ResourceNotFoundException, ValidationException
+    def search_quick_responses(self, SearchQuickResponsesRequest input) -> str:
+        auto host = endpoints.regional_host(wisdom_service(), self.region)
+        dict[str, str] labels = {}
+        labels["knowledgeBaseId"] = input.knowledgeBaseId
+        dict[str, str] query = {}
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/search/quickResponses", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.attributes.is_some():
+            auto u0 = input.attributes.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(wisdom_json_str(k1) + ":" + wisdom_json_str(u0[k1]))
+            parts.append("\"attributes\":" + wisdom_json_obj(m1))
+        parts.append("\"searchExpression\":" + quick_response_search_expression_to_json(input.searchExpression))
+        auto bp = restjson.rest_json_document(b, wisdom_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
+
+    # SearchSessions  POST /assistants/{assistantId}/searchSessions
+    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    def search_sessions(self, SearchSessionsRequest input) -> str:
+        auto host = endpoints.regional_host(wisdom_service(), self.region)
+        dict[str, str] labels = {}
+        labels["assistantId"] = input.assistantId
+        dict[str, str] query = {}
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/searchSessions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"searchExpression\":" + search_expression_to_json(input.searchExpression))
+        auto bp = restjson.rest_json_document(b, wisdom_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
+
     # StartContentUpload  POST /knowledgeBases/{knowledgeBaseId}/upload
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
     def start_content_upload(self, StartContentUploadRequest input) -> str:
@@ -1475,6 +1896,79 @@ struct WisdomClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
 
+    # StartImportJob  POST /knowledgeBases/{knowledgeBaseId}/importJobs
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def start_import_job(self, StartImportJobRequest input) -> str:
+        auto host = endpoints.regional_host(wisdom_service(), self.region)
+        dict[str, str] labels = {}
+        labels["knowledgeBaseId"] = input.knowledgeBaseId
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/importJobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + wisdom_json_str(u0))
+        if input.externalSourceConfiguration.is_some():
+            auto u1 = input.externalSourceConfiguration.unwrap()
+            parts.append("\"externalSourceConfiguration\":" + u1.to_json())
+        parts.append("\"importJobType\":" + wisdom_json_str(input.importJobType))
+        if input.metadata.is_some():
+            auto u2 = input.metadata.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(wisdom_json_str(k3) + ":" + wisdom_json_str(u2[k3]))
+            parts.append("\"metadata\":" + wisdom_json_obj(m3))
+        parts.append("\"uploadId\":" + wisdom_json_str(input.uploadId))
+        auto bp = restjson.rest_json_document(b, wisdom_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: ResourceNotFoundException, TooManyTagsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(wisdom_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(wisdom_json_str(k0) + ":" + wisdom_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + wisdom_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, wisdom_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
+
+    # UpdateContent  POST /knowledgeBases/{knowledgeBaseId}/contents/{contentId}
+    # errors: AccessDeniedException, PreconditionFailedException, ResourceNotFoundException, ValidationException
+    def update_content(self, UpdateContentRequest input) -> str:
+        auto host = endpoints.regional_host(wisdom_service(), self.region)
+        dict[str, str] labels = {}
+        labels["contentId"] = input.contentId
+        labels["knowledgeBaseId"] = input.knowledgeBaseId
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.metadata.is_some():
+            auto u0 = input.metadata.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(wisdom_json_str(k1) + ":" + wisdom_json_str(u0[k1]))
+            parts.append("\"metadata\":" + wisdom_json_obj(m1))
+        if input.overrideLinkOutUri.is_some():
+            auto u2 = input.overrideLinkOutUri.unwrap()
+            parts.append("\"overrideLinkOutUri\":" + wisdom_json_str(u2))
+        if input.removeOverrideLinkOutUri.is_some():
+            auto u3 = input.removeOverrideLinkOutUri.unwrap()
+            parts.append("\"removeOverrideLinkOutUri\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.revisionId.is_some():
+            auto u4 = input.revisionId.unwrap()
+            parts.append("\"revisionId\":" + wisdom_json_str(u4))
+        if input.title.is_some():
+            auto u5 = input.title.unwrap()
+            parts.append("\"title\":" + wisdom_json_str(u5))
+        if input.uploadId.is_some():
+            auto u6 = input.uploadId.unwrap()
+            parts.append("\"uploadId\":" + wisdom_json_str(u6))
+        auto bp = restjson.rest_json_document(b, wisdom_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
+
     # UpdateKnowledgeBaseTemplateUri  POST /knowledgeBases/{knowledgeBaseId}/templateUri
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
     def update_knowledge_base_template_uri(self, UpdateKnowledgeBaseTemplateUriRequest input) -> str:
@@ -1484,6 +1978,57 @@ struct WisdomClient:
         auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/templateUri", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateKnowledgeBaseTemplateUriDocument(templateUri=input.templateUri)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
+
+    # UpdateQuickResponse  POST /knowledgeBases/{knowledgeBaseId}/quickResponses/{quickResponseId}
+    # errors: AccessDeniedException, ConflictException, PreconditionFailedException, ResourceNotFoundException, ValidationException
+    def update_quick_response(self, UpdateQuickResponseRequest input) -> str:
+        auto host = endpoints.regional_host(wisdom_service(), self.region)
+        dict[str, str] labels = {}
+        labels["knowledgeBaseId"] = input.knowledgeBaseId
+        labels["quickResponseId"] = input.quickResponseId
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/quickResponses/{quickResponseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.channels.is_some():
+            auto u0 = input.channels.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(wisdom_json_str(x1))
+            parts.append("\"channels\":" + wisdom_json_arr(e1))
+        if input.content.is_some():
+            auto u2 = input.content.unwrap()
+            parts.append("\"content\":" + u2.to_json())
+        if input.contentType.is_some():
+            auto u3 = input.contentType.unwrap()
+            parts.append("\"contentType\":" + wisdom_json_str(u3))
+        if input.description.is_some():
+            auto u4 = input.description.unwrap()
+            parts.append("\"description\":" + wisdom_json_str(u4))
+        if input.groupingConfiguration.is_some():
+            auto u5 = input.groupingConfiguration.unwrap()
+            parts.append("\"groupingConfiguration\":" + grouping_configuration_to_json(u5))
+        if input.isActive.is_some():
+            auto u6 = input.isActive.unwrap()
+            parts.append("\"isActive\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.language.is_some():
+            auto u7 = input.language.unwrap()
+            parts.append("\"language\":" + wisdom_json_str(u7))
+        if input.name.is_some():
+            auto u8 = input.name.unwrap()
+            parts.append("\"name\":" + wisdom_json_str(u8))
+        if input.removeDescription.is_some():
+            auto u9 = input.removeDescription.unwrap()
+            parts.append("\"removeDescription\":" + json.dumps(JsonValue.Bool(u9)))
+        if input.removeGroupingConfiguration.is_some():
+            auto u10 = input.removeGroupingConfiguration.unwrap()
+            parts.append("\"removeGroupingConfiguration\":" + json.dumps(JsonValue.Bool(u10)))
+        if input.removeShortcutKey.is_some():
+            auto u11 = input.removeShortcutKey.unwrap()
+            parts.append("\"removeShortcutKey\":" + json.dumps(JsonValue.Bool(u11)))
+        if input.shortcutKey.is_some():
+            auto u12 = input.shortcutKey.unwrap()
+            parts.append("\"shortcutKey\":" + wisdom_json_str(u12))
+        auto bp = restjson.rest_json_document(b, wisdom_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
 
     # Paginator for ListAssistantAssociations — yields each Response page, threading the
@@ -1570,6 +2115,45 @@ struct WisdomClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         while True:
             auto raw = self.query_assistant(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for SearchContent — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: contentSummaries).
+    def paginate_search_content(self, SearchContentRequest input):
+        auto host = endpoints.regional_host(wisdom_service(), self.region)
+        while True:
+            auto raw = self.search_content(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for SearchQuickResponses — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: results).
+    def paginate_search_quick_responses(self, SearchQuickResponsesRequest input):
+        auto host = endpoints.regional_host(wisdom_service(), self.region)
+        while True:
+            auto raw = self.search_quick_responses(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for SearchSessions — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: sessionSummaries).
+    def paginate_search_sessions(self, SearchSessionsRequest input):
+        auto host = endpoints.regional_host(wisdom_service(), self.region)
+        while True:
+            auto raw = self.search_sessions(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

@@ -57,13 +57,15 @@ fn sqs_coverage() {
     let (_src, cov) = generate_sqs();
     // The pinned 2012-11-05 model: 23 operations, 76 structures.
     assert_eq!(cov.operations_total, 23, "ops: {}", cov.operations_total);
+    // Collection/nested input bodies now serialize via explicit serializers
+    // (zaplang-io/zap#424); only the two enum-keyed-map inputs stay skipped.
     assert_eq!(
-        cov.operations_methods, 12,
+        cov.operations_methods, 21,
         "methods: {}",
         cov.operations_methods
     );
     assert_eq!(
-        cov.operations_skipped, 11,
+        cov.operations_skipped, 2,
         "skipped: {}",
         cov.operations_skipped
     );
@@ -101,11 +103,14 @@ fn sqs_awsjson_contract_shape() {
     assert!(src.contains("enum SQSError:"));
     assert!(src.contains("def sqs_error_from_code(str code) -> SQSError:"));
     assert!(src.contains("QueueDoesNotExist"));
-    // Collection-input ops (ReceiveMessage, SendMessage, ...) are documented as
-    // skipped, not silently emitted wrong — same derive gap as DynamoDB item ops.
+    // Collection/nested-input ops now serialize explicitly (zaplang-io/zap#424).
+    assert!(src.contains("def receive_message(self, ReceiveMessageRequest input) -> str:"));
+    assert!(src.contains("def send_message(self, SendMessageRequest input) -> str:"));
+    assert!(src.contains("def send_message_batch_request_to_json("));
+    // An enum-keyed-map input is still skipped (documented, not emitted wrong).
     assert!(src.contains("Operations skipped in v0"));
-    assert!(src.contains("ReceiveMessage (input ReceiveMessageRequest)"));
-    assert!(src.contains("SendMessage (input SendMessageRequest)"));
+    assert!(src.contains("CreateQueue (input CreateQueueRequest)"));
+    assert!(src.contains("SetQueueAttributes (input SetQueueAttributesRequest)"));
 }
 
 #[test]

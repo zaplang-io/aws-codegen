@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 124 operations — 71 with a generated method,
-#   53 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 124 operations — 111 with a generated method,
+#   13 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   199 structs (103 @derive(Json)), 24 enums, 7 error variants.
 #   16 paginators generated (2 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -285,16 +285,18 @@ struct AccessLogSettings:
     Optional[str] format
     Optional[str] destinationArn
 
-# no @derive(Json): member(s) features: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) features: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Account:
     Optional[str] cloudwatchRoleArn
     Optional[ThrottleSettings] throttleSettings
     Optional[list[str]] features
     Optional[str] apiKeyVersion
 
-# no @derive(Json): member(s) stageKeys: list[str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stageKeys: list[str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApiKey:
     Optional[str] id
     Optional[str] value
@@ -307,28 +309,32 @@ struct ApiKey:
     Optional[list[str]] stageKeys
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) ids: list[str], warnings: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str], warnings: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApiKeyIds:
     Optional[list[str]] ids
     Optional[list[str]] warnings
 
-# no @derive(Json): member(s) warnings: list[str], items: list[ApiKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) warnings: list[str], items: list[ApiKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApiKeys:
     Optional[list[str]] warnings
     Optional[str] position
     Optional[list[ApiKey]] items
 
-# no @derive(Json): member(s) throttle: dict[str, ThrottleSettings] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) throttle: dict[str, ThrottleSettings] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApiStage:
     Optional[str] apiId
     Optional[str] stage
     Optional[dict[str, ThrottleSettings]] throttle
 
-# no @derive(Json): member(s) providerARNs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) providerARNs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Authorizer:
     Optional[str] id
     Optional[str] name
@@ -341,8 +347,9 @@ struct Authorizer:
     Optional[str] identityValidationExpression
     Optional[int64] authorizerResultTtlInSeconds
 
-# no @derive(Json): member(s) items: list[Authorizer] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[Authorizer] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Authorizers:
     Optional[str] position
     Optional[list[Authorizer]] items
@@ -357,22 +364,25 @@ struct BasePathMapping:
     Optional[str] restApiId
     Optional[str] stage
 
-# no @derive(Json): member(s) items: list[BasePathMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[BasePathMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BasePathMappings:
     Optional[str] position
     Optional[list[BasePathMapping]] items
 
-# no @derive(Json): member(s) stageVariableOverrides: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stageVariableOverrides: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CanarySettings:
     Optional[float64] percentTraffic
     Optional[str] deploymentId
     Optional[dict[str, str]] stageVariableOverrides
     Optional[bool] useStageCache
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClientCertificate:
     Optional[str] clientCertificateId
     Optional[str] description
@@ -381,8 +391,9 @@ struct ClientCertificate:
     Optional[DateTime] expirationDate
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) items: list[ClientCertificate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ClientCertificate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClientCertificates:
     Optional[str] position
     Optional[list[ClientCertificate]] items
@@ -697,23 +708,26 @@ struct DeleteUsagePlanRequest:
 struct DeleteVpcLinkRequest:
     str vpcLinkId
 
-# no @derive(Json): member(s) apiSummary: dict[str, dict[str, MethodSnapshot]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) apiSummary: dict[str, dict[str, MethodSnapshot]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Deployment:
     Optional[str] id
     Optional[str] description
     Optional[DateTime] createdDate
     Optional[dict[str, dict[str, MethodSnapshot]]] apiSummary
 
-# no @derive(Json): member(s) stageVariableOverrides: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stageVariableOverrides: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeploymentCanarySettings:
     Optional[float64] percentTraffic
     Optional[dict[str, str]] stageVariableOverrides
     Optional[bool] useStageCache
 
-# no @derive(Json): member(s) items: list[Deployment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[Deployment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Deployments:
     Optional[str] position
     Optional[list[Deployment]] items
@@ -724,8 +738,9 @@ struct DocumentationPart:
     Optional[DocumentationPartLocation] location
     Optional[str] properties
 
-# no @derive(Json): member(s) ids: list[str], warnings: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str], warnings: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentationPartIds:
     Optional[list[str]] ids
     Optional[list[str]] warnings
@@ -738,8 +753,9 @@ struct DocumentationPartLocation:
     Optional[str] statusCode
     Optional[str] name
 
-# no @derive(Json): member(s) items: list[DocumentationPart] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[DocumentationPart] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentationParts:
     Optional[str] position
     Optional[list[DocumentationPart]] items
@@ -750,14 +766,16 @@ struct DocumentationVersion:
     Optional[DateTime] createdDate
     Optional[str] description
 
-# no @derive(Json): member(s) items: list[DocumentationVersion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[DocumentationVersion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentationVersions:
     Optional[str] position
     Optional[list[DocumentationVersion]] items
 
-# no @derive(Json): member(s) endpointConfiguration: EndpointConfiguration, tags: dict[str, str], mutualTlsAuthentication: MutualTlsAuthentication not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) endpointConfiguration: EndpointConfiguration, tags: dict[str, str], mutualTlsAuthentication: MutualTlsAuthentication not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DomainName:
     Optional[str] domainName
     Optional[str] domainNameId
@@ -783,8 +801,9 @@ struct DomainName:
     Optional[str] policy
     Optional[RoutingMode] routingMode
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DomainNameAccessAssociation:
     Optional[str] domainNameAccessAssociationArn
     Optional[str] domainNameArn
@@ -792,20 +811,23 @@ struct DomainNameAccessAssociation:
     Optional[str] accessAssociationSource
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) items: list[DomainNameAccessAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[DomainNameAccessAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DomainNameAccessAssociations:
     Optional[str] position
     Optional[list[DomainNameAccessAssociation]] items
 
-# no @derive(Json): member(s) items: list[DomainName] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[DomainName] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DomainNames:
     Optional[str] position
     Optional[list[DomainName]] items
 
-# no @derive(Json): member(s) types: list[EndpointType], vpcEndpointIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) types: list[EndpointType], vpcEndpointIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EndpointConfiguration:
     Optional[list[EndpointType]] types
     Optional[IpAddressType] ipAddressType
@@ -829,8 +851,9 @@ struct FlushStageCacheRequest:
     str restApiId
     str stageName
 
-# no @derive(Json): member(s) responseParameters: dict[str, str], responseTemplates: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) responseParameters: dict[str, str], responseTemplates: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayResponse:
     Optional[GatewayResponseType] responseType
     Optional[str] statusCode
@@ -838,8 +861,9 @@ struct GatewayResponse:
     Optional[dict[str, str]] responseTemplates
     Optional[bool] defaultResponse
 
-# no @derive(Json): member(s) items: list[GatewayResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[GatewayResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayResponses:
     Optional[str] position
     Optional[list[GatewayResponse]] items
@@ -1198,8 +1222,9 @@ struct ImportRestApiRequest:
     Optional[dict[str, str]] parameters
     bytes body
 
-# no @derive(Json): member(s) requestParameters: dict[str, str], requestTemplates: dict[str, str], cacheKeyParameters: list[str], integrationResponses: dict[str, IntegrationResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) requestParameters: dict[str, str], requestTemplates: dict[str, str], cacheKeyParameters: list[str], integrationResponses: dict[str, IntegrationResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Integration:
     Optional[IntegrationType] type
     Optional[str] httpMethod
@@ -1219,8 +1244,9 @@ struct Integration:
     Optional[ResponseTransferMode] responseTransferMode
     Optional[str] integrationTarget
 
-# no @derive(Json): member(s) responseParameters: dict[str, str], responseTemplates: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) responseParameters: dict[str, str], responseTemplates: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntegrationResponse:
     Optional[str] statusCode
     Optional[str] selectionPattern
@@ -1233,8 +1259,9 @@ struct LimitExceededException:
     Optional[str] retryAfterSeconds
     Optional[str] message
 
-# no @derive(Json): member(s) requestParameters: dict[str, bool], requestModels: dict[str, str], methodResponses: dict[str, MethodResponse], methodIntegration: Integration, authorizationScopes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) requestParameters: dict[str, bool], requestModels: dict[str, str], methodResponses: dict[str, MethodResponse], methodIntegration: Integration, authorizationScopes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Method:
     Optional[str] httpMethod
     Optional[str] authorizationType
@@ -1248,8 +1275,9 @@ struct Method:
     Optional[Integration] methodIntegration
     Optional[list[str]] authorizationScopes
 
-# no @derive(Json): member(s) responseParameters: dict[str, bool], responseModels: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) responseParameters: dict[str, bool], responseModels: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MethodResponse:
     Optional[str] statusCode
     Optional[dict[str, bool]] responseParameters
@@ -1281,14 +1309,16 @@ struct Model:
     Optional[str] schema
     Optional[str] contentType
 
-# no @derive(Json): member(s) items: list[Model] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[Model] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Models:
     Optional[str] position
     Optional[list[Model]] items
 
-# no @derive(Json): member(s) truststoreWarnings: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) truststoreWarnings: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MutualTlsAuthentication:
     Optional[str] truststoreUri
     Optional[str] truststoreVersion
@@ -1409,14 +1439,16 @@ struct RequestValidator:
     Optional[bool] validateRequestBody
     Optional[bool] validateRequestParameters
 
-# no @derive(Json): member(s) items: list[RequestValidator] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[RequestValidator] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RequestValidators:
     Optional[str] position
     Optional[list[RequestValidator]] items
 
-# no @derive(Json): member(s) resourceMethods: dict[str, Method] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceMethods: dict[str, Method] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Resource:
     Optional[str] id
     Optional[str] parentId
@@ -1424,14 +1456,16 @@ struct Resource:
     Optional[str] path
     Optional[dict[str, Method]] resourceMethods
 
-# no @derive(Json): member(s) items: list[Resource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[Resource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Resources:
     Optional[str] position
     Optional[list[Resource]] items
 
-# no @derive(Json): member(s) warnings: list[str], binaryMediaTypes: list[str], endpointConfiguration: EndpointConfiguration, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) warnings: list[str], binaryMediaTypes: list[str], endpointConfiguration: EndpointConfiguration, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestApi:
     Optional[str] id
     Optional[str] name
@@ -1452,8 +1486,9 @@ struct RestApi:
     Optional[ApiStatus] apiStatus
     Optional[str] apiStatusMessage
 
-# no @derive(Json): member(s) items: list[RestApi] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[RestApi] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestApis:
     Optional[str] position
     Optional[list[RestApi]] items
@@ -1472,16 +1507,18 @@ struct SdkResponse:
     Optional[str] contentDisposition
     Optional[bytes] body
 
-# no @derive(Json): member(s) configurationProperties: list[SdkConfigurationProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurationProperties: list[SdkConfigurationProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SdkType:
     Optional[str] id
     Optional[str] friendlyName
     Optional[str] description
     Optional[list[SdkConfigurationProperty]] configurationProperties
 
-# no @derive(Json): member(s) items: list[SdkType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[SdkType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SdkTypes:
     Optional[str] position
     Optional[list[SdkType]] items
@@ -1491,8 +1528,9 @@ struct ServiceUnavailableException:
     Optional[str] retryAfterSeconds
     Optional[str] message
 
-# no @derive(Json): member(s) methodSettings: dict[str, MethodSetting], variables: dict[str, str], canarySettings: CanarySettings, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) methodSettings: dict[str, MethodSetting], variables: dict[str, str], canarySettings: CanarySettings, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Stage:
     Optional[str] deploymentId
     Optional[str] clientCertificateId
@@ -1517,8 +1555,9 @@ struct StageKey:
     Optional[str] restApiId
     Optional[str] stageName
 
-# no @derive(Json): member(s) item: list[Stage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) item: list[Stage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Stages:
     Optional[list[Stage]] item
 
@@ -1528,8 +1567,9 @@ struct TagResourceRequest:
     str resourceArn
     dict[str, str] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Tags:
     Optional[dict[str, str]] tags
 
@@ -1549,8 +1589,9 @@ struct TestInvokeAuthorizerRequest:
     Optional[dict[str, str]] stageVariables
     Optional[dict[str, str]] additionalContext
 
-# no @derive(Json): member(s) authorization: dict[str, list[str]], claims: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorization: dict[str, list[str]], claims: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestInvokeAuthorizerResponse:
     Optional[int64] clientStatus
     Optional[str] log
@@ -1573,8 +1614,9 @@ struct TestInvokeMethodRequest:
     Optional[str] clientCertificateId
     Optional[dict[str, str]] stageVariables
 
-# no @derive(Json): member(s) headers: dict[str, str], multiValueHeaders: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) headers: dict[str, str], multiValueHeaders: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestInvokeMethodResponse:
     Optional[int64] status
     Optional[str] body
@@ -1762,8 +1804,9 @@ struct UpdateVpcLinkRequest:
     str vpcLinkId
     Optional[list[PatchOperation]] patchOperations
 
-# no @derive(Json): member(s) items: dict[str, list[list[int64]]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: dict[str, list[list[int64]]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Usage:
     Optional[str] usagePlanId
     Optional[str] startDate
@@ -1771,8 +1814,9 @@ struct Usage:
     Optional[str] position
     Optional[dict[str, list[list[int64]]]] items
 
-# no @derive(Json): member(s) apiStages: list[ApiStage], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) apiStages: list[ApiStage], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UsagePlan:
     Optional[str] id
     Optional[str] name
@@ -1790,20 +1834,23 @@ struct UsagePlanKey:
     Optional[str] value
     Optional[str] name
 
-# no @derive(Json): member(s) items: list[UsagePlanKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[UsagePlanKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UsagePlanKeys:
     Optional[str] position
     Optional[list[UsagePlanKey]] items
 
-# no @derive(Json): member(s) items: list[UsagePlan] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[UsagePlan] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UsagePlans:
     Optional[str] position
     Optional[list[UsagePlan]] items
 
-# no @derive(Json): member(s) targetArns: list[str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetArns: list[str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcLink:
     Optional[str] id
     Optional[str] name
@@ -1813,8 +1860,9 @@ struct VpcLink:
     Optional[str] statusMessage
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) items: list[VpcLink] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[VpcLink] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcLinks:
     Optional[str] position
     Optional[list[VpcLink]] items
@@ -1857,16 +1905,6 @@ def apigateway_error_from_code(str code) -> API_GatewayError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateApiKey (document member `stageKeys: list[StageKey]` is not serializable by derive)
-#   CreateAuthorizer (document member `providerARNs: list[str]` is not serializable by derive)
-#   CreateDeployment (document member `variables: dict[str, str]` is not serializable by derive)
-#   CreateDomainName (document member `endpointConfiguration: EndpointConfiguration` is not serializable by derive)
-#   CreateDomainNameAccessAssociation (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateRestApi (document member `binaryMediaTypes: list[str]` is not serializable by derive)
-#   CreateStage (document member `variables: dict[str, str]` is not serializable by derive)
-#   CreateUsagePlan (document member `apiStages: list[ApiStage]` is not serializable by derive)
-#   CreateVpcLink (document member `targetArns: list[str]` is not serializable by derive)
-#   GenerateClientCertificate (document member `tags: dict[str, str]` is not serializable by derive)
 #   GetApiKey (httpQuery `includeValue` has unsupported type bool)
 #   GetApiKeys (httpQuery `includeValues` has unsupported type bool)
 #   GetDeployment (httpQuery `embed` has unsupported type list[str])
@@ -1878,38 +1916,8 @@ def apigateway_error_from_code(str code) -> API_GatewayError:
 #   ImportApiKeys (httpQuery `failOnWarnings` has unsupported type bool)
 #   ImportDocumentationParts (httpQuery `failOnWarnings` has unsupported type bool)
 #   ImportRestApi (httpQuery `failOnWarnings` has unsupported type bool)
-#   PutGatewayResponse (document member `responseParameters: dict[str, str]` is not serializable by derive)
-#   PutIntegration (document member `requestParameters: dict[str, str]` is not serializable by derive)
-#   PutIntegrationResponse (document member `responseParameters: dict[str, str]` is not serializable by derive)
-#   PutMethod (document member `requestParameters: dict[str, bool]` is not serializable by derive)
-#   PutMethodResponse (document member `responseParameters: dict[str, bool]` is not serializable by derive)
 #   PutRestApi (httpQuery `failOnWarnings` has unsupported type bool)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
-#   TestInvokeAuthorizer (document member `headers: dict[str, str]` is not serializable by derive)
-#   TestInvokeMethod (document member `headers: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateAccount (document member `patchOperations: list[PatchOperation]` is not serializable by derive)
-#   UpdateApiKey (document member `patchOperations: list[PatchOperation]` is not serializable by derive)
-#   UpdateAuthorizer (document member `patchOperations: list[PatchOperation]` is not serializable by derive)
-#   UpdateBasePathMapping (document member `patchOperations: list[PatchOperation]` is not serializable by derive)
-#   UpdateClientCertificate (document member `patchOperations: list[PatchOperation]` is not serializable by derive)
-#   UpdateDeployment (document member `patchOperations: list[PatchOperation]` is not serializable by derive)
-#   UpdateDocumentationPart (document member `patchOperations: list[PatchOperation]` is not serializable by derive)
-#   UpdateDocumentationVersion (document member `patchOperations: list[PatchOperation]` is not serializable by derive)
-#   UpdateDomainName (document member `patchOperations: list[PatchOperation]` is not serializable by derive)
-#   UpdateGatewayResponse (document member `patchOperations: list[PatchOperation]` is not serializable by derive)
-#   UpdateIntegration (document member `patchOperations: list[PatchOperation]` is not serializable by derive)
-#   UpdateIntegrationResponse (document member `patchOperations: list[PatchOperation]` is not serializable by derive)
-#   UpdateMethod (document member `patchOperations: list[PatchOperation]` is not serializable by derive)
-#   UpdateMethodResponse (document member `patchOperations: list[PatchOperation]` is not serializable by derive)
-#   UpdateModel (document member `patchOperations: list[PatchOperation]` is not serializable by derive)
-#   UpdateRequestValidator (document member `patchOperations: list[PatchOperation]` is not serializable by derive)
-#   UpdateResource (document member `patchOperations: list[PatchOperation]` is not serializable by derive)
-#   UpdateRestApi (document member `patchOperations: list[PatchOperation]` is not serializable by derive)
-#   UpdateStage (document member `patchOperations: list[PatchOperation]` is not serializable by derive)
-#   UpdateUsage (document member `patchOperations: list[PatchOperation]` is not serializable by derive)
-#   UpdateUsagePlan (document member `patchOperations: list[PatchOperation]` is not serializable by derive)
-#   UpdateVpcLink (document member `patchOperations: list[PatchOperation]` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -1965,10 +1973,190 @@ struct CreateUsagePlanKeyDocument:
     str keyId
     str keyType
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def apigateway_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def apigateway_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def apigateway_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ApiStage to a compact JSON object (declaration order).
+def api_stage_to_json(ApiStage v) -> str:
+    list[str] parts = []
+    if v.apiId.is_some():
+        auto u0 = v.apiId.unwrap()
+        parts.append("\"apiId\":" + apigateway_json_str(u0))
+    if v.stage.is_some():
+        auto u1 = v.stage.unwrap()
+        parts.append("\"stage\":" + apigateway_json_str(u1))
+    if v.throttle.is_some():
+        auto u2 = v.throttle.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(apigateway_json_str(k3) + ":" + u2[k3].to_json())
+        parts.append("\"throttle\":" + apigateway_json_obj(m3))
+    return apigateway_json_obj(parts)
+
+# Serialize CanarySettings to a compact JSON object (declaration order).
+def canary_settings_to_json(CanarySettings v) -> str:
+    list[str] parts = []
+    if v.percentTraffic.is_some():
+        auto u0 = v.percentTraffic.unwrap()
+        parts.append("\"percentTraffic\":" + str(u0))
+    if v.deploymentId.is_some():
+        auto u1 = v.deploymentId.unwrap()
+        parts.append("\"deploymentId\":" + apigateway_json_str(u1))
+    if v.stageVariableOverrides.is_some():
+        auto u2 = v.stageVariableOverrides.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(apigateway_json_str(k3) + ":" + apigateway_json_str(u2[k3]))
+        parts.append("\"stageVariableOverrides\":" + apigateway_json_obj(m3))
+    if v.useStageCache.is_some():
+        auto u4 = v.useStageCache.unwrap()
+        parts.append("\"useStageCache\":" + json.dumps(JsonValue.Bool(u4)))
+    return apigateway_json_obj(parts)
+
+# Serialize DeploymentCanarySettings to a compact JSON object (declaration order).
+def deployment_canary_settings_to_json(DeploymentCanarySettings v) -> str:
+    list[str] parts = []
+    if v.percentTraffic.is_some():
+        auto u0 = v.percentTraffic.unwrap()
+        parts.append("\"percentTraffic\":" + str(u0))
+    if v.stageVariableOverrides.is_some():
+        auto u1 = v.stageVariableOverrides.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(apigateway_json_str(k2) + ":" + apigateway_json_str(u1[k2]))
+        parts.append("\"stageVariableOverrides\":" + apigateway_json_obj(m2))
+    if v.useStageCache.is_some():
+        auto u3 = v.useStageCache.unwrap()
+        parts.append("\"useStageCache\":" + json.dumps(JsonValue.Bool(u3)))
+    return apigateway_json_obj(parts)
+
+# Serialize EndpointConfiguration to a compact JSON object (declaration order).
+def endpoint_configuration_to_json(EndpointConfiguration v) -> str:
+    list[str] parts = []
+    if v.types.is_some():
+        auto u0 = v.types.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"types\":" + apigateway_json_arr(e1))
+    if v.ipAddressType.is_some():
+        auto u2 = v.ipAddressType.unwrap()
+        parts.append("\"ipAddressType\":" + u2.to_json())
+    if v.vpcEndpointIds.is_some():
+        auto u3 = v.vpcEndpointIds.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(apigateway_json_str(x4))
+        parts.append("\"vpcEndpointIds\":" + apigateway_json_arr(e4))
+    return apigateway_json_obj(parts)
+
 # A bound API_Gateway client: credentials + region, threaded into every operation.
 struct API_GatewayClient:
     core.Credentials creds
     str region
+
+    # CreateApiKey  POST /apikeys
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def create_api_key(self, CreateApiKeyRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/apikeys", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + apigateway_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + apigateway_json_str(u1))
+        if input.enabled.is_some():
+            auto u2 = input.enabled.unwrap()
+            parts.append("\"enabled\":" + json.dumps(JsonValue.Bool(u2)))
+        if input.generateDistinctId.is_some():
+            auto u3 = input.generateDistinctId.unwrap()
+            parts.append("\"generateDistinctId\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.value.is_some():
+            auto u4 = input.value.unwrap()
+            parts.append("\"value\":" + apigateway_json_str(u4))
+        if input.stageKeys.is_some():
+            auto u5 = input.stageKeys.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"stageKeys\":" + apigateway_json_arr(e6))
+        if input.customerId.is_some():
+            auto u7 = input.customerId.unwrap()
+            parts.append("\"customerId\":" + apigateway_json_str(u7))
+        if input.tags.is_some():
+            auto u8 = input.tags.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(apigateway_json_str(k9) + ":" + apigateway_json_str(u8[k9]))
+            parts.append("\"tags\":" + apigateway_json_obj(m9))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # CreateAuthorizer  POST /restapis/{restapi_id}/authorizers
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def create_authorizer(self, CreateAuthorizerRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/authorizers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + apigateway_json_str(input.name))
+        parts.append("\"type\":" + input.type.to_json())
+        if input.providerARNs.is_some():
+            auto u0 = input.providerARNs.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(apigateway_json_str(x1))
+            parts.append("\"providerARNs\":" + apigateway_json_arr(e1))
+        if input.authType.is_some():
+            auto u2 = input.authType.unwrap()
+            parts.append("\"authType\":" + apigateway_json_str(u2))
+        if input.authorizerUri.is_some():
+            auto u3 = input.authorizerUri.unwrap()
+            parts.append("\"authorizerUri\":" + apigateway_json_str(u3))
+        if input.authorizerCredentials.is_some():
+            auto u4 = input.authorizerCredentials.unwrap()
+            parts.append("\"authorizerCredentials\":" + apigateway_json_str(u4))
+        if input.identitySource.is_some():
+            auto u5 = input.identitySource.unwrap()
+            parts.append("\"identitySource\":" + apigateway_json_str(u5))
+        if input.identityValidationExpression.is_some():
+            auto u6 = input.identityValidationExpression.unwrap()
+            parts.append("\"identityValidationExpression\":" + apigateway_json_str(u6))
+        if input.authorizerResultTtlInSeconds.is_some():
+            auto u7 = input.authorizerResultTtlInSeconds.unwrap()
+            parts.append("\"authorizerResultTtlInSeconds\":" + str(u7))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
 
     # CreateBasePathMapping  POST /domainnames/{domain_name}/basepathmappings
     # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
@@ -1982,6 +2170,44 @@ struct API_GatewayClient:
         auto b = binding.HttpBinding(method="POST", path_template="/domainnames/{domain_name}/basepathmappings", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateBasePathMappingDocument(basePath=input.basePath, restApiId=input.restApiId, stage=input.stage)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # CreateDeployment  POST /restapis/{restapi_id}/deployments
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
+    def create_deployment(self, CreateDeploymentRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/deployments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.stageName.is_some():
+            auto u0 = input.stageName.unwrap()
+            parts.append("\"stageName\":" + apigateway_json_str(u0))
+        if input.stageDescription.is_some():
+            auto u1 = input.stageDescription.unwrap()
+            parts.append("\"stageDescription\":" + apigateway_json_str(u1))
+        if input.description.is_some():
+            auto u2 = input.description.unwrap()
+            parts.append("\"description\":" + apigateway_json_str(u2))
+        if input.cacheClusterEnabled.is_some():
+            auto u3 = input.cacheClusterEnabled.unwrap()
+            parts.append("\"cacheClusterEnabled\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.cacheClusterSize.is_some():
+            auto u4 = input.cacheClusterSize.unwrap()
+            parts.append("\"cacheClusterSize\":" + u4.to_json())
+        if input.variables.is_some():
+            auto u5 = input.variables.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(apigateway_json_str(k6) + ":" + apigateway_json_str(u5[k6]))
+            parts.append("\"variables\":" + apigateway_json_obj(m6))
+        if input.canarySettings.is_some():
+            auto u7 = input.canarySettings.unwrap()
+            parts.append("\"canarySettings\":" + deployment_canary_settings_to_json(u7))
+        if input.tracingEnabled.is_some():
+            auto u8 = input.tracingEnabled.unwrap()
+            parts.append("\"tracingEnabled\":" + json.dumps(JsonValue.Bool(u8)))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
 
     # CreateDocumentationPart  POST /restapis/{restapi_id}/documentation/parts
@@ -2004,6 +2230,82 @@ struct API_GatewayClient:
         auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/documentation/versions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateDocumentationVersionDocument(documentationVersion=input.documentationVersion, stageName=input.stageName, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # CreateDomainName  POST /domainnames
+    # errors: BadRequestException, ConflictException, LimitExceededException, TooManyRequestsException, UnauthorizedException
+    def create_domain_name(self, CreateDomainNameRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/domainnames", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"domainName\":" + apigateway_json_str(input.domainName))
+        if input.certificateName.is_some():
+            auto u0 = input.certificateName.unwrap()
+            parts.append("\"certificateName\":" + apigateway_json_str(u0))
+        if input.certificateBody.is_some():
+            auto u1 = input.certificateBody.unwrap()
+            parts.append("\"certificateBody\":" + apigateway_json_str(u1))
+        if input.certificatePrivateKey.is_some():
+            auto u2 = input.certificatePrivateKey.unwrap()
+            parts.append("\"certificatePrivateKey\":" + apigateway_json_str(u2))
+        if input.certificateChain.is_some():
+            auto u3 = input.certificateChain.unwrap()
+            parts.append("\"certificateChain\":" + apigateway_json_str(u3))
+        if input.certificateArn.is_some():
+            auto u4 = input.certificateArn.unwrap()
+            parts.append("\"certificateArn\":" + apigateway_json_str(u4))
+        if input.regionalCertificateName.is_some():
+            auto u5 = input.regionalCertificateName.unwrap()
+            parts.append("\"regionalCertificateName\":" + apigateway_json_str(u5))
+        if input.regionalCertificateArn.is_some():
+            auto u6 = input.regionalCertificateArn.unwrap()
+            parts.append("\"regionalCertificateArn\":" + apigateway_json_str(u6))
+        if input.endpointConfiguration.is_some():
+            auto u7 = input.endpointConfiguration.unwrap()
+            parts.append("\"endpointConfiguration\":" + endpoint_configuration_to_json(u7))
+        if input.tags.is_some():
+            auto u8 = input.tags.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(apigateway_json_str(k9) + ":" + apigateway_json_str(u8[k9]))
+            parts.append("\"tags\":" + apigateway_json_obj(m9))
+        if input.securityPolicy.is_some():
+            auto u10 = input.securityPolicy.unwrap()
+            parts.append("\"securityPolicy\":" + u10.to_json())
+        if input.endpointAccessMode.is_some():
+            auto u11 = input.endpointAccessMode.unwrap()
+            parts.append("\"endpointAccessMode\":" + u11.to_json())
+        if input.mutualTlsAuthentication.is_some():
+            auto u12 = input.mutualTlsAuthentication.unwrap()
+            parts.append("\"mutualTlsAuthentication\":" + u12.to_json())
+        if input.ownershipVerificationCertificateArn.is_some():
+            auto u13 = input.ownershipVerificationCertificateArn.unwrap()
+            parts.append("\"ownershipVerificationCertificateArn\":" + apigateway_json_str(u13))
+        if input.policy.is_some():
+            auto u14 = input.policy.unwrap()
+            parts.append("\"policy\":" + apigateway_json_str(u14))
+        if input.routingMode.is_some():
+            auto u15 = input.routingMode.unwrap()
+            parts.append("\"routingMode\":" + u15.to_json())
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # CreateDomainNameAccessAssociation  POST /domainnameaccessassociations
+    # errors: BadRequestException, ConflictException, LimitExceededException, TooManyRequestsException, UnauthorizedException
+    def create_domain_name_access_association(self, CreateDomainNameAccessAssociationRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/domainnameaccessassociations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"domainNameArn\":" + apigateway_json_str(input.domainNameArn))
+        parts.append("\"accessAssociationSourceType\":" + apigateway_json_str(input.accessAssociationSourceType))
+        parts.append("\"accessAssociationSource\":" + apigateway_json_str(input.accessAssociationSource))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(apigateway_json_str(k1) + ":" + apigateway_json_str(u0[k1]))
+            parts.append("\"tags\":" + apigateway_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
 
     # CreateModel  POST /restapis/{restapi_id}/models
@@ -2040,6 +2342,132 @@ struct API_GatewayClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
 
+    # CreateRestApi  POST /restapis
+    # errors: BadRequestException, ConflictException, LimitExceededException, TooManyRequestsException, UnauthorizedException
+    def create_rest_api(self, CreateRestApiRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/restapis", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + apigateway_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + apigateway_json_str(u0))
+        if input.version.is_some():
+            auto u1 = input.version.unwrap()
+            parts.append("\"version\":" + apigateway_json_str(u1))
+        if input.cloneFrom.is_some():
+            auto u2 = input.cloneFrom.unwrap()
+            parts.append("\"cloneFrom\":" + apigateway_json_str(u2))
+        if input.binaryMediaTypes.is_some():
+            auto u3 = input.binaryMediaTypes.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(apigateway_json_str(x4))
+            parts.append("\"binaryMediaTypes\":" + apigateway_json_arr(e4))
+        if input.minimumCompressionSize.is_some():
+            auto u5 = input.minimumCompressionSize.unwrap()
+            parts.append("\"minimumCompressionSize\":" + str(u5))
+        if input.apiKeySource.is_some():
+            auto u6 = input.apiKeySource.unwrap()
+            parts.append("\"apiKeySource\":" + u6.to_json())
+        if input.endpointConfiguration.is_some():
+            auto u7 = input.endpointConfiguration.unwrap()
+            parts.append("\"endpointConfiguration\":" + endpoint_configuration_to_json(u7))
+        if input.policy.is_some():
+            auto u8 = input.policy.unwrap()
+            parts.append("\"policy\":" + apigateway_json_str(u8))
+        if input.tags.is_some():
+            auto u9 = input.tags.unwrap()
+            list[str] m10 = []
+            for k10 in sorted(u9.keys()):
+                m10.append(apigateway_json_str(k10) + ":" + apigateway_json_str(u9[k10]))
+            parts.append("\"tags\":" + apigateway_json_obj(m10))
+        if input.disableExecuteApiEndpoint.is_some():
+            auto u11 = input.disableExecuteApiEndpoint.unwrap()
+            parts.append("\"disableExecuteApiEndpoint\":" + json.dumps(JsonValue.Bool(u11)))
+        if input.securityPolicy.is_some():
+            auto u12 = input.securityPolicy.unwrap()
+            parts.append("\"securityPolicy\":" + u12.to_json())
+        if input.endpointAccessMode.is_some():
+            auto u13 = input.endpointAccessMode.unwrap()
+            parts.append("\"endpointAccessMode\":" + u13.to_json())
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # CreateStage  POST /restapis/{restapi_id}/stages
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def create_stage(self, CreateStageRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/stages", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"stageName\":" + apigateway_json_str(input.stageName))
+        parts.append("\"deploymentId\":" + apigateway_json_str(input.deploymentId))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + apigateway_json_str(u0))
+        if input.cacheClusterEnabled.is_some():
+            auto u1 = input.cacheClusterEnabled.unwrap()
+            parts.append("\"cacheClusterEnabled\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.cacheClusterSize.is_some():
+            auto u2 = input.cacheClusterSize.unwrap()
+            parts.append("\"cacheClusterSize\":" + u2.to_json())
+        if input.variables.is_some():
+            auto u3 = input.variables.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(apigateway_json_str(k4) + ":" + apigateway_json_str(u3[k4]))
+            parts.append("\"variables\":" + apigateway_json_obj(m4))
+        if input.documentationVersion.is_some():
+            auto u5 = input.documentationVersion.unwrap()
+            parts.append("\"documentationVersion\":" + apigateway_json_str(u5))
+        if input.canarySettings.is_some():
+            auto u6 = input.canarySettings.unwrap()
+            parts.append("\"canarySettings\":" + canary_settings_to_json(u6))
+        if input.tracingEnabled.is_some():
+            auto u7 = input.tracingEnabled.unwrap()
+            parts.append("\"tracingEnabled\":" + json.dumps(JsonValue.Bool(u7)))
+        if input.tags.is_some():
+            auto u8 = input.tags.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(apigateway_json_str(k9) + ":" + apigateway_json_str(u8[k9]))
+            parts.append("\"tags\":" + apigateway_json_obj(m9))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # CreateUsagePlan  POST /usageplans
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def create_usage_plan(self, CreateUsagePlanRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/usageplans", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + apigateway_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + apigateway_json_str(u0))
+        if input.apiStages.is_some():
+            auto u1 = input.apiStages.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(api_stage_to_json(x2))
+            parts.append("\"apiStages\":" + apigateway_json_arr(e2))
+        if input.throttle.is_some():
+            auto u3 = input.throttle.unwrap()
+            parts.append("\"throttle\":" + u3.to_json())
+        if input.quota.is_some():
+            auto u4 = input.quota.unwrap()
+            parts.append("\"quota\":" + u4.to_json())
+        if input.tags.is_some():
+            auto u5 = input.tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(apigateway_json_str(k6) + ":" + apigateway_json_str(u5[k6]))
+            parts.append("\"tags\":" + apigateway_json_obj(m6))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
     # CreateUsagePlanKey  POST /usageplans/{usageplanId}/keys
     # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
     def create_usage_plan_key(self, CreateUsagePlanKeyRequest input) -> str:
@@ -2049,6 +2477,29 @@ struct API_GatewayClient:
         auto b = binding.HttpBinding(method="POST", path_template="/usageplans/{usageplanId}/keys", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateUsagePlanKeyDocument(keyId=input.keyId, keyType=input.keyType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # CreateVpcLink  POST /vpclinks
+    # errors: BadRequestException, ConflictException, LimitExceededException, TooManyRequestsException, UnauthorizedException
+    def create_vpc_link(self, CreateVpcLinkRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/vpclinks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + apigateway_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + apigateway_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.targetArns:
+            e1.append(apigateway_json_str(x1))
+        parts.append("\"targetArns\":" + apigateway_json_arr(e1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(apigateway_json_str(k3) + ":" + apigateway_json_str(u2[k3]))
+            parts.append("\"tags\":" + apigateway_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
 
     # DeleteApiKey  DELETE /apikeys/{api_Key}
@@ -2295,6 +2746,24 @@ struct API_GatewayClient:
         labels["stage_name"] = input.stageName
         auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/stages/{stage_name}/cache/data", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
+
+    # GenerateClientCertificate  POST /clientcertificates
+    # errors: BadRequestException, ConflictException, LimitExceededException, TooManyRequestsException, UnauthorizedException
+    def generate_client_certificate(self, GenerateClientCertificateRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/clientcertificates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + apigateway_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(apigateway_json_str(k2) + ":" + apigateway_json_str(u1[k2]))
+            parts.append("\"tags\":" + apigateway_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
 
     # GetAccount  GET /account
     # errors: BadRequestException, NotFoundException, TooManyRequestsException, UnauthorizedException
@@ -2771,6 +3240,203 @@ struct API_GatewayClient:
         auto b = binding.HttpBinding(method="GET", path_template="/vpclinks", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
+    # PutGatewayResponse  PUT /restapis/{restapi_id}/gatewayresponses/{response_type}
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def put_gateway_response(self, PutGatewayResponseRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        labels["response_type"] = input.responseType
+        auto b = binding.HttpBinding(method="PUT", path_template="/restapis/{restapi_id}/gatewayresponses/{response_type}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.statusCode.is_some():
+            auto u0 = input.statusCode.unwrap()
+            parts.append("\"statusCode\":" + apigateway_json_str(u0))
+        if input.responseParameters.is_some():
+            auto u1 = input.responseParameters.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(apigateway_json_str(k2) + ":" + apigateway_json_str(u1[k2]))
+            parts.append("\"responseParameters\":" + apigateway_json_obj(m2))
+        if input.responseTemplates.is_some():
+            auto u3 = input.responseTemplates.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(apigateway_json_str(k4) + ":" + apigateway_json_str(u3[k4]))
+            parts.append("\"responseTemplates\":" + apigateway_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # PutIntegration  PUT /restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def put_integration(self, PutIntegrationRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        labels["resource_id"] = input.resourceId
+        labels["http_method"] = input.httpMethod
+        auto b = binding.HttpBinding(method="PUT", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"type\":" + input.type.to_json())
+        if input.integrationHttpMethod.is_some():
+            auto u0 = input.integrationHttpMethod.unwrap()
+            parts.append("\"httpMethod\":" + apigateway_json_str(u0))
+        if input.uri.is_some():
+            auto u1 = input.uri.unwrap()
+            parts.append("\"uri\":" + apigateway_json_str(u1))
+        if input.connectionType.is_some():
+            auto u2 = input.connectionType.unwrap()
+            parts.append("\"connectionType\":" + u2.to_json())
+        if input.connectionId.is_some():
+            auto u3 = input.connectionId.unwrap()
+            parts.append("\"connectionId\":" + apigateway_json_str(u3))
+        if input.credentials.is_some():
+            auto u4 = input.credentials.unwrap()
+            parts.append("\"credentials\":" + apigateway_json_str(u4))
+        if input.requestParameters.is_some():
+            auto u5 = input.requestParameters.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(apigateway_json_str(k6) + ":" + apigateway_json_str(u5[k6]))
+            parts.append("\"requestParameters\":" + apigateway_json_obj(m6))
+        if input.requestTemplates.is_some():
+            auto u7 = input.requestTemplates.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(apigateway_json_str(k8) + ":" + apigateway_json_str(u7[k8]))
+            parts.append("\"requestTemplates\":" + apigateway_json_obj(m8))
+        if input.passthroughBehavior.is_some():
+            auto u9 = input.passthroughBehavior.unwrap()
+            parts.append("\"passthroughBehavior\":" + apigateway_json_str(u9))
+        if input.cacheNamespace.is_some():
+            auto u10 = input.cacheNamespace.unwrap()
+            parts.append("\"cacheNamespace\":" + apigateway_json_str(u10))
+        if input.cacheKeyParameters.is_some():
+            auto u11 = input.cacheKeyParameters.unwrap()
+            list[str] e12 = []
+            for x12 in u11:
+                e12.append(apigateway_json_str(x12))
+            parts.append("\"cacheKeyParameters\":" + apigateway_json_arr(e12))
+        if input.contentHandling.is_some():
+            auto u13 = input.contentHandling.unwrap()
+            parts.append("\"contentHandling\":" + u13.to_json())
+        if input.timeoutInMillis.is_some():
+            auto u14 = input.timeoutInMillis.unwrap()
+            parts.append("\"timeoutInMillis\":" + str(u14))
+        if input.tlsConfig.is_some():
+            auto u15 = input.tlsConfig.unwrap()
+            parts.append("\"tlsConfig\":" + u15.to_json())
+        if input.responseTransferMode.is_some():
+            auto u16 = input.responseTransferMode.unwrap()
+            parts.append("\"responseTransferMode\":" + u16.to_json())
+        if input.integrationTarget.is_some():
+            auto u17 = input.integrationTarget.unwrap()
+            parts.append("\"integrationTarget\":" + apigateway_json_str(u17))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # PutIntegrationResponse  PUT /restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration/responses/{status_code}
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def put_integration_response(self, PutIntegrationResponseRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        labels["resource_id"] = input.resourceId
+        labels["http_method"] = input.httpMethod
+        labels["status_code"] = input.statusCode
+        auto b = binding.HttpBinding(method="PUT", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration/responses/{status_code}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.selectionPattern.is_some():
+            auto u0 = input.selectionPattern.unwrap()
+            parts.append("\"selectionPattern\":" + apigateway_json_str(u0))
+        if input.responseParameters.is_some():
+            auto u1 = input.responseParameters.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(apigateway_json_str(k2) + ":" + apigateway_json_str(u1[k2]))
+            parts.append("\"responseParameters\":" + apigateway_json_obj(m2))
+        if input.responseTemplates.is_some():
+            auto u3 = input.responseTemplates.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(apigateway_json_str(k4) + ":" + apigateway_json_str(u3[k4]))
+            parts.append("\"responseTemplates\":" + apigateway_json_obj(m4))
+        if input.contentHandling.is_some():
+            auto u5 = input.contentHandling.unwrap()
+            parts.append("\"contentHandling\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # PutMethod  PUT /restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def put_method(self, PutMethodRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        labels["resource_id"] = input.resourceId
+        labels["http_method"] = input.httpMethod
+        auto b = binding.HttpBinding(method="PUT", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"authorizationType\":" + apigateway_json_str(input.authorizationType))
+        if input.authorizerId.is_some():
+            auto u0 = input.authorizerId.unwrap()
+            parts.append("\"authorizerId\":" + apigateway_json_str(u0))
+        if input.apiKeyRequired.is_some():
+            auto u1 = input.apiKeyRequired.unwrap()
+            parts.append("\"apiKeyRequired\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.operationName.is_some():
+            auto u2 = input.operationName.unwrap()
+            parts.append("\"operationName\":" + apigateway_json_str(u2))
+        if input.requestParameters.is_some():
+            auto u3 = input.requestParameters.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(apigateway_json_str(k4) + ":" + json.dumps(JsonValue.Bool(u3[k4])))
+            parts.append("\"requestParameters\":" + apigateway_json_obj(m4))
+        if input.requestModels.is_some():
+            auto u5 = input.requestModels.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(apigateway_json_str(k6) + ":" + apigateway_json_str(u5[k6]))
+            parts.append("\"requestModels\":" + apigateway_json_obj(m6))
+        if input.requestValidatorId.is_some():
+            auto u7 = input.requestValidatorId.unwrap()
+            parts.append("\"requestValidatorId\":" + apigateway_json_str(u7))
+        if input.authorizationScopes.is_some():
+            auto u8 = input.authorizationScopes.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(apigateway_json_str(x9))
+            parts.append("\"authorizationScopes\":" + apigateway_json_arr(e9))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # PutMethodResponse  PUT /restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/responses/{status_code}
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def put_method_response(self, PutMethodResponseRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        labels["resource_id"] = input.resourceId
+        labels["http_method"] = input.httpMethod
+        labels["status_code"] = input.statusCode
+        auto b = binding.HttpBinding(method="PUT", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/responses/{status_code}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.responseParameters.is_some():
+            auto u0 = input.responseParameters.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(apigateway_json_str(k1) + ":" + json.dumps(JsonValue.Bool(u0[k1])))
+            parts.append("\"responseParameters\":" + apigateway_json_obj(m1))
+        if input.responseModels.is_some():
+            auto u2 = input.responseModels.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(apigateway_json_str(k3) + ":" + apigateway_json_str(u2[k3]))
+            parts.append("\"responseModels\":" + apigateway_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
     # RejectDomainNameAccessAssociation  POST /rejectdomainnameaccessassociations
     # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException, UnauthorizedException
     def reject_domain_name_access_association(self, RejectDomainNameAccessAssociationRequest input) -> str:
@@ -2780,6 +3446,508 @@ struct API_GatewayClient:
         query["domainNameArn"] = input.domainNameArn
         auto b = binding.HttpBinding(method="POST", path_template="/rejectdomainnameaccessassociations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
+
+    # TagResource  PUT /tags/{resource_arn}
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resource_arn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/tags/{resource_arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(apigateway_json_str(k0) + ":" + apigateway_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + apigateway_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # TestInvokeAuthorizer  POST /restapis/{restapi_id}/authorizers/{authorizer_id}
+    # errors: BadRequestException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def test_invoke_authorizer(self, TestInvokeAuthorizerRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        labels["authorizer_id"] = input.authorizerId
+        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/authorizers/{authorizer_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.headers.is_some():
+            auto u0 = input.headers.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(apigateway_json_str(k1) + ":" + apigateway_json_str(u0[k1]))
+            parts.append("\"headers\":" + apigateway_json_obj(m1))
+        if input.multiValueHeaders.is_some():
+            auto u2 = input.multiValueHeaders.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                list[str] e4 = []
+                for x4 in u2[k3]:
+                    e4.append(apigateway_json_str(x4))
+                m3.append(apigateway_json_str(k3) + ":" + apigateway_json_arr(e4))
+            parts.append("\"multiValueHeaders\":" + apigateway_json_obj(m3))
+        if input.pathWithQueryString.is_some():
+            auto u5 = input.pathWithQueryString.unwrap()
+            parts.append("\"pathWithQueryString\":" + apigateway_json_str(u5))
+        if input.body.is_some():
+            auto u6 = input.body.unwrap()
+            parts.append("\"body\":" + apigateway_json_str(u6))
+        if input.stageVariables.is_some():
+            auto u7 = input.stageVariables.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(apigateway_json_str(k8) + ":" + apigateway_json_str(u7[k8]))
+            parts.append("\"stageVariables\":" + apigateway_json_obj(m8))
+        if input.additionalContext.is_some():
+            auto u9 = input.additionalContext.unwrap()
+            list[str] m10 = []
+            for k10 in sorted(u9.keys()):
+                m10.append(apigateway_json_str(k10) + ":" + apigateway_json_str(u9[k10]))
+            parts.append("\"additionalContext\":" + apigateway_json_obj(m10))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # TestInvokeMethod  POST /restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}
+    # errors: BadRequestException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def test_invoke_method(self, TestInvokeMethodRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        labels["resource_id"] = input.resourceId
+        labels["http_method"] = input.httpMethod
+        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.pathWithQueryString.is_some():
+            auto u0 = input.pathWithQueryString.unwrap()
+            parts.append("\"pathWithQueryString\":" + apigateway_json_str(u0))
+        if input.body.is_some():
+            auto u1 = input.body.unwrap()
+            parts.append("\"body\":" + apigateway_json_str(u1))
+        if input.headers.is_some():
+            auto u2 = input.headers.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(apigateway_json_str(k3) + ":" + apigateway_json_str(u2[k3]))
+            parts.append("\"headers\":" + apigateway_json_obj(m3))
+        if input.multiValueHeaders.is_some():
+            auto u4 = input.multiValueHeaders.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                list[str] e6 = []
+                for x6 in u4[k5]:
+                    e6.append(apigateway_json_str(x6))
+                m5.append(apigateway_json_str(k5) + ":" + apigateway_json_arr(e6))
+            parts.append("\"multiValueHeaders\":" + apigateway_json_obj(m5))
+        if input.clientCertificateId.is_some():
+            auto u7 = input.clientCertificateId.unwrap()
+            parts.append("\"clientCertificateId\":" + apigateway_json_str(u7))
+        if input.stageVariables.is_some():
+            auto u8 = input.stageVariables.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(apigateway_json_str(k9) + ":" + apigateway_json_str(u8[k9]))
+            parts.append("\"stageVariables\":" + apigateway_json_obj(m9))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateAccount  PATCH /account
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def update_account(self, UpdateAccountRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        auto b = binding.HttpBinding(method="PATCH", path_template="/account", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.patchOperations.is_some():
+            auto u0 = input.patchOperations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"patchOperations\":" + apigateway_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateApiKey  PATCH /apikeys/{api_Key}
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def update_api_key(self, UpdateApiKeyRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["api_Key"] = input.apiKey
+        auto b = binding.HttpBinding(method="PATCH", path_template="/apikeys/{api_Key}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.patchOperations.is_some():
+            auto u0 = input.patchOperations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"patchOperations\":" + apigateway_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateAuthorizer  PATCH /restapis/{restapi_id}/authorizers/{authorizer_id}
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def update_authorizer(self, UpdateAuthorizerRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        labels["authorizer_id"] = input.authorizerId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/authorizers/{authorizer_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.patchOperations.is_some():
+            auto u0 = input.patchOperations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"patchOperations\":" + apigateway_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateBasePathMapping  PATCH /domainnames/{domain_name}/basepathmappings/{base_path}
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def update_base_path_mapping(self, UpdateBasePathMappingRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domain_name"] = input.domainName
+        labels["base_path"] = input.basePath
+        dict[str, str] query = {}
+        if input.domainNameId.is_some():
+            query["domainNameId"] = input.domainNameId.unwrap_or("")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/domainnames/{domain_name}/basepathmappings/{base_path}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.patchOperations.is_some():
+            auto u0 = input.patchOperations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"patchOperations\":" + apigateway_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateClientCertificate  PATCH /clientcertificates/{clientcertificate_id}
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def update_client_certificate(self, UpdateClientCertificateRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["clientcertificate_id"] = input.clientCertificateId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/clientcertificates/{clientcertificate_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.patchOperations.is_some():
+            auto u0 = input.patchOperations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"patchOperations\":" + apigateway_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateDeployment  PATCH /restapis/{restapi_id}/deployments/{deployment_id}
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
+    def update_deployment(self, UpdateDeploymentRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        labels["deployment_id"] = input.deploymentId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/deployments/{deployment_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.patchOperations.is_some():
+            auto u0 = input.patchOperations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"patchOperations\":" + apigateway_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateDocumentationPart  PATCH /restapis/{restapi_id}/documentation/parts/{part_id}
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def update_documentation_part(self, UpdateDocumentationPartRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        labels["part_id"] = input.documentationPartId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/documentation/parts/{part_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.patchOperations.is_some():
+            auto u0 = input.patchOperations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"patchOperations\":" + apigateway_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateDocumentationVersion  PATCH /restapis/{restapi_id}/documentation/versions/{doc_version}
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def update_documentation_version(self, UpdateDocumentationVersionRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        labels["doc_version"] = input.documentationVersion
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/documentation/versions/{doc_version}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.patchOperations.is_some():
+            auto u0 = input.patchOperations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"patchOperations\":" + apigateway_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateDomainName  PATCH /domainnames/{domain_name}
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def update_domain_name(self, UpdateDomainNameRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domain_name"] = input.domainName
+        dict[str, str] query = {}
+        if input.domainNameId.is_some():
+            query["domainNameId"] = input.domainNameId.unwrap_or("")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/domainnames/{domain_name}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.patchOperations.is_some():
+            auto u0 = input.patchOperations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"patchOperations\":" + apigateway_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateGatewayResponse  PATCH /restapis/{restapi_id}/gatewayresponses/{response_type}
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def update_gateway_response(self, UpdateGatewayResponseRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        labels["response_type"] = input.responseType
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/gatewayresponses/{response_type}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.patchOperations.is_some():
+            auto u0 = input.patchOperations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"patchOperations\":" + apigateway_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateIntegration  PATCH /restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def update_integration(self, UpdateIntegrationRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        labels["resource_id"] = input.resourceId
+        labels["http_method"] = input.httpMethod
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.patchOperations.is_some():
+            auto u0 = input.patchOperations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"patchOperations\":" + apigateway_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateIntegrationResponse  PATCH /restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration/responses/{status_code}
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def update_integration_response(self, UpdateIntegrationResponseRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        labels["resource_id"] = input.resourceId
+        labels["http_method"] = input.httpMethod
+        labels["status_code"] = input.statusCode
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration/responses/{status_code}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.patchOperations.is_some():
+            auto u0 = input.patchOperations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"patchOperations\":" + apigateway_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateMethod  PATCH /restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}
+    # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def update_method(self, UpdateMethodRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        labels["resource_id"] = input.resourceId
+        labels["http_method"] = input.httpMethod
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.patchOperations.is_some():
+            auto u0 = input.patchOperations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"patchOperations\":" + apigateway_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateMethodResponse  PATCH /restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/responses/{status_code}
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def update_method_response(self, UpdateMethodResponseRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        labels["resource_id"] = input.resourceId
+        labels["http_method"] = input.httpMethod
+        labels["status_code"] = input.statusCode
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/responses/{status_code}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.patchOperations.is_some():
+            auto u0 = input.patchOperations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"patchOperations\":" + apigateway_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateModel  PATCH /restapis/{restapi_id}/models/{model_name}
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def update_model(self, UpdateModelRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        labels["model_name"] = input.modelName
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/models/{model_name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.patchOperations.is_some():
+            auto u0 = input.patchOperations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"patchOperations\":" + apigateway_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateRequestValidator  PATCH /restapis/{restapi_id}/requestvalidators/{requestvalidator_id}
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def update_request_validator(self, UpdateRequestValidatorRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        labels["requestvalidator_id"] = input.requestValidatorId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/requestvalidators/{requestvalidator_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.patchOperations.is_some():
+            auto u0 = input.patchOperations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"patchOperations\":" + apigateway_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateResource  PATCH /restapis/{restapi_id}/resources/{resource_id}
+    # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def update_resource(self, UpdateResourceRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        labels["resource_id"] = input.resourceId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/resources/{resource_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.patchOperations.is_some():
+            auto u0 = input.patchOperations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"patchOperations\":" + apigateway_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateRestApi  PATCH /restapis/{restapi_id}
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def update_rest_api(self, UpdateRestApiRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.patchOperations.is_some():
+            auto u0 = input.patchOperations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"patchOperations\":" + apigateway_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateStage  PATCH /restapis/{restapi_id}/stages/{stage_name}
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def update_stage(self, UpdateStageRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        labels["stage_name"] = input.stageName
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/stages/{stage_name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.patchOperations.is_some():
+            auto u0 = input.patchOperations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"patchOperations\":" + apigateway_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateUsage  PATCH /usageplans/{usageplanId}/keys/{keyId}/usage
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def update_usage(self, UpdateUsageRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["usageplanId"] = input.usagePlanId
+        labels["keyId"] = input.keyId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/usageplans/{usageplanId}/keys/{keyId}/usage", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.patchOperations.is_some():
+            auto u0 = input.patchOperations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"patchOperations\":" + apigateway_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateUsagePlan  PATCH /usageplans/{usageplanId}
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def update_usage_plan(self, UpdateUsagePlanRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["usageplanId"] = input.usagePlanId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/usageplans/{usageplanId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.patchOperations.is_some():
+            auto u0 = input.patchOperations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"patchOperations\":" + apigateway_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # UpdateVpcLink  PATCH /vpclinks/{vpclink_id}
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def update_vpc_link(self, UpdateVpcLinkRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["vpclink_id"] = input.vpcLinkId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/vpclinks/{vpclink_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.patchOperations.is_some():
+            auto u0 = input.patchOperations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"patchOperations\":" + apigateway_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
 
     # Paginator for GetAuthorizers — yields each Response page, threading the
     # position -> position continuation token until it is absent (result key: items).

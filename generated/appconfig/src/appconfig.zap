@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 56 operations — 37 with a generated method,
-#   19 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 56 operations — 52 with a generated method,
+#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   112 structs (62 @derive(Json)), 14 enums, 6 error variants.
 #   11 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -193,22 +193,25 @@ struct Application:
     Optional[str] Name
     Optional[str] Description
 
-# no @derive(Json): member(s) Items: list[Application] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[Application] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Applications:
     Optional[list[Application]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AppliedExtension:
     Optional[str] ExtensionId
     Optional[str] ExtensionAssociationId
     Optional[int64] VersionNumber
     Optional[dict[str, str]] Parameters
 
-# no @derive(Json): member(s) StringArray: list[str], NumberArray: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StringArray: list[str], NumberArray: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributeValue:
     Optional[str] StringValue
     Optional[float64] NumberValue
@@ -216,13 +219,15 @@ struct AttributeValue:
     Optional[list[str]] StringArray
     Optional[list[float64]] NumberArray
 
-# no @derive(Json): member(s) InvalidConfiguration: list[InvalidConfigurationDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InvalidConfiguration: list[InvalidConfigurationDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BadRequestDetails:
     Optional[list[InvalidConfigurationDetail]] InvalidConfiguration
 
-# no @derive(Json): member(s) Details: BadRequestDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Details: BadRequestDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BadRequestException:
     Optional[str] Message
     Optional[str] Reason
@@ -234,8 +239,9 @@ struct Configuration:
     Optional[str] ConfigurationVersion
     Optional[str] ContentType
 
-# no @derive(Json): member(s) Validators: list[Validator] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Validators: list[Validator] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationProfile:
     Optional[str] ApplicationId
     Optional[str] Id
@@ -248,8 +254,9 @@ struct ConfigurationProfile:
     Optional[str] KmsKeyArn
     Optional[str] KmsKeyIdentifier
 
-# no @derive(Json): member(s) ValidatorTypes: list[ValidatorType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValidatorTypes: list[ValidatorType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationProfileSummary:
     Optional[str] ApplicationId
     Optional[str] Id
@@ -258,8 +265,9 @@ struct ConfigurationProfileSummary:
     Optional[list[ValidatorType]] ValidatorTypes
     Optional[str] Type
 
-# no @derive(Json): member(s) Items: list[ConfigurationProfileSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ConfigurationProfileSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationProfiles:
     Optional[list[ConfigurationProfileSummary]] Items
     Optional[str] NextToken
@@ -412,8 +420,9 @@ struct DeletionProtectionSettings:
     Optional[bool] Enabled
     Optional[int64] ProtectionPeriodInMinutes
 
-# no @derive(Json): member(s) EventLog: list[DeploymentEvent], AppliedExtensions: list[AppliedExtension] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventLog: list[DeploymentEvent], AppliedExtensions: list[AppliedExtension] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Deployment:
     Optional[str] ApplicationId
     Optional[str] EnvironmentId
@@ -438,8 +447,9 @@ struct Deployment:
     Optional[str] KmsKeyIdentifier
     Optional[str] VersionLabel
 
-# no @derive(Json): member(s) ActionInvocations: list[ActionInvocation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActionInvocations: list[ActionInvocation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeploymentEvent:
     Optional[DeploymentEventType] EventType
     Optional[TriggeredBy] TriggeredBy
@@ -447,14 +457,16 @@ struct DeploymentEvent:
     Optional[list[ActionInvocation]] ActionInvocations
     Optional[DateTime] OccurredAt
 
-# no @derive(Json): member(s) DynamicExtensionParameters: dict[str, str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DynamicExtensionParameters: dict[str, str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeploymentParameters:
     Optional[dict[str, str]] DynamicExtensionParameters
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Items: list[DeploymentStrategy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[DeploymentStrategy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeploymentStrategies:
     Optional[list[DeploymentStrategy]] Items
     Optional[str] NextToken
@@ -489,14 +501,16 @@ struct DeploymentSummary:
     Optional[str] VersionLabel
     Optional[DeploymentType] Type
 
-# no @derive(Json): member(s) Items: list[DeploymentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[DeploymentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Deployments:
     Optional[list[DeploymentSummary]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Monitors: list[Monitor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Monitors: list[Monitor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Environment:
     Optional[str] ApplicationId
     Optional[str] Id
@@ -505,14 +519,16 @@ struct Environment:
     Optional[EnvironmentState] State
     Optional[list[Monitor]] Monitors
 
-# no @derive(Json): member(s) Items: list[Environment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[Environment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Environments:
     Optional[list[Environment]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Treatments: list[Treatment], Control: Treatment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Treatments: list[Treatment], Control: Treatment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperimentDefinition:
     Optional[str] ApplicationId
     Optional[str] Id
@@ -531,8 +547,9 @@ struct ExperimentDefinition:
     Optional[DateTime] UpdatedAt
     Optional[str] KmsKeyIdentifier
 
-# no @derive(Json): member(s) Treatments: list[Treatment], Control: Treatment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Treatments: list[Treatment], Control: Treatment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperimentDefinitionSnapshot:
     Optional[str] ApplicationId
     Optional[str] Id
@@ -562,14 +579,16 @@ struct ExperimentDefinitionSummary:
     @json(timestamp="iso8601")
     Optional[DateTime] UpdatedAt
 
-# no @derive(Json): member(s) Items: list[ExperimentDefinitionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ExperimentDefinitionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperimentDefinitions:
     Optional[list[ExperimentDefinitionSummary]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TreatmentOverrides: TreatmentOverrides, ExperimentDefinitionSnapshot: ExperimentDefinitionSnapshot not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TreatmentOverrides: TreatmentOverrides, ExperimentDefinitionSnapshot: ExperimentDefinitionSnapshot not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperimentRun:
     Optional[str] ApplicationId
     Optional[str] ExperimentDefinitionId
@@ -584,8 +603,9 @@ struct ExperimentRun:
     Optional[DateTime] EndedAt
     Optional[ExperimentDefinitionSnapshot] ExperimentDefinitionSnapshot
 
-# no @derive(Json): member(s) TreatmentOverrides: TreatmentOverrides not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TreatmentOverrides: TreatmentOverrides not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperimentRunEvent:
     Optional[str] Description
     Optional[str] AssociatedDeployment
@@ -595,8 +615,9 @@ struct ExperimentRunEvent:
     Optional[float64] ExposurePercentage
     Optional[TreatmentOverrides] TreatmentOverrides
 
-# no @derive(Json): member(s) Items: list[ExperimentRunEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ExperimentRunEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperimentRunEvents:
     Optional[list[ExperimentRunEvent]] Items
     Optional[str] NextToken
@@ -620,14 +641,16 @@ struct ExperimentRunSummary:
     @json(timestamp="iso8601")
     Optional[DateTime] EndedAt
 
-# no @derive(Json): member(s) Items: list[ExperimentRunSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ExperimentRunSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExperimentRuns:
     Optional[list[ExperimentRunSummary]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Actions: dict[ActionPoint, list[Action]], Parameters: dict[str, Parameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: dict[ActionPoint, list[Action]], Parameters: dict[str, Parameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Extension:
     Optional[str] Id
     Optional[str] Name
@@ -637,8 +660,9 @@ struct Extension:
     Optional[dict[ActionPoint, list[Action]]] Actions
     Optional[dict[str, Parameter]] Parameters
 
-# no @derive(Json): member(s) Parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExtensionAssociation:
     Optional[str] Id
     Optional[str] ExtensionArn
@@ -653,8 +677,9 @@ struct ExtensionAssociationSummary:
     Optional[str] ExtensionArn
     Optional[str] ResourceArn
 
-# no @derive(Json): member(s) Items: list[ExtensionAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ExtensionAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExtensionAssociations:
     Optional[list[ExtensionAssociationSummary]] Items
     Optional[str] NextToken
@@ -667,14 +692,16 @@ struct ExtensionSummary:
     Optional[str] Arn
     Optional[str] Description
 
-# no @derive(Json): member(s) Items: list[ExtensionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[ExtensionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Extensions:
     Optional[list[ExtensionSummary]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AttributeValues: dict[str, AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeValues: dict[str, AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FlagValue:
     bool Enabled
     Optional[dict[str, AttributeValue]] AttributeValues
@@ -769,8 +796,9 @@ struct HostedConfigurationVersionSummary:
     Optional[str] VersionLabel
     Optional[str] KmsKeyArn
 
-# no @derive(Json): member(s) Items: list[HostedConfigurationVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[HostedConfigurationVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HostedConfigurationVersions:
     Optional[list[HostedConfigurationVersionSummary]] Items
     Optional[str] NextToken
@@ -905,8 +933,9 @@ struct ResourceNotFoundException:
     Optional[str] Message
     Optional[str] ResourceName
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceTags:
     Optional[dict[str, str]] Tags
 
@@ -962,23 +991,26 @@ struct TagResourceRequest:
     str ResourceArn
     dict[str, str] Tags
 
-# no @derive(Json): member(s) FlagValue: FlagValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FlagValue: FlagValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Treatment:
     Optional[str] Key
     float64 Weight
     Optional[str] Description
     FlagValue FlagValue
 
-# no @derive(Json): member(s) FlagValue: FlagValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FlagValue: FlagValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TreatmentInput:
     float64 Weight
     Optional[str] Description
     FlagValue FlagValue
 
-# no @derive(Json): member(s) Inline: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inline: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TreatmentOverrides:
     Optional[dict[str, str]] Inline
 
@@ -1120,25 +1152,10 @@ def appconfig_error_from_code(str code) -> AppConfigError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateApplication (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateConfigurationProfile (document member `Validators: list[Validator]` is not serializable by derive)
-#   CreateDeploymentStrategy (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateEnvironment (document member `Monitors: list[Monitor]` is not serializable by derive)
-#   CreateExperimentDefinition (document member `Treatments: list[TreatmentInput]` is not serializable by derive)
-#   CreateExtension (document member `Actions: dict[ActionPoint, list[Action]]` is not serializable by derive)
-#   CreateExtensionAssociation (document member `Parameters: dict[str, str]` is not serializable by derive)
-#   StartDeployment (document member `Tags: dict[str, str]` is not serializable by derive)
-#   StartExperimentRun (document member `TreatmentOverrides: TreatmentOverrides` is not serializable by derive)
+#   CreateExtension (document member `Actions: dict[ActionPoint, list[Action]]` is not serializable)
 #   StopDeployment (httpHeader `AllowRevert` has unsupported type bool)
-#   StopExperimentRun (document member `DeploymentParameters: DeploymentParameters` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateConfigurationProfile (document member `Validators: list[Validator]` is not serializable by derive)
-#   UpdateEnvironment (document member `Monitors: list[Monitor]` is not serializable by derive)
-#   UpdateExperimentDefinition (document member `Treatments: list[TreatmentInput]` is not serializable by derive)
-#   UpdateExperimentRun (document member `TreatmentOverrides: TreatmentOverrides` is not serializable by derive)
-#   UpdateExtension (document member `Actions: dict[ActionPoint, list[Action]]` is not serializable by derive)
-#   UpdateExtensionAssociation (document member `Parameters: dict[str, str]` is not serializable by derive)
+#   UpdateExtension (document member `Actions: dict[ActionPoint, list[Action]]` is not serializable)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1164,10 +1181,291 @@ struct UpdateDeploymentStrategyDocument:
     Optional[float64] GrowthFactor
     Optional[GrowthType] GrowthType
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def appconfig_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def appconfig_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def appconfig_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AttributeValue to a compact JSON object (declaration order).
+def attribute_value_to_json(AttributeValue v) -> str:
+    list[str] parts = []
+    if v.StringValue.is_some():
+        auto u0 = v.StringValue.unwrap()
+        parts.append("\"StringValue\":" + appconfig_json_str(u0))
+    if v.NumberValue.is_some():
+        auto u1 = v.NumberValue.unwrap()
+        parts.append("\"NumberValue\":" + str(u1))
+    if v.BooleanValue.is_some():
+        auto u2 = v.BooleanValue.unwrap()
+        parts.append("\"BooleanValue\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.StringArray.is_some():
+        auto u3 = v.StringArray.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(appconfig_json_str(x4))
+        parts.append("\"StringArray\":" + appconfig_json_arr(e4))
+    if v.NumberArray.is_some():
+        auto u5 = v.NumberArray.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(str(x6))
+        parts.append("\"NumberArray\":" + appconfig_json_arr(e6))
+    return appconfig_json_obj(parts)
+
+# Serialize DeploymentParameters to a compact JSON object (declaration order).
+def deployment_parameters_to_json(DeploymentParameters v) -> str:
+    list[str] parts = []
+    if v.DynamicExtensionParameters.is_some():
+        auto u0 = v.DynamicExtensionParameters.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(appconfig_json_str(k1) + ":" + appconfig_json_str(u0[k1]))
+        parts.append("\"DynamicExtensionParameters\":" + appconfig_json_obj(m1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(appconfig_json_str(k3) + ":" + appconfig_json_str(u2[k3]))
+        parts.append("\"Tags\":" + appconfig_json_obj(m3))
+    return appconfig_json_obj(parts)
+
+# Serialize FlagValue to a compact JSON object (declaration order).
+def flag_value_to_json(FlagValue v) -> str:
+    list[str] parts = []
+    parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(v.Enabled)))
+    if v.AttributeValues.is_some():
+        auto u0 = v.AttributeValues.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(appconfig_json_str(k1) + ":" + attribute_value_to_json(u0[k1]))
+        parts.append("\"AttributeValues\":" + appconfig_json_obj(m1))
+    return appconfig_json_obj(parts)
+
+# Serialize TreatmentInput to a compact JSON object (declaration order).
+def treatment_input_to_json(TreatmentInput v) -> str:
+    list[str] parts = []
+    parts.append("\"Weight\":" + str(v.Weight))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + appconfig_json_str(u0))
+    parts.append("\"FlagValue\":" + flag_value_to_json(v.FlagValue))
+    return appconfig_json_obj(parts)
+
+# Serialize TreatmentOverrides to a compact JSON object (declaration order).
+def treatment_overrides_to_json(TreatmentOverrides v) -> str:
+    list[str] parts = []
+    if v.Inline.is_some():
+        auto u0 = v.Inline.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(appconfig_json_str(k1) + ":" + appconfig_json_str(u0[k1]))
+        parts.append("\"Inline\":" + appconfig_json_obj(m1))
+    return appconfig_json_obj(parts)
+
 # A bound AppConfig client: credentials + region, threaded into every operation.
 struct AppConfigClient:
     core.Credentials creds
     str region
+
+    # CreateApplication  POST /applications
+    # errors: BadRequestException, InternalServerException, ServiceQuotaExceededException
+    def create_application(self, CreateApplicationRequest input) -> str:
+        auto host = endpoints.regional_host(appconfig_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + appconfig_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + appconfig_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(appconfig_json_str(k2) + ":" + appconfig_json_str(u1[k2]))
+            parts.append("\"Tags\":" + appconfig_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, appconfig_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appconfig_service(), self.region, host)
+
+    # CreateConfigurationProfile  POST /applications/{ApplicationId}/configurationprofiles
+    # errors: BadRequestException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException
+    def create_configuration_profile(self, CreateConfigurationProfileRequest input) -> str:
+        auto host = endpoints.regional_host(appconfig_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ApplicationId"] = input.ApplicationId
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{ApplicationId}/configurationprofiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + appconfig_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + appconfig_json_str(u0))
+        parts.append("\"LocationUri\":" + appconfig_json_str(input.LocationUri))
+        if input.RetrievalRoleArn.is_some():
+            auto u1 = input.RetrievalRoleArn.unwrap()
+            parts.append("\"RetrievalRoleArn\":" + appconfig_json_str(u1))
+        if input.Validators.is_some():
+            auto u2 = input.Validators.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"Validators\":" + appconfig_json_arr(e3))
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(appconfig_json_str(k5) + ":" + appconfig_json_str(u4[k5]))
+            parts.append("\"Tags\":" + appconfig_json_obj(m5))
+        if input.Type.is_some():
+            auto u6 = input.Type.unwrap()
+            parts.append("\"Type\":" + appconfig_json_str(u6))
+        if input.KmsKeyIdentifier.is_some():
+            auto u7 = input.KmsKeyIdentifier.unwrap()
+            parts.append("\"KmsKeyIdentifier\":" + appconfig_json_str(u7))
+        auto bp = restjson.rest_json_document(b, appconfig_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appconfig_service(), self.region, host)
+
+    # CreateDeploymentStrategy  POST /deploymentstrategies
+    # errors: BadRequestException, InternalServerException, ServiceQuotaExceededException
+    def create_deployment_strategy(self, CreateDeploymentStrategyRequest input) -> str:
+        auto host = endpoints.regional_host(appconfig_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/deploymentstrategies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + appconfig_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + appconfig_json_str(u0))
+        parts.append("\"DeploymentDurationInMinutes\":" + str(input.DeploymentDurationInMinutes))
+        if input.FinalBakeTimeInMinutes.is_some():
+            auto u1 = input.FinalBakeTimeInMinutes.unwrap()
+            parts.append("\"FinalBakeTimeInMinutes\":" + str(u1))
+        parts.append("\"GrowthFactor\":" + str(input.GrowthFactor))
+        if input.GrowthType.is_some():
+            auto u2 = input.GrowthType.unwrap()
+            parts.append("\"GrowthType\":" + u2.to_json())
+        if input.ReplicateTo.is_some():
+            auto u3 = input.ReplicateTo.unwrap()
+            parts.append("\"ReplicateTo\":" + u3.to_json())
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(appconfig_json_str(k5) + ":" + appconfig_json_str(u4[k5]))
+            parts.append("\"Tags\":" + appconfig_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, appconfig_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appconfig_service(), self.region, host)
+
+    # CreateEnvironment  POST /applications/{ApplicationId}/environments
+    # errors: BadRequestException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException
+    def create_environment(self, CreateEnvironmentRequest input) -> str:
+        auto host = endpoints.regional_host(appconfig_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ApplicationId"] = input.ApplicationId
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{ApplicationId}/environments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + appconfig_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + appconfig_json_str(u0))
+        if input.Monitors.is_some():
+            auto u1 = input.Monitors.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Monitors\":" + appconfig_json_arr(e2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(appconfig_json_str(k4) + ":" + appconfig_json_str(u3[k4]))
+            parts.append("\"Tags\":" + appconfig_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, appconfig_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appconfig_service(), self.region, host)
+
+    # CreateExperimentDefinition  POST /applications/{ApplicationIdentifier}/experimentdefinitions
+    # errors: BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException
+    def create_experiment_definition(self, CreateExperimentDefinitionRequest input) -> str:
+        auto host = endpoints.regional_host(appconfig_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ApplicationIdentifier"] = input.ApplicationIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + appconfig_json_str(input.Name))
+        parts.append("\"ConfigurationProfileIdentifier\":" + appconfig_json_str(input.ConfigurationProfileIdentifier))
+        parts.append("\"EnvironmentIdentifier\":" + appconfig_json_str(input.EnvironmentIdentifier))
+        parts.append("\"FlagKey\":" + appconfig_json_str(input.FlagKey))
+        list[str] e0 = []
+        for x0 in input.Treatments:
+            e0.append(treatment_input_to_json(x0))
+        parts.append("\"Treatments\":" + appconfig_json_arr(e0))
+        parts.append("\"Control\":" + treatment_input_to_json(input.Control))
+        parts.append("\"AudienceRule\":" + appconfig_json_str(input.AudienceRule))
+        if input.Hypothesis.is_some():
+            auto u1 = input.Hypothesis.unwrap()
+            parts.append("\"Hypothesis\":" + appconfig_json_str(u1))
+        if input.AudienceDescription.is_some():
+            auto u2 = input.AudienceDescription.unwrap()
+            parts.append("\"AudienceDescription\":" + appconfig_json_str(u2))
+        if input.LaunchCriteria.is_some():
+            auto u3 = input.LaunchCriteria.unwrap()
+            parts.append("\"LaunchCriteria\":" + appconfig_json_str(u3))
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(appconfig_json_str(k5) + ":" + appconfig_json_str(u4[k5]))
+            parts.append("\"Tags\":" + appconfig_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, appconfig_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appconfig_service(), self.region, host)
+
+    # CreateExtensionAssociation  POST /extensionassociations
+    # errors: BadRequestException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException
+    def create_extension_association(self, CreateExtensionAssociationRequest input) -> str:
+        auto host = endpoints.regional_host(appconfig_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/extensionassociations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ExtensionIdentifier\":" + appconfig_json_str(input.ExtensionIdentifier))
+        if input.ExtensionVersionNumber.is_some():
+            auto u0 = input.ExtensionVersionNumber.unwrap()
+            parts.append("\"ExtensionVersionNumber\":" + str(u0))
+        parts.append("\"ResourceIdentifier\":" + appconfig_json_str(input.ResourceIdentifier))
+        if input.Parameters.is_some():
+            auto u1 = input.Parameters.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(appconfig_json_str(k2) + ":" + appconfig_json_str(u1[k2]))
+            parts.append("\"Parameters\":" + appconfig_json_obj(m2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(appconfig_json_str(k4) + ":" + appconfig_json_str(u3[k4]))
+            parts.append("\"Tags\":" + appconfig_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, appconfig_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appconfig_service(), self.region, host)
 
     # CreateHostedConfigurationVersion  POST /applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}/hostedconfigurationversions
     # errors: BadRequestException, ConflictException, InternalServerException, PayloadTooLargeException, ResourceNotFoundException, ServiceQuotaExceededException
@@ -1581,6 +1879,106 @@ struct AppConfigClient:
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
+    # StartDeployment  POST /applications/{ApplicationId}/environments/{EnvironmentId}/deployments
+    # errors: BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException
+    def start_deployment(self, StartDeploymentRequest input) -> str:
+        auto host = endpoints.regional_host(appconfig_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ApplicationId"] = input.ApplicationId
+        labels["EnvironmentId"] = input.EnvironmentId
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{ApplicationId}/environments/{EnvironmentId}/deployments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"DeploymentStrategyId\":" + appconfig_json_str(input.DeploymentStrategyId))
+        parts.append("\"ConfigurationProfileId\":" + appconfig_json_str(input.ConfigurationProfileId))
+        parts.append("\"ConfigurationVersion\":" + appconfig_json_str(input.ConfigurationVersion))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + appconfig_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(appconfig_json_str(k2) + ":" + appconfig_json_str(u1[k2]))
+            parts.append("\"Tags\":" + appconfig_json_obj(m2))
+        if input.KmsKeyIdentifier.is_some():
+            auto u3 = input.KmsKeyIdentifier.unwrap()
+            parts.append("\"KmsKeyIdentifier\":" + appconfig_json_str(u3))
+        if input.DynamicExtensionParameters.is_some():
+            auto u4 = input.DynamicExtensionParameters.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(appconfig_json_str(k5) + ":" + appconfig_json_str(u4[k5]))
+            parts.append("\"DynamicExtensionParameters\":" + appconfig_json_obj(m5))
+        if input.LatestDeploymentNumber.is_some():
+            auto u6 = input.LatestDeploymentNumber.unwrap()
+            parts.append("\"LatestDeploymentNumber\":" + str(u6))
+        auto bp = restjson.rest_json_document(b, appconfig_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appconfig_service(), self.region, host)
+
+    # StartExperimentRun  POST /applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns
+    # errors: BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException
+    def start_experiment_run(self, StartExperimentRunRequest input) -> str:
+        auto host = endpoints.regional_host(appconfig_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ApplicationIdentifier"] = input.ApplicationIdentifier
+        labels["ExperimentDefinitionIdentifier"] = input.ExperimentDefinitionIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + appconfig_json_str(u0))
+        if input.ExposurePercentage.is_some():
+            auto u1 = input.ExposurePercentage.unwrap()
+            parts.append("\"ExposurePercentage\":" + str(u1))
+        if input.TreatmentOverrides.is_some():
+            auto u2 = input.TreatmentOverrides.unwrap()
+            parts.append("\"TreatmentOverrides\":" + treatment_overrides_to_json(u2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(appconfig_json_str(k4) + ":" + appconfig_json_str(u3[k4]))
+            parts.append("\"Tags\":" + appconfig_json_obj(m4))
+        if input.DeploymentParameters.is_some():
+            auto u5 = input.DeploymentParameters.unwrap()
+            parts.append("\"DeploymentParameters\":" + deployment_parameters_to_json(u5))
+        auto bp = restjson.rest_json_document(b, appconfig_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appconfig_service(), self.region, host)
+
+    # StopExperimentRun  PATCH /applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns/{Run}/stop
+    # errors: BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException
+    def stop_experiment_run(self, StopExperimentRunRequest input) -> str:
+        auto host = endpoints.regional_host(appconfig_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ApplicationIdentifier"] = input.ApplicationIdentifier
+        labels["ExperimentDefinitionIdentifier"] = input.ExperimentDefinitionIdentifier
+        labels["Run"] = str(input.Run)
+        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns/{Run}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Result.is_some():
+            auto u0 = input.Result.unwrap()
+            parts.append("\"Result\":" + u0.to_json())
+        if input.DeploymentParameters.is_some():
+            auto u1 = input.DeploymentParameters.unwrap()
+            parts.append("\"DeploymentParameters\":" + deployment_parameters_to_json(u1))
+        auto bp = restjson.rest_json_document(b, appconfig_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appconfig_service(), self.region, host)
+
+    # TagResource  POST /tags/{ResourceArn}
+    # errors: BadRequestException, InternalServerException, ResourceNotFoundException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(appconfig_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(appconfig_json_str(k0) + ":" + appconfig_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + appconfig_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, appconfig_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appconfig_service(), self.region, host)
+
     # UpdateAccountSettings  PATCH /settings
     # errors: BadRequestException, InternalServerException
     def update_account_settings(self, UpdateAccountSettingsRequest input) -> str:
@@ -1601,6 +1999,36 @@ struct AppConfigClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appconfig_service(), self.region, host)
 
+    # UpdateConfigurationProfile  PATCH /applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}
+    # errors: BadRequestException, InternalServerException, ResourceNotFoundException
+    def update_configuration_profile(self, UpdateConfigurationProfileRequest input) -> str:
+        auto host = endpoints.regional_host(appconfig_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ApplicationId"] = input.ApplicationId
+        labels["ConfigurationProfileId"] = input.ConfigurationProfileId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + appconfig_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + appconfig_json_str(u1))
+        if input.RetrievalRoleArn.is_some():
+            auto u2 = input.RetrievalRoleArn.unwrap()
+            parts.append("\"RetrievalRoleArn\":" + appconfig_json_str(u2))
+        if input.Validators.is_some():
+            auto u3 = input.Validators.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"Validators\":" + appconfig_json_arr(e4))
+        if input.KmsKeyIdentifier.is_some():
+            auto u5 = input.KmsKeyIdentifier.unwrap()
+            parts.append("\"KmsKeyIdentifier\":" + appconfig_json_str(u5))
+        auto bp = restjson.rest_json_document(b, appconfig_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appconfig_service(), self.region, host)
+
     # UpdateDeploymentStrategy  PATCH /deploymentstrategies/{DeploymentStrategyId}
     # errors: BadRequestException, InternalServerException, ResourceNotFoundException
     def update_deployment_strategy(self, UpdateDeploymentStrategyRequest input) -> str:
@@ -1610,6 +2038,105 @@ struct AppConfigClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/deploymentstrategies/{DeploymentStrategyId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDeploymentStrategyDocument(Description=input.Description, DeploymentDurationInMinutes=input.DeploymentDurationInMinutes, FinalBakeTimeInMinutes=input.FinalBakeTimeInMinutes, GrowthFactor=input.GrowthFactor, GrowthType=input.GrowthType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, appconfig_service(), self.region, host)
+
+    # UpdateEnvironment  PATCH /applications/{ApplicationId}/environments/{EnvironmentId}
+    # errors: BadRequestException, InternalServerException, ResourceNotFoundException
+    def update_environment(self, UpdateEnvironmentRequest input) -> str:
+        auto host = endpoints.regional_host(appconfig_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ApplicationId"] = input.ApplicationId
+        labels["EnvironmentId"] = input.EnvironmentId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{ApplicationId}/environments/{EnvironmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"Name\":" + appconfig_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"Description\":" + appconfig_json_str(u1))
+        if input.Monitors.is_some():
+            auto u2 = input.Monitors.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"Monitors\":" + appconfig_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, appconfig_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appconfig_service(), self.region, host)
+
+    # UpdateExperimentDefinition  PATCH /applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}
+    # errors: BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException
+    def update_experiment_definition(self, UpdateExperimentDefinitionRequest input) -> str:
+        auto host = endpoints.regional_host(appconfig_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ApplicationIdentifier"] = input.ApplicationIdentifier
+        labels["ExperimentDefinitionIdentifier"] = input.ExperimentDefinitionIdentifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Treatments.is_some():
+            auto u0 = input.Treatments.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(treatment_input_to_json(x1))
+            parts.append("\"Treatments\":" + appconfig_json_arr(e1))
+        if input.Control.is_some():
+            auto u2 = input.Control.unwrap()
+            parts.append("\"Control\":" + treatment_input_to_json(u2))
+        if input.Hypothesis.is_some():
+            auto u3 = input.Hypothesis.unwrap()
+            parts.append("\"Hypothesis\":" + appconfig_json_str(u3))
+        if input.AudienceRule.is_some():
+            auto u4 = input.AudienceRule.unwrap()
+            parts.append("\"AudienceRule\":" + appconfig_json_str(u4))
+        if input.AudienceDescription.is_some():
+            auto u5 = input.AudienceDescription.unwrap()
+            parts.append("\"AudienceDescription\":" + appconfig_json_str(u5))
+        if input.LaunchCriteria.is_some():
+            auto u6 = input.LaunchCriteria.unwrap()
+            parts.append("\"LaunchCriteria\":" + appconfig_json_str(u6))
+        auto bp = restjson.rest_json_document(b, appconfig_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appconfig_service(), self.region, host)
+
+    # UpdateExperimentRun  PATCH /applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns/{Run}/update
+    # errors: BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException
+    def update_experiment_run(self, UpdateExperimentRunRequest input) -> str:
+        auto host = endpoints.regional_host(appconfig_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ApplicationIdentifier"] = input.ApplicationIdentifier
+        labels["ExperimentDefinitionIdentifier"] = input.ExperimentDefinitionIdentifier
+        labels["Run"] = str(input.Run)
+        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns/{Run}/update", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + appconfig_json_str(u0))
+        if input.ExposurePercentage.is_some():
+            auto u1 = input.ExposurePercentage.unwrap()
+            parts.append("\"ExposurePercentage\":" + str(u1))
+        if input.TreatmentOverrides.is_some():
+            auto u2 = input.TreatmentOverrides.unwrap()
+            parts.append("\"TreatmentOverrides\":" + treatment_overrides_to_json(u2))
+        if input.DeploymentParameters.is_some():
+            auto u3 = input.DeploymentParameters.unwrap()
+            parts.append("\"DeploymentParameters\":" + deployment_parameters_to_json(u3))
+        auto bp = restjson.rest_json_document(b, appconfig_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appconfig_service(), self.region, host)
+
+    # UpdateExtensionAssociation  PATCH /extensionassociations/{ExtensionAssociationId}
+    # errors: BadRequestException, InternalServerException, ResourceNotFoundException
+    def update_extension_association(self, UpdateExtensionAssociationRequest input) -> str:
+        auto host = endpoints.regional_host(appconfig_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ExtensionAssociationId"] = input.ExtensionAssociationId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/extensionassociations/{ExtensionAssociationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Parameters.is_some():
+            auto u0 = input.Parameters.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(appconfig_json_str(k1) + ":" + appconfig_json_str(u0[k1]))
+            parts.append("\"Parameters\":" + appconfig_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, appconfig_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, appconfig_service(), self.region, host)
 
     # ValidateConfiguration  POST /applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}/validators

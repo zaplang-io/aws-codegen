@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 195 operations — 129 with a generated method,
-#   66 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 195 operations — 182 with a generated method,
+#   13 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   746 structs (434 @derive(Json)), 91 enums, 8 error variants.
-#   31 paginators generated (10 paginated ops skipped) from paginators-1.json.
+#   35 paginators generated (6 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -966,8 +966,9 @@ struct AcceptSubscriptionRequestInput:
     Optional[list[AcceptedAssetScope]] assetScopes
     Optional[list[AssetPermission]] assetPermissions
 
-# no @derive(Json): member(s) subscribedPrincipals: list[SubscribedPrincipal], subscribedListings: list[SubscribedListing], metadataForms: list[FormOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscribedPrincipals: list[SubscribedPrincipal], subscribedListings: list[SubscribedListing], metadataForms: list[FormOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AcceptSubscriptionRequestOutput:
     str id
     str createdBy
@@ -984,8 +985,9 @@ struct AcceptSubscriptionRequestOutput:
     Optional[str] existingSubscriptionId
     Optional[list[FormOutput]] metadataForms
 
-# no @derive(Json): member(s) filterIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filterIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AcceptedAssetScope:
     str assetId
     list[str] filterIds
@@ -994,8 +996,9 @@ struct AcceptedAssetScope:
 struct AccessDeniedException:
     str message
 
-# no @derive(Json): member(s) supportedRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) supportedRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccountInfo:
     str awsAccountId
     list[str] supportedRegions
@@ -1011,8 +1014,9 @@ struct AccountPoolSummary:
     Optional[str] createdBy
     Optional[str] updatedBy
 
-# no @derive(Json): member(s) accounts: list[AccountInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accounts: list[AccountInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccountSource:
     Optional[list[AccountInfo]] accounts
     Optional[CustomAccountPoolHandler] customAccountPoolHandler
@@ -1055,8 +1059,9 @@ struct AddPolicyGrantOutput:
 struct AddToProjectMemberPoolPolicyGrantDetail:
     Optional[bool] includeChildDomainUnits
 
-# no @derive(Json): member(s) formNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) formNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdditionalAttributes:
     Optional[list[str]] formNames
 
@@ -1065,8 +1070,9 @@ struct AggregationListItem:
     str attribute
     Optional[str] displayValue
 
-# no @derive(Json): member(s) items: list[AggregationOutputItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[AggregationOutputItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AggregationOutput:
     Optional[str] attribute
     Optional[str] displayValue
@@ -1106,14 +1112,16 @@ struct AmazonQPropertiesPatch:
     Optional[str] profileArn
     Optional[str] authMode
 
-# no @derive(Json): member(s) columnConfiguration: ColumnFilterConfiguration, rowConfiguration: RowFilterConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) columnConfiguration: ColumnFilterConfiguration, rowConfiguration: RowFilterConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetFilterConfiguration:
     Optional[ColumnFilterConfiguration] columnConfiguration
     Optional[RowFilterConfiguration] rowConfiguration
 
-# no @derive(Json): member(s) effectiveColumnNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) effectiveColumnNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetFilterSummary:
     str id
     str domainId
@@ -1132,8 +1140,9 @@ struct AssetInDataProductListingItem:
     Optional[str] entityRevision
     Optional[str] entityType
 
-# no @derive(Json): member(s) glossaryTerms: list[str], additionalAttributes: AssetItemAdditionalAttributes, governedGlossaryTerms: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glossaryTerms: list[str], additionalAttributes: AssetItemAdditionalAttributes, governedGlossaryTerms: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetItem:
     str domainId
     str identifier
@@ -1151,16 +1160,18 @@ struct AssetItem:
     Optional[AssetItemAdditionalAttributes] additionalAttributes
     Optional[list[str]] governedGlossaryTerms
 
-# no @derive(Json): member(s) formsOutput: list[FormOutput], readOnlyFormsOutput: list[FormOutput], latestTimeSeriesDataPointFormsOutput: list[TimeSeriesDataPointSummaryFormOutput], matchRationale: list[MatchRationaleItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) formsOutput: list[FormOutput], readOnlyFormsOutput: list[FormOutput], latestTimeSeriesDataPointFormsOutput: list[TimeSeriesDataPointSummaryFormOutput], matchRationale: list[MatchRationaleItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetItemAdditionalAttributes:
     Optional[list[FormOutput]] formsOutput
     Optional[list[FormOutput]] readOnlyFormsOutput
     Optional[list[TimeSeriesDataPointSummaryFormOutput]] latestTimeSeriesDataPointFormsOutput
     Optional[list[MatchRationaleItem]] matchRationale
 
-# no @derive(Json): member(s) latestTimeSeriesDataPointForms: list[TimeSeriesDataPointSummaryFormOutput], glossaryTerms: list[DetailedGlossaryTerm], governedGlossaryTerms: list[DetailedGlossaryTerm] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) latestTimeSeriesDataPointForms: list[TimeSeriesDataPointSummaryFormOutput], glossaryTerms: list[DetailedGlossaryTerm], governedGlossaryTerms: list[DetailedGlossaryTerm] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetListing:
     Optional[str] assetId
     Optional[str] assetRevision
@@ -1177,8 +1188,9 @@ struct AssetListingDetails:
     str listingId
     ListingStatus listingStatus
 
-# no @derive(Json): member(s) glossaryTerms: list[DetailedGlossaryTerm], governedGlossaryTerms: list[DetailedGlossaryTerm], additionalAttributes: AssetListingItemAdditionalAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glossaryTerms: list[DetailedGlossaryTerm], governedGlossaryTerms: list[DetailedGlossaryTerm], additionalAttributes: AssetListingItemAdditionalAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetListingItem:
     Optional[str] listingId
     Optional[str] listingRevision
@@ -1195,15 +1207,17 @@ struct AssetListingItem:
     Optional[str] owningProjectId
     Optional[AssetListingItemAdditionalAttributes] additionalAttributes
 
-# no @derive(Json): member(s) matchRationale: list[MatchRationaleItem], latestTimeSeriesDataPointForms: list[TimeSeriesDataPointSummaryFormOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) matchRationale: list[MatchRationaleItem], latestTimeSeriesDataPointForms: list[TimeSeriesDataPointSummaryFormOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetListingItemAdditionalAttributes:
     Optional[str] forms
     Optional[list[MatchRationaleItem]] matchRationale
     Optional[list[TimeSeriesDataPointSummaryFormOutput]] latestTimeSeriesDataPointForms
 
-# no @derive(Json): member(s) permissions: Permissions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) permissions: Permissions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetPermission:
     str assetId
     Permissions permissions
@@ -1216,8 +1230,9 @@ struct AssetRevision:
     Optional[str] createdBy
     Optional[DateTime] createdAt
 
-# no @derive(Json): member(s) filterIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filterIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetScope:
     str assetId
     list[str] filterIds
@@ -1230,8 +1245,9 @@ struct AssetTargetNameMap:
     str assetId
     str targetName
 
-# no @derive(Json): member(s) formsOutput: dict[str, FormEntryOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) formsOutput: dict[str, FormEntryOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetTypeItem:
     str domainId
     str name
@@ -1246,8 +1262,9 @@ struct AssetTypeItem:
     Optional[DateTime] updatedAt
     Optional[str] updatedBy
 
-# no @derive(Json): member(s) specificAssetTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) specificAssetTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetTypesForRule:
     RuleScopeSelectionMode selectionMode
     Optional[list[str]] specificAssetTypes
@@ -1295,21 +1312,24 @@ struct AttributeError:
     str code
     str message
 
-# no @derive(Json): member(s) forms: list[FormInput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) forms: list[FormInput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributeInput:
     str attributeIdentifier
     list[FormInput] forms
 
-# no @derive(Json): member(s) oAuth2Properties: OAuth2Properties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oAuth2Properties: OAuth2Properties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthenticationConfiguration:
     Optional[AuthenticationType] authenticationType
     Optional[str] secretArn
     Optional[OAuth2Properties] oAuth2Properties
 
-# no @derive(Json): member(s) oAuth2Properties: OAuth2Properties, customAuthenticationCredentials: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oAuth2Properties: OAuth2Properties, customAuthenticationCredentials: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthenticationConfigurationInput:
     Optional[AuthenticationType] authenticationType
     Optional[OAuth2Properties] oAuth2Properties
@@ -1349,8 +1369,9 @@ struct BasicAuthenticationCredentials:
     Optional[str] userName
     Optional[str] password
 
-# no @derive(Json): member(s) forms: list[FormOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) forms: list[FormOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetAttributeOutput:
     str attributeIdentifier
     Optional[list[FormOutput]] forms
@@ -1365,8 +1386,9 @@ struct BatchGetAttributesMetadataInput:
     Optional[str] entityRevision
     list[str] attributeIdentifiers
 
-# no @derive(Json): member(s) attributes: list[BatchGetAttributeOutput], errors: list[AttributeError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: list[BatchGetAttributeOutput], errors: list[AttributeError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetAttributesMetadataOutput:
     Optional[list[BatchGetAttributeOutput]] attributes
     list[AttributeError] errors
@@ -1385,8 +1407,9 @@ struct BatchPutAttributesMetadataInput:
     Optional[str] clientToken
     list[AttributeInput] attributes
 
-# no @derive(Json): member(s) errors: list[AttributeError], attributes: list[BatchPutAttributeOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[AttributeError], attributes: list[BatchPutAttributeOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchPutAttributesMetadataOutput:
     Optional[list[AttributeError]] errors
     Optional[list[BatchPutAttributeOutput]] attributes
@@ -1412,8 +1435,9 @@ struct CancelSubscriptionInput:
     str domainIdentifier
     str identifier
 
-# no @derive(Json): member(s) subscribedListing: SubscribedListing not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscribedListing: SubscribedListing not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CancelSubscriptionOutput:
     str id
     str createdBy
@@ -1436,8 +1460,9 @@ struct CellInformation:
 struct CloudFormationProperties:
     str templateUrl
 
-# no @derive(Json): member(s) includedColumnNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) includedColumnNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ColumnFilterConfiguration:
     Optional[list[str]] includedColumnNames
 
@@ -1451,15 +1476,17 @@ struct ConfigurableActionParameter:
     Optional[str] key
     Optional[str] value
 
-# no @derive(Json): member(s) parameters: list[ConfigurableActionParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: list[ConfigurableActionParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurableEnvironmentAction:
     str type
     Optional[ConfigurableActionTypeAuthorization] auth
     list[ConfigurableActionParameter] parameters
 
-# no @derive(Json): member(s) properties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Configuration:
     Optional[str] classification
     Optional[dict[str, str]] properties
@@ -1476,8 +1503,9 @@ struct ConnectionCredentials:
     @json(timestamp="iso8601")
     Optional[DateTime] expiration
 
-# no @derive(Json): member(s) glueProperties: GluePropertiesInput, sparkGlueProperties: SparkGluePropertiesInput, snowflakeProperties: SnowflakePropertiesInput, vpcProperties: VpcPropertiesInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glueProperties: GluePropertiesInput, sparkGlueProperties: SparkGluePropertiesInput, snowflakeProperties: SnowflakePropertiesInput, vpcProperties: VpcPropertiesInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectionPropertiesInput:
     Optional[AthenaPropertiesInput] athenaProperties
     Optional[GluePropertiesInput] glueProperties
@@ -1496,8 +1524,9 @@ struct ConnectionPropertiesInput:
     Optional[VpcPropertiesInput] vpcProperties
     Optional[GitPropertiesInput] gitProperties
 
-# no @derive(Json): member(s) sparkGlueProperties: SparkGluePropertiesOutput, vpcProperties: VpcPropertiesOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sparkGlueProperties: SparkGluePropertiesOutput, vpcProperties: VpcPropertiesOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectionPropertiesOutput:
     Optional[AthenaPropertiesOutput] athenaProperties
     Optional[GluePropertiesOutput] glueProperties
@@ -1516,8 +1545,9 @@ struct ConnectionPropertiesOutput:
     Optional[VpcPropertiesOutput] vpcProperties
     Optional[GitPropertiesOutput] gitProperties
 
-# no @derive(Json): member(s) glueProperties: GluePropertiesPatch, snowflakeProperties: SnowflakePropertiesPatch, vpcProperties: VpcPropertiesPatch not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glueProperties: GluePropertiesPatch, snowflakeProperties: SnowflakePropertiesPatch, vpcProperties: VpcPropertiesPatch not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectionPropertiesPatch:
     Optional[AthenaPropertiesPatch] athenaProperties
     Optional[GluePropertiesPatch] glueProperties
@@ -1532,8 +1562,9 @@ struct ConnectionPropertiesPatch:
     Optional[VpcPropertiesPatch] vpcProperties
     Optional[GitPropertiesPatch] gitProperties
 
-# no @derive(Json): member(s) configurations: list[Configuration], physicalEndpoints: list[PhysicalEndpoint], props: ConnectionPropertiesOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurations: list[Configuration], physicalEndpoints: list[PhysicalEndpoint], props: ConnectionPropertiesOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectionSummary:
     Optional[list[Configuration]] configurations
     str connectionId
@@ -1548,8 +1579,9 @@ struct ConnectionSummary:
     # wire name "scope" differs from field; derive rename is a #346 follow-up
     Optional[ConnectionScope] scope_
 
-# no @derive(Json): member(s) connectionProperties: dict[str, str], physicalConnectionRequirements: PhysicalConnectionRequirements, validateForComputeEnvironments: list[ComputeEnvironments], sparkProperties: dict[str, str], athenaProperties: dict[str, str], pythonProperties: dict[str, str], authenticationConfiguration: AuthenticationConfigurationInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectionProperties: dict[str, str], physicalConnectionRequirements: PhysicalConnectionRequirements, validateForComputeEnvironments: list[ComputeEnvironments], sparkProperties: dict[str, str], athenaProperties: dict[str, str], pythonProperties: dict[str, str], authenticationConfiguration: AuthenticationConfigurationInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectivityProperties:
     Optional[dict[str, str]] connectionProperties
     Optional[PhysicalConnectionRequirements] physicalConnectionRequirements
@@ -1562,8 +1594,9 @@ struct ConnectivityProperties:
     Optional[dict[str, str]] pythonProperties
     Optional[AuthenticationConfigurationInput] authenticationConfiguration
 
-# no @derive(Json): member(s) connectionProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectionProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectivityPropertiesPatch:
     Optional[str] description
     Optional[dict[str, str]] connectionProperties
@@ -1578,8 +1611,9 @@ struct CreateAccountPoolInput:
     str resolutionStrategy
     AccountSource accountSource
 
-# no @derive(Json): member(s) accountSource: AccountSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountSource: AccountSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAccountPoolOutput:
     Optional[str] domainId
     Optional[str] name
@@ -1603,8 +1637,9 @@ struct CreateAssetFilterInput:
     AssetFilterConfiguration configuration
     Optional[str] clientToken
 
-# no @derive(Json): member(s) configuration: AssetFilterConfiguration, effectiveColumnNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: AssetFilterConfiguration, effectiveColumnNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAssetFilterOutput:
     str id
     str domainId
@@ -1633,8 +1668,9 @@ struct CreateAssetInput:
     Optional[PredictionConfiguration] predictionConfiguration
     Optional[str] clientToken
 
-# no @derive(Json): member(s) glossaryTerms: list[str], governedGlossaryTerms: list[str], formsOutput: list[FormOutput], readOnlyFormsOutput: list[FormOutput], latestTimeSeriesDataPointFormsOutput: list[TimeSeriesDataPointSummaryFormOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glossaryTerms: list[str], governedGlossaryTerms: list[str], formsOutput: list[FormOutput], readOnlyFormsOutput: list[FormOutput], latestTimeSeriesDataPointFormsOutput: list[TimeSeriesDataPointSummaryFormOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAssetOutput:
     str id
     str name
@@ -1670,8 +1706,9 @@ struct CreateAssetRevisionInput:
     Optional[PredictionConfiguration] predictionConfiguration
     Optional[str] clientToken
 
-# no @derive(Json): member(s) glossaryTerms: list[str], governedGlossaryTerms: list[str], formsOutput: list[FormOutput], readOnlyFormsOutput: list[FormOutput], latestTimeSeriesDataPointFormsOutput: list[TimeSeriesDataPointSummaryFormOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glossaryTerms: list[str], governedGlossaryTerms: list[str], formsOutput: list[FormOutput], readOnlyFormsOutput: list[FormOutput], latestTimeSeriesDataPointFormsOutput: list[TimeSeriesDataPointSummaryFormOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAssetRevisionOutput:
     str id
     str name
@@ -1703,8 +1740,9 @@ struct CreateAssetTypeInput:
     dict[str, FormEntryInput] formsInput
     str owningProjectIdentifier
 
-# no @derive(Json): member(s) formsOutput: dict[str, FormEntryOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) formsOutput: dict[str, FormEntryOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAssetTypeOutput:
     str domainId
     str name
@@ -1738,8 +1776,9 @@ struct CreateConnectionInput:
     # wire name "scope" differs from field; derive rename is a #346 follow-up
     Optional[ConnectionScope] scope_
 
-# no @derive(Json): member(s) configurations: list[Configuration], physicalEndpoints: list[PhysicalEndpoint], props: ConnectionPropertiesOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurations: list[Configuration], physicalEndpoints: list[PhysicalEndpoint], props: ConnectionPropertiesOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConnectionOutput:
     str connectionId
     Optional[list[Configuration]] configurations
@@ -1767,8 +1806,9 @@ struct CreateDataProductInput:
     Optional[list[DataProductItem]] items
     Optional[str] clientToken
 
-# no @derive(Json): member(s) glossaryTerms: list[str], items: list[DataProductItem], formsOutput: list[FormOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glossaryTerms: list[str], items: list[DataProductItem], formsOutput: list[FormOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDataProductOutput:
     str domainId
     str id
@@ -1797,8 +1837,9 @@ struct CreateDataProductRevisionInput:
     Optional[list[FormInput]] formsInput
     Optional[str] clientToken
 
-# no @derive(Json): member(s) glossaryTerms: list[str], items: list[DataProductItem], formsOutput: list[FormOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glossaryTerms: list[str], items: list[DataProductItem], formsOutput: list[FormOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDataProductRevisionOutput:
     str domainId
     str id
@@ -1833,8 +1874,9 @@ struct CreateDataSourceInput:
     Optional[list[FormInput]] assetFormsInput
     Optional[str] clientToken
 
-# no @derive(Json): member(s) configuration: DataSourceConfigurationOutput, assetFormsOutput: list[FormOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: DataSourceConfigurationOutput, assetFormsOutput: list[FormOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDataSourceOutput:
     str id
     Optional[DataSourceStatus] status
@@ -1895,8 +1937,9 @@ struct CreateDomainInput:
     Optional[str] serviceRole
     Optional[str] clientToken
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDomainOutput:
     str id
     Optional[str] rootDomainUnitId
@@ -1921,8 +1964,9 @@ struct CreateDomainUnitInput:
     Optional[str] description
     Optional[str] clientToken
 
-# no @derive(Json): member(s) owners: list[DomainUnitOwnerProperties], ancestorDomainUnitIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) owners: list[DomainUnitOwnerProperties], ancestorDomainUnitIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDomainUnitOutput:
     str id
     str domainId
@@ -1966,8 +2010,9 @@ struct CreateEnvironmentBlueprintInput:
     Optional[list[CustomParameter]] userParameters
     Optional[str] blueprintCategory
 
-# no @derive(Json): member(s) userParameters: list[CustomParameter], glossaryTerms: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userParameters: list[CustomParameter], glossaryTerms: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEnvironmentBlueprintOutput:
     str id
     str name
@@ -1998,8 +2043,9 @@ struct CreateEnvironmentInput:
     Optional[str] environmentConfigurationId
     Optional[str] environmentConfigurationName
 
-# no @derive(Json): member(s) provisionedResources: list[Resource], environmentActions: list[ConfigurableEnvironmentAction], glossaryTerms: list[str], userParameters: list[CustomParameter], lastDeployment: Deployment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) provisionedResources: list[Resource], environmentActions: list[ConfigurableEnvironmentAction], glossaryTerms: list[str], userParameters: list[CustomParameter], lastDeployment: Deployment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEnvironmentOutput:
     str projectId
     Optional[str] id
@@ -2037,8 +2083,9 @@ struct CreateEnvironmentProfileInput:
     Optional[str] awsAccountId
     Optional[str] awsAccountRegion
 
-# no @derive(Json): member(s) userParameters: list[CustomParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userParameters: list[CustomParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEnvironmentProfileOutput:
     str id
     str domainId
@@ -2092,8 +2139,9 @@ struct CreateGlossaryInput:
     Optional[list[str]] usageRestrictions
     Optional[str] clientToken
 
-# no @derive(Json): member(s) usageRestrictions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) usageRestrictions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateGlossaryOutput:
     str domainId
     str id
@@ -2119,8 +2167,9 @@ struct CreateGlossaryTermInput:
     Optional[TermRelations] termRelations
     Optional[str] clientToken
 
-# no @derive(Json): member(s) termRelations: TermRelations, usageRestrictions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) termRelations: TermRelations, usageRestrictions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateGlossaryTermOutput:
     str id
     str domainId
@@ -2177,8 +2226,9 @@ struct CreateNotebookInput:
     Optional[dict[str, str]] parameters
     Optional[str] clientToken
 
-# no @derive(Json): member(s) cellOrder: list[CellInformation], metadata: dict[str, str], parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cellOrder: list[CellInformation], metadata: dict[str, str], parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateNotebookOutput:
     str id
     str name
@@ -2202,8 +2252,9 @@ struct CreateNotebookOutput:
     Optional[NotebookError] error
     Optional[GitMetadata] gitMetadata
 
-# no @derive(Json): member(s) projectProfiles: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) projectProfiles: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProjectFromProjectProfilePolicyGrantDetail:
     Optional[bool] includeChildDomainUnits
     Optional[list[str]] projectProfiles
@@ -2237,8 +2288,9 @@ struct CreateProjectMembershipOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) failureReasons: list[ProjectDeletionError], resourceTags: list[ResourceTag], glossaryTerms: list[str], userParameters: list[EnvironmentConfigurationUserParameter], environmentDeploymentDetails: EnvironmentDeploymentDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failureReasons: list[ProjectDeletionError], resourceTags: list[ResourceTag], glossaryTerms: list[str], userParameters: list[EnvironmentConfigurationUserParameter], environmentDeploymentDetails: EnvironmentDeploymentDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProjectOutput:
     str domainId
     str id
@@ -2274,8 +2326,9 @@ struct CreateProjectProfileInput:
     Optional[list[EnvironmentConfiguration]] environmentConfigurations
     Optional[str] domainUnitIdentifier
 
-# no @derive(Json): member(s) projectResourceTags: list[ResourceTagParameter], environmentConfigurations: list[EnvironmentConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) projectResourceTags: list[ResourceTagParameter], environmentConfigurations: list[EnvironmentConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProjectProfileOutput:
     str domainId
     str id
@@ -2304,8 +2357,9 @@ struct CreateRuleInput:
     Optional[str] description
     Optional[str] clientToken
 
-# no @derive(Json): member(s) scope: RuleScope, detail: RuleDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scope: RuleScope, detail: RuleDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRuleOutput:
     str identifier
     str name
@@ -2330,8 +2384,9 @@ struct CreateSubscriptionGrantInput:
     Optional[list[AssetTargetNameMap]] assetTargetNames
     Optional[str] clientToken
 
-# no @derive(Json): member(s) assets: list[SubscribedAsset] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assets: list[SubscribedAsset] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSubscriptionGrantOutput:
     str id
     str createdBy
@@ -2358,8 +2413,9 @@ struct CreateSubscriptionRequestInput:
     Optional[list[AssetPermission]] assetPermissions
     Optional[list[AcceptedAssetScope]] assetScopes
 
-# no @derive(Json): member(s) subscribedPrincipals: list[SubscribedPrincipal], subscribedListings: list[SubscribedListing], metadataForms: list[FormOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscribedPrincipals: list[SubscribedPrincipal], subscribedListings: list[SubscribedListing], metadataForms: list[FormOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSubscriptionRequestOutput:
     str id
     str createdBy
@@ -2391,8 +2447,9 @@ struct CreateSubscriptionTargetInput:
     Optional[str] clientToken
     Optional[SubscriptionGrantCreationMode] subscriptionGrantCreationMode
 
-# no @derive(Json): member(s) authorizedPrincipals: list[str], applicableAssetTypes: list[str], subscriptionTargetConfig: list[SubscriptionTargetForm] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizedPrincipals: list[str], applicableAssetTypes: list[str], subscriptionTargetConfig: list[SubscriptionTargetForm] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSubscriptionTargetOutput:
     str id
     list[str] authorizedPrincipals
@@ -2443,21 +2500,24 @@ struct CustomParameter:
     Optional[bool] isOptional
     Optional[bool] isUpdateSupported
 
-# no @derive(Json): member(s) glossaryTerms: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glossaryTerms: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataProductItem:
     str itemType
     str identifier
     Optional[str] revision
     Optional[list[str]] glossaryTerms
 
-# no @derive(Json): member(s) matchRationale: list[MatchRationaleItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) matchRationale: list[MatchRationaleItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataProductItemAdditionalAttributes:
     Optional[list[MatchRationaleItem]] matchRationale
 
-# no @derive(Json): member(s) glossaryTerms: list[DetailedGlossaryTerm], items: list[ListingSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glossaryTerms: list[DetailedGlossaryTerm], items: list[ListingSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataProductListing:
     Optional[str] dataProductId
     Optional[str] dataProductRevision
@@ -2467,8 +2527,9 @@ struct DataProductListing:
     Optional[str] owningProjectId
     Optional[list[ListingSummary]] items
 
-# no @derive(Json): member(s) glossaryTerms: list[DetailedGlossaryTerm], additionalAttributes: DataProductListingItemAdditionalAttributes, items: list[ListingSummaryItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glossaryTerms: list[DetailedGlossaryTerm], additionalAttributes: DataProductListingItemAdditionalAttributes, items: list[ListingSummaryItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataProductListingItem:
     Optional[str] listingId
     Optional[str] listingRevision
@@ -2484,14 +2545,16 @@ struct DataProductListingItem:
     Optional[DataProductListingItemAdditionalAttributes] additionalAttributes
     Optional[list[ListingSummaryItem]] items
 
-# no @derive(Json): member(s) matchRationale: list[MatchRationaleItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) matchRationale: list[MatchRationaleItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataProductListingItemAdditionalAttributes:
     Optional[str] forms
     Optional[list[MatchRationaleItem]] matchRationale
 
-# no @derive(Json): member(s) glossaryTerms: list[str], additionalAttributes: DataProductItemAdditionalAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glossaryTerms: list[str], additionalAttributes: DataProductItemAdditionalAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataProductResultItem:
     str domainId
     str id
@@ -2513,15 +2576,17 @@ struct DataProductRevision:
     Optional[DateTime] createdAt
     Optional[str] createdBy
 
-# no @derive(Json): member(s) glueRunConfiguration: GlueRunConfigurationInput, redshiftRunConfiguration: RedshiftRunConfigurationInput, sageMakerRunConfiguration: SageMakerRunConfigurationInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glueRunConfiguration: GlueRunConfigurationInput, redshiftRunConfiguration: RedshiftRunConfigurationInput, sageMakerRunConfiguration: SageMakerRunConfigurationInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSourceConfigurationInput:
     Optional[GlueRunConfigurationInput] glueRunConfiguration
     Optional[RedshiftRunConfigurationInput] redshiftRunConfiguration
     Optional[SageMakerRunConfigurationInput] sageMakerRunConfiguration
 
-# no @derive(Json): member(s) glueRunConfiguration: GlueRunConfigurationOutput, redshiftRunConfiguration: RedshiftRunConfigurationOutput, sageMakerRunConfiguration: SageMakerRunConfigurationOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glueRunConfiguration: GlueRunConfigurationOutput, redshiftRunConfiguration: RedshiftRunConfigurationOutput, sageMakerRunConfiguration: SageMakerRunConfigurationOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSourceConfigurationOutput:
     Optional[GlueRunConfigurationOutput] glueRunConfiguration
     Optional[RedshiftRunConfigurationOutput] redshiftRunConfiguration
@@ -2672,8 +2737,9 @@ struct DeleteDataSourceInput:
     Optional[str] clientToken
     Optional[bool] retainPermissionsOnRevokeFailure
 
-# no @derive(Json): member(s) configuration: DataSourceConfigurationOutput, assetFormsOutput: list[FormOutput], selfGrantStatus: SelfGrantStatusOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: DataSourceConfigurationOutput, assetFormsOutput: list[FormOutput], selfGrantStatus: SelfGrantStatusOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteDataSourceOutput:
     str id
     Optional[DataSourceStatus] status
@@ -2891,8 +2957,9 @@ struct DeleteSubscriptionGrantInput:
     str domainIdentifier
     str identifier
 
-# no @derive(Json): member(s) assets: list[SubscribedAsset] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assets: list[SubscribedAsset] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteSubscriptionGrantOutput:
     str id
     str createdBy
@@ -2935,8 +3002,9 @@ struct DeleteTimeSeriesDataPointsOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) messages: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) messages: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Deployment:
     Optional[str] deploymentId
     Optional[DeploymentType] deploymentType
@@ -3050,8 +3118,9 @@ struct EncryptionConfiguration:
     Optional[str] kmsKeyArn
     Optional[str] sseAlgorithm
 
-# no @derive(Json): member(s) filters: FilterClause not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: FilterClause not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EntityPattern:
     str entityType
     str identifier
@@ -3066,8 +3135,9 @@ struct EnvironmentActionSummary:
     ActionParameters parameters
     Optional[str] description
 
-# no @derive(Json): member(s) enabledRegions: list[str], regionalParameters: dict[str, dict[str, str]], resourceConfigurations: list[ResourceConfiguration], provisioningConfigurations: list[ProvisioningConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) enabledRegions: list[str], regionalParameters: dict[str, dict[str, str]], resourceConfigurations: list[ResourceConfiguration], provisioningConfigurations: list[ProvisioningConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnvironmentBlueprintConfigurationItem:
     str domainId
     str environmentBlueprintId
@@ -3100,8 +3170,9 @@ struct EnvironmentConfig:
     Optional[str] imageVersion
     Optional[PackageConfig] packageConfig
 
-# no @derive(Json): member(s) configurationParameters: EnvironmentConfigurationParametersDetails, accountPools: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurationParameters: EnvironmentConfigurationParametersDetails, accountPools: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnvironmentConfiguration:
     str name
     Optional[str] id
@@ -3120,23 +3191,26 @@ struct EnvironmentConfigurationParameter:
     Optional[str] value
     Optional[bool] isEditable
 
-# no @derive(Json): member(s) parameterOverrides: list[EnvironmentConfigurationParameter], resolvedParameters: list[EnvironmentConfigurationParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameterOverrides: list[EnvironmentConfigurationParameter], resolvedParameters: list[EnvironmentConfigurationParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnvironmentConfigurationParametersDetails:
     Optional[str] ssmPath
     Optional[list[EnvironmentConfigurationParameter]] parameterOverrides
     Optional[list[EnvironmentConfigurationParameter]] resolvedParameters
 
-# no @derive(Json): member(s) environmentParameters: list[EnvironmentParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environmentParameters: list[EnvironmentParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnvironmentConfigurationUserParameter:
     Optional[str] environmentId
     Optional[EnvironmentResolvedAccount] environmentResolvedAccount
     Optional[str] environmentConfigurationName
     Optional[list[EnvironmentParameter]] environmentParameters
 
-# no @derive(Json): member(s) environmentFailureReasons: dict[str, list[EnvironmentError]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environmentFailureReasons: dict[str, list[EnvironmentError]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnvironmentDeploymentDetails:
     Optional[OverallDeploymentStatus] overallDeploymentStatus
     Optional[dict[str, list[EnvironmentError]]] environmentFailureReasons
@@ -3198,8 +3272,9 @@ struct EqualToExpression:
     str columnName
     str value
 
-# no @derive(Json): member(s) openLineageRunEventSummary: OpenLineageRunEventSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) openLineageRunEventSummary: OpenLineageRunEventSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventSummary:
     Optional[OpenLineageRunEventSummary] openLineageRunEventSummary
 
@@ -3219,8 +3294,9 @@ struct Filter:
     Optional[int64] intValue
     Optional[FilterOperator] operator
 
-# no @derive(Json): member(s) and: list[FilterClause], or: list[FilterClause] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) and: list[FilterClause], or: list[FilterClause] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterClause:
     Optional[Filter] filter
     # wire name "and" differs from field; derive rename is a #346 follow-up
@@ -3259,8 +3335,9 @@ struct FormOutput:
     Optional[str] typeRevision
     Optional[str] content
 
-# no @derive(Json): member(s) imports: list[Import] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imports: list[Import] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FormTypeData:
     str domainId
     str name
@@ -3281,8 +3358,9 @@ struct GetAccountPoolInput:
     str domainIdentifier
     str identifier
 
-# no @derive(Json): member(s) accountSource: AccountSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountSource: AccountSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAccountPoolOutput:
     Optional[str] domainId
     Optional[str] name
@@ -3303,8 +3381,9 @@ struct GetAssetFilterInput:
     str assetIdentifier
     str identifier
 
-# no @derive(Json): member(s) configuration: AssetFilterConfiguration, effectiveColumnNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: AssetFilterConfiguration, effectiveColumnNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAssetFilterOutput:
     str id
     str domainId
@@ -3325,8 +3404,9 @@ struct GetAssetInput:
     str identifier
     Optional[str] revision
 
-# no @derive(Json): member(s) glossaryTerms: list[str], governedGlossaryTerms: list[str], formsOutput: list[FormOutput], readOnlyFormsOutput: list[FormOutput], latestTimeSeriesDataPointFormsOutput: list[TimeSeriesDataPointSummaryFormOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glossaryTerms: list[str], governedGlossaryTerms: list[str], formsOutput: list[FormOutput], readOnlyFormsOutput: list[FormOutput], latestTimeSeriesDataPointFormsOutput: list[TimeSeriesDataPointSummaryFormOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAssetOutput:
     str id
     str name
@@ -3355,8 +3435,9 @@ struct GetAssetTypeInput:
     str identifier
     Optional[str] revision
 
-# no @derive(Json): member(s) formsOutput: dict[str, FormEntryOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) formsOutput: dict[str, FormEntryOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAssetTypeOutput:
     str domainId
     str name
@@ -3378,8 +3459,9 @@ struct GetConnectionInput:
     str identifier
     Optional[bool] withSecret
 
-# no @derive(Json): member(s) configurations: list[Configuration], physicalEndpoints: list[PhysicalEndpoint], props: ConnectionPropertiesOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurations: list[Configuration], physicalEndpoints: list[PhysicalEndpoint], props: ConnectionPropertiesOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConnectionOutput:
     Optional[ConnectionCredentials] connectionCredentials
     Optional[list[Configuration]] configurations
@@ -3418,8 +3500,9 @@ struct GetDataProductInput:
     str identifier
     Optional[str] revision
 
-# no @derive(Json): member(s) glossaryTerms: list[str], items: list[DataProductItem], formsOutput: list[FormOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glossaryTerms: list[str], items: list[DataProductItem], formsOutput: list[FormOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataProductOutput:
     str domainId
     str id
@@ -3442,8 +3525,9 @@ struct GetDataSourceInput:
     str domainIdentifier
     str identifier
 
-# no @derive(Json): member(s) configuration: DataSourceConfigurationOutput, assetFormsOutput: list[FormOutput], selfGrantStatus: SelfGrantStatusOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: DataSourceConfigurationOutput, assetFormsOutput: list[FormOutput], selfGrantStatus: SelfGrantStatusOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataSourceOutput:
     str id
     Optional[DataSourceStatus] status
@@ -3522,8 +3606,9 @@ struct GetDesignationOutput:
 struct GetDomainInput:
     str identifier
 
-# no @derive(Json): member(s) tags: dict[str, str], failureReasons: list[FailureReason] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], failureReasons: list[FailureReason] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDomainOutput:
     str id
     Optional[str] rootDomainUnitId
@@ -3549,8 +3634,9 @@ struct GetDomainUnitInput:
     str domainIdentifier
     str identifier
 
-# no @derive(Json): member(s) owners: list[DomainUnitOwnerProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) owners: list[DomainUnitOwnerProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDomainUnitOutput:
     str id
     str domainId
@@ -3585,8 +3671,9 @@ struct GetEnvironmentBlueprintConfigurationInput:
     str domainIdentifier
     str environmentBlueprintIdentifier
 
-# no @derive(Json): member(s) enabledRegions: list[str], regionalParameters: dict[str, dict[str, str]], resourceConfigurations: list[ResourceConfiguration], provisioningConfigurations: list[ProvisioningConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) enabledRegions: list[str], regionalParameters: dict[str, dict[str, str]], resourceConfigurations: list[ResourceConfiguration], provisioningConfigurations: list[ProvisioningConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEnvironmentBlueprintConfigurationOutput:
     str domainId
     str environmentBlueprintId
@@ -3607,8 +3694,9 @@ struct GetEnvironmentBlueprintInput:
     str domainIdentifier
     str identifier
 
-# no @derive(Json): member(s) userParameters: list[CustomParameter], glossaryTerms: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userParameters: list[CustomParameter], glossaryTerms: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEnvironmentBlueprintOutput:
     str id
     str name
@@ -3642,8 +3730,9 @@ struct GetEnvironmentInput:
     str domainIdentifier
     str identifier
 
-# no @derive(Json): member(s) provisionedResources: list[Resource], environmentActions: list[ConfigurableEnvironmentAction], glossaryTerms: list[str], userParameters: list[CustomParameter], lastDeployment: Deployment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) provisionedResources: list[Resource], environmentActions: list[ConfigurableEnvironmentAction], glossaryTerms: list[str], userParameters: list[CustomParameter], lastDeployment: Deployment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEnvironmentOutput:
     str projectId
     Optional[str] id
@@ -3675,8 +3764,9 @@ struct GetEnvironmentProfileInput:
     str domainIdentifier
     str identifier
 
-# no @derive(Json): member(s) userParameters: list[CustomParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userParameters: list[CustomParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEnvironmentProfileOutput:
     str id
     str domainId
@@ -3698,8 +3788,9 @@ struct GetFormTypeInput:
     str formTypeIdentifier
     Optional[str] revision
 
-# no @derive(Json): member(s) imports: list[Import] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imports: list[Import] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFormTypeOutput:
     str domainId
     str name
@@ -3720,8 +3811,9 @@ struct GetGlossaryInput:
     str domainIdentifier
     str identifier
 
-# no @derive(Json): member(s) usageRestrictions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) usageRestrictions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetGlossaryOutput:
     str domainId
     str id
@@ -3741,8 +3833,9 @@ struct GetGlossaryTermInput:
     str domainIdentifier
     str identifier
 
-# no @derive(Json): member(s) termRelations: TermRelations, usageRestrictions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) termRelations: TermRelations, usageRestrictions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetGlossaryTermOutput:
     str domainId
     str glossaryId
@@ -3789,8 +3882,9 @@ struct GetJobRunInput:
     str domainIdentifier
     str identifier
 
-# no @derive(Json): member(s) details: JobRunDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) details: JobRunDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetJobRunOutput:
     Optional[str] domainId
     Optional[str] id
@@ -3828,8 +3922,9 @@ struct GetLineageNodeInput:
     str identifier
     Optional[DateTime] eventTimestamp
 
-# no @derive(Json): member(s) formsOutput: list[FormOutput], upstreamNodes: list[LineageNodeReference], downstreamNodes: list[LineageNodeReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) formsOutput: list[FormOutput], upstreamNodes: list[LineageNodeReference], downstreamNodes: list[LineageNodeReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLineageNodeOutput:
     str domainId
     Optional[str] name
@@ -3854,8 +3949,9 @@ struct GetListingInput:
     str identifier
     Optional[str] listingRevision
 
-# no @derive(Json): member(s) item: ListingItem not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) item: ListingItem not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetListingOutput:
     str domainId
     str id
@@ -3877,8 +3973,9 @@ struct GetMetadataGenerationRunInput:
     # wire string of the MetadataGenerationRunType enum (querystring binding)
     Optional[str] type
 
-# no @derive(Json): member(s) types: list[MetadataGenerationRunType], typeStats: list[MetadataGenerationRunTypeStat] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) types: list[MetadataGenerationRunType], typeStats: list[MetadataGenerationRunTypeStat] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMetadataGenerationRunOutput:
     str domainId
     str id
@@ -3917,8 +4014,9 @@ struct GetNotebookInput:
     str domainIdentifier
     str identifier
 
-# no @derive(Json): member(s) cellOrder: list[CellInformation], metadata: dict[str, str], parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cellOrder: list[CellInformation], metadata: dict[str, str], parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetNotebookOutput:
     str id
     str name
@@ -3948,8 +4046,9 @@ struct GetNotebookRunInput:
     str domainIdentifier
     str identifier
 
-# no @derive(Json): member(s) cellOrder: list[CellInformation], metadata: dict[str, str], parameters: dict[str, str], networkConfiguration: NetworkConfig, notificationConfiguration: NotificationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cellOrder: list[CellInformation], metadata: dict[str, str], parameters: dict[str, str], networkConfiguration: NetworkConfig, notificationConfiguration: NotificationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetNotebookRunOutput:
     str id
     str domainId
@@ -3981,8 +4080,9 @@ struct GetProjectInput:
     str domainIdentifier
     str identifier
 
-# no @derive(Json): member(s) failureReasons: list[ProjectDeletionError], resourceTags: list[ResourceTag], glossaryTerms: list[str], userParameters: list[EnvironmentConfigurationUserParameter], environmentDeploymentDetails: EnvironmentDeploymentDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failureReasons: list[ProjectDeletionError], resourceTags: list[ResourceTag], glossaryTerms: list[str], userParameters: list[EnvironmentConfigurationUserParameter], environmentDeploymentDetails: EnvironmentDeploymentDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProjectOutput:
     str domainId
     str id
@@ -4007,8 +4107,9 @@ struct GetProjectProfileInput:
     str domainIdentifier
     str identifier
 
-# no @derive(Json): member(s) projectResourceTags: list[ResourceTagParameter], environmentConfigurations: list[EnvironmentConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) projectResourceTags: list[ResourceTagParameter], environmentConfigurations: list[EnvironmentConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProjectProfileOutput:
     str domainId
     str id
@@ -4031,8 +4132,9 @@ struct GetRuleInput:
     str identifier
     Optional[str] revision
 
-# no @derive(Json): member(s) scope: RuleScope, detail: RuleDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scope: RuleScope, detail: RuleDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRuleOutput:
     str identifier
     str revision
@@ -4056,8 +4158,9 @@ struct GetSubscriptionGrantInput:
     str domainIdentifier
     str identifier
 
-# no @derive(Json): member(s) assets: list[SubscribedAsset] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assets: list[SubscribedAsset] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSubscriptionGrantOutput:
     str id
     str createdBy
@@ -4078,8 +4181,9 @@ struct GetSubscriptionInput:
     str domainIdentifier
     str identifier
 
-# no @derive(Json): member(s) subscribedListing: SubscribedListing not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscribedListing: SubscribedListing not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSubscriptionOutput:
     str id
     str createdBy
@@ -4099,8 +4203,9 @@ struct GetSubscriptionRequestDetailsInput:
     str domainIdentifier
     str identifier
 
-# no @derive(Json): member(s) subscribedPrincipals: list[SubscribedPrincipal], subscribedListings: list[SubscribedListing], metadataForms: list[FormOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscribedPrincipals: list[SubscribedPrincipal], subscribedListings: list[SubscribedListing], metadataForms: list[FormOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSubscriptionRequestDetailsOutput:
     str id
     str createdBy
@@ -4124,8 +4229,9 @@ struct GetSubscriptionTargetInput:
     str environmentIdentifier
     str identifier
 
-# no @derive(Json): member(s) authorizedPrincipals: list[str], applicableAssetTypes: list[str], subscriptionTargetConfig: list[SubscriptionTargetForm] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizedPrincipals: list[str], applicableAssetTypes: list[str], subscriptionTargetConfig: list[SubscriptionTargetForm] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSubscriptionTargetOutput:
     str id
     list[str] authorizedPrincipals
@@ -4208,8 +4314,9 @@ struct GitPropertiesPatch:
     Optional[str] codeConnectionArn
     Optional[str] defaultBranch
 
-# no @derive(Json): member(s) usageRestrictions: list[str], additionalAttributes: GlossaryItemAdditionalAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) usageRestrictions: list[str], additionalAttributes: GlossaryItemAdditionalAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GlossaryItem:
     str domainId
     str id
@@ -4224,18 +4331,21 @@ struct GlossaryItem:
     Optional[str] updatedBy
     Optional[GlossaryItemAdditionalAttributes] additionalAttributes
 
-# no @derive(Json): member(s) matchRationale: list[MatchRationaleItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) matchRationale: list[MatchRationaleItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GlossaryItemAdditionalAttributes:
     Optional[list[MatchRationaleItem]] matchRationale
 
-# no @derive(Json): member(s) requiredGlossaryTermIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) requiredGlossaryTermIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GlossaryTermEnforcementDetail:
     Optional[list[str]] requiredGlossaryTermIds
 
-# no @derive(Json): member(s) usageRestrictions: list[str], termRelations: TermRelations, additionalAttributes: GlossaryTermItemAdditionalAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) usageRestrictions: list[str], termRelations: TermRelations, additionalAttributes: GlossaryTermItemAdditionalAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GlossaryTermItem:
     str domainId
     str glossaryId
@@ -4252,13 +4362,15 @@ struct GlossaryTermItem:
     Optional[str] updatedBy
     Optional[GlossaryTermItemAdditionalAttributes] additionalAttributes
 
-# no @derive(Json): member(s) matchRationale: list[MatchRationaleItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) matchRationale: list[MatchRationaleItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GlossaryTermItemAdditionalAttributes:
     Optional[list[MatchRationaleItem]] matchRationale
 
-# no @derive(Json): member(s) matchCriteria: list[str], connectionProperties: dict[str, str], sparkProperties: dict[str, str], athenaProperties: dict[str, str], pythonProperties: dict[str, str], physicalConnectionRequirements: PhysicalConnectionRequirements, authenticationConfiguration: AuthenticationConfiguration, compatibleComputeEnvironments: list[ComputeEnvironments] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) matchCriteria: list[str], connectionProperties: dict[str, str], sparkProperties: dict[str, str], athenaProperties: dict[str, str], pythonProperties: dict[str, str], physicalConnectionRequirements: PhysicalConnectionRequirements, authenticationConfiguration: AuthenticationConfiguration, compatibleComputeEnvironments: list[ComputeEnvironments] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GlueConnection:
     Optional[str] name
     Optional[str] description
@@ -4279,8 +4391,9 @@ struct GlueConnection:
     Optional[int64] connectionSchemaVersion
     Optional[list[ComputeEnvironments]] compatibleComputeEnvironments
 
-# no @derive(Json): member(s) connectionProperties: dict[str, str], physicalConnectionRequirements: PhysicalConnectionRequirements, validateForComputeEnvironments: list[ComputeEnvironments], sparkProperties: dict[str, str], athenaProperties: dict[str, str], pythonProperties: dict[str, str], authenticationConfiguration: AuthenticationConfigurationInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectionProperties: dict[str, str], physicalConnectionRequirements: PhysicalConnectionRequirements, validateForComputeEnvironments: list[ComputeEnvironments], sparkProperties: dict[str, str], athenaProperties: dict[str, str], pythonProperties: dict[str, str], authenticationConfiguration: AuthenticationConfigurationInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GlueConnectionInput:
     Optional[dict[str, str]] connectionProperties
     Optional[PhysicalConnectionRequirements] physicalConnectionRequirements
@@ -4295,8 +4408,9 @@ struct GlueConnectionInput:
     Optional[dict[str, str]] pythonProperties
     Optional[AuthenticationConfigurationInput] authenticationConfiguration
 
-# no @derive(Json): member(s) connectionProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectionProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GlueConnectionPatch:
     Optional[str] description
     Optional[dict[str, str]] connectionProperties
@@ -4309,8 +4423,9 @@ struct GlueOAuth2Credentials:
     Optional[str] refreshToken
     Optional[str] jwtToken
 
-# no @derive(Json): member(s) glueConnectionInput: GlueConnectionInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glueConnectionInput: GlueConnectionInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GluePropertiesInput:
     Optional[GlueConnectionInput] glueConnectionInput
 
@@ -4319,21 +4434,24 @@ struct GluePropertiesOutput:
     Optional[ConnectionStatus] status
     Optional[str] errorMessage
 
-# no @derive(Json): member(s) glueConnectionInput: GlueConnectionPatch not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glueConnectionInput: GlueConnectionPatch not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GluePropertiesPatch:
     Optional[GlueConnectionPatch] glueConnectionInput
 
-# no @derive(Json): member(s) relationalFilterConfigurations: list[RelationalFilterConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) relationalFilterConfigurations: list[RelationalFilterConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GlueRunConfigurationInput:
     Optional[str] dataAccessRole
     list[RelationalFilterConfiguration] relationalFilterConfigurations
     Optional[bool] autoImportDataQualityResult
     Optional[str] catalogName
 
-# no @derive(Json): member(s) relationalFilterConfigurations: list[RelationalFilterConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) relationalFilterConfigurations: list[RelationalFilterConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GlueRunConfigurationOutput:
     Optional[str] accountId
     Optional[str] region
@@ -4342,8 +4460,9 @@ struct GlueRunConfigurationOutput:
     Optional[bool] autoImportDataQualityResult
     Optional[str] catalogName
 
-# no @derive(Json): member(s) selfGrantStatusDetails: list[SelfGrantStatusDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) selfGrantStatusDetails: list[SelfGrantStatusDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GlueSelfGrantStatusOutput:
     list[SelfGrantStatusDetail] selfGrantStatusDetails
 
@@ -4423,8 +4542,9 @@ struct Import:
     str name
     str revision
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InExpression:
     str columnName
     list[str] values
@@ -4441,8 +4561,9 @@ struct IsNotNullExpression:
 struct IsNullExpression:
     str columnName
 
-# no @derive(Json): member(s) lineageRunDetails: LineageRunDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lineageRunDetails: LineageRunDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobRunDetails:
     Optional[LineageRunDetails] lineageRunDetails
 
@@ -4464,8 +4585,9 @@ struct JobRunSummary:
     Optional[DateTime] startTime
     Optional[DateTime] endTime
 
-# no @derive(Json): member(s) locationRegistrationExcludeS3Locations: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) locationRegistrationExcludeS3Locations: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LakeFormationConfiguration:
     Optional[str] locationRegistrationRole
     Optional[list[str]] locationRegistrationExcludeS3Locations
@@ -4497,8 +4619,9 @@ struct LikeExpression:
     str columnName
     str value
 
-# no @derive(Json): member(s) eventSummary: EventSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventSummary: EventSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LineageEventSummary:
     Optional[str] id
     Optional[str] domainId
@@ -4514,8 +4637,9 @@ struct LineageInfo:
     Optional[LineageEventProcessingStatus] eventStatus
     Optional[str] errorMessage
 
-# no @derive(Json): member(s) formsOutput: list[FormOutput], upstreamLineageNodeIds: list[str], downstreamLineageNodeIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) formsOutput: list[FormOutput], upstreamLineageNodeIds: list[str], downstreamLineageNodeIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LineageNodeItem:
     str domainId
     Optional[str] name
@@ -4553,8 +4677,9 @@ struct LineageNodeSummary:
     Optional[str] sourceIdentifier
     Optional[DateTime] eventTimestamp
 
-# no @derive(Json): member(s) formsOutput: dict[str, FormEntryOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) formsOutput: dict[str, FormEntryOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LineageNodeTypeItem:
     str domainId
     Optional[str] name
@@ -4566,13 +4691,15 @@ struct LineageNodeTypeItem:
     str revision
     dict[str, FormEntryOutput] formsOutput
 
-# no @derive(Json): member(s) sqlQueryRunDetails: LineageSqlQueryRunDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sqlQueryRunDetails: LineageSqlQueryRunDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LineageRunDetails:
     Optional[LineageSqlQueryRunDetails] sqlQueryRunDetails
 
-# no @derive(Json): member(s) errorMessages: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errorMessages: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LineageSqlQueryRunDetails:
     Optional[DateTime] queryStartTime
     Optional[DateTime] queryEndTime
@@ -4608,8 +4735,9 @@ struct ListAccountPoolsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[AccountPoolSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[AccountPoolSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccountPoolsOutput:
     Optional[list[AccountPoolSummary]] items
     Optional[str] nextToken
@@ -4622,8 +4750,9 @@ struct ListAccountsInAccountPoolInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[AccountInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[AccountInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccountsInAccountPoolOutput:
     Optional[list[AccountInfo]] items
     Optional[str] nextToken
@@ -4638,8 +4767,9 @@ struct ListAssetFiltersInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[AssetFilterSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[AssetFilterSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssetFiltersOutput:
     list[AssetFilterSummary] items
     Optional[str] nextToken
@@ -4652,8 +4782,9 @@ struct ListAssetRevisionsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[AssetRevision] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[AssetRevision] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssetRevisionsOutput:
     Optional[list[AssetRevision]] items
     Optional[str] nextToken
@@ -4676,8 +4807,9 @@ struct ListConnectionsInput:
     # wire name "scope" differs from field; derive rename is a #346 follow-up
     Optional[str] scope_
 
-# no @derive(Json): member(s) items: list[ConnectionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ConnectionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectionsOutput:
     list[ConnectionSummary] items
     Optional[str] nextToken
@@ -4690,8 +4822,9 @@ struct ListDataProductRevisionsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[DataProductRevision] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[DataProductRevision] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataProductRevisionsOutput:
     list[DataProductRevision] items
     Optional[str] nextToken
@@ -4706,8 +4839,9 @@ struct ListDataSourceRunActivitiesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[DataSourceRunActivity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[DataSourceRunActivity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataSourceRunActivitiesOutput:
     list[DataSourceRunActivity] items
     Optional[str] nextToken
@@ -4722,8 +4856,9 @@ struct ListDataSourceRunsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[DataSourceRunSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[DataSourceRunSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataSourceRunsOutput:
     list[DataSourceRunSummary] items
     Optional[str] nextToken
@@ -4742,8 +4877,9 @@ struct ListDataSourcesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[DataSourceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[DataSourceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataSourcesOutput:
     list[DataSourceSummary] items
     Optional[str] nextToken
@@ -4755,8 +4891,9 @@ struct ListDesignationsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[DesignationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[DesignationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDesignationsOutput:
     Optional[list[DesignationSummary]] items
     Optional[str] nextToken
@@ -4769,8 +4906,9 @@ struct ListDomainUnitsForParentInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[DomainUnitSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[DomainUnitSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDomainUnitsForParentOutput:
     list[DomainUnitSummary] items
     Optional[str] nextToken
@@ -4783,8 +4921,9 @@ struct ListDomainsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[DomainSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[DomainSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDomainsOutput:
     list[DomainSummary] items
     Optional[str] nextToken
@@ -4798,8 +4937,9 @@ struct ListEntityOwnersInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) owners: list[OwnerPropertiesOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) owners: list[OwnerPropertiesOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEntityOwnersOutput:
     list[OwnerPropertiesOutput] owners
     Optional[str] nextToken
@@ -4812,8 +4952,9 @@ struct ListEnvironmentActionsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[EnvironmentActionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[EnvironmentActionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentActionsOutput:
     Optional[list[EnvironmentActionSummary]] items
     Optional[str] nextToken
@@ -4825,8 +4966,9 @@ struct ListEnvironmentBlueprintConfigurationsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[EnvironmentBlueprintConfigurationItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[EnvironmentBlueprintConfigurationItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentBlueprintConfigurationsOutput:
     Optional[list[EnvironmentBlueprintConfigurationItem]] items
     Optional[str] nextToken
@@ -4840,8 +4982,9 @@ struct ListEnvironmentBlueprintsInput:
     Optional[str] name
     Optional[bool] managed
 
-# no @derive(Json): member(s) items: list[EnvironmentBlueprintSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[EnvironmentBlueprintSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentBlueprintsOutput:
     list[EnvironmentBlueprintSummary] items
     Optional[str] nextToken
@@ -4858,8 +5001,9 @@ struct ListEnvironmentProfilesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[EnvironmentProfileSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[EnvironmentProfileSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentProfilesOutput:
     list[EnvironmentProfileSummary] items
     Optional[str] nextToken
@@ -4880,8 +5024,9 @@ struct ListEnvironmentsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[EnvironmentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[EnvironmentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentsOutput:
     list[EnvironmentSummary] items
     Optional[str] nextToken
@@ -4898,8 +5043,9 @@ struct ListJobRunsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[JobRunSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[JobRunSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobRunsOutput:
     Optional[list[JobRunSummary]] items
     Optional[str] nextToken
@@ -4917,8 +5063,9 @@ struct ListLineageEventsInput:
     Optional[str] sortOrder
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[LineageEventSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[LineageEventSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLineageEventsOutput:
     Optional[list[LineageEventSummary]] items
     Optional[str] nextToken
@@ -4937,8 +5084,9 @@ struct ListLineageNodeHistoryInput:
     # wire string of the SortOrder enum (querystring binding)
     Optional[str] sortOrder
 
-# no @derive(Json): member(s) nodes: list[LineageNodeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nodes: list[LineageNodeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLineageNodeHistoryOutput:
     Optional[list[LineageNodeSummary]] nodes
     Optional[str] nextToken
@@ -4955,8 +5103,9 @@ struct ListMetadataGenerationRunsInput:
     Optional[int64] maxResults
     Optional[str] targetIdentifier
 
-# no @derive(Json): member(s) items: list[MetadataGenerationRunItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[MetadataGenerationRunItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMetadataGenerationRunsOutput:
     Optional[list[MetadataGenerationRunItem]] items
     Optional[str] nextToken
@@ -4975,8 +5124,9 @@ struct ListNotebookRunsInput:
     Optional[str] sortOrder
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[NotebookRunSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[NotebookRunSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNotebookRunsOutput:
     Optional[list[NotebookRunSummary]] items
     Optional[str] nextToken
@@ -4997,8 +5147,9 @@ struct ListNotebooksInput:
     Optional[str] type
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[NotebookSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[NotebookSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNotebooksOutput:
     Optional[list[NotebookSummary]] items
     Optional[str] nextToken
@@ -5017,8 +5168,9 @@ struct ListNotificationsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) notifications: list[NotificationOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) notifications: list[NotificationOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNotificationsOutput:
     Optional[list[NotificationOutput]] notifications
     Optional[str] nextToken
@@ -5035,8 +5187,9 @@ struct ListPolicyGrantsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) grantList: list[PolicyGrantMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) grantList: list[PolicyGrantMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPolicyGrantsOutput:
     list[PolicyGrantMember] grantList
     Optional[str] nextToken
@@ -5052,8 +5205,9 @@ struct ListProjectMembershipsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) members: list[ProjectMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) members: list[ProjectMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProjectMembershipsOutput:
     list[ProjectMember] members
     Optional[str] nextToken
@@ -5069,8 +5223,9 @@ struct ListProjectProfilesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[ProjectProfileSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ProjectProfileSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProjectProfilesOutput:
     Optional[list[ProjectProfileSummary]] items
     Optional[str] nextToken
@@ -5086,8 +5241,9 @@ struct ListProjectsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[ProjectSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ProjectSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProjectsOutput:
     Optional[list[ProjectSummary]] items
     Optional[str] nextToken
@@ -5109,8 +5265,9 @@ struct ListRulesInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[RuleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[RuleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRulesOutput:
     list[RuleSummary] items
     Optional[str] nextToken
@@ -5134,8 +5291,9 @@ struct ListSubscriptionGrantsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[SubscriptionGrantSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[SubscriptionGrantSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSubscriptionGrantsOutput:
     list[SubscriptionGrantSummary] items
     Optional[str] nextToken
@@ -5159,8 +5317,9 @@ struct ListSubscriptionRequestsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[SubscriptionRequestSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[SubscriptionRequestSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSubscriptionRequestsOutput:
     list[SubscriptionRequestSummary] items
     Optional[str] nextToken
@@ -5177,8 +5336,9 @@ struct ListSubscriptionTargetsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[SubscriptionTargetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[SubscriptionTargetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSubscriptionTargetsOutput:
     list[SubscriptionTargetSummary] items
     Optional[str] nextToken
@@ -5203,8 +5363,9 @@ struct ListSubscriptionsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[SubscriptionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[SubscriptionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSubscriptionsOutput:
     list[SubscriptionSummary] items
     Optional[str] nextToken
@@ -5214,8 +5375,9 @@ struct ListSubscriptionsOutput:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -5232,14 +5394,16 @@ struct ListTimeSeriesDataPointsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[TimeSeriesDataPointSummaryFormOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[TimeSeriesDataPointSummaryFormOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTimeSeriesDataPointsOutput:
     Optional[list[TimeSeriesDataPointSummaryFormOutput]] items
     Optional[str] nextToken
 
-# no @derive(Json): member(s) assetListing: AssetListing, dataProductListing: DataProductListing not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetListing: AssetListing, dataProductListing: DataProductListing not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListingItem:
     Optional[AssetListing] assetListing
     Optional[DataProductListing] dataProductListing
@@ -5254,15 +5418,17 @@ struct ListingRevisionInput:
     str identifier
     str revision
 
-# no @derive(Json): member(s) glossaryTerms: list[DetailedGlossaryTerm] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glossaryTerms: list[DetailedGlossaryTerm] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListingSummary:
     Optional[str] listingId
     Optional[str] listingRevision
     Optional[list[DetailedGlossaryTerm]] glossaryTerms
 
-# no @derive(Json): member(s) glossaryTerms: list[DetailedGlossaryTerm] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glossaryTerms: list[DetailedGlossaryTerm] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListingSummaryItem:
     Optional[str] listingId
     Optional[str] listingRevision
@@ -5273,8 +5439,9 @@ struct ManagedEndpointCredentials:
     Optional[str] id
     Optional[str] token
 
-# no @derive(Json): member(s) entityPattern: EntityPattern not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entityPattern: EntityPattern not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MatchClause:
     Optional[RelationPattern] relationPattern
     Optional[EntityPattern] entityPattern
@@ -5284,8 +5451,9 @@ struct MatchOffset:
     Optional[int64] startOffset
     Optional[int64] endOffset
 
-# no @derive(Json): member(s) textMatches: list[TextMatchItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) textMatches: list[TextMatchItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MatchRationaleItem:
     Optional[list[TextMatchItem]] textMatches
 
@@ -5299,8 +5467,9 @@ struct MemberDetails:
     Optional[UserDetails] user
     Optional[GroupDetails] group
 
-# no @derive(Json): member(s) requiredMetadataForms: list[MetadataFormReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) requiredMetadataForms: list[MetadataFormReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetadataFormEnforcementDetail:
     Optional[list[MetadataFormReference]] requiredMetadataForms
 
@@ -5315,8 +5484,9 @@ struct MetadataFormSummary:
     str typeName
     str typeRevision
 
-# no @derive(Json): member(s) types: list[MetadataGenerationRunType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) types: list[MetadataGenerationRunType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetadataGenerationRunItem:
     str domainId
     str id
@@ -5361,8 +5531,9 @@ struct NameIdentifier:
     Optional[str] name
     Optional[str] namespace
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkConfig:
     NetworkAccessType networkAccessType
     Optional[str] vpcId
@@ -5374,8 +5545,9 @@ struct NotEqualToExpression:
     str columnName
     str value
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotInExpression:
     str columnName
     list[str] values
@@ -5427,13 +5599,15 @@ struct NotebookSummary:
     Optional[DateTime] updatedAt
     Optional[str] updatedBy
 
-# no @derive(Json): member(s) notifyOn: list[NotifyOnState] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) notifyOn: list[NotifyOnState] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotificationConfig:
     list[NotifyOnState] notifyOn
 
-# no @derive(Json): member(s) metadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotificationOutput:
     str identifier
     str domainIdentifier
@@ -5458,8 +5632,9 @@ struct OAuth2ClientApplication:
     Optional[str] userManagedClientApplicationClientId
     Optional[str] aWSManagedClientApplicationReference
 
-# no @derive(Json): member(s) tokenUrlParametersMap: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tokenUrlParametersMap: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OAuth2Properties:
     Optional[OAuth2GrantType] oAuth2GrantType
     Optional[OAuth2ClientApplication] oAuth2ClientApplication
@@ -5468,8 +5643,9 @@ struct OAuth2Properties:
     Optional[AuthorizationCodeProperties] authorizationCodeProperties
     Optional[GlueOAuth2Credentials] oAuth2Credentials
 
-# no @derive(Json): member(s) inputs: list[NameIdentifier], outputs: list[NameIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputs: list[NameIdentifier], outputs: list[NameIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenLineageRunEventSummary:
     Optional[OpenLineageRunState] eventType
     Optional[str] runId
@@ -5520,21 +5696,24 @@ struct PackageConfig:
     str packageManager
     Optional[str] packageSpecification
 
-# no @derive(Json): member(s) s3: list[S3Permission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) s3: list[S3Permission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Permissions:
     Optional[list[S3Permission]] s3
 
-# no @derive(Json): member(s) subnetIdList: list[str], securityGroupIdList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIdList: list[str], securityGroupIdList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PhysicalConnectionRequirements:
     Optional[str] subnetId
     Optional[list[str]] subnetIdList
     Optional[list[str]] securityGroupIdList
     Optional[str] availabilityZone
 
-# no @derive(Json): member(s) glueConnectionNames: list[str], glueConnection: GlueConnection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glueConnectionNames: list[str], glueConnection: GlueConnection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PhysicalEndpoint:
     Optional[AwsLocation] awsLocation
     Optional[str] glueConnectionName
@@ -5546,8 +5725,9 @@ struct PhysicalEndpoint:
     Optional[Protocol] protocol
     Optional[str] stage
 
-# no @derive(Json): member(s) createProjectFromProjectProfile: CreateProjectFromProjectProfilePolicyGrantDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) createProjectFromProjectProfile: CreateProjectFromProjectProfilePolicyGrantDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PolicyGrantDetail:
     Optional[CreateDomainUnitPolicyGrantDetail] createDomainUnit
     Optional[OverrideDomainUnitOwnersPolicyGrantDetail] overrideDomainUnitOwners
@@ -5564,8 +5744,9 @@ struct PolicyGrantDetail:
     Optional[CreateProjectFromProjectProfilePolicyGrantDetail] createProjectFromProjectProfile
     Optional[UseAssetTypePolicyGrantDetail] useAssetType
 
-# no @derive(Json): member(s) detail: PolicyGrantDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) detail: PolicyGrantDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PolicyGrantMember:
     Optional[PolicyGrantPrincipal] principal
     Optional[PolicyGrantDetail] detail
@@ -5602,8 +5783,9 @@ struct PostTimeSeriesDataPointsInput:
     list[TimeSeriesDataPointFormInput] forms
     Optional[str] clientToken
 
-# no @derive(Json): member(s) forms: list[TimeSeriesDataPointFormOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) forms: list[TimeSeriesDataPointFormOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PostTimeSeriesDataPointsOutput:
     Optional[str] domainId
     Optional[str] entityId
@@ -5656,8 +5838,9 @@ struct ProjectProfileSummary:
     Optional[DateTime] lastUpdatedAt
     Optional[str] domainUnitId
 
-# no @derive(Json): member(s) failureReasons: list[ProjectDeletionError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failureReasons: list[ProjectDeletionError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProjectSummary:
     str domainId
     str id
@@ -5671,14 +5854,16 @@ struct ProjectSummary:
     Optional[str] domainUnitId
     Optional[str] projectCategory
 
-# no @derive(Json): member(s) specificProjects: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) specificProjects: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProjectsForRule:
     RuleScopeSelectionMode selectionMode
     Optional[list[str]] specificProjects
 
-# no @derive(Json): member(s) lakeFormationConfiguration: LakeFormationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lakeFormationConfiguration: LakeFormationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProvisioningConfiguration:
     Optional[LakeFormationConfiguration] lakeFormationConfiguration
 
@@ -5714,8 +5899,9 @@ struct PutEnvironmentBlueprintConfigurationInput:
     Optional[dict[str, str]] globalParameters
     Optional[list[ProvisioningConfiguration]] provisioningConfigurations
 
-# no @derive(Json): member(s) enabledRegions: list[str], regionalParameters: dict[str, dict[str, str]], resourceConfigurations: list[ResourceConfiguration], provisioningConfigurations: list[ProvisioningConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) enabledRegions: list[str], regionalParameters: dict[str, dict[str, str]], resourceConfigurations: list[ResourceConfiguration], provisioningConfigurations: list[ProvisioningConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutEnvironmentBlueprintConfigurationOutput:
     str domainId
     str environmentBlueprintId
@@ -5730,8 +5916,9 @@ struct PutEnvironmentBlueprintConfigurationOutput:
     Optional[list[ResourceConfiguration]] resourceConfigurations
     Optional[list[ProvisioningConfiguration]] provisioningConfigurations
 
-# no @derive(Json): member(s) parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutResourceConfiguration:
     str name
     Optional[str] description
@@ -5748,8 +5935,9 @@ struct QueryGraphInput:
     Optional[str] nextToken
     Optional[AdditionalAttributes] additionalAttributes
 
-# no @derive(Json): member(s) items: list[ResultItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ResultItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryGraphOutput:
     Optional[list[ResultItem]] items
     Optional[str] nextToken
@@ -5812,16 +6000,18 @@ struct RedshiftPropertiesPatch:
     Optional[RedshiftCredentials] credentials
     Optional[RedshiftLineageSyncConfigurationInput] lineageSync
 
-# no @derive(Json): member(s) relationalFilterConfigurations: list[RelationalFilterConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) relationalFilterConfigurations: list[RelationalFilterConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RedshiftRunConfigurationInput:
     Optional[str] dataAccessRole
     list[RelationalFilterConfiguration] relationalFilterConfigurations
     Optional[RedshiftCredentialConfiguration] redshiftCredentialConfiguration
     Optional[RedshiftStorage] redshiftStorage
 
-# no @derive(Json): member(s) relationalFilterConfigurations: list[RelationalFilterConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) relationalFilterConfigurations: list[RelationalFilterConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RedshiftRunConfigurationOutput:
     Optional[str] accountId
     Optional[str] region
@@ -5830,8 +6020,9 @@ struct RedshiftRunConfigurationOutput:
     Optional[RedshiftCredentialConfiguration] redshiftCredentialConfiguration
     RedshiftStorage redshiftStorage
 
-# no @derive(Json): member(s) selfGrantStatusDetails: list[SelfGrantStatusDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) selfGrantStatusDetails: list[SelfGrantStatusDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RedshiftSelfGrantStatusOutput:
     list[SelfGrantStatusDetail] selfGrantStatusDetails
 
@@ -5854,8 +6045,9 @@ struct Region:
     Optional[str] regionName
     Optional[str] regionNamePath
 
-# no @derive(Json): member(s) predictionChoices: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) predictionChoices: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RejectChoice:
     str predictionTarget
     Optional[list[int64]] predictionChoices
@@ -5888,8 +6080,9 @@ struct RejectSubscriptionRequestInput:
     str identifier
     Optional[str] decisionComment
 
-# no @derive(Json): member(s) subscribedPrincipals: list[SubscribedPrincipal], subscribedListings: list[SubscribedListing], metadataForms: list[FormOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscribedPrincipals: list[SubscribedPrincipal], subscribedListings: list[SubscribedListing], metadataForms: list[FormOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RejectSubscriptionRequestOutput:
     str id
     str createdBy
@@ -5912,8 +6105,9 @@ struct RelationPattern:
     RelationDirection relationDirection
     Optional[int64] maxPathLength
 
-# no @derive(Json): member(s) filterExpressions: list[FilterExpression] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filterExpressions: list[FilterExpression] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RelationalFilterConfiguration:
     str databaseName
     Optional[str] schemaName
@@ -5957,8 +6151,9 @@ struct Resource:
     str value
     str type
 
-# no @derive(Json): member(s) parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceConfiguration:
     str identifier
     str name
@@ -5982,8 +6177,9 @@ struct ResourceTagParameter:
     str value
     bool isValueEditable
 
-# no @derive(Json): member(s) lineageNode: LineageNodeItem not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lineageNode: LineageNodeItem not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResultItem:
     Optional[LineageNodeItem] lineageNode
 
@@ -5994,8 +6190,9 @@ struct RevokeSubscriptionInput:
     str identifier
     Optional[bool] retainPermissions
 
-# no @derive(Json): member(s) subscribedListing: SubscribedListing not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscribedListing: SubscribedListing not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RevokeSubscriptionOutput:
     str id
     str createdBy
@@ -6009,8 +6206,9 @@ struct RevokeSubscriptionOutput:
     Optional[str] subscriptionRequestId
     Optional[bool] retainPermissions
 
-# no @derive(Json): member(s) expression: RowFilterExpression, and: list[RowFilter], or: list[RowFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) expression: RowFilterExpression, and: list[RowFilter], or: list[RowFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RowFilter:
     Optional[RowFilterExpression] expression
     # wire name "and" differs from field; derive rename is a #346 follow-up
@@ -6018,14 +6216,16 @@ struct RowFilter:
     # wire name "or" differs from field; derive rename is a #346 follow-up
     Optional[list[RowFilter]] or_
 
-# no @derive(Json): member(s) rowFilter: RowFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rowFilter: RowFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RowFilterConfiguration:
     RowFilter rowFilter
     Optional[bool] sensitive
 
-# no @derive(Json): member(s) in: InExpression, notIn: NotInExpression not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) in: InExpression, notIn: NotInExpression not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RowFilterExpression:
     Optional[EqualToExpression] equalTo
     Optional[NotEqualToExpression] notEqualTo
@@ -6041,21 +6241,24 @@ struct RowFilterExpression:
     Optional[LikeExpression] like
     Optional[NotLikeExpression] notLike
 
-# no @derive(Json): member(s) metadataFormEnforcementDetail: MetadataFormEnforcementDetail, glossaryTermEnforcementDetail: GlossaryTermEnforcementDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadataFormEnforcementDetail: MetadataFormEnforcementDetail, glossaryTermEnforcementDetail: GlossaryTermEnforcementDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleDetail:
     Optional[MetadataFormEnforcementDetail] metadataFormEnforcementDetail
     Optional[GlossaryTermEnforcementDetail] glossaryTermEnforcementDetail
 
-# no @derive(Json): member(s) assetType: AssetTypesForRule, project: ProjectsForRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetType: AssetTypesForRule, project: ProjectsForRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleScope:
     Optional[AssetTypesForRule] assetType
     Optional[bool] dataProduct
     Optional[ProjectsForRule] project
 
-# no @derive(Json): member(s) scope: RuleScope not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scope: RuleScope not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleSummary:
     Optional[str] identifier
     Optional[str] revision
@@ -6089,8 +6292,9 @@ struct S3Destination:
 struct S3File:
     str key
 
-# no @derive(Json): member(s) fileList: list[S3File] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fileList: list[S3File] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3FilesLocation:
     str bucket
     list[S3File] fileList
@@ -6115,13 +6319,15 @@ struct S3PropertiesPatch:
     Optional[str] s3AccessGrantLocationId
     Optional[bool] registerS3AccessGrantLocation
 
-# no @derive(Json): member(s) trackingAssets: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) trackingAssets: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SageMakerRunConfigurationInput:
     dict[str, list[str]] trackingAssets
 
-# no @derive(Json): member(s) trackingAssets: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) trackingAssets: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SageMakerRunConfigurationOutput:
     Optional[str] accountId
     Optional[str] region
@@ -6141,8 +6347,9 @@ struct SearchGroupProfilesInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[GroupProfileSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[GroupProfileSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchGroupProfilesOutput:
     Optional[list[GroupProfileSummary]] items
     Optional[str] nextToken
@@ -6165,8 +6372,9 @@ struct SearchInput:
     Optional[SearchSort] sort
     Optional[list[SearchOutputAdditionalAttribute]] additionalAttributes
 
-# no @derive(Json): member(s) glossaryItem: GlossaryItem, glossaryTermItem: GlossaryTermItem, assetItem: AssetItem, dataProductItem: DataProductResultItem not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glossaryItem: GlossaryItem, glossaryTermItem: GlossaryTermItem, assetItem: AssetItem, dataProductItem: DataProductResultItem not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchInventoryResultItem:
     Optional[GlossaryItem] glossaryItem
     Optional[GlossaryTermItem] glossaryTermItem
@@ -6186,23 +6394,26 @@ struct SearchListingsInput:
     Optional[SearchSort] sort
     Optional[list[SearchOutputAdditionalAttribute]] additionalAttributes
 
-# no @derive(Json): member(s) items: list[SearchResultItem], aggregates: list[AggregationOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[SearchResultItem], aggregates: list[AggregationOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchListingsOutput:
     Optional[list[SearchResultItem]] items
     Optional[str] nextToken
     Optional[int64] totalMatchCount
     Optional[list[AggregationOutput]] aggregates
 
-# no @derive(Json): member(s) items: list[SearchInventoryResultItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[SearchInventoryResultItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchOutput:
     Optional[list[SearchInventoryResultItem]] items
     Optional[str] nextToken
     Optional[int64] totalMatchCount
 
-# no @derive(Json): member(s) assetListing: AssetListingItem, dataProductListing: DataProductListingItem not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetListing: AssetListingItem, dataProductListing: DataProductListingItem not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchResultItem:
     Optional[AssetListingItem] assetListing
     Optional[DataProductListingItem] dataProductListing
@@ -6225,15 +6436,17 @@ struct SearchTypesInput:
     Optional[SearchSort] sort
     bool managed
 
-# no @derive(Json): member(s) items: list[SearchTypesResultItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[SearchTypesResultItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchTypesOutput:
     Optional[list[SearchTypesResultItem]] items
     Optional[str] nextToken
     Optional[int64] totalMatchCount
 
-# no @derive(Json): member(s) assetTypeItem: AssetTypeItem, formTypeItem: FormTypeData, lineageNodeTypeItem: LineageNodeTypeItem not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetTypeItem: AssetTypeItem, formTypeItem: FormTypeData, lineageNodeTypeItem: LineageNodeTypeItem not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchTypesResultItem:
     Optional[AssetTypeItem] assetTypeItem
     Optional[FormTypeData] formTypeItem
@@ -6248,8 +6461,9 @@ struct SearchUserProfilesInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[UserProfileSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[UserProfileSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchUserProfilesOutput:
     Optional[list[UserProfileSummary]] items
     Optional[str] nextToken
@@ -6261,8 +6475,9 @@ struct SelfGrantStatusDetail:
     SelfGrantStatus status
     Optional[str] failureCause
 
-# no @derive(Json): member(s) glueSelfGrantStatus: GlueSelfGrantStatusOutput, redshiftSelfGrantStatus: RedshiftSelfGrantStatusOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glueSelfGrantStatus: GlueSelfGrantStatusOutput, redshiftSelfGrantStatus: RedshiftSelfGrantStatusOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SelfGrantStatusOutput:
     Optional[GlueSelfGrantStatusOutput] glueSelfGrantStatus
     Optional[RedshiftSelfGrantStatusOutput] redshiftSelfGrantStatus
@@ -6277,8 +6492,9 @@ struct SingleSignOn:
     Optional[UserAssignment] userAssignment
     Optional[str] idcInstanceArn
 
-# no @derive(Json): member(s) connectivityProperties: ConnectivityProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectivityProperties: ConnectivityProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnowflakePropertiesInput:
     Optional[ConnectivityProperties] connectivityProperties
     str snowflakeRole
@@ -6293,15 +6509,17 @@ struct SnowflakePropertiesOutput:
     ConnectionStatus status
     Optional[str] errorMessage
 
-# no @derive(Json): member(s) connectivityPropertiesPatch: ConnectivityPropertiesPatch not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectivityPropertiesPatch: ConnectivityPropertiesPatch not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnowflakePropertiesPatch:
     Optional[ConnectivityPropertiesPatch] connectivityPropertiesPatch
     Optional[str] snowflakeRole
     Optional[LineageSyncInput] lineageSync
 
-# no @derive(Json): member(s) s3Files: S3FilesLocation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) s3Files: S3FilesLocation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceLocation:
     Optional[str] s3
     Optional[S3FilesLocation] s3Files
@@ -6350,8 +6568,9 @@ struct SparkEmrPropertiesPatch:
 struct SparkGlueArgs:
     Optional[str] connection
 
-# no @derive(Json): member(s) glueConnectionNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glueConnectionNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SparkGluePropertiesInput:
     Optional[SparkGlueArgs] additionalArgs
     Optional[str] glueConnectionName
@@ -6363,8 +6582,9 @@ struct SparkGluePropertiesInput:
     Optional[str] pythonVirtualEnv
     Optional[str] workerType
 
-# no @derive(Json): member(s) glueConnectionNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glueConnectionNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SparkGluePropertiesOutput:
     Optional[SparkGlueArgs] additionalArgs
     Optional[str] glueConnectionName
@@ -6419,8 +6639,9 @@ struct StartMetadataGenerationRunInput:
     Optional[str] clientToken
     str owningProjectIdentifier
 
-# no @derive(Json): member(s) types: list[MetadataGenerationRunType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) types: list[MetadataGenerationRunType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartMetadataGenerationRunOutput:
     str domainId
     str id
@@ -6462,8 +6683,9 @@ struct StartNotebookImportInput:
     Optional[NotebookType] type
     Optional[str] clientToken
 
-# no @derive(Json): member(s) sourceLocation: SourceLocation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceLocation: SourceLocation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartNotebookImportOutput:
     Optional[str] notebookId
     Optional[NotebookStatus] status
@@ -6492,8 +6714,9 @@ struct StartNotebookRunInput:
     Optional[dict[str, str]] parameters
     Optional[str] clientToken
 
-# no @derive(Json): member(s) cellOrder: list[CellInformation], metadata: dict[str, str], parameters: dict[str, str], networkConfiguration: NetworkConfig, notificationConfiguration: NotificationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cellOrder: list[CellInformation], metadata: dict[str, str], parameters: dict[str, str], networkConfiguration: NetworkConfig, notificationConfiguration: NotificationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartNotebookRunOutput:
     str id
     str domainId
@@ -6531,8 +6754,9 @@ struct StartNotebookSyncInput:
     Optional[str] description
     Optional[str] clientToken
 
-# no @derive(Json): member(s) sourceLocation: SourceLocation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceLocation: SourceLocation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartNotebookSyncOutput:
     Optional[str] notebookId
     Optional[NotebookStatus] status
@@ -6564,8 +6788,9 @@ struct StorageConfig:
     Optional[str] projectS3Path
     Optional[str] kmsKeyArn
 
-# no @derive(Json): member(s) assetScope: AssetScope, permissions: Permissions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetScope: AssetScope, permissions: Permissions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubscribedAsset:
     str assetId
     str assetRevision
@@ -6577,8 +6802,9 @@ struct SubscribedAsset:
     Optional[AssetScope] assetScope
     Optional[Permissions] permissions
 
-# no @derive(Json): member(s) glossaryTerms: list[DetailedGlossaryTerm], assetScope: AssetScope, permissions: Permissions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glossaryTerms: list[DetailedGlossaryTerm], assetScope: AssetScope, permissions: Permissions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubscribedAssetListing:
     Optional[str] entityId
     Optional[str] entityRevision
@@ -6605,8 +6831,9 @@ struct SubscribedIamPrincipal:
 struct SubscribedIamPrincipalInput:
     Optional[str] identifier
 
-# no @derive(Json): member(s) item: SubscribedListingItem not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) item: SubscribedListingItem not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubscribedListing:
     str id
     Optional[str] revision
@@ -6620,8 +6847,9 @@ struct SubscribedListing:
 struct SubscribedListingInput:
     str identifier
 
-# no @derive(Json): member(s) assetListing: SubscribedAssetListing, productListing: SubscribedProductListing not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetListing: SubscribedAssetListing, productListing: SubscribedProductListing not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubscribedListingItem:
     Optional[SubscribedAssetListing] assetListing
     Optional[SubscribedProductListing] productListing
@@ -6640,8 +6868,9 @@ struct SubscribedPrincipalInput:
     Optional[SubscribedGroupInput] group
     Optional[SubscribedIamPrincipalInput] iam
 
-# no @derive(Json): member(s) glossaryTerms: list[DetailedGlossaryTerm], assetListings: list[AssetInDataProductListingItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) glossaryTerms: list[DetailedGlossaryTerm], assetListings: list[AssetInDataProductListingItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubscribedProductListing:
     Optional[str] entityId
     Optional[str] entityRevision
@@ -6668,8 +6897,9 @@ struct SubscribedUser:
 struct SubscribedUserInput:
     Optional[str] identifier
 
-# no @derive(Json): member(s) assets: list[SubscribedAsset] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assets: list[SubscribedAsset] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubscriptionGrantSummary:
     str id
     str createdBy
@@ -6684,8 +6914,9 @@ struct SubscriptionGrantSummary:
     Optional[list[SubscribedAsset]] assets
     Optional[str] subscriptionId
 
-# no @derive(Json): member(s) subscribedPrincipals: list[SubscribedPrincipal], subscribedListings: list[SubscribedListing], metadataFormsSummary: list[MetadataFormSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscribedPrincipals: list[SubscribedPrincipal], subscribedListings: list[SubscribedListing], metadataFormsSummary: list[MetadataFormSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubscriptionRequestSummary:
     str id
     str createdBy
@@ -6702,8 +6933,9 @@ struct SubscriptionRequestSummary:
     Optional[str] existingSubscriptionId
     Optional[list[MetadataFormSummary]] metadataFormsSummary
 
-# no @derive(Json): member(s) subscribedListing: SubscribedListing not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscribedListing: SubscribedListing not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubscriptionSummary:
     str id
     str createdBy
@@ -6722,8 +6954,9 @@ struct SubscriptionTargetForm:
     str formName
     str content
 
-# no @derive(Json): member(s) authorizedPrincipals: list[str], applicableAssetTypes: list[str], subscriptionTargetConfig: list[SubscriptionTargetForm] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizedPrincipals: list[str], applicableAssetTypes: list[str], subscriptionTargetConfig: list[SubscriptionTargetForm] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubscriptionTargetSummary:
     str id
     list[str] authorizedPrincipals
@@ -6753,14 +6986,16 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) isA: list[str], classifies: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) isA: list[str], classifies: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TermRelations:
     Optional[list[str]] isA
     Optional[list[str]] classifies
 
-# no @derive(Json): member(s) matchOffsets: list[MatchOffset] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) matchOffsets: list[MatchOffset] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TextMatchItem:
     Optional[str] attribute
     Optional[str] text
@@ -6841,8 +7076,9 @@ struct UpdateAccountPoolInput:
     Optional[str] resolutionStrategy
     Optional[AccountSource] accountSource
 
-# no @derive(Json): member(s) accountSource: AccountSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountSource: AccountSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAccountPoolOutput:
     Optional[str] domainId
     Optional[str] name
@@ -6866,8 +7102,9 @@ struct UpdateAssetFilterInput:
     Optional[str] description
     Optional[AssetFilterConfiguration] configuration
 
-# no @derive(Json): member(s) configuration: AssetFilterConfiguration, effectiveColumnNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: AssetFilterConfiguration, effectiveColumnNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAssetFilterOutput:
     str id
     str domainId
@@ -6891,8 +7128,9 @@ struct UpdateConnectionInput:
     Optional[AwsLocation] awsLocation
     Optional[ConnectionPropertiesPatch] props
 
-# no @derive(Json): member(s) configurations: list[Configuration], physicalEndpoints: list[PhysicalEndpoint], props: ConnectionPropertiesOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurations: list[Configuration], physicalEndpoints: list[PhysicalEndpoint], props: ConnectionPropertiesOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateConnectionOutput:
     Optional[list[Configuration]] configurations
     str connectionId
@@ -6923,8 +7161,9 @@ struct UpdateDataSourceInput:
     Optional[RecommendationConfiguration] recommendation
     Optional[bool] retainPermissionsOnRevokeFailure
 
-# no @derive(Json): member(s) configuration: DataSourceConfigurationOutput, assetFormsOutput: list[FormOutput], selfGrantStatus: SelfGrantStatusOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: DataSourceConfigurationOutput, assetFormsOutput: list[FormOutput], selfGrantStatus: SelfGrantStatusOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDataSourceOutput:
     str id
     Optional[DataSourceStatus] status
@@ -7005,8 +7244,9 @@ struct UpdateDomainUnitInput:
     Optional[str] description
     Optional[str] name
 
-# no @derive(Json): member(s) owners: list[DomainUnitOwnerProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) owners: list[DomainUnitOwnerProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDomainUnitOutput:
     str id
     str domainId
@@ -7048,8 +7288,9 @@ struct UpdateEnvironmentBlueprintInput:
     Optional[list[CustomParameter]] userParameters
     Optional[str] blueprintCategory
 
-# no @derive(Json): member(s) userParameters: list[CustomParameter], glossaryTerms: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userParameters: list[CustomParameter], glossaryTerms: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEnvironmentBlueprintOutput:
     str id
     str name
@@ -7075,8 +7316,9 @@ struct UpdateEnvironmentInput:
     Optional[list[EnvironmentParameter]] userParameters
     Optional[str] environmentConfigurationName
 
-# no @derive(Json): member(s) provisionedResources: list[Resource], environmentActions: list[ConfigurableEnvironmentAction], glossaryTerms: list[str], userParameters: list[CustomParameter], lastDeployment: Deployment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) provisionedResources: list[Resource], environmentActions: list[ConfigurableEnvironmentAction], glossaryTerms: list[str], userParameters: list[CustomParameter], lastDeployment: Deployment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEnvironmentOutput:
     str projectId
     Optional[str] id
@@ -7113,8 +7355,9 @@ struct UpdateEnvironmentProfileInput:
     Optional[str] awsAccountId
     Optional[str] awsAccountRegion
 
-# no @derive(Json): member(s) userParameters: list[CustomParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userParameters: list[CustomParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEnvironmentProfileOutput:
     str id
     str domainId
@@ -7139,8 +7382,9 @@ struct UpdateGlossaryInput:
     Optional[GlossaryStatus] status
     Optional[str] clientToken
 
-# no @derive(Json): member(s) usageRestrictions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) usageRestrictions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateGlossaryOutput:
     str domainId
     str id
@@ -7162,8 +7406,9 @@ struct UpdateGlossaryTermInput:
     Optional[TermRelations] termRelations
     Optional[GlossaryTermStatus] status
 
-# no @derive(Json): member(s) termRelations: TermRelations, usageRestrictions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) termRelations: TermRelations, usageRestrictions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateGlossaryTermOutput:
     str id
     str domainId
@@ -7206,8 +7451,9 @@ struct UpdateNotebookInput:
     Optional[EnvironmentConfig] environmentConfiguration
     Optional[str] clientToken
 
-# no @derive(Json): member(s) cellOrder: list[CellInformation], metadata: dict[str, str], parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cellOrder: list[CellInformation], metadata: dict[str, str], parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateNotebookOutput:
     str id
     str name
@@ -7245,8 +7491,9 @@ struct UpdateProjectInput:
     Optional[list[EnvironmentConfigurationUserParameter]] userParameters
     Optional[str] projectProfileVersion
 
-# no @derive(Json): member(s) failureReasons: list[ProjectDeletionError], resourceTags: list[ResourceTag], glossaryTerms: list[str], userParameters: list[EnvironmentConfigurationUserParameter], environmentDeploymentDetails: EnvironmentDeploymentDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failureReasons: list[ProjectDeletionError], resourceTags: list[ResourceTag], glossaryTerms: list[str], userParameters: list[EnvironmentConfigurationUserParameter], environmentDeploymentDetails: EnvironmentDeploymentDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProjectOutput:
     str domainId
     str id
@@ -7279,8 +7526,9 @@ struct UpdateProjectProfileInput:
     Optional[list[EnvironmentConfiguration]] environmentConfigurations
     Optional[str] domainUnitIdentifier
 
-# no @derive(Json): member(s) projectResourceTags: list[ResourceTagParameter], environmentConfigurations: list[EnvironmentConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) projectResourceTags: list[ResourceTagParameter], environmentConfigurations: list[EnvironmentConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProjectProfileOutput:
     str domainId
     str id
@@ -7321,8 +7569,9 @@ struct UpdateRuleInput:
     Optional[RuleDetail] detail
     Optional[bool] includeChildDomainUnits
 
-# no @derive(Json): member(s) scope: RuleScope, detail: RuleDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scope: RuleScope, detail: RuleDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRuleOutput:
     str identifier
     str revision
@@ -7349,8 +7598,9 @@ struct UpdateSubscriptionGrantStatusInput:
     Optional[FailureCause] failureCause
     Optional[str] targetName
 
-# no @derive(Json): member(s) assets: list[SubscribedAsset] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assets: list[SubscribedAsset] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSubscriptionGrantStatusOutput:
     str id
     str createdBy
@@ -7372,8 +7622,9 @@ struct UpdateSubscriptionRequestInput:
     str identifier
     str requestReason
 
-# no @derive(Json): member(s) subscribedPrincipals: list[SubscribedPrincipal], subscribedListings: list[SubscribedListing], metadataForms: list[FormOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscribedPrincipals: list[SubscribedPrincipal], subscribedListings: list[SubscribedListing], metadataForms: list[FormOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSubscriptionRequestOutput:
     str id
     str createdBy
@@ -7404,8 +7655,9 @@ struct UpdateSubscriptionTargetInput:
     Optional[str] provider
     Optional[SubscriptionGrantCreationMode] subscriptionGrantCreationMode
 
-# no @derive(Json): member(s) authorizedPrincipals: list[str], applicableAssetTypes: list[str], subscriptionTargetConfig: list[SubscriptionTargetForm] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizedPrincipals: list[str], applicableAssetTypes: list[str], subscriptionTargetConfig: list[SubscriptionTargetForm] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSubscriptionTargetOutput:
     str id
     list[str] authorizedPrincipals
@@ -7476,15 +7728,17 @@ struct UsernamePassword:
 struct ValidationException:
     str message
 
-# no @derive(Json): member(s) subnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcPropertiesInput:
     str vpcId
     list[str] subnetIds
     Optional[str] securityGroupId
 
-# no @derive(Json): member(s) subnetIds: list[str], glueConnectionNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], glueConnectionNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcPropertiesOutput:
     str vpcId
     list[str] subnetIds
@@ -7492,8 +7746,9 @@ struct VpcPropertiesOutput:
     Optional[str] securityGroupId
     Optional[list[str]] glueConnectionNames
 
-# no @derive(Json): member(s) subnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcPropertiesPatch:
     Optional[str] vpcId
     Optional[list[str]] subnetIds
@@ -7558,38 +7813,10 @@ def datazone_error_from_code(str code) -> DataZoneError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AcceptPredictions (document member `acceptChoices: list[AcceptChoice]` is not serializable by derive)
-#   AcceptSubscriptionRequest (document member `assetScopes: list[AcceptedAssetScope]` is not serializable by derive)
-#   AddPolicyGrant (document member `detail: PolicyGrantDetail` is not serializable by derive)
-#   AssociateGovernedTerms (document member `governedGlossaryTerms: list[str]` is not serializable by derive)
 #   BatchGetAttributesMetadata (httpQuery `attributeIdentifiers` has unsupported type list[str])
-#   BatchPutAttributesMetadata (document member `attributes: list[AttributeInput]` is not serializable by derive)
-#   CreateAccountPool (document member `accountSource: AccountSource` is not serializable by derive)
-#   CreateAsset (document member `glossaryTerms: list[str]` is not serializable by derive)
-#   CreateAssetFilter (document member `configuration: AssetFilterConfiguration` is not serializable by derive)
-#   CreateAssetRevision (document member `glossaryTerms: list[str]` is not serializable by derive)
-#   CreateAssetType (document member `formsInput: dict[str, FormEntryInput]` is not serializable by derive)
-#   CreateConnection (document member `configurations: list[Configuration]` is not serializable by derive)
-#   CreateDataProduct (document member `glossaryTerms: list[str]` is not serializable by derive)
-#   CreateDataProductRevision (document member `glossaryTerms: list[str]` is not serializable by derive)
-#   CreateDataSource (document member `configuration: DataSourceConfigurationInput` is not serializable by derive)
-#   CreateDomain (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateEnvironment (document member `userParameters: list[EnvironmentParameter]` is not serializable by derive)
-#   CreateEnvironmentBlueprint (document member `userParameters: list[CustomParameter]` is not serializable by derive)
-#   CreateEnvironmentProfile (document member `userParameters: list[EnvironmentParameter]` is not serializable by derive)
-#   CreateGlossary (document member `usageRestrictions: list[str]` is not serializable by derive)
-#   CreateGlossaryTerm (document member `termRelations: TermRelations` is not serializable by derive)
-#   CreateNotebook (document member `metadata: dict[str, str]` is not serializable by derive)
-#   CreateProject (document member `resourceTags: dict[str, str]` is not serializable by derive)
-#   CreateProjectProfile (document member `projectResourceTags: list[ResourceTagParameter]` is not serializable by derive)
-#   CreateRule (document member `scope: RuleScope` is not serializable by derive)
-#   CreateSubscriptionGrant (document member `assetTargetNames: list[AssetTargetNameMap]` is not serializable by derive)
-#   CreateSubscriptionRequest (document member `subscribedPrincipals: list[SubscribedPrincipalInput]` is not serializable by derive)
-#   CreateSubscriptionTarget (document member `subscriptionTargetConfig: list[SubscriptionTargetForm]` is not serializable by derive)
 #   DeleteDataSource (httpQuery `retainPermissionsOnRevokeFailure` has unsupported type bool)
 #   DeleteDomain (httpQuery `skipDeletionCheck` has unsupported type bool)
 #   DeleteProject (httpQuery `skipDeletionCheck` has unsupported type bool)
-#   DisassociateGovernedTerms (document member `governedGlossaryTerms: list[str]` is not serializable by derive)
 #   GetConnection (httpQuery `withSecret` has unsupported type bool)
 #   GetLineageNode (httpQuery `eventTimestamp` has unsupported type DateTime)
 #   ListEnvironmentBlueprints (httpQuery `managed` has unsupported type bool)
@@ -7598,32 +7825,7 @@ def datazone_error_from_code(str code) -> DataZoneError:
 #   ListNotifications (httpQuery `afterTimestamp` has unsupported type DateTime)
 #   ListRules (httpQuery `projectIds` has unsupported type list[str])
 #   ListTimeSeriesDataPoints (httpQuery `startedAt` has unsupported type DateTime)
-#   PostTimeSeriesDataPoints (document member `forms: list[TimeSeriesDataPointFormInput]` is not serializable by derive)
-#   PutEnvironmentBlueprintConfiguration (document member `enabledRegions: list[str]` is not serializable by derive)
-#   QueryGraph (document member `match: list[MatchClause]` is not serializable by derive)
-#   RejectPredictions (document member `rejectChoices: list[RejectChoice]` is not serializable by derive)
-#   Search (document member `searchIn: list[SearchInItem]` is not serializable by derive)
-#   SearchListings (document member `searchIn: list[SearchInItem]` is not serializable by derive)
-#   SearchTypes (document member `searchIn: list[SearchInItem]` is not serializable by derive)
-#   StartMetadataGenerationRun (document member `types: list[MetadataGenerationRunType]` is not serializable by derive)
-#   StartNotebookImport (document member `sourceLocation: SourceLocation` is not serializable by derive)
-#   StartNotebookRun (document member `networkConfiguration: NetworkConfig` is not serializable by derive)
-#   StartNotebookSync (document member `sourceLocation: SourceLocation` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateAccountPool (document member `accountSource: AccountSource` is not serializable by derive)
-#   UpdateAssetFilter (document member `configuration: AssetFilterConfiguration` is not serializable by derive)
-#   UpdateConnection (document member `configurations: list[Configuration]` is not serializable by derive)
-#   UpdateDataSource (document member `assetFormsInput: list[FormInput]` is not serializable by derive)
-#   UpdateEnvironment (document member `glossaryTerms: list[str]` is not serializable by derive)
-#   UpdateEnvironmentBlueprint (document member `userParameters: list[CustomParameter]` is not serializable by derive)
-#   UpdateEnvironmentProfile (document member `userParameters: list[EnvironmentParameter]` is not serializable by derive)
-#   UpdateGlossaryTerm (document member `termRelations: TermRelations` is not serializable by derive)
-#   UpdateNotebook (document member `cellOrder: list[CellInformation]` is not serializable by derive)
-#   UpdateProject (document member `resourceTags: dict[str, str]` is not serializable by derive)
-#   UpdateProjectProfile (document member `projectResourceTags: list[ResourceTagParameter]` is not serializable by derive)
-#   UpdateRule (document member `scope: RuleScope` is not serializable by derive)
-#   UpdateSubscriptionTarget (document member `authorizedPrincipals: list[str]` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -7633,10 +7835,6 @@ def datazone_error_from_code(str code) -> DataZoneError:
 #   ListNotifications (operation not generated)
 #   ListRules (operation not generated)
 #   ListTimeSeriesDataPoints (operation not generated)
-#   QueryGraph (operation not generated)
-#   Search (operation not generated)
-#   SearchListings (operation not generated)
-#   SearchTypes (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -7849,10 +8047,1186 @@ struct UpdateUserProfileDocument:
     UserProfileStatus status
     Optional[str] sessionName
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def datazone_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def datazone_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def datazone_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AcceptedAssetScope to a compact JSON object (declaration order).
+def accepted_asset_scope_to_json(AcceptedAssetScope v) -> str:
+    list[str] parts = []
+    parts.append("\"assetId\":" + datazone_json_str(v.assetId))
+    list[str] e0 = []
+    for x0 in v.filterIds:
+        e0.append(datazone_json_str(x0))
+    parts.append("\"filterIds\":" + datazone_json_arr(e0))
+    return datazone_json_obj(parts)
+
+# Serialize AccountInfo to a compact JSON object (declaration order).
+def account_info_to_json(AccountInfo v) -> str:
+    list[str] parts = []
+    parts.append("\"awsAccountId\":" + datazone_json_str(v.awsAccountId))
+    list[str] e0 = []
+    for x0 in v.supportedRegions:
+        e0.append(datazone_json_str(x0))
+    parts.append("\"supportedRegions\":" + datazone_json_arr(e0))
+    if v.awsAccountName.is_some():
+        auto u1 = v.awsAccountName.unwrap()
+        parts.append("\"awsAccountName\":" + datazone_json_str(u1))
+    return datazone_json_obj(parts)
+
+# Serialize AccountSource to a compact JSON object (declaration order).
+def account_source_to_json(AccountSource v) -> str:
+    list[str] parts = []
+    if v.accounts.is_some():
+        auto u0 = v.accounts.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(account_info_to_json(x1))
+        parts.append("\"accounts\":" + datazone_json_arr(e1))
+    if v.customAccountPoolHandler.is_some():
+        auto u2 = v.customAccountPoolHandler.unwrap()
+        parts.append("\"customAccountPoolHandler\":" + u2.to_json())
+    return datazone_json_obj(parts)
+
+# Serialize AdditionalAttributes to a compact JSON object (declaration order).
+def additional_attributes_to_json(AdditionalAttributes v) -> str:
+    list[str] parts = []
+    if v.formNames.is_some():
+        auto u0 = v.formNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(datazone_json_str(x1))
+        parts.append("\"formNames\":" + datazone_json_arr(e1))
+    return datazone_json_obj(parts)
+
+# Serialize AssetFilterConfiguration to a compact JSON object (declaration order).
+def asset_filter_configuration_to_json(AssetFilterConfiguration v) -> str:
+    list[str] parts = []
+    if v.columnConfiguration.is_some():
+        auto u0 = v.columnConfiguration.unwrap()
+        parts.append("\"columnConfiguration\":" + column_filter_configuration_to_json(u0))
+    if v.rowConfiguration.is_some():
+        auto u1 = v.rowConfiguration.unwrap()
+        parts.append("\"rowConfiguration\":" + row_filter_configuration_to_json(u1))
+    return datazone_json_obj(parts)
+
+# Serialize AssetPermission to a compact JSON object (declaration order).
+def asset_permission_to_json(AssetPermission v) -> str:
+    list[str] parts = []
+    parts.append("\"assetId\":" + datazone_json_str(v.assetId))
+    parts.append("\"permissions\":" + permissions_to_json(v.permissions))
+    return datazone_json_obj(parts)
+
+# Serialize AssetTypesForRule to a compact JSON object (declaration order).
+def asset_types_for_rule_to_json(AssetTypesForRule v) -> str:
+    list[str] parts = []
+    parts.append("\"selectionMode\":" + v.selectionMode.to_json())
+    if v.specificAssetTypes.is_some():
+        auto u0 = v.specificAssetTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(datazone_json_str(x1))
+        parts.append("\"specificAssetTypes\":" + datazone_json_arr(e1))
+    return datazone_json_obj(parts)
+
+# Serialize AttributeInput to a compact JSON object (declaration order).
+def attribute_input_to_json(AttributeInput v) -> str:
+    list[str] parts = []
+    parts.append("\"attributeIdentifier\":" + datazone_json_str(v.attributeIdentifier))
+    list[str] e0 = []
+    for x0 in v.forms:
+        e0.append(x0.to_json())
+    parts.append("\"forms\":" + datazone_json_arr(e0))
+    return datazone_json_obj(parts)
+
+# Serialize AuthenticationConfigurationInput to a compact JSON object (declaration order).
+def authentication_configuration_input_to_json(AuthenticationConfigurationInput v) -> str:
+    list[str] parts = []
+    if v.authenticationType.is_some():
+        auto u0 = v.authenticationType.unwrap()
+        parts.append("\"authenticationType\":" + u0.to_json())
+    if v.oAuth2Properties.is_some():
+        auto u1 = v.oAuth2Properties.unwrap()
+        parts.append("\"oAuth2Properties\":" + o_auth2_properties_to_json(u1))
+    if v.secretArn.is_some():
+        auto u2 = v.secretArn.unwrap()
+        parts.append("\"secretArn\":" + datazone_json_str(u2))
+    if v.kmsKeyArn.is_some():
+        auto u3 = v.kmsKeyArn.unwrap()
+        parts.append("\"kmsKeyArn\":" + datazone_json_str(u3))
+    if v.basicAuthenticationCredentials.is_some():
+        auto u4 = v.basicAuthenticationCredentials.unwrap()
+        parts.append("\"basicAuthenticationCredentials\":" + u4.to_json())
+    if v.customAuthenticationCredentials.is_some():
+        auto u5 = v.customAuthenticationCredentials.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(datazone_json_str(k6) + ":" + datazone_json_str(u5[k6]))
+        parts.append("\"customAuthenticationCredentials\":" + datazone_json_obj(m6))
+    return datazone_json_obj(parts)
+
+# Serialize ColumnFilterConfiguration to a compact JSON object (declaration order).
+def column_filter_configuration_to_json(ColumnFilterConfiguration v) -> str:
+    list[str] parts = []
+    if v.includedColumnNames.is_some():
+        auto u0 = v.includedColumnNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(datazone_json_str(x1))
+        parts.append("\"includedColumnNames\":" + datazone_json_arr(e1))
+    return datazone_json_obj(parts)
+
+# Serialize Configuration to a compact JSON object (declaration order).
+def configuration_to_json(Configuration v) -> str:
+    list[str] parts = []
+    if v.classification.is_some():
+        auto u0 = v.classification.unwrap()
+        parts.append("\"classification\":" + datazone_json_str(u0))
+    if v.properties.is_some():
+        auto u1 = v.properties.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(datazone_json_str(k2) + ":" + datazone_json_str(u1[k2]))
+        parts.append("\"properties\":" + datazone_json_obj(m2))
+    return datazone_json_obj(parts)
+
+# Serialize ConnectionPropertiesInput to a compact JSON object (declaration order).
+def connection_properties_input_to_json(ConnectionPropertiesInput v) -> str:
+    list[str] parts = []
+    if v.athenaProperties.is_some():
+        auto u0 = v.athenaProperties.unwrap()
+        parts.append("\"athenaProperties\":" + u0.to_json())
+    if v.glueProperties.is_some():
+        auto u1 = v.glueProperties.unwrap()
+        parts.append("\"glueProperties\":" + glue_properties_input_to_json(u1))
+    if v.hyperPodProperties.is_some():
+        auto u2 = v.hyperPodProperties.unwrap()
+        parts.append("\"hyperPodProperties\":" + u2.to_json())
+    if v.iamProperties.is_some():
+        auto u3 = v.iamProperties.unwrap()
+        parts.append("\"iamProperties\":" + u3.to_json())
+    if v.redshiftProperties.is_some():
+        auto u4 = v.redshiftProperties.unwrap()
+        parts.append("\"redshiftProperties\":" + u4.to_json())
+    if v.sparkEmrProperties.is_some():
+        auto u5 = v.sparkEmrProperties.unwrap()
+        parts.append("\"sparkEmrProperties\":" + u5.to_json())
+    if v.sparkGlueProperties.is_some():
+        auto u6 = v.sparkGlueProperties.unwrap()
+        parts.append("\"sparkGlueProperties\":" + spark_glue_properties_input_to_json(u6))
+    if v.s3Properties.is_some():
+        auto u7 = v.s3Properties.unwrap()
+        parts.append("\"s3Properties\":" + u7.to_json())
+    if v.snowflakeProperties.is_some():
+        auto u8 = v.snowflakeProperties.unwrap()
+        parts.append("\"snowflakeProperties\":" + snowflake_properties_input_to_json(u8))
+    if v.amazonQProperties.is_some():
+        auto u9 = v.amazonQProperties.unwrap()
+        parts.append("\"amazonQProperties\":" + u9.to_json())
+    if v.mlflowProperties.is_some():
+        auto u10 = v.mlflowProperties.unwrap()
+        parts.append("\"mlflowProperties\":" + u10.to_json())
+    if v.workflowsMwaaProperties.is_some():
+        auto u11 = v.workflowsMwaaProperties.unwrap()
+        parts.append("\"workflowsMwaaProperties\":" + u11.to_json())
+    if v.workflowsServerlessProperties.is_some():
+        auto u12 = v.workflowsServerlessProperties.unwrap()
+        parts.append("\"workflowsServerlessProperties\":" + u12.to_json())
+    if v.lakehouseProperties.is_some():
+        auto u13 = v.lakehouseProperties.unwrap()
+        parts.append("\"lakehouseProperties\":" + u13.to_json())
+    if v.vpcProperties.is_some():
+        auto u14 = v.vpcProperties.unwrap()
+        parts.append("\"vpcProperties\":" + vpc_properties_input_to_json(u14))
+    if v.gitProperties.is_some():
+        auto u15 = v.gitProperties.unwrap()
+        parts.append("\"gitProperties\":" + u15.to_json())
+    return datazone_json_obj(parts)
+
+# Serialize ConnectionPropertiesPatch to a compact JSON object (declaration order).
+def connection_properties_patch_to_json(ConnectionPropertiesPatch v) -> str:
+    list[str] parts = []
+    if v.athenaProperties.is_some():
+        auto u0 = v.athenaProperties.unwrap()
+        parts.append("\"athenaProperties\":" + u0.to_json())
+    if v.glueProperties.is_some():
+        auto u1 = v.glueProperties.unwrap()
+        parts.append("\"glueProperties\":" + glue_properties_patch_to_json(u1))
+    if v.iamProperties.is_some():
+        auto u2 = v.iamProperties.unwrap()
+        parts.append("\"iamProperties\":" + u2.to_json())
+    if v.redshiftProperties.is_some():
+        auto u3 = v.redshiftProperties.unwrap()
+        parts.append("\"redshiftProperties\":" + u3.to_json())
+    if v.sparkEmrProperties.is_some():
+        auto u4 = v.sparkEmrProperties.unwrap()
+        parts.append("\"sparkEmrProperties\":" + u4.to_json())
+    if v.s3Properties.is_some():
+        auto u5 = v.s3Properties.unwrap()
+        parts.append("\"s3Properties\":" + u5.to_json())
+    if v.snowflakeProperties.is_some():
+        auto u6 = v.snowflakeProperties.unwrap()
+        parts.append("\"snowflakeProperties\":" + snowflake_properties_patch_to_json(u6))
+    if v.amazonQProperties.is_some():
+        auto u7 = v.amazonQProperties.unwrap()
+        parts.append("\"amazonQProperties\":" + u7.to_json())
+    if v.mlflowProperties.is_some():
+        auto u8 = v.mlflowProperties.unwrap()
+        parts.append("\"mlflowProperties\":" + u8.to_json())
+    if v.lakehouseProperties.is_some():
+        auto u9 = v.lakehouseProperties.unwrap()
+        parts.append("\"lakehouseProperties\":" + u9.to_json())
+    if v.vpcProperties.is_some():
+        auto u10 = v.vpcProperties.unwrap()
+        parts.append("\"vpcProperties\":" + vpc_properties_patch_to_json(u10))
+    if v.gitProperties.is_some():
+        auto u11 = v.gitProperties.unwrap()
+        parts.append("\"gitProperties\":" + u11.to_json())
+    return datazone_json_obj(parts)
+
+# Serialize ConnectivityProperties to a compact JSON object (declaration order).
+def connectivity_properties_to_json(ConnectivityProperties v) -> str:
+    list[str] parts = []
+    if v.connectionProperties.is_some():
+        auto u0 = v.connectionProperties.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(datazone_json_str(k1) + ":" + datazone_json_str(u0[k1]))
+        parts.append("\"connectionProperties\":" + datazone_json_obj(m1))
+    if v.physicalConnectionRequirements.is_some():
+        auto u2 = v.physicalConnectionRequirements.unwrap()
+        parts.append("\"physicalConnectionRequirements\":" + physical_connection_requirements_to_json(u2))
+    if v.name.is_some():
+        auto u3 = v.name.unwrap()
+        parts.append("\"name\":" + datazone_json_str(u3))
+    if v.description.is_some():
+        auto u4 = v.description.unwrap()
+        parts.append("\"description\":" + datazone_json_str(u4))
+    if v.validateCredentials.is_some():
+        auto u5 = v.validateCredentials.unwrap()
+        parts.append("\"validateCredentials\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.validateForComputeEnvironments.is_some():
+        auto u6 = v.validateForComputeEnvironments.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"validateForComputeEnvironments\":" + datazone_json_arr(e7))
+    if v.sparkProperties.is_some():
+        auto u8 = v.sparkProperties.unwrap()
+        list[str] m9 = []
+        for k9 in sorted(u8.keys()):
+            m9.append(datazone_json_str(k9) + ":" + datazone_json_str(u8[k9]))
+        parts.append("\"sparkProperties\":" + datazone_json_obj(m9))
+    if v.athenaProperties.is_some():
+        auto u10 = v.athenaProperties.unwrap()
+        list[str] m11 = []
+        for k11 in sorted(u10.keys()):
+            m11.append(datazone_json_str(k11) + ":" + datazone_json_str(u10[k11]))
+        parts.append("\"athenaProperties\":" + datazone_json_obj(m11))
+    if v.pythonProperties.is_some():
+        auto u12 = v.pythonProperties.unwrap()
+        list[str] m13 = []
+        for k13 in sorted(u12.keys()):
+            m13.append(datazone_json_str(k13) + ":" + datazone_json_str(u12[k13]))
+        parts.append("\"pythonProperties\":" + datazone_json_obj(m13))
+    if v.authenticationConfiguration.is_some():
+        auto u14 = v.authenticationConfiguration.unwrap()
+        parts.append("\"authenticationConfiguration\":" + authentication_configuration_input_to_json(u14))
+    return datazone_json_obj(parts)
+
+# Serialize ConnectivityPropertiesPatch to a compact JSON object (declaration order).
+def connectivity_properties_patch_to_json(ConnectivityPropertiesPatch v) -> str:
+    list[str] parts = []
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + datazone_json_str(u0))
+    if v.connectionProperties.is_some():
+        auto u1 = v.connectionProperties.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(datazone_json_str(k2) + ":" + datazone_json_str(u1[k2]))
+        parts.append("\"connectionProperties\":" + datazone_json_obj(m2))
+    if v.authenticationConfiguration.is_some():
+        auto u3 = v.authenticationConfiguration.unwrap()
+        parts.append("\"authenticationConfiguration\":" + u3.to_json())
+    return datazone_json_obj(parts)
+
+# Serialize CreateProjectFromProjectProfilePolicyGrantDetail to a compact JSON object (declaration order).
+def create_project_from_project_profile_policy_grant_detail_to_json(CreateProjectFromProjectProfilePolicyGrantDetail v) -> str:
+    list[str] parts = []
+    if v.includeChildDomainUnits.is_some():
+        auto u0 = v.includeChildDomainUnits.unwrap()
+        parts.append("\"includeChildDomainUnits\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.projectProfiles.is_some():
+        auto u1 = v.projectProfiles.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(datazone_json_str(x2))
+        parts.append("\"projectProfiles\":" + datazone_json_arr(e2))
+    return datazone_json_obj(parts)
+
+# Serialize DataProductItem to a compact JSON object (declaration order).
+def data_product_item_to_json(DataProductItem v) -> str:
+    list[str] parts = []
+    parts.append("\"itemType\":" + datazone_json_str(v.itemType))
+    parts.append("\"identifier\":" + datazone_json_str(v.identifier))
+    if v.revision.is_some():
+        auto u0 = v.revision.unwrap()
+        parts.append("\"revision\":" + datazone_json_str(u0))
+    if v.glossaryTerms.is_some():
+        auto u1 = v.glossaryTerms.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(datazone_json_str(x2))
+        parts.append("\"glossaryTerms\":" + datazone_json_arr(e2))
+    return datazone_json_obj(parts)
+
+# Serialize DataSourceConfigurationInput to a compact JSON object (declaration order).
+def data_source_configuration_input_to_json(DataSourceConfigurationInput v) -> str:
+    list[str] parts = []
+    if v.glueRunConfiguration.is_some():
+        auto u0 = v.glueRunConfiguration.unwrap()
+        parts.append("\"glueRunConfiguration\":" + glue_run_configuration_input_to_json(u0))
+    if v.redshiftRunConfiguration.is_some():
+        auto u1 = v.redshiftRunConfiguration.unwrap()
+        parts.append("\"redshiftRunConfiguration\":" + redshift_run_configuration_input_to_json(u1))
+    if v.sageMakerRunConfiguration.is_some():
+        auto u2 = v.sageMakerRunConfiguration.unwrap()
+        parts.append("\"sageMakerRunConfiguration\":" + sage_maker_run_configuration_input_to_json(u2))
+    return datazone_json_obj(parts)
+
+# Serialize EntityPattern to a compact JSON object (declaration order).
+def entity_pattern_to_json(EntityPattern v) -> str:
+    list[str] parts = []
+    parts.append("\"entityType\":" + datazone_json_str(v.entityType))
+    parts.append("\"identifier\":" + datazone_json_str(v.identifier))
+    if v.filters.is_some():
+        auto u0 = v.filters.unwrap()
+        parts.append("\"filters\":" + filter_clause_to_json(u0))
+    return datazone_json_obj(parts)
+
+# Serialize EnvironmentConfiguration to a compact JSON object (declaration order).
+def environment_configuration_to_json(EnvironmentConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + datazone_json_str(v.name))
+    if v.id.is_some():
+        auto u0 = v.id.unwrap()
+        parts.append("\"id\":" + datazone_json_str(u0))
+    parts.append("\"environmentBlueprintId\":" + datazone_json_str(v.environmentBlueprintId))
+    if v.description.is_some():
+        auto u1 = v.description.unwrap()
+        parts.append("\"description\":" + datazone_json_str(u1))
+    if v.deploymentMode.is_some():
+        auto u2 = v.deploymentMode.unwrap()
+        parts.append("\"deploymentMode\":" + u2.to_json())
+    if v.configurationParameters.is_some():
+        auto u3 = v.configurationParameters.unwrap()
+        parts.append("\"configurationParameters\":" + environment_configuration_parameters_details_to_json(u3))
+    if v.awsAccount.is_some():
+        auto u4 = v.awsAccount.unwrap()
+        parts.append("\"awsAccount\":" + u4.to_json())
+    if v.accountPools.is_some():
+        auto u5 = v.accountPools.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(datazone_json_str(x6))
+        parts.append("\"accountPools\":" + datazone_json_arr(e6))
+    if v.awsRegion.is_some():
+        auto u7 = v.awsRegion.unwrap()
+        parts.append("\"awsRegion\":" + u7.to_json())
+    if v.deploymentOrder.is_some():
+        auto u8 = v.deploymentOrder.unwrap()
+        parts.append("\"deploymentOrder\":" + str(u8))
+    return datazone_json_obj(parts)
+
+# Serialize EnvironmentConfigurationParametersDetails to a compact JSON object (declaration order).
+def environment_configuration_parameters_details_to_json(EnvironmentConfigurationParametersDetails v) -> str:
+    list[str] parts = []
+    if v.ssmPath.is_some():
+        auto u0 = v.ssmPath.unwrap()
+        parts.append("\"ssmPath\":" + datazone_json_str(u0))
+    if v.parameterOverrides.is_some():
+        auto u1 = v.parameterOverrides.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"parameterOverrides\":" + datazone_json_arr(e2))
+    if v.resolvedParameters.is_some():
+        auto u3 = v.resolvedParameters.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"resolvedParameters\":" + datazone_json_arr(e4))
+    return datazone_json_obj(parts)
+
+# Serialize EnvironmentConfigurationUserParameter to a compact JSON object (declaration order).
+def environment_configuration_user_parameter_to_json(EnvironmentConfigurationUserParameter v) -> str:
+    list[str] parts = []
+    if v.environmentId.is_some():
+        auto u0 = v.environmentId.unwrap()
+        parts.append("\"environmentId\":" + datazone_json_str(u0))
+    if v.environmentResolvedAccount.is_some():
+        auto u1 = v.environmentResolvedAccount.unwrap()
+        parts.append("\"environmentResolvedAccount\":" + u1.to_json())
+    if v.environmentConfigurationName.is_some():
+        auto u2 = v.environmentConfigurationName.unwrap()
+        parts.append("\"environmentConfigurationName\":" + datazone_json_str(u2))
+    if v.environmentParameters.is_some():
+        auto u3 = v.environmentParameters.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"environmentParameters\":" + datazone_json_arr(e4))
+    return datazone_json_obj(parts)
+
+# Serialize EnvironmentDeploymentDetails to a compact JSON object (declaration order).
+def environment_deployment_details_to_json(EnvironmentDeploymentDetails v) -> str:
+    list[str] parts = []
+    if v.overallDeploymentStatus.is_some():
+        auto u0 = v.overallDeploymentStatus.unwrap()
+        parts.append("\"overallDeploymentStatus\":" + u0.to_json())
+    if v.environmentFailureReasons.is_some():
+        auto u1 = v.environmentFailureReasons.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            list[str] e3 = []
+            for x3 in u1[k2]:
+                e3.append(x3.to_json())
+            m2.append(datazone_json_str(k2) + ":" + datazone_json_arr(e3))
+        parts.append("\"environmentFailureReasons\":" + datazone_json_obj(m2))
+    return datazone_json_obj(parts)
+
+# Serialize FilterClause to a compact JSON object (declaration order).
+def filter_clause_to_json(FilterClause v) -> str:
+    list[str] parts = []
+    if v.filter.is_some():
+        auto u0 = v.filter.unwrap()
+        parts.append("\"filter\":" + u0.to_json())
+    if v.and_.is_some():
+        auto u1 = v.and_.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(filter_clause_to_json(x2))
+        parts.append("\"and\":" + datazone_json_arr(e2))
+    if v.or_.is_some():
+        auto u3 = v.or_.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(filter_clause_to_json(x4))
+        parts.append("\"or\":" + datazone_json_arr(e4))
+    return datazone_json_obj(parts)
+
+# Serialize GlossaryTermEnforcementDetail to a compact JSON object (declaration order).
+def glossary_term_enforcement_detail_to_json(GlossaryTermEnforcementDetail v) -> str:
+    list[str] parts = []
+    if v.requiredGlossaryTermIds.is_some():
+        auto u0 = v.requiredGlossaryTermIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(datazone_json_str(x1))
+        parts.append("\"requiredGlossaryTermIds\":" + datazone_json_arr(e1))
+    return datazone_json_obj(parts)
+
+# Serialize GlueConnectionInput to a compact JSON object (declaration order).
+def glue_connection_input_to_json(GlueConnectionInput v) -> str:
+    list[str] parts = []
+    if v.connectionProperties.is_some():
+        auto u0 = v.connectionProperties.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(datazone_json_str(k1) + ":" + datazone_json_str(u0[k1]))
+        parts.append("\"connectionProperties\":" + datazone_json_obj(m1))
+    if v.physicalConnectionRequirements.is_some():
+        auto u2 = v.physicalConnectionRequirements.unwrap()
+        parts.append("\"physicalConnectionRequirements\":" + physical_connection_requirements_to_json(u2))
+    if v.name.is_some():
+        auto u3 = v.name.unwrap()
+        parts.append("\"name\":" + datazone_json_str(u3))
+    if v.description.is_some():
+        auto u4 = v.description.unwrap()
+        parts.append("\"description\":" + datazone_json_str(u4))
+    if v.connectionType.is_some():
+        auto u5 = v.connectionType.unwrap()
+        parts.append("\"connectionType\":" + u5.to_json())
+    if v.matchCriteria.is_some():
+        auto u6 = v.matchCriteria.unwrap()
+        parts.append("\"matchCriteria\":" + datazone_json_str(u6))
+    if v.validateCredentials.is_some():
+        auto u7 = v.validateCredentials.unwrap()
+        parts.append("\"validateCredentials\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.validateForComputeEnvironments.is_some():
+        auto u8 = v.validateForComputeEnvironments.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"validateForComputeEnvironments\":" + datazone_json_arr(e9))
+    if v.sparkProperties.is_some():
+        auto u10 = v.sparkProperties.unwrap()
+        list[str] m11 = []
+        for k11 in sorted(u10.keys()):
+            m11.append(datazone_json_str(k11) + ":" + datazone_json_str(u10[k11]))
+        parts.append("\"sparkProperties\":" + datazone_json_obj(m11))
+    if v.athenaProperties.is_some():
+        auto u12 = v.athenaProperties.unwrap()
+        list[str] m13 = []
+        for k13 in sorted(u12.keys()):
+            m13.append(datazone_json_str(k13) + ":" + datazone_json_str(u12[k13]))
+        parts.append("\"athenaProperties\":" + datazone_json_obj(m13))
+    if v.pythonProperties.is_some():
+        auto u14 = v.pythonProperties.unwrap()
+        list[str] m15 = []
+        for k15 in sorted(u14.keys()):
+            m15.append(datazone_json_str(k15) + ":" + datazone_json_str(u14[k15]))
+        parts.append("\"pythonProperties\":" + datazone_json_obj(m15))
+    if v.authenticationConfiguration.is_some():
+        auto u16 = v.authenticationConfiguration.unwrap()
+        parts.append("\"authenticationConfiguration\":" + authentication_configuration_input_to_json(u16))
+    return datazone_json_obj(parts)
+
+# Serialize GlueConnectionPatch to a compact JSON object (declaration order).
+def glue_connection_patch_to_json(GlueConnectionPatch v) -> str:
+    list[str] parts = []
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + datazone_json_str(u0))
+    if v.connectionProperties.is_some():
+        auto u1 = v.connectionProperties.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(datazone_json_str(k2) + ":" + datazone_json_str(u1[k2]))
+        parts.append("\"connectionProperties\":" + datazone_json_obj(m2))
+    if v.authenticationConfiguration.is_some():
+        auto u3 = v.authenticationConfiguration.unwrap()
+        parts.append("\"authenticationConfiguration\":" + u3.to_json())
+    return datazone_json_obj(parts)
+
+# Serialize GluePropertiesInput to a compact JSON object (declaration order).
+def glue_properties_input_to_json(GluePropertiesInput v) -> str:
+    list[str] parts = []
+    if v.glueConnectionInput.is_some():
+        auto u0 = v.glueConnectionInput.unwrap()
+        parts.append("\"glueConnectionInput\":" + glue_connection_input_to_json(u0))
+    return datazone_json_obj(parts)
+
+# Serialize GluePropertiesPatch to a compact JSON object (declaration order).
+def glue_properties_patch_to_json(GluePropertiesPatch v) -> str:
+    list[str] parts = []
+    if v.glueConnectionInput.is_some():
+        auto u0 = v.glueConnectionInput.unwrap()
+        parts.append("\"glueConnectionInput\":" + glue_connection_patch_to_json(u0))
+    return datazone_json_obj(parts)
+
+# Serialize GlueRunConfigurationInput to a compact JSON object (declaration order).
+def glue_run_configuration_input_to_json(GlueRunConfigurationInput v) -> str:
+    list[str] parts = []
+    if v.dataAccessRole.is_some():
+        auto u0 = v.dataAccessRole.unwrap()
+        parts.append("\"dataAccessRole\":" + datazone_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.relationalFilterConfigurations:
+        e1.append(relational_filter_configuration_to_json(x1))
+    parts.append("\"relationalFilterConfigurations\":" + datazone_json_arr(e1))
+    if v.autoImportDataQualityResult.is_some():
+        auto u2 = v.autoImportDataQualityResult.unwrap()
+        parts.append("\"autoImportDataQualityResult\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.catalogName.is_some():
+        auto u3 = v.catalogName.unwrap()
+        parts.append("\"catalogName\":" + datazone_json_str(u3))
+    return datazone_json_obj(parts)
+
+# Serialize InExpression to a compact JSON object (declaration order).
+def in_expression_to_json(InExpression v) -> str:
+    list[str] parts = []
+    parts.append("\"columnName\":" + datazone_json_str(v.columnName))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(datazone_json_str(x0))
+    parts.append("\"values\":" + datazone_json_arr(e0))
+    return datazone_json_obj(parts)
+
+# Serialize LakeFormationConfiguration to a compact JSON object (declaration order).
+def lake_formation_configuration_to_json(LakeFormationConfiguration v) -> str:
+    list[str] parts = []
+    if v.locationRegistrationRole.is_some():
+        auto u0 = v.locationRegistrationRole.unwrap()
+        parts.append("\"locationRegistrationRole\":" + datazone_json_str(u0))
+    if v.locationRegistrationExcludeS3Locations.is_some():
+        auto u1 = v.locationRegistrationExcludeS3Locations.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(datazone_json_str(x2))
+        parts.append("\"locationRegistrationExcludeS3Locations\":" + datazone_json_arr(e2))
+    return datazone_json_obj(parts)
+
+# Serialize MatchClause to a compact JSON object (declaration order).
+def match_clause_to_json(MatchClause v) -> str:
+    list[str] parts = []
+    if v.relationPattern.is_some():
+        auto u0 = v.relationPattern.unwrap()
+        parts.append("\"relationPattern\":" + u0.to_json())
+    if v.entityPattern.is_some():
+        auto u1 = v.entityPattern.unwrap()
+        parts.append("\"entityPattern\":" + entity_pattern_to_json(u1))
+    return datazone_json_obj(parts)
+
+# Serialize MetadataFormEnforcementDetail to a compact JSON object (declaration order).
+def metadata_form_enforcement_detail_to_json(MetadataFormEnforcementDetail v) -> str:
+    list[str] parts = []
+    if v.requiredMetadataForms.is_some():
+        auto u0 = v.requiredMetadataForms.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"requiredMetadataForms\":" + datazone_json_arr(e1))
+    return datazone_json_obj(parts)
+
+# Serialize NetworkConfig to a compact JSON object (declaration order).
+def network_config_to_json(NetworkConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"networkAccessType\":" + v.networkAccessType.to_json())
+    if v.vpcId.is_some():
+        auto u0 = v.vpcId.unwrap()
+        parts.append("\"vpcId\":" + datazone_json_str(u0))
+    if v.subnetIds.is_some():
+        auto u1 = v.subnetIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(datazone_json_str(x2))
+        parts.append("\"subnetIds\":" + datazone_json_arr(e2))
+    if v.securityGroupIds.is_some():
+        auto u3 = v.securityGroupIds.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(datazone_json_str(x4))
+        parts.append("\"securityGroupIds\":" + datazone_json_arr(e4))
+    return datazone_json_obj(parts)
+
+# Serialize NotInExpression to a compact JSON object (declaration order).
+def not_in_expression_to_json(NotInExpression v) -> str:
+    list[str] parts = []
+    parts.append("\"columnName\":" + datazone_json_str(v.columnName))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(datazone_json_str(x0))
+    parts.append("\"values\":" + datazone_json_arr(e0))
+    return datazone_json_obj(parts)
+
+# Serialize NotificationConfig to a compact JSON object (declaration order).
+def notification_config_to_json(NotificationConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.notifyOn:
+        e0.append(x0.to_json())
+    parts.append("\"notifyOn\":" + datazone_json_arr(e0))
+    return datazone_json_obj(parts)
+
+# Serialize OAuth2Properties to a compact JSON object (declaration order).
+def o_auth2_properties_to_json(OAuth2Properties v) -> str:
+    list[str] parts = []
+    if v.oAuth2GrantType.is_some():
+        auto u0 = v.oAuth2GrantType.unwrap()
+        parts.append("\"oAuth2GrantType\":" + u0.to_json())
+    if v.oAuth2ClientApplication.is_some():
+        auto u1 = v.oAuth2ClientApplication.unwrap()
+        parts.append("\"oAuth2ClientApplication\":" + u1.to_json())
+    if v.tokenUrl.is_some():
+        auto u2 = v.tokenUrl.unwrap()
+        parts.append("\"tokenUrl\":" + datazone_json_str(u2))
+    if v.tokenUrlParametersMap.is_some():
+        auto u3 = v.tokenUrlParametersMap.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(datazone_json_str(k4) + ":" + datazone_json_str(u3[k4]))
+        parts.append("\"tokenUrlParametersMap\":" + datazone_json_obj(m4))
+    if v.authorizationCodeProperties.is_some():
+        auto u5 = v.authorizationCodeProperties.unwrap()
+        parts.append("\"authorizationCodeProperties\":" + u5.to_json())
+    if v.oAuth2Credentials.is_some():
+        auto u6 = v.oAuth2Credentials.unwrap()
+        parts.append("\"oAuth2Credentials\":" + u6.to_json())
+    return datazone_json_obj(parts)
+
+# Serialize Permissions to a compact JSON object (declaration order).
+def permissions_to_json(Permissions v) -> str:
+    list[str] parts = []
+    if v.s3.is_some():
+        auto u0 = v.s3.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"s3\":" + datazone_json_arr(e1))
+    return datazone_json_obj(parts)
+
+# Serialize PhysicalConnectionRequirements to a compact JSON object (declaration order).
+def physical_connection_requirements_to_json(PhysicalConnectionRequirements v) -> str:
+    list[str] parts = []
+    if v.subnetId.is_some():
+        auto u0 = v.subnetId.unwrap()
+        parts.append("\"subnetId\":" + datazone_json_str(u0))
+    if v.subnetIdList.is_some():
+        auto u1 = v.subnetIdList.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(datazone_json_str(x2))
+        parts.append("\"subnetIdList\":" + datazone_json_arr(e2))
+    if v.securityGroupIdList.is_some():
+        auto u3 = v.securityGroupIdList.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(datazone_json_str(x4))
+        parts.append("\"securityGroupIdList\":" + datazone_json_arr(e4))
+    if v.availabilityZone.is_some():
+        auto u5 = v.availabilityZone.unwrap()
+        parts.append("\"availabilityZone\":" + datazone_json_str(u5))
+    return datazone_json_obj(parts)
+
+# Serialize PolicyGrantDetail to a compact JSON object (declaration order).
+def policy_grant_detail_to_json(PolicyGrantDetail v) -> str:
+    list[str] parts = []
+    if v.createDomainUnit.is_some():
+        auto u0 = v.createDomainUnit.unwrap()
+        parts.append("\"createDomainUnit\":" + u0.to_json())
+    if v.overrideDomainUnitOwners.is_some():
+        auto u1 = v.overrideDomainUnitOwners.unwrap()
+        parts.append("\"overrideDomainUnitOwners\":" + u1.to_json())
+    if v.addToProjectMemberPool.is_some():
+        auto u2 = v.addToProjectMemberPool.unwrap()
+        parts.append("\"addToProjectMemberPool\":" + u2.to_json())
+    if v.overrideProjectOwners.is_some():
+        auto u3 = v.overrideProjectOwners.unwrap()
+        parts.append("\"overrideProjectOwners\":" + u3.to_json())
+    if v.createGlossary.is_some():
+        auto u4 = v.createGlossary.unwrap()
+        parts.append("\"createGlossary\":" + u4.to_json())
+    if v.createFormType.is_some():
+        auto u5 = v.createFormType.unwrap()
+        parts.append("\"createFormType\":" + u5.to_json())
+    if v.createAssetType.is_some():
+        auto u6 = v.createAssetType.unwrap()
+        parts.append("\"createAssetType\":" + u6.to_json())
+    if v.createProject.is_some():
+        auto u7 = v.createProject.unwrap()
+        parts.append("\"createProject\":" + u7.to_json())
+    if v.createEnvironmentProfile.is_some():
+        auto u8 = v.createEnvironmentProfile.unwrap()
+        parts.append("\"createEnvironmentProfile\":" + u8.to_json())
+    if v.delegateCreateEnvironmentProfile.is_some():
+        auto u9 = v.delegateCreateEnvironmentProfile.unwrap()
+        parts.append("\"delegateCreateEnvironmentProfile\":" + u9.to_json())
+    if v.createEnvironment.is_some():
+        auto u10 = v.createEnvironment.unwrap()
+        parts.append("\"createEnvironment\":" + u10.to_json())
+    if v.createEnvironmentFromBlueprint.is_some():
+        auto u11 = v.createEnvironmentFromBlueprint.unwrap()
+        parts.append("\"createEnvironmentFromBlueprint\":" + u11.to_json())
+    if v.createProjectFromProjectProfile.is_some():
+        auto u12 = v.createProjectFromProjectProfile.unwrap()
+        parts.append("\"createProjectFromProjectProfile\":" + create_project_from_project_profile_policy_grant_detail_to_json(u12))
+    if v.useAssetType.is_some():
+        auto u13 = v.useAssetType.unwrap()
+        parts.append("\"useAssetType\":" + u13.to_json())
+    return datazone_json_obj(parts)
+
+# Serialize ProjectsForRule to a compact JSON object (declaration order).
+def projects_for_rule_to_json(ProjectsForRule v) -> str:
+    list[str] parts = []
+    parts.append("\"selectionMode\":" + v.selectionMode.to_json())
+    if v.specificProjects.is_some():
+        auto u0 = v.specificProjects.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(datazone_json_str(x1))
+        parts.append("\"specificProjects\":" + datazone_json_arr(e1))
+    return datazone_json_obj(parts)
+
+# Serialize ProvisioningConfiguration to a compact JSON object (declaration order).
+def provisioning_configuration_to_json(ProvisioningConfiguration v) -> str:
+    list[str] parts = []
+    if v.lakeFormationConfiguration.is_some():
+        auto u0 = v.lakeFormationConfiguration.unwrap()
+        parts.append("\"lakeFormationConfiguration\":" + lake_formation_configuration_to_json(u0))
+    return datazone_json_obj(parts)
+
+# Serialize PutResourceConfiguration to a compact JSON object (declaration order).
+def put_resource_configuration_to_json(PutResourceConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + datazone_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + datazone_json_str(u0))
+    parts.append("\"region\":" + datazone_json_str(v.region))
+    list[str] m1 = []
+    for k1 in sorted(v.parameters.keys()):
+        m1.append(datazone_json_str(k1) + ":" + datazone_json_str(v.parameters[k1]))
+    parts.append("\"parameters\":" + datazone_json_obj(m1))
+    return datazone_json_obj(parts)
+
+# Serialize RedshiftRunConfigurationInput to a compact JSON object (declaration order).
+def redshift_run_configuration_input_to_json(RedshiftRunConfigurationInput v) -> str:
+    list[str] parts = []
+    if v.dataAccessRole.is_some():
+        auto u0 = v.dataAccessRole.unwrap()
+        parts.append("\"dataAccessRole\":" + datazone_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.relationalFilterConfigurations:
+        e1.append(relational_filter_configuration_to_json(x1))
+    parts.append("\"relationalFilterConfigurations\":" + datazone_json_arr(e1))
+    if v.redshiftCredentialConfiguration.is_some():
+        auto u2 = v.redshiftCredentialConfiguration.unwrap()
+        parts.append("\"redshiftCredentialConfiguration\":" + u2.to_json())
+    if v.redshiftStorage.is_some():
+        auto u3 = v.redshiftStorage.unwrap()
+        parts.append("\"redshiftStorage\":" + u3.to_json())
+    return datazone_json_obj(parts)
+
+# Serialize RejectChoice to a compact JSON object (declaration order).
+def reject_choice_to_json(RejectChoice v) -> str:
+    list[str] parts = []
+    parts.append("\"predictionTarget\":" + datazone_json_str(v.predictionTarget))
+    if v.predictionChoices.is_some():
+        auto u0 = v.predictionChoices.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"predictionChoices\":" + datazone_json_arr(e1))
+    return datazone_json_obj(parts)
+
+# Serialize RelationalFilterConfiguration to a compact JSON object (declaration order).
+def relational_filter_configuration_to_json(RelationalFilterConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"databaseName\":" + datazone_json_str(v.databaseName))
+    if v.schemaName.is_some():
+        auto u0 = v.schemaName.unwrap()
+        parts.append("\"schemaName\":" + datazone_json_str(u0))
+    if v.filterExpressions.is_some():
+        auto u1 = v.filterExpressions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"filterExpressions\":" + datazone_json_arr(e2))
+    return datazone_json_obj(parts)
+
+# Serialize RowFilter to a compact JSON object (declaration order).
+def row_filter_to_json(RowFilter v) -> str:
+    list[str] parts = []
+    if v.expression.is_some():
+        auto u0 = v.expression.unwrap()
+        parts.append("\"expression\":" + row_filter_expression_to_json(u0))
+    if v.and_.is_some():
+        auto u1 = v.and_.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(row_filter_to_json(x2))
+        parts.append("\"and\":" + datazone_json_arr(e2))
+    if v.or_.is_some():
+        auto u3 = v.or_.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(row_filter_to_json(x4))
+        parts.append("\"or\":" + datazone_json_arr(e4))
+    return datazone_json_obj(parts)
+
+# Serialize RowFilterConfiguration to a compact JSON object (declaration order).
+def row_filter_configuration_to_json(RowFilterConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"rowFilter\":" + row_filter_to_json(v.rowFilter))
+    if v.sensitive.is_some():
+        auto u0 = v.sensitive.unwrap()
+        parts.append("\"sensitive\":" + json.dumps(JsonValue.Bool(u0)))
+    return datazone_json_obj(parts)
+
+# Serialize RowFilterExpression to a compact JSON object (declaration order).
+def row_filter_expression_to_json(RowFilterExpression v) -> str:
+    list[str] parts = []
+    if v.equalTo.is_some():
+        auto u0 = v.equalTo.unwrap()
+        parts.append("\"equalTo\":" + u0.to_json())
+    if v.notEqualTo.is_some():
+        auto u1 = v.notEqualTo.unwrap()
+        parts.append("\"notEqualTo\":" + u1.to_json())
+    if v.greaterThan.is_some():
+        auto u2 = v.greaterThan.unwrap()
+        parts.append("\"greaterThan\":" + u2.to_json())
+    if v.lessThan.is_some():
+        auto u3 = v.lessThan.unwrap()
+        parts.append("\"lessThan\":" + u3.to_json())
+    if v.greaterThanOrEqualTo.is_some():
+        auto u4 = v.greaterThanOrEqualTo.unwrap()
+        parts.append("\"greaterThanOrEqualTo\":" + u4.to_json())
+    if v.lessThanOrEqualTo.is_some():
+        auto u5 = v.lessThanOrEqualTo.unwrap()
+        parts.append("\"lessThanOrEqualTo\":" + u5.to_json())
+    if v.isNull.is_some():
+        auto u6 = v.isNull.unwrap()
+        parts.append("\"isNull\":" + u6.to_json())
+    if v.isNotNull.is_some():
+        auto u7 = v.isNotNull.unwrap()
+        parts.append("\"isNotNull\":" + u7.to_json())
+    if v.in_.is_some():
+        auto u8 = v.in_.unwrap()
+        parts.append("\"in\":" + in_expression_to_json(u8))
+    if v.notIn.is_some():
+        auto u9 = v.notIn.unwrap()
+        parts.append("\"notIn\":" + not_in_expression_to_json(u9))
+    if v.like.is_some():
+        auto u10 = v.like.unwrap()
+        parts.append("\"like\":" + u10.to_json())
+    if v.notLike.is_some():
+        auto u11 = v.notLike.unwrap()
+        parts.append("\"notLike\":" + u11.to_json())
+    return datazone_json_obj(parts)
+
+# Serialize RuleDetail to a compact JSON object (declaration order).
+def rule_detail_to_json(RuleDetail v) -> str:
+    list[str] parts = []
+    if v.metadataFormEnforcementDetail.is_some():
+        auto u0 = v.metadataFormEnforcementDetail.unwrap()
+        parts.append("\"metadataFormEnforcementDetail\":" + metadata_form_enforcement_detail_to_json(u0))
+    if v.glossaryTermEnforcementDetail.is_some():
+        auto u1 = v.glossaryTermEnforcementDetail.unwrap()
+        parts.append("\"glossaryTermEnforcementDetail\":" + glossary_term_enforcement_detail_to_json(u1))
+    return datazone_json_obj(parts)
+
+# Serialize RuleScope to a compact JSON object (declaration order).
+def rule_scope_to_json(RuleScope v) -> str:
+    list[str] parts = []
+    if v.assetType.is_some():
+        auto u0 = v.assetType.unwrap()
+        parts.append("\"assetType\":" + asset_types_for_rule_to_json(u0))
+    if v.dataProduct.is_some():
+        auto u1 = v.dataProduct.unwrap()
+        parts.append("\"dataProduct\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.project.is_some():
+        auto u2 = v.project.unwrap()
+        parts.append("\"project\":" + projects_for_rule_to_json(u2))
+    return datazone_json_obj(parts)
+
+# Serialize S3FilesLocation to a compact JSON object (declaration order).
+def s3_files_location_to_json(S3FilesLocation v) -> str:
+    list[str] parts = []
+    parts.append("\"bucket\":" + datazone_json_str(v.bucket))
+    list[str] e0 = []
+    for x0 in v.fileList:
+        e0.append(x0.to_json())
+    parts.append("\"fileList\":" + datazone_json_arr(e0))
+    return datazone_json_obj(parts)
+
+# Serialize SageMakerRunConfigurationInput to a compact JSON object (declaration order).
+def sage_maker_run_configuration_input_to_json(SageMakerRunConfigurationInput v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.trackingAssets.keys()):
+        list[str] e1 = []
+        for x1 in v.trackingAssets[k0]:
+            e1.append(datazone_json_str(x1))
+        m0.append(datazone_json_str(k0) + ":" + datazone_json_arr(e1))
+    parts.append("\"trackingAssets\":" + datazone_json_obj(m0))
+    return datazone_json_obj(parts)
+
+# Serialize SnowflakePropertiesInput to a compact JSON object (declaration order).
+def snowflake_properties_input_to_json(SnowflakePropertiesInput v) -> str:
+    list[str] parts = []
+    if v.connectivityProperties.is_some():
+        auto u0 = v.connectivityProperties.unwrap()
+        parts.append("\"connectivityProperties\":" + connectivity_properties_to_json(u0))
+    parts.append("\"snowflakeRole\":" + datazone_json_str(v.snowflakeRole))
+    parts.append("\"identityMapping\":" + v.identityMapping.to_json())
+    if v.lineageSync.is_some():
+        auto u1 = v.lineageSync.unwrap()
+        parts.append("\"lineageSync\":" + u1.to_json())
+    return datazone_json_obj(parts)
+
+# Serialize SnowflakePropertiesPatch to a compact JSON object (declaration order).
+def snowflake_properties_patch_to_json(SnowflakePropertiesPatch v) -> str:
+    list[str] parts = []
+    if v.connectivityPropertiesPatch.is_some():
+        auto u0 = v.connectivityPropertiesPatch.unwrap()
+        parts.append("\"connectivityPropertiesPatch\":" + connectivity_properties_patch_to_json(u0))
+    if v.snowflakeRole.is_some():
+        auto u1 = v.snowflakeRole.unwrap()
+        parts.append("\"snowflakeRole\":" + datazone_json_str(u1))
+    if v.lineageSync.is_some():
+        auto u2 = v.lineageSync.unwrap()
+        parts.append("\"lineageSync\":" + u2.to_json())
+    return datazone_json_obj(parts)
+
+# Serialize SourceLocation to a compact JSON object (declaration order).
+def source_location_to_json(SourceLocation v) -> str:
+    list[str] parts = []
+    if v.s3.is_some():
+        auto u0 = v.s3.unwrap()
+        parts.append("\"s3\":" + datazone_json_str(u0))
+    if v.s3Files.is_some():
+        auto u1 = v.s3Files.unwrap()
+        parts.append("\"s3Files\":" + s3_files_location_to_json(u1))
+    return datazone_json_obj(parts)
+
+# Serialize SparkGluePropertiesInput to a compact JSON object (declaration order).
+def spark_glue_properties_input_to_json(SparkGluePropertiesInput v) -> str:
+    list[str] parts = []
+    if v.additionalArgs.is_some():
+        auto u0 = v.additionalArgs.unwrap()
+        parts.append("\"additionalArgs\":" + u0.to_json())
+    if v.glueConnectionName.is_some():
+        auto u1 = v.glueConnectionName.unwrap()
+        parts.append("\"glueConnectionName\":" + datazone_json_str(u1))
+    if v.glueConnectionNames.is_some():
+        auto u2 = v.glueConnectionNames.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(datazone_json_str(x3))
+        parts.append("\"glueConnectionNames\":" + datazone_json_arr(e3))
+    if v.glueVersion.is_some():
+        auto u4 = v.glueVersion.unwrap()
+        parts.append("\"glueVersion\":" + datazone_json_str(u4))
+    if v.idleTimeout.is_some():
+        auto u5 = v.idleTimeout.unwrap()
+        parts.append("\"idleTimeout\":" + str(u5))
+    if v.javaVirtualEnv.is_some():
+        auto u6 = v.javaVirtualEnv.unwrap()
+        parts.append("\"javaVirtualEnv\":" + datazone_json_str(u6))
+    if v.numberOfWorkers.is_some():
+        auto u7 = v.numberOfWorkers.unwrap()
+        parts.append("\"numberOfWorkers\":" + str(u7))
+    if v.pythonVirtualEnv.is_some():
+        auto u8 = v.pythonVirtualEnv.unwrap()
+        parts.append("\"pythonVirtualEnv\":" + datazone_json_str(u8))
+    if v.workerType.is_some():
+        auto u9 = v.workerType.unwrap()
+        parts.append("\"workerType\":" + datazone_json_str(u9))
+    return datazone_json_obj(parts)
+
+# Serialize TermRelations to a compact JSON object (declaration order).
+def term_relations_to_json(TermRelations v) -> str:
+    list[str] parts = []
+    if v.isA.is_some():
+        auto u0 = v.isA.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(datazone_json_str(x1))
+        parts.append("\"isA\":" + datazone_json_arr(e1))
+    if v.classifies.is_some():
+        auto u2 = v.classifies.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(datazone_json_str(x3))
+        parts.append("\"classifies\":" + datazone_json_arr(e3))
+    return datazone_json_obj(parts)
+
+# Serialize VpcPropertiesInput to a compact JSON object (declaration order).
+def vpc_properties_input_to_json(VpcPropertiesInput v) -> str:
+    list[str] parts = []
+    parts.append("\"vpcId\":" + datazone_json_str(v.vpcId))
+    list[str] e0 = []
+    for x0 in v.subnetIds:
+        e0.append(datazone_json_str(x0))
+    parts.append("\"subnetIds\":" + datazone_json_arr(e0))
+    if v.securityGroupId.is_some():
+        auto u1 = v.securityGroupId.unwrap()
+        parts.append("\"securityGroupId\":" + datazone_json_str(u1))
+    return datazone_json_obj(parts)
+
+# Serialize VpcPropertiesPatch to a compact JSON object (declaration order).
+def vpc_properties_patch_to_json(VpcPropertiesPatch v) -> str:
+    list[str] parts = []
+    if v.vpcId.is_some():
+        auto u0 = v.vpcId.unwrap()
+        parts.append("\"vpcId\":" + datazone_json_str(u0))
+    if v.subnetIds.is_some():
+        auto u1 = v.subnetIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(datazone_json_str(x2))
+        parts.append("\"subnetIds\":" + datazone_json_arr(e2))
+    if v.securityGroupId.is_some():
+        auto u3 = v.securityGroupId.unwrap()
+        parts.append("\"securityGroupId\":" + datazone_json_str(u3))
+    return datazone_json_obj(parts)
+
 # A bound DataZone client: credentials + region, threaded into every operation.
 struct DataZoneClient:
     core.Credentials creds
     str region
+
+    # AcceptPredictions  PUT /v2/domains/{domainIdentifier}/assets/{identifier}/accept-predictions
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def accept_predictions(self, AcceptPredictionsInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["identifier"] = input.identifier
+        dict[str, str] query = {}
+        if input.revision.is_some():
+            query["revision"] = input.revision.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/assets/{identifier}/accept-predictions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.acceptRule.is_some():
+            auto u0 = input.acceptRule.unwrap()
+            parts.append("\"acceptRule\":" + u0.to_json())
+        if input.acceptChoices.is_some():
+            auto u1 = input.acceptChoices.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"acceptChoices\":" + datazone_json_arr(e2))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u3))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # AcceptSubscriptionRequest  PUT /v2/domains/{domainIdentifier}/subscription-requests/{identifier}/accept
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def accept_subscription_request(self, AcceptSubscriptionRequestInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["identifier"] = input.identifier
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/subscription-requests/{identifier}/accept", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.decisionComment.is_some():
+            auto u0 = input.decisionComment.unwrap()
+            parts.append("\"decisionComment\":" + datazone_json_str(u0))
+        if input.assetScopes.is_some():
+            auto u1 = input.assetScopes.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(accepted_asset_scope_to_json(x2))
+            parts.append("\"assetScopes\":" + datazone_json_arr(e2))
+        if input.assetPermissions.is_some():
+            auto u3 = input.assetPermissions.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(asset_permission_to_json(x4))
+            parts.append("\"assetPermissions\":" + datazone_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
     # AddEntityOwner  POST /v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/addOwner
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
@@ -7867,6 +9241,25 @@ struct DataZoneClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
+    # AddPolicyGrant  POST /v2/domains/{domainIdentifier}/policies/managed/{entityType}/{entityIdentifier}/addGrant
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def add_policy_grant(self, AddPolicyGrantInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["entityType"] = input.entityType
+        labels["entityIdentifier"] = input.entityIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/policies/managed/{entityType}/{entityIdentifier}/addGrant", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"policyType\":" + input.policyType.to_json())
+        parts.append("\"principal\":" + input.principal.to_json())
+        parts.append("\"detail\":" + policy_grant_detail_to_json(input.detail))
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u0))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
     # AssociateEnvironmentRole  PUT /v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/roles/{environmentRoleArn}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def associate_environment_role(self, AssociateEnvironmentRoleInput input) -> str:
@@ -7877,6 +9270,43 @@ struct DataZoneClient:
         labels["environmentRoleArn"] = input.environmentRoleArn
         auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/roles/{environmentRoleArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
+
+    # AssociateGovernedTerms  PATCH /v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/associate-governed-terms
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def associate_governed_terms(self, AssociateGovernedTermsInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["entityIdentifier"] = input.entityIdentifier
+        labels["entityType"] = input.entityType
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/associate-governed-terms", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.governedGlossaryTerms:
+            e0.append(datazone_json_str(x0))
+        parts.append("\"governedGlossaryTerms\":" + datazone_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # BatchPutAttributesMetadata  PUT /v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/attributes-metadata
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def batch_put_attributes_metadata(self, BatchPutAttributesMetadataInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["entityType"] = input.entityType
+        labels["entityIdentifier"] = input.entityIdentifier
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/attributes-metadata", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.attributes:
+            e1.append(attribute_input_to_json(x1))
+        parts.append("\"attributes\":" + datazone_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
     # CancelMetadataGenerationRun  POST /v2/domains/{domainIdentifier}/metadata-generation-runs/{identifier}/cancel
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
@@ -7898,6 +9328,301 @@ struct DataZoneClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/subscriptions/{identifier}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
+    # CreateAccountPool  POST /v2/domains/{domainIdentifier}/account-pools
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_account_pool(self, CreateAccountPoolInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/account-pools", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + datazone_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u0))
+        parts.append("\"resolutionStrategy\":" + datazone_json_str(input.resolutionStrategy))
+        parts.append("\"accountSource\":" + account_source_to_json(input.accountSource))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # CreateAsset  POST /v2/domains/{domainIdentifier}/assets
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_asset(self, CreateAssetInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/assets", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + datazone_json_str(input.name))
+        if input.externalIdentifier.is_some():
+            auto u0 = input.externalIdentifier.unwrap()
+            parts.append("\"externalIdentifier\":" + datazone_json_str(u0))
+        parts.append("\"typeIdentifier\":" + datazone_json_str(input.typeIdentifier))
+        if input.typeRevision.is_some():
+            auto u1 = input.typeRevision.unwrap()
+            parts.append("\"typeRevision\":" + datazone_json_str(u1))
+        if input.description.is_some():
+            auto u2 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u2))
+        if input.glossaryTerms.is_some():
+            auto u3 = input.glossaryTerms.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(datazone_json_str(x4))
+            parts.append("\"glossaryTerms\":" + datazone_json_arr(e4))
+        if input.formsInput.is_some():
+            auto u5 = input.formsInput.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"formsInput\":" + datazone_json_arr(e6))
+        parts.append("\"owningProjectIdentifier\":" + datazone_json_str(input.owningProjectIdentifier))
+        if input.predictionConfiguration.is_some():
+            auto u7 = input.predictionConfiguration.unwrap()
+            parts.append("\"predictionConfiguration\":" + u7.to_json())
+        if input.clientToken.is_some():
+            auto u8 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u8))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # CreateAssetFilter  POST /v2/domains/{domainIdentifier}/assets/{assetIdentifier}/filters
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_asset_filter(self, CreateAssetFilterInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["assetIdentifier"] = input.assetIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/assets/{assetIdentifier}/filters", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + datazone_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u0))
+        parts.append("\"configuration\":" + asset_filter_configuration_to_json(input.configuration))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u1))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # CreateAssetRevision  POST /v2/domains/{domainIdentifier}/assets/{identifier}/revisions
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_asset_revision(self, CreateAssetRevisionInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["identifier"] = input.identifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/assets/{identifier}/revisions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + datazone_json_str(input.name))
+        if input.typeRevision.is_some():
+            auto u0 = input.typeRevision.unwrap()
+            parts.append("\"typeRevision\":" + datazone_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u1))
+        if input.glossaryTerms.is_some():
+            auto u2 = input.glossaryTerms.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(datazone_json_str(x3))
+            parts.append("\"glossaryTerms\":" + datazone_json_arr(e3))
+        if input.formsInput.is_some():
+            auto u4 = input.formsInput.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"formsInput\":" + datazone_json_arr(e5))
+        if input.predictionConfiguration.is_some():
+            auto u6 = input.predictionConfiguration.unwrap()
+            parts.append("\"predictionConfiguration\":" + u6.to_json())
+        if input.clientToken.is_some():
+            auto u7 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u7))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # CreateAssetType  POST /v2/domains/{domainIdentifier}/asset-types
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_asset_type(self, CreateAssetTypeInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/asset-types", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + datazone_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u0))
+        list[str] m1 = []
+        for k1 in sorted(input.formsInput.keys()):
+            m1.append(datazone_json_str(k1) + ":" + input.formsInput[k1].to_json())
+        parts.append("\"formsInput\":" + datazone_json_obj(m1))
+        parts.append("\"owningProjectIdentifier\":" + datazone_json_str(input.owningProjectIdentifier))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # CreateConnection  POST /v2/domains/{domainIdentifier}/connections
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_connection(self, CreateConnectionInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/connections", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.awsLocation.is_some():
+            auto u0 = input.awsLocation.unwrap()
+            parts.append("\"awsLocation\":" + u0.to_json())
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u1))
+        if input.configurations.is_some():
+            auto u2 = input.configurations.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(configuration_to_json(x3))
+            parts.append("\"configurations\":" + datazone_json_arr(e3))
+        if input.description.is_some():
+            auto u4 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u4))
+        if input.environmentIdentifier.is_some():
+            auto u5 = input.environmentIdentifier.unwrap()
+            parts.append("\"environmentIdentifier\":" + datazone_json_str(u5))
+        parts.append("\"name\":" + datazone_json_str(input.name))
+        if input.props.is_some():
+            auto u6 = input.props.unwrap()
+            parts.append("\"props\":" + connection_properties_input_to_json(u6))
+        if input.enableTrustedIdentityPropagation.is_some():
+            auto u7 = input.enableTrustedIdentityPropagation.unwrap()
+            parts.append("\"enableTrustedIdentityPropagation\":" + json.dumps(JsonValue.Bool(u7)))
+        if input.scope_.is_some():
+            auto u8 = input.scope_.unwrap()
+            parts.append("\"scope\":" + u8.to_json())
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # CreateDataProduct  POST /v2/domains/{domainIdentifier}/data-products
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_data_product(self, CreateDataProductInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/data-products", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + datazone_json_str(input.name))
+        parts.append("\"owningProjectIdentifier\":" + datazone_json_str(input.owningProjectIdentifier))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u0))
+        if input.glossaryTerms.is_some():
+            auto u1 = input.glossaryTerms.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(datazone_json_str(x2))
+            parts.append("\"glossaryTerms\":" + datazone_json_arr(e2))
+        if input.formsInput.is_some():
+            auto u3 = input.formsInput.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"formsInput\":" + datazone_json_arr(e4))
+        if input.items.is_some():
+            auto u5 = input.items.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(data_product_item_to_json(x6))
+            parts.append("\"items\":" + datazone_json_arr(e6))
+        if input.clientToken.is_some():
+            auto u7 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u7))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # CreateDataProductRevision  POST /v2/domains/{domainIdentifier}/data-products/{identifier}/revisions
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_data_product_revision(self, CreateDataProductRevisionInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["identifier"] = input.identifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/data-products/{identifier}/revisions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + datazone_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u0))
+        if input.glossaryTerms.is_some():
+            auto u1 = input.glossaryTerms.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(datazone_json_str(x2))
+            parts.append("\"glossaryTerms\":" + datazone_json_arr(e2))
+        if input.items.is_some():
+            auto u3 = input.items.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(data_product_item_to_json(x4))
+            parts.append("\"items\":" + datazone_json_arr(e4))
+        if input.formsInput.is_some():
+            auto u5 = input.formsInput.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"formsInput\":" + datazone_json_arr(e6))
+        if input.clientToken.is_some():
+            auto u7 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u7))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # CreateDataSource  POST /v2/domains/{domainIdentifier}/data-sources
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_data_source(self, CreateDataSourceInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/data-sources", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + datazone_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u0))
+        parts.append("\"projectIdentifier\":" + datazone_json_str(input.projectIdentifier))
+        if input.environmentIdentifier.is_some():
+            auto u1 = input.environmentIdentifier.unwrap()
+            parts.append("\"environmentIdentifier\":" + datazone_json_str(u1))
+        if input.connectionIdentifier.is_some():
+            auto u2 = input.connectionIdentifier.unwrap()
+            parts.append("\"connectionIdentifier\":" + datazone_json_str(u2))
+        parts.append("\"type\":" + datazone_json_str(input.type))
+        if input.configuration.is_some():
+            auto u3 = input.configuration.unwrap()
+            parts.append("\"configuration\":" + data_source_configuration_input_to_json(u3))
+        if input.recommendation.is_some():
+            auto u4 = input.recommendation.unwrap()
+            parts.append("\"recommendation\":" + u4.to_json())
+        if input.enableSetting.is_some():
+            auto u5 = input.enableSetting.unwrap()
+            parts.append("\"enableSetting\":" + u5.to_json())
+        if input.schedule.is_some():
+            auto u6 = input.schedule.unwrap()
+            parts.append("\"schedule\":" + u6.to_json())
+        if input.publishOnImport.is_some():
+            auto u7 = input.publishOnImport.unwrap()
+            parts.append("\"publishOnImport\":" + json.dumps(JsonValue.Bool(u7)))
+        if input.assetFormsInput.is_some():
+            auto u8 = input.assetFormsInput.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"assetFormsInput\":" + datazone_json_arr(e9))
+        if input.clientToken.is_some():
+            auto u10 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u10))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
     # CreateDesignation  POST /v2/domains/{domainIdentifier}/designations
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
     def create_designation(self, CreateDesignationInput input) -> str:
@@ -7909,6 +9634,43 @@ struct DataZoneClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
+    # CreateDomain  POST /v2/domains
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_domain(self, CreateDomainInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + datazone_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u0))
+        if input.singleSignOn.is_some():
+            auto u1 = input.singleSignOn.unwrap()
+            parts.append("\"singleSignOn\":" + u1.to_json())
+        if input.domainExecutionRole.is_some():
+            auto u2 = input.domainExecutionRole.unwrap()
+            parts.append("\"domainExecutionRole\":" + datazone_json_str(u2))
+        if input.kmsKeyIdentifier.is_some():
+            auto u3 = input.kmsKeyIdentifier.unwrap()
+            parts.append("\"kmsKeyIdentifier\":" + datazone_json_str(u3))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(datazone_json_str(k5) + ":" + datazone_json_str(u4[k5]))
+            parts.append("\"tags\":" + datazone_json_obj(m5))
+        if input.domainVersion.is_some():
+            auto u6 = input.domainVersion.unwrap()
+            parts.append("\"domainVersion\":" + u6.to_json())
+        if input.serviceRole.is_some():
+            auto u7 = input.serviceRole.unwrap()
+            parts.append("\"serviceRole\":" + datazone_json_str(u7))
+        if input.clientToken.is_some():
+            auto u8 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u8))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
     # CreateDomainUnit  POST /v2/domains/{domainIdentifier}/domain-units
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
     def create_domain_unit(self, CreateDomainUnitInput input) -> str:
@@ -7918,6 +9680,55 @@ struct DataZoneClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/domain-units", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateDomainUnitDocument(name=input.name, parentDomainUnitIdentifier=input.parentDomainUnitIdentifier, description=input.description, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # CreateEnvironment  POST /v2/domains/{domainIdentifier}/environments
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_environment(self, CreateEnvironmentInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/environments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"projectIdentifier\":" + datazone_json_str(input.projectIdentifier))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u0))
+        parts.append("\"name\":" + datazone_json_str(input.name))
+        if input.environmentProfileIdentifier.is_some():
+            auto u1 = input.environmentProfileIdentifier.unwrap()
+            parts.append("\"environmentProfileIdentifier\":" + datazone_json_str(u1))
+        if input.userParameters.is_some():
+            auto u2 = input.userParameters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"userParameters\":" + datazone_json_arr(e3))
+        if input.glossaryTerms.is_some():
+            auto u4 = input.glossaryTerms.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(datazone_json_str(x5))
+            parts.append("\"glossaryTerms\":" + datazone_json_arr(e5))
+        if input.environmentAccountIdentifier.is_some():
+            auto u6 = input.environmentAccountIdentifier.unwrap()
+            parts.append("\"environmentAccountIdentifier\":" + datazone_json_str(u6))
+        if input.environmentAccountRegion.is_some():
+            auto u7 = input.environmentAccountRegion.unwrap()
+            parts.append("\"environmentAccountRegion\":" + datazone_json_str(u7))
+        if input.environmentBlueprintIdentifier.is_some():
+            auto u8 = input.environmentBlueprintIdentifier.unwrap()
+            parts.append("\"environmentBlueprintIdentifier\":" + datazone_json_str(u8))
+        if input.deploymentOrder.is_some():
+            auto u9 = input.deploymentOrder.unwrap()
+            parts.append("\"deploymentOrder\":" + str(u9))
+        if input.environmentConfigurationId.is_some():
+            auto u10 = input.environmentConfigurationId.unwrap()
+            parts.append("\"environmentConfigurationId\":" + datazone_json_str(u10))
+        if input.environmentConfigurationName.is_some():
+            auto u11 = input.environmentConfigurationName.unwrap()
+            parts.append("\"environmentConfigurationName\":" + datazone_json_str(u11))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
     # CreateEnvironmentAction  POST /v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/actions
@@ -7932,6 +9743,60 @@ struct DataZoneClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
+    # CreateEnvironmentBlueprint  POST /v2/domains/{domainIdentifier}/environment-blueprints
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_environment_blueprint(self, CreateEnvironmentBlueprintInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/environment-blueprints", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + datazone_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u0))
+        parts.append("\"provisioningProperties\":" + input.provisioningProperties.to_json())
+        if input.userParameters.is_some():
+            auto u1 = input.userParameters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"userParameters\":" + datazone_json_arr(e2))
+        if input.blueprintCategory.is_some():
+            auto u3 = input.blueprintCategory.unwrap()
+            parts.append("\"blueprintCategory\":" + datazone_json_str(u3))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # CreateEnvironmentProfile  POST /v2/domains/{domainIdentifier}/environment-profiles
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_environment_profile(self, CreateEnvironmentProfileInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/environment-profiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + datazone_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u0))
+        parts.append("\"environmentBlueprintIdentifier\":" + datazone_json_str(input.environmentBlueprintIdentifier))
+        parts.append("\"projectIdentifier\":" + datazone_json_str(input.projectIdentifier))
+        if input.userParameters.is_some():
+            auto u1 = input.userParameters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"userParameters\":" + datazone_json_arr(e2))
+        if input.awsAccountId.is_some():
+            auto u3 = input.awsAccountId.unwrap()
+            parts.append("\"awsAccountId\":" + datazone_json_str(u3))
+        if input.awsAccountRegion.is_some():
+            auto u4 = input.awsAccountRegion.unwrap()
+            parts.append("\"awsAccountRegion\":" + datazone_json_str(u4))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
     # CreateFormType  POST /v2/domains/{domainIdentifier}/form-types
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
     def create_form_type(self, CreateFormTypeInput input) -> str:
@@ -7941,6 +9806,62 @@ struct DataZoneClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/form-types", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateFormTypeDocument(name=input.name, model=input.model, owningProjectIdentifier=input.owningProjectIdentifier, status=input.status, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # CreateGlossary  POST /v2/domains/{domainIdentifier}/glossaries
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_glossary(self, CreateGlossaryInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/glossaries", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + datazone_json_str(input.name))
+        parts.append("\"owningProjectIdentifier\":" + datazone_json_str(input.owningProjectIdentifier))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u0))
+        if input.status.is_some():
+            auto u1 = input.status.unwrap()
+            parts.append("\"status\":" + u1.to_json())
+        if input.usageRestrictions.is_some():
+            auto u2 = input.usageRestrictions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(datazone_json_str(x3))
+            parts.append("\"usageRestrictions\":" + datazone_json_arr(e3))
+        if input.clientToken.is_some():
+            auto u4 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u4))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # CreateGlossaryTerm  POST /v2/domains/{domainIdentifier}/glossary-terms
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_glossary_term(self, CreateGlossaryTermInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/glossary-terms", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"glossaryIdentifier\":" + datazone_json_str(input.glossaryIdentifier))
+        parts.append("\"name\":" + datazone_json_str(input.name))
+        if input.status.is_some():
+            auto u0 = input.status.unwrap()
+            parts.append("\"status\":" + u0.to_json())
+        if input.shortDescription.is_some():
+            auto u1 = input.shortDescription.unwrap()
+            parts.append("\"shortDescription\":" + datazone_json_str(u1))
+        if input.longDescription.is_some():
+            auto u2 = input.longDescription.unwrap()
+            parts.append("\"longDescription\":" + datazone_json_str(u2))
+        if input.termRelations.is_some():
+            auto u3 = input.termRelations.unwrap()
+            parts.append("\"termRelations\":" + term_relations_to_json(u3))
+        if input.clientToken.is_some():
+            auto u4 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u4))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
     # CreateGroupProfile  POST /v2/domains/{domainIdentifier}/group-profiles
@@ -7965,6 +9886,91 @@ struct DataZoneClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
+    # CreateNotebook  POST /v2/domains/{domainIdentifier}/notebooks
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_notebook(self, CreateNotebookInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/notebooks", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"owningProjectIdentifier\":" + datazone_json_str(input.owningProjectIdentifier))
+        parts.append("\"name\":" + datazone_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u0))
+        if input.type.is_some():
+            auto u1 = input.type.unwrap()
+            parts.append("\"type\":" + u1.to_json())
+        if input.metadata.is_some():
+            auto u2 = input.metadata.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(datazone_json_str(k3) + ":" + datazone_json_str(u2[k3]))
+            parts.append("\"metadata\":" + datazone_json_obj(m3))
+        if input.parameters.is_some():
+            auto u4 = input.parameters.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(datazone_json_str(k5) + ":" + datazone_json_str(u4[k5]))
+            parts.append("\"parameters\":" + datazone_json_obj(m5))
+        if input.clientToken.is_some():
+            auto u6 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u6))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # CreateProject  POST /v2/domains/{domainIdentifier}/projects
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_project(self, CreateProjectInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/projects", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + datazone_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u0))
+        if input.resourceTags.is_some():
+            auto u1 = input.resourceTags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(datazone_json_str(k2) + ":" + datazone_json_str(u1[k2]))
+            parts.append("\"resourceTags\":" + datazone_json_obj(m2))
+        if input.glossaryTerms.is_some():
+            auto u3 = input.glossaryTerms.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(datazone_json_str(x4))
+            parts.append("\"glossaryTerms\":" + datazone_json_arr(e4))
+        if input.domainUnitId.is_some():
+            auto u5 = input.domainUnitId.unwrap()
+            parts.append("\"domainUnitId\":" + datazone_json_str(u5))
+        if input.projectProfileId.is_some():
+            auto u6 = input.projectProfileId.unwrap()
+            parts.append("\"projectProfileId\":" + datazone_json_str(u6))
+        if input.userParameters.is_some():
+            auto u7 = input.userParameters.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(environment_configuration_user_parameter_to_json(x8))
+            parts.append("\"userParameters\":" + datazone_json_arr(e8))
+        if input.projectCategory.is_some():
+            auto u9 = input.projectCategory.unwrap()
+            parts.append("\"projectCategory\":" + datazone_json_str(u9))
+        if input.projectExecutionRole.is_some():
+            auto u10 = input.projectExecutionRole.unwrap()
+            parts.append("\"projectExecutionRole\":" + datazone_json_str(u10))
+        if input.membershipAssignments.is_some():
+            auto u11 = input.membershipAssignments.unwrap()
+            list[str] e12 = []
+            for x12 in u11:
+                e12.append(x12.to_json())
+            parts.append("\"membershipAssignments\":" + datazone_json_arr(e12))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
     # CreateProjectMembership  POST /v2/domains/{domainIdentifier}/projects/{projectIdentifier}/createMembership
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def create_project_membership(self, CreateProjectMembershipInput input) -> str:
@@ -7975,6 +9981,169 @@ struct DataZoneClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/projects/{projectIdentifier}/createMembership", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateProjectMembershipDocument(member=input.member, designation=input.designation, userCreatedDesignationId=input.userCreatedDesignationId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # CreateProjectProfile  POST /v2/domains/{domainIdentifier}/project-profiles
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_project_profile(self, CreateProjectProfileInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/project-profiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + datazone_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u0))
+        if input.status.is_some():
+            auto u1 = input.status.unwrap()
+            parts.append("\"status\":" + u1.to_json())
+        if input.projectResourceTags.is_some():
+            auto u2 = input.projectResourceTags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"projectResourceTags\":" + datazone_json_arr(e3))
+        if input.allowCustomProjectResourceTags.is_some():
+            auto u4 = input.allowCustomProjectResourceTags.unwrap()
+            parts.append("\"allowCustomProjectResourceTags\":" + json.dumps(JsonValue.Bool(u4)))
+        if input.projectResourceTagsDescription.is_some():
+            auto u5 = input.projectResourceTagsDescription.unwrap()
+            parts.append("\"projectResourceTagsDescription\":" + datazone_json_str(u5))
+        if input.environmentConfigurations.is_some():
+            auto u6 = input.environmentConfigurations.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(environment_configuration_to_json(x7))
+            parts.append("\"environmentConfigurations\":" + datazone_json_arr(e7))
+        if input.domainUnitIdentifier.is_some():
+            auto u8 = input.domainUnitIdentifier.unwrap()
+            parts.append("\"domainUnitIdentifier\":" + datazone_json_str(u8))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # CreateRule  POST /v2/domains/{domainIdentifier}/rules
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_rule(self, CreateRuleInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/rules", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + datazone_json_str(input.name))
+        parts.append("\"target\":" + input.target.to_json())
+        parts.append("\"action\":" + input.action.to_json())
+        parts.append("\"scope\":" + rule_scope_to_json(input.scope_))
+        parts.append("\"detail\":" + rule_detail_to_json(input.detail))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u1))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # CreateSubscriptionGrant  POST /v2/domains/{domainIdentifier}/subscription-grants
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_subscription_grant(self, CreateSubscriptionGrantInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/subscription-grants", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"environmentIdentifier\":" + datazone_json_str(input.environmentIdentifier))
+        if input.subscriptionTargetIdentifier.is_some():
+            auto u0 = input.subscriptionTargetIdentifier.unwrap()
+            parts.append("\"subscriptionTargetIdentifier\":" + datazone_json_str(u0))
+        parts.append("\"grantedEntity\":" + input.grantedEntity.to_json())
+        if input.assetTargetNames.is_some():
+            auto u1 = input.assetTargetNames.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"assetTargetNames\":" + datazone_json_arr(e2))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u3))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # CreateSubscriptionRequest  POST /v2/domains/{domainIdentifier}/subscription-requests
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_subscription_request(self, CreateSubscriptionRequestInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/subscription-requests", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.subscribedPrincipals:
+            e0.append(x0.to_json())
+        parts.append("\"subscribedPrincipals\":" + datazone_json_arr(e0))
+        list[str] e1 = []
+        for x1 in input.subscribedListings:
+            e1.append(x1.to_json())
+        parts.append("\"subscribedListings\":" + datazone_json_arr(e1))
+        parts.append("\"requestReason\":" + datazone_json_str(input.requestReason))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u2))
+        if input.metadataForms.is_some():
+            auto u3 = input.metadataForms.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"metadataForms\":" + datazone_json_arr(e4))
+        if input.assetPermissions.is_some():
+            auto u5 = input.assetPermissions.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(asset_permission_to_json(x6))
+            parts.append("\"assetPermissions\":" + datazone_json_arr(e6))
+        if input.assetScopes.is_some():
+            auto u7 = input.assetScopes.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(accepted_asset_scope_to_json(x8))
+            parts.append("\"assetScopes\":" + datazone_json_arr(e8))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # CreateSubscriptionTarget  POST /v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/subscription-targets
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_subscription_target(self, CreateSubscriptionTargetInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["environmentIdentifier"] = input.environmentIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/subscription-targets", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + datazone_json_str(input.name))
+        parts.append("\"type\":" + datazone_json_str(input.type))
+        list[str] e0 = []
+        for x0 in input.subscriptionTargetConfig:
+            e0.append(x0.to_json())
+        parts.append("\"subscriptionTargetConfig\":" + datazone_json_arr(e0))
+        list[str] e1 = []
+        for x1 in input.authorizedPrincipals:
+            e1.append(datazone_json_str(x1))
+        parts.append("\"authorizedPrincipals\":" + datazone_json_arr(e1))
+        parts.append("\"manageAccessRole\":" + datazone_json_str(input.manageAccessRole))
+        list[str] e2 = []
+        for x2 in input.applicableAssetTypes:
+            e2.append(datazone_json_str(x2))
+        parts.append("\"applicableAssetTypes\":" + datazone_json_arr(e2))
+        if input.provider.is_some():
+            auto u3 = input.provider.unwrap()
+            parts.append("\"provider\":" + datazone_json_str(u3))
+        if input.clientToken.is_some():
+            auto u4 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u4))
+        if input.subscriptionGrantCreationMode.is_some():
+            auto u5 = input.subscriptionGrantCreationMode.unwrap()
+            parts.append("\"subscriptionGrantCreationMode\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
     # CreateUserProfile  POST /v2/domains/{domainIdentifier}/user-profiles
@@ -8277,6 +10446,23 @@ struct DataZoneClient:
         labels["environmentRoleArn"] = input.environmentRoleArn
         auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/roles/{environmentRoleArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
+
+    # DisassociateGovernedTerms  PATCH /v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/disassociate-governed-terms
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def disassociate_governed_terms(self, DisassociateGovernedTermsInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["entityIdentifier"] = input.entityIdentifier
+        labels["entityType"] = input.entityType
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/disassociate-governed-terms", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.governedGlossaryTerms:
+            e0.append(datazone_json_str(x0))
+        parts.append("\"governedGlossaryTerms\":" + datazone_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
     # GetAccountPool  GET /v2/domains/{domainIdentifier}/account-pools/{identifier}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
@@ -9302,6 +11488,26 @@ struct DataZoneClient:
         auto bp = restjson.rest_json_raw_payload(b, str(input.event), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
+    # PostTimeSeriesDataPoints  POST /v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/time-series-data-points
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def post_time_series_data_points(self, PostTimeSeriesDataPointsInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["entityIdentifier"] = input.entityIdentifier
+        labels["entityType"] = input.entityType
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/time-series-data-points", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.forms:
+            e0.append(x0.to_json())
+        parts.append("\"forms\":" + datazone_json_arr(e0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u1))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
     # PutDataExportConfiguration  PUT /v2/domains/{domainIdentifier}/data-export-configuration
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
     def put_data_export_configuration(self, PutDataExportConfigurationInput input) -> str:
@@ -9311,6 +11517,111 @@ struct DataZoneClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/data-export-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutDataExportConfigurationDocument(enableExport=input.enableExport, encryptionConfiguration=input.encryptionConfiguration, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # PutEnvironmentBlueprintConfiguration  PUT /v2/domains/{domainIdentifier}/environment-blueprint-configurations/{environmentBlueprintIdentifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def put_environment_blueprint_configuration(self, PutEnvironmentBlueprintConfigurationInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["environmentBlueprintIdentifier"] = input.environmentBlueprintIdentifier
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/environment-blueprint-configurations/{environmentBlueprintIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.provisioningRoleArn.is_some():
+            auto u0 = input.provisioningRoleArn.unwrap()
+            parts.append("\"provisioningRoleArn\":" + datazone_json_str(u0))
+        if input.manageAccessRoleArn.is_some():
+            auto u1 = input.manageAccessRoleArn.unwrap()
+            parts.append("\"manageAccessRoleArn\":" + datazone_json_str(u1))
+        if input.environmentRolePermissionBoundary.is_some():
+            auto u2 = input.environmentRolePermissionBoundary.unwrap()
+            parts.append("\"environmentRolePermissionBoundary\":" + datazone_json_str(u2))
+        list[str] e3 = []
+        for x3 in input.enabledRegions:
+            e3.append(datazone_json_str(x3))
+        parts.append("\"enabledRegions\":" + datazone_json_arr(e3))
+        if input.regionalParameters.is_some():
+            auto u4 = input.regionalParameters.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                list[str] m6 = []
+                for k6 in sorted(u4[k5].keys()):
+                    m6.append(datazone_json_str(k6) + ":" + datazone_json_str(u4[k5][k6]))
+                m5.append(datazone_json_str(k5) + ":" + datazone_json_obj(m6))
+            parts.append("\"regionalParameters\":" + datazone_json_obj(m5))
+        if input.resourceConfigurations.is_some():
+            auto u7 = input.resourceConfigurations.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(put_resource_configuration_to_json(x8))
+            parts.append("\"resourceConfigurations\":" + datazone_json_arr(e8))
+        if input.allowUserProvidedConfigurations.is_some():
+            auto u9 = input.allowUserProvidedConfigurations.unwrap()
+            parts.append("\"allowUserProvidedConfigurations\":" + json.dumps(JsonValue.Bool(u9)))
+        if input.globalParameters.is_some():
+            auto u10 = input.globalParameters.unwrap()
+            list[str] m11 = []
+            for k11 in sorted(u10.keys()):
+                m11.append(datazone_json_str(k11) + ":" + datazone_json_str(u10[k11]))
+            parts.append("\"globalParameters\":" + datazone_json_obj(m11))
+        if input.provisioningConfigurations.is_some():
+            auto u12 = input.provisioningConfigurations.unwrap()
+            list[str] e13 = []
+            for x13 in u12:
+                e13.append(provisioning_configuration_to_json(x13))
+            parts.append("\"provisioningConfigurations\":" + datazone_json_arr(e13))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # QueryGraph  POST /v2/domains/{domainIdentifier}/graph/query
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, UnauthorizedException, ValidationException
+    def query_graph(self, QueryGraphInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        dict[str, str] query = {}
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/graph/query", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.match_:
+            e0.append(match_clause_to_json(x0))
+        parts.append("\"match\":" + datazone_json_arr(e0))
+        if input.additionalAttributes.is_some():
+            auto u1 = input.additionalAttributes.unwrap()
+            parts.append("\"additionalAttributes\":" + additional_attributes_to_json(u1))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # RejectPredictions  PUT /v2/domains/{domainIdentifier}/assets/{identifier}/reject-predictions
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def reject_predictions(self, RejectPredictionsInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["identifier"] = input.identifier
+        dict[str, str] query = {}
+        if input.revision.is_some():
+            query["revision"] = input.revision.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/assets/{identifier}/reject-predictions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.rejectRule.is_some():
+            auto u0 = input.rejectRule.unwrap()
+            parts.append("\"rejectRule\":" + u0.to_json())
+        if input.rejectChoices.is_some():
+            auto u1 = input.rejectChoices.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(reject_choice_to_json(x2))
+            parts.append("\"rejectChoices\":" + datazone_json_arr(e2))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u3))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
     # RejectSubscriptionRequest  PUT /v2/domains/{domainIdentifier}/subscription-requests/{identifier}/reject
@@ -9363,6 +11674,48 @@ struct DataZoneClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
+    # Search  POST /v2/domains/{domainIdentifier}/search
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, UnauthorizedException, ValidationException
+    def search(self, SearchInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/search", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.owningProjectIdentifier.is_some():
+            auto u0 = input.owningProjectIdentifier.unwrap()
+            parts.append("\"owningProjectIdentifier\":" + datazone_json_str(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + datazone_json_str(u2))
+        parts.append("\"searchScope\":" + input.searchScope.to_json())
+        if input.searchText.is_some():
+            auto u3 = input.searchText.unwrap()
+            parts.append("\"searchText\":" + datazone_json_str(u3))
+        if input.searchIn.is_some():
+            auto u4 = input.searchIn.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"searchIn\":" + datazone_json_arr(e5))
+        if input.filters.is_some():
+            auto u6 = input.filters.unwrap()
+            parts.append("\"filters\":" + filter_clause_to_json(u6))
+        if input.sort.is_some():
+            auto u7 = input.sort.unwrap()
+            parts.append("\"sort\":" + u7.to_json())
+        if input.additionalAttributes.is_some():
+            auto u8 = input.additionalAttributes.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"additionalAttributes\":" + datazone_json_arr(e9))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
     # SearchGroupProfiles  POST /v2/domains/{domainIdentifier}/search-group-profiles
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def search_group_profiles(self, SearchGroupProfilesInput input) -> str:
@@ -9372,6 +11725,84 @@ struct DataZoneClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/search-group-profiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SearchGroupProfilesDocument(groupType=input.groupType, searchText=input.searchText, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # SearchListings  POST /v2/domains/{domainIdentifier}/listings/search
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, UnauthorizedException, ValidationException
+    def search_listings(self, SearchListingsInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/listings/search", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.searchText.is_some():
+            auto u0 = input.searchText.unwrap()
+            parts.append("\"searchText\":" + datazone_json_str(u0))
+        if input.searchIn.is_some():
+            auto u1 = input.searchIn.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"searchIn\":" + datazone_json_arr(e2))
+        if input.maxResults.is_some():
+            auto u3 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u3))
+        if input.nextToken.is_some():
+            auto u4 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + datazone_json_str(u4))
+        if input.filters.is_some():
+            auto u5 = input.filters.unwrap()
+            parts.append("\"filters\":" + filter_clause_to_json(u5))
+        if input.aggregations.is_some():
+            auto u6 = input.aggregations.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"aggregations\":" + datazone_json_arr(e7))
+        if input.sort.is_some():
+            auto u8 = input.sort.unwrap()
+            parts.append("\"sort\":" + u8.to_json())
+        if input.additionalAttributes.is_some():
+            auto u9 = input.additionalAttributes.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(x10.to_json())
+            parts.append("\"additionalAttributes\":" + datazone_json_arr(e10))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # SearchTypes  POST /v2/domains/{domainIdentifier}/types-search
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, UnauthorizedException, ValidationException
+    def search_types(self, SearchTypesInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/types-search", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.maxResults.is_some():
+            auto u0 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + datazone_json_str(u1))
+        parts.append("\"searchScope\":" + input.searchScope.to_json())
+        if input.searchText.is_some():
+            auto u2 = input.searchText.unwrap()
+            parts.append("\"searchText\":" + datazone_json_str(u2))
+        if input.searchIn.is_some():
+            auto u3 = input.searchIn.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"searchIn\":" + datazone_json_arr(e4))
+        if input.filters.is_some():
+            auto u5 = input.filters.unwrap()
+            parts.append("\"filters\":" + filter_clause_to_json(u5))
+        if input.sort.is_some():
+            auto u6 = input.sort.unwrap()
+            parts.append("\"sort\":" + u6.to_json())
+        parts.append("\"managed\":" + json.dumps(JsonValue.Bool(input.managed)))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
     # SearchUserProfiles  POST /v2/domains/{domainIdentifier}/search-user-profiles
@@ -9397,6 +11828,31 @@ struct DataZoneClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
+    # StartMetadataGenerationRun  POST /v2/domains/{domainIdentifier}/metadata-generation-runs
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def start_metadata_generation_run(self, StartMetadataGenerationRunInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/metadata-generation-runs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.type.is_some():
+            auto u0 = input.type.unwrap()
+            parts.append("\"type\":" + u0.to_json())
+        if input.types.is_some():
+            auto u1 = input.types.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"types\":" + datazone_json_arr(e2))
+        parts.append("\"target\":" + input.target.to_json())
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u3))
+        parts.append("\"owningProjectIdentifier\":" + datazone_json_str(input.owningProjectIdentifier))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
     # StartNotebookExport  POST /v2/domains/{domainIdentifier}/notebook-exports
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
     def start_notebook_export(self, StartNotebookExportInput input) -> str:
@@ -9406,6 +11862,103 @@ struct DataZoneClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/notebook-exports", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartNotebookExportDocument(notebookIdentifier=input.notebookIdentifier, owningProjectIdentifier=input.owningProjectIdentifier, fileFormat=input.fileFormat, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # StartNotebookImport  POST /v2/domains/{domainIdentifier}/notebook-imports
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def start_notebook_import(self, StartNotebookImportInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/notebook-imports", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"owningProjectIdentifier\":" + datazone_json_str(input.owningProjectIdentifier))
+        parts.append("\"sourceLocation\":" + source_location_to_json(input.sourceLocation))
+        parts.append("\"name\":" + datazone_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u0))
+        if input.type.is_some():
+            auto u1 = input.type.unwrap()
+            parts.append("\"type\":" + u1.to_json())
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u2))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # StartNotebookRun  POST /v2/domains/{domainIdentifier}/notebook-runs
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def start_notebook_run(self, StartNotebookRunInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/notebook-runs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"owningProjectIdentifier\":" + datazone_json_str(input.owningProjectIdentifier))
+        parts.append("\"notebookIdentifier\":" + datazone_json_str(input.notebookIdentifier))
+        if input.scheduleIdentifier.is_some():
+            auto u0 = input.scheduleIdentifier.unwrap()
+            parts.append("\"scheduleIdentifier\":" + datazone_json_str(u0))
+        if input.computeConfiguration.is_some():
+            auto u1 = input.computeConfiguration.unwrap()
+            parts.append("\"computeConfiguration\":" + u1.to_json())
+        if input.networkConfiguration.is_some():
+            auto u2 = input.networkConfiguration.unwrap()
+            parts.append("\"networkConfiguration\":" + network_config_to_json(u2))
+        if input.timeoutConfiguration.is_some():
+            auto u3 = input.timeoutConfiguration.unwrap()
+            parts.append("\"timeoutConfiguration\":" + u3.to_json())
+        if input.notificationConfiguration.is_some():
+            auto u4 = input.notificationConfiguration.unwrap()
+            parts.append("\"notificationConfiguration\":" + notification_config_to_json(u4))
+        if input.triggerSource.is_some():
+            auto u5 = input.triggerSource.unwrap()
+            parts.append("\"triggerSource\":" + u5.to_json())
+        if input.metadata.is_some():
+            auto u6 = input.metadata.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(datazone_json_str(k7) + ":" + datazone_json_str(u6[k7]))
+            parts.append("\"metadata\":" + datazone_json_obj(m7))
+        if input.parameters.is_some():
+            auto u8 = input.parameters.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(datazone_json_str(k9) + ":" + datazone_json_str(u8[k9]))
+            parts.append("\"parameters\":" + datazone_json_obj(m9))
+        if input.clientToken.is_some():
+            auto u10 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u10))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # StartNotebookSync  POST /v2/domains/{domainIdentifier}/notebook-syncs
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def start_notebook_sync(self, StartNotebookSyncInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/notebook-syncs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"owningProjectIdentifier\":" + datazone_json_str(input.owningProjectIdentifier))
+        parts.append("\"sourceLocation\":" + source_location_to_json(input.sourceLocation))
+        if input.gitMetadata.is_some():
+            auto u0 = input.gitMetadata.unwrap()
+            parts.append("\"gitMetadata\":" + u0.to_json())
+        if input.notebookId.is_some():
+            auto u1 = input.notebookId.unwrap()
+            parts.append("\"notebookId\":" + datazone_json_str(u1))
+        if input.name.is_some():
+            auto u2 = input.name.unwrap()
+            parts.append("\"name\":" + datazone_json_str(u2))
+        if input.description.is_some():
+            auto u3 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u3))
+        if input.clientToken.is_some():
+            auto u4 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u4))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
     # StopNotebookRun  PUT /v2/domains/{domainIdentifier}/notebook-runs/{identifier}/stop
@@ -9418,6 +11971,136 @@ struct DataZoneClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/notebook-runs/{identifier}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopNotebookRunDocument(clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(datazone_json_str(k0) + ":" + datazone_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + datazone_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # UpdateAccountPool  PATCH /v2/domains/{domainIdentifier}/account-pools/{identifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def update_account_pool(self, UpdateAccountPoolInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["identifier"] = input.identifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/account-pools/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + datazone_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u1))
+        if input.resolutionStrategy.is_some():
+            auto u2 = input.resolutionStrategy.unwrap()
+            parts.append("\"resolutionStrategy\":" + datazone_json_str(u2))
+        if input.accountSource.is_some():
+            auto u3 = input.accountSource.unwrap()
+            parts.append("\"accountSource\":" + account_source_to_json(u3))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # UpdateAssetFilter  PATCH /v2/domains/{domainIdentifier}/assets/{assetIdentifier}/filters/{identifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def update_asset_filter(self, UpdateAssetFilterInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["assetIdentifier"] = input.assetIdentifier
+        labels["identifier"] = input.identifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/assets/{assetIdentifier}/filters/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + datazone_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u1))
+        if input.configuration.is_some():
+            auto u2 = input.configuration.unwrap()
+            parts.append("\"configuration\":" + asset_filter_configuration_to_json(u2))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # UpdateConnection  PATCH /v2/domains/{domainIdentifier}/connections/{identifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def update_connection(self, UpdateConnectionInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["identifier"] = input.identifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/connections/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.configurations.is_some():
+            auto u0 = input.configurations.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(configuration_to_json(x1))
+            parts.append("\"configurations\":" + datazone_json_arr(e1))
+        if input.description.is_some():
+            auto u2 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u2))
+        if input.awsLocation.is_some():
+            auto u3 = input.awsLocation.unwrap()
+            parts.append("\"awsLocation\":" + u3.to_json())
+        if input.props.is_some():
+            auto u4 = input.props.unwrap()
+            parts.append("\"props\":" + connection_properties_patch_to_json(u4))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # UpdateDataSource  PATCH /v2/domains/{domainIdentifier}/data-sources/{identifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def update_data_source(self, UpdateDataSourceInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["identifier"] = input.identifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/data-sources/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + datazone_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u1))
+        if input.enableSetting.is_some():
+            auto u2 = input.enableSetting.unwrap()
+            parts.append("\"enableSetting\":" + u2.to_json())
+        if input.publishOnImport.is_some():
+            auto u3 = input.publishOnImport.unwrap()
+            parts.append("\"publishOnImport\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.assetFormsInput.is_some():
+            auto u4 = input.assetFormsInput.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"assetFormsInput\":" + datazone_json_arr(e5))
+        if input.schedule.is_some():
+            auto u6 = input.schedule.unwrap()
+            parts.append("\"schedule\":" + u6.to_json())
+        if input.configuration.is_some():
+            auto u7 = input.configuration.unwrap()
+            parts.append("\"configuration\":" + data_source_configuration_input_to_json(u7))
+        if input.recommendation.is_some():
+            auto u8 = input.recommendation.unwrap()
+            parts.append("\"recommendation\":" + u8.to_json())
+        if input.retainPermissionsOnRevokeFailure.is_some():
+            auto u9 = input.retainPermissionsOnRevokeFailure.unwrap()
+            parts.append("\"retainPermissionsOnRevokeFailure\":" + json.dumps(JsonValue.Bool(u9)))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
     # UpdateDesignation  PATCH /v2/domains/{domainIdentifier}/designations/{identifier}
@@ -9458,6 +12141,42 @@ struct DataZoneClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
+    # UpdateEnvironment  PATCH /v2/domains/{domainIdentifier}/environments/{identifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def update_environment(self, UpdateEnvironmentInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["identifier"] = input.identifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/environments/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + datazone_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u1))
+        if input.glossaryTerms.is_some():
+            auto u2 = input.glossaryTerms.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(datazone_json_str(x3))
+            parts.append("\"glossaryTerms\":" + datazone_json_arr(e3))
+        if input.blueprintVersion.is_some():
+            auto u4 = input.blueprintVersion.unwrap()
+            parts.append("\"blueprintVersion\":" + datazone_json_str(u4))
+        if input.userParameters.is_some():
+            auto u5 = input.userParameters.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"userParameters\":" + datazone_json_arr(e6))
+        if input.environmentConfigurationName.is_some():
+            auto u7 = input.environmentConfigurationName.unwrap()
+            parts.append("\"environmentConfigurationName\":" + datazone_json_str(u7))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
     # UpdateEnvironmentAction  PATCH /v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/actions/{identifier}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def update_environment_action(self, UpdateEnvironmentActionInput input) -> str:
@@ -9469,6 +12188,63 @@ struct DataZoneClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/actions/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateEnvironmentActionDocument(parameters=input.parameters, name=input.name, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # UpdateEnvironmentBlueprint  PATCH /v2/domains/{domainIdentifier}/environment-blueprints/{identifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def update_environment_blueprint(self, UpdateEnvironmentBlueprintInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["identifier"] = input.identifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/environment-blueprints/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u0))
+        if input.provisioningProperties.is_some():
+            auto u1 = input.provisioningProperties.unwrap()
+            parts.append("\"provisioningProperties\":" + u1.to_json())
+        if input.userParameters.is_some():
+            auto u2 = input.userParameters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"userParameters\":" + datazone_json_arr(e3))
+        if input.blueprintCategory.is_some():
+            auto u4 = input.blueprintCategory.unwrap()
+            parts.append("\"blueprintCategory\":" + datazone_json_str(u4))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # UpdateEnvironmentProfile  PATCH /v2/domains/{domainIdentifier}/environment-profiles/{identifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def update_environment_profile(self, UpdateEnvironmentProfileInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["identifier"] = input.identifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/environment-profiles/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + datazone_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u1))
+        if input.userParameters.is_some():
+            auto u2 = input.userParameters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"userParameters\":" + datazone_json_arr(e3))
+        if input.awsAccountId.is_some():
+            auto u4 = input.awsAccountId.unwrap()
+            parts.append("\"awsAccountId\":" + datazone_json_str(u4))
+        if input.awsAccountRegion.is_some():
+            auto u5 = input.awsAccountRegion.unwrap()
+            parts.append("\"awsAccountRegion\":" + datazone_json_str(u5))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
     # UpdateGlossary  PATCH /v2/domains/{domainIdentifier}/glossaries/{identifier}
@@ -9483,6 +12259,36 @@ struct DataZoneClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
+    # UpdateGlossaryTerm  PATCH /v2/domains/{domainIdentifier}/glossary-terms/{identifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def update_glossary_term(self, UpdateGlossaryTermInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["identifier"] = input.identifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/glossary-terms/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.glossaryIdentifier.is_some():
+            auto u0 = input.glossaryIdentifier.unwrap()
+            parts.append("\"glossaryIdentifier\":" + datazone_json_str(u0))
+        if input.name.is_some():
+            auto u1 = input.name.unwrap()
+            parts.append("\"name\":" + datazone_json_str(u1))
+        if input.shortDescription.is_some():
+            auto u2 = input.shortDescription.unwrap()
+            parts.append("\"shortDescription\":" + datazone_json_str(u2))
+        if input.longDescription.is_some():
+            auto u3 = input.longDescription.unwrap()
+            parts.append("\"longDescription\":" + datazone_json_str(u3))
+        if input.termRelations.is_some():
+            auto u4 = input.termRelations.unwrap()
+            parts.append("\"termRelations\":" + term_relations_to_json(u4))
+        if input.status.is_some():
+            auto u5 = input.status.unwrap()
+            parts.append("\"status\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
     # UpdateGroupProfile  PUT /v2/domains/{domainIdentifier}/group-profiles/{groupIdentifier}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def update_group_profile(self, UpdateGroupProfileInput input) -> str:
@@ -9495,6 +12301,141 @@ struct DataZoneClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
+    # UpdateNotebook  PATCH /v2/domains/{domainIdentifier}/notebooks/{identifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def update_notebook(self, UpdateNotebookInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["identifier"] = input.identifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/notebooks/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u0))
+        if input.status.is_some():
+            auto u1 = input.status.unwrap()
+            parts.append("\"status\":" + u1.to_json())
+        if input.name.is_some():
+            auto u2 = input.name.unwrap()
+            parts.append("\"name\":" + datazone_json_str(u2))
+        if input.cellOrder.is_some():
+            auto u3 = input.cellOrder.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"cellOrder\":" + datazone_json_arr(e4))
+        if input.type.is_some():
+            auto u5 = input.type.unwrap()
+            parts.append("\"type\":" + u5.to_json())
+        if input.metadata.is_some():
+            auto u6 = input.metadata.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(datazone_json_str(k7) + ":" + datazone_json_str(u6[k7]))
+            parts.append("\"metadata\":" + datazone_json_obj(m7))
+        if input.parameters.is_some():
+            auto u8 = input.parameters.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(datazone_json_str(k9) + ":" + datazone_json_str(u8[k9]))
+            parts.append("\"parameters\":" + datazone_json_obj(m9))
+        if input.environmentConfiguration.is_some():
+            auto u10 = input.environmentConfiguration.unwrap()
+            parts.append("\"environmentConfiguration\":" + u10.to_json())
+        if input.clientToken.is_some():
+            auto u11 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + datazone_json_str(u11))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # UpdateProject  PATCH /v2/domains/{domainIdentifier}/projects/{identifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def update_project(self, UpdateProjectInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["identifier"] = input.identifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/projects/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + datazone_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u1))
+        if input.resourceTags.is_some():
+            auto u2 = input.resourceTags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(datazone_json_str(k3) + ":" + datazone_json_str(u2[k3]))
+            parts.append("\"resourceTags\":" + datazone_json_obj(m3))
+        if input.glossaryTerms.is_some():
+            auto u4 = input.glossaryTerms.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(datazone_json_str(x5))
+            parts.append("\"glossaryTerms\":" + datazone_json_arr(e5))
+        if input.domainUnitId.is_some():
+            auto u6 = input.domainUnitId.unwrap()
+            parts.append("\"domainUnitId\":" + datazone_json_str(u6))
+        if input.environmentDeploymentDetails.is_some():
+            auto u7 = input.environmentDeploymentDetails.unwrap()
+            parts.append("\"environmentDeploymentDetails\":" + environment_deployment_details_to_json(u7))
+        if input.userParameters.is_some():
+            auto u8 = input.userParameters.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(environment_configuration_user_parameter_to_json(x9))
+            parts.append("\"userParameters\":" + datazone_json_arr(e9))
+        if input.projectProfileVersion.is_some():
+            auto u10 = input.projectProfileVersion.unwrap()
+            parts.append("\"projectProfileVersion\":" + datazone_json_str(u10))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # UpdateProjectProfile  PATCH /v2/domains/{domainIdentifier}/project-profiles/{identifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def update_project_profile(self, UpdateProjectProfileInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["identifier"] = input.identifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/project-profiles/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + datazone_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u1))
+        if input.status.is_some():
+            auto u2 = input.status.unwrap()
+            parts.append("\"status\":" + u2.to_json())
+        if input.projectResourceTags.is_some():
+            auto u3 = input.projectResourceTags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"projectResourceTags\":" + datazone_json_arr(e4))
+        if input.allowCustomProjectResourceTags.is_some():
+            auto u5 = input.allowCustomProjectResourceTags.unwrap()
+            parts.append("\"allowCustomProjectResourceTags\":" + json.dumps(JsonValue.Bool(u5)))
+        if input.projectResourceTagsDescription.is_some():
+            auto u6 = input.projectResourceTagsDescription.unwrap()
+            parts.append("\"projectResourceTagsDescription\":" + datazone_json_str(u6))
+        if input.environmentConfigurations.is_some():
+            auto u7 = input.environmentConfigurations.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(environment_configuration_to_json(x8))
+            parts.append("\"environmentConfigurations\":" + datazone_json_arr(e8))
+        if input.domainUnitIdentifier.is_some():
+            auto u9 = input.domainUnitIdentifier.unwrap()
+            parts.append("\"domainUnitIdentifier\":" + datazone_json_str(u9))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
     # UpdateRootDomainUnitOwner  PATCH /v2/domains/{domainIdentifier}/root-domain-unit-owner
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def update_root_domain_unit_owner(self, UpdateRootDomainUnitOwnerInput input) -> str:
@@ -9504,6 +12445,33 @@ struct DataZoneClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/root-domain-unit-owner", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRootDomainUnitOwnerDocument(currentOwner=input.currentOwner, newOwner=input.newOwner, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # UpdateRule  PATCH /v2/domains/{domainIdentifier}/rules/{identifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def update_rule(self, UpdateRuleInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["identifier"] = input.identifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/rules/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + datazone_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + datazone_json_str(u1))
+        if input.scope_.is_some():
+            auto u2 = input.scope_.unwrap()
+            parts.append("\"scope\":" + rule_scope_to_json(u2))
+        if input.detail.is_some():
+            auto u3 = input.detail.unwrap()
+            parts.append("\"detail\":" + rule_detail_to_json(u3))
+        if input.includeChildDomainUnits.is_some():
+            auto u4 = input.includeChildDomainUnits.unwrap()
+            parts.append("\"includeChildDomainUnits\":" + json.dumps(JsonValue.Bool(u4)))
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
     # UpdateSubscriptionGrantStatus  PATCH /v2/domains/{domainIdentifier}/subscription-grants/{identifier}/status/{assetIdentifier}
@@ -9529,6 +12497,49 @@ struct DataZoneClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/subscription-requests/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSubscriptionRequestDocument(requestReason=input.requestReason)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # UpdateSubscriptionTarget  PATCH /v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/subscription-targets/{identifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def update_subscription_target(self, UpdateSubscriptionTargetInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["environmentIdentifier"] = input.environmentIdentifier
+        labels["identifier"] = input.identifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/subscription-targets/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + datazone_json_str(u0))
+        if input.authorizedPrincipals.is_some():
+            auto u1 = input.authorizedPrincipals.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(datazone_json_str(x2))
+            parts.append("\"authorizedPrincipals\":" + datazone_json_arr(e2))
+        if input.applicableAssetTypes.is_some():
+            auto u3 = input.applicableAssetTypes.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(datazone_json_str(x4))
+            parts.append("\"applicableAssetTypes\":" + datazone_json_arr(e4))
+        if input.subscriptionTargetConfig.is_some():
+            auto u5 = input.subscriptionTargetConfig.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"subscriptionTargetConfig\":" + datazone_json_arr(e6))
+        if input.manageAccessRole.is_some():
+            auto u7 = input.manageAccessRole.unwrap()
+            parts.append("\"manageAccessRole\":" + datazone_json_str(u7))
+        if input.provider.is_some():
+            auto u8 = input.provider.unwrap()
+            parts.append("\"provider\":" + datazone_json_str(u8))
+        if input.subscriptionGrantCreationMode.is_some():
+            auto u9 = input.subscriptionGrantCreationMode.unwrap()
+            parts.append("\"subscriptionGrantCreationMode\":" + u9.to_json())
+        auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
     # UpdateUserProfile  PUT /v2/domains/{domainIdentifier}/user-profiles/{userIdentifier}
@@ -9920,12 +12931,64 @@ struct DataZoneClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for QueryGraph — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_query_graph(self, QueryGraphInput input):
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        while True:
+            auto raw = self.query_graph(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for Search — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_search(self, SearchInput input):
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        while True:
+            auto raw = self.search(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for SearchGroupProfiles — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: items).
     def paginate_search_group_profiles(self, SearchGroupProfilesInput input):
         auto host = endpoints.regional_host(datazone_service(), self.region)
         while True:
             auto raw = self.search_group_profiles(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for SearchListings — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_search_listings(self, SearchListingsInput input):
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        while True:
+            auto raw = self.search_listings(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for SearchTypes — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_search_types(self, SearchTypesInput input):
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        while True:
+            auto raw = self.search_types(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

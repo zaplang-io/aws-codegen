@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 11 operations — 4 with a generated method,
-#   7 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 11 operations — 10 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   195 structs (129 @derive(Json)), 39 enums, 12 error variants.
 #   0 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import base64
 
 # The Bedrock_Runtime rest-json protocol: SigV4 service "bedrock" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -441,8 +442,9 @@ struct AnyToolChoice:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) guardrailOrigin: list[GuardrailOrigin] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) guardrailOrigin: list[GuardrailOrigin] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AppliedGuardrailDetails:
     Optional[str] guardrailId
     Optional[str] guardrailVersion
@@ -459,8 +461,9 @@ struct ApplyGuardrailRequest:
     list[GuardrailContentBlock] content
     Optional[GuardrailOutputScope] outputScope
 
-# no @derive(Json): member(s) outputs: list[GuardrailOutputContent], assessments: list[GuardrailAssessment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputs: list[GuardrailOutputContent], assessments: list[GuardrailAssessment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplyGuardrailResponse:
     GuardrailUsage usage
     GuardrailAction action
@@ -531,8 +534,9 @@ struct CachePointBlock:
     str type
     Optional[CacheTTL] ttl
 
-# no @derive(Json): member(s) sourceContent: list[CitationSourceContent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceContent: list[CitationSourceContent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Citation:
     Optional[str] title
     Optional[str] source
@@ -563,14 +567,16 @@ struct CitationSourceContentDelta:
 struct CitationsConfig:
     bool enabled
 
-# no @derive(Json): member(s) content: list[CitationGeneratedContent], citations: list[Citation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) content: list[CitationGeneratedContent], citations: list[Citation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CitationsContentBlock:
     Optional[list[CitationGeneratedContent]] content
     Optional[list[Citation]] citations
 
-# no @derive(Json): member(s) sourceContent: list[CitationSourceContentDelta] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceContent: list[CitationSourceContentDelta] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CitationsDelta:
     Optional[str] title
     Optional[str] source
@@ -581,8 +587,9 @@ struct CitationsDelta:
 struct ConflictException:
     Optional[str] message
 
-# no @derive(Json): member(s) document: DocumentBlock, toolResult: ToolResultBlock, guardContent: GuardrailConverseContentBlock, citationsContent: CitationsContentBlock, searchResult: SearchResultBlock not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) document: DocumentBlock, toolResult: ToolResultBlock, guardContent: GuardrailConverseContentBlock, citationsContent: CitationsContentBlock, searchResult: SearchResultBlock not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContentBlock:
     Optional[str] text
     Optional[ImageBlock] image
@@ -599,8 +606,9 @@ struct ContentBlock:
     Optional[ToolAdditionBlock] toolAddition
     Optional[ToolRemovalBlock] toolRemoval
 
-# no @derive(Json): member(s) toolResult: list[ToolResultBlockDelta], citation: CitationsDelta not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) toolResult: list[ToolResultBlockDelta], citation: CitationsDelta not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContentBlockDelta:
     Optional[str] text
     Optional[ToolUseBlockDelta] toolUse
@@ -609,8 +617,9 @@ struct ContentBlockDelta:
     Optional[CitationsDelta] citation
     Optional[ImageBlockDelta] image
 
-# no @derive(Json): member(s) delta: ContentBlockDelta not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) delta: ContentBlockDelta not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContentBlockDeltaEvent:
     ContentBlockDelta delta
     int64 contentBlockIndex
@@ -634,8 +643,9 @@ struct ContentBlockStopEvent:
 struct ConverseMetrics:
     int64 latencyMs
 
-# no @derive(Json): member(s) message: Message not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) message: Message not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConverseOutput:
     Optional[Message] message
 
@@ -656,8 +666,9 @@ struct ConverseRequest:
     Optional[ServiceTier] serviceTier
     Optional[OutputConfig] outputConfig
 
-# no @derive(Json): member(s) output: ConverseOutput, usage: TokenUsage, trace: ConverseTrace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) output: ConverseOutput, usage: TokenUsage, trace: ConverseTrace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConverseResponse:
     ConverseOutput output
     StopReason stopReason
@@ -668,8 +679,9 @@ struct ConverseResponse:
     Optional[PerformanceConfiguration] performanceConfig
     Optional[ServiceTier] serviceTier
 
-# no @derive(Json): member(s) usage: TokenUsage, trace: ConverseStreamTrace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) usage: TokenUsage, trace: ConverseStreamTrace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConverseStreamMetadataEvent:
     TokenUsage usage
     ConverseStreamMetrics metrics
@@ -681,8 +693,9 @@ struct ConverseStreamMetadataEvent:
 struct ConverseStreamMetrics:
     int64 latencyMs
 
-# no @derive(Json): member(s) contentBlockDelta: ContentBlockDeltaEvent, metadata: ConverseStreamMetadataEvent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) contentBlockDelta: ContentBlockDeltaEvent, metadata: ConverseStreamMetadataEvent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConverseStreamOutput:
     Optional[MessageStartEvent] messageStart
     Optional[ContentBlockStartEvent] contentBlockStart
@@ -713,33 +726,38 @@ struct ConverseStreamRequest:
     Optional[ServiceTier] serviceTier
     Optional[OutputConfig] outputConfig
 
-# no @derive(Json): member(s) stream: ConverseStreamOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stream: ConverseStreamOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConverseStreamResponse:
     Optional[ConverseStreamOutput] stream
 
-# no @derive(Json): member(s) guardrail: GuardrailTraceAssessment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) guardrail: GuardrailTraceAssessment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConverseStreamTrace:
     Optional[GuardrailTraceAssessment] guardrail
     Optional[PromptRouterTrace] promptRouter
 
-# no @derive(Json): member(s) messages: list[Message], system: list[SystemContentBlock], toolConfig: ToolConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) messages: list[Message], system: list[SystemContentBlock], toolConfig: ToolConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConverseTokensRequest:
     Optional[list[Message]] messages
     Optional[list[SystemContentBlock]] system
     Optional[ToolConfiguration] toolConfig
     Optional[Document] additionalModelRequestFields
 
-# no @derive(Json): member(s) guardrail: GuardrailTraceAssessment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) guardrail: GuardrailTraceAssessment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConverseTrace:
     Optional[GuardrailTraceAssessment] guardrail
     Optional[PromptRouterTrace] promptRouter
 
-# no @derive(Json): member(s) converse: ConverseTokensRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) converse: ConverseTokensRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CountTokensInput:
     Optional[InvokeModelTokensRequest] invokeModel
     Optional[ConverseTokensRequest] converse
@@ -759,8 +777,9 @@ struct Document:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) source: DocumentSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) source: DocumentSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentBlock:
     Optional[DocumentFormat] format
     str name
@@ -790,8 +809,9 @@ struct DocumentPageLocation:
     Optional[int64] start
     Optional[int64] end
 
-# no @derive(Json): member(s) content: list[DocumentContentBlock] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) content: list[DocumentContentBlock] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentSource:
     # wire name "bytes" differs from field; derive rename is a #346 follow-up
     Optional[bytes] bytes_
@@ -823,8 +843,9 @@ struct GetAsyncInvokeResponse:
     Optional[DateTime] endTime
     AsyncInvokeOutputDataConfig outputDataConfig
 
-# no @derive(Json): member(s) topicPolicy: GuardrailTopicPolicyAssessment, contentPolicy: GuardrailContentPolicyAssessment, wordPolicy: GuardrailWordPolicyAssessment, sensitiveInformationPolicy: GuardrailSensitiveInformationPolicyAssessment, contextualGroundingPolicy: GuardrailContextualGroundingPolicyAssessment, automatedReasoningPolicy: GuardrailAutomatedReasoningPolicyAssessment, appliedGuardrailDetails: AppliedGuardrailDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) topicPolicy: GuardrailTopicPolicyAssessment, contentPolicy: GuardrailContentPolicyAssessment, wordPolicy: GuardrailWordPolicyAssessment, sensitiveInformationPolicy: GuardrailSensitiveInformationPolicyAssessment, contextualGroundingPolicy: GuardrailContextualGroundingPolicyAssessment, automatedReasoningPolicy: GuardrailAutomatedReasoningPolicyAssessment, appliedGuardrailDetails: AppliedGuardrailDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailAssessment:
     Optional[GuardrailTopicPolicyAssessment] topicPolicy
     Optional[GuardrailContentPolicyAssessment] contentPolicy
@@ -835,8 +856,9 @@ struct GuardrailAssessment:
     Optional[GuardrailInvocationMetrics] invocationMetrics
     Optional[AppliedGuardrailDetails] appliedGuardrailDetails
 
-# no @derive(Json): member(s) valid: GuardrailAutomatedReasoningValidFinding, invalid: GuardrailAutomatedReasoningInvalidFinding, satisfiable: GuardrailAutomatedReasoningSatisfiableFinding, impossible: GuardrailAutomatedReasoningImpossibleFinding, translationAmbiguous: GuardrailAutomatedReasoningTranslationAmbiguousFinding not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) valid: GuardrailAutomatedReasoningValidFinding, invalid: GuardrailAutomatedReasoningInvalidFinding, satisfiable: GuardrailAutomatedReasoningSatisfiableFinding, impossible: GuardrailAutomatedReasoningImpossibleFinding, translationAmbiguous: GuardrailAutomatedReasoningTranslationAmbiguousFinding not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailAutomatedReasoningFinding:
     Optional[GuardrailAutomatedReasoningValidFinding] valid
     Optional[GuardrailAutomatedReasoningInvalidFinding] invalid
@@ -846,8 +868,9 @@ struct GuardrailAutomatedReasoningFinding:
     Optional[GuardrailAutomatedReasoningTooComplexFinding] tooComplex
     Optional[GuardrailAutomatedReasoningNoTranslationsFinding] noTranslations
 
-# no @derive(Json): member(s) translation: GuardrailAutomatedReasoningTranslation, contradictingRules: list[GuardrailAutomatedReasoningRule], logicWarning: GuardrailAutomatedReasoningLogicWarning not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) translation: GuardrailAutomatedReasoningTranslation, contradictingRules: list[GuardrailAutomatedReasoningRule], logicWarning: GuardrailAutomatedReasoningLogicWarning not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailAutomatedReasoningImpossibleFinding:
     Optional[GuardrailAutomatedReasoningTranslation] translation
     Optional[list[GuardrailAutomatedReasoningRule]] contradictingRules
@@ -857,15 +880,17 @@ struct GuardrailAutomatedReasoningImpossibleFinding:
 struct GuardrailAutomatedReasoningInputTextReference:
     Optional[str] text
 
-# no @derive(Json): member(s) translation: GuardrailAutomatedReasoningTranslation, contradictingRules: list[GuardrailAutomatedReasoningRule], logicWarning: GuardrailAutomatedReasoningLogicWarning not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) translation: GuardrailAutomatedReasoningTranslation, contradictingRules: list[GuardrailAutomatedReasoningRule], logicWarning: GuardrailAutomatedReasoningLogicWarning not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailAutomatedReasoningInvalidFinding:
     Optional[GuardrailAutomatedReasoningTranslation] translation
     Optional[list[GuardrailAutomatedReasoningRule]] contradictingRules
     Optional[GuardrailAutomatedReasoningLogicWarning] logicWarning
 
-# no @derive(Json): member(s) premises: list[GuardrailAutomatedReasoningStatement], claims: list[GuardrailAutomatedReasoningStatement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) premises: list[GuardrailAutomatedReasoningStatement], claims: list[GuardrailAutomatedReasoningStatement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailAutomatedReasoningLogicWarning:
     Optional[GuardrailAutomatedReasoningLogicWarningType] type
     Optional[list[GuardrailAutomatedReasoningStatement]] premises
@@ -876,8 +901,9 @@ struct GuardrailAutomatedReasoningNoTranslationsFinding:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) findings: list[GuardrailAutomatedReasoningFinding] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findings: list[GuardrailAutomatedReasoningFinding] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailAutomatedReasoningPolicyAssessment:
     Optional[list[GuardrailAutomatedReasoningFinding]] findings
 
@@ -886,16 +912,18 @@ struct GuardrailAutomatedReasoningRule:
     Optional[str] identifier
     Optional[str] policyVersionArn
 
-# no @derive(Json): member(s) translation: GuardrailAutomatedReasoningTranslation, claimsTrueScenario: GuardrailAutomatedReasoningScenario, claimsFalseScenario: GuardrailAutomatedReasoningScenario, logicWarning: GuardrailAutomatedReasoningLogicWarning not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) translation: GuardrailAutomatedReasoningTranslation, claimsTrueScenario: GuardrailAutomatedReasoningScenario, claimsFalseScenario: GuardrailAutomatedReasoningScenario, logicWarning: GuardrailAutomatedReasoningLogicWarning not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailAutomatedReasoningSatisfiableFinding:
     Optional[GuardrailAutomatedReasoningTranslation] translation
     Optional[GuardrailAutomatedReasoningScenario] claimsTrueScenario
     Optional[GuardrailAutomatedReasoningScenario] claimsFalseScenario
     Optional[GuardrailAutomatedReasoningLogicWarning] logicWarning
 
-# no @derive(Json): member(s) statements: list[GuardrailAutomatedReasoningStatement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statements: list[GuardrailAutomatedReasoningStatement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailAutomatedReasoningScenario:
     Optional[list[GuardrailAutomatedReasoningStatement]] statements
 
@@ -909,8 +937,9 @@ struct GuardrailAutomatedReasoningTooComplexFinding:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) premises: list[GuardrailAutomatedReasoningStatement], claims: list[GuardrailAutomatedReasoningStatement], untranslatedPremises: list[GuardrailAutomatedReasoningInputTextReference], untranslatedClaims: list[GuardrailAutomatedReasoningInputTextReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) premises: list[GuardrailAutomatedReasoningStatement], claims: list[GuardrailAutomatedReasoningStatement], untranslatedPremises: list[GuardrailAutomatedReasoningInputTextReference], untranslatedClaims: list[GuardrailAutomatedReasoningInputTextReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailAutomatedReasoningTranslation:
     Optional[list[GuardrailAutomatedReasoningStatement]] premises
     Optional[list[GuardrailAutomatedReasoningStatement]] claims
@@ -918,27 +947,31 @@ struct GuardrailAutomatedReasoningTranslation:
     Optional[list[GuardrailAutomatedReasoningInputTextReference]] untranslatedClaims
     Optional[float64] confidence
 
-# no @derive(Json): member(s) options: list[GuardrailAutomatedReasoningTranslationOption], differenceScenarios: list[GuardrailAutomatedReasoningScenario] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) options: list[GuardrailAutomatedReasoningTranslationOption], differenceScenarios: list[GuardrailAutomatedReasoningScenario] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailAutomatedReasoningTranslationAmbiguousFinding:
     Optional[list[GuardrailAutomatedReasoningTranslationOption]] options
     Optional[list[GuardrailAutomatedReasoningScenario]] differenceScenarios
 
-# no @derive(Json): member(s) translations: list[GuardrailAutomatedReasoningTranslation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) translations: list[GuardrailAutomatedReasoningTranslation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailAutomatedReasoningTranslationOption:
     Optional[list[GuardrailAutomatedReasoningTranslation]] translations
 
-# no @derive(Json): member(s) translation: GuardrailAutomatedReasoningTranslation, claimsTrueScenario: GuardrailAutomatedReasoningScenario, supportingRules: list[GuardrailAutomatedReasoningRule], logicWarning: GuardrailAutomatedReasoningLogicWarning not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) translation: GuardrailAutomatedReasoningTranslation, claimsTrueScenario: GuardrailAutomatedReasoningScenario, supportingRules: list[GuardrailAutomatedReasoningRule], logicWarning: GuardrailAutomatedReasoningLogicWarning not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailAutomatedReasoningValidFinding:
     Optional[GuardrailAutomatedReasoningTranslation] translation
     Optional[GuardrailAutomatedReasoningScenario] claimsTrueScenario
     Optional[list[GuardrailAutomatedReasoningRule]] supportingRules
     Optional[GuardrailAutomatedReasoningLogicWarning] logicWarning
 
-# no @derive(Json): member(s) contentFilter: GuardrailChecksContentFilterConfig, promptAttack: GuardrailChecksPromptAttackConfig, sensitiveInformation: GuardrailChecksSensitiveInformationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) contentFilter: GuardrailChecksContentFilterConfig, promptAttack: GuardrailChecksPromptAttackConfig, sensitiveInformation: GuardrailChecksSensitiveInformationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailChecksConfig:
     Optional[GuardrailChecksContentFilterConfig] contentFilter
     Optional[GuardrailChecksPromptAttackConfig] promptAttack
@@ -952,13 +985,15 @@ struct GuardrailChecksContentBlock:
 struct GuardrailChecksContentFilterCategoryConfig:
     GuardrailChecksContentFilterCategory category
 
-# no @derive(Json): member(s) categories: list[GuardrailChecksContentFilterCategoryConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) categories: list[GuardrailChecksContentFilterCategoryConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailChecksContentFilterConfig:
     list[GuardrailChecksContentFilterCategoryConfig] categories
 
-# no @derive(Json): member(s) results: list[GuardrailChecksContentFilterResultEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) results: list[GuardrailChecksContentFilterResultEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailChecksContentFilterResult:
     list[GuardrailChecksContentFilterResultEntry] results
 
@@ -971,8 +1006,9 @@ struct GuardrailChecksContentFilterResultEntry:
 struct GuardrailChecksContentFilterUsage:
     int64 textUnits
 
-# no @derive(Json): member(s) content: list[GuardrailChecksContentBlock] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) content: list[GuardrailChecksContentBlock] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailChecksMessage:
     GuardrailChecksRole role
     list[GuardrailChecksContentBlock] content
@@ -981,13 +1017,15 @@ struct GuardrailChecksMessage:
 struct GuardrailChecksPromptAttackCategoryConfig:
     GuardrailChecksPromptAttackCategory category
 
-# no @derive(Json): member(s) categories: list[GuardrailChecksPromptAttackCategoryConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) categories: list[GuardrailChecksPromptAttackCategoryConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailChecksPromptAttackConfig:
     list[GuardrailChecksPromptAttackCategoryConfig] categories
 
-# no @derive(Json): member(s) results: list[GuardrailChecksPromptAttackResultEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) results: list[GuardrailChecksPromptAttackResultEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailChecksPromptAttackResult:
     list[GuardrailChecksPromptAttackResultEntry] results
 
@@ -1000,15 +1038,17 @@ struct GuardrailChecksPromptAttackResultEntry:
 struct GuardrailChecksPromptAttackUsage:
     int64 textUnits
 
-# no @derive(Json): member(s) contentFilter: GuardrailChecksContentFilterResult, promptAttack: GuardrailChecksPromptAttackResult, sensitiveInformation: GuardrailChecksSensitiveInformationResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) contentFilter: GuardrailChecksContentFilterResult, promptAttack: GuardrailChecksPromptAttackResult, sensitiveInformation: GuardrailChecksSensitiveInformationResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailChecksResults:
     Optional[GuardrailChecksContentFilterResult] contentFilter
     Optional[GuardrailChecksPromptAttackResult] promptAttack
     Optional[GuardrailChecksSensitiveInformationResult] sensitiveInformation
 
-# no @derive(Json): member(s) entities: list[GuardrailChecksSensitiveInformationEntityConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entities: list[GuardrailChecksSensitiveInformationEntityConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailChecksSensitiveInformationConfig:
     list[GuardrailChecksSensitiveInformationEntityConfig] entities
 
@@ -1016,8 +1056,9 @@ struct GuardrailChecksSensitiveInformationConfig:
 struct GuardrailChecksSensitiveInformationEntityConfig:
     GuardrailChecksSensitiveInformationEntityType type
 
-# no @derive(Json): member(s) results: list[GuardrailChecksSensitiveInformationResultEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) results: list[GuardrailChecksSensitiveInformationResultEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailChecksSensitiveInformationResult:
     list[GuardrailChecksSensitiveInformationResultEntry] results
     Optional[bool] truncated
@@ -1047,8 +1088,9 @@ struct GuardrailConfiguration:
     Optional[str] guardrailVersion
     Optional[GuardrailTrace] trace
 
-# no @derive(Json): member(s) text: GuardrailTextBlock not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) text: GuardrailTextBlock not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailContentBlock:
     Optional[GuardrailTextBlock] text
     Optional[GuardrailImageBlock] image
@@ -1061,8 +1103,9 @@ struct GuardrailContentFilter:
     GuardrailContentPolicyAction action
     Optional[bool] detected
 
-# no @derive(Json): member(s) filters: list[GuardrailContentFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[GuardrailContentFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailContentPolicyAssessment:
     list[GuardrailContentFilter] filters
 
@@ -1074,13 +1117,15 @@ struct GuardrailContextualGroundingFilter:
     GuardrailContextualGroundingPolicyAction action
     Optional[bool] detected
 
-# no @derive(Json): member(s) filters: list[GuardrailContextualGroundingFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[GuardrailContextualGroundingFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailContextualGroundingPolicyAssessment:
     Optional[list[GuardrailContextualGroundingFilter]] filters
 
-# no @derive(Json): member(s) text: GuardrailConverseTextBlock not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) text: GuardrailConverseTextBlock not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailConverseContentBlock:
     Optional[GuardrailConverseTextBlock] text
     Optional[GuardrailConverseImageBlock] image
@@ -1095,8 +1140,9 @@ struct GuardrailConverseImageSource:
     # wire name "bytes" differs from field; derive rename is a #346 follow-up
     Optional[bytes] bytes_
 
-# no @derive(Json): member(s) qualifiers: list[GuardrailConverseContentQualifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) qualifiers: list[GuardrailConverseContentQualifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailConverseTextBlock:
     str text
     Optional[list[GuardrailConverseContentQualifier]] qualifiers
@@ -1163,8 +1209,9 @@ struct GuardrailRegexFilter:
     GuardrailSensitiveInformationPolicyAction action
     Optional[bool] detected
 
-# no @derive(Json): member(s) piiEntities: list[GuardrailPiiEntityFilter], regexes: list[GuardrailRegexFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) piiEntities: list[GuardrailPiiEntityFilter], regexes: list[GuardrailRegexFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailSensitiveInformationPolicyAssessment:
     list[GuardrailPiiEntityFilter] piiEntities
     list[GuardrailRegexFilter] regexes
@@ -1176,8 +1223,9 @@ struct GuardrailStreamConfiguration:
     Optional[GuardrailTrace] trace
     Optional[GuardrailStreamProcessingMode] streamProcessingMode
 
-# no @derive(Json): member(s) qualifiers: list[GuardrailContentQualifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) qualifiers: list[GuardrailContentQualifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailTextBlock:
     str text
     Optional[list[GuardrailContentQualifier]] qualifiers
@@ -1194,13 +1242,15 @@ struct GuardrailTopic:
     GuardrailTopicPolicyAction action
     Optional[bool] detected
 
-# no @derive(Json): member(s) topics: list[GuardrailTopic] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) topics: list[GuardrailTopic] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailTopicPolicyAssessment:
     list[GuardrailTopic] topics
 
-# no @derive(Json): member(s) modelOutput: list[str], inputAssessment: dict[str, GuardrailAssessment], outputAssessments: dict[str, list[GuardrailAssessment]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) modelOutput: list[str], inputAssessment: dict[str, GuardrailAssessment], outputAssessments: dict[str, list[GuardrailAssessment]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailTraceAssessment:
     Optional[list[str]] modelOutput
     Optional[dict[str, GuardrailAssessment]] inputAssessment
@@ -1219,8 +1269,9 @@ struct GuardrailUsage:
     Optional[int64] automatedReasoningPolicyUnits
     Optional[int64] automatedReasoningPolicies
 
-# no @derive(Json): member(s) customWords: list[GuardrailCustomWord], managedWordLists: list[GuardrailManagedWord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customWords: list[GuardrailCustomWord], managedWordLists: list[GuardrailManagedWord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GuardrailWordPolicyAssessment:
     list[GuardrailCustomWord] customWords
     list[GuardrailManagedWord] managedWordLists
@@ -1246,8 +1297,9 @@ struct ImageSource:
     Optional[bytes] bytes_
     Optional[S3Location] s3Location
 
-# no @derive(Json): member(s) stopSequences: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stopSequences: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InferenceConfiguration:
     Optional[int64] maxTokens
     Optional[float64] temperature
@@ -1264,8 +1316,9 @@ struct InvokeGuardrailChecksRequest:
     list[GuardrailChecksMessage] messages
     GuardrailChecksConfig checks
 
-# no @derive(Json): member(s) results: GuardrailChecksResults not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) results: GuardrailChecksResults not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvokeGuardrailChecksResponse:
     GuardrailChecksResults results
     GuardrailChecksUsageResults usage
@@ -1365,14 +1418,16 @@ struct ListAsyncInvokesRequest:
     # wire string of the SortOrder enum (querystring binding)
     Optional[str] sortOrder
 
-# no @derive(Json): member(s) asyncInvokeSummaries: list[AsyncInvokeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) asyncInvokeSummaries: list[AsyncInvokeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAsyncInvokesResponse:
     Optional[str] nextToken
     Optional[list[AsyncInvokeSummary]] asyncInvokeSummaries
 
-# no @derive(Json): member(s) content: list[ContentBlock] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) content: list[ContentBlock] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Message:
     ConversationRole role
     list[ContentBlock] content
@@ -1477,8 +1532,9 @@ struct S3Location:
     str uri
     Optional[str] bucketOwner
 
-# no @derive(Json): member(s) content: list[SearchResultContentBlock] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) content: list[SearchResultContentBlock] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchResultBlock:
     str source
     str title
@@ -1524,8 +1580,9 @@ struct StartAsyncInvokeRequest:
 struct StartAsyncInvokeResponse:
     str invocationArn
 
-# no @derive(Json): member(s) guardContent: GuardrailConverseContentBlock not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) guardContent: GuardrailConverseContentBlock not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SystemContentBlock:
     Optional[str] text
     Optional[GuardrailConverseContentBlock] guardContent
@@ -1544,8 +1601,9 @@ struct Tag:
 struct ThrottlingException:
     Optional[str] message
 
-# no @derive(Json): member(s) cacheDetails: list[CacheDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cacheDetails: list[CacheDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TokenUsage:
     int64 inputTokens
     int64 outputTokens
@@ -1571,8 +1629,9 @@ struct ToolChoice:
     Optional[AnyToolChoice] any
     Optional[SpecificToolChoice] tool
 
-# no @derive(Json): member(s) tools: list[Tool] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tools: list[Tool] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ToolConfiguration:
     list[Tool] tools
     Optional[ToolChoice] toolChoice
@@ -1591,8 +1650,9 @@ struct ToolReference:
 struct ToolRemovalBlock:
     ToolReference tool
 
-# no @derive(Json): member(s) content: list[ToolResultContentBlock] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) content: list[ToolResultContentBlock] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ToolResultBlock:
     str toolUseId
     list[ToolResultContentBlock] content
@@ -1610,8 +1670,9 @@ struct ToolResultBlockStart:
     Optional[str] type
     Optional[ToolResultStatus] status
 
-# no @derive(Json): member(s) document: DocumentBlock, searchResult: SearchResultBlock not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) document: DocumentBlock, searchResult: SearchResultBlock not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ToolResultContentBlock:
     Optional[Document] json
     Optional[str] text
@@ -1717,22 +1778,562 @@ def bedrock_runtime_error_from_code(str code) -> Bedrock_RuntimeError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   ApplyGuardrail (document member `content: list[GuardrailContentBlock]` is not serializable by derive)
-#   Converse (document member `messages: list[Message]` is not serializable by derive)
-#   ConverseStream (document member `messages: list[Message]` is not serializable by derive)
-#   CountTokens (document member `input: CountTokensInput` is not serializable by derive)
-#   InvokeGuardrailChecks (document member `messages: list[GuardrailChecksMessage]` is not serializable by derive)
 #   ListAsyncInvokes (httpQuery `submitTimeAfter` has unsupported type DateTime)
-#   StartAsyncInvoke (document member `tags: list[Tag]` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
 #   ListAsyncInvokes (operation not generated)
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def bedrock_runtime_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def bedrock_runtime_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def bedrock_runtime_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize Citation to a compact JSON object (declaration order).
+def citation_to_json(Citation v) -> str:
+    list[str] parts = []
+    if v.title.is_some():
+        auto u0 = v.title.unwrap()
+        parts.append("\"title\":" + bedrock_runtime_json_str(u0))
+    if v.source.is_some():
+        auto u1 = v.source.unwrap()
+        parts.append("\"source\":" + bedrock_runtime_json_str(u1))
+    if v.sourceContent.is_some():
+        auto u2 = v.sourceContent.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"sourceContent\":" + bedrock_runtime_json_arr(e3))
+    if v.location.is_some():
+        auto u4 = v.location.unwrap()
+        parts.append("\"location\":" + u4.to_json())
+    return bedrock_runtime_json_obj(parts)
+
+# Serialize CitationsContentBlock to a compact JSON object (declaration order).
+def citations_content_block_to_json(CitationsContentBlock v) -> str:
+    list[str] parts = []
+    if v.content.is_some():
+        auto u0 = v.content.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"content\":" + bedrock_runtime_json_arr(e1))
+    if v.citations.is_some():
+        auto u2 = v.citations.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(citation_to_json(x3))
+        parts.append("\"citations\":" + bedrock_runtime_json_arr(e3))
+    return bedrock_runtime_json_obj(parts)
+
+# Serialize ContentBlock to a compact JSON object (declaration order).
+def content_block_to_json(ContentBlock v) -> str:
+    list[str] parts = []
+    if v.text.is_some():
+        auto u0 = v.text.unwrap()
+        parts.append("\"text\":" + bedrock_runtime_json_str(u0))
+    if v.image.is_some():
+        auto u1 = v.image.unwrap()
+        parts.append("\"image\":" + u1.to_json())
+    if v.document.is_some():
+        auto u2 = v.document.unwrap()
+        parts.append("\"document\":" + document_block_to_json(u2))
+    if v.video.is_some():
+        auto u3 = v.video.unwrap()
+        parts.append("\"video\":" + u3.to_json())
+    if v.audio.is_some():
+        auto u4 = v.audio.unwrap()
+        parts.append("\"audio\":" + u4.to_json())
+    if v.toolUse.is_some():
+        auto u5 = v.toolUse.unwrap()
+        parts.append("\"toolUse\":" + u5.to_json())
+    if v.toolResult.is_some():
+        auto u6 = v.toolResult.unwrap()
+        parts.append("\"toolResult\":" + tool_result_block_to_json(u6))
+    if v.guardContent.is_some():
+        auto u7 = v.guardContent.unwrap()
+        parts.append("\"guardContent\":" + guardrail_converse_content_block_to_json(u7))
+    if v.cachePoint.is_some():
+        auto u8 = v.cachePoint.unwrap()
+        parts.append("\"cachePoint\":" + u8.to_json())
+    if v.reasoningContent.is_some():
+        auto u9 = v.reasoningContent.unwrap()
+        parts.append("\"reasoningContent\":" + u9.to_json())
+    if v.citationsContent.is_some():
+        auto u10 = v.citationsContent.unwrap()
+        parts.append("\"citationsContent\":" + citations_content_block_to_json(u10))
+    if v.searchResult.is_some():
+        auto u11 = v.searchResult.unwrap()
+        parts.append("\"searchResult\":" + search_result_block_to_json(u11))
+    if v.toolAddition.is_some():
+        auto u12 = v.toolAddition.unwrap()
+        parts.append("\"toolAddition\":" + u12.to_json())
+    if v.toolRemoval.is_some():
+        auto u13 = v.toolRemoval.unwrap()
+        parts.append("\"toolRemoval\":" + u13.to_json())
+    return bedrock_runtime_json_obj(parts)
+
+# Serialize ConverseTokensRequest to a compact JSON object (declaration order).
+def converse_tokens_request_to_json(ConverseTokensRequest v) -> str:
+    list[str] parts = []
+    if v.messages.is_some():
+        auto u0 = v.messages.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(message_to_json(x1))
+        parts.append("\"messages\":" + bedrock_runtime_json_arr(e1))
+    if v.system.is_some():
+        auto u2 = v.system.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(system_content_block_to_json(x3))
+        parts.append("\"system\":" + bedrock_runtime_json_arr(e3))
+    if v.toolConfig.is_some():
+        auto u4 = v.toolConfig.unwrap()
+        parts.append("\"toolConfig\":" + tool_configuration_to_json(u4))
+    if v.additionalModelRequestFields.is_some():
+        auto u5 = v.additionalModelRequestFields.unwrap()
+        parts.append("\"additionalModelRequestFields\":" + u5.to_json())
+    return bedrock_runtime_json_obj(parts)
+
+# Serialize CountTokensInput to a compact JSON object (declaration order).
+def count_tokens_input_to_json(CountTokensInput v) -> str:
+    list[str] parts = []
+    if v.invokeModel.is_some():
+        auto u0 = v.invokeModel.unwrap()
+        parts.append("\"invokeModel\":" + u0.to_json())
+    if v.converse.is_some():
+        auto u1 = v.converse.unwrap()
+        parts.append("\"converse\":" + converse_tokens_request_to_json(u1))
+    return bedrock_runtime_json_obj(parts)
+
+# Serialize DocumentBlock to a compact JSON object (declaration order).
+def document_block_to_json(DocumentBlock v) -> str:
+    list[str] parts = []
+    if v.format.is_some():
+        auto u0 = v.format.unwrap()
+        parts.append("\"format\":" + u0.to_json())
+    parts.append("\"name\":" + bedrock_runtime_json_str(v.name))
+    parts.append("\"source\":" + document_source_to_json(v.source))
+    if v.context.is_some():
+        auto u1 = v.context.unwrap()
+        parts.append("\"context\":" + bedrock_runtime_json_str(u1))
+    if v.citations.is_some():
+        auto u2 = v.citations.unwrap()
+        parts.append("\"citations\":" + u2.to_json())
+    return bedrock_runtime_json_obj(parts)
+
+# Serialize DocumentSource to a compact JSON object (declaration order).
+def document_source_to_json(DocumentSource v) -> str:
+    list[str] parts = []
+    if v.bytes_.is_some():
+        auto u0 = v.bytes_.unwrap()
+        parts.append("\"bytes\":" + bedrock_runtime_json_str(base64.encode(u0)))
+    if v.s3Location.is_some():
+        auto u1 = v.s3Location.unwrap()
+        parts.append("\"s3Location\":" + u1.to_json())
+    if v.text.is_some():
+        auto u2 = v.text.unwrap()
+        parts.append("\"text\":" + bedrock_runtime_json_str(u2))
+    if v.content.is_some():
+        auto u3 = v.content.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"content\":" + bedrock_runtime_json_arr(e4))
+    return bedrock_runtime_json_obj(parts)
+
+# Serialize GuardrailChecksConfig to a compact JSON object (declaration order).
+def guardrail_checks_config_to_json(GuardrailChecksConfig v) -> str:
+    list[str] parts = []
+    if v.contentFilter.is_some():
+        auto u0 = v.contentFilter.unwrap()
+        parts.append("\"contentFilter\":" + guardrail_checks_content_filter_config_to_json(u0))
+    if v.promptAttack.is_some():
+        auto u1 = v.promptAttack.unwrap()
+        parts.append("\"promptAttack\":" + guardrail_checks_prompt_attack_config_to_json(u1))
+    if v.sensitiveInformation.is_some():
+        auto u2 = v.sensitiveInformation.unwrap()
+        parts.append("\"sensitiveInformation\":" + guardrail_checks_sensitive_information_config_to_json(u2))
+    return bedrock_runtime_json_obj(parts)
+
+# Serialize GuardrailChecksContentFilterConfig to a compact JSON object (declaration order).
+def guardrail_checks_content_filter_config_to_json(GuardrailChecksContentFilterConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.categories:
+        e0.append(x0.to_json())
+    parts.append("\"categories\":" + bedrock_runtime_json_arr(e0))
+    return bedrock_runtime_json_obj(parts)
+
+# Serialize GuardrailChecksMessage to a compact JSON object (declaration order).
+def guardrail_checks_message_to_json(GuardrailChecksMessage v) -> str:
+    list[str] parts = []
+    parts.append("\"role\":" + v.role.to_json())
+    list[str] e0 = []
+    for x0 in v.content:
+        e0.append(x0.to_json())
+    parts.append("\"content\":" + bedrock_runtime_json_arr(e0))
+    return bedrock_runtime_json_obj(parts)
+
+# Serialize GuardrailChecksPromptAttackConfig to a compact JSON object (declaration order).
+def guardrail_checks_prompt_attack_config_to_json(GuardrailChecksPromptAttackConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.categories:
+        e0.append(x0.to_json())
+    parts.append("\"categories\":" + bedrock_runtime_json_arr(e0))
+    return bedrock_runtime_json_obj(parts)
+
+# Serialize GuardrailChecksSensitiveInformationConfig to a compact JSON object (declaration order).
+def guardrail_checks_sensitive_information_config_to_json(GuardrailChecksSensitiveInformationConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.entities:
+        e0.append(x0.to_json())
+    parts.append("\"entities\":" + bedrock_runtime_json_arr(e0))
+    return bedrock_runtime_json_obj(parts)
+
+# Serialize GuardrailContentBlock to a compact JSON object (declaration order).
+def guardrail_content_block_to_json(GuardrailContentBlock v) -> str:
+    list[str] parts = []
+    if v.text.is_some():
+        auto u0 = v.text.unwrap()
+        parts.append("\"text\":" + guardrail_text_block_to_json(u0))
+    if v.image.is_some():
+        auto u1 = v.image.unwrap()
+        parts.append("\"image\":" + u1.to_json())
+    return bedrock_runtime_json_obj(parts)
+
+# Serialize GuardrailConverseContentBlock to a compact JSON object (declaration order).
+def guardrail_converse_content_block_to_json(GuardrailConverseContentBlock v) -> str:
+    list[str] parts = []
+    if v.text.is_some():
+        auto u0 = v.text.unwrap()
+        parts.append("\"text\":" + guardrail_converse_text_block_to_json(u0))
+    if v.image.is_some():
+        auto u1 = v.image.unwrap()
+        parts.append("\"image\":" + u1.to_json())
+    return bedrock_runtime_json_obj(parts)
+
+# Serialize GuardrailConverseTextBlock to a compact JSON object (declaration order).
+def guardrail_converse_text_block_to_json(GuardrailConverseTextBlock v) -> str:
+    list[str] parts = []
+    parts.append("\"text\":" + bedrock_runtime_json_str(v.text))
+    if v.qualifiers.is_some():
+        auto u0 = v.qualifiers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"qualifiers\":" + bedrock_runtime_json_arr(e1))
+    return bedrock_runtime_json_obj(parts)
+
+# Serialize GuardrailTextBlock to a compact JSON object (declaration order).
+def guardrail_text_block_to_json(GuardrailTextBlock v) -> str:
+    list[str] parts = []
+    parts.append("\"text\":" + bedrock_runtime_json_str(v.text))
+    if v.qualifiers.is_some():
+        auto u0 = v.qualifiers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"qualifiers\":" + bedrock_runtime_json_arr(e1))
+    return bedrock_runtime_json_obj(parts)
+
+# Serialize InferenceConfiguration to a compact JSON object (declaration order).
+def inference_configuration_to_json(InferenceConfiguration v) -> str:
+    list[str] parts = []
+    if v.maxTokens.is_some():
+        auto u0 = v.maxTokens.unwrap()
+        parts.append("\"maxTokens\":" + str(u0))
+    if v.temperature.is_some():
+        auto u1 = v.temperature.unwrap()
+        parts.append("\"temperature\":" + str(u1))
+    if v.topP.is_some():
+        auto u2 = v.topP.unwrap()
+        parts.append("\"topP\":" + str(u2))
+    if v.stopSequences.is_some():
+        auto u3 = v.stopSequences.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(bedrock_runtime_json_str(x4))
+        parts.append("\"stopSequences\":" + bedrock_runtime_json_arr(e4))
+    return bedrock_runtime_json_obj(parts)
+
+# Serialize Message to a compact JSON object (declaration order).
+def message_to_json(Message v) -> str:
+    list[str] parts = []
+    parts.append("\"role\":" + v.role.to_json())
+    list[str] e0 = []
+    for x0 in v.content:
+        e0.append(content_block_to_json(x0))
+    parts.append("\"content\":" + bedrock_runtime_json_arr(e0))
+    return bedrock_runtime_json_obj(parts)
+
+# Serialize SearchResultBlock to a compact JSON object (declaration order).
+def search_result_block_to_json(SearchResultBlock v) -> str:
+    list[str] parts = []
+    parts.append("\"source\":" + bedrock_runtime_json_str(v.source))
+    parts.append("\"title\":" + bedrock_runtime_json_str(v.title))
+    list[str] e0 = []
+    for x0 in v.content:
+        e0.append(x0.to_json())
+    parts.append("\"content\":" + bedrock_runtime_json_arr(e0))
+    if v.citations.is_some():
+        auto u1 = v.citations.unwrap()
+        parts.append("\"citations\":" + u1.to_json())
+    return bedrock_runtime_json_obj(parts)
+
+# Serialize SystemContentBlock to a compact JSON object (declaration order).
+def system_content_block_to_json(SystemContentBlock v) -> str:
+    list[str] parts = []
+    if v.text.is_some():
+        auto u0 = v.text.unwrap()
+        parts.append("\"text\":" + bedrock_runtime_json_str(u0))
+    if v.guardContent.is_some():
+        auto u1 = v.guardContent.unwrap()
+        parts.append("\"guardContent\":" + guardrail_converse_content_block_to_json(u1))
+    if v.cachePoint.is_some():
+        auto u2 = v.cachePoint.unwrap()
+        parts.append("\"cachePoint\":" + u2.to_json())
+    return bedrock_runtime_json_obj(parts)
+
+# Serialize ToolConfiguration to a compact JSON object (declaration order).
+def tool_configuration_to_json(ToolConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.tools:
+        e0.append(x0.to_json())
+    parts.append("\"tools\":" + bedrock_runtime_json_arr(e0))
+    if v.toolChoice.is_some():
+        auto u1 = v.toolChoice.unwrap()
+        parts.append("\"toolChoice\":" + u1.to_json())
+    return bedrock_runtime_json_obj(parts)
+
+# Serialize ToolResultBlock to a compact JSON object (declaration order).
+def tool_result_block_to_json(ToolResultBlock v) -> str:
+    list[str] parts = []
+    parts.append("\"toolUseId\":" + bedrock_runtime_json_str(v.toolUseId))
+    list[str] e0 = []
+    for x0 in v.content:
+        e0.append(tool_result_content_block_to_json(x0))
+    parts.append("\"content\":" + bedrock_runtime_json_arr(e0))
+    if v.status.is_some():
+        auto u1 = v.status.unwrap()
+        parts.append("\"status\":" + u1.to_json())
+    if v.type.is_some():
+        auto u2 = v.type.unwrap()
+        parts.append("\"type\":" + bedrock_runtime_json_str(u2))
+    return bedrock_runtime_json_obj(parts)
+
+# Serialize ToolResultContentBlock to a compact JSON object (declaration order).
+def tool_result_content_block_to_json(ToolResultContentBlock v) -> str:
+    list[str] parts = []
+    if v.json.is_some():
+        auto u0 = v.json.unwrap()
+        parts.append("\"json\":" + u0.to_json())
+    if v.text.is_some():
+        auto u1 = v.text.unwrap()
+        parts.append("\"text\":" + bedrock_runtime_json_str(u1))
+    if v.image.is_some():
+        auto u2 = v.image.unwrap()
+        parts.append("\"image\":" + u2.to_json())
+    if v.document.is_some():
+        auto u3 = v.document.unwrap()
+        parts.append("\"document\":" + document_block_to_json(u3))
+    if v.video.is_some():
+        auto u4 = v.video.unwrap()
+        parts.append("\"video\":" + u4.to_json())
+    if v.searchResult.is_some():
+        auto u5 = v.searchResult.unwrap()
+        parts.append("\"searchResult\":" + search_result_block_to_json(u5))
+    return bedrock_runtime_json_obj(parts)
+
 # A bound Bedrock_Runtime client: credentials + region, threaded into every operation.
 struct Bedrock_RuntimeClient:
     core.Credentials creds
     str region
+
+    # ApplyGuardrail  POST /guardrail/{guardrailIdentifier}/version/{guardrailVersion}/apply
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ServiceUnavailableException, ThrottlingException, ValidationException
+    def apply_guardrail(self, ApplyGuardrailRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_runtime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["guardrailIdentifier"] = input.guardrailIdentifier
+        labels["guardrailVersion"] = input.guardrailVersion
+        auto b = binding.HttpBinding(method="POST", path_template="/guardrail/{guardrailIdentifier}/version/{guardrailVersion}/apply", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"source\":" + input.source.to_json())
+        list[str] e0 = []
+        for x0 in input.content:
+            e0.append(guardrail_content_block_to_json(x0))
+        parts.append("\"content\":" + bedrock_runtime_json_arr(e0))
+        if input.outputScope.is_some():
+            auto u1 = input.outputScope.unwrap()
+            parts.append("\"outputScope\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, bedrock_runtime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_runtime_service(), self.region, host)
+
+    # Converse  POST /model/{modelId}/converse
+    # errors: AccessDeniedException, InternalServerException, ModelErrorException, ModelNotReadyException, ModelTimeoutException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, ValidationException
+    def converse(self, ConverseRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_runtime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["modelId"] = input.modelId
+        auto b = binding.HttpBinding(method="POST", path_template="/model/{modelId}/converse", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.messages.is_some():
+            auto u0 = input.messages.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(message_to_json(x1))
+            parts.append("\"messages\":" + bedrock_runtime_json_arr(e1))
+        if input.system.is_some():
+            auto u2 = input.system.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(system_content_block_to_json(x3))
+            parts.append("\"system\":" + bedrock_runtime_json_arr(e3))
+        if input.inferenceConfig.is_some():
+            auto u4 = input.inferenceConfig.unwrap()
+            parts.append("\"inferenceConfig\":" + inference_configuration_to_json(u4))
+        if input.toolConfig.is_some():
+            auto u5 = input.toolConfig.unwrap()
+            parts.append("\"toolConfig\":" + tool_configuration_to_json(u5))
+        if input.guardrailConfig.is_some():
+            auto u6 = input.guardrailConfig.unwrap()
+            parts.append("\"guardrailConfig\":" + u6.to_json())
+        if input.additionalModelRequestFields.is_some():
+            auto u7 = input.additionalModelRequestFields.unwrap()
+            parts.append("\"additionalModelRequestFields\":" + u7.to_json())
+        if input.promptVariables.is_some():
+            auto u8 = input.promptVariables.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(bedrock_runtime_json_str(k9) + ":" + u8[k9].to_json())
+            parts.append("\"promptVariables\":" + bedrock_runtime_json_obj(m9))
+        if input.additionalModelResponseFieldPaths.is_some():
+            auto u10 = input.additionalModelResponseFieldPaths.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(bedrock_runtime_json_str(x11))
+            parts.append("\"additionalModelResponseFieldPaths\":" + bedrock_runtime_json_arr(e11))
+        if input.requestMetadata.is_some():
+            auto u12 = input.requestMetadata.unwrap()
+            list[str] m13 = []
+            for k13 in sorted(u12.keys()):
+                m13.append(bedrock_runtime_json_str(k13) + ":" + bedrock_runtime_json_str(u12[k13]))
+            parts.append("\"requestMetadata\":" + bedrock_runtime_json_obj(m13))
+        if input.performanceConfig.is_some():
+            auto u14 = input.performanceConfig.unwrap()
+            parts.append("\"performanceConfig\":" + u14.to_json())
+        if input.serviceTier.is_some():
+            auto u15 = input.serviceTier.unwrap()
+            parts.append("\"serviceTier\":" + u15.to_json())
+        if input.outputConfig.is_some():
+            auto u16 = input.outputConfig.unwrap()
+            parts.append("\"outputConfig\":" + u16.to_json())
+        auto bp = restjson.rest_json_document(b, bedrock_runtime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_runtime_service(), self.region, host)
+
+    # ConverseStream  POST /model/{modelId}/converse-stream
+    # errors: AccessDeniedException, InternalServerException, ModelErrorException, ModelNotReadyException, ModelTimeoutException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, ValidationException
+    def converse_stream(self, ConverseStreamRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_runtime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["modelId"] = input.modelId
+        auto b = binding.HttpBinding(method="POST", path_template="/model/{modelId}/converse-stream", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.messages.is_some():
+            auto u0 = input.messages.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(message_to_json(x1))
+            parts.append("\"messages\":" + bedrock_runtime_json_arr(e1))
+        if input.system.is_some():
+            auto u2 = input.system.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(system_content_block_to_json(x3))
+            parts.append("\"system\":" + bedrock_runtime_json_arr(e3))
+        if input.inferenceConfig.is_some():
+            auto u4 = input.inferenceConfig.unwrap()
+            parts.append("\"inferenceConfig\":" + inference_configuration_to_json(u4))
+        if input.toolConfig.is_some():
+            auto u5 = input.toolConfig.unwrap()
+            parts.append("\"toolConfig\":" + tool_configuration_to_json(u5))
+        if input.guardrailConfig.is_some():
+            auto u6 = input.guardrailConfig.unwrap()
+            parts.append("\"guardrailConfig\":" + u6.to_json())
+        if input.additionalModelRequestFields.is_some():
+            auto u7 = input.additionalModelRequestFields.unwrap()
+            parts.append("\"additionalModelRequestFields\":" + u7.to_json())
+        if input.promptVariables.is_some():
+            auto u8 = input.promptVariables.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(bedrock_runtime_json_str(k9) + ":" + u8[k9].to_json())
+            parts.append("\"promptVariables\":" + bedrock_runtime_json_obj(m9))
+        if input.additionalModelResponseFieldPaths.is_some():
+            auto u10 = input.additionalModelResponseFieldPaths.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(bedrock_runtime_json_str(x11))
+            parts.append("\"additionalModelResponseFieldPaths\":" + bedrock_runtime_json_arr(e11))
+        if input.requestMetadata.is_some():
+            auto u12 = input.requestMetadata.unwrap()
+            list[str] m13 = []
+            for k13 in sorted(u12.keys()):
+                m13.append(bedrock_runtime_json_str(k13) + ":" + bedrock_runtime_json_str(u12[k13]))
+            parts.append("\"requestMetadata\":" + bedrock_runtime_json_obj(m13))
+        if input.performanceConfig.is_some():
+            auto u14 = input.performanceConfig.unwrap()
+            parts.append("\"performanceConfig\":" + u14.to_json())
+        if input.serviceTier.is_some():
+            auto u15 = input.serviceTier.unwrap()
+            parts.append("\"serviceTier\":" + u15.to_json())
+        if input.outputConfig.is_some():
+            auto u16 = input.outputConfig.unwrap()
+            parts.append("\"outputConfig\":" + u16.to_json())
+        auto bp = restjson.rest_json_document(b, bedrock_runtime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_runtime_service(), self.region, host)
+
+    # CountTokens  POST /model/{modelId}/count-tokens
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, ValidationException
+    def count_tokens(self, CountTokensRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_runtime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["modelId"] = input.modelId
+        auto b = binding.HttpBinding(method="POST", path_template="/model/{modelId}/count-tokens", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"input\":" + count_tokens_input_to_json(input.input))
+        auto bp = restjson.rest_json_document(b, bedrock_runtime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_runtime_service(), self.region, host)
 
     # GetAsyncInvoke  GET /async-invoke/{invocationArn}
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
@@ -1742,6 +2343,20 @@ struct Bedrock_RuntimeClient:
         labels["invocationArn"] = input.invocationArn
         auto b = binding.HttpBinding(method="GET", path_template="/async-invoke/{invocationArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_runtime_service(), self.region, host)
+
+    # InvokeGuardrailChecks  POST /guardrail-checks/invoke
+    # errors: AccessDeniedException, InternalServerException, ServiceUnavailableException, ThrottlingException, ValidationException
+    def invoke_guardrail_checks(self, InvokeGuardrailChecksRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_runtime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/guardrail-checks/invoke", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.messages:
+            e0.append(guardrail_checks_message_to_json(x0))
+        parts.append("\"messages\":" + bedrock_runtime_json_arr(e0))
+        parts.append("\"checks\":" + guardrail_checks_config_to_json(input.checks))
+        auto bp = restjson.rest_json_document(b, bedrock_runtime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_runtime_service(), self.region, host)
 
     # InvokeModel  POST /model/{modelId}/invoke
     # errors: AccessDeniedException, InternalServerException, ModelErrorException, ModelNotReadyException, ModelTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ServiceUnavailableException, ThrottlingException, ValidationException
@@ -1805,6 +2420,27 @@ struct Bedrock_RuntimeClient:
             headers["X-Amzn-Bedrock-Request-Metadata"] = input.requestMetadata.unwrap_or("")
         auto b = binding.HttpBinding(method="POST", path_template="/model/{modelId}/invoke-with-response-stream", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.body.unwrap_or(bytes())), "application/octet-stream")
+        return restjson.rest_json_request(self.creds, bp, bedrock_runtime_service(), self.region, host)
+
+    # StartAsyncInvoke  POST /async-invoke
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ServiceUnavailableException, ThrottlingException, ValidationException
+    def start_async_invoke(self, StartAsyncInvokeRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_runtime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/async-invoke", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientRequestToken.is_some():
+            auto u0 = input.clientRequestToken.unwrap()
+            parts.append("\"clientRequestToken\":" + bedrock_runtime_json_str(u0))
+        parts.append("\"modelId\":" + bedrock_runtime_json_str(input.modelId))
+        parts.append("\"modelInput\":" + input.modelInput.to_json())
+        parts.append("\"outputDataConfig\":" + input.outputDataConfig.to_json())
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + bedrock_runtime_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, bedrock_runtime_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_runtime_service(), self.region, host)
 
 # Construct a Bedrock_RuntimeClient bound to credentials + region.

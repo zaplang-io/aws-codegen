@@ -12,6 +12,7 @@
 
 pub mod binding;
 pub mod emit;
+pub mod jsonbody;
 pub mod model;
 pub mod naming;
 pub mod query;

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 33 operations — 31 with a generated method,
-#   2 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 33 operations — 33 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   146 structs (106 @derive(Json)), 40 enums, 7 error variants.
 #   8 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -523,8 +523,9 @@ struct AssociatedEnvironment:
     @json(timestamp="iso8601")
     DateTime createdAt
 
-# no @derive(Json): member(s) sourceConfiguration: EnvironmentSourceConfiguration, environmentConfiguration: EnvironmentConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceConfiguration: EnvironmentSourceConfiguration, environmentConfiguration: EnvironmentConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeConfigurationDetails:
     Optional[CollectorDetails] collectorDetails
     Optional[EnvironmentSourceConfiguration] sourceConfiguration
@@ -572,8 +573,9 @@ struct CollectorSummary:
 struct ConflictException:
     str message
 
-# no @derive(Json): member(s) sourceConfiguration: EnvironmentSourceConfiguration, environmentConfiguration: EnvironmentConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceConfiguration: EnvironmentSourceConfiguration, environmentConfiguration: EnvironmentConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCodeConfiguration:
     Optional[EnvironmentSourceConfiguration] sourceConfiguration
     Optional[EnvironmentConfiguration] environmentConfiguration
@@ -620,8 +622,9 @@ struct CreateCollectorOutput:
     @json(timestamp="iso8601")
     DateTime createdAt
 
-# no @derive(Json): member(s) codeConfiguration: CreateCodeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) codeConfiguration: CreateCodeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEnvironmentConfiguration:
     Optional[CreateCodeConfiguration] codeConfiguration
 
@@ -684,15 +687,17 @@ struct Document:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) network: EnvironmentNetworkConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) network: EnvironmentNetworkConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnvironmentConfiguration:
     Optional[EnvironmentNetworkConfiguration] network
     Optional[str] scanFrequency
     Optional[PatchCreationPolicy] patchCreationPolicy
 
-# no @derive(Json): member(s) codeConfiguration: CodeConfigurationDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) codeConfiguration: CodeConfigurationDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnvironmentConfigurationDetails:
     Optional[CodeConfigurationDetails] codeConfiguration
 
@@ -705,8 +710,9 @@ struct EnvironmentListEntry:
     @json(timestamp="iso8601")
     DateTime createdAt
 
-# no @derive(Json): member(s) allowedDomains: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedDomains: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnvironmentNetworkConfiguration:
     Optional[list[str]] allowedDomains
 
@@ -722,8 +728,9 @@ struct EnvironmentS3IntegrationSource:
     Optional[str] codePrefix
     Optional[str] contextPrefix
 
-# no @derive(Json): member(s) s3Sources: list[EnvironmentS3IntegrationSource], repositorySources: list[EnvironmentRepositorySource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) s3Sources: list[EnvironmentS3IntegrationSource], repositorySources: list[EnvironmentRepositorySource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EnvironmentSourceConfiguration:
     Optional[list[EnvironmentS3IntegrationSource]] s3Sources
     Optional[list[EnvironmentRepositorySource]] repositorySources
@@ -746,8 +753,9 @@ struct FindingLocation:
     Optional[int64] startLine
     Optional[int64] endLine
 
-# no @derive(Json): member(s) standards: list[str], requirements: list[str], checks: list[FindingComplianceCheck], remediationReferences: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) standards: list[str], requirements: list[str], checks: list[FindingComplianceCheck], remediationReferences: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FindingPosture:
     Optional[str] application
     Optional[str] applicationUid
@@ -797,8 +805,9 @@ struct FindingSummary:
     Optional[str] category
     Optional[str] filePath
 
-# no @derive(Json): member(s) mitigatingControls: list[str], preconditions: list[str], evidence: list[FindingEvidence] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mitigatingControls: list[str], preconditions: list[str], evidence: list[FindingEvidence] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FindingValidation:
     FindingVerdict verdict
     Optional[FindingBlockingReason] blockingReason
@@ -809,8 +818,9 @@ struct FindingValidation:
     Optional[list[str]] preconditions
     Optional[list[FindingEvidence]] evidence
 
-# no @derive(Json): member(s) additionalCweIds: list[str], locations: list[FindingLocation], remediationReferences: list[str], affectedPackages: list[AffectedPackage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) additionalCweIds: list[str], locations: list[FindingLocation], remediationReferences: list[str], affectedPackages: list[AffectedPackage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FindingVulnerability:
     Optional[str] title
     Optional[str] description
@@ -828,8 +838,9 @@ struct FindingVulnerability:
     Optional[str] details
     Optional[list[AffectedPackage]] affectedPackages
 
-# no @derive(Json): member(s) evidence: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) evidence: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FlowVerdict:
     str flowId
     FlowVerdictValue verdict
@@ -842,8 +853,9 @@ struct GetCodeFindingInput:
     str environmentId
     str findingId
 
-# no @derive(Json): member(s) cweIds: list[str], affectedPackages: list[AffectedPackage], relevantInputs: list[str], stepsToReproduce: list[str], validation: FindingValidation, mitreTechniques: list[str], remediationReferences: list[str], findingTypes: list[str], vulnerabilities: list[FindingVulnerability], resources: list[FindingResource], posture: FindingPosture not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cweIds: list[str], affectedPackages: list[AffectedPackage], relevantInputs: list[str], stepsToReproduce: list[str], validation: FindingValidation, mitreTechniques: list[str], remediationReferences: list[str], findingTypes: list[str], vulnerabilities: list[FindingVulnerability], resources: list[FindingResource], posture: FindingPosture not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCodeFindingOutput:
     FindingType type
     str title
@@ -903,8 +915,9 @@ struct GetCodeIssueArtifactInput:
     str issueId
     str artifactId
 
-# no @derive(Json): member(s) body: IssueArtifactBody not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) body: IssueArtifactBody not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCodeIssueArtifactOutput:
     str artifactId
     IssueArtifactType artifactType
@@ -920,8 +933,9 @@ struct GetCodeIssueInput:
     str environmentId
     str issueId
 
-# no @derive(Json): member(s) findingIds: list[str], patchDelivery: IssuePatchDelivery not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findingIds: list[str], patchDelivery: IssuePatchDelivery not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCodeIssueOutput:
     str issueId
     str issueArn
@@ -987,8 +1001,9 @@ struct GetCollectorOutput:
 struct GetEnvironmentInput:
     str environmentId
 
-# no @derive(Json): member(s) configuration: EnvironmentConfigurationDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: EnvironmentConfigurationDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEnvironmentOutput:
     str environmentId
     str environmentArn
@@ -1082,8 +1097,9 @@ struct IntegrationSummary:
 struct InternalServerException:
     str message
 
-# no @derive(Json): member(s) validationEvidence: ValidationEvidenceBody, prevalidationSignals: PrevalidationSignalsBody not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) validationEvidence: ValidationEvidenceBody, prevalidationSignals: PrevalidationSignalsBody not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IssueArtifactBody:
     Optional[ValidationEvidenceBody] validationEvidence
     Optional[PrevalidationSignalsBody] prevalidationSignals
@@ -1105,8 +1121,9 @@ struct IssueArtifactItem:
 struct IssueArtifactProducerSummary:
     str agent
 
-# no @derive(Json): member(s) failureReasons: list[DeliveryReason] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failureReasons: list[DeliveryReason] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IssuePatchDelivery:
     IssuePatchDeliveryStatus status
     int64 patchCount
@@ -1150,8 +1167,9 @@ struct ListAssociatedCollectorsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) associatedCollectors: list[AssociatedCollector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedCollectors: list[AssociatedCollector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssociatedCollectorsOutput:
     list[AssociatedCollector] associatedCollectors
     Optional[str] nextToken
@@ -1163,8 +1181,9 @@ struct ListAssociatedEnvironmentsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) associatedEnvironments: list[AssociatedEnvironment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedEnvironments: list[AssociatedEnvironment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssociatedEnvironmentsOutput:
     list[AssociatedEnvironment] associatedEnvironments
     Optional[str] nextToken
@@ -1176,8 +1195,9 @@ struct ListCodeFindingsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[FindingSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[FindingSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCodeFindingsOutput:
     list[FindingSummary] items
     Optional[str] nextToken
@@ -1192,8 +1212,9 @@ struct ListCodeIssueArtifactsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[IssueArtifactItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[IssueArtifactItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCodeIssueArtifactsOutput:
     list[IssueArtifactItem] items
     Optional[str] nextToken
@@ -1205,8 +1226,9 @@ struct ListCodeIssuesInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[IssueSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[IssueSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCodeIssuesOutput:
     list[IssueSummary] items
     Optional[str] nextToken
@@ -1218,8 +1240,9 @@ struct ListCodeScansInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) scans: list[CodeScanSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scans: list[CodeScanSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCodeScansOutput:
     list[CodeScanSummary] scans
     Optional[str] nextToken
@@ -1230,8 +1253,9 @@ struct ListCollectorsInput:
     # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) items: list[CollectorSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[CollectorSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCollectorsOutput:
     list[CollectorSummary] items
 
@@ -1241,8 +1265,9 @@ struct ListEnvironmentsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[EnvironmentListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[EnvironmentListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentsOutput:
     list[EnvironmentListEntry] items
     Optional[str] nextToken
@@ -1253,8 +1278,9 @@ struct ListIntegrationsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[IntegrationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[IntegrationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIntegrationsOutput:
     list[IntegrationSummary] items
     Optional[str] nextToken
@@ -1275,8 +1301,9 @@ struct PatchDelivery:
     @json(timestamp="iso8601")
     DateTime updatedAt
 
-# no @derive(Json): member(s) flowVerdicts: list[FlowVerdict], reasoningChain: list[ReasoningStep], exploitArtifact: ValidationExploitArtifact not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) flowVerdicts: list[FlowVerdict], reasoningChain: list[ReasoningStep], exploitArtifact: ValidationExploitArtifact not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PerFindingResult:
     str findingId
     ExploitabilityVerdict exploitable
@@ -1285,8 +1312,9 @@ struct PerFindingResult:
     Optional[list[ReasoningStep]] reasoningChain
     Optional[ValidationExploitArtifact] exploitArtifact
 
-# no @derive(Json): member(s) confidenceReasoning: SignalConfidenceReasoning not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) confidenceReasoning: SignalConfidenceReasoning not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrevalidationSignal:
     Optional[str] subjectRef
     Optional[SignalDimension] dimension
@@ -1301,8 +1329,9 @@ struct PrevalidationSignal:
     Optional[SignalImpactDimensions] impactDimensions
     Optional[SignalExploitability] exploitability
 
-# no @derive(Json): member(s) signals: list[PrevalidationSignal] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) signals: list[PrevalidationSignal] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrevalidationSignalsBody:
     Optional[str] producedBy
     Optional[list[PrevalidationSignal]] signals
@@ -1405,8 +1434,9 @@ struct SignalComputation:
     Optional[SignalBand] impactBand
     Optional[int64] barriers
 
-# no @derive(Json): member(s) factors: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) factors: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SignalConfidenceReasoning:
     str summary
     Optional[list[str]] factors
@@ -1465,8 +1495,9 @@ struct StartIntegrationAuthorizationOutput:
 struct ThrottlingException:
     str message
 
-# no @derive(Json): member(s) sourceConfiguration: EnvironmentSourceConfiguration, environmentConfiguration: EnvironmentConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceConfiguration: EnvironmentSourceConfiguration, environmentConfiguration: EnvironmentConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCodeConfiguration:
     Optional[EnvironmentSourceConfiguration] sourceConfiguration
     Optional[EnvironmentConfiguration] environmentConfiguration
@@ -1491,8 +1522,9 @@ struct UpdateCollectorOutput:
     @json(timestamp="iso8601")
     DateTime updatedAt
 
-# no @derive(Json): member(s) codeConfiguration: UpdateCodeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) codeConfiguration: UpdateCodeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEnvironmentConfiguration:
     Optional[UpdateCodeConfiguration] codeConfiguration
 
@@ -1503,8 +1535,9 @@ struct UpdateEnvironmentInput:
     Optional[str] name
     Optional[UpdateEnvironmentConfiguration] configuration
 
-# no @derive(Json): member(s) configuration: EnvironmentConfigurationDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: EnvironmentConfigurationDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEnvironmentOutput:
     str environmentId
     str environmentArn
@@ -1542,8 +1575,9 @@ struct UpdateS3Configuration:
     str roleArn
     Optional[str] externalId
 
-# no @derive(Json): member(s) flowVerdicts: list[FlowVerdict], attackFlowsConfirmed: list[str], exploitArtifact: ValidationExploitArtifact, executedProof: ValidationExecutedProof, perFindingResults: list[PerFindingResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) flowVerdicts: list[FlowVerdict], attackFlowsConfirmed: list[str], exploitArtifact: ValidationExploitArtifact, executedProof: ValidationExecutedProof, perFindingResults: list[PerFindingResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationEvidenceBody:
     ExploitabilityVerdict exploitable
     Optional[ValidationTerminalStatus] terminalStatus
@@ -1554,8 +1588,9 @@ struct ValidationEvidenceBody:
     Optional[ValidationSourceAnalysis] sourceAnalysis
     Optional[list[PerFindingResult]] perFindingResults
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     Optional[list[ValidationExceptionField]] fieldList
@@ -1565,15 +1600,17 @@ struct ValidationExceptionField:
     str path
     str message
 
-# no @derive(Json): member(s) code: ValidationProofCode not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) code: ValidationProofCode not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationExecutedProof:
     ValidationProofCode code
     Optional[ValidationProofOutput] output
     Optional[ExploitEffect] observedEffect
 
-# no @derive(Json): member(s) headers: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) headers: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationExploitArtifact:
     str payload
     str targetUrl
@@ -1583,8 +1620,9 @@ struct ValidationExploitArtifact:
     Optional[str] responseSnippet
     ExploitEffect effect
 
-# no @derive(Json): member(s) proofCode: list[ValidationProofMaterial] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) proofCode: list[ValidationProofMaterial] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationProofCode:
     list[ValidationProofMaterial] proofCode
 
@@ -1635,12 +1673,6 @@ def continuum_error_from_code(str code) -> ContinuumError:
     return ContinuumError.Unknown(code=code)
 
 # --- client ----------------------------------------------------------------
-
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CreateEnvironment (document member `configuration: CreateEnvironmentConfiguration` is not serializable by derive)
-#   UpdateEnvironment (document member `configuration: UpdateEnvironmentConfiguration` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1706,6 +1738,116 @@ struct UpdateIntegrationDocument:
     # document members of UpdateIntegration
     UpdateProviderConfiguration providerConfiguration
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def continuum_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def continuum_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def continuum_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateCodeConfiguration to a compact JSON object (declaration order).
+def create_code_configuration_to_json(CreateCodeConfiguration v) -> str:
+    list[str] parts = []
+    if v.sourceConfiguration.is_some():
+        auto u0 = v.sourceConfiguration.unwrap()
+        parts.append("\"sourceConfiguration\":" + environment_source_configuration_to_json(u0))
+    if v.environmentConfiguration.is_some():
+        auto u1 = v.environmentConfiguration.unwrap()
+        parts.append("\"environmentConfiguration\":" + environment_configuration_to_json(u1))
+    return continuum_json_obj(parts)
+
+# Serialize CreateEnvironmentConfiguration to a compact JSON object (declaration order).
+def create_environment_configuration_to_json(CreateEnvironmentConfiguration v) -> str:
+    list[str] parts = []
+    if v.codeConfiguration.is_some():
+        auto u0 = v.codeConfiguration.unwrap()
+        parts.append("\"codeConfiguration\":" + create_code_configuration_to_json(u0))
+    return continuum_json_obj(parts)
+
+# Serialize EnvironmentConfiguration to a compact JSON object (declaration order).
+def environment_configuration_to_json(EnvironmentConfiguration v) -> str:
+    list[str] parts = []
+    if v.network.is_some():
+        auto u0 = v.network.unwrap()
+        parts.append("\"network\":" + environment_network_configuration_to_json(u0))
+    if v.scanFrequency.is_some():
+        auto u1 = v.scanFrequency.unwrap()
+        parts.append("\"scanFrequency\":" + continuum_json_str(u1))
+    if v.patchCreationPolicy.is_some():
+        auto u2 = v.patchCreationPolicy.unwrap()
+        parts.append("\"patchCreationPolicy\":" + u2.to_json())
+    return continuum_json_obj(parts)
+
+# Serialize EnvironmentNetworkConfiguration to a compact JSON object (declaration order).
+def environment_network_configuration_to_json(EnvironmentNetworkConfiguration v) -> str:
+    list[str] parts = []
+    if v.allowedDomains.is_some():
+        auto u0 = v.allowedDomains.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(continuum_json_str(x1))
+        parts.append("\"allowedDomains\":" + continuum_json_arr(e1))
+    return continuum_json_obj(parts)
+
+# Serialize EnvironmentSourceConfiguration to a compact JSON object (declaration order).
+def environment_source_configuration_to_json(EnvironmentSourceConfiguration v) -> str:
+    list[str] parts = []
+    if v.s3Sources.is_some():
+        auto u0 = v.s3Sources.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"s3Sources\":" + continuum_json_arr(e1))
+    if v.repositorySources.is_some():
+        auto u2 = v.repositorySources.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"repositorySources\":" + continuum_json_arr(e3))
+    return continuum_json_obj(parts)
+
+# Serialize UpdateCodeConfiguration to a compact JSON object (declaration order).
+def update_code_configuration_to_json(UpdateCodeConfiguration v) -> str:
+    list[str] parts = []
+    if v.sourceConfiguration.is_some():
+        auto u0 = v.sourceConfiguration.unwrap()
+        parts.append("\"sourceConfiguration\":" + environment_source_configuration_to_json(u0))
+    if v.environmentConfiguration.is_some():
+        auto u1 = v.environmentConfiguration.unwrap()
+        parts.append("\"environmentConfiguration\":" + environment_configuration_to_json(u1))
+    return continuum_json_obj(parts)
+
+# Serialize UpdateEnvironmentConfiguration to a compact JSON object (declaration order).
+def update_environment_configuration_to_json(UpdateEnvironmentConfiguration v) -> str:
+    list[str] parts = []
+    if v.codeConfiguration.is_some():
+        auto u0 = v.codeConfiguration.unwrap()
+        parts.append("\"codeConfiguration\":" + update_code_configuration_to_json(u0))
+    return continuum_json_obj(parts)
+
 # A bound Continuum client: credentials + region, threaded into every operation.
 struct ContinuumClient:
     core.Credentials creds
@@ -1751,6 +1893,19 @@ struct ContinuumClient:
         auto b = binding.HttpBinding(method="POST", path_template="/collectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateCollectorDocument(type=input.type, kubernetesClusterRole=input.kubernetesClusterRole, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, continuum_service(), self.region, host)
+
+    # CreateEnvironment  POST /environments
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_environment(self, CreateEnvironmentInput input) -> str:
+        auto host = endpoints.regional_host(continuum_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/environments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + continuum_json_str(input.name))
+        if input.configuration.is_some():
+            auto u0 = input.configuration.unwrap()
+            parts.append("\"configuration\":" + create_environment_configuration_to_json(u0))
+        auto bp = restjson.rest_json_document(b, continuum_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, continuum_service(), self.region, host)
 
     # CreateIntegration  POST /integrations
@@ -2035,6 +2190,23 @@ struct ContinuumClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/collectors/{collectorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCollectorDocument(name=input.name, kubernetesClusterRole=input.kubernetesClusterRole)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, continuum_service(), self.region, host)
+
+    # UpdateEnvironment  PATCH /environments/{environmentId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_environment(self, UpdateEnvironmentInput input) -> str:
+        auto host = endpoints.regional_host(continuum_service(), self.region)
+        dict[str, str] labels = {}
+        labels["environmentId"] = input.environmentId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/environments/{environmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + continuum_json_str(u0))
+        if input.configuration.is_some():
+            auto u1 = input.configuration.unwrap()
+            parts.append("\"configuration\":" + update_environment_configuration_to_json(u1))
+        auto bp = restjson.rest_json_document(b, continuum_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, continuum_service(), self.region, host)
 
     # UpdateIntegration  PATCH /integrations/{integrationId}

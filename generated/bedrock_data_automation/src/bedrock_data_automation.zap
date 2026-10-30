@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 27 operations — 18 with a generated method,
-#   9 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 27 operations — 27 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   136 structs (73 @derive(Json)), 28 enums, 7 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -304,8 +304,9 @@ enum VideoStandardGenerativeFieldType:
 struct AccessDeniedException:
     Optional[str] message
 
-# no @derive(Json): member(s) types: list[AudioExtractionCategoryType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) types: list[AudioExtractionCategoryType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AudioExtractionCategory:
     State state
     Optional[list[AudioExtractionCategoryType]] types
@@ -315,39 +316,45 @@ struct AudioExtractionCategory:
 struct AudioExtractionCategoryTypeConfiguration:
     Optional[TranscriptConfiguration] transcript
 
-# no @derive(Json): member(s) inputLanguages: list[Language] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputLanguages: list[Language] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AudioLanguageConfiguration:
     Optional[list[Language]] inputLanguages
     Optional[AudioGenerativeOutputLanguage] generativeOutputLanguage
     Optional[bool] identifyMultipleLanguages
 
-# no @derive(Json): member(s) languageConfiguration: AudioLanguageConfiguration, sensitiveDataConfiguration: SensitiveDataConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) languageConfiguration: AudioLanguageConfiguration, sensitiveDataConfiguration: SensitiveDataConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AudioOverrideConfiguration:
     Optional[ModalityProcessingConfiguration] modalityProcessing
     Optional[AudioLanguageConfiguration] languageConfiguration
     Optional[SensitiveDataConfiguration] sensitiveDataConfiguration
 
-# no @derive(Json): member(s) category: AudioExtractionCategory not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) category: AudioExtractionCategory not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AudioStandardExtraction:
     AudioExtractionCategory category
 
-# no @derive(Json): member(s) types: list[AudioStandardGenerativeFieldType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) types: list[AudioStandardGenerativeFieldType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AudioStandardGenerativeField:
     State state
     Optional[list[AudioStandardGenerativeFieldType]] types
 
-# no @derive(Json): member(s) extraction: AudioStandardExtraction, generativeField: AudioStandardGenerativeField not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) extraction: AudioStandardExtraction, generativeField: AudioStandardGenerativeField not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AudioStandardOutputConfiguration:
     Optional[AudioStandardExtraction] extraction
     Optional[AudioStandardGenerativeField] generativeField
 
-# no @derive(Json): member(s) kmsEncryptionContext: dict[str, str], optimizationSamples: list[BlueprintOptimizationSample] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) kmsEncryptionContext: dict[str, str], optimizationSamples: list[BlueprintOptimizationSample] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Blueprint:
     str blueprintArn
     str schema
@@ -431,8 +438,9 @@ struct CreateBlueprintRequest:
     Optional[EncryptionConfiguration] encryptionConfiguration
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) blueprint: Blueprint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) blueprint: Blueprint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBlueprintResponse:
     Blueprint blueprint
 
@@ -442,8 +450,9 @@ struct CreateBlueprintVersionRequest:
     str blueprintArn
     Optional[str] clientToken
 
-# no @derive(Json): member(s) blueprint: Blueprint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) blueprint: Blueprint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBlueprintVersionResponse:
     Blueprint blueprint
 
@@ -482,14 +491,16 @@ struct CreateDataAutomationProjectResponse:
     Optional[DataAutomationProjectStage] projectStage
     Optional[DataAutomationProjectStatus] status
 
-# no @derive(Json): member(s) blueprints: list[BlueprintItem], document: DocumentCustomOutputConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) blueprints: list[BlueprintItem], document: DocumentCustomOutputConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomOutputConfiguration:
     Optional[list[BlueprintItem]] blueprints
     Optional[DocumentCustomOutputConfiguration] document
 
-# no @derive(Json): member(s) entityTypes: list[EntityTypeInfo], kmsEncryptionContext: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entityTypes: list[EntityTypeInfo], kmsEncryptionContext: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataAutomationLibrary:
     str libraryArn
     DateTime creationTime
@@ -500,8 +511,9 @@ struct DataAutomationLibrary:
     Optional[str] kmsKeyId
     Optional[dict[str, str]] kmsEncryptionContext
 
-# no @derive(Json): member(s) libraries: list[DataAutomationLibraryItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) libraries: list[DataAutomationLibraryItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataAutomationLibraryConfiguration:
     Optional[list[DataAutomationLibraryItem]] libraries
 
@@ -549,8 +561,9 @@ struct DataAutomationLibrarySummary:
     @json(timestamp="iso8601")
     DateTime creationTime
 
-# no @derive(Json): member(s) standardOutputConfiguration: StandardOutputConfiguration, customOutputConfiguration: CustomOutputConfiguration, overrideConfiguration: OverrideConfiguration, dataAutomationLibraryConfiguration: DataAutomationLibraryConfiguration, kmsEncryptionContext: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) standardOutputConfiguration: StandardOutputConfiguration, customOutputConfiguration: CustomOutputConfiguration, overrideConfiguration: OverrideConfiguration, dataAutomationLibraryConfiguration: DataAutomationLibraryConfiguration, kmsEncryptionContext: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataAutomationProject:
     str projectArn
     DateTime creationTime
@@ -612,8 +625,9 @@ struct DeleteDataAutomationProjectResponse:
     str projectArn
     Optional[DataAutomationProjectStatus] status
 
-# no @derive(Json): member(s) entityIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entityIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteEntitiesInfo:
     list[str] entityIds
 
@@ -621,13 +635,15 @@ struct DeleteEntitiesInfo:
 struct DocumentBoundingBox:
     State state
 
-# no @derive(Json): member(s) fallbackBlueprints: list[BlueprintItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fallbackBlueprints: list[BlueprintItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentCustomOutputConfiguration:
     Optional[list[BlueprintItem]] fallbackBlueprints
 
-# no @derive(Json): member(s) types: list[DocumentExtractionGranularityType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) types: list[DocumentExtractionGranularityType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentExtractionGranularity:
     Optional[list[DocumentExtractionGranularityType]] types
 
@@ -635,26 +651,30 @@ struct DocumentExtractionGranularity:
 struct DocumentOutputAdditionalFileFormat:
     State state
 
-# no @derive(Json): member(s) textFormat: DocumentOutputTextFormat not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) textFormat: DocumentOutputTextFormat not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentOutputFormat:
     DocumentOutputTextFormat textFormat
     DocumentOutputAdditionalFileFormat additionalFileFormat
 
-# no @derive(Json): member(s) types: list[DocumentOutputTextFormatType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) types: list[DocumentOutputTextFormatType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentOutputTextFormat:
     Optional[list[DocumentOutputTextFormatType]] types
 
-# no @derive(Json): member(s) sensitiveDataConfiguration: SensitiveDataConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sensitiveDataConfiguration: SensitiveDataConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentOverrideConfiguration:
     Optional[SplitterConfiguration] splitter
     Optional[ModalityProcessingConfiguration] modalityProcessing
     Optional[SensitiveDataConfiguration] sensitiveDataConfiguration
 
-# no @derive(Json): member(s) granularity: DocumentExtractionGranularity not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) granularity: DocumentExtractionGranularity not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentStandardExtraction:
     DocumentExtractionGranularity granularity
     DocumentBoundingBox boundingBox
@@ -663,21 +683,24 @@ struct DocumentStandardExtraction:
 struct DocumentStandardGenerativeField:
     State state
 
-# no @derive(Json): member(s) extraction: DocumentStandardExtraction, outputFormat: DocumentOutputFormat not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) extraction: DocumentStandardExtraction, outputFormat: DocumentOutputFormat not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentStandardOutputConfiguration:
     Optional[DocumentStandardExtraction] extraction
     Optional[DocumentStandardGenerativeField] generativeField
     Optional[DocumentOutputFormat] outputFormat
 
-# no @derive(Json): member(s) kmsEncryptionContext: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) kmsEncryptionContext: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EncryptionConfiguration:
     str kmsKeyId
     Optional[dict[str, str]] kmsEncryptionContext
 
-# no @derive(Json): member(s) vocabulary: VocabularyEntity not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vocabulary: VocabularyEntity not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EntityDetails:
     Optional[VocabularyEntity] vocabulary
 
@@ -709,8 +732,9 @@ struct GetBlueprintRequest:
     Optional[str] blueprintVersion
     Optional[BlueprintStage] blueprintStage
 
-# no @derive(Json): member(s) blueprint: Blueprint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) blueprint: Blueprint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBlueprintResponse:
     Blueprint blueprint
 
@@ -721,8 +745,9 @@ struct GetDataAutomationLibraryEntityRequest:
     str entityType
     str entityId
 
-# no @derive(Json): member(s) entity: EntityDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entity: EntityDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataAutomationLibraryEntityResponse:
     Optional[EntityDetails] entity
 
@@ -741,8 +766,9 @@ struct GetDataAutomationLibraryIngestionJobResponse:
 struct GetDataAutomationLibraryRequest:
     str libraryArn
 
-# no @derive(Json): member(s) library: DataAutomationLibrary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) library: DataAutomationLibrary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataAutomationLibraryResponse:
     Optional[DataAutomationLibrary] library
 
@@ -752,8 +778,9 @@ struct GetDataAutomationProjectRequest:
     str projectArn
     Optional[DataAutomationProjectStage] projectStage
 
-# no @derive(Json): member(s) project: DataAutomationProject not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) project: DataAutomationProject not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataAutomationProjectResponse:
     DataAutomationProject project
 
@@ -761,44 +788,51 @@ struct GetDataAutomationProjectResponse:
 struct ImageBoundingBox:
     State state
 
-# no @derive(Json): member(s) types: list[ImageExtractionCategoryType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) types: list[ImageExtractionCategoryType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImageExtractionCategory:
     State state
     Optional[list[ImageExtractionCategoryType]] types
 
-# no @derive(Json): member(s) sensitiveDataConfiguration: SensitiveDataConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sensitiveDataConfiguration: SensitiveDataConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImageOverrideConfiguration:
     Optional[ModalityProcessingConfiguration] modalityProcessing
     Optional[SensitiveDataConfiguration] sensitiveDataConfiguration
 
-# no @derive(Json): member(s) category: ImageExtractionCategory not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) category: ImageExtractionCategory not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImageStandardExtraction:
     ImageExtractionCategory category
     ImageBoundingBox boundingBox
 
-# no @derive(Json): member(s) types: list[ImageStandardGenerativeFieldType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) types: list[ImageStandardGenerativeFieldType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImageStandardGenerativeField:
     State state
     Optional[list[ImageStandardGenerativeFieldType]] types
 
-# no @derive(Json): member(s) extraction: ImageStandardExtraction, generativeField: ImageStandardGenerativeField not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) extraction: ImageStandardExtraction, generativeField: ImageStandardGenerativeField not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImageStandardOutputConfiguration:
     Optional[ImageStandardExtraction] extraction
     Optional[ImageStandardGenerativeField] generativeField
 
-# no @derive(Json): member(s) upsertEntitiesInfo: list[UpsertEntityInfo], deleteEntitiesInfo: DeleteEntitiesInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) upsertEntitiesInfo: list[UpsertEntityInfo], deleteEntitiesInfo: DeleteEntitiesInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InlinePayload:
     Optional[list[UpsertEntityInfo]] upsertEntitiesInfo
     Optional[DeleteEntitiesInfo] deleteEntitiesInfo
 
-# no @derive(Json): member(s) inlinePayload: InlinePayload not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inlinePayload: InlinePayload not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputConfiguration:
     Optional[S3Object] s3Object
     Optional[InlinePayload] inlinePayload
@@ -847,8 +881,9 @@ struct ListBlueprintsRequest:
     Optional[str] nextToken
     Optional[DataAutomationProjectFilter] projectFilter
 
-# no @derive(Json): member(s) blueprints: list[BlueprintSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) blueprints: list[BlueprintSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBlueprintsResponse:
     list[BlueprintSummary] blueprints
     Optional[str] nextToken
@@ -860,8 +895,9 @@ struct ListDataAutomationLibrariesRequest:
     Optional[str] nextToken
     Optional[DataAutomationProjectFilter] projectFilter
 
-# no @derive(Json): member(s) libraries: list[DataAutomationLibrarySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) libraries: list[DataAutomationLibrarySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataAutomationLibrariesResponse:
     Optional[list[DataAutomationLibrarySummary]] libraries
     Optional[str] nextToken
@@ -874,8 +910,9 @@ struct ListDataAutomationLibraryEntitiesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) entities: list[DataAutomationLibraryEntitySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entities: list[DataAutomationLibraryEntitySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataAutomationLibraryEntitiesResponse:
     Optional[list[DataAutomationLibraryEntitySummary]] entities
     Optional[str] nextToken
@@ -887,8 +924,9 @@ struct ListDataAutomationLibraryIngestionJobsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) jobs: list[DataAutomationLibraryIngestionJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobs: list[DataAutomationLibraryIngestionJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataAutomationLibraryIngestionJobsResponse:
     Optional[list[DataAutomationLibraryIngestionJobSummary]] jobs
     Optional[str] nextToken
@@ -903,8 +941,9 @@ struct ListDataAutomationProjectsRequest:
     Optional[ResourceOwner] resourceOwner
     Optional[DataAutomationLibraryFilter] libraryFilter
 
-# no @derive(Json): member(s) projects: list[DataAutomationProjectSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) projects: list[DataAutomationProjectSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataAutomationProjectsResponse:
     list[DataAutomationProjectSummary] projects
     Optional[str] nextToken
@@ -914,8 +953,9 @@ struct ListDataAutomationProjectsResponse:
 struct ListTagsForResourceRequest:
     str resourceARN
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] tags
 
@@ -938,8 +978,9 @@ struct NotificationConfiguration:
 struct OutputConfiguration:
     str s3Uri
 
-# no @derive(Json): member(s) document: DocumentOverrideConfiguration, image: ImageOverrideConfiguration, video: VideoOverrideConfiguration, audio: AudioOverrideConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) document: DocumentOverrideConfiguration, image: ImageOverrideConfiguration, video: VideoOverrideConfiguration, audio: AudioOverrideConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OverrideConfiguration:
     Optional[DocumentOverrideConfiguration] document
     Optional[ImageOverrideConfiguration] image
@@ -947,8 +988,9 @@ struct OverrideConfiguration:
     Optional[AudioOverrideConfiguration] audio
     Optional[ModalityRoutingConfiguration] modalityRouting
 
-# no @derive(Json): member(s) piiEntityTypes: list[PIIEntityType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) piiEntityTypes: list[PIIEntityType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PIIEntitiesConfiguration:
     Optional[list[PIIEntityType]] piiEntityTypes
     Optional[PIIRedactionMaskMode] redactionMaskMode
@@ -967,8 +1009,9 @@ struct S3Object:
     str s3Uri
     Optional[str] version
 
-# no @derive(Json): member(s) detectionScope: list[SensitiveDataDetectionScopeType], piiEntitiesConfiguration: PIIEntitiesConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) detectionScope: list[SensitiveDataDetectionScopeType], piiEntitiesConfiguration: PIIEntitiesConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SensitiveDataConfiguration:
     SensitiveDataDetectionMode detectionMode
     Optional[list[SensitiveDataDetectionScopeType]] detectionScope
@@ -986,8 +1029,9 @@ struct SpeakerLabelingConfiguration:
 struct SplitterConfiguration:
     Optional[State] state
 
-# no @derive(Json): member(s) document: DocumentStandardOutputConfiguration, image: ImageStandardOutputConfiguration, video: VideoStandardOutputConfiguration, audio: AudioStandardOutputConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) document: DocumentStandardOutputConfiguration, image: ImageStandardOutputConfiguration, video: VideoStandardOutputConfiguration, audio: AudioStandardOutputConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StandardOutputConfiguration:
     Optional[DocumentStandardOutputConfiguration] document
     Optional[ImageStandardOutputConfiguration] image
@@ -1038,8 +1082,9 @@ struct UpdateBlueprintRequest:
     Optional[BlueprintStage] blueprintStage
     Optional[EncryptionConfiguration] encryptionConfiguration
 
-# no @derive(Json): member(s) blueprint: Blueprint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) blueprint: Blueprint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBlueprintResponse:
     Blueprint blueprint
 
@@ -1073,13 +1118,15 @@ struct UpdateDataAutomationProjectResponse:
     Optional[DataAutomationProjectStage] projectStage
     Optional[DataAutomationProjectStatus] status
 
-# no @derive(Json): member(s) vocabulary: VocabularyEntityInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vocabulary: VocabularyEntityInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpsertEntityInfo:
     Optional[VocabularyEntityInfo] vocabulary
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     Optional[str] message
     Optional[list[ValidationExceptionField]] fieldList
@@ -1093,38 +1140,44 @@ struct ValidationExceptionField:
 struct VideoBoundingBox:
     State state
 
-# no @derive(Json): member(s) types: list[VideoExtractionCategoryType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) types: list[VideoExtractionCategoryType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VideoExtractionCategory:
     State state
     Optional[list[VideoExtractionCategoryType]] types
 
-# no @derive(Json): member(s) sensitiveDataConfiguration: SensitiveDataConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sensitiveDataConfiguration: SensitiveDataConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VideoOverrideConfiguration:
     Optional[ModalityProcessingConfiguration] modalityProcessing
     Optional[SensitiveDataConfiguration] sensitiveDataConfiguration
 
-# no @derive(Json): member(s) category: VideoExtractionCategory not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) category: VideoExtractionCategory not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VideoStandardExtraction:
     VideoExtractionCategory category
     VideoBoundingBox boundingBox
 
-# no @derive(Json): member(s) types: list[VideoStandardGenerativeFieldType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) types: list[VideoStandardGenerativeFieldType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VideoStandardGenerativeField:
     State state
     Optional[list[VideoStandardGenerativeFieldType]] types
 
-# no @derive(Json): member(s) extraction: VideoStandardExtraction, generativeField: VideoStandardGenerativeField not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) extraction: VideoStandardExtraction, generativeField: VideoStandardGenerativeField not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VideoStandardOutputConfiguration:
     Optional[VideoStandardExtraction] extraction
     Optional[VideoStandardGenerativeField] generativeField
 
-# no @derive(Json): member(s) phrases: list[Phrase] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) phrases: list[Phrase] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VocabularyEntity:
     Optional[str] entityId
     Optional[str] description
@@ -1132,8 +1185,9 @@ struct VocabularyEntity:
     Optional[list[Phrase]] phrases
     Optional[DateTime] lastModifiedTime
 
-# no @derive(Json): member(s) phrases: list[Phrase] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) phrases: list[Phrase] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VocabularyEntityInfo:
     Optional[str] entityId
     Optional[str] description
@@ -1183,19 +1237,6 @@ def bedrock_data_automation_error_from_code(str code) -> Bedrock_Data_Automation
     return Bedrock_Data_AutomationError.Unknown(code=code)
 
 # --- client ----------------------------------------------------------------
-
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CreateBlueprint (document member `encryptionConfiguration: EncryptionConfiguration` is not serializable by derive)
-#   CreateDataAutomationLibrary (document member `encryptionConfiguration: EncryptionConfiguration` is not serializable by derive)
-#   CreateDataAutomationProject (document member `standardOutputConfiguration: StandardOutputConfiguration` is not serializable by derive)
-#   InvokeBlueprintOptimizationAsync (document member `samples: list[BlueprintOptimizationSample]` is not serializable by derive)
-#   InvokeDataAutomationLibraryIngestionJob (document member `inputConfiguration: InputConfiguration` is not serializable by derive)
-#   TagResource (document member `tags: list[Tag]` is not serializable by derive)
-#   UntagResource (document member `tagKeys: list[str]` is not serializable by derive)
-#   UpdateBlueprint (document member `encryptionConfiguration: EncryptionConfiguration` is not serializable by derive)
-#   UpdateDataAutomationProject (document member `standardOutputConfiguration: StandardOutputConfiguration` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1273,6 +1314,453 @@ struct UpdateDataAutomationLibraryDocument:
     Optional[str] libraryDescription
     Optional[str] clientToken
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def bedrock_data_automation_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def bedrock_data_automation_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def bedrock_data_automation_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AudioExtractionCategory to a compact JSON object (declaration order).
+def audio_extraction_category_to_json(AudioExtractionCategory v) -> str:
+    list[str] parts = []
+    parts.append("\"state\":" + v.state.to_json())
+    if v.types.is_some():
+        auto u0 = v.types.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"types\":" + bedrock_data_automation_json_arr(e1))
+    if v.typeConfiguration.is_some():
+        auto u2 = v.typeConfiguration.unwrap()
+        parts.append("\"typeConfiguration\":" + u2.to_json())
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize AudioLanguageConfiguration to a compact JSON object (declaration order).
+def audio_language_configuration_to_json(AudioLanguageConfiguration v) -> str:
+    list[str] parts = []
+    if v.inputLanguages.is_some():
+        auto u0 = v.inputLanguages.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"inputLanguages\":" + bedrock_data_automation_json_arr(e1))
+    if v.generativeOutputLanguage.is_some():
+        auto u2 = v.generativeOutputLanguage.unwrap()
+        parts.append("\"generativeOutputLanguage\":" + u2.to_json())
+    if v.identifyMultipleLanguages.is_some():
+        auto u3 = v.identifyMultipleLanguages.unwrap()
+        parts.append("\"identifyMultipleLanguages\":" + json.dumps(JsonValue.Bool(u3)))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize AudioOverrideConfiguration to a compact JSON object (declaration order).
+def audio_override_configuration_to_json(AudioOverrideConfiguration v) -> str:
+    list[str] parts = []
+    if v.modalityProcessing.is_some():
+        auto u0 = v.modalityProcessing.unwrap()
+        parts.append("\"modalityProcessing\":" + u0.to_json())
+    if v.languageConfiguration.is_some():
+        auto u1 = v.languageConfiguration.unwrap()
+        parts.append("\"languageConfiguration\":" + audio_language_configuration_to_json(u1))
+    if v.sensitiveDataConfiguration.is_some():
+        auto u2 = v.sensitiveDataConfiguration.unwrap()
+        parts.append("\"sensitiveDataConfiguration\":" + sensitive_data_configuration_to_json(u2))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize AudioStandardExtraction to a compact JSON object (declaration order).
+def audio_standard_extraction_to_json(AudioStandardExtraction v) -> str:
+    list[str] parts = []
+    parts.append("\"category\":" + audio_extraction_category_to_json(v.category))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize AudioStandardGenerativeField to a compact JSON object (declaration order).
+def audio_standard_generative_field_to_json(AudioStandardGenerativeField v) -> str:
+    list[str] parts = []
+    parts.append("\"state\":" + v.state.to_json())
+    if v.types.is_some():
+        auto u0 = v.types.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"types\":" + bedrock_data_automation_json_arr(e1))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize AudioStandardOutputConfiguration to a compact JSON object (declaration order).
+def audio_standard_output_configuration_to_json(AudioStandardOutputConfiguration v) -> str:
+    list[str] parts = []
+    if v.extraction.is_some():
+        auto u0 = v.extraction.unwrap()
+        parts.append("\"extraction\":" + audio_standard_extraction_to_json(u0))
+    if v.generativeField.is_some():
+        auto u1 = v.generativeField.unwrap()
+        parts.append("\"generativeField\":" + audio_standard_generative_field_to_json(u1))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize CustomOutputConfiguration to a compact JSON object (declaration order).
+def custom_output_configuration_to_json(CustomOutputConfiguration v) -> str:
+    list[str] parts = []
+    if v.blueprints.is_some():
+        auto u0 = v.blueprints.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"blueprints\":" + bedrock_data_automation_json_arr(e1))
+    if v.document.is_some():
+        auto u2 = v.document.unwrap()
+        parts.append("\"document\":" + document_custom_output_configuration_to_json(u2))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize DataAutomationLibraryConfiguration to a compact JSON object (declaration order).
+def data_automation_library_configuration_to_json(DataAutomationLibraryConfiguration v) -> str:
+    list[str] parts = []
+    if v.libraries.is_some():
+        auto u0 = v.libraries.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"libraries\":" + bedrock_data_automation_json_arr(e1))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize DeleteEntitiesInfo to a compact JSON object (declaration order).
+def delete_entities_info_to_json(DeleteEntitiesInfo v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.entityIds:
+        e0.append(bedrock_data_automation_json_str(x0))
+    parts.append("\"entityIds\":" + bedrock_data_automation_json_arr(e0))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize DocumentCustomOutputConfiguration to a compact JSON object (declaration order).
+def document_custom_output_configuration_to_json(DocumentCustomOutputConfiguration v) -> str:
+    list[str] parts = []
+    if v.fallbackBlueprints.is_some():
+        auto u0 = v.fallbackBlueprints.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"fallbackBlueprints\":" + bedrock_data_automation_json_arr(e1))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize DocumentExtractionGranularity to a compact JSON object (declaration order).
+def document_extraction_granularity_to_json(DocumentExtractionGranularity v) -> str:
+    list[str] parts = []
+    if v.types.is_some():
+        auto u0 = v.types.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"types\":" + bedrock_data_automation_json_arr(e1))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize DocumentOutputFormat to a compact JSON object (declaration order).
+def document_output_format_to_json(DocumentOutputFormat v) -> str:
+    list[str] parts = []
+    parts.append("\"textFormat\":" + document_output_text_format_to_json(v.textFormat))
+    parts.append("\"additionalFileFormat\":" + v.additionalFileFormat.to_json())
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize DocumentOutputTextFormat to a compact JSON object (declaration order).
+def document_output_text_format_to_json(DocumentOutputTextFormat v) -> str:
+    list[str] parts = []
+    if v.types.is_some():
+        auto u0 = v.types.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"types\":" + bedrock_data_automation_json_arr(e1))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize DocumentOverrideConfiguration to a compact JSON object (declaration order).
+def document_override_configuration_to_json(DocumentOverrideConfiguration v) -> str:
+    list[str] parts = []
+    if v.splitter.is_some():
+        auto u0 = v.splitter.unwrap()
+        parts.append("\"splitter\":" + u0.to_json())
+    if v.modalityProcessing.is_some():
+        auto u1 = v.modalityProcessing.unwrap()
+        parts.append("\"modalityProcessing\":" + u1.to_json())
+    if v.sensitiveDataConfiguration.is_some():
+        auto u2 = v.sensitiveDataConfiguration.unwrap()
+        parts.append("\"sensitiveDataConfiguration\":" + sensitive_data_configuration_to_json(u2))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize DocumentStandardExtraction to a compact JSON object (declaration order).
+def document_standard_extraction_to_json(DocumentStandardExtraction v) -> str:
+    list[str] parts = []
+    parts.append("\"granularity\":" + document_extraction_granularity_to_json(v.granularity))
+    parts.append("\"boundingBox\":" + v.boundingBox.to_json())
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize DocumentStandardOutputConfiguration to a compact JSON object (declaration order).
+def document_standard_output_configuration_to_json(DocumentStandardOutputConfiguration v) -> str:
+    list[str] parts = []
+    if v.extraction.is_some():
+        auto u0 = v.extraction.unwrap()
+        parts.append("\"extraction\":" + document_standard_extraction_to_json(u0))
+    if v.generativeField.is_some():
+        auto u1 = v.generativeField.unwrap()
+        parts.append("\"generativeField\":" + u1.to_json())
+    if v.outputFormat.is_some():
+        auto u2 = v.outputFormat.unwrap()
+        parts.append("\"outputFormat\":" + document_output_format_to_json(u2))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize EncryptionConfiguration to a compact JSON object (declaration order).
+def encryption_configuration_to_json(EncryptionConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"kmsKeyId\":" + bedrock_data_automation_json_str(v.kmsKeyId))
+    if v.kmsEncryptionContext.is_some():
+        auto u0 = v.kmsEncryptionContext.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(bedrock_data_automation_json_str(k1) + ":" + bedrock_data_automation_json_str(u0[k1]))
+        parts.append("\"kmsEncryptionContext\":" + bedrock_data_automation_json_obj(m1))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize ImageExtractionCategory to a compact JSON object (declaration order).
+def image_extraction_category_to_json(ImageExtractionCategory v) -> str:
+    list[str] parts = []
+    parts.append("\"state\":" + v.state.to_json())
+    if v.types.is_some():
+        auto u0 = v.types.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"types\":" + bedrock_data_automation_json_arr(e1))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize ImageOverrideConfiguration to a compact JSON object (declaration order).
+def image_override_configuration_to_json(ImageOverrideConfiguration v) -> str:
+    list[str] parts = []
+    if v.modalityProcessing.is_some():
+        auto u0 = v.modalityProcessing.unwrap()
+        parts.append("\"modalityProcessing\":" + u0.to_json())
+    if v.sensitiveDataConfiguration.is_some():
+        auto u1 = v.sensitiveDataConfiguration.unwrap()
+        parts.append("\"sensitiveDataConfiguration\":" + sensitive_data_configuration_to_json(u1))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize ImageStandardExtraction to a compact JSON object (declaration order).
+def image_standard_extraction_to_json(ImageStandardExtraction v) -> str:
+    list[str] parts = []
+    parts.append("\"category\":" + image_extraction_category_to_json(v.category))
+    parts.append("\"boundingBox\":" + v.boundingBox.to_json())
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize ImageStandardGenerativeField to a compact JSON object (declaration order).
+def image_standard_generative_field_to_json(ImageStandardGenerativeField v) -> str:
+    list[str] parts = []
+    parts.append("\"state\":" + v.state.to_json())
+    if v.types.is_some():
+        auto u0 = v.types.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"types\":" + bedrock_data_automation_json_arr(e1))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize ImageStandardOutputConfiguration to a compact JSON object (declaration order).
+def image_standard_output_configuration_to_json(ImageStandardOutputConfiguration v) -> str:
+    list[str] parts = []
+    if v.extraction.is_some():
+        auto u0 = v.extraction.unwrap()
+        parts.append("\"extraction\":" + image_standard_extraction_to_json(u0))
+    if v.generativeField.is_some():
+        auto u1 = v.generativeField.unwrap()
+        parts.append("\"generativeField\":" + image_standard_generative_field_to_json(u1))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize InlinePayload to a compact JSON object (declaration order).
+def inline_payload_to_json(InlinePayload v) -> str:
+    list[str] parts = []
+    if v.upsertEntitiesInfo.is_some():
+        auto u0 = v.upsertEntitiesInfo.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(upsert_entity_info_to_json(x1))
+        parts.append("\"upsertEntitiesInfo\":" + bedrock_data_automation_json_arr(e1))
+    if v.deleteEntitiesInfo.is_some():
+        auto u2 = v.deleteEntitiesInfo.unwrap()
+        parts.append("\"deleteEntitiesInfo\":" + delete_entities_info_to_json(u2))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize InputConfiguration to a compact JSON object (declaration order).
+def input_configuration_to_json(InputConfiguration v) -> str:
+    list[str] parts = []
+    if v.s3Object.is_some():
+        auto u0 = v.s3Object.unwrap()
+        parts.append("\"s3Object\":" + u0.to_json())
+    if v.inlinePayload.is_some():
+        auto u1 = v.inlinePayload.unwrap()
+        parts.append("\"inlinePayload\":" + inline_payload_to_json(u1))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize OverrideConfiguration to a compact JSON object (declaration order).
+def override_configuration_to_json(OverrideConfiguration v) -> str:
+    list[str] parts = []
+    if v.document.is_some():
+        auto u0 = v.document.unwrap()
+        parts.append("\"document\":" + document_override_configuration_to_json(u0))
+    if v.image.is_some():
+        auto u1 = v.image.unwrap()
+        parts.append("\"image\":" + image_override_configuration_to_json(u1))
+    if v.video.is_some():
+        auto u2 = v.video.unwrap()
+        parts.append("\"video\":" + video_override_configuration_to_json(u2))
+    if v.audio.is_some():
+        auto u3 = v.audio.unwrap()
+        parts.append("\"audio\":" + audio_override_configuration_to_json(u3))
+    if v.modalityRouting.is_some():
+        auto u4 = v.modalityRouting.unwrap()
+        parts.append("\"modalityRouting\":" + u4.to_json())
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize PIIEntitiesConfiguration to a compact JSON object (declaration order).
+def pii_entities_configuration_to_json(PIIEntitiesConfiguration v) -> str:
+    list[str] parts = []
+    if v.piiEntityTypes.is_some():
+        auto u0 = v.piiEntityTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"piiEntityTypes\":" + bedrock_data_automation_json_arr(e1))
+    if v.redactionMaskMode.is_some():
+        auto u2 = v.redactionMaskMode.unwrap()
+        parts.append("\"redactionMaskMode\":" + u2.to_json())
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize SensitiveDataConfiguration to a compact JSON object (declaration order).
+def sensitive_data_configuration_to_json(SensitiveDataConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"detectionMode\":" + v.detectionMode.to_json())
+    if v.detectionScope.is_some():
+        auto u0 = v.detectionScope.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"detectionScope\":" + bedrock_data_automation_json_arr(e1))
+    if v.piiEntitiesConfiguration.is_some():
+        auto u2 = v.piiEntitiesConfiguration.unwrap()
+        parts.append("\"piiEntitiesConfiguration\":" + pii_entities_configuration_to_json(u2))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize StandardOutputConfiguration to a compact JSON object (declaration order).
+def standard_output_configuration_to_json(StandardOutputConfiguration v) -> str:
+    list[str] parts = []
+    if v.document.is_some():
+        auto u0 = v.document.unwrap()
+        parts.append("\"document\":" + document_standard_output_configuration_to_json(u0))
+    if v.image.is_some():
+        auto u1 = v.image.unwrap()
+        parts.append("\"image\":" + image_standard_output_configuration_to_json(u1))
+    if v.video.is_some():
+        auto u2 = v.video.unwrap()
+        parts.append("\"video\":" + video_standard_output_configuration_to_json(u2))
+    if v.audio.is_some():
+        auto u3 = v.audio.unwrap()
+        parts.append("\"audio\":" + audio_standard_output_configuration_to_json(u3))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize UpsertEntityInfo to a compact JSON object (declaration order).
+def upsert_entity_info_to_json(UpsertEntityInfo v) -> str:
+    list[str] parts = []
+    if v.vocabulary.is_some():
+        auto u0 = v.vocabulary.unwrap()
+        parts.append("\"vocabulary\":" + vocabulary_entity_info_to_json(u0))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize VideoExtractionCategory to a compact JSON object (declaration order).
+def video_extraction_category_to_json(VideoExtractionCategory v) -> str:
+    list[str] parts = []
+    parts.append("\"state\":" + v.state.to_json())
+    if v.types.is_some():
+        auto u0 = v.types.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"types\":" + bedrock_data_automation_json_arr(e1))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize VideoOverrideConfiguration to a compact JSON object (declaration order).
+def video_override_configuration_to_json(VideoOverrideConfiguration v) -> str:
+    list[str] parts = []
+    if v.modalityProcessing.is_some():
+        auto u0 = v.modalityProcessing.unwrap()
+        parts.append("\"modalityProcessing\":" + u0.to_json())
+    if v.sensitiveDataConfiguration.is_some():
+        auto u1 = v.sensitiveDataConfiguration.unwrap()
+        parts.append("\"sensitiveDataConfiguration\":" + sensitive_data_configuration_to_json(u1))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize VideoStandardExtraction to a compact JSON object (declaration order).
+def video_standard_extraction_to_json(VideoStandardExtraction v) -> str:
+    list[str] parts = []
+    parts.append("\"category\":" + video_extraction_category_to_json(v.category))
+    parts.append("\"boundingBox\":" + v.boundingBox.to_json())
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize VideoStandardGenerativeField to a compact JSON object (declaration order).
+def video_standard_generative_field_to_json(VideoStandardGenerativeField v) -> str:
+    list[str] parts = []
+    parts.append("\"state\":" + v.state.to_json())
+    if v.types.is_some():
+        auto u0 = v.types.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"types\":" + bedrock_data_automation_json_arr(e1))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize VideoStandardOutputConfiguration to a compact JSON object (declaration order).
+def video_standard_output_configuration_to_json(VideoStandardOutputConfiguration v) -> str:
+    list[str] parts = []
+    if v.extraction.is_some():
+        auto u0 = v.extraction.unwrap()
+        parts.append("\"extraction\":" + video_standard_extraction_to_json(u0))
+    if v.generativeField.is_some():
+        auto u1 = v.generativeField.unwrap()
+        parts.append("\"generativeField\":" + video_standard_generative_field_to_json(u1))
+    return bedrock_data_automation_json_obj(parts)
+
+# Serialize VocabularyEntityInfo to a compact JSON object (declaration order).
+def vocabulary_entity_info_to_json(VocabularyEntityInfo v) -> str:
+    list[str] parts = []
+    if v.entityId.is_some():
+        auto u0 = v.entityId.unwrap()
+        parts.append("\"entityId\":" + bedrock_data_automation_json_str(u0))
+    if v.description.is_some():
+        auto u1 = v.description.unwrap()
+        parts.append("\"description\":" + bedrock_data_automation_json_str(u1))
+    parts.append("\"language\":" + v.language.to_json())
+    list[str] e2 = []
+    for x2 in v.phrases:
+        e2.append(x2.to_json())
+    parts.append("\"phrases\":" + bedrock_data_automation_json_arr(e2))
+    return bedrock_data_automation_json_obj(parts)
+
 # A bound Bedrock_Data_Automation client: credentials + region, threaded into every operation.
 struct Bedrock_Data_AutomationClient:
     core.Credentials creds
@@ -1289,6 +1777,33 @@ struct Bedrock_Data_AutomationClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
 
+    # CreateBlueprint  PUT /blueprints/
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_blueprint(self, CreateBlueprintRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/blueprints/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"blueprintName\":" + bedrock_data_automation_json_str(input.blueprintName))
+        parts.append("\"type\":" + input.type.to_json())
+        if input.blueprintStage.is_some():
+            auto u0 = input.blueprintStage.unwrap()
+            parts.append("\"blueprintStage\":" + u0.to_json())
+        parts.append("\"schema\":" + bedrock_data_automation_json_str(input.schema))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_data_automation_json_str(u1))
+        if input.encryptionConfiguration.is_some():
+            auto u2 = input.encryptionConfiguration.unwrap()
+            parts.append("\"encryptionConfiguration\":" + encryption_configuration_to_json(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"tags\":" + bedrock_data_automation_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, bedrock_data_automation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
+
     # CreateBlueprintVersion  POST /blueprints/{blueprintArn}/versions/
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_blueprint_version(self, CreateBlueprintVersionRequest input) -> str:
@@ -1298,6 +1813,72 @@ struct Bedrock_Data_AutomationClient:
         auto b = binding.HttpBinding(method="POST", path_template="/blueprints/{blueprintArn}/versions/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateBlueprintVersionDocument(clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
+
+    # CreateDataAutomationLibrary  PUT /data-automation-libraries/
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_data_automation_library(self, CreateDataAutomationLibraryRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/data-automation-libraries/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"libraryName\":" + bedrock_data_automation_json_str(input.libraryName))
+        if input.libraryDescription.is_some():
+            auto u0 = input.libraryDescription.unwrap()
+            parts.append("\"libraryDescription\":" + bedrock_data_automation_json_str(u0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_data_automation_json_str(u1))
+        if input.encryptionConfiguration.is_some():
+            auto u2 = input.encryptionConfiguration.unwrap()
+            parts.append("\"encryptionConfiguration\":" + encryption_configuration_to_json(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"tags\":" + bedrock_data_automation_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, bedrock_data_automation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
+
+    # CreateDataAutomationProject  PUT /data-automation-projects/
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_data_automation_project(self, CreateDataAutomationProjectRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/data-automation-projects/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"projectName\":" + bedrock_data_automation_json_str(input.projectName))
+        if input.projectDescription.is_some():
+            auto u0 = input.projectDescription.unwrap()
+            parts.append("\"projectDescription\":" + bedrock_data_automation_json_str(u0))
+        if input.projectStage.is_some():
+            auto u1 = input.projectStage.unwrap()
+            parts.append("\"projectStage\":" + u1.to_json())
+        if input.projectType.is_some():
+            auto u2 = input.projectType.unwrap()
+            parts.append("\"projectType\":" + u2.to_json())
+        parts.append("\"standardOutputConfiguration\":" + standard_output_configuration_to_json(input.standardOutputConfiguration))
+        if input.customOutputConfiguration.is_some():
+            auto u3 = input.customOutputConfiguration.unwrap()
+            parts.append("\"customOutputConfiguration\":" + custom_output_configuration_to_json(u3))
+        if input.overrideConfiguration.is_some():
+            auto u4 = input.overrideConfiguration.unwrap()
+            parts.append("\"overrideConfiguration\":" + override_configuration_to_json(u4))
+        if input.dataAutomationLibraryConfiguration.is_some():
+            auto u5 = input.dataAutomationLibraryConfiguration.unwrap()
+            parts.append("\"dataAutomationLibraryConfiguration\":" + data_automation_library_configuration_to_json(u5))
+        if input.clientToken.is_some():
+            auto u6 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_data_automation_json_str(u6))
+        if input.encryptionConfiguration.is_some():
+            auto u7 = input.encryptionConfiguration.unwrap()
+            parts.append("\"encryptionConfiguration\":" + encryption_configuration_to_json(u7))
+        if input.tags.is_some():
+            auto u8 = input.tags.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"tags\":" + bedrock_data_automation_json_arr(e9))
+        auto bp = restjson.rest_json_document(b, bedrock_data_automation_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
 
     # DeleteBlueprint  DELETE /blueprints/{blueprintArn}/
@@ -1391,6 +1972,58 @@ struct Bedrock_Data_AutomationClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
 
+    # InvokeBlueprintOptimizationAsync  POST /invokeBlueprintOptimizationAsync
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def invoke_blueprint_optimization_async(self, InvokeBlueprintOptimizationAsyncRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/invokeBlueprintOptimizationAsync", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"blueprint\":" + input.blueprint.to_json())
+        list[str] e0 = []
+        for x0 in input.samples:
+            e0.append(x0.to_json())
+        parts.append("\"samples\":" + bedrock_data_automation_json_arr(e0))
+        parts.append("\"outputConfiguration\":" + input.outputConfiguration.to_json())
+        parts.append("\"dataAutomationProfileArn\":" + bedrock_data_automation_json_str(input.dataAutomationProfileArn))
+        if input.encryptionConfiguration.is_some():
+            auto u1 = input.encryptionConfiguration.unwrap()
+            parts.append("\"encryptionConfiguration\":" + encryption_configuration_to_json(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"tags\":" + bedrock_data_automation_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, bedrock_data_automation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
+
+    # InvokeDataAutomationLibraryIngestionJob  PUT /data-automation-libraries/{libraryArn}/library-ingestion-jobs/
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def invoke_data_automation_library_ingestion_job(self, InvokeDataAutomationLibraryIngestionJobRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
+        dict[str, str] labels = {}
+        labels["libraryArn"] = input.libraryArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/data-automation-libraries/{libraryArn}/library-ingestion-jobs/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_data_automation_json_str(u0))
+        parts.append("\"inputConfiguration\":" + input_configuration_to_json(input.inputConfiguration))
+        parts.append("\"entityType\":" + bedrock_data_automation_json_str(input.entityType))
+        parts.append("\"operationType\":" + input.operationType.to_json())
+        parts.append("\"outputConfiguration\":" + input.outputConfiguration.to_json())
+        if input.notificationConfiguration.is_some():
+            auto u1 = input.notificationConfiguration.unwrap()
+            parts.append("\"notificationConfiguration\":" + u1.to_json())
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"tags\":" + bedrock_data_automation_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, bedrock_data_automation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
+
     # ListBlueprints  POST /blueprints/
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_blueprints(self, ListBlueprintsRequest input) -> str:
@@ -1450,6 +2083,52 @@ struct Bedrock_Data_AutomationClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
 
+    # TagResource  POST /tagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/tagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceARN\":" + bedrock_data_automation_json_str(input.resourceARN))
+        list[str] e0 = []
+        for x0 in input.tags:
+            e0.append(x0.to_json())
+        parts.append("\"tags\":" + bedrock_data_automation_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, bedrock_data_automation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
+
+    # UntagResource  POST /untagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/untagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceARN\":" + bedrock_data_automation_json_str(input.resourceARN))
+        list[str] e0 = []
+        for x0 in input.tagKeys:
+            e0.append(bedrock_data_automation_json_str(x0))
+        parts.append("\"tagKeys\":" + bedrock_data_automation_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, bedrock_data_automation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
+
+    # UpdateBlueprint  PUT /blueprints/{blueprintArn}/
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_blueprint(self, UpdateBlueprintRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
+        dict[str, str] labels = {}
+        labels["blueprintArn"] = input.blueprintArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/blueprints/{blueprintArn}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"schema\":" + bedrock_data_automation_json_str(input.schema))
+        if input.blueprintStage.is_some():
+            auto u0 = input.blueprintStage.unwrap()
+            parts.append("\"blueprintStage\":" + u0.to_json())
+        if input.encryptionConfiguration.is_some():
+            auto u1 = input.encryptionConfiguration.unwrap()
+            parts.append("\"encryptionConfiguration\":" + encryption_configuration_to_json(u1))
+        auto bp = restjson.rest_json_document(b, bedrock_data_automation_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
+
     # UpdateDataAutomationLibrary  PUT /data-automation-libraries/{libraryArn}/
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_data_automation_library(self, UpdateDataAutomationLibraryRequest input) -> str:
@@ -1459,6 +2138,36 @@ struct Bedrock_Data_AutomationClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/data-automation-libraries/{libraryArn}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDataAutomationLibraryDocument(libraryDescription=input.libraryDescription, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
+
+    # UpdateDataAutomationProject  PUT /data-automation-projects/{projectArn}/
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_data_automation_project(self, UpdateDataAutomationProjectRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
+        dict[str, str] labels = {}
+        labels["projectArn"] = input.projectArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/data-automation-projects/{projectArn}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.projectStage.is_some():
+            auto u0 = input.projectStage.unwrap()
+            parts.append("\"projectStage\":" + u0.to_json())
+        if input.projectDescription.is_some():
+            auto u1 = input.projectDescription.unwrap()
+            parts.append("\"projectDescription\":" + bedrock_data_automation_json_str(u1))
+        parts.append("\"standardOutputConfiguration\":" + standard_output_configuration_to_json(input.standardOutputConfiguration))
+        if input.customOutputConfiguration.is_some():
+            auto u2 = input.customOutputConfiguration.unwrap()
+            parts.append("\"customOutputConfiguration\":" + custom_output_configuration_to_json(u2))
+        if input.overrideConfiguration.is_some():
+            auto u3 = input.overrideConfiguration.unwrap()
+            parts.append("\"overrideConfiguration\":" + override_configuration_to_json(u3))
+        if input.dataAutomationLibraryConfiguration.is_some():
+            auto u4 = input.dataAutomationLibraryConfiguration.unwrap()
+            parts.append("\"dataAutomationLibraryConfiguration\":" + data_automation_library_configuration_to_json(u4))
+        if input.encryptionConfiguration.is_some():
+            auto u5 = input.encryptionConfiguration.unwrap()
+            parts.append("\"encryptionConfiguration\":" + encryption_configuration_to_json(u5))
+        auto bp = restjson.rest_json_document(b, bedrock_data_automation_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
 
     # Paginator for ListBlueprints — yields each Response page, threading the

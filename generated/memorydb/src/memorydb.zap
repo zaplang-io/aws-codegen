@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 45 operations — 25 with a generated method,
-#   20 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 45 operations — 45 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   188 structs (112 @derive(Json)), 9 enums, 57 error variants.
-#   11 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   13 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -108,8 +108,9 @@ enum UpdateStrategy:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) UserNames: list[str], PendingChanges: ACLPendingChanges, Clusters: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserNames: list[str], PendingChanges: ACLPendingChanges, Clusters: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ACL:
     Optional[str] Name
     Optional[str] Status
@@ -129,8 +130,9 @@ struct ACLNotFoundFault:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) UserNamesToRemove: list[str], UserNamesToAdd: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserNamesToRemove: list[str], UserNamesToAdd: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ACLPendingChanges:
     Optional[list[str]] UserNamesToRemove
     Optional[list[str]] UserNamesToAdd
@@ -154,8 +156,9 @@ struct Authentication:
     Optional[AuthenticationType] Type
     Optional[int64] PasswordCount
 
-# no @derive(Json): member(s) Passwords: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Passwords: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthenticationMode:
     Optional[InputAuthenticationType] Type
     Optional[list[str]] Passwords
@@ -164,20 +167,23 @@ struct AuthenticationMode:
 struct AvailabilityZone:
     Optional[str] Name
 
-# no @derive(Json): member(s) ClusterNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClusterNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateClusterRequest:
     list[str] ClusterNames
     Optional[ServiceUpdateRequest] ServiceUpdate
 
-# no @derive(Json): member(s) ProcessedClusters: list[Cluster], UnprocessedClusters: list[UnprocessedCluster] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProcessedClusters: list[Cluster], UnprocessedClusters: list[UnprocessedCluster] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateClusterResponse:
     Optional[list[Cluster]] ProcessedClusters
     Optional[list[UnprocessedCluster]] UnprocessedClusters
 
-# no @derive(Json): member(s) PendingUpdates: ClusterPendingUpdates, Shards: list[Shard], SecurityGroups: list[SecurityGroupMembership] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PendingUpdates: ClusterPendingUpdates, Shards: list[Shard], SecurityGroups: list[SecurityGroupMembership] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Cluster:
     Optional[str] Name
     Optional[str] Description
@@ -215,8 +221,9 @@ struct ClusterAlreadyExistsFault:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Shards: list[ShardDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Shards: list[ShardDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterConfiguration:
     Optional[str] Name
     Optional[str] Description
@@ -241,8 +248,9 @@ struct ClusterNotFoundFault:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ServiceUpdates: list[PendingModifiedServiceUpdate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceUpdates: list[PendingModifiedServiceUpdate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterPendingUpdates:
     Optional[ReshardingStatus] Resharding
     Optional[ACLsUpdateStatus] ACLs
@@ -253,8 +261,9 @@ struct ClusterQuotaForCustomerExceededFault:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CopySnapshotRequest:
     str SourceSnapshotName
     str TargetSnapshotName
@@ -262,25 +271,29 @@ struct CopySnapshotRequest:
     Optional[str] KmsKeyId
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Snapshot: Snapshot not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Snapshot: Snapshot not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CopySnapshotResponse:
     Optional[Snapshot] Snapshot
 
-# no @derive(Json): member(s) UserNames: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserNames: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateACLRequest:
     str ACLName
     Optional[list[str]] UserNames
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) ACL: ACL not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ACL: ACL not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateACLResponse:
     Optional[ACL] ACL
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], SnapshotArns: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], SnapshotArns: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateClusterRequest:
     str ClusterName
     str NodeType
@@ -309,13 +322,15 @@ struct CreateClusterRequest:
     Optional[NetworkType] NetworkType
     Optional[IpDiscovery] IpDiscovery
 
-# no @derive(Json): member(s) Cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateClusterResponse:
     Optional[Cluster] Cluster
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMultiRegionClusterRequest:
     str MultiRegionClusterNameSuffix
     Optional[str] Description
@@ -327,13 +342,15 @@ struct CreateMultiRegionClusterRequest:
     Optional[bool] TLSEnabled
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) MultiRegionCluster: MultiRegionCluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MultiRegionCluster: MultiRegionCluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMultiRegionClusterResponse:
     Optional[MultiRegionCluster] MultiRegionCluster
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateParameterGroupRequest:
     str ParameterGroupName
     str Family
@@ -344,42 +361,48 @@ struct CreateParameterGroupRequest:
 struct CreateParameterGroupResponse:
     Optional[ParameterGroup] ParameterGroup
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSnapshotRequest:
     str ClusterName
     str SnapshotName
     Optional[str] KmsKeyId
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Snapshot: Snapshot not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Snapshot: Snapshot not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSnapshotResponse:
     Optional[Snapshot] Snapshot
 
-# no @derive(Json): member(s) SubnetIds: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSubnetGroupRequest:
     str SubnetGroupName
     Optional[str] Description
     list[str] SubnetIds
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) SubnetGroup: SubnetGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetGroup: SubnetGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSubnetGroupResponse:
     Optional[SubnetGroup] SubnetGroup
 
-# no @derive(Json): member(s) AuthenticationMode: AuthenticationMode, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthenticationMode: AuthenticationMode, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateUserRequest:
     str UserName
     AuthenticationMode AuthenticationMode
     str AccessString
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) User: User not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) User: User not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateUserResponse:
     Optional[User] User
 
@@ -392,8 +415,9 @@ struct DefaultUserRequired:
 struct DeleteACLRequest:
     str ACLName
 
-# no @derive(Json): member(s) ACL: ACL not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ACL: ACL not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteACLResponse:
     Optional[ACL] ACL
 
@@ -403,8 +427,9 @@ struct DeleteClusterRequest:
     Optional[str] MultiRegionClusterName
     Optional[str] FinalSnapshotName
 
-# no @derive(Json): member(s) Cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteClusterResponse:
     Optional[Cluster] Cluster
 
@@ -412,8 +437,9 @@ struct DeleteClusterResponse:
 struct DeleteMultiRegionClusterRequest:
     str MultiRegionClusterName
 
-# no @derive(Json): member(s) MultiRegionCluster: MultiRegionCluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MultiRegionCluster: MultiRegionCluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteMultiRegionClusterResponse:
     Optional[MultiRegionCluster] MultiRegionCluster
 
@@ -429,8 +455,9 @@ struct DeleteParameterGroupResponse:
 struct DeleteSnapshotRequest:
     str SnapshotName
 
-# no @derive(Json): member(s) Snapshot: Snapshot not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Snapshot: Snapshot not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteSnapshotResponse:
     Optional[Snapshot] Snapshot
 
@@ -438,8 +465,9 @@ struct DeleteSnapshotResponse:
 struct DeleteSubnetGroupRequest:
     str SubnetGroupName
 
-# no @derive(Json): member(s) SubnetGroup: SubnetGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetGroup: SubnetGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteSubnetGroupResponse:
     Optional[SubnetGroup] SubnetGroup
 
@@ -447,8 +475,9 @@ struct DeleteSubnetGroupResponse:
 struct DeleteUserRequest:
     str UserName
 
-# no @derive(Json): member(s) User: User not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) User: User not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteUserResponse:
     Optional[User] User
 
@@ -458,8 +487,9 @@ struct DescribeACLsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ACLs: list[ACL] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ACLs: list[ACL] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeACLsResponse:
     Optional[list[ACL]] ACLs
     Optional[str] NextToken
@@ -471,8 +501,9 @@ struct DescribeClustersRequest:
     Optional[str] NextToken
     Optional[bool] ShowShardDetails
 
-# no @derive(Json): member(s) Clusters: list[Cluster] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Clusters: list[Cluster] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClustersResponse:
     Optional[str] NextToken
     Optional[list[Cluster]] Clusters
@@ -486,8 +517,9 @@ struct DescribeEngineVersionsRequest:
     Optional[str] NextToken
     Optional[bool] DefaultOnly
 
-# no @derive(Json): member(s) EngineVersions: list[EngineVersionInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EngineVersions: list[EngineVersionInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEngineVersionsResponse:
     Optional[str] NextToken
     Optional[list[EngineVersionInfo]] EngineVersions
@@ -502,8 +534,9 @@ struct DescribeEventsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Events: list[Event] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Events: list[Event] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEventsResponse:
     Optional[str] NextToken
     Optional[list[Event]] Events
@@ -515,8 +548,9 @@ struct DescribeMultiRegionClustersRequest:
     Optional[str] NextToken
     Optional[bool] ShowClusterDetails
 
-# no @derive(Json): member(s) MultiRegionClusters: list[MultiRegionCluster] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MultiRegionClusters: list[MultiRegionCluster] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMultiRegionClustersResponse:
     Optional[str] NextToken
     Optional[list[MultiRegionCluster]] MultiRegionClusters
@@ -527,8 +561,9 @@ struct DescribeMultiRegionParameterGroupsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) MultiRegionParameterGroups: list[MultiRegionParameterGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MultiRegionParameterGroups: list[MultiRegionParameterGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMultiRegionParameterGroupsResponse:
     Optional[str] NextToken
     Optional[list[MultiRegionParameterGroup]] MultiRegionParameterGroups
@@ -540,8 +575,9 @@ struct DescribeMultiRegionParametersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) MultiRegionParameters: list[MultiRegionParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MultiRegionParameters: list[MultiRegionParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMultiRegionParametersResponse:
     Optional[str] NextToken
     Optional[list[MultiRegionParameter]] MultiRegionParameters
@@ -552,8 +588,9 @@ struct DescribeParameterGroupsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ParameterGroups: list[ParameterGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParameterGroups: list[ParameterGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeParameterGroupsResponse:
     Optional[str] NextToken
     Optional[list[ParameterGroup]] ParameterGroups
@@ -564,8 +601,9 @@ struct DescribeParametersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Parameters: list[Parameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: list[Parameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeParametersResponse:
     Optional[str] NextToken
     Optional[list[Parameter]] Parameters
@@ -579,8 +617,9 @@ struct DescribeReservedNodesOfferingsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ReservedNodesOfferings: list[ReservedNodesOffering] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReservedNodesOfferings: list[ReservedNodesOffering] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReservedNodesOfferingsResponse:
     Optional[str] NextToken
     Optional[list[ReservedNodesOffering]] ReservedNodesOfferings
@@ -595,14 +634,16 @@ struct DescribeReservedNodesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ReservedNodes: list[ReservedNode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReservedNodes: list[ReservedNode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReservedNodesResponse:
     Optional[str] NextToken
     Optional[list[ReservedNode]] ReservedNodes
 
-# no @derive(Json): member(s) ClusterNames: list[str], Status: list[ServiceUpdateStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClusterNames: list[str], Status: list[ServiceUpdateStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeServiceUpdatesRequest:
     Optional[str] ServiceUpdateName
     Optional[list[str]] ClusterNames
@@ -610,8 +651,9 @@ struct DescribeServiceUpdatesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ServiceUpdates: list[ServiceUpdate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceUpdates: list[ServiceUpdate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeServiceUpdatesResponse:
     Optional[str] NextToken
     Optional[list[ServiceUpdate]] ServiceUpdates
@@ -625,8 +667,9 @@ struct DescribeSnapshotsRequest:
     Optional[int64] MaxResults
     Optional[bool] ShowDetail
 
-# no @derive(Json): member(s) Snapshots: list[Snapshot] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Snapshots: list[Snapshot] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSnapshotsResponse:
     Optional[str] NextToken
     Optional[list[Snapshot]] Snapshots
@@ -637,22 +680,25 @@ struct DescribeSubnetGroupsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SubnetGroups: list[SubnetGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetGroups: list[SubnetGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSubnetGroupsResponse:
     Optional[str] NextToken
     Optional[list[SubnetGroup]] SubnetGroups
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeUsersRequest:
     Optional[str] UserName
     Optional[list[Filter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Users: list[User] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Users: list[User] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeUsersResponse:
     Optional[list[User]] Users
     Optional[str] NextToken
@@ -686,13 +732,15 @@ struct FailoverShardRequest:
     str ClusterName
     str ShardName
 
-# no @derive(Json): member(s) Cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FailoverShardResponse:
     Optional[Cluster] Cluster
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filter:
     str Name
     list[str] Values
@@ -774,8 +822,9 @@ struct InvalidVPCNetworkStateFault:
 struct ListAllowedMultiRegionClusterUpdatesRequest:
     str MultiRegionClusterName
 
-# no @derive(Json): member(s) ScaleUpNodeTypes: list[str], ScaleDownNodeTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScaleUpNodeTypes: list[str], ScaleDownNodeTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAllowedMultiRegionClusterUpdatesResponse:
     Optional[list[str]] ScaleUpNodeTypes
     Optional[list[str]] ScaleDownNodeTypes
@@ -784,8 +833,9 @@ struct ListAllowedMultiRegionClusterUpdatesResponse:
 struct ListAllowedNodeTypeUpdatesRequest:
     str ClusterName
 
-# no @derive(Json): member(s) ScaleUpNodeTypes: list[str], ScaleDownNodeTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScaleUpNodeTypes: list[str], ScaleDownNodeTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAllowedNodeTypeUpdatesResponse:
     Optional[list[str]] ScaleUpNodeTypes
     Optional[list[str]] ScaleDownNodeTypes
@@ -794,13 +844,15 @@ struct ListAllowedNodeTypeUpdatesResponse:
 struct ListTagsRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) TagList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsResponse:
     Optional[list[Tag]] TagList
 
-# no @derive(Json): member(s) Clusters: list[RegionalCluster] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Clusters: list[RegionalCluster] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MultiRegionCluster:
     Optional[str] MultiRegionClusterName
     Optional[str] Description
@@ -910,16 +962,18 @@ struct PendingModifiedServiceUpdate:
     Optional[str] ServiceUpdateName
     Optional[ServiceUpdateStatus] Status
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PurchaseReservedNodesOfferingRequest:
     str ReservedNodesOfferingId
     Optional[str] ReservationId
     Optional[int64] NodeCount
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) ReservedNode: ReservedNode not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReservedNode: ReservedNode not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PurchaseReservedNodesOfferingResponse:
     Optional[ReservedNode] ReservedNode
 
@@ -939,8 +993,9 @@ struct RegionalCluster:
 struct ReplicaConfigurationRequest:
     Optional[int64] ReplicaCount
 
-# no @derive(Json): member(s) RecurringCharges: list[RecurringCharge] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecurringCharges: list[RecurringCharge] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReservedNode:
     Optional[str] ReservationId
     Optional[str] ReservedNodesOfferingId
@@ -969,8 +1024,9 @@ struct ReservedNodeQuotaExceededFault:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) RecurringCharges: list[RecurringCharge] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecurringCharges: list[RecurringCharge] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReservedNodesOffering:
     Optional[str] ReservedNodesOfferingId
     Optional[str] NodeType
@@ -984,8 +1040,9 @@ struct ReservedNodesOfferingNotFoundFault:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ParameterNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParameterNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResetParameterGroupRequest:
     str ParameterGroupName
     Optional[bool] AllParameters
@@ -1030,8 +1087,9 @@ struct ServiceUpdateNotFoundFault:
 struct ServiceUpdateRequest:
     Optional[str] ServiceUpdateNameToApply
 
-# no @derive(Json): member(s) Nodes: list[Node] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Nodes: list[Node] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Shard:
     Optional[str] Name
     Optional[str] Status
@@ -1069,8 +1127,9 @@ struct ShardsPerClusterQuotaExceededFault:
 struct SlotMigration:
     Optional[float64] ProgressPercentage
 
-# no @derive(Json): member(s) ClusterConfiguration: ClusterConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClusterConfiguration: ClusterConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Snapshot:
     Optional[str] Name
     Optional[str] Status
@@ -1095,15 +1154,17 @@ struct SnapshotQuotaExceededFault:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) SupportedNetworkTypes: list[NetworkType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupportedNetworkTypes: list[NetworkType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Subnet:
     Optional[str] Identifier
     Optional[AvailabilityZone] AvailabilityZone
     Optional[list[NetworkType]] SupportedNetworkTypes
 
-# no @derive(Json): member(s) Subnets: list[Subnet], SupportedNetworkTypes: list[NetworkType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subnets: list[Subnet], SupportedNetworkTypes: list[NetworkType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SubnetGroup:
     Optional[str] Name
     Optional[str] Description
@@ -1162,14 +1223,16 @@ struct TagQuotaPerResourceExceeded:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[Tag] Tags
 
-# no @derive(Json): member(s) TagList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceResponse:
     Optional[list[Tag]] TagList
 
@@ -1184,31 +1247,36 @@ struct UnprocessedCluster:
     Optional[str] ErrorType
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] TagKeys
 
-# no @derive(Json): member(s) TagList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceResponse:
     Optional[list[Tag]] TagList
 
-# no @derive(Json): member(s) UserNamesToAdd: list[str], UserNamesToRemove: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserNamesToAdd: list[str], UserNamesToRemove: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateACLRequest:
     str ACLName
     Optional[list[str]] UserNamesToAdd
     Optional[list[str]] UserNamesToRemove
 
-# no @derive(Json): member(s) ACL: ACL not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ACL: ACL not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateACLResponse:
     Optional[ACL] ACL
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateClusterRequest:
     str ClusterName
     Optional[str] Description
@@ -1227,8 +1295,9 @@ struct UpdateClusterRequest:
     Optional[str] ACLName
     Optional[IpDiscovery] IpDiscovery
 
-# no @derive(Json): member(s) Cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateClusterResponse:
     Optional[Cluster] Cluster
 
@@ -1242,13 +1311,15 @@ struct UpdateMultiRegionClusterRequest:
     Optional[str] MultiRegionParameterGroupName
     Optional[UpdateStrategy] UpdateStrategy
 
-# no @derive(Json): member(s) MultiRegionCluster: MultiRegionCluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MultiRegionCluster: MultiRegionCluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMultiRegionClusterResponse:
     Optional[MultiRegionCluster] MultiRegionCluster
 
-# no @derive(Json): member(s) ParameterNameValues: list[ParameterNameValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParameterNameValues: list[ParameterNameValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateParameterGroupRequest:
     str ParameterGroupName
     list[ParameterNameValue] ParameterNameValues
@@ -1257,32 +1328,37 @@ struct UpdateParameterGroupRequest:
 struct UpdateParameterGroupResponse:
     Optional[ParameterGroup] ParameterGroup
 
-# no @derive(Json): member(s) SubnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSubnetGroupRequest:
     str SubnetGroupName
     Optional[str] Description
     Optional[list[str]] SubnetIds
 
-# no @derive(Json): member(s) SubnetGroup: SubnetGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetGroup: SubnetGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSubnetGroupResponse:
     Optional[SubnetGroup] SubnetGroup
 
-# no @derive(Json): member(s) AuthenticationMode: AuthenticationMode not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthenticationMode: AuthenticationMode not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateUserRequest:
     str UserName
     Optional[AuthenticationMode] AuthenticationMode
     Optional[str] AccessString
 
-# no @derive(Json): member(s) User: User not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) User: User not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateUserResponse:
     Optional[User] User
 
-# no @derive(Json): member(s) ACLNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ACLNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct User:
     Optional[str] Name
     Optional[str] Status
@@ -1491,38 +1567,557 @@ def memory_db_error_from_code(str code) -> MemoryDBError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   BatchUpdateCluster (input BatchUpdateClusterRequest)
-#   CopySnapshot (input CopySnapshotRequest)
-#   CreateACL (input CreateACLRequest)
-#   CreateCluster (input CreateClusterRequest)
-#   CreateMultiRegionCluster (input CreateMultiRegionClusterRequest)
-#   CreateParameterGroup (input CreateParameterGroupRequest)
-#   CreateSnapshot (input CreateSnapshotRequest)
-#   CreateSubnetGroup (input CreateSubnetGroupRequest)
-#   CreateUser (input CreateUserRequest)
-#   DescribeServiceUpdates (input DescribeServiceUpdatesRequest)
-#   DescribeUsers (input DescribeUsersRequest)
-#   PurchaseReservedNodesOffering (input PurchaseReservedNodesOfferingRequest)
-#   ResetParameterGroup (input ResetParameterGroupRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateACL (input UpdateACLRequest)
-#   UpdateCluster (input UpdateClusterRequest)
-#   UpdateParameterGroup (input UpdateParameterGroupRequest)
-#   UpdateSubnetGroup (input UpdateSubnetGroupRequest)
-#   UpdateUser (input UpdateUserRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def memory_db_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   DescribeServiceUpdates (input not derivable (no generated method))
-#   DescribeUsers (input not derivable (no generated method))
+def memory_db_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def memory_db_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AuthenticationMode to a compact JSON object (declaration order).
+def authentication_mode_to_json(AuthenticationMode v) -> str:
+    list[str] parts = []
+    if v.Type.is_some():
+        auto u0 = v.Type.unwrap()
+        parts.append("\"Type\":" + u0.to_json())
+    if v.Passwords.is_some():
+        auto u1 = v.Passwords.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(memory_db_json_str(x2))
+        parts.append("\"Passwords\":" + memory_db_json_arr(e2))
+    return memory_db_json_obj(parts)
+
+# Serialize BatchUpdateClusterRequest to a compact JSON object (declaration order).
+def batch_update_cluster_request_to_json(BatchUpdateClusterRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ClusterNames:
+        e0.append(memory_db_json_str(x0))
+    parts.append("\"ClusterNames\":" + memory_db_json_arr(e0))
+    if v.ServiceUpdate.is_some():
+        auto u1 = v.ServiceUpdate.unwrap()
+        parts.append("\"ServiceUpdate\":" + u1.to_json())
+    return memory_db_json_obj(parts)
+
+# Serialize CopySnapshotRequest to a compact JSON object (declaration order).
+def copy_snapshot_request_to_json(CopySnapshotRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SourceSnapshotName\":" + memory_db_json_str(v.SourceSnapshotName))
+    parts.append("\"TargetSnapshotName\":" + memory_db_json_str(v.TargetSnapshotName))
+    if v.TargetBucket.is_some():
+        auto u0 = v.TargetBucket.unwrap()
+        parts.append("\"TargetBucket\":" + memory_db_json_str(u0))
+    if v.KmsKeyId.is_some():
+        auto u1 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + memory_db_json_str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + memory_db_json_arr(e3))
+    return memory_db_json_obj(parts)
+
+# Serialize CreateACLRequest to a compact JSON object (declaration order).
+def create_acl_request_to_json(CreateACLRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ACLName\":" + memory_db_json_str(v.ACLName))
+    if v.UserNames.is_some():
+        auto u0 = v.UserNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(memory_db_json_str(x1))
+        parts.append("\"UserNames\":" + memory_db_json_arr(e1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + memory_db_json_arr(e3))
+    return memory_db_json_obj(parts)
+
+# Serialize CreateClusterRequest to a compact JSON object (declaration order).
+def create_cluster_request_to_json(CreateClusterRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterName\":" + memory_db_json_str(v.ClusterName))
+    parts.append("\"NodeType\":" + memory_db_json_str(v.NodeType))
+    if v.MultiRegionClusterName.is_some():
+        auto u0 = v.MultiRegionClusterName.unwrap()
+        parts.append("\"MultiRegionClusterName\":" + memory_db_json_str(u0))
+    if v.ParameterGroupName.is_some():
+        auto u1 = v.ParameterGroupName.unwrap()
+        parts.append("\"ParameterGroupName\":" + memory_db_json_str(u1))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"Description\":" + memory_db_json_str(u2))
+    if v.NumShards.is_some():
+        auto u3 = v.NumShards.unwrap()
+        parts.append("\"NumShards\":" + str(u3))
+    if v.NumReplicasPerShard.is_some():
+        auto u4 = v.NumReplicasPerShard.unwrap()
+        parts.append("\"NumReplicasPerShard\":" + str(u4))
+    if v.SubnetGroupName.is_some():
+        auto u5 = v.SubnetGroupName.unwrap()
+        parts.append("\"SubnetGroupName\":" + memory_db_json_str(u5))
+    if v.SecurityGroupIds.is_some():
+        auto u6 = v.SecurityGroupIds.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(memory_db_json_str(x7))
+        parts.append("\"SecurityGroupIds\":" + memory_db_json_arr(e7))
+    if v.MaintenanceWindow.is_some():
+        auto u8 = v.MaintenanceWindow.unwrap()
+        parts.append("\"MaintenanceWindow\":" + memory_db_json_str(u8))
+    if v.Port.is_some():
+        auto u9 = v.Port.unwrap()
+        parts.append("\"Port\":" + str(u9))
+    if v.SnsTopicArn.is_some():
+        auto u10 = v.SnsTopicArn.unwrap()
+        parts.append("\"SnsTopicArn\":" + memory_db_json_str(u10))
+    if v.TLSEnabled.is_some():
+        auto u11 = v.TLSEnabled.unwrap()
+        parts.append("\"TLSEnabled\":" + json.dumps(JsonValue.Bool(u11)))
+    if v.KmsKeyId.is_some():
+        auto u12 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + memory_db_json_str(u12))
+    if v.SnapshotArns.is_some():
+        auto u13 = v.SnapshotArns.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(memory_db_json_str(x14))
+        parts.append("\"SnapshotArns\":" + memory_db_json_arr(e14))
+    if v.SnapshotName.is_some():
+        auto u15 = v.SnapshotName.unwrap()
+        parts.append("\"SnapshotName\":" + memory_db_json_str(u15))
+    if v.SnapshotRetentionLimit.is_some():
+        auto u16 = v.SnapshotRetentionLimit.unwrap()
+        parts.append("\"SnapshotRetentionLimit\":" + str(u16))
+    if v.Tags.is_some():
+        auto u17 = v.Tags.unwrap()
+        list[str] e18 = []
+        for x18 in u17:
+            e18.append(x18.to_json())
+        parts.append("\"Tags\":" + memory_db_json_arr(e18))
+    if v.SnapshotWindow.is_some():
+        auto u19 = v.SnapshotWindow.unwrap()
+        parts.append("\"SnapshotWindow\":" + memory_db_json_str(u19))
+    parts.append("\"ACLName\":" + memory_db_json_str(v.ACLName))
+    if v.Engine.is_some():
+        auto u20 = v.Engine.unwrap()
+        parts.append("\"Engine\":" + memory_db_json_str(u20))
+    if v.EngineVersion.is_some():
+        auto u21 = v.EngineVersion.unwrap()
+        parts.append("\"EngineVersion\":" + memory_db_json_str(u21))
+    if v.AutoMinorVersionUpgrade.is_some():
+        auto u22 = v.AutoMinorVersionUpgrade.unwrap()
+        parts.append("\"AutoMinorVersionUpgrade\":" + json.dumps(JsonValue.Bool(u22)))
+    if v.DataTiering.is_some():
+        auto u23 = v.DataTiering.unwrap()
+        parts.append("\"DataTiering\":" + json.dumps(JsonValue.Bool(u23)))
+    if v.NetworkType.is_some():
+        auto u24 = v.NetworkType.unwrap()
+        parts.append("\"NetworkType\":" + u24.to_json())
+    if v.IpDiscovery.is_some():
+        auto u25 = v.IpDiscovery.unwrap()
+        parts.append("\"IpDiscovery\":" + u25.to_json())
+    return memory_db_json_obj(parts)
+
+# Serialize CreateMultiRegionClusterRequest to a compact JSON object (declaration order).
+def create_multi_region_cluster_request_to_json(CreateMultiRegionClusterRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"MultiRegionClusterNameSuffix\":" + memory_db_json_str(v.MultiRegionClusterNameSuffix))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + memory_db_json_str(u0))
+    if v.Engine.is_some():
+        auto u1 = v.Engine.unwrap()
+        parts.append("\"Engine\":" + memory_db_json_str(u1))
+    if v.EngineVersion.is_some():
+        auto u2 = v.EngineVersion.unwrap()
+        parts.append("\"EngineVersion\":" + memory_db_json_str(u2))
+    parts.append("\"NodeType\":" + memory_db_json_str(v.NodeType))
+    if v.MultiRegionParameterGroupName.is_some():
+        auto u3 = v.MultiRegionParameterGroupName.unwrap()
+        parts.append("\"MultiRegionParameterGroupName\":" + memory_db_json_str(u3))
+    if v.NumShards.is_some():
+        auto u4 = v.NumShards.unwrap()
+        parts.append("\"NumShards\":" + str(u4))
+    if v.TLSEnabled.is_some():
+        auto u5 = v.TLSEnabled.unwrap()
+        parts.append("\"TLSEnabled\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.Tags.is_some():
+        auto u6 = v.Tags.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Tags\":" + memory_db_json_arr(e7))
+    return memory_db_json_obj(parts)
+
+# Serialize CreateParameterGroupRequest to a compact JSON object (declaration order).
+def create_parameter_group_request_to_json(CreateParameterGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ParameterGroupName\":" + memory_db_json_str(v.ParameterGroupName))
+    parts.append("\"Family\":" + memory_db_json_str(v.Family))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + memory_db_json_str(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + memory_db_json_arr(e2))
+    return memory_db_json_obj(parts)
+
+# Serialize CreateSnapshotRequest to a compact JSON object (declaration order).
+def create_snapshot_request_to_json(CreateSnapshotRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterName\":" + memory_db_json_str(v.ClusterName))
+    parts.append("\"SnapshotName\":" + memory_db_json_str(v.SnapshotName))
+    if v.KmsKeyId.is_some():
+        auto u0 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + memory_db_json_str(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + memory_db_json_arr(e2))
+    return memory_db_json_obj(parts)
+
+# Serialize CreateSubnetGroupRequest to a compact JSON object (declaration order).
+def create_subnet_group_request_to_json(CreateSubnetGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SubnetGroupName\":" + memory_db_json_str(v.SubnetGroupName))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + memory_db_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.SubnetIds:
+        e1.append(memory_db_json_str(x1))
+    parts.append("\"SubnetIds\":" + memory_db_json_arr(e1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + memory_db_json_arr(e3))
+    return memory_db_json_obj(parts)
+
+# Serialize CreateUserRequest to a compact JSON object (declaration order).
+def create_user_request_to_json(CreateUserRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UserName\":" + memory_db_json_str(v.UserName))
+    parts.append("\"AuthenticationMode\":" + authentication_mode_to_json(v.AuthenticationMode))
+    parts.append("\"AccessString\":" + memory_db_json_str(v.AccessString))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + memory_db_json_arr(e1))
+    return memory_db_json_obj(parts)
+
+# Serialize DescribeServiceUpdatesRequest to a compact JSON object (declaration order).
+def describe_service_updates_request_to_json(DescribeServiceUpdatesRequest v) -> str:
+    list[str] parts = []
+    if v.ServiceUpdateName.is_some():
+        auto u0 = v.ServiceUpdateName.unwrap()
+        parts.append("\"ServiceUpdateName\":" + memory_db_json_str(u0))
+    if v.ClusterNames.is_some():
+        auto u1 = v.ClusterNames.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(memory_db_json_str(x2))
+        parts.append("\"ClusterNames\":" + memory_db_json_arr(e2))
+    if v.Status.is_some():
+        auto u3 = v.Status.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Status\":" + memory_db_json_arr(e4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    if v.NextToken.is_some():
+        auto u6 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + memory_db_json_str(u6))
+    return memory_db_json_obj(parts)
+
+# Serialize DescribeUsersRequest to a compact JSON object (declaration order).
+def describe_users_request_to_json(DescribeUsersRequest v) -> str:
+    list[str] parts = []
+    if v.UserName.is_some():
+        auto u0 = v.UserName.unwrap()
+        parts.append("\"UserName\":" + memory_db_json_str(u0))
+    if v.Filters.is_some():
+        auto u1 = v.Filters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(filter_to_json(x2))
+        parts.append("\"Filters\":" + memory_db_json_arr(e2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + memory_db_json_str(u4))
+    return memory_db_json_obj(parts)
+
+# Serialize Filter to a compact JSON object (declaration order).
+def filter_to_json(Filter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + memory_db_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(memory_db_json_str(x0))
+    parts.append("\"Values\":" + memory_db_json_arr(e0))
+    return memory_db_json_obj(parts)
+
+# Serialize PurchaseReservedNodesOfferingRequest to a compact JSON object (declaration order).
+def purchase_reserved_nodes_offering_request_to_json(PurchaseReservedNodesOfferingRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ReservedNodesOfferingId\":" + memory_db_json_str(v.ReservedNodesOfferingId))
+    if v.ReservationId.is_some():
+        auto u0 = v.ReservationId.unwrap()
+        parts.append("\"ReservationId\":" + memory_db_json_str(u0))
+    if v.NodeCount.is_some():
+        auto u1 = v.NodeCount.unwrap()
+        parts.append("\"NodeCount\":" + str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + memory_db_json_arr(e3))
+    return memory_db_json_obj(parts)
+
+# Serialize ResetParameterGroupRequest to a compact JSON object (declaration order).
+def reset_parameter_group_request_to_json(ResetParameterGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ParameterGroupName\":" + memory_db_json_str(v.ParameterGroupName))
+    if v.AllParameters.is_some():
+        auto u0 = v.AllParameters.unwrap()
+        parts.append("\"AllParameters\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.ParameterNames.is_some():
+        auto u1 = v.ParameterNames.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(memory_db_json_str(x2))
+        parts.append("\"ParameterNames\":" + memory_db_json_arr(e2))
+    return memory_db_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + memory_db_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + memory_db_json_arr(e0))
+    return memory_db_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + memory_db_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(memory_db_json_str(x0))
+    parts.append("\"TagKeys\":" + memory_db_json_arr(e0))
+    return memory_db_json_obj(parts)
+
+# Serialize UpdateACLRequest to a compact JSON object (declaration order).
+def update_acl_request_to_json(UpdateACLRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ACLName\":" + memory_db_json_str(v.ACLName))
+    if v.UserNamesToAdd.is_some():
+        auto u0 = v.UserNamesToAdd.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(memory_db_json_str(x1))
+        parts.append("\"UserNamesToAdd\":" + memory_db_json_arr(e1))
+    if v.UserNamesToRemove.is_some():
+        auto u2 = v.UserNamesToRemove.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(memory_db_json_str(x3))
+        parts.append("\"UserNamesToRemove\":" + memory_db_json_arr(e3))
+    return memory_db_json_obj(parts)
+
+# Serialize UpdateClusterRequest to a compact JSON object (declaration order).
+def update_cluster_request_to_json(UpdateClusterRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterName\":" + memory_db_json_str(v.ClusterName))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + memory_db_json_str(u0))
+    if v.SecurityGroupIds.is_some():
+        auto u1 = v.SecurityGroupIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(memory_db_json_str(x2))
+        parts.append("\"SecurityGroupIds\":" + memory_db_json_arr(e2))
+    if v.MaintenanceWindow.is_some():
+        auto u3 = v.MaintenanceWindow.unwrap()
+        parts.append("\"MaintenanceWindow\":" + memory_db_json_str(u3))
+    if v.SnsTopicArn.is_some():
+        auto u4 = v.SnsTopicArn.unwrap()
+        parts.append("\"SnsTopicArn\":" + memory_db_json_str(u4))
+    if v.SnsTopicStatus.is_some():
+        auto u5 = v.SnsTopicStatus.unwrap()
+        parts.append("\"SnsTopicStatus\":" + memory_db_json_str(u5))
+    if v.ParameterGroupName.is_some():
+        auto u6 = v.ParameterGroupName.unwrap()
+        parts.append("\"ParameterGroupName\":" + memory_db_json_str(u6))
+    if v.SnapshotWindow.is_some():
+        auto u7 = v.SnapshotWindow.unwrap()
+        parts.append("\"SnapshotWindow\":" + memory_db_json_str(u7))
+    if v.SnapshotRetentionLimit.is_some():
+        auto u8 = v.SnapshotRetentionLimit.unwrap()
+        parts.append("\"SnapshotRetentionLimit\":" + str(u8))
+    if v.NodeType.is_some():
+        auto u9 = v.NodeType.unwrap()
+        parts.append("\"NodeType\":" + memory_db_json_str(u9))
+    if v.Engine.is_some():
+        auto u10 = v.Engine.unwrap()
+        parts.append("\"Engine\":" + memory_db_json_str(u10))
+    if v.EngineVersion.is_some():
+        auto u11 = v.EngineVersion.unwrap()
+        parts.append("\"EngineVersion\":" + memory_db_json_str(u11))
+    if v.ReplicaConfiguration.is_some():
+        auto u12 = v.ReplicaConfiguration.unwrap()
+        parts.append("\"ReplicaConfiguration\":" + u12.to_json())
+    if v.ShardConfiguration.is_some():
+        auto u13 = v.ShardConfiguration.unwrap()
+        parts.append("\"ShardConfiguration\":" + u13.to_json())
+    if v.ACLName.is_some():
+        auto u14 = v.ACLName.unwrap()
+        parts.append("\"ACLName\":" + memory_db_json_str(u14))
+    if v.IpDiscovery.is_some():
+        auto u15 = v.IpDiscovery.unwrap()
+        parts.append("\"IpDiscovery\":" + u15.to_json())
+    return memory_db_json_obj(parts)
+
+# Serialize UpdateParameterGroupRequest to a compact JSON object (declaration order).
+def update_parameter_group_request_to_json(UpdateParameterGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ParameterGroupName\":" + memory_db_json_str(v.ParameterGroupName))
+    list[str] e0 = []
+    for x0 in v.ParameterNameValues:
+        e0.append(x0.to_json())
+    parts.append("\"ParameterNameValues\":" + memory_db_json_arr(e0))
+    return memory_db_json_obj(parts)
+
+# Serialize UpdateSubnetGroupRequest to a compact JSON object (declaration order).
+def update_subnet_group_request_to_json(UpdateSubnetGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SubnetGroupName\":" + memory_db_json_str(v.SubnetGroupName))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + memory_db_json_str(u0))
+    if v.SubnetIds.is_some():
+        auto u1 = v.SubnetIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(memory_db_json_str(x2))
+        parts.append("\"SubnetIds\":" + memory_db_json_arr(e2))
+    return memory_db_json_obj(parts)
+
+# Serialize UpdateUserRequest to a compact JSON object (declaration order).
+def update_user_request_to_json(UpdateUserRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"UserName\":" + memory_db_json_str(v.UserName))
+    if v.AuthenticationMode.is_some():
+        auto u0 = v.AuthenticationMode.unwrap()
+        parts.append("\"AuthenticationMode\":" + authentication_mode_to_json(u0))
+    if v.AccessString.is_some():
+        auto u1 = v.AccessString.unwrap()
+        parts.append("\"AccessString\":" + memory_db_json_str(u1))
+    return memory_db_json_obj(parts)
 
 # A bound MemoryDB client: credentials + region, threaded into every operation.
 struct MemoryDBClient:
     core.Credentials creds
     str region
+
+    # BatchUpdateCluster
+    # errors: InvalidParameterValueException, ServiceUpdateNotFoundFault
+    def batch_update_cluster(self, BatchUpdateClusterRequest input) -> str:
+        auto body = batch_update_cluster_request_to_json(input)
+        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "BatchUpdateCluster", body)
+
+    # CopySnapshot
+    # errors: InvalidParameterCombinationException, InvalidParameterValueException, InvalidSnapshotStateFault, ServiceLinkedRoleNotFoundFault, SnapshotAlreadyExistsFault, SnapshotNotFoundFault, SnapshotQuotaExceededFault, TagQuotaPerResourceExceeded
+    def copy_snapshot(self, CopySnapshotRequest input) -> str:
+        auto body = copy_snapshot_request_to_json(input)
+        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "CopySnapshot", body)
+
+    # CreateACL
+    # errors: ACLAlreadyExistsFault, ACLQuotaExceededFault, DefaultUserRequired, DuplicateUserNameFault, InvalidParameterValueException, TagQuotaPerResourceExceeded, UserNotFoundFault
+    def create_acl(self, CreateACLRequest input) -> str:
+        auto body = create_acl_request_to_json(input)
+        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "CreateACL", body)
+
+    # CreateCluster
+    # errors: ACLNotFoundFault, ClusterAlreadyExistsFault, ClusterQuotaForCustomerExceededFault, InsufficientClusterCapacityFault, InvalidACLStateFault, InvalidCredentialsException, InvalidMultiRegionClusterStateFault, InvalidParameterCombinationException, InvalidParameterValueException, InvalidVPCNetworkStateFault, MultiRegionClusterNotFoundFault, NodeQuotaForClusterExceededFault, NodeQuotaForCustomerExceededFault, ParameterGroupNotFoundFault, ServiceLinkedRoleNotFoundFault, ShardsPerClusterQuotaExceededFault, SubnetGroupNotFoundFault, TagQuotaPerResourceExceeded
+    def create_cluster(self, CreateClusterRequest input) -> str:
+        auto body = create_cluster_request_to_json(input)
+        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "CreateCluster", body)
+
+    # CreateMultiRegionCluster
+    # errors: ClusterQuotaForCustomerExceededFault, InvalidParameterCombinationException, InvalidParameterValueException, MultiRegionClusterAlreadyExistsFault, MultiRegionParameterGroupNotFoundFault, TagQuotaPerResourceExceeded
+    def create_multi_region_cluster(self, CreateMultiRegionClusterRequest input) -> str:
+        auto body = create_multi_region_cluster_request_to_json(input)
+        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "CreateMultiRegionCluster", body)
+
+    # CreateParameterGroup
+    # errors: InvalidParameterCombinationException, InvalidParameterGroupStateFault, InvalidParameterValueException, ParameterGroupAlreadyExistsFault, ParameterGroupQuotaExceededFault, ServiceLinkedRoleNotFoundFault, TagQuotaPerResourceExceeded
+    def create_parameter_group(self, CreateParameterGroupRequest input) -> str:
+        auto body = create_parameter_group_request_to_json(input)
+        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "CreateParameterGroup", body)
+
+    # CreateSnapshot
+    # errors: ClusterNotFoundFault, InvalidClusterStateFault, InvalidParameterCombinationException, InvalidParameterValueException, ServiceLinkedRoleNotFoundFault, SnapshotAlreadyExistsFault, SnapshotQuotaExceededFault, TagQuotaPerResourceExceeded
+    def create_snapshot(self, CreateSnapshotRequest input) -> str:
+        auto body = create_snapshot_request_to_json(input)
+        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "CreateSnapshot", body)
+
+    # CreateSubnetGroup
+    # errors: InvalidSubnet, ServiceLinkedRoleNotFoundFault, SubnetGroupAlreadyExistsFault, SubnetGroupQuotaExceededFault, SubnetNotAllowedFault, SubnetQuotaExceededFault, TagQuotaPerResourceExceeded
+    def create_subnet_group(self, CreateSubnetGroupRequest input) -> str:
+        auto body = create_subnet_group_request_to_json(input)
+        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "CreateSubnetGroup", body)
+
+    # CreateUser
+    # errors: DuplicateUserNameFault, InvalidParameterCombinationException, InvalidParameterValueException, TagQuotaPerResourceExceeded, UserAlreadyExistsFault, UserQuotaExceededFault
+    def create_user(self, CreateUserRequest input) -> str:
+        auto body = create_user_request_to_json(input)
+        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "CreateUser", body)
 
     # DeleteACL
     # errors: ACLNotFoundFault, InvalidACLStateFault, InvalidParameterValueException
@@ -1632,6 +2227,12 @@ struct MemoryDBClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeReservedNodesOfferings", body)
 
+    # DescribeServiceUpdates
+    # errors: InvalidParameterCombinationException, InvalidParameterValueException
+    def describe_service_updates(self, DescribeServiceUpdatesRequest input) -> str:
+        auto body = describe_service_updates_request_to_json(input)
+        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeServiceUpdates", body)
+
     # DescribeSnapshots
     # errors: InvalidParameterCombinationException, InvalidParameterValueException, ServiceLinkedRoleNotFoundFault, SnapshotNotFoundFault
     def describe_snapshots(self, DescribeSnapshotsRequest input) -> str:
@@ -1643,6 +2244,12 @@ struct MemoryDBClient:
     def describe_subnet_groups(self, DescribeSubnetGroupsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeSubnetGroups", body)
+
+    # DescribeUsers
+    # errors: InvalidParameterCombinationException, UserNotFoundFault
+    def describe_users(self, DescribeUsersRequest input) -> str:
+        auto body = describe_users_request_to_json(input)
+        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeUsers", body)
 
     # FailoverShard
     # errors: APICallRateForCustomerExceededFault, ClusterNotFoundFault, InvalidClusterStateFault, InvalidKMSKeyFault, InvalidParameterCombinationException, InvalidParameterValueException, ShardNotFoundFault, TestFailoverNotAvailableFault
@@ -1668,11 +2275,65 @@ struct MemoryDBClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "ListTags", body)
 
+    # PurchaseReservedNodesOffering
+    # errors: InvalidParameterCombinationException, InvalidParameterValueException, ReservedNodeAlreadyExistsFault, ReservedNodeQuotaExceededFault, ReservedNodesOfferingNotFoundFault, ServiceLinkedRoleNotFoundFault, TagQuotaPerResourceExceeded
+    def purchase_reserved_nodes_offering(self, PurchaseReservedNodesOfferingRequest input) -> str:
+        auto body = purchase_reserved_nodes_offering_request_to_json(input)
+        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "PurchaseReservedNodesOffering", body)
+
+    # ResetParameterGroup
+    # errors: InvalidParameterCombinationException, InvalidParameterGroupStateFault, InvalidParameterValueException, ParameterGroupNotFoundFault, ServiceLinkedRoleNotFoundFault
+    def reset_parameter_group(self, ResetParameterGroupRequest input) -> str:
+        auto body = reset_parameter_group_request_to_json(input)
+        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "ResetParameterGroup", body)
+
+    # TagResource
+    # errors: ACLNotFoundFault, ClusterNotFoundFault, InvalidARNFault, InvalidClusterStateFault, InvalidParameterValueException, MultiRegionClusterNotFoundFault, MultiRegionParameterGroupNotFoundFault, ParameterGroupNotFoundFault, ServiceLinkedRoleNotFoundFault, SnapshotNotFoundFault, SubnetGroupNotFoundFault, TagQuotaPerResourceExceeded, UserNotFoundFault
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: ACLNotFoundFault, ClusterNotFoundFault, InvalidARNFault, InvalidClusterStateFault, InvalidParameterValueException, MultiRegionClusterNotFoundFault, MultiRegionParameterGroupNotFoundFault, ParameterGroupNotFoundFault, ServiceLinkedRoleNotFoundFault, SnapshotNotFoundFault, SubnetGroupNotFoundFault, TagNotFoundFault, UserNotFoundFault
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateACL
+    # errors: ACLNotFoundFault, DefaultUserRequired, DuplicateUserNameFault, InvalidACLStateFault, InvalidParameterCombinationException, InvalidParameterValueException, UserNotFoundFault
+    def update_acl(self, UpdateACLRequest input) -> str:
+        auto body = update_acl_request_to_json(input)
+        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "UpdateACL", body)
+
+    # UpdateCluster
+    # errors: ACLNotFoundFault, ClusterNotFoundFault, ClusterQuotaForCustomerExceededFault, InvalidACLStateFault, InvalidClusterStateFault, InvalidKMSKeyFault, InvalidNodeStateFault, InvalidParameterCombinationException, InvalidParameterValueException, InvalidVPCNetworkStateFault, NoOperationFault, NodeQuotaForClusterExceededFault, NodeQuotaForCustomerExceededFault, ParameterGroupNotFoundFault, ServiceLinkedRoleNotFoundFault, ShardsPerClusterQuotaExceededFault
+    def update_cluster(self, UpdateClusterRequest input) -> str:
+        auto body = update_cluster_request_to_json(input)
+        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "UpdateCluster", body)
+
     # UpdateMultiRegionCluster
     # errors: InvalidMultiRegionClusterStateFault, InvalidParameterCombinationException, InvalidParameterValueException, MultiRegionClusterNotFoundFault, MultiRegionParameterGroupNotFoundFault
     def update_multi_region_cluster(self, UpdateMultiRegionClusterRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "UpdateMultiRegionCluster", body)
+
+    # UpdateParameterGroup
+    # errors: InvalidParameterCombinationException, InvalidParameterGroupStateFault, InvalidParameterValueException, ParameterGroupNotFoundFault, ServiceLinkedRoleNotFoundFault
+    def update_parameter_group(self, UpdateParameterGroupRequest input) -> str:
+        auto body = update_parameter_group_request_to_json(input)
+        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "UpdateParameterGroup", body)
+
+    # UpdateSubnetGroup
+    # errors: InvalidSubnet, ServiceLinkedRoleNotFoundFault, SubnetGroupNotFoundFault, SubnetInUse, SubnetNotAllowedFault, SubnetQuotaExceededFault
+    def update_subnet_group(self, UpdateSubnetGroupRequest input) -> str:
+        auto body = update_subnet_group_request_to_json(input)
+        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "UpdateSubnetGroup", body)
+
+    # UpdateUser
+    # errors: InvalidParameterCombinationException, InvalidParameterValueException, InvalidUserStateFault, UserNotFoundFault
+    def update_user(self, UpdateUserRequest input) -> str:
+        auto body = update_user_request_to_json(input)
+        return awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "UpdateUser", body)
 
     # Paginator for DescribeACLs — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: ACLs).
@@ -1800,6 +2461,20 @@ struct MemoryDBClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for DescribeServiceUpdates — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ServiceUpdates).
+    def paginate_describe_service_updates(self, DescribeServiceUpdatesRequest input):
+        auto host = endpoints.regional_host(memory_db_protocol().service, self.region)
+        while True:
+            auto body = describe_service_updates_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeServiceUpdates", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for DescribeSnapshots — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: Snapshots).
     def paginate_describe_snapshots(self, DescribeSnapshotsRequest input):
@@ -1821,6 +2496,20 @@ struct MemoryDBClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeSubnetGroups", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeUsers — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Users).
+    def paginate_describe_users(self, DescribeUsersRequest input):
+        auto host = endpoints.regional_host(memory_db_protocol().service, self.region)
+        while True:
+            auto body = describe_users_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(memory_db_protocol(), self.creds, self.region, "DescribeUsers", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

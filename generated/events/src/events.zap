@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 57 operations — 44 with a generated method,
-#   13 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 57 operations — 57 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   189 structs (133 @derive(Json)), 17 enums, 13 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import datetime
 
 # The EventBridge awsJson protocol: version 1.1, API id "AWSEvents".
 def events_protocol() -> awsjson.AwsJson:
@@ -225,8 +226,9 @@ struct Archive:
     Optional[int64] EventCount
     Optional[DateTime] CreationTime
 
-# no @derive(Json): member(s) Subnets: list[str], SecurityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subnets: list[str], SecurityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsVpcConfiguration:
     list[str] Subnets
     Optional[list[str]] SecurityGroups
@@ -289,8 +291,9 @@ struct Connection:
 struct ConnectionApiKeyAuthResponseParameters:
     Optional[str] ApiKeyName
 
-# no @derive(Json): member(s) OAuthParameters: ConnectionOAuthResponseParameters, InvocationHttpParameters: ConnectionHttpParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OAuthParameters: ConnectionOAuthResponseParameters, InvocationHttpParameters: ConnectionHttpParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectionAuthResponseParameters:
     Optional[ConnectionBasicAuthResponseParameters] BasicAuthParameters
     Optional[ConnectionOAuthResponseParameters] OAuthParameters
@@ -314,8 +317,9 @@ struct ConnectionHeaderParameter:
     Optional[str] Value
     Optional[bool] IsValueSecret
 
-# no @derive(Json): member(s) HeaderParameters: list[ConnectionHeaderParameter], QueryStringParameters: list[ConnectionQueryStringParameter], BodyParameters: list[ConnectionBodyParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HeaderParameters: list[ConnectionHeaderParameter], QueryStringParameters: list[ConnectionQueryStringParameter], BodyParameters: list[ConnectionBodyParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectionHttpParameters:
     Optional[list[ConnectionHeaderParameter]] HeaderParameters
     Optional[list[ConnectionQueryStringParameter]] QueryStringParameters
@@ -325,8 +329,9 @@ struct ConnectionHttpParameters:
 struct ConnectionOAuthClientResponseParameters:
     Optional[str] ClientID
 
-# no @derive(Json): member(s) OAuthHttpParameters: ConnectionHttpParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OAuthHttpParameters: ConnectionHttpParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectionOAuthResponseParameters:
     Optional[ConnectionOAuthClientResponseParameters] ClientParameters
     Optional[str] AuthorizationEndpoint
@@ -384,8 +389,9 @@ struct CreateConnectionApiKeyAuthRequestParameters:
     str ApiKeyName
     str ApiKeyValue
 
-# no @derive(Json): member(s) OAuthParameters: CreateConnectionOAuthRequestParameters, InvocationHttpParameters: ConnectionHttpParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OAuthParameters: CreateConnectionOAuthRequestParameters, InvocationHttpParameters: ConnectionHttpParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConnectionAuthRequestParameters:
     Optional[CreateConnectionBasicAuthRequestParameters] BasicAuthParameters
     Optional[CreateConnectionOAuthRequestParameters] OAuthParameters
@@ -403,16 +409,18 @@ struct CreateConnectionOAuthClientRequestParameters:
     str ClientID
     str ClientSecret
 
-# no @derive(Json): member(s) OAuthHttpParameters: ConnectionHttpParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OAuthHttpParameters: ConnectionHttpParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConnectionOAuthRequestParameters:
     CreateConnectionOAuthClientRequestParameters ClientParameters
     str AuthorizationEndpoint
     ConnectionOAuthHttpMethod HttpMethod
     Optional[ConnectionHttpParameters] OAuthHttpParameters
 
-# no @derive(Json): member(s) AuthParameters: CreateConnectionAuthRequestParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthParameters: CreateConnectionAuthRequestParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConnectionRequest:
     str Name
     Optional[str] Description
@@ -428,8 +436,9 @@ struct CreateConnectionResponse:
     Optional[DateTime] CreationTime
     Optional[DateTime] LastModifiedTime
 
-# no @derive(Json): member(s) EventBuses: list[EndpointEventBus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventBuses: list[EndpointEventBus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEndpointRequest:
     str Name
     Optional[str] Description
@@ -438,8 +447,9 @@ struct CreateEndpointRequest:
     list[EndpointEventBus] EventBuses
     Optional[str] RoleArn
 
-# no @derive(Json): member(s) EventBuses: list[EndpointEventBus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventBuses: list[EndpointEventBus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEndpointResponse:
     Optional[str] Name
     Optional[str] Arn
@@ -449,8 +459,9 @@ struct CreateEndpointResponse:
     Optional[str] RoleArn
     Optional[EndpointState] State
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEventBusRequest:
     str Name
     Optional[str] EventSourceName
@@ -600,8 +611,9 @@ struct DescribeConnectionResourceParameters:
     str ResourceConfigurationArn
     str ResourceAssociationArn
 
-# no @derive(Json): member(s) AuthParameters: ConnectionAuthResponseParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthParameters: ConnectionAuthResponseParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConnectionResponse:
     Optional[str] ConnectionArn
     Optional[str] Name
@@ -622,8 +634,9 @@ struct DescribeEndpointRequest:
     str Name
     Optional[str] HomeRegion
 
-# no @derive(Json): member(s) EventBuses: list[EndpointEventBus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventBuses: list[EndpointEventBus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEndpointResponse:
     Optional[str] Name
     Optional[str] Description
@@ -682,8 +695,9 @@ struct DescribePartnerEventSourceResponse:
 struct DescribeReplayRequest:
     str ReplayName
 
-# no @derive(Json): member(s) Destination: ReplayDestination not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destination: ReplayDestination not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReplayResponse:
     Optional[str] ReplayName
     Optional[str] ReplayArn
@@ -721,8 +735,9 @@ struct DisableRuleRequest:
     str Name
     Optional[str] EventBusName
 
-# no @derive(Json): member(s) NetworkConfiguration: NetworkConfiguration, CapacityProviderStrategy: list[CapacityProviderStrategyItem], PlacementConstraints: list[PlacementConstraint], PlacementStrategy: list[PlacementStrategy], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkConfiguration: NetworkConfiguration, CapacityProviderStrategy: list[CapacityProviderStrategyItem], PlacementConstraints: list[PlacementConstraint], PlacementStrategy: list[PlacementStrategy], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EcsParameters:
     str TaskDefinitionArn
     Optional[int64] TaskCount
@@ -744,8 +759,9 @@ struct EnableRuleRequest:
     str Name
     Optional[str] EventBusName
 
-# no @derive(Json): member(s) EventBuses: list[EndpointEventBus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventBuses: list[EndpointEventBus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Endpoint:
     Optional[str] Name
     Optional[str] Description
@@ -789,8 +805,9 @@ struct FailoverConfig:
     Primary Primary
     Secondary Secondary
 
-# no @derive(Json): member(s) PathParameterValues: list[str], HeaderParameters: dict[str, str], QueryStringParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PathParameterValues: list[str], HeaderParameters: dict[str, str], QueryStringParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HttpParameters:
     Optional[list[str]] PathParameterValues
     Optional[dict[str, str]] HeaderParameters
@@ -801,8 +818,9 @@ struct IllegalStatusException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) InputPathsMap: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputPathsMap: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputTransformer:
     Optional[dict[str, str]] InputPathsMap
     str InputTemplate
@@ -838,8 +856,9 @@ struct ListApiDestinationsRequest:
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) ApiDestinations: list[ApiDestination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApiDestinations: list[ApiDestination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApiDestinationsResponse:
     Optional[list[ApiDestination]] ApiDestinations
     Optional[str] NextToken
@@ -852,8 +871,9 @@ struct ListArchivesRequest:
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Archives: list[Archive] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Archives: list[Archive] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListArchivesResponse:
     Optional[list[Archive]] Archives
     Optional[str] NextToken
@@ -865,8 +885,9 @@ struct ListConnectionsRequest:
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Connections: list[Connection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Connections: list[Connection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectionsResponse:
     Optional[list[Connection]] Connections
     Optional[str] NextToken
@@ -878,8 +899,9 @@ struct ListEndpointsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Endpoints: list[Endpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoints: list[Endpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEndpointsResponse:
     Optional[list[Endpoint]] Endpoints
     Optional[str] NextToken
@@ -890,8 +912,9 @@ struct ListEventBusesRequest:
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) EventBuses: list[EventBus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventBuses: list[EventBus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventBusesResponse:
     Optional[list[EventBus]] EventBuses
     Optional[str] NextToken
@@ -902,8 +925,9 @@ struct ListEventSourcesRequest:
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) EventSources: list[EventSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventSources: list[EventSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventSourcesResponse:
     Optional[list[EventSource]] EventSources
     Optional[str] NextToken
@@ -914,8 +938,9 @@ struct ListPartnerEventSourceAccountsRequest:
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) PartnerEventSourceAccounts: list[PartnerEventSourceAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartnerEventSourceAccounts: list[PartnerEventSourceAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPartnerEventSourceAccountsResponse:
     Optional[list[PartnerEventSourceAccount]] PartnerEventSourceAccounts
     Optional[str] NextToken
@@ -926,8 +951,9 @@ struct ListPartnerEventSourcesRequest:
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) PartnerEventSources: list[PartnerEventSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartnerEventSources: list[PartnerEventSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPartnerEventSourcesResponse:
     Optional[list[PartnerEventSource]] PartnerEventSources
     Optional[str] NextToken
@@ -940,8 +966,9 @@ struct ListReplaysRequest:
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Replays: list[Replay] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Replays: list[Replay] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReplaysResponse:
     Optional[list[Replay]] Replays
     Optional[str] NextToken
@@ -953,8 +980,9 @@ struct ListRuleNamesByTargetRequest:
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) RuleNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRuleNamesByTargetResponse:
     Optional[list[str]] RuleNames
     Optional[str] NextToken
@@ -966,8 +994,9 @@ struct ListRulesRequest:
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Rules: list[Rule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[Rule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRulesResponse:
     Optional[list[Rule]] Rules
     Optional[str] NextToken
@@ -976,8 +1005,9 @@ struct ListRulesResponse:
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -988,8 +1018,9 @@ struct ListTargetsByRuleRequest:
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Targets: list[Target] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: list[Target] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTargetsByRuleResponse:
     Optional[list[Target]] Targets
     Optional[str] NextToken
@@ -1004,8 +1035,9 @@ struct ManagedRuleException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) awsvpcConfiguration: AwsVpcConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) awsvpcConfiguration: AwsVpcConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkConfiguration:
     Optional[AwsVpcConfiguration] awsvpcConfiguration
 
@@ -1045,14 +1077,16 @@ struct PolicyLengthExceededException:
 struct Primary:
     str HealthCheck
 
-# no @derive(Json): member(s) Entries: list[PutEventsRequestEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entries: list[PutEventsRequestEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutEventsRequest:
     list[PutEventsRequestEntry] Entries
     Optional[str] EndpointId
 
-# no @derive(Json): member(s) Resources: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resources: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutEventsRequestEntry:
     Optional[DateTime] Time
     Optional[str] Source
@@ -1062,8 +1096,9 @@ struct PutEventsRequestEntry:
     Optional[str] EventBusName
     Optional[str] TraceHeader
 
-# no @derive(Json): member(s) Entries: list[PutEventsResultEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entries: list[PutEventsResultEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutEventsResponse:
     Optional[int64] FailedEntryCount
     Optional[list[PutEventsResultEntry]] Entries
@@ -1074,13 +1109,15 @@ struct PutEventsResultEntry:
     Optional[str] ErrorCode
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) Entries: list[PutPartnerEventsRequestEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entries: list[PutPartnerEventsRequestEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutPartnerEventsRequest:
     list[PutPartnerEventsRequestEntry] Entries
 
-# no @derive(Json): member(s) Resources: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resources: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutPartnerEventsRequestEntry:
     Optional[DateTime] Time
     Optional[str] Source
@@ -1088,8 +1125,9 @@ struct PutPartnerEventsRequestEntry:
     Optional[str] DetailType
     Optional[str] Detail
 
-# no @derive(Json): member(s) Entries: list[PutPartnerEventsResultEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entries: list[PutPartnerEventsResultEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutPartnerEventsResponse:
     Optional[int64] FailedEntryCount
     Optional[list[PutPartnerEventsResultEntry]] Entries
@@ -1109,8 +1147,9 @@ struct PutPermissionRequest:
     Optional[Condition] Condition
     Optional[str] Policy
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutRuleRequest:
     str Name
     Optional[str] ScheduleExpression
@@ -1125,15 +1164,17 @@ struct PutRuleRequest:
 struct PutRuleResponse:
     Optional[str] RuleArn
 
-# no @derive(Json): member(s) Targets: list[Target] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: list[Target] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutTargetsRequest:
     str Rule
     Optional[str] EventBusName
     list[Target] Targets
 
-# no @derive(Json): member(s) FailedEntries: list[PutTargetsResultEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedEntries: list[PutTargetsResultEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutTargetsResponse:
     Optional[int64] FailedEntryCount
     Optional[list[PutTargetsResultEntry]] FailedEntries
@@ -1144,8 +1185,9 @@ struct PutTargetsResultEntry:
     Optional[str] ErrorCode
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) Sqls: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sqls: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RedshiftDataParameters:
     Optional[str] SecretManagerArn
     str Database
@@ -1161,16 +1203,18 @@ struct RemovePermissionRequest:
     Optional[bool] RemoveAllPermissions
     Optional[str] EventBusName
 
-# no @derive(Json): member(s) Ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveTargetsRequest:
     str Rule
     Optional[str] EventBusName
     list[str] Ids
     Optional[bool] Force
 
-# no @derive(Json): member(s) FailedEntries: list[RemoveTargetsResultEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedEntries: list[RemoveTargetsResultEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveTargetsResponse:
     Optional[int64] FailedEntryCount
     Optional[list[RemoveTargetsResultEntry]] FailedEntries
@@ -1193,8 +1237,9 @@ struct Replay:
     Optional[DateTime] ReplayStartTime
     Optional[DateTime] ReplayEndTime
 
-# no @derive(Json): member(s) FilterArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplayDestination:
     str Arn
     Optional[list[str]] FilterArns
@@ -1234,13 +1279,15 @@ struct Rule:
     Optional[str] ManagedBy
     Optional[str] EventBusName
 
-# no @derive(Json): member(s) RunCommandTargets: list[RunCommandTarget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RunCommandTargets: list[RunCommandTarget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RunCommandParameters:
     list[RunCommandTarget] RunCommandTargets
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RunCommandTarget:
     str Key
     list[str] Values
@@ -1250,8 +1297,9 @@ struct SageMakerPipelineParameter:
     str Name
     str Value
 
-# no @derive(Json): member(s) PipelineParameterList: list[SageMakerPipelineParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PipelineParameterList: list[SageMakerPipelineParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SageMakerPipelineParameters:
     Optional[list[SageMakerPipelineParameter]] PipelineParameterList
 
@@ -1263,8 +1311,9 @@ struct Secondary:
 struct SqsParameters:
     Optional[str] MessageGroupId
 
-# no @derive(Json): member(s) Destination: ReplayDestination not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Destination: ReplayDestination not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartReplayRequest:
     str ReplayName
     Optional[str] Description
@@ -1285,8 +1334,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceARN
     list[Tag] Tags
@@ -1296,8 +1346,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) InputTransformer: InputTransformer, RunCommandParameters: RunCommandParameters, EcsParameters: EcsParameters, HttpParameters: HttpParameters, RedshiftDataParameters: RedshiftDataParameters, SageMakerPipelineParameters: SageMakerPipelineParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputTransformer: InputTransformer, RunCommandParameters: RunCommandParameters, EcsParameters: EcsParameters, HttpParameters: HttpParameters, RedshiftDataParameters: RedshiftDataParameters, SageMakerPipelineParameters: SageMakerPipelineParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Target:
     str Id
     str Arn
@@ -1331,8 +1382,9 @@ struct ThrottlingException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceARN
     list[str] TagKeys
@@ -1378,8 +1430,9 @@ struct UpdateConnectionApiKeyAuthRequestParameters:
     Optional[str] ApiKeyName
     Optional[str] ApiKeyValue
 
-# no @derive(Json): member(s) OAuthParameters: UpdateConnectionOAuthRequestParameters, InvocationHttpParameters: ConnectionHttpParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OAuthParameters: UpdateConnectionOAuthRequestParameters, InvocationHttpParameters: ConnectionHttpParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateConnectionAuthRequestParameters:
     Optional[UpdateConnectionBasicAuthRequestParameters] BasicAuthParameters
     Optional[UpdateConnectionOAuthRequestParameters] OAuthParameters
@@ -1397,16 +1450,18 @@ struct UpdateConnectionOAuthClientRequestParameters:
     Optional[str] ClientID
     Optional[str] ClientSecret
 
-# no @derive(Json): member(s) OAuthHttpParameters: ConnectionHttpParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OAuthHttpParameters: ConnectionHttpParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateConnectionOAuthRequestParameters:
     Optional[UpdateConnectionOAuthClientRequestParameters] ClientParameters
     Optional[str] AuthorizationEndpoint
     Optional[ConnectionOAuthHttpMethod] HttpMethod
     Optional[ConnectionHttpParameters] OAuthHttpParameters
 
-# no @derive(Json): member(s) AuthParameters: UpdateConnectionAuthRequestParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthParameters: UpdateConnectionAuthRequestParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateConnectionRequest:
     str Name
     Optional[str] Description
@@ -1423,8 +1478,9 @@ struct UpdateConnectionResponse:
     Optional[DateTime] LastModifiedTime
     Optional[DateTime] LastAuthorizedTime
 
-# no @derive(Json): member(s) EventBuses: list[EndpointEventBus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventBuses: list[EndpointEventBus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEndpointRequest:
     str Name
     Optional[str] Description
@@ -1433,8 +1489,9 @@ struct UpdateEndpointRequest:
     Optional[list[EndpointEventBus]] EventBuses
     Optional[str] RoleArn
 
-# no @derive(Json): member(s) EventBuses: list[EndpointEventBus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventBuses: list[EndpointEventBus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEndpointResponse:
     Optional[str] Name
     Optional[str] Arn
@@ -1515,21 +1572,639 @@ def events_error_from_code(str code) -> EventBridgeError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateConnection (input CreateConnectionRequest)
-#   CreateEndpoint (input CreateEndpointRequest)
-#   CreateEventBus (input CreateEventBusRequest)
-#   PutEvents (input PutEventsRequest)
-#   PutPartnerEvents (input PutPartnerEventsRequest)
-#   PutRule (input PutRuleRequest)
-#   PutTargets (input PutTargetsRequest)
-#   RemoveTargets (input RemoveTargetsRequest)
-#   StartReplay (input StartReplayRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateConnection (input UpdateConnectionRequest)
-#   UpdateEndpoint (input UpdateEndpointRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def events_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def events_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def events_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AwsVpcConfiguration to a compact JSON object (declaration order).
+def aws_vpc_configuration_to_json(AwsVpcConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Subnets:
+        e0.append(events_json_str(x0))
+    parts.append("\"Subnets\":" + events_json_arr(e0))
+    if v.SecurityGroups.is_some():
+        auto u1 = v.SecurityGroups.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(events_json_str(x2))
+        parts.append("\"SecurityGroups\":" + events_json_arr(e2))
+    if v.AssignPublicIp.is_some():
+        auto u3 = v.AssignPublicIp.unwrap()
+        parts.append("\"AssignPublicIp\":" + u3.to_json())
+    return events_json_obj(parts)
+
+# Serialize ConnectionHttpParameters to a compact JSON object (declaration order).
+def connection_http_parameters_to_json(ConnectionHttpParameters v) -> str:
+    list[str] parts = []
+    if v.HeaderParameters.is_some():
+        auto u0 = v.HeaderParameters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"HeaderParameters\":" + events_json_arr(e1))
+    if v.QueryStringParameters.is_some():
+        auto u2 = v.QueryStringParameters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"QueryStringParameters\":" + events_json_arr(e3))
+    if v.BodyParameters.is_some():
+        auto u4 = v.BodyParameters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"BodyParameters\":" + events_json_arr(e5))
+    return events_json_obj(parts)
+
+# Serialize CreateConnectionAuthRequestParameters to a compact JSON object (declaration order).
+def create_connection_auth_request_parameters_to_json(CreateConnectionAuthRequestParameters v) -> str:
+    list[str] parts = []
+    if v.BasicAuthParameters.is_some():
+        auto u0 = v.BasicAuthParameters.unwrap()
+        parts.append("\"BasicAuthParameters\":" + u0.to_json())
+    if v.OAuthParameters.is_some():
+        auto u1 = v.OAuthParameters.unwrap()
+        parts.append("\"OAuthParameters\":" + create_connection_o_auth_request_parameters_to_json(u1))
+    if v.ApiKeyAuthParameters.is_some():
+        auto u2 = v.ApiKeyAuthParameters.unwrap()
+        parts.append("\"ApiKeyAuthParameters\":" + u2.to_json())
+    if v.InvocationHttpParameters.is_some():
+        auto u3 = v.InvocationHttpParameters.unwrap()
+        parts.append("\"InvocationHttpParameters\":" + connection_http_parameters_to_json(u3))
+    if v.ConnectivityParameters.is_some():
+        auto u4 = v.ConnectivityParameters.unwrap()
+        parts.append("\"ConnectivityParameters\":" + u4.to_json())
+    return events_json_obj(parts)
+
+# Serialize CreateConnectionOAuthRequestParameters to a compact JSON object (declaration order).
+def create_connection_o_auth_request_parameters_to_json(CreateConnectionOAuthRequestParameters v) -> str:
+    list[str] parts = []
+    parts.append("\"ClientParameters\":" + v.ClientParameters.to_json())
+    parts.append("\"AuthorizationEndpoint\":" + events_json_str(v.AuthorizationEndpoint))
+    parts.append("\"HttpMethod\":" + v.HttpMethod.to_json())
+    if v.OAuthHttpParameters.is_some():
+        auto u0 = v.OAuthHttpParameters.unwrap()
+        parts.append("\"OAuthHttpParameters\":" + connection_http_parameters_to_json(u0))
+    return events_json_obj(parts)
+
+# Serialize CreateConnectionRequest to a compact JSON object (declaration order).
+def create_connection_request_to_json(CreateConnectionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + events_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + events_json_str(u0))
+    parts.append("\"AuthorizationType\":" + v.AuthorizationType.to_json())
+    parts.append("\"AuthParameters\":" + create_connection_auth_request_parameters_to_json(v.AuthParameters))
+    if v.InvocationConnectivityParameters.is_some():
+        auto u1 = v.InvocationConnectivityParameters.unwrap()
+        parts.append("\"InvocationConnectivityParameters\":" + u1.to_json())
+    if v.KmsKeyIdentifier.is_some():
+        auto u2 = v.KmsKeyIdentifier.unwrap()
+        parts.append("\"KmsKeyIdentifier\":" + events_json_str(u2))
+    return events_json_obj(parts)
+
+# Serialize CreateEndpointRequest to a compact JSON object (declaration order).
+def create_endpoint_request_to_json(CreateEndpointRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + events_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + events_json_str(u0))
+    parts.append("\"RoutingConfig\":" + v.RoutingConfig.to_json())
+    if v.ReplicationConfig.is_some():
+        auto u1 = v.ReplicationConfig.unwrap()
+        parts.append("\"ReplicationConfig\":" + u1.to_json())
+    list[str] e2 = []
+    for x2 in v.EventBuses:
+        e2.append(x2.to_json())
+    parts.append("\"EventBuses\":" + events_json_arr(e2))
+    if v.RoleArn.is_some():
+        auto u3 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + events_json_str(u3))
+    return events_json_obj(parts)
+
+# Serialize CreateEventBusRequest to a compact JSON object (declaration order).
+def create_event_bus_request_to_json(CreateEventBusRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + events_json_str(v.Name))
+    if v.EventSourceName.is_some():
+        auto u0 = v.EventSourceName.unwrap()
+        parts.append("\"EventSourceName\":" + events_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + events_json_str(u1))
+    if v.KmsKeyIdentifier.is_some():
+        auto u2 = v.KmsKeyIdentifier.unwrap()
+        parts.append("\"KmsKeyIdentifier\":" + events_json_str(u2))
+    if v.DeadLetterConfig.is_some():
+        auto u3 = v.DeadLetterConfig.unwrap()
+        parts.append("\"DeadLetterConfig\":" + u3.to_json())
+    if v.LogConfig.is_some():
+        auto u4 = v.LogConfig.unwrap()
+        parts.append("\"LogConfig\":" + u4.to_json())
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + events_json_arr(e6))
+    return events_json_obj(parts)
+
+# Serialize EcsParameters to a compact JSON object (declaration order).
+def ecs_parameters_to_json(EcsParameters v) -> str:
+    list[str] parts = []
+    parts.append("\"TaskDefinitionArn\":" + events_json_str(v.TaskDefinitionArn))
+    if v.TaskCount.is_some():
+        auto u0 = v.TaskCount.unwrap()
+        parts.append("\"TaskCount\":" + str(u0))
+    if v.LaunchType.is_some():
+        auto u1 = v.LaunchType.unwrap()
+        parts.append("\"LaunchType\":" + u1.to_json())
+    if v.NetworkConfiguration.is_some():
+        auto u2 = v.NetworkConfiguration.unwrap()
+        parts.append("\"NetworkConfiguration\":" + network_configuration_to_json(u2))
+    if v.PlatformVersion.is_some():
+        auto u3 = v.PlatformVersion.unwrap()
+        parts.append("\"PlatformVersion\":" + events_json_str(u3))
+    if v.Group.is_some():
+        auto u4 = v.Group.unwrap()
+        parts.append("\"Group\":" + events_json_str(u4))
+    if v.CapacityProviderStrategy.is_some():
+        auto u5 = v.CapacityProviderStrategy.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"CapacityProviderStrategy\":" + events_json_arr(e6))
+    if v.EnableECSManagedTags.is_some():
+        auto u7 = v.EnableECSManagedTags.unwrap()
+        parts.append("\"EnableECSManagedTags\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.EnableExecuteCommand.is_some():
+        auto u8 = v.EnableExecuteCommand.unwrap()
+        parts.append("\"EnableExecuteCommand\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.PlacementConstraints.is_some():
+        auto u9 = v.PlacementConstraints.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"PlacementConstraints\":" + events_json_arr(e10))
+    if v.PlacementStrategy.is_some():
+        auto u11 = v.PlacementStrategy.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"PlacementStrategy\":" + events_json_arr(e12))
+    if v.PropagateTags.is_some():
+        auto u13 = v.PropagateTags.unwrap()
+        parts.append("\"PropagateTags\":" + events_json_str(u13))
+    if v.ReferenceId.is_some():
+        auto u14 = v.ReferenceId.unwrap()
+        parts.append("\"ReferenceId\":" + events_json_str(u14))
+    if v.Tags.is_some():
+        auto u15 = v.Tags.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(x16.to_json())
+        parts.append("\"Tags\":" + events_json_arr(e16))
+    return events_json_obj(parts)
+
+# Serialize HttpParameters to a compact JSON object (declaration order).
+def http_parameters_to_json(HttpParameters v) -> str:
+    list[str] parts = []
+    if v.PathParameterValues.is_some():
+        auto u0 = v.PathParameterValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(events_json_str(x1))
+        parts.append("\"PathParameterValues\":" + events_json_arr(e1))
+    if v.HeaderParameters.is_some():
+        auto u2 = v.HeaderParameters.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(events_json_str(k3) + ":" + events_json_str(u2[k3]))
+        parts.append("\"HeaderParameters\":" + events_json_obj(m3))
+    if v.QueryStringParameters.is_some():
+        auto u4 = v.QueryStringParameters.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(events_json_str(k5) + ":" + events_json_str(u4[k5]))
+        parts.append("\"QueryStringParameters\":" + events_json_obj(m5))
+    return events_json_obj(parts)
+
+# Serialize InputTransformer to a compact JSON object (declaration order).
+def input_transformer_to_json(InputTransformer v) -> str:
+    list[str] parts = []
+    if v.InputPathsMap.is_some():
+        auto u0 = v.InputPathsMap.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(events_json_str(k1) + ":" + events_json_str(u0[k1]))
+        parts.append("\"InputPathsMap\":" + events_json_obj(m1))
+    parts.append("\"InputTemplate\":" + events_json_str(v.InputTemplate))
+    return events_json_obj(parts)
+
+# Serialize NetworkConfiguration to a compact JSON object (declaration order).
+def network_configuration_to_json(NetworkConfiguration v) -> str:
+    list[str] parts = []
+    if v.awsvpcConfiguration.is_some():
+        auto u0 = v.awsvpcConfiguration.unwrap()
+        parts.append("\"awsvpcConfiguration\":" + aws_vpc_configuration_to_json(u0))
+    return events_json_obj(parts)
+
+# Serialize PutEventsRequest to a compact JSON object (declaration order).
+def put_events_request_to_json(PutEventsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Entries:
+        e0.append(put_events_request_entry_to_json(x0))
+    parts.append("\"Entries\":" + events_json_arr(e0))
+    if v.EndpointId.is_some():
+        auto u1 = v.EndpointId.unwrap()
+        parts.append("\"EndpointId\":" + events_json_str(u1))
+    return events_json_obj(parts)
+
+# Serialize PutEventsRequestEntry to a compact JSON object (declaration order).
+def put_events_request_entry_to_json(PutEventsRequestEntry v) -> str:
+    list[str] parts = []
+    if v.Time.is_some():
+        auto u0 = v.Time.unwrap()
+        parts.append("\"Time\":" + str(datetime.to_timestamp(u0)))
+    if v.Source.is_some():
+        auto u1 = v.Source.unwrap()
+        parts.append("\"Source\":" + events_json_str(u1))
+    if v.Resources.is_some():
+        auto u2 = v.Resources.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(events_json_str(x3))
+        parts.append("\"Resources\":" + events_json_arr(e3))
+    if v.DetailType.is_some():
+        auto u4 = v.DetailType.unwrap()
+        parts.append("\"DetailType\":" + events_json_str(u4))
+    if v.Detail.is_some():
+        auto u5 = v.Detail.unwrap()
+        parts.append("\"Detail\":" + events_json_str(u5))
+    if v.EventBusName.is_some():
+        auto u6 = v.EventBusName.unwrap()
+        parts.append("\"EventBusName\":" + events_json_str(u6))
+    if v.TraceHeader.is_some():
+        auto u7 = v.TraceHeader.unwrap()
+        parts.append("\"TraceHeader\":" + events_json_str(u7))
+    return events_json_obj(parts)
+
+# Serialize PutPartnerEventsRequest to a compact JSON object (declaration order).
+def put_partner_events_request_to_json(PutPartnerEventsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Entries:
+        e0.append(put_partner_events_request_entry_to_json(x0))
+    parts.append("\"Entries\":" + events_json_arr(e0))
+    return events_json_obj(parts)
+
+# Serialize PutPartnerEventsRequestEntry to a compact JSON object (declaration order).
+def put_partner_events_request_entry_to_json(PutPartnerEventsRequestEntry v) -> str:
+    list[str] parts = []
+    if v.Time.is_some():
+        auto u0 = v.Time.unwrap()
+        parts.append("\"Time\":" + str(datetime.to_timestamp(u0)))
+    if v.Source.is_some():
+        auto u1 = v.Source.unwrap()
+        parts.append("\"Source\":" + events_json_str(u1))
+    if v.Resources.is_some():
+        auto u2 = v.Resources.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(events_json_str(x3))
+        parts.append("\"Resources\":" + events_json_arr(e3))
+    if v.DetailType.is_some():
+        auto u4 = v.DetailType.unwrap()
+        parts.append("\"DetailType\":" + events_json_str(u4))
+    if v.Detail.is_some():
+        auto u5 = v.Detail.unwrap()
+        parts.append("\"Detail\":" + events_json_str(u5))
+    return events_json_obj(parts)
+
+# Serialize PutRuleRequest to a compact JSON object (declaration order).
+def put_rule_request_to_json(PutRuleRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + events_json_str(v.Name))
+    if v.ScheduleExpression.is_some():
+        auto u0 = v.ScheduleExpression.unwrap()
+        parts.append("\"ScheduleExpression\":" + events_json_str(u0))
+    if v.EventPattern.is_some():
+        auto u1 = v.EventPattern.unwrap()
+        parts.append("\"EventPattern\":" + events_json_str(u1))
+    if v.State.is_some():
+        auto u2 = v.State.unwrap()
+        parts.append("\"State\":" + u2.to_json())
+    if v.Description.is_some():
+        auto u3 = v.Description.unwrap()
+        parts.append("\"Description\":" + events_json_str(u3))
+    if v.RoleArn.is_some():
+        auto u4 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + events_json_str(u4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + events_json_arr(e6))
+    if v.EventBusName.is_some():
+        auto u7 = v.EventBusName.unwrap()
+        parts.append("\"EventBusName\":" + events_json_str(u7))
+    return events_json_obj(parts)
+
+# Serialize PutTargetsRequest to a compact JSON object (declaration order).
+def put_targets_request_to_json(PutTargetsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Rule\":" + events_json_str(v.Rule))
+    if v.EventBusName.is_some():
+        auto u0 = v.EventBusName.unwrap()
+        parts.append("\"EventBusName\":" + events_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.Targets:
+        e1.append(target_to_json(x1))
+    parts.append("\"Targets\":" + events_json_arr(e1))
+    return events_json_obj(parts)
+
+# Serialize RedshiftDataParameters to a compact JSON object (declaration order).
+def redshift_data_parameters_to_json(RedshiftDataParameters v) -> str:
+    list[str] parts = []
+    if v.SecretManagerArn.is_some():
+        auto u0 = v.SecretManagerArn.unwrap()
+        parts.append("\"SecretManagerArn\":" + events_json_str(u0))
+    parts.append("\"Database\":" + events_json_str(v.Database))
+    if v.DbUser.is_some():
+        auto u1 = v.DbUser.unwrap()
+        parts.append("\"DbUser\":" + events_json_str(u1))
+    if v.Sql.is_some():
+        auto u2 = v.Sql.unwrap()
+        parts.append("\"Sql\":" + events_json_str(u2))
+    if v.StatementName.is_some():
+        auto u3 = v.StatementName.unwrap()
+        parts.append("\"StatementName\":" + events_json_str(u3))
+    if v.WithEvent.is_some():
+        auto u4 = v.WithEvent.unwrap()
+        parts.append("\"WithEvent\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.Sqls.is_some():
+        auto u5 = v.Sqls.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(events_json_str(x6))
+        parts.append("\"Sqls\":" + events_json_arr(e6))
+    return events_json_obj(parts)
+
+# Serialize RemoveTargetsRequest to a compact JSON object (declaration order).
+def remove_targets_request_to_json(RemoveTargetsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Rule\":" + events_json_str(v.Rule))
+    if v.EventBusName.is_some():
+        auto u0 = v.EventBusName.unwrap()
+        parts.append("\"EventBusName\":" + events_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.Ids:
+        e1.append(events_json_str(x1))
+    parts.append("\"Ids\":" + events_json_arr(e1))
+    if v.Force.is_some():
+        auto u2 = v.Force.unwrap()
+        parts.append("\"Force\":" + json.dumps(JsonValue.Bool(u2)))
+    return events_json_obj(parts)
+
+# Serialize ReplayDestination to a compact JSON object (declaration order).
+def replay_destination_to_json(ReplayDestination v) -> str:
+    list[str] parts = []
+    parts.append("\"Arn\":" + events_json_str(v.Arn))
+    if v.FilterArns.is_some():
+        auto u0 = v.FilterArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(events_json_str(x1))
+        parts.append("\"FilterArns\":" + events_json_arr(e1))
+    return events_json_obj(parts)
+
+# Serialize RunCommandParameters to a compact JSON object (declaration order).
+def run_command_parameters_to_json(RunCommandParameters v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.RunCommandTargets:
+        e0.append(run_command_target_to_json(x0))
+    parts.append("\"RunCommandTargets\":" + events_json_arr(e0))
+    return events_json_obj(parts)
+
+# Serialize RunCommandTarget to a compact JSON object (declaration order).
+def run_command_target_to_json(RunCommandTarget v) -> str:
+    list[str] parts = []
+    parts.append("\"Key\":" + events_json_str(v.Key))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(events_json_str(x0))
+    parts.append("\"Values\":" + events_json_arr(e0))
+    return events_json_obj(parts)
+
+# Serialize SageMakerPipelineParameters to a compact JSON object (declaration order).
+def sage_maker_pipeline_parameters_to_json(SageMakerPipelineParameters v) -> str:
+    list[str] parts = []
+    if v.PipelineParameterList.is_some():
+        auto u0 = v.PipelineParameterList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"PipelineParameterList\":" + events_json_arr(e1))
+    return events_json_obj(parts)
+
+# Serialize StartReplayRequest to a compact JSON object (declaration order).
+def start_replay_request_to_json(StartReplayRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ReplayName\":" + events_json_str(v.ReplayName))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + events_json_str(u0))
+    parts.append("\"EventSourceArn\":" + events_json_str(v.EventSourceArn))
+    parts.append("\"EventStartTime\":" + str(datetime.to_timestamp(v.EventStartTime)))
+    parts.append("\"EventEndTime\":" + str(datetime.to_timestamp(v.EventEndTime)))
+    parts.append("\"Destination\":" + replay_destination_to_json(v.Destination))
+    return events_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + events_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + events_json_arr(e0))
+    return events_json_obj(parts)
+
+# Serialize Target to a compact JSON object (declaration order).
+def target_to_json(Target v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + events_json_str(v.Id))
+    parts.append("\"Arn\":" + events_json_str(v.Arn))
+    if v.RoleArn.is_some():
+        auto u0 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + events_json_str(u0))
+    if v.Input.is_some():
+        auto u1 = v.Input.unwrap()
+        parts.append("\"Input\":" + events_json_str(u1))
+    if v.InputPath.is_some():
+        auto u2 = v.InputPath.unwrap()
+        parts.append("\"InputPath\":" + events_json_str(u2))
+    if v.InputTransformer.is_some():
+        auto u3 = v.InputTransformer.unwrap()
+        parts.append("\"InputTransformer\":" + input_transformer_to_json(u3))
+    if v.KinesisParameters.is_some():
+        auto u4 = v.KinesisParameters.unwrap()
+        parts.append("\"KinesisParameters\":" + u4.to_json())
+    if v.RunCommandParameters.is_some():
+        auto u5 = v.RunCommandParameters.unwrap()
+        parts.append("\"RunCommandParameters\":" + run_command_parameters_to_json(u5))
+    if v.EcsParameters.is_some():
+        auto u6 = v.EcsParameters.unwrap()
+        parts.append("\"EcsParameters\":" + ecs_parameters_to_json(u6))
+    if v.BatchParameters.is_some():
+        auto u7 = v.BatchParameters.unwrap()
+        parts.append("\"BatchParameters\":" + u7.to_json())
+    if v.SqsParameters.is_some():
+        auto u8 = v.SqsParameters.unwrap()
+        parts.append("\"SqsParameters\":" + u8.to_json())
+    if v.HttpParameters.is_some():
+        auto u9 = v.HttpParameters.unwrap()
+        parts.append("\"HttpParameters\":" + http_parameters_to_json(u9))
+    if v.RedshiftDataParameters.is_some():
+        auto u10 = v.RedshiftDataParameters.unwrap()
+        parts.append("\"RedshiftDataParameters\":" + redshift_data_parameters_to_json(u10))
+    if v.SageMakerPipelineParameters.is_some():
+        auto u11 = v.SageMakerPipelineParameters.unwrap()
+        parts.append("\"SageMakerPipelineParameters\":" + sage_maker_pipeline_parameters_to_json(u11))
+    if v.DeadLetterConfig.is_some():
+        auto u12 = v.DeadLetterConfig.unwrap()
+        parts.append("\"DeadLetterConfig\":" + u12.to_json())
+    if v.RetryPolicy.is_some():
+        auto u13 = v.RetryPolicy.unwrap()
+        parts.append("\"RetryPolicy\":" + u13.to_json())
+    if v.AppSyncParameters.is_some():
+        auto u14 = v.AppSyncParameters.unwrap()
+        parts.append("\"AppSyncParameters\":" + u14.to_json())
+    return events_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + events_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(events_json_str(x0))
+    parts.append("\"TagKeys\":" + events_json_arr(e0))
+    return events_json_obj(parts)
+
+# Serialize UpdateConnectionAuthRequestParameters to a compact JSON object (declaration order).
+def update_connection_auth_request_parameters_to_json(UpdateConnectionAuthRequestParameters v) -> str:
+    list[str] parts = []
+    if v.BasicAuthParameters.is_some():
+        auto u0 = v.BasicAuthParameters.unwrap()
+        parts.append("\"BasicAuthParameters\":" + u0.to_json())
+    if v.OAuthParameters.is_some():
+        auto u1 = v.OAuthParameters.unwrap()
+        parts.append("\"OAuthParameters\":" + update_connection_o_auth_request_parameters_to_json(u1))
+    if v.ApiKeyAuthParameters.is_some():
+        auto u2 = v.ApiKeyAuthParameters.unwrap()
+        parts.append("\"ApiKeyAuthParameters\":" + u2.to_json())
+    if v.InvocationHttpParameters.is_some():
+        auto u3 = v.InvocationHttpParameters.unwrap()
+        parts.append("\"InvocationHttpParameters\":" + connection_http_parameters_to_json(u3))
+    if v.ConnectivityParameters.is_some():
+        auto u4 = v.ConnectivityParameters.unwrap()
+        parts.append("\"ConnectivityParameters\":" + u4.to_json())
+    return events_json_obj(parts)
+
+# Serialize UpdateConnectionOAuthRequestParameters to a compact JSON object (declaration order).
+def update_connection_o_auth_request_parameters_to_json(UpdateConnectionOAuthRequestParameters v) -> str:
+    list[str] parts = []
+    if v.ClientParameters.is_some():
+        auto u0 = v.ClientParameters.unwrap()
+        parts.append("\"ClientParameters\":" + u0.to_json())
+    if v.AuthorizationEndpoint.is_some():
+        auto u1 = v.AuthorizationEndpoint.unwrap()
+        parts.append("\"AuthorizationEndpoint\":" + events_json_str(u1))
+    if v.HttpMethod.is_some():
+        auto u2 = v.HttpMethod.unwrap()
+        parts.append("\"HttpMethod\":" + u2.to_json())
+    if v.OAuthHttpParameters.is_some():
+        auto u3 = v.OAuthHttpParameters.unwrap()
+        parts.append("\"OAuthHttpParameters\":" + connection_http_parameters_to_json(u3))
+    return events_json_obj(parts)
+
+# Serialize UpdateConnectionRequest to a compact JSON object (declaration order).
+def update_connection_request_to_json(UpdateConnectionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + events_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + events_json_str(u0))
+    if v.AuthorizationType.is_some():
+        auto u1 = v.AuthorizationType.unwrap()
+        parts.append("\"AuthorizationType\":" + u1.to_json())
+    if v.AuthParameters.is_some():
+        auto u2 = v.AuthParameters.unwrap()
+        parts.append("\"AuthParameters\":" + update_connection_auth_request_parameters_to_json(u2))
+    if v.InvocationConnectivityParameters.is_some():
+        auto u3 = v.InvocationConnectivityParameters.unwrap()
+        parts.append("\"InvocationConnectivityParameters\":" + u3.to_json())
+    if v.KmsKeyIdentifier.is_some():
+        auto u4 = v.KmsKeyIdentifier.unwrap()
+        parts.append("\"KmsKeyIdentifier\":" + events_json_str(u4))
+    return events_json_obj(parts)
+
+# Serialize UpdateEndpointRequest to a compact JSON object (declaration order).
+def update_endpoint_request_to_json(UpdateEndpointRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + events_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + events_json_str(u0))
+    if v.RoutingConfig.is_some():
+        auto u1 = v.RoutingConfig.unwrap()
+        parts.append("\"RoutingConfig\":" + u1.to_json())
+    if v.ReplicationConfig.is_some():
+        auto u2 = v.ReplicationConfig.unwrap()
+        parts.append("\"ReplicationConfig\":" + u2.to_json())
+    if v.EventBuses.is_some():
+        auto u3 = v.EventBuses.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"EventBuses\":" + events_json_arr(e4))
+    if v.RoleArn.is_some():
+        auto u5 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + events_json_str(u5))
+    return events_json_obj(parts)
 
 # A bound EventBridge client: credentials + region, threaded into every operation.
 struct EventBridgeClient:
@@ -1559,6 +2234,24 @@ struct EventBridgeClient:
     def create_archive(self, CreateArchiveRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(events_protocol(), self.creds, self.region, "CreateArchive", body)
+
+    # CreateConnection
+    # errors: AccessDeniedException, InternalException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, ThrottlingException
+    def create_connection(self, CreateConnectionRequest input) -> str:
+        auto body = create_connection_request_to_json(input)
+        return awsjson.awsjson_request_now(events_protocol(), self.creds, self.region, "CreateConnection", body)
+
+    # CreateEndpoint
+    # errors: InternalException, LimitExceededException, ResourceAlreadyExistsException
+    def create_endpoint(self, CreateEndpointRequest input) -> str:
+        auto body = create_endpoint_request_to_json(input)
+        return awsjson.awsjson_request_now(events_protocol(), self.creds, self.region, "CreateEndpoint", body)
+
+    # CreateEventBus
+    # errors: ConcurrentModificationException, InternalException, InvalidStateException, LimitExceededException, OperationDisabledException, ResourceAlreadyExistsException, ResourceNotFoundException
+    def create_event_bus(self, CreateEventBusRequest input) -> str:
+        auto body = create_event_bus_request_to_json(input)
+        return awsjson.awsjson_request_now(events_protocol(), self.creds, self.region, "CreateEventBus", body)
 
     # CreatePartnerEventSource
     # errors: ConcurrentModificationException, InternalException, LimitExceededException, OperationDisabledException, ResourceAlreadyExistsException
@@ -1764,11 +2457,35 @@ struct EventBridgeClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(events_protocol(), self.creds, self.region, "ListTargetsByRule", body)
 
+    # PutEvents
+    # errors: InternalException
+    def put_events(self, PutEventsRequest input) -> str:
+        auto body = put_events_request_to_json(input)
+        return awsjson.awsjson_request_now(events_protocol(), self.creds, self.region, "PutEvents", body)
+
+    # PutPartnerEvents
+    # errors: InternalException, OperationDisabledException
+    def put_partner_events(self, PutPartnerEventsRequest input) -> str:
+        auto body = put_partner_events_request_to_json(input)
+        return awsjson.awsjson_request_now(events_protocol(), self.creds, self.region, "PutPartnerEvents", body)
+
     # PutPermission
     # errors: ConcurrentModificationException, InternalException, OperationDisabledException, PolicyLengthExceededException, ResourceNotFoundException
     def put_permission(self, PutPermissionRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(events_protocol(), self.creds, self.region, "PutPermission", body)
+
+    # PutRule
+    # errors: ConcurrentModificationException, InternalException, InvalidEventPatternException, LimitExceededException, ManagedRuleException, ResourceNotFoundException
+    def put_rule(self, PutRuleRequest input) -> str:
+        auto body = put_rule_request_to_json(input)
+        return awsjson.awsjson_request_now(events_protocol(), self.creds, self.region, "PutRule", body)
+
+    # PutTargets
+    # errors: ConcurrentModificationException, InternalException, LimitExceededException, ManagedRuleException, ResourceNotFoundException
+    def put_targets(self, PutTargetsRequest input) -> str:
+        auto body = put_targets_request_to_json(input)
+        return awsjson.awsjson_request_now(events_protocol(), self.creds, self.region, "PutTargets", body)
 
     # RemovePermission
     # errors: ConcurrentModificationException, InternalException, OperationDisabledException, ResourceNotFoundException
@@ -1776,11 +2493,35 @@ struct EventBridgeClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(events_protocol(), self.creds, self.region, "RemovePermission", body)
 
+    # RemoveTargets
+    # errors: ConcurrentModificationException, InternalException, ManagedRuleException, ResourceNotFoundException
+    def remove_targets(self, RemoveTargetsRequest input) -> str:
+        auto body = remove_targets_request_to_json(input)
+        return awsjson.awsjson_request_now(events_protocol(), self.creds, self.region, "RemoveTargets", body)
+
+    # StartReplay
+    # errors: InternalException, InvalidEventPatternException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException
+    def start_replay(self, StartReplayRequest input) -> str:
+        auto body = start_replay_request_to_json(input)
+        return awsjson.awsjson_request_now(events_protocol(), self.creds, self.region, "StartReplay", body)
+
+    # TagResource
+    # errors: ConcurrentModificationException, InternalException, ManagedRuleException, ResourceNotFoundException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(events_protocol(), self.creds, self.region, "TagResource", body)
+
     # TestEventPattern
     # errors: InternalException, InvalidEventPatternException
     def test_event_pattern(self, TestEventPatternRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(events_protocol(), self.creds, self.region, "TestEventPattern", body)
+
+    # UntagResource
+    # errors: ConcurrentModificationException, InternalException, ManagedRuleException, ResourceNotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(events_protocol(), self.creds, self.region, "UntagResource", body)
 
     # UpdateApiDestination
     # errors: ConcurrentModificationException, InternalException, LimitExceededException, ResourceNotFoundException
@@ -1793,6 +2534,18 @@ struct EventBridgeClient:
     def update_archive(self, UpdateArchiveRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(events_protocol(), self.creds, self.region, "UpdateArchive", body)
+
+    # UpdateConnection
+    # errors: AccessDeniedException, ConcurrentModificationException, InternalException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def update_connection(self, UpdateConnectionRequest input) -> str:
+        auto body = update_connection_request_to_json(input)
+        return awsjson.awsjson_request_now(events_protocol(), self.creds, self.region, "UpdateConnection", body)
+
+    # UpdateEndpoint
+    # errors: ConcurrentModificationException, InternalException, ResourceNotFoundException
+    def update_endpoint(self, UpdateEndpointRequest input) -> str:
+        auto body = update_endpoint_request_to_json(input)
+        return awsjson.awsjson_request_now(events_protocol(), self.creds, self.region, "UpdateEndpoint", body)
 
     # UpdateEventBus
     # errors: ConcurrentModificationException, InternalException, OperationDisabledException, ResourceNotFoundException

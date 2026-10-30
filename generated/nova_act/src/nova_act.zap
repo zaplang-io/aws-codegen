@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 16 operations — 14 with a generated method,
-#   2 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 16 operations — 16 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   59 structs (48 @derive(Json)), 7 enums, 7 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -128,8 +128,9 @@ struct Call:
     SensitiveDocument input
     str name
 
-# no @derive(Json): member(s) content: list[CallResultContent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) content: list[CallResultContent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CallResult:
     Optional[str] callId
     list[CallResultContent] content
@@ -143,8 +144,9 @@ struct ClientInfo:
     int64 compatibilityVersion
     Optional[str] sdkVersion
 
-# no @derive(Json): member(s) supportedModelIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) supportedModelIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CompatibilityInformation:
     int64 clientCompatibilityVersion
     list[str] supportedModelIds
@@ -276,8 +278,9 @@ struct InvokeActStepRequest:
     list[CallResult] callResults
     Optional[str] previousStepId
 
-# no @derive(Json): member(s) calls: list[Call] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) calls: list[Call] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvokeActStepResponse:
     list[Call] calls
     str stepId
@@ -292,8 +295,9 @@ struct ListActsRequest:
     Optional[str] nextToken
     Optional[SortOrder] sortOrder
 
-# no @derive(Json): member(s) actSummaries: list[ActSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actSummaries: list[ActSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListActsResponse:
     list[ActSummary] actSummaries
     Optional[str] nextToken
@@ -303,8 +307,9 @@ struct ListActsResponse:
 struct ListModelsRequest:
     int64 clientCompatibilityVersion
 
-# no @derive(Json): member(s) modelSummaries: list[ModelSummary], modelAliases: list[ModelAlias], compatibilityInformation: CompatibilityInformation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) modelSummaries: list[ModelSummary], modelAliases: list[ModelAlias], compatibilityInformation: CompatibilityInformation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListModelsResponse:
     list[ModelSummary] modelSummaries
     list[ModelAlias] modelAliases
@@ -319,8 +324,9 @@ struct ListSessionsRequest:
     Optional[str] nextToken
     Optional[SortOrder] sortOrder
 
-# no @derive(Json): member(s) sessionSummaries: list[SessionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sessionSummaries: list[SessionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSessionsResponse:
     list[SessionSummary] sessionSummaries
     Optional[str] nextToken
@@ -332,8 +338,9 @@ struct ListWorkflowDefinitionsRequest:
     Optional[str] nextToken
     Optional[SortOrder] sortOrder
 
-# no @derive(Json): member(s) workflowDefinitionSummaries: list[WorkflowDefinitionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workflowDefinitionSummaries: list[WorkflowDefinitionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkflowDefinitionsResponse:
     list[WorkflowDefinitionSummary] workflowDefinitionSummaries
     Optional[str] nextToken
@@ -346,8 +353,9 @@ struct ListWorkflowRunsRequest:
     Optional[str] nextToken
     Optional[SortOrder] sortOrder
 
-# no @derive(Json): member(s) workflowRunSummaries: list[WorkflowRunSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workflowRunSummaries: list[WorkflowRunSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkflowRunsResponse:
     list[WorkflowRunSummary] workflowRunSummaries
     Optional[str] nextToken
@@ -445,8 +453,9 @@ struct UpdateWorkflowRunResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -516,12 +525,6 @@ def nova_act_error_from_code(str code) -> Nova_ActError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CreateAct (document member `toolSpecs: list[ToolSpec]` is not serializable by derive)
-#   InvokeActStep (document member `callResults: list[CallResult]` is not serializable by derive)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -577,10 +580,75 @@ struct UpdateWorkflowRunDocument:
     # document members of UpdateWorkflowRun
     WorkflowRunStatus status
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def nova_act_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def nova_act_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def nova_act_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CallResult to a compact JSON object (declaration order).
+def call_result_to_json(CallResult v) -> str:
+    list[str] parts = []
+    if v.callId.is_some():
+        auto u0 = v.callId.unwrap()
+        parts.append("\"callId\":" + nova_act_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.content:
+        e1.append(x1.to_json())
+    parts.append("\"content\":" + nova_act_json_arr(e1))
+    return nova_act_json_obj(parts)
+
 # A bound Nova_Act client: credentials + region, threaded into every operation.
 struct Nova_ActClient:
     core.Credentials creds
     str region
+
+    # CreateAct  PUT /workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}/sessions/{sessionId}/acts
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_act(self, CreateActRequest input) -> str:
+        auto host = endpoints.regional_host(nova_act_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workflowDefinitionName"] = input.workflowDefinitionName
+        labels["workflowRunId"] = input.workflowRunId
+        labels["sessionId"] = input.sessionId
+        auto b = binding.HttpBinding(method="PUT", path_template="/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}/sessions/{sessionId}/acts", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"task\":" + nova_act_json_str(input.task))
+        if input.toolSpecs.is_some():
+            auto u0 = input.toolSpecs.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"toolSpecs\":" + nova_act_json_arr(e1))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + nova_act_json_str(u2))
+        auto bp = restjson.rest_json_document(b, nova_act_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, nova_act_service(), self.region, host)
 
     # CreateSession  PUT /workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}/sessions
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -651,6 +719,27 @@ struct Nova_ActClient:
         labels["workflowRunId"] = input.workflowRunId
         auto b = binding.HttpBinding(method="GET", path_template="/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, nova_act_service(), self.region, host)
+
+    # InvokeActStep  PUT /workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}/sessions/{sessionId}/acts/{actId}/invoke-step/
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def invoke_act_step(self, InvokeActStepRequest input) -> str:
+        auto host = endpoints.regional_host(nova_act_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workflowDefinitionName"] = input.workflowDefinitionName
+        labels["workflowRunId"] = input.workflowRunId
+        labels["sessionId"] = input.sessionId
+        labels["actId"] = input.actId
+        auto b = binding.HttpBinding(method="PUT", path_template="/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}/sessions/{sessionId}/acts/{actId}/invoke-step/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.callResults:
+            e0.append(call_result_to_json(x0))
+        parts.append("\"callResults\":" + nova_act_json_arr(e0))
+        if input.previousStepId.is_some():
+            auto u1 = input.previousStepId.unwrap()
+            parts.append("\"previousStepId\":" + nova_act_json_str(u1))
+        auto bp = restjson.rest_json_document(b, nova_act_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, nova_act_service(), self.region, host)
 
     # ListActs  POST /workflow-definitions/{workflowDefinitionName}/acts
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException

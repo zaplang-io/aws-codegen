@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 96 operations — 58 with a generated method,
-#   38 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 96 operations — 88 with a generated method,
+#   8 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   437 structs (283 @derive(Json)), 71 enums, 17 error variants.
-#   7 paginators generated (5 paginated ops skipped) from paginators-1.json.
+#   12 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -725,8 +725,9 @@ struct AddBridgeOutputsRequest:
     str BridgeArn
     list[AddBridgeOutputRequest] Outputs
 
-# no @derive(Json): member(s) Outputs: list[BridgeOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Outputs: list[BridgeOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddBridgeOutputsResponse:
     Optional[str] BridgeArn
     Optional[list[BridgeOutput]] Outputs
@@ -742,8 +743,9 @@ struct AddBridgeSourcesRequest:
     str BridgeArn
     list[AddBridgeSourceRequest] Sources
 
-# no @derive(Json): member(s) Sources: list[BridgeSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sources: list[BridgeSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddBridgeSourcesResponse:
     Optional[str] BridgeArn
     Optional[list[BridgeSource]] Sources
@@ -758,8 +760,9 @@ struct AddFlowMediaStreamsRequest:
     str FlowArn
     list[AddMediaStreamRequest] MediaStreams
 
-# no @derive(Json): member(s) MediaStreams: list[MediaStream] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaStreams: list[MediaStream] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddFlowMediaStreamsResponse:
     Optional[str] FlowArn
     Optional[list[MediaStream]] MediaStreams
@@ -774,8 +777,9 @@ struct AddFlowOutputsRequest:
     str FlowArn
     list[AddOutputRequest] Outputs
 
-# no @derive(Json): member(s) Outputs: list[Output] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Outputs: list[Output] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddFlowOutputsResponse:
     Optional[str] FlowArn
     Optional[list[Output]] Outputs
@@ -786,8 +790,9 @@ struct AddFlowSourcesRequest:
     str FlowArn
     list[SetSourceRequest] Sources
 
-# no @derive(Json): member(s) Sources: list[Source] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sources: list[Source] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddFlowSourcesResponse:
     Optional[str] FlowArn
     Optional[list[Source]] Sources
@@ -798,8 +803,9 @@ struct AddFlowVpcInterfacesRequest:
     str FlowArn
     list[VpcInterfaceRequest] VpcInterfaces
 
-# no @derive(Json): member(s) VpcInterfaces: list[VpcInterface] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcInterfaces: list[VpcInterface] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddFlowVpcInterfacesResponse:
     Optional[str] FlowArn
     Optional[list[VpcInterface]] VpcInterfaces
@@ -814,8 +820,9 @@ struct AddMaintenance:
     MaintenanceDay MaintenanceDay
     str MaintenanceStartHour
 
-# no @derive(Json): member(s) MediaStreamTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaStreamTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddMediaStreamRequest:
     Optional[MediaStreamAttributesRequest] Attributes
     Optional[int64] ClockRate
@@ -826,8 +833,9 @@ struct AddMediaStreamRequest:
     Optional[str] VideoFormat
     Optional[dict[str, str]] MediaStreamTags
 
-# no @derive(Json): member(s) CidrAllowList: list[str], MediaStreamOutputConfigurations: list[MediaStreamOutputConfigurationRequest], OutputTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CidrAllowList: list[str], MediaStreamOutputConfigurations: list[MediaStreamOutputConfigurationRequest], OutputTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddOutputRequest:
     Optional[list[str]] CidrAllowList
     Optional[str] Description
@@ -882,8 +890,9 @@ struct BatchGetDestinationEndpointError:
 struct BatchGetDestinationEndpointRequest:
     list[str] Arns
 
-# no @derive(Json): member(s) DestinationEndpoints: list[DestinationEndpoint], Errors: list[BatchGetDestinationEndpointError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DestinationEndpoints: list[DestinationEndpoint], Errors: list[BatchGetDestinationEndpointError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetDestinationEndpointResponse:
     list[DestinationEndpoint] DestinationEndpoints
     list[BatchGetDestinationEndpointError] Errors
@@ -899,8 +908,9 @@ struct BatchGetRouterInputError:
 struct BatchGetRouterInputRequest:
     list[str] Arns
 
-# no @derive(Json): member(s) RouterInputs: list[RouterInput], Errors: list[BatchGetRouterInputError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouterInputs: list[RouterInput], Errors: list[BatchGetRouterInputError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetRouterInputResponse:
     list[RouterInput] RouterInputs
     list[BatchGetRouterInputError] Errors
@@ -916,8 +926,9 @@ struct BatchGetRouterNetworkInterfaceError:
 struct BatchGetRouterNetworkInterfaceRequest:
     list[str] Arns
 
-# no @derive(Json): member(s) RouterNetworkInterfaces: list[RouterNetworkInterface], Errors: list[BatchGetRouterNetworkInterfaceError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouterNetworkInterfaces: list[RouterNetworkInterface], Errors: list[BatchGetRouterNetworkInterfaceError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetRouterNetworkInterfaceResponse:
     list[RouterNetworkInterface] RouterNetworkInterfaces
     list[BatchGetRouterNetworkInterfaceError] Errors
@@ -933,8 +944,9 @@ struct BatchGetRouterOutputError:
 struct BatchGetRouterOutputRequest:
     list[str] Arns
 
-# no @derive(Json): member(s) RouterOutputs: list[RouterOutput], Errors: list[BatchGetRouterOutputError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouterOutputs: list[RouterOutput], Errors: list[BatchGetRouterOutputError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetRouterOutputResponse:
     list[RouterOutput] RouterOutputs
     list[BatchGetRouterOutputError] Errors
@@ -950,8 +962,9 @@ struct BatchGetSourceEndpointError:
 struct BatchGetSourceEndpointRequest:
     list[str] Arns
 
-# no @derive(Json): member(s) SourceEndpoints: list[SourceEndpoint], Errors: list[BatchGetSourceEndpointError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceEndpoints: list[SourceEndpoint], Errors: list[BatchGetSourceEndpointError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetSourceEndpointResponse:
     list[SourceEndpoint] SourceEndpoints
     list[BatchGetSourceEndpointError] Errors
@@ -966,8 +979,9 @@ struct BlackFramesConfiguration:
     ContentQualityAnalysisState State
     int64 ThresholdSeconds
 
-# no @derive(Json): member(s) BridgeMessages: list[MessageDetail], Outputs: list[BridgeOutput], Sources: list[BridgeSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BridgeMessages: list[MessageDetail], Outputs: list[BridgeOutput], Sources: list[BridgeSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Bridge:
     str BridgeArn
     Optional[list[MessageDetail]] BridgeMessages
@@ -1069,8 +1083,9 @@ struct CreateBridgeRequest:
     Optional[FailoverConfig] SourceFailoverConfig
     list[AddBridgeSourceRequest] Sources
 
-# no @derive(Json): member(s) Bridge: Bridge not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Bridge: Bridge not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBridgeResponse:
     Optional[Bridge] Bridge
 
@@ -1097,8 +1112,9 @@ struct CreateFlowRequest:
     Optional[EncodingConfig] EncodingConfig
     Optional[dict[str, str]] FlowTags
 
-# no @derive(Json): member(s) Flow: Flow not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Flow: Flow not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFlowResponse:
     Optional[Flow] Flow
 
@@ -1113,8 +1129,9 @@ struct CreateGatewayRequest:
     str Name
     list[GatewayNetwork] Networks
 
-# no @derive(Json): member(s) Gateway: Gateway not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Gateway: Gateway not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateGatewayResponse:
     Optional[Gateway] Gateway
 
@@ -1134,8 +1151,9 @@ struct CreateRouterInputRequest:
     Optional[str] ClientToken
     Optional[RouterContentQualityAnalysisConfiguration] ContentQualityAnalysisConfiguration
 
-# no @derive(Json): member(s) RouterInput: RouterInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouterInput: RouterInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRouterInputResponse:
     RouterInput RouterInput
 
@@ -1148,8 +1166,9 @@ struct CreateRouterNetworkInterfaceRequest:
     Optional[dict[str, str]] Tags
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) RouterNetworkInterface: RouterNetworkInterface not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouterNetworkInterface: RouterNetworkInterface not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRouterNetworkInterfaceResponse:
     RouterNetworkInterface RouterNetworkInterface
 
@@ -1168,8 +1187,9 @@ struct CreateRouterOutputRequest:
     Optional[FabricConfiguration] FabricConfiguration
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) RouterOutput: RouterOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouterOutput: RouterOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRouterOutputResponse:
     RouterOutput RouterOutput
 
@@ -1275,8 +1295,9 @@ struct DeregisterSourceEndpointResponse:
 struct DescribeBridgeRequest:
     str BridgeArn
 
-# no @derive(Json): member(s) Bridge: Bridge not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Bridge: Bridge not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBridgeResponse:
     Optional[Bridge] Bridge
 
@@ -1285,8 +1306,9 @@ struct DescribeBridgeResponse:
 struct DescribeFlowRequest:
     str FlowArn
 
-# no @derive(Json): member(s) Flow: Flow, Messages: Messages not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Flow: Flow, Messages: Messages not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFlowResponse:
     Optional[Flow] Flow
     Optional[Messages] Messages
@@ -1296,8 +1318,9 @@ struct DescribeFlowResponse:
 struct DescribeFlowSourceMetadataRequest:
     str FlowArn
 
-# no @derive(Json): member(s) Messages: list[MessageDetail], TransportMediaInfo: TransportMediaInfo, NdiInfo: NdiSourceMetadataInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Messages: list[MessageDetail], TransportMediaInfo: TransportMediaInfo, NdiInfo: NdiSourceMetadataInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFlowSourceMetadataResponse:
     Optional[str] FlowArn
     Optional[list[MessageDetail]] Messages
@@ -1310,8 +1333,9 @@ struct DescribeFlowSourceMetadataResponse:
 struct DescribeFlowSourceThumbnailRequest:
     str FlowArn
 
-# no @derive(Json): member(s) ThumbnailDetails: ThumbnailDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ThumbnailDetails: ThumbnailDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFlowSourceThumbnailResponse:
     Optional[ThumbnailDetails] ThumbnailDetails
 
@@ -1320,8 +1344,9 @@ struct DescribeFlowSourceThumbnailResponse:
 struct DescribeGatewayInstanceRequest:
     str GatewayInstanceArn
 
-# no @derive(Json): member(s) GatewayInstance: GatewayInstance not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GatewayInstance: GatewayInstance not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeGatewayInstanceResponse:
     Optional[GatewayInstance] GatewayInstance
 
@@ -1330,8 +1355,9 @@ struct DescribeGatewayInstanceResponse:
 struct DescribeGatewayRequest:
     str GatewayArn
 
-# no @derive(Json): member(s) Gateway: Gateway not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Gateway: Gateway not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeGatewayResponse:
     Optional[Gateway] Gateway
 
@@ -1366,8 +1392,9 @@ struct DestinationConfigurationRequest:
     int64 DestinationPort
     InterfaceRequest Interface
 
-# no @derive(Json): member(s) Messages: list[DestinationEndpointMessage], Configuration: DestinationEndpointConfiguration, AssociatedResourceDetails: DestinationEndpointAssociatedResourceDetails, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Messages: list[DestinationEndpointMessage], Configuration: DestinationEndpointConfiguration, AssociatedResourceDetails: DestinationEndpointAssociatedResourceDetails, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DestinationEndpoint:
     str Name
     str Arn
@@ -1393,14 +1420,16 @@ struct DestinationEndpoint:
     DestinationEndpointAssociatedResourceDetails AssociatedResourceDetails
     dict[str, str] Tags
 
-# no @derive(Json): member(s) RouterInput: RouterInputDestinationEndpointAssociatedResourceDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouterInput: RouterInputDestinationEndpointAssociatedResourceDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DestinationEndpointAssociatedResourceDetails:
     Optional[StandardDestinationEndpointAssociatedResourceDetails] Standard
     Optional[RouterInputDestinationEndpointAssociatedResourceDetails] RouterInput
 
-# no @derive(Json): member(s) Standard: StandardDestinationEndpointConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Standard: StandardDestinationEndpointConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DestinationEndpointConfiguration:
     Optional[StandardDestinationEndpointConfiguration] Standard
     Optional[RouterInputDestinationEndpointConfiguration] RouterInput
@@ -1410,8 +1439,9 @@ struct DestinationEndpointConnectionDetails:
     Optional[StandardDestinationEndpointConnectionDetails] Standard
     Optional[RouterInputDestinationEndpointConnectionDetails] RouterInput
 
-# no @derive(Json): member(s) RegionNames: list[str], DestinationTypes: list[DestinationEndpointType], NameContains: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegionNames: list[str], DestinationTypes: list[DestinationEndpointType], NameContains: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DestinationEndpointFilter:
     Optional[list[str]] RegionNames
     Optional[list[DestinationEndpointType]] DestinationTypes
@@ -1491,8 +1521,9 @@ struct EndpointEncryptionConfiguration:
 struct EndpointEncryptionSecretConfiguration:
     str SecretArn
 
-# no @derive(Json): member(s) Subscribers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subscribers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Entitlement:
     Optional[int64] DataTransferSubscriberFeePercent
     Optional[str] Description
@@ -1513,8 +1544,9 @@ struct FailoverConfig:
     Optional[SourcePriority] SourcePriority
     Optional[State] State
 
-# no @derive(Json): member(s) ProtocolConfigurations: list[FailoverRouterInputProtocolConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProtocolConfigurations: list[FailoverRouterInputProtocolConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FailoverRouterInputConfiguration:
     str NetworkInterfaceArn
     list[FailoverRouterInputProtocolConfiguration] ProtocolConfigurations
@@ -1538,8 +1570,9 @@ struct FailoverRouterInputStreamDetails:
     FailoverRouterInputIndexedStreamDetails SourceIndexZeroStreamDetails
     FailoverRouterInputIndexedStreamDetails SourceIndexOneStreamDetails
 
-# no @derive(Json): member(s) Entitlements: list[Entitlement], MediaStreams: list[MediaStream], Outputs: list[Output], Source: Source, Sources: list[Source], VpcInterfaces: list[VpcInterface], SourceMonitoringConfig: MonitoringConfig, NdiConfig: NdiConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entitlements: list[Entitlement], MediaStreams: list[MediaStream], Outputs: list[Output], Source: Source, Sources: list[Source], VpcInterfaces: list[VpcInterface], SourceMonitoringConfig: MonitoringConfig, NdiConfig: NdiConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Flow:
     str AvailabilityZone
     Optional[str] Description
@@ -1609,8 +1642,9 @@ struct FrozenFramesConfiguration:
     ContentQualityAnalysisState State
     int64 ThresholdSeconds
 
-# no @derive(Json): member(s) EgressCidrBlocks: list[str], GatewayMessages: list[MessageDetail], Networks: list[GatewayNetwork] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EgressCidrBlocks: list[str], GatewayMessages: list[MessageDetail], Networks: list[GatewayNetwork] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Gateway:
     list[str] EgressCidrBlocks
     str GatewayArn
@@ -1624,8 +1658,9 @@ struct GatewayBridgeSource:
     str BridgeArn
     Optional[VpcInterfaceAttachment] VpcInterfaceAttachment
 
-# no @derive(Json): member(s) InstanceMessages: list[MessageDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceMessages: list[MessageDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayInstance:
     BridgePlacement BridgePlacement
     ConnectionStatus ConnectionStatus
@@ -1646,8 +1681,9 @@ struct GatewayNetwork:
 struct GetDestinationEndpointRequest:
     str Arn
 
-# no @derive(Json): member(s) DestinationEndpoint: DestinationEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DestinationEndpoint: DestinationEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDestinationEndpointResponse:
     DestinationEndpoint DestinationEndpoint
 
@@ -1656,8 +1692,9 @@ struct GetDestinationEndpointResponse:
 struct GetRouterInputRequest:
     str Arn
 
-# no @derive(Json): member(s) RouterInput: RouterInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouterInput: RouterInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRouterInputResponse:
     RouterInput RouterInput
 
@@ -1666,8 +1703,9 @@ struct GetRouterInputResponse:
 struct GetRouterInputSourceMetadataRequest:
     str Arn
 
-# no @derive(Json): member(s) SourceMetadataDetails: RouterInputSourceMetadataDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceMetadataDetails: RouterInputSourceMetadataDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRouterInputSourceMetadataResponse:
     str Arn
     str Name
@@ -1678,8 +1716,9 @@ struct GetRouterInputSourceMetadataResponse:
 struct GetRouterInputThumbnailRequest:
     str Arn
 
-# no @derive(Json): member(s) ThumbnailDetails: RouterInputThumbnailDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ThumbnailDetails: RouterInputThumbnailDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRouterInputThumbnailResponse:
     str Arn
     str Name
@@ -1690,8 +1729,9 @@ struct GetRouterInputThumbnailResponse:
 struct GetRouterNetworkInterfaceRequest:
     str Arn
 
-# no @derive(Json): member(s) RouterNetworkInterface: RouterNetworkInterface not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouterNetworkInterface: RouterNetworkInterface not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRouterNetworkInterfaceResponse:
     RouterNetworkInterface RouterNetworkInterface
 
@@ -1700,8 +1740,9 @@ struct GetRouterNetworkInterfaceResponse:
 struct GetRouterOutputRequest:
     str Arn
 
-# no @derive(Json): member(s) RouterOutput: RouterOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouterOutput: RouterOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRouterOutputResponse:
     RouterOutput RouterOutput
 
@@ -1710,13 +1751,15 @@ struct GetRouterOutputResponse:
 struct GetSourceEndpointRequest:
     str Arn
 
-# no @derive(Json): member(s) SourceEndpoint: SourceEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceEndpoint: SourceEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSourceEndpointResponse:
     SourceEndpoint SourceEndpoint
 
-# no @derive(Json): member(s) Subscribers: list[str], EntitlementTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subscribers: list[str], EntitlementTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GrantEntitlementRequest:
     Optional[int64] DataTransferSubscriberFeePercent
     Optional[str] Description
@@ -1736,8 +1779,9 @@ struct GrantFlowEntitlementsRequest:
     list[GrantEntitlementRequest] Entitlements
     str FlowArn
 
-# no @derive(Json): member(s) Entitlements: list[Entitlement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entitlements: list[Entitlement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GrantFlowEntitlementsResponse:
     Optional[list[Entitlement]] Entitlements
     Optional[str] FlowArn
@@ -1778,8 +1822,9 @@ struct ListBridgesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Bridges: list[ListedBridge] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Bridges: list[ListedBridge] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBridgesResponse:
     Optional[list[ListedBridge]] Bridges
     Optional[str] NextToken
@@ -1791,8 +1836,9 @@ struct ListDestinationEndpointsRequest:
     Optional[str] NextToken
     Optional[list[DestinationEndpointFilter]] Filters
 
-# no @derive(Json): member(s) DestinationEndpoints: list[ListedDestinationEndpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DestinationEndpoints: list[ListedDestinationEndpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDestinationEndpointsResponse:
     list[ListedDestinationEndpoint] DestinationEndpoints
     Optional[str] NextToken
@@ -1803,8 +1849,9 @@ struct ListEntitlementsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Entitlements: list[ListedEntitlement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entitlements: list[ListedEntitlement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEntitlementsResponse:
     Optional[list[ListedEntitlement]] Entitlements
     Optional[str] NextToken
@@ -1815,8 +1862,9 @@ struct ListFlowsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Flows: list[ListedFlow] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Flows: list[ListedFlow] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFlowsResponse:
     Optional[list[ListedFlow]] Flows
     Optional[str] NextToken
@@ -1828,8 +1876,9 @@ struct ListGatewayInstancesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Instances: list[ListedGatewayInstance] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Instances: list[ListedGatewayInstance] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGatewayInstancesResponse:
     Optional[list[ListedGatewayInstance]] Instances
     Optional[str] NextToken
@@ -1840,8 +1889,9 @@ struct ListGatewaysRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Gateways: list[ListedGateway] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Gateways: list[ListedGateway] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGatewaysResponse:
     Optional[list[ListedGateway]] Gateways
     Optional[str] NextToken
@@ -1852,8 +1902,9 @@ struct ListOfferingsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Offerings: list[Offering] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Offerings: list[Offering] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOfferingsResponse:
     Optional[str] NextToken
     Optional[list[Offering]] Offerings
@@ -1864,8 +1915,9 @@ struct ListReservationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Reservations: list[Reservation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Reservations: list[Reservation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReservationsResponse:
     Optional[str] NextToken
     Optional[list[Reservation]] Reservations
@@ -1877,8 +1929,9 @@ struct ListRouterInputsRequest:
     Optional[str] NextToken
     Optional[list[RouterInputFilter]] Filters
 
-# no @derive(Json): member(s) RouterInputs: list[ListedRouterInput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouterInputs: list[ListedRouterInput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRouterInputsResponse:
     list[ListedRouterInput] RouterInputs
     Optional[str] NextToken
@@ -1890,8 +1943,9 @@ struct ListRouterNetworkInterfacesRequest:
     Optional[str] NextToken
     Optional[list[RouterNetworkInterfaceFilter]] Filters
 
-# no @derive(Json): member(s) RouterNetworkInterfaces: list[ListedRouterNetworkInterface] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouterNetworkInterfaces: list[ListedRouterNetworkInterface] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRouterNetworkInterfacesResponse:
     list[ListedRouterNetworkInterface] RouterNetworkInterfaces
     Optional[str] NextToken
@@ -1903,8 +1957,9 @@ struct ListRouterOutputsRequest:
     Optional[str] NextToken
     Optional[list[RouterOutputFilter]] Filters
 
-# no @derive(Json): member(s) RouterOutputs: list[ListedRouterOutput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouterOutputs: list[ListedRouterOutput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRouterOutputsResponse:
     list[ListedRouterOutput] RouterOutputs
     Optional[str] NextToken
@@ -1916,8 +1971,9 @@ struct ListSourceEndpointsRequest:
     Optional[str] NextToken
     Optional[list[SourceEndpointFilter]] Filters
 
-# no @derive(Json): member(s) SourceEndpoints: list[ListedSourceEndpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceEndpoints: list[ListedSourceEndpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSourceEndpointsResponse:
     list[ListedSourceEndpoint] SourceEndpoints
     Optional[str] NextToken
@@ -1927,8 +1983,9 @@ struct ListSourceEndpointsResponse:
 struct ListTagsForGlobalResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForGlobalResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -1937,8 +1994,9 @@ struct ListTagsForGlobalResourceResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -2175,38 +2233,43 @@ struct MediaStreamAttributesRequest:
     Optional[FmtpRequest] Fmtp
     Optional[str] Lang
 
-# no @derive(Json): member(s) DestinationConfigurations: list[DestinationConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DestinationConfigurations: list[DestinationConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MediaStreamOutputConfiguration:
     Optional[list[DestinationConfiguration]] DestinationConfigurations
     EncodingName EncodingName
     Optional[EncodingParameters] EncodingParameters
     str MediaStreamName
 
-# no @derive(Json): member(s) DestinationConfigurations: list[DestinationConfigurationRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DestinationConfigurations: list[DestinationConfigurationRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MediaStreamOutputConfigurationRequest:
     Optional[list[DestinationConfigurationRequest]] DestinationConfigurations
     EncodingName EncodingName
     Optional[EncodingParametersRequest] EncodingParameters
     str MediaStreamName
 
-# no @derive(Json): member(s) InputConfigurations: list[InputConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputConfigurations: list[InputConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MediaStreamSourceConfiguration:
     EncodingName EncodingName
     Optional[list[InputConfiguration]] InputConfigurations
     str MediaStreamName
 
-# no @derive(Json): member(s) InputConfigurations: list[InputConfigurationRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputConfigurations: list[InputConfigurationRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MediaStreamSourceConfigurationRequest:
     EncodingName EncodingName
     Optional[list[InputConfigurationRequest]] InputConfigurations
     str MediaStreamName
 
-# no @derive(Json): member(s) ProtocolConfigurations: list[MergeRouterInputProtocolConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProtocolConfigurations: list[MergeRouterInputProtocolConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MergeRouterInputConfiguration:
     str NetworkInterfaceArn
     list[MergeRouterInputProtocolConfiguration] ProtocolConfigurations
@@ -2233,13 +2296,15 @@ struct MessageDetail:
     str Message
     Optional[str] ResourceName
 
-# no @derive(Json): member(s) Errors: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Messages:
     list[str] Errors
 
-# no @derive(Json): member(s) AudioMonitoringSettings: list[AudioMonitoringSetting], VideoMonitoringSettings: list[VideoMonitoringSetting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AudioMonitoringSettings: list[AudioMonitoringSetting], VideoMonitoringSettings: list[VideoMonitoringSetting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MonitoringConfig:
     Optional[ThumbnailState] ThumbnailState
     Optional[list[AudioMonitoringSetting]] AudioMonitoringSettings
@@ -2250,8 +2315,9 @@ struct MonitoringConfig:
 struct MulticastSourceSettings:
     Optional[str] MulticastSourceIp
 
-# no @derive(Json): member(s) NdiDiscoveryServers: list[NdiDiscoveryServerConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NdiDiscoveryServers: list[NdiDiscoveryServerConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NdiConfig:
     Optional[NdiState] NdiState
     Optional[str] MachineName
@@ -2263,8 +2329,9 @@ struct NdiDiscoveryServerConfig:
     Optional[int64] DiscoveryServerPort
     str VpcInterfaceAdapter
 
-# no @derive(Json): member(s) Streams: list[NdiMediaStreamInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Streams: list[NdiMediaStreamInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NdiMediaInfo:
     list[NdiMediaStreamInfo] Streams
 
@@ -2284,8 +2351,9 @@ struct NdiMediaStreamInfo:
 struct NdiSourceInfo:
     str SourceName
 
-# no @derive(Json): member(s) DiscoveredSources: list[NdiSourceInfo], MediaInfo: NdiMediaInfo, Messages: list[MessageDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DiscoveredSources: list[NdiSourceInfo], MediaInfo: NdiMediaInfo, Messages: list[MessageDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NdiSourceMetadataInfo:
     Optional[NdiSourceInfo] ActiveSource
     list[NdiSourceInfo] DiscoveredSources
@@ -2312,8 +2380,9 @@ struct Offering:
     str PriceUnits
     ResourceSpecification ResourceSpecification
 
-# no @derive(Json): member(s) MediaStreamOutputConfigurations: list[MediaStreamOutputConfiguration], Transport: Transport, BridgePorts: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaStreamOutputConfigurations: list[MediaStreamOutputConfiguration], Transport: Transport, BridgePorts: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Output:
     Optional[int64] DataTransferSubscriberFeePercent
     Optional[str] Description
@@ -2345,8 +2414,9 @@ struct PreferredDayTimeMaintenanceConfiguration:
     Day Day
     str Time
 
-# no @derive(Json): member(s) DestinationAllowRules: list[PublicDestinationEndpointNetworkingConfigurationAllowRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DestinationAllowRules: list[PublicDestinationEndpointNetworkingConfigurationAllowRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PublicDestinationEndpointNetworkingConfiguration:
     list[PublicDestinationEndpointNetworkingConfigurationAllowRule] DestinationAllowRules
 
@@ -2354,8 +2424,9 @@ struct PublicDestinationEndpointNetworkingConfiguration:
 struct PublicDestinationEndpointNetworkingConfigurationAllowRule:
     str Cidr
 
-# no @derive(Json): member(s) AllowRules: list[PublicRouterNetworkInterfaceRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowRules: list[PublicRouterNetworkInterfaceRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PublicRouterNetworkInterfaceConfiguration:
     list[PublicRouterNetworkInterfaceRule] AllowRules
 
@@ -2363,8 +2434,9 @@ struct PublicRouterNetworkInterfaceConfiguration:
 struct PublicRouterNetworkInterfaceRule:
     str Cidr
 
-# no @derive(Json): member(s) SourceAllowRules: list[PublicSourceEndpointNetworkingConfigurationAllowRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceAllowRules: list[PublicSourceEndpointNetworkingConfigurationAllowRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PublicSourceEndpointNetworkingConfiguration:
     list[PublicSourceEndpointNetworkingConfigurationAllowRule] SourceAllowRules
 
@@ -2397,8 +2469,9 @@ struct RegisterDestinationEndpointRequest:
     Optional[dict[str, str]] Tags
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) DestinationEndpoint: DestinationEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DestinationEndpoint: DestinationEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterDestinationEndpointResponse:
     DestinationEndpoint DestinationEndpoint
 
@@ -2411,8 +2484,9 @@ struct RegisterSourceEndpointRequest:
     Optional[dict[str, str]] Tags
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) SourceEndpoint: SourceEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceEndpoint: SourceEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterSourceEndpointResponse:
     SourceEndpoint SourceEndpoint
 
@@ -2477,8 +2551,9 @@ struct RemoveFlowVpcInterfaceRequest:
     str FlowArn
     str VpcInterfaceName
 
-# no @derive(Json): member(s) NonDeletedNetworkInterfaceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NonDeletedNetworkInterfaceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveFlowVpcInterfaceResponse:
     Optional[str] FlowArn
     Optional[list[str]] NonDeletedNetworkInterfaceIds
@@ -2567,8 +2642,9 @@ struct RistStandardSourceEndpointConfiguration:
 struct RouterContentQualityAnalysisConfiguration:
     Optional[ContentQualityAnalysisFeatureConfiguration] ContentLevel
 
-# no @derive(Json): member(s) Configuration: RouterInputConfiguration, Messages: list[RouterInputMessage], Tags: dict[str, str], AssociatedDestinationEndpointArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: RouterInputConfiguration, Messages: list[RouterInputMessage], Tags: dict[str, str], AssociatedDestinationEndpointArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouterInput:
     str Name
     str Arn
@@ -2598,8 +2674,9 @@ struct RouterInput:
     RouterContentQualityAnalysisConfiguration ContentQualityAnalysisConfiguration
     Optional[list[str]] AssociatedDestinationEndpointArns
 
-# no @derive(Json): member(s) Failover: FailoverRouterInputConfiguration, Merge: MergeRouterInputConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Failover: FailoverRouterInputConfiguration, Merge: MergeRouterInputConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouterInputConfiguration:
     Optional[DestinationEndpointRouterInputConfiguration] DestinationEndpoint
     Optional[StandardRouterInputConfiguration] Standard
@@ -2608,8 +2685,9 @@ struct RouterInputConfiguration:
     Optional[MediaConnectFlowRouterInputConfiguration] MediaConnectFlow
     Optional[MergeRouterInputConfiguration] Merge
 
-# no @derive(Json): member(s) Messages: list[RouterInputMessage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Messages: list[RouterInputMessage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouterInputDestinationEndpointAssociatedResourceDetails:
     str Name
     int64 MaximumBitrate
@@ -2626,8 +2704,9 @@ struct RouterInputDestinationEndpointConnectionDetails:
     Optional[EndpointEncryptionConfiguration] SourceEncryptionConfiguration
     Optional[SourceEndpointType] SourceEndpointType
 
-# no @derive(Json): member(s) NameContains: list[str], RegionNames: list[str], NetworkInterfaceArns: list[str], RoutingScopes: list[RoutingScope], InputTypes: list[RouterInputType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NameContains: list[str], RegionNames: list[str], NetworkInterfaceArns: list[str], RoutingScopes: list[RoutingScope], InputTypes: list[RouterInputType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouterInputFilter:
     Optional[list[str]] NameContains
     Optional[list[str]] RegionNames
@@ -2640,8 +2719,9 @@ struct RouterInputMessage:
     str Code
     str Message
 
-# no @derive(Json): member(s) TransportStreamMediaInfo: TransportMediaInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TransportStreamMediaInfo: TransportMediaInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouterInputMetadata:
     Optional[TransportMediaInfo] TransportStreamMediaInfo
 
@@ -2656,8 +2736,9 @@ struct RouterInputProtocolConfiguration:
 struct RouterInputServiceQuotaExceededException:
     str Message
 
-# no @derive(Json): member(s) SourceMetadataMessages: list[RouterInputMessage], RouterInputMetadata: RouterInputMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceMetadataMessages: list[RouterInputMessage], RouterInputMetadata: RouterInputMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouterInputSourceMetadataDetails:
     list[RouterInputMessage] SourceMetadataMessages
     DateTime Timestamp
@@ -2672,8 +2753,9 @@ struct RouterInputStreamDetails:
     Optional[MediaConnectFlowRouterInputStreamDetails] MediaConnectFlow
     Optional[MergeRouterInputStreamDetails] Merge
 
-# no @derive(Json): member(s) ThumbnailMessages: list[RouterInputMessage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ThumbnailMessages: list[RouterInputMessage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouterInputThumbnailDetails:
     list[RouterInputMessage] ThumbnailMessages
     Optional[bytes] Thumbnail
@@ -2690,8 +2772,9 @@ struct RouterInputTransitEncryptionKeyConfiguration:
     Optional[SecretsManagerEncryptionKeyConfiguration] SecretsManager
     Optional[AutomaticEncryptionKeyConfiguration] Automatic
 
-# no @derive(Json): member(s) Configuration: RouterNetworkInterfaceConfiguration, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: RouterNetworkInterfaceConfiguration, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouterNetworkInterface:
     str Name
     str Arn
@@ -2706,14 +2789,16 @@ struct RouterNetworkInterface:
     DateTime UpdatedAt
     dict[str, str] Tags
 
-# no @derive(Json): member(s) Public: PublicRouterNetworkInterfaceConfiguration, Vpc: VpcRouterNetworkInterfaceConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Public: PublicRouterNetworkInterfaceConfiguration, Vpc: VpcRouterNetworkInterfaceConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouterNetworkInterfaceConfiguration:
     Optional[PublicRouterNetworkInterfaceConfiguration] Public
     Optional[VpcRouterNetworkInterfaceConfiguration] Vpc
 
-# no @derive(Json): member(s) RegionNames: list[str], NetworkInterfaceTypes: list[RouterNetworkInterfaceType], NameContains: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegionNames: list[str], NetworkInterfaceTypes: list[RouterNetworkInterfaceType], NameContains: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouterNetworkInterfaceFilter:
     Optional[list[str]] RegionNames
     Optional[list[RouterNetworkInterfaceType]] NetworkInterfaceTypes
@@ -2723,8 +2808,9 @@ struct RouterNetworkInterfaceFilter:
 struct RouterNetworkInterfaceServiceQuotaExceededException:
     str Message
 
-# no @derive(Json): member(s) Messages: list[RouterOutputMessage], Tags: dict[str, str], AssociatedSourceEndpointArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Messages: list[RouterOutputMessage], Tags: dict[str, str], AssociatedSourceEndpointArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouterOutput:
     str Name
     str Arn
@@ -2759,8 +2845,9 @@ struct RouterOutputConfiguration:
     Optional[MediaLiveInputRouterOutputConfiguration] MediaLiveInput
     Optional[SourceEndpointRouterOutputConfiguration] SourceEndpoint
 
-# no @derive(Json): member(s) RegionNames: list[str], NetworkInterfaceArns: list[str], RoutingScopes: list[RoutingScope], OutputTypes: list[RouterOutputType], RoutedInputArns: list[str], NameContains: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegionNames: list[str], NetworkInterfaceArns: list[str], RoutingScopes: list[RoutingScope], OutputTypes: list[RouterOutputType], RoutedInputArns: list[str], NameContains: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouterOutputFilter:
     Optional[list[str]] RegionNames
     Optional[list[str]] NetworkInterfaceArns
@@ -2786,8 +2873,9 @@ struct RouterOutputProtocolConfiguration:
 struct RouterOutputServiceQuotaExceededException:
     str Message
 
-# no @derive(Json): member(s) Messages: list[RouterOutputMessage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Messages: list[RouterOutputMessage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouterOutputSourceEndpointAssociatedResourceDetails:
     str Name
     int64 MaximumBitrate
@@ -2860,8 +2948,9 @@ struct SetGatewayBridgeSourceRequest:
     str BridgeArn
     Optional[VpcInterfaceAttachment] VpcInterfaceAttachment
 
-# no @derive(Json): member(s) MediaStreamSourceConfigurations: list[MediaStreamSourceConfigurationRequest], SourceTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaStreamSourceConfigurations: list[MediaStreamSourceConfigurationRequest], SourceTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetSourceRequest:
     Optional[Encryption] Decryption
     Optional[str] Description
@@ -2897,8 +2986,9 @@ struct SilentAudioConfiguration:
     ContentQualityAnalysisState State
     int64 ThresholdSeconds
 
-# no @derive(Json): member(s) MediaStreamSourceConfigurations: list[MediaStreamSourceConfiguration], Transport: Transport not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaStreamSourceConfigurations: list[MediaStreamSourceConfiguration], Transport: Transport not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Source:
     Optional[int64] DataTransferSubscriberFeePercent
     Optional[Encryption] Decryption
@@ -2920,8 +3010,9 @@ struct Source:
     Optional[FlowTransitEncryption] RouterIntegrationTransitDecryption
     Optional[str] ConnectedRouterOutputArn
 
-# no @derive(Json): member(s) Messages: list[SourceEndpointMessage], Configuration: SourceEndpointConfiguration, ConnectedDestinations: list[str], AssociatedResourceDetails: SourceEndpointAssociatedResourceDetails, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Messages: list[SourceEndpointMessage], Configuration: SourceEndpointConfiguration, ConnectedDestinations: list[str], AssociatedResourceDetails: SourceEndpointAssociatedResourceDetails, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceEndpoint:
     str Name
     str Arn
@@ -2947,14 +3038,16 @@ struct SourceEndpoint:
     SourceEndpointAssociatedResourceDetails AssociatedResourceDetails
     dict[str, str] Tags
 
-# no @derive(Json): member(s) RouterOutput: RouterOutputSourceEndpointAssociatedResourceDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouterOutput: RouterOutputSourceEndpointAssociatedResourceDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceEndpointAssociatedResourceDetails:
     Optional[StandardSourceEndpointAssociatedResourceDetails] Standard
     Optional[RouterOutputSourceEndpointAssociatedResourceDetails] RouterOutput
 
-# no @derive(Json): member(s) Standard: StandardSourceEndpointConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Standard: StandardSourceEndpointConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceEndpointConfiguration:
     Optional[StandardSourceEndpointConfiguration] Standard
     Optional[RouterOutputSourceEndpointConfiguration] RouterOutput
@@ -2964,8 +3057,9 @@ struct SourceEndpointConnectionDetails:
     Optional[StandardSourceEndpointConnectionDetails] Standard
     Optional[RouterOutputSourceEndpointConnectionDetails] RouterOutput
 
-# no @derive(Json): member(s) RegionNames: list[str], SourceTypes: list[SourceEndpointType], NameContains: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegionNames: list[str], SourceTypes: list[SourceEndpointType], NameContains: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceEndpointFilter:
     Optional[list[str]] RegionNames
     Optional[list[SourceEndpointType]] SourceTypes
@@ -3064,8 +3158,9 @@ struct StandardDestinationEndpointAssociatedResourceDetails:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) DestinationNetworkingConfiguration: StandardDestinationEndpointNetworkingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DestinationNetworkingConfiguration: StandardDestinationEndpointNetworkingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StandardDestinationEndpointConfiguration:
     str Name
     StandardDestinationEndpointNetworkingConfiguration DestinationNetworkingConfiguration
@@ -3081,8 +3176,9 @@ struct StandardDestinationEndpointConnectionDetails:
     Optional[EndpointEncryptionConfiguration] SourceEncryptionConfiguration
     Optional[SourceEndpointType] SourceEndpointType
 
-# no @derive(Json): member(s) Public: PublicDestinationEndpointNetworkingConfiguration, Vpc: VpcDestinationEndpointNetworkingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Public: PublicDestinationEndpointNetworkingConfiguration, Vpc: VpcDestinationEndpointNetworkingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StandardDestinationEndpointNetworkingConfiguration:
     Optional[PublicDestinationEndpointNetworkingConfiguration] Public
     Optional[VpcDestinationEndpointNetworkingConfiguration] Vpc
@@ -3119,8 +3215,9 @@ struct StandardSourceEndpointAssociatedResourceDetails:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) SourceNetworkingConfiguration: StandardSourceEndpointNetworkingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceNetworkingConfiguration: StandardSourceEndpointNetworkingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StandardSourceEndpointConfiguration:
     str Name
     StandardSourceEndpointNetworkingConfiguration SourceNetworkingConfiguration
@@ -3136,8 +3233,9 @@ struct StandardSourceEndpointConnectionDetails:
     Optional[EndpointEncryptionConfiguration] DestinationDecryptionConfiguration
     Optional[DestinationEndpointType] DestinationEndpointType
 
-# no @derive(Json): member(s) Public: PublicSourceEndpointNetworkingConfiguration, Vpc: VpcSourceEndpointNetworkingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Public: PublicSourceEndpointNetworkingConfiguration, Vpc: VpcSourceEndpointNetworkingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StandardSourceEndpointNetworkingConfiguration:
     Optional[PublicSourceEndpointNetworkingConfiguration] Public
     Optional[VpcSourceEndpointNetworkingConfiguration] Vpc
@@ -3243,8 +3341,9 @@ struct TakeRouterInputResponse:
     Optional[str] RouterInputArn
     Optional[str] RouterInputName
 
-# no @derive(Json): member(s) ThumbnailMessages: list[MessageDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ThumbnailMessages: list[MessageDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ThumbnailDetails:
     str FlowArn
     Optional[str] Thumbnail
@@ -3265,8 +3364,9 @@ struct TlsEncryptionConfiguration:
 struct TooManyRequestsException:
     str Message
 
-# no @derive(Json): member(s) CidrAllowList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CidrAllowList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Transport:
     Optional[list[str]] CidrAllowList
     Optional[int64] MaxBitrate
@@ -3287,8 +3387,9 @@ struct Transport:
     Optional[NdiOutputTimecodeSource] NdiOutputTimecodeSource
     Optional[int64] NdiAudioReferenceLevel
 
-# no @derive(Json): member(s) Programs: list[TransportStreamProgram] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Programs: list[TransportStreamProgram] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TransportMediaInfo:
     list[TransportStreamProgram] Programs
     Optional[int64] TsId
@@ -3305,8 +3406,9 @@ struct TransportStream:
     Optional[int64] SampleSize
     str StreamType
 
-# no @derive(Json): member(s) Streams: list[TransportStream] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Streams: list[TransportStream] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TransportStreamProgram:
     int64 PcrPid
     Optional[str] ProgramName
@@ -3367,8 +3469,9 @@ struct UpdateBridgeRequest:
     Optional[UpdateIngressGatewayBridgeRequest] IngressGatewayBridge
     Optional[UpdateFailoverConfig] SourceFailoverConfig
 
-# no @derive(Json): member(s) Bridge: Bridge not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Bridge: Bridge not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBridgeResponse:
     Optional[Bridge] Bridge
 
@@ -3403,8 +3506,9 @@ struct UpdateDestinationEndpointRequest:
     Optional[str] Description
     Optional[DestinationEndpointConfiguration] Configuration
 
-# no @derive(Json): member(s) DestinationEndpoint: DestinationEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DestinationEndpoint: DestinationEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDestinationEndpointResponse:
     DestinationEndpoint DestinationEndpoint
 
@@ -3441,8 +3545,9 @@ struct UpdateFlowEntitlementRequest:
     str FlowArn
     Optional[list[str]] Subscribers
 
-# no @derive(Json): member(s) Entitlement: Entitlement not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entitlement: Entitlement not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFlowEntitlementResponse:
     Optional[Entitlement] Entitlement
     Optional[str] FlowArn
@@ -3491,8 +3596,9 @@ struct UpdateFlowOutputRequest:
     Optional[NdiOutputTimecodeSource] NdiOutputTimecodeSource
     Optional[int64] NdiAudioReferenceLevel
 
-# no @derive(Json): member(s) Output: Output not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Output: Output not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFlowOutputResponse:
     Optional[str] FlowArn
     Optional[Output] Output
@@ -3508,8 +3614,9 @@ struct UpdateFlowRequest:
     Optional[FlowSize] FlowSize
     Optional[EncodingConfig] EncodingConfig
 
-# no @derive(Json): member(s) Flow: Flow not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Flow: Flow not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFlowResponse:
     Optional[Flow] Flow
 
@@ -3540,8 +3647,9 @@ struct UpdateFlowSourceRequest:
     Optional[State] RouterIntegrationState
     Optional[FlowTransitEncryption] RouterIntegrationTransitDecryption
 
-# no @derive(Json): member(s) Source: Source not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Source: Source not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFlowSourceResponse:
     Optional[str] FlowArn
     Optional[Source] Source
@@ -3586,8 +3694,9 @@ struct UpdateRouterInputRequest:
     Optional[MaintenanceConfiguration] MaintenanceConfiguration
     Optional[RouterContentQualityAnalysisConfiguration] ContentQualityAnalysisConfiguration
 
-# no @derive(Json): member(s) RouterInput: RouterInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouterInput: RouterInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRouterInputResponse:
     RouterInput RouterInput
 
@@ -3598,8 +3707,9 @@ struct UpdateRouterNetworkInterfaceRequest:
     Optional[str] Name
     Optional[RouterNetworkInterfaceConfiguration] Configuration
 
-# no @derive(Json): member(s) RouterNetworkInterface: RouterNetworkInterface not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouterNetworkInterface: RouterNetworkInterface not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRouterNetworkInterfaceResponse:
     RouterNetworkInterface RouterNetworkInterface
 
@@ -3615,8 +3725,9 @@ struct UpdateRouterOutputRequest:
     Optional[MaintenanceConfiguration] MaintenanceConfiguration
     Optional[FabricConfiguration] FabricConfiguration
 
-# no @derive(Json): member(s) RouterOutput: RouterOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouterOutput: RouterOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRouterOutputResponse:
     RouterOutput RouterOutput
 
@@ -3627,8 +3738,9 @@ struct UpdateSourceEndpointRequest:
     Optional[str] Description
     Optional[SourceEndpointConfiguration] Configuration
 
-# no @derive(Json): member(s) SourceEndpoint: SourceEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceEndpoint: SourceEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSourceEndpointResponse:
     SourceEndpoint SourceEndpoint
 
@@ -3637,14 +3749,16 @@ struct VideoMonitoringSetting:
     Optional[BlackFrames] BlackFrames
     Optional[FrozenFrames] FrozenFrames
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcDestinationEndpointNetworkingConfiguration:
     list[str] SecurityGroupIds
     str SubnetId
 
-# no @derive(Json): member(s) NetworkInterfaceIds: list[str], SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkInterfaceIds: list[str], SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcInterface:
     str Name
     list[str] NetworkInterfaceIds
@@ -3657,8 +3771,9 @@ struct VpcInterface:
 struct VpcInterfaceAttachment:
     Optional[str] VpcInterfaceName
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], VpcInterfaceTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], VpcInterfaceTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcInterfaceRequest:
     str Name
     Optional[NetworkInterfaceType] NetworkInterfaceType
@@ -3667,14 +3782,16 @@ struct VpcInterfaceRequest:
     str SubnetId
     Optional[dict[str, str]] VpcInterfaceTags
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcRouterNetworkInterfaceConfiguration:
     list[str] SecurityGroupIds
     str SubnetId
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcSourceEndpointNetworkingConfiguration:
     list[str] SecurityGroupIds
     str SubnetId
@@ -3756,52 +3873,14 @@ def mediaconnect_error_from_code(str code) -> MediaConnectError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AddBridgeOutputs (document member `Outputs: list[AddBridgeOutputRequest]` is not serializable by derive)
-#   AddBridgeSources (document member `Sources: list[AddBridgeSourceRequest]` is not serializable by derive)
-#   AddFlowMediaStreams (document member `MediaStreams: list[AddMediaStreamRequest]` is not serializable by derive)
-#   AddFlowOutputs (document member `Outputs: list[AddOutputRequest]` is not serializable by derive)
-#   AddFlowSources (document member `Sources: list[SetSourceRequest]` is not serializable by derive)
-#   AddFlowVpcInterfaces (document member `VpcInterfaces: list[VpcInterfaceRequest]` is not serializable by derive)
 #   BatchGetDestinationEndpoint (httpQuery `Arns` has unsupported type list[str])
 #   BatchGetRouterInput (httpQuery `Arns` has unsupported type list[str])
 #   BatchGetRouterNetworkInterface (httpQuery `Arns` has unsupported type list[str])
 #   BatchGetRouterOutput (httpQuery `Arns` has unsupported type list[str])
 #   BatchGetSourceEndpoint (httpQuery `Arns` has unsupported type list[str])
-#   CreateBridge (document member `Outputs: list[AddBridgeOutputRequest]` is not serializable by derive)
-#   CreateFlow (document member `Entitlements: list[GrantEntitlementRequest]` is not serializable by derive)
-#   CreateGateway (document member `EgressCidrBlocks: list[str]` is not serializable by derive)
-#   CreateRouterInput (document member `Configuration: RouterInputConfiguration` is not serializable by derive)
-#   CreateRouterNetworkInterface (document member `Configuration: RouterNetworkInterfaceConfiguration` is not serializable by derive)
-#   CreateRouterOutput (document member `Tags: dict[str, str]` is not serializable by derive)
 #   DeregisterGatewayInstance (httpQuery `Force` has unsupported type bool)
-#   GrantFlowEntitlements (document member `Entitlements: list[GrantEntitlementRequest]` is not serializable by derive)
-#   ListDestinationEndpoints (document member `Filters: list[DestinationEndpointFilter]` is not serializable by derive)
-#   ListRouterInputs (document member `Filters: list[RouterInputFilter]` is not serializable by derive)
-#   ListRouterNetworkInterfaces (document member `Filters: list[RouterNetworkInterfaceFilter]` is not serializable by derive)
-#   ListRouterOutputs (document member `Filters: list[RouterOutputFilter]` is not serializable by derive)
-#   ListSourceEndpoints (document member `Filters: list[SourceEndpointFilter]` is not serializable by derive)
-#   RegisterDestinationEndpoint (document member `Configuration: DestinationEndpointConfiguration` is not serializable by derive)
-#   RegisterSourceEndpoint (document member `Configuration: SourceEndpointConfiguration` is not serializable by derive)
-#   TagGlobalResource (document member `Tags: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagGlobalResource (httpQuery `TagKeys` has unsupported type list[str])
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateDestinationEndpoint (document member `Configuration: DestinationEndpointConfiguration` is not serializable by derive)
-#   UpdateFlow (document member `SourceMonitoringConfig: MonitoringConfig` is not serializable by derive)
-#   UpdateFlowEntitlement (document member `Subscribers: list[str]` is not serializable by derive)
-#   UpdateFlowOutput (document member `CidrAllowList: list[str]` is not serializable by derive)
-#   UpdateFlowSource (document member `MediaStreamSourceConfigurations: list[MediaStreamSourceConfigurationRequest]` is not serializable by derive)
-#   UpdateRouterInput (document member `Configuration: RouterInputConfiguration` is not serializable by derive)
-#   UpdateRouterNetworkInterface (document member `Configuration: RouterNetworkInterfaceConfiguration` is not serializable by derive)
-#   UpdateSourceEndpoint (document member `Configuration: SourceEndpointConfiguration` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListDestinationEndpoints (operation not generated)
-#   ListRouterInputs (operation not generated)
-#   ListRouterNetworkInterfaces (operation not generated)
-#   ListRouterOutputs (operation not generated)
-#   ListSourceEndpoints (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -3875,10 +3954,772 @@ struct UpdateRouterOutputDocument:
     Optional[MaintenanceConfiguration] MaintenanceConfiguration
     Optional[FabricConfiguration] FabricConfiguration
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def mediaconnect_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def mediaconnect_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def mediaconnect_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AddMediaStreamRequest to a compact JSON object (declaration order).
+def add_media_stream_request_to_json(AddMediaStreamRequest v) -> str:
+    list[str] parts = []
+    if v.Attributes.is_some():
+        auto u0 = v.Attributes.unwrap()
+        parts.append("\"attributes\":" + u0.to_json())
+    if v.ClockRate.is_some():
+        auto u1 = v.ClockRate.unwrap()
+        parts.append("\"clockRate\":" + str(u1))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"description\":" + mediaconnect_json_str(u2))
+    parts.append("\"mediaStreamId\":" + str(v.MediaStreamId))
+    parts.append("\"mediaStreamName\":" + mediaconnect_json_str(v.MediaStreamName))
+    parts.append("\"mediaStreamType\":" + v.MediaStreamType.to_json())
+    if v.VideoFormat.is_some():
+        auto u3 = v.VideoFormat.unwrap()
+        parts.append("\"videoFormat\":" + mediaconnect_json_str(u3))
+    if v.MediaStreamTags.is_some():
+        auto u4 = v.MediaStreamTags.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(mediaconnect_json_str(k5) + ":" + mediaconnect_json_str(u4[k5]))
+        parts.append("\"mediaStreamTags\":" + mediaconnect_json_obj(m5))
+    return mediaconnect_json_obj(parts)
+
+# Serialize AddOutputRequest to a compact JSON object (declaration order).
+def add_output_request_to_json(AddOutputRequest v) -> str:
+    list[str] parts = []
+    if v.CidrAllowList.is_some():
+        auto u0 = v.CidrAllowList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mediaconnect_json_str(x1))
+        parts.append("\"cidrAllowList\":" + mediaconnect_json_arr(e1))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"description\":" + mediaconnect_json_str(u2))
+    if v.Destination.is_some():
+        auto u3 = v.Destination.unwrap()
+        parts.append("\"destination\":" + mediaconnect_json_str(u3))
+    if v.Encryption.is_some():
+        auto u4 = v.Encryption.unwrap()
+        parts.append("\"encryption\":" + u4.to_json())
+    if v.MaxLatency.is_some():
+        auto u5 = v.MaxLatency.unwrap()
+        parts.append("\"maxLatency\":" + str(u5))
+    if v.MediaStreamOutputConfigurations.is_some():
+        auto u6 = v.MediaStreamOutputConfigurations.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(media_stream_output_configuration_request_to_json(x7))
+        parts.append("\"mediaStreamOutputConfigurations\":" + mediaconnect_json_arr(e7))
+    if v.MinLatency.is_some():
+        auto u8 = v.MinLatency.unwrap()
+        parts.append("\"minLatency\":" + str(u8))
+    if v.Name.is_some():
+        auto u9 = v.Name.unwrap()
+        parts.append("\"name\":" + mediaconnect_json_str(u9))
+    if v.Port.is_some():
+        auto u10 = v.Port.unwrap()
+        parts.append("\"port\":" + str(u10))
+    if v.Protocol.is_some():
+        auto u11 = v.Protocol.unwrap()
+        parts.append("\"protocol\":" + u11.to_json())
+    if v.RemoteId.is_some():
+        auto u12 = v.RemoteId.unwrap()
+        parts.append("\"remoteId\":" + mediaconnect_json_str(u12))
+    if v.SenderControlPort.is_some():
+        auto u13 = v.SenderControlPort.unwrap()
+        parts.append("\"senderControlPort\":" + str(u13))
+    if v.SmoothingLatency.is_some():
+        auto u14 = v.SmoothingLatency.unwrap()
+        parts.append("\"smoothingLatency\":" + str(u14))
+    if v.StreamId.is_some():
+        auto u15 = v.StreamId.unwrap()
+        parts.append("\"streamId\":" + mediaconnect_json_str(u15))
+    if v.VpcInterfaceAttachment.is_some():
+        auto u16 = v.VpcInterfaceAttachment.unwrap()
+        parts.append("\"vpcInterfaceAttachment\":" + u16.to_json())
+    if v.OutputStatus.is_some():
+        auto u17 = v.OutputStatus.unwrap()
+        parts.append("\"outputStatus\":" + u17.to_json())
+    if v.NdiSpeedHqQuality.is_some():
+        auto u18 = v.NdiSpeedHqQuality.unwrap()
+        parts.append("\"ndiSpeedHqQuality\":" + str(u18))
+    if v.NdiProgramName.is_some():
+        auto u19 = v.NdiProgramName.unwrap()
+        parts.append("\"ndiProgramName\":" + mediaconnect_json_str(u19))
+    if v.OutputTags.is_some():
+        auto u20 = v.OutputTags.unwrap()
+        list[str] m21 = []
+        for k21 in sorted(u20.keys()):
+            m21.append(mediaconnect_json_str(k21) + ":" + mediaconnect_json_str(u20[k21]))
+        parts.append("\"outputTags\":" + mediaconnect_json_obj(m21))
+    if v.RouterIntegrationState.is_some():
+        auto u22 = v.RouterIntegrationState.unwrap()
+        parts.append("\"routerIntegrationState\":" + u22.to_json())
+    if v.RouterIntegrationTransitEncryption.is_some():
+        auto u23 = v.RouterIntegrationTransitEncryption.unwrap()
+        parts.append("\"routerIntegrationTransitEncryption\":" + u23.to_json())
+    if v.NdiOutputTimecodeSource.is_some():
+        auto u24 = v.NdiOutputTimecodeSource.unwrap()
+        parts.append("\"ndiOutputTimecodeSource\":" + u24.to_json())
+    if v.NdiAudioReferenceLevel.is_some():
+        auto u25 = v.NdiAudioReferenceLevel.unwrap()
+        parts.append("\"ndiAudioReferenceLevel\":" + str(u25))
+    return mediaconnect_json_obj(parts)
+
+# Serialize DestinationEndpointConfiguration to a compact JSON object (declaration order).
+def destination_endpoint_configuration_to_json(DestinationEndpointConfiguration v) -> str:
+    list[str] parts = []
+    if v.Standard.is_some():
+        auto u0 = v.Standard.unwrap()
+        parts.append("\"standard\":" + standard_destination_endpoint_configuration_to_json(u0))
+    if v.RouterInput.is_some():
+        auto u1 = v.RouterInput.unwrap()
+        parts.append("\"routerInput\":" + u1.to_json())
+    return mediaconnect_json_obj(parts)
+
+# Serialize DestinationEndpointFilter to a compact JSON object (declaration order).
+def destination_endpoint_filter_to_json(DestinationEndpointFilter v) -> str:
+    list[str] parts = []
+    if v.RegionNames.is_some():
+        auto u0 = v.RegionNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mediaconnect_json_str(x1))
+        parts.append("\"regionNames\":" + mediaconnect_json_arr(e1))
+    if v.DestinationTypes.is_some():
+        auto u2 = v.DestinationTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"destinationTypes\":" + mediaconnect_json_arr(e3))
+    if v.NameContains.is_some():
+        auto u4 = v.NameContains.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(mediaconnect_json_str(x5))
+        parts.append("\"nameContains\":" + mediaconnect_json_arr(e5))
+    return mediaconnect_json_obj(parts)
+
+# Serialize FailoverRouterInputConfiguration to a compact JSON object (declaration order).
+def failover_router_input_configuration_to_json(FailoverRouterInputConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"networkInterfaceArn\":" + mediaconnect_json_str(v.NetworkInterfaceArn))
+    list[str] e0 = []
+    for x0 in v.ProtocolConfigurations:
+        e0.append(x0.to_json())
+    parts.append("\"protocolConfigurations\":" + mediaconnect_json_arr(e0))
+    parts.append("\"sourcePriorityMode\":" + v.SourcePriorityMode.to_json())
+    if v.PrimarySourceIndex.is_some():
+        auto u1 = v.PrimarySourceIndex.unwrap()
+        parts.append("\"primarySourceIndex\":" + str(u1))
+    return mediaconnect_json_obj(parts)
+
+# Serialize GrantEntitlementRequest to a compact JSON object (declaration order).
+def grant_entitlement_request_to_json(GrantEntitlementRequest v) -> str:
+    list[str] parts = []
+    if v.DataTransferSubscriberFeePercent.is_some():
+        auto u0 = v.DataTransferSubscriberFeePercent.unwrap()
+        parts.append("\"dataTransferSubscriberFeePercent\":" + str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"description\":" + mediaconnect_json_str(u1))
+    if v.Encryption.is_some():
+        auto u2 = v.Encryption.unwrap()
+        parts.append("\"encryption\":" + u2.to_json())
+    if v.EntitlementStatus.is_some():
+        auto u3 = v.EntitlementStatus.unwrap()
+        parts.append("\"entitlementStatus\":" + u3.to_json())
+    if v.Name.is_some():
+        auto u4 = v.Name.unwrap()
+        parts.append("\"name\":" + mediaconnect_json_str(u4))
+    list[str] e5 = []
+    for x5 in v.Subscribers:
+        e5.append(mediaconnect_json_str(x5))
+    parts.append("\"subscribers\":" + mediaconnect_json_arr(e5))
+    if v.EntitlementTags.is_some():
+        auto u6 = v.EntitlementTags.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(mediaconnect_json_str(k7) + ":" + mediaconnect_json_str(u6[k7]))
+        parts.append("\"entitlementTags\":" + mediaconnect_json_obj(m7))
+    return mediaconnect_json_obj(parts)
+
+# Serialize MediaStreamOutputConfigurationRequest to a compact JSON object (declaration order).
+def media_stream_output_configuration_request_to_json(MediaStreamOutputConfigurationRequest v) -> str:
+    list[str] parts = []
+    if v.DestinationConfigurations.is_some():
+        auto u0 = v.DestinationConfigurations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"destinationConfigurations\":" + mediaconnect_json_arr(e1))
+    parts.append("\"encodingName\":" + v.EncodingName.to_json())
+    if v.EncodingParameters.is_some():
+        auto u2 = v.EncodingParameters.unwrap()
+        parts.append("\"encodingParameters\":" + u2.to_json())
+    parts.append("\"mediaStreamName\":" + mediaconnect_json_str(v.MediaStreamName))
+    return mediaconnect_json_obj(parts)
+
+# Serialize MediaStreamSourceConfigurationRequest to a compact JSON object (declaration order).
+def media_stream_source_configuration_request_to_json(MediaStreamSourceConfigurationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"encodingName\":" + v.EncodingName.to_json())
+    if v.InputConfigurations.is_some():
+        auto u0 = v.InputConfigurations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"inputConfigurations\":" + mediaconnect_json_arr(e1))
+    parts.append("\"mediaStreamName\":" + mediaconnect_json_str(v.MediaStreamName))
+    return mediaconnect_json_obj(parts)
+
+# Serialize MergeRouterInputConfiguration to a compact JSON object (declaration order).
+def merge_router_input_configuration_to_json(MergeRouterInputConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"networkInterfaceArn\":" + mediaconnect_json_str(v.NetworkInterfaceArn))
+    list[str] e0 = []
+    for x0 in v.ProtocolConfigurations:
+        e0.append(x0.to_json())
+    parts.append("\"protocolConfigurations\":" + mediaconnect_json_arr(e0))
+    parts.append("\"mergeRecoveryWindowMilliseconds\":" + str(v.MergeRecoveryWindowMilliseconds))
+    return mediaconnect_json_obj(parts)
+
+# Serialize MonitoringConfig to a compact JSON object (declaration order).
+def monitoring_config_to_json(MonitoringConfig v) -> str:
+    list[str] parts = []
+    if v.ThumbnailState.is_some():
+        auto u0 = v.ThumbnailState.unwrap()
+        parts.append("\"thumbnailState\":" + u0.to_json())
+    if v.AudioMonitoringSettings.is_some():
+        auto u1 = v.AudioMonitoringSettings.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"audioMonitoringSettings\":" + mediaconnect_json_arr(e2))
+    if v.ContentQualityAnalysisState.is_some():
+        auto u3 = v.ContentQualityAnalysisState.unwrap()
+        parts.append("\"contentQualityAnalysisState\":" + u3.to_json())
+    if v.VideoMonitoringSettings.is_some():
+        auto u4 = v.VideoMonitoringSettings.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"videoMonitoringSettings\":" + mediaconnect_json_arr(e5))
+    return mediaconnect_json_obj(parts)
+
+# Serialize NdiConfig to a compact JSON object (declaration order).
+def ndi_config_to_json(NdiConfig v) -> str:
+    list[str] parts = []
+    if v.NdiState.is_some():
+        auto u0 = v.NdiState.unwrap()
+        parts.append("\"ndiState\":" + u0.to_json())
+    if v.MachineName.is_some():
+        auto u1 = v.MachineName.unwrap()
+        parts.append("\"machineName\":" + mediaconnect_json_str(u1))
+    if v.NdiDiscoveryServers.is_some():
+        auto u2 = v.NdiDiscoveryServers.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ndiDiscoveryServers\":" + mediaconnect_json_arr(e3))
+    return mediaconnect_json_obj(parts)
+
+# Serialize PublicDestinationEndpointNetworkingConfiguration to a compact JSON object (declaration order).
+def public_destination_endpoint_networking_configuration_to_json(PublicDestinationEndpointNetworkingConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.DestinationAllowRules:
+        e0.append(x0.to_json())
+    parts.append("\"destinationAllowRules\":" + mediaconnect_json_arr(e0))
+    return mediaconnect_json_obj(parts)
+
+# Serialize PublicRouterNetworkInterfaceConfiguration to a compact JSON object (declaration order).
+def public_router_network_interface_configuration_to_json(PublicRouterNetworkInterfaceConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AllowRules:
+        e0.append(x0.to_json())
+    parts.append("\"allowRules\":" + mediaconnect_json_arr(e0))
+    return mediaconnect_json_obj(parts)
+
+# Serialize PublicSourceEndpointNetworkingConfiguration to a compact JSON object (declaration order).
+def public_source_endpoint_networking_configuration_to_json(PublicSourceEndpointNetworkingConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SourceAllowRules:
+        e0.append(x0.to_json())
+    parts.append("\"sourceAllowRules\":" + mediaconnect_json_arr(e0))
+    return mediaconnect_json_obj(parts)
+
+# Serialize RouterInputConfiguration to a compact JSON object (declaration order).
+def router_input_configuration_to_json(RouterInputConfiguration v) -> str:
+    list[str] parts = []
+    if v.DestinationEndpoint.is_some():
+        auto u0 = v.DestinationEndpoint.unwrap()
+        parts.append("\"destinationEndpoint\":" + u0.to_json())
+    if v.Standard.is_some():
+        auto u1 = v.Standard.unwrap()
+        parts.append("\"standard\":" + u1.to_json())
+    if v.MediaLiveChannel.is_some():
+        auto u2 = v.MediaLiveChannel.unwrap()
+        parts.append("\"mediaLiveChannel\":" + u2.to_json())
+    if v.Failover.is_some():
+        auto u3 = v.Failover.unwrap()
+        parts.append("\"failover\":" + failover_router_input_configuration_to_json(u3))
+    if v.MediaConnectFlow.is_some():
+        auto u4 = v.MediaConnectFlow.unwrap()
+        parts.append("\"mediaConnectFlow\":" + u4.to_json())
+    if v.Merge.is_some():
+        auto u5 = v.Merge.unwrap()
+        parts.append("\"merge\":" + merge_router_input_configuration_to_json(u5))
+    return mediaconnect_json_obj(parts)
+
+# Serialize RouterInputFilter to a compact JSON object (declaration order).
+def router_input_filter_to_json(RouterInputFilter v) -> str:
+    list[str] parts = []
+    if v.NameContains.is_some():
+        auto u0 = v.NameContains.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mediaconnect_json_str(x1))
+        parts.append("\"nameContains\":" + mediaconnect_json_arr(e1))
+    if v.RegionNames.is_some():
+        auto u2 = v.RegionNames.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(mediaconnect_json_str(x3))
+        parts.append("\"regionNames\":" + mediaconnect_json_arr(e3))
+    if v.NetworkInterfaceArns.is_some():
+        auto u4 = v.NetworkInterfaceArns.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(mediaconnect_json_str(x5))
+        parts.append("\"networkInterfaceArns\":" + mediaconnect_json_arr(e5))
+    if v.RoutingScopes.is_some():
+        auto u6 = v.RoutingScopes.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"routingScopes\":" + mediaconnect_json_arr(e7))
+    if v.InputTypes.is_some():
+        auto u8 = v.InputTypes.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"inputTypes\":" + mediaconnect_json_arr(e9))
+    return mediaconnect_json_obj(parts)
+
+# Serialize RouterNetworkInterfaceConfiguration to a compact JSON object (declaration order).
+def router_network_interface_configuration_to_json(RouterNetworkInterfaceConfiguration v) -> str:
+    list[str] parts = []
+    if v.Public.is_some():
+        auto u0 = v.Public.unwrap()
+        parts.append("\"public\":" + public_router_network_interface_configuration_to_json(u0))
+    if v.Vpc.is_some():
+        auto u1 = v.Vpc.unwrap()
+        parts.append("\"vpc\":" + vpc_router_network_interface_configuration_to_json(u1))
+    return mediaconnect_json_obj(parts)
+
+# Serialize RouterNetworkInterfaceFilter to a compact JSON object (declaration order).
+def router_network_interface_filter_to_json(RouterNetworkInterfaceFilter v) -> str:
+    list[str] parts = []
+    if v.RegionNames.is_some():
+        auto u0 = v.RegionNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mediaconnect_json_str(x1))
+        parts.append("\"regionNames\":" + mediaconnect_json_arr(e1))
+    if v.NetworkInterfaceTypes.is_some():
+        auto u2 = v.NetworkInterfaceTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"networkInterfaceTypes\":" + mediaconnect_json_arr(e3))
+    if v.NameContains.is_some():
+        auto u4 = v.NameContains.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(mediaconnect_json_str(x5))
+        parts.append("\"nameContains\":" + mediaconnect_json_arr(e5))
+    return mediaconnect_json_obj(parts)
+
+# Serialize RouterOutputFilter to a compact JSON object (declaration order).
+def router_output_filter_to_json(RouterOutputFilter v) -> str:
+    list[str] parts = []
+    if v.RegionNames.is_some():
+        auto u0 = v.RegionNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mediaconnect_json_str(x1))
+        parts.append("\"regionNames\":" + mediaconnect_json_arr(e1))
+    if v.NetworkInterfaceArns.is_some():
+        auto u2 = v.NetworkInterfaceArns.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(mediaconnect_json_str(x3))
+        parts.append("\"networkInterfaceArns\":" + mediaconnect_json_arr(e3))
+    if v.RoutingScopes.is_some():
+        auto u4 = v.RoutingScopes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"routingScopes\":" + mediaconnect_json_arr(e5))
+    if v.OutputTypes.is_some():
+        auto u6 = v.OutputTypes.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"outputTypes\":" + mediaconnect_json_arr(e7))
+    if v.RoutedInputArns.is_some():
+        auto u8 = v.RoutedInputArns.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(mediaconnect_json_str(x9))
+        parts.append("\"routedInputArns\":" + mediaconnect_json_arr(e9))
+    if v.NameContains.is_some():
+        auto u10 = v.NameContains.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(mediaconnect_json_str(x11))
+        parts.append("\"nameContains\":" + mediaconnect_json_arr(e11))
+    return mediaconnect_json_obj(parts)
+
+# Serialize SetSourceRequest to a compact JSON object (declaration order).
+def set_source_request_to_json(SetSourceRequest v) -> str:
+    list[str] parts = []
+    if v.Decryption.is_some():
+        auto u0 = v.Decryption.unwrap()
+        parts.append("\"decryption\":" + u0.to_json())
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"description\":" + mediaconnect_json_str(u1))
+    if v.EntitlementArn.is_some():
+        auto u2 = v.EntitlementArn.unwrap()
+        parts.append("\"entitlementArn\":" + mediaconnect_json_str(u2))
+    if v.IngestPort.is_some():
+        auto u3 = v.IngestPort.unwrap()
+        parts.append("\"ingestPort\":" + str(u3))
+    if v.MaxBitrate.is_some():
+        auto u4 = v.MaxBitrate.unwrap()
+        parts.append("\"maxBitrate\":" + str(u4))
+    if v.MaxLatency.is_some():
+        auto u5 = v.MaxLatency.unwrap()
+        parts.append("\"maxLatency\":" + str(u5))
+    if v.MaxSyncBuffer.is_some():
+        auto u6 = v.MaxSyncBuffer.unwrap()
+        parts.append("\"maxSyncBuffer\":" + str(u6))
+    if v.MediaStreamSourceConfigurations.is_some():
+        auto u7 = v.MediaStreamSourceConfigurations.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(media_stream_source_configuration_request_to_json(x8))
+        parts.append("\"mediaStreamSourceConfigurations\":" + mediaconnect_json_arr(e8))
+    if v.MinLatency.is_some():
+        auto u9 = v.MinLatency.unwrap()
+        parts.append("\"minLatency\":" + str(u9))
+    if v.Name.is_some():
+        auto u10 = v.Name.unwrap()
+        parts.append("\"name\":" + mediaconnect_json_str(u10))
+    if v.Protocol.is_some():
+        auto u11 = v.Protocol.unwrap()
+        parts.append("\"protocol\":" + u11.to_json())
+    if v.SenderControlPort.is_some():
+        auto u12 = v.SenderControlPort.unwrap()
+        parts.append("\"senderControlPort\":" + str(u12))
+    if v.SenderIpAddress.is_some():
+        auto u13 = v.SenderIpAddress.unwrap()
+        parts.append("\"senderIpAddress\":" + mediaconnect_json_str(u13))
+    if v.SourceListenerAddress.is_some():
+        auto u14 = v.SourceListenerAddress.unwrap()
+        parts.append("\"sourceListenerAddress\":" + mediaconnect_json_str(u14))
+    if v.SourceListenerPort.is_some():
+        auto u15 = v.SourceListenerPort.unwrap()
+        parts.append("\"sourceListenerPort\":" + str(u15))
+    if v.StreamId.is_some():
+        auto u16 = v.StreamId.unwrap()
+        parts.append("\"streamId\":" + mediaconnect_json_str(u16))
+    if v.VpcInterfaceName.is_some():
+        auto u17 = v.VpcInterfaceName.unwrap()
+        parts.append("\"vpcInterfaceName\":" + mediaconnect_json_str(u17))
+    if v.WhitelistCidr.is_some():
+        auto u18 = v.WhitelistCidr.unwrap()
+        parts.append("\"whitelistCidr\":" + mediaconnect_json_str(u18))
+    if v.GatewayBridgeSource.is_some():
+        auto u19 = v.GatewayBridgeSource.unwrap()
+        parts.append("\"gatewayBridgeSource\":" + u19.to_json())
+    if v.NdiSourceSettings.is_some():
+        auto u20 = v.NdiSourceSettings.unwrap()
+        parts.append("\"ndiSourceSettings\":" + u20.to_json())
+    if v.SourceTags.is_some():
+        auto u21 = v.SourceTags.unwrap()
+        list[str] m22 = []
+        for k22 in sorted(u21.keys()):
+            m22.append(mediaconnect_json_str(k22) + ":" + mediaconnect_json_str(u21[k22]))
+        parts.append("\"sourceTags\":" + mediaconnect_json_obj(m22))
+    if v.RouterIntegrationState.is_some():
+        auto u23 = v.RouterIntegrationState.unwrap()
+        parts.append("\"routerIntegrationState\":" + u23.to_json())
+    if v.RouterIntegrationTransitDecryption.is_some():
+        auto u24 = v.RouterIntegrationTransitDecryption.unwrap()
+        parts.append("\"routerIntegrationTransitDecryption\":" + u24.to_json())
+    return mediaconnect_json_obj(parts)
+
+# Serialize SourceEndpointConfiguration to a compact JSON object (declaration order).
+def source_endpoint_configuration_to_json(SourceEndpointConfiguration v) -> str:
+    list[str] parts = []
+    if v.Standard.is_some():
+        auto u0 = v.Standard.unwrap()
+        parts.append("\"standard\":" + standard_source_endpoint_configuration_to_json(u0))
+    if v.RouterOutput.is_some():
+        auto u1 = v.RouterOutput.unwrap()
+        parts.append("\"routerOutput\":" + u1.to_json())
+    return mediaconnect_json_obj(parts)
+
+# Serialize SourceEndpointFilter to a compact JSON object (declaration order).
+def source_endpoint_filter_to_json(SourceEndpointFilter v) -> str:
+    list[str] parts = []
+    if v.RegionNames.is_some():
+        auto u0 = v.RegionNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mediaconnect_json_str(x1))
+        parts.append("\"regionNames\":" + mediaconnect_json_arr(e1))
+    if v.SourceTypes.is_some():
+        auto u2 = v.SourceTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"sourceTypes\":" + mediaconnect_json_arr(e3))
+    if v.NameContains.is_some():
+        auto u4 = v.NameContains.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(mediaconnect_json_str(x5))
+        parts.append("\"nameContains\":" + mediaconnect_json_arr(e5))
+    return mediaconnect_json_obj(parts)
+
+# Serialize StandardDestinationEndpointConfiguration to a compact JSON object (declaration order).
+def standard_destination_endpoint_configuration_to_json(StandardDestinationEndpointConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + mediaconnect_json_str(v.Name))
+    parts.append("\"destinationNetworkingConfiguration\":" + standard_destination_endpoint_networking_configuration_to_json(v.DestinationNetworkingConfiguration))
+    parts.append("\"protocolConfiguration\":" + v.ProtocolConfiguration.to_json())
+    if v.DestinationNetworkingType.is_some():
+        auto u0 = v.DestinationNetworkingType.unwrap()
+        parts.append("\"destinationNetworkingType\":" + u0.to_json())
+    if v.Protocol.is_some():
+        auto u1 = v.Protocol.unwrap()
+        parts.append("\"protocol\":" + u1.to_json())
+    return mediaconnect_json_obj(parts)
+
+# Serialize StandardDestinationEndpointNetworkingConfiguration to a compact JSON object (declaration order).
+def standard_destination_endpoint_networking_configuration_to_json(StandardDestinationEndpointNetworkingConfiguration v) -> str:
+    list[str] parts = []
+    if v.Public.is_some():
+        auto u0 = v.Public.unwrap()
+        parts.append("\"public\":" + public_destination_endpoint_networking_configuration_to_json(u0))
+    if v.Vpc.is_some():
+        auto u1 = v.Vpc.unwrap()
+        parts.append("\"vpc\":" + vpc_destination_endpoint_networking_configuration_to_json(u1))
+    return mediaconnect_json_obj(parts)
+
+# Serialize StandardSourceEndpointConfiguration to a compact JSON object (declaration order).
+def standard_source_endpoint_configuration_to_json(StandardSourceEndpointConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + mediaconnect_json_str(v.Name))
+    parts.append("\"sourceNetworkingConfiguration\":" + standard_source_endpoint_networking_configuration_to_json(v.SourceNetworkingConfiguration))
+    parts.append("\"protocolConfiguration\":" + v.ProtocolConfiguration.to_json())
+    if v.SourceNetworkingType.is_some():
+        auto u0 = v.SourceNetworkingType.unwrap()
+        parts.append("\"sourceNetworkingType\":" + u0.to_json())
+    if v.Protocol.is_some():
+        auto u1 = v.Protocol.unwrap()
+        parts.append("\"protocol\":" + u1.to_json())
+    return mediaconnect_json_obj(parts)
+
+# Serialize StandardSourceEndpointNetworkingConfiguration to a compact JSON object (declaration order).
+def standard_source_endpoint_networking_configuration_to_json(StandardSourceEndpointNetworkingConfiguration v) -> str:
+    list[str] parts = []
+    if v.Public.is_some():
+        auto u0 = v.Public.unwrap()
+        parts.append("\"public\":" + public_source_endpoint_networking_configuration_to_json(u0))
+    if v.Vpc.is_some():
+        auto u1 = v.Vpc.unwrap()
+        parts.append("\"vpc\":" + vpc_source_endpoint_networking_configuration_to_json(u1))
+    return mediaconnect_json_obj(parts)
+
+# Serialize VpcDestinationEndpointNetworkingConfiguration to a compact JSON object (declaration order).
+def vpc_destination_endpoint_networking_configuration_to_json(VpcDestinationEndpointNetworkingConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SecurityGroupIds:
+        e0.append(mediaconnect_json_str(x0))
+    parts.append("\"securityGroupIds\":" + mediaconnect_json_arr(e0))
+    parts.append("\"subnetId\":" + mediaconnect_json_str(v.SubnetId))
+    return mediaconnect_json_obj(parts)
+
+# Serialize VpcInterfaceRequest to a compact JSON object (declaration order).
+def vpc_interface_request_to_json(VpcInterfaceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + mediaconnect_json_str(v.Name))
+    if v.NetworkInterfaceType.is_some():
+        auto u0 = v.NetworkInterfaceType.unwrap()
+        parts.append("\"networkInterfaceType\":" + u0.to_json())
+    parts.append("\"roleArn\":" + mediaconnect_json_str(v.RoleArn))
+    list[str] e1 = []
+    for x1 in v.SecurityGroupIds:
+        e1.append(mediaconnect_json_str(x1))
+    parts.append("\"securityGroupIds\":" + mediaconnect_json_arr(e1))
+    parts.append("\"subnetId\":" + mediaconnect_json_str(v.SubnetId))
+    if v.VpcInterfaceTags.is_some():
+        auto u2 = v.VpcInterfaceTags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(mediaconnect_json_str(k3) + ":" + mediaconnect_json_str(u2[k3]))
+        parts.append("\"vpcInterfaceTags\":" + mediaconnect_json_obj(m3))
+    return mediaconnect_json_obj(parts)
+
+# Serialize VpcRouterNetworkInterfaceConfiguration to a compact JSON object (declaration order).
+def vpc_router_network_interface_configuration_to_json(VpcRouterNetworkInterfaceConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SecurityGroupIds:
+        e0.append(mediaconnect_json_str(x0))
+    parts.append("\"securityGroupIds\":" + mediaconnect_json_arr(e0))
+    parts.append("\"subnetId\":" + mediaconnect_json_str(v.SubnetId))
+    return mediaconnect_json_obj(parts)
+
+# Serialize VpcSourceEndpointNetworkingConfiguration to a compact JSON object (declaration order).
+def vpc_source_endpoint_networking_configuration_to_json(VpcSourceEndpointNetworkingConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SecurityGroupIds:
+        e0.append(mediaconnect_json_str(x0))
+    parts.append("\"securityGroupIds\":" + mediaconnect_json_arr(e0))
+    parts.append("\"subnetId\":" + mediaconnect_json_str(v.SubnetId))
+    return mediaconnect_json_obj(parts)
+
 # A bound MediaConnect client: credentials + region, threaded into every operation.
 struct MediaConnectClient:
     core.Credentials creds
     str region
+
+    # AddBridgeOutputs  POST /v1/bridges/{BridgeArn}/outputs
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def add_bridge_outputs(self, AddBridgeOutputsRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["BridgeArn"] = input.BridgeArn
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/bridges/{BridgeArn}/outputs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Outputs:
+            e0.append(x0.to_json())
+        parts.append("\"outputs\":" + mediaconnect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
+    # AddBridgeSources  POST /v1/bridges/{BridgeArn}/sources
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def add_bridge_sources(self, AddBridgeSourcesRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["BridgeArn"] = input.BridgeArn
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/bridges/{BridgeArn}/sources", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Sources:
+            e0.append(x0.to_json())
+        parts.append("\"sources\":" + mediaconnect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
+    # AddFlowMediaStreams  POST /v1/flows/{FlowArn}/mediaStreams
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def add_flow_media_streams(self, AddFlowMediaStreamsRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["FlowArn"] = input.FlowArn
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/flows/{FlowArn}/mediaStreams", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.MediaStreams:
+            e0.append(add_media_stream_request_to_json(x0))
+        parts.append("\"mediaStreams\":" + mediaconnect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
+    # AddFlowOutputs  POST /v1/flows/{FlowArn}/outputs
+    # errors: AddFlowOutputs420Exception, BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def add_flow_outputs(self, AddFlowOutputsRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["FlowArn"] = input.FlowArn
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/flows/{FlowArn}/outputs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Outputs:
+            e0.append(add_output_request_to_json(x0))
+        parts.append("\"outputs\":" + mediaconnect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
+    # AddFlowSources  POST /v1/flows/{FlowArn}/source
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def add_flow_sources(self, AddFlowSourcesRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["FlowArn"] = input.FlowArn
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/flows/{FlowArn}/source", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Sources:
+            e0.append(set_source_request_to_json(x0))
+        parts.append("\"sources\":" + mediaconnect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
+    # AddFlowVpcInterfaces  POST /v1/flows/{FlowArn}/vpcInterfaces
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def add_flow_vpc_interfaces(self, AddFlowVpcInterfacesRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["FlowArn"] = input.FlowArn
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/flows/{FlowArn}/vpcInterfaces", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.VpcInterfaces:
+            e0.append(vpc_interface_request_to_json(x0))
+        parts.append("\"vpcInterfaces\":" + mediaconnect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
 
     # ConnectEndpoints  PUT /v1/connectEndpoints/{DestinationEndpointArn}
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
@@ -3889,6 +4730,220 @@ struct MediaConnectClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/v1/connectEndpoints/{DestinationEndpointArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ConnectEndpointsDocument(SourceEndpointArn=input.SourceEndpointArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
+    # CreateBridge  POST /v1/bridges
+    # errors: BadRequestException, ConflictException, CreateBridge420Exception, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException
+    def create_bridge(self, CreateBridgeRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/bridges", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.EgressGatewayBridge.is_some():
+            auto u0 = input.EgressGatewayBridge.unwrap()
+            parts.append("\"egressGatewayBridge\":" + u0.to_json())
+        if input.IngressGatewayBridge.is_some():
+            auto u1 = input.IngressGatewayBridge.unwrap()
+            parts.append("\"ingressGatewayBridge\":" + u1.to_json())
+        parts.append("\"name\":" + mediaconnect_json_str(input.Name))
+        if input.Outputs.is_some():
+            auto u2 = input.Outputs.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"outputs\":" + mediaconnect_json_arr(e3))
+        parts.append("\"placementArn\":" + mediaconnect_json_str(input.PlacementArn))
+        if input.SourceFailoverConfig.is_some():
+            auto u4 = input.SourceFailoverConfig.unwrap()
+            parts.append("\"sourceFailoverConfig\":" + u4.to_json())
+        list[str] e5 = []
+        for x5 in input.Sources:
+            e5.append(x5.to_json())
+        parts.append("\"sources\":" + mediaconnect_json_arr(e5))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
+    # CreateFlow  POST /v1/flows
+    # errors: BadRequestException, CreateFlow420Exception, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException
+    def create_flow(self, CreateFlowRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/flows", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AvailabilityZone.is_some():
+            auto u0 = input.AvailabilityZone.unwrap()
+            parts.append("\"availabilityZone\":" + mediaconnect_json_str(u0))
+        if input.Entitlements.is_some():
+            auto u1 = input.Entitlements.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(grant_entitlement_request_to_json(x2))
+            parts.append("\"entitlements\":" + mediaconnect_json_arr(e2))
+        if input.MediaStreams.is_some():
+            auto u3 = input.MediaStreams.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(add_media_stream_request_to_json(x4))
+            parts.append("\"mediaStreams\":" + mediaconnect_json_arr(e4))
+        parts.append("\"name\":" + mediaconnect_json_str(input.Name))
+        if input.Outputs.is_some():
+            auto u5 = input.Outputs.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(add_output_request_to_json(x6))
+            parts.append("\"outputs\":" + mediaconnect_json_arr(e6))
+        if input.Source.is_some():
+            auto u7 = input.Source.unwrap()
+            parts.append("\"source\":" + set_source_request_to_json(u7))
+        if input.SourceFailoverConfig.is_some():
+            auto u8 = input.SourceFailoverConfig.unwrap()
+            parts.append("\"sourceFailoverConfig\":" + u8.to_json())
+        if input.Sources.is_some():
+            auto u9 = input.Sources.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(set_source_request_to_json(x10))
+            parts.append("\"sources\":" + mediaconnect_json_arr(e10))
+        if input.VpcInterfaces.is_some():
+            auto u11 = input.VpcInterfaces.unwrap()
+            list[str] e12 = []
+            for x12 in u11:
+                e12.append(vpc_interface_request_to_json(x12))
+            parts.append("\"vpcInterfaces\":" + mediaconnect_json_arr(e12))
+        if input.Maintenance.is_some():
+            auto u13 = input.Maintenance.unwrap()
+            parts.append("\"maintenance\":" + u13.to_json())
+        if input.SourceMonitoringConfig.is_some():
+            auto u14 = input.SourceMonitoringConfig.unwrap()
+            parts.append("\"sourceMonitoringConfig\":" + monitoring_config_to_json(u14))
+        if input.FlowSize.is_some():
+            auto u15 = input.FlowSize.unwrap()
+            parts.append("\"flowSize\":" + u15.to_json())
+        if input.NdiConfig.is_some():
+            auto u16 = input.NdiConfig.unwrap()
+            parts.append("\"ndiConfig\":" + ndi_config_to_json(u16))
+        if input.EncodingConfig.is_some():
+            auto u17 = input.EncodingConfig.unwrap()
+            parts.append("\"encodingConfig\":" + u17.to_json())
+        if input.FlowTags.is_some():
+            auto u18 = input.FlowTags.unwrap()
+            list[str] m19 = []
+            for k19 in sorted(u18.keys()):
+                m19.append(mediaconnect_json_str(k19) + ":" + mediaconnect_json_str(u18[k19]))
+            parts.append("\"flowTags\":" + mediaconnect_json_obj(m19))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
+    # CreateGateway  POST /v1/gateways
+    # errors: BadRequestException, ConflictException, CreateGateway420Exception, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException
+    def create_gateway(self, CreateGatewayRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/gateways", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.EgressCidrBlocks:
+            e0.append(mediaconnect_json_str(x0))
+        parts.append("\"egressCidrBlocks\":" + mediaconnect_json_arr(e0))
+        parts.append("\"name\":" + mediaconnect_json_str(input.Name))
+        list[str] e1 = []
+        for x1 in input.Networks:
+            e1.append(x1.to_json())
+        parts.append("\"networks\":" + mediaconnect_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
+    # CreateRouterInput  POST /v1/routerInput
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, RouterInputServiceQuotaExceededException, ServiceUnavailableException, TooManyRequestsException
+    def create_router_input(self, CreateRouterInputRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerInput", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + mediaconnect_json_str(input.Name))
+        parts.append("\"configuration\":" + router_input_configuration_to_json(input.Configuration))
+        parts.append("\"maximumBitrate\":" + str(input.MaximumBitrate))
+        parts.append("\"routingScope\":" + input.RoutingScope.to_json())
+        parts.append("\"tier\":" + input.Tier.to_json())
+        if input.RegionName.is_some():
+            auto u0 = input.RegionName.unwrap()
+            parts.append("\"regionName\":" + mediaconnect_json_str(u0))
+        if input.AvailabilityZone.is_some():
+            auto u1 = input.AvailabilityZone.unwrap()
+            parts.append("\"availabilityZone\":" + mediaconnect_json_str(u1))
+        if input.TransitEncryption.is_some():
+            auto u2 = input.TransitEncryption.unwrap()
+            parts.append("\"transitEncryption\":" + u2.to_json())
+        if input.MaintenanceConfiguration.is_some():
+            auto u3 = input.MaintenanceConfiguration.unwrap()
+            parts.append("\"maintenanceConfiguration\":" + u3.to_json())
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(mediaconnect_json_str(k5) + ":" + mediaconnect_json_str(u4[k5]))
+            parts.append("\"tags\":" + mediaconnect_json_obj(m5))
+        if input.ClientToken.is_some():
+            auto u6 = input.ClientToken.unwrap()
+            parts.append("\"clientToken\":" + mediaconnect_json_str(u6))
+        if input.ContentQualityAnalysisConfiguration.is_some():
+            auto u7 = input.ContentQualityAnalysisConfiguration.unwrap()
+            parts.append("\"contentQualityAnalysisConfiguration\":" + u7.to_json())
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
+    # CreateRouterNetworkInterface  POST /v1/routerNetworkInterface
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, RouterNetworkInterfaceServiceQuotaExceededException, ServiceUnavailableException, TooManyRequestsException
+    def create_router_network_interface(self, CreateRouterNetworkInterfaceRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerNetworkInterface", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + mediaconnect_json_str(input.Name))
+        parts.append("\"configuration\":" + router_network_interface_configuration_to_json(input.Configuration))
+        if input.RegionName.is_some():
+            auto u0 = input.RegionName.unwrap()
+            parts.append("\"regionName\":" + mediaconnect_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(mediaconnect_json_str(k2) + ":" + mediaconnect_json_str(u1[k2]))
+            parts.append("\"tags\":" + mediaconnect_json_obj(m2))
+        if input.ClientToken.is_some():
+            auto u3 = input.ClientToken.unwrap()
+            parts.append("\"clientToken\":" + mediaconnect_json_str(u3))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
+    # CreateRouterOutput  POST /v1/routerOutput
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, RouterOutputServiceQuotaExceededException, ServiceUnavailableException, TooManyRequestsException
+    def create_router_output(self, CreateRouterOutputRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerOutput", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + mediaconnect_json_str(input.Name))
+        parts.append("\"configuration\":" + input.Configuration.to_json())
+        parts.append("\"maximumBitrate\":" + str(input.MaximumBitrate))
+        parts.append("\"routingScope\":" + input.RoutingScope.to_json())
+        parts.append("\"tier\":" + input.Tier.to_json())
+        if input.RegionName.is_some():
+            auto u0 = input.RegionName.unwrap()
+            parts.append("\"regionName\":" + mediaconnect_json_str(u0))
+        if input.AvailabilityZone.is_some():
+            auto u1 = input.AvailabilityZone.unwrap()
+            parts.append("\"availabilityZone\":" + mediaconnect_json_str(u1))
+        if input.MaintenanceConfiguration.is_some():
+            auto u2 = input.MaintenanceConfiguration.unwrap()
+            parts.append("\"maintenanceConfiguration\":" + u2.to_json())
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(mediaconnect_json_str(k4) + ":" + mediaconnect_json_str(u3[k4]))
+            parts.append("\"tags\":" + mediaconnect_json_obj(m4))
+        if input.FabricConfiguration.is_some():
+            auto u5 = input.FabricConfiguration.unwrap()
+            parts.append("\"fabricConfiguration\":" + u5.to_json())
+        if input.ClientToken.is_some():
+            auto u6 = input.ClientToken.unwrap()
+            parts.append("\"clientToken\":" + mediaconnect_json_str(u6))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
 
     # DeleteBridge  DELETE /v1/bridges/{BridgeArn}
@@ -4109,6 +5164,21 @@ struct MediaConnectClient:
         auto b = binding.HttpBinding(method="GET", path_template="/v1/sourceEndpoint/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
+    # GrantFlowEntitlements  POST /v1/flows/{FlowArn}/entitlements
+    # errors: BadRequestException, ForbiddenException, GrantFlowEntitlements420Exception, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def grant_flow_entitlements(self, GrantFlowEntitlementsRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["FlowArn"] = input.FlowArn
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/flows/{FlowArn}/entitlements", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Entitlements:
+            e0.append(grant_entitlement_request_to_json(x0))
+        parts.append("\"entitlements\":" + mediaconnect_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
     # ListBridges  GET /v1/bridges
     # errors: BadRequestException, ConflictException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException
     def list_bridges(self, ListBridgesRequest input) -> str:
@@ -4122,6 +5192,26 @@ struct MediaConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         auto b = binding.HttpBinding(method="GET", path_template="/v1/bridges", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
+
+    # ListDestinationEndpoints  POST /v1/destinationEndpoints
+    # errors: BadRequestException, ConflictException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException
+    def list_destination_endpoints(self, ListDestinationEndpointsRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] query = {}
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/destinationEndpoints", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(destination_endpoint_filter_to_json(x1))
+            parts.append("\"filters\":" + mediaconnect_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
 
     # ListEntitlements  GET /v1/entitlements
     # errors: BadRequestException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException
@@ -4197,6 +5287,86 @@ struct MediaConnectClient:
         auto b = binding.HttpBinding(method="GET", path_template="/v1/reservations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
+    # ListRouterInputs  POST /v1/routerInputs
+    # errors: BadRequestException, ConflictException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException
+    def list_router_inputs(self, ListRouterInputsRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] query = {}
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerInputs", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(router_input_filter_to_json(x1))
+            parts.append("\"filters\":" + mediaconnect_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
+    # ListRouterNetworkInterfaces  POST /v1/routerNetworkInterfaces
+    # errors: BadRequestException, ConflictException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException
+    def list_router_network_interfaces(self, ListRouterNetworkInterfacesRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] query = {}
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerNetworkInterfaces", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(router_network_interface_filter_to_json(x1))
+            parts.append("\"filters\":" + mediaconnect_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
+    # ListRouterOutputs  POST /v1/routerOutputs
+    # errors: BadRequestException, ConflictException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException
+    def list_router_outputs(self, ListRouterOutputsRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] query = {}
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerOutputs", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(router_output_filter_to_json(x1))
+            parts.append("\"filters\":" + mediaconnect_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
+    # ListSourceEndpoints  POST /v1/sourceEndpoints
+    # errors: BadRequestException, ConflictException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException
+    def list_source_endpoints(self, ListSourceEndpointsRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] query = {}
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/sourceEndpoints", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(source_endpoint_filter_to_json(x1))
+            parts.append("\"filters\":" + mediaconnect_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
     # ListTagsForGlobalResource  GET /tags/global/{ResourceArn}
     # errors: BadRequestException, InternalServerErrorException, NotFoundException
     def list_tags_for_global_resource(self, ListTagsForGlobalResourceRequest input) -> str:
@@ -4224,6 +5394,56 @@ struct MediaConnectClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/offerings/{OfferingArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PurchaseOfferingDocument(ReservationName=input.ReservationName, Start=input.Start)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
+    # RegisterDestinationEndpoint  POST /v1/destinationEndpoint
+    # errors: BadRequestException, ConflictException, DestinationEndpointServiceQuotaExceededException, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException
+    def register_destination_endpoint(self, RegisterDestinationEndpointRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/destinationEndpoint", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"description\":" + mediaconnect_json_str(u0))
+        parts.append("\"configuration\":" + destination_endpoint_configuration_to_json(input.Configuration))
+        if input.RegionName.is_some():
+            auto u1 = input.RegionName.unwrap()
+            parts.append("\"regionName\":" + mediaconnect_json_str(u1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(mediaconnect_json_str(k3) + ":" + mediaconnect_json_str(u2[k3]))
+            parts.append("\"tags\":" + mediaconnect_json_obj(m3))
+        if input.ClientToken.is_some():
+            auto u4 = input.ClientToken.unwrap()
+            parts.append("\"clientToken\":" + mediaconnect_json_str(u4))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
+    # RegisterSourceEndpoint  POST /v1/sourceEndpoint
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, SourceEndpointServiceQuotaExceededException, TooManyRequestsException
+    def register_source_endpoint(self, RegisterSourceEndpointRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/sourceEndpoint", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.RegionName.is_some():
+            auto u0 = input.RegionName.unwrap()
+            parts.append("\"regionName\":" + mediaconnect_json_str(u0))
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"description\":" + mediaconnect_json_str(u1))
+        parts.append("\"configuration\":" + source_endpoint_configuration_to_json(input.Configuration))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(mediaconnect_json_str(k3) + ":" + mediaconnect_json_str(u2[k3]))
+            parts.append("\"tags\":" + mediaconnect_json_obj(m3))
+        if input.ClientToken.is_some():
+            auto u4 = input.ClientToken.unwrap()
+            parts.append("\"clientToken\":" + mediaconnect_json_str(u4))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
 
     # RemoveBridgeOutput  DELETE /v1/bridges/{BridgeArn}/outputs/{OutputName}
@@ -4368,6 +5588,36 @@ struct MediaConnectClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/routerOutput/stop/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
+    # TagGlobalResource  POST /tags/global/{ResourceArn}
+    # errors: BadRequestException, InternalServerErrorException, NotFoundException
+    def tag_global_resource(self, TagGlobalResourceRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/global/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(mediaconnect_json_str(k0) + ":" + mediaconnect_json_str(input.Tags[k0]))
+        parts.append("\"tags\":" + mediaconnect_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
+    # TagResource  POST /tags/{ResourceArn}
+    # errors: BadRequestException, InternalServerErrorException, NotFoundException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(mediaconnect_json_str(k0) + ":" + mediaconnect_json_str(input.Tags[k0]))
+        parts.append("\"tags\":" + mediaconnect_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
     # TakeRouterInput  PUT /v1/routerOutput/takeRouterInput/{RouterOutputArn}
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
     def take_router_input(self, TakeRouterInputRequest input) -> str:
@@ -4425,6 +5675,79 @@ struct MediaConnectClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
 
+    # UpdateDestinationEndpoint  PUT /v1/destinationEndpoint/{Arn}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def update_destination_endpoint(self, UpdateDestinationEndpointRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Arn"] = input.Arn
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/destinationEndpoint/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"description\":" + mediaconnect_json_str(u0))
+        if input.Configuration.is_some():
+            auto u1 = input.Configuration.unwrap()
+            parts.append("\"configuration\":" + destination_endpoint_configuration_to_json(u1))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
+    # UpdateFlow  PUT /v1/flows/{FlowArn}
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def update_flow(self, UpdateFlowRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["FlowArn"] = input.FlowArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/flows/{FlowArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.SourceFailoverConfig.is_some():
+            auto u0 = input.SourceFailoverConfig.unwrap()
+            parts.append("\"sourceFailoverConfig\":" + u0.to_json())
+        if input.Maintenance.is_some():
+            auto u1 = input.Maintenance.unwrap()
+            parts.append("\"maintenance\":" + u1.to_json())
+        if input.SourceMonitoringConfig.is_some():
+            auto u2 = input.SourceMonitoringConfig.unwrap()
+            parts.append("\"sourceMonitoringConfig\":" + monitoring_config_to_json(u2))
+        if input.NdiConfig.is_some():
+            auto u3 = input.NdiConfig.unwrap()
+            parts.append("\"ndiConfig\":" + ndi_config_to_json(u3))
+        if input.FlowSize.is_some():
+            auto u4 = input.FlowSize.unwrap()
+            parts.append("\"flowSize\":" + u4.to_json())
+        if input.EncodingConfig.is_some():
+            auto u5 = input.EncodingConfig.unwrap()
+            parts.append("\"encodingConfig\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
+    # UpdateFlowEntitlement  PUT /v1/flows/{FlowArn}/entitlements/{EntitlementArn}
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def update_flow_entitlement(self, UpdateFlowEntitlementRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["EntitlementArn"] = input.EntitlementArn
+        labels["FlowArn"] = input.FlowArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/flows/{FlowArn}/entitlements/{EntitlementArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"description\":" + mediaconnect_json_str(u0))
+        if input.Encryption.is_some():
+            auto u1 = input.Encryption.unwrap()
+            parts.append("\"encryption\":" + u1.to_json())
+        if input.EntitlementStatus.is_some():
+            auto u2 = input.EntitlementStatus.unwrap()
+            parts.append("\"entitlementStatus\":" + u2.to_json())
+        if input.Subscribers.is_some():
+            auto u3 = input.Subscribers.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(mediaconnect_json_str(x4))
+            parts.append("\"subscribers\":" + mediaconnect_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
     # UpdateFlowMediaStream  PUT /v1/flows/{FlowArn}/mediaStreams/{MediaStreamName}
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
     def update_flow_media_stream(self, UpdateFlowMediaStreamRequest input) -> str:
@@ -4435,6 +5758,168 @@ struct MediaConnectClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/v1/flows/{FlowArn}/mediaStreams/{MediaStreamName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateFlowMediaStreamDocument(Attributes=input.Attributes, ClockRate=input.ClockRate, Description=input.Description, MediaStreamType=input.MediaStreamType, VideoFormat=input.VideoFormat)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
+    # UpdateFlowOutput  PUT /v1/flows/{FlowArn}/outputs/{OutputArn}
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def update_flow_output(self, UpdateFlowOutputRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["FlowArn"] = input.FlowArn
+        labels["OutputArn"] = input.OutputArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/flows/{FlowArn}/outputs/{OutputArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.CidrAllowList.is_some():
+            auto u0 = input.CidrAllowList.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(mediaconnect_json_str(x1))
+            parts.append("\"cidrAllowList\":" + mediaconnect_json_arr(e1))
+        if input.Description.is_some():
+            auto u2 = input.Description.unwrap()
+            parts.append("\"description\":" + mediaconnect_json_str(u2))
+        if input.Destination.is_some():
+            auto u3 = input.Destination.unwrap()
+            parts.append("\"destination\":" + mediaconnect_json_str(u3))
+        if input.Encryption.is_some():
+            auto u4 = input.Encryption.unwrap()
+            parts.append("\"encryption\":" + u4.to_json())
+        if input.MaxLatency.is_some():
+            auto u5 = input.MaxLatency.unwrap()
+            parts.append("\"maxLatency\":" + str(u5))
+        if input.MediaStreamOutputConfigurations.is_some():
+            auto u6 = input.MediaStreamOutputConfigurations.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(media_stream_output_configuration_request_to_json(x7))
+            parts.append("\"mediaStreamOutputConfigurations\":" + mediaconnect_json_arr(e7))
+        if input.MinLatency.is_some():
+            auto u8 = input.MinLatency.unwrap()
+            parts.append("\"minLatency\":" + str(u8))
+        if input.Port.is_some():
+            auto u9 = input.Port.unwrap()
+            parts.append("\"port\":" + str(u9))
+        if input.Protocol.is_some():
+            auto u10 = input.Protocol.unwrap()
+            parts.append("\"protocol\":" + u10.to_json())
+        if input.RemoteId.is_some():
+            auto u11 = input.RemoteId.unwrap()
+            parts.append("\"remoteId\":" + mediaconnect_json_str(u11))
+        if input.SenderControlPort.is_some():
+            auto u12 = input.SenderControlPort.unwrap()
+            parts.append("\"senderControlPort\":" + str(u12))
+        if input.SenderIpAddress.is_some():
+            auto u13 = input.SenderIpAddress.unwrap()
+            parts.append("\"senderIpAddress\":" + mediaconnect_json_str(u13))
+        if input.SmoothingLatency.is_some():
+            auto u14 = input.SmoothingLatency.unwrap()
+            parts.append("\"smoothingLatency\":" + str(u14))
+        if input.StreamId.is_some():
+            auto u15 = input.StreamId.unwrap()
+            parts.append("\"streamId\":" + mediaconnect_json_str(u15))
+        if input.VpcInterfaceAttachment.is_some():
+            auto u16 = input.VpcInterfaceAttachment.unwrap()
+            parts.append("\"vpcInterfaceAttachment\":" + u16.to_json())
+        if input.OutputStatus.is_some():
+            auto u17 = input.OutputStatus.unwrap()
+            parts.append("\"outputStatus\":" + u17.to_json())
+        if input.NdiProgramName.is_some():
+            auto u18 = input.NdiProgramName.unwrap()
+            parts.append("\"ndiProgramName\":" + mediaconnect_json_str(u18))
+        if input.NdiSpeedHqQuality.is_some():
+            auto u19 = input.NdiSpeedHqQuality.unwrap()
+            parts.append("\"ndiSpeedHqQuality\":" + str(u19))
+        if input.RouterIntegrationState.is_some():
+            auto u20 = input.RouterIntegrationState.unwrap()
+            parts.append("\"routerIntegrationState\":" + u20.to_json())
+        if input.RouterIntegrationTransitEncryption.is_some():
+            auto u21 = input.RouterIntegrationTransitEncryption.unwrap()
+            parts.append("\"routerIntegrationTransitEncryption\":" + u21.to_json())
+        if input.NdiOutputTimecodeSource.is_some():
+            auto u22 = input.NdiOutputTimecodeSource.unwrap()
+            parts.append("\"ndiOutputTimecodeSource\":" + u22.to_json())
+        if input.NdiAudioReferenceLevel.is_some():
+            auto u23 = input.NdiAudioReferenceLevel.unwrap()
+            parts.append("\"ndiAudioReferenceLevel\":" + str(u23))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
+    # UpdateFlowSource  PUT /v1/flows/{FlowArn}/source/{SourceArn}
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def update_flow_source(self, UpdateFlowSourceRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["FlowArn"] = input.FlowArn
+        labels["SourceArn"] = input.SourceArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/flows/{FlowArn}/source/{SourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Decryption.is_some():
+            auto u0 = input.Decryption.unwrap()
+            parts.append("\"decryption\":" + u0.to_json())
+        if input.Description.is_some():
+            auto u1 = input.Description.unwrap()
+            parts.append("\"description\":" + mediaconnect_json_str(u1))
+        if input.EntitlementArn.is_some():
+            auto u2 = input.EntitlementArn.unwrap()
+            parts.append("\"entitlementArn\":" + mediaconnect_json_str(u2))
+        if input.IngestPort.is_some():
+            auto u3 = input.IngestPort.unwrap()
+            parts.append("\"ingestPort\":" + str(u3))
+        if input.MaxBitrate.is_some():
+            auto u4 = input.MaxBitrate.unwrap()
+            parts.append("\"maxBitrate\":" + str(u4))
+        if input.MaxLatency.is_some():
+            auto u5 = input.MaxLatency.unwrap()
+            parts.append("\"maxLatency\":" + str(u5))
+        if input.MaxSyncBuffer.is_some():
+            auto u6 = input.MaxSyncBuffer.unwrap()
+            parts.append("\"maxSyncBuffer\":" + str(u6))
+        if input.MediaStreamSourceConfigurations.is_some():
+            auto u7 = input.MediaStreamSourceConfigurations.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(media_stream_source_configuration_request_to_json(x8))
+            parts.append("\"mediaStreamSourceConfigurations\":" + mediaconnect_json_arr(e8))
+        if input.MinLatency.is_some():
+            auto u9 = input.MinLatency.unwrap()
+            parts.append("\"minLatency\":" + str(u9))
+        if input.Protocol.is_some():
+            auto u10 = input.Protocol.unwrap()
+            parts.append("\"protocol\":" + u10.to_json())
+        if input.SenderControlPort.is_some():
+            auto u11 = input.SenderControlPort.unwrap()
+            parts.append("\"senderControlPort\":" + str(u11))
+        if input.SenderIpAddress.is_some():
+            auto u12 = input.SenderIpAddress.unwrap()
+            parts.append("\"senderIpAddress\":" + mediaconnect_json_str(u12))
+        if input.SourceListenerAddress.is_some():
+            auto u13 = input.SourceListenerAddress.unwrap()
+            parts.append("\"sourceListenerAddress\":" + mediaconnect_json_str(u13))
+        if input.SourceListenerPort.is_some():
+            auto u14 = input.SourceListenerPort.unwrap()
+            parts.append("\"sourceListenerPort\":" + str(u14))
+        if input.StreamId.is_some():
+            auto u15 = input.StreamId.unwrap()
+            parts.append("\"streamId\":" + mediaconnect_json_str(u15))
+        if input.VpcInterfaceName.is_some():
+            auto u16 = input.VpcInterfaceName.unwrap()
+            parts.append("\"vpcInterfaceName\":" + mediaconnect_json_str(u16))
+        if input.WhitelistCidr.is_some():
+            auto u17 = input.WhitelistCidr.unwrap()
+            parts.append("\"whitelistCidr\":" + mediaconnect_json_str(u17))
+        if input.GatewayBridgeSource.is_some():
+            auto u18 = input.GatewayBridgeSource.unwrap()
+            parts.append("\"gatewayBridgeSource\":" + u18.to_json())
+        if input.NdiSourceSettings.is_some():
+            auto u19 = input.NdiSourceSettings.unwrap()
+            parts.append("\"ndiSourceSettings\":" + u19.to_json())
+        if input.RouterIntegrationState.is_some():
+            auto u20 = input.RouterIntegrationState.unwrap()
+            parts.append("\"routerIntegrationState\":" + u20.to_json())
+        if input.RouterIntegrationTransitDecryption.is_some():
+            auto u21 = input.RouterIntegrationTransitDecryption.unwrap()
+            parts.append("\"routerIntegrationTransitDecryption\":" + u21.to_json())
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
 
     # UpdateGatewayInstance  PUT /v1/gateway-instances/{GatewayInstanceArn}
@@ -4448,6 +5933,58 @@ struct MediaConnectClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
 
+    # UpdateRouterInput  PUT /v1/routerInput/{Arn}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def update_router_input(self, UpdateRouterInputRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Arn"] = input.Arn
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/routerInput/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"name\":" + mediaconnect_json_str(u0))
+        if input.Configuration.is_some():
+            auto u1 = input.Configuration.unwrap()
+            parts.append("\"configuration\":" + router_input_configuration_to_json(u1))
+        if input.MaximumBitrate.is_some():
+            auto u2 = input.MaximumBitrate.unwrap()
+            parts.append("\"maximumBitrate\":" + str(u2))
+        if input.RoutingScope.is_some():
+            auto u3 = input.RoutingScope.unwrap()
+            parts.append("\"routingScope\":" + u3.to_json())
+        if input.Tier.is_some():
+            auto u4 = input.Tier.unwrap()
+            parts.append("\"tier\":" + u4.to_json())
+        if input.TransitEncryption.is_some():
+            auto u5 = input.TransitEncryption.unwrap()
+            parts.append("\"transitEncryption\":" + u5.to_json())
+        if input.MaintenanceConfiguration.is_some():
+            auto u6 = input.MaintenanceConfiguration.unwrap()
+            parts.append("\"maintenanceConfiguration\":" + u6.to_json())
+        if input.ContentQualityAnalysisConfiguration.is_some():
+            auto u7 = input.ContentQualityAnalysisConfiguration.unwrap()
+            parts.append("\"contentQualityAnalysisConfiguration\":" + u7.to_json())
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
+    # UpdateRouterNetworkInterface  PUT /v1/routerNetworkInterface/{Arn}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException
+    def update_router_network_interface(self, UpdateRouterNetworkInterfaceRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Arn"] = input.Arn
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/routerNetworkInterface/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Name.is_some():
+            auto u0 = input.Name.unwrap()
+            parts.append("\"name\":" + mediaconnect_json_str(u0))
+        if input.Configuration.is_some():
+            auto u1 = input.Configuration.unwrap()
+            parts.append("\"configuration\":" + router_network_interface_configuration_to_json(u1))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
     # UpdateRouterOutput  PUT /v1/routerOutput/{Arn}
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
     def update_router_output(self, UpdateRouterOutputRequest input) -> str:
@@ -4459,12 +5996,42 @@ struct MediaConnectClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
 
+    # UpdateSourceEndpoint  PUT /v1/sourceEndpoint/{Arn}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def update_source_endpoint(self, UpdateSourceEndpointRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Arn"] = input.Arn
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/sourceEndpoint/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"description\":" + mediaconnect_json_str(u0))
+        if input.Configuration.is_some():
+            auto u1 = input.Configuration.unwrap()
+            parts.append("\"configuration\":" + source_endpoint_configuration_to_json(u1))
+        auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
     # Paginator for ListBridges — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: Bridges).
     def paginate_list_bridges(self, ListBridgesRequest input):
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         while True:
             auto raw = self.list_bridges(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListDestinationEndpoints — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: DestinationEndpoints).
+    def paginate_list_destination_endpoints(self, ListDestinationEndpointsRequest input):
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        while True:
+            auto raw = self.list_destination_endpoints(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")
@@ -4543,6 +6110,58 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         while True:
             auto raw = self.list_reservations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListRouterInputs — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: RouterInputs).
+    def paginate_list_router_inputs(self, ListRouterInputsRequest input):
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        while True:
+            auto raw = self.list_router_inputs(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListRouterNetworkInterfaces — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: RouterNetworkInterfaces).
+    def paginate_list_router_network_interfaces(self, ListRouterNetworkInterfacesRequest input):
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        while True:
+            auto raw = self.list_router_network_interfaces(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListRouterOutputs — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: RouterOutputs).
+    def paginate_list_router_outputs(self, ListRouterOutputsRequest input):
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        while True:
+            auto raw = self.list_router_outputs(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListSourceEndpoints — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: SourceEndpoints).
+    def paginate_list_source_endpoints(self, ListSourceEndpointsRequest input):
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        while True:
+            auto raw = self.list_source_endpoints(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

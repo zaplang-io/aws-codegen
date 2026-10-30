@@ -13,19 +13,20 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 17 operations — 9 with a generated method,
-#   8 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 17 operations — 17 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   60 structs (39 @derive(Json)), 9 enums, 7 error variants.
-#   0 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.endpoints
 import aws_core.awsjson
 
 # The PartnerCentral_Benefits awsJson protocol: version 1.0, API id "PartnerCentralBenefitsService".
@@ -224,8 +225,9 @@ struct AccessDeniedException:
 struct AccessDetails:
     Optional[str] Description
 
-# no @derive(Json): member(s) Amendments: list[Amendment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Amendments: list[Amendment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmendBenefitApplicationInput:
     str Catalog
     str ClientToken
@@ -262,8 +264,9 @@ struct AssociatedResource:
     Optional[str] ResourceIdentifier
     Optional[str] ResourceArn
 
-# no @derive(Json): member(s) FulfillmentTypes: list[FulfillmentType], ApplicableBenefitIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FulfillmentTypes: list[FulfillmentType], ApplicableBenefitIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BenefitAllocationSummary:
     Optional[str] Id
     Optional[str] Catalog
@@ -278,8 +281,9 @@ struct BenefitAllocationSummary:
     Optional[DateTime] ExpiresAt
     Optional[list[str]] ApplicableBenefitIds
 
-# no @derive(Json): member(s) Programs: list[str], FulfillmentTypes: list[FulfillmentType], BenefitApplicationDetails: dict[str, str], AssociatedResources: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Programs: list[str], FulfillmentTypes: list[FulfillmentType], BenefitApplicationDetails: dict[str, str], AssociatedResources: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BenefitApplicationSummary:
     Optional[str] Catalog
     Optional[str] Name
@@ -295,8 +299,9 @@ struct BenefitApplicationSummary:
     Optional[dict[str, str]] BenefitApplicationDetails
     Optional[list[str]] AssociatedResources
 
-# no @derive(Json): member(s) Programs: list[str], FulfillmentTypes: list[FulfillmentType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Programs: list[str], FulfillmentTypes: list[FulfillmentType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BenefitSummary:
     Optional[str] Id
     Optional[str] Catalog
@@ -338,8 +343,9 @@ struct Contact:
     Optional[str] BusinessTitle
     Optional[str] Phone
 
-# no @derive(Json): member(s) FulfillmentTypes: list[FulfillmentType], Tags: list[Tag], AssociatedResources: list[str], PartnerContacts: list[Contact], FileDetails: list[FileInput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FulfillmentTypes: list[FulfillmentType], Tags: list[Tag], AssociatedResources: list[str], PartnerContacts: list[Contact], FileDetails: list[FileInput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBenefitApplicationInput:
     str Catalog
     str ClientToken
@@ -370,8 +376,9 @@ struct CreditCode:
     @json(timestamp="iso8601")
     DateTime ExpiresAt
 
-# no @derive(Json): member(s) Codes: list[CreditCode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Codes: list[CreditCode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreditDetails:
     MonetaryValue AllocatedAmount
     MonetaryValue IssuedAmount
@@ -416,8 +423,9 @@ struct FileInput:
     str FileURI
     Optional[str] BusinessUseCase
 
-# no @derive(Json): member(s) CreditDetails: CreditDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CreditDetails: CreditDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FulfillmentDetails:
     Optional[DisbursementDetails] DisbursementDetails
     Optional[ConsumableDetails] ConsumableDetails
@@ -429,8 +437,9 @@ struct GetBenefitAllocationInput:
     str Catalog
     str Identifier
 
-# no @derive(Json): member(s) ApplicableBenefitIds: list[str], FulfillmentDetail: FulfillmentDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicableBenefitIds: list[str], FulfillmentDetail: FulfillmentDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBenefitAllocationOutput:
     Optional[str] Id
     Optional[str] Catalog
@@ -454,8 +463,9 @@ struct GetBenefitApplicationInput:
     str Catalog
     str Identifier
 
-# no @derive(Json): member(s) FulfillmentTypes: list[FulfillmentType], Programs: list[str], StatusReasonCodes: list[str], AssociatedResources: list[str], PartnerContacts: list[Contact], FileDetails: list[FileDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FulfillmentTypes: list[FulfillmentType], Programs: list[str], StatusReasonCodes: list[str], AssociatedResources: list[str], PartnerContacts: list[Contact], FileDetails: list[FileDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBenefitApplicationOutput:
     Optional[str] Id
     Optional[str] Arn
@@ -483,8 +493,9 @@ struct GetBenefitInput:
     str Catalog
     str Identifier
 
-# no @derive(Json): member(s) Programs: list[str], FulfillmentTypes: list[FulfillmentType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Programs: list[str], FulfillmentTypes: list[FulfillmentType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBenefitOutput:
     Optional[str] Id
     Optional[str] Catalog
@@ -507,8 +518,9 @@ struct IssuanceDetail:
     @json(timestamp="iso8601")
     Optional[DateTime] IssuedAt
 
-# no @derive(Json): member(s) FulfillmentTypes: list[FulfillmentType], BenefitIdentifiers: list[str], BenefitApplicationIdentifiers: list[str], Status: list[BenefitAllocationStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FulfillmentTypes: list[FulfillmentType], BenefitIdentifiers: list[str], BenefitApplicationIdentifiers: list[str], Status: list[BenefitAllocationStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBenefitAllocationsInput:
     str Catalog
     Optional[list[FulfillmentType]] FulfillmentTypes
@@ -518,14 +530,16 @@ struct ListBenefitAllocationsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) BenefitAllocationSummaries: list[BenefitAllocationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BenefitAllocationSummaries: list[BenefitAllocationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBenefitAllocationsOutput:
     Optional[list[BenefitAllocationSummary]] BenefitAllocationSummaries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Programs: list[str], FulfillmentTypes: list[FulfillmentType], BenefitIdentifiers: list[str], Status: list[BenefitApplicationStatus], Stages: list[str], AssociatedResources: list[AssociatedResource], AssociatedResourceArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Programs: list[str], FulfillmentTypes: list[FulfillmentType], BenefitIdentifiers: list[str], Status: list[BenefitApplicationStatus], Stages: list[str], AssociatedResources: list[AssociatedResource], AssociatedResourceArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBenefitApplicationsInput:
     str Catalog
     Optional[list[str]] Programs
@@ -538,14 +552,16 @@ struct ListBenefitApplicationsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) BenefitApplicationSummaries: list[BenefitApplicationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BenefitApplicationSummaries: list[BenefitApplicationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBenefitApplicationsOutput:
     Optional[list[BenefitApplicationSummary]] BenefitApplicationSummaries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Programs: list[str], FulfillmentTypes: list[FulfillmentType], Status: list[BenefitStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Programs: list[str], FulfillmentTypes: list[FulfillmentType], Status: list[BenefitStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBenefitsInput:
     str Catalog
     Optional[list[str]] Programs
@@ -554,8 +570,9 @@ struct ListBenefitsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) BenefitSummaries: list[BenefitSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BenefitSummaries: list[BenefitSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBenefitsOutput:
     Optional[list[BenefitSummary]] BenefitSummaries
     Optional[str] NextToken
@@ -564,8 +581,9 @@ struct ListBenefitsOutput:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] tags
 
@@ -612,8 +630,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str resourceArn
     list[Tag] tags
@@ -627,8 +646,9 @@ struct TagResourceResponse:
 struct ThrottlingException:
     str Message
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str resourceArn
     list[str] tagKeys
@@ -638,8 +658,9 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) PartnerContacts: list[Contact], FileDetails: list[FileInput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartnerContacts: list[Contact], FileDetails: list[FileInput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBenefitApplicationInput:
     str Catalog
     str ClientToken
@@ -657,8 +678,9 @@ struct UpdateBenefitApplicationOutput:
     Optional[str] Arn
     Optional[str] Revision
 
-# no @derive(Json): member(s) FieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str Message
     ValidationExceptionReason Reason
@@ -704,27 +726,277 @@ def partnercentral_benefits_error_from_code(str code) -> PartnerCentral_Benefits
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AmendBenefitApplication (input AmendBenefitApplicationInput)
-#   CreateBenefitApplication (input CreateBenefitApplicationInput)
-#   ListBenefitAllocations (input ListBenefitAllocationsInput)
-#   ListBenefitApplications (input ListBenefitApplicationsInput)
-#   ListBenefits (input ListBenefitsInput)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateBenefitApplication (input UpdateBenefitApplicationInput)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def partnercentral_benefits_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListBenefitAllocations (input not derivable (no generated method))
-#   ListBenefitApplications (input not derivable (no generated method))
-#   ListBenefits (input not derivable (no generated method))
+def partnercentral_benefits_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def partnercentral_benefits_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AmendBenefitApplicationInput to a compact JSON object (declaration order).
+def amend_benefit_application_input_to_json(AmendBenefitApplicationInput v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_benefits_json_str(v.Catalog))
+    parts.append("\"ClientToken\":" + partnercentral_benefits_json_str(v.ClientToken))
+    parts.append("\"Revision\":" + partnercentral_benefits_json_str(v.Revision))
+    parts.append("\"Identifier\":" + partnercentral_benefits_json_str(v.Identifier))
+    parts.append("\"AmendmentReason\":" + partnercentral_benefits_json_str(v.AmendmentReason))
+    list[str] e0 = []
+    for x0 in v.Amendments:
+        e0.append(x0.to_json())
+    parts.append("\"Amendments\":" + partnercentral_benefits_json_arr(e0))
+    return partnercentral_benefits_json_obj(parts)
+
+# Serialize CreateBenefitApplicationInput to a compact JSON object (declaration order).
+def create_benefit_application_input_to_json(CreateBenefitApplicationInput v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_benefits_json_str(v.Catalog))
+    parts.append("\"ClientToken\":" + partnercentral_benefits_json_str(v.ClientToken))
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + partnercentral_benefits_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + partnercentral_benefits_json_str(u1))
+    parts.append("\"BenefitIdentifier\":" + partnercentral_benefits_json_str(v.BenefitIdentifier))
+    if v.FulfillmentTypes.is_some():
+        auto u2 = v.FulfillmentTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"FulfillmentTypes\":" + partnercentral_benefits_json_arr(e3))
+    if v.BenefitApplicationDetails.is_some():
+        auto u4 = v.BenefitApplicationDetails.unwrap()
+        parts.append("\"BenefitApplicationDetails\":" + u4.to_json())
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + partnercentral_benefits_json_arr(e6))
+    if v.AssociatedResources.is_some():
+        auto u7 = v.AssociatedResources.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(partnercentral_benefits_json_str(x8))
+        parts.append("\"AssociatedResources\":" + partnercentral_benefits_json_arr(e8))
+    if v.PartnerContacts.is_some():
+        auto u9 = v.PartnerContacts.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"PartnerContacts\":" + partnercentral_benefits_json_arr(e10))
+    if v.FileDetails.is_some():
+        auto u11 = v.FileDetails.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"FileDetails\":" + partnercentral_benefits_json_arr(e12))
+    return partnercentral_benefits_json_obj(parts)
+
+# Serialize ListBenefitAllocationsInput to a compact JSON object (declaration order).
+def list_benefit_allocations_input_to_json(ListBenefitAllocationsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_benefits_json_str(v.Catalog))
+    if v.FulfillmentTypes.is_some():
+        auto u0 = v.FulfillmentTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"FulfillmentTypes\":" + partnercentral_benefits_json_arr(e1))
+    if v.BenefitIdentifiers.is_some():
+        auto u2 = v.BenefitIdentifiers.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(partnercentral_benefits_json_str(x3))
+        parts.append("\"BenefitIdentifiers\":" + partnercentral_benefits_json_arr(e3))
+    if v.BenefitApplicationIdentifiers.is_some():
+        auto u4 = v.BenefitApplicationIdentifiers.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(partnercentral_benefits_json_str(x5))
+        parts.append("\"BenefitApplicationIdentifiers\":" + partnercentral_benefits_json_arr(e5))
+    if v.Status.is_some():
+        auto u6 = v.Status.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Status\":" + partnercentral_benefits_json_arr(e7))
+    if v.MaxResults.is_some():
+        auto u8 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u8))
+    if v.NextToken.is_some():
+        auto u9 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + partnercentral_benefits_json_str(u9))
+    return partnercentral_benefits_json_obj(parts)
+
+# Serialize ListBenefitApplicationsInput to a compact JSON object (declaration order).
+def list_benefit_applications_input_to_json(ListBenefitApplicationsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_benefits_json_str(v.Catalog))
+    if v.Programs.is_some():
+        auto u0 = v.Programs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(partnercentral_benefits_json_str(x1))
+        parts.append("\"Programs\":" + partnercentral_benefits_json_arr(e1))
+    if v.FulfillmentTypes.is_some():
+        auto u2 = v.FulfillmentTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"FulfillmentTypes\":" + partnercentral_benefits_json_arr(e3))
+    if v.BenefitIdentifiers.is_some():
+        auto u4 = v.BenefitIdentifiers.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(partnercentral_benefits_json_str(x5))
+        parts.append("\"BenefitIdentifiers\":" + partnercentral_benefits_json_arr(e5))
+    if v.Status.is_some():
+        auto u6 = v.Status.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Status\":" + partnercentral_benefits_json_arr(e7))
+    if v.Stages.is_some():
+        auto u8 = v.Stages.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(partnercentral_benefits_json_str(x9))
+        parts.append("\"Stages\":" + partnercentral_benefits_json_arr(e9))
+    if v.AssociatedResources.is_some():
+        auto u10 = v.AssociatedResources.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"AssociatedResources\":" + partnercentral_benefits_json_arr(e11))
+    if v.AssociatedResourceArns.is_some():
+        auto u12 = v.AssociatedResourceArns.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(partnercentral_benefits_json_str(x13))
+        parts.append("\"AssociatedResourceArns\":" + partnercentral_benefits_json_arr(e13))
+    if v.MaxResults.is_some():
+        auto u14 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u14))
+    if v.NextToken.is_some():
+        auto u15 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + partnercentral_benefits_json_str(u15))
+    return partnercentral_benefits_json_obj(parts)
+
+# Serialize ListBenefitsInput to a compact JSON object (declaration order).
+def list_benefits_input_to_json(ListBenefitsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_benefits_json_str(v.Catalog))
+    if v.Programs.is_some():
+        auto u0 = v.Programs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(partnercentral_benefits_json_str(x1))
+        parts.append("\"Programs\":" + partnercentral_benefits_json_arr(e1))
+    if v.FulfillmentTypes.is_some():
+        auto u2 = v.FulfillmentTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"FulfillmentTypes\":" + partnercentral_benefits_json_arr(e3))
+    if v.Status.is_some():
+        auto u4 = v.Status.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Status\":" + partnercentral_benefits_json_arr(e5))
+    if v.MaxResults.is_some():
+        auto u6 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u6))
+    if v.NextToken.is_some():
+        auto u7 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + partnercentral_benefits_json_str(u7))
+    return partnercentral_benefits_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + partnercentral_benefits_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tags:
+        e0.append(x0.to_json())
+    parts.append("\"tags\":" + partnercentral_benefits_json_arr(e0))
+    return partnercentral_benefits_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + partnercentral_benefits_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(partnercentral_benefits_json_str(x0))
+    parts.append("\"tagKeys\":" + partnercentral_benefits_json_arr(e0))
+    return partnercentral_benefits_json_obj(parts)
+
+# Serialize UpdateBenefitApplicationInput to a compact JSON object (declaration order).
+def update_benefit_application_input_to_json(UpdateBenefitApplicationInput v) -> str:
+    list[str] parts = []
+    parts.append("\"Catalog\":" + partnercentral_benefits_json_str(v.Catalog))
+    parts.append("\"ClientToken\":" + partnercentral_benefits_json_str(v.ClientToken))
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + partnercentral_benefits_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + partnercentral_benefits_json_str(u1))
+    parts.append("\"Identifier\":" + partnercentral_benefits_json_str(v.Identifier))
+    parts.append("\"Revision\":" + partnercentral_benefits_json_str(v.Revision))
+    if v.BenefitApplicationDetails.is_some():
+        auto u2 = v.BenefitApplicationDetails.unwrap()
+        parts.append("\"BenefitApplicationDetails\":" + u2.to_json())
+    if v.PartnerContacts.is_some():
+        auto u3 = v.PartnerContacts.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"PartnerContacts\":" + partnercentral_benefits_json_arr(e4))
+    if v.FileDetails.is_some():
+        auto u5 = v.FileDetails.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"FileDetails\":" + partnercentral_benefits_json_arr(e6))
+    return partnercentral_benefits_json_obj(parts)
 
 # A bound PartnerCentral_Benefits client: credentials + region, threaded into every operation.
 struct PartnerCentral_BenefitsClient:
     core.Credentials creds
     str region
+
+    # AmendBenefitApplication
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def amend_benefit_application(self, AmendBenefitApplicationInput input) -> str:
+        auto body = amend_benefit_application_input_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_benefits_protocol(), self.creds, self.region, "AmendBenefitApplication", body)
 
     # AssociateBenefitApplicationResource
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -737,6 +1009,12 @@ struct PartnerCentral_BenefitsClient:
     def cancel_benefit_application(self, CancelBenefitApplicationInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(partnercentral_benefits_protocol(), self.creds, self.region, "CancelBenefitApplication", body)
+
+    # CreateBenefitApplication
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_benefit_application(self, CreateBenefitApplicationInput input) -> str:
+        auto body = create_benefit_application_input_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_benefits_protocol(), self.creds, self.region, "CreateBenefitApplication", body)
 
     # DisassociateBenefitApplicationResource
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -762,6 +1040,24 @@ struct PartnerCentral_BenefitsClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(partnercentral_benefits_protocol(), self.creds, self.region, "GetBenefitApplication", body)
 
+    # ListBenefitAllocations
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_benefit_allocations(self, ListBenefitAllocationsInput input) -> str:
+        auto body = list_benefit_allocations_input_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_benefits_protocol(), self.creds, self.region, "ListBenefitAllocations", body)
+
+    # ListBenefitApplications
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_benefit_applications(self, ListBenefitApplicationsInput input) -> str:
+        auto body = list_benefit_applications_input_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_benefits_protocol(), self.creds, self.region, "ListBenefitApplications", body)
+
+    # ListBenefits
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_benefits(self, ListBenefitsInput input) -> str:
+        auto body = list_benefits_input_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_benefits_protocol(), self.creds, self.region, "ListBenefits", body)
+
     # ListTagsForResource
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
@@ -779,6 +1075,66 @@ struct PartnerCentral_BenefitsClient:
     def submit_benefit_application(self, SubmitBenefitApplicationInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(partnercentral_benefits_protocol(), self.creds, self.region, "SubmitBenefitApplication", body)
+
+    # TagResource
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_benefits_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_benefits_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateBenefitApplication
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_benefit_application(self, UpdateBenefitApplicationInput input) -> str:
+        auto body = update_benefit_application_input_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_benefits_protocol(), self.creds, self.region, "UpdateBenefitApplication", body)
+
+    # Paginator for ListBenefitAllocations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: BenefitAllocationSummaries).
+    def paginate_list_benefit_allocations(self, ListBenefitAllocationsInput input):
+        auto host = endpoints.regional_host(partnercentral_benefits_protocol().service, self.region)
+        while True:
+            auto body = list_benefit_allocations_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(partnercentral_benefits_protocol(), self.creds, self.region, "ListBenefitAllocations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListBenefitApplications — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: BenefitApplicationSummaries).
+    def paginate_list_benefit_applications(self, ListBenefitApplicationsInput input):
+        auto host = endpoints.regional_host(partnercentral_benefits_protocol().service, self.region)
+        while True:
+            auto body = list_benefit_applications_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(partnercentral_benefits_protocol(), self.creds, self.region, "ListBenefitApplications", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListBenefits — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: BenefitSummaries).
+    def paginate_list_benefits(self, ListBenefitsInput input):
+        auto host = endpoints.regional_host(partnercentral_benefits_protocol().service, self.region)
+        while True:
+            auto body = list_benefits_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(partnercentral_benefits_protocol(), self.creds, self.region, "ListBenefits", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
 # Construct a PartnerCentral_BenefitsClient bound to credentials + region.
 def partnercentral_benefits_client(core.Credentials creds, str region) -> PartnerCentral_BenefitsClient:

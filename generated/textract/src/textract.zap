@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 25 operations — 18 with a generated method,
-#   7 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 25 operations — 25 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   117 structs (65 @derive(Json)), 10 enums, 18 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -156,15 +156,17 @@ struct AccessDeniedException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Pages: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Pages: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Adapter:
     str AdapterId
     Optional[list[str]] Pages
     str Version
 
-# no @derive(Json): member(s) FeatureTypes: list[FeatureType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FeatureTypes: list[FeatureType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdapterOverview:
     Optional[str] AdapterId
     Optional[str] AdapterName
@@ -181,8 +183,9 @@ struct AdapterVersionEvaluationMetric:
     Optional[EvaluationMetric] AdapterVersion
     Optional[FeatureType] FeatureType
 
-# no @derive(Json): member(s) FeatureTypes: list[FeatureType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FeatureTypes: list[FeatureType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdapterVersionOverview:
     Optional[str] AdapterId
     Optional[str] AdapterVersion
@@ -191,13 +194,15 @@ struct AdapterVersionOverview:
     Optional[AdapterVersionStatus] Status
     Optional[str] StatusMessage
 
-# no @derive(Json): member(s) Adapters: list[Adapter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Adapters: list[Adapter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdaptersConfig:
     list[Adapter] Adapters
 
-# no @derive(Json): member(s) FeatureTypes: list[FeatureType], HumanLoopConfig: HumanLoopConfig, QueriesConfig: QueriesConfig, AdaptersConfig: AdaptersConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FeatureTypes: list[FeatureType], HumanLoopConfig: HumanLoopConfig, QueriesConfig: QueriesConfig, AdaptersConfig: AdaptersConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalyzeDocumentRequest:
     Document Document
     list[FeatureType] FeatureTypes
@@ -205,8 +210,9 @@ struct AnalyzeDocumentRequest:
     Optional[QueriesConfig] QueriesConfig
     Optional[AdaptersConfig] AdaptersConfig
 
-# no @derive(Json): member(s) Blocks: list[Block], HumanLoopActivationOutput: HumanLoopActivationOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Blocks: list[Block], HumanLoopActivationOutput: HumanLoopActivationOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalyzeDocumentResponse:
     Optional[DocumentMetadata] DocumentMetadata
     Optional[list[Block]] Blocks
@@ -217,8 +223,9 @@ struct AnalyzeDocumentResponse:
 struct AnalyzeExpenseRequest:
     Document Document
 
-# no @derive(Json): member(s) ExpenseDocuments: list[ExpenseDocument] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExpenseDocuments: list[ExpenseDocument] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalyzeExpenseResponse:
     Optional[DocumentMetadata] DocumentMetadata
     Optional[list[ExpenseDocument]] ExpenseDocuments
@@ -229,13 +236,15 @@ struct AnalyzeIDDetections:
     Optional[NormalizedValue] NormalizedValue
     Optional[float64] Confidence
 
-# no @derive(Json): member(s) DocumentPages: list[Document] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentPages: list[Document] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalyzeIDRequest:
     list[Document] DocumentPages
 
-# no @derive(Json): member(s) IdentityDocuments: list[IdentityDocument] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentityDocuments: list[IdentityDocument] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnalyzeIDResponse:
     Optional[list[IdentityDocument]] IdentityDocuments
     Optional[DocumentMetadata] DocumentMetadata
@@ -246,8 +255,9 @@ struct BadDocumentException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Geometry: Geometry, Relationships: list[Relationship], EntityTypes: list[EntityType], Query: Query not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Geometry: Geometry, Relationships: list[Relationship], EntityTypes: list[EntityType], Query: Query not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Block:
     Optional[BlockType] BlockType
     Optional[float64] Confidence
@@ -277,8 +287,9 @@ struct ConflictException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) FeatureTypes: list[FeatureType], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FeatureTypes: list[FeatureType], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAdapterRequest:
     str AdapterName
     Optional[str] ClientRequestToken
@@ -291,8 +302,9 @@ struct CreateAdapterRequest:
 struct CreateAdapterResponse:
     Optional[str] AdapterId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAdapterVersionRequest:
     str AdapterId
     Optional[str] ClientRequestToken
@@ -329,8 +341,9 @@ struct DeleteAdapterVersionResponse:
 struct DetectDocumentTextRequest:
     Document Document
 
-# no @derive(Json): member(s) Blocks: list[Block] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Blocks: list[Block] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DetectDocumentTextResponse:
     Optional[DocumentMetadata] DocumentMetadata
     Optional[list[Block]] Blocks
@@ -345,8 +358,9 @@ struct Document:
     Optional[bytes] Bytes
     Optional[S3Object] S3Object
 
-# no @derive(Json): member(s) SplitDocuments: list[SplitDocument], DetectedSignatures: list[DetectedSignature], UndetectedSignatures: list[UndetectedSignature] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SplitDocuments: list[SplitDocument], DetectedSignatures: list[DetectedSignature], UndetectedSignatures: list[UndetectedSignature] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DocumentGroup:
     Optional[str] Type
     Optional[list[SplitDocument]] SplitDocuments
@@ -377,23 +391,26 @@ struct ExpenseCurrency:
     Optional[str] Code
     Optional[float64] Confidence
 
-# no @derive(Json): member(s) Geometry: Geometry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Geometry: Geometry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExpenseDetection:
     Optional[str] Text
     Optional[Geometry] Geometry
     Optional[float64] Confidence
 
-# no @derive(Json): member(s) SummaryFields: list[ExpenseField], LineItemGroups: list[LineItemGroup], Blocks: list[Block] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SummaryFields: list[ExpenseField], LineItemGroups: list[LineItemGroup], Blocks: list[Block] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExpenseDocument:
     Optional[int64] ExpenseIndex
     Optional[list[ExpenseField]] SummaryFields
     Optional[list[LineItemGroup]] LineItemGroups
     Optional[list[Block]] Blocks
 
-# no @derive(Json): member(s) LabelDetection: ExpenseDetection, ValueDetection: ExpenseDetection, GroupProperties: list[ExpenseGroupProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LabelDetection: ExpenseDetection, ValueDetection: ExpenseDetection, GroupProperties: list[ExpenseGroupProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExpenseField:
     Optional[ExpenseType] Type
     Optional[ExpenseDetection] LabelDetection
@@ -402,8 +419,9 @@ struct ExpenseField:
     Optional[ExpenseCurrency] Currency
     Optional[list[ExpenseGroupProperty]] GroupProperties
 
-# no @derive(Json): member(s) Types: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Types: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExpenseGroupProperty:
     Optional[list[str]] Types
     Optional[str] Id
@@ -413,15 +431,17 @@ struct ExpenseType:
     Optional[str] Text
     Optional[float64] Confidence
 
-# no @derive(Json): member(s) LendingDocument: LendingDocument, ExpenseDocument: ExpenseDocument, IdentityDocument: IdentityDocument not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LendingDocument: LendingDocument, ExpenseDocument: ExpenseDocument, IdentityDocument: IdentityDocument not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Extraction:
     Optional[LendingDocument] LendingDocument
     Optional[ExpenseDocument] ExpenseDocument
     Optional[IdentityDocument] IdentityDocument
 
-# no @derive(Json): member(s) Polygon: list[Point] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Polygon: list[Point] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Geometry:
     Optional[BoundingBox] BoundingBox
     Optional[list[Point]] Polygon
@@ -431,8 +451,9 @@ struct Geometry:
 struct GetAdapterRequest:
     str AdapterId
 
-# no @derive(Json): member(s) FeatureTypes: list[FeatureType], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FeatureTypes: list[FeatureType], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAdapterResponse:
     Optional[str] AdapterId
     Optional[str] AdapterName
@@ -447,8 +468,9 @@ struct GetAdapterVersionRequest:
     str AdapterId
     str AdapterVersion
 
-# no @derive(Json): member(s) FeatureTypes: list[FeatureType], EvaluationMetrics: list[AdapterVersionEvaluationMetric], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FeatureTypes: list[FeatureType], EvaluationMetrics: list[AdapterVersionEvaluationMetric], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAdapterVersionResponse:
     Optional[str] AdapterId
     Optional[str] AdapterVersion
@@ -468,8 +490,9 @@ struct GetDocumentAnalysisRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Blocks: list[Block], Warnings: list[Warning] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Blocks: list[Block], Warnings: list[Warning] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDocumentAnalysisResponse:
     Optional[DocumentMetadata] DocumentMetadata
     Optional[JobStatus] JobStatus
@@ -485,8 +508,9 @@ struct GetDocumentTextDetectionRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Blocks: list[Block], Warnings: list[Warning] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Blocks: list[Block], Warnings: list[Warning] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDocumentTextDetectionResponse:
     Optional[DocumentMetadata] DocumentMetadata
     Optional[JobStatus] JobStatus
@@ -502,8 +526,9 @@ struct GetExpenseAnalysisRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ExpenseDocuments: list[ExpenseDocument], Warnings: list[Warning] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExpenseDocuments: list[ExpenseDocument], Warnings: list[Warning] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetExpenseAnalysisResponse:
     Optional[DocumentMetadata] DocumentMetadata
     Optional[JobStatus] JobStatus
@@ -519,8 +544,9 @@ struct GetLendingAnalysisRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Results: list[LendingResult], Warnings: list[Warning] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[LendingResult], Warnings: list[Warning] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLendingAnalysisResponse:
     Optional[DocumentMetadata] DocumentMetadata
     Optional[JobStatus] JobStatus
@@ -534,8 +560,9 @@ struct GetLendingAnalysisResponse:
 struct GetLendingAnalysisSummaryRequest:
     str JobId
 
-# no @derive(Json): member(s) Summary: LendingSummary, Warnings: list[Warning] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Summary: LendingSummary, Warnings: list[Warning] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLendingAnalysisSummaryResponse:
     Optional[DocumentMetadata] DocumentMetadata
     Optional[JobStatus] JobStatus
@@ -544,22 +571,25 @@ struct GetLendingAnalysisSummaryResponse:
     Optional[str] StatusMessage
     Optional[str] AnalyzeLendingModelVersion
 
-# no @derive(Json): member(s) HumanLoopActivationReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HumanLoopActivationReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HumanLoopActivationOutput:
     Optional[str] HumanLoopArn
     Optional[list[str]] HumanLoopActivationReasons
     Optional[str] HumanLoopActivationConditionsEvaluationResults
 
-# no @derive(Json): member(s) DataAttributes: HumanLoopDataAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataAttributes: HumanLoopDataAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HumanLoopConfig:
     str HumanLoopName
     str FlowDefinitionArn
     Optional[HumanLoopDataAttributes] DataAttributes
 
-# no @derive(Json): member(s) ContentClassifiers: list[ContentClassifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContentClassifiers: list[ContentClassifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HumanLoopDataAttributes:
     Optional[list[ContentClassifier]] ContentClassifiers
 
@@ -574,8 +604,9 @@ struct IdempotentParameterMismatchException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) IdentityDocumentFields: list[IdentityDocumentField], Blocks: list[Block] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentityDocumentFields: list[IdentityDocumentField], Blocks: list[Block] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IdentityDocument:
     Optional[int64] DocumentIndex
     Optional[list[IdentityDocumentField]] IdentityDocumentFields
@@ -611,36 +642,41 @@ struct InvalidS3ObjectException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Geometry: Geometry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Geometry: Geometry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LendingDetection:
     Optional[str] Text
     Optional[SelectionStatus] SelectionStatus
     Optional[Geometry] Geometry
     Optional[float64] Confidence
 
-# no @derive(Json): member(s) LendingFields: list[LendingField], SignatureDetections: list[SignatureDetection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LendingFields: list[LendingField], SignatureDetections: list[SignatureDetection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LendingDocument:
     Optional[list[LendingField]] LendingFields
     Optional[list[SignatureDetection]] SignatureDetections
 
-# no @derive(Json): member(s) KeyDetection: LendingDetection, ValueDetections: list[LendingDetection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeyDetection: LendingDetection, ValueDetections: list[LendingDetection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LendingField:
     Optional[str] Type
     Optional[LendingDetection] KeyDetection
     Optional[list[LendingDetection]] ValueDetections
 
-# no @derive(Json): member(s) PageClassification: PageClassification, Extractions: list[Extraction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PageClassification: PageClassification, Extractions: list[Extraction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LendingResult:
     Optional[int64] Page
     Optional[PageClassification] PageClassification
     Optional[list[Extraction]] Extractions
 
-# no @derive(Json): member(s) DocumentGroups: list[DocumentGroup], UndetectedDocumentTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DocumentGroups: list[DocumentGroup], UndetectedDocumentTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LendingSummary:
     Optional[list[DocumentGroup]] DocumentGroups
     Optional[list[str]] UndetectedDocumentTypes
@@ -650,13 +686,15 @@ struct LimitExceededException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) LineItemExpenseFields: list[ExpenseField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LineItemExpenseFields: list[ExpenseField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LineItemFields:
     Optional[list[ExpenseField]] LineItemExpenseFields
 
-# no @derive(Json): member(s) LineItems: list[LineItemFields] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LineItems: list[LineItemFields] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LineItemGroup:
     Optional[int64] LineItemGroupIndex
     Optional[list[LineItemFields]] LineItems
@@ -669,8 +707,9 @@ struct ListAdapterVersionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AdapterVersions: list[AdapterVersionOverview] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdapterVersions: list[AdapterVersionOverview] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAdapterVersionsResponse:
     Optional[list[AdapterVersionOverview]] AdapterVersions
     Optional[str] NextToken
@@ -682,8 +721,9 @@ struct ListAdaptersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Adapters: list[AdapterOverview] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Adapters: list[AdapterOverview] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAdaptersResponse:
     Optional[list[AdapterOverview]] Adapters
     Optional[str] NextToken
@@ -692,8 +732,9 @@ struct ListAdaptersResponse:
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -712,8 +753,9 @@ struct OutputConfig:
     str S3Bucket
     Optional[str] S3Prefix
 
-# no @derive(Json): member(s) PageType: list[Prediction], PageNumber: list[Prediction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PageType: list[Prediction], PageNumber: list[Prediction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PageClassification:
     list[Prediction] PageType
     list[Prediction] PageNumber
@@ -733,20 +775,23 @@ struct ProvisionedThroughputExceededException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Queries: list[Query] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Queries: list[Query] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueriesConfig:
     list[Query] Queries
 
-# no @derive(Json): member(s) Pages: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Pages: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Query:
     str Text
     Optional[str] Alias
     Optional[list[str]] Pages
 
-# no @derive(Json): member(s) Ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Relationship:
     Optional[RelationshipType] Type
     Optional[list[str]] Ids
@@ -767,20 +812,23 @@ struct ServiceQuotaExceededException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Geometry: Geometry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Geometry: Geometry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SignatureDetection:
     Optional[float64] Confidence
     Optional[Geometry] Geometry
 
-# no @derive(Json): member(s) Pages: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Pages: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SplitDocument:
     Optional[int64] Index
     Optional[list[int64]] Pages
 
-# no @derive(Json): member(s) FeatureTypes: list[FeatureType], QueriesConfig: QueriesConfig, AdaptersConfig: AdaptersConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FeatureTypes: list[FeatureType], QueriesConfig: QueriesConfig, AdaptersConfig: AdaptersConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartDocumentAnalysisRequest:
     DocumentLocation DocumentLocation
     list[FeatureType] FeatureTypes
@@ -835,8 +883,9 @@ struct StartLendingAnalysisRequest:
 struct StartLendingAnalysisResponse:
     Optional[str] JobId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceARN
     dict[str, str] Tags
@@ -860,8 +909,9 @@ struct UnsupportedDocumentException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceARN
     list[str] TagKeys
@@ -878,8 +928,9 @@ struct UpdateAdapterRequest:
     Optional[str] AdapterName
     Optional[AutoUpdate] AutoUpdate
 
-# no @derive(Json): member(s) FeatureTypes: list[FeatureType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FeatureTypes: list[FeatureType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAdapterResponse:
     Optional[str] AdapterId
     Optional[str] AdapterName
@@ -893,8 +944,9 @@ struct ValidationException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Pages: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Pages: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Warning:
     Optional[str] ErrorCode
     Optional[list[int64]] Pages
@@ -966,26 +1018,261 @@ def textract_error_from_code(str code) -> TextractError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AnalyzeDocument (input AnalyzeDocumentRequest)
-#   AnalyzeID (input AnalyzeIDRequest)
-#   CreateAdapter (input CreateAdapterRequest)
-#   CreateAdapterVersion (input CreateAdapterVersionRequest)
-#   StartDocumentAnalysis (input StartDocumentAnalysisRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def textract_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def textract_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def textract_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize Adapter to a compact JSON object (declaration order).
+def adapter_to_json(Adapter v) -> str:
+    list[str] parts = []
+    parts.append("\"AdapterId\":" + textract_json_str(v.AdapterId))
+    if v.Pages.is_some():
+        auto u0 = v.Pages.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(textract_json_str(x1))
+        parts.append("\"Pages\":" + textract_json_arr(e1))
+    parts.append("\"Version\":" + textract_json_str(v.Version))
+    return textract_json_obj(parts)
+
+# Serialize AdaptersConfig to a compact JSON object (declaration order).
+def adapters_config_to_json(AdaptersConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Adapters:
+        e0.append(adapter_to_json(x0))
+    parts.append("\"Adapters\":" + textract_json_arr(e0))
+    return textract_json_obj(parts)
+
+# Serialize AnalyzeDocumentRequest to a compact JSON object (declaration order).
+def analyze_document_request_to_json(AnalyzeDocumentRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Document\":" + v.Document.to_json())
+    list[str] e0 = []
+    for x0 in v.FeatureTypes:
+        e0.append(x0.to_json())
+    parts.append("\"FeatureTypes\":" + textract_json_arr(e0))
+    if v.HumanLoopConfig.is_some():
+        auto u1 = v.HumanLoopConfig.unwrap()
+        parts.append("\"HumanLoopConfig\":" + human_loop_config_to_json(u1))
+    if v.QueriesConfig.is_some():
+        auto u2 = v.QueriesConfig.unwrap()
+        parts.append("\"QueriesConfig\":" + queries_config_to_json(u2))
+    if v.AdaptersConfig.is_some():
+        auto u3 = v.AdaptersConfig.unwrap()
+        parts.append("\"AdaptersConfig\":" + adapters_config_to_json(u3))
+    return textract_json_obj(parts)
+
+# Serialize AnalyzeIDRequest to a compact JSON object (declaration order).
+def analyze_id_request_to_json(AnalyzeIDRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.DocumentPages:
+        e0.append(x0.to_json())
+    parts.append("\"DocumentPages\":" + textract_json_arr(e0))
+    return textract_json_obj(parts)
+
+# Serialize CreateAdapterRequest to a compact JSON object (declaration order).
+def create_adapter_request_to_json(CreateAdapterRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AdapterName\":" + textract_json_str(v.AdapterName))
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + textract_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + textract_json_str(u1))
+    list[str] e2 = []
+    for x2 in v.FeatureTypes:
+        e2.append(x2.to_json())
+    parts.append("\"FeatureTypes\":" + textract_json_arr(e2))
+    if v.AutoUpdate.is_some():
+        auto u3 = v.AutoUpdate.unwrap()
+        parts.append("\"AutoUpdate\":" + u3.to_json())
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(textract_json_str(k5) + ":" + textract_json_str(u4[k5]))
+        parts.append("\"Tags\":" + textract_json_obj(m5))
+    return textract_json_obj(parts)
+
+# Serialize CreateAdapterVersionRequest to a compact JSON object (declaration order).
+def create_adapter_version_request_to_json(CreateAdapterVersionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AdapterId\":" + textract_json_str(v.AdapterId))
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + textract_json_str(u0))
+    parts.append("\"DatasetConfig\":" + v.DatasetConfig.to_json())
+    if v.KMSKeyId.is_some():
+        auto u1 = v.KMSKeyId.unwrap()
+        parts.append("\"KMSKeyId\":" + textract_json_str(u1))
+    parts.append("\"OutputConfig\":" + v.OutputConfig.to_json())
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(textract_json_str(k3) + ":" + textract_json_str(u2[k3]))
+        parts.append("\"Tags\":" + textract_json_obj(m3))
+    return textract_json_obj(parts)
+
+# Serialize HumanLoopConfig to a compact JSON object (declaration order).
+def human_loop_config_to_json(HumanLoopConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"HumanLoopName\":" + textract_json_str(v.HumanLoopName))
+    parts.append("\"FlowDefinitionArn\":" + textract_json_str(v.FlowDefinitionArn))
+    if v.DataAttributes.is_some():
+        auto u0 = v.DataAttributes.unwrap()
+        parts.append("\"DataAttributes\":" + human_loop_data_attributes_to_json(u0))
+    return textract_json_obj(parts)
+
+# Serialize HumanLoopDataAttributes to a compact JSON object (declaration order).
+def human_loop_data_attributes_to_json(HumanLoopDataAttributes v) -> str:
+    list[str] parts = []
+    if v.ContentClassifiers.is_some():
+        auto u0 = v.ContentClassifiers.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ContentClassifiers\":" + textract_json_arr(e1))
+    return textract_json_obj(parts)
+
+# Serialize QueriesConfig to a compact JSON object (declaration order).
+def queries_config_to_json(QueriesConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Queries:
+        e0.append(query_to_json(x0))
+    parts.append("\"Queries\":" + textract_json_arr(e0))
+    return textract_json_obj(parts)
+
+# Serialize Query to a compact JSON object (declaration order).
+def query_to_json(Query v) -> str:
+    list[str] parts = []
+    parts.append("\"Text\":" + textract_json_str(v.Text))
+    if v.Alias.is_some():
+        auto u0 = v.Alias.unwrap()
+        parts.append("\"Alias\":" + textract_json_str(u0))
+    if v.Pages.is_some():
+        auto u1 = v.Pages.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(textract_json_str(x2))
+        parts.append("\"Pages\":" + textract_json_arr(e2))
+    return textract_json_obj(parts)
+
+# Serialize StartDocumentAnalysisRequest to a compact JSON object (declaration order).
+def start_document_analysis_request_to_json(StartDocumentAnalysisRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DocumentLocation\":" + v.DocumentLocation.to_json())
+    list[str] e0 = []
+    for x0 in v.FeatureTypes:
+        e0.append(x0.to_json())
+    parts.append("\"FeatureTypes\":" + textract_json_arr(e0))
+    if v.ClientRequestToken.is_some():
+        auto u1 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + textract_json_str(u1))
+    if v.JobTag.is_some():
+        auto u2 = v.JobTag.unwrap()
+        parts.append("\"JobTag\":" + textract_json_str(u2))
+    if v.NotificationChannel.is_some():
+        auto u3 = v.NotificationChannel.unwrap()
+        parts.append("\"NotificationChannel\":" + u3.to_json())
+    if v.OutputConfig.is_some():
+        auto u4 = v.OutputConfig.unwrap()
+        parts.append("\"OutputConfig\":" + u4.to_json())
+    if v.KMSKeyId.is_some():
+        auto u5 = v.KMSKeyId.unwrap()
+        parts.append("\"KMSKeyId\":" + textract_json_str(u5))
+    if v.QueriesConfig.is_some():
+        auto u6 = v.QueriesConfig.unwrap()
+        parts.append("\"QueriesConfig\":" + queries_config_to_json(u6))
+    if v.AdaptersConfig.is_some():
+        auto u7 = v.AdaptersConfig.unwrap()
+        parts.append("\"AdaptersConfig\":" + adapters_config_to_json(u7))
+    return textract_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + textract_json_str(v.ResourceARN))
+    list[str] m0 = []
+    for k0 in sorted(v.Tags.keys()):
+        m0.append(textract_json_str(k0) + ":" + textract_json_str(v.Tags[k0]))
+    parts.append("\"Tags\":" + textract_json_obj(m0))
+    return textract_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + textract_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(textract_json_str(x0))
+    parts.append("\"TagKeys\":" + textract_json_arr(e0))
+    return textract_json_obj(parts)
 
 # A bound Textract client: credentials + region, threaded into every operation.
 struct TextractClient:
     core.Credentials creds
     str region
 
+    # AnalyzeDocument
+    # errors: AccessDeniedException, BadDocumentException, DocumentTooLargeException, HumanLoopQuotaExceededException, InternalServerError, InvalidParameterException, InvalidS3ObjectException, ProvisionedThroughputExceededException, ThrottlingException, UnsupportedDocumentException
+    def analyze_document(self, AnalyzeDocumentRequest input) -> str:
+        auto body = analyze_document_request_to_json(input)
+        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "AnalyzeDocument", body)
+
     # AnalyzeExpense
     # errors: AccessDeniedException, BadDocumentException, DocumentTooLargeException, InternalServerError, InvalidParameterException, InvalidS3ObjectException, ProvisionedThroughputExceededException, ThrottlingException, UnsupportedDocumentException
     def analyze_expense(self, AnalyzeExpenseRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "AnalyzeExpense", body)
+
+    # AnalyzeID
+    # errors: AccessDeniedException, BadDocumentException, DocumentTooLargeException, InternalServerError, InvalidParameterException, InvalidS3ObjectException, ProvisionedThroughputExceededException, ThrottlingException, UnsupportedDocumentException
+    def analyze_id(self, AnalyzeIDRequest input) -> str:
+        auto body = analyze_id_request_to_json(input)
+        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "AnalyzeID", body)
+
+    # CreateAdapter
+    # errors: AccessDeniedException, ConflictException, IdempotentParameterMismatchException, InternalServerError, InvalidParameterException, LimitExceededException, ProvisionedThroughputExceededException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_adapter(self, CreateAdapterRequest input) -> str:
+        auto body = create_adapter_request_to_json(input)
+        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "CreateAdapter", body)
+
+    # CreateAdapterVersion
+    # errors: AccessDeniedException, ConflictException, IdempotentParameterMismatchException, InternalServerError, InvalidKMSKeyException, InvalidParameterException, InvalidS3ObjectException, LimitExceededException, ProvisionedThroughputExceededException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_adapter_version(self, CreateAdapterVersionRequest input) -> str:
+        auto body = create_adapter_version_request_to_json(input)
+        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "CreateAdapterVersion", body)
 
     # DeleteAdapter
     # errors: AccessDeniedException, ConflictException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1065,6 +1352,12 @@ struct TextractClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "ListTagsForResource", body)
 
+    # StartDocumentAnalysis
+    # errors: AccessDeniedException, BadDocumentException, DocumentTooLargeException, IdempotentParameterMismatchException, InternalServerError, InvalidKMSKeyException, InvalidParameterException, InvalidS3ObjectException, LimitExceededException, ProvisionedThroughputExceededException, ThrottlingException, UnsupportedDocumentException
+    def start_document_analysis(self, StartDocumentAnalysisRequest input) -> str:
+        auto body = start_document_analysis_request_to_json(input)
+        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "StartDocumentAnalysis", body)
+
     # StartDocumentTextDetection
     # errors: AccessDeniedException, BadDocumentException, DocumentTooLargeException, IdempotentParameterMismatchException, InternalServerError, InvalidKMSKeyException, InvalidParameterException, InvalidS3ObjectException, LimitExceededException, ProvisionedThroughputExceededException, ThrottlingException, UnsupportedDocumentException
     def start_document_text_detection(self, StartDocumentTextDetectionRequest input) -> str:
@@ -1082,6 +1375,18 @@ struct TextractClient:
     def start_lending_analysis(self, StartLendingAnalysisRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "StartLendingAnalysis", body)
+
+    # TagResource
+    # errors: AccessDeniedException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(textract_protocol(), self.creds, self.region, "UntagResource", body)
 
     # UpdateAdapter
     # errors: AccessDeniedException, ConflictException, InternalServerError, InvalidParameterException, ProvisionedThroughputExceededException, ResourceNotFoundException, ThrottlingException, ValidationException

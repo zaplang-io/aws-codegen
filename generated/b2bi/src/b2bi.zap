@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 30 operations — 19 with a generated method,
-#   11 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 30 operations — 30 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   103 structs (64 @derive(Json)), 17 enums, 7 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -510,8 +510,9 @@ enum X12Version:
 struct AccessDeniedException:
     str message
 
-# no @derive(Json): member(s) x12: X12AdvancedOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) x12: X12AdvancedOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdvancedOptions:
     Optional[X12AdvancedOptions] x12
 
@@ -543,8 +544,9 @@ struct ConversionSource:
     ConversionSourceFormat fileFormat
     InputFileSource inputFile
 
-# no @derive(Json): member(s) advancedOptions: AdvancedOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) advancedOptions: AdvancedOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConversionTarget:
     str fileFormat
     Optional[ConversionTargetFormatDetails] formatDetails
@@ -555,8 +557,9 @@ struct ConversionTarget:
 struct ConversionTargetFormatDetails:
     Optional[X12Details] x12
 
-# no @derive(Json): member(s) instructionsDocuments: list[S3Location], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instructionsDocuments: list[S3Location], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCapabilityRequest:
     str name
     str type
@@ -565,8 +568,9 @@ struct CreateCapabilityRequest:
     Optional[str] clientToken
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) instructionsDocuments: list[S3Location] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instructionsDocuments: list[S3Location] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCapabilityResponse:
     str capabilityId
     str capabilityArn
@@ -576,8 +580,9 @@ struct CreateCapabilityResponse:
     Optional[list[S3Location]] instructionsDocuments
     DateTime createdAt
 
-# no @derive(Json): member(s) capabilities: list[str], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capabilities: list[str], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePartnershipRequest:
     str profileId
     str name
@@ -588,8 +593,9 @@ struct CreatePartnershipRequest:
     Optional[str] clientToken
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) capabilities: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capabilities: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePartnershipResponse:
     str profileId
     str partnershipId
@@ -602,8 +608,9 @@ struct CreatePartnershipResponse:
     Optional[str] tradingPartnerId
     DateTime createdAt
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProfileRequest:
     str name
     Optional[str] email
@@ -636,8 +643,9 @@ struct CreateStarterMappingTemplateRequest:
 struct CreateStarterMappingTemplateResponse:
     str mappingTemplate
 
-# no @derive(Json): member(s) tags: list[Tag], inputConversion: InputConversion, outputConversion: OutputConversion, sampleDocuments: SampleDocuments not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag], inputConversion: InputConversion, outputConversion: OutputConversion, sampleDocuments: SampleDocuments not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTransformerRequest:
     str name
     Optional[str] clientToken
@@ -651,8 +659,9 @@ struct CreateTransformerRequest:
     Optional[OutputConversion] outputConversion
     Optional[SampleDocuments] sampleDocuments
 
-# no @derive(Json): member(s) inputConversion: InputConversion, outputConversion: OutputConversion, sampleDocuments: SampleDocuments not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputConversion: InputConversion, outputConversion: OutputConversion, sampleDocuments: SampleDocuments not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTransformerResponse:
     str transformerId
     str transformerArn
@@ -715,8 +724,9 @@ struct GenerateMappingResponse:
 struct GetCapabilityRequest:
     str capabilityId
 
-# no @derive(Json): member(s) instructionsDocuments: list[S3Location] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instructionsDocuments: list[S3Location] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCapabilityResponse:
     str capabilityId
     str capabilityArn
@@ -731,8 +741,9 @@ struct GetCapabilityResponse:
 struct GetPartnershipRequest:
     str partnershipId
 
-# no @derive(Json): member(s) capabilities: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capabilities: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPartnershipResponse:
     str profileId
     str partnershipId
@@ -770,8 +781,9 @@ struct GetTransformerJobRequest:
     str transformerJobId
     str transformerId
 
-# no @derive(Json): member(s) outputFiles: list[S3Location] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputFiles: list[S3Location] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTransformerJobResponse:
     TransformerJobStatus status
     Optional[list[S3Location]] outputFiles
@@ -781,8 +793,9 @@ struct GetTransformerJobResponse:
 struct GetTransformerRequest:
     str transformerId
 
-# no @derive(Json): member(s) inputConversion: InputConversion, outputConversion: OutputConversion, sampleDocuments: SampleDocuments not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputConversion: InputConversion, outputConversion: OutputConversion, sampleDocuments: SampleDocuments not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTransformerResponse:
     str transformerId
     str transformerArn
@@ -803,8 +816,9 @@ struct GetTransformerResponse:
 struct InboundEdiOptions:
     Optional[X12InboundEdiOptions] x12
 
-# no @derive(Json): member(s) advancedOptions: AdvancedOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) advancedOptions: AdvancedOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InputConversion:
     str fromFormat
     Optional[FormatOptions] formatOptions
@@ -824,8 +838,9 @@ struct ListCapabilitiesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) capabilities: list[CapabilitySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capabilities: list[CapabilitySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCapabilitiesResponse:
     list[CapabilitySummary] capabilities
     Optional[str] nextToken
@@ -836,8 +851,9 @@ struct ListPartnershipsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) partnerships: list[PartnershipSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) partnerships: list[PartnershipSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPartnershipsResponse:
     list[PartnershipSummary] partnerships
     Optional[str] nextToken
@@ -847,8 +863,9 @@ struct ListProfilesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) profiles: list[ProfileSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) profiles: list[ProfileSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProfilesResponse:
     list[ProfileSummary] profiles
     Optional[str] nextToken
@@ -857,8 +874,9 @@ struct ListProfilesResponse:
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -867,8 +885,9 @@ struct ListTransformersRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) transformers: list[TransformerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) transformers: list[TransformerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTransformersResponse:
     list[TransformerSummary] transformers
     Optional[str] nextToken
@@ -882,8 +901,9 @@ struct Mapping:
 struct OutboundEdiOptions:
     Optional[X12Envelope] x12
 
-# no @derive(Json): member(s) advancedOptions: AdvancedOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) advancedOptions: AdvancedOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OutputConversion:
     str toFormat
     Optional[FormatOptions] formatOptions
@@ -893,8 +913,9 @@ struct OutputConversion:
 struct OutputSampleFileSource:
     Optional[S3Location] fileLocation
 
-# no @derive(Json): member(s) capabilities: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capabilities: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PartnershipSummary:
     str profileId
     str partnershipId
@@ -931,8 +952,9 @@ struct SampleDocumentKeys:
     Optional[str] input
     Optional[str] output
 
-# no @derive(Json): member(s) keys: list[SampleDocumentKeys] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) keys: list[SampleDocumentKeys] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SampleDocuments:
     str bucketName
     list[SampleDocumentKeys] keys
@@ -961,8 +983,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceARN
     list[Tag] Tags
@@ -971,14 +994,16 @@ struct TagResourceRequest:
 struct TemplateDetails:
     Optional[X12Details] x12
 
-# no @derive(Json): member(s) target: ConversionTarget not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) target: ConversionTarget not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestConversionRequest:
     ConversionSource source
     ConversionTarget target
 
-# no @derive(Json): member(s) validationMessages: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) validationMessages: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestConversionResponse:
     str convertedFileContent
     Optional[list[str]] validationMessages
@@ -993,16 +1018,18 @@ struct TestMappingRequest:
 struct TestMappingResponse:
     str mappedFileContent
 
-# no @derive(Json): member(s) advancedOptions: AdvancedOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) advancedOptions: AdvancedOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestParsingRequest:
     S3Location inputFile
     FileFormat fileFormat
     EdiType ediType
     Optional[AdvancedOptions] advancedOptions
 
-# no @derive(Json): member(s) parsedSplitFileContents: list[str], validationMessages: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parsedSplitFileContents: list[str], validationMessages: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestParsingResponse:
     str parsedFileContent
     Optional[list[str]] parsedSplitFileContents
@@ -1013,8 +1040,9 @@ struct ThrottlingException:
     str message
     Optional[int64] retryAfterSeconds
 
-# no @derive(Json): member(s) inputConversion: InputConversion, outputConversion: OutputConversion, sampleDocuments: SampleDocuments not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputConversion: InputConversion, outputConversion: OutputConversion, sampleDocuments: SampleDocuments not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TransformerSummary:
     str transformerId
     str name
@@ -1030,22 +1058,25 @@ struct TransformerSummary:
     Optional[OutputConversion] outputConversion
     Optional[SampleDocuments] sampleDocuments
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceARN
     list[str] TagKeys
 
-# no @derive(Json): member(s) instructionsDocuments: list[S3Location] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instructionsDocuments: list[S3Location] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCapabilityRequest:
     str capabilityId
     Optional[str] name
     Optional[CapabilityConfiguration] configuration
     Optional[list[S3Location]] instructionsDocuments
 
-# no @derive(Json): member(s) instructionsDocuments: list[S3Location] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instructionsDocuments: list[S3Location] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCapabilityResponse:
     str capabilityId
     str capabilityArn
@@ -1056,16 +1087,18 @@ struct UpdateCapabilityResponse:
     DateTime createdAt
     Optional[DateTime] modifiedAt
 
-# no @derive(Json): member(s) capabilities: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capabilities: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePartnershipRequest:
     str partnershipId
     Optional[str] name
     Optional[list[str]] capabilities
     Optional[CapabilityOptions] capabilityOptions
 
-# no @derive(Json): member(s) capabilities: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capabilities: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePartnershipResponse:
     str profileId
     str partnershipId
@@ -1102,8 +1135,9 @@ struct UpdateProfileResponse:
     @json(timestamp="iso8601")
     Optional[DateTime] modifiedAt
 
-# no @derive(Json): member(s) inputConversion: InputConversion, outputConversion: OutputConversion, sampleDocuments: SampleDocuments not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputConversion: InputConversion, outputConversion: OutputConversion, sampleDocuments: SampleDocuments not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTransformerRequest:
     str transformerId
     Optional[str] name
@@ -1117,8 +1151,9 @@ struct UpdateTransformerRequest:
     Optional[OutputConversion] outputConversion
     Optional[SampleDocuments] sampleDocuments
 
-# no @derive(Json): member(s) inputConversion: InputConversion, outputConversion: OutputConversion, sampleDocuments: SampleDocuments not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputConversion: InputConversion, outputConversion: OutputConversion, sampleDocuments: SampleDocuments not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTransformerResponse:
     str transformerId
     str transformerArn
@@ -1150,14 +1185,16 @@ struct X12AcknowledgmentOptions:
     X12FunctionalAcknowledgment functionalAcknowledgment
     X12TechnicalAcknowledgment technicalAcknowledgment
 
-# no @derive(Json): member(s) validationOptions: X12ValidationOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) validationOptions: X12ValidationOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct X12AdvancedOptions:
     Optional[X12SplitOptions] splitOptions
     Optional[X12ValidationOptions] validationOptions
 
-# no @derive(Json): member(s) codesToAdd: list[str], codesToRemove: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) codesToAdd: list[str], codesToRemove: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct X12CodeListValidationRule:
     str elementId
     Optional[list[str]] codesToAdd
@@ -1229,13 +1266,15 @@ struct X12OutboundEdiHeaders:
 struct X12SplitOptions:
     X12SplitBy splitBy
 
-# no @derive(Json): member(s) validationRules: list[X12ValidationRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) validationRules: list[X12ValidationRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct X12ValidationOptions:
     Optional[list[X12ValidationRule]] validationRules
 
-# no @derive(Json): member(s) codeListValidationRule: X12CodeListValidationRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) codeListValidationRule: X12CodeListValidationRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct X12ValidationRule:
     Optional[X12CodeListValidationRule] codeListValidationRule
     Optional[X12ElementLengthValidationRule] elementLengthValidationRule
@@ -1275,30 +1314,401 @@ def b2bi_error_from_code(str code) -> b2biError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateCapability (input CreateCapabilityRequest)
-#   CreatePartnership (input CreatePartnershipRequest)
-#   CreateProfile (input CreateProfileRequest)
-#   CreateTransformer (input CreateTransformerRequest)
-#   TagResource (input TagResourceRequest)
-#   TestConversion (input TestConversionRequest)
-#   TestParsing (input TestParsingRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateCapability (input UpdateCapabilityRequest)
-#   UpdatePartnership (input UpdatePartnershipRequest)
-#   UpdateTransformer (input UpdateTransformerRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def b2bi_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def b2bi_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def b2bi_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AdvancedOptions to a compact JSON object (declaration order).
+def advanced_options_to_json(AdvancedOptions v) -> str:
+    list[str] parts = []
+    if v.x12.is_some():
+        auto u0 = v.x12.unwrap()
+        parts.append("\"x12\":" + x12_advanced_options_to_json(u0))
+    return b2bi_json_obj(parts)
+
+# Serialize ConversionTarget to a compact JSON object (declaration order).
+def conversion_target_to_json(ConversionTarget v) -> str:
+    list[str] parts = []
+    parts.append("\"fileFormat\":" + b2bi_json_str(v.fileFormat))
+    if v.formatDetails.is_some():
+        auto u0 = v.formatDetails.unwrap()
+        parts.append("\"formatDetails\":" + u0.to_json())
+    if v.outputSampleFile.is_some():
+        auto u1 = v.outputSampleFile.unwrap()
+        parts.append("\"outputSampleFile\":" + u1.to_json())
+    if v.advancedOptions.is_some():
+        auto u2 = v.advancedOptions.unwrap()
+        parts.append("\"advancedOptions\":" + advanced_options_to_json(u2))
+    return b2bi_json_obj(parts)
+
+# Serialize CreateCapabilityRequest to a compact JSON object (declaration order).
+def create_capability_request_to_json(CreateCapabilityRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + b2bi_json_str(v.name))
+    parts.append("\"type\":" + b2bi_json_str(v.type))
+    parts.append("\"configuration\":" + v.configuration.to_json())
+    if v.instructionsDocuments.is_some():
+        auto u0 = v.instructionsDocuments.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"instructionsDocuments\":" + b2bi_json_arr(e1))
+    if v.clientToken.is_some():
+        auto u2 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + b2bi_json_str(u2))
+    if v.tags.is_some():
+        auto u3 = v.tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"tags\":" + b2bi_json_arr(e4))
+    return b2bi_json_obj(parts)
+
+# Serialize CreatePartnershipRequest to a compact JSON object (declaration order).
+def create_partnership_request_to_json(CreatePartnershipRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"profileId\":" + b2bi_json_str(v.profileId))
+    parts.append("\"name\":" + b2bi_json_str(v.name))
+    parts.append("\"email\":" + b2bi_json_str(v.email))
+    if v.phone.is_some():
+        auto u0 = v.phone.unwrap()
+        parts.append("\"phone\":" + b2bi_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.capabilities:
+        e1.append(b2bi_json_str(x1))
+    parts.append("\"capabilities\":" + b2bi_json_arr(e1))
+    if v.capabilityOptions.is_some():
+        auto u2 = v.capabilityOptions.unwrap()
+        parts.append("\"capabilityOptions\":" + u2.to_json())
+    if v.clientToken.is_some():
+        auto u3 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + b2bi_json_str(u3))
+    if v.tags.is_some():
+        auto u4 = v.tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"tags\":" + b2bi_json_arr(e5))
+    return b2bi_json_obj(parts)
+
+# Serialize CreateProfileRequest to a compact JSON object (declaration order).
+def create_profile_request_to_json(CreateProfileRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + b2bi_json_str(v.name))
+    if v.email.is_some():
+        auto u0 = v.email.unwrap()
+        parts.append("\"email\":" + b2bi_json_str(u0))
+    parts.append("\"phone\":" + b2bi_json_str(v.phone))
+    parts.append("\"businessName\":" + b2bi_json_str(v.businessName))
+    parts.append("\"logging\":" + v.logging.to_json())
+    if v.clientToken.is_some():
+        auto u1 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + b2bi_json_str(u1))
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"tags\":" + b2bi_json_arr(e3))
+    return b2bi_json_obj(parts)
+
+# Serialize CreateTransformerRequest to a compact JSON object (declaration order).
+def create_transformer_request_to_json(CreateTransformerRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + b2bi_json_str(v.name))
+    if v.clientToken.is_some():
+        auto u0 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + b2bi_json_str(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + b2bi_json_arr(e2))
+    if v.fileFormat.is_some():
+        auto u3 = v.fileFormat.unwrap()
+        parts.append("\"fileFormat\":" + u3.to_json())
+    if v.mappingTemplate.is_some():
+        auto u4 = v.mappingTemplate.unwrap()
+        parts.append("\"mappingTemplate\":" + b2bi_json_str(u4))
+    if v.ediType.is_some():
+        auto u5 = v.ediType.unwrap()
+        parts.append("\"ediType\":" + u5.to_json())
+    if v.sampleDocument.is_some():
+        auto u6 = v.sampleDocument.unwrap()
+        parts.append("\"sampleDocument\":" + b2bi_json_str(u6))
+    if v.inputConversion.is_some():
+        auto u7 = v.inputConversion.unwrap()
+        parts.append("\"inputConversion\":" + input_conversion_to_json(u7))
+    if v.mapping.is_some():
+        auto u8 = v.mapping.unwrap()
+        parts.append("\"mapping\":" + u8.to_json())
+    if v.outputConversion.is_some():
+        auto u9 = v.outputConversion.unwrap()
+        parts.append("\"outputConversion\":" + output_conversion_to_json(u9))
+    if v.sampleDocuments.is_some():
+        auto u10 = v.sampleDocuments.unwrap()
+        parts.append("\"sampleDocuments\":" + sample_documents_to_json(u10))
+    return b2bi_json_obj(parts)
+
+# Serialize InputConversion to a compact JSON object (declaration order).
+def input_conversion_to_json(InputConversion v) -> str:
+    list[str] parts = []
+    parts.append("\"fromFormat\":" + b2bi_json_str(v.fromFormat))
+    if v.formatOptions.is_some():
+        auto u0 = v.formatOptions.unwrap()
+        parts.append("\"formatOptions\":" + u0.to_json())
+    if v.advancedOptions.is_some():
+        auto u1 = v.advancedOptions.unwrap()
+        parts.append("\"advancedOptions\":" + advanced_options_to_json(u1))
+    return b2bi_json_obj(parts)
+
+# Serialize OutputConversion to a compact JSON object (declaration order).
+def output_conversion_to_json(OutputConversion v) -> str:
+    list[str] parts = []
+    parts.append("\"toFormat\":" + b2bi_json_str(v.toFormat))
+    if v.formatOptions.is_some():
+        auto u0 = v.formatOptions.unwrap()
+        parts.append("\"formatOptions\":" + u0.to_json())
+    if v.advancedOptions.is_some():
+        auto u1 = v.advancedOptions.unwrap()
+        parts.append("\"advancedOptions\":" + advanced_options_to_json(u1))
+    return b2bi_json_obj(parts)
+
+# Serialize SampleDocuments to a compact JSON object (declaration order).
+def sample_documents_to_json(SampleDocuments v) -> str:
+    list[str] parts = []
+    parts.append("\"bucketName\":" + b2bi_json_str(v.bucketName))
+    list[str] e0 = []
+    for x0 in v.keys:
+        e0.append(x0.to_json())
+    parts.append("\"keys\":" + b2bi_json_arr(e0))
+    return b2bi_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + b2bi_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + b2bi_json_arr(e0))
+    return b2bi_json_obj(parts)
+
+# Serialize TestConversionRequest to a compact JSON object (declaration order).
+def test_conversion_request_to_json(TestConversionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"source\":" + v.source.to_json())
+    parts.append("\"target\":" + conversion_target_to_json(v.target))
+    return b2bi_json_obj(parts)
+
+# Serialize TestParsingRequest to a compact JSON object (declaration order).
+def test_parsing_request_to_json(TestParsingRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"inputFile\":" + v.inputFile.to_json())
+    parts.append("\"fileFormat\":" + v.fileFormat.to_json())
+    parts.append("\"ediType\":" + v.ediType.to_json())
+    if v.advancedOptions.is_some():
+        auto u0 = v.advancedOptions.unwrap()
+        parts.append("\"advancedOptions\":" + advanced_options_to_json(u0))
+    return b2bi_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + b2bi_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(b2bi_json_str(x0))
+    parts.append("\"TagKeys\":" + b2bi_json_arr(e0))
+    return b2bi_json_obj(parts)
+
+# Serialize UpdateCapabilityRequest to a compact JSON object (declaration order).
+def update_capability_request_to_json(UpdateCapabilityRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"capabilityId\":" + b2bi_json_str(v.capabilityId))
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + b2bi_json_str(u0))
+    if v.configuration.is_some():
+        auto u1 = v.configuration.unwrap()
+        parts.append("\"configuration\":" + u1.to_json())
+    if v.instructionsDocuments.is_some():
+        auto u2 = v.instructionsDocuments.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"instructionsDocuments\":" + b2bi_json_arr(e3))
+    return b2bi_json_obj(parts)
+
+# Serialize UpdatePartnershipRequest to a compact JSON object (declaration order).
+def update_partnership_request_to_json(UpdatePartnershipRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"partnershipId\":" + b2bi_json_str(v.partnershipId))
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + b2bi_json_str(u0))
+    if v.capabilities.is_some():
+        auto u1 = v.capabilities.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(b2bi_json_str(x2))
+        parts.append("\"capabilities\":" + b2bi_json_arr(e2))
+    if v.capabilityOptions.is_some():
+        auto u3 = v.capabilityOptions.unwrap()
+        parts.append("\"capabilityOptions\":" + u3.to_json())
+    return b2bi_json_obj(parts)
+
+# Serialize UpdateTransformerRequest to a compact JSON object (declaration order).
+def update_transformer_request_to_json(UpdateTransformerRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"transformerId\":" + b2bi_json_str(v.transformerId))
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + b2bi_json_str(u0))
+    if v.status.is_some():
+        auto u1 = v.status.unwrap()
+        parts.append("\"status\":" + u1.to_json())
+    if v.fileFormat.is_some():
+        auto u2 = v.fileFormat.unwrap()
+        parts.append("\"fileFormat\":" + u2.to_json())
+    if v.mappingTemplate.is_some():
+        auto u3 = v.mappingTemplate.unwrap()
+        parts.append("\"mappingTemplate\":" + b2bi_json_str(u3))
+    if v.ediType.is_some():
+        auto u4 = v.ediType.unwrap()
+        parts.append("\"ediType\":" + u4.to_json())
+    if v.sampleDocument.is_some():
+        auto u5 = v.sampleDocument.unwrap()
+        parts.append("\"sampleDocument\":" + b2bi_json_str(u5))
+    if v.inputConversion.is_some():
+        auto u6 = v.inputConversion.unwrap()
+        parts.append("\"inputConversion\":" + input_conversion_to_json(u6))
+    if v.mapping.is_some():
+        auto u7 = v.mapping.unwrap()
+        parts.append("\"mapping\":" + u7.to_json())
+    if v.outputConversion.is_some():
+        auto u8 = v.outputConversion.unwrap()
+        parts.append("\"outputConversion\":" + output_conversion_to_json(u8))
+    if v.sampleDocuments.is_some():
+        auto u9 = v.sampleDocuments.unwrap()
+        parts.append("\"sampleDocuments\":" + sample_documents_to_json(u9))
+    return b2bi_json_obj(parts)
+
+# Serialize X12AdvancedOptions to a compact JSON object (declaration order).
+def x12_advanced_options_to_json(X12AdvancedOptions v) -> str:
+    list[str] parts = []
+    if v.splitOptions.is_some():
+        auto u0 = v.splitOptions.unwrap()
+        parts.append("\"splitOptions\":" + u0.to_json())
+    if v.validationOptions.is_some():
+        auto u1 = v.validationOptions.unwrap()
+        parts.append("\"validationOptions\":" + x12_validation_options_to_json(u1))
+    return b2bi_json_obj(parts)
+
+# Serialize X12CodeListValidationRule to a compact JSON object (declaration order).
+def x12_code_list_validation_rule_to_json(X12CodeListValidationRule v) -> str:
+    list[str] parts = []
+    parts.append("\"elementId\":" + b2bi_json_str(v.elementId))
+    if v.codesToAdd.is_some():
+        auto u0 = v.codesToAdd.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(b2bi_json_str(x1))
+        parts.append("\"codesToAdd\":" + b2bi_json_arr(e1))
+    if v.codesToRemove.is_some():
+        auto u2 = v.codesToRemove.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(b2bi_json_str(x3))
+        parts.append("\"codesToRemove\":" + b2bi_json_arr(e3))
+    return b2bi_json_obj(parts)
+
+# Serialize X12ValidationOptions to a compact JSON object (declaration order).
+def x12_validation_options_to_json(X12ValidationOptions v) -> str:
+    list[str] parts = []
+    if v.validationRules.is_some():
+        auto u0 = v.validationRules.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x12_validation_rule_to_json(x1))
+        parts.append("\"validationRules\":" + b2bi_json_arr(e1))
+    return b2bi_json_obj(parts)
+
+# Serialize X12ValidationRule to a compact JSON object (declaration order).
+def x12_validation_rule_to_json(X12ValidationRule v) -> str:
+    list[str] parts = []
+    if v.codeListValidationRule.is_some():
+        auto u0 = v.codeListValidationRule.unwrap()
+        parts.append("\"codeListValidationRule\":" + x12_code_list_validation_rule_to_json(u0))
+    if v.elementLengthValidationRule.is_some():
+        auto u1 = v.elementLengthValidationRule.unwrap()
+        parts.append("\"elementLengthValidationRule\":" + u1.to_json())
+    if v.elementRequirementValidationRule.is_some():
+        auto u2 = v.elementRequirementValidationRule.unwrap()
+        parts.append("\"elementRequirementValidationRule\":" + u2.to_json())
+    return b2bi_json_obj(parts)
 
 # A bound b2bi client: credentials + region, threaded into every operation.
 struct b2biClient:
     core.Credentials creds
     str region
 
+    # CreateCapability
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_capability(self, CreateCapabilityRequest input) -> str:
+        auto body = create_capability_request_to_json(input)
+        return awsjson.awsjson_request_now(b2bi_protocol(), self.creds, self.region, "CreateCapability", body)
+
+    # CreatePartnership
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_partnership(self, CreatePartnershipRequest input) -> str:
+        auto body = create_partnership_request_to_json(input)
+        return awsjson.awsjson_request_now(b2bi_protocol(), self.creds, self.region, "CreatePartnership", body)
+
+    # CreateProfile
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_profile(self, CreateProfileRequest input) -> str:
+        auto body = create_profile_request_to_json(input)
+        return awsjson.awsjson_request_now(b2bi_protocol(), self.creds, self.region, "CreateProfile", body)
+
     # CreateStarterMappingTemplate
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
     def create_starter_mapping_template(self, CreateStarterMappingTemplateRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(b2bi_protocol(), self.creds, self.region, "CreateStarterMappingTemplate", body)
+
+    # CreateTransformer
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_transformer(self, CreateTransformerRequest input) -> str:
+        auto body = create_transformer_request_to_json(input)
+        return awsjson.awsjson_request_now(b2bi_protocol(), self.creds, self.region, "CreateTransformer", body)
 
     # DeleteCapability
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1396,17 +1806,59 @@ struct b2biClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(b2bi_protocol(), self.creds, self.region, "StartTransformerJob", body)
 
+    # TagResource
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(b2bi_protocol(), self.creds, self.region, "TagResource", body)
+
+    # TestConversion
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def test_conversion(self, TestConversionRequest input) -> str:
+        auto body = test_conversion_request_to_json(input)
+        return awsjson.awsjson_request_now(b2bi_protocol(), self.creds, self.region, "TestConversion", body)
+
     # TestMapping
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def test_mapping(self, TestMappingRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(b2bi_protocol(), self.creds, self.region, "TestMapping", body)
 
+    # TestParsing
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def test_parsing(self, TestParsingRequest input) -> str:
+        auto body = test_parsing_request_to_json(input)
+        return awsjson.awsjson_request_now(b2bi_protocol(), self.creds, self.region, "TestParsing", body)
+
+    # UntagResource
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(b2bi_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateCapability
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_capability(self, UpdateCapabilityRequest input) -> str:
+        auto body = update_capability_request_to_json(input)
+        return awsjson.awsjson_request_now(b2bi_protocol(), self.creds, self.region, "UpdateCapability", body)
+
+    # UpdatePartnership
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_partnership(self, UpdatePartnershipRequest input) -> str:
+        auto body = update_partnership_request_to_json(input)
+        return awsjson.awsjson_request_now(b2bi_protocol(), self.creds, self.region, "UpdatePartnership", body)
+
     # UpdateProfile
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_profile(self, UpdateProfileRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(b2bi_protocol(), self.creds, self.region, "UpdateProfile", body)
+
+    # UpdateTransformer
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_transformer(self, UpdateTransformerRequest input) -> str:
+        auto body = update_transformer_request_to_json(input)
+        return awsjson.awsjson_request_now(b2bi_protocol(), self.creds, self.region, "UpdateTransformer", body)
 
     # Paginator for ListCapabilities — yields each Response page, threading the
     # nextToken -> nextToken continuation token until the output token is absent (result key: capabilities).

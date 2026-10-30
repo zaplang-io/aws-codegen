@@ -1,0 +1,10 @@
+POST /2015-03-31/functions HTTP/1.1
+content-type: application/json
+host: lambda.us-east-1.amazonaws.com
+x-amz-content-sha256: 3901cb99675512fc8f065d136685c64d6c9076238d1a3ab3e2cf0fcfe61ebdf1
+x-amz-date: 20150830T123600Z
+content-length: 154
+authorization: AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/lambda/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=ebc78b30ccc42148ba2db27d99b3185d68a78213e379a58d35732b3108366d7e
+Connection: close
+
+{"FunctionName":"my-func","Role":"arn:aws:iam::123456789012:role/svc","Code":{"ZipFile":"emlwYnl0ZXM="},"VpcConfig":{"SubnetIds":["subnet-1","subnet-2"]}}

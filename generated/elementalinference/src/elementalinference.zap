@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 24 operations — 16 with a generated method,
-#   8 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 24 operations — 23 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   79 structs (49 @derive(Json)), 11 enums, 9 error variants.
-#   3 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -189,8 +189,9 @@ struct CreateDictionaryRequest:
     Optional[str] entries
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) references: list[str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) references: list[str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDictionaryResponse:
     str name
     str arn
@@ -208,8 +209,9 @@ struct CreateFeedRequest:
     list[CreateOutput] outputs
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) dataEndpoints: list[str], outputs: list[GetOutput], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataEndpoints: list[str], outputs: list[GetOutput], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFeedResponse:
     str arn
     str name
@@ -221,8 +223,9 @@ struct CreateFeedResponse:
     Optional[FeedAssociation] association
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) outputConfig: OutputConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputConfig: OutputConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateOutput:
     str name
     OutputConfig outputConfig
@@ -237,8 +240,9 @@ struct CreateScheduleActionRequest:
     ScheduleActionStartConfiguration startConfiguration
     list[ScheduleActionOperation] operations
 
-# no @derive(Json): member(s) operations: list[ScheduleActionOperation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[ScheduleActionOperation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateScheduleActionResponse:
     str actionName
     ScheduleActionStartConfiguration startConfiguration
@@ -246,8 +250,9 @@ struct CreateScheduleActionResponse:
     ScheduleActionStatus status
     Optional[ScheduleActionError] error
 
-# no @derive(Json): member(s) templateGroups: list[TemplateGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) templateGroups: list[TemplateGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CroppingConfig:
     Optional[list[TemplateGroup]] templateGroups
 
@@ -337,8 +342,9 @@ struct FeedSummary:
 struct FixedModeScheduleActionStartSettings:
     DateTime scheduledAt
 
-# no @derive(Json): member(s) competitors: list[Competitor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) competitors: list[Competitor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FixtureSummary:
     str fixtureId
     str name
@@ -356,8 +362,9 @@ struct GatewayTimedOutException:
 struct GetDictionaryRequest:
     str id
 
-# no @derive(Json): member(s) references: list[str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) references: list[str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDictionaryResponse:
     str name
     str arn
@@ -381,8 +388,9 @@ struct GetFeedPolicyResponse:
 struct GetFeedRequest:
     str id
 
-# no @derive(Json): member(s) dataEndpoints: list[str], outputs: list[GetOutput], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataEndpoints: list[str], outputs: list[GetOutput], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFeedResponse:
     str arn
     str name
@@ -399,8 +407,9 @@ struct GetFeedResponse:
 struct GetFixtureRequest:
     str fixtureId
 
-# no @derive(Json): member(s) competitors: list[Competitor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) competitors: list[Competitor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFixtureResponse:
     str fixtureId
     str name
@@ -409,8 +418,9 @@ struct GetFixtureResponse:
     str status
     list[Competitor] competitors
 
-# no @derive(Json): member(s) outputConfig: OutputConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputConfig: OutputConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOutput:
     str name
     OutputConfig outputConfig
@@ -428,8 +438,9 @@ struct ListDictionariesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) dictionaries: list[DictionarySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dictionaries: list[DictionarySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDictionariesResponse:
     list[DictionarySummary] dictionaries
     Optional[str] nextToken
@@ -440,8 +451,9 @@ struct ListFeedsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) feeds: list[FeedSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) feeds: list[FeedSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFeedsResponse:
     list[FeedSummary] feeds
     Optional[str] nextToken
@@ -453,8 +465,9 @@ struct ListScheduleActionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) scheduleActions: list[ScheduleAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scheduleActions: list[ScheduleAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListScheduleActionsResponse:
     list[ScheduleAction] scheduleActions
     Optional[str] nextToken
@@ -464,13 +477,15 @@ struct ListScheduleActionsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) cropping: CroppingConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cropping: CroppingConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OutputConfig:
     Optional[CroppingConfig] cropping
     Optional[ClippingConfig] clipping
@@ -496,8 +511,9 @@ struct RemoveClippingDataSourceConfiguration:
 struct ResourceNotFoundException:
     str message
 
-# no @derive(Json): member(s) operations: list[ScheduleActionOperation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[ScheduleActionOperation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScheduleAction:
     str actionName
     ScheduleActionStartConfiguration startConfiguration
@@ -520,8 +536,9 @@ struct ScheduleActionOperation:
 struct ScheduleActionStartConfiguration:
     Optional[FixedModeScheduleActionStartSettings] fixedModeScheduleActionStartSettings
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchFilter:
     str name
     list[str] values
@@ -536,8 +553,9 @@ struct SearchFixturesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) fixtures: list[FixtureSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fixtures: list[FixtureSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchFixturesResponse:
     list[FixtureSummary] fixtures
     Optional[str] nextToken
@@ -563,8 +581,9 @@ struct TagResourceRequest:
     str resourceArn
     dict[str, str] tags
 
-# no @derive(Json): member(s) templateUris: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) templateUris: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TemplateGroup:
     str name
     list[str] templateUris
@@ -592,8 +611,9 @@ struct UpdateDictionaryRequest:
     Optional[DictionaryLanguage] language
     Optional[str] entries
 
-# no @derive(Json): member(s) references: list[str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) references: list[str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDictionaryResponse:
     str name
     str arn
@@ -611,8 +631,9 @@ struct UpdateFeedRequest:
     str id
     list[UpdateOutput] outputs
 
-# no @derive(Json): member(s) dataEndpoints: list[str], outputs: list[GetOutput], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataEndpoints: list[str], outputs: list[GetOutput], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFeedResponse:
     str arn
     str name
@@ -624,8 +645,9 @@ struct UpdateFeedResponse:
     Optional[FeedAssociation] association
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) outputConfig: OutputConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputConfig: OutputConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateOutput:
     str name
     OutputConfig outputConfig
@@ -686,18 +708,7 @@ def elemental_inference_error_from_code(str code) -> ElementalInferenceError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AssociateFeed (document member `outputs: list[CreateOutput]` is not serializable by derive)
-#   CreateDictionary (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateFeed (document member `outputs: list[CreateOutput]` is not serializable by derive)
-#   CreateScheduleAction (document member `operations: list[ScheduleActionOperation]` is not serializable by derive)
-#   SearchFixtures (document member `filters: list[SearchFilter]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateFeed (document member `outputs: list[UpdateOutput]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   SearchFixtures (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -720,10 +731,192 @@ struct UpdateDictionaryDocument:
     Optional[DictionaryLanguage] language
     Optional[str] entries
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def elemental_inference_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def elemental_inference_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def elemental_inference_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateOutput to a compact JSON object (declaration order).
+def create_output_to_json(CreateOutput v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + elemental_inference_json_str(v.name))
+    parts.append("\"outputConfig\":" + output_config_to_json(v.outputConfig))
+    parts.append("\"status\":" + v.status.to_json())
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + elemental_inference_json_str(u0))
+    return elemental_inference_json_obj(parts)
+
+# Serialize CroppingConfig to a compact JSON object (declaration order).
+def cropping_config_to_json(CroppingConfig v) -> str:
+    list[str] parts = []
+    if v.templateGroups.is_some():
+        auto u0 = v.templateGroups.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(template_group_to_json(x1))
+        parts.append("\"templateGroups\":" + elemental_inference_json_arr(e1))
+    return elemental_inference_json_obj(parts)
+
+# Serialize OutputConfig to a compact JSON object (declaration order).
+def output_config_to_json(OutputConfig v) -> str:
+    list[str] parts = []
+    if v.cropping.is_some():
+        auto u0 = v.cropping.unwrap()
+        parts.append("\"cropping\":" + cropping_config_to_json(u0))
+    if v.clipping.is_some():
+        auto u1 = v.clipping.unwrap()
+        parts.append("\"clipping\":" + u1.to_json())
+    if v.subtitling.is_some():
+        auto u2 = v.subtitling.unwrap()
+        parts.append("\"subtitling\":" + u2.to_json())
+    if v.contextualMetadata.is_some():
+        auto u3 = v.contextualMetadata.unwrap()
+        parts.append("\"contextualMetadata\":" + u3.to_json())
+    return elemental_inference_json_obj(parts)
+
+# Serialize SearchFilter to a compact JSON object (declaration order).
+def search_filter_to_json(SearchFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + elemental_inference_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(elemental_inference_json_str(x0))
+    parts.append("\"values\":" + elemental_inference_json_arr(e0))
+    return elemental_inference_json_obj(parts)
+
+# Serialize TemplateGroup to a compact JSON object (declaration order).
+def template_group_to_json(TemplateGroup v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + elemental_inference_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.templateUris:
+        e0.append(elemental_inference_json_str(x0))
+    parts.append("\"templateUris\":" + elemental_inference_json_arr(e0))
+    return elemental_inference_json_obj(parts)
+
+# Serialize UpdateOutput to a compact JSON object (declaration order).
+def update_output_to_json(UpdateOutput v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + elemental_inference_json_str(v.name))
+    parts.append("\"outputConfig\":" + output_config_to_json(v.outputConfig))
+    parts.append("\"status\":" + v.status.to_json())
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + elemental_inference_json_str(u0))
+    if v.fromAssociation.is_some():
+        auto u1 = v.fromAssociation.unwrap()
+        parts.append("\"fromAssociation\":" + json.dumps(JsonValue.Bool(u1)))
+    return elemental_inference_json_obj(parts)
+
 # A bound ElementalInference client: credentials + region, threaded into every operation.
 struct ElementalInferenceClient:
     core.Credentials creds
     str region
+
+    # AssociateFeed  POST /v1/feed/{id}/associate
+    # errors: AccessDeniedException, ConflictException, InternalServerErrorException, ResourceNotFoundException, ServiceQuotaExceededException, TooManyRequestException, ValidationException
+    def associate_feed(self, AssociateFeedRequest input) -> str:
+        auto host = endpoints.regional_host(elemental_inference_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.id
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/feed/{id}/associate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"associatedResourceName\":" + elemental_inference_json_str(input.associatedResourceName))
+        list[str] e0 = []
+        for x0 in input.outputs:
+            e0.append(create_output_to_json(x0))
+        parts.append("\"outputs\":" + elemental_inference_json_arr(e0))
+        if input.dryRun.is_some():
+            auto u1 = input.dryRun.unwrap()
+            parts.append("\"dryRun\":" + json.dumps(JsonValue.Bool(u1)))
+        auto bp = restjson.rest_json_document(b, elemental_inference_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, elemental_inference_service(), self.region, host)
+
+    # CreateDictionary  POST /v1/dictionary
+    # errors: AccessDeniedException, ConflictException, InternalServerErrorException, ServiceQuotaExceededException, TooManyRequestException, ValidationException
+    def create_dictionary(self, CreateDictionaryRequest input) -> str:
+        auto host = endpoints.regional_host(elemental_inference_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/dictionary", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + elemental_inference_json_str(input.name))
+        parts.append("\"language\":" + input.language.to_json())
+        if input.entries.is_some():
+            auto u0 = input.entries.unwrap()
+            parts.append("\"entries\":" + elemental_inference_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(elemental_inference_json_str(k2) + ":" + elemental_inference_json_str(u1[k2]))
+            parts.append("\"tags\":" + elemental_inference_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, elemental_inference_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, elemental_inference_service(), self.region, host)
+
+    # CreateFeed  POST /v1/feed
+    # errors: AccessDeniedException, ConflictException, InternalServerErrorException, ServiceQuotaExceededException, TooManyRequestException, ValidationException
+    def create_feed(self, CreateFeedRequest input) -> str:
+        auto host = endpoints.regional_host(elemental_inference_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/feed", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + elemental_inference_json_str(input.name))
+        if input.accessRoleArn.is_some():
+            auto u0 = input.accessRoleArn.unwrap()
+            parts.append("\"accessRoleArn\":" + elemental_inference_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.outputs:
+            e1.append(create_output_to_json(x1))
+        parts.append("\"outputs\":" + elemental_inference_json_arr(e1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(elemental_inference_json_str(k3) + ":" + elemental_inference_json_str(u2[k3]))
+            parts.append("\"tags\":" + elemental_inference_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, elemental_inference_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, elemental_inference_service(), self.region, host)
+
+    # CreateScheduleAction  POST /v1/feed/{id}/schedule-actions
+    # errors: AccessDeniedException, ConflictException, InternalServerErrorException, ResourceNotFoundException, ServiceQuotaExceededException, TooManyRequestException, ValidationException
+    def create_schedule_action(self, CreateScheduleActionRequest input) -> str:
+        auto host = endpoints.regional_host(elemental_inference_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.id
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/feed/{id}/schedule-actions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"actionName\":" + elemental_inference_json_str(input.actionName))
+        parts.append("\"startConfiguration\":" + input.startConfiguration.to_json())
+        list[str] e0 = []
+        for x0 in input.operations:
+            e0.append(x0.to_json())
+        parts.append("\"operations\":" + elemental_inference_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, elemental_inference_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, elemental_inference_service(), self.region, host)
 
     # DeleteDictionary  DELETE /v1/dictionary/{id}
     # errors: AccessDeniedException, ConflictException, InternalServerErrorException, ResourceNotFoundException, TooManyRequestException, ValidationException
@@ -877,6 +1070,47 @@ struct ElementalInferenceClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, elemental_inference_service(), self.region, host)
 
+    # SearchFixtures  POST /v1/fixtures
+    # errors: AccessDeniedException, GatewayTimedOutException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestException, ValidationException
+    def search_fixtures(self, SearchFixturesRequest input) -> str:
+        auto host = endpoints.regional_host(elemental_inference_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/fixtures", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"sport\":" + input.sport.to_json())
+        parts.append("\"startDate\":" + elemental_inference_json_str(input.startDate))
+        if input.endDate.is_some():
+            auto u0 = input.endDate.unwrap()
+            parts.append("\"endDate\":" + elemental_inference_json_str(u0))
+        if input.filters.is_some():
+            auto u1 = input.filters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(search_filter_to_json(x2))
+            parts.append("\"filters\":" + elemental_inference_json_arr(e2))
+        if input.maxResults.is_some():
+            auto u3 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u3))
+        if input.nextToken.is_some():
+            auto u4 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + elemental_inference_json_str(u4))
+        auto bp = restjson.rest_json_document(b, elemental_inference_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, elemental_inference_service(), self.region, host)
+
+    # TagResource  POST /v1/tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerErrorException, ResourceNotFoundException, TooManyRequestException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(elemental_inference_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(elemental_inference_json_str(k0) + ":" + elemental_inference_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + elemental_inference_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, elemental_inference_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, elemental_inference_service(), self.region, host)
+
     # UpdateDictionary  PATCH /v1/dictionary/{id}
     # errors: AccessDeniedException, ConflictException, InternalServerErrorException, ResourceNotFoundException, TooManyRequestException, ValidationException
     def update_dictionary(self, UpdateDictionaryRequest input) -> str:
@@ -886,6 +1120,25 @@ struct ElementalInferenceClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/v1/dictionary/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDictionaryDocument(name=input.name, language=input.language, entries=input.entries)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, elemental_inference_service(), self.region, host)
+
+    # UpdateFeed  PUT /v1/feed/{id}
+    # errors: AccessDeniedException, ConflictException, InternalServerErrorException, ResourceNotFoundException, ServiceQuotaExceededException, TooManyRequestException, ValidationException
+    def update_feed(self, UpdateFeedRequest input) -> str:
+        auto host = endpoints.regional_host(elemental_inference_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.id
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/feed/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + elemental_inference_json_str(input.name))
+        if input.accessRoleArn.is_some():
+            auto u0 = input.accessRoleArn.unwrap()
+            parts.append("\"accessRoleArn\":" + elemental_inference_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.outputs:
+            e1.append(update_output_to_json(x1))
+        parts.append("\"outputs\":" + elemental_inference_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, elemental_inference_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, elemental_inference_service(), self.region, host)
 
     # Paginator for ListDictionaries — yields each Response page, threading the
@@ -920,6 +1173,19 @@ struct ElementalInferenceClient:
         auto host = endpoints.regional_host(elemental_inference_service(), self.region)
         while True:
             auto raw = self.list_schedule_actions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for SearchFixtures — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: fixtures).
+    def paginate_search_fixtures(self, SearchFixturesRequest input):
+        auto host = endpoints.regional_host(elemental_inference_service(), self.region)
+        while True:
+            auto raw = self.search_fixtures(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

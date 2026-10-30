@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 12 operations — 8 with a generated method,
-#   4 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 12 operations — 11 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   35 structs (19 @derive(Json)), 4 enums, 7 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -94,8 +94,9 @@ struct CreateMonitorInput:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMonitorOutput:
     str monitorArn
     str monitorName
@@ -103,8 +104,9 @@ struct CreateMonitorOutput:
     Optional[int64] aggregationPeriod
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) probeTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) probeTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMonitorProbeInput:
     str sourceArn
     str destination
@@ -121,8 +123,9 @@ struct CreateProbeInput:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProbeOutput:
     Optional[str] probeId
     Optional[str] probeArn
@@ -164,8 +167,9 @@ struct DeleteProbeOutput:
 struct GetMonitorInput:
     str monitorName
 
-# no @derive(Json): member(s) tags: dict[str, str], probes: list[Probe] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], probes: list[Probe] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMonitorOutput:
     str monitorArn
     str monitorName
@@ -182,8 +186,9 @@ struct GetProbeInput:
     str monitorName
     str probeId
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProbeOutput:
     Optional[str] probeId
     Optional[str] probeArn
@@ -210,8 +215,9 @@ struct ListMonitorsInput:
     Optional[int64] maxResults
     Optional[str] state
 
-# no @derive(Json): member(s) monitors: list[MonitorSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) monitors: list[MonitorSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMonitorsOutput:
     list[MonitorSummary] monitors
     Optional[str] nextToken
@@ -221,13 +227,15 @@ struct ListMonitorsOutput:
 struct ListTagsForResourceInput:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MonitorSummary:
     str monitorArn
     str monitorName
@@ -235,8 +243,9 @@ struct MonitorSummary:
     Optional[int64] aggregationPeriod
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Probe:
     Optional[str] probeId
     Optional[str] probeArn
@@ -252,8 +261,9 @@ struct Probe:
     Optional[DateTime] modifiedAt
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProbeInput:
     str sourceArn
     str destination
@@ -302,8 +312,9 @@ struct UpdateMonitorInput:
     str monitorName
     int64 aggregationPeriod
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMonitorOutput:
     str monitorArn
     str monitorName
@@ -322,8 +333,9 @@ struct UpdateProbeInput:
     Optional[Protocol] protocol
     Optional[int64] packetSize
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProbeOutput:
     Optional[str] probeId
     Optional[str] probeArn
@@ -381,9 +393,6 @@ def networkmonitor_error_from_code(str code) -> NetworkMonitorError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateMonitor (document member `probes: list[CreateMonitorProbeInput]` is not serializable by derive)
-#   CreateProbe (document member `probe: ProbeInput` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -403,10 +412,129 @@ struct UpdateProbeDocument:
     Optional[Protocol] protocol
     Optional[int64] packetSize
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def networkmonitor_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def networkmonitor_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def networkmonitor_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateMonitorProbeInput to a compact JSON object (declaration order).
+def create_monitor_probe_input_to_json(CreateMonitorProbeInput v) -> str:
+    list[str] parts = []
+    parts.append("\"sourceArn\":" + networkmonitor_json_str(v.sourceArn))
+    parts.append("\"destination\":" + networkmonitor_json_str(v.destination))
+    if v.destinationPort.is_some():
+        auto u0 = v.destinationPort.unwrap()
+        parts.append("\"destinationPort\":" + str(u0))
+    parts.append("\"protocol\":" + v.protocol.to_json())
+    if v.packetSize.is_some():
+        auto u1 = v.packetSize.unwrap()
+        parts.append("\"packetSize\":" + str(u1))
+    if v.probeTags.is_some():
+        auto u2 = v.probeTags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(networkmonitor_json_str(k3) + ":" + networkmonitor_json_str(u2[k3]))
+        parts.append("\"probeTags\":" + networkmonitor_json_obj(m3))
+    return networkmonitor_json_obj(parts)
+
+# Serialize ProbeInput to a compact JSON object (declaration order).
+def probe_input_to_json(ProbeInput v) -> str:
+    list[str] parts = []
+    parts.append("\"sourceArn\":" + networkmonitor_json_str(v.sourceArn))
+    parts.append("\"destination\":" + networkmonitor_json_str(v.destination))
+    if v.destinationPort.is_some():
+        auto u0 = v.destinationPort.unwrap()
+        parts.append("\"destinationPort\":" + str(u0))
+    parts.append("\"protocol\":" + v.protocol.to_json())
+    if v.packetSize.is_some():
+        auto u1 = v.packetSize.unwrap()
+        parts.append("\"packetSize\":" + str(u1))
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(networkmonitor_json_str(k3) + ":" + networkmonitor_json_str(u2[k3]))
+        parts.append("\"tags\":" + networkmonitor_json_obj(m3))
+    return networkmonitor_json_obj(parts)
+
 # A bound NetworkMonitor client: credentials + region, threaded into every operation.
 struct NetworkMonitorClient:
     core.Credentials creds
     str region
+
+    # CreateMonitor  POST /monitors
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_monitor(self, CreateMonitorInput input) -> str:
+        auto host = endpoints.regional_host(networkmonitor_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/monitors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"monitorName\":" + networkmonitor_json_str(input.monitorName))
+        if input.probes.is_some():
+            auto u0 = input.probes.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(create_monitor_probe_input_to_json(x1))
+            parts.append("\"probes\":" + networkmonitor_json_arr(e1))
+        if input.aggregationPeriod.is_some():
+            auto u2 = input.aggregationPeriod.unwrap()
+            parts.append("\"aggregationPeriod\":" + str(u2))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + networkmonitor_json_str(u3))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(networkmonitor_json_str(k5) + ":" + networkmonitor_json_str(u4[k5]))
+            parts.append("\"tags\":" + networkmonitor_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, networkmonitor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkmonitor_service(), self.region, host)
+
+    # CreateProbe  POST /monitors/{monitorName}/probes
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_probe(self, CreateProbeInput input) -> str:
+        auto host = endpoints.regional_host(networkmonitor_service(), self.region)
+        dict[str, str] labels = {}
+        labels["monitorName"] = input.monitorName
+        auto b = binding.HttpBinding(method="POST", path_template="/monitors/{monitorName}/probes", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"probe\":" + probe_input_to_json(input.probe))
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + networkmonitor_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(networkmonitor_json_str(k2) + ":" + networkmonitor_json_str(u1[k2]))
+            parts.append("\"tags\":" + networkmonitor_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, networkmonitor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkmonitor_service(), self.region, host)
 
     # DeleteMonitor  DELETE /monitors/{monitorName}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -468,6 +596,21 @@ struct NetworkMonitorClient:
         labels["resourceArn"] = input.resourceArn
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmonitor_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(networkmonitor_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(networkmonitor_json_str(k0) + ":" + networkmonitor_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + networkmonitor_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, networkmonitor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, networkmonitor_service(), self.region, host)
 
     # UpdateMonitor  PATCH /monitors/{monitorName}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException

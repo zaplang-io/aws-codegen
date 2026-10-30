@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 24 operations — 17 with a generated method,
-#   7 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 24 operations — 24 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   78 structs (41 @derive(Json)), 11 enums, 7 error variants.
-#   4 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -163,8 +163,9 @@ struct AssociateEipToVlanRequest:
     str vlanName
     str allocationId
 
-# no @derive(Json): member(s) vlan: Vlan not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vlan: Vlan not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateEipToVlanResponse:
     Optional[Vlan] vlan
 
@@ -175,13 +176,15 @@ struct Check:
     Optional[CheckResult] result
     Optional[DateTime] impairedSince
 
-# no @derive(Json): member(s) privateRouteServerPeerings: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) privateRouteServerPeerings: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectivityInfo:
     list[str] privateRouteServerPeerings
 
-# no @derive(Json): member(s) checks: list[ConnectorCheck] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) checks: list[ConnectorCheck] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Connector:
     Optional[str] environmentId
     Optional[str] connectorId
@@ -202,8 +205,9 @@ struct ConnectorCheck:
     Optional[DateTime] lastCheckAttempt
     Optional[DateTime] impairedSince
 
-# no @derive(Json): member(s) vmIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vmIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEntitlementRequest:
     Optional[str] clientToken
     str environmentId
@@ -211,8 +215,9 @@ struct CreateEntitlementRequest:
     str entitlementType
     list[str] vmIds
 
-# no @derive(Json): member(s) entitlements: list[VmEntitlement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entitlements: list[VmEntitlement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEntitlementResponse:
     Optional[list[VmEntitlement]] entitlements
 
@@ -224,8 +229,9 @@ struct CreateEnvironmentConnectorRequest:
     str applianceFqdn
     str secretIdentifier
 
-# no @derive(Json): member(s) connector: Connector not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connector: Connector not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEnvironmentConnectorResponse:
     Optional[Connector] connector
 
@@ -236,14 +242,16 @@ struct CreateEnvironmentHostRequest:
     HostInfoForCreate host
     Optional[str] esxVersion
 
-# no @derive(Json): member(s) host: Host not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) host: Host not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEnvironmentHostResponse:
     Optional[EnvironmentSummary] environmentSummary
     Optional[Host] host
 
-# no @derive(Json): member(s) tags: dict[str, str], serviceAccessSecurityGroups: ServiceAccessSecurityGroups, connectivityInfo: ConnectivityInfo, licenseInfo: list[LicenseInfo], hosts: list[HostInfoForCreate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], serviceAccessSecurityGroups: ServiceAccessSecurityGroups, connectivityInfo: ConnectivityInfo, licenseInfo: list[LicenseInfo], hosts: list[HostInfoForCreate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEnvironmentRequest:
     Optional[str] clientToken
     Optional[str] environmentName
@@ -261,13 +269,15 @@ struct CreateEnvironmentRequest:
     Optional[VcfHostnames] vcfHostnames
     Optional[str] siteId
 
-# no @derive(Json): member(s) environment: Environment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environment: Environment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEnvironmentResponse:
     Optional[Environment] environment
 
-# no @derive(Json): member(s) vmIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vmIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteEntitlementRequest:
     Optional[str] clientToken
     str environmentId
@@ -275,8 +285,9 @@ struct DeleteEntitlementRequest:
     str entitlementType
     list[str] vmIds
 
-# no @derive(Json): member(s) entitlements: list[VmEntitlement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entitlements: list[VmEntitlement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteEntitlementResponse:
     Optional[list[VmEntitlement]] entitlements
 
@@ -286,8 +297,9 @@ struct DeleteEnvironmentConnectorRequest:
     str environmentId
     str connectorId
 
-# no @derive(Json): member(s) connector: Connector not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connector: Connector not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteEnvironmentConnectorResponse:
     Optional[Connector] connector
     Optional[EnvironmentSummary] environmentSummary
@@ -298,8 +310,9 @@ struct DeleteEnvironmentHostRequest:
     str environmentId
     str hostName
 
-# no @derive(Json): member(s) host: Host not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) host: Host not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteEnvironmentHostResponse:
     Optional[EnvironmentSummary] environmentSummary
     Optional[Host] host
@@ -309,8 +322,9 @@ struct DeleteEnvironmentRequest:
     Optional[str] clientToken
     str environmentId
 
-# no @derive(Json): member(s) environment: Environment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environment: Environment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteEnvironmentResponse:
     Optional[Environment] environment
 
@@ -321,8 +335,9 @@ struct DisassociateEipFromVlanRequest:
     str vlanName
     str associationId
 
-# no @derive(Json): member(s) vlan: Vlan not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vlan: Vlan not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateEipFromVlanResponse:
     Optional[Vlan] vlan
 
@@ -332,8 +347,9 @@ struct EipAssociation:
     Optional[str] allocationId
     Optional[str] ipAddress
 
-# no @derive(Json): member(s) licenseInfo: list[LicenseInfo], checks: list[Check], connectivityInfo: ConnectivityInfo, serviceAccessSecurityGroups: ServiceAccessSecurityGroups, credentials: list[Secret] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) licenseInfo: list[LicenseInfo], checks: list[Check], connectivityInfo: ConnectivityInfo, serviceAccessSecurityGroups: ServiceAccessSecurityGroups, credentials: list[Secret] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Environment:
     Optional[str] environmentId
     Optional[EnvironmentState] environmentState
@@ -377,8 +393,9 @@ struct GetAccountSettingsRequest:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) settings: list[AccountSetting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) settings: list[AccountSetting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAccountSettingsResponse:
     Optional[list[AccountSetting]] settings
 
@@ -396,8 +413,9 @@ struct GetDepotUrlResponse:
 struct GetEnvironmentRequest:
     str environmentId
 
-# no @derive(Json): member(s) environment: Environment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environment: Environment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEnvironmentResponse:
     Optional[Environment] environment
 
@@ -406,14 +424,16 @@ struct GetVersionsRequest:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) vcfVersions: list[VcfVersionInfo], instanceTypeEsxVersions: list[InstanceTypeEsxVersionsInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vcfVersions: list[VcfVersionInfo], instanceTypeEsxVersions: list[InstanceTypeEsxVersionsInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetVersionsResponse:
     list[VcfVersionInfo] vcfVersions
     list[InstanceTypeEsxVersionsInfo] instanceTypeEsxVersions
 
-# no @derive(Json): member(s) networkInterfaces: list[NetworkInterface] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkInterfaces: list[NetworkInterface] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Host:
     Optional[str] hostName
     Optional[str] ipAddress
@@ -455,8 +475,9 @@ struct InitialVlans:
     Optional[bool] isHcxPublic
     Optional[str] hcxNetworkAclId
 
-# no @derive(Json): member(s) esxVersions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) esxVersions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceTypeEsxVersionsInfo:
     InstanceType instanceType
     list[str] esxVersions
@@ -476,8 +497,9 @@ struct ListEnvironmentConnectorsRequest:
     Optional[int64] maxResults
     str environmentId
 
-# no @derive(Json): member(s) connectors: list[Connector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectors: list[Connector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentConnectorsResponse:
     Optional[str] nextToken
     Optional[list[Connector]] connectors
@@ -488,8 +510,9 @@ struct ListEnvironmentHostsRequest:
     Optional[int64] maxResults
     str environmentId
 
-# no @derive(Json): member(s) environmentHosts: list[Host] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environmentHosts: list[Host] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentHostsResponse:
     Optional[str] nextToken
     Optional[list[Host]] environmentHosts
@@ -500,21 +523,24 @@ struct ListEnvironmentVlansRequest:
     Optional[int64] maxResults
     str environmentId
 
-# no @derive(Json): member(s) environmentVlans: list[Vlan] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environmentVlans: list[Vlan] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentVlansResponse:
     Optional[str] nextToken
     Optional[list[Vlan]] environmentVlans
 
-# no @derive(Json): member(s) state: list[EnvironmentState] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) state: list[EnvironmentState] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
     Optional[list[EnvironmentState]] state
 
-# no @derive(Json): member(s) environmentSummaries: list[EnvironmentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environmentSummaries: list[EnvironmentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentsResponse:
     Optional[str] nextToken
     Optional[list[EnvironmentSummary]] environmentSummaries
@@ -523,8 +549,9 @@ struct ListEnvironmentsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -536,8 +563,9 @@ struct ListVmEntitlementsRequest:
     str connectorId
     str entitlementType
 
-# no @derive(Json): member(s) entitlements: list[VmEntitlement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entitlements: list[VmEntitlement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVmEntitlementsResponse:
     Optional[str] nextToken
     Optional[list[VmEntitlement]] entitlements
@@ -546,13 +574,15 @@ struct ListVmEntitlementsResponse:
 struct NetworkInterface:
     Optional[str] networkInterfaceId
 
-# no @derive(Json): member(s) settings: list[AccountSetting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) settings: list[AccountSetting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutAccountSettingsRequest:
     list[AccountSetting] settings
 
-# no @derive(Json): member(s) settings: list[AccountSetting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) settings: list[AccountSetting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutAccountSettingsResponse:
     Optional[list[AccountSetting]] settings
 
@@ -566,8 +596,9 @@ struct ResourceNotFoundException:
 struct Secret:
     Optional[str] secretArn
 
-# no @derive(Json): member(s) securityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceAccessSecurityGroups:
     Optional[list[str]] securityGroups
 
@@ -579,8 +610,9 @@ struct ServiceQuotaExceededException:
 struct TagPolicyException:
     str message
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str resourceArn
     dict[str, str] tags
@@ -599,8 +631,9 @@ struct ThrottlingException:
 struct TooManyTagsException:
     str message
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str resourceArn
     list[str] tagKeys
@@ -618,13 +651,15 @@ struct UpdateEnvironmentConnectorRequest:
     Optional[str] applianceFqdn
     Optional[str] secretIdentifier
 
-# no @derive(Json): member(s) connector: Connector not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connector: Connector not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEnvironmentConnectorResponse:
     Optional[Connector] connector
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -647,16 +682,18 @@ struct VcfHostnames:
     str sddcManager
     str cloudBuilder
 
-# no @derive(Json): member(s) instanceTypes: list[InstanceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceTypes: list[InstanceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VcfVersionInfo:
     VcfVersion vcfVersion
     str status
     str defaultEsxVersion
     list[InstanceType] instanceTypes
 
-# no @derive(Json): member(s) eipAssociations: list[EipAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eipAssociations: list[EipAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Vlan:
     Optional[int64] vlanId
     Optional[str] cidr
@@ -718,19 +755,180 @@ def evs_error_from_code(str code) -> evsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateEntitlement (input CreateEntitlementRequest)
-#   CreateEnvironment (input CreateEnvironmentRequest)
-#   DeleteEntitlement (input DeleteEntitlementRequest)
-#   ListEnvironments (input ListEnvironmentsRequest)
-#   PutAccountSettings (input PutAccountSettingsRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def evs_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListEnvironments (input not derivable (no generated method))
+def evs_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def evs_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ConnectivityInfo to a compact JSON object (declaration order).
+def connectivity_info_to_json(ConnectivityInfo v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.privateRouteServerPeerings:
+        e0.append(evs_json_str(x0))
+    parts.append("\"privateRouteServerPeerings\":" + evs_json_arr(e0))
+    return evs_json_obj(parts)
+
+# Serialize CreateEntitlementRequest to a compact JSON object (declaration order).
+def create_entitlement_request_to_json(CreateEntitlementRequest v) -> str:
+    list[str] parts = []
+    if v.clientToken.is_some():
+        auto u0 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + evs_json_str(u0))
+    parts.append("\"environmentId\":" + evs_json_str(v.environmentId))
+    parts.append("\"connectorId\":" + evs_json_str(v.connectorId))
+    parts.append("\"entitlementType\":" + evs_json_str(v.entitlementType))
+    list[str] e1 = []
+    for x1 in v.vmIds:
+        e1.append(evs_json_str(x1))
+    parts.append("\"vmIds\":" + evs_json_arr(e1))
+    return evs_json_obj(parts)
+
+# Serialize CreateEnvironmentRequest to a compact JSON object (declaration order).
+def create_environment_request_to_json(CreateEnvironmentRequest v) -> str:
+    list[str] parts = []
+    if v.clientToken.is_some():
+        auto u0 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + evs_json_str(u0))
+    if v.environmentName.is_some():
+        auto u1 = v.environmentName.unwrap()
+        parts.append("\"environmentName\":" + evs_json_str(u1))
+    if v.kmsKeyId.is_some():
+        auto u2 = v.kmsKeyId.unwrap()
+        parts.append("\"kmsKeyId\":" + evs_json_str(u2))
+    if v.tags.is_some():
+        auto u3 = v.tags.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(evs_json_str(k4) + ":" + evs_json_str(u3[k4]))
+        parts.append("\"tags\":" + evs_json_obj(m4))
+    if v.serviceAccessSecurityGroups.is_some():
+        auto u5 = v.serviceAccessSecurityGroups.unwrap()
+        parts.append("\"serviceAccessSecurityGroups\":" + service_access_security_groups_to_json(u5))
+    parts.append("\"vpcId\":" + evs_json_str(v.vpcId))
+    parts.append("\"serviceAccessSubnetId\":" + evs_json_str(v.serviceAccessSubnetId))
+    parts.append("\"vcfVersion\":" + v.vcfVersion.to_json())
+    parts.append("\"termsAccepted\":" + json.dumps(JsonValue.Bool(v.termsAccepted)))
+    parts.append("\"initialVlans\":" + v.initialVlans.to_json())
+    if v.connectivityInfo.is_some():
+        auto u6 = v.connectivityInfo.unwrap()
+        parts.append("\"connectivityInfo\":" + connectivity_info_to_json(u6))
+    if v.licenseInfo.is_some():
+        auto u7 = v.licenseInfo.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"licenseInfo\":" + evs_json_arr(e8))
+    if v.hosts.is_some():
+        auto u9 = v.hosts.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"hosts\":" + evs_json_arr(e10))
+    if v.vcfHostnames.is_some():
+        auto u11 = v.vcfHostnames.unwrap()
+        parts.append("\"vcfHostnames\":" + u11.to_json())
+    if v.siteId.is_some():
+        auto u12 = v.siteId.unwrap()
+        parts.append("\"siteId\":" + evs_json_str(u12))
+    return evs_json_obj(parts)
+
+# Serialize DeleteEntitlementRequest to a compact JSON object (declaration order).
+def delete_entitlement_request_to_json(DeleteEntitlementRequest v) -> str:
+    list[str] parts = []
+    if v.clientToken.is_some():
+        auto u0 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + evs_json_str(u0))
+    parts.append("\"environmentId\":" + evs_json_str(v.environmentId))
+    parts.append("\"connectorId\":" + evs_json_str(v.connectorId))
+    parts.append("\"entitlementType\":" + evs_json_str(v.entitlementType))
+    list[str] e1 = []
+    for x1 in v.vmIds:
+        e1.append(evs_json_str(x1))
+    parts.append("\"vmIds\":" + evs_json_arr(e1))
+    return evs_json_obj(parts)
+
+# Serialize ListEnvironmentsRequest to a compact JSON object (declaration order).
+def list_environments_request_to_json(ListEnvironmentsRequest v) -> str:
+    list[str] parts = []
+    if v.nextToken.is_some():
+        auto u0 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + evs_json_str(u0))
+    if v.maxResults.is_some():
+        auto u1 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u1))
+    if v.state.is_some():
+        auto u2 = v.state.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"state\":" + evs_json_arr(e3))
+    return evs_json_obj(parts)
+
+# Serialize PutAccountSettingsRequest to a compact JSON object (declaration order).
+def put_account_settings_request_to_json(PutAccountSettingsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.settings:
+        e0.append(x0.to_json())
+    parts.append("\"settings\":" + evs_json_arr(e0))
+    return evs_json_obj(parts)
+
+# Serialize ServiceAccessSecurityGroups to a compact JSON object (declaration order).
+def service_access_security_groups_to_json(ServiceAccessSecurityGroups v) -> str:
+    list[str] parts = []
+    if v.securityGroups.is_some():
+        auto u0 = v.securityGroups.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(evs_json_str(x1))
+        parts.append("\"securityGroups\":" + evs_json_arr(e1))
+    return evs_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + evs_json_str(v.resourceArn))
+    list[str] m0 = []
+    for k0 in sorted(v.tags.keys()):
+        m0.append(evs_json_str(k0) + ":" + evs_json_str(v.tags[k0]))
+    parts.append("\"tags\":" + evs_json_obj(m0))
+    return evs_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + evs_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(evs_json_str(x0))
+    parts.append("\"tagKeys\":" + evs_json_arr(e0))
+    return evs_json_obj(parts)
 
 # A bound evs client: credentials + region, threaded into every operation.
 struct evsClient:
@@ -743,6 +941,18 @@ struct evsClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(evs_protocol(), self.creds, self.region, "AssociateEipToVlan", body)
 
+    # CreateEntitlement
+    # errors: ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_entitlement(self, CreateEntitlementRequest input) -> str:
+        auto body = create_entitlement_request_to_json(input)
+        return awsjson.awsjson_request_now(evs_protocol(), self.creds, self.region, "CreateEntitlement", body)
+
+    # CreateEnvironment
+    # errors: ValidationException
+    def create_environment(self, CreateEnvironmentRequest input) -> str:
+        auto body = create_environment_request_to_json(input)
+        return awsjson.awsjson_request_now(evs_protocol(), self.creds, self.region, "CreateEnvironment", body)
+
     # CreateEnvironmentConnector
     # errors: ResourceNotFoundException, ThrottlingException, ValidationException
     def create_environment_connector(self, CreateEnvironmentConnectorRequest input) -> str:
@@ -754,6 +964,12 @@ struct evsClient:
     def create_environment_host(self, CreateEnvironmentHostRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(evs_protocol(), self.creds, self.region, "CreateEnvironmentHost", body)
+
+    # DeleteEntitlement
+    # errors: ResourceNotFoundException, ThrottlingException, ValidationException
+    def delete_entitlement(self, DeleteEntitlementRequest input) -> str:
+        auto body = delete_entitlement_request_to_json(input)
+        return awsjson.awsjson_request_now(evs_protocol(), self.creds, self.region, "DeleteEntitlement", body)
 
     # DeleteEnvironment
     # errors: ResourceNotFoundException, ValidationException
@@ -821,6 +1037,12 @@ struct evsClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(evs_protocol(), self.creds, self.region, "ListEnvironmentVlans", body)
 
+    # ListEnvironments
+    # errors: ValidationException
+    def list_environments(self, ListEnvironmentsRequest input) -> str:
+        auto body = list_environments_request_to_json(input)
+        return awsjson.awsjson_request_now(evs_protocol(), self.creds, self.region, "ListEnvironments", body)
+
     # ListTagsForResource
     # errors: ResourceNotFoundException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
@@ -832,6 +1054,24 @@ struct evsClient:
     def list_vm_entitlements(self, ListVmEntitlementsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(evs_protocol(), self.creds, self.region, "ListVmEntitlements", body)
+
+    # PutAccountSettings
+    # errors: InternalServerException, ThrottlingException, ValidationException
+    def put_account_settings(self, PutAccountSettingsRequest input) -> str:
+        auto body = put_account_settings_request_to_json(input)
+        return awsjson.awsjson_request_now(evs_protocol(), self.creds, self.region, "PutAccountSettings", body)
+
+    # TagResource
+    # errors: ResourceNotFoundException, ServiceQuotaExceededException, TagPolicyException, TooManyTagsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(evs_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: ResourceNotFoundException, TagPolicyException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(evs_protocol(), self.creds, self.region, "UntagResource", body)
 
     # UpdateEnvironmentConnector
     # errors: ResourceNotFoundException, ThrottlingException, ValidationException
@@ -874,6 +1114,20 @@ struct evsClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(evs_protocol(), self.creds, self.region, "ListEnvironmentVlans", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListEnvironments — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: environmentSummaries).
+    def paginate_list_environments(self, ListEnvironmentsRequest input):
+        auto host = endpoints.regional_host(evs_protocol().service, self.region)
+        while True:
+            auto body = list_environments_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(evs_protocol(), self.creds, self.region, "ListEnvironments", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

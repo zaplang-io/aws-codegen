@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 15 operations — 9 with a generated method,
-#   6 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 15 operations — 14 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   49 structs (25 @derive(Json)), 5 enums, 4 error variants.
-#   3 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -138,8 +138,9 @@ struct DeploymentConditionalField:
     Optional[str] value
     Optional[str] comparator
 
-# no @derive(Json): member(s) specifications: dict[str, str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) specifications: dict[str, str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeploymentData:
     Optional[str] name
     Optional[str] id
@@ -164,8 +165,9 @@ struct DeploymentDataSummary:
     Optional[DateTime] createdAt
     Optional[DateTime] modifiedAt
 
-# no @derive(Json): member(s) metadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeploymentEventDataSummary:
     Optional[str] name
     Optional[str] description
@@ -174,8 +176,9 @@ struct DeploymentEventDataSummary:
     Optional[DateTime] timestamp
     Optional[dict[str, str]] metadata
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeploymentFilter:
     Optional[DeploymentFilterKey] name
     Optional[list[str]] values
@@ -188,14 +191,16 @@ struct DeploymentPatternVersionDataSummary:
     Optional[str] workloadName
     Optional[str] deploymentPatternName
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeploymentPatternVersionFilter:
     str name
     list[str] values
 
-# no @derive(Json): member(s) allowedValues: list[str], conditionals: list[DeploymentConditionalField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedValues: list[str], conditionals: list[DeploymentConditionalField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeploymentSpecificationsField:
     Optional[str] name
     Optional[str] description
@@ -208,8 +213,9 @@ struct DeploymentSpecificationsField:
 struct GetDeploymentInput:
     str deploymentId
 
-# no @derive(Json): member(s) deployment: DeploymentData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deployment: DeploymentData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDeploymentOutput:
     Optional[DeploymentData] deployment
 
@@ -230,8 +236,9 @@ struct GetWorkloadDeploymentPatternInput:
     str workloadName
     str deploymentPatternName
 
-# no @derive(Json): member(s) workloadDeploymentPattern: WorkloadDeploymentPatternData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workloadDeploymentPattern: WorkloadDeploymentPatternData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWorkloadDeploymentPatternOutput:
     Optional[WorkloadDeploymentPatternData] workloadDeploymentPattern
 
@@ -240,8 +247,9 @@ struct GetWorkloadDeploymentPatternOutput:
 struct GetWorkloadInput:
     str workloadName
 
-# no @derive(Json): member(s) workload: WorkloadData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workload: WorkloadData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWorkloadOutput:
     Optional[WorkloadData] workload
 
@@ -256,8 +264,9 @@ struct ListDeploymentEventsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) deploymentEvents: list[DeploymentEventDataSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deploymentEvents: list[DeploymentEventDataSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeploymentEventsOutput:
     Optional[list[DeploymentEventDataSummary]] deploymentEvents
     Optional[str] nextToken
@@ -271,8 +280,9 @@ struct ListDeploymentPatternVersionsInput:
     Optional[str] nextToken
     Optional[list[DeploymentPatternVersionFilter]] filters
 
-# no @derive(Json): member(s) deploymentPatternVersions: list[DeploymentPatternVersionDataSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deploymentPatternVersions: list[DeploymentPatternVersionDataSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeploymentPatternVersionsOutput:
     Optional[list[DeploymentPatternVersionDataSummary]] deploymentPatternVersions
     Optional[str] nextToken
@@ -284,8 +294,9 @@ struct ListDeploymentsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) deployments: list[DeploymentDataSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) deployments: list[DeploymentDataSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDeploymentsOutput:
     Optional[list[DeploymentDataSummary]] deployments
     Optional[str] nextToken
@@ -295,8 +306,9 @@ struct ListDeploymentsOutput:
 struct ListTagsForResourceInput:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[dict[str, str]] tags
 
@@ -307,8 +319,9 @@ struct ListWorkloadDeploymentPatternsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) workloadDeploymentPatterns: list[WorkloadDeploymentPatternDataSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workloadDeploymentPatterns: list[WorkloadDeploymentPatternDataSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkloadDeploymentPatternsOutput:
     Optional[list[WorkloadDeploymentPatternDataSummary]] workloadDeploymentPatterns
     Optional[str] nextToken
@@ -319,8 +332,9 @@ struct ListWorkloadsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) workloads: list[WorkloadDataSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workloads: list[WorkloadDataSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkloadsOutput:
     Optional[list[WorkloadDataSummary]] workloads
     Optional[str] nextToken
@@ -378,8 +392,9 @@ struct UpdateDeploymentOutput:
 struct ValidationException:
     Optional[str] message
 
-# no @derive(Json): member(s) accountConstraints: list[AccountConstraint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountConstraints: list[AccountConstraint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkloadData:
     Optional[str] workloadName
     Optional[str] displayName
@@ -390,16 +405,18 @@ struct WorkloadData:
     Optional[str] iconUrl
     Optional[str] statusMessage
 
-# no @derive(Json): member(s) accountConstraints: list[AccountConstraint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountConstraints: list[AccountConstraint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkloadDataSummary:
     Optional[str] workloadName
     Optional[str] displayName
     Optional[WorkloadStatus] status
     Optional[list[AccountConstraint]] accountConstraints
 
-# no @derive(Json): member(s) accountConstraints: list[AccountConstraint], specifications: list[DeploymentSpecificationsField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountConstraints: list[AccountConstraint], specifications: list[DeploymentSpecificationsField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkloadDeploymentPatternData:
     Optional[str] workloadName
     Optional[str] deploymentPatternName
@@ -412,8 +429,9 @@ struct WorkloadDeploymentPatternData:
     Optional[list[AccountConstraint]] accountConstraints
     Optional[list[DeploymentSpecificationsField]] specifications
 
-# no @derive(Json): member(s) accountConstraints: list[AccountConstraint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountConstraints: list[AccountConstraint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkloadDeploymentPatternDataSummary:
     Optional[str] workloadName
     Optional[str] deploymentPatternName
@@ -454,17 +472,7 @@ def launchwizard_error_from_code(str code) -> Launch_WizardError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateDeployment (document member `specifications: dict[str, str]` is not serializable by derive)
-#   ListDeploymentPatternVersions (document member `filters: list[DeploymentPatternVersionFilter]` is not serializable by derive)
-#   ListDeployments (document member `filters: list[DeploymentFilter]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateDeployment (document member `specifications: dict[str, str]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListDeploymentPatternVersions (operation not generated)
-#   ListDeployments (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -517,10 +525,89 @@ struct ListWorkloadsDocument:
     Optional[int64] maxResults
     Optional[str] nextToken
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def launchwizard_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def launchwizard_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def launchwizard_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize DeploymentFilter to a compact JSON object (declaration order).
+def deployment_filter_to_json(DeploymentFilter v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + u0.to_json())
+    if v.values.is_some():
+        auto u1 = v.values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(launchwizard_json_str(x2))
+        parts.append("\"values\":" + launchwizard_json_arr(e2))
+    return launchwizard_json_obj(parts)
+
+# Serialize DeploymentPatternVersionFilter to a compact JSON object (declaration order).
+def deployment_pattern_version_filter_to_json(DeploymentPatternVersionFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + launchwizard_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(launchwizard_json_str(x0))
+    parts.append("\"values\":" + launchwizard_json_arr(e0))
+    return launchwizard_json_obj(parts)
+
 # A bound Launch_Wizard client: credentials + region, threaded into every operation.
 struct Launch_WizardClient:
     core.Credentials creds
     str region
+
+    # CreateDeployment  POST /createDeployment
+    # errors: InternalServerException, ResourceLimitException, ResourceNotFoundException, ValidationException
+    def create_deployment(self, CreateDeploymentInput input) -> str:
+        auto host = endpoints.regional_host(launchwizard_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/createDeployment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"workloadName\":" + launchwizard_json_str(input.workloadName))
+        parts.append("\"deploymentPatternName\":" + launchwizard_json_str(input.deploymentPatternName))
+        parts.append("\"name\":" + launchwizard_json_str(input.name))
+        list[str] m0 = []
+        for k0 in sorted(input.specifications.keys()):
+            m0.append(launchwizard_json_str(k0) + ":" + launchwizard_json_str(input.specifications[k0]))
+        parts.append("\"specifications\":" + launchwizard_json_obj(m0))
+        if input.dryRun.is_some():
+            auto u1 = input.dryRun.unwrap()
+            parts.append("\"dryRun\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(launchwizard_json_str(k3) + ":" + launchwizard_json_str(u2[k3]))
+            parts.append("\"tags\":" + launchwizard_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, launchwizard_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, launchwizard_service(), self.region, host)
 
     # DeleteDeployment  POST /deleteDeployment
     # errors: InternalServerException, ResourceLimitException, ResourceNotFoundException, ValidationException
@@ -576,6 +663,50 @@ struct Launch_WizardClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, launchwizard_service(), self.region, host)
 
+    # ListDeploymentPatternVersions  POST /listDeploymentPatternVersions
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def list_deployment_pattern_versions(self, ListDeploymentPatternVersionsInput input) -> str:
+        auto host = endpoints.regional_host(launchwizard_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/listDeploymentPatternVersions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"workloadName\":" + launchwizard_json_str(input.workloadName))
+        parts.append("\"deploymentPatternName\":" + launchwizard_json_str(input.deploymentPatternName))
+        if input.maxResults.is_some():
+            auto u0 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + launchwizard_json_str(u1))
+        if input.filters.is_some():
+            auto u2 = input.filters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(deployment_pattern_version_filter_to_json(x3))
+            parts.append("\"filters\":" + launchwizard_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, launchwizard_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, launchwizard_service(), self.region, host)
+
+    # ListDeployments  POST /listDeployments
+    # errors: InternalServerException, ValidationException
+    def list_deployments(self, ListDeploymentsInput input) -> str:
+        auto host = endpoints.regional_host(launchwizard_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/listDeployments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(deployment_filter_to_json(x1))
+            parts.append("\"filters\":" + launchwizard_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + launchwizard_json_str(u3))
+        auto bp = restjson.rest_json_document(b, launchwizard_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, launchwizard_service(), self.region, host)
+
     # ListTagsForResource  GET /tags/{resourceArn}
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def list_tags_for_resource(self, ListTagsForResourceInput input) -> str:
@@ -603,12 +734,79 @@ struct Launch_WizardClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, launchwizard_service(), self.region, host)
 
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(launchwizard_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(launchwizard_json_str(k0) + ":" + launchwizard_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + launchwizard_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, launchwizard_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, launchwizard_service(), self.region, host)
+
+    # UpdateDeployment  POST /updateDeployment
+    # errors: InternalServerException, ResourceLimitException, ResourceNotFoundException, ValidationException
+    def update_deployment(self, UpdateDeploymentInput input) -> str:
+        auto host = endpoints.regional_host(launchwizard_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/updateDeployment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"deploymentId\":" + launchwizard_json_str(input.deploymentId))
+        list[str] m0 = []
+        for k0 in sorted(input.specifications.keys()):
+            m0.append(launchwizard_json_str(k0) + ":" + launchwizard_json_str(input.specifications[k0]))
+        parts.append("\"specifications\":" + launchwizard_json_obj(m0))
+        if input.workloadVersionName.is_some():
+            auto u1 = input.workloadVersionName.unwrap()
+            parts.append("\"workloadVersionName\":" + launchwizard_json_str(u1))
+        if input.deploymentPatternVersionName.is_some():
+            auto u2 = input.deploymentPatternVersionName.unwrap()
+            parts.append("\"deploymentPatternVersionName\":" + launchwizard_json_str(u2))
+        if input.dryRun.is_some():
+            auto u3 = input.dryRun.unwrap()
+            parts.append("\"dryRun\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.force.is_some():
+            auto u4 = input.force.unwrap()
+            parts.append("\"force\":" + json.dumps(JsonValue.Bool(u4)))
+        auto bp = restjson.rest_json_document(b, launchwizard_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, launchwizard_service(), self.region, host)
+
     # Paginator for ListDeploymentEvents — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: deploymentEvents).
     def paginate_list_deployment_events(self, ListDeploymentEventsInput input):
         auto host = endpoints.regional_host(launchwizard_service(), self.region)
         while True:
             auto raw = self.list_deployment_events(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListDeploymentPatternVersions — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: deploymentPatternVersions).
+    def paginate_list_deployment_pattern_versions(self, ListDeploymentPatternVersionsInput input):
+        auto host = endpoints.regional_host(launchwizard_service(), self.region)
+        while True:
+            auto raw = self.list_deployment_pattern_versions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListDeployments — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: deployments).
+    def paginate_list_deployments(self, ListDeploymentsInput input):
+        auto host = endpoints.regional_host(launchwizard_service(), self.region)
+        while True:
+            auto raw = self.list_deployments(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

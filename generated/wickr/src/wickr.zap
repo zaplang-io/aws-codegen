@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 44 operations — 33 with a generated method,
-#   11 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 44 operations — 41 with a generated method,
+#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   125 structs (86 @derive(Json)), 4 enums, 7 error variants.
 #   8 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -92,8 +92,9 @@ struct BatchCreateUserRequest:
     list[BatchCreateUserRequestItem] users
     Optional[str] clientToken
 
-# no @derive(Json): member(s) securityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateUserRequestItem:
     Optional[str] firstName
     Optional[str] lastName
@@ -103,8 +104,9 @@ struct BatchCreateUserRequestItem:
     Optional[int64] inviteCodeTtl
     Optional[bool] codeValidation
 
-# no @derive(Json): member(s) successful: list[User], failed: list[BatchUserErrorResponseItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successful: list[User], failed: list[BatchUserErrorResponseItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateUserResponse:
     Optional[str] message
     Optional[list[User]] successful
@@ -117,8 +119,9 @@ struct BatchDeleteUserRequest:
     list[str] userIds
     Optional[str] clientToken
 
-# no @derive(Json): member(s) successful: list[BatchUserSuccessResponseItem], failed: list[BatchUserErrorResponseItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successful: list[BatchUserSuccessResponseItem], failed: list[BatchUserErrorResponseItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteUserResponse:
     Optional[str] message
     Optional[list[BatchUserSuccessResponseItem]] successful
@@ -141,8 +144,9 @@ struct BatchLookupUserUnameRequest:
     list[str] unames
     Optional[str] clientToken
 
-# no @derive(Json): member(s) successful: list[BatchUnameSuccessResponseItem], failed: list[BatchUnameErrorResponseItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successful: list[BatchUnameSuccessResponseItem], failed: list[BatchUnameErrorResponseItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchLookupUserUnameResponse:
     Optional[str] message
     Optional[list[BatchUnameSuccessResponseItem]] successful
@@ -155,8 +159,9 @@ struct BatchReinviteUserRequest:
     list[str] userIds
     Optional[str] clientToken
 
-# no @derive(Json): member(s) successful: list[BatchUserSuccessResponseItem], failed: list[BatchUserErrorResponseItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successful: list[BatchUserSuccessResponseItem], failed: list[BatchUserErrorResponseItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchReinviteUserResponse:
     Optional[str] message
     Optional[list[BatchUserSuccessResponseItem]] successful
@@ -170,8 +175,9 @@ struct BatchResetDevicesForUserRequest:
     list[str] appIds
     Optional[str] clientToken
 
-# no @derive(Json): member(s) successful: list[BatchDeviceSuccessResponseItem], failed: list[BatchDeviceErrorResponseItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successful: list[BatchDeviceSuccessResponseItem], failed: list[BatchDeviceErrorResponseItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchResetDevicesForUserResponse:
     Optional[str] message
     Optional[list[BatchDeviceSuccessResponseItem]] successful
@@ -185,8 +191,9 @@ struct BatchToggleUserSuspendStatusRequest:
     list[str] userIds
     Optional[str] clientToken
 
-# no @derive(Json): member(s) successful: list[BatchUserSuccessResponseItem], failed: list[BatchUserErrorResponseItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successful: list[BatchUserSuccessResponseItem], failed: list[BatchUserErrorResponseItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchToggleUserSuspendStatusResponse:
     Optional[str] message
     Optional[list[BatchUserSuccessResponseItem]] successful
@@ -304,8 +311,9 @@ struct CreateSecurityGroupRequest:
     SecurityGroupSettingsRequest securityGroupSettings
     Optional[str] clientToken
 
-# no @derive(Json): member(s) securityGroup: SecurityGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroup: SecurityGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSecurityGroupResponse:
     SecurityGroup securityGroup
 
@@ -408,8 +416,9 @@ struct GetDataRetentionBotResponse:
 struct GetGuestUserHistoryCountRequest:
     str networkId
 
-# no @derive(Json): member(s) history: list[GuestUserHistoryCount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) history: list[GuestUserHistoryCount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetGuestUserHistoryCountResponse:
     list[GuestUserHistoryCount] history
 
@@ -435,8 +444,9 @@ struct GetNetworkResponse:
 struct GetNetworkSettingsRequest:
     str networkId
 
-# no @derive(Json): member(s) settings: list[Setting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) settings: list[Setting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetNetworkSettingsResponse:
     list[Setting] settings
 
@@ -476,8 +486,9 @@ struct GetSecurityGroupRequest:
     str networkId
     str groupId
 
-# no @derive(Json): member(s) securityGroup: SecurityGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroup: SecurityGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSecurityGroupResponse:
     SecurityGroup securityGroup
 
@@ -489,8 +500,9 @@ struct GetUserRequest:
     Optional[DateTime] startTime
     Optional[DateTime] endTime
 
-# no @derive(Json): member(s) securityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUserResponse:
     str userId
     Optional[str] firstName
@@ -543,8 +555,9 @@ struct ListBlockedGuestUsersRequest:
     Optional[str] admin
     Optional[str] nextToken
 
-# no @derive(Json): member(s) blocklist: list[BlockedGuestUser] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) blocklist: list[BlockedGuestUser] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBlockedGuestUsersResponse:
     Optional[str] nextToken
     list[BlockedGuestUser] blocklist
@@ -563,8 +576,9 @@ struct ListBotsRequest:
     Optional[int64] status
     Optional[str] groupId
 
-# no @derive(Json): member(s) bots: list[Bot] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bots: list[Bot] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBotsResponse:
     list[Bot] bots
     Optional[str] nextToken
@@ -580,8 +594,9 @@ struct ListDevicesForUserRequest:
     # wire string of the SortDirection enum (querystring binding)
     Optional[str] sortDirection
 
-# no @derive(Json): member(s) devices: list[BasicDeviceObject] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) devices: list[BasicDeviceObject] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDevicesForUserResponse:
     Optional[str] nextToken
     list[BasicDeviceObject] devices
@@ -598,8 +613,9 @@ struct ListGuestUsersRequest:
     Optional[str] billingPeriod
     Optional[str] nextToken
 
-# no @derive(Json): member(s) guestlist: list[GuestUser] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) guestlist: list[GuestUser] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGuestUsersResponse:
     Optional[str] nextToken
     list[GuestUser] guestlist
@@ -613,8 +629,9 @@ struct ListNetworksRequest:
     Optional[str] sortDirection
     Optional[str] nextToken
 
-# no @derive(Json): member(s) networks: list[Network] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networks: list[Network] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworksResponse:
     list[Network] networks
     Optional[str] nextToken
@@ -630,8 +647,9 @@ struct ListSecurityGroupUsersRequest:
     # wire string of the SortDirection enum (querystring binding)
     Optional[str] sortDirection
 
-# no @derive(Json): member(s) users: list[User] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) users: list[User] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSecurityGroupUsersResponse:
     list[User] users
     Optional[str] nextToken
@@ -646,8 +664,9 @@ struct ListSecurityGroupsRequest:
     # wire string of the SortDirection enum (querystring binding)
     Optional[str] sortDirection
 
-# no @derive(Json): member(s) securityGroups: list[SecurityGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroups: list[SecurityGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSecurityGroupsResponse:
     Optional[list[SecurityGroup]] securityGroups
     Optional[str] nextToken
@@ -667,8 +686,9 @@ struct ListUsersRequest:
     Optional[int64] status
     Optional[str] groupId
 
-# no @derive(Json): member(s) users: list[User] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) users: list[User] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUsersResponse:
     Optional[str] nextToken
     Optional[list[User]] users
@@ -780,8 +800,9 @@ struct RegisterOidcConfigTestRequest:
     str scopes
     Optional[str] certificate
 
-# no @derive(Json): member(s) responseTypesSupported: list[str], scopesSupported: list[str], grantTypesSupported: list[str], tokenEndpointAuthMethodsSupported: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) responseTypesSupported: list[str], scopesSupported: list[str], grantTypesSupported: list[str], tokenEndpointAuthMethodsSupported: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterOidcConfigTestResponse:
     Optional[str] tokenEndpoint
     Optional[str] userinfoEndpoint
@@ -817,8 +838,9 @@ struct RegisterOpentdfConfigResponse:
 struct ResourceNotFoundError:
     Optional[str] message
 
-# no @derive(Json): member(s) securityGroupSettings: SecurityGroupSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroupSettings: SecurityGroupSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SecurityGroup:
     int64 activeMembers
     int64 botMembers
@@ -829,8 +851,9 @@ struct SecurityGroup:
     int64 modified
     SecurityGroupSettings securityGroupSettings
 
-# no @derive(Json): member(s) atakPackageValues: list[str], quickResponses: list[str], permittedNetworks: list[str], permittedWickrAwsNetworks: list[WickrAwsNetworks], permittedWickrEnterpriseNetworks: list[PermittedWickrEnterpriseNetwork] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) atakPackageValues: list[str], quickResponses: list[str], permittedNetworks: list[str], permittedWickrAwsNetworks: list[WickrAwsNetworks], permittedWickrEnterpriseNetworks: list[PermittedWickrEnterpriseNetwork] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SecurityGroupSettings:
     Optional[bool] alwaysReauthenticate
     Optional[list[str]] atakPackageValues
@@ -869,8 +892,9 @@ struct SecurityGroupSettings:
     Optional[list[WickrAwsNetworks]] permittedWickrAwsNetworks
     Optional[list[PermittedWickrEnterpriseNetwork]] permittedWickrEnterpriseNetworks
 
-# no @derive(Json): member(s) permittedNetworks: list[str], permittedWickrAwsNetworks: list[WickrAwsNetworks], permittedWickrEnterpriseNetworks: list[PermittedWickrEnterpriseNetwork] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) permittedNetworks: list[str], permittedWickrAwsNetworks: list[WickrAwsNetworks], permittedWickrEnterpriseNetworks: list[PermittedWickrEnterpriseNetwork] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SecurityGroupSettingsRequest:
     Optional[int64] lockoutThreshold
     Optional[list[str]] permittedNetworks
@@ -949,8 +973,9 @@ struct UpdateNetworkSettingsRequest:
     str networkId
     NetworkSettings settings
 
-# no @derive(Json): member(s) settings: list[Setting] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) settings: list[Setting] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateNetworkSettingsResponse:
     list[Setting] settings
 
@@ -962,13 +987,15 @@ struct UpdateSecurityGroupRequest:
     Optional[str] name
     Optional[SecurityGroupSettings] securityGroupSettings
 
-# no @derive(Json): member(s) securityGroup: SecurityGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroup: SecurityGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSecurityGroupResponse:
     SecurityGroup securityGroup
 
-# no @derive(Json): member(s) securityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateUserDetails:
     Optional[str] firstName
     Optional[str] lastName
@@ -985,8 +1012,9 @@ struct UpdateUserRequest:
     str userId
     Optional[UpdateUserDetails] userDetails
 
-# no @derive(Json): member(s) securityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateUserResponse:
     str userId
     str networkId
@@ -1001,8 +1029,9 @@ struct UpdateUserResponse:
     Optional[int64] inviteExpiration
     Optional[bool] codeValidation
 
-# no @derive(Json): member(s) securityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct User:
     Optional[str] userId
     Optional[str] firstName
@@ -1024,8 +1053,9 @@ struct User:
     Optional[bool] codeValidation
     Optional[str] uname
 
-# no @derive(Json): member(s) reasons: list[ErrorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reasons: list[ErrorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationError:
     Optional[list[ErrorDetail]] reasons
     Optional[str] message
@@ -1073,17 +1103,9 @@ def admin_wickr_error_from_code(str code) -> WickrError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchCreateUser (document member `users: list[BatchCreateUserRequestItem]` is not serializable by derive)
-#   BatchDeleteUser (document member `userIds: list[str]` is not serializable by derive)
-#   BatchLookupUserUname (document member `unames: list[str]` is not serializable by derive)
-#   BatchReinviteUser (document member `userIds: list[str]` is not serializable by derive)
-#   BatchResetDevicesForUser (document member `appIds: list[str]` is not serializable by derive)
 #   BatchToggleUserSuspendStatus (httpQuery `suspend` has unsupported type bool)
-#   CreateSecurityGroup (document member `securityGroupSettings: SecurityGroupSettingsRequest` is not serializable by derive)
 #   GetUser (httpQuery `startTime` has unsupported type DateTime)
 #   RegisterOpentdfConfig (httpQuery `dryRun` has unsupported type bool)
-#   UpdateSecurityGroup (document member `securityGroupSettings: SecurityGroupSettings` is not serializable by derive)
-#   UpdateUser (document member `userDetails: UpdateUserDetails` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1153,10 +1175,351 @@ struct UpdateNetworkSettingsDocument:
     # document members of UpdateNetworkSettings
     NetworkSettings settings
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def admin_wickr_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def admin_wickr_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def admin_wickr_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize BatchCreateUserRequestItem to a compact JSON object (declaration order).
+def batch_create_user_request_item_to_json(BatchCreateUserRequestItem v) -> str:
+    list[str] parts = []
+    if v.firstName.is_some():
+        auto u0 = v.firstName.unwrap()
+        parts.append("\"firstName\":" + admin_wickr_json_str(u0))
+    if v.lastName.is_some():
+        auto u1 = v.lastName.unwrap()
+        parts.append("\"lastName\":" + admin_wickr_json_str(u1))
+    list[str] e2 = []
+    for x2 in v.securityGroupIds:
+        e2.append(admin_wickr_json_str(x2))
+    parts.append("\"securityGroupIds\":" + admin_wickr_json_arr(e2))
+    parts.append("\"username\":" + admin_wickr_json_str(v.username))
+    if v.inviteCode.is_some():
+        auto u3 = v.inviteCode.unwrap()
+        parts.append("\"inviteCode\":" + admin_wickr_json_str(u3))
+    if v.inviteCodeTtl.is_some():
+        auto u4 = v.inviteCodeTtl.unwrap()
+        parts.append("\"inviteCodeTtl\":" + str(u4))
+    if v.codeValidation.is_some():
+        auto u5 = v.codeValidation.unwrap()
+        parts.append("\"codeValidation\":" + json.dumps(JsonValue.Bool(u5)))
+    return admin_wickr_json_obj(parts)
+
+# Serialize SecurityGroupSettings to a compact JSON object (declaration order).
+def security_group_settings_to_json(SecurityGroupSettings v) -> str:
+    list[str] parts = []
+    if v.alwaysReauthenticate.is_some():
+        auto u0 = v.alwaysReauthenticate.unwrap()
+        parts.append("\"alwaysReauthenticate\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.atakPackageValues.is_some():
+        auto u1 = v.atakPackageValues.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(admin_wickr_json_str(x2))
+        parts.append("\"atakPackageValues\":" + admin_wickr_json_arr(e2))
+    if v.calling.is_some():
+        auto u3 = v.calling.unwrap()
+        parts.append("\"calling\":" + u3.to_json())
+    if v.checkForUpdates.is_some():
+        auto u4 = v.checkForUpdates.unwrap()
+        parts.append("\"checkForUpdates\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.enableAtak.is_some():
+        auto u5 = v.enableAtak.unwrap()
+        parts.append("\"enableAtak\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.enableCrashReports.is_some():
+        auto u6 = v.enableCrashReports.unwrap()
+        parts.append("\"enableCrashReports\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.enableFileDownload.is_some():
+        auto u7 = v.enableFileDownload.unwrap()
+        parts.append("\"enableFileDownload\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.enableGuestFederation.is_some():
+        auto u8 = v.enableGuestFederation.unwrap()
+        parts.append("\"enableGuestFederation\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.enableNotificationPreview.is_some():
+        auto u9 = v.enableNotificationPreview.unwrap()
+        parts.append("\"enableNotificationPreview\":" + json.dumps(JsonValue.Bool(u9)))
+    if v.enableOpenAccessOption.is_some():
+        auto u10 = v.enableOpenAccessOption.unwrap()
+        parts.append("\"enableOpenAccessOption\":" + json.dumps(JsonValue.Bool(u10)))
+    if v.enableRestrictedGlobalFederation.is_some():
+        auto u11 = v.enableRestrictedGlobalFederation.unwrap()
+        parts.append("\"enableRestrictedGlobalFederation\":" + json.dumps(JsonValue.Bool(u11)))
+    if v.filesEnabled.is_some():
+        auto u12 = v.filesEnabled.unwrap()
+        parts.append("\"filesEnabled\":" + json.dumps(JsonValue.Bool(u12)))
+    if v.forceDeviceLockout.is_some():
+        auto u13 = v.forceDeviceLockout.unwrap()
+        parts.append("\"forceDeviceLockout\":" + str(u13))
+    if v.forceOpenAccess.is_some():
+        auto u14 = v.forceOpenAccess.unwrap()
+        parts.append("\"forceOpenAccess\":" + json.dumps(JsonValue.Bool(u14)))
+    if v.forceReadReceipts.is_some():
+        auto u15 = v.forceReadReceipts.unwrap()
+        parts.append("\"forceReadReceipts\":" + json.dumps(JsonValue.Bool(u15)))
+    if v.globalFederation.is_some():
+        auto u16 = v.globalFederation.unwrap()
+        parts.append("\"globalFederation\":" + json.dumps(JsonValue.Bool(u16)))
+    if v.isAtoEnabled.is_some():
+        auto u17 = v.isAtoEnabled.unwrap()
+        parts.append("\"isAtoEnabled\":" + json.dumps(JsonValue.Bool(u17)))
+    if v.isLinkPreviewEnabled.is_some():
+        auto u18 = v.isLinkPreviewEnabled.unwrap()
+        parts.append("\"isLinkPreviewEnabled\":" + json.dumps(JsonValue.Bool(u18)))
+    if v.locationAllowMaps.is_some():
+        auto u19 = v.locationAllowMaps.unwrap()
+        parts.append("\"locationAllowMaps\":" + json.dumps(JsonValue.Bool(u19)))
+    if v.locationEnabled.is_some():
+        auto u20 = v.locationEnabled.unwrap()
+        parts.append("\"locationEnabled\":" + json.dumps(JsonValue.Bool(u20)))
+    if v.maxAutoDownloadSize.is_some():
+        auto u21 = v.maxAutoDownloadSize.unwrap()
+        parts.append("\"maxAutoDownloadSize\":" + str(u21))
+    if v.maxBor.is_some():
+        auto u22 = v.maxBor.unwrap()
+        parts.append("\"maxBor\":" + str(u22))
+    if v.maxTtl.is_some():
+        auto u23 = v.maxTtl.unwrap()
+        parts.append("\"maxTtl\":" + str(u23))
+    if v.messageForwardingEnabled.is_some():
+        auto u24 = v.messageForwardingEnabled.unwrap()
+        parts.append("\"messageForwardingEnabled\":" + json.dumps(JsonValue.Bool(u24)))
+    if v.passwordRequirements.is_some():
+        auto u25 = v.passwordRequirements.unwrap()
+        parts.append("\"passwordRequirements\":" + u25.to_json())
+    if v.presenceEnabled.is_some():
+        auto u26 = v.presenceEnabled.unwrap()
+        parts.append("\"presenceEnabled\":" + json.dumps(JsonValue.Bool(u26)))
+    if v.quickResponses.is_some():
+        auto u27 = v.quickResponses.unwrap()
+        list[str] e28 = []
+        for x28 in u27:
+            e28.append(admin_wickr_json_str(x28))
+        parts.append("\"quickResponses\":" + admin_wickr_json_arr(e28))
+    if v.showMasterRecoveryKey.is_some():
+        auto u29 = v.showMasterRecoveryKey.unwrap()
+        parts.append("\"showMasterRecoveryKey\":" + json.dumps(JsonValue.Bool(u29)))
+    if v.shredder.is_some():
+        auto u30 = v.shredder.unwrap()
+        parts.append("\"shredder\":" + u30.to_json())
+    if v.ssoMaxIdleMinutes.is_some():
+        auto u31 = v.ssoMaxIdleMinutes.unwrap()
+        parts.append("\"ssoMaxIdleMinutes\":" + str(u31))
+    if v.maxNonSsoSessionMinutes.is_some():
+        auto u32 = v.maxNonSsoSessionMinutes.unwrap()
+        parts.append("\"maxNonSsoSessionMinutes\":" + str(u32))
+    if v.federationMode.is_some():
+        auto u33 = v.federationMode.unwrap()
+        parts.append("\"federationMode\":" + str(u33))
+    if v.lockoutThreshold.is_some():
+        auto u34 = v.lockoutThreshold.unwrap()
+        parts.append("\"lockoutThreshold\":" + str(u34))
+    if v.permittedNetworks.is_some():
+        auto u35 = v.permittedNetworks.unwrap()
+        list[str] e36 = []
+        for x36 in u35:
+            e36.append(admin_wickr_json_str(x36))
+        parts.append("\"permittedNetworks\":" + admin_wickr_json_arr(e36))
+    if v.permittedWickrAwsNetworks.is_some():
+        auto u37 = v.permittedWickrAwsNetworks.unwrap()
+        list[str] e38 = []
+        for x38 in u37:
+            e38.append(x38.to_json())
+        parts.append("\"permittedWickrAwsNetworks\":" + admin_wickr_json_arr(e38))
+    if v.permittedWickrEnterpriseNetworks.is_some():
+        auto u39 = v.permittedWickrEnterpriseNetworks.unwrap()
+        list[str] e40 = []
+        for x40 in u39:
+            e40.append(x40.to_json())
+        parts.append("\"permittedWickrEnterpriseNetworks\":" + admin_wickr_json_arr(e40))
+    return admin_wickr_json_obj(parts)
+
+# Serialize SecurityGroupSettingsRequest to a compact JSON object (declaration order).
+def security_group_settings_request_to_json(SecurityGroupSettingsRequest v) -> str:
+    list[str] parts = []
+    if v.lockoutThreshold.is_some():
+        auto u0 = v.lockoutThreshold.unwrap()
+        parts.append("\"lockoutThreshold\":" + str(u0))
+    if v.permittedNetworks.is_some():
+        auto u1 = v.permittedNetworks.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(admin_wickr_json_str(x2))
+        parts.append("\"permittedNetworks\":" + admin_wickr_json_arr(e2))
+    if v.enableGuestFederation.is_some():
+        auto u3 = v.enableGuestFederation.unwrap()
+        parts.append("\"enableGuestFederation\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.globalFederation.is_some():
+        auto u4 = v.globalFederation.unwrap()
+        parts.append("\"globalFederation\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.federationMode.is_some():
+        auto u5 = v.federationMode.unwrap()
+        parts.append("\"federationMode\":" + str(u5))
+    if v.enableRestrictedGlobalFederation.is_some():
+        auto u6 = v.enableRestrictedGlobalFederation.unwrap()
+        parts.append("\"enableRestrictedGlobalFederation\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.permittedWickrAwsNetworks.is_some():
+        auto u7 = v.permittedWickrAwsNetworks.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"permittedWickrAwsNetworks\":" + admin_wickr_json_arr(e8))
+    if v.permittedWickrEnterpriseNetworks.is_some():
+        auto u9 = v.permittedWickrEnterpriseNetworks.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"permittedWickrEnterpriseNetworks\":" + admin_wickr_json_arr(e10))
+    return admin_wickr_json_obj(parts)
+
+# Serialize UpdateUserDetails to a compact JSON object (declaration order).
+def update_user_details_to_json(UpdateUserDetails v) -> str:
+    list[str] parts = []
+    if v.firstName.is_some():
+        auto u0 = v.firstName.unwrap()
+        parts.append("\"firstName\":" + admin_wickr_json_str(u0))
+    if v.lastName.is_some():
+        auto u1 = v.lastName.unwrap()
+        parts.append("\"lastName\":" + admin_wickr_json_str(u1))
+    if v.username.is_some():
+        auto u2 = v.username.unwrap()
+        parts.append("\"username\":" + admin_wickr_json_str(u2))
+    if v.securityGroupIds.is_some():
+        auto u3 = v.securityGroupIds.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(admin_wickr_json_str(x4))
+        parts.append("\"securityGroupIds\":" + admin_wickr_json_arr(e4))
+    if v.inviteCode.is_some():
+        auto u5 = v.inviteCode.unwrap()
+        parts.append("\"inviteCode\":" + admin_wickr_json_str(u5))
+    if v.inviteCodeTtl.is_some():
+        auto u6 = v.inviteCodeTtl.unwrap()
+        parts.append("\"inviteCodeTtl\":" + str(u6))
+    if v.codeValidation.is_some():
+        auto u7 = v.codeValidation.unwrap()
+        parts.append("\"codeValidation\":" + json.dumps(JsonValue.Bool(u7)))
+    return admin_wickr_json_obj(parts)
+
 # A bound Wickr client: credentials + region, threaded into every operation.
 struct WickrClient:
     core.Credentials creds
     str region
+
+    # BatchCreateUser  POST /networks/{networkId}/users
+    # errors: BadRequestError, ForbiddenError, InternalServerError, RateLimitError, ResourceNotFoundError, UnauthorizedError, ValidationError
+    def batch_create_user(self, BatchCreateUserRequest input) -> str:
+        auto host = endpoints.regional_host(admin_wickr_service(), self.region)
+        dict[str, str] labels = {}
+        labels["networkId"] = input.networkId
+        dict[str, str] headers = {}
+        if input.clientToken.is_some():
+            headers["X-Client-Token"] = input.clientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/users", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.users:
+            e0.append(batch_create_user_request_item_to_json(x0))
+        parts.append("\"users\":" + admin_wickr_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, admin_wickr_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, admin_wickr_service(), self.region, host)
+
+    # BatchDeleteUser  POST /networks/{networkId}/users/batch-delete
+    # errors: BadRequestError, ForbiddenError, InternalServerError, RateLimitError, ResourceNotFoundError, UnauthorizedError, ValidationError
+    def batch_delete_user(self, BatchDeleteUserRequest input) -> str:
+        auto host = endpoints.regional_host(admin_wickr_service(), self.region)
+        dict[str, str] labels = {}
+        labels["networkId"] = input.networkId
+        dict[str, str] headers = {}
+        if input.clientToken.is_some():
+            headers["X-Client-Token"] = input.clientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/users/batch-delete", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.userIds:
+            e0.append(admin_wickr_json_str(x0))
+        parts.append("\"userIds\":" + admin_wickr_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, admin_wickr_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, admin_wickr_service(), self.region, host)
+
+    # BatchLookupUserUname  POST /networks/{networkId}/users/uname-lookup
+    # errors: BadRequestError, ForbiddenError, InternalServerError, RateLimitError, ResourceNotFoundError, UnauthorizedError, ValidationError
+    def batch_lookup_user_uname(self, BatchLookupUserUnameRequest input) -> str:
+        auto host = endpoints.regional_host(admin_wickr_service(), self.region)
+        dict[str, str] labels = {}
+        labels["networkId"] = input.networkId
+        dict[str, str] headers = {}
+        if input.clientToken.is_some():
+            headers["X-Client-Token"] = input.clientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/users/uname-lookup", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.unames:
+            e0.append(admin_wickr_json_str(x0))
+        parts.append("\"unames\":" + admin_wickr_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, admin_wickr_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, admin_wickr_service(), self.region, host)
+
+    # BatchReinviteUser  PATCH /networks/{networkId}/users/re-invite
+    # errors: BadRequestError, ForbiddenError, InternalServerError, RateLimitError, ResourceNotFoundError, UnauthorizedError, ValidationError
+    def batch_reinvite_user(self, BatchReinviteUserRequest input) -> str:
+        auto host = endpoints.regional_host(admin_wickr_service(), self.region)
+        dict[str, str] labels = {}
+        labels["networkId"] = input.networkId
+        dict[str, str] headers = {}
+        if input.clientToken.is_some():
+            headers["X-Client-Token"] = input.clientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/users/re-invite", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.userIds:
+            e0.append(admin_wickr_json_str(x0))
+        parts.append("\"userIds\":" + admin_wickr_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, admin_wickr_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, admin_wickr_service(), self.region, host)
+
+    # BatchResetDevicesForUser  PATCH /networks/{networkId}/users/{userId}/devices
+    # errors: BadRequestError, ForbiddenError, InternalServerError, RateLimitError, ResourceNotFoundError, UnauthorizedError, ValidationError
+    def batch_reset_devices_for_user(self, BatchResetDevicesForUserRequest input) -> str:
+        auto host = endpoints.regional_host(admin_wickr_service(), self.region)
+        dict[str, str] labels = {}
+        labels["networkId"] = input.networkId
+        labels["userId"] = input.userId
+        dict[str, str] headers = {}
+        if input.clientToken.is_some():
+            headers["X-Client-Token"] = input.clientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/users/{userId}/devices", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.appIds:
+            e0.append(admin_wickr_json_str(x0))
+        parts.append("\"appIds\":" + admin_wickr_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, admin_wickr_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, admin_wickr_service(), self.region, host)
 
     # CreateBot  POST /networks/{networkId}/bots
     # errors: BadRequestError, ForbiddenError, InternalServerError, RateLimitError, ResourceNotFoundError, UnauthorizedError, ValidationError
@@ -1194,6 +1557,22 @@ struct WickrClient:
         auto b = binding.HttpBinding(method="POST", path_template="/networks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateNetworkDocument(networkName=input.networkName, accessLevel=input.accessLevel, enablePremiumFreeTrial=input.enablePremiumFreeTrial, encryptionKeyArn=input.encryptionKeyArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, admin_wickr_service(), self.region, host)
+
+    # CreateSecurityGroup  POST /networks/{networkId}/security-groups
+    # errors: BadRequestError, ForbiddenError, InternalServerError, RateLimitError, ResourceNotFoundError, UnauthorizedError, ValidationError
+    def create_security_group(self, CreateSecurityGroupRequest input) -> str:
+        auto host = endpoints.regional_host(admin_wickr_service(), self.region)
+        dict[str, str] labels = {}
+        labels["networkId"] = input.networkId
+        dict[str, str] headers = {}
+        if input.clientToken.is_some():
+            headers["X-Client-Token"] = input.clientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/security-groups", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + admin_wickr_json_str(input.name))
+        parts.append("\"securityGroupSettings\":" + security_group_settings_request_to_json(input.securityGroupSettings))
+        auto bp = restjson.rest_json_document(b, admin_wickr_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, admin_wickr_service(), self.region, host)
 
     # DeleteBot  DELETE /networks/{networkId}/bots/{botId}
@@ -1596,6 +1975,39 @@ struct WickrClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/settings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateNetworkSettingsDocument(settings=input.settings)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, admin_wickr_service(), self.region, host)
+
+    # UpdateSecurityGroup  PATCH /networks/{networkId}/security-groups/{groupId}
+    # errors: BadRequestError, ForbiddenError, InternalServerError, RateLimitError, ResourceNotFoundError, UnauthorizedError, ValidationError
+    def update_security_group(self, UpdateSecurityGroupRequest input) -> str:
+        auto host = endpoints.regional_host(admin_wickr_service(), self.region)
+        dict[str, str] labels = {}
+        labels["networkId"] = input.networkId
+        labels["groupId"] = input.groupId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/security-groups/{groupId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + admin_wickr_json_str(u0))
+        if input.securityGroupSettings.is_some():
+            auto u1 = input.securityGroupSettings.unwrap()
+            parts.append("\"securityGroupSettings\":" + security_group_settings_to_json(u1))
+        auto bp = restjson.rest_json_document(b, admin_wickr_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, admin_wickr_service(), self.region, host)
+
+    # UpdateUser  PATCH /networks/{networkId}/users
+    # errors: BadRequestError, ForbiddenError, InternalServerError, RateLimitError, ResourceNotFoundError, UnauthorizedError, ValidationError
+    def update_user(self, UpdateUserRequest input) -> str:
+        auto host = endpoints.regional_host(admin_wickr_service(), self.region)
+        dict[str, str] labels = {}
+        labels["networkId"] = input.networkId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/users", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"userId\":" + admin_wickr_json_str(input.userId))
+        if input.userDetails.is_some():
+            auto u0 = input.userDetails.unwrap()
+            parts.append("\"userDetails\":" + update_user_details_to_json(u0))
+        auto bp = restjson.rest_json_document(b, admin_wickr_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, admin_wickr_service(), self.region, host)
 
     # Paginator for ListBlockedGuestUsers — yields each Response page, threading the

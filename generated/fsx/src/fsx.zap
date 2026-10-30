@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 48 operations — 15 with a generated method,
-#   33 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 48 operations — 48 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   254 structs (115 @derive(Json)), 60 enums, 40 error variants.
-#   1 paginators generated (6 paginated ops skipped) from paginators-1.json.
+#   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -596,8 +596,9 @@ struct ActiveDirectoryError:
     Optional[ActiveDirectoryErrorType] Type
     Optional[str] Message
 
-# no @derive(Json): member(s) TargetFileSystemValues: FileSystem, TargetVolumeValues: Volume, TargetSnapshotValues: Snapshot not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetFileSystemValues: FileSystem, TargetVolumeValues: Volume, TargetSnapshotValues: Snapshot not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AdministrativeAction:
     Optional[AdministrativeActionType] AdministrativeActionType
     Optional[int64] ProgressPercent
@@ -615,8 +616,9 @@ struct AdministrativeAction:
 struct AdministrativeActionFailureDetails:
     Optional[str] Message
 
-# no @derive(Json): member(s) Aggregates: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Aggregates: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AggregateConfiguration:
     Optional[list[str]] Aggregates
     Optional[int64] TotalConstituents
@@ -626,25 +628,29 @@ struct Alias:
     Optional[str] Name
     Optional[AliasLifecycle] Lifecycle
 
-# no @derive(Json): member(s) Aliases: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Aliases: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateFileSystemAliasesRequest:
     Optional[str] ClientRequestToken
     str FileSystemId
     list[str] Aliases
 
-# no @derive(Json): member(s) Aliases: list[Alias] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Aliases: list[Alias] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateFileSystemAliasesResponse:
     Optional[list[Alias]] Aliases
 
-# no @derive(Json): member(s) Events: list[EventType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Events: list[EventType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoExportPolicy:
     Optional[list[EventType]] Events
 
-# no @derive(Json): member(s) Events: list[EventType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Events: list[EventType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoImportPolicy:
     Optional[list[EventType]] Events
 
@@ -653,8 +659,9 @@ struct AutocommitPeriod:
     AutocommitPeriodType Type
     Optional[int64] Value
 
-# no @derive(Json): member(s) Tags: list[Tag], FileSystem: FileSystem, Volume: Volume not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], FileSystem: FileSystem, Volume: Volume not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Backup:
     str BackupId
     BackupLifecycle Lifecycle
@@ -716,8 +723,9 @@ struct CompletionReport:
     Optional[str] Format
     Optional[str] Scope
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CopyBackupRequest:
     Optional[str] ClientRequestToken
     str SourceBackupId
@@ -726,13 +734,15 @@ struct CopyBackupRequest:
     Optional[bool] CopyTags
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Backup: Backup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Backup: Backup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CopyBackupResponse:
     Optional[Backup] Backup
 
-# no @derive(Json): member(s) Options: list[UpdateOpenZFSVolumeOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Options: list[UpdateOpenZFSVolumeOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CopySnapshotAndUpdateVolumeRequest:
     Optional[str] ClientRequestToken
     str VolumeId
@@ -740,15 +750,17 @@ struct CopySnapshotAndUpdateVolumeRequest:
     Optional[OpenZFSCopyStrategy] CopyStrategy
     Optional[list[UpdateOpenZFSVolumeOption]] Options
 
-# no @derive(Json): member(s) AdministrativeActions: list[AdministrativeAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdministrativeActions: list[AdministrativeAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CopySnapshotAndUpdateVolumeResponse:
     Optional[str] VolumeId
     Optional[VolumeLifecycle] Lifecycle
     Optional[list[AdministrativeAction]] AdministrativeActions
 
-# no @derive(Json): member(s) Aggregates: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Aggregates: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAggregateConfiguration:
     Optional[list[str]] Aggregates
     Optional[int64] ConstituentsPerAggregate
@@ -758,14 +770,16 @@ struct CreateAndAttachS3AccessPointOntapConfiguration:
     str VolumeId
     OntapFileSystemIdentity FileSystemIdentity
 
-# no @derive(Json): member(s) FileSystemIdentity: OpenZFSFileSystemIdentity not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileSystemIdentity: OpenZFSFileSystemIdentity not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAndAttachS3AccessPointOpenZFSConfiguration:
     str VolumeId
     OpenZFSFileSystemIdentity FileSystemIdentity
 
-# no @derive(Json): member(s) OpenZFSConfiguration: CreateAndAttachS3AccessPointOpenZFSConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OpenZFSConfiguration: CreateAndAttachS3AccessPointOpenZFSConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAndAttachS3AccessPointRequest:
     Optional[str] ClientRequestToken
     str Name
@@ -774,8 +788,9 @@ struct CreateAndAttachS3AccessPointRequest:
     Optional[CreateAndAttachS3AccessPointOntapConfiguration] OntapConfiguration
     Optional[CreateAndAttachS3AccessPointS3Configuration] S3AccessPoint
 
-# no @derive(Json): member(s) S3AccessPointAttachment: S3AccessPointAttachment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3AccessPointAttachment: S3AccessPointAttachment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAndAttachS3AccessPointResponse:
     Optional[S3AccessPointAttachment] S3AccessPointAttachment
 
@@ -784,21 +799,24 @@ struct CreateAndAttachS3AccessPointS3Configuration:
     Optional[S3AccessPointVpcConfiguration] VpcConfiguration
     Optional[str] Policy
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBackupRequest:
     Optional[str] FileSystemId
     Optional[str] ClientRequestToken
     Optional[list[Tag]] Tags
     Optional[str] VolumeId
 
-# no @derive(Json): member(s) Backup: Backup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Backup: Backup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBackupResponse:
     Optional[Backup] Backup
 
-# no @derive(Json): member(s) S3: S3DataRepositoryConfiguration, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3: S3DataRepositoryConfiguration, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDataRepositoryAssociationRequest:
     str FileSystemId
     Optional[str] FileSystemPath
@@ -809,13 +827,15 @@ struct CreateDataRepositoryAssociationRequest:
     Optional[str] ClientRequestToken
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Association: DataRepositoryAssociation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Association: DataRepositoryAssociation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDataRepositoryAssociationResponse:
     Optional[DataRepositoryAssociation] Association
 
-# no @derive(Json): member(s) Paths: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Paths: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDataRepositoryTaskRequest:
     DataRepositoryTaskType Type
     Optional[list[str]] Paths
@@ -826,8 +846,9 @@ struct CreateDataRepositoryTaskRequest:
     Optional[int64] CapacityToRelease
     Optional[ReleaseConfiguration] ReleaseConfiguration
 
-# no @derive(Json): member(s) DataRepositoryTask: DataRepositoryTask not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataRepositoryTask: DataRepositoryTask not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDataRepositoryTaskResponse:
     Optional[DataRepositoryTask] DataRepositoryTask
 
@@ -838,8 +859,9 @@ struct CreateFileCacheLustreConfiguration:
     Optional[str] WeeklyMaintenanceStartTime
     FileCacheLustreMetadataConfiguration MetadataConfiguration
 
-# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str], Tags: list[Tag], DataRepositoryAssociations: list[FileCacheDataRepositoryAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str], Tags: list[Tag], DataRepositoryAssociations: list[FileCacheDataRepositoryAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFileCacheRequest:
     Optional[str] ClientRequestToken
     str FileCacheType
@@ -853,13 +875,15 @@ struct CreateFileCacheRequest:
     Optional[CreateFileCacheLustreConfiguration] LustreConfiguration
     Optional[list[FileCacheDataRepositoryAssociation]] DataRepositoryAssociations
 
-# no @derive(Json): member(s) FileCache: FileCacheCreating not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileCache: FileCacheCreating not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFileCacheResponse:
     Optional[FileCacheCreating] FileCache
 
-# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str], Tags: list[Tag], WindowsConfiguration: CreateFileSystemWindowsConfiguration, LustreConfiguration: CreateFileSystemLustreConfiguration, OpenZFSConfiguration: CreateFileSystemOpenZFSConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str], Tags: list[Tag], WindowsConfiguration: CreateFileSystemWindowsConfiguration, LustreConfiguration: CreateFileSystemLustreConfiguration, OpenZFSConfiguration: CreateFileSystemOpenZFSConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFileSystemFromBackupRequest:
     str BackupId
     Optional[str] ClientRequestToken
@@ -875,13 +899,15 @@ struct CreateFileSystemFromBackupRequest:
     Optional[int64] StorageCapacity
     Optional[NetworkType] NetworkType
 
-# no @derive(Json): member(s) FileSystem: FileSystem not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileSystem: FileSystem not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFileSystemFromBackupResponse:
     Optional[FileSystem] FileSystem
 
-# no @derive(Json): member(s) RootSquashConfiguration: LustreRootSquashConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RootSquashConfiguration: LustreRootSquashConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFileSystemLustreConfiguration:
     Optional[str] WeeklyMaintenanceStartTime
     Optional[str] ImportPath
@@ -907,8 +933,9 @@ struct CreateFileSystemLustreMetadataConfiguration:
     Optional[int64] Iops
     MetadataConfigurationMode Mode
 
-# no @derive(Json): member(s) RouteTableIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouteTableIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFileSystemOntapConfiguration:
     Optional[int64] AutomaticBackupRetentionDays
     Optional[str] DailyAutomaticBackupStartTime
@@ -924,8 +951,9 @@ struct CreateFileSystemOntapConfiguration:
     Optional[int64] ThroughputCapacityPerHAPair
     Optional[str] EndpointIpv6AddressRange
 
-# no @derive(Json): member(s) RootVolumeConfiguration: OpenZFSCreateRootVolumeConfiguration, RouteTableIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RootVolumeConfiguration: OpenZFSCreateRootVolumeConfiguration, RouteTableIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFileSystemOpenZFSConfiguration:
     Optional[int64] AutomaticBackupRetentionDays
     Optional[bool] CopyTagsToBackups
@@ -942,8 +970,9 @@ struct CreateFileSystemOpenZFSConfiguration:
     Optional[list[str]] RouteTableIds
     Optional[OpenZFSReadCacheConfiguration] ReadCacheConfiguration
 
-# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str], Tags: list[Tag], WindowsConfiguration: CreateFileSystemWindowsConfiguration, LustreConfiguration: CreateFileSystemLustreConfiguration, OntapConfiguration: CreateFileSystemOntapConfiguration, OpenZFSConfiguration: CreateFileSystemOpenZFSConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str], Tags: list[Tag], WindowsConfiguration: CreateFileSystemWindowsConfiguration, LustreConfiguration: CreateFileSystemLustreConfiguration, OntapConfiguration: CreateFileSystemOntapConfiguration, OpenZFSConfiguration: CreateFileSystemOpenZFSConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFileSystemRequest:
     Optional[str] ClientRequestToken
     FileSystemType FileSystemType
@@ -960,13 +989,15 @@ struct CreateFileSystemRequest:
     Optional[CreateFileSystemOpenZFSConfiguration] OpenZFSConfiguration
     Optional[NetworkType] NetworkType
 
-# no @derive(Json): member(s) FileSystem: FileSystem not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileSystem: FileSystem not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFileSystemResponse:
     Optional[FileSystem] FileSystem
 
-# no @derive(Json): member(s) SelfManagedActiveDirectoryConfiguration: SelfManagedActiveDirectoryConfiguration, Aliases: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelfManagedActiveDirectoryConfiguration: SelfManagedActiveDirectoryConfiguration, Aliases: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFileSystemWindowsConfiguration:
     Optional[str] ActiveDirectoryId
     Optional[SelfManagedActiveDirectoryConfiguration] SelfManagedActiveDirectoryConfiguration
@@ -982,8 +1013,9 @@ struct CreateFileSystemWindowsConfiguration:
     Optional[DiskIopsConfiguration] DiskIopsConfiguration
     Optional[WindowsFsrmConfiguration] FsrmConfiguration
 
-# no @derive(Json): member(s) AggregateConfiguration: CreateAggregateConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AggregateConfiguration: CreateAggregateConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateOntapVolumeConfiguration:
     Optional[str] JunctionPath
     Optional[SecurityStyle] SecurityStyle
@@ -1004,8 +1036,9 @@ struct CreateOpenZFSOriginSnapshotConfiguration:
     str SnapshotARN
     OpenZFSCopyStrategy CopyStrategy
 
-# no @derive(Json): member(s) NfsExports: list[OpenZFSNfsExport], UserAndGroupQuotas: list[OpenZFSUserOrGroupQuota] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NfsExports: list[OpenZFSNfsExport], UserAndGroupQuotas: list[OpenZFSUserOrGroupQuota] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateOpenZFSVolumeConfiguration:
     str ParentVolumeId
     Optional[int64] StorageCapacityReservationGiB
@@ -1027,21 +1060,24 @@ struct CreateSnaplockConfiguration:
     SnaplockType SnaplockType
     Optional[bool] VolumeAppendModeEnabled
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSnapshotRequest:
     Optional[str] ClientRequestToken
     str Name
     str VolumeId
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Snapshot: Snapshot not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Snapshot: Snapshot not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSnapshotResponse:
     Optional[Snapshot] Snapshot
 
-# no @derive(Json): member(s) ActiveDirectoryConfiguration: CreateSvmActiveDirectoryConfiguration, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActiveDirectoryConfiguration: CreateSvmActiveDirectoryConfiguration, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateStorageVirtualMachineRequest:
     Optional[CreateSvmActiveDirectoryConfiguration] ActiveDirectoryConfiguration
     Optional[str] ClientRequestToken
@@ -1051,19 +1087,22 @@ struct CreateStorageVirtualMachineRequest:
     Optional[list[Tag]] Tags
     Optional[StorageVirtualMachineRootVolumeSecurityStyle] RootVolumeSecurityStyle
 
-# no @derive(Json): member(s) StorageVirtualMachine: StorageVirtualMachine not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StorageVirtualMachine: StorageVirtualMachine not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateStorageVirtualMachineResponse:
     Optional[StorageVirtualMachine] StorageVirtualMachine
 
-# no @derive(Json): member(s) SelfManagedActiveDirectoryConfiguration: SelfManagedActiveDirectoryConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelfManagedActiveDirectoryConfiguration: SelfManagedActiveDirectoryConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSvmActiveDirectoryConfiguration:
     str NetBiosName
     Optional[SelfManagedActiveDirectoryConfiguration] SelfManagedActiveDirectoryConfiguration
 
-# no @derive(Json): member(s) OntapConfiguration: CreateOntapVolumeConfiguration, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OntapConfiguration: CreateOntapVolumeConfiguration, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVolumeFromBackupRequest:
     str BackupId
     Optional[str] ClientRequestToken
@@ -1071,13 +1110,15 @@ struct CreateVolumeFromBackupRequest:
     Optional[CreateOntapVolumeConfiguration] OntapConfiguration
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Volume: Volume not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Volume: Volume not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVolumeFromBackupResponse:
     Optional[Volume] Volume
 
-# no @derive(Json): member(s) OntapConfiguration: CreateOntapVolumeConfiguration, Tags: list[Tag], OpenZFSConfiguration: CreateOpenZFSVolumeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OntapConfiguration: CreateOntapVolumeConfiguration, Tags: list[Tag], OpenZFSConfiguration: CreateOpenZFSVolumeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVolumeRequest:
     Optional[str] ClientRequestToken
     VolumeType VolumeType
@@ -1086,13 +1127,15 @@ struct CreateVolumeRequest:
     Optional[list[Tag]] Tags
     Optional[CreateOpenZFSVolumeConfiguration] OpenZFSConfiguration
 
-# no @derive(Json): member(s) Volume: Volume not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Volume: Volume not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVolumeResponse:
     Optional[Volume] Volume
 
-# no @derive(Json): member(s) S3: S3DataRepositoryConfiguration, Tags: list[Tag], DataRepositorySubdirectories: list[str], NFS: NFSDataRepositoryConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3: S3DataRepositoryConfiguration, Tags: list[Tag], DataRepositorySubdirectories: list[str], NFS: NFSDataRepositoryConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataRepositoryAssociation:
     Optional[str] AssociationId
     Optional[str] ResourceARN
@@ -1128,8 +1171,9 @@ struct DataRepositoryConfiguration:
 struct DataRepositoryFailureDetails:
     Optional[str] Message
 
-# no @derive(Json): member(s) Tags: list[Tag], Paths: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], Paths: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataRepositoryTask:
     str TaskId
     DataRepositoryTaskLifecycle Lifecycle
@@ -1160,8 +1204,9 @@ struct DataRepositoryTaskExecuting:
 struct DataRepositoryTaskFailureDetails:
     Optional[str] Message
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataRepositoryTaskFilter:
     Optional[DataRepositoryTaskFilterName] Name
     Optional[list[str]] Values
@@ -1210,33 +1255,38 @@ struct DeleteFileCacheResponse:
     Optional[str] FileCacheId
     Optional[FileCacheLifecycle] Lifecycle
 
-# no @derive(Json): member(s) FinalBackupTags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FinalBackupTags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteFileSystemLustreConfiguration:
     Optional[bool] SkipFinalBackup
     Optional[list[Tag]] FinalBackupTags
 
-# no @derive(Json): member(s) FinalBackupTags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FinalBackupTags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteFileSystemLustreResponse:
     Optional[str] FinalBackupId
     Optional[list[Tag]] FinalBackupTags
 
-# no @derive(Json): member(s) FinalBackupTags: list[Tag], Options: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FinalBackupTags: list[Tag], Options: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteFileSystemOpenZFSConfiguration:
     Optional[bool] SkipFinalBackup
     Optional[list[Tag]] FinalBackupTags
     Optional[list[str]] Options
 
-# no @derive(Json): member(s) FinalBackupTags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FinalBackupTags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteFileSystemOpenZFSResponse:
     Optional[str] FinalBackupId
     Optional[list[Tag]] FinalBackupTags
 
-# no @derive(Json): member(s) WindowsConfiguration: DeleteFileSystemWindowsConfiguration, LustreConfiguration: DeleteFileSystemLustreConfiguration, OpenZFSConfiguration: DeleteFileSystemOpenZFSConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WindowsConfiguration: DeleteFileSystemWindowsConfiguration, LustreConfiguration: DeleteFileSystemLustreConfiguration, OpenZFSConfiguration: DeleteFileSystemOpenZFSConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteFileSystemRequest:
     str FileSystemId
     Optional[str] ClientRequestToken
@@ -1244,8 +1294,9 @@ struct DeleteFileSystemRequest:
     Optional[DeleteFileSystemLustreConfiguration] LustreConfiguration
     Optional[DeleteFileSystemOpenZFSConfiguration] OpenZFSConfiguration
 
-# no @derive(Json): member(s) WindowsResponse: DeleteFileSystemWindowsResponse, LustreResponse: DeleteFileSystemLustreResponse, OpenZFSResponse: DeleteFileSystemOpenZFSResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WindowsResponse: DeleteFileSystemWindowsResponse, LustreResponse: DeleteFileSystemLustreResponse, OpenZFSResponse: DeleteFileSystemOpenZFSResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteFileSystemResponse:
     Optional[str] FileSystemId
     Optional[FileSystemLifecycle] Lifecycle
@@ -1253,14 +1304,16 @@ struct DeleteFileSystemResponse:
     Optional[DeleteFileSystemLustreResponse] LustreResponse
     Optional[DeleteFileSystemOpenZFSResponse] OpenZFSResponse
 
-# no @derive(Json): member(s) FinalBackupTags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FinalBackupTags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteFileSystemWindowsConfiguration:
     Optional[bool] SkipFinalBackup
     Optional[list[Tag]] FinalBackupTags
 
-# no @derive(Json): member(s) FinalBackupTags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FinalBackupTags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteFileSystemWindowsResponse:
     Optional[str] FinalBackupId
     Optional[list[Tag]] FinalBackupTags
@@ -1285,90 +1338,103 @@ struct DeleteStorageVirtualMachineResponse:
     Optional[str] StorageVirtualMachineId
     Optional[StorageVirtualMachineLifecycle] Lifecycle
 
-# no @derive(Json): member(s) FinalBackupTags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FinalBackupTags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteVolumeOntapConfiguration:
     Optional[bool] SkipFinalBackup
     Optional[list[Tag]] FinalBackupTags
     Optional[bool] BypassSnaplockEnterpriseRetention
 
-# no @derive(Json): member(s) FinalBackupTags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FinalBackupTags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteVolumeOntapResponse:
     Optional[str] FinalBackupId
     Optional[list[Tag]] FinalBackupTags
 
-# no @derive(Json): member(s) Options: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Options: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteVolumeOpenZFSConfiguration:
     Optional[list[str]] Options
 
-# no @derive(Json): member(s) OntapConfiguration: DeleteVolumeOntapConfiguration, OpenZFSConfiguration: DeleteVolumeOpenZFSConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OntapConfiguration: DeleteVolumeOntapConfiguration, OpenZFSConfiguration: DeleteVolumeOpenZFSConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteVolumeRequest:
     Optional[str] ClientRequestToken
     str VolumeId
     Optional[DeleteVolumeOntapConfiguration] OntapConfiguration
     Optional[DeleteVolumeOpenZFSConfiguration] OpenZFSConfiguration
 
-# no @derive(Json): member(s) OntapResponse: DeleteVolumeOntapResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OntapResponse: DeleteVolumeOntapResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteVolumeResponse:
     Optional[str] VolumeId
     Optional[VolumeLifecycle] Lifecycle
     Optional[DeleteVolumeOntapResponse] OntapResponse
 
-# no @derive(Json): member(s) BackupIds: list[str], Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupIds: list[str], Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBackupsRequest:
     Optional[list[str]] BackupIds
     Optional[list[Filter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Backups: list[Backup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Backups: list[Backup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBackupsResponse:
     Optional[list[Backup]] Backups
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AssociationIds: list[str], Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AssociationIds: list[str], Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDataRepositoryAssociationsRequest:
     Optional[list[str]] AssociationIds
     Optional[list[Filter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Associations: list[DataRepositoryAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Associations: list[DataRepositoryAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDataRepositoryAssociationsResponse:
     Optional[list[DataRepositoryAssociation]] Associations
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TaskIds: list[str], Filters: list[DataRepositoryTaskFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskIds: list[str], Filters: list[DataRepositoryTaskFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDataRepositoryTasksRequest:
     Optional[list[str]] TaskIds
     Optional[list[DataRepositoryTaskFilter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) DataRepositoryTasks: list[DataRepositoryTask] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataRepositoryTasks: list[DataRepositoryTask] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDataRepositoryTasksResponse:
     Optional[list[DataRepositoryTask]] DataRepositoryTasks
     Optional[str] NextToken
 
-# no @derive(Json): member(s) FileCacheIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileCacheIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFileCachesRequest:
     Optional[list[str]] FileCacheIds
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) FileCaches: list[FileCache] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileCaches: list[FileCache] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFileCachesResponse:
     Optional[list[FileCache]] FileCaches
     Optional[str] NextToken
@@ -1380,35 +1446,40 @@ struct DescribeFileSystemAliasesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Aliases: list[Alias] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Aliases: list[Alias] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFileSystemAliasesResponse:
     Optional[list[Alias]] Aliases
     Optional[str] NextToken
 
-# no @derive(Json): member(s) FileSystemIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileSystemIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFileSystemsRequest:
     Optional[list[str]] FileSystemIds
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) FileSystems: list[FileSystem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileSystems: list[FileSystem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFileSystemsResponse:
     Optional[list[FileSystem]] FileSystems
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Names: list[str], Filters: list[S3AccessPointAttachmentsFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Names: list[str], Filters: list[S3AccessPointAttachmentsFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeS3AccessPointAttachmentsRequest:
     Optional[list[str]] Names
     Optional[list[S3AccessPointAttachmentsFilter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) S3AccessPointAttachments: list[S3AccessPointAttachment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3AccessPointAttachments: list[S3AccessPointAttachment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeS3AccessPointAttachmentsResponse:
     Optional[list[S3AccessPointAttachment]] S3AccessPointAttachments
     Optional[str] NextToken
@@ -1422,8 +1493,9 @@ struct DescribeSharedVpcConfigurationRequest:
 struct DescribeSharedVpcConfigurationResponse:
     Optional[str] EnableFsxRouteTableUpdatesFromParticipantAccounts
 
-# no @derive(Json): member(s) SnapshotIds: list[str], Filters: list[SnapshotFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SnapshotIds: list[str], Filters: list[SnapshotFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSnapshotsRequest:
     Optional[list[str]] SnapshotIds
     Optional[list[SnapshotFilter]] Filters
@@ -1431,36 +1503,41 @@ struct DescribeSnapshotsRequest:
     Optional[str] NextToken
     Optional[bool] IncludeShared
 
-# no @derive(Json): member(s) Snapshots: list[Snapshot] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Snapshots: list[Snapshot] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSnapshotsResponse:
     Optional[list[Snapshot]] Snapshots
     Optional[str] NextToken
 
-# no @derive(Json): member(s) StorageVirtualMachineIds: list[str], Filters: list[StorageVirtualMachineFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StorageVirtualMachineIds: list[str], Filters: list[StorageVirtualMachineFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeStorageVirtualMachinesRequest:
     Optional[list[str]] StorageVirtualMachineIds
     Optional[list[StorageVirtualMachineFilter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) StorageVirtualMachines: list[StorageVirtualMachine] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StorageVirtualMachines: list[StorageVirtualMachine] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeStorageVirtualMachinesResponse:
     Optional[list[StorageVirtualMachine]] StorageVirtualMachines
     Optional[str] NextToken
 
-# no @derive(Json): member(s) VolumeIds: list[str], Filters: list[VolumeFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VolumeIds: list[str], Filters: list[VolumeFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeVolumesRequest:
     Optional[list[str]] VolumeIds
     Optional[list[VolumeFilter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Volumes: list[Volume] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Volumes: list[Volume] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeVolumesResponse:
     Optional[list[Volume]] Volumes
     Optional[str] NextToken
@@ -1475,15 +1552,17 @@ struct DetachAndDeleteS3AccessPointResponse:
     Optional[S3AccessPointAttachmentLifecycle] Lifecycle
     Optional[str] Name
 
-# no @derive(Json): member(s) Aliases: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Aliases: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateFileSystemAliasesRequest:
     Optional[str] ClientRequestToken
     str FileSystemId
     list[str] Aliases
 
-# no @derive(Json): member(s) Aliases: list[Alias] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Aliases: list[Alias] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateFileSystemAliasesResponse:
     Optional[list[Alias]] Aliases
 
@@ -1497,8 +1576,9 @@ struct DurationSinceLastAccess:
     Optional[str] Unit
     Optional[int64] Value
 
-# no @derive(Json): member(s) SubnetIds: list[str], NetworkInterfaceIds: list[str], DataRepositoryAssociationIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], NetworkInterfaceIds: list[str], DataRepositoryAssociationIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FileCache:
     Optional[str] OwnerId
     Optional[DateTime] CreationTime
@@ -1517,8 +1597,9 @@ struct FileCache:
     Optional[FileCacheLustreConfiguration] LustreConfiguration
     Optional[list[str]] DataRepositoryAssociationIds
 
-# no @derive(Json): member(s) SubnetIds: list[str], NetworkInterfaceIds: list[str], Tags: list[Tag], DataRepositoryAssociationIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], NetworkInterfaceIds: list[str], Tags: list[Tag], DataRepositoryAssociationIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FileCacheCreating:
     Optional[str] OwnerId
     Optional[DateTime] CreationTime
@@ -1539,8 +1620,9 @@ struct FileCacheCreating:
     Optional[FileCacheLustreConfiguration] LustreConfiguration
     Optional[list[str]] DataRepositoryAssociationIds
 
-# no @derive(Json): member(s) DataRepositorySubdirectories: list[str], NFS: FileCacheNFSConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataRepositorySubdirectories: list[str], NFS: FileCacheNFSConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FileCacheDataRepositoryAssociation:
     str FileCachePath
     str DataRepositoryPath
@@ -1564,8 +1646,9 @@ struct FileCacheLustreConfiguration:
 struct FileCacheLustreMetadataConfiguration:
     int64 StorageCapacity
 
-# no @derive(Json): member(s) DnsIps: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DnsIps: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FileCacheNFSConfiguration:
     str Version
     Optional[list[str]] DnsIps
@@ -1574,8 +1657,9 @@ struct FileCacheNFSConfiguration:
 struct FileCacheNotFound:
     Optional[str] Message
 
-# no @derive(Json): member(s) SubnetIds: list[str], NetworkInterfaceIds: list[str], Tags: list[Tag], WindowsConfiguration: WindowsFileSystemConfiguration, LustreConfiguration: LustreFileSystemConfiguration, AdministrativeActions: list[AdministrativeAction], OntapConfiguration: OntapFileSystemConfiguration, OpenZFSConfiguration: OpenZFSFileSystemConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], NetworkInterfaceIds: list[str], Tags: list[Tag], WindowsConfiguration: WindowsFileSystemConfiguration, LustreConfiguration: LustreFileSystemConfiguration, AdministrativeActions: list[AdministrativeAction], OntapConfiguration: OntapFileSystemConfiguration, OpenZFSConfiguration: OpenZFSFileSystemConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FileSystem:
     Optional[str] OwnerId
     Optional[DateTime] CreationTime
@@ -1600,15 +1684,17 @@ struct FileSystem:
     Optional[OpenZFSFileSystemConfiguration] OpenZFSConfiguration
     Optional[NetworkType] NetworkType
 
-# no @derive(Json): member(s) IpAddresses: list[str], Ipv6Addresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IpAddresses: list[str], Ipv6Addresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FileSystemEndpoint:
     Optional[str] DNSName
     Optional[list[str]] IpAddresses
     Optional[list[str]] Ipv6Addresses
 
-# no @derive(Json): member(s) Intercluster: FileSystemEndpoint, Management: FileSystemEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Intercluster: FileSystemEndpoint, Management: FileSystemEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FileSystemEndpoints:
     Optional[FileSystemEndpoint] Intercluster
     Optional[FileSystemEndpoint] Management
@@ -1626,8 +1712,9 @@ struct FileSystemLustreMetadataConfiguration:
 struct FileSystemNotFound:
     Optional[str] Message
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filter:
     Optional[FilterName] Name
     Optional[list[str]] Values
@@ -1700,14 +1787,16 @@ struct ListTagsForResourceRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RootSquashConfiguration: LustreRootSquashConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RootSquashConfiguration: LustreRootSquashConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LustreFileSystemConfiguration:
     Optional[str] WeeklyMaintenanceStartTime
     Optional[DataRepositoryConfiguration] DataRepositoryConfiguration
@@ -1741,8 +1830,9 @@ struct LustreReadCacheConfiguration:
     Optional[LustreReadCacheSizingMode] SizingMode
     Optional[int64] SizeGiB
 
-# no @derive(Json): member(s) NoSquashNids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NoSquashNids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LustreRootSquashConfiguration:
     Optional[str] RootSquash
     Optional[list[str]] NoSquashNids
@@ -1759,8 +1849,9 @@ struct MissingFileSystemConfiguration:
 struct MissingVolumeConfiguration:
     Optional[str] Message
 
-# no @derive(Json): member(s) DnsIps: list[str], AutoExportPolicy: AutoExportPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DnsIps: list[str], AutoExportPolicy: AutoExportPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NFSDataRepositoryConfiguration:
     str Version
     Optional[list[str]] DnsIps
@@ -1771,8 +1862,9 @@ struct NotServiceResourceError:
     str ResourceARN
     Optional[str] Message
 
-# no @derive(Json): member(s) Endpoints: FileSystemEndpoints, RouteTableIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoints: FileSystemEndpoints, RouteTableIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OntapFileSystemConfiguration:
     Optional[int64] AutomaticBackupRetentionDays
     Optional[str] DailyAutomaticBackupStartTime
@@ -1799,8 +1891,9 @@ struct OntapFileSystemIdentity:
 struct OntapUnixFileSystemUser:
     str Name
 
-# no @derive(Json): member(s) AggregateConfiguration: AggregateConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AggregateConfiguration: AggregateConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OntapVolumeConfiguration:
     Optional[FlexCacheEndpointType] FlexCacheEndpointType
     Optional[str] JunctionPath
@@ -1823,14 +1916,16 @@ struct OntapVolumeConfiguration:
 struct OntapWindowsFileSystemUser:
     str Name
 
-# no @derive(Json): member(s) Options: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Options: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenZFSClientConfiguration:
     str Clients
     list[str] Options
 
-# no @derive(Json): member(s) NfsExports: list[OpenZFSNfsExport], UserAndGroupQuotas: list[OpenZFSUserOrGroupQuota] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NfsExports: list[OpenZFSNfsExport], UserAndGroupQuotas: list[OpenZFSUserOrGroupQuota] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenZFSCreateRootVolumeConfiguration:
     Optional[int64] RecordSizeKiB
     Optional[OpenZFSDataCompressionType] DataCompressionType
@@ -1839,8 +1934,9 @@ struct OpenZFSCreateRootVolumeConfiguration:
     Optional[bool] CopyTagsToSnapshots
     Optional[bool] ReadOnly
 
-# no @derive(Json): member(s) RouteTableIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouteTableIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenZFSFileSystemConfiguration:
     Optional[int64] AutomaticBackupRetentionDays
     Optional[bool] CopyTagsToBackups
@@ -1859,14 +1955,16 @@ struct OpenZFSFileSystemConfiguration:
     Optional[str] EndpointIpv6Address
     Optional[OpenZFSReadCacheConfiguration] ReadCacheConfiguration
 
-# no @derive(Json): member(s) PosixUser: OpenZFSPosixFileSystemUser not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PosixUser: OpenZFSPosixFileSystemUser not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenZFSFileSystemIdentity:
     str Type
     Optional[OpenZFSPosixFileSystemUser] PosixUser
 
-# no @derive(Json): member(s) ClientConfigurations: list[OpenZFSClientConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClientConfigurations: list[OpenZFSClientConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenZFSNfsExport:
     list[OpenZFSClientConfiguration] ClientConfigurations
 
@@ -1875,8 +1973,9 @@ struct OpenZFSOriginSnapshotConfiguration:
     Optional[str] SnapshotARN
     Optional[OpenZFSCopyStrategy] CopyStrategy
 
-# no @derive(Json): member(s) SecondaryGids: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecondaryGids: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenZFSPosixFileSystemUser:
     int64 Uid
     int64 Gid
@@ -1893,8 +1992,9 @@ struct OpenZFSUserOrGroupQuota:
     int64 Id
     int64 StorageCapacityQuotaGiB
 
-# no @derive(Json): member(s) NfsExports: list[OpenZFSNfsExport], UserAndGroupQuotas: list[OpenZFSUserOrGroupQuota] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NfsExports: list[OpenZFSNfsExport], UserAndGroupQuotas: list[OpenZFSUserOrGroupQuota] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenZFSVolumeConfiguration:
     Optional[str] ParentVolumeId
     Optional[str] VolumePath
@@ -1924,8 +2024,9 @@ struct ReleaseFileSystemNfsV3LocksRequest:
     str FileSystemId
     Optional[str] ClientRequestToken
 
-# no @derive(Json): member(s) FileSystem: FileSystem not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileSystem: FileSystem not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReleaseFileSystemNfsV3LocksResponse:
     Optional[FileSystem] FileSystem
 
@@ -1939,16 +2040,18 @@ struct ResourceNotFound:
     str ResourceARN
     Optional[str] Message
 
-# no @derive(Json): member(s) Options: list[RestoreOpenZFSVolumeOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Options: list[RestoreOpenZFSVolumeOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestoreVolumeFromSnapshotRequest:
     Optional[str] ClientRequestToken
     str VolumeId
     str SnapshotId
     Optional[list[RestoreOpenZFSVolumeOption]] Options
 
-# no @derive(Json): member(s) AdministrativeActions: list[AdministrativeAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdministrativeActions: list[AdministrativeAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestoreVolumeFromSnapshotResponse:
     Optional[str] VolumeId
     Optional[VolumeLifecycle] Lifecycle
@@ -1965,8 +2068,9 @@ struct S3AccessPoint:
     Optional[str] Alias
     Optional[S3AccessPointVpcConfiguration] VpcConfiguration
 
-# no @derive(Json): member(s) OpenZFSConfiguration: S3AccessPointOpenZFSConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OpenZFSConfiguration: S3AccessPointOpenZFSConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3AccessPointAttachment:
     Optional[S3AccessPointAttachmentLifecycle] Lifecycle
     Optional[LifecycleTransitionReason] LifecycleTransitionReason
@@ -1981,8 +2085,9 @@ struct S3AccessPointAttachment:
 struct S3AccessPointAttachmentNotFound:
     Optional[str] Message
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3AccessPointAttachmentsFilter:
     Optional[S3AccessPointAttachmentsFilterName] Name
     Optional[list[str]] Values
@@ -1992,8 +2097,9 @@ struct S3AccessPointOntapConfiguration:
     Optional[str] VolumeId
     Optional[OntapFileSystemIdentity] FileSystemIdentity
 
-# no @derive(Json): member(s) FileSystemIdentity: OpenZFSFileSystemIdentity not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileSystemIdentity: OpenZFSFileSystemIdentity not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3AccessPointOpenZFSConfiguration:
     Optional[str] VolumeId
     Optional[OpenZFSFileSystemIdentity] FileSystemIdentity
@@ -2002,14 +2108,16 @@ struct S3AccessPointOpenZFSConfiguration:
 struct S3AccessPointVpcConfiguration:
     Optional[str] VpcId
 
-# no @derive(Json): member(s) AutoImportPolicy: AutoImportPolicy, AutoExportPolicy: AutoExportPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AutoImportPolicy: AutoImportPolicy, AutoExportPolicy: AutoExportPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3DataRepositoryConfiguration:
     Optional[AutoImportPolicy] AutoImportPolicy
     Optional[AutoExportPolicy] AutoExportPolicy
 
-# no @derive(Json): member(s) DnsIps: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DnsIps: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SelfManagedActiveDirectoryAttributes:
     Optional[str] DomainName
     Optional[str] OrganizationalUnitDistinguishedName
@@ -2018,8 +2126,9 @@ struct SelfManagedActiveDirectoryAttributes:
     Optional[list[str]] DnsIps
     Optional[str] DomainJoinServiceAccountSecret
 
-# no @derive(Json): member(s) DnsIps: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DnsIps: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SelfManagedActiveDirectoryConfiguration:
     str DomainName
     Optional[str] OrganizationalUnitDistinguishedName
@@ -2029,8 +2138,9 @@ struct SelfManagedActiveDirectoryConfiguration:
     list[str] DnsIps
     Optional[str] DomainJoinServiceAccountSecret
 
-# no @derive(Json): member(s) DnsIps: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DnsIps: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SelfManagedActiveDirectoryConfigurationUpdates:
     Optional[str] UserName
     Optional[str] Password
@@ -2060,8 +2170,9 @@ struct SnaplockRetentionPeriod:
     RetentionPeriod MinimumRetention
     RetentionPeriod MaximumRetention
 
-# no @derive(Json): member(s) Tags: list[Tag], AdministrativeActions: list[AdministrativeAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], AdministrativeActions: list[AdministrativeAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Snapshot:
     Optional[str] ResourceARN
     Optional[str] SnapshotId
@@ -2073,8 +2184,9 @@ struct Snapshot:
     Optional[list[Tag]] Tags
     Optional[list[AdministrativeAction]] AdministrativeActions
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnapshotFilter:
     Optional[SnapshotFilterName] Name
     Optional[list[str]] Values
@@ -2093,13 +2205,15 @@ struct StartMisconfiguredStateRecoveryRequest:
     Optional[str] ClientRequestToken
     str FileSystemId
 
-# no @derive(Json): member(s) FileSystem: FileSystem not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileSystem: FileSystem not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartMisconfiguredStateRecoveryResponse:
     Optional[FileSystem] FileSystem
 
-# no @derive(Json): member(s) ActiveDirectoryConfiguration: SvmActiveDirectoryConfiguration, Endpoints: SvmEndpoints, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActiveDirectoryConfiguration: SvmActiveDirectoryConfiguration, Endpoints: SvmEndpoints, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StorageVirtualMachine:
     Optional[SvmActiveDirectoryConfiguration] ActiveDirectoryConfiguration
     Optional[DateTime] CreationTime
@@ -2115,8 +2229,9 @@ struct StorageVirtualMachine:
     Optional[LifecycleTransitionReason] LifecycleTransitionReason
     Optional[StorageVirtualMachineRootVolumeSecurityStyle] RootVolumeSecurityStyle
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StorageVirtualMachineFilter:
     Optional[str] Name
     Optional[list[str]] Values
@@ -2125,21 +2240,24 @@ struct StorageVirtualMachineFilter:
 struct StorageVirtualMachineNotFound:
     Optional[str] Message
 
-# no @derive(Json): member(s) SelfManagedActiveDirectoryConfiguration: SelfManagedActiveDirectoryAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelfManagedActiveDirectoryConfiguration: SelfManagedActiveDirectoryAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SvmActiveDirectoryConfiguration:
     Optional[str] NetBiosName
     Optional[SelfManagedActiveDirectoryAttributes] SelfManagedActiveDirectoryConfiguration
 
-# no @derive(Json): member(s) IpAddresses: list[str], Ipv6Addresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IpAddresses: list[str], Ipv6Addresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SvmEndpoint:
     Optional[str] DNSName
     Optional[list[str]] IpAddresses
     Optional[list[str]] Ipv6Addresses
 
-# no @derive(Json): member(s) Iscsi: SvmEndpoint, Management: SvmEndpoint, Nfs: SvmEndpoint, Smb: SvmEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Iscsi: SvmEndpoint, Management: SvmEndpoint, Nfs: SvmEndpoint, Smb: SvmEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SvmEndpoints:
     Optional[SvmEndpoint] Iscsi
     Optional[SvmEndpoint] Management
@@ -2151,8 +2269,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceARN
     list[Tag] Tags
@@ -2176,8 +2295,9 @@ struct TooManyAccessPoints:
 struct UnsupportedOperation:
     Optional[str] Message
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceARN
     list[str] TagKeys
@@ -2187,16 +2307,18 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) S3: S3DataRepositoryConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3: S3DataRepositoryConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDataRepositoryAssociationRequest:
     str AssociationId
     Optional[str] ClientRequestToken
     Optional[int64] ImportedFileChunkSize
     Optional[S3DataRepositoryConfiguration] S3
 
-# no @derive(Json): member(s) Association: DataRepositoryAssociation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Association: DataRepositoryAssociation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDataRepositoryAssociationResponse:
     Optional[DataRepositoryAssociation] Association
 
@@ -2210,13 +2332,15 @@ struct UpdateFileCacheRequest:
     Optional[str] ClientRequestToken
     Optional[UpdateFileCacheLustreConfiguration] LustreConfiguration
 
-# no @derive(Json): member(s) FileCache: FileCache not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileCache: FileCache not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFileCacheResponse:
     Optional[FileCache] FileCache
 
-# no @derive(Json): member(s) RootSquashConfiguration: LustreRootSquashConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RootSquashConfiguration: LustreRootSquashConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFileSystemLustreConfiguration:
     Optional[str] WeeklyMaintenanceStartTime
     Optional[str] DailyAutomaticBackupStartTime
@@ -2235,8 +2359,9 @@ struct UpdateFileSystemLustreMetadataConfiguration:
     Optional[int64] Iops
     Optional[MetadataConfigurationMode] Mode
 
-# no @derive(Json): member(s) AddRouteTableIds: list[str], RemoveRouteTableIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AddRouteTableIds: list[str], RemoveRouteTableIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFileSystemOntapConfiguration:
     Optional[int64] AutomaticBackupRetentionDays
     Optional[str] DailyAutomaticBackupStartTime
@@ -2250,8 +2375,9 @@ struct UpdateFileSystemOntapConfiguration:
     Optional[int64] HAPairs
     Optional[str] EndpointIpv6AddressRange
 
-# no @derive(Json): member(s) AddRouteTableIds: list[str], RemoveRouteTableIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AddRouteTableIds: list[str], RemoveRouteTableIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFileSystemOpenZFSConfiguration:
     Optional[int64] AutomaticBackupRetentionDays
     Optional[bool] CopyTagsToBackups
@@ -2265,8 +2391,9 @@ struct UpdateFileSystemOpenZFSConfiguration:
     Optional[OpenZFSReadCacheConfiguration] ReadCacheConfiguration
     Optional[str] EndpointIpv6AddressRange
 
-# no @derive(Json): member(s) WindowsConfiguration: UpdateFileSystemWindowsConfiguration, LustreConfiguration: UpdateFileSystemLustreConfiguration, OntapConfiguration: UpdateFileSystemOntapConfiguration, OpenZFSConfiguration: UpdateFileSystemOpenZFSConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WindowsConfiguration: UpdateFileSystemWindowsConfiguration, LustreConfiguration: UpdateFileSystemLustreConfiguration, OntapConfiguration: UpdateFileSystemOntapConfiguration, OpenZFSConfiguration: UpdateFileSystemOpenZFSConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFileSystemRequest:
     str FileSystemId
     Optional[str] ClientRequestToken
@@ -2279,13 +2406,15 @@ struct UpdateFileSystemRequest:
     Optional[str] FileSystemTypeVersion
     Optional[NetworkType] NetworkType
 
-# no @derive(Json): member(s) FileSystem: FileSystem not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileSystem: FileSystem not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFileSystemResponse:
     Optional[FileSystem] FileSystem
 
-# no @derive(Json): member(s) SelfManagedActiveDirectoryConfiguration: SelfManagedActiveDirectoryConfigurationUpdates not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelfManagedActiveDirectoryConfiguration: SelfManagedActiveDirectoryConfigurationUpdates not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFileSystemWindowsConfiguration:
     Optional[str] WeeklyMaintenanceStartTime
     Optional[str] DailyAutomaticBackupStartTime
@@ -2308,8 +2437,9 @@ struct UpdateOntapVolumeConfiguration:
     Optional[UpdateSnaplockConfiguration] SnaplockConfiguration
     Optional[int64] SizeInBytes
 
-# no @derive(Json): member(s) NfsExports: list[OpenZFSNfsExport], UserAndGroupQuotas: list[OpenZFSUserOrGroupQuota] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NfsExports: list[OpenZFSNfsExport], UserAndGroupQuotas: list[OpenZFSUserOrGroupQuota] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateOpenZFSVolumeConfiguration:
     Optional[int64] StorageCapacityReservationGiB
     Optional[int64] StorageCapacityQuotaGiB
@@ -2342,32 +2472,37 @@ struct UpdateSnapshotRequest:
     str Name
     str SnapshotId
 
-# no @derive(Json): member(s) Snapshot: Snapshot not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Snapshot: Snapshot not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSnapshotResponse:
     Optional[Snapshot] Snapshot
 
-# no @derive(Json): member(s) ActiveDirectoryConfiguration: UpdateSvmActiveDirectoryConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActiveDirectoryConfiguration: UpdateSvmActiveDirectoryConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateStorageVirtualMachineRequest:
     Optional[UpdateSvmActiveDirectoryConfiguration] ActiveDirectoryConfiguration
     Optional[str] ClientRequestToken
     str StorageVirtualMachineId
     Optional[str] SvmAdminPassword
 
-# no @derive(Json): member(s) StorageVirtualMachine: StorageVirtualMachine not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StorageVirtualMachine: StorageVirtualMachine not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateStorageVirtualMachineResponse:
     Optional[StorageVirtualMachine] StorageVirtualMachine
 
-# no @derive(Json): member(s) SelfManagedActiveDirectoryConfiguration: SelfManagedActiveDirectoryConfigurationUpdates not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelfManagedActiveDirectoryConfiguration: SelfManagedActiveDirectoryConfigurationUpdates not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSvmActiveDirectoryConfiguration:
     Optional[SelfManagedActiveDirectoryConfigurationUpdates] SelfManagedActiveDirectoryConfiguration
     Optional[str] NetBiosName
 
-# no @derive(Json): member(s) OpenZFSConfiguration: UpdateOpenZFSVolumeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OpenZFSConfiguration: UpdateOpenZFSVolumeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateVolumeRequest:
     Optional[str] ClientRequestToken
     str VolumeId
@@ -2375,13 +2510,15 @@ struct UpdateVolumeRequest:
     Optional[str] Name
     Optional[UpdateOpenZFSVolumeConfiguration] OpenZFSConfiguration
 
-# no @derive(Json): member(s) Volume: Volume not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Volume: Volume not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateVolumeResponse:
     Optional[Volume] Volume
 
-# no @derive(Json): member(s) OntapConfiguration: OntapVolumeConfiguration, Tags: list[Tag], AdministrativeActions: list[AdministrativeAction], OpenZFSConfiguration: OpenZFSVolumeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OntapConfiguration: OntapVolumeConfiguration, Tags: list[Tag], AdministrativeActions: list[AdministrativeAction], OpenZFSConfiguration: OpenZFSVolumeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Volume:
     Optional[DateTime] CreationTime
     Optional[str] FileSystemId
@@ -2396,8 +2533,9 @@ struct Volume:
     Optional[list[AdministrativeAction]] AdministrativeActions
     Optional[OpenZFSVolumeConfiguration] OpenZFSConfiguration
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VolumeFilter:
     Optional[VolumeFilterName] Name
     Optional[list[str]] Values
@@ -2418,8 +2556,9 @@ struct WindowsAuditLogCreateConfiguration:
     WindowsAccessAuditLogLevel FileShareAccessAuditLogLevel
     Optional[str] AuditLogDestination
 
-# no @derive(Json): member(s) SelfManagedActiveDirectoryConfiguration: SelfManagedActiveDirectoryAttributes, MaintenanceOperationsInProgress: list[FileSystemMaintenanceOperation], Aliases: list[Alias] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelfManagedActiveDirectoryConfiguration: SelfManagedActiveDirectoryAttributes, MaintenanceOperationsInProgress: list[FileSystemMaintenanceOperation], Aliases: list[Alias] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WindowsFileSystemConfiguration:
     Optional[str] ActiveDirectoryId
     Optional[SelfManagedActiveDirectoryAttributes] SelfManagedActiveDirectoryConfiguration
@@ -2577,61 +2716,1731 @@ def fsx_error_from_code(str code) -> FSxError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AssociateFileSystemAliases (input AssociateFileSystemAliasesRequest)
-#   CopyBackup (input CopyBackupRequest)
-#   CopySnapshotAndUpdateVolume (input CopySnapshotAndUpdateVolumeRequest)
-#   CreateAndAttachS3AccessPoint (input CreateAndAttachS3AccessPointRequest)
-#   CreateBackup (input CreateBackupRequest)
-#   CreateDataRepositoryAssociation (input CreateDataRepositoryAssociationRequest)
-#   CreateDataRepositoryTask (input CreateDataRepositoryTaskRequest)
-#   CreateFileCache (input CreateFileCacheRequest)
-#   CreateFileSystem (input CreateFileSystemRequest)
-#   CreateFileSystemFromBackup (input CreateFileSystemFromBackupRequest)
-#   CreateSnapshot (input CreateSnapshotRequest)
-#   CreateStorageVirtualMachine (input CreateStorageVirtualMachineRequest)
-#   CreateVolume (input CreateVolumeRequest)
-#   CreateVolumeFromBackup (input CreateVolumeFromBackupRequest)
-#   DeleteFileSystem (input DeleteFileSystemRequest)
-#   DeleteVolume (input DeleteVolumeRequest)
-#   DescribeBackups (input DescribeBackupsRequest)
-#   DescribeDataRepositoryAssociations (input DescribeDataRepositoryAssociationsRequest)
-#   DescribeDataRepositoryTasks (input DescribeDataRepositoryTasksRequest)
-#   DescribeFileCaches (input DescribeFileCachesRequest)
-#   DescribeFileSystems (input DescribeFileSystemsRequest)
-#   DescribeS3AccessPointAttachments (input DescribeS3AccessPointAttachmentsRequest)
-#   DescribeSnapshots (input DescribeSnapshotsRequest)
-#   DescribeStorageVirtualMachines (input DescribeStorageVirtualMachinesRequest)
-#   DescribeVolumes (input DescribeVolumesRequest)
-#   DisassociateFileSystemAliases (input DisassociateFileSystemAliasesRequest)
-#   RestoreVolumeFromSnapshot (input RestoreVolumeFromSnapshotRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateDataRepositoryAssociation (input UpdateDataRepositoryAssociationRequest)
-#   UpdateFileSystem (input UpdateFileSystemRequest)
-#   UpdateStorageVirtualMachine (input UpdateStorageVirtualMachineRequest)
-#   UpdateVolume (input UpdateVolumeRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def fsx_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   DescribeBackups (input not derivable (no generated method))
-#   DescribeFileSystems (input not derivable (no generated method))
-#   DescribeS3AccessPointAttachments (input not derivable (no generated method))
-#   DescribeSnapshots (input not derivable (no generated method))
-#   DescribeStorageVirtualMachines (input not derivable (no generated method))
-#   DescribeVolumes (input not derivable (no generated method))
+def fsx_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def fsx_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AssociateFileSystemAliasesRequest to a compact JSON object (declaration order).
+def associate_file_system_aliases_request_to_json(AssociateFileSystemAliasesRequest v) -> str:
+    list[str] parts = []
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + fsx_json_str(u0))
+    parts.append("\"FileSystemId\":" + fsx_json_str(v.FileSystemId))
+    list[str] e1 = []
+    for x1 in v.Aliases:
+        e1.append(fsx_json_str(x1))
+    parts.append("\"Aliases\":" + fsx_json_arr(e1))
+    return fsx_json_obj(parts)
+
+# Serialize AutoExportPolicy to a compact JSON object (declaration order).
+def auto_export_policy_to_json(AutoExportPolicy v) -> str:
+    list[str] parts = []
+    if v.Events.is_some():
+        auto u0 = v.Events.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Events\":" + fsx_json_arr(e1))
+    return fsx_json_obj(parts)
+
+# Serialize AutoImportPolicy to a compact JSON object (declaration order).
+def auto_import_policy_to_json(AutoImportPolicy v) -> str:
+    list[str] parts = []
+    if v.Events.is_some():
+        auto u0 = v.Events.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Events\":" + fsx_json_arr(e1))
+    return fsx_json_obj(parts)
+
+# Serialize CopyBackupRequest to a compact JSON object (declaration order).
+def copy_backup_request_to_json(CopyBackupRequest v) -> str:
+    list[str] parts = []
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + fsx_json_str(u0))
+    parts.append("\"SourceBackupId\":" + fsx_json_str(v.SourceBackupId))
+    if v.SourceRegion.is_some():
+        auto u1 = v.SourceRegion.unwrap()
+        parts.append("\"SourceRegion\":" + fsx_json_str(u1))
+    if v.KmsKeyId.is_some():
+        auto u2 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + fsx_json_str(u2))
+    if v.CopyTags.is_some():
+        auto u3 = v.CopyTags.unwrap()
+        parts.append("\"CopyTags\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + fsx_json_arr(e5))
+    return fsx_json_obj(parts)
+
+# Serialize CopySnapshotAndUpdateVolumeRequest to a compact JSON object (declaration order).
+def copy_snapshot_and_update_volume_request_to_json(CopySnapshotAndUpdateVolumeRequest v) -> str:
+    list[str] parts = []
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + fsx_json_str(u0))
+    parts.append("\"VolumeId\":" + fsx_json_str(v.VolumeId))
+    parts.append("\"SourceSnapshotARN\":" + fsx_json_str(v.SourceSnapshotARN))
+    if v.CopyStrategy.is_some():
+        auto u1 = v.CopyStrategy.unwrap()
+        parts.append("\"CopyStrategy\":" + u1.to_json())
+    if v.Options.is_some():
+        auto u2 = v.Options.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Options\":" + fsx_json_arr(e3))
+    return fsx_json_obj(parts)
+
+# Serialize CreateAggregateConfiguration to a compact JSON object (declaration order).
+def create_aggregate_configuration_to_json(CreateAggregateConfiguration v) -> str:
+    list[str] parts = []
+    if v.Aggregates.is_some():
+        auto u0 = v.Aggregates.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(fsx_json_str(x1))
+        parts.append("\"Aggregates\":" + fsx_json_arr(e1))
+    if v.ConstituentsPerAggregate.is_some():
+        auto u2 = v.ConstituentsPerAggregate.unwrap()
+        parts.append("\"ConstituentsPerAggregate\":" + str(u2))
+    return fsx_json_obj(parts)
+
+# Serialize CreateAndAttachS3AccessPointOpenZFSConfiguration to a compact JSON object (declaration order).
+def create_and_attach_s3_access_point_open_zfs_configuration_to_json(CreateAndAttachS3AccessPointOpenZFSConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"VolumeId\":" + fsx_json_str(v.VolumeId))
+    parts.append("\"FileSystemIdentity\":" + open_zfs_file_system_identity_to_json(v.FileSystemIdentity))
+    return fsx_json_obj(parts)
+
+# Serialize CreateAndAttachS3AccessPointRequest to a compact JSON object (declaration order).
+def create_and_attach_s3_access_point_request_to_json(CreateAndAttachS3AccessPointRequest v) -> str:
+    list[str] parts = []
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + fsx_json_str(u0))
+    parts.append("\"Name\":" + fsx_json_str(v.Name))
+    parts.append("\"Type\":" + v.Type.to_json())
+    if v.OpenZFSConfiguration.is_some():
+        auto u1 = v.OpenZFSConfiguration.unwrap()
+        parts.append("\"OpenZFSConfiguration\":" + create_and_attach_s3_access_point_open_zfs_configuration_to_json(u1))
+    if v.OntapConfiguration.is_some():
+        auto u2 = v.OntapConfiguration.unwrap()
+        parts.append("\"OntapConfiguration\":" + u2.to_json())
+    if v.S3AccessPoint.is_some():
+        auto u3 = v.S3AccessPoint.unwrap()
+        parts.append("\"S3AccessPoint\":" + u3.to_json())
+    return fsx_json_obj(parts)
+
+# Serialize CreateBackupRequest to a compact JSON object (declaration order).
+def create_backup_request_to_json(CreateBackupRequest v) -> str:
+    list[str] parts = []
+    if v.FileSystemId.is_some():
+        auto u0 = v.FileSystemId.unwrap()
+        parts.append("\"FileSystemId\":" + fsx_json_str(u0))
+    if v.ClientRequestToken.is_some():
+        auto u1 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + fsx_json_str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + fsx_json_arr(e3))
+    if v.VolumeId.is_some():
+        auto u4 = v.VolumeId.unwrap()
+        parts.append("\"VolumeId\":" + fsx_json_str(u4))
+    return fsx_json_obj(parts)
+
+# Serialize CreateDataRepositoryAssociationRequest to a compact JSON object (declaration order).
+def create_data_repository_association_request_to_json(CreateDataRepositoryAssociationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"FileSystemId\":" + fsx_json_str(v.FileSystemId))
+    if v.FileSystemPath.is_some():
+        auto u0 = v.FileSystemPath.unwrap()
+        parts.append("\"FileSystemPath\":" + fsx_json_str(u0))
+    parts.append("\"DataRepositoryPath\":" + fsx_json_str(v.DataRepositoryPath))
+    if v.BatchImportMetaDataOnCreate.is_some():
+        auto u1 = v.BatchImportMetaDataOnCreate.unwrap()
+        parts.append("\"BatchImportMetaDataOnCreate\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.ImportedFileChunkSize.is_some():
+        auto u2 = v.ImportedFileChunkSize.unwrap()
+        parts.append("\"ImportedFileChunkSize\":" + str(u2))
+    if v.S3.is_some():
+        auto u3 = v.S3.unwrap()
+        parts.append("\"S3\":" + s3_data_repository_configuration_to_json(u3))
+    if v.ClientRequestToken.is_some():
+        auto u4 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + fsx_json_str(u4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + fsx_json_arr(e6))
+    return fsx_json_obj(parts)
+
+# Serialize CreateDataRepositoryTaskRequest to a compact JSON object (declaration order).
+def create_data_repository_task_request_to_json(CreateDataRepositoryTaskRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Type\":" + v.Type.to_json())
+    if v.Paths.is_some():
+        auto u0 = v.Paths.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(fsx_json_str(x1))
+        parts.append("\"Paths\":" + fsx_json_arr(e1))
+    parts.append("\"FileSystemId\":" + fsx_json_str(v.FileSystemId))
+    parts.append("\"Report\":" + v.Report.to_json())
+    if v.ClientRequestToken.is_some():
+        auto u2 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + fsx_json_str(u2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + fsx_json_arr(e4))
+    if v.CapacityToRelease.is_some():
+        auto u5 = v.CapacityToRelease.unwrap()
+        parts.append("\"CapacityToRelease\":" + str(u5))
+    if v.ReleaseConfiguration.is_some():
+        auto u6 = v.ReleaseConfiguration.unwrap()
+        parts.append("\"ReleaseConfiguration\":" + u6.to_json())
+    return fsx_json_obj(parts)
+
+# Serialize CreateFileCacheRequest to a compact JSON object (declaration order).
+def create_file_cache_request_to_json(CreateFileCacheRequest v) -> str:
+    list[str] parts = []
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + fsx_json_str(u0))
+    parts.append("\"FileCacheType\":" + fsx_json_str(v.FileCacheType))
+    parts.append("\"FileCacheTypeVersion\":" + fsx_json_str(v.FileCacheTypeVersion))
+    parts.append("\"StorageCapacity\":" + str(v.StorageCapacity))
+    list[str] e1 = []
+    for x1 in v.SubnetIds:
+        e1.append(fsx_json_str(x1))
+    parts.append("\"SubnetIds\":" + fsx_json_arr(e1))
+    if v.SecurityGroupIds.is_some():
+        auto u2 = v.SecurityGroupIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(fsx_json_str(x3))
+        parts.append("\"SecurityGroupIds\":" + fsx_json_arr(e3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + fsx_json_arr(e5))
+    if v.CopyTagsToDataRepositoryAssociations.is_some():
+        auto u6 = v.CopyTagsToDataRepositoryAssociations.unwrap()
+        parts.append("\"CopyTagsToDataRepositoryAssociations\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.KmsKeyId.is_some():
+        auto u7 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + fsx_json_str(u7))
+    if v.LustreConfiguration.is_some():
+        auto u8 = v.LustreConfiguration.unwrap()
+        parts.append("\"LustreConfiguration\":" + u8.to_json())
+    if v.DataRepositoryAssociations.is_some():
+        auto u9 = v.DataRepositoryAssociations.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(file_cache_data_repository_association_to_json(x10))
+        parts.append("\"DataRepositoryAssociations\":" + fsx_json_arr(e10))
+    return fsx_json_obj(parts)
+
+# Serialize CreateFileSystemFromBackupRequest to a compact JSON object (declaration order).
+def create_file_system_from_backup_request_to_json(CreateFileSystemFromBackupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"BackupId\":" + fsx_json_str(v.BackupId))
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + fsx_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.SubnetIds:
+        e1.append(fsx_json_str(x1))
+    parts.append("\"SubnetIds\":" + fsx_json_arr(e1))
+    if v.SecurityGroupIds.is_some():
+        auto u2 = v.SecurityGroupIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(fsx_json_str(x3))
+        parts.append("\"SecurityGroupIds\":" + fsx_json_arr(e3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + fsx_json_arr(e5))
+    if v.WindowsConfiguration.is_some():
+        auto u6 = v.WindowsConfiguration.unwrap()
+        parts.append("\"WindowsConfiguration\":" + create_file_system_windows_configuration_to_json(u6))
+    if v.LustreConfiguration.is_some():
+        auto u7 = v.LustreConfiguration.unwrap()
+        parts.append("\"LustreConfiguration\":" + create_file_system_lustre_configuration_to_json(u7))
+    if v.StorageType.is_some():
+        auto u8 = v.StorageType.unwrap()
+        parts.append("\"StorageType\":" + u8.to_json())
+    if v.KmsKeyId.is_some():
+        auto u9 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + fsx_json_str(u9))
+    if v.FileSystemTypeVersion.is_some():
+        auto u10 = v.FileSystemTypeVersion.unwrap()
+        parts.append("\"FileSystemTypeVersion\":" + fsx_json_str(u10))
+    if v.OpenZFSConfiguration.is_some():
+        auto u11 = v.OpenZFSConfiguration.unwrap()
+        parts.append("\"OpenZFSConfiguration\":" + create_file_system_open_zfs_configuration_to_json(u11))
+    if v.StorageCapacity.is_some():
+        auto u12 = v.StorageCapacity.unwrap()
+        parts.append("\"StorageCapacity\":" + str(u12))
+    if v.NetworkType.is_some():
+        auto u13 = v.NetworkType.unwrap()
+        parts.append("\"NetworkType\":" + u13.to_json())
+    return fsx_json_obj(parts)
+
+# Serialize CreateFileSystemLustreConfiguration to a compact JSON object (declaration order).
+def create_file_system_lustre_configuration_to_json(CreateFileSystemLustreConfiguration v) -> str:
+    list[str] parts = []
+    if v.WeeklyMaintenanceStartTime.is_some():
+        auto u0 = v.WeeklyMaintenanceStartTime.unwrap()
+        parts.append("\"WeeklyMaintenanceStartTime\":" + fsx_json_str(u0))
+    if v.ImportPath.is_some():
+        auto u1 = v.ImportPath.unwrap()
+        parts.append("\"ImportPath\":" + fsx_json_str(u1))
+    if v.ExportPath.is_some():
+        auto u2 = v.ExportPath.unwrap()
+        parts.append("\"ExportPath\":" + fsx_json_str(u2))
+    if v.ImportedFileChunkSize.is_some():
+        auto u3 = v.ImportedFileChunkSize.unwrap()
+        parts.append("\"ImportedFileChunkSize\":" + str(u3))
+    if v.DeploymentType.is_some():
+        auto u4 = v.DeploymentType.unwrap()
+        parts.append("\"DeploymentType\":" + u4.to_json())
+    if v.AutoImportPolicy.is_some():
+        auto u5 = v.AutoImportPolicy.unwrap()
+        parts.append("\"AutoImportPolicy\":" + u5.to_json())
+    if v.PerUnitStorageThroughput.is_some():
+        auto u6 = v.PerUnitStorageThroughput.unwrap()
+        parts.append("\"PerUnitStorageThroughput\":" + str(u6))
+    if v.DailyAutomaticBackupStartTime.is_some():
+        auto u7 = v.DailyAutomaticBackupStartTime.unwrap()
+        parts.append("\"DailyAutomaticBackupStartTime\":" + fsx_json_str(u7))
+    if v.AutomaticBackupRetentionDays.is_some():
+        auto u8 = v.AutomaticBackupRetentionDays.unwrap()
+        parts.append("\"AutomaticBackupRetentionDays\":" + str(u8))
+    if v.CopyTagsToBackups.is_some():
+        auto u9 = v.CopyTagsToBackups.unwrap()
+        parts.append("\"CopyTagsToBackups\":" + json.dumps(JsonValue.Bool(u9)))
+    if v.DriveCacheType.is_some():
+        auto u10 = v.DriveCacheType.unwrap()
+        parts.append("\"DriveCacheType\":" + u10.to_json())
+    if v.DataCompressionType.is_some():
+        auto u11 = v.DataCompressionType.unwrap()
+        parts.append("\"DataCompressionType\":" + u11.to_json())
+    if v.EfaEnabled.is_some():
+        auto u12 = v.EfaEnabled.unwrap()
+        parts.append("\"EfaEnabled\":" + json.dumps(JsonValue.Bool(u12)))
+    if v.LogConfiguration.is_some():
+        auto u13 = v.LogConfiguration.unwrap()
+        parts.append("\"LogConfiguration\":" + u13.to_json())
+    if v.RootSquashConfiguration.is_some():
+        auto u14 = v.RootSquashConfiguration.unwrap()
+        parts.append("\"RootSquashConfiguration\":" + lustre_root_squash_configuration_to_json(u14))
+    if v.MetadataConfiguration.is_some():
+        auto u15 = v.MetadataConfiguration.unwrap()
+        parts.append("\"MetadataConfiguration\":" + u15.to_json())
+    if v.ThroughputCapacity.is_some():
+        auto u16 = v.ThroughputCapacity.unwrap()
+        parts.append("\"ThroughputCapacity\":" + str(u16))
+    if v.DataReadCacheConfiguration.is_some():
+        auto u17 = v.DataReadCacheConfiguration.unwrap()
+        parts.append("\"DataReadCacheConfiguration\":" + u17.to_json())
+    return fsx_json_obj(parts)
+
+# Serialize CreateFileSystemOntapConfiguration to a compact JSON object (declaration order).
+def create_file_system_ontap_configuration_to_json(CreateFileSystemOntapConfiguration v) -> str:
+    list[str] parts = []
+    if v.AutomaticBackupRetentionDays.is_some():
+        auto u0 = v.AutomaticBackupRetentionDays.unwrap()
+        parts.append("\"AutomaticBackupRetentionDays\":" + str(u0))
+    if v.DailyAutomaticBackupStartTime.is_some():
+        auto u1 = v.DailyAutomaticBackupStartTime.unwrap()
+        parts.append("\"DailyAutomaticBackupStartTime\":" + fsx_json_str(u1))
+    parts.append("\"DeploymentType\":" + v.DeploymentType.to_json())
+    if v.EndpointIpAddressRange.is_some():
+        auto u2 = v.EndpointIpAddressRange.unwrap()
+        parts.append("\"EndpointIpAddressRange\":" + fsx_json_str(u2))
+    if v.FsxAdminPassword.is_some():
+        auto u3 = v.FsxAdminPassword.unwrap()
+        parts.append("\"FsxAdminPassword\":" + fsx_json_str(u3))
+    if v.DiskIopsConfiguration.is_some():
+        auto u4 = v.DiskIopsConfiguration.unwrap()
+        parts.append("\"DiskIopsConfiguration\":" + u4.to_json())
+    if v.PreferredSubnetId.is_some():
+        auto u5 = v.PreferredSubnetId.unwrap()
+        parts.append("\"PreferredSubnetId\":" + fsx_json_str(u5))
+    if v.RouteTableIds.is_some():
+        auto u6 = v.RouteTableIds.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(fsx_json_str(x7))
+        parts.append("\"RouteTableIds\":" + fsx_json_arr(e7))
+    if v.ThroughputCapacity.is_some():
+        auto u8 = v.ThroughputCapacity.unwrap()
+        parts.append("\"ThroughputCapacity\":" + str(u8))
+    if v.WeeklyMaintenanceStartTime.is_some():
+        auto u9 = v.WeeklyMaintenanceStartTime.unwrap()
+        parts.append("\"WeeklyMaintenanceStartTime\":" + fsx_json_str(u9))
+    if v.HAPairs.is_some():
+        auto u10 = v.HAPairs.unwrap()
+        parts.append("\"HAPairs\":" + str(u10))
+    if v.ThroughputCapacityPerHAPair.is_some():
+        auto u11 = v.ThroughputCapacityPerHAPair.unwrap()
+        parts.append("\"ThroughputCapacityPerHAPair\":" + str(u11))
+    if v.EndpointIpv6AddressRange.is_some():
+        auto u12 = v.EndpointIpv6AddressRange.unwrap()
+        parts.append("\"EndpointIpv6AddressRange\":" + fsx_json_str(u12))
+    return fsx_json_obj(parts)
+
+# Serialize CreateFileSystemOpenZFSConfiguration to a compact JSON object (declaration order).
+def create_file_system_open_zfs_configuration_to_json(CreateFileSystemOpenZFSConfiguration v) -> str:
+    list[str] parts = []
+    if v.AutomaticBackupRetentionDays.is_some():
+        auto u0 = v.AutomaticBackupRetentionDays.unwrap()
+        parts.append("\"AutomaticBackupRetentionDays\":" + str(u0))
+    if v.CopyTagsToBackups.is_some():
+        auto u1 = v.CopyTagsToBackups.unwrap()
+        parts.append("\"CopyTagsToBackups\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.CopyTagsToVolumes.is_some():
+        auto u2 = v.CopyTagsToVolumes.unwrap()
+        parts.append("\"CopyTagsToVolumes\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.DailyAutomaticBackupStartTime.is_some():
+        auto u3 = v.DailyAutomaticBackupStartTime.unwrap()
+        parts.append("\"DailyAutomaticBackupStartTime\":" + fsx_json_str(u3))
+    parts.append("\"DeploymentType\":" + v.DeploymentType.to_json())
+    parts.append("\"ThroughputCapacity\":" + str(v.ThroughputCapacity))
+    if v.WeeklyMaintenanceStartTime.is_some():
+        auto u4 = v.WeeklyMaintenanceStartTime.unwrap()
+        parts.append("\"WeeklyMaintenanceStartTime\":" + fsx_json_str(u4))
+    if v.DiskIopsConfiguration.is_some():
+        auto u5 = v.DiskIopsConfiguration.unwrap()
+        parts.append("\"DiskIopsConfiguration\":" + u5.to_json())
+    if v.RootVolumeConfiguration.is_some():
+        auto u6 = v.RootVolumeConfiguration.unwrap()
+        parts.append("\"RootVolumeConfiguration\":" + open_zfs_create_root_volume_configuration_to_json(u6))
+    if v.PreferredSubnetId.is_some():
+        auto u7 = v.PreferredSubnetId.unwrap()
+        parts.append("\"PreferredSubnetId\":" + fsx_json_str(u7))
+    if v.EndpointIpAddressRange.is_some():
+        auto u8 = v.EndpointIpAddressRange.unwrap()
+        parts.append("\"EndpointIpAddressRange\":" + fsx_json_str(u8))
+    if v.EndpointIpv6AddressRange.is_some():
+        auto u9 = v.EndpointIpv6AddressRange.unwrap()
+        parts.append("\"EndpointIpv6AddressRange\":" + fsx_json_str(u9))
+    if v.RouteTableIds.is_some():
+        auto u10 = v.RouteTableIds.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(fsx_json_str(x11))
+        parts.append("\"RouteTableIds\":" + fsx_json_arr(e11))
+    if v.ReadCacheConfiguration.is_some():
+        auto u12 = v.ReadCacheConfiguration.unwrap()
+        parts.append("\"ReadCacheConfiguration\":" + u12.to_json())
+    return fsx_json_obj(parts)
+
+# Serialize CreateFileSystemRequest to a compact JSON object (declaration order).
+def create_file_system_request_to_json(CreateFileSystemRequest v) -> str:
+    list[str] parts = []
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + fsx_json_str(u0))
+    parts.append("\"FileSystemType\":" + v.FileSystemType.to_json())
+    if v.StorageCapacity.is_some():
+        auto u1 = v.StorageCapacity.unwrap()
+        parts.append("\"StorageCapacity\":" + str(u1))
+    if v.StorageType.is_some():
+        auto u2 = v.StorageType.unwrap()
+        parts.append("\"StorageType\":" + u2.to_json())
+    list[str] e3 = []
+    for x3 in v.SubnetIds:
+        e3.append(fsx_json_str(x3))
+    parts.append("\"SubnetIds\":" + fsx_json_arr(e3))
+    if v.SecurityGroupIds.is_some():
+        auto u4 = v.SecurityGroupIds.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(fsx_json_str(x5))
+        parts.append("\"SecurityGroupIds\":" + fsx_json_arr(e5))
+    if v.Tags.is_some():
+        auto u6 = v.Tags.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Tags\":" + fsx_json_arr(e7))
+    if v.KmsKeyId.is_some():
+        auto u8 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + fsx_json_str(u8))
+    if v.WindowsConfiguration.is_some():
+        auto u9 = v.WindowsConfiguration.unwrap()
+        parts.append("\"WindowsConfiguration\":" + create_file_system_windows_configuration_to_json(u9))
+    if v.LustreConfiguration.is_some():
+        auto u10 = v.LustreConfiguration.unwrap()
+        parts.append("\"LustreConfiguration\":" + create_file_system_lustre_configuration_to_json(u10))
+    if v.OntapConfiguration.is_some():
+        auto u11 = v.OntapConfiguration.unwrap()
+        parts.append("\"OntapConfiguration\":" + create_file_system_ontap_configuration_to_json(u11))
+    if v.FileSystemTypeVersion.is_some():
+        auto u12 = v.FileSystemTypeVersion.unwrap()
+        parts.append("\"FileSystemTypeVersion\":" + fsx_json_str(u12))
+    if v.OpenZFSConfiguration.is_some():
+        auto u13 = v.OpenZFSConfiguration.unwrap()
+        parts.append("\"OpenZFSConfiguration\":" + create_file_system_open_zfs_configuration_to_json(u13))
+    if v.NetworkType.is_some():
+        auto u14 = v.NetworkType.unwrap()
+        parts.append("\"NetworkType\":" + u14.to_json())
+    return fsx_json_obj(parts)
+
+# Serialize CreateFileSystemWindowsConfiguration to a compact JSON object (declaration order).
+def create_file_system_windows_configuration_to_json(CreateFileSystemWindowsConfiguration v) -> str:
+    list[str] parts = []
+    if v.ActiveDirectoryId.is_some():
+        auto u0 = v.ActiveDirectoryId.unwrap()
+        parts.append("\"ActiveDirectoryId\":" + fsx_json_str(u0))
+    if v.SelfManagedActiveDirectoryConfiguration.is_some():
+        auto u1 = v.SelfManagedActiveDirectoryConfiguration.unwrap()
+        parts.append("\"SelfManagedActiveDirectoryConfiguration\":" + self_managed_active_directory_configuration_to_json(u1))
+    if v.DeploymentType.is_some():
+        auto u2 = v.DeploymentType.unwrap()
+        parts.append("\"DeploymentType\":" + u2.to_json())
+    if v.PreferredSubnetId.is_some():
+        auto u3 = v.PreferredSubnetId.unwrap()
+        parts.append("\"PreferredSubnetId\":" + fsx_json_str(u3))
+    parts.append("\"ThroughputCapacity\":" + str(v.ThroughputCapacity))
+    if v.WeeklyMaintenanceStartTime.is_some():
+        auto u4 = v.WeeklyMaintenanceStartTime.unwrap()
+        parts.append("\"WeeklyMaintenanceStartTime\":" + fsx_json_str(u4))
+    if v.DailyAutomaticBackupStartTime.is_some():
+        auto u5 = v.DailyAutomaticBackupStartTime.unwrap()
+        parts.append("\"DailyAutomaticBackupStartTime\":" + fsx_json_str(u5))
+    if v.AutomaticBackupRetentionDays.is_some():
+        auto u6 = v.AutomaticBackupRetentionDays.unwrap()
+        parts.append("\"AutomaticBackupRetentionDays\":" + str(u6))
+    if v.CopyTagsToBackups.is_some():
+        auto u7 = v.CopyTagsToBackups.unwrap()
+        parts.append("\"CopyTagsToBackups\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.Aliases.is_some():
+        auto u8 = v.Aliases.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(fsx_json_str(x9))
+        parts.append("\"Aliases\":" + fsx_json_arr(e9))
+    if v.AuditLogConfiguration.is_some():
+        auto u10 = v.AuditLogConfiguration.unwrap()
+        parts.append("\"AuditLogConfiguration\":" + u10.to_json())
+    if v.DiskIopsConfiguration.is_some():
+        auto u11 = v.DiskIopsConfiguration.unwrap()
+        parts.append("\"DiskIopsConfiguration\":" + u11.to_json())
+    if v.FsrmConfiguration.is_some():
+        auto u12 = v.FsrmConfiguration.unwrap()
+        parts.append("\"FsrmConfiguration\":" + u12.to_json())
+    return fsx_json_obj(parts)
+
+# Serialize CreateOntapVolumeConfiguration to a compact JSON object (declaration order).
+def create_ontap_volume_configuration_to_json(CreateOntapVolumeConfiguration v) -> str:
+    list[str] parts = []
+    if v.JunctionPath.is_some():
+        auto u0 = v.JunctionPath.unwrap()
+        parts.append("\"JunctionPath\":" + fsx_json_str(u0))
+    if v.SecurityStyle.is_some():
+        auto u1 = v.SecurityStyle.unwrap()
+        parts.append("\"SecurityStyle\":" + u1.to_json())
+    if v.SizeInMegabytes.is_some():
+        auto u2 = v.SizeInMegabytes.unwrap()
+        parts.append("\"SizeInMegabytes\":" + str(u2))
+    if v.StorageEfficiencyEnabled.is_some():
+        auto u3 = v.StorageEfficiencyEnabled.unwrap()
+        parts.append("\"StorageEfficiencyEnabled\":" + json.dumps(JsonValue.Bool(u3)))
+    parts.append("\"StorageVirtualMachineId\":" + fsx_json_str(v.StorageVirtualMachineId))
+    if v.TieringPolicy.is_some():
+        auto u4 = v.TieringPolicy.unwrap()
+        parts.append("\"TieringPolicy\":" + u4.to_json())
+    if v.OntapVolumeType.is_some():
+        auto u5 = v.OntapVolumeType.unwrap()
+        parts.append("\"OntapVolumeType\":" + u5.to_json())
+    if v.SnapshotPolicy.is_some():
+        auto u6 = v.SnapshotPolicy.unwrap()
+        parts.append("\"SnapshotPolicy\":" + fsx_json_str(u6))
+    if v.CopyTagsToBackups.is_some():
+        auto u7 = v.CopyTagsToBackups.unwrap()
+        parts.append("\"CopyTagsToBackups\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.SnaplockConfiguration.is_some():
+        auto u8 = v.SnaplockConfiguration.unwrap()
+        parts.append("\"SnaplockConfiguration\":" + u8.to_json())
+    if v.VolumeStyle.is_some():
+        auto u9 = v.VolumeStyle.unwrap()
+        parts.append("\"VolumeStyle\":" + u9.to_json())
+    if v.AggregateConfiguration.is_some():
+        auto u10 = v.AggregateConfiguration.unwrap()
+        parts.append("\"AggregateConfiguration\":" + create_aggregate_configuration_to_json(u10))
+    if v.SizeInBytes.is_some():
+        auto u11 = v.SizeInBytes.unwrap()
+        parts.append("\"SizeInBytes\":" + str(u11))
+    return fsx_json_obj(parts)
+
+# Serialize CreateOpenZFSVolumeConfiguration to a compact JSON object (declaration order).
+def create_open_zfs_volume_configuration_to_json(CreateOpenZFSVolumeConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"ParentVolumeId\":" + fsx_json_str(v.ParentVolumeId))
+    if v.StorageCapacityReservationGiB.is_some():
+        auto u0 = v.StorageCapacityReservationGiB.unwrap()
+        parts.append("\"StorageCapacityReservationGiB\":" + str(u0))
+    if v.StorageCapacityQuotaGiB.is_some():
+        auto u1 = v.StorageCapacityQuotaGiB.unwrap()
+        parts.append("\"StorageCapacityQuotaGiB\":" + str(u1))
+    if v.RecordSizeKiB.is_some():
+        auto u2 = v.RecordSizeKiB.unwrap()
+        parts.append("\"RecordSizeKiB\":" + str(u2))
+    if v.DataCompressionType.is_some():
+        auto u3 = v.DataCompressionType.unwrap()
+        parts.append("\"DataCompressionType\":" + u3.to_json())
+    if v.CopyTagsToSnapshots.is_some():
+        auto u4 = v.CopyTagsToSnapshots.unwrap()
+        parts.append("\"CopyTagsToSnapshots\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.OriginSnapshot.is_some():
+        auto u5 = v.OriginSnapshot.unwrap()
+        parts.append("\"OriginSnapshot\":" + u5.to_json())
+    if v.ReadOnly.is_some():
+        auto u6 = v.ReadOnly.unwrap()
+        parts.append("\"ReadOnly\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.NfsExports.is_some():
+        auto u7 = v.NfsExports.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(open_zfs_nfs_export_to_json(x8))
+        parts.append("\"NfsExports\":" + fsx_json_arr(e8))
+    if v.UserAndGroupQuotas.is_some():
+        auto u9 = v.UserAndGroupQuotas.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"UserAndGroupQuotas\":" + fsx_json_arr(e10))
+    return fsx_json_obj(parts)
+
+# Serialize CreateSnapshotRequest to a compact JSON object (declaration order).
+def create_snapshot_request_to_json(CreateSnapshotRequest v) -> str:
+    list[str] parts = []
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + fsx_json_str(u0))
+    parts.append("\"Name\":" + fsx_json_str(v.Name))
+    parts.append("\"VolumeId\":" + fsx_json_str(v.VolumeId))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + fsx_json_arr(e2))
+    return fsx_json_obj(parts)
+
+# Serialize CreateStorageVirtualMachineRequest to a compact JSON object (declaration order).
+def create_storage_virtual_machine_request_to_json(CreateStorageVirtualMachineRequest v) -> str:
+    list[str] parts = []
+    if v.ActiveDirectoryConfiguration.is_some():
+        auto u0 = v.ActiveDirectoryConfiguration.unwrap()
+        parts.append("\"ActiveDirectoryConfiguration\":" + create_svm_active_directory_configuration_to_json(u0))
+    if v.ClientRequestToken.is_some():
+        auto u1 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + fsx_json_str(u1))
+    parts.append("\"FileSystemId\":" + fsx_json_str(v.FileSystemId))
+    parts.append("\"Name\":" + fsx_json_str(v.Name))
+    if v.SvmAdminPassword.is_some():
+        auto u2 = v.SvmAdminPassword.unwrap()
+        parts.append("\"SvmAdminPassword\":" + fsx_json_str(u2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + fsx_json_arr(e4))
+    if v.RootVolumeSecurityStyle.is_some():
+        auto u5 = v.RootVolumeSecurityStyle.unwrap()
+        parts.append("\"RootVolumeSecurityStyle\":" + u5.to_json())
+    return fsx_json_obj(parts)
+
+# Serialize CreateSvmActiveDirectoryConfiguration to a compact JSON object (declaration order).
+def create_svm_active_directory_configuration_to_json(CreateSvmActiveDirectoryConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"NetBiosName\":" + fsx_json_str(v.NetBiosName))
+    if v.SelfManagedActiveDirectoryConfiguration.is_some():
+        auto u0 = v.SelfManagedActiveDirectoryConfiguration.unwrap()
+        parts.append("\"SelfManagedActiveDirectoryConfiguration\":" + self_managed_active_directory_configuration_to_json(u0))
+    return fsx_json_obj(parts)
+
+# Serialize CreateVolumeFromBackupRequest to a compact JSON object (declaration order).
+def create_volume_from_backup_request_to_json(CreateVolumeFromBackupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"BackupId\":" + fsx_json_str(v.BackupId))
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + fsx_json_str(u0))
+    parts.append("\"Name\":" + fsx_json_str(v.Name))
+    if v.OntapConfiguration.is_some():
+        auto u1 = v.OntapConfiguration.unwrap()
+        parts.append("\"OntapConfiguration\":" + create_ontap_volume_configuration_to_json(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + fsx_json_arr(e3))
+    return fsx_json_obj(parts)
+
+# Serialize CreateVolumeRequest to a compact JSON object (declaration order).
+def create_volume_request_to_json(CreateVolumeRequest v) -> str:
+    list[str] parts = []
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + fsx_json_str(u0))
+    parts.append("\"VolumeType\":" + v.VolumeType.to_json())
+    parts.append("\"Name\":" + fsx_json_str(v.Name))
+    if v.OntapConfiguration.is_some():
+        auto u1 = v.OntapConfiguration.unwrap()
+        parts.append("\"OntapConfiguration\":" + create_ontap_volume_configuration_to_json(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + fsx_json_arr(e3))
+    if v.OpenZFSConfiguration.is_some():
+        auto u4 = v.OpenZFSConfiguration.unwrap()
+        parts.append("\"OpenZFSConfiguration\":" + create_open_zfs_volume_configuration_to_json(u4))
+    return fsx_json_obj(parts)
+
+# Serialize DataRepositoryTaskFilter to a compact JSON object (declaration order).
+def data_repository_task_filter_to_json(DataRepositoryTaskFilter v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + u0.to_json())
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(fsx_json_str(x2))
+        parts.append("\"Values\":" + fsx_json_arr(e2))
+    return fsx_json_obj(parts)
+
+# Serialize DeleteFileSystemLustreConfiguration to a compact JSON object (declaration order).
+def delete_file_system_lustre_configuration_to_json(DeleteFileSystemLustreConfiguration v) -> str:
+    list[str] parts = []
+    if v.SkipFinalBackup.is_some():
+        auto u0 = v.SkipFinalBackup.unwrap()
+        parts.append("\"SkipFinalBackup\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.FinalBackupTags.is_some():
+        auto u1 = v.FinalBackupTags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"FinalBackupTags\":" + fsx_json_arr(e2))
+    return fsx_json_obj(parts)
+
+# Serialize DeleteFileSystemOpenZFSConfiguration to a compact JSON object (declaration order).
+def delete_file_system_open_zfs_configuration_to_json(DeleteFileSystemOpenZFSConfiguration v) -> str:
+    list[str] parts = []
+    if v.SkipFinalBackup.is_some():
+        auto u0 = v.SkipFinalBackup.unwrap()
+        parts.append("\"SkipFinalBackup\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.FinalBackupTags.is_some():
+        auto u1 = v.FinalBackupTags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"FinalBackupTags\":" + fsx_json_arr(e2))
+    if v.Options.is_some():
+        auto u3 = v.Options.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(fsx_json_str(x4))
+        parts.append("\"Options\":" + fsx_json_arr(e4))
+    return fsx_json_obj(parts)
+
+# Serialize DeleteFileSystemRequest to a compact JSON object (declaration order).
+def delete_file_system_request_to_json(DeleteFileSystemRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"FileSystemId\":" + fsx_json_str(v.FileSystemId))
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + fsx_json_str(u0))
+    if v.WindowsConfiguration.is_some():
+        auto u1 = v.WindowsConfiguration.unwrap()
+        parts.append("\"WindowsConfiguration\":" + delete_file_system_windows_configuration_to_json(u1))
+    if v.LustreConfiguration.is_some():
+        auto u2 = v.LustreConfiguration.unwrap()
+        parts.append("\"LustreConfiguration\":" + delete_file_system_lustre_configuration_to_json(u2))
+    if v.OpenZFSConfiguration.is_some():
+        auto u3 = v.OpenZFSConfiguration.unwrap()
+        parts.append("\"OpenZFSConfiguration\":" + delete_file_system_open_zfs_configuration_to_json(u3))
+    return fsx_json_obj(parts)
+
+# Serialize DeleteFileSystemWindowsConfiguration to a compact JSON object (declaration order).
+def delete_file_system_windows_configuration_to_json(DeleteFileSystemWindowsConfiguration v) -> str:
+    list[str] parts = []
+    if v.SkipFinalBackup.is_some():
+        auto u0 = v.SkipFinalBackup.unwrap()
+        parts.append("\"SkipFinalBackup\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.FinalBackupTags.is_some():
+        auto u1 = v.FinalBackupTags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"FinalBackupTags\":" + fsx_json_arr(e2))
+    return fsx_json_obj(parts)
+
+# Serialize DeleteVolumeOntapConfiguration to a compact JSON object (declaration order).
+def delete_volume_ontap_configuration_to_json(DeleteVolumeOntapConfiguration v) -> str:
+    list[str] parts = []
+    if v.SkipFinalBackup.is_some():
+        auto u0 = v.SkipFinalBackup.unwrap()
+        parts.append("\"SkipFinalBackup\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.FinalBackupTags.is_some():
+        auto u1 = v.FinalBackupTags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"FinalBackupTags\":" + fsx_json_arr(e2))
+    if v.BypassSnaplockEnterpriseRetention.is_some():
+        auto u3 = v.BypassSnaplockEnterpriseRetention.unwrap()
+        parts.append("\"BypassSnaplockEnterpriseRetention\":" + json.dumps(JsonValue.Bool(u3)))
+    return fsx_json_obj(parts)
+
+# Serialize DeleteVolumeOpenZFSConfiguration to a compact JSON object (declaration order).
+def delete_volume_open_zfs_configuration_to_json(DeleteVolumeOpenZFSConfiguration v) -> str:
+    list[str] parts = []
+    if v.Options.is_some():
+        auto u0 = v.Options.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(fsx_json_str(x1))
+        parts.append("\"Options\":" + fsx_json_arr(e1))
+    return fsx_json_obj(parts)
+
+# Serialize DeleteVolumeRequest to a compact JSON object (declaration order).
+def delete_volume_request_to_json(DeleteVolumeRequest v) -> str:
+    list[str] parts = []
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + fsx_json_str(u0))
+    parts.append("\"VolumeId\":" + fsx_json_str(v.VolumeId))
+    if v.OntapConfiguration.is_some():
+        auto u1 = v.OntapConfiguration.unwrap()
+        parts.append("\"OntapConfiguration\":" + delete_volume_ontap_configuration_to_json(u1))
+    if v.OpenZFSConfiguration.is_some():
+        auto u2 = v.OpenZFSConfiguration.unwrap()
+        parts.append("\"OpenZFSConfiguration\":" + delete_volume_open_zfs_configuration_to_json(u2))
+    return fsx_json_obj(parts)
+
+# Serialize DescribeBackupsRequest to a compact JSON object (declaration order).
+def describe_backups_request_to_json(DescribeBackupsRequest v) -> str:
+    list[str] parts = []
+    if v.BackupIds.is_some():
+        auto u0 = v.BackupIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(fsx_json_str(x1))
+        parts.append("\"BackupIds\":" + fsx_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(filter_to_json(x3))
+        parts.append("\"Filters\":" + fsx_json_arr(e3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    if v.NextToken.is_some():
+        auto u5 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + fsx_json_str(u5))
+    return fsx_json_obj(parts)
+
+# Serialize DescribeDataRepositoryAssociationsRequest to a compact JSON object (declaration order).
+def describe_data_repository_associations_request_to_json(DescribeDataRepositoryAssociationsRequest v) -> str:
+    list[str] parts = []
+    if v.AssociationIds.is_some():
+        auto u0 = v.AssociationIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(fsx_json_str(x1))
+        parts.append("\"AssociationIds\":" + fsx_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(filter_to_json(x3))
+        parts.append("\"Filters\":" + fsx_json_arr(e3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    if v.NextToken.is_some():
+        auto u5 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + fsx_json_str(u5))
+    return fsx_json_obj(parts)
+
+# Serialize DescribeDataRepositoryTasksRequest to a compact JSON object (declaration order).
+def describe_data_repository_tasks_request_to_json(DescribeDataRepositoryTasksRequest v) -> str:
+    list[str] parts = []
+    if v.TaskIds.is_some():
+        auto u0 = v.TaskIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(fsx_json_str(x1))
+        parts.append("\"TaskIds\":" + fsx_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(data_repository_task_filter_to_json(x3))
+        parts.append("\"Filters\":" + fsx_json_arr(e3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    if v.NextToken.is_some():
+        auto u5 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + fsx_json_str(u5))
+    return fsx_json_obj(parts)
+
+# Serialize DescribeFileCachesRequest to a compact JSON object (declaration order).
+def describe_file_caches_request_to_json(DescribeFileCachesRequest v) -> str:
+    list[str] parts = []
+    if v.FileCacheIds.is_some():
+        auto u0 = v.FileCacheIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(fsx_json_str(x1))
+        parts.append("\"FileCacheIds\":" + fsx_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + fsx_json_str(u3))
+    return fsx_json_obj(parts)
+
+# Serialize DescribeFileSystemsRequest to a compact JSON object (declaration order).
+def describe_file_systems_request_to_json(DescribeFileSystemsRequest v) -> str:
+    list[str] parts = []
+    if v.FileSystemIds.is_some():
+        auto u0 = v.FileSystemIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(fsx_json_str(x1))
+        parts.append("\"FileSystemIds\":" + fsx_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + fsx_json_str(u3))
+    return fsx_json_obj(parts)
+
+# Serialize DescribeS3AccessPointAttachmentsRequest to a compact JSON object (declaration order).
+def describe_s3_access_point_attachments_request_to_json(DescribeS3AccessPointAttachmentsRequest v) -> str:
+    list[str] parts = []
+    if v.Names.is_some():
+        auto u0 = v.Names.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(fsx_json_str(x1))
+        parts.append("\"Names\":" + fsx_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(s3_access_point_attachments_filter_to_json(x3))
+        parts.append("\"Filters\":" + fsx_json_arr(e3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    if v.NextToken.is_some():
+        auto u5 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + fsx_json_str(u5))
+    return fsx_json_obj(parts)
+
+# Serialize DescribeSnapshotsRequest to a compact JSON object (declaration order).
+def describe_snapshots_request_to_json(DescribeSnapshotsRequest v) -> str:
+    list[str] parts = []
+    if v.SnapshotIds.is_some():
+        auto u0 = v.SnapshotIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(fsx_json_str(x1))
+        parts.append("\"SnapshotIds\":" + fsx_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(snapshot_filter_to_json(x3))
+        parts.append("\"Filters\":" + fsx_json_arr(e3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    if v.NextToken.is_some():
+        auto u5 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + fsx_json_str(u5))
+    if v.IncludeShared.is_some():
+        auto u6 = v.IncludeShared.unwrap()
+        parts.append("\"IncludeShared\":" + json.dumps(JsonValue.Bool(u6)))
+    return fsx_json_obj(parts)
+
+# Serialize DescribeStorageVirtualMachinesRequest to a compact JSON object (declaration order).
+def describe_storage_virtual_machines_request_to_json(DescribeStorageVirtualMachinesRequest v) -> str:
+    list[str] parts = []
+    if v.StorageVirtualMachineIds.is_some():
+        auto u0 = v.StorageVirtualMachineIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(fsx_json_str(x1))
+        parts.append("\"StorageVirtualMachineIds\":" + fsx_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(storage_virtual_machine_filter_to_json(x3))
+        parts.append("\"Filters\":" + fsx_json_arr(e3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    if v.NextToken.is_some():
+        auto u5 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + fsx_json_str(u5))
+    return fsx_json_obj(parts)
+
+# Serialize DescribeVolumesRequest to a compact JSON object (declaration order).
+def describe_volumes_request_to_json(DescribeVolumesRequest v) -> str:
+    list[str] parts = []
+    if v.VolumeIds.is_some():
+        auto u0 = v.VolumeIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(fsx_json_str(x1))
+        parts.append("\"VolumeIds\":" + fsx_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(volume_filter_to_json(x3))
+        parts.append("\"Filters\":" + fsx_json_arr(e3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    if v.NextToken.is_some():
+        auto u5 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + fsx_json_str(u5))
+    return fsx_json_obj(parts)
+
+# Serialize DisassociateFileSystemAliasesRequest to a compact JSON object (declaration order).
+def disassociate_file_system_aliases_request_to_json(DisassociateFileSystemAliasesRequest v) -> str:
+    list[str] parts = []
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + fsx_json_str(u0))
+    parts.append("\"FileSystemId\":" + fsx_json_str(v.FileSystemId))
+    list[str] e1 = []
+    for x1 in v.Aliases:
+        e1.append(fsx_json_str(x1))
+    parts.append("\"Aliases\":" + fsx_json_arr(e1))
+    return fsx_json_obj(parts)
+
+# Serialize FileCacheDataRepositoryAssociation to a compact JSON object (declaration order).
+def file_cache_data_repository_association_to_json(FileCacheDataRepositoryAssociation v) -> str:
+    list[str] parts = []
+    parts.append("\"FileCachePath\":" + fsx_json_str(v.FileCachePath))
+    parts.append("\"DataRepositoryPath\":" + fsx_json_str(v.DataRepositoryPath))
+    if v.DataRepositorySubdirectories.is_some():
+        auto u0 = v.DataRepositorySubdirectories.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(fsx_json_str(x1))
+        parts.append("\"DataRepositorySubdirectories\":" + fsx_json_arr(e1))
+    if v.NFS.is_some():
+        auto u2 = v.NFS.unwrap()
+        parts.append("\"NFS\":" + file_cache_nfs_configuration_to_json(u2))
+    return fsx_json_obj(parts)
+
+# Serialize FileCacheNFSConfiguration to a compact JSON object (declaration order).
+def file_cache_nfs_configuration_to_json(FileCacheNFSConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"Version\":" + fsx_json_str(v.Version))
+    if v.DnsIps.is_some():
+        auto u0 = v.DnsIps.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(fsx_json_str(x1))
+        parts.append("\"DnsIps\":" + fsx_json_arr(e1))
+    return fsx_json_obj(parts)
+
+# Serialize Filter to a compact JSON object (declaration order).
+def filter_to_json(Filter v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + u0.to_json())
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(fsx_json_str(x2))
+        parts.append("\"Values\":" + fsx_json_arr(e2))
+    return fsx_json_obj(parts)
+
+# Serialize LustreRootSquashConfiguration to a compact JSON object (declaration order).
+def lustre_root_squash_configuration_to_json(LustreRootSquashConfiguration v) -> str:
+    list[str] parts = []
+    if v.RootSquash.is_some():
+        auto u0 = v.RootSquash.unwrap()
+        parts.append("\"RootSquash\":" + fsx_json_str(u0))
+    if v.NoSquashNids.is_some():
+        auto u1 = v.NoSquashNids.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(fsx_json_str(x2))
+        parts.append("\"NoSquashNids\":" + fsx_json_arr(e2))
+    return fsx_json_obj(parts)
+
+# Serialize OpenZFSClientConfiguration to a compact JSON object (declaration order).
+def open_zfs_client_configuration_to_json(OpenZFSClientConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"Clients\":" + fsx_json_str(v.Clients))
+    list[str] e0 = []
+    for x0 in v.Options:
+        e0.append(fsx_json_str(x0))
+    parts.append("\"Options\":" + fsx_json_arr(e0))
+    return fsx_json_obj(parts)
+
+# Serialize OpenZFSCreateRootVolumeConfiguration to a compact JSON object (declaration order).
+def open_zfs_create_root_volume_configuration_to_json(OpenZFSCreateRootVolumeConfiguration v) -> str:
+    list[str] parts = []
+    if v.RecordSizeKiB.is_some():
+        auto u0 = v.RecordSizeKiB.unwrap()
+        parts.append("\"RecordSizeKiB\":" + str(u0))
+    if v.DataCompressionType.is_some():
+        auto u1 = v.DataCompressionType.unwrap()
+        parts.append("\"DataCompressionType\":" + u1.to_json())
+    if v.NfsExports.is_some():
+        auto u2 = v.NfsExports.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(open_zfs_nfs_export_to_json(x3))
+        parts.append("\"NfsExports\":" + fsx_json_arr(e3))
+    if v.UserAndGroupQuotas.is_some():
+        auto u4 = v.UserAndGroupQuotas.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"UserAndGroupQuotas\":" + fsx_json_arr(e5))
+    if v.CopyTagsToSnapshots.is_some():
+        auto u6 = v.CopyTagsToSnapshots.unwrap()
+        parts.append("\"CopyTagsToSnapshots\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.ReadOnly.is_some():
+        auto u7 = v.ReadOnly.unwrap()
+        parts.append("\"ReadOnly\":" + json.dumps(JsonValue.Bool(u7)))
+    return fsx_json_obj(parts)
+
+# Serialize OpenZFSFileSystemIdentity to a compact JSON object (declaration order).
+def open_zfs_file_system_identity_to_json(OpenZFSFileSystemIdentity v) -> str:
+    list[str] parts = []
+    parts.append("\"Type\":" + fsx_json_str(v.Type))
+    if v.PosixUser.is_some():
+        auto u0 = v.PosixUser.unwrap()
+        parts.append("\"PosixUser\":" + open_zfs_posix_file_system_user_to_json(u0))
+    return fsx_json_obj(parts)
+
+# Serialize OpenZFSNfsExport to a compact JSON object (declaration order).
+def open_zfs_nfs_export_to_json(OpenZFSNfsExport v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ClientConfigurations:
+        e0.append(open_zfs_client_configuration_to_json(x0))
+    parts.append("\"ClientConfigurations\":" + fsx_json_arr(e0))
+    return fsx_json_obj(parts)
+
+# Serialize OpenZFSPosixFileSystemUser to a compact JSON object (declaration order).
+def open_zfs_posix_file_system_user_to_json(OpenZFSPosixFileSystemUser v) -> str:
+    list[str] parts = []
+    parts.append("\"Uid\":" + str(v.Uid))
+    parts.append("\"Gid\":" + str(v.Gid))
+    if v.SecondaryGids.is_some():
+        auto u0 = v.SecondaryGids.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"SecondaryGids\":" + fsx_json_arr(e1))
+    return fsx_json_obj(parts)
+
+# Serialize RestoreVolumeFromSnapshotRequest to a compact JSON object (declaration order).
+def restore_volume_from_snapshot_request_to_json(RestoreVolumeFromSnapshotRequest v) -> str:
+    list[str] parts = []
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + fsx_json_str(u0))
+    parts.append("\"VolumeId\":" + fsx_json_str(v.VolumeId))
+    parts.append("\"SnapshotId\":" + fsx_json_str(v.SnapshotId))
+    if v.Options.is_some():
+        auto u1 = v.Options.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Options\":" + fsx_json_arr(e2))
+    return fsx_json_obj(parts)
+
+# Serialize S3AccessPointAttachmentsFilter to a compact JSON object (declaration order).
+def s3_access_point_attachments_filter_to_json(S3AccessPointAttachmentsFilter v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + u0.to_json())
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(fsx_json_str(x2))
+        parts.append("\"Values\":" + fsx_json_arr(e2))
+    return fsx_json_obj(parts)
+
+# Serialize S3DataRepositoryConfiguration to a compact JSON object (declaration order).
+def s3_data_repository_configuration_to_json(S3DataRepositoryConfiguration v) -> str:
+    list[str] parts = []
+    if v.AutoImportPolicy.is_some():
+        auto u0 = v.AutoImportPolicy.unwrap()
+        parts.append("\"AutoImportPolicy\":" + auto_import_policy_to_json(u0))
+    if v.AutoExportPolicy.is_some():
+        auto u1 = v.AutoExportPolicy.unwrap()
+        parts.append("\"AutoExportPolicy\":" + auto_export_policy_to_json(u1))
+    return fsx_json_obj(parts)
+
+# Serialize SelfManagedActiveDirectoryConfiguration to a compact JSON object (declaration order).
+def self_managed_active_directory_configuration_to_json(SelfManagedActiveDirectoryConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"DomainName\":" + fsx_json_str(v.DomainName))
+    if v.OrganizationalUnitDistinguishedName.is_some():
+        auto u0 = v.OrganizationalUnitDistinguishedName.unwrap()
+        parts.append("\"OrganizationalUnitDistinguishedName\":" + fsx_json_str(u0))
+    if v.FileSystemAdministratorsGroup.is_some():
+        auto u1 = v.FileSystemAdministratorsGroup.unwrap()
+        parts.append("\"FileSystemAdministratorsGroup\":" + fsx_json_str(u1))
+    if v.UserName.is_some():
+        auto u2 = v.UserName.unwrap()
+        parts.append("\"UserName\":" + fsx_json_str(u2))
+    if v.Password.is_some():
+        auto u3 = v.Password.unwrap()
+        parts.append("\"Password\":" + fsx_json_str(u3))
+    list[str] e4 = []
+    for x4 in v.DnsIps:
+        e4.append(fsx_json_str(x4))
+    parts.append("\"DnsIps\":" + fsx_json_arr(e4))
+    if v.DomainJoinServiceAccountSecret.is_some():
+        auto u5 = v.DomainJoinServiceAccountSecret.unwrap()
+        parts.append("\"DomainJoinServiceAccountSecret\":" + fsx_json_str(u5))
+    return fsx_json_obj(parts)
+
+# Serialize SelfManagedActiveDirectoryConfigurationUpdates to a compact JSON object (declaration order).
+def self_managed_active_directory_configuration_updates_to_json(SelfManagedActiveDirectoryConfigurationUpdates v) -> str:
+    list[str] parts = []
+    if v.UserName.is_some():
+        auto u0 = v.UserName.unwrap()
+        parts.append("\"UserName\":" + fsx_json_str(u0))
+    if v.Password.is_some():
+        auto u1 = v.Password.unwrap()
+        parts.append("\"Password\":" + fsx_json_str(u1))
+    if v.DnsIps.is_some():
+        auto u2 = v.DnsIps.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(fsx_json_str(x3))
+        parts.append("\"DnsIps\":" + fsx_json_arr(e3))
+    if v.DomainName.is_some():
+        auto u4 = v.DomainName.unwrap()
+        parts.append("\"DomainName\":" + fsx_json_str(u4))
+    if v.OrganizationalUnitDistinguishedName.is_some():
+        auto u5 = v.OrganizationalUnitDistinguishedName.unwrap()
+        parts.append("\"OrganizationalUnitDistinguishedName\":" + fsx_json_str(u5))
+    if v.FileSystemAdministratorsGroup.is_some():
+        auto u6 = v.FileSystemAdministratorsGroup.unwrap()
+        parts.append("\"FileSystemAdministratorsGroup\":" + fsx_json_str(u6))
+    if v.DomainJoinServiceAccountSecret.is_some():
+        auto u7 = v.DomainJoinServiceAccountSecret.unwrap()
+        parts.append("\"DomainJoinServiceAccountSecret\":" + fsx_json_str(u7))
+    return fsx_json_obj(parts)
+
+# Serialize SnapshotFilter to a compact JSON object (declaration order).
+def snapshot_filter_to_json(SnapshotFilter v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + u0.to_json())
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(fsx_json_str(x2))
+        parts.append("\"Values\":" + fsx_json_arr(e2))
+    return fsx_json_obj(parts)
+
+# Serialize StorageVirtualMachineFilter to a compact JSON object (declaration order).
+def storage_virtual_machine_filter_to_json(StorageVirtualMachineFilter v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + fsx_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(fsx_json_str(x2))
+        parts.append("\"Values\":" + fsx_json_arr(e2))
+    return fsx_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + fsx_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + fsx_json_arr(e0))
+    return fsx_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + fsx_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(fsx_json_str(x0))
+    parts.append("\"TagKeys\":" + fsx_json_arr(e0))
+    return fsx_json_obj(parts)
+
+# Serialize UpdateDataRepositoryAssociationRequest to a compact JSON object (declaration order).
+def update_data_repository_association_request_to_json(UpdateDataRepositoryAssociationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AssociationId\":" + fsx_json_str(v.AssociationId))
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + fsx_json_str(u0))
+    if v.ImportedFileChunkSize.is_some():
+        auto u1 = v.ImportedFileChunkSize.unwrap()
+        parts.append("\"ImportedFileChunkSize\":" + str(u1))
+    if v.S3.is_some():
+        auto u2 = v.S3.unwrap()
+        parts.append("\"S3\":" + s3_data_repository_configuration_to_json(u2))
+    return fsx_json_obj(parts)
+
+# Serialize UpdateFileSystemLustreConfiguration to a compact JSON object (declaration order).
+def update_file_system_lustre_configuration_to_json(UpdateFileSystemLustreConfiguration v) -> str:
+    list[str] parts = []
+    if v.WeeklyMaintenanceStartTime.is_some():
+        auto u0 = v.WeeklyMaintenanceStartTime.unwrap()
+        parts.append("\"WeeklyMaintenanceStartTime\":" + fsx_json_str(u0))
+    if v.DailyAutomaticBackupStartTime.is_some():
+        auto u1 = v.DailyAutomaticBackupStartTime.unwrap()
+        parts.append("\"DailyAutomaticBackupStartTime\":" + fsx_json_str(u1))
+    if v.AutomaticBackupRetentionDays.is_some():
+        auto u2 = v.AutomaticBackupRetentionDays.unwrap()
+        parts.append("\"AutomaticBackupRetentionDays\":" + str(u2))
+    if v.AutoImportPolicy.is_some():
+        auto u3 = v.AutoImportPolicy.unwrap()
+        parts.append("\"AutoImportPolicy\":" + u3.to_json())
+    if v.DataCompressionType.is_some():
+        auto u4 = v.DataCompressionType.unwrap()
+        parts.append("\"DataCompressionType\":" + u4.to_json())
+    if v.LogConfiguration.is_some():
+        auto u5 = v.LogConfiguration.unwrap()
+        parts.append("\"LogConfiguration\":" + u5.to_json())
+    if v.RootSquashConfiguration.is_some():
+        auto u6 = v.RootSquashConfiguration.unwrap()
+        parts.append("\"RootSquashConfiguration\":" + lustre_root_squash_configuration_to_json(u6))
+    if v.PerUnitStorageThroughput.is_some():
+        auto u7 = v.PerUnitStorageThroughput.unwrap()
+        parts.append("\"PerUnitStorageThroughput\":" + str(u7))
+    if v.MetadataConfiguration.is_some():
+        auto u8 = v.MetadataConfiguration.unwrap()
+        parts.append("\"MetadataConfiguration\":" + u8.to_json())
+    if v.ThroughputCapacity.is_some():
+        auto u9 = v.ThroughputCapacity.unwrap()
+        parts.append("\"ThroughputCapacity\":" + str(u9))
+    if v.DataReadCacheConfiguration.is_some():
+        auto u10 = v.DataReadCacheConfiguration.unwrap()
+        parts.append("\"DataReadCacheConfiguration\":" + u10.to_json())
+    return fsx_json_obj(parts)
+
+# Serialize UpdateFileSystemOntapConfiguration to a compact JSON object (declaration order).
+def update_file_system_ontap_configuration_to_json(UpdateFileSystemOntapConfiguration v) -> str:
+    list[str] parts = []
+    if v.AutomaticBackupRetentionDays.is_some():
+        auto u0 = v.AutomaticBackupRetentionDays.unwrap()
+        parts.append("\"AutomaticBackupRetentionDays\":" + str(u0))
+    if v.DailyAutomaticBackupStartTime.is_some():
+        auto u1 = v.DailyAutomaticBackupStartTime.unwrap()
+        parts.append("\"DailyAutomaticBackupStartTime\":" + fsx_json_str(u1))
+    if v.FsxAdminPassword.is_some():
+        auto u2 = v.FsxAdminPassword.unwrap()
+        parts.append("\"FsxAdminPassword\":" + fsx_json_str(u2))
+    if v.WeeklyMaintenanceStartTime.is_some():
+        auto u3 = v.WeeklyMaintenanceStartTime.unwrap()
+        parts.append("\"WeeklyMaintenanceStartTime\":" + fsx_json_str(u3))
+    if v.DiskIopsConfiguration.is_some():
+        auto u4 = v.DiskIopsConfiguration.unwrap()
+        parts.append("\"DiskIopsConfiguration\":" + u4.to_json())
+    if v.ThroughputCapacity.is_some():
+        auto u5 = v.ThroughputCapacity.unwrap()
+        parts.append("\"ThroughputCapacity\":" + str(u5))
+    if v.AddRouteTableIds.is_some():
+        auto u6 = v.AddRouteTableIds.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(fsx_json_str(x7))
+        parts.append("\"AddRouteTableIds\":" + fsx_json_arr(e7))
+    if v.RemoveRouteTableIds.is_some():
+        auto u8 = v.RemoveRouteTableIds.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(fsx_json_str(x9))
+        parts.append("\"RemoveRouteTableIds\":" + fsx_json_arr(e9))
+    if v.ThroughputCapacityPerHAPair.is_some():
+        auto u10 = v.ThroughputCapacityPerHAPair.unwrap()
+        parts.append("\"ThroughputCapacityPerHAPair\":" + str(u10))
+    if v.HAPairs.is_some():
+        auto u11 = v.HAPairs.unwrap()
+        parts.append("\"HAPairs\":" + str(u11))
+    if v.EndpointIpv6AddressRange.is_some():
+        auto u12 = v.EndpointIpv6AddressRange.unwrap()
+        parts.append("\"EndpointIpv6AddressRange\":" + fsx_json_str(u12))
+    return fsx_json_obj(parts)
+
+# Serialize UpdateFileSystemOpenZFSConfiguration to a compact JSON object (declaration order).
+def update_file_system_open_zfs_configuration_to_json(UpdateFileSystemOpenZFSConfiguration v) -> str:
+    list[str] parts = []
+    if v.AutomaticBackupRetentionDays.is_some():
+        auto u0 = v.AutomaticBackupRetentionDays.unwrap()
+        parts.append("\"AutomaticBackupRetentionDays\":" + str(u0))
+    if v.CopyTagsToBackups.is_some():
+        auto u1 = v.CopyTagsToBackups.unwrap()
+        parts.append("\"CopyTagsToBackups\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.CopyTagsToVolumes.is_some():
+        auto u2 = v.CopyTagsToVolumes.unwrap()
+        parts.append("\"CopyTagsToVolumes\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.DailyAutomaticBackupStartTime.is_some():
+        auto u3 = v.DailyAutomaticBackupStartTime.unwrap()
+        parts.append("\"DailyAutomaticBackupStartTime\":" + fsx_json_str(u3))
+    if v.ThroughputCapacity.is_some():
+        auto u4 = v.ThroughputCapacity.unwrap()
+        parts.append("\"ThroughputCapacity\":" + str(u4))
+    if v.WeeklyMaintenanceStartTime.is_some():
+        auto u5 = v.WeeklyMaintenanceStartTime.unwrap()
+        parts.append("\"WeeklyMaintenanceStartTime\":" + fsx_json_str(u5))
+    if v.DiskIopsConfiguration.is_some():
+        auto u6 = v.DiskIopsConfiguration.unwrap()
+        parts.append("\"DiskIopsConfiguration\":" + u6.to_json())
+    if v.AddRouteTableIds.is_some():
+        auto u7 = v.AddRouteTableIds.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(fsx_json_str(x8))
+        parts.append("\"AddRouteTableIds\":" + fsx_json_arr(e8))
+    if v.RemoveRouteTableIds.is_some():
+        auto u9 = v.RemoveRouteTableIds.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(fsx_json_str(x10))
+        parts.append("\"RemoveRouteTableIds\":" + fsx_json_arr(e10))
+    if v.ReadCacheConfiguration.is_some():
+        auto u11 = v.ReadCacheConfiguration.unwrap()
+        parts.append("\"ReadCacheConfiguration\":" + u11.to_json())
+    if v.EndpointIpv6AddressRange.is_some():
+        auto u12 = v.EndpointIpv6AddressRange.unwrap()
+        parts.append("\"EndpointIpv6AddressRange\":" + fsx_json_str(u12))
+    return fsx_json_obj(parts)
+
+# Serialize UpdateFileSystemRequest to a compact JSON object (declaration order).
+def update_file_system_request_to_json(UpdateFileSystemRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"FileSystemId\":" + fsx_json_str(v.FileSystemId))
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + fsx_json_str(u0))
+    if v.StorageCapacity.is_some():
+        auto u1 = v.StorageCapacity.unwrap()
+        parts.append("\"StorageCapacity\":" + str(u1))
+    if v.WindowsConfiguration.is_some():
+        auto u2 = v.WindowsConfiguration.unwrap()
+        parts.append("\"WindowsConfiguration\":" + update_file_system_windows_configuration_to_json(u2))
+    if v.LustreConfiguration.is_some():
+        auto u3 = v.LustreConfiguration.unwrap()
+        parts.append("\"LustreConfiguration\":" + update_file_system_lustre_configuration_to_json(u3))
+    if v.OntapConfiguration.is_some():
+        auto u4 = v.OntapConfiguration.unwrap()
+        parts.append("\"OntapConfiguration\":" + update_file_system_ontap_configuration_to_json(u4))
+    if v.OpenZFSConfiguration.is_some():
+        auto u5 = v.OpenZFSConfiguration.unwrap()
+        parts.append("\"OpenZFSConfiguration\":" + update_file_system_open_zfs_configuration_to_json(u5))
+    if v.StorageType.is_some():
+        auto u6 = v.StorageType.unwrap()
+        parts.append("\"StorageType\":" + u6.to_json())
+    if v.FileSystemTypeVersion.is_some():
+        auto u7 = v.FileSystemTypeVersion.unwrap()
+        parts.append("\"FileSystemTypeVersion\":" + fsx_json_str(u7))
+    if v.NetworkType.is_some():
+        auto u8 = v.NetworkType.unwrap()
+        parts.append("\"NetworkType\":" + u8.to_json())
+    return fsx_json_obj(parts)
+
+# Serialize UpdateFileSystemWindowsConfiguration to a compact JSON object (declaration order).
+def update_file_system_windows_configuration_to_json(UpdateFileSystemWindowsConfiguration v) -> str:
+    list[str] parts = []
+    if v.WeeklyMaintenanceStartTime.is_some():
+        auto u0 = v.WeeklyMaintenanceStartTime.unwrap()
+        parts.append("\"WeeklyMaintenanceStartTime\":" + fsx_json_str(u0))
+    if v.DailyAutomaticBackupStartTime.is_some():
+        auto u1 = v.DailyAutomaticBackupStartTime.unwrap()
+        parts.append("\"DailyAutomaticBackupStartTime\":" + fsx_json_str(u1))
+    if v.AutomaticBackupRetentionDays.is_some():
+        auto u2 = v.AutomaticBackupRetentionDays.unwrap()
+        parts.append("\"AutomaticBackupRetentionDays\":" + str(u2))
+    if v.ThroughputCapacity.is_some():
+        auto u3 = v.ThroughputCapacity.unwrap()
+        parts.append("\"ThroughputCapacity\":" + str(u3))
+    if v.SelfManagedActiveDirectoryConfiguration.is_some():
+        auto u4 = v.SelfManagedActiveDirectoryConfiguration.unwrap()
+        parts.append("\"SelfManagedActiveDirectoryConfiguration\":" + self_managed_active_directory_configuration_updates_to_json(u4))
+    if v.AuditLogConfiguration.is_some():
+        auto u5 = v.AuditLogConfiguration.unwrap()
+        parts.append("\"AuditLogConfiguration\":" + u5.to_json())
+    if v.DiskIopsConfiguration.is_some():
+        auto u6 = v.DiskIopsConfiguration.unwrap()
+        parts.append("\"DiskIopsConfiguration\":" + u6.to_json())
+    if v.FsrmConfiguration.is_some():
+        auto u7 = v.FsrmConfiguration.unwrap()
+        parts.append("\"FsrmConfiguration\":" + u7.to_json())
+    return fsx_json_obj(parts)
+
+# Serialize UpdateOpenZFSVolumeConfiguration to a compact JSON object (declaration order).
+def update_open_zfs_volume_configuration_to_json(UpdateOpenZFSVolumeConfiguration v) -> str:
+    list[str] parts = []
+    if v.StorageCapacityReservationGiB.is_some():
+        auto u0 = v.StorageCapacityReservationGiB.unwrap()
+        parts.append("\"StorageCapacityReservationGiB\":" + str(u0))
+    if v.StorageCapacityQuotaGiB.is_some():
+        auto u1 = v.StorageCapacityQuotaGiB.unwrap()
+        parts.append("\"StorageCapacityQuotaGiB\":" + str(u1))
+    if v.RecordSizeKiB.is_some():
+        auto u2 = v.RecordSizeKiB.unwrap()
+        parts.append("\"RecordSizeKiB\":" + str(u2))
+    if v.DataCompressionType.is_some():
+        auto u3 = v.DataCompressionType.unwrap()
+        parts.append("\"DataCompressionType\":" + u3.to_json())
+    if v.NfsExports.is_some():
+        auto u4 = v.NfsExports.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(open_zfs_nfs_export_to_json(x5))
+        parts.append("\"NfsExports\":" + fsx_json_arr(e5))
+    if v.UserAndGroupQuotas.is_some():
+        auto u6 = v.UserAndGroupQuotas.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"UserAndGroupQuotas\":" + fsx_json_arr(e7))
+    if v.ReadOnly.is_some():
+        auto u8 = v.ReadOnly.unwrap()
+        parts.append("\"ReadOnly\":" + json.dumps(JsonValue.Bool(u8)))
+    return fsx_json_obj(parts)
+
+# Serialize UpdateStorageVirtualMachineRequest to a compact JSON object (declaration order).
+def update_storage_virtual_machine_request_to_json(UpdateStorageVirtualMachineRequest v) -> str:
+    list[str] parts = []
+    if v.ActiveDirectoryConfiguration.is_some():
+        auto u0 = v.ActiveDirectoryConfiguration.unwrap()
+        parts.append("\"ActiveDirectoryConfiguration\":" + update_svm_active_directory_configuration_to_json(u0))
+    if v.ClientRequestToken.is_some():
+        auto u1 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + fsx_json_str(u1))
+    parts.append("\"StorageVirtualMachineId\":" + fsx_json_str(v.StorageVirtualMachineId))
+    if v.SvmAdminPassword.is_some():
+        auto u2 = v.SvmAdminPassword.unwrap()
+        parts.append("\"SvmAdminPassword\":" + fsx_json_str(u2))
+    return fsx_json_obj(parts)
+
+# Serialize UpdateSvmActiveDirectoryConfiguration to a compact JSON object (declaration order).
+def update_svm_active_directory_configuration_to_json(UpdateSvmActiveDirectoryConfiguration v) -> str:
+    list[str] parts = []
+    if v.SelfManagedActiveDirectoryConfiguration.is_some():
+        auto u0 = v.SelfManagedActiveDirectoryConfiguration.unwrap()
+        parts.append("\"SelfManagedActiveDirectoryConfiguration\":" + self_managed_active_directory_configuration_updates_to_json(u0))
+    if v.NetBiosName.is_some():
+        auto u1 = v.NetBiosName.unwrap()
+        parts.append("\"NetBiosName\":" + fsx_json_str(u1))
+    return fsx_json_obj(parts)
+
+# Serialize UpdateVolumeRequest to a compact JSON object (declaration order).
+def update_volume_request_to_json(UpdateVolumeRequest v) -> str:
+    list[str] parts = []
+    if v.ClientRequestToken.is_some():
+        auto u0 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + fsx_json_str(u0))
+    parts.append("\"VolumeId\":" + fsx_json_str(v.VolumeId))
+    if v.OntapConfiguration.is_some():
+        auto u1 = v.OntapConfiguration.unwrap()
+        parts.append("\"OntapConfiguration\":" + u1.to_json())
+    if v.Name.is_some():
+        auto u2 = v.Name.unwrap()
+        parts.append("\"Name\":" + fsx_json_str(u2))
+    if v.OpenZFSConfiguration.is_some():
+        auto u3 = v.OpenZFSConfiguration.unwrap()
+        parts.append("\"OpenZFSConfiguration\":" + update_open_zfs_volume_configuration_to_json(u3))
+    return fsx_json_obj(parts)
+
+# Serialize VolumeFilter to a compact JSON object (declaration order).
+def volume_filter_to_json(VolumeFilter v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + u0.to_json())
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(fsx_json_str(x2))
+        parts.append("\"Values\":" + fsx_json_arr(e2))
+    return fsx_json_obj(parts)
 
 # A bound FSx client: credentials + region, threaded into every operation.
 struct FSxClient:
     core.Credentials creds
     str region
 
+    # AssociateFileSystemAliases
+    # errors: BadRequest, FileSystemNotFound, InternalServerError
+    def associate_file_system_aliases(self, AssociateFileSystemAliasesRequest input) -> str:
+        auto body = associate_file_system_aliases_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "AssociateFileSystemAliases", body)
+
     # CancelDataRepositoryTask
     # errors: BadRequest, DataRepositoryTaskEnded, DataRepositoryTaskNotFound, InternalServerError, UnsupportedOperation
     def cancel_data_repository_task(self, CancelDataRepositoryTaskRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "CancelDataRepositoryTask", body)
+
+    # CopyBackup
+    # errors: BackupNotFound, BadRequest, IncompatibleParameterError, IncompatibleRegionForMultiAZ, InternalServerError, InvalidDestinationKmsKey, InvalidRegion, InvalidSourceKmsKey, ServiceLimitExceeded, SourceBackupUnavailable, UnsupportedOperation
+    def copy_backup(self, CopyBackupRequest input) -> str:
+        auto body = copy_backup_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "CopyBackup", body)
+
+    # CopySnapshotAndUpdateVolume
+    # errors: BadRequest, IncompatibleParameterError, InternalServerError, ServiceLimitExceeded
+    def copy_snapshot_and_update_volume(self, CopySnapshotAndUpdateVolumeRequest input) -> str:
+        auto body = copy_snapshot_and_update_volume_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "CopySnapshotAndUpdateVolume", body)
+
+    # CreateAndAttachS3AccessPoint
+    # errors: AccessPointAlreadyOwnedByYou, BadRequest, IncompatibleParameterError, InternalServerError, InvalidAccessPoint, InvalidRequest, TooManyAccessPoints, UnsupportedOperation, VolumeNotFound
+    def create_and_attach_s3_access_point(self, CreateAndAttachS3AccessPointRequest input) -> str:
+        auto body = create_and_attach_s3_access_point_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "CreateAndAttachS3AccessPoint", body)
+
+    # CreateBackup
+    # errors: BackupInProgress, BadRequest, FileSystemNotFound, IncompatibleParameterError, InternalServerError, ServiceLimitExceeded, UnsupportedOperation, VolumeNotFound
+    def create_backup(self, CreateBackupRequest input) -> str:
+        auto body = create_backup_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "CreateBackup", body)
+
+    # CreateDataRepositoryAssociation
+    # errors: BadRequest, FileSystemNotFound, IncompatibleParameterError, InternalServerError, ServiceLimitExceeded, UnsupportedOperation
+    def create_data_repository_association(self, CreateDataRepositoryAssociationRequest input) -> str:
+        auto body = create_data_repository_association_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "CreateDataRepositoryAssociation", body)
+
+    # CreateDataRepositoryTask
+    # errors: BadRequest, DataRepositoryTaskExecuting, FileSystemNotFound, IncompatibleParameterError, InternalServerError, ServiceLimitExceeded, UnsupportedOperation
+    def create_data_repository_task(self, CreateDataRepositoryTaskRequest input) -> str:
+        auto body = create_data_repository_task_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "CreateDataRepositoryTask", body)
+
+    # CreateFileCache
+    # errors: BadRequest, IncompatibleParameterError, InternalServerError, InvalidNetworkSettings, InvalidPerUnitStorageThroughput, MissingFileCacheConfiguration, ServiceLimitExceeded
+    def create_file_cache(self, CreateFileCacheRequest input) -> str:
+        auto body = create_file_cache_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "CreateFileCache", body)
+
+    # CreateFileSystem
+    # errors: ActiveDirectoryError, BadRequest, IncompatibleParameterError, InternalServerError, InvalidExportPath, InvalidImportPath, InvalidNetworkSettings, InvalidPerUnitStorageThroughput, MissingFileSystemConfiguration, ServiceLimitExceeded
+    def create_file_system(self, CreateFileSystemRequest input) -> str:
+        auto body = create_file_system_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "CreateFileSystem", body)
+
+    # CreateFileSystemFromBackup
+    # errors: ActiveDirectoryError, BackupNotFound, BadRequest, IncompatibleParameterError, InternalServerError, InvalidNetworkSettings, InvalidPerUnitStorageThroughput, MissingFileSystemConfiguration, ServiceLimitExceeded
+    def create_file_system_from_backup(self, CreateFileSystemFromBackupRequest input) -> str:
+        auto body = create_file_system_from_backup_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "CreateFileSystemFromBackup", body)
+
+    # CreateSnapshot
+    # errors: BadRequest, InternalServerError, ServiceLimitExceeded, VolumeNotFound
+    def create_snapshot(self, CreateSnapshotRequest input) -> str:
+        auto body = create_snapshot_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "CreateSnapshot", body)
+
+    # CreateStorageVirtualMachine
+    # errors: ActiveDirectoryError, BadRequest, FileSystemNotFound, IncompatibleParameterError, InternalServerError, ServiceLimitExceeded, UnsupportedOperation
+    def create_storage_virtual_machine(self, CreateStorageVirtualMachineRequest input) -> str:
+        auto body = create_storage_virtual_machine_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "CreateStorageVirtualMachine", body)
+
+    # CreateVolume
+    # errors: BadRequest, FileSystemNotFound, IncompatibleParameterError, InternalServerError, MissingVolumeConfiguration, ServiceLimitExceeded, StorageVirtualMachineNotFound, UnsupportedOperation
+    def create_volume(self, CreateVolumeRequest input) -> str:
+        auto body = create_volume_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "CreateVolume", body)
+
+    # CreateVolumeFromBackup
+    # errors: BackupNotFound, BadRequest, FileSystemNotFound, IncompatibleParameterError, InternalServerError, MissingVolumeConfiguration, ServiceLimitExceeded, StorageVirtualMachineNotFound
+    def create_volume_from_backup(self, CreateVolumeFromBackupRequest input) -> str:
+        auto body = create_volume_from_backup_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "CreateVolumeFromBackup", body)
 
     # DeleteBackup
     # errors: BackupBeingCopied, BackupInProgress, BackupNotFound, BackupRestoring, BadRequest, IncompatibleParameterError, InternalServerError
@@ -2651,6 +4460,12 @@ struct FSxClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "DeleteFileCache", body)
 
+    # DeleteFileSystem
+    # errors: BadRequest, FileSystemNotFound, IncompatibleParameterError, InternalServerError, ServiceLimitExceeded
+    def delete_file_system(self, DeleteFileSystemRequest input) -> str:
+        auto body = delete_file_system_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "DeleteFileSystem", body)
+
     # DeleteSnapshot
     # errors: BadRequest, InternalServerError, SnapshotNotFound
     def delete_snapshot(self, DeleteSnapshotRequest input) -> str:
@@ -2663,11 +4478,53 @@ struct FSxClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "DeleteStorageVirtualMachine", body)
 
+    # DeleteVolume
+    # errors: BadRequest, IncompatibleParameterError, InternalServerError, ServiceLimitExceeded, VolumeNotFound
+    def delete_volume(self, DeleteVolumeRequest input) -> str:
+        auto body = delete_volume_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "DeleteVolume", body)
+
+    # DescribeBackups
+    # errors: BackupNotFound, BadRequest, FileSystemNotFound, InternalServerError, VolumeNotFound
+    def describe_backups(self, DescribeBackupsRequest input) -> str:
+        auto body = describe_backups_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "DescribeBackups", body)
+
+    # DescribeDataRepositoryAssociations
+    # errors: BadRequest, DataRepositoryAssociationNotFound, FileSystemNotFound, InternalServerError, InvalidDataRepositoryType
+    def describe_data_repository_associations(self, DescribeDataRepositoryAssociationsRequest input) -> str:
+        auto body = describe_data_repository_associations_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "DescribeDataRepositoryAssociations", body)
+
+    # DescribeDataRepositoryTasks
+    # errors: BadRequest, DataRepositoryTaskNotFound, FileSystemNotFound, InternalServerError
+    def describe_data_repository_tasks(self, DescribeDataRepositoryTasksRequest input) -> str:
+        auto body = describe_data_repository_tasks_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "DescribeDataRepositoryTasks", body)
+
+    # DescribeFileCaches
+    # errors: BadRequest, FileCacheNotFound, InternalServerError
+    def describe_file_caches(self, DescribeFileCachesRequest input) -> str:
+        auto body = describe_file_caches_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "DescribeFileCaches", body)
+
     # DescribeFileSystemAliases
     # errors: BadRequest, FileSystemNotFound, InternalServerError
     def describe_file_system_aliases(self, DescribeFileSystemAliasesRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "DescribeFileSystemAliases", body)
+
+    # DescribeFileSystems
+    # errors: BadRequest, FileSystemNotFound, InternalServerError
+    def describe_file_systems(self, DescribeFileSystemsRequest input) -> str:
+        auto body = describe_file_systems_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "DescribeFileSystems", body)
+
+    # DescribeS3AccessPointAttachments
+    # errors: BadRequest, InternalServerError, S3AccessPointAttachmentNotFound, UnsupportedOperation
+    def describe_s3_access_point_attachments(self, DescribeS3AccessPointAttachmentsRequest input) -> str:
+        auto body = describe_s3_access_point_attachments_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "DescribeS3AccessPointAttachments", body)
 
     # DescribeSharedVpcConfiguration
     # errors: BadRequest, InternalServerError
@@ -2675,11 +4532,35 @@ struct FSxClient:
         auto body = "{}"
         return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "DescribeSharedVpcConfiguration", body)
 
+    # DescribeSnapshots
+    # errors: BadRequest, InternalServerError, SnapshotNotFound
+    def describe_snapshots(self, DescribeSnapshotsRequest input) -> str:
+        auto body = describe_snapshots_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "DescribeSnapshots", body)
+
+    # DescribeStorageVirtualMachines
+    # errors: BadRequest, InternalServerError, StorageVirtualMachineNotFound
+    def describe_storage_virtual_machines(self, DescribeStorageVirtualMachinesRequest input) -> str:
+        auto body = describe_storage_virtual_machines_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "DescribeStorageVirtualMachines", body)
+
+    # DescribeVolumes
+    # errors: BadRequest, InternalServerError, VolumeNotFound
+    def describe_volumes(self, DescribeVolumesRequest input) -> str:
+        auto body = describe_volumes_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "DescribeVolumes", body)
+
     # DetachAndDeleteS3AccessPoint
     # errors: BadRequest, IncompatibleParameterError, InternalServerError, S3AccessPointAttachmentNotFound, UnsupportedOperation
     def detach_and_delete_s3_access_point(self, DetachAndDeleteS3AccessPointRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "DetachAndDeleteS3AccessPoint", body)
+
+    # DisassociateFileSystemAliases
+    # errors: BadRequest, FileSystemNotFound, InternalServerError
+    def disassociate_file_system_aliases(self, DisassociateFileSystemAliasesRequest input) -> str:
+        auto body = disassociate_file_system_aliases_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "DisassociateFileSystemAliases", body)
 
     # ListTagsForResource
     # errors: BadRequest, InternalServerError, NotServiceResourceError, ResourceDoesNotSupportTagging, ResourceNotFound
@@ -2693,17 +4574,47 @@ struct FSxClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "ReleaseFileSystemNfsV3Locks", body)
 
+    # RestoreVolumeFromSnapshot
+    # errors: BadRequest, InternalServerError, VolumeNotFound
+    def restore_volume_from_snapshot(self, RestoreVolumeFromSnapshotRequest input) -> str:
+        auto body = restore_volume_from_snapshot_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "RestoreVolumeFromSnapshot", body)
+
     # StartMisconfiguredStateRecovery
     # errors: BadRequest, FileSystemNotFound, InternalServerError
     def start_misconfigured_state_recovery(self, StartMisconfiguredStateRecoveryRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "StartMisconfiguredStateRecovery", body)
 
+    # TagResource
+    # errors: BadRequest, InternalServerError, NotServiceResourceError, ResourceDoesNotSupportTagging, ResourceNotFound
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: BadRequest, InternalServerError, NotServiceResourceError, ResourceDoesNotSupportTagging, ResourceNotFound
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateDataRepositoryAssociation
+    # errors: BadRequest, DataRepositoryAssociationNotFound, IncompatibleParameterError, InternalServerError, ServiceLimitExceeded
+    def update_data_repository_association(self, UpdateDataRepositoryAssociationRequest input) -> str:
+        auto body = update_data_repository_association_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "UpdateDataRepositoryAssociation", body)
+
     # UpdateFileCache
     # errors: BadRequest, FileCacheNotFound, IncompatibleParameterError, InternalServerError, MissingFileCacheConfiguration, ServiceLimitExceeded, UnsupportedOperation
     def update_file_cache(self, UpdateFileCacheRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "UpdateFileCache", body)
+
+    # UpdateFileSystem
+    # errors: BadRequest, FileSystemNotFound, IncompatibleParameterError, InternalServerError, InvalidNetworkSettings, MissingFileSystemConfiguration, ServiceLimitExceeded, UnsupportedOperation
+    def update_file_system(self, UpdateFileSystemRequest input) -> str:
+        auto body = update_file_system_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "UpdateFileSystem", body)
 
     # UpdateSharedVpcConfiguration
     # errors: BadRequest, IncompatibleParameterError, InternalServerError
@@ -2716,6 +4627,102 @@ struct FSxClient:
     def update_snapshot(self, UpdateSnapshotRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "UpdateSnapshot", body)
+
+    # UpdateStorageVirtualMachine
+    # errors: BadRequest, IncompatibleParameterError, InternalServerError, StorageVirtualMachineNotFound, UnsupportedOperation
+    def update_storage_virtual_machine(self, UpdateStorageVirtualMachineRequest input) -> str:
+        auto body = update_storage_virtual_machine_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "UpdateStorageVirtualMachine", body)
+
+    # UpdateVolume
+    # errors: BadRequest, IncompatibleParameterError, InternalServerError, MissingVolumeConfiguration, VolumeNotFound
+    def update_volume(self, UpdateVolumeRequest input) -> str:
+        auto body = update_volume_request_to_json(input)
+        return awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "UpdateVolume", body)
+
+    # Paginator for DescribeBackups — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Backups).
+    def paginate_describe_backups(self, DescribeBackupsRequest input):
+        auto host = endpoints.regional_host(fsx_protocol().service, self.region)
+        while True:
+            auto body = describe_backups_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "DescribeBackups", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeFileSystems — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: FileSystems).
+    def paginate_describe_file_systems(self, DescribeFileSystemsRequest input):
+        auto host = endpoints.regional_host(fsx_protocol().service, self.region)
+        while True:
+            auto body = describe_file_systems_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "DescribeFileSystems", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeS3AccessPointAttachments — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: S3AccessPointAttachments).
+    def paginate_describe_s3_access_point_attachments(self, DescribeS3AccessPointAttachmentsRequest input):
+        auto host = endpoints.regional_host(fsx_protocol().service, self.region)
+        while True:
+            auto body = describe_s3_access_point_attachments_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "DescribeS3AccessPointAttachments", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeSnapshots — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Snapshots).
+    def paginate_describe_snapshots(self, DescribeSnapshotsRequest input):
+        auto host = endpoints.regional_host(fsx_protocol().service, self.region)
+        while True:
+            auto body = describe_snapshots_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "DescribeSnapshots", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeStorageVirtualMachines — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: StorageVirtualMachines).
+    def paginate_describe_storage_virtual_machines(self, DescribeStorageVirtualMachinesRequest input):
+        auto host = endpoints.regional_host(fsx_protocol().service, self.region)
+        while True:
+            auto body = describe_storage_virtual_machines_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "DescribeStorageVirtualMachines", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeVolumes — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Volumes).
+    def paginate_describe_volumes(self, DescribeVolumesRequest input):
+        auto host = endpoints.regional_host(fsx_protocol().service, self.region)
+        while True:
+            auto body = describe_volumes_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(fsx_protocol(), self.creds, self.region, "DescribeVolumes", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
     # Paginator for ListTagsForResource — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: Tags).

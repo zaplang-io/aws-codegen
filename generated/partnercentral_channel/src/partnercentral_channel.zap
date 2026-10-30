@@ -13,19 +13,20 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 17 operations — 9 with a generated method,
-#   8 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 17 operations — 17 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   76 structs (59 @derive(Json)), 13 enums, 7 error variants.
-#   0 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.endpoints
 import aws_core.awsjson
 
 # The PartnerCentral_Channel awsJson protocol: version 1.0, API id "PartnerCentralChannel".
@@ -205,8 +206,9 @@ struct CreateChannelHandshakeDetail:
     Optional[str] id
     Optional[str] arn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateChannelHandshakeRequest:
     HandshakeType handshakeType
     str catalog
@@ -224,8 +226,9 @@ struct CreateProgramManagementAccountDetail:
     Optional[str] id
     Optional[str] arn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateProgramManagementAccountRequest:
     str catalog
     Program program
@@ -243,8 +246,9 @@ struct CreateRelationshipDetail:
     Optional[str] arn
     Optional[str] id
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRelationshipRequest:
     str catalog
     AssociationType associationType
@@ -304,8 +308,9 @@ struct HandshakeDetail:
 struct InternalServerException:
     str message
 
-# no @derive(Json): member(s) statuses: list[HandshakeStatus], associatedResourceIdentifiers: list[str], handshakeTypeFilters: ListChannelHandshakesTypeFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statuses: list[HandshakeStatus], associatedResourceIdentifiers: list[str], handshakeTypeFilters: ListChannelHandshakesTypeFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelHandshakesRequest:
     HandshakeType handshakeType
     str catalog
@@ -317,14 +322,16 @@ struct ListChannelHandshakesRequest:
     Optional[ListChannelHandshakesTypeSort] handshakeTypeSort
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[ChannelHandshakeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ChannelHandshakeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelHandshakesResponse:
     Optional[list[ChannelHandshakeSummary]] items
     Optional[str] nextToken
 
-# no @derive(Json): member(s) startServicePeriodTypeFilters: StartServicePeriodTypeFilters, revokeServicePeriodTypeFilters: RevokeServicePeriodTypeFilters, programManagementAccountTypeFilters: ProgramManagementAccountTypeFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) startServicePeriodTypeFilters: StartServicePeriodTypeFilters, revokeServicePeriodTypeFilters: RevokeServicePeriodTypeFilters, programManagementAccountTypeFilters: ProgramManagementAccountTypeFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelHandshakesTypeFilters:
     Optional[StartServicePeriodTypeFilters] startServicePeriodTypeFilters
     Optional[RevokeServicePeriodTypeFilters] revokeServicePeriodTypeFilters
@@ -336,8 +343,9 @@ struct ListChannelHandshakesTypeSort:
     Optional[RevokeServicePeriodTypeSort] revokeServicePeriodTypeSort
     Optional[ProgramManagementAccountTypeSort] programManagementAccountTypeSort
 
-# no @derive(Json): member(s) displayNames: list[str], programs: list[Program], accountIds: list[str], statuses: list[ProgramManagementAccountStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) displayNames: list[str], programs: list[Program], accountIds: list[str], statuses: list[ProgramManagementAccountStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProgramManagementAccountsRequest:
     str catalog
     Optional[int64] maxResults
@@ -348,8 +356,9 @@ struct ListProgramManagementAccountsRequest:
     Optional[ListProgramManagementAccountsSortBase] sort
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[ProgramManagementAccountSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ProgramManagementAccountSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProgramManagementAccountsResponse:
     Optional[list[ProgramManagementAccountSummary]] items
     Optional[str] nextToken
@@ -359,8 +368,9 @@ struct ListProgramManagementAccountsSortBase:
     SortOrder sortOrder
     str sortBy
 
-# no @derive(Json): member(s) associatedAccountIds: list[str], associationTypes: list[AssociationType], displayNames: list[str], programManagementAccountIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedAccountIds: list[str], associationTypes: list[AssociationType], displayNames: list[str], programManagementAccountIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRelationshipsRequest:
     str catalog
     Optional[int64] maxResults
@@ -371,8 +381,9 @@ struct ListRelationshipsRequest:
     Optional[ListRelationshipsSortBase] sort
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[RelationshipSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[RelationshipSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRelationshipsResponse:
     Optional[list[RelationshipSummary]] items
     Optional[str] nextToken
@@ -386,8 +397,9 @@ struct ListRelationshipsSortBase:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] tags
 
@@ -418,8 +430,9 @@ struct ProgramManagementAccountSummary:
     Optional[DateTime] startDate
     Optional[ProgramManagementAccountStatus] status
 
-# no @derive(Json): member(s) programs: list[Program] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) programs: list[Program] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProgramManagementAccountTypeFilters:
     Optional[list[Program]] programs
 
@@ -513,8 +526,9 @@ struct RevokeServicePeriodPayload:
     str programManagementAccountIdentifier
     Optional[str] note
 
-# no @derive(Json): member(s) servicePeriodTypes: list[ServicePeriodType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) servicePeriodTypes: list[ServicePeriodType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RevokeServicePeriodTypeFilters:
     Optional[list[ServicePeriodType]] servicePeriodTypes
 
@@ -549,8 +563,9 @@ struct StartServicePeriodPayload:
     @json(timestamp="iso8601")
     Optional[DateTime] endDate
 
-# no @derive(Json): member(s) servicePeriodTypes: list[ServicePeriodType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) servicePeriodTypes: list[ServicePeriodType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartServicePeriodTypeFilters:
     Optional[list[ServicePeriodType]] servicePeriodTypes
 
@@ -570,8 +585,9 @@ struct Tag:
     str key
     str value
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str resourceArn
     list[Tag] tags
@@ -587,8 +603,9 @@ struct ThrottlingException:
     Optional[str] serviceCode
     Optional[str] quotaCode
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str resourceArn
     list[str] tagKeys
@@ -636,8 +653,9 @@ struct UpdateRelationshipRequest:
 struct UpdateRelationshipResponse:
     Optional[UpdateRelationshipDetail] relationshipDetail
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -683,22 +701,276 @@ def partnercentral_channel_error_from_code(str code) -> PartnerCentral_ChannelEr
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateChannelHandshake (input CreateChannelHandshakeRequest)
-#   CreateProgramManagementAccount (input CreateProgramManagementAccountRequest)
-#   CreateRelationship (input CreateRelationshipRequest)
-#   ListChannelHandshakes (input ListChannelHandshakesRequest)
-#   ListProgramManagementAccounts (input ListProgramManagementAccountsRequest)
-#   ListRelationships (input ListRelationshipsRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def partnercentral_channel_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListChannelHandshakes (input not derivable (no generated method))
-#   ListProgramManagementAccounts (input not derivable (no generated method))
-#   ListRelationships (input not derivable (no generated method))
+def partnercentral_channel_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def partnercentral_channel_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateChannelHandshakeRequest to a compact JSON object (declaration order).
+def create_channel_handshake_request_to_json(CreateChannelHandshakeRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"handshakeType\":" + v.handshakeType.to_json())
+    parts.append("\"catalog\":" + partnercentral_channel_json_str(v.catalog))
+    parts.append("\"associatedResourceIdentifier\":" + partnercentral_channel_json_str(v.associatedResourceIdentifier))
+    if v.payload.is_some():
+        auto u0 = v.payload.unwrap()
+        parts.append("\"payload\":" + u0.to_json())
+    if v.clientToken.is_some():
+        auto u1 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + partnercentral_channel_json_str(u1))
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"tags\":" + partnercentral_channel_json_arr(e3))
+    return partnercentral_channel_json_obj(parts)
+
+# Serialize CreateProgramManagementAccountRequest to a compact JSON object (declaration order).
+def create_program_management_account_request_to_json(CreateProgramManagementAccountRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"catalog\":" + partnercentral_channel_json_str(v.catalog))
+    parts.append("\"program\":" + v.program.to_json())
+    parts.append("\"displayName\":" + partnercentral_channel_json_str(v.displayName))
+    parts.append("\"accountId\":" + partnercentral_channel_json_str(v.accountId))
+    if v.clientToken.is_some():
+        auto u0 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + partnercentral_channel_json_str(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + partnercentral_channel_json_arr(e2))
+    return partnercentral_channel_json_obj(parts)
+
+# Serialize CreateRelationshipRequest to a compact JSON object (declaration order).
+def create_relationship_request_to_json(CreateRelationshipRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"catalog\":" + partnercentral_channel_json_str(v.catalog))
+    parts.append("\"associationType\":" + v.associationType.to_json())
+    parts.append("\"programManagementAccountIdentifier\":" + partnercentral_channel_json_str(v.programManagementAccountIdentifier))
+    parts.append("\"associatedAccountId\":" + partnercentral_channel_json_str(v.associatedAccountId))
+    parts.append("\"displayName\":" + partnercentral_channel_json_str(v.displayName))
+    if v.resaleAccountModel.is_some():
+        auto u0 = v.resaleAccountModel.unwrap()
+        parts.append("\"resaleAccountModel\":" + u0.to_json())
+    parts.append("\"sector\":" + v.sector.to_json())
+    if v.clientToken.is_some():
+        auto u1 = v.clientToken.unwrap()
+        parts.append("\"clientToken\":" + partnercentral_channel_json_str(u1))
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"tags\":" + partnercentral_channel_json_arr(e3))
+    if v.requestedSupportPlan.is_some():
+        auto u4 = v.requestedSupportPlan.unwrap()
+        parts.append("\"requestedSupportPlan\":" + u4.to_json())
+    return partnercentral_channel_json_obj(parts)
+
+# Serialize ListChannelHandshakesRequest to a compact JSON object (declaration order).
+def list_channel_handshakes_request_to_json(ListChannelHandshakesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"handshakeType\":" + v.handshakeType.to_json())
+    parts.append("\"catalog\":" + partnercentral_channel_json_str(v.catalog))
+    parts.append("\"participantType\":" + v.participantType.to_json())
+    if v.maxResults.is_some():
+        auto u0 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u0))
+    if v.statuses.is_some():
+        auto u1 = v.statuses.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"statuses\":" + partnercentral_channel_json_arr(e2))
+    if v.associatedResourceIdentifiers.is_some():
+        auto u3 = v.associatedResourceIdentifiers.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(partnercentral_channel_json_str(x4))
+        parts.append("\"associatedResourceIdentifiers\":" + partnercentral_channel_json_arr(e4))
+    if v.handshakeTypeFilters.is_some():
+        auto u5 = v.handshakeTypeFilters.unwrap()
+        parts.append("\"handshakeTypeFilters\":" + list_channel_handshakes_type_filters_to_json(u5))
+    if v.handshakeTypeSort.is_some():
+        auto u6 = v.handshakeTypeSort.unwrap()
+        parts.append("\"handshakeTypeSort\":" + u6.to_json())
+    if v.nextToken.is_some():
+        auto u7 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + partnercentral_channel_json_str(u7))
+    return partnercentral_channel_json_obj(parts)
+
+# Serialize ListChannelHandshakesTypeFilters to a compact JSON object (declaration order).
+def list_channel_handshakes_type_filters_to_json(ListChannelHandshakesTypeFilters v) -> str:
+    list[str] parts = []
+    if v.startServicePeriodTypeFilters.is_some():
+        auto u0 = v.startServicePeriodTypeFilters.unwrap()
+        parts.append("\"startServicePeriodTypeFilters\":" + start_service_period_type_filters_to_json(u0))
+    if v.revokeServicePeriodTypeFilters.is_some():
+        auto u1 = v.revokeServicePeriodTypeFilters.unwrap()
+        parts.append("\"revokeServicePeriodTypeFilters\":" + revoke_service_period_type_filters_to_json(u1))
+    if v.programManagementAccountTypeFilters.is_some():
+        auto u2 = v.programManagementAccountTypeFilters.unwrap()
+        parts.append("\"programManagementAccountTypeFilters\":" + program_management_account_type_filters_to_json(u2))
+    return partnercentral_channel_json_obj(parts)
+
+# Serialize ListProgramManagementAccountsRequest to a compact JSON object (declaration order).
+def list_program_management_accounts_request_to_json(ListProgramManagementAccountsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"catalog\":" + partnercentral_channel_json_str(v.catalog))
+    if v.maxResults.is_some():
+        auto u0 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u0))
+    if v.displayNames.is_some():
+        auto u1 = v.displayNames.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(partnercentral_channel_json_str(x2))
+        parts.append("\"displayNames\":" + partnercentral_channel_json_arr(e2))
+    if v.programs.is_some():
+        auto u3 = v.programs.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"programs\":" + partnercentral_channel_json_arr(e4))
+    if v.accountIds.is_some():
+        auto u5 = v.accountIds.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(partnercentral_channel_json_str(x6))
+        parts.append("\"accountIds\":" + partnercentral_channel_json_arr(e6))
+    if v.statuses.is_some():
+        auto u7 = v.statuses.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"statuses\":" + partnercentral_channel_json_arr(e8))
+    if v.sort.is_some():
+        auto u9 = v.sort.unwrap()
+        parts.append("\"sort\":" + u9.to_json())
+    if v.nextToken.is_some():
+        auto u10 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + partnercentral_channel_json_str(u10))
+    return partnercentral_channel_json_obj(parts)
+
+# Serialize ListRelationshipsRequest to a compact JSON object (declaration order).
+def list_relationships_request_to_json(ListRelationshipsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"catalog\":" + partnercentral_channel_json_str(v.catalog))
+    if v.maxResults.is_some():
+        auto u0 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u0))
+    if v.associatedAccountIds.is_some():
+        auto u1 = v.associatedAccountIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(partnercentral_channel_json_str(x2))
+        parts.append("\"associatedAccountIds\":" + partnercentral_channel_json_arr(e2))
+    if v.associationTypes.is_some():
+        auto u3 = v.associationTypes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"associationTypes\":" + partnercentral_channel_json_arr(e4))
+    if v.displayNames.is_some():
+        auto u5 = v.displayNames.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(partnercentral_channel_json_str(x6))
+        parts.append("\"displayNames\":" + partnercentral_channel_json_arr(e6))
+    if v.programManagementAccountIdentifiers.is_some():
+        auto u7 = v.programManagementAccountIdentifiers.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(partnercentral_channel_json_str(x8))
+        parts.append("\"programManagementAccountIdentifiers\":" + partnercentral_channel_json_arr(e8))
+    if v.sort.is_some():
+        auto u9 = v.sort.unwrap()
+        parts.append("\"sort\":" + u9.to_json())
+    if v.nextToken.is_some():
+        auto u10 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + partnercentral_channel_json_str(u10))
+    return partnercentral_channel_json_obj(parts)
+
+# Serialize ProgramManagementAccountTypeFilters to a compact JSON object (declaration order).
+def program_management_account_type_filters_to_json(ProgramManagementAccountTypeFilters v) -> str:
+    list[str] parts = []
+    if v.programs.is_some():
+        auto u0 = v.programs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"programs\":" + partnercentral_channel_json_arr(e1))
+    return partnercentral_channel_json_obj(parts)
+
+# Serialize RevokeServicePeriodTypeFilters to a compact JSON object (declaration order).
+def revoke_service_period_type_filters_to_json(RevokeServicePeriodTypeFilters v) -> str:
+    list[str] parts = []
+    if v.servicePeriodTypes.is_some():
+        auto u0 = v.servicePeriodTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"servicePeriodTypes\":" + partnercentral_channel_json_arr(e1))
+    return partnercentral_channel_json_obj(parts)
+
+# Serialize StartServicePeriodTypeFilters to a compact JSON object (declaration order).
+def start_service_period_type_filters_to_json(StartServicePeriodTypeFilters v) -> str:
+    list[str] parts = []
+    if v.servicePeriodTypes.is_some():
+        auto u0 = v.servicePeriodTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"servicePeriodTypes\":" + partnercentral_channel_json_arr(e1))
+    return partnercentral_channel_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + partnercentral_channel_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tags:
+        e0.append(x0.to_json())
+    parts.append("\"tags\":" + partnercentral_channel_json_arr(e0))
+    return partnercentral_channel_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + partnercentral_channel_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(partnercentral_channel_json_str(x0))
+    parts.append("\"tagKeys\":" + partnercentral_channel_json_arr(e0))
+    return partnercentral_channel_json_obj(parts)
 
 # A bound PartnerCentral_Channel client: credentials + region, threaded into every operation.
 struct PartnerCentral_ChannelClient:
@@ -716,6 +988,24 @@ struct PartnerCentral_ChannelClient:
     def cancel_channel_handshake(self, CancelChannelHandshakeRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(partnercentral_channel_protocol(), self.creds, self.region, "CancelChannelHandshake", body)
+
+    # CreateChannelHandshake
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_channel_handshake(self, CreateChannelHandshakeRequest input) -> str:
+        auto body = create_channel_handshake_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_channel_protocol(), self.creds, self.region, "CreateChannelHandshake", body)
+
+    # CreateProgramManagementAccount
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_program_management_account(self, CreateProgramManagementAccountRequest input) -> str:
+        auto body = create_program_management_account_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_channel_protocol(), self.creds, self.region, "CreateProgramManagementAccount", body)
+
+    # CreateRelationship
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_relationship(self, CreateRelationshipRequest input) -> str:
+        auto body = create_relationship_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_channel_protocol(), self.creds, self.region, "CreateRelationship", body)
 
     # DeleteProgramManagementAccount
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -735,6 +1025,24 @@ struct PartnerCentral_ChannelClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(partnercentral_channel_protocol(), self.creds, self.region, "GetRelationship", body)
 
+    # ListChannelHandshakes
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_channel_handshakes(self, ListChannelHandshakesRequest input) -> str:
+        auto body = list_channel_handshakes_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_channel_protocol(), self.creds, self.region, "ListChannelHandshakes", body)
+
+    # ListProgramManagementAccounts
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_program_management_accounts(self, ListProgramManagementAccountsRequest input) -> str:
+        auto body = list_program_management_accounts_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_channel_protocol(), self.creds, self.region, "ListProgramManagementAccounts", body)
+
+    # ListRelationships
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_relationships(self, ListRelationshipsRequest input) -> str:
+        auto body = list_relationships_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_channel_protocol(), self.creds, self.region, "ListRelationships", body)
+
     # ListTagsForResource
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
@@ -747,6 +1055,18 @@ struct PartnerCentral_ChannelClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(partnercentral_channel_protocol(), self.creds, self.region, "RejectChannelHandshake", body)
 
+    # TagResource
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_channel_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(partnercentral_channel_protocol(), self.creds, self.region, "UntagResource", body)
+
     # UpdateProgramManagementAccount
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_program_management_account(self, UpdateProgramManagementAccountRequest input) -> str:
@@ -758,6 +1078,48 @@ struct PartnerCentral_ChannelClient:
     def update_relationship(self, UpdateRelationshipRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(partnercentral_channel_protocol(), self.creds, self.region, "UpdateRelationship", body)
+
+    # Paginator for ListChannelHandshakes — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: items).
+    def paginate_list_channel_handshakes(self, ListChannelHandshakesRequest input):
+        auto host = endpoints.regional_host(partnercentral_channel_protocol().service, self.region)
+        while True:
+            auto body = list_channel_handshakes_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(partnercentral_channel_protocol(), self.creds, self.region, "ListChannelHandshakes", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListProgramManagementAccounts — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: items).
+    def paginate_list_program_management_accounts(self, ListProgramManagementAccountsRequest input):
+        auto host = endpoints.regional_host(partnercentral_channel_protocol().service, self.region)
+        while True:
+            auto body = list_program_management_accounts_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(partnercentral_channel_protocol(), self.creds, self.region, "ListProgramManagementAccounts", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListRelationships — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: items).
+    def paginate_list_relationships(self, ListRelationshipsRequest input):
+        auto host = endpoints.regional_host(partnercentral_channel_protocol().service, self.region)
+        while True:
+            auto body = list_relationships_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(partnercentral_channel_protocol(), self.creds, self.region, "ListRelationships", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
 
 # Construct a PartnerCentral_ChannelClient bound to credentials + region.
 def partnercentral_channel_client(core.Credentials creds, str region) -> PartnerCentral_ChannelClient:

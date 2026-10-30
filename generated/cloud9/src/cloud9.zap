@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 13 operations — 8 with a generated method,
-#   5 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 13 operations — 13 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   38 structs (29 @derive(Json)), 8 enums, 8 error variants.
-#   1 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -126,8 +126,9 @@ struct ConflictException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEnvironmentEC2Request:
     str name
     Optional[str] description
@@ -174,8 +175,9 @@ struct DeleteEnvironmentResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) permissions: list[Permissions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) permissions: list[Permissions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEnvironmentMembershipsRequest:
     Optional[str] userArn
     Optional[str] environmentId
@@ -183,8 +185,9 @@ struct DescribeEnvironmentMembershipsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) memberships: list[EnvironmentMember] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) memberships: list[EnvironmentMember] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEnvironmentMembershipsResult:
     Optional[list[EnvironmentMember]] memberships
     Optional[str] nextToken
@@ -198,13 +201,15 @@ struct DescribeEnvironmentStatusResult:
     EnvironmentStatus status
     str message
 
-# no @derive(Json): member(s) environmentIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environmentIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEnvironmentsRequest:
     list[str] environmentIds
 
-# no @derive(Json): member(s) environments: list[Environment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environments: list[Environment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEnvironmentsResult:
     Optional[list[Environment]] environments
 
@@ -254,8 +259,9 @@ struct ListEnvironmentsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) environmentIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environmentIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnvironmentsResult:
     Optional[str] nextToken
     Optional[list[str]] environmentIds
@@ -264,8 +270,9 @@ struct ListEnvironmentsResult:
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -279,8 +286,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceARN
     list[Tag] Tags
@@ -295,8 +303,9 @@ struct TooManyRequestsException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceARN
     list[str] TagKeys
@@ -365,22 +374,133 @@ def cloud9_error_from_code(str code) -> Cloud9Error:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateEnvironmentEC2 (input CreateEnvironmentEC2Request)
-#   DescribeEnvironmentMemberships (input DescribeEnvironmentMembershipsRequest)
-#   DescribeEnvironments (input DescribeEnvironmentsRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def cloud9_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   DescribeEnvironmentMemberships (input not derivable (no generated method))
+def cloud9_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def cloud9_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateEnvironmentEC2Request to a compact JSON object (declaration order).
+def create_environment_ec2_request_to_json(CreateEnvironmentEC2Request v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + cloud9_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + cloud9_json_str(u0))
+    if v.clientRequestToken.is_some():
+        auto u1 = v.clientRequestToken.unwrap()
+        parts.append("\"clientRequestToken\":" + cloud9_json_str(u1))
+    parts.append("\"instanceType\":" + cloud9_json_str(v.instanceType))
+    if v.subnetId.is_some():
+        auto u2 = v.subnetId.unwrap()
+        parts.append("\"subnetId\":" + cloud9_json_str(u2))
+    parts.append("\"imageId\":" + cloud9_json_str(v.imageId))
+    if v.automaticStopTimeMinutes.is_some():
+        auto u3 = v.automaticStopTimeMinutes.unwrap()
+        parts.append("\"automaticStopTimeMinutes\":" + str(u3))
+    if v.ownerArn.is_some():
+        auto u4 = v.ownerArn.unwrap()
+        parts.append("\"ownerArn\":" + cloud9_json_str(u4))
+    if v.tags.is_some():
+        auto u5 = v.tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"tags\":" + cloud9_json_arr(e6))
+    if v.connectionType.is_some():
+        auto u7 = v.connectionType.unwrap()
+        parts.append("\"connectionType\":" + u7.to_json())
+    if v.dryRun.is_some():
+        auto u8 = v.dryRun.unwrap()
+        parts.append("\"dryRun\":" + json.dumps(JsonValue.Bool(u8)))
+    return cloud9_json_obj(parts)
+
+# Serialize DescribeEnvironmentMembershipsRequest to a compact JSON object (declaration order).
+def describe_environment_memberships_request_to_json(DescribeEnvironmentMembershipsRequest v) -> str:
+    list[str] parts = []
+    if v.userArn.is_some():
+        auto u0 = v.userArn.unwrap()
+        parts.append("\"userArn\":" + cloud9_json_str(u0))
+    if v.environmentId.is_some():
+        auto u1 = v.environmentId.unwrap()
+        parts.append("\"environmentId\":" + cloud9_json_str(u1))
+    if v.permissions.is_some():
+        auto u2 = v.permissions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"permissions\":" + cloud9_json_arr(e3))
+    if v.nextToken.is_some():
+        auto u4 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + cloud9_json_str(u4))
+    if v.maxResults.is_some():
+        auto u5 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u5))
+    return cloud9_json_obj(parts)
+
+# Serialize DescribeEnvironmentsRequest to a compact JSON object (declaration order).
+def describe_environments_request_to_json(DescribeEnvironmentsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.environmentIds:
+        e0.append(cloud9_json_str(x0))
+    parts.append("\"environmentIds\":" + cloud9_json_arr(e0))
+    return cloud9_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + cloud9_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + cloud9_json_arr(e0))
+    return cloud9_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + cloud9_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(cloud9_json_str(x0))
+    parts.append("\"TagKeys\":" + cloud9_json_arr(e0))
+    return cloud9_json_obj(parts)
 
 # A bound Cloud9 client: credentials + region, threaded into every operation.
 struct Cloud9Client:
     core.Credentials creds
     str region
+
+    # CreateEnvironmentEC2
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, LimitExceededException, NotFoundException, TooManyRequestsException
+    def create_environment_ec2(self, CreateEnvironmentEC2Request input) -> str:
+        auto body = create_environment_ec2_request_to_json(input)
+        return awsjson.awsjson_request_now(cloud9_protocol(), self.creds, self.region, "CreateEnvironmentEC2", body)
 
     # CreateEnvironmentMembership
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, LimitExceededException, NotFoundException, TooManyRequestsException
@@ -400,11 +520,23 @@ struct Cloud9Client:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cloud9_protocol(), self.creds, self.region, "DeleteEnvironmentMembership", body)
 
+    # DescribeEnvironmentMemberships
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, LimitExceededException, NotFoundException, TooManyRequestsException
+    def describe_environment_memberships(self, DescribeEnvironmentMembershipsRequest input) -> str:
+        auto body = describe_environment_memberships_request_to_json(input)
+        return awsjson.awsjson_request_now(cloud9_protocol(), self.creds, self.region, "DescribeEnvironmentMemberships", body)
+
     # DescribeEnvironmentStatus
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, LimitExceededException, NotFoundException, TooManyRequestsException
     def describe_environment_status(self, DescribeEnvironmentStatusRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cloud9_protocol(), self.creds, self.region, "DescribeEnvironmentStatus", body)
+
+    # DescribeEnvironments
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, LimitExceededException, NotFoundException, TooManyRequestsException
+    def describe_environments(self, DescribeEnvironmentsRequest input) -> str:
+        auto body = describe_environments_request_to_json(input)
+        return awsjson.awsjson_request_now(cloud9_protocol(), self.creds, self.region, "DescribeEnvironments", body)
 
     # ListEnvironments
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, LimitExceededException, NotFoundException, TooManyRequestsException
@@ -418,6 +550,18 @@ struct Cloud9Client:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cloud9_protocol(), self.creds, self.region, "ListTagsForResource", body)
 
+    # TagResource
+    # errors: BadRequestException, ConcurrentAccessException, InternalServerErrorException, NotFoundException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(cloud9_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: BadRequestException, ConcurrentAccessException, InternalServerErrorException, NotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(cloud9_protocol(), self.creds, self.region, "UntagResource", body)
+
     # UpdateEnvironment
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, LimitExceededException, NotFoundException, TooManyRequestsException
     def update_environment(self, UpdateEnvironmentRequest input) -> str:
@@ -429,6 +573,20 @@ struct Cloud9Client:
     def update_environment_membership(self, UpdateEnvironmentMembershipRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cloud9_protocol(), self.creds, self.region, "UpdateEnvironmentMembership", body)
+
+    # Paginator for DescribeEnvironmentMemberships — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: memberships).
+    def paginate_describe_environment_memberships(self, DescribeEnvironmentMembershipsRequest input):
+        auto host = endpoints.regional_host(cloud9_protocol().service, self.region)
+        while True:
+            auto body = describe_environment_memberships_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(cloud9_protocol(), self.creds, self.region, "DescribeEnvironmentMemberships", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
 
     # Paginator for ListEnvironments — yields each Response page, threading the
     # nextToken -> nextToken continuation token until the output token is absent (result key: environmentIds).

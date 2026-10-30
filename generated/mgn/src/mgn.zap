@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 95 operations — 45 with a generated method,
-#   50 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 95 operations — 94 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   287 structs (140 @derive(Json)), 58 enums, 8 error variants.
-#   6 paginators generated (23 paginated ops skipped) from paginators-1.json.
+#   29 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -593,8 +593,9 @@ struct AccessDeniedException:
     Optional[str] message
     Optional[str] code
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Application:
     Optional[str] applicationID
     Optional[str] arn
@@ -681,8 +682,9 @@ struct CodeGenerationOutputFormatStatusDetails:
     Optional[CodeGenerationOutputFormatStatus] status
     Optional[str] statusDetailList
 
-# no @derive(Json): member(s) errors: list[ErrorDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[ErrorDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConflictException:
     Optional[str] message
     Optional[str] code
@@ -690,8 +692,9 @@ struct ConflictException:
     Optional[str] resourceType
     Optional[list[ErrorDetails]] errors
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Connector:
     Optional[str] connectorID
     Optional[str] name
@@ -791,8 +794,9 @@ struct DataReplicationError:
     Optional[DataReplicationErrorString] error
     Optional[str] rawError
 
-# no @derive(Json): member(s) replicatedDisks: list[DataReplicationInfoReplicatedDisk], dataReplicationInitiation: DataReplicationInitiation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) replicatedDisks: list[DataReplicationInfoReplicatedDisk], dataReplicationInitiation: DataReplicationInitiation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataReplicationInfo:
     Optional[str] lagDuration
     Optional[str] etaDateTime
@@ -811,8 +815,9 @@ struct DataReplicationInfoReplicatedDisk:
     Optional[int64] rescannedStorageBytes
     Optional[int64] backloggedStorageBytes
 
-# no @derive(Json): member(s) steps: list[DataReplicationInitiationStep] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) steps: list[DataReplicationInitiationStep] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataReplicationInitiation:
     Optional[str] startDateTime
     Optional[str] nextAttemptDateTime
@@ -920,8 +925,9 @@ struct DescribeJobLogItemsRequest:
     Optional[str] nextToken
     Optional[str] accountID
 
-# no @derive(Json): member(s) items: list[JobLog] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[JobLog] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeJobLogItemsResponse:
     Optional[list[JobLog]] items
     Optional[str] nextToken
@@ -934,15 +940,17 @@ struct DescribeJobsRequest:
     Optional[str] nextToken
     Optional[str] accountID
 
-# no @derive(Json): member(s) jobIDs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobIDs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeJobsRequestFilters:
     Optional[list[str]] jobIDs
     Optional[str] fromDate
     Optional[str] toDate
 
-# no @derive(Json): member(s) items: list[Job] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[Job] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeJobsResponse:
     Optional[list[Job]] items
     Optional[str] nextToken
@@ -954,8 +962,9 @@ struct DescribeLaunchConfigurationTemplatesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[LaunchConfigurationTemplate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[LaunchConfigurationTemplate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLaunchConfigurationTemplatesResponse:
     Optional[list[LaunchConfigurationTemplate]] items
     Optional[str] nextToken
@@ -967,8 +976,9 @@ struct DescribeReplicationConfigurationTemplatesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[ReplicationConfigurationTemplate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ReplicationConfigurationTemplate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReplicationConfigurationTemplatesResponse:
     Optional[list[ReplicationConfigurationTemplate]] items
     Optional[str] nextToken
@@ -981,8 +991,9 @@ struct DescribeSourceServersRequest:
     Optional[str] nextToken
     Optional[str] accountID
 
-# no @derive(Json): member(s) sourceServerIDs: list[str], replicationTypes: list[ReplicationType], lifeCycleStates: list[LifeCycleState], applicationIDs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceServerIDs: list[str], replicationTypes: list[ReplicationType], lifeCycleStates: list[LifeCycleState], applicationIDs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSourceServersRequestFilters:
     Optional[list[str]] sourceServerIDs
     Optional[bool] isArchived
@@ -990,8 +1001,9 @@ struct DescribeSourceServersRequestFilters:
     Optional[list[LifeCycleState]] lifeCycleStates
     Optional[list[str]] applicationIDs
 
-# no @derive(Json): member(s) items: list[SourceServer] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[SourceServer] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSourceServersResponse:
     Optional[list[SourceServer]] items
     Optional[str] nextToken
@@ -1002,8 +1014,9 @@ struct DescribeVcenterClientsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[VcenterClient] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[VcenterClient] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeVcenterClientsResponse:
     Optional[list[VcenterClient]] items
     Optional[str] nextToken
@@ -1067,8 +1080,9 @@ struct ErrorDetails:
 struct ExportErrorData:
     Optional[str] rawError
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportTask:
     Optional[str] exportID
     Optional[str] arn
@@ -1123,8 +1137,9 @@ struct GetNetworkMigrationMapperSegmentConstructRequest:
     str segmentID
     str constructID
 
-# no @derive(Json): member(s) construct: NetworkMigrationMapperSegmentConstruct not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) construct: NetworkMigrationMapperSegmentConstruct not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetNetworkMigrationMapperSegmentConstructResponse:
     Optional[NetworkMigrationMapperSegmentConstruct] construct
 
@@ -1162,8 +1177,9 @@ struct ImportFileEnrichment:
     Optional[Checksum] checksum
     Optional[EnrichmentTargetS3Configuration] s3BucketTarget
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportTask:
     Optional[str] importID
     Optional[str] arn
@@ -1218,8 +1234,9 @@ struct InternalServerException:
     str message
     Optional[int64] retryAfterSeconds
 
-# no @derive(Json): member(s) participatingServers: list[ParticipatingServer], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) participatingServers: list[ParticipatingServer], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Job:
     str jobID
     Optional[str] arn
@@ -1246,8 +1263,9 @@ struct JobLogEventData:
     Optional[int64] attemptCount
     Optional[int64] maxAttemptsCount
 
-# no @derive(Json): member(s) ssmDocument: SsmDocument not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ssmDocument: SsmDocument not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobPostLaunchActionsLaunchStatus:
     Optional[SsmDocument] ssmDocument
     Optional[SsmDocumentType] ssmDocumentType
@@ -1263,8 +1281,9 @@ struct LastKnownCheck:
     Optional[str] error
     Optional[DateTime] checkedAt
 
-# no @derive(Json): member(s) postLaunchActions: PostLaunchActions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) postLaunchActions: PostLaunchActions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LaunchConfiguration:
     Optional[str] sourceServerID
     Optional[str] name
@@ -1279,8 +1298,9 @@ struct LaunchConfiguration:
     Optional[bool] enableMapAutoTagging
     Optional[str] mapAutoTaggingMpeID
 
-# no @derive(Json): member(s) postLaunchActions: PostLaunchActions, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) postLaunchActions: PostLaunchActions, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LaunchConfigurationTemplate:
     str launchConfigurationTemplateID
     Optional[str] arn
@@ -1310,8 +1330,9 @@ struct LaunchTemplateDiskConf:
     Optional[int64] volumeInitializationRate
     Optional[bool] deleteOnTermination
 
-# no @derive(Json): member(s) lastKnownChecks: list[LastKnownCheck] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lastKnownChecks: list[LastKnownCheck] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LaunchedInstance:
     Optional[str] ec2InstanceID
     Optional[str] jobID
@@ -1379,15 +1400,17 @@ struct ListApplicationsRequest:
     Optional[str] nextToken
     Optional[str] accountID
 
-# no @derive(Json): member(s) applicationIDs: list[str], waveIDs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) applicationIDs: list[str], waveIDs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationsRequestFilters:
     Optional[list[str]] applicationIDs
     Optional[bool] isArchived
     Optional[list[str]] waveIDs
 
-# no @derive(Json): member(s) items: list[Application] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[Application] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationsResponse:
     Optional[list[Application]] items
     Optional[str] nextToken
@@ -1399,13 +1422,15 @@ struct ListConnectorsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) connectorIDs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectorIDs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectorsRequestFilters:
     Optional[list[str]] connectorIDs
 
-# no @derive(Json): member(s) items: list[Connector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[Connector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectorsResponse:
     Optional[list[Connector]] items
     Optional[str] nextToken
@@ -1417,8 +1442,9 @@ struct ListExportErrorsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[ExportTaskError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ExportTaskError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExportErrorsResponse:
     Optional[list[ExportTaskError]] items
     Optional[str] nextToken
@@ -1430,13 +1456,15 @@ struct ListExportsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) exportIDs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exportIDs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExportsRequestFilters:
     Optional[list[str]] exportIDs
 
-# no @derive(Json): member(s) items: list[ExportTask] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ExportTask] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExportsResponse:
     Optional[list[ExportTask]] items
     Optional[str] nextToken
@@ -1448,14 +1476,16 @@ struct ListImportErrorsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[ImportTaskError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ImportTaskError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImportErrorsResponse:
     Optional[list[ImportTaskError]] items
     Optional[str] nextToken
 
-# no @derive(Json): member(s) jobIDs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobIDs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImportFileEnrichmentsFilters:
     Optional[list[str]] jobIDs
 
@@ -1466,8 +1496,9 @@ struct ListImportFileEnrichmentsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[ImportFileEnrichment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ImportFileEnrichment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImportFileEnrichmentsResponse:
     Optional[list[ImportFileEnrichment]] items
     Optional[str] nextToken
@@ -1479,13 +1510,15 @@ struct ListImportsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) importIDs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) importIDs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImportsRequestFilters:
     Optional[list[str]] importIDs
 
-# no @derive(Json): member(s) items: list[ImportTask] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ImportTask] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImportsResponse:
     Optional[list[ImportTask]] items
     Optional[str] nextToken
@@ -1496,14 +1529,16 @@ struct ListManagedAccountsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[ManagedAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ManagedAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListManagedAccountsResponse:
     list[ManagedAccount] items
     Optional[str] nextToken
 
-# no @derive(Json): member(s) jobIDs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobIDs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkMigrationAnalysesFilters:
     Optional[list[str]] jobIDs
 
@@ -1516,14 +1551,16 @@ struct ListNetworkMigrationAnalysesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[NetworkMigrationAnalysisJobDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[NetworkMigrationAnalysisJobDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkMigrationAnalysesResponse:
     Optional[list[NetworkMigrationAnalysisJobDetails]] items
     Optional[str] nextToken
 
-# no @derive(Json): member(s) vpcIDs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcIDs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkMigrationAnalysisResultsFilters:
     Optional[list[str]] vpcIDs
 
@@ -1536,14 +1573,16 @@ struct ListNetworkMigrationAnalysisResultsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[NetworkMigrationAnalysisResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[NetworkMigrationAnalysisResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkMigrationAnalysisResultsResponse:
     Optional[list[NetworkMigrationAnalysisResult]] items
     Optional[str] nextToken
 
-# no @derive(Json): member(s) segmentIDs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) segmentIDs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkMigrationCodeGenerationSegmentsFilters:
     Optional[list[str]] segmentIDs
 
@@ -1556,14 +1595,16 @@ struct ListNetworkMigrationCodeGenerationSegmentsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[NetworkMigrationCodeGenerationSegment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[NetworkMigrationCodeGenerationSegment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkMigrationCodeGenerationSegmentsResponse:
     Optional[list[NetworkMigrationCodeGenerationSegment]] items
     Optional[str] nextToken
 
-# no @derive(Json): member(s) jobIDs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobIDs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkMigrationCodeGenerationsFilters:
     Optional[list[str]] jobIDs
 
@@ -1576,8 +1617,9 @@ struct ListNetworkMigrationCodeGenerationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[NetworkMigrationCodeGenerationJobDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[NetworkMigrationCodeGenerationJobDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkMigrationCodeGenerationsResponse:
     Optional[list[NetworkMigrationCodeGenerationJobDetails]] items
     Optional[str] nextToken
@@ -1589,13 +1631,15 @@ struct ListNetworkMigrationDefinitionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) networkMigrationDefinitionIDs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkMigrationDefinitionIDs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkMigrationDefinitionsRequestFilters:
     Optional[list[str]] networkMigrationDefinitionIDs
 
-# no @derive(Json): member(s) items: list[NetworkMigrationDefinitionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[NetworkMigrationDefinitionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkMigrationDefinitionsResponse:
     Optional[list[NetworkMigrationDefinitionSummary]] items
     Optional[str] nextToken
@@ -1608,19 +1652,22 @@ struct ListNetworkMigrationDeployedStacksRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[NetworkMigrationDeployedStackDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[NetworkMigrationDeployedStackDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkMigrationDeployedStacksResponse:
     Optional[list[NetworkMigrationDeployedStackDetails]] items
     Optional[str] nextToken
 
-# no @derive(Json): member(s) jobIDs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobIDs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkMigrationDeployerJobFilters:
     Optional[list[str]] jobIDs
 
-# no @derive(Json): member(s) items: list[NetworkMigrationDeployerJobDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[NetworkMigrationDeployerJobDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkMigrationDeployerJobResponse:
     Optional[list[NetworkMigrationDeployerJobDetails]] items
     Optional[str] nextToken
@@ -1634,8 +1681,9 @@ struct ListNetworkMigrationDeploymentsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) networkMigrationExecutionIDs: list[str], networkMigrationExecutionStatuses: list[ExecutionStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkMigrationExecutionIDs: list[str], networkMigrationExecutionStatuses: list[ExecutionStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkMigrationExecutionRequestFilters:
     Optional[list[str]] networkMigrationExecutionIDs
     Optional[list[ExecutionStatus]] networkMigrationExecutionStatuses
@@ -1648,14 +1696,16 @@ struct ListNetworkMigrationExecutionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[NetworkMigrationExecution] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[NetworkMigrationExecution] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkMigrationExecutionsResponse:
     Optional[list[NetworkMigrationExecution]] items
     Optional[str] nextToken
 
-# no @derive(Json): member(s) constructIDs: list[str], constructTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) constructIDs: list[str], constructTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkMigrationMapperSegmentConstructsFilters:
     Optional[list[str]] constructIDs
     Optional[list[str]] constructTypes
@@ -1670,14 +1720,16 @@ struct ListNetworkMigrationMapperSegmentConstructsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[NetworkMigrationMapperSegmentConstruct] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[NetworkMigrationMapperSegmentConstruct] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkMigrationMapperSegmentConstructsResponse:
     Optional[list[NetworkMigrationMapperSegmentConstruct]] items
     Optional[str] nextToken
 
-# no @derive(Json): member(s) segmentIDs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) segmentIDs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkMigrationMapperSegmentsFilters:
     Optional[list[str]] segmentIDs
 
@@ -1690,14 +1742,16 @@ struct ListNetworkMigrationMapperSegmentsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[NetworkMigrationMapperSegment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[NetworkMigrationMapperSegment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkMigrationMapperSegmentsResponse:
     Optional[list[NetworkMigrationMapperSegment]] items
     Optional[str] nextToken
 
-# no @derive(Json): member(s) jobIDs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobIDs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkMigrationMappingUpdatesFilters:
     Optional[list[str]] jobIDs
 
@@ -1710,14 +1764,16 @@ struct ListNetworkMigrationMappingUpdatesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[NetworkMigrationMappingUpdateJobDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[NetworkMigrationMappingUpdateJobDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkMigrationMappingUpdatesResponse:
     Optional[list[NetworkMigrationMappingUpdateJobDetails]] items
     Optional[str] nextToken
 
-# no @derive(Json): member(s) jobIDs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobIDs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkMigrationMappingsFilters:
     Optional[list[str]] jobIDs
 
@@ -1730,8 +1786,9 @@ struct ListNetworkMigrationMappingsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[NetworkMigrationMappingJobDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[NetworkMigrationMappingJobDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNetworkMigrationMappingsResponse:
     Optional[list[NetworkMigrationMappingJobDetails]] items
     Optional[str] nextToken
@@ -1745,8 +1802,9 @@ struct ListSourceServerActionsRequest:
     Optional[str] nextToken
     Optional[str] accountID
 
-# no @derive(Json): member(s) items: list[SourceServerActionDocument] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[SourceServerActionDocument] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSourceServerActionsResponse:
     Optional[list[SourceServerActionDocument]] items
     Optional[str] nextToken
@@ -1756,8 +1814,9 @@ struct ListSourceServerActionsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -1769,8 +1828,9 @@ struct ListTemplateActionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[TemplateActionDocument] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[TemplateActionDocument] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTemplateActionsResponse:
     Optional[list[TemplateActionDocument]] items
     Optional[str] nextToken
@@ -1783,14 +1843,16 @@ struct ListWavesRequest:
     Optional[str] nextToken
     Optional[str] accountID
 
-# no @derive(Json): member(s) waveIDs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) waveIDs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWavesRequestFilters:
     Optional[list[str]] waveIDs
     Optional[bool] isArchived
 
-# no @derive(Json): member(s) items: list[Wave] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[Wave] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWavesResponse:
     Optional[list[Wave]] items
     Optional[str] nextToken
@@ -1810,13 +1872,15 @@ struct MergeConstruct:
     Optional[str] segmentID
     Optional[str] constructID
 
-# no @derive(Json): member(s) mergeConstructs: list[MergeConstruct] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mergeConstructs: list[MergeConstruct] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MergeOperation:
     Optional[list[MergeConstruct]] mergeConstructs
 
-# no @derive(Json): member(s) ips: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ips: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkInterface:
     Optional[str] macAddress
     Optional[list[str]] ips
@@ -1863,8 +1927,9 @@ struct NetworkMigrationCodeGenerationArtifact:
     Optional[Checksum] checksum
     Optional[DateTime] createdAt
 
-# no @derive(Json): member(s) codeGenerationOutputFormatStatusDetailsMap: dict[CodeGenerationOutputFormatType, CodeGenerationOutputFormatStatusDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) codeGenerationOutputFormatStatusDetailsMap: dict[CodeGenerationOutputFormatType, CodeGenerationOutputFormatStatusDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkMigrationCodeGenerationJobDetails:
     Optional[str] jobID
     Optional[str] networkMigrationExecutionID
@@ -1875,8 +1940,9 @@ struct NetworkMigrationCodeGenerationJobDetails:
     Optional[str] statusDetails
     Optional[dict[CodeGenerationOutputFormatType, CodeGenerationOutputFormatStatusDetails]] codeGenerationOutputFormatStatusDetailsMap
 
-# no @derive(Json): member(s) artifacts: list[NetworkMigrationCodeGenerationArtifact], referencedSegments: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) artifacts: list[NetworkMigrationCodeGenerationArtifact], referencedSegments: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkMigrationCodeGenerationSegment:
     Optional[str] jobID
     Optional[str] networkMigrationExecutionID
@@ -1889,8 +1955,9 @@ struct NetworkMigrationCodeGenerationSegment:
     Optional[list[str]] referencedSegments
     Optional[DateTime] createdAt
 
-# no @derive(Json): member(s) sourceConfigurations: list[SourceConfiguration], cidrMappings: list[CidrMapping], tags: dict[str, str], scopeTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceConfigurations: list[SourceConfiguration], cidrMappings: list[CidrMapping], tags: dict[str, str], scopeTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkMigrationDefinition:
     Optional[str] arn
     Optional[str] networkMigrationDefinitionID
@@ -1907,8 +1974,9 @@ struct NetworkMigrationDefinition:
     Optional[dict[str, str]] tags
     Optional[dict[str, str]] scopeTags
 
-# no @derive(Json): member(s) tags: dict[str, str], scopeTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], scopeTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkMigrationDefinitionSummary:
     Optional[str] networkMigrationDefinitionID
     Optional[str] name
@@ -1917,8 +1985,9 @@ struct NetworkMigrationDefinitionSummary:
     Optional[dict[str, str]] tags
     Optional[dict[str, str]] scopeTags
 
-# no @derive(Json): member(s) failedResources: list[NetworkMigrationFailedResourceDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failedResources: list[NetworkMigrationFailedResourceDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkMigrationDeployedStackDetails:
     Optional[NetworkMigrationDeployedStackStatus] status
     Optional[str] stackPhysicalID
@@ -1937,8 +2006,9 @@ struct NetworkMigrationDeployerJobDetails:
     Optional[NetworkMigrationJobStatus] status
     Optional[str] statusDetails
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkMigrationExecution:
     Optional[str] networkMigrationDefinitionID
     Optional[str] networkMigrationExecutionID
@@ -1955,8 +2025,9 @@ struct NetworkMigrationFailedResourceDetails:
     Optional[NetworkMigrationFailedResourceStatus] status
     Optional[str] statusReason
 
-# no @derive(Json): member(s) scopeTags: dict[str, str], referencedSegments: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scopeTags: dict[str, str], referencedSegments: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkMigrationMapperSegment:
     Optional[str] jobID
     Optional[str] networkMigrationExecutionID
@@ -1974,8 +2045,9 @@ struct NetworkMigrationMapperSegment:
     Optional[str] targetAccount
     Optional[list[str]] referencedSegments
 
-# no @derive(Json): member(s) properties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkMigrationMapperSegmentConstruct:
     Optional[str] constructID
     Optional[str] constructType
@@ -2011,16 +2083,18 @@ struct NetworkMigrationMappingUpdateJobDetails:
 struct OS:
     Optional[str] fullString
 
-# no @derive(Json): member(s) merge: MergeOperation, split: SplitOperation, update: UpdateOperation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) merge: MergeOperation, split: SplitOperation, update: UpdateOperation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OperationUnion:
     Optional[MergeOperation] merge
     Optional[SplitOperation] split
     Optional[DeleteOperation] delete
     Optional[UpdateOperation] update
 
-# no @derive(Json): member(s) postLaunchActionsStatus: PostLaunchActionsStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) postLaunchActionsStatus: PostLaunchActionsStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParticipatingServer:
     str sourceServerID
     Optional[LaunchStatus] launchStatus
@@ -2033,8 +2107,9 @@ struct PauseReplicationRequest:
     str sourceServerID
     Optional[str] accountID
 
-# no @derive(Json): member(s) ssmDocuments: list[SsmDocument] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ssmDocuments: list[SsmDocument] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PostLaunchActions:
     Optional[PostLaunchActionsDeploymentType] deployment
     Optional[str] s3LogBucket
@@ -2042,8 +2117,9 @@ struct PostLaunchActions:
     Optional[str] cloudWatchLogGroupName
     Optional[list[SsmDocument]] ssmDocuments
 
-# no @derive(Json): member(s) postLaunchActionsLaunchStatusList: list[JobPostLaunchActionsLaunchStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) postLaunchActionsLaunchStatusList: list[JobPostLaunchActionsLaunchStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PostLaunchActionsStatus:
     Optional[str] ssmAgentDiscoveryDatetime
     Optional[list[JobPostLaunchActionsLaunchStatus]] postLaunchActionsLaunchStatusList
@@ -2107,8 +2183,9 @@ struct RemoveTemplateActionResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) replicationServersSecurityGroupsIDs: list[str], replicatedDisks: list[ReplicationConfigurationReplicatedDisk], stagingAreaTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) replicationServersSecurityGroupsIDs: list[str], replicatedDisks: list[ReplicationConfigurationReplicatedDisk], stagingAreaTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicationConfiguration:
     Optional[str] sourceServerID
     Optional[str] name
@@ -2138,8 +2215,9 @@ struct ReplicationConfigurationReplicatedDisk:
     Optional[int64] iops
     Optional[int64] throughput
 
-# no @derive(Json): member(s) replicationServersSecurityGroupsIDs: list[str], stagingAreaTags: dict[str, str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) replicationServersSecurityGroupsIDs: list[str], stagingAreaTags: dict[str, str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicationConfigurationTemplate:
     str replicationConfigurationTemplateID
     Optional[str] arn
@@ -2207,8 +2285,9 @@ struct SourceConfiguration:
     SourceEnvironment sourceEnvironment
     SourceS3Configuration sourceS3Configuration
 
-# no @derive(Json): member(s) networkInterfaces: list[NetworkInterface], disks: list[Disk], cpus: list[CPU] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkInterfaces: list[NetworkInterface], disks: list[Disk], cpus: list[CPU] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceProperties:
     Optional[str] lastUpdatedDateTime
     Optional[str] recommendedInstanceType
@@ -2225,8 +2304,9 @@ struct SourceS3Configuration:
     str s3BucketOwner
     str s3Key
 
-# no @derive(Json): member(s) tags: dict[str, str], launchedInstance: LaunchedInstance, dataReplicationInfo: DataReplicationInfo, sourceProperties: SourceProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], launchedInstance: LaunchedInstance, dataReplicationInfo: DataReplicationInfo, sourceProperties: SourceProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceServer:
     Optional[str] sourceServerID
     Optional[str] arn
@@ -2243,8 +2323,9 @@ struct SourceServer:
     Optional[str] fqdnForActionFramework
     Optional[SourceServerConnectorAction] connectorAction
 
-# no @derive(Json): member(s) parameters: dict[str, list[SsmParameterStoreParameter]], externalParameters: dict[str, SsmExternalParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: dict[str, list[SsmParameterStoreParameter]], externalParameters: dict[str, SsmExternalParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceServerActionDocument:
     Optional[str] actionID
     Optional[str] actionName
@@ -2259,8 +2340,9 @@ struct SourceServerActionDocument:
     Optional[str] description
     Optional[ActionCategory] category
 
-# no @derive(Json): member(s) actionIDs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actionIDs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceServerActionsRequestFilters:
     Optional[list[str]] actionIDs
 
@@ -2273,13 +2355,15 @@ struct SourceServerConnectorAction:
 struct SplitConstruct:
     Optional[str] cidrBlock
 
-# no @derive(Json): member(s) splitConstructs: list[SplitConstruct] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) splitConstructs: list[SplitConstruct] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SplitOperation:
     Optional[list[SplitConstruct]] splitConstructs
 
-# no @derive(Json): member(s) parameters: dict[str, list[SsmParameterStoreParameter]], externalParameters: dict[str, SsmExternalParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: dict[str, list[SsmParameterStoreParameter]], externalParameters: dict[str, SsmExternalParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SsmDocument:
     str actionName
     str ssmDocumentName
@@ -2304,8 +2388,9 @@ struct StartCutoverRequest:
     Optional[dict[str, str]] tags
     Optional[str] accountID
 
-# no @derive(Json): member(s) job: Job not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) job: Job not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartCutoverResponse:
     Optional[Job] job
 
@@ -2317,8 +2402,9 @@ struct StartExportRequest:
     Optional[str] s3BucketOwner
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) exportTask: ExportTask not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exportTask: ExportTask not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartExportResponse:
     Optional[ExportTask] exportTask
 
@@ -2341,8 +2427,9 @@ struct StartImportRequest:
     S3BucketSource s3BucketSource
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) importTask: ImportTask not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) importTask: ImportTask not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartImportResponse:
     Optional[ImportTask] importTask
 
@@ -2388,8 +2475,9 @@ struct StartNetworkMigrationMappingRequest:
 struct StartNetworkMigrationMappingResponse:
     Optional[str] jobID
 
-# no @derive(Json): member(s) operation: OperationUnion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operation: OperationUnion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartNetworkMigrationMappingUpdateConstruct:
     str segmentID
     str constructID
@@ -2408,8 +2496,9 @@ struct StartNetworkMigrationMappingUpdateRequest:
 struct StartNetworkMigrationMappingUpdateResponse:
     Optional[str] jobID
 
-# no @derive(Json): member(s) scopeTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scopeTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartNetworkMigrationMappingUpdateSegment:
     str segmentID
     Optional[str] targetAccount
@@ -2428,8 +2517,9 @@ struct StartTestRequest:
     Optional[dict[str, str]] tags
     Optional[str] accountID
 
-# no @derive(Json): member(s) job: Job not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) job: Job not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartTestResponse:
     Optional[Job] job
 
@@ -2474,8 +2564,9 @@ struct TargetS3ConfigurationUpdate:
     Optional[str] s3Bucket
     Optional[str] s3BucketOwner
 
-# no @derive(Json): member(s) parameters: dict[str, list[SsmParameterStoreParameter]], externalParameters: dict[str, SsmExternalParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: dict[str, list[SsmParameterStoreParameter]], externalParameters: dict[str, SsmExternalParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TemplateActionDocument:
     Optional[str] actionID
     Optional[str] actionName
@@ -2491,8 +2582,9 @@ struct TemplateActionDocument:
     Optional[str] description
     Optional[ActionCategory] category
 
-# no @derive(Json): member(s) actionIDs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actionIDs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TemplateActionsRequestFilters:
     Optional[list[str]] actionIDs
 
@@ -2503,8 +2595,9 @@ struct TerminateTargetInstancesRequest:
     Optional[dict[str, str]] tags
     Optional[str] accountID
 
-# no @derive(Json): member(s) job: Job not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) job: Job not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TerminateTargetInstancesResponse:
     Optional[Job] job
 
@@ -2611,8 +2704,9 @@ struct UpdateNetworkMigrationMapperSegmentRequest:
     str segmentID
     Optional[dict[str, str]] scopeTags
 
-# no @derive(Json): member(s) properties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateOperation:
     Optional[str] name
     Optional[bool] excluded
@@ -2689,8 +2783,9 @@ struct UpdateWaveRequest:
     Optional[str] description
     Optional[str] accountID
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     Optional[str] message
     Optional[str] code
@@ -2702,8 +2797,9 @@ struct ValidationExceptionField:
     Optional[str] name
     Optional[str] message
 
-# no @derive(Json): member(s) sourceServerTags: dict[str, str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceServerTags: dict[str, str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VcenterClient:
     Optional[str] vcenterClientID
     Optional[str] arn
@@ -2714,8 +2810,9 @@ struct VcenterClient:
     Optional[dict[str, str]] sourceServerTags
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Wave:
     Optional[str] waveID
     Optional[str] arn
@@ -2776,82 +2873,7 @@ def mgn_error_from_code(str code) -> mgnError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AssociateApplications (document member `applicationIDs: list[str]` is not serializable by derive)
-#   AssociateSourceServers (document member `sourceServerIDs: list[str]` is not serializable by derive)
-#   CreateApplication (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateConnector (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateLaunchConfigurationTemplate (document member `postLaunchActions: PostLaunchActions` is not serializable by derive)
-#   CreateNetworkMigrationDefinition (document member `sourceConfigurations: list[SourceConfiguration]` is not serializable by derive)
-#   CreateReplicationConfigurationTemplate (document member `replicationServersSecurityGroupsIDs: list[str]` is not serializable by derive)
-#   CreateWave (document member `tags: dict[str, str]` is not serializable by derive)
-#   DescribeJobs (document member `filters: DescribeJobsRequestFilters` is not serializable by derive)
-#   DescribeLaunchConfigurationTemplates (document member `launchConfigurationTemplateIDs: list[str]` is not serializable by derive)
-#   DescribeReplicationConfigurationTemplates (document member `replicationConfigurationTemplateIDs: list[str]` is not serializable by derive)
-#   DescribeSourceServers (document member `filters: DescribeSourceServersRequestFilters` is not serializable by derive)
-#   DisassociateApplications (document member `applicationIDs: list[str]` is not serializable by derive)
-#   DisassociateSourceServers (document member `sourceServerIDs: list[str]` is not serializable by derive)
-#   ListApplications (document member `filters: ListApplicationsRequestFilters` is not serializable by derive)
-#   ListConnectors (document member `filters: ListConnectorsRequestFilters` is not serializable by derive)
-#   ListExports (document member `filters: ListExportsRequestFilters` is not serializable by derive)
-#   ListImportFileEnrichments (document member `filters: ListImportFileEnrichmentsFilters` is not serializable by derive)
-#   ListImports (document member `filters: ListImportsRequestFilters` is not serializable by derive)
-#   ListNetworkMigrationAnalyses (document member `filters: ListNetworkMigrationAnalysesFilters` is not serializable by derive)
-#   ListNetworkMigrationAnalysisResults (document member `filters: ListNetworkMigrationAnalysisResultsFilters` is not serializable by derive)
-#   ListNetworkMigrationCodeGenerationSegments (document member `filters: ListNetworkMigrationCodeGenerationSegmentsFilters` is not serializable by derive)
-#   ListNetworkMigrationCodeGenerations (document member `filters: ListNetworkMigrationCodeGenerationsFilters` is not serializable by derive)
-#   ListNetworkMigrationDefinitions (document member `filters: ListNetworkMigrationDefinitionsRequestFilters` is not serializable by derive)
-#   ListNetworkMigrationDeployments (document member `filters: ListNetworkMigrationDeployerJobFilters` is not serializable by derive)
-#   ListNetworkMigrationExecutions (document member `filters: ListNetworkMigrationExecutionRequestFilters` is not serializable by derive)
-#   ListNetworkMigrationMapperSegmentConstructs (document member `filters: ListNetworkMigrationMapperSegmentConstructsFilters` is not serializable by derive)
-#   ListNetworkMigrationMapperSegments (document member `filters: ListNetworkMigrationMapperSegmentsFilters` is not serializable by derive)
-#   ListNetworkMigrationMappingUpdates (document member `filters: ListNetworkMigrationMappingUpdatesFilters` is not serializable by derive)
-#   ListNetworkMigrationMappings (document member `filters: ListNetworkMigrationMappingsFilters` is not serializable by derive)
-#   ListSourceServerActions (document member `filters: SourceServerActionsRequestFilters` is not serializable by derive)
-#   ListTemplateActions (document member `filters: TemplateActionsRequestFilters` is not serializable by derive)
-#   ListWaves (document member `filters: ListWavesRequestFilters` is not serializable by derive)
-#   PutSourceServerAction (document member `parameters: dict[str, list[SsmParameterStoreParameter]]` is not serializable by derive)
-#   PutTemplateAction (document member `parameters: dict[str, list[SsmParameterStoreParameter]]` is not serializable by derive)
-#   StartCutover (document member `sourceServerIDs: list[str]` is not serializable by derive)
-#   StartExport (document member `tags: dict[str, str]` is not serializable by derive)
-#   StartImport (document member `tags: dict[str, str]` is not serializable by derive)
-#   StartNetworkMigrationCodeGeneration (document member `codeGenerationOutputFormatTypes: list[CodeGenerationOutputFormatType]` is not serializable by derive)
-#   StartNetworkMigrationMappingUpdate (document member `constructs: list[StartNetworkMigrationMappingUpdateConstruct]` is not serializable by derive)
-#   StartTest (document member `sourceServerIDs: list[str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
-#   TerminateTargetInstances (document member `sourceServerIDs: list[str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateLaunchConfiguration (document member `postLaunchActions: PostLaunchActions` is not serializable by derive)
-#   UpdateLaunchConfigurationTemplate (document member `postLaunchActions: PostLaunchActions` is not serializable by derive)
-#   UpdateNetworkMigrationDefinition (document member `sourceConfigurations: list[SourceConfiguration]` is not serializable by derive)
-#   UpdateNetworkMigrationMapperSegment (document member `scopeTags: dict[str, str]` is not serializable by derive)
-#   UpdateReplicationConfiguration (document member `replicationServersSecurityGroupsIDs: list[str]` is not serializable by derive)
-#   UpdateReplicationConfigurationTemplate (document member `replicationServersSecurityGroupsIDs: list[str]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   DescribeJobs (operation not generated)
-#   DescribeLaunchConfigurationTemplates (operation not generated)
-#   DescribeReplicationConfigurationTemplates (operation not generated)
-#   DescribeSourceServers (operation not generated)
-#   ListApplications (operation not generated)
-#   ListConnectors (operation not generated)
-#   ListExports (operation not generated)
-#   ListImportFileEnrichments (operation not generated)
-#   ListImports (operation not generated)
-#   ListNetworkMigrationAnalyses (operation not generated)
-#   ListNetworkMigrationAnalysisResults (operation not generated)
-#   ListNetworkMigrationCodeGenerationSegments (operation not generated)
-#   ListNetworkMigrationCodeGenerations (operation not generated)
-#   ListNetworkMigrationDefinitions (operation not generated)
-#   ListNetworkMigrationDeployments (operation not generated)
-#   ListNetworkMigrationExecutions (operation not generated)
-#   ListNetworkMigrationMapperSegmentConstructs (operation not generated)
-#   ListNetworkMigrationMapperSegments (operation not generated)
-#   ListNetworkMigrationMappingUpdates (operation not generated)
-#   ListNetworkMigrationMappings (operation not generated)
-#   ListSourceServerActions (operation not generated)
-#   ListTemplateActions (operation not generated)
-#   ListWaves (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -3125,6 +3147,451 @@ struct UpdateWaveDocument:
     Optional[str] description
     Optional[str] accountID
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def mgn_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def mgn_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def mgn_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize DescribeJobsRequestFilters to a compact JSON object (declaration order).
+def describe_jobs_request_filters_to_json(DescribeJobsRequestFilters v) -> str:
+    list[str] parts = []
+    if v.jobIDs.is_some():
+        auto u0 = v.jobIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mgn_json_str(x1))
+        parts.append("\"jobIDs\":" + mgn_json_arr(e1))
+    if v.fromDate.is_some():
+        auto u2 = v.fromDate.unwrap()
+        parts.append("\"fromDate\":" + mgn_json_str(u2))
+    if v.toDate.is_some():
+        auto u3 = v.toDate.unwrap()
+        parts.append("\"toDate\":" + mgn_json_str(u3))
+    return mgn_json_obj(parts)
+
+# Serialize DescribeSourceServersRequestFilters to a compact JSON object (declaration order).
+def describe_source_servers_request_filters_to_json(DescribeSourceServersRequestFilters v) -> str:
+    list[str] parts = []
+    if v.sourceServerIDs.is_some():
+        auto u0 = v.sourceServerIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mgn_json_str(x1))
+        parts.append("\"sourceServerIDs\":" + mgn_json_arr(e1))
+    if v.isArchived.is_some():
+        auto u2 = v.isArchived.unwrap()
+        parts.append("\"isArchived\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.replicationTypes.is_some():
+        auto u3 = v.replicationTypes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"replicationTypes\":" + mgn_json_arr(e4))
+    if v.lifeCycleStates.is_some():
+        auto u5 = v.lifeCycleStates.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"lifeCycleStates\":" + mgn_json_arr(e6))
+    if v.applicationIDs.is_some():
+        auto u7 = v.applicationIDs.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(mgn_json_str(x8))
+        parts.append("\"applicationIDs\":" + mgn_json_arr(e8))
+    return mgn_json_obj(parts)
+
+# Serialize ListApplicationsRequestFilters to a compact JSON object (declaration order).
+def list_applications_request_filters_to_json(ListApplicationsRequestFilters v) -> str:
+    list[str] parts = []
+    if v.applicationIDs.is_some():
+        auto u0 = v.applicationIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mgn_json_str(x1))
+        parts.append("\"applicationIDs\":" + mgn_json_arr(e1))
+    if v.isArchived.is_some():
+        auto u2 = v.isArchived.unwrap()
+        parts.append("\"isArchived\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.waveIDs.is_some():
+        auto u3 = v.waveIDs.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(mgn_json_str(x4))
+        parts.append("\"waveIDs\":" + mgn_json_arr(e4))
+    return mgn_json_obj(parts)
+
+# Serialize ListConnectorsRequestFilters to a compact JSON object (declaration order).
+def list_connectors_request_filters_to_json(ListConnectorsRequestFilters v) -> str:
+    list[str] parts = []
+    if v.connectorIDs.is_some():
+        auto u0 = v.connectorIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mgn_json_str(x1))
+        parts.append("\"connectorIDs\":" + mgn_json_arr(e1))
+    return mgn_json_obj(parts)
+
+# Serialize ListExportsRequestFilters to a compact JSON object (declaration order).
+def list_exports_request_filters_to_json(ListExportsRequestFilters v) -> str:
+    list[str] parts = []
+    if v.exportIDs.is_some():
+        auto u0 = v.exportIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mgn_json_str(x1))
+        parts.append("\"exportIDs\":" + mgn_json_arr(e1))
+    return mgn_json_obj(parts)
+
+# Serialize ListImportFileEnrichmentsFilters to a compact JSON object (declaration order).
+def list_import_file_enrichments_filters_to_json(ListImportFileEnrichmentsFilters v) -> str:
+    list[str] parts = []
+    if v.jobIDs.is_some():
+        auto u0 = v.jobIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mgn_json_str(x1))
+        parts.append("\"jobIDs\":" + mgn_json_arr(e1))
+    return mgn_json_obj(parts)
+
+# Serialize ListImportsRequestFilters to a compact JSON object (declaration order).
+def list_imports_request_filters_to_json(ListImportsRequestFilters v) -> str:
+    list[str] parts = []
+    if v.importIDs.is_some():
+        auto u0 = v.importIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mgn_json_str(x1))
+        parts.append("\"importIDs\":" + mgn_json_arr(e1))
+    return mgn_json_obj(parts)
+
+# Serialize ListNetworkMigrationAnalysesFilters to a compact JSON object (declaration order).
+def list_network_migration_analyses_filters_to_json(ListNetworkMigrationAnalysesFilters v) -> str:
+    list[str] parts = []
+    if v.jobIDs.is_some():
+        auto u0 = v.jobIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mgn_json_str(x1))
+        parts.append("\"jobIDs\":" + mgn_json_arr(e1))
+    return mgn_json_obj(parts)
+
+# Serialize ListNetworkMigrationAnalysisResultsFilters to a compact JSON object (declaration order).
+def list_network_migration_analysis_results_filters_to_json(ListNetworkMigrationAnalysisResultsFilters v) -> str:
+    list[str] parts = []
+    if v.vpcIDs.is_some():
+        auto u0 = v.vpcIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mgn_json_str(x1))
+        parts.append("\"vpcIDs\":" + mgn_json_arr(e1))
+    return mgn_json_obj(parts)
+
+# Serialize ListNetworkMigrationCodeGenerationSegmentsFilters to a compact JSON object (declaration order).
+def list_network_migration_code_generation_segments_filters_to_json(ListNetworkMigrationCodeGenerationSegmentsFilters v) -> str:
+    list[str] parts = []
+    if v.segmentIDs.is_some():
+        auto u0 = v.segmentIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mgn_json_str(x1))
+        parts.append("\"segmentIDs\":" + mgn_json_arr(e1))
+    return mgn_json_obj(parts)
+
+# Serialize ListNetworkMigrationCodeGenerationsFilters to a compact JSON object (declaration order).
+def list_network_migration_code_generations_filters_to_json(ListNetworkMigrationCodeGenerationsFilters v) -> str:
+    list[str] parts = []
+    if v.jobIDs.is_some():
+        auto u0 = v.jobIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mgn_json_str(x1))
+        parts.append("\"jobIDs\":" + mgn_json_arr(e1))
+    return mgn_json_obj(parts)
+
+# Serialize ListNetworkMigrationDefinitionsRequestFilters to a compact JSON object (declaration order).
+def list_network_migration_definitions_request_filters_to_json(ListNetworkMigrationDefinitionsRequestFilters v) -> str:
+    list[str] parts = []
+    if v.networkMigrationDefinitionIDs.is_some():
+        auto u0 = v.networkMigrationDefinitionIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mgn_json_str(x1))
+        parts.append("\"networkMigrationDefinitionIDs\":" + mgn_json_arr(e1))
+    return mgn_json_obj(parts)
+
+# Serialize ListNetworkMigrationDeployerJobFilters to a compact JSON object (declaration order).
+def list_network_migration_deployer_job_filters_to_json(ListNetworkMigrationDeployerJobFilters v) -> str:
+    list[str] parts = []
+    if v.jobIDs.is_some():
+        auto u0 = v.jobIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mgn_json_str(x1))
+        parts.append("\"jobIDs\":" + mgn_json_arr(e1))
+    return mgn_json_obj(parts)
+
+# Serialize ListNetworkMigrationExecutionRequestFilters to a compact JSON object (declaration order).
+def list_network_migration_execution_request_filters_to_json(ListNetworkMigrationExecutionRequestFilters v) -> str:
+    list[str] parts = []
+    if v.networkMigrationExecutionIDs.is_some():
+        auto u0 = v.networkMigrationExecutionIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mgn_json_str(x1))
+        parts.append("\"networkMigrationExecutionIDs\":" + mgn_json_arr(e1))
+    if v.networkMigrationExecutionStatuses.is_some():
+        auto u2 = v.networkMigrationExecutionStatuses.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"networkMigrationExecutionStatuses\":" + mgn_json_arr(e3))
+    return mgn_json_obj(parts)
+
+# Serialize ListNetworkMigrationMapperSegmentConstructsFilters to a compact JSON object (declaration order).
+def list_network_migration_mapper_segment_constructs_filters_to_json(ListNetworkMigrationMapperSegmentConstructsFilters v) -> str:
+    list[str] parts = []
+    if v.constructIDs.is_some():
+        auto u0 = v.constructIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mgn_json_str(x1))
+        parts.append("\"constructIDs\":" + mgn_json_arr(e1))
+    if v.constructTypes.is_some():
+        auto u2 = v.constructTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(mgn_json_str(x3))
+        parts.append("\"constructTypes\":" + mgn_json_arr(e3))
+    return mgn_json_obj(parts)
+
+# Serialize ListNetworkMigrationMapperSegmentsFilters to a compact JSON object (declaration order).
+def list_network_migration_mapper_segments_filters_to_json(ListNetworkMigrationMapperSegmentsFilters v) -> str:
+    list[str] parts = []
+    if v.segmentIDs.is_some():
+        auto u0 = v.segmentIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mgn_json_str(x1))
+        parts.append("\"segmentIDs\":" + mgn_json_arr(e1))
+    return mgn_json_obj(parts)
+
+# Serialize ListNetworkMigrationMappingUpdatesFilters to a compact JSON object (declaration order).
+def list_network_migration_mapping_updates_filters_to_json(ListNetworkMigrationMappingUpdatesFilters v) -> str:
+    list[str] parts = []
+    if v.jobIDs.is_some():
+        auto u0 = v.jobIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mgn_json_str(x1))
+        parts.append("\"jobIDs\":" + mgn_json_arr(e1))
+    return mgn_json_obj(parts)
+
+# Serialize ListNetworkMigrationMappingsFilters to a compact JSON object (declaration order).
+def list_network_migration_mappings_filters_to_json(ListNetworkMigrationMappingsFilters v) -> str:
+    list[str] parts = []
+    if v.jobIDs.is_some():
+        auto u0 = v.jobIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mgn_json_str(x1))
+        parts.append("\"jobIDs\":" + mgn_json_arr(e1))
+    return mgn_json_obj(parts)
+
+# Serialize ListWavesRequestFilters to a compact JSON object (declaration order).
+def list_waves_request_filters_to_json(ListWavesRequestFilters v) -> str:
+    list[str] parts = []
+    if v.waveIDs.is_some():
+        auto u0 = v.waveIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mgn_json_str(x1))
+        parts.append("\"waveIDs\":" + mgn_json_arr(e1))
+    if v.isArchived.is_some():
+        auto u2 = v.isArchived.unwrap()
+        parts.append("\"isArchived\":" + json.dumps(JsonValue.Bool(u2)))
+    return mgn_json_obj(parts)
+
+# Serialize MergeOperation to a compact JSON object (declaration order).
+def merge_operation_to_json(MergeOperation v) -> str:
+    list[str] parts = []
+    if v.mergeConstructs.is_some():
+        auto u0 = v.mergeConstructs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"mergeConstructs\":" + mgn_json_arr(e1))
+    return mgn_json_obj(parts)
+
+# Serialize OperationUnion to a compact JSON object (declaration order).
+def operation_union_to_json(OperationUnion v) -> str:
+    list[str] parts = []
+    if v.merge.is_some():
+        auto u0 = v.merge.unwrap()
+        parts.append("\"merge\":" + merge_operation_to_json(u0))
+    if v.split.is_some():
+        auto u1 = v.split.unwrap()
+        parts.append("\"split\":" + split_operation_to_json(u1))
+    if v.delete.is_some():
+        auto u2 = v.delete.unwrap()
+        parts.append("\"delete\":" + u2.to_json())
+    if v.update.is_some():
+        auto u3 = v.update.unwrap()
+        parts.append("\"update\":" + update_operation_to_json(u3))
+    return mgn_json_obj(parts)
+
+# Serialize PostLaunchActions to a compact JSON object (declaration order).
+def post_launch_actions_to_json(PostLaunchActions v) -> str:
+    list[str] parts = []
+    if v.deployment.is_some():
+        auto u0 = v.deployment.unwrap()
+        parts.append("\"deployment\":" + u0.to_json())
+    if v.s3LogBucket.is_some():
+        auto u1 = v.s3LogBucket.unwrap()
+        parts.append("\"s3LogBucket\":" + mgn_json_str(u1))
+    if v.s3OutputKeyPrefix.is_some():
+        auto u2 = v.s3OutputKeyPrefix.unwrap()
+        parts.append("\"s3OutputKeyPrefix\":" + mgn_json_str(u2))
+    if v.cloudWatchLogGroupName.is_some():
+        auto u3 = v.cloudWatchLogGroupName.unwrap()
+        parts.append("\"cloudWatchLogGroupName\":" + mgn_json_str(u3))
+    if v.ssmDocuments.is_some():
+        auto u4 = v.ssmDocuments.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(ssm_document_to_json(x5))
+        parts.append("\"ssmDocuments\":" + mgn_json_arr(e5))
+    return mgn_json_obj(parts)
+
+# Serialize SourceServerActionsRequestFilters to a compact JSON object (declaration order).
+def source_server_actions_request_filters_to_json(SourceServerActionsRequestFilters v) -> str:
+    list[str] parts = []
+    if v.actionIDs.is_some():
+        auto u0 = v.actionIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mgn_json_str(x1))
+        parts.append("\"actionIDs\":" + mgn_json_arr(e1))
+    return mgn_json_obj(parts)
+
+# Serialize SplitOperation to a compact JSON object (declaration order).
+def split_operation_to_json(SplitOperation v) -> str:
+    list[str] parts = []
+    if v.splitConstructs.is_some():
+        auto u0 = v.splitConstructs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"splitConstructs\":" + mgn_json_arr(e1))
+    return mgn_json_obj(parts)
+
+# Serialize SsmDocument to a compact JSON object (declaration order).
+def ssm_document_to_json(SsmDocument v) -> str:
+    list[str] parts = []
+    parts.append("\"actionName\":" + mgn_json_str(v.actionName))
+    parts.append("\"ssmDocumentName\":" + mgn_json_str(v.ssmDocumentName))
+    if v.timeoutSeconds.is_some():
+        auto u0 = v.timeoutSeconds.unwrap()
+        parts.append("\"timeoutSeconds\":" + str(u0))
+    if v.mustSucceedForCutover.is_some():
+        auto u1 = v.mustSucceedForCutover.unwrap()
+        parts.append("\"mustSucceedForCutover\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.parameters.is_some():
+        auto u2 = v.parameters.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            list[str] e4 = []
+            for x4 in u2[k3]:
+                e4.append(x4.to_json())
+            m3.append(mgn_json_str(k3) + ":" + mgn_json_arr(e4))
+        parts.append("\"parameters\":" + mgn_json_obj(m3))
+    if v.externalParameters.is_some():
+        auto u5 = v.externalParameters.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(mgn_json_str(k6) + ":" + u5[k6].to_json())
+        parts.append("\"externalParameters\":" + mgn_json_obj(m6))
+    return mgn_json_obj(parts)
+
+# Serialize StartNetworkMigrationMappingUpdateConstruct to a compact JSON object (declaration order).
+def start_network_migration_mapping_update_construct_to_json(StartNetworkMigrationMappingUpdateConstruct v) -> str:
+    list[str] parts = []
+    parts.append("\"segmentID\":" + mgn_json_str(v.segmentID))
+    parts.append("\"constructID\":" + mgn_json_str(v.constructID))
+    parts.append("\"constructType\":" + mgn_json_str(v.constructType))
+    if v.operation.is_some():
+        auto u0 = v.operation.unwrap()
+        parts.append("\"operation\":" + operation_union_to_json(u0))
+    return mgn_json_obj(parts)
+
+# Serialize StartNetworkMigrationMappingUpdateSegment to a compact JSON object (declaration order).
+def start_network_migration_mapping_update_segment_to_json(StartNetworkMigrationMappingUpdateSegment v) -> str:
+    list[str] parts = []
+    parts.append("\"segmentID\":" + mgn_json_str(v.segmentID))
+    if v.targetAccount.is_some():
+        auto u0 = v.targetAccount.unwrap()
+        parts.append("\"targetAccount\":" + mgn_json_str(u0))
+    if v.scopeTags.is_some():
+        auto u1 = v.scopeTags.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(mgn_json_str(k2) + ":" + mgn_json_str(u1[k2]))
+        parts.append("\"scopeTags\":" + mgn_json_obj(m2))
+    return mgn_json_obj(parts)
+
+# Serialize TemplateActionsRequestFilters to a compact JSON object (declaration order).
+def template_actions_request_filters_to_json(TemplateActionsRequestFilters v) -> str:
+    list[str] parts = []
+    if v.actionIDs.is_some():
+        auto u0 = v.actionIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mgn_json_str(x1))
+        parts.append("\"actionIDs\":" + mgn_json_arr(e1))
+    return mgn_json_obj(parts)
+
+# Serialize UpdateOperation to a compact JSON object (declaration order).
+def update_operation_to_json(UpdateOperation v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + mgn_json_str(u0))
+    if v.excluded.is_some():
+        auto u1 = v.excluded.unwrap()
+        parts.append("\"excluded\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.properties.is_some():
+        auto u2 = v.properties.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(mgn_json_str(k3) + ":" + mgn_json_str(u2[k3]))
+        parts.append("\"properties\":" + mgn_json_obj(m3))
+    return mgn_json_obj(parts)
+
 # A bound mgn client: credentials + region, threaded into every operation.
 struct mgnClient:
     core.Credentials creds
@@ -3148,6 +3615,40 @@ struct mgnClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
 
+    # AssociateApplications  POST /AssociateApplications
+    # errors: ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, UninitializedAccountException
+    def associate_applications(self, AssociateApplicationsRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/AssociateApplications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"waveID\":" + mgn_json_str(input.waveID))
+        list[str] e0 = []
+        for x0 in input.applicationIDs:
+            e0.append(mgn_json_str(x0))
+        parts.append("\"applicationIDs\":" + mgn_json_arr(e0))
+        if input.accountID.is_some():
+            auto u1 = input.accountID.unwrap()
+            parts.append("\"accountID\":" + mgn_json_str(u1))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # AssociateSourceServers  POST /AssociateSourceServers
+    # errors: ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, UninitializedAccountException
+    def associate_source_servers(self, AssociateSourceServersRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/AssociateSourceServers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"applicationID\":" + mgn_json_str(input.applicationID))
+        list[str] e0 = []
+        for x0 in input.sourceServerIDs:
+            e0.append(mgn_json_str(x0))
+        parts.append("\"sourceServerIDs\":" + mgn_json_arr(e0))
+        if input.accountID.is_some():
+            auto u1 = input.accountID.unwrap()
+            parts.append("\"accountID\":" + mgn_json_str(u1))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
     # ChangeServerLifeCycleState  POST /ChangeServerLifeCycleState
     # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException, ValidationException
     def change_server_life_cycle_state(self, ChangeServerLifeCycleStateRequest input) -> str:
@@ -3155,6 +3656,222 @@ struct mgnClient:
         auto b = binding.HttpBinding(method="POST", path_template="/ChangeServerLifeCycleState", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ChangeServerLifeCycleStateDocument(sourceServerID=input.sourceServerID, lifeCycle=input.lifeCycle, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # CreateApplication  POST /CreateApplication
+    # errors: ConflictException, ServiceQuotaExceededException, UninitializedAccountException
+    def create_application(self, CreateApplicationRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateApplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + mgn_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + mgn_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(mgn_json_str(k2) + ":" + mgn_json_str(u1[k2]))
+            parts.append("\"tags\":" + mgn_json_obj(m2))
+        if input.accountID.is_some():
+            auto u3 = input.accountID.unwrap()
+            parts.append("\"accountID\":" + mgn_json_str(u3))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # CreateConnector  POST /CreateConnector
+    # errors: UninitializedAccountException, ValidationException
+    def create_connector(self, CreateConnectorRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateConnector", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + mgn_json_str(input.name))
+        parts.append("\"ssmInstanceID\":" + mgn_json_str(input.ssmInstanceID))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(mgn_json_str(k1) + ":" + mgn_json_str(u0[k1]))
+            parts.append("\"tags\":" + mgn_json_obj(m1))
+        if input.ssmCommandConfig.is_some():
+            auto u2 = input.ssmCommandConfig.unwrap()
+            parts.append("\"ssmCommandConfig\":" + u2.to_json())
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # CreateLaunchConfigurationTemplate  POST /CreateLaunchConfigurationTemplate
+    # errors: AccessDeniedException, UninitializedAccountException, ValidationException
+    def create_launch_configuration_template(self, CreateLaunchConfigurationTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateLaunchConfigurationTemplate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.postLaunchActions.is_some():
+            auto u0 = input.postLaunchActions.unwrap()
+            parts.append("\"postLaunchActions\":" + post_launch_actions_to_json(u0))
+        if input.enableMapAutoTagging.is_some():
+            auto u1 = input.enableMapAutoTagging.unwrap()
+            parts.append("\"enableMapAutoTagging\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.mapAutoTaggingMpeID.is_some():
+            auto u2 = input.mapAutoTaggingMpeID.unwrap()
+            parts.append("\"mapAutoTaggingMpeID\":" + mgn_json_str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(mgn_json_str(k4) + ":" + mgn_json_str(u3[k4]))
+            parts.append("\"tags\":" + mgn_json_obj(m4))
+        if input.launchDisposition.is_some():
+            auto u5 = input.launchDisposition.unwrap()
+            parts.append("\"launchDisposition\":" + u5.to_json())
+        if input.targetInstanceTypeRightSizingMethod.is_some():
+            auto u6 = input.targetInstanceTypeRightSizingMethod.unwrap()
+            parts.append("\"targetInstanceTypeRightSizingMethod\":" + u6.to_json())
+        if input.copyPrivateIp.is_some():
+            auto u7 = input.copyPrivateIp.unwrap()
+            parts.append("\"copyPrivateIp\":" + json.dumps(JsonValue.Bool(u7)))
+        if input.associatePublicIpAddress.is_some():
+            auto u8 = input.associatePublicIpAddress.unwrap()
+            parts.append("\"associatePublicIpAddress\":" + json.dumps(JsonValue.Bool(u8)))
+        if input.copyTags.is_some():
+            auto u9 = input.copyTags.unwrap()
+            parts.append("\"copyTags\":" + json.dumps(JsonValue.Bool(u9)))
+        if input.licensing.is_some():
+            auto u10 = input.licensing.unwrap()
+            parts.append("\"licensing\":" + u10.to_json())
+        if input.bootMode.is_some():
+            auto u11 = input.bootMode.unwrap()
+            parts.append("\"bootMode\":" + u11.to_json())
+        if input.smallVolumeMaxSize.is_some():
+            auto u12 = input.smallVolumeMaxSize.unwrap()
+            parts.append("\"smallVolumeMaxSize\":" + str(u12))
+        if input.smallVolumeConf.is_some():
+            auto u13 = input.smallVolumeConf.unwrap()
+            parts.append("\"smallVolumeConf\":" + u13.to_json())
+        if input.largeVolumeConf.is_some():
+            auto u14 = input.largeVolumeConf.unwrap()
+            parts.append("\"largeVolumeConf\":" + u14.to_json())
+        if input.enableParametersEncryption.is_some():
+            auto u15 = input.enableParametersEncryption.unwrap()
+            parts.append("\"enableParametersEncryption\":" + json.dumps(JsonValue.Bool(u15)))
+        if input.parametersEncryptionKey.is_some():
+            auto u16 = input.parametersEncryptionKey.unwrap()
+            parts.append("\"parametersEncryptionKey\":" + mgn_json_str(u16))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # CreateNetworkMigrationDefinition  POST /network-migration/CreateNetworkMigrationDefinition
+    # errors: ServiceQuotaExceededException, ValidationException
+    def create_network_migration_definition(self, CreateNetworkMigrationDefinitionRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/CreateNetworkMigrationDefinition", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + mgn_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + mgn_json_str(u0))
+        if input.sourceConfigurations.is_some():
+            auto u1 = input.sourceConfigurations.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"sourceConfigurations\":" + mgn_json_arr(e2))
+        parts.append("\"targetS3Configuration\":" + input.targetS3Configuration.to_json())
+        parts.append("\"targetNetwork\":" + input.targetNetwork.to_json())
+        if input.targetDeployment.is_some():
+            auto u3 = input.targetDeployment.unwrap()
+            parts.append("\"targetDeployment\":" + u3.to_json())
+        if input.vpcProvisioningStrategy.is_some():
+            auto u4 = input.vpcProvisioningStrategy.unwrap()
+            parts.append("\"vpcProvisioningStrategy\":" + u4.to_json())
+        if input.cidrMappings.is_some():
+            auto u5 = input.cidrMappings.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"cidrMappings\":" + mgn_json_arr(e6))
+        if input.tags.is_some():
+            auto u7 = input.tags.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(mgn_json_str(k8) + ":" + mgn_json_str(u7[k8]))
+            parts.append("\"tags\":" + mgn_json_obj(m8))
+        if input.scopeTags.is_some():
+            auto u9 = input.scopeTags.unwrap()
+            list[str] m10 = []
+            for k10 in sorted(u9.keys()):
+                m10.append(mgn_json_str(k10) + ":" + mgn_json_str(u9[k10]))
+            parts.append("\"scopeTags\":" + mgn_json_obj(m10))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # CreateReplicationConfigurationTemplate  POST /CreateReplicationConfigurationTemplate
+    # errors: AccessDeniedException, UninitializedAccountException, ValidationException
+    def create_replication_configuration_template(self, CreateReplicationConfigurationTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateReplicationConfigurationTemplate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"stagingAreaSubnetId\":" + mgn_json_str(input.stagingAreaSubnetId))
+        parts.append("\"associateDefaultSecurityGroup\":" + json.dumps(JsonValue.Bool(input.associateDefaultSecurityGroup)))
+        list[str] e0 = []
+        for x0 in input.replicationServersSecurityGroupsIDs:
+            e0.append(mgn_json_str(x0))
+        parts.append("\"replicationServersSecurityGroupsIDs\":" + mgn_json_arr(e0))
+        parts.append("\"replicationServerInstanceType\":" + mgn_json_str(input.replicationServerInstanceType))
+        parts.append("\"useDedicatedReplicationServer\":" + json.dumps(JsonValue.Bool(input.useDedicatedReplicationServer)))
+        parts.append("\"defaultLargeStagingDiskType\":" + input.defaultLargeStagingDiskType.to_json())
+        parts.append("\"ebsEncryption\":" + input.ebsEncryption.to_json())
+        if input.ebsEncryptionKeyArn.is_some():
+            auto u1 = input.ebsEncryptionKeyArn.unwrap()
+            parts.append("\"ebsEncryptionKeyArn\":" + mgn_json_str(u1))
+        parts.append("\"bandwidthThrottling\":" + str(input.bandwidthThrottling))
+        parts.append("\"dataPlaneRouting\":" + input.dataPlaneRouting.to_json())
+        parts.append("\"createPublicIP\":" + json.dumps(JsonValue.Bool(input.createPublicIP)))
+        list[str] m2 = []
+        for k2 in sorted(input.stagingAreaTags.keys()):
+            m2.append(mgn_json_str(k2) + ":" + mgn_json_str(input.stagingAreaTags[k2]))
+        parts.append("\"stagingAreaTags\":" + mgn_json_obj(m2))
+        if input.useFipsEndpoint.is_some():
+            auto u3 = input.useFipsEndpoint.unwrap()
+            parts.append("\"useFipsEndpoint\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(mgn_json_str(k5) + ":" + mgn_json_str(u4[k5]))
+            parts.append("\"tags\":" + mgn_json_obj(m5))
+        if input.internetProtocol.is_some():
+            auto u6 = input.internetProtocol.unwrap()
+            parts.append("\"internetProtocol\":" + u6.to_json())
+        if input.storeSnapshotOnLocalZone.is_some():
+            auto u7 = input.storeSnapshotOnLocalZone.unwrap()
+            parts.append("\"storeSnapshotOnLocalZone\":" + json.dumps(JsonValue.Bool(u7)))
+        if input.storageConfiguration.is_some():
+            auto u8 = input.storageConfiguration.unwrap()
+            parts.append("\"storageConfiguration\":" + u8.to_json())
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # CreateWave  POST /CreateWave
+    # errors: ConflictException, ServiceQuotaExceededException, UninitializedAccountException
+    def create_wave(self, CreateWaveRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateWave", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + mgn_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + mgn_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(mgn_json_str(k2) + ":" + mgn_json_str(u1[k2]))
+            parts.append("\"tags\":" + mgn_json_obj(m2))
+        if input.accountID.is_some():
+            auto u3 = input.accountID.unwrap()
+            parts.append("\"accountID\":" + mgn_json_str(u3))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
 
     # DeleteApplication  POST /DeleteApplication
@@ -3247,6 +3964,90 @@ struct mgnClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
 
+    # DescribeJobs  POST /DescribeJobs
+    # errors: UninitializedAccountException, ValidationException
+    def describe_jobs(self, DescribeJobsRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeJobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + describe_jobs_request_filters_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + mgn_json_str(u2))
+        if input.accountID.is_some():
+            auto u3 = input.accountID.unwrap()
+            parts.append("\"accountID\":" + mgn_json_str(u3))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # DescribeLaunchConfigurationTemplates  POST /DescribeLaunchConfigurationTemplates
+    # errors: ResourceNotFoundException, UninitializedAccountException, ValidationException
+    def describe_launch_configuration_templates(self, DescribeLaunchConfigurationTemplatesRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeLaunchConfigurationTemplates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.launchConfigurationTemplateIDs.is_some():
+            auto u0 = input.launchConfigurationTemplateIDs.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(mgn_json_str(x1))
+            parts.append("\"launchConfigurationTemplateIDs\":" + mgn_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + mgn_json_str(u3))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # DescribeReplicationConfigurationTemplates  POST /DescribeReplicationConfigurationTemplates
+    # errors: ResourceNotFoundException, UninitializedAccountException, ValidationException
+    def describe_replication_configuration_templates(self, DescribeReplicationConfigurationTemplatesRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeReplicationConfigurationTemplates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.replicationConfigurationTemplateIDs.is_some():
+            auto u0 = input.replicationConfigurationTemplateIDs.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(mgn_json_str(x1))
+            parts.append("\"replicationConfigurationTemplateIDs\":" + mgn_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + mgn_json_str(u3))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # DescribeSourceServers  POST /DescribeSourceServers
+    # errors: UninitializedAccountException, ValidationException
+    def describe_source_servers(self, DescribeSourceServersRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeSourceServers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + describe_source_servers_request_filters_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + mgn_json_str(u2))
+        if input.accountID.is_some():
+            auto u3 = input.accountID.unwrap()
+            parts.append("\"accountID\":" + mgn_json_str(u3))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
     # DescribeVcenterClients  GET /DescribeVcenterClients
     # errors: ResourceNotFoundException, UninitializedAccountException, ValidationException
     def describe_vcenter_clients(self, DescribeVcenterClientsRequest input) -> str:
@@ -3258,6 +4059,40 @@ struct mgnClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         auto b = binding.HttpBinding(method="GET", path_template="/DescribeVcenterClients", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mgn_service(), self.region, host)
+
+    # DisassociateApplications  POST /DisassociateApplications
+    # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException
+    def disassociate_applications(self, DisassociateApplicationsRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/DisassociateApplications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"waveID\":" + mgn_json_str(input.waveID))
+        list[str] e0 = []
+        for x0 in input.applicationIDs:
+            e0.append(mgn_json_str(x0))
+        parts.append("\"applicationIDs\":" + mgn_json_arr(e0))
+        if input.accountID.is_some():
+            auto u1 = input.accountID.unwrap()
+            parts.append("\"accountID\":" + mgn_json_str(u1))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # DisassociateSourceServers  POST /DisassociateSourceServers
+    # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException
+    def disassociate_source_servers(self, DisassociateSourceServersRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/DisassociateSourceServers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"applicationID\":" + mgn_json_str(input.applicationID))
+        list[str] e0 = []
+        for x0 in input.sourceServerIDs:
+            e0.append(mgn_json_str(x0))
+        parts.append("\"sourceServerIDs\":" + mgn_json_arr(e0))
+        if input.accountID.is_some():
+            auto u1 = input.accountID.unwrap()
+            parts.append("\"accountID\":" + mgn_json_str(u1))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
 
     # DisconnectFromService  POST /DisconnectFromService
     # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException
@@ -3320,6 +4155,45 @@ struct mgnClient:
         auto b = binding.HttpBinding(method="POST", path_template="/InitializeService", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mgn_service(), self.region, host)
 
+    # ListApplications  POST /ListApplications
+    # errors: UninitializedAccountException
+    def list_applications(self, ListApplicationsRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListApplications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + list_applications_request_filters_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + mgn_json_str(u2))
+        if input.accountID.is_some():
+            auto u3 = input.accountID.unwrap()
+            parts.append("\"accountID\":" + mgn_json_str(u3))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # ListConnectors  POST /ListConnectors
+    # errors: UninitializedAccountException, ValidationException
+    def list_connectors(self, ListConnectorsRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListConnectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + list_connectors_request_filters_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + mgn_json_str(u2))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
     # ListExportErrors  POST /ListExportErrors
     # errors: UninitializedAccountException, ValidationException
     def list_export_errors(self, ListExportErrorsRequest input) -> str:
@@ -3327,6 +4201,24 @@ struct mgnClient:
         auto b = binding.HttpBinding(method="POST", path_template="/ListExportErrors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListExportErrorsDocument(exportID=input.exportID, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # ListExports  POST /ListExports
+    # errors: UninitializedAccountException
+    def list_exports(self, ListExportsRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListExports", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + list_exports_request_filters_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + mgn_json_str(u2))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
 
     # ListImportErrors  POST /ListImportErrors
@@ -3338,6 +4230,42 @@ struct mgnClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
 
+    # ListImportFileEnrichments  POST /network-migration/ListImportFileEnrichments
+    # errors: ValidationException
+    def list_import_file_enrichments(self, ListImportFileEnrichmentsRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListImportFileEnrichments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + list_import_file_enrichments_filters_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + mgn_json_str(u2))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # ListImports  POST /ListImports
+    # errors: UninitializedAccountException, ValidationException
+    def list_imports(self, ListImportsRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListImports", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + list_imports_request_filters_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + mgn_json_str(u2))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
     # ListManagedAccounts  POST /ListManagedAccounts
     # errors: UninitializedAccountException, ValidationException
     def list_managed_accounts(self, ListManagedAccountsRequest input) -> str:
@@ -3345,6 +4273,104 @@ struct mgnClient:
         auto b = binding.HttpBinding(method="POST", path_template="/ListManagedAccounts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListManagedAccountsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # ListNetworkMigrationAnalyses  POST /network-migration/ListNetworkMigrationAnalyses
+    # errors: AccessDeniedException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_network_migration_analyses(self, ListNetworkMigrationAnalysesRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationAnalyses", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"networkMigrationExecutionID\":" + mgn_json_str(input.networkMigrationExecutionID))
+        parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + list_network_migration_analyses_filters_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + mgn_json_str(u2))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # ListNetworkMigrationAnalysisResults  POST /network-migration/ListNetworkMigrationAnalysisResults
+    # errors: AccessDeniedException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_network_migration_analysis_results(self, ListNetworkMigrationAnalysisResultsRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationAnalysisResults", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"networkMigrationExecutionID\":" + mgn_json_str(input.networkMigrationExecutionID))
+        parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + list_network_migration_analysis_results_filters_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + mgn_json_str(u2))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # ListNetworkMigrationCodeGenerationSegments  POST /network-migration/ListNetworkMigrationCodeGenerationSegments
+    # errors: AccessDeniedException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_network_migration_code_generation_segments(self, ListNetworkMigrationCodeGenerationSegmentsRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationCodeGenerationSegments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"networkMigrationExecutionID\":" + mgn_json_str(input.networkMigrationExecutionID))
+        parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + list_network_migration_code_generation_segments_filters_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + mgn_json_str(u2))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # ListNetworkMigrationCodeGenerations  POST /network-migration/ListNetworkMigrationCodeGenerations
+    # errors: AccessDeniedException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_network_migration_code_generations(self, ListNetworkMigrationCodeGenerationsRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationCodeGenerations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"networkMigrationExecutionID\":" + mgn_json_str(input.networkMigrationExecutionID))
+        parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + list_network_migration_code_generations_filters_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + mgn_json_str(u2))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # ListNetworkMigrationDefinitions  POST /network-migration/ListNetworkMigrationDefinitions
+    # errors: AccessDeniedException
+    def list_network_migration_definitions(self, ListNetworkMigrationDefinitionsRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationDefinitions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + list_network_migration_definitions_request_filters_to_json(u0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + mgn_json_str(u1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
 
     # ListNetworkMigrationDeployedStacks  POST /network-migration/ListNetworkMigrationDeployedStacks
@@ -3356,6 +4382,148 @@ struct mgnClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
 
+    # ListNetworkMigrationDeployments  POST /network-migration/ListNetworkMigrationDeployments
+    # errors: AccessDeniedException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_network_migration_deployments(self, ListNetworkMigrationDeploymentsRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationDeployments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"networkMigrationExecutionID\":" + mgn_json_str(input.networkMigrationExecutionID))
+        parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + list_network_migration_deployer_job_filters_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + mgn_json_str(u2))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # ListNetworkMigrationExecutions  POST /network-migration/ListNetworkMigrationExecutions
+    # errors: AccessDeniedException, ResourceNotFoundException
+    def list_network_migration_executions(self, ListNetworkMigrationExecutionsRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationExecutions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + list_network_migration_execution_request_filters_to_json(u0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + mgn_json_str(u1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # ListNetworkMigrationMapperSegmentConstructs  POST /network-migration/ListNetworkMigrationMapperSegmentConstructs
+    # errors: AccessDeniedException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_network_migration_mapper_segment_constructs(self, ListNetworkMigrationMapperSegmentConstructsRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationMapperSegmentConstructs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"networkMigrationExecutionID\":" + mgn_json_str(input.networkMigrationExecutionID))
+        parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
+        parts.append("\"segmentID\":" + mgn_json_str(input.segmentID))
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + list_network_migration_mapper_segment_constructs_filters_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + mgn_json_str(u2))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # ListNetworkMigrationMapperSegments  POST /network-migration/ListNetworkMigrationMapperSegments
+    # errors: AccessDeniedException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_network_migration_mapper_segments(self, ListNetworkMigrationMapperSegmentsRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationMapperSegments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"networkMigrationExecutionID\":" + mgn_json_str(input.networkMigrationExecutionID))
+        parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + list_network_migration_mapper_segments_filters_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + mgn_json_str(u2))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # ListNetworkMigrationMappingUpdates  POST /network-migration/ListNetworkMigrationMappingUpdates
+    # errors: AccessDeniedException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_network_migration_mapping_updates(self, ListNetworkMigrationMappingUpdatesRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationMappingUpdates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"networkMigrationExecutionID\":" + mgn_json_str(input.networkMigrationExecutionID))
+        parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + list_network_migration_mapping_updates_filters_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + mgn_json_str(u2))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # ListNetworkMigrationMappings  POST /network-migration/ListNetworkMigrationMappings
+    # errors: AccessDeniedException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_network_migration_mappings(self, ListNetworkMigrationMappingsRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationMappings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"networkMigrationExecutionID\":" + mgn_json_str(input.networkMigrationExecutionID))
+        parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + list_network_migration_mappings_filters_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + mgn_json_str(u2))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # ListSourceServerActions  POST /ListSourceServerActions
+    # errors: ResourceNotFoundException, UninitializedAccountException
+    def list_source_server_actions(self, ListSourceServerActionsRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListSourceServerActions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"sourceServerID\":" + mgn_json_str(input.sourceServerID))
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + source_server_actions_request_filters_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + mgn_json_str(u2))
+        if input.accountID.is_some():
+            auto u3 = input.accountID.unwrap()
+            parts.append("\"accountID\":" + mgn_json_str(u3))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
     # ListTagsForResource  GET /tags/{resourceArn}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
@@ -3364,6 +4532,46 @@ struct mgnClient:
         labels["resourceArn"] = input.resourceArn
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mgn_service(), self.region, host)
+
+    # ListTemplateActions  POST /ListTemplateActions
+    # errors: ResourceNotFoundException, UninitializedAccountException
+    def list_template_actions(self, ListTemplateActionsRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListTemplateActions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"launchConfigurationTemplateID\":" + mgn_json_str(input.launchConfigurationTemplateID))
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + template_actions_request_filters_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + mgn_json_str(u2))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # ListWaves  POST /ListWaves
+    # errors: UninitializedAccountException
+    def list_waves(self, ListWavesRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListWaves", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + list_waves_request_filters_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + mgn_json_str(u2))
+        if input.accountID.is_some():
+            auto u3 = input.accountID.unwrap()
+            parts.append("\"accountID\":" + mgn_json_str(u3))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
 
     # MarkAsArchived  POST /MarkAsArchived
     # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException
@@ -3381,6 +4589,106 @@ struct mgnClient:
         auto b = binding.HttpBinding(method="POST", path_template="/PauseReplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PauseReplicationDocument(sourceServerID=input.sourceServerID, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # PutSourceServerAction  POST /PutSourceServerAction
+    # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException, ValidationException
+    def put_source_server_action(self, PutSourceServerActionRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/PutSourceServerAction", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"sourceServerID\":" + mgn_json_str(input.sourceServerID))
+        parts.append("\"actionName\":" + mgn_json_str(input.actionName))
+        parts.append("\"documentIdentifier\":" + mgn_json_str(input.documentIdentifier))
+        parts.append("\"order\":" + str(input.order))
+        parts.append("\"actionID\":" + mgn_json_str(input.actionID))
+        if input.documentVersion.is_some():
+            auto u0 = input.documentVersion.unwrap()
+            parts.append("\"documentVersion\":" + mgn_json_str(u0))
+        if input.active.is_some():
+            auto u1 = input.active.unwrap()
+            parts.append("\"active\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.timeoutSeconds.is_some():
+            auto u2 = input.timeoutSeconds.unwrap()
+            parts.append("\"timeoutSeconds\":" + str(u2))
+        if input.mustSucceedForCutover.is_some():
+            auto u3 = input.mustSucceedForCutover.unwrap()
+            parts.append("\"mustSucceedForCutover\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.parameters.is_some():
+            auto u4 = input.parameters.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                list[str] e6 = []
+                for x6 in u4[k5]:
+                    e6.append(x6.to_json())
+                m5.append(mgn_json_str(k5) + ":" + mgn_json_arr(e6))
+            parts.append("\"parameters\":" + mgn_json_obj(m5))
+        if input.externalParameters.is_some():
+            auto u7 = input.externalParameters.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(mgn_json_str(k8) + ":" + u7[k8].to_json())
+            parts.append("\"externalParameters\":" + mgn_json_obj(m8))
+        if input.description.is_some():
+            auto u9 = input.description.unwrap()
+            parts.append("\"description\":" + mgn_json_str(u9))
+        if input.category.is_some():
+            auto u10 = input.category.unwrap()
+            parts.append("\"category\":" + u10.to_json())
+        if input.accountID.is_some():
+            auto u11 = input.accountID.unwrap()
+            parts.append("\"accountID\":" + mgn_json_str(u11))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # PutTemplateAction  POST /PutTemplateAction
+    # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException, ValidationException
+    def put_template_action(self, PutTemplateActionRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/PutTemplateAction", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"launchConfigurationTemplateID\":" + mgn_json_str(input.launchConfigurationTemplateID))
+        parts.append("\"actionName\":" + mgn_json_str(input.actionName))
+        parts.append("\"documentIdentifier\":" + mgn_json_str(input.documentIdentifier))
+        parts.append("\"order\":" + str(input.order))
+        parts.append("\"actionID\":" + mgn_json_str(input.actionID))
+        if input.documentVersion.is_some():
+            auto u0 = input.documentVersion.unwrap()
+            parts.append("\"documentVersion\":" + mgn_json_str(u0))
+        if input.active.is_some():
+            auto u1 = input.active.unwrap()
+            parts.append("\"active\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.timeoutSeconds.is_some():
+            auto u2 = input.timeoutSeconds.unwrap()
+            parts.append("\"timeoutSeconds\":" + str(u2))
+        if input.mustSucceedForCutover.is_some():
+            auto u3 = input.mustSucceedForCutover.unwrap()
+            parts.append("\"mustSucceedForCutover\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.parameters.is_some():
+            auto u4 = input.parameters.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                list[str] e6 = []
+                for x6 in u4[k5]:
+                    e6.append(x6.to_json())
+                m5.append(mgn_json_str(k5) + ":" + mgn_json_arr(e6))
+            parts.append("\"parameters\":" + mgn_json_obj(m5))
+        if input.operatingSystem.is_some():
+            auto u7 = input.operatingSystem.unwrap()
+            parts.append("\"operatingSystem\":" + mgn_json_str(u7))
+        if input.externalParameters.is_some():
+            auto u8 = input.externalParameters.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(mgn_json_str(k9) + ":" + u8[k9].to_json())
+            parts.append("\"externalParameters\":" + mgn_json_obj(m9))
+        if input.description.is_some():
+            auto u10 = input.description.unwrap()
+            parts.append("\"description\":" + mgn_json_str(u10))
+        if input.category.is_some():
+            auto u11 = input.category.unwrap()
+            parts.append("\"category\":" + u11.to_json())
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
 
     # RemoveSourceServerAction  POST /RemoveSourceServerAction
@@ -3419,6 +4727,67 @@ struct mgnClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
 
+    # StartCutover  POST /StartCutover
+    # errors: ConflictException, UninitializedAccountException, ValidationException
+    def start_cutover(self, StartCutoverRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/StartCutover", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.sourceServerIDs:
+            e0.append(mgn_json_str(x0))
+        parts.append("\"sourceServerIDs\":" + mgn_json_arr(e0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(mgn_json_str(k2) + ":" + mgn_json_str(u1[k2]))
+            parts.append("\"tags\":" + mgn_json_obj(m2))
+        if input.accountID.is_some():
+            auto u3 = input.accountID.unwrap()
+            parts.append("\"accountID\":" + mgn_json_str(u3))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # StartExport  POST /StartExport
+    # errors: ServiceQuotaExceededException, UninitializedAccountException, ValidationException
+    def start_export(self, StartExportRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/StartExport", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"s3Bucket\":" + mgn_json_str(input.s3Bucket))
+        parts.append("\"s3Key\":" + mgn_json_str(input.s3Key))
+        if input.s3BucketOwner.is_some():
+            auto u0 = input.s3BucketOwner.unwrap()
+            parts.append("\"s3BucketOwner\":" + mgn_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(mgn_json_str(k2) + ":" + mgn_json_str(u1[k2]))
+            parts.append("\"tags\":" + mgn_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # StartImport  POST /StartImport
+    # errors: ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, UninitializedAccountException, ValidationException
+    def start_import(self, StartImportRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/StartImport", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + mgn_json_str(u0))
+        parts.append("\"s3BucketSource\":" + input.s3BucketSource.to_json())
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(mgn_json_str(k2) + ":" + mgn_json_str(u1[k2]))
+            parts.append("\"tags\":" + mgn_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
     # StartImportFileEnrichment  POST /network-migration/StartImportFileEnrichment
     # errors: AccessDeniedException, ConflictException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_import_file_enrichment(self, StartImportFileEnrichmentRequest input) -> str:
@@ -3435,6 +4804,23 @@ struct mgnClient:
         auto b = binding.HttpBinding(method="POST", path_template="/network-migration/StartNetworkMigrationAnalysis", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartNetworkMigrationAnalysisDocument(networkMigrationExecutionID=input.networkMigrationExecutionID, networkMigrationDefinitionID=input.networkMigrationDefinitionID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # StartNetworkMigrationCodeGeneration  POST /network-migration/StartNetworkMigrationCodeGeneration
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_network_migration_code_generation(self, StartNetworkMigrationCodeGenerationRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/StartNetworkMigrationCodeGeneration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"networkMigrationExecutionID\":" + mgn_json_str(input.networkMigrationExecutionID))
+        parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
+        if input.codeGenerationOutputFormatTypes.is_some():
+            auto u0 = input.codeGenerationOutputFormatTypes.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"codeGenerationOutputFormatTypes\":" + mgn_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
 
     # StartNetworkMigrationDeployment  POST /network-migration/StartNetworkMigrationDeployment
@@ -3455,6 +4841,29 @@ struct mgnClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
 
+    # StartNetworkMigrationMappingUpdate  POST /network-migration/StartNetworkMigrationMappingUpdate
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_network_migration_mapping_update(self, StartNetworkMigrationMappingUpdateRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/StartNetworkMigrationMappingUpdate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"networkMigrationExecutionID\":" + mgn_json_str(input.networkMigrationExecutionID))
+        parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
+        if input.constructs.is_some():
+            auto u0 = input.constructs.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(start_network_migration_mapping_update_construct_to_json(x1))
+            parts.append("\"constructs\":" + mgn_json_arr(e1))
+        if input.segments.is_some():
+            auto u2 = input.segments.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(start_network_migration_mapping_update_segment_to_json(x3))
+            parts.append("\"segments\":" + mgn_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
     # StartReplication  POST /StartReplication
     # errors: ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, UninitializedAccountException, ValidationException
     def start_replication(self, StartReplicationRequest input) -> str:
@@ -3464,6 +4873,28 @@ struct mgnClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
 
+    # StartTest  POST /StartTest
+    # errors: ConflictException, UninitializedAccountException, ValidationException
+    def start_test(self, StartTestRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/StartTest", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.sourceServerIDs:
+            e0.append(mgn_json_str(x0))
+        parts.append("\"sourceServerIDs\":" + mgn_json_arr(e0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(mgn_json_str(k2) + ":" + mgn_json_str(u1[k2]))
+            parts.append("\"tags\":" + mgn_json_obj(m2))
+        if input.accountID.is_some():
+            auto u3 = input.accountID.unwrap()
+            parts.append("\"accountID\":" + mgn_json_str(u3))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
     # StopReplication  POST /StopReplication
     # errors: ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, UninitializedAccountException, ValidationException
     def stop_replication(self, StopReplicationRequest input) -> str:
@@ -3471,6 +4902,43 @@ struct mgnClient:
         auto b = binding.HttpBinding(method="POST", path_template="/StopReplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopReplicationDocument(sourceServerID=input.sourceServerID, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(mgn_json_str(k0) + ":" + mgn_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + mgn_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # TerminateTargetInstances  POST /TerminateTargetInstances
+    # errors: ConflictException, UninitializedAccountException, ValidationException
+    def terminate_target_instances(self, TerminateTargetInstancesRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/TerminateTargetInstances", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.sourceServerIDs:
+            e0.append(mgn_json_str(x0))
+        parts.append("\"sourceServerIDs\":" + mgn_json_arr(e0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(mgn_json_str(k2) + ":" + mgn_json_str(u1[k2]))
+            parts.append("\"tags\":" + mgn_json_obj(m2))
+        if input.accountID.is_some():
+            auto u3 = input.accountID.unwrap()
+            parts.append("\"accountID\":" + mgn_json_str(u3))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
 
     # UnarchiveApplication  POST /UnarchiveApplication
@@ -3507,6 +4975,311 @@ struct mgnClient:
         auto b = binding.HttpBinding(method="POST", path_template="/UpdateConnector", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateConnectorDocument(connectorID=input.connectorID, name=input.name, ssmCommandConfig=input.ssmCommandConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # UpdateLaunchConfiguration  POST /UpdateLaunchConfiguration
+    # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException, ValidationException
+    def update_launch_configuration(self, UpdateLaunchConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateLaunchConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"sourceServerID\":" + mgn_json_str(input.sourceServerID))
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + mgn_json_str(u0))
+        if input.launchDisposition.is_some():
+            auto u1 = input.launchDisposition.unwrap()
+            parts.append("\"launchDisposition\":" + u1.to_json())
+        if input.targetInstanceTypeRightSizingMethod.is_some():
+            auto u2 = input.targetInstanceTypeRightSizingMethod.unwrap()
+            parts.append("\"targetInstanceTypeRightSizingMethod\":" + u2.to_json())
+        if input.copyPrivateIp.is_some():
+            auto u3 = input.copyPrivateIp.unwrap()
+            parts.append("\"copyPrivateIp\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.copyTags.is_some():
+            auto u4 = input.copyTags.unwrap()
+            parts.append("\"copyTags\":" + json.dumps(JsonValue.Bool(u4)))
+        if input.licensing.is_some():
+            auto u5 = input.licensing.unwrap()
+            parts.append("\"licensing\":" + u5.to_json())
+        if input.bootMode.is_some():
+            auto u6 = input.bootMode.unwrap()
+            parts.append("\"bootMode\":" + u6.to_json())
+        if input.postLaunchActions.is_some():
+            auto u7 = input.postLaunchActions.unwrap()
+            parts.append("\"postLaunchActions\":" + post_launch_actions_to_json(u7))
+        if input.enableMapAutoTagging.is_some():
+            auto u8 = input.enableMapAutoTagging.unwrap()
+            parts.append("\"enableMapAutoTagging\":" + json.dumps(JsonValue.Bool(u8)))
+        if input.mapAutoTaggingMpeID.is_some():
+            auto u9 = input.mapAutoTaggingMpeID.unwrap()
+            parts.append("\"mapAutoTaggingMpeID\":" + mgn_json_str(u9))
+        if input.accountID.is_some():
+            auto u10 = input.accountID.unwrap()
+            parts.append("\"accountID\":" + mgn_json_str(u10))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # UpdateLaunchConfigurationTemplate  POST /UpdateLaunchConfigurationTemplate
+    # errors: AccessDeniedException, ResourceNotFoundException, UninitializedAccountException, ValidationException
+    def update_launch_configuration_template(self, UpdateLaunchConfigurationTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateLaunchConfigurationTemplate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"launchConfigurationTemplateID\":" + mgn_json_str(input.launchConfigurationTemplateID))
+        if input.postLaunchActions.is_some():
+            auto u0 = input.postLaunchActions.unwrap()
+            parts.append("\"postLaunchActions\":" + post_launch_actions_to_json(u0))
+        if input.enableMapAutoTagging.is_some():
+            auto u1 = input.enableMapAutoTagging.unwrap()
+            parts.append("\"enableMapAutoTagging\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.mapAutoTaggingMpeID.is_some():
+            auto u2 = input.mapAutoTaggingMpeID.unwrap()
+            parts.append("\"mapAutoTaggingMpeID\":" + mgn_json_str(u2))
+        if input.launchDisposition.is_some():
+            auto u3 = input.launchDisposition.unwrap()
+            parts.append("\"launchDisposition\":" + u3.to_json())
+        if input.targetInstanceTypeRightSizingMethod.is_some():
+            auto u4 = input.targetInstanceTypeRightSizingMethod.unwrap()
+            parts.append("\"targetInstanceTypeRightSizingMethod\":" + u4.to_json())
+        if input.copyPrivateIp.is_some():
+            auto u5 = input.copyPrivateIp.unwrap()
+            parts.append("\"copyPrivateIp\":" + json.dumps(JsonValue.Bool(u5)))
+        if input.associatePublicIpAddress.is_some():
+            auto u6 = input.associatePublicIpAddress.unwrap()
+            parts.append("\"associatePublicIpAddress\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.copyTags.is_some():
+            auto u7 = input.copyTags.unwrap()
+            parts.append("\"copyTags\":" + json.dumps(JsonValue.Bool(u7)))
+        if input.licensing.is_some():
+            auto u8 = input.licensing.unwrap()
+            parts.append("\"licensing\":" + u8.to_json())
+        if input.bootMode.is_some():
+            auto u9 = input.bootMode.unwrap()
+            parts.append("\"bootMode\":" + u9.to_json())
+        if input.smallVolumeMaxSize.is_some():
+            auto u10 = input.smallVolumeMaxSize.unwrap()
+            parts.append("\"smallVolumeMaxSize\":" + str(u10))
+        if input.smallVolumeConf.is_some():
+            auto u11 = input.smallVolumeConf.unwrap()
+            parts.append("\"smallVolumeConf\":" + u11.to_json())
+        if input.largeVolumeConf.is_some():
+            auto u12 = input.largeVolumeConf.unwrap()
+            parts.append("\"largeVolumeConf\":" + u12.to_json())
+        if input.enableParametersEncryption.is_some():
+            auto u13 = input.enableParametersEncryption.unwrap()
+            parts.append("\"enableParametersEncryption\":" + json.dumps(JsonValue.Bool(u13)))
+        if input.parametersEncryptionKey.is_some():
+            auto u14 = input.parametersEncryptionKey.unwrap()
+            parts.append("\"parametersEncryptionKey\":" + mgn_json_str(u14))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # UpdateNetworkMigrationDefinition  POST /network-migration/UpdateNetworkMigrationDefinition
+    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    def update_network_migration_definition(self, UpdateNetworkMigrationDefinitionRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/UpdateNetworkMigrationDefinition", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + mgn_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + mgn_json_str(u1))
+        if input.sourceConfigurations.is_some():
+            auto u2 = input.sourceConfigurations.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"sourceConfigurations\":" + mgn_json_arr(e3))
+        if input.targetS3Configuration.is_some():
+            auto u4 = input.targetS3Configuration.unwrap()
+            parts.append("\"targetS3Configuration\":" + u4.to_json())
+        if input.targetNetwork.is_some():
+            auto u5 = input.targetNetwork.unwrap()
+            parts.append("\"targetNetwork\":" + u5.to_json())
+        if input.targetDeployment.is_some():
+            auto u6 = input.targetDeployment.unwrap()
+            parts.append("\"targetDeployment\":" + u6.to_json())
+        if input.vpcProvisioningStrategy.is_some():
+            auto u7 = input.vpcProvisioningStrategy.unwrap()
+            parts.append("\"vpcProvisioningStrategy\":" + u7.to_json())
+        if input.cidrMappings.is_some():
+            auto u8 = input.cidrMappings.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"cidrMappings\":" + mgn_json_arr(e9))
+        if input.scopeTags.is_some():
+            auto u10 = input.scopeTags.unwrap()
+            list[str] m11 = []
+            for k11 in sorted(u10.keys()):
+                m11.append(mgn_json_str(k11) + ":" + mgn_json_str(u10[k11]))
+            parts.append("\"scopeTags\":" + mgn_json_obj(m11))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # UpdateNetworkMigrationMapperSegment  POST /network-migration/UpdateNetworkMigrationMapperSegment
+    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    def update_network_migration_mapper_segment(self, UpdateNetworkMigrationMapperSegmentRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/UpdateNetworkMigrationMapperSegment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
+        parts.append("\"networkMigrationExecutionID\":" + mgn_json_str(input.networkMigrationExecutionID))
+        parts.append("\"segmentID\":" + mgn_json_str(input.segmentID))
+        if input.scopeTags.is_some():
+            auto u0 = input.scopeTags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(mgn_json_str(k1) + ":" + mgn_json_str(u0[k1]))
+            parts.append("\"scopeTags\":" + mgn_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # UpdateReplicationConfiguration  POST /UpdateReplicationConfiguration
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, UninitializedAccountException, ValidationException
+    def update_replication_configuration(self, UpdateReplicationConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateReplicationConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"sourceServerID\":" + mgn_json_str(input.sourceServerID))
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + mgn_json_str(u0))
+        if input.stagingAreaSubnetId.is_some():
+            auto u1 = input.stagingAreaSubnetId.unwrap()
+            parts.append("\"stagingAreaSubnetId\":" + mgn_json_str(u1))
+        if input.associateDefaultSecurityGroup.is_some():
+            auto u2 = input.associateDefaultSecurityGroup.unwrap()
+            parts.append("\"associateDefaultSecurityGroup\":" + json.dumps(JsonValue.Bool(u2)))
+        if input.replicationServersSecurityGroupsIDs.is_some():
+            auto u3 = input.replicationServersSecurityGroupsIDs.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(mgn_json_str(x4))
+            parts.append("\"replicationServersSecurityGroupsIDs\":" + mgn_json_arr(e4))
+        if input.replicationServerInstanceType.is_some():
+            auto u5 = input.replicationServerInstanceType.unwrap()
+            parts.append("\"replicationServerInstanceType\":" + mgn_json_str(u5))
+        if input.useDedicatedReplicationServer.is_some():
+            auto u6 = input.useDedicatedReplicationServer.unwrap()
+            parts.append("\"useDedicatedReplicationServer\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.defaultLargeStagingDiskType.is_some():
+            auto u7 = input.defaultLargeStagingDiskType.unwrap()
+            parts.append("\"defaultLargeStagingDiskType\":" + u7.to_json())
+        if input.replicatedDisks.is_some():
+            auto u8 = input.replicatedDisks.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"replicatedDisks\":" + mgn_json_arr(e9))
+        if input.ebsEncryption.is_some():
+            auto u10 = input.ebsEncryption.unwrap()
+            parts.append("\"ebsEncryption\":" + u10.to_json())
+        if input.ebsEncryptionKeyArn.is_some():
+            auto u11 = input.ebsEncryptionKeyArn.unwrap()
+            parts.append("\"ebsEncryptionKeyArn\":" + mgn_json_str(u11))
+        if input.bandwidthThrottling.is_some():
+            auto u12 = input.bandwidthThrottling.unwrap()
+            parts.append("\"bandwidthThrottling\":" + str(u12))
+        if input.dataPlaneRouting.is_some():
+            auto u13 = input.dataPlaneRouting.unwrap()
+            parts.append("\"dataPlaneRouting\":" + u13.to_json())
+        if input.createPublicIP.is_some():
+            auto u14 = input.createPublicIP.unwrap()
+            parts.append("\"createPublicIP\":" + json.dumps(JsonValue.Bool(u14)))
+        if input.stagingAreaTags.is_some():
+            auto u15 = input.stagingAreaTags.unwrap()
+            list[str] m16 = []
+            for k16 in sorted(u15.keys()):
+                m16.append(mgn_json_str(k16) + ":" + mgn_json_str(u15[k16]))
+            parts.append("\"stagingAreaTags\":" + mgn_json_obj(m16))
+        if input.useFipsEndpoint.is_some():
+            auto u17 = input.useFipsEndpoint.unwrap()
+            parts.append("\"useFipsEndpoint\":" + json.dumps(JsonValue.Bool(u17)))
+        if input.accountID.is_some():
+            auto u18 = input.accountID.unwrap()
+            parts.append("\"accountID\":" + mgn_json_str(u18))
+        if input.internetProtocol.is_some():
+            auto u19 = input.internetProtocol.unwrap()
+            parts.append("\"internetProtocol\":" + u19.to_json())
+        if input.storeSnapshotOnLocalZone.is_some():
+            auto u20 = input.storeSnapshotOnLocalZone.unwrap()
+            parts.append("\"storeSnapshotOnLocalZone\":" + json.dumps(JsonValue.Bool(u20)))
+        if input.storageConfiguration.is_some():
+            auto u21 = input.storageConfiguration.unwrap()
+            parts.append("\"storageConfiguration\":" + u21.to_json())
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # UpdateReplicationConfigurationTemplate  POST /UpdateReplicationConfigurationTemplate
+    # errors: AccessDeniedException, ResourceNotFoundException, UninitializedAccountException, ValidationException
+    def update_replication_configuration_template(self, UpdateReplicationConfigurationTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateReplicationConfigurationTemplate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"replicationConfigurationTemplateID\":" + mgn_json_str(input.replicationConfigurationTemplateID))
+        if input.arn.is_some():
+            auto u0 = input.arn.unwrap()
+            parts.append("\"arn\":" + mgn_json_str(u0))
+        if input.stagingAreaSubnetId.is_some():
+            auto u1 = input.stagingAreaSubnetId.unwrap()
+            parts.append("\"stagingAreaSubnetId\":" + mgn_json_str(u1))
+        if input.associateDefaultSecurityGroup.is_some():
+            auto u2 = input.associateDefaultSecurityGroup.unwrap()
+            parts.append("\"associateDefaultSecurityGroup\":" + json.dumps(JsonValue.Bool(u2)))
+        if input.replicationServersSecurityGroupsIDs.is_some():
+            auto u3 = input.replicationServersSecurityGroupsIDs.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(mgn_json_str(x4))
+            parts.append("\"replicationServersSecurityGroupsIDs\":" + mgn_json_arr(e4))
+        if input.replicationServerInstanceType.is_some():
+            auto u5 = input.replicationServerInstanceType.unwrap()
+            parts.append("\"replicationServerInstanceType\":" + mgn_json_str(u5))
+        if input.useDedicatedReplicationServer.is_some():
+            auto u6 = input.useDedicatedReplicationServer.unwrap()
+            parts.append("\"useDedicatedReplicationServer\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.defaultLargeStagingDiskType.is_some():
+            auto u7 = input.defaultLargeStagingDiskType.unwrap()
+            parts.append("\"defaultLargeStagingDiskType\":" + u7.to_json())
+        if input.ebsEncryption.is_some():
+            auto u8 = input.ebsEncryption.unwrap()
+            parts.append("\"ebsEncryption\":" + u8.to_json())
+        if input.ebsEncryptionKeyArn.is_some():
+            auto u9 = input.ebsEncryptionKeyArn.unwrap()
+            parts.append("\"ebsEncryptionKeyArn\":" + mgn_json_str(u9))
+        if input.bandwidthThrottling.is_some():
+            auto u10 = input.bandwidthThrottling.unwrap()
+            parts.append("\"bandwidthThrottling\":" + str(u10))
+        if input.dataPlaneRouting.is_some():
+            auto u11 = input.dataPlaneRouting.unwrap()
+            parts.append("\"dataPlaneRouting\":" + u11.to_json())
+        if input.createPublicIP.is_some():
+            auto u12 = input.createPublicIP.unwrap()
+            parts.append("\"createPublicIP\":" + json.dumps(JsonValue.Bool(u12)))
+        if input.stagingAreaTags.is_some():
+            auto u13 = input.stagingAreaTags.unwrap()
+            list[str] m14 = []
+            for k14 in sorted(u13.keys()):
+                m14.append(mgn_json_str(k14) + ":" + mgn_json_str(u13[k14]))
+            parts.append("\"stagingAreaTags\":" + mgn_json_obj(m14))
+        if input.useFipsEndpoint.is_some():
+            auto u15 = input.useFipsEndpoint.unwrap()
+            parts.append("\"useFipsEndpoint\":" + json.dumps(JsonValue.Bool(u15)))
+        if input.internetProtocol.is_some():
+            auto u16 = input.internetProtocol.unwrap()
+            parts.append("\"internetProtocol\":" + u16.to_json())
+        if input.storeSnapshotOnLocalZone.is_some():
+            auto u17 = input.storeSnapshotOnLocalZone.unwrap()
+            parts.append("\"storeSnapshotOnLocalZone\":" + json.dumps(JsonValue.Bool(u17)))
+        if input.storageConfiguration.is_some():
+            auto u18 = input.storageConfiguration.unwrap()
+            parts.append("\"storageConfiguration\":" + u18.to_json())
+        auto bp = restjson.rest_json_document(b, mgn_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
 
     # UpdateSourceServer  POST /UpdateSourceServer
@@ -3549,12 +5322,90 @@ struct mgnClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for DescribeJobs — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_describe_jobs(self, DescribeJobsRequest input):
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        while True:
+            auto raw = self.describe_jobs(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeLaunchConfigurationTemplates — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_describe_launch_configuration_templates(self, DescribeLaunchConfigurationTemplatesRequest input):
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        while True:
+            auto raw = self.describe_launch_configuration_templates(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeReplicationConfigurationTemplates — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_describe_replication_configuration_templates(self, DescribeReplicationConfigurationTemplatesRequest input):
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        while True:
+            auto raw = self.describe_replication_configuration_templates(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeSourceServers — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_describe_source_servers(self, DescribeSourceServersRequest input):
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        while True:
+            auto raw = self.describe_source_servers(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for DescribeVcenterClients — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: items).
     def paginate_describe_vcenter_clients(self, DescribeVcenterClientsRequest input):
         auto host = endpoints.regional_host(mgn_service(), self.region)
         while True:
             auto raw = self.describe_vcenter_clients(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListApplications — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_applications(self, ListApplicationsRequest input):
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        while True:
+            auto raw = self.list_applications(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListConnectors — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_connectors(self, ListConnectorsRequest input):
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        while True:
+            auto raw = self.list_connectors(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -3575,12 +5426,51 @@ struct mgnClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListExports — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_exports(self, ListExportsRequest input):
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        while True:
+            auto raw = self.list_exports(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListImportErrors — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: items).
     def paginate_list_import_errors(self, ListImportErrorsRequest input):
         auto host = endpoints.regional_host(mgn_service(), self.region)
         while True:
             auto raw = self.list_import_errors(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListImportFileEnrichments — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_import_file_enrichments(self, ListImportFileEnrichmentsRequest input):
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        while True:
+            auto raw = self.list_import_file_enrichments(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListImports — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_imports(self, ListImportsRequest input):
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        while True:
+            auto raw = self.list_imports(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -3601,12 +5491,194 @@ struct mgnClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListNetworkMigrationAnalyses — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_network_migration_analyses(self, ListNetworkMigrationAnalysesRequest input):
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        while True:
+            auto raw = self.list_network_migration_analyses(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListNetworkMigrationAnalysisResults — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_network_migration_analysis_results(self, ListNetworkMigrationAnalysisResultsRequest input):
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        while True:
+            auto raw = self.list_network_migration_analysis_results(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListNetworkMigrationCodeGenerationSegments — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_network_migration_code_generation_segments(self, ListNetworkMigrationCodeGenerationSegmentsRequest input):
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        while True:
+            auto raw = self.list_network_migration_code_generation_segments(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListNetworkMigrationCodeGenerations — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_network_migration_code_generations(self, ListNetworkMigrationCodeGenerationsRequest input):
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        while True:
+            auto raw = self.list_network_migration_code_generations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListNetworkMigrationDefinitions — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_network_migration_definitions(self, ListNetworkMigrationDefinitionsRequest input):
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        while True:
+            auto raw = self.list_network_migration_definitions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListNetworkMigrationDeployedStacks — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: items).
     def paginate_list_network_migration_deployed_stacks(self, ListNetworkMigrationDeployedStacksRequest input):
         auto host = endpoints.regional_host(mgn_service(), self.region)
         while True:
             auto raw = self.list_network_migration_deployed_stacks(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListNetworkMigrationDeployments — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_network_migration_deployments(self, ListNetworkMigrationDeploymentsRequest input):
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        while True:
+            auto raw = self.list_network_migration_deployments(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListNetworkMigrationExecutions — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_network_migration_executions(self, ListNetworkMigrationExecutionsRequest input):
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        while True:
+            auto raw = self.list_network_migration_executions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListNetworkMigrationMapperSegmentConstructs — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_network_migration_mapper_segment_constructs(self, ListNetworkMigrationMapperSegmentConstructsRequest input):
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        while True:
+            auto raw = self.list_network_migration_mapper_segment_constructs(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListNetworkMigrationMapperSegments — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_network_migration_mapper_segments(self, ListNetworkMigrationMapperSegmentsRequest input):
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        while True:
+            auto raw = self.list_network_migration_mapper_segments(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListNetworkMigrationMappingUpdates — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_network_migration_mapping_updates(self, ListNetworkMigrationMappingUpdatesRequest input):
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        while True:
+            auto raw = self.list_network_migration_mapping_updates(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListNetworkMigrationMappings — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_network_migration_mappings(self, ListNetworkMigrationMappingsRequest input):
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        while True:
+            auto raw = self.list_network_migration_mappings(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListSourceServerActions — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_source_server_actions(self, ListSourceServerActionsRequest input):
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        while True:
+            auto raw = self.list_source_server_actions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListTemplateActions — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_template_actions(self, ListTemplateActionsRequest input):
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        while True:
+            auto raw = self.list_template_actions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListWaves — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_waves(self, ListWavesRequest input):
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        while True:
+            auto raw = self.list_waves(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

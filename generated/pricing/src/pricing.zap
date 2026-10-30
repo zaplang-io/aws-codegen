@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 5 operations — 4 with a generated method,
-#   1 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 5 operations — 5 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   22 structs (15 @derive(Json)), 1 enums, 8 error variants.
-#   3 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -62,8 +62,9 @@ struct DescribeServicesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Services: list[Service] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Services: list[Service] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeServicesResponse:
     Optional[list[Service]] Services
     Optional[str] FormatVersion
@@ -86,8 +87,9 @@ struct GetAttributeValuesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AttributeValues: list[AttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeValues: list[AttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAttributeValuesResponse:
     Optional[list[AttributeValue]] AttributeValues
     Optional[str] NextToken
@@ -101,8 +103,9 @@ struct GetPriceListFileUrlRequest:
 struct GetPriceListFileUrlResponse:
     Optional[str] Url
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProductsRequest:
     str ServiceCode
     Optional[list[Filter]] Filters
@@ -110,8 +113,9 @@ struct GetProductsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) PriceList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PriceList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProductsResponse:
     Optional[str] FormatVersion
     Optional[list[str]] PriceList
@@ -138,8 +142,9 @@ struct ListPriceListsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) PriceLists: list[PriceList] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PriceLists: list[PriceList] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPriceListsResponse:
     Optional[list[PriceList]] PriceLists
     Optional[str] NextToken
@@ -148,8 +153,9 @@ struct ListPriceListsResponse:
 struct NotFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) FileFormats: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FileFormats: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PriceList:
     Optional[str] PriceListArn
     Optional[str] RegionCode
@@ -160,8 +166,9 @@ struct PriceList:
 struct ResourceNotFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) AttributeNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Service:
     str ServiceCode
     Optional[list[str]] AttributeNames
@@ -207,13 +214,56 @@ def api_pricing_error_from_code(str code) -> PricingError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   GetProducts (input GetProductsRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def api_pricing_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   GetProducts (input not derivable (no generated method))
+def api_pricing_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def api_pricing_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize GetProductsRequest to a compact JSON object (declaration order).
+def get_products_request_to_json(GetProductsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ServiceCode\":" + api_pricing_json_str(v.ServiceCode))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Filters\":" + api_pricing_json_arr(e1))
+    if v.FormatVersion.is_some():
+        auto u2 = v.FormatVersion.unwrap()
+        parts.append("\"FormatVersion\":" + api_pricing_json_str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + api_pricing_json_str(u3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    return api_pricing_json_obj(parts)
 
 # A bound Pricing client: credentials + region, threaded into every operation.
 struct PricingClient:
@@ -237,6 +287,12 @@ struct PricingClient:
     def get_price_list_file_url(self, GetPriceListFileUrlRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(api_pricing_protocol(), self.creds, self.region, "GetPriceListFileUrl", body)
+
+    # GetProducts
+    # errors: AccessDeniedException, ExpiredNextTokenException, InternalErrorException, InvalidNextTokenException, InvalidParameterException, NotFoundException, ThrottlingException
+    def get_products(self, GetProductsRequest input) -> str:
+        auto body = get_products_request_to_json(input)
+        return awsjson.awsjson_request_now(api_pricing_protocol(), self.creds, self.region, "GetProducts", body)
 
     # ListPriceLists
     # errors: AccessDeniedException, ExpiredNextTokenException, InternalErrorException, InvalidNextTokenException, InvalidParameterException, NotFoundException, ResourceNotFoundException, ThrottlingException
@@ -265,6 +321,20 @@ struct PricingClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(api_pricing_protocol(), self.creds, self.region, "GetAttributeValues", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetProducts — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: PriceList).
+    def paginate_get_products(self, GetProductsRequest input):
+        auto host = endpoints.regional_host(api_pricing_protocol().service, self.region)
+        while True:
+            auto body = get_products_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(api_pricing_protocol(), self.creds, self.region, "GetProducts", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

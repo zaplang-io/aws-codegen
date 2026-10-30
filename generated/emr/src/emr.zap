@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 65 operations — 39 with a generated method,
-#   26 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 65 operations — 64 with a generated method,
+#   1 skipped (input has a non-string-keyed map or free-form document member).
 #   235 structs (133 @derive(Json)), 45 enums, 3 error variants.
-#   7 paginators generated (4 paginated ops skipped) from paginators-1.json.
+#   11 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import datetime
 
 # The EMR awsJson protocol: version 1.1, API id "ElasticMapReduce".
 def elasticmapreduce_protocol() -> awsjson.AwsJson:
@@ -473,8 +474,9 @@ enum Unit:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) InstanceFleet: InstanceFleetConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceFleet: InstanceFleetConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddInstanceFleetInput:
     str ClusterId
     InstanceFleetConfig InstanceFleet
@@ -485,33 +487,38 @@ struct AddInstanceFleetOutput:
     Optional[str] InstanceFleetId
     Optional[str] ClusterArn
 
-# no @derive(Json): member(s) InstanceGroups: list[InstanceGroupConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceGroups: list[InstanceGroupConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddInstanceGroupsInput:
     list[InstanceGroupConfig] InstanceGroups
     str JobFlowId
 
-# no @derive(Json): member(s) InstanceGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddInstanceGroupsOutput:
     Optional[str] JobFlowId
     Optional[list[str]] InstanceGroupIds
     Optional[str] ClusterArn
 
-# no @derive(Json): member(s) Steps: list[StepConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Steps: list[StepConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddJobFlowStepsInput:
     str JobFlowId
     list[StepConfig] Steps
     Optional[str] ExecutionRoleArn
 
-# no @derive(Json): member(s) StepIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StepIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddJobFlowStepsOutput:
     Optional[list[str]] StepIds
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddTagsInput:
     str ResourceId
     list[Tag] Tags
@@ -522,22 +529,25 @@ struct AddTagsOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Args: list[str], AdditionalInfo: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Args: list[str], AdditionalInfo: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Application:
     Optional[str] Name
     Optional[str] Version
     Optional[list[str]] Args
     Optional[dict[str, str]] AdditionalInfo
 
-# no @derive(Json): member(s) Rules: list[ScalingRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[ScalingRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoScalingPolicy:
     ScalingConstraints Constraints
     list[ScalingRule] Rules
 
-# no @derive(Json): member(s) Rules: list[ScalingRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[ScalingRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AutoScalingPolicyDescription:
     Optional[AutoScalingPolicyStatus] Status
     Optional[ScalingConstraints] Constraints
@@ -557,8 +567,9 @@ struct AutoScalingPolicyStatus:
 struct AutoTerminationPolicy:
     Optional[int64] IdleTimeout
 
-# no @derive(Json): member(s) PermittedPublicSecurityGroupRuleRanges: list[PortRange] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PermittedPublicSecurityGroupRuleRanges: list[PortRange] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BlockPublicAccessConfiguration:
     bool BlockPublicSecurityGroupRules
     Optional[list[PortRange]] PermittedPublicSecurityGroupRuleRanges
@@ -568,14 +579,16 @@ struct BlockPublicAccessConfigurationMetadata:
     DateTime CreationDateTime
     str CreatedByArn
 
-# no @derive(Json): member(s) ScriptBootstrapAction: ScriptBootstrapActionConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScriptBootstrapAction: ScriptBootstrapActionConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BootstrapActionConfig:
     str Name
     ScriptBootstrapActionConfig ScriptBootstrapAction
 
-# no @derive(Json): member(s) BootstrapActionConfig: BootstrapActionConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BootstrapActionConfig: BootstrapActionConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BootstrapActionDetail:
     Optional[BootstrapActionConfig] BootstrapActionConfig
 
@@ -585,20 +598,23 @@ struct CancelStepsInfo:
     Optional[CancelStepsRequestStatus] Status
     Optional[str] Reason
 
-# no @derive(Json): member(s) StepIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StepIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CancelStepsInput:
     str ClusterId
     list[str] StepIds
     Optional[StepCancellationOption] StepCancellationOption
 
-# no @derive(Json): member(s) CancelStepsInfoList: list[CancelStepsInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CancelStepsInfoList: list[CancelStepsInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CancelStepsOutput:
     Optional[list[CancelStepsInfo]] CancelStepsInfoList
 
-# no @derive(Json): member(s) Dimensions: list[MetricDimension] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: list[MetricDimension] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudWatchAlarmDefinition:
     ComparisonOperator ComparisonOperator
     Optional[int64] EvaluationPeriods
@@ -610,8 +626,9 @@ struct CloudWatchAlarmDefinition:
     Optional[Unit] Unit
     Optional[list[MetricDimension]] Dimensions
 
-# no @derive(Json): member(s) LogTypes: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LogTypes: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudWatchLogConfiguration:
     bool Enabled
     Optional[str] LogGroupName
@@ -619,8 +636,9 @@ struct CloudWatchLogConfiguration:
     Optional[str] EncryptionKeyArn
     Optional[dict[str, list[str]]] LogTypes
 
-# no @derive(Json): member(s) Status: ClusterStatus, Ec2InstanceAttributes: Ec2InstanceAttributes, Applications: list[Application], Tags: list[Tag], Configurations: list[Configuration], PlacementGroups: list[PlacementGroupConfig], MonitoringConfiguration: MonitoringConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Status: ClusterStatus, Ec2InstanceAttributes: Ec2InstanceAttributes, Applications: list[Application], Tags: list[Tag], Configurations: list[Configuration], PlacementGroups: list[PlacementGroupConfig], MonitoringConfiguration: MonitoringConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Cluster:
     Optional[str] Id
     Optional[str] Name
@@ -665,16 +683,18 @@ struct ClusterStateChangeReason:
     Optional[ClusterStateChangeReasonCode] Code
     Optional[str] Message
 
-# no @derive(Json): member(s) ErrorDetails: list[ErrorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ErrorDetails: list[ErrorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterStatus:
     Optional[ClusterState] State
     Optional[ClusterStateChangeReason] StateChangeReason
     Optional[ClusterTimeline] Timeline
     Optional[list[ErrorDetail]] ErrorDetails
 
-# no @derive(Json): member(s) Status: ClusterStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Status: ClusterStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterSummary:
     Optional[str] Id
     Optional[str] Name
@@ -689,8 +709,9 @@ struct ClusterTimeline:
     Optional[DateTime] ReadyDateTime
     Optional[DateTime] EndDateTime
 
-# no @derive(Json): member(s) Args: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Args: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Command:
     Optional[str] Name
     Optional[str] ScriptPath
@@ -704,15 +725,17 @@ struct ComputeLimits:
     Optional[int64] MaximumOnDemandCapacityUnits
     Optional[int64] MaximumCoreCapacityUnits
 
-# no @derive(Json): member(s) Configurations: list[Configuration], Properties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configurations: list[Configuration], Properties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Configuration:
     Optional[str] Classification
     Optional[list[Configuration]] Configurations
     Optional[dict[str, str]] Properties
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePersistentAppUIInput:
     str TargetResourceArn
     Optional[EMRContainersConfig] EMRContainersConfig
@@ -735,8 +758,9 @@ struct CreateSecurityConfigurationOutput:
     str Name
     DateTime CreationDateTime
 
-# no @derive(Json): member(s) SubnetIds: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateStudioInput:
     str Name
     Optional[str] Description
@@ -797,21 +821,24 @@ struct DeleteStudioSessionMappingInput:
 struct DescribeClusterInput:
     str ClusterId
 
-# no @derive(Json): member(s) Cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClusterOutput:
     Optional[Cluster] Cluster
 
-# no @derive(Json): member(s) JobFlowIds: list[str], JobFlowStates: list[JobFlowExecutionState] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobFlowIds: list[str], JobFlowStates: list[JobFlowExecutionState] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeJobFlowsInput:
     Optional[DateTime] CreatedAfter
     Optional[DateTime] CreatedBefore
     Optional[list[str]] JobFlowIds
     Optional[list[JobFlowExecutionState]] JobFlowStates
 
-# no @derive(Json): member(s) JobFlows: list[JobFlowDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobFlows: list[JobFlowDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeJobFlowsOutput:
     Optional[list[JobFlowDetail]] JobFlows
 
@@ -819,8 +846,9 @@ struct DescribeJobFlowsOutput:
 struct DescribeNotebookExecutionInput:
     str NotebookExecutionId
 
-# no @derive(Json): member(s) NotebookExecution: NotebookExecution not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NotebookExecution: NotebookExecution not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeNotebookExecutionOutput:
     Optional[NotebookExecution] NotebookExecution
 
@@ -828,8 +856,9 @@ struct DescribeNotebookExecutionOutput:
 struct DescribePersistentAppUIInput:
     str PersistentAppUIId
 
-# no @derive(Json): member(s) PersistentAppUI: PersistentAppUI not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PersistentAppUI: PersistentAppUI not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePersistentAppUIOutput:
     Optional[PersistentAppUI] PersistentAppUI
 
@@ -839,8 +868,9 @@ struct DescribeReleaseLabelInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Applications: list[SimplifiedApplication], AvailableOSReleases: list[OSRelease] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Applications: list[SimplifiedApplication], AvailableOSReleases: list[OSRelease] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReleaseLabelOutput:
     Optional[str] ReleaseLabel
     Optional[list[SimplifiedApplication]] Applications
@@ -862,8 +892,9 @@ struct DescribeStepInput:
     str ClusterId
     str StepId
 
-# no @derive(Json): member(s) Step: Step not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Step: Step not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeStepOutput:
     Optional[Step] Step
 
@@ -871,8 +902,9 @@ struct DescribeStepOutput:
 struct DescribeStudioInput:
     str StudioId
 
-# no @derive(Json): member(s) Studio: Studio not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Studio: Studio not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeStudioOutput:
     Optional[Studio] Studio
 
@@ -890,8 +922,9 @@ struct EbsBlockDeviceConfig:
     VolumeSpecification VolumeSpecification
     Optional[int64] VolumesPerInstance
 
-# no @derive(Json): member(s) EbsBlockDeviceConfigs: list[EbsBlockDeviceConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EbsBlockDeviceConfigs: list[EbsBlockDeviceConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EbsConfiguration:
     Optional[list[EbsBlockDeviceConfig]] EbsBlockDeviceConfigs
     Optional[bool] EbsOptimized
@@ -901,8 +934,9 @@ struct EbsVolume:
     Optional[str] Device
     Optional[str] VolumeId
 
-# no @derive(Json): member(s) RequestedEc2SubnetIds: list[str], RequestedEc2AvailabilityZones: list[str], AdditionalMasterSecurityGroups: list[str], AdditionalSlaveSecurityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestedEc2SubnetIds: list[str], RequestedEc2AvailabilityZones: list[str], AdditionalMasterSecurityGroups: list[str], AdditionalSlaveSecurityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Ec2InstanceAttributes:
     Optional[str] Ec2KeyName
     Optional[str] Ec2SubnetId
@@ -916,8 +950,9 @@ struct Ec2InstanceAttributes:
     Optional[list[str]] AdditionalMasterSecurityGroups
     Optional[list[str]] AdditionalSlaveSecurityGroups
 
-# no @derive(Json): member(s) ErrorData: list[dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ErrorData: list[dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ErrorDetail:
     Optional[str] ErrorCode
     Optional[list[dict[str, str]]] ErrorData
@@ -949,8 +984,9 @@ struct GetBlockPublicAccessConfigurationInput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) BlockPublicAccessConfiguration: BlockPublicAccessConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BlockPublicAccessConfiguration: BlockPublicAccessConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBlockPublicAccessConfigurationOutput:
     BlockPublicAccessConfiguration BlockPublicAccessConfiguration
     BlockPublicAccessConfigurationMetadata BlockPublicAccessConfigurationMetadata
@@ -1016,8 +1052,9 @@ struct GetSessionInput:
     str ClusterId
     str SessionId
 
-# no @derive(Json): member(s) Session: Session not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Session: Session not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSessionOutput:
     Session Session
 
@@ -1032,24 +1069,27 @@ struct GetStudioSessionMappingInput:
 struct GetStudioSessionMappingOutput:
     Optional[SessionMappingDetail] SessionMapping
 
-# no @derive(Json): member(s) Properties: list[KeyValue], Args: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: list[KeyValue], Args: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HadoopJarStepConfig:
     Optional[list[KeyValue]] Properties
     str Jar
     Optional[str] MainClass
     Optional[list[str]] Args
 
-# no @derive(Json): member(s) Properties: dict[str, str], Args: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: dict[str, str], Args: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HadoopStepConfig:
     Optional[str] Jar
     Optional[dict[str, str]] Properties
     Optional[str] MainClass
     Optional[list[str]] Args
 
-# no @derive(Json): member(s) EbsVolumes: list[EbsVolume] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EbsVolumes: list[EbsVolume] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Instance:
     Optional[str] Id
     Optional[str] Ec2InstanceId
@@ -1064,8 +1104,9 @@ struct Instance:
     Optional[str] InstanceType
     Optional[list[EbsVolume]] EbsVolumes
 
-# no @derive(Json): member(s) InstanceTypeSpecifications: list[InstanceTypeSpecification] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceTypeSpecifications: list[InstanceTypeSpecification] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceFleet:
     Optional[str] Id
     Optional[str] Name
@@ -1080,8 +1121,9 @@ struct InstanceFleet:
     Optional[InstanceFleetResizingSpecifications] ResizeSpecifications
     Optional[str] Context
 
-# no @derive(Json): member(s) InstanceTypeConfigs: list[InstanceTypeConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceTypeConfigs: list[InstanceTypeConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceFleetConfig:
     Optional[str] Name
     InstanceFleetType InstanceFleetType
@@ -1092,8 +1134,9 @@ struct InstanceFleetConfig:
     Optional[InstanceFleetResizingSpecifications] ResizeSpecifications
     Optional[str] Context
 
-# no @derive(Json): member(s) InstanceTypeConfigs: list[InstanceTypeConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceTypeConfigs: list[InstanceTypeConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceFleetModifyConfig:
     str InstanceFleetId
     Optional[int64] TargetOnDemandCapacity
@@ -1129,8 +1172,9 @@ struct InstanceFleetTimeline:
     Optional[DateTime] ReadyDateTime
     Optional[DateTime] EndDateTime
 
-# no @derive(Json): member(s) Configurations: list[Configuration], LastSuccessfullyAppliedConfigurations: list[Configuration], EbsBlockDevices: list[EbsBlockDevice], ShrinkPolicy: ShrinkPolicy, AutoScalingPolicy: AutoScalingPolicyDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configurations: list[Configuration], LastSuccessfullyAppliedConfigurations: list[Configuration], EbsBlockDevices: list[EbsBlockDevice], ShrinkPolicy: ShrinkPolicy, AutoScalingPolicy: AutoScalingPolicyDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceGroup:
     Optional[str] Id
     Optional[str] Name
@@ -1151,8 +1195,9 @@ struct InstanceGroup:
     Optional[AutoScalingPolicyDescription] AutoScalingPolicy
     Optional[str] CustomAmiId
 
-# no @derive(Json): member(s) Configurations: list[Configuration], EbsConfiguration: EbsConfiguration, AutoScalingPolicy: AutoScalingPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configurations: list[Configuration], EbsConfiguration: EbsConfiguration, AutoScalingPolicy: AutoScalingPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceGroupConfig:
     Optional[str] Name
     Optional[MarketType] Market
@@ -1183,8 +1228,9 @@ struct InstanceGroupDetail:
     Optional[DateTime] EndDateTime
     Optional[str] CustomAmiId
 
-# no @derive(Json): member(s) EC2InstanceIdsToTerminate: list[str], ShrinkPolicy: ShrinkPolicy, Configurations: list[Configuration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EC2InstanceIdsToTerminate: list[str], ShrinkPolicy: ShrinkPolicy, Configurations: list[Configuration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceGroupModifyConfig:
     str InstanceGroupId
     Optional[int64] InstanceCount
@@ -1210,8 +1256,9 @@ struct InstanceGroupTimeline:
     Optional[DateTime] ReadyDateTime
     Optional[DateTime] EndDateTime
 
-# no @derive(Json): member(s) InstancesToTerminate: list[str], InstancesToProtect: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstancesToTerminate: list[str], InstancesToProtect: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceResizePolicy:
     Optional[list[str]] InstancesToTerminate
     Optional[list[str]] InstancesToProtect
@@ -1234,8 +1281,9 @@ struct InstanceTimeline:
     Optional[DateTime] ReadyDateTime
     Optional[DateTime] EndDateTime
 
-# no @derive(Json): member(s) EbsConfiguration: EbsConfiguration, Configurations: list[Configuration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EbsConfiguration: EbsConfiguration, Configurations: list[Configuration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceTypeConfig:
     str InstanceType
     Optional[int64] WeightedCapacity
@@ -1246,8 +1294,9 @@ struct InstanceTypeConfig:
     Optional[str] CustomAmiId
     Optional[float64] Priority
 
-# no @derive(Json): member(s) Configurations: list[Configuration], EbsBlockDevices: list[EbsBlockDevice] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configurations: list[Configuration], EbsBlockDevices: list[EbsBlockDevice] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceTypeSpecification:
     Optional[str] InstanceType
     Optional[int64] WeightedCapacity
@@ -1273,8 +1322,9 @@ struct InvalidRequestException:
     Optional[str] ErrorCode
     Optional[str] Message
 
-# no @derive(Json): member(s) Instances: JobFlowInstancesDetail, Steps: list[StepDetail], BootstrapActions: list[BootstrapActionDetail], SupportedProducts: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Instances: JobFlowInstancesDetail, Steps: list[StepDetail], BootstrapActions: list[BootstrapActionDetail], SupportedProducts: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobFlowDetail:
     str JobFlowId
     str Name
@@ -1301,8 +1351,9 @@ struct JobFlowExecutionStatusDetail:
     Optional[DateTime] EndDateTime
     Optional[str] LastStateChangeReason
 
-# no @derive(Json): member(s) InstanceGroups: list[InstanceGroupConfig], InstanceFleets: list[InstanceFleetConfig], Placement: PlacementType, Ec2SubnetIds: list[str], AdditionalMasterSecurityGroups: list[str], AdditionalSlaveSecurityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceGroups: list[InstanceGroupConfig], InstanceFleets: list[InstanceFleetConfig], Placement: PlacementType, Ec2SubnetIds: list[str], AdditionalMasterSecurityGroups: list[str], AdditionalSlaveSecurityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobFlowInstancesConfig:
     Optional[str] MasterInstanceType
     Optional[str] SlaveInstanceType
@@ -1323,8 +1374,9 @@ struct JobFlowInstancesConfig:
     Optional[list[str]] AdditionalMasterSecurityGroups
     Optional[list[str]] AdditionalSlaveSecurityGroups
 
-# no @derive(Json): member(s) InstanceGroups: list[InstanceGroupDetail], Placement: PlacementType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceGroups: list[InstanceGroupDetail], Placement: PlacementType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobFlowInstancesDetail:
     str MasterInstanceType
     Optional[str] MasterPublicDnsName
@@ -1359,22 +1411,25 @@ struct ListBootstrapActionsInput:
     str ClusterId
     Optional[str] Marker
 
-# no @derive(Json): member(s) BootstrapActions: list[Command] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BootstrapActions: list[Command] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBootstrapActionsOutput:
     Optional[list[Command]] BootstrapActions
     Optional[str] Marker
 
-# no @derive(Json): member(s) ClusterStates: list[ClusterState] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClusterStates: list[ClusterState] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListClustersInput:
     Optional[DateTime] CreatedAfter
     Optional[DateTime] CreatedBefore
     Optional[list[ClusterState]] ClusterStates
     Optional[str] Marker
 
-# no @derive(Json): member(s) Clusters: list[ClusterSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Clusters: list[ClusterSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListClustersOutput:
     Optional[list[ClusterSummary]] Clusters
     Optional[str] Marker
@@ -1384,8 +1439,9 @@ struct ListInstanceFleetsInput:
     str ClusterId
     Optional[str] Marker
 
-# no @derive(Json): member(s) InstanceFleets: list[InstanceFleet] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceFleets: list[InstanceFleet] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInstanceFleetsOutput:
     Optional[list[InstanceFleet]] InstanceFleets
     Optional[str] Marker
@@ -1395,14 +1451,16 @@ struct ListInstanceGroupsInput:
     str ClusterId
     Optional[str] Marker
 
-# no @derive(Json): member(s) InstanceGroups: list[InstanceGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceGroups: list[InstanceGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInstanceGroupsOutput:
     Optional[list[InstanceGroup]] InstanceGroups
     Optional[str] Marker
 
-# no @derive(Json): member(s) InstanceGroupTypes: list[InstanceGroupType], InstanceStates: list[InstanceState] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceGroupTypes: list[InstanceGroupType], InstanceStates: list[InstanceState] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInstancesInput:
     str ClusterId
     Optional[str] InstanceGroupId
@@ -1412,8 +1470,9 @@ struct ListInstancesInput:
     Optional[list[InstanceState]] InstanceStates
     Optional[str] Marker
 
-# no @derive(Json): member(s) Instances: list[Instance] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Instances: list[Instance] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInstancesOutput:
     Optional[list[Instance]] Instances
     Optional[str] Marker
@@ -1427,8 +1486,9 @@ struct ListNotebookExecutionsInput:
     Optional[str] Marker
     Optional[str] ExecutionEngineId
 
-# no @derive(Json): member(s) NotebookExecutions: list[NotebookExecutionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NotebookExecutions: list[NotebookExecutionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNotebookExecutionsOutput:
     Optional[list[NotebookExecutionSummary]] NotebookExecutions
     Optional[str] Marker
@@ -1439,8 +1499,9 @@ struct ListReleaseLabelsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ReleaseLabels: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReleaseLabels: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReleaseLabelsOutput:
     Optional[list[str]] ReleaseLabels
     Optional[str] NextToken
@@ -1449,36 +1510,41 @@ struct ListReleaseLabelsOutput:
 struct ListSecurityConfigurationsInput:
     Optional[str] Marker
 
-# no @derive(Json): member(s) SecurityConfigurations: list[SecurityConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityConfigurations: list[SecurityConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSecurityConfigurationsOutput:
     Optional[list[SecurityConfigurationSummary]] SecurityConfigurations
     Optional[str] Marker
 
-# no @derive(Json): member(s) SessionStates: list[SessionState] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SessionStates: list[SessionState] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSessionsInput:
     str ClusterId
     Optional[list[SessionState]] SessionStates
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Sessions: list[Session] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sessions: list[Session] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSessionsOutput:
     Optional[list[Session]] Sessions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) StepStates: list[StepState], StepIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StepStates: list[StepState], StepIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStepsInput:
     str ClusterId
     Optional[list[StepState]] StepStates
     Optional[list[str]] StepIds
     Optional[str] Marker
 
-# no @derive(Json): member(s) Steps: list[StepSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Steps: list[StepSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStepsOutput:
     Optional[list[StepSummary]] Steps
     Optional[str] Marker
@@ -1489,8 +1555,9 @@ struct ListStudioSessionMappingsInput:
     Optional[IdentityType] IdentityType
     Optional[str] Marker
 
-# no @derive(Json): member(s) SessionMappings: list[SessionMappingSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SessionMappings: list[SessionMappingSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStudioSessionMappingsOutput:
     Optional[list[SessionMappingSummary]] SessionMappings
     Optional[str] Marker
@@ -1499,8 +1566,9 @@ struct ListStudioSessionMappingsOutput:
 struct ListStudiosInput:
     Optional[str] Marker
 
-# no @derive(Json): member(s) Studios: list[StudioSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Studios: list[StudioSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStudiosOutput:
     Optional[list[StudioSummary]] Studios
     Optional[str] Marker
@@ -1510,8 +1578,9 @@ struct ListSupportedInstanceTypesInput:
     str ReleaseLabel
     Optional[str] Marker
 
-# no @derive(Json): member(s) SupportedInstanceTypes: list[SupportedInstanceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupportedInstanceTypes: list[SupportedInstanceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSupportedInstanceTypesOutput:
     Optional[list[SupportedInstanceType]] SupportedInstanceTypes
     Optional[str] Marker
@@ -1538,26 +1607,30 @@ struct ModifyClusterOutput:
     Optional[int64] StepConcurrencyLevel
     Optional[bool] ExtendedSupport
 
-# no @derive(Json): member(s) InstanceFleet: InstanceFleetModifyConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceFleet: InstanceFleetModifyConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyInstanceFleetInput:
     str ClusterId
     InstanceFleetModifyConfig InstanceFleet
 
-# no @derive(Json): member(s) InstanceGroups: list[InstanceGroupModifyConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceGroups: list[InstanceGroupModifyConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyInstanceGroupsInput:
     Optional[str] ClusterId
     Optional[list[InstanceGroupModifyConfig]] InstanceGroups
 
-# no @derive(Json): member(s) CloudWatchLogConfiguration: CloudWatchLogConfiguration, S3LoggingConfiguration: S3LoggingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchLogConfiguration: CloudWatchLogConfiguration, S3LoggingConfiguration: S3LoggingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MonitoringConfiguration:
     Optional[CloudWatchLogConfiguration] CloudWatchLogConfiguration
     Optional[S3LoggingConfiguration] S3LoggingConfiguration
 
-# no @derive(Json): member(s) Tags: list[Tag], EnvironmentVariables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], EnvironmentVariables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotebookExecution:
     Optional[str] NotebookExecutionId
     Optional[str] EditorId
@@ -1629,8 +1702,9 @@ struct OutputNotebookS3LocationFromInput:
     Optional[str] Bucket
     Optional[str] Key
 
-# no @derive(Json): member(s) PersistentAppUITypeList: list[PersistentAppUIType], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PersistentAppUITypeList: list[PersistentAppUIType], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PersistentAppUI:
     Optional[str] PersistentAppUIId
     Optional[list[PersistentAppUIType]] PersistentAppUITypeList
@@ -1646,8 +1720,9 @@ struct PlacementGroupConfig:
     InstanceRoleType InstanceRole
     Optional[PlacementGroupStrategy] PlacementStrategy
 
-# no @derive(Json): member(s) AvailabilityZones: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PlacementType:
     Optional[str] AvailabilityZone
     Optional[list[str]] AvailabilityZones
@@ -1657,15 +1732,17 @@ struct PortRange:
     int64 MinRange
     Optional[int64] MaxRange
 
-# no @derive(Json): member(s) AutoScalingPolicy: AutoScalingPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AutoScalingPolicy: AutoScalingPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutAutoScalingPolicyInput:
     str ClusterId
     str InstanceGroupId
     AutoScalingPolicy AutoScalingPolicy
 
-# no @derive(Json): member(s) AutoScalingPolicy: AutoScalingPolicyDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AutoScalingPolicy: AutoScalingPolicyDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutAutoScalingPolicyOutput:
     Optional[str] ClusterId
     Optional[str] InstanceGroupId
@@ -1682,8 +1759,9 @@ struct PutAutoTerminationPolicyOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) BlockPublicAccessConfiguration: BlockPublicAccessConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BlockPublicAccessConfiguration: BlockPublicAccessConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutBlockPublicAccessConfigurationInput:
     BlockPublicAccessConfiguration BlockPublicAccessConfiguration
 
@@ -1735,8 +1813,9 @@ struct RemoveManagedScalingPolicyOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveTagsInput:
     str ResourceId
     list[str] TagKeys
@@ -1747,8 +1826,9 @@ struct RemoveTagsOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Instances: JobFlowInstancesConfig, Steps: list[StepConfig], BootstrapActions: list[BootstrapActionConfig], SupportedProducts: list[str], NewSupportedProducts: list[SupportedProductConfig], Applications: list[Application], Configurations: list[Configuration], Tags: list[Tag], PlacementGroupConfigs: list[PlacementGroupConfig], MonitoringConfiguration: MonitoringConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Instances: JobFlowInstancesConfig, Steps: list[StepConfig], BootstrapActions: list[BootstrapActionConfig], SupportedProducts: list[str], NewSupportedProducts: list[SupportedProductConfig], Applications: list[Application], Configurations: list[Configuration], Tags: list[Tag], PlacementGroupConfigs: list[PlacementGroupConfig], MonitoringConfiguration: MonitoringConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RunJobFlowInput:
     str Name
     Optional[str] LogUri
@@ -1791,8 +1871,9 @@ struct RunJobFlowOutput:
     Optional[str] JobFlowId
     Optional[str] ClusterArn
 
-# no @derive(Json): member(s) LogTypeUploadPolicy: dict[LogType, LogUploadPolicyValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LogTypeUploadPolicy: dict[LogType, LogUploadPolicyValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3LoggingConfiguration:
     Optional[dict[LogType, LogUploadPolicyValue]] LogTypeUploadPolicy
 
@@ -1811,21 +1892,24 @@ struct ScalingConstraints:
     int64 MinCapacity
     int64 MaxCapacity
 
-# no @derive(Json): member(s) Trigger: ScalingTrigger not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Trigger: ScalingTrigger not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScalingRule:
     str Name
     Optional[str] Description
     ScalingAction Action
     ScalingTrigger Trigger
 
-# no @derive(Json): member(s) CloudWatchAlarmDefinition: CloudWatchAlarmDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchAlarmDefinition: CloudWatchAlarmDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScalingTrigger:
     CloudWatchAlarmDefinition CloudWatchAlarmDefinition
 
-# no @derive(Json): member(s) Args: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Args: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScriptBootstrapActionConfig:
     str Path
     Optional[list[str]] Args
@@ -1835,8 +1919,9 @@ struct SecurityConfigurationSummary:
     Optional[str] Name
     Optional[DateTime] CreationDateTime
 
-# no @derive(Json): member(s) EngineConfigurations: list[Configuration], MonitoringConfiguration: SessionMonitoringConfiguration, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EngineConfigurations: list[Configuration], MonitoringConfiguration: SessionMonitoringConfiguration, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Session:
     str Id
     str ClusterId
@@ -1858,8 +1943,9 @@ struct Session:
     Optional[str] ServerUrl
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) LogTypes: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LogTypes: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SessionCloudWatchLoggingConfiguration:
     Optional[bool] Enabled
     Optional[str] LogGroup
@@ -1891,47 +1977,54 @@ struct SessionMappingSummary:
     Optional[str] SessionPolicyArn
     Optional[DateTime] CreationTime
 
-# no @derive(Json): member(s) CloudWatchLoggingConfiguration: SessionCloudWatchLoggingConfiguration, S3LoggingConfiguration: SessionS3LoggingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CloudWatchLoggingConfiguration: SessionCloudWatchLoggingConfiguration, S3LoggingConfiguration: SessionS3LoggingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SessionMonitoringConfiguration:
     Optional[SessionCloudWatchLoggingConfiguration] CloudWatchLoggingConfiguration
     Optional[SessionManagedLoggingConfiguration] ManagedLoggingConfiguration
     Optional[SessionS3LoggingConfiguration] S3LoggingConfiguration
 
-# no @derive(Json): member(s) LogTypes: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LogTypes: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SessionS3LoggingConfiguration:
     Optional[bool] Enabled
     Optional[str] LogUri
     Optional[str] EncryptionKeyArn
     Optional[dict[str, list[str]]] LogTypes
 
-# no @derive(Json): member(s) JobFlowIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobFlowIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetKeepJobFlowAliveWhenNoStepsInput:
     list[str] JobFlowIds
     bool KeepJobFlowAliveWhenNoSteps
 
-# no @derive(Json): member(s) JobFlowIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobFlowIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetTerminationProtectionInput:
     list[str] JobFlowIds
     bool TerminationProtected
 
-# no @derive(Json): member(s) JobFlowIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobFlowIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetUnhealthyNodeReplacementInput:
     list[str] JobFlowIds
     bool UnhealthyNodeReplacement
 
-# no @derive(Json): member(s) JobFlowIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobFlowIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetVisibleToAllUsersInput:
     list[str] JobFlowIds
     bool VisibleToAllUsers
 
-# no @derive(Json): member(s) InstanceResizePolicy: InstanceResizePolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InstanceResizePolicy: InstanceResizePolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ShrinkPolicy:
     Optional[int64] DecommissionTimeout
     Optional[InstanceResizePolicy] InstanceResizePolicy
@@ -1959,8 +2052,9 @@ struct SpotResizingSpecification:
     Optional[int64] TimeoutDurationMinutes
     Optional[SpotProvisioningAllocationStrategy] AllocationStrategy
 
-# no @derive(Json): member(s) Tags: list[Tag], EnvironmentVariables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], EnvironmentVariables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartNotebookExecutionInput:
     Optional[str] EditorId
     Optional[str] RelativePath
@@ -1979,8 +2073,9 @@ struct StartNotebookExecutionInput:
 struct StartNotebookExecutionOutput:
     Optional[str] NotebookExecutionId
 
-# no @derive(Json): member(s) EngineConfigurations: list[Configuration], MonitoringConfiguration: SessionMonitoringConfiguration, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EngineConfigurations: list[Configuration], MonitoringConfiguration: SessionMonitoringConfiguration, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartSessionInput:
     Optional[str] Name
     str ClusterId
@@ -1999,8 +2094,9 @@ struct StartSessionOutput:
     Optional[str] AccountId
     Optional[SessionState] State
 
-# no @derive(Json): member(s) Config: HadoopStepConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Config: HadoopStepConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Step:
     Optional[str] Id
     Optional[str] Name
@@ -2011,16 +2107,18 @@ struct Step:
     Optional[str] LogUri
     Optional[str] EncryptionKeyArn
 
-# no @derive(Json): member(s) HadoopJarStep: HadoopJarStepConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HadoopJarStep: HadoopJarStepConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StepConfig:
     str Name
     Optional[ActionOnFailure] ActionOnFailure
     HadoopJarStepConfig HadoopJarStep
     Optional[StepMonitoringConfiguration] StepMonitoringConfiguration
 
-# no @derive(Json): member(s) StepConfig: StepConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StepConfig: StepConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StepDetail:
     StepConfig StepConfig
     StepExecutionStatusDetail ExecutionStatusDetail
@@ -2049,8 +2147,9 @@ struct StepStatus:
     Optional[FailureDetails] FailureDetails
     Optional[StepTimeline] Timeline
 
-# no @derive(Json): member(s) Config: HadoopStepConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Config: HadoopStepConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StepSummary:
     Optional[str] Id
     Optional[str] Name
@@ -2070,8 +2169,9 @@ struct StepTimeline:
 struct StopNotebookExecutionInput:
     str NotebookExecutionId
 
-# no @derive(Json): member(s) SubnetIds: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Studio:
     Optional[str] StudioId
     Optional[str] StudioArn
@@ -2119,8 +2219,9 @@ struct SupportedInstanceType:
     Optional[bool] EbsStorageOnly
     Optional[str] Architecture
 
-# no @derive(Json): member(s) Args: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Args: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SupportedProductConfig:
     Optional[str] Name
     Optional[list[str]] Args
@@ -2130,8 +2231,9 @@ struct Tag:
     Optional[str] Key
     Optional[str] Value
 
-# no @derive(Json): member(s) JobFlowIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobFlowIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TerminateJobFlowsInput:
     list[str] JobFlowIds
 
@@ -2146,8 +2248,9 @@ struct TerminateSessionOutput:
     str SessionId
     SessionState State
 
-# no @derive(Json): member(s) SubnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateStudioInput:
     str StudioId
     Optional[str] Name
@@ -2198,52 +2301,895 @@ def elasticmapreduce_error_from_code(str code) -> EMRError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AddInstanceFleet (input AddInstanceFleetInput)
-#   AddInstanceGroups (input AddInstanceGroupsInput)
-#   AddJobFlowSteps (input AddJobFlowStepsInput)
-#   AddTags (input AddTagsInput)
-#   CancelSteps (input CancelStepsInput)
-#   CreatePersistentAppUI (input CreatePersistentAppUIInput)
-#   CreateStudio (input CreateStudioInput)
-#   DescribeJobFlows (input DescribeJobFlowsInput)
-#   ListClusters (input ListClustersInput)
-#   ListInstances (input ListInstancesInput)
-#   ListSessions (input ListSessionsInput)
-#   ListSteps (input ListStepsInput)
-#   ModifyInstanceFleet (input ModifyInstanceFleetInput)
-#   ModifyInstanceGroups (input ModifyInstanceGroupsInput)
-#   PutAutoScalingPolicy (input PutAutoScalingPolicyInput)
-#   PutBlockPublicAccessConfiguration (input PutBlockPublicAccessConfigurationInput)
-#   RemoveTags (input RemoveTagsInput)
+# Operations skipped in v0 (a member type is not yet serializable — a map
+# with a non-string key, or a free-form document member):
 #   RunJobFlow (input RunJobFlowInput)
-#   SetKeepJobFlowAliveWhenNoSteps (input SetKeepJobFlowAliveWhenNoStepsInput)
-#   SetTerminationProtection (input SetTerminationProtectionInput)
-#   SetUnhealthyNodeReplacement (input SetUnhealthyNodeReplacementInput)
-#   SetVisibleToAllUsers (input SetVisibleToAllUsersInput)
-#   StartNotebookExecution (input StartNotebookExecutionInput)
-#   StartSession (input StartSessionInput)
-#   TerminateJobFlows (input TerminateJobFlowsInput)
-#   UpdateStudio (input UpdateStudioInput)
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListClusters (input not derivable (no generated method))
-#   ListInstances (input not derivable (no generated method))
-#   ListSessions (input not derivable (no generated method))
-#   ListSteps (input not derivable (no generated method))
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def elasticmapreduce_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def elasticmapreduce_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def elasticmapreduce_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AddInstanceFleetInput to a compact JSON object (declaration order).
+def add_instance_fleet_input_to_json(AddInstanceFleetInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterId\":" + elasticmapreduce_json_str(v.ClusterId))
+    parts.append("\"InstanceFleet\":" + instance_fleet_config_to_json(v.InstanceFleet))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize AddInstanceGroupsInput to a compact JSON object (declaration order).
+def add_instance_groups_input_to_json(AddInstanceGroupsInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.InstanceGroups:
+        e0.append(instance_group_config_to_json(x0))
+    parts.append("\"InstanceGroups\":" + elasticmapreduce_json_arr(e0))
+    parts.append("\"JobFlowId\":" + elasticmapreduce_json_str(v.JobFlowId))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize AddJobFlowStepsInput to a compact JSON object (declaration order).
+def add_job_flow_steps_input_to_json(AddJobFlowStepsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"JobFlowId\":" + elasticmapreduce_json_str(v.JobFlowId))
+    list[str] e0 = []
+    for x0 in v.Steps:
+        e0.append(step_config_to_json(x0))
+    parts.append("\"Steps\":" + elasticmapreduce_json_arr(e0))
+    if v.ExecutionRoleArn.is_some():
+        auto u1 = v.ExecutionRoleArn.unwrap()
+        parts.append("\"ExecutionRoleArn\":" + elasticmapreduce_json_str(u1))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize AddTagsInput to a compact JSON object (declaration order).
+def add_tags_input_to_json(AddTagsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceId\":" + elasticmapreduce_json_str(v.ResourceId))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + elasticmapreduce_json_arr(e0))
+    if v.ClusterId.is_some():
+        auto u1 = v.ClusterId.unwrap()
+        parts.append("\"ClusterId\":" + elasticmapreduce_json_str(u1))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize AutoScalingPolicy to a compact JSON object (declaration order).
+def auto_scaling_policy_to_json(AutoScalingPolicy v) -> str:
+    list[str] parts = []
+    parts.append("\"Constraints\":" + v.Constraints.to_json())
+    list[str] e0 = []
+    for x0 in v.Rules:
+        e0.append(scaling_rule_to_json(x0))
+    parts.append("\"Rules\":" + elasticmapreduce_json_arr(e0))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize BlockPublicAccessConfiguration to a compact JSON object (declaration order).
+def block_public_access_configuration_to_json(BlockPublicAccessConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"BlockPublicSecurityGroupRules\":" + json.dumps(JsonValue.Bool(v.BlockPublicSecurityGroupRules)))
+    if v.PermittedPublicSecurityGroupRuleRanges.is_some():
+        auto u0 = v.PermittedPublicSecurityGroupRuleRanges.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"PermittedPublicSecurityGroupRuleRanges\":" + elasticmapreduce_json_arr(e1))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize CancelStepsInput to a compact JSON object (declaration order).
+def cancel_steps_input_to_json(CancelStepsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterId\":" + elasticmapreduce_json_str(v.ClusterId))
+    list[str] e0 = []
+    for x0 in v.StepIds:
+        e0.append(elasticmapreduce_json_str(x0))
+    parts.append("\"StepIds\":" + elasticmapreduce_json_arr(e0))
+    if v.StepCancellationOption.is_some():
+        auto u1 = v.StepCancellationOption.unwrap()
+        parts.append("\"StepCancellationOption\":" + u1.to_json())
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize CloudWatchAlarmDefinition to a compact JSON object (declaration order).
+def cloud_watch_alarm_definition_to_json(CloudWatchAlarmDefinition v) -> str:
+    list[str] parts = []
+    parts.append("\"ComparisonOperator\":" + v.ComparisonOperator.to_json())
+    if v.EvaluationPeriods.is_some():
+        auto u0 = v.EvaluationPeriods.unwrap()
+        parts.append("\"EvaluationPeriods\":" + str(u0))
+    parts.append("\"MetricName\":" + elasticmapreduce_json_str(v.MetricName))
+    if v.Namespace.is_some():
+        auto u1 = v.Namespace.unwrap()
+        parts.append("\"Namespace\":" + elasticmapreduce_json_str(u1))
+    parts.append("\"Period\":" + str(v.Period))
+    if v.Statistic.is_some():
+        auto u2 = v.Statistic.unwrap()
+        parts.append("\"Statistic\":" + u2.to_json())
+    parts.append("\"Threshold\":" + str(v.Threshold))
+    if v.Unit.is_some():
+        auto u3 = v.Unit.unwrap()
+        parts.append("\"Unit\":" + u3.to_json())
+    if v.Dimensions.is_some():
+        auto u4 = v.Dimensions.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Dimensions\":" + elasticmapreduce_json_arr(e5))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize Configuration to a compact JSON object (declaration order).
+def configuration_to_json(Configuration v) -> str:
+    list[str] parts = []
+    if v.Classification.is_some():
+        auto u0 = v.Classification.unwrap()
+        parts.append("\"Classification\":" + elasticmapreduce_json_str(u0))
+    if v.Configurations.is_some():
+        auto u1 = v.Configurations.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(configuration_to_json(x2))
+        parts.append("\"Configurations\":" + elasticmapreduce_json_arr(e2))
+    if v.Properties.is_some():
+        auto u3 = v.Properties.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(elasticmapreduce_json_str(k4) + ":" + elasticmapreduce_json_str(u3[k4]))
+        parts.append("\"Properties\":" + elasticmapreduce_json_obj(m4))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize CreatePersistentAppUIInput to a compact JSON object (declaration order).
+def create_persistent_app_ui_input_to_json(CreatePersistentAppUIInput v) -> str:
+    list[str] parts = []
+    parts.append("\"TargetResourceArn\":" + elasticmapreduce_json_str(v.TargetResourceArn))
+    if v.EMRContainersConfig.is_some():
+        auto u0 = v.EMRContainersConfig.unwrap()
+        parts.append("\"EMRContainersConfig\":" + u0.to_json())
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + elasticmapreduce_json_arr(e2))
+    if v.XReferer.is_some():
+        auto u3 = v.XReferer.unwrap()
+        parts.append("\"XReferer\":" + elasticmapreduce_json_str(u3))
+    if v.ProfilerType.is_some():
+        auto u4 = v.ProfilerType.unwrap()
+        parts.append("\"ProfilerType\":" + u4.to_json())
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize CreateStudioInput to a compact JSON object (declaration order).
+def create_studio_input_to_json(CreateStudioInput v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + elasticmapreduce_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + elasticmapreduce_json_str(u0))
+    parts.append("\"AuthMode\":" + v.AuthMode.to_json())
+    parts.append("\"VpcId\":" + elasticmapreduce_json_str(v.VpcId))
+    list[str] e1 = []
+    for x1 in v.SubnetIds:
+        e1.append(elasticmapreduce_json_str(x1))
+    parts.append("\"SubnetIds\":" + elasticmapreduce_json_arr(e1))
+    parts.append("\"ServiceRole\":" + elasticmapreduce_json_str(v.ServiceRole))
+    if v.UserRole.is_some():
+        auto u2 = v.UserRole.unwrap()
+        parts.append("\"UserRole\":" + elasticmapreduce_json_str(u2))
+    parts.append("\"WorkspaceSecurityGroupId\":" + elasticmapreduce_json_str(v.WorkspaceSecurityGroupId))
+    parts.append("\"EngineSecurityGroupId\":" + elasticmapreduce_json_str(v.EngineSecurityGroupId))
+    parts.append("\"DefaultS3Location\":" + elasticmapreduce_json_str(v.DefaultS3Location))
+    if v.IdpAuthUrl.is_some():
+        auto u3 = v.IdpAuthUrl.unwrap()
+        parts.append("\"IdpAuthUrl\":" + elasticmapreduce_json_str(u3))
+    if v.IdpRelayStateParameterName.is_some():
+        auto u4 = v.IdpRelayStateParameterName.unwrap()
+        parts.append("\"IdpRelayStateParameterName\":" + elasticmapreduce_json_str(u4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + elasticmapreduce_json_arr(e6))
+    if v.TrustedIdentityPropagationEnabled.is_some():
+        auto u7 = v.TrustedIdentityPropagationEnabled.unwrap()
+        parts.append("\"TrustedIdentityPropagationEnabled\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.IdcUserAssignment.is_some():
+        auto u8 = v.IdcUserAssignment.unwrap()
+        parts.append("\"IdcUserAssignment\":" + u8.to_json())
+    if v.IdcInstanceArn.is_some():
+        auto u9 = v.IdcInstanceArn.unwrap()
+        parts.append("\"IdcInstanceArn\":" + elasticmapreduce_json_str(u9))
+    if v.EncryptionKeyArn.is_some():
+        auto u10 = v.EncryptionKeyArn.unwrap()
+        parts.append("\"EncryptionKeyArn\":" + elasticmapreduce_json_str(u10))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize DescribeJobFlowsInput to a compact JSON object (declaration order).
+def describe_job_flows_input_to_json(DescribeJobFlowsInput v) -> str:
+    list[str] parts = []
+    if v.CreatedAfter.is_some():
+        auto u0 = v.CreatedAfter.unwrap()
+        parts.append("\"CreatedAfter\":" + str(datetime.to_timestamp(u0)))
+    if v.CreatedBefore.is_some():
+        auto u1 = v.CreatedBefore.unwrap()
+        parts.append("\"CreatedBefore\":" + str(datetime.to_timestamp(u1)))
+    if v.JobFlowIds.is_some():
+        auto u2 = v.JobFlowIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(elasticmapreduce_json_str(x3))
+        parts.append("\"JobFlowIds\":" + elasticmapreduce_json_arr(e3))
+    if v.JobFlowStates.is_some():
+        auto u4 = v.JobFlowStates.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"JobFlowStates\":" + elasticmapreduce_json_arr(e5))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize EbsConfiguration to a compact JSON object (declaration order).
+def ebs_configuration_to_json(EbsConfiguration v) -> str:
+    list[str] parts = []
+    if v.EbsBlockDeviceConfigs.is_some():
+        auto u0 = v.EbsBlockDeviceConfigs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"EbsBlockDeviceConfigs\":" + elasticmapreduce_json_arr(e1))
+    if v.EbsOptimized.is_some():
+        auto u2 = v.EbsOptimized.unwrap()
+        parts.append("\"EbsOptimized\":" + json.dumps(JsonValue.Bool(u2)))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize HadoopJarStepConfig to a compact JSON object (declaration order).
+def hadoop_jar_step_config_to_json(HadoopJarStepConfig v) -> str:
+    list[str] parts = []
+    if v.Properties.is_some():
+        auto u0 = v.Properties.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Properties\":" + elasticmapreduce_json_arr(e1))
+    parts.append("\"Jar\":" + elasticmapreduce_json_str(v.Jar))
+    if v.MainClass.is_some():
+        auto u2 = v.MainClass.unwrap()
+        parts.append("\"MainClass\":" + elasticmapreduce_json_str(u2))
+    if v.Args.is_some():
+        auto u3 = v.Args.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(elasticmapreduce_json_str(x4))
+        parts.append("\"Args\":" + elasticmapreduce_json_arr(e4))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize InstanceFleetConfig to a compact JSON object (declaration order).
+def instance_fleet_config_to_json(InstanceFleetConfig v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + elasticmapreduce_json_str(u0))
+    parts.append("\"InstanceFleetType\":" + v.InstanceFleetType.to_json())
+    if v.TargetOnDemandCapacity.is_some():
+        auto u1 = v.TargetOnDemandCapacity.unwrap()
+        parts.append("\"TargetOnDemandCapacity\":" + str(u1))
+    if v.TargetSpotCapacity.is_some():
+        auto u2 = v.TargetSpotCapacity.unwrap()
+        parts.append("\"TargetSpotCapacity\":" + str(u2))
+    if v.InstanceTypeConfigs.is_some():
+        auto u3 = v.InstanceTypeConfigs.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(instance_type_config_to_json(x4))
+        parts.append("\"InstanceTypeConfigs\":" + elasticmapreduce_json_arr(e4))
+    if v.LaunchSpecifications.is_some():
+        auto u5 = v.LaunchSpecifications.unwrap()
+        parts.append("\"LaunchSpecifications\":" + u5.to_json())
+    if v.ResizeSpecifications.is_some():
+        auto u6 = v.ResizeSpecifications.unwrap()
+        parts.append("\"ResizeSpecifications\":" + u6.to_json())
+    if v.Context.is_some():
+        auto u7 = v.Context.unwrap()
+        parts.append("\"Context\":" + elasticmapreduce_json_str(u7))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize InstanceFleetModifyConfig to a compact JSON object (declaration order).
+def instance_fleet_modify_config_to_json(InstanceFleetModifyConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"InstanceFleetId\":" + elasticmapreduce_json_str(v.InstanceFleetId))
+    if v.TargetOnDemandCapacity.is_some():
+        auto u0 = v.TargetOnDemandCapacity.unwrap()
+        parts.append("\"TargetOnDemandCapacity\":" + str(u0))
+    if v.TargetSpotCapacity.is_some():
+        auto u1 = v.TargetSpotCapacity.unwrap()
+        parts.append("\"TargetSpotCapacity\":" + str(u1))
+    if v.ResizeSpecifications.is_some():
+        auto u2 = v.ResizeSpecifications.unwrap()
+        parts.append("\"ResizeSpecifications\":" + u2.to_json())
+    if v.InstanceTypeConfigs.is_some():
+        auto u3 = v.InstanceTypeConfigs.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(instance_type_config_to_json(x4))
+        parts.append("\"InstanceTypeConfigs\":" + elasticmapreduce_json_arr(e4))
+    if v.Context.is_some():
+        auto u5 = v.Context.unwrap()
+        parts.append("\"Context\":" + elasticmapreduce_json_str(u5))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize InstanceGroupConfig to a compact JSON object (declaration order).
+def instance_group_config_to_json(InstanceGroupConfig v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + elasticmapreduce_json_str(u0))
+    if v.Market.is_some():
+        auto u1 = v.Market.unwrap()
+        parts.append("\"Market\":" + u1.to_json())
+    parts.append("\"InstanceRole\":" + v.InstanceRole.to_json())
+    if v.BidPrice.is_some():
+        auto u2 = v.BidPrice.unwrap()
+        parts.append("\"BidPrice\":" + elasticmapreduce_json_str(u2))
+    parts.append("\"InstanceType\":" + elasticmapreduce_json_str(v.InstanceType))
+    parts.append("\"InstanceCount\":" + str(v.InstanceCount))
+    if v.Configurations.is_some():
+        auto u3 = v.Configurations.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(configuration_to_json(x4))
+        parts.append("\"Configurations\":" + elasticmapreduce_json_arr(e4))
+    if v.EbsConfiguration.is_some():
+        auto u5 = v.EbsConfiguration.unwrap()
+        parts.append("\"EbsConfiguration\":" + ebs_configuration_to_json(u5))
+    if v.AutoScalingPolicy.is_some():
+        auto u6 = v.AutoScalingPolicy.unwrap()
+        parts.append("\"AutoScalingPolicy\":" + auto_scaling_policy_to_json(u6))
+    if v.CustomAmiId.is_some():
+        auto u7 = v.CustomAmiId.unwrap()
+        parts.append("\"CustomAmiId\":" + elasticmapreduce_json_str(u7))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize InstanceGroupModifyConfig to a compact JSON object (declaration order).
+def instance_group_modify_config_to_json(InstanceGroupModifyConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"InstanceGroupId\":" + elasticmapreduce_json_str(v.InstanceGroupId))
+    if v.InstanceCount.is_some():
+        auto u0 = v.InstanceCount.unwrap()
+        parts.append("\"InstanceCount\":" + str(u0))
+    if v.EC2InstanceIdsToTerminate.is_some():
+        auto u1 = v.EC2InstanceIdsToTerminate.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(elasticmapreduce_json_str(x2))
+        parts.append("\"EC2InstanceIdsToTerminate\":" + elasticmapreduce_json_arr(e2))
+    if v.ShrinkPolicy.is_some():
+        auto u3 = v.ShrinkPolicy.unwrap()
+        parts.append("\"ShrinkPolicy\":" + shrink_policy_to_json(u3))
+    if v.ReconfigurationType.is_some():
+        auto u4 = v.ReconfigurationType.unwrap()
+        parts.append("\"ReconfigurationType\":" + u4.to_json())
+    if v.Configurations.is_some():
+        auto u5 = v.Configurations.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(configuration_to_json(x6))
+        parts.append("\"Configurations\":" + elasticmapreduce_json_arr(e6))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize InstanceResizePolicy to a compact JSON object (declaration order).
+def instance_resize_policy_to_json(InstanceResizePolicy v) -> str:
+    list[str] parts = []
+    if v.InstancesToTerminate.is_some():
+        auto u0 = v.InstancesToTerminate.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(elasticmapreduce_json_str(x1))
+        parts.append("\"InstancesToTerminate\":" + elasticmapreduce_json_arr(e1))
+    if v.InstancesToProtect.is_some():
+        auto u2 = v.InstancesToProtect.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(elasticmapreduce_json_str(x3))
+        parts.append("\"InstancesToProtect\":" + elasticmapreduce_json_arr(e3))
+    if v.InstanceTerminationTimeout.is_some():
+        auto u4 = v.InstanceTerminationTimeout.unwrap()
+        parts.append("\"InstanceTerminationTimeout\":" + str(u4))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize InstanceTypeConfig to a compact JSON object (declaration order).
+def instance_type_config_to_json(InstanceTypeConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"InstanceType\":" + elasticmapreduce_json_str(v.InstanceType))
+    if v.WeightedCapacity.is_some():
+        auto u0 = v.WeightedCapacity.unwrap()
+        parts.append("\"WeightedCapacity\":" + str(u0))
+    if v.BidPrice.is_some():
+        auto u1 = v.BidPrice.unwrap()
+        parts.append("\"BidPrice\":" + elasticmapreduce_json_str(u1))
+    if v.BidPriceAsPercentageOfOnDemandPrice.is_some():
+        auto u2 = v.BidPriceAsPercentageOfOnDemandPrice.unwrap()
+        parts.append("\"BidPriceAsPercentageOfOnDemandPrice\":" + str(u2))
+    if v.EbsConfiguration.is_some():
+        auto u3 = v.EbsConfiguration.unwrap()
+        parts.append("\"EbsConfiguration\":" + ebs_configuration_to_json(u3))
+    if v.Configurations.is_some():
+        auto u4 = v.Configurations.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(configuration_to_json(x5))
+        parts.append("\"Configurations\":" + elasticmapreduce_json_arr(e5))
+    if v.CustomAmiId.is_some():
+        auto u6 = v.CustomAmiId.unwrap()
+        parts.append("\"CustomAmiId\":" + elasticmapreduce_json_str(u6))
+    if v.Priority.is_some():
+        auto u7 = v.Priority.unwrap()
+        parts.append("\"Priority\":" + str(u7))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize ListClustersInput to a compact JSON object (declaration order).
+def list_clusters_input_to_json(ListClustersInput v) -> str:
+    list[str] parts = []
+    if v.CreatedAfter.is_some():
+        auto u0 = v.CreatedAfter.unwrap()
+        parts.append("\"CreatedAfter\":" + str(datetime.to_timestamp(u0)))
+    if v.CreatedBefore.is_some():
+        auto u1 = v.CreatedBefore.unwrap()
+        parts.append("\"CreatedBefore\":" + str(datetime.to_timestamp(u1)))
+    if v.ClusterStates.is_some():
+        auto u2 = v.ClusterStates.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ClusterStates\":" + elasticmapreduce_json_arr(e3))
+    if v.Marker.is_some():
+        auto u4 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + elasticmapreduce_json_str(u4))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize ListInstancesInput to a compact JSON object (declaration order).
+def list_instances_input_to_json(ListInstancesInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterId\":" + elasticmapreduce_json_str(v.ClusterId))
+    if v.InstanceGroupId.is_some():
+        auto u0 = v.InstanceGroupId.unwrap()
+        parts.append("\"InstanceGroupId\":" + elasticmapreduce_json_str(u0))
+    if v.InstanceGroupTypes.is_some():
+        auto u1 = v.InstanceGroupTypes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"InstanceGroupTypes\":" + elasticmapreduce_json_arr(e2))
+    if v.InstanceFleetId.is_some():
+        auto u3 = v.InstanceFleetId.unwrap()
+        parts.append("\"InstanceFleetId\":" + elasticmapreduce_json_str(u3))
+    if v.InstanceFleetType.is_some():
+        auto u4 = v.InstanceFleetType.unwrap()
+        parts.append("\"InstanceFleetType\":" + u4.to_json())
+    if v.InstanceStates.is_some():
+        auto u5 = v.InstanceStates.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"InstanceStates\":" + elasticmapreduce_json_arr(e6))
+    if v.Marker.is_some():
+        auto u7 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + elasticmapreduce_json_str(u7))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize ListSessionsInput to a compact JSON object (declaration order).
+def list_sessions_input_to_json(ListSessionsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterId\":" + elasticmapreduce_json_str(v.ClusterId))
+    if v.SessionStates.is_some():
+        auto u0 = v.SessionStates.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"SessionStates\":" + elasticmapreduce_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + elasticmapreduce_json_str(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize ListStepsInput to a compact JSON object (declaration order).
+def list_steps_input_to_json(ListStepsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterId\":" + elasticmapreduce_json_str(v.ClusterId))
+    if v.StepStates.is_some():
+        auto u0 = v.StepStates.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"StepStates\":" + elasticmapreduce_json_arr(e1))
+    if v.StepIds.is_some():
+        auto u2 = v.StepIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(elasticmapreduce_json_str(x3))
+        parts.append("\"StepIds\":" + elasticmapreduce_json_arr(e3))
+    if v.Marker.is_some():
+        auto u4 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + elasticmapreduce_json_str(u4))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize ModifyInstanceFleetInput to a compact JSON object (declaration order).
+def modify_instance_fleet_input_to_json(ModifyInstanceFleetInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterId\":" + elasticmapreduce_json_str(v.ClusterId))
+    parts.append("\"InstanceFleet\":" + instance_fleet_modify_config_to_json(v.InstanceFleet))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize ModifyInstanceGroupsInput to a compact JSON object (declaration order).
+def modify_instance_groups_input_to_json(ModifyInstanceGroupsInput v) -> str:
+    list[str] parts = []
+    if v.ClusterId.is_some():
+        auto u0 = v.ClusterId.unwrap()
+        parts.append("\"ClusterId\":" + elasticmapreduce_json_str(u0))
+    if v.InstanceGroups.is_some():
+        auto u1 = v.InstanceGroups.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(instance_group_modify_config_to_json(x2))
+        parts.append("\"InstanceGroups\":" + elasticmapreduce_json_arr(e2))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize PutAutoScalingPolicyInput to a compact JSON object (declaration order).
+def put_auto_scaling_policy_input_to_json(PutAutoScalingPolicyInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ClusterId\":" + elasticmapreduce_json_str(v.ClusterId))
+    parts.append("\"InstanceGroupId\":" + elasticmapreduce_json_str(v.InstanceGroupId))
+    parts.append("\"AutoScalingPolicy\":" + auto_scaling_policy_to_json(v.AutoScalingPolicy))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize PutBlockPublicAccessConfigurationInput to a compact JSON object (declaration order).
+def put_block_public_access_configuration_input_to_json(PutBlockPublicAccessConfigurationInput v) -> str:
+    list[str] parts = []
+    parts.append("\"BlockPublicAccessConfiguration\":" + block_public_access_configuration_to_json(v.BlockPublicAccessConfiguration))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize RemoveTagsInput to a compact JSON object (declaration order).
+def remove_tags_input_to_json(RemoveTagsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceId\":" + elasticmapreduce_json_str(v.ResourceId))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(elasticmapreduce_json_str(x0))
+    parts.append("\"TagKeys\":" + elasticmapreduce_json_arr(e0))
+    if v.ClusterId.is_some():
+        auto u1 = v.ClusterId.unwrap()
+        parts.append("\"ClusterId\":" + elasticmapreduce_json_str(u1))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize ScalingRule to a compact JSON object (declaration order).
+def scaling_rule_to_json(ScalingRule v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + elasticmapreduce_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + elasticmapreduce_json_str(u0))
+    parts.append("\"Action\":" + v.Action.to_json())
+    parts.append("\"Trigger\":" + scaling_trigger_to_json(v.Trigger))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize ScalingTrigger to a compact JSON object (declaration order).
+def scaling_trigger_to_json(ScalingTrigger v) -> str:
+    list[str] parts = []
+    parts.append("\"CloudWatchAlarmDefinition\":" + cloud_watch_alarm_definition_to_json(v.CloudWatchAlarmDefinition))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize SessionCloudWatchLoggingConfiguration to a compact JSON object (declaration order).
+def session_cloud_watch_logging_configuration_to_json(SessionCloudWatchLoggingConfiguration v) -> str:
+    list[str] parts = []
+    if v.Enabled.is_some():
+        auto u0 = v.Enabled.unwrap()
+        parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.LogGroup.is_some():
+        auto u1 = v.LogGroup.unwrap()
+        parts.append("\"LogGroup\":" + elasticmapreduce_json_str(u1))
+    if v.LogStreamNamePrefix.is_some():
+        auto u2 = v.LogStreamNamePrefix.unwrap()
+        parts.append("\"LogStreamNamePrefix\":" + elasticmapreduce_json_str(u2))
+    if v.EncryptionKeyArn.is_some():
+        auto u3 = v.EncryptionKeyArn.unwrap()
+        parts.append("\"EncryptionKeyArn\":" + elasticmapreduce_json_str(u3))
+    if v.LogTypes.is_some():
+        auto u4 = v.LogTypes.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            list[str] e6 = []
+            for x6 in u4[k5]:
+                e6.append(elasticmapreduce_json_str(x6))
+            m5.append(elasticmapreduce_json_str(k5) + ":" + elasticmapreduce_json_arr(e6))
+        parts.append("\"LogTypes\":" + elasticmapreduce_json_obj(m5))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize SessionMonitoringConfiguration to a compact JSON object (declaration order).
+def session_monitoring_configuration_to_json(SessionMonitoringConfiguration v) -> str:
+    list[str] parts = []
+    if v.CloudWatchLoggingConfiguration.is_some():
+        auto u0 = v.CloudWatchLoggingConfiguration.unwrap()
+        parts.append("\"CloudWatchLoggingConfiguration\":" + session_cloud_watch_logging_configuration_to_json(u0))
+    if v.ManagedLoggingConfiguration.is_some():
+        auto u1 = v.ManagedLoggingConfiguration.unwrap()
+        parts.append("\"ManagedLoggingConfiguration\":" + u1.to_json())
+    if v.S3LoggingConfiguration.is_some():
+        auto u2 = v.S3LoggingConfiguration.unwrap()
+        parts.append("\"S3LoggingConfiguration\":" + session_s3_logging_configuration_to_json(u2))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize SessionS3LoggingConfiguration to a compact JSON object (declaration order).
+def session_s3_logging_configuration_to_json(SessionS3LoggingConfiguration v) -> str:
+    list[str] parts = []
+    if v.Enabled.is_some():
+        auto u0 = v.Enabled.unwrap()
+        parts.append("\"Enabled\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.LogUri.is_some():
+        auto u1 = v.LogUri.unwrap()
+        parts.append("\"LogUri\":" + elasticmapreduce_json_str(u1))
+    if v.EncryptionKeyArn.is_some():
+        auto u2 = v.EncryptionKeyArn.unwrap()
+        parts.append("\"EncryptionKeyArn\":" + elasticmapreduce_json_str(u2))
+    if v.LogTypes.is_some():
+        auto u3 = v.LogTypes.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            list[str] e5 = []
+            for x5 in u3[k4]:
+                e5.append(elasticmapreduce_json_str(x5))
+            m4.append(elasticmapreduce_json_str(k4) + ":" + elasticmapreduce_json_arr(e5))
+        parts.append("\"LogTypes\":" + elasticmapreduce_json_obj(m4))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize SetKeepJobFlowAliveWhenNoStepsInput to a compact JSON object (declaration order).
+def set_keep_job_flow_alive_when_no_steps_input_to_json(SetKeepJobFlowAliveWhenNoStepsInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.JobFlowIds:
+        e0.append(elasticmapreduce_json_str(x0))
+    parts.append("\"JobFlowIds\":" + elasticmapreduce_json_arr(e0))
+    parts.append("\"KeepJobFlowAliveWhenNoSteps\":" + json.dumps(JsonValue.Bool(v.KeepJobFlowAliveWhenNoSteps)))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize SetTerminationProtectionInput to a compact JSON object (declaration order).
+def set_termination_protection_input_to_json(SetTerminationProtectionInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.JobFlowIds:
+        e0.append(elasticmapreduce_json_str(x0))
+    parts.append("\"JobFlowIds\":" + elasticmapreduce_json_arr(e0))
+    parts.append("\"TerminationProtected\":" + json.dumps(JsonValue.Bool(v.TerminationProtected)))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize SetUnhealthyNodeReplacementInput to a compact JSON object (declaration order).
+def set_unhealthy_node_replacement_input_to_json(SetUnhealthyNodeReplacementInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.JobFlowIds:
+        e0.append(elasticmapreduce_json_str(x0))
+    parts.append("\"JobFlowIds\":" + elasticmapreduce_json_arr(e0))
+    parts.append("\"UnhealthyNodeReplacement\":" + json.dumps(JsonValue.Bool(v.UnhealthyNodeReplacement)))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize SetVisibleToAllUsersInput to a compact JSON object (declaration order).
+def set_visible_to_all_users_input_to_json(SetVisibleToAllUsersInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.JobFlowIds:
+        e0.append(elasticmapreduce_json_str(x0))
+    parts.append("\"JobFlowIds\":" + elasticmapreduce_json_arr(e0))
+    parts.append("\"VisibleToAllUsers\":" + json.dumps(JsonValue.Bool(v.VisibleToAllUsers)))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize ShrinkPolicy to a compact JSON object (declaration order).
+def shrink_policy_to_json(ShrinkPolicy v) -> str:
+    list[str] parts = []
+    if v.DecommissionTimeout.is_some():
+        auto u0 = v.DecommissionTimeout.unwrap()
+        parts.append("\"DecommissionTimeout\":" + str(u0))
+    if v.InstanceResizePolicy.is_some():
+        auto u1 = v.InstanceResizePolicy.unwrap()
+        parts.append("\"InstanceResizePolicy\":" + instance_resize_policy_to_json(u1))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize StartNotebookExecutionInput to a compact JSON object (declaration order).
+def start_notebook_execution_input_to_json(StartNotebookExecutionInput v) -> str:
+    list[str] parts = []
+    if v.EditorId.is_some():
+        auto u0 = v.EditorId.unwrap()
+        parts.append("\"EditorId\":" + elasticmapreduce_json_str(u0))
+    if v.RelativePath.is_some():
+        auto u1 = v.RelativePath.unwrap()
+        parts.append("\"RelativePath\":" + elasticmapreduce_json_str(u1))
+    if v.NotebookExecutionName.is_some():
+        auto u2 = v.NotebookExecutionName.unwrap()
+        parts.append("\"NotebookExecutionName\":" + elasticmapreduce_json_str(u2))
+    if v.NotebookParams.is_some():
+        auto u3 = v.NotebookParams.unwrap()
+        parts.append("\"NotebookParams\":" + elasticmapreduce_json_str(u3))
+    parts.append("\"ExecutionEngine\":" + v.ExecutionEngine.to_json())
+    parts.append("\"ServiceRole\":" + elasticmapreduce_json_str(v.ServiceRole))
+    if v.NotebookInstanceSecurityGroupId.is_some():
+        auto u4 = v.NotebookInstanceSecurityGroupId.unwrap()
+        parts.append("\"NotebookInstanceSecurityGroupId\":" + elasticmapreduce_json_str(u4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + elasticmapreduce_json_arr(e6))
+    if v.NotebookS3Location.is_some():
+        auto u7 = v.NotebookS3Location.unwrap()
+        parts.append("\"NotebookS3Location\":" + u7.to_json())
+    if v.OutputNotebookS3Location.is_some():
+        auto u8 = v.OutputNotebookS3Location.unwrap()
+        parts.append("\"OutputNotebookS3Location\":" + u8.to_json())
+    if v.OutputNotebookFormat.is_some():
+        auto u9 = v.OutputNotebookFormat.unwrap()
+        parts.append("\"OutputNotebookFormat\":" + elasticmapreduce_json_str(u9))
+    if v.EnvironmentVariables.is_some():
+        auto u10 = v.EnvironmentVariables.unwrap()
+        list[str] m11 = []
+        for k11 in sorted(u10.keys()):
+            m11.append(elasticmapreduce_json_str(k11) + ":" + elasticmapreduce_json_str(u10[k11]))
+        parts.append("\"EnvironmentVariables\":" + elasticmapreduce_json_obj(m11))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize StartSessionInput to a compact JSON object (declaration order).
+def start_session_input_to_json(StartSessionInput v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + elasticmapreduce_json_str(u0))
+    parts.append("\"ClusterId\":" + elasticmapreduce_json_str(v.ClusterId))
+    if v.ExecutionRoleArn.is_some():
+        auto u1 = v.ExecutionRoleArn.unwrap()
+        parts.append("\"ExecutionRoleArn\":" + elasticmapreduce_json_str(u1))
+    if v.EngineConfigurations.is_some():
+        auto u2 = v.EngineConfigurations.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(configuration_to_json(x3))
+        parts.append("\"EngineConfigurations\":" + elasticmapreduce_json_arr(e3))
+    if v.MonitoringConfiguration.is_some():
+        auto u4 = v.MonitoringConfiguration.unwrap()
+        parts.append("\"MonitoringConfiguration\":" + session_monitoring_configuration_to_json(u4))
+    if v.SessionIdleTimeoutInMinutes.is_some():
+        auto u5 = v.SessionIdleTimeoutInMinutes.unwrap()
+        parts.append("\"SessionIdleTimeoutInMinutes\":" + str(u5))
+    if v.ClientRequestToken.is_some():
+        auto u6 = v.ClientRequestToken.unwrap()
+        parts.append("\"ClientRequestToken\":" + elasticmapreduce_json_str(u6))
+    if v.Tags.is_some():
+        auto u7 = v.Tags.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"Tags\":" + elasticmapreduce_json_arr(e8))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize StepConfig to a compact JSON object (declaration order).
+def step_config_to_json(StepConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + elasticmapreduce_json_str(v.Name))
+    if v.ActionOnFailure.is_some():
+        auto u0 = v.ActionOnFailure.unwrap()
+        parts.append("\"ActionOnFailure\":" + u0.to_json())
+    parts.append("\"HadoopJarStep\":" + hadoop_jar_step_config_to_json(v.HadoopJarStep))
+    if v.StepMonitoringConfiguration.is_some():
+        auto u1 = v.StepMonitoringConfiguration.unwrap()
+        parts.append("\"StepMonitoringConfiguration\":" + u1.to_json())
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize TerminateJobFlowsInput to a compact JSON object (declaration order).
+def terminate_job_flows_input_to_json(TerminateJobFlowsInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.JobFlowIds:
+        e0.append(elasticmapreduce_json_str(x0))
+    parts.append("\"JobFlowIds\":" + elasticmapreduce_json_arr(e0))
+    return elasticmapreduce_json_obj(parts)
+
+# Serialize UpdateStudioInput to a compact JSON object (declaration order).
+def update_studio_input_to_json(UpdateStudioInput v) -> str:
+    list[str] parts = []
+    parts.append("\"StudioId\":" + elasticmapreduce_json_str(v.StudioId))
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + elasticmapreduce_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + elasticmapreduce_json_str(u1))
+    if v.SubnetIds.is_some():
+        auto u2 = v.SubnetIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(elasticmapreduce_json_str(x3))
+        parts.append("\"SubnetIds\":" + elasticmapreduce_json_arr(e3))
+    if v.DefaultS3Location.is_some():
+        auto u4 = v.DefaultS3Location.unwrap()
+        parts.append("\"DefaultS3Location\":" + elasticmapreduce_json_str(u4))
+    if v.EncryptionKeyArn.is_some():
+        auto u5 = v.EncryptionKeyArn.unwrap()
+        parts.append("\"EncryptionKeyArn\":" + elasticmapreduce_json_str(u5))
+    return elasticmapreduce_json_obj(parts)
 
 # A bound EMR client: credentials + region, threaded into every operation.
 struct EMRClient:
     core.Credentials creds
     str region
 
+    # AddInstanceFleet
+    # errors: InternalServerException, InvalidRequestException
+    def add_instance_fleet(self, AddInstanceFleetInput input) -> str:
+        auto body = add_instance_fleet_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "AddInstanceFleet", body)
+
+    # AddInstanceGroups
+    # errors: InternalServerError
+    def add_instance_groups(self, AddInstanceGroupsInput input) -> str:
+        auto body = add_instance_groups_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "AddInstanceGroups", body)
+
+    # AddJobFlowSteps
+    # errors: InternalServerError
+    def add_job_flow_steps(self, AddJobFlowStepsInput input) -> str:
+        auto body = add_job_flow_steps_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "AddJobFlowSteps", body)
+
+    # AddTags
+    # errors: InternalServerException, InvalidRequestException
+    def add_tags(self, AddTagsInput input) -> str:
+        auto body = add_tags_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "AddTags", body)
+
+    # CancelSteps
+    # errors: InternalServerError, InvalidRequestException
+    def cancel_steps(self, CancelStepsInput input) -> str:
+        auto body = cancel_steps_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "CancelSteps", body)
+
+    # CreatePersistentAppUI
+    # errors: InternalServerException, InvalidRequestException
+    def create_persistent_app_ui(self, CreatePersistentAppUIInput input) -> str:
+        auto body = create_persistent_app_ui_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "CreatePersistentAppUI", body)
+
     # CreateSecurityConfiguration
     # errors: InternalServerException, InvalidRequestException
     def create_security_configuration(self, CreateSecurityConfigurationInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "CreateSecurityConfiguration", body)
+
+    # CreateStudio
+    # errors: InternalServerException, InvalidRequestException
+    def create_studio(self, CreateStudioInput input) -> str:
+        auto body = create_studio_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "CreateStudio", body)
 
     # CreateStudioSessionMapping
     # errors: InternalServerError, InvalidRequestException
@@ -2274,6 +3220,12 @@ struct EMRClient:
     def describe_cluster(self, DescribeClusterInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "DescribeCluster", body)
+
+    # DescribeJobFlows
+    # errors: InternalServerError
+    def describe_job_flows(self, DescribeJobFlowsInput input) -> str:
+        auto body = describe_job_flows_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "DescribeJobFlows", body)
 
     # DescribeNotebookExecution
     # errors: InternalServerError, InvalidRequestException
@@ -2369,6 +3321,12 @@ struct EMRClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "ListBootstrapActions", body)
 
+    # ListClusters
+    # errors: InternalServerException, InvalidRequestException
+    def list_clusters(self, ListClustersInput input) -> str:
+        auto body = list_clusters_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "ListClusters", body)
+
     # ListInstanceFleets
     # errors: InternalServerException, InvalidRequestException
     def list_instance_fleets(self, ListInstanceFleetsInput input) -> str:
@@ -2380,6 +3338,12 @@ struct EMRClient:
     def list_instance_groups(self, ListInstanceGroupsInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "ListInstanceGroups", body)
+
+    # ListInstances
+    # errors: InternalServerException, InvalidRequestException
+    def list_instances(self, ListInstancesInput input) -> str:
+        auto body = list_instances_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "ListInstances", body)
 
     # ListNotebookExecutions
     # errors: InternalServerError, InvalidRequestException
@@ -2398,6 +3362,18 @@ struct EMRClient:
     def list_security_configurations(self, ListSecurityConfigurationsInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "ListSecurityConfigurations", body)
+
+    # ListSessions
+    # errors: InternalServerException, InvalidRequestException
+    def list_sessions(self, ListSessionsInput input) -> str:
+        auto body = list_sessions_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "ListSessions", body)
+
+    # ListSteps
+    # errors: InternalServerException, InvalidRequestException
+    def list_steps(self, ListStepsInput input) -> str:
+        auto body = list_steps_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "ListSteps", body)
 
     # ListStudioSessionMappings
     # errors: InternalServerError, InvalidRequestException
@@ -2423,10 +3399,33 @@ struct EMRClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "ModifyCluster", body)
 
+    # ModifyInstanceFleet
+    # errors: InternalServerException, InvalidRequestException
+    def modify_instance_fleet(self, ModifyInstanceFleetInput input) -> str:
+        auto body = modify_instance_fleet_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "ModifyInstanceFleet", body)
+
+    # ModifyInstanceGroups
+    # errors: InternalServerError
+    def modify_instance_groups(self, ModifyInstanceGroupsInput input) -> str:
+        auto body = modify_instance_groups_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "ModifyInstanceGroups", body)
+
+    # PutAutoScalingPolicy
+    def put_auto_scaling_policy(self, PutAutoScalingPolicyInput input) -> str:
+        auto body = put_auto_scaling_policy_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "PutAutoScalingPolicy", body)
+
     # PutAutoTerminationPolicy
     def put_auto_termination_policy(self, PutAutoTerminationPolicyInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "PutAutoTerminationPolicy", body)
+
+    # PutBlockPublicAccessConfiguration
+    # errors: InternalServerException, InvalidRequestException
+    def put_block_public_access_configuration(self, PutBlockPublicAccessConfigurationInput input) -> str:
+        auto body = put_block_public_access_configuration_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "PutBlockPublicAccessConfiguration", body)
 
     # PutManagedScalingPolicy
     def put_managed_scaling_policy(self, PutManagedScalingPolicyInput input) -> str:
@@ -2448,17 +3447,71 @@ struct EMRClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "RemoveManagedScalingPolicy", body)
 
+    # RemoveTags
+    # errors: InternalServerException, InvalidRequestException
+    def remove_tags(self, RemoveTagsInput input) -> str:
+        auto body = remove_tags_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "RemoveTags", body)
+
+    # SetKeepJobFlowAliveWhenNoSteps
+    # errors: InternalServerError
+    def set_keep_job_flow_alive_when_no_steps(self, SetKeepJobFlowAliveWhenNoStepsInput input) -> str:
+        auto body = set_keep_job_flow_alive_when_no_steps_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "SetKeepJobFlowAliveWhenNoSteps", body)
+
+    # SetTerminationProtection
+    # errors: InternalServerError
+    def set_termination_protection(self, SetTerminationProtectionInput input) -> str:
+        auto body = set_termination_protection_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "SetTerminationProtection", body)
+
+    # SetUnhealthyNodeReplacement
+    # errors: InternalServerError
+    def set_unhealthy_node_replacement(self, SetUnhealthyNodeReplacementInput input) -> str:
+        auto body = set_unhealthy_node_replacement_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "SetUnhealthyNodeReplacement", body)
+
+    # SetVisibleToAllUsers
+    # errors: InternalServerError
+    def set_visible_to_all_users(self, SetVisibleToAllUsersInput input) -> str:
+        auto body = set_visible_to_all_users_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "SetVisibleToAllUsers", body)
+
+    # StartNotebookExecution
+    # errors: InternalServerException, InvalidRequestException
+    def start_notebook_execution(self, StartNotebookExecutionInput input) -> str:
+        auto body = start_notebook_execution_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "StartNotebookExecution", body)
+
+    # StartSession
+    # errors: InternalServerException, InvalidRequestException
+    def start_session(self, StartSessionInput input) -> str:
+        auto body = start_session_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "StartSession", body)
+
     # StopNotebookExecution
     # errors: InternalServerError, InvalidRequestException
     def stop_notebook_execution(self, StopNotebookExecutionInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "StopNotebookExecution", body)
 
+    # TerminateJobFlows
+    # errors: InternalServerError
+    def terminate_job_flows(self, TerminateJobFlowsInput input) -> str:
+        auto body = terminate_job_flows_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "TerminateJobFlows", body)
+
     # TerminateSession
     # errors: InternalServerException, InvalidRequestException
     def terminate_session(self, TerminateSessionInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "TerminateSession", body)
+
+    # UpdateStudio
+    # errors: InternalServerException, InvalidRequestException
+    def update_studio(self, UpdateStudioInput input) -> str:
+        auto body = update_studio_input_to_json(input)
+        return awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "UpdateStudio", body)
 
     # UpdateStudioSessionMapping
     # errors: InternalServerError, InvalidRequestException
@@ -2473,6 +3526,20 @@ struct EMRClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "ListBootstrapActions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "Marker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
+
+    # Paginator for ListClusters — yields each Response page, threading the
+    # Marker -> Marker continuation token until the output token is absent (result key: Clusters).
+    def paginate_list_clusters(self, ListClustersInput input):
+        auto host = endpoints.regional_host(elasticmapreduce_protocol().service, self.region)
+        while True:
+            auto body = list_clusters_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "ListClusters", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "Marker")
@@ -2508,6 +3575,20 @@ struct EMRClient:
                 break
             input.Marker = Optional.Some(np.token)
 
+    # Paginator for ListInstances — yields each Response page, threading the
+    # Marker -> Marker continuation token until the output token is absent (result key: Instances).
+    def paginate_list_instances(self, ListInstancesInput input):
+        auto host = endpoints.regional_host(elasticmapreduce_protocol().service, self.region)
+        while True:
+            auto body = list_instances_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "ListInstances", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "Marker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
+
     # Paginator for ListNotebookExecutions — yields each Response page, threading the
     # Marker -> Marker continuation token until the output token is absent (result key: NotebookExecutions).
     def paginate_list_notebook_executions(self, ListNotebookExecutionsInput input):
@@ -2529,6 +3610,34 @@ struct EMRClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "ListSecurityConfigurations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "Marker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
+
+    # Paginator for ListSessions — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Sessions).
+    def paginate_list_sessions(self, ListSessionsInput input):
+        auto host = endpoints.regional_host(elasticmapreduce_protocol().service, self.region)
+        while True:
+            auto body = list_sessions_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "ListSessions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListSteps — yields each Response page, threading the
+    # Marker -> Marker continuation token until the output token is absent (result key: Steps).
+    def paginate_list_steps(self, ListStepsInput input):
+        auto host = endpoints.regional_host(elasticmapreduce_protocol().service, self.region)
+        while True:
+            auto body = list_steps_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(elasticmapreduce_protocol(), self.creds, self.region, "ListSteps", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "Marker")

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 10 operations — 6 with a generated method,
-#   4 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 10 operations — 9 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   98 structs (66 @derive(Json)), 20 enums, 6 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -208,8 +208,9 @@ enum TimeFieldType:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) Subnets: list[str], SecurityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subnets: list[str], SecurityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AwsVpcConfiguration:
     list[str] Subnets
     Optional[list[str]] SecurityGroups
@@ -219,8 +220,9 @@ struct AwsVpcConfiguration:
 struct BatchArrayProperties:
     Optional[int64] Size
 
-# no @derive(Json): member(s) Command: list[str], Environment: list[BatchEnvironmentVariable], ResourceRequirements: list[BatchResourceRequirement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Command: list[str], Environment: list[BatchEnvironmentVariable], ResourceRequirements: list[BatchResourceRequirement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchContainerOverrides:
     Optional[list[str]] Command
     Optional[list[BatchEnvironmentVariable]] Environment
@@ -315,8 +317,9 @@ struct DeletePipeResponse:
 struct DescribePipeRequest:
     str Name
 
-# no @derive(Json): member(s) SourceParameters: PipeSourceParameters, EnrichmentParameters: PipeEnrichmentParameters, TargetParameters: PipeTargetParameters, Tags: dict[str, str], LogConfiguration: PipeLogConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceParameters: PipeSourceParameters, EnrichmentParameters: PipeEnrichmentParameters, TargetParameters: PipeTargetParameters, Tags: dict[str, str], LogConfiguration: PipeLogConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePipeResponse:
     Optional[str] Arn
     Optional[str] Name
@@ -343,8 +346,9 @@ struct DimensionMapping:
     str DimensionValueType
     str DimensionName
 
-# no @derive(Json): member(s) Command: list[str], Environment: list[EcsEnvironmentVariable], EnvironmentFiles: list[EcsEnvironmentFile], ResourceRequirements: list[EcsResourceRequirement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Command: list[str], Environment: list[EcsEnvironmentVariable], EnvironmentFiles: list[EcsEnvironmentFile], ResourceRequirements: list[EcsResourceRequirement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EcsContainerOverride:
     Optional[list[str]] Command
     Optional[int64] Cpu
@@ -379,8 +383,9 @@ struct EcsResourceRequirement:
     EcsResourceRequirementType type
     str value
 
-# no @derive(Json): member(s) ContainerOverrides: list[EcsContainerOverride], InferenceAcceleratorOverrides: list[EcsInferenceAcceleratorOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContainerOverrides: list[EcsContainerOverride], InferenceAcceleratorOverrides: list[EcsInferenceAcceleratorOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EcsTaskOverride:
     Optional[list[EcsContainerOverride]] ContainerOverrides
     Optional[str] Cpu
@@ -394,8 +399,9 @@ struct EcsTaskOverride:
 struct Filter:
     Optional[str] Pattern
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterCriteria:
     Optional[list[Filter]] Filters
 
@@ -425,8 +431,9 @@ struct ListPipesRequest:
     Optional[str] NextToken
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Pipes: list[Pipe] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Pipes: list[Pipe] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPipesResponse:
     Optional[list[Pipe]] Pipes
     Optional[str] NextToken
@@ -436,8 +443,9 @@ struct ListPipesResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -456,14 +464,16 @@ struct MultiMeasureAttributeMapping:
     MeasureValueType MeasureValueType
     str MultiMeasureAttributeName
 
-# no @derive(Json): member(s) MultiMeasureAttributeMappings: list[MultiMeasureAttributeMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MultiMeasureAttributeMappings: list[MultiMeasureAttributeMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MultiMeasureMapping:
     str MultiMeasureName
     list[MultiMeasureAttributeMapping] MultiMeasureAttributeMappings
 
-# no @derive(Json): member(s) awsvpcConfiguration: AwsVpcConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) awsvpcConfiguration: AwsVpcConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkConfiguration:
     Optional[AwsVpcConfiguration] awsvpcConfiguration
 
@@ -484,21 +494,24 @@ struct Pipe:
     Optional[str] Target
     Optional[str] Enrichment
 
-# no @derive(Json): member(s) PathParameterValues: list[str], HeaderParameters: dict[str, str], QueryStringParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PathParameterValues: list[str], HeaderParameters: dict[str, str], QueryStringParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipeEnrichmentHttpParameters:
     Optional[list[str]] PathParameterValues
     Optional[dict[str, str]] HeaderParameters
     Optional[dict[str, str]] QueryStringParameters
 
-# no @derive(Json): member(s) HttpParameters: PipeEnrichmentHttpParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HttpParameters: PipeEnrichmentHttpParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipeEnrichmentParameters:
     Optional[str] InputTemplate
     Optional[PipeEnrichmentHttpParameters] HttpParameters
 
-# no @derive(Json): member(s) IncludeExecutionData: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IncludeExecutionData: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipeLogConfiguration:
     Optional[S3LogDestination] S3LogDestination
     Optional[FirehoseLogDestination] FirehoseLogDestination
@@ -506,8 +519,9 @@ struct PipeLogConfiguration:
     Optional[LogLevel] Level
     Optional[list[str]] IncludeExecutionData
 
-# no @derive(Json): member(s) IncludeExecutionData: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IncludeExecutionData: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipeLogConfigurationParameters:
     Optional[S3LogDestinationParameters] S3LogDestination
     Optional[FirehoseLogDestinationParameters] FirehoseLogDestination
@@ -554,8 +568,9 @@ struct PipeSourceManagedStreamingKafkaParameters:
     Optional[str] ConsumerGroupID
     Optional[MSKAccessCredentials] Credentials
 
-# no @derive(Json): member(s) FilterCriteria: FilterCriteria, SelfManagedKafkaParameters: PipeSourceSelfManagedKafkaParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterCriteria: FilterCriteria, SelfManagedKafkaParameters: PipeSourceSelfManagedKafkaParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipeSourceParameters:
     Optional[FilterCriteria] FilterCriteria
     Optional[PipeSourceKinesisStreamParameters] KinesisStreamParameters
@@ -574,8 +589,9 @@ struct PipeSourceRabbitMQBrokerParameters:
     Optional[int64] BatchSize
     Optional[int64] MaximumBatchingWindowInSeconds
 
-# no @derive(Json): member(s) AdditionalBootstrapServers: list[str], Vpc: SelfManagedKafkaAccessConfigurationVpc not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalBootstrapServers: list[str], Vpc: SelfManagedKafkaAccessConfigurationVpc not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipeSourceSelfManagedKafkaParameters:
     str TopicName
     Optional[SelfManagedKafkaStartPosition] StartingPosition
@@ -592,8 +608,9 @@ struct PipeSourceSqsQueueParameters:
     Optional[int64] BatchSize
     Optional[int64] MaximumBatchingWindowInSeconds
 
-# no @derive(Json): member(s) ContainerOverrides: BatchContainerOverrides, DependsOn: list[BatchJobDependency], Parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContainerOverrides: BatchContainerOverrides, DependsOn: list[BatchJobDependency], Parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipeTargetBatchJobParameters:
     str JobDefinition
     str JobName
@@ -608,8 +625,9 @@ struct PipeTargetCloudWatchLogsParameters:
     Optional[str] LogStreamName
     Optional[str] Timestamp
 
-# no @derive(Json): member(s) NetworkConfiguration: NetworkConfiguration, CapacityProviderStrategy: list[CapacityProviderStrategyItem], PlacementConstraints: list[PlacementConstraint], PlacementStrategy: list[PlacementStrategy], Overrides: EcsTaskOverride, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NetworkConfiguration: NetworkConfiguration, CapacityProviderStrategy: list[CapacityProviderStrategyItem], PlacementConstraints: list[PlacementConstraint], PlacementStrategy: list[PlacementStrategy], Overrides: EcsTaskOverride, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipeTargetEcsTaskParameters:
     str TaskDefinitionArn
     Optional[int64] TaskCount
@@ -627,8 +645,9 @@ struct PipeTargetEcsTaskParameters:
     Optional[EcsTaskOverride] Overrides
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) Resources: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resources: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipeTargetEventBridgeEventBusParameters:
     Optional[str] EndpointId
     Optional[str] DetailType
@@ -636,8 +655,9 @@ struct PipeTargetEventBridgeEventBusParameters:
     Optional[list[str]] Resources
     Optional[str] Time
 
-# no @derive(Json): member(s) PathParameterValues: list[str], HeaderParameters: dict[str, str], QueryStringParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PathParameterValues: list[str], HeaderParameters: dict[str, str], QueryStringParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipeTargetHttpParameters:
     Optional[list[str]] PathParameterValues
     Optional[dict[str, str]] HeaderParameters
@@ -651,8 +671,9 @@ struct PipeTargetKinesisStreamParameters:
 struct PipeTargetLambdaFunctionParameters:
     Optional[PipeTargetInvocationType] InvocationType
 
-# no @derive(Json): member(s) EcsTaskParameters: PipeTargetEcsTaskParameters, BatchJobParameters: PipeTargetBatchJobParameters, HttpParameters: PipeTargetHttpParameters, RedshiftDataParameters: PipeTargetRedshiftDataParameters, SageMakerPipelineParameters: PipeTargetSageMakerPipelineParameters, EventBridgeEventBusParameters: PipeTargetEventBridgeEventBusParameters, TimestreamParameters: PipeTargetTimestreamParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EcsTaskParameters: PipeTargetEcsTaskParameters, BatchJobParameters: PipeTargetBatchJobParameters, HttpParameters: PipeTargetHttpParameters, RedshiftDataParameters: PipeTargetRedshiftDataParameters, SageMakerPipelineParameters: PipeTargetSageMakerPipelineParameters, EventBridgeEventBusParameters: PipeTargetEventBridgeEventBusParameters, TimestreamParameters: PipeTargetTimestreamParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipeTargetParameters:
     Optional[str] InputTemplate
     Optional[PipeTargetLambdaFunctionParameters] LambdaFunctionParameters
@@ -668,8 +689,9 @@ struct PipeTargetParameters:
     Optional[PipeTargetCloudWatchLogsParameters] CloudWatchLogsParameters
     Optional[PipeTargetTimestreamParameters] TimestreamParameters
 
-# no @derive(Json): member(s) Sqls: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sqls: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipeTargetRedshiftDataParameters:
     Optional[str] SecretManagerArn
     str Database
@@ -678,8 +700,9 @@ struct PipeTargetRedshiftDataParameters:
     Optional[bool] WithEvent
     list[str] Sqls
 
-# no @derive(Json): member(s) PipelineParameterList: list[SageMakerPipelineParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PipelineParameterList: list[SageMakerPipelineParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipeTargetSageMakerPipelineParameters:
     Optional[list[SageMakerPipelineParameter]] PipelineParameterList
 
@@ -692,8 +715,9 @@ struct PipeTargetSqsQueueParameters:
 struct PipeTargetStateMachineParameters:
     Optional[PipeTargetInvocationType] InvocationType
 
-# no @derive(Json): member(s) DimensionMappings: list[DimensionMapping], SingleMeasureMappings: list[SingleMeasureMapping], MultiMeasureMappings: list[MultiMeasureMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DimensionMappings: list[DimensionMapping], SingleMeasureMappings: list[SingleMeasureMapping], MultiMeasureMappings: list[MultiMeasureMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipeTargetTimestreamParameters:
     str TimeValue
     Optional[EpochTimeUnit] EpochTimeUnit
@@ -740,8 +764,9 @@ struct SelfManagedKafkaAccessConfigurationCredentials:
     Optional[str] SaslScram256Auth
     Optional[str] ClientCertificateTlsAuth
 
-# no @derive(Json): member(s) Subnets: list[str], SecurityGroup: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subnets: list[str], SecurityGroup: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SelfManagedKafkaAccessConfigurationVpc:
     Optional[list[str]] Subnets
     Optional[list[str]] SecurityGroup
@@ -878,8 +903,9 @@ struct UpdatePipeSourceManagedStreamingKafkaParameters:
     Optional[MSKAccessCredentials] Credentials
     Optional[int64] MaximumBatchingWindowInSeconds
 
-# no @derive(Json): member(s) FilterCriteria: FilterCriteria, SelfManagedKafkaParameters: UpdatePipeSourceSelfManagedKafkaParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterCriteria: FilterCriteria, SelfManagedKafkaParameters: UpdatePipeSourceSelfManagedKafkaParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePipeSourceParameters:
     Optional[FilterCriteria] FilterCriteria
     Optional[UpdatePipeSourceKinesisStreamParameters] KinesisStreamParameters
@@ -896,8 +922,9 @@ struct UpdatePipeSourceRabbitMQBrokerParameters:
     Optional[int64] BatchSize
     Optional[int64] MaximumBatchingWindowInSeconds
 
-# no @derive(Json): member(s) Vpc: SelfManagedKafkaAccessConfigurationVpc not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Vpc: SelfManagedKafkaAccessConfigurationVpc not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePipeSourceSelfManagedKafkaParameters:
     Optional[int64] BatchSize
     Optional[int64] MaximumBatchingWindowInSeconds
@@ -910,8 +937,9 @@ struct UpdatePipeSourceSqsQueueParameters:
     Optional[int64] BatchSize
     Optional[int64] MaximumBatchingWindowInSeconds
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     Optional[str] message
     Optional[list[ValidationExceptionField]] fieldList
@@ -956,15 +984,658 @@ def pipes_error_from_code(str code) -> PipesError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreatePipe (document member `SourceParameters: PipeSourceParameters` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdatePipe (document member `SourceParameters: UpdatePipeSourceParameters` is not serializable by derive)
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def pipes_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def pipes_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def pipes_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AwsVpcConfiguration to a compact JSON object (declaration order).
+def aws_vpc_configuration_to_json(AwsVpcConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Subnets:
+        e0.append(pipes_json_str(x0))
+    parts.append("\"Subnets\":" + pipes_json_arr(e0))
+    if v.SecurityGroups.is_some():
+        auto u1 = v.SecurityGroups.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(pipes_json_str(x2))
+        parts.append("\"SecurityGroups\":" + pipes_json_arr(e2))
+    if v.AssignPublicIp.is_some():
+        auto u3 = v.AssignPublicIp.unwrap()
+        parts.append("\"AssignPublicIp\":" + u3.to_json())
+    return pipes_json_obj(parts)
+
+# Serialize BatchContainerOverrides to a compact JSON object (declaration order).
+def batch_container_overrides_to_json(BatchContainerOverrides v) -> str:
+    list[str] parts = []
+    if v.Command.is_some():
+        auto u0 = v.Command.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(pipes_json_str(x1))
+        parts.append("\"Command\":" + pipes_json_arr(e1))
+    if v.Environment.is_some():
+        auto u2 = v.Environment.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Environment\":" + pipes_json_arr(e3))
+    if v.InstanceType.is_some():
+        auto u4 = v.InstanceType.unwrap()
+        parts.append("\"InstanceType\":" + pipes_json_str(u4))
+    if v.ResourceRequirements.is_some():
+        auto u5 = v.ResourceRequirements.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"ResourceRequirements\":" + pipes_json_arr(e6))
+    return pipes_json_obj(parts)
+
+# Serialize EcsContainerOverride to a compact JSON object (declaration order).
+def ecs_container_override_to_json(EcsContainerOverride v) -> str:
+    list[str] parts = []
+    if v.Command.is_some():
+        auto u0 = v.Command.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(pipes_json_str(x1))
+        parts.append("\"Command\":" + pipes_json_arr(e1))
+    if v.Cpu.is_some():
+        auto u2 = v.Cpu.unwrap()
+        parts.append("\"Cpu\":" + str(u2))
+    if v.Environment.is_some():
+        auto u3 = v.Environment.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Environment\":" + pipes_json_arr(e4))
+    if v.EnvironmentFiles.is_some():
+        auto u5 = v.EnvironmentFiles.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"EnvironmentFiles\":" + pipes_json_arr(e6))
+    if v.Memory.is_some():
+        auto u7 = v.Memory.unwrap()
+        parts.append("\"Memory\":" + str(u7))
+    if v.MemoryReservation.is_some():
+        auto u8 = v.MemoryReservation.unwrap()
+        parts.append("\"MemoryReservation\":" + str(u8))
+    if v.Name.is_some():
+        auto u9 = v.Name.unwrap()
+        parts.append("\"Name\":" + pipes_json_str(u9))
+    if v.ResourceRequirements.is_some():
+        auto u10 = v.ResourceRequirements.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"ResourceRequirements\":" + pipes_json_arr(e11))
+    return pipes_json_obj(parts)
+
+# Serialize EcsTaskOverride to a compact JSON object (declaration order).
+def ecs_task_override_to_json(EcsTaskOverride v) -> str:
+    list[str] parts = []
+    if v.ContainerOverrides.is_some():
+        auto u0 = v.ContainerOverrides.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(ecs_container_override_to_json(x1))
+        parts.append("\"ContainerOverrides\":" + pipes_json_arr(e1))
+    if v.Cpu.is_some():
+        auto u2 = v.Cpu.unwrap()
+        parts.append("\"Cpu\":" + pipes_json_str(u2))
+    if v.EphemeralStorage.is_some():
+        auto u3 = v.EphemeralStorage.unwrap()
+        parts.append("\"EphemeralStorage\":" + u3.to_json())
+    if v.ExecutionRoleArn.is_some():
+        auto u4 = v.ExecutionRoleArn.unwrap()
+        parts.append("\"ExecutionRoleArn\":" + pipes_json_str(u4))
+    if v.InferenceAcceleratorOverrides.is_some():
+        auto u5 = v.InferenceAcceleratorOverrides.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"InferenceAcceleratorOverrides\":" + pipes_json_arr(e6))
+    if v.Memory.is_some():
+        auto u7 = v.Memory.unwrap()
+        parts.append("\"Memory\":" + pipes_json_str(u7))
+    if v.TaskRoleArn.is_some():
+        auto u8 = v.TaskRoleArn.unwrap()
+        parts.append("\"TaskRoleArn\":" + pipes_json_str(u8))
+    return pipes_json_obj(parts)
+
+# Serialize FilterCriteria to a compact JSON object (declaration order).
+def filter_criteria_to_json(FilterCriteria v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Filters\":" + pipes_json_arr(e1))
+    return pipes_json_obj(parts)
+
+# Serialize MultiMeasureMapping to a compact JSON object (declaration order).
+def multi_measure_mapping_to_json(MultiMeasureMapping v) -> str:
+    list[str] parts = []
+    parts.append("\"MultiMeasureName\":" + pipes_json_str(v.MultiMeasureName))
+    list[str] e0 = []
+    for x0 in v.MultiMeasureAttributeMappings:
+        e0.append(x0.to_json())
+    parts.append("\"MultiMeasureAttributeMappings\":" + pipes_json_arr(e0))
+    return pipes_json_obj(parts)
+
+# Serialize NetworkConfiguration to a compact JSON object (declaration order).
+def network_configuration_to_json(NetworkConfiguration v) -> str:
+    list[str] parts = []
+    if v.awsvpcConfiguration.is_some():
+        auto u0 = v.awsvpcConfiguration.unwrap()
+        parts.append("\"awsvpcConfiguration\":" + aws_vpc_configuration_to_json(u0))
+    return pipes_json_obj(parts)
+
+# Serialize PipeEnrichmentHttpParameters to a compact JSON object (declaration order).
+def pipe_enrichment_http_parameters_to_json(PipeEnrichmentHttpParameters v) -> str:
+    list[str] parts = []
+    if v.PathParameterValues.is_some():
+        auto u0 = v.PathParameterValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(pipes_json_str(x1))
+        parts.append("\"PathParameterValues\":" + pipes_json_arr(e1))
+    if v.HeaderParameters.is_some():
+        auto u2 = v.HeaderParameters.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(pipes_json_str(k3) + ":" + pipes_json_str(u2[k3]))
+        parts.append("\"HeaderParameters\":" + pipes_json_obj(m3))
+    if v.QueryStringParameters.is_some():
+        auto u4 = v.QueryStringParameters.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(pipes_json_str(k5) + ":" + pipes_json_str(u4[k5]))
+        parts.append("\"QueryStringParameters\":" + pipes_json_obj(m5))
+    return pipes_json_obj(parts)
+
+# Serialize PipeEnrichmentParameters to a compact JSON object (declaration order).
+def pipe_enrichment_parameters_to_json(PipeEnrichmentParameters v) -> str:
+    list[str] parts = []
+    if v.InputTemplate.is_some():
+        auto u0 = v.InputTemplate.unwrap()
+        parts.append("\"InputTemplate\":" + pipes_json_str(u0))
+    if v.HttpParameters.is_some():
+        auto u1 = v.HttpParameters.unwrap()
+        parts.append("\"HttpParameters\":" + pipe_enrichment_http_parameters_to_json(u1))
+    return pipes_json_obj(parts)
+
+# Serialize PipeLogConfigurationParameters to a compact JSON object (declaration order).
+def pipe_log_configuration_parameters_to_json(PipeLogConfigurationParameters v) -> str:
+    list[str] parts = []
+    if v.S3LogDestination.is_some():
+        auto u0 = v.S3LogDestination.unwrap()
+        parts.append("\"S3LogDestination\":" + u0.to_json())
+    if v.FirehoseLogDestination.is_some():
+        auto u1 = v.FirehoseLogDestination.unwrap()
+        parts.append("\"FirehoseLogDestination\":" + u1.to_json())
+    if v.CloudwatchLogsLogDestination.is_some():
+        auto u2 = v.CloudwatchLogsLogDestination.unwrap()
+        parts.append("\"CloudwatchLogsLogDestination\":" + u2.to_json())
+    parts.append("\"Level\":" + v.Level.to_json())
+    if v.IncludeExecutionData.is_some():
+        auto u3 = v.IncludeExecutionData.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(pipes_json_str(x4))
+        parts.append("\"IncludeExecutionData\":" + pipes_json_arr(e4))
+    return pipes_json_obj(parts)
+
+# Serialize PipeSourceParameters to a compact JSON object (declaration order).
+def pipe_source_parameters_to_json(PipeSourceParameters v) -> str:
+    list[str] parts = []
+    if v.FilterCriteria.is_some():
+        auto u0 = v.FilterCriteria.unwrap()
+        parts.append("\"FilterCriteria\":" + filter_criteria_to_json(u0))
+    if v.KinesisStreamParameters.is_some():
+        auto u1 = v.KinesisStreamParameters.unwrap()
+        parts.append("\"KinesisStreamParameters\":" + u1.to_json())
+    if v.DynamoDBStreamParameters.is_some():
+        auto u2 = v.DynamoDBStreamParameters.unwrap()
+        parts.append("\"DynamoDBStreamParameters\":" + u2.to_json())
+    if v.SqsQueueParameters.is_some():
+        auto u3 = v.SqsQueueParameters.unwrap()
+        parts.append("\"SqsQueueParameters\":" + u3.to_json())
+    if v.ActiveMQBrokerParameters.is_some():
+        auto u4 = v.ActiveMQBrokerParameters.unwrap()
+        parts.append("\"ActiveMQBrokerParameters\":" + u4.to_json())
+    if v.RabbitMQBrokerParameters.is_some():
+        auto u5 = v.RabbitMQBrokerParameters.unwrap()
+        parts.append("\"RabbitMQBrokerParameters\":" + u5.to_json())
+    if v.ManagedStreamingKafkaParameters.is_some():
+        auto u6 = v.ManagedStreamingKafkaParameters.unwrap()
+        parts.append("\"ManagedStreamingKafkaParameters\":" + u6.to_json())
+    if v.SelfManagedKafkaParameters.is_some():
+        auto u7 = v.SelfManagedKafkaParameters.unwrap()
+        parts.append("\"SelfManagedKafkaParameters\":" + pipe_source_self_managed_kafka_parameters_to_json(u7))
+    return pipes_json_obj(parts)
+
+# Serialize PipeSourceSelfManagedKafkaParameters to a compact JSON object (declaration order).
+def pipe_source_self_managed_kafka_parameters_to_json(PipeSourceSelfManagedKafkaParameters v) -> str:
+    list[str] parts = []
+    parts.append("\"TopicName\":" + pipes_json_str(v.TopicName))
+    if v.StartingPosition.is_some():
+        auto u0 = v.StartingPosition.unwrap()
+        parts.append("\"StartingPosition\":" + u0.to_json())
+    if v.AdditionalBootstrapServers.is_some():
+        auto u1 = v.AdditionalBootstrapServers.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(pipes_json_str(x2))
+        parts.append("\"AdditionalBootstrapServers\":" + pipes_json_arr(e2))
+    if v.BatchSize.is_some():
+        auto u3 = v.BatchSize.unwrap()
+        parts.append("\"BatchSize\":" + str(u3))
+    if v.MaximumBatchingWindowInSeconds.is_some():
+        auto u4 = v.MaximumBatchingWindowInSeconds.unwrap()
+        parts.append("\"MaximumBatchingWindowInSeconds\":" + str(u4))
+    if v.ConsumerGroupID.is_some():
+        auto u5 = v.ConsumerGroupID.unwrap()
+        parts.append("\"ConsumerGroupID\":" + pipes_json_str(u5))
+    if v.Credentials.is_some():
+        auto u6 = v.Credentials.unwrap()
+        parts.append("\"Credentials\":" + u6.to_json())
+    if v.ServerRootCaCertificate.is_some():
+        auto u7 = v.ServerRootCaCertificate.unwrap()
+        parts.append("\"ServerRootCaCertificate\":" + pipes_json_str(u7))
+    if v.Vpc.is_some():
+        auto u8 = v.Vpc.unwrap()
+        parts.append("\"Vpc\":" + self_managed_kafka_access_configuration_vpc_to_json(u8))
+    return pipes_json_obj(parts)
+
+# Serialize PipeTargetBatchJobParameters to a compact JSON object (declaration order).
+def pipe_target_batch_job_parameters_to_json(PipeTargetBatchJobParameters v) -> str:
+    list[str] parts = []
+    parts.append("\"JobDefinition\":" + pipes_json_str(v.JobDefinition))
+    parts.append("\"JobName\":" + pipes_json_str(v.JobName))
+    if v.ArrayProperties.is_some():
+        auto u0 = v.ArrayProperties.unwrap()
+        parts.append("\"ArrayProperties\":" + u0.to_json())
+    if v.RetryStrategy.is_some():
+        auto u1 = v.RetryStrategy.unwrap()
+        parts.append("\"RetryStrategy\":" + u1.to_json())
+    if v.ContainerOverrides.is_some():
+        auto u2 = v.ContainerOverrides.unwrap()
+        parts.append("\"ContainerOverrides\":" + batch_container_overrides_to_json(u2))
+    if v.DependsOn.is_some():
+        auto u3 = v.DependsOn.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"DependsOn\":" + pipes_json_arr(e4))
+    if v.Parameters.is_some():
+        auto u5 = v.Parameters.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(pipes_json_str(k6) + ":" + pipes_json_str(u5[k6]))
+        parts.append("\"Parameters\":" + pipes_json_obj(m6))
+    return pipes_json_obj(parts)
+
+# Serialize PipeTargetEcsTaskParameters to a compact JSON object (declaration order).
+def pipe_target_ecs_task_parameters_to_json(PipeTargetEcsTaskParameters v) -> str:
+    list[str] parts = []
+    parts.append("\"TaskDefinitionArn\":" + pipes_json_str(v.TaskDefinitionArn))
+    if v.TaskCount.is_some():
+        auto u0 = v.TaskCount.unwrap()
+        parts.append("\"TaskCount\":" + str(u0))
+    if v.LaunchType.is_some():
+        auto u1 = v.LaunchType.unwrap()
+        parts.append("\"LaunchType\":" + u1.to_json())
+    if v.NetworkConfiguration.is_some():
+        auto u2 = v.NetworkConfiguration.unwrap()
+        parts.append("\"NetworkConfiguration\":" + network_configuration_to_json(u2))
+    if v.PlatformVersion.is_some():
+        auto u3 = v.PlatformVersion.unwrap()
+        parts.append("\"PlatformVersion\":" + pipes_json_str(u3))
+    if v.Group.is_some():
+        auto u4 = v.Group.unwrap()
+        parts.append("\"Group\":" + pipes_json_str(u4))
+    if v.CapacityProviderStrategy.is_some():
+        auto u5 = v.CapacityProviderStrategy.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"CapacityProviderStrategy\":" + pipes_json_arr(e6))
+    if v.EnableECSManagedTags.is_some():
+        auto u7 = v.EnableECSManagedTags.unwrap()
+        parts.append("\"EnableECSManagedTags\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.EnableExecuteCommand.is_some():
+        auto u8 = v.EnableExecuteCommand.unwrap()
+        parts.append("\"EnableExecuteCommand\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.PlacementConstraints.is_some():
+        auto u9 = v.PlacementConstraints.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"PlacementConstraints\":" + pipes_json_arr(e10))
+    if v.PlacementStrategy.is_some():
+        auto u11 = v.PlacementStrategy.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(x12.to_json())
+        parts.append("\"PlacementStrategy\":" + pipes_json_arr(e12))
+    if v.PropagateTags.is_some():
+        auto u13 = v.PropagateTags.unwrap()
+        parts.append("\"PropagateTags\":" + pipes_json_str(u13))
+    if v.ReferenceId.is_some():
+        auto u14 = v.ReferenceId.unwrap()
+        parts.append("\"ReferenceId\":" + pipes_json_str(u14))
+    if v.Overrides.is_some():
+        auto u15 = v.Overrides.unwrap()
+        parts.append("\"Overrides\":" + ecs_task_override_to_json(u15))
+    if v.Tags.is_some():
+        auto u16 = v.Tags.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(x17.to_json())
+        parts.append("\"Tags\":" + pipes_json_arr(e17))
+    return pipes_json_obj(parts)
+
+# Serialize PipeTargetEventBridgeEventBusParameters to a compact JSON object (declaration order).
+def pipe_target_event_bridge_event_bus_parameters_to_json(PipeTargetEventBridgeEventBusParameters v) -> str:
+    list[str] parts = []
+    if v.EndpointId.is_some():
+        auto u0 = v.EndpointId.unwrap()
+        parts.append("\"EndpointId\":" + pipes_json_str(u0))
+    if v.DetailType.is_some():
+        auto u1 = v.DetailType.unwrap()
+        parts.append("\"DetailType\":" + pipes_json_str(u1))
+    if v.Source.is_some():
+        auto u2 = v.Source.unwrap()
+        parts.append("\"Source\":" + pipes_json_str(u2))
+    if v.Resources.is_some():
+        auto u3 = v.Resources.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(pipes_json_str(x4))
+        parts.append("\"Resources\":" + pipes_json_arr(e4))
+    if v.Time.is_some():
+        auto u5 = v.Time.unwrap()
+        parts.append("\"Time\":" + pipes_json_str(u5))
+    return pipes_json_obj(parts)
+
+# Serialize PipeTargetHttpParameters to a compact JSON object (declaration order).
+def pipe_target_http_parameters_to_json(PipeTargetHttpParameters v) -> str:
+    list[str] parts = []
+    if v.PathParameterValues.is_some():
+        auto u0 = v.PathParameterValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(pipes_json_str(x1))
+        parts.append("\"PathParameterValues\":" + pipes_json_arr(e1))
+    if v.HeaderParameters.is_some():
+        auto u2 = v.HeaderParameters.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(pipes_json_str(k3) + ":" + pipes_json_str(u2[k3]))
+        parts.append("\"HeaderParameters\":" + pipes_json_obj(m3))
+    if v.QueryStringParameters.is_some():
+        auto u4 = v.QueryStringParameters.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(pipes_json_str(k5) + ":" + pipes_json_str(u4[k5]))
+        parts.append("\"QueryStringParameters\":" + pipes_json_obj(m5))
+    return pipes_json_obj(parts)
+
+# Serialize PipeTargetParameters to a compact JSON object (declaration order).
+def pipe_target_parameters_to_json(PipeTargetParameters v) -> str:
+    list[str] parts = []
+    if v.InputTemplate.is_some():
+        auto u0 = v.InputTemplate.unwrap()
+        parts.append("\"InputTemplate\":" + pipes_json_str(u0))
+    if v.LambdaFunctionParameters.is_some():
+        auto u1 = v.LambdaFunctionParameters.unwrap()
+        parts.append("\"LambdaFunctionParameters\":" + u1.to_json())
+    if v.StepFunctionStateMachineParameters.is_some():
+        auto u2 = v.StepFunctionStateMachineParameters.unwrap()
+        parts.append("\"StepFunctionStateMachineParameters\":" + u2.to_json())
+    if v.KinesisStreamParameters.is_some():
+        auto u3 = v.KinesisStreamParameters.unwrap()
+        parts.append("\"KinesisStreamParameters\":" + u3.to_json())
+    if v.EcsTaskParameters.is_some():
+        auto u4 = v.EcsTaskParameters.unwrap()
+        parts.append("\"EcsTaskParameters\":" + pipe_target_ecs_task_parameters_to_json(u4))
+    if v.BatchJobParameters.is_some():
+        auto u5 = v.BatchJobParameters.unwrap()
+        parts.append("\"BatchJobParameters\":" + pipe_target_batch_job_parameters_to_json(u5))
+    if v.SqsQueueParameters.is_some():
+        auto u6 = v.SqsQueueParameters.unwrap()
+        parts.append("\"SqsQueueParameters\":" + u6.to_json())
+    if v.HttpParameters.is_some():
+        auto u7 = v.HttpParameters.unwrap()
+        parts.append("\"HttpParameters\":" + pipe_target_http_parameters_to_json(u7))
+    if v.RedshiftDataParameters.is_some():
+        auto u8 = v.RedshiftDataParameters.unwrap()
+        parts.append("\"RedshiftDataParameters\":" + pipe_target_redshift_data_parameters_to_json(u8))
+    if v.SageMakerPipelineParameters.is_some():
+        auto u9 = v.SageMakerPipelineParameters.unwrap()
+        parts.append("\"SageMakerPipelineParameters\":" + pipe_target_sage_maker_pipeline_parameters_to_json(u9))
+    if v.EventBridgeEventBusParameters.is_some():
+        auto u10 = v.EventBridgeEventBusParameters.unwrap()
+        parts.append("\"EventBridgeEventBusParameters\":" + pipe_target_event_bridge_event_bus_parameters_to_json(u10))
+    if v.CloudWatchLogsParameters.is_some():
+        auto u11 = v.CloudWatchLogsParameters.unwrap()
+        parts.append("\"CloudWatchLogsParameters\":" + u11.to_json())
+    if v.TimestreamParameters.is_some():
+        auto u12 = v.TimestreamParameters.unwrap()
+        parts.append("\"TimestreamParameters\":" + pipe_target_timestream_parameters_to_json(u12))
+    return pipes_json_obj(parts)
+
+# Serialize PipeTargetRedshiftDataParameters to a compact JSON object (declaration order).
+def pipe_target_redshift_data_parameters_to_json(PipeTargetRedshiftDataParameters v) -> str:
+    list[str] parts = []
+    if v.SecretManagerArn.is_some():
+        auto u0 = v.SecretManagerArn.unwrap()
+        parts.append("\"SecretManagerArn\":" + pipes_json_str(u0))
+    parts.append("\"Database\":" + pipes_json_str(v.Database))
+    if v.DbUser.is_some():
+        auto u1 = v.DbUser.unwrap()
+        parts.append("\"DbUser\":" + pipes_json_str(u1))
+    if v.StatementName.is_some():
+        auto u2 = v.StatementName.unwrap()
+        parts.append("\"StatementName\":" + pipes_json_str(u2))
+    if v.WithEvent.is_some():
+        auto u3 = v.WithEvent.unwrap()
+        parts.append("\"WithEvent\":" + json.dumps(JsonValue.Bool(u3)))
+    list[str] e4 = []
+    for x4 in v.Sqls:
+        e4.append(pipes_json_str(x4))
+    parts.append("\"Sqls\":" + pipes_json_arr(e4))
+    return pipes_json_obj(parts)
+
+# Serialize PipeTargetSageMakerPipelineParameters to a compact JSON object (declaration order).
+def pipe_target_sage_maker_pipeline_parameters_to_json(PipeTargetSageMakerPipelineParameters v) -> str:
+    list[str] parts = []
+    if v.PipelineParameterList.is_some():
+        auto u0 = v.PipelineParameterList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"PipelineParameterList\":" + pipes_json_arr(e1))
+    return pipes_json_obj(parts)
+
+# Serialize PipeTargetTimestreamParameters to a compact JSON object (declaration order).
+def pipe_target_timestream_parameters_to_json(PipeTargetTimestreamParameters v) -> str:
+    list[str] parts = []
+    parts.append("\"TimeValue\":" + pipes_json_str(v.TimeValue))
+    if v.EpochTimeUnit.is_some():
+        auto u0 = v.EpochTimeUnit.unwrap()
+        parts.append("\"EpochTimeUnit\":" + u0.to_json())
+    if v.TimeFieldType.is_some():
+        auto u1 = v.TimeFieldType.unwrap()
+        parts.append("\"TimeFieldType\":" + u1.to_json())
+    if v.TimestampFormat.is_some():
+        auto u2 = v.TimestampFormat.unwrap()
+        parts.append("\"TimestampFormat\":" + pipes_json_str(u2))
+    parts.append("\"VersionValue\":" + pipes_json_str(v.VersionValue))
+    list[str] e3 = []
+    for x3 in v.DimensionMappings:
+        e3.append(x3.to_json())
+    parts.append("\"DimensionMappings\":" + pipes_json_arr(e3))
+    if v.SingleMeasureMappings.is_some():
+        auto u4 = v.SingleMeasureMappings.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"SingleMeasureMappings\":" + pipes_json_arr(e5))
+    if v.MultiMeasureMappings.is_some():
+        auto u6 = v.MultiMeasureMappings.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(multi_measure_mapping_to_json(x7))
+        parts.append("\"MultiMeasureMappings\":" + pipes_json_arr(e7))
+    return pipes_json_obj(parts)
+
+# Serialize SelfManagedKafkaAccessConfigurationVpc to a compact JSON object (declaration order).
+def self_managed_kafka_access_configuration_vpc_to_json(SelfManagedKafkaAccessConfigurationVpc v) -> str:
+    list[str] parts = []
+    if v.Subnets.is_some():
+        auto u0 = v.Subnets.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(pipes_json_str(x1))
+        parts.append("\"Subnets\":" + pipes_json_arr(e1))
+    if v.SecurityGroup.is_some():
+        auto u2 = v.SecurityGroup.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(pipes_json_str(x3))
+        parts.append("\"SecurityGroup\":" + pipes_json_arr(e3))
+    return pipes_json_obj(parts)
+
+# Serialize UpdatePipeSourceParameters to a compact JSON object (declaration order).
+def update_pipe_source_parameters_to_json(UpdatePipeSourceParameters v) -> str:
+    list[str] parts = []
+    if v.FilterCriteria.is_some():
+        auto u0 = v.FilterCriteria.unwrap()
+        parts.append("\"FilterCriteria\":" + filter_criteria_to_json(u0))
+    if v.KinesisStreamParameters.is_some():
+        auto u1 = v.KinesisStreamParameters.unwrap()
+        parts.append("\"KinesisStreamParameters\":" + u1.to_json())
+    if v.DynamoDBStreamParameters.is_some():
+        auto u2 = v.DynamoDBStreamParameters.unwrap()
+        parts.append("\"DynamoDBStreamParameters\":" + u2.to_json())
+    if v.SqsQueueParameters.is_some():
+        auto u3 = v.SqsQueueParameters.unwrap()
+        parts.append("\"SqsQueueParameters\":" + u3.to_json())
+    if v.ActiveMQBrokerParameters.is_some():
+        auto u4 = v.ActiveMQBrokerParameters.unwrap()
+        parts.append("\"ActiveMQBrokerParameters\":" + u4.to_json())
+    if v.RabbitMQBrokerParameters.is_some():
+        auto u5 = v.RabbitMQBrokerParameters.unwrap()
+        parts.append("\"RabbitMQBrokerParameters\":" + u5.to_json())
+    if v.ManagedStreamingKafkaParameters.is_some():
+        auto u6 = v.ManagedStreamingKafkaParameters.unwrap()
+        parts.append("\"ManagedStreamingKafkaParameters\":" + u6.to_json())
+    if v.SelfManagedKafkaParameters.is_some():
+        auto u7 = v.SelfManagedKafkaParameters.unwrap()
+        parts.append("\"SelfManagedKafkaParameters\":" + update_pipe_source_self_managed_kafka_parameters_to_json(u7))
+    return pipes_json_obj(parts)
+
+# Serialize UpdatePipeSourceSelfManagedKafkaParameters to a compact JSON object (declaration order).
+def update_pipe_source_self_managed_kafka_parameters_to_json(UpdatePipeSourceSelfManagedKafkaParameters v) -> str:
+    list[str] parts = []
+    if v.BatchSize.is_some():
+        auto u0 = v.BatchSize.unwrap()
+        parts.append("\"BatchSize\":" + str(u0))
+    if v.MaximumBatchingWindowInSeconds.is_some():
+        auto u1 = v.MaximumBatchingWindowInSeconds.unwrap()
+        parts.append("\"MaximumBatchingWindowInSeconds\":" + str(u1))
+    if v.Credentials.is_some():
+        auto u2 = v.Credentials.unwrap()
+        parts.append("\"Credentials\":" + u2.to_json())
+    if v.ServerRootCaCertificate.is_some():
+        auto u3 = v.ServerRootCaCertificate.unwrap()
+        parts.append("\"ServerRootCaCertificate\":" + pipes_json_str(u3))
+    if v.Vpc.is_some():
+        auto u4 = v.Vpc.unwrap()
+        parts.append("\"Vpc\":" + self_managed_kafka_access_configuration_vpc_to_json(u4))
+    return pipes_json_obj(parts)
 
 # A bound Pipes client: credentials + region, threaded into every operation.
 struct PipesClient:
     core.Credentials creds
     str region
+
+    # CreatePipe  POST /v1/pipes/{Name}
+    # errors: ConflictException, InternalException, NotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_pipe(self, CreatePipeRequest input) -> str:
+        auto host = endpoints.regional_host(pipes_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Name"] = input.Name
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/pipes/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + pipes_json_str(u0))
+        if input.DesiredState.is_some():
+            auto u1 = input.DesiredState.unwrap()
+            parts.append("\"DesiredState\":" + u1.to_json())
+        parts.append("\"Source\":" + pipes_json_str(input.Source))
+        if input.SourceParameters.is_some():
+            auto u2 = input.SourceParameters.unwrap()
+            parts.append("\"SourceParameters\":" + pipe_source_parameters_to_json(u2))
+        if input.Enrichment.is_some():
+            auto u3 = input.Enrichment.unwrap()
+            parts.append("\"Enrichment\":" + pipes_json_str(u3))
+        if input.EnrichmentParameters.is_some():
+            auto u4 = input.EnrichmentParameters.unwrap()
+            parts.append("\"EnrichmentParameters\":" + pipe_enrichment_parameters_to_json(u4))
+        parts.append("\"Target\":" + pipes_json_str(input.Target))
+        if input.TargetParameters.is_some():
+            auto u5 = input.TargetParameters.unwrap()
+            parts.append("\"TargetParameters\":" + pipe_target_parameters_to_json(u5))
+        parts.append("\"RoleArn\":" + pipes_json_str(input.RoleArn))
+        if input.Tags.is_some():
+            auto u6 = input.Tags.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(pipes_json_str(k7) + ":" + pipes_json_str(u6[k7]))
+            parts.append("\"Tags\":" + pipes_json_obj(m7))
+        if input.LogConfiguration.is_some():
+            auto u8 = input.LogConfiguration.unwrap()
+            parts.append("\"LogConfiguration\":" + pipe_log_configuration_parameters_to_json(u8))
+        if input.KmsKeyIdentifier.is_some():
+            auto u9 = input.KmsKeyIdentifier.unwrap()
+            parts.append("\"KmsKeyIdentifier\":" + pipes_json_str(u9))
+        auto bp = restjson.rest_json_document(b, pipes_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, pipes_service(), self.region, host)
 
     # DeletePipe  DELETE /v1/pipes/{Name}
     # errors: ConflictException, InternalException, NotFoundException, ThrottlingException, ValidationException
@@ -1032,6 +1703,60 @@ struct PipesClient:
         labels["Name"] = input.Name
         auto b = binding.HttpBinding(method="POST", path_template="/v1/pipes/{Name}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pipes_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalException, NotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(pipes_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(pipes_json_str(k0) + ":" + pipes_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + pipes_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, pipes_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, pipes_service(), self.region, host)
+
+    # UpdatePipe  PUT /v1/pipes/{Name}
+    # errors: ConflictException, InternalException, NotFoundException, ThrottlingException, ValidationException
+    def update_pipe(self, UpdatePipeRequest input) -> str:
+        auto host = endpoints.regional_host(pipes_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Name"] = input.Name
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/pipes/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + pipes_json_str(u0))
+        if input.DesiredState.is_some():
+            auto u1 = input.DesiredState.unwrap()
+            parts.append("\"DesiredState\":" + u1.to_json())
+        if input.SourceParameters.is_some():
+            auto u2 = input.SourceParameters.unwrap()
+            parts.append("\"SourceParameters\":" + update_pipe_source_parameters_to_json(u2))
+        if input.Enrichment.is_some():
+            auto u3 = input.Enrichment.unwrap()
+            parts.append("\"Enrichment\":" + pipes_json_str(u3))
+        if input.EnrichmentParameters.is_some():
+            auto u4 = input.EnrichmentParameters.unwrap()
+            parts.append("\"EnrichmentParameters\":" + pipe_enrichment_parameters_to_json(u4))
+        if input.Target.is_some():
+            auto u5 = input.Target.unwrap()
+            parts.append("\"Target\":" + pipes_json_str(u5))
+        if input.TargetParameters.is_some():
+            auto u6 = input.TargetParameters.unwrap()
+            parts.append("\"TargetParameters\":" + pipe_target_parameters_to_json(u6))
+        parts.append("\"RoleArn\":" + pipes_json_str(input.RoleArn))
+        if input.LogConfiguration.is_some():
+            auto u7 = input.LogConfiguration.unwrap()
+            parts.append("\"LogConfiguration\":" + pipe_log_configuration_parameters_to_json(u7))
+        if input.KmsKeyIdentifier.is_some():
+            auto u8 = input.KmsKeyIdentifier.unwrap()
+            parts.append("\"KmsKeyIdentifier\":" + pipes_json_str(u8))
+        auto bp = restjson.rest_json_document(b, pipes_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, pipes_service(), self.region, host)
 
     # Paginator for ListPipes — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: Pipes).

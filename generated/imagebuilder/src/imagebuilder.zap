@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 77 operations — 43 with a generated method,
-#   34 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 77 operations — 76 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   284 structs (170 @derive(Json)), 33 enums, 20 error variants.
-#   8 paginators generated (13 paginated ops skipped) from paginators-1.json.
+#   21 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The imagebuilder rest-json protocol: SigV4 service "imagebuilder" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -348,8 +349,9 @@ struct AdditionalInstanceConfiguration:
     Optional[SystemsManagerAgent] systemsManagerAgent
     Optional[str] userDataOverride
 
-# no @derive(Json): member(s) state: ImageState not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) state: ImageState not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Ami:
     Optional[str] region
     Optional[str] image
@@ -358,8 +360,9 @@ struct Ami:
     Optional[ImageState] state
     Optional[str] accountId
 
-# no @derive(Json): member(s) targetAccountIds: list[str], amiTags: dict[str, str], launchPermission: LaunchPermissionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetAccountIds: list[str], amiTags: dict[str, str], launchPermission: LaunchPermissionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmiDistributionConfiguration:
     Optional[str] name
     Optional[str] description
@@ -407,8 +410,9 @@ struct CancelLifecycleExecutionResponse:
 struct ClientException:
     Optional[str] message
 
-# no @derive(Json): member(s) supportedOsVersions: list[str], parameters: list[ComponentParameterDetail], tags: dict[str, str], productCodes: list[ProductCodeListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) supportedOsVersions: list[str], parameters: list[ComponentParameterDetail], tags: dict[str, str], productCodes: list[ProductCodeListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Component:
     Optional[str] arn
     Optional[str] name
@@ -430,8 +434,9 @@ struct Component:
     Optional[bool] obfuscate
     Optional[list[ProductCodeListItem]] productCodes
 
-# no @derive(Json): member(s) parameters: list[ComponentParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: list[ComponentParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComponentConfiguration:
     str componentArn
     Optional[list[ComponentParameter]] parameters
@@ -444,14 +449,16 @@ struct ComponentFailureContext:
     Optional[str] action
     Optional[str] errorMessage
 
-# no @derive(Json): member(s) value: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComponentParameter:
     str name
     list[str] value
 
-# no @derive(Json): member(s) defaultValue: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) defaultValue: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComponentParameterDetail:
     str name
     str type
@@ -463,8 +470,9 @@ struct ComponentState:
     Optional[ComponentStatus] status
     Optional[str] reason
 
-# no @derive(Json): member(s) supportedOsVersions: list[str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) supportedOsVersions: list[str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComponentSummary:
     Optional[str] arn
     Optional[str] name
@@ -481,8 +489,9 @@ struct ComponentSummary:
     Optional[str] publisher
     Optional[bool] obfuscate
 
-# no @derive(Json): member(s) supportedOsVersions: list[str], productCodes: list[ProductCodeListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) supportedOsVersions: list[str], productCodes: list[ProductCodeListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComponentVersion:
     Optional[str] arn
     Optional[str] name
@@ -496,21 +505,24 @@ struct ComponentVersion:
     Optional[ComponentStatus] status
     Optional[list[ProductCodeListItem]] productCodes
 
-# no @derive(Json): member(s) imageUris: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imageUris: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Container:
     Optional[str] region
     Optional[list[str]] imageUris
 
-# no @derive(Json): member(s) containerTags: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerTags: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerDistributionConfiguration:
     Optional[str] description
     Optional[list[str]] containerTags
     TargetContainerRepository targetRepository
 
-# no @derive(Json): member(s) components: list[ComponentConfiguration], instanceConfiguration: InstanceConfiguration, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) components: list[ComponentConfiguration], instanceConfiguration: InstanceConfiguration, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerRecipe:
     Optional[str] arn
     Optional[str] containerType
@@ -530,8 +542,9 @@ struct ContainerRecipe:
     Optional[str] workingDirectory
     Optional[TargetContainerRepository] targetRepository
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerRecipeSummary:
     Optional[str] arn
     Optional[str] containerType
@@ -765,8 +778,9 @@ struct CvssScoreAdjustment:
     Optional[str] metric
     Optional[str] reason
 
-# no @derive(Json): member(s) adjustments: list[CvssScoreAdjustment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) adjustments: list[CvssScoreAdjustment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CvssScoreDetails:
     Optional[str] scoreSource
     Optional[str] cvssSource
@@ -878,8 +892,9 @@ struct DistributeImageResponse:
     Optional[str] clientToken
     Optional[str] imageBuildVersionArn
 
-# no @derive(Json): member(s) amiDistributionConfiguration: AmiDistributionConfiguration, containerDistributionConfiguration: ContainerDistributionConfiguration, licenseConfigurationArns: list[str], launchTemplateConfigurations: list[LaunchTemplateConfiguration], fastLaunchConfigurations: list[FastLaunchConfiguration], ssmParameterConfigurations: list[SsmParameterConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) amiDistributionConfiguration: AmiDistributionConfiguration, containerDistributionConfiguration: ContainerDistributionConfiguration, licenseConfigurationArns: list[str], launchTemplateConfigurations: list[LaunchTemplateConfiguration], fastLaunchConfigurations: list[FastLaunchConfiguration], ssmParameterConfigurations: list[SsmParameterConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Distribution:
     str region
     Optional[AmiDistributionConfiguration] amiDistributionConfiguration
@@ -890,8 +905,9 @@ struct Distribution:
     Optional[list[FastLaunchConfiguration]] fastLaunchConfigurations
     Optional[list[SsmParameterConfiguration]] ssmParameterConfigurations
 
-# no @derive(Json): member(s) distributions: list[Distribution], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) distributions: list[Distribution], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DistributionConfiguration:
     Optional[str] arn
     Optional[str] name
@@ -902,8 +918,9 @@ struct DistributionConfiguration:
     Optional[str] dateUpdated
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str], regions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], regions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DistributionConfigurationSummary:
     Optional[str] arn
     Optional[str] name
@@ -913,8 +930,9 @@ struct DistributionConfigurationSummary:
     Optional[dict[str, str]] tags
     Optional[list[str]] regions
 
-# no @derive(Json): member(s) regionFailures: list[RegionFailure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) regionFailures: list[RegionFailure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DistributionFailureContext:
     Optional[str] errorMessage
     Optional[list[RegionFailure]] regionFailures
@@ -934,8 +952,9 @@ struct EbsInstanceBlockDeviceSpecification:
     Optional[EbsVolumeType] volumeType
     Optional[int64] throughput
 
-# no @derive(Json): member(s) containerTags: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerTags: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EcrConfiguration:
     Optional[str] repositoryName
     Optional[list[str]] containerTags
@@ -958,8 +977,9 @@ struct FastLaunchLaunchTemplateSpecification:
 struct FastLaunchSnapshotConfiguration:
     Optional[int64] targetResourceCount
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filter:
     Optional[str] name
     Optional[list[str]] values
@@ -983,8 +1003,9 @@ struct GetComponentPolicyResponse:
 struct GetComponentRequest:
     str componentBuildVersionArn
 
-# no @derive(Json): member(s) component: Component not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) component: Component not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetComponentResponse:
     Optional[str] requestId
     Optional[Component] component
@@ -1005,8 +1026,9 @@ struct GetContainerRecipePolicyResponse:
 struct GetContainerRecipeRequest:
     str containerRecipeArn
 
-# no @derive(Json): member(s) containerRecipe: ContainerRecipe not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerRecipe: ContainerRecipe not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetContainerRecipeResponse:
     Optional[str] requestId
     Optional[ContainerRecipe] containerRecipe
@@ -1017,8 +1039,9 @@ struct GetContainerRecipeResponse:
 struct GetDistributionConfigurationRequest:
     str distributionConfigurationArn
 
-# no @derive(Json): member(s) distributionConfiguration: DistributionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) distributionConfiguration: DistributionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDistributionConfigurationResponse:
     Optional[str] requestId
     Optional[DistributionConfiguration] distributionConfiguration
@@ -1028,8 +1051,9 @@ struct GetDistributionConfigurationResponse:
 struct GetImagePipelineRequest:
     str imagePipelineArn
 
-# no @derive(Json): member(s) imagePipeline: ImagePipeline not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imagePipeline: ImagePipeline not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetImagePipelineResponse:
     Optional[str] requestId
     Optional[ImagePipeline] imagePipeline
@@ -1059,8 +1083,9 @@ struct GetImageRecipePolicyResponse:
 struct GetImageRecipeRequest:
     str imageRecipeArn
 
-# no @derive(Json): member(s) imageRecipe: ImageRecipe not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imageRecipe: ImageRecipe not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetImageRecipeResponse:
     Optional[str] requestId
     Optional[ImageRecipe] imageRecipe
@@ -1071,8 +1096,9 @@ struct GetImageRecipeResponse:
 struct GetImageRequest:
     str imageBuildVersionArn
 
-# no @derive(Json): member(s) image: Image not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) image: Image not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetImageResponse:
     Optional[str] requestId
     Optional[Image] image
@@ -1083,8 +1109,9 @@ struct GetImageResponse:
 struct GetInfrastructureConfigurationRequest:
     str infrastructureConfigurationArn
 
-# no @derive(Json): member(s) infrastructureConfiguration: InfrastructureConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) infrastructureConfiguration: InfrastructureConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInfrastructureConfigurationResponse:
     Optional[str] requestId
     Optional[InfrastructureConfiguration] infrastructureConfiguration
@@ -1103,8 +1130,9 @@ struct GetLifecycleExecutionResponse:
 struct GetLifecyclePolicyRequest:
     str lifecyclePolicyArn
 
-# no @derive(Json): member(s) lifecyclePolicy: LifecyclePolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lifecyclePolicy: LifecyclePolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLifecyclePolicyResponse:
     Optional[LifecyclePolicy] lifecyclePolicy
 
@@ -1148,8 +1176,9 @@ struct GetWorkflowExecutionResponse:
 struct GetWorkflowRequest:
     str workflowBuildVersionArn
 
-# no @derive(Json): member(s) workflow: Workflow not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workflow: Workflow not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWorkflowResponse:
     Optional[Workflow] workflow
     Optional[LatestVersionReferences] latestVersionReferences
@@ -1185,8 +1214,9 @@ struct GetWorkflowStepExecutionResponse:
 struct IdempotentParameterMismatchException:
     Optional[str] message
 
-# no @derive(Json): member(s) state: ImageState, imageRecipe: ImageRecipe, containerRecipe: ContainerRecipe, infrastructureConfiguration: InfrastructureConfiguration, distributionConfiguration: DistributionConfiguration, outputResources: OutputResources, tags: dict[str, str], imageScanningConfiguration: ImageScanningConfiguration, workflows: list[WorkflowConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) state: ImageState, imageRecipe: ImageRecipe, containerRecipe: ContainerRecipe, infrastructureConfiguration: InfrastructureConfiguration, distributionConfiguration: DistributionConfiguration, outputResources: OutputResources, tags: dict[str, str], imageScanningConfiguration: ImageScanningConfiguration, workflows: list[WorkflowConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Image:
     Optional[str] arn
     Optional[ImageType] type
@@ -1221,8 +1251,9 @@ struct ImageAggregation:
     Optional[str] imageBuildVersionArn
     Optional[SeverityCounts] severityCounts
 
-# no @derive(Json): member(s) distributionFailure: DistributionFailureContext not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) distributionFailure: DistributionFailureContext not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImageFailureContext:
     Optional[ImageStatus] imageStatus
     Optional[str] workflowExecutionId
@@ -1241,8 +1272,9 @@ struct ImagePackage:
     Optional[str] packageName
     Optional[str] packageVersion
 
-# no @derive(Json): member(s) tags: dict[str, str], imageScanningConfiguration: ImageScanningConfiguration, imageTags: dict[str, str], workflows: list[WorkflowConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], imageScanningConfiguration: ImageScanningConfiguration, imageTags: dict[str, str], workflows: list[WorkflowConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImagePipeline:
     Optional[str] arn
     Optional[str] name
@@ -1274,8 +1306,9 @@ struct ImagePipelineAggregation:
     Optional[str] imagePipelineArn
     Optional[SeverityCounts] severityCounts
 
-# no @derive(Json): member(s) components: list[ComponentConfiguration], blockDeviceMappings: list[InstanceBlockDeviceMapping], tags: dict[str, str], amiTags: dict[str, str], amiWatermarks: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) components: list[ComponentConfiguration], blockDeviceMappings: list[InstanceBlockDeviceMapping], tags: dict[str, str], amiTags: dict[str, str], amiWatermarks: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImageRecipe:
     Optional[str] arn
     Optional[ImageType] type
@@ -1294,8 +1327,9 @@ struct ImageRecipe:
     Optional[dict[str, str]] amiTags
     Optional[list[str]] amiWatermarks
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImageRecipeSummary:
     Optional[str] arn
     Optional[str] name
@@ -1305,8 +1339,9 @@ struct ImageRecipeSummary:
     Optional[str] dateCreated
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) inspectorScoreDetails: InspectorScoreDetails, packageVulnerabilityDetails: PackageVulnerabilityDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inspectorScoreDetails: InspectorScoreDetails, packageVulnerabilityDetails: PackageVulnerabilityDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImageScanFinding:
     Optional[str] awsAccountId
     Optional[str] imageBuildVersionArn
@@ -1330,8 +1365,9 @@ struct ImageScanFindingAggregation:
     Optional[ImagePipelineAggregation] imagePipelineAggregation
     Optional[VulnerabilityIdAggregation] vulnerabilityIdAggregation
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImageScanFindingsFilter:
     Optional[str] name
     Optional[list[str]] values
@@ -1341,21 +1377,24 @@ struct ImageScanState:
     Optional[ImageScanStatus] status
     Optional[str] reason
 
-# no @derive(Json): member(s) ecrConfiguration: EcrConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ecrConfiguration: EcrConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImageScanningConfiguration:
     Optional[bool] imageScanningEnabled
     Optional[EcrConfiguration] ecrConfiguration
 
-# no @derive(Json): member(s) failureContext: ImageFailureContext not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failureContext: ImageFailureContext not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImageState:
     Optional[ImageStatus] status
     Optional[str] reason
     Optional[ImageFailureContext] failureContext
 
-# no @derive(Json): member(s) state: ImageState, outputResources: OutputResources, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) state: ImageState, outputResources: OutputResources, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImageSummary:
     Optional[str] arn
     Optional[str] name
@@ -1455,8 +1494,9 @@ struct ImportVmImageResponse:
     Optional[str] imageArn
     Optional[str] clientToken
 
-# no @derive(Json): member(s) instanceTypes: list[str], securityGroupIds: list[str], resourceTags: dict[str, str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceTypes: list[str], securityGroupIds: list[str], resourceTags: dict[str, str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InfrastructureConfiguration:
     Optional[str] arn
     Optional[str] name
@@ -1478,8 +1518,9 @@ struct InfrastructureConfiguration:
     Optional[bool] terminateInstanceOnCompletion
     Optional[ParentInstanceConfiguration] parentInstance
 
-# no @derive(Json): member(s) resourceTags: dict[str, str], tags: dict[str, str], instanceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceTags: dict[str, str], tags: dict[str, str], instanceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InfrastructureConfigurationSummary:
     Optional[str] arn
     Optional[str] name
@@ -1492,8 +1533,9 @@ struct InfrastructureConfigurationSummary:
     Optional[str] instanceProfileName
     Optional[Placement] placement
 
-# no @derive(Json): member(s) adjustedCvss: CvssScoreDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) adjustedCvss: CvssScoreDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InspectorScoreDetails:
     Optional[CvssScoreDetails] adjustedCvss
 
@@ -1504,8 +1546,9 @@ struct InstanceBlockDeviceMapping:
     Optional[str] virtualName
     Optional[str] noDevice
 
-# no @derive(Json): member(s) blockDeviceMappings: list[InstanceBlockDeviceMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) blockDeviceMappings: list[InstanceBlockDeviceMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceConfiguration:
     Optional[str] image
     Optional[list[InstanceBlockDeviceMapping]] blockDeviceMappings
@@ -1546,8 +1589,9 @@ struct LatestVersionReferences:
     Optional[str] latestMinorVersionArn
     Optional[str] latestPatchVersionArn
 
-# no @derive(Json): member(s) userIds: list[str], userGroups: list[str], organizationArns: list[str], organizationalUnitArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) userIds: list[str], userGroups: list[str], organizationArns: list[str], organizationalUnitArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LaunchPermissionConfiguration:
     Optional[list[str]] userIds
     Optional[list[str]] userGroups
@@ -1569,8 +1613,9 @@ struct LifecycleExecution:
     Optional[DateTime] startTime
     Optional[DateTime] endTime
 
-# no @derive(Json): member(s) snapshots: list[LifecycleExecutionSnapshotResource], imageUris: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) snapshots: list[LifecycleExecutionSnapshotResource], imageUris: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LifecycleExecutionResource:
     Optional[str] accountId
     Optional[str] resourceId
@@ -1606,8 +1651,9 @@ struct LifecycleExecutionState:
     Optional[LifecycleExecutionStatus] status
     Optional[str] reason
 
-# no @derive(Json): member(s) policyDetails: list[LifecyclePolicyDetail], resourceSelection: LifecyclePolicyResourceSelection, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policyDetails: list[LifecyclePolicyDetail], resourceSelection: LifecyclePolicyResourceSelection, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LifecyclePolicy:
     Optional[str] arn
     Optional[str] name
@@ -1622,8 +1668,9 @@ struct LifecyclePolicy:
     Optional[DateTime] dateLastRun
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) exclusionRules: LifecyclePolicyDetailExclusionRules not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exclusionRules: LifecyclePolicyDetailExclusionRules not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LifecyclePolicyDetail:
     LifecyclePolicyDetailAction action
     LifecyclePolicyDetailFilter filter
@@ -1640,14 +1687,16 @@ struct LifecyclePolicyDetailActionIncludeResources:
     Optional[bool] snapshots
     Optional[bool] containers
 
-# no @derive(Json): member(s) tagMap: dict[str, str], amis: LifecyclePolicyDetailExclusionRulesAmis not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagMap: dict[str, str], amis: LifecyclePolicyDetailExclusionRulesAmis not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LifecyclePolicyDetailExclusionRules:
     Optional[dict[str, str]] tagMap
     Optional[LifecyclePolicyDetailExclusionRulesAmis] amis
 
-# no @derive(Json): member(s) regions: list[str], sharedAccounts: list[str], tagMap: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) regions: list[str], sharedAccounts: list[str], tagMap: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LifecyclePolicyDetailExclusionRulesAmis:
     Optional[bool] isPublic
     Optional[list[str]] regions
@@ -1667,8 +1716,9 @@ struct LifecyclePolicyDetailFilter:
     Optional[LifecyclePolicyTimeUnit] unit
     Optional[int64] retainAtLeast
 
-# no @derive(Json): member(s) recipes: list[LifecyclePolicyResourceSelectionRecipe], tagMap: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recipes: list[LifecyclePolicyResourceSelectionRecipe], tagMap: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LifecyclePolicyResourceSelection:
     Optional[list[LifecyclePolicyResourceSelectionRecipe]] recipes
     Optional[dict[str, str]] tagMap
@@ -1678,8 +1728,9 @@ struct LifecyclePolicyResourceSelectionRecipe:
     str name
     str semanticVersion
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LifecyclePolicySummary:
     Optional[str] arn
     Optional[str] name
@@ -1699,8 +1750,9 @@ struct ListComponentBuildVersionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) componentSummaryList: list[ComponentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) componentSummaryList: list[ComponentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListComponentBuildVersionsResponse:
     Optional[str] requestId
     Optional[list[ComponentSummary]] componentSummaryList
@@ -1715,8 +1767,9 @@ struct ListComponentsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) componentVersionList: list[ComponentVersion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) componentVersionList: list[ComponentVersion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListComponentsResponse:
     Optional[str] requestId
     Optional[list[ComponentVersion]] componentVersionList
@@ -1730,8 +1783,9 @@ struct ListContainerRecipesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) containerRecipeSummaryList: list[ContainerRecipeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerRecipeSummaryList: list[ContainerRecipeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListContainerRecipesResponse:
     Optional[str] requestId
     Optional[list[ContainerRecipeSummary]] containerRecipeSummaryList
@@ -1744,8 +1798,9 @@ struct ListDistributionConfigurationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) distributionConfigurationSummaryList: list[DistributionConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) distributionConfigurationSummaryList: list[DistributionConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDistributionConfigurationsResponse:
     Optional[str] requestId
     Optional[list[DistributionConfigurationSummary]] distributionConfigurationSummaryList
@@ -1759,8 +1814,9 @@ struct ListImageBuildVersionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) imageSummaryList: list[ImageSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imageSummaryList: list[ImageSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImageBuildVersionsResponse:
     Optional[str] requestId
     Optional[list[ImageSummary]] imageSummaryList
@@ -1773,8 +1829,9 @@ struct ListImagePackagesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) imagePackageList: list[ImagePackage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imagePackageList: list[ImagePackage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImagePackagesResponse:
     Optional[str] requestId
     Optional[list[ImagePackage]] imagePackageList
@@ -1788,8 +1845,9 @@ struct ListImagePipelineImagesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) imageSummaryList: list[ImageSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imageSummaryList: list[ImageSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImagePipelineImagesResponse:
     Optional[str] requestId
     Optional[list[ImageSummary]] imageSummaryList
@@ -1802,8 +1860,9 @@ struct ListImagePipelinesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) imagePipelineList: list[ImagePipeline] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imagePipelineList: list[ImagePipeline] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImagePipelinesResponse:
     Optional[str] requestId
     Optional[list[ImagePipeline]] imagePipelineList
@@ -1817,8 +1876,9 @@ struct ListImageRecipesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) imageRecipeSummaryList: list[ImageRecipeSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imageRecipeSummaryList: list[ImageRecipeSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImageRecipesResponse:
     Optional[str] requestId
     Optional[list[ImageRecipeSummary]] imageRecipeSummaryList
@@ -1830,8 +1890,9 @@ struct ListImageScanFindingAggregationsRequest:
     Optional[Filter] filter
     Optional[str] nextToken
 
-# no @derive(Json): member(s) responses: list[ImageScanFindingAggregation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) responses: list[ImageScanFindingAggregation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImageScanFindingAggregationsResponse:
     Optional[str] requestId
     Optional[str] aggregationType
@@ -1845,8 +1906,9 @@ struct ListImageScanFindingsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) findings: list[ImageScanFinding] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findings: list[ImageScanFinding] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImageScanFindingsResponse:
     Optional[str] requestId
     Optional[list[ImageScanFinding]] findings
@@ -1862,8 +1924,9 @@ struct ListImagesRequest:
     Optional[str] nextToken
     Optional[bool] includeDeprecated
 
-# no @derive(Json): member(s) imageVersionList: list[ImageVersion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imageVersionList: list[ImageVersion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImagesResponse:
     Optional[str] requestId
     Optional[list[ImageVersion]] imageVersionList
@@ -1876,8 +1939,9 @@ struct ListInfrastructureConfigurationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) infrastructureConfigurationSummaryList: list[InfrastructureConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) infrastructureConfigurationSummaryList: list[InfrastructureConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInfrastructureConfigurationsResponse:
     Optional[str] requestId
     Optional[list[InfrastructureConfigurationSummary]] infrastructureConfigurationSummaryList
@@ -1891,8 +1955,9 @@ struct ListLifecycleExecutionResourcesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) resources: list[LifecycleExecutionResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resources: list[LifecycleExecutionResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLifecycleExecutionResourcesResponse:
     Optional[str] lifecycleExecutionId
     Optional[LifecycleExecutionState] lifecycleExecutionState
@@ -1906,8 +1971,9 @@ struct ListLifecycleExecutionsRequest:
     Optional[str] nextToken
     str resourceArn
 
-# no @derive(Json): member(s) lifecycleExecutions: list[LifecycleExecution] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lifecycleExecutions: list[LifecycleExecution] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLifecycleExecutionsResponse:
     Optional[list[LifecycleExecution]] lifecycleExecutions
     Optional[str] nextToken
@@ -1919,8 +1985,9 @@ struct ListLifecyclePoliciesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) lifecyclePolicySummaryList: list[LifecyclePolicySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lifecyclePolicySummaryList: list[LifecyclePolicySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLifecyclePoliciesResponse:
     Optional[list[LifecyclePolicySummary]] lifecyclePolicySummaryList
     Optional[str] nextToken
@@ -1930,8 +1997,9 @@ struct ListLifecyclePoliciesResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -1941,8 +2009,9 @@ struct ListWaitingWorkflowStepsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) steps: list[WorkflowStepExecution] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) steps: list[WorkflowStepExecution] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWaitingWorkflowStepsResponse:
     Optional[list[WorkflowStepExecution]] steps
     Optional[str] nextToken
@@ -1954,8 +2023,9 @@ struct ListWorkflowBuildVersionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) workflowSummaryList: list[WorkflowSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workflowSummaryList: list[WorkflowSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkflowBuildVersionsResponse:
     Optional[list[WorkflowSummary]] workflowSummaryList
     Optional[str] nextToken
@@ -1967,8 +2037,9 @@ struct ListWorkflowExecutionsRequest:
     Optional[str] nextToken
     str imageBuildVersionArn
 
-# no @derive(Json): member(s) workflowExecutions: list[WorkflowExecutionMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workflowExecutions: list[WorkflowExecutionMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkflowExecutionsResponse:
     Optional[str] requestId
     Optional[list[WorkflowExecutionMetadata]] workflowExecutions
@@ -1983,8 +2054,9 @@ struct ListWorkflowStepExecutionsRequest:
     Optional[str] nextToken
     str workflowExecutionId
 
-# no @derive(Json): member(s) steps: list[WorkflowStepMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) steps: list[WorkflowStepMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkflowStepExecutionsResponse:
     Optional[str] requestId
     Optional[list[WorkflowStepMetadata]] steps
@@ -2003,8 +2075,9 @@ struct ListWorkflowsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) workflowVersionList: list[WorkflowVersion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workflowVersionList: list[WorkflowVersion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkflowsResponse:
     Optional[list[WorkflowVersion]] workflowVersionList
     Optional[str] nextToken
@@ -2013,14 +2086,16 @@ struct ListWorkflowsResponse:
 struct Logging:
     Optional[S3Logs] s3Logs
 
-# no @derive(Json): member(s) amis: list[Ami], containers: list[Container] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) amis: list[Ami], containers: list[Container] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OutputResources:
     Optional[list[Ami]] amis
     Optional[list[Container]] containers
 
-# no @derive(Json): member(s) vulnerablePackages: list[VulnerablePackage], cvss: list[CvssScore], relatedVulnerabilities: list[str], referenceUrls: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vulnerablePackages: list[VulnerablePackage], cvss: list[CvssScore], relatedVulnerabilities: list[str], referenceUrls: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PackageVulnerabilityDetails:
     str vulnerabilityId
     Optional[list[VulnerablePackage]] vulnerablePackages
@@ -2140,8 +2215,9 @@ struct ResourceNotFoundException:
 struct ResourceState:
     Optional[ResourceStatus] status
 
-# no @derive(Json): member(s) amis: LifecyclePolicyDetailExclusionRulesAmis not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) amis: LifecyclePolicyDetailExclusionRulesAmis not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceStateUpdateExclusionRules:
     Optional[LifecyclePolicyDetailExclusionRulesAmis] amis
 
@@ -2389,8 +2465,9 @@ struct VulnerablePackage:
 struct WindowsConfiguration:
     int64 imageIndex
 
-# no @derive(Json): member(s) tags: dict[str, str], parameters: list[WorkflowParameterDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], parameters: list[WorkflowParameterDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Workflow:
     Optional[str] arn
     Optional[str] name
@@ -2406,8 +2483,9 @@ struct Workflow:
     Optional[dict[str, str]] tags
     Optional[list[WorkflowParameterDetail]] parameters
 
-# no @derive(Json): member(s) parameters: list[WorkflowParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: list[WorkflowParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkflowConfiguration:
     str workflowArn
     Optional[list[WorkflowParameter]] parameters
@@ -2430,14 +2508,16 @@ struct WorkflowExecutionMetadata:
     Optional[str] parallelGroup
     Optional[bool] retried
 
-# no @derive(Json): member(s) value: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkflowParameter:
     str name
     list[str] value
 
-# no @derive(Json): member(s) defaultValue: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) defaultValue: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkflowParameterDetail:
     str name
     str type
@@ -2475,8 +2555,9 @@ struct WorkflowStepMetadata:
     Optional[int64] attemptNumber
     Optional[int64] maxAttempts
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkflowSummary:
     Optional[str] arn
     Optional[str] name
@@ -2576,56 +2657,7 @@ def imagebuilder_error_from_code(str code) -> imagebuilderError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateComponent (document member `supportedOsVersions: list[str]` is not serializable by derive)
-#   CreateContainerRecipe (document member `components: list[ComponentConfiguration]` is not serializable by derive)
-#   CreateDistributionConfiguration (document member `distributions: list[Distribution]` is not serializable by derive)
-#   CreateImage (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateImagePipeline (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateImageRecipe (document member `components: list[ComponentConfiguration]` is not serializable by derive)
-#   CreateInfrastructureConfiguration (document member `instanceTypes: list[str]` is not serializable by derive)
-#   CreateLifecyclePolicy (document member `policyDetails: list[LifecyclePolicyDetail]` is not serializable by derive)
-#   CreateWorkflow (document member `tags: dict[str, str]` is not serializable by derive)
-#   DistributeImage (document member `tags: dict[str, str]` is not serializable by derive)
-#   ImportComponent (document member `tags: dict[str, str]` is not serializable by derive)
-#   ImportDiskImage (document member `tags: dict[str, str]` is not serializable by derive)
-#   ImportVmImage (document member `tags: dict[str, str]` is not serializable by derive)
-#   ListComponents (document member `filters: list[Filter]` is not serializable by derive)
-#   ListContainerRecipes (document member `filters: list[Filter]` is not serializable by derive)
-#   ListDistributionConfigurations (document member `filters: list[Filter]` is not serializable by derive)
-#   ListImageBuildVersions (document member `filters: list[Filter]` is not serializable by derive)
-#   ListImagePipelineImages (document member `filters: list[Filter]` is not serializable by derive)
-#   ListImagePipelines (document member `filters: list[Filter]` is not serializable by derive)
-#   ListImageRecipes (document member `filters: list[Filter]` is not serializable by derive)
-#   ListImageScanFindingAggregations (document member `filter: Filter` is not serializable by derive)
-#   ListImageScanFindings (document member `filters: list[ImageScanFindingsFilter]` is not serializable by derive)
-#   ListImages (document member `filters: list[Filter]` is not serializable by derive)
-#   ListInfrastructureConfigurations (document member `filters: list[Filter]` is not serializable by derive)
-#   ListLifecyclePolicies (document member `filters: list[Filter]` is not serializable by derive)
-#   ListWorkflows (document member `filters: list[Filter]` is not serializable by derive)
-#   StartImagePipelineExecution (document member `tags: dict[str, str]` is not serializable by derive)
-#   StartResourceStateUpdate (document member `exclusionRules: ResourceStateUpdateExclusionRules` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateDistributionConfiguration (document member `distributions: list[Distribution]` is not serializable by derive)
-#   UpdateImagePipeline (document member `imageScanningConfiguration: ImageScanningConfiguration` is not serializable by derive)
-#   UpdateInfrastructureConfiguration (document member `instanceTypes: list[str]` is not serializable by derive)
-#   UpdateLifecyclePolicy (document member `policyDetails: list[LifecyclePolicyDetail]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListComponents (operation not generated)
-#   ListContainerRecipes (operation not generated)
-#   ListDistributionConfigurations (operation not generated)
-#   ListImageBuildVersions (operation not generated)
-#   ListImagePipelineImages (operation not generated)
-#   ListImagePipelines (operation not generated)
-#   ListImageRecipes (operation not generated)
-#   ListImageScanFindingAggregations (operation not generated)
-#   ListImageScanFindings (operation not generated)
-#   ListImages (operation not generated)
-#   ListInfrastructureConfigurations (operation not generated)
-#   ListLifecyclePolicies (operation not generated)
-#   ListWorkflows (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -2744,6 +2776,343 @@ struct SendWorkflowStepActionDocument:
     Optional[str] reason
     str clientToken
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def imagebuilder_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def imagebuilder_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def imagebuilder_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AmiDistributionConfiguration to a compact JSON object (declaration order).
+def ami_distribution_configuration_to_json(AmiDistributionConfiguration v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + imagebuilder_json_str(u0))
+    if v.description.is_some():
+        auto u1 = v.description.unwrap()
+        parts.append("\"description\":" + imagebuilder_json_str(u1))
+    if v.targetAccountIds.is_some():
+        auto u2 = v.targetAccountIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(imagebuilder_json_str(x3))
+        parts.append("\"targetAccountIds\":" + imagebuilder_json_arr(e3))
+    if v.amiTags.is_some():
+        auto u4 = v.amiTags.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(imagebuilder_json_str(k5) + ":" + imagebuilder_json_str(u4[k5]))
+        parts.append("\"amiTags\":" + imagebuilder_json_obj(m5))
+    if v.kmsKeyId.is_some():
+        auto u6 = v.kmsKeyId.unwrap()
+        parts.append("\"kmsKeyId\":" + imagebuilder_json_str(u6))
+    if v.launchPermission.is_some():
+        auto u7 = v.launchPermission.unwrap()
+        parts.append("\"launchPermission\":" + launch_permission_configuration_to_json(u7))
+    return imagebuilder_json_obj(parts)
+
+# Serialize ComponentConfiguration to a compact JSON object (declaration order).
+def component_configuration_to_json(ComponentConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"componentArn\":" + imagebuilder_json_str(v.componentArn))
+    if v.parameters.is_some():
+        auto u0 = v.parameters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(component_parameter_to_json(x1))
+        parts.append("\"parameters\":" + imagebuilder_json_arr(e1))
+    return imagebuilder_json_obj(parts)
+
+# Serialize ComponentParameter to a compact JSON object (declaration order).
+def component_parameter_to_json(ComponentParameter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + imagebuilder_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.value:
+        e0.append(imagebuilder_json_str(x0))
+    parts.append("\"value\":" + imagebuilder_json_arr(e0))
+    return imagebuilder_json_obj(parts)
+
+# Serialize ContainerDistributionConfiguration to a compact JSON object (declaration order).
+def container_distribution_configuration_to_json(ContainerDistributionConfiguration v) -> str:
+    list[str] parts = []
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + imagebuilder_json_str(u0))
+    if v.containerTags.is_some():
+        auto u1 = v.containerTags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(imagebuilder_json_str(x2))
+        parts.append("\"containerTags\":" + imagebuilder_json_arr(e2))
+    parts.append("\"targetRepository\":" + v.targetRepository.to_json())
+    return imagebuilder_json_obj(parts)
+
+# Serialize Distribution to a compact JSON object (declaration order).
+def distribution_to_json(Distribution v) -> str:
+    list[str] parts = []
+    parts.append("\"region\":" + imagebuilder_json_str(v.region))
+    if v.amiDistributionConfiguration.is_some():
+        auto u0 = v.amiDistributionConfiguration.unwrap()
+        parts.append("\"amiDistributionConfiguration\":" + ami_distribution_configuration_to_json(u0))
+    if v.containerDistributionConfiguration.is_some():
+        auto u1 = v.containerDistributionConfiguration.unwrap()
+        parts.append("\"containerDistributionConfiguration\":" + container_distribution_configuration_to_json(u1))
+    if v.licenseConfigurationArns.is_some():
+        auto u2 = v.licenseConfigurationArns.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(imagebuilder_json_str(x3))
+        parts.append("\"licenseConfigurationArns\":" + imagebuilder_json_arr(e3))
+    if v.launchTemplateConfigurations.is_some():
+        auto u4 = v.launchTemplateConfigurations.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"launchTemplateConfigurations\":" + imagebuilder_json_arr(e5))
+    if v.s3ExportConfiguration.is_some():
+        auto u6 = v.s3ExportConfiguration.unwrap()
+        parts.append("\"s3ExportConfiguration\":" + u6.to_json())
+    if v.fastLaunchConfigurations.is_some():
+        auto u7 = v.fastLaunchConfigurations.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"fastLaunchConfigurations\":" + imagebuilder_json_arr(e8))
+    if v.ssmParameterConfigurations.is_some():
+        auto u9 = v.ssmParameterConfigurations.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"ssmParameterConfigurations\":" + imagebuilder_json_arr(e10))
+    return imagebuilder_json_obj(parts)
+
+# Serialize EcrConfiguration to a compact JSON object (declaration order).
+def ecr_configuration_to_json(EcrConfiguration v) -> str:
+    list[str] parts = []
+    if v.repositoryName.is_some():
+        auto u0 = v.repositoryName.unwrap()
+        parts.append("\"repositoryName\":" + imagebuilder_json_str(u0))
+    if v.containerTags.is_some():
+        auto u1 = v.containerTags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(imagebuilder_json_str(x2))
+        parts.append("\"containerTags\":" + imagebuilder_json_arr(e2))
+    return imagebuilder_json_obj(parts)
+
+# Serialize Filter to a compact JSON object (declaration order).
+def filter_to_json(Filter v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + imagebuilder_json_str(u0))
+    if v.values.is_some():
+        auto u1 = v.values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(imagebuilder_json_str(x2))
+        parts.append("\"values\":" + imagebuilder_json_arr(e2))
+    return imagebuilder_json_obj(parts)
+
+# Serialize ImageScanFindingsFilter to a compact JSON object (declaration order).
+def image_scan_findings_filter_to_json(ImageScanFindingsFilter v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + imagebuilder_json_str(u0))
+    if v.values.is_some():
+        auto u1 = v.values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(imagebuilder_json_str(x2))
+        parts.append("\"values\":" + imagebuilder_json_arr(e2))
+    return imagebuilder_json_obj(parts)
+
+# Serialize ImageScanningConfiguration to a compact JSON object (declaration order).
+def image_scanning_configuration_to_json(ImageScanningConfiguration v) -> str:
+    list[str] parts = []
+    if v.imageScanningEnabled.is_some():
+        auto u0 = v.imageScanningEnabled.unwrap()
+        parts.append("\"imageScanningEnabled\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.ecrConfiguration.is_some():
+        auto u1 = v.ecrConfiguration.unwrap()
+        parts.append("\"ecrConfiguration\":" + ecr_configuration_to_json(u1))
+    return imagebuilder_json_obj(parts)
+
+# Serialize InstanceConfiguration to a compact JSON object (declaration order).
+def instance_configuration_to_json(InstanceConfiguration v) -> str:
+    list[str] parts = []
+    if v.image.is_some():
+        auto u0 = v.image.unwrap()
+        parts.append("\"image\":" + imagebuilder_json_str(u0))
+    if v.blockDeviceMappings.is_some():
+        auto u1 = v.blockDeviceMappings.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"blockDeviceMappings\":" + imagebuilder_json_arr(e2))
+    return imagebuilder_json_obj(parts)
+
+# Serialize LaunchPermissionConfiguration to a compact JSON object (declaration order).
+def launch_permission_configuration_to_json(LaunchPermissionConfiguration v) -> str:
+    list[str] parts = []
+    if v.userIds.is_some():
+        auto u0 = v.userIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(imagebuilder_json_str(x1))
+        parts.append("\"userIds\":" + imagebuilder_json_arr(e1))
+    if v.userGroups.is_some():
+        auto u2 = v.userGroups.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(imagebuilder_json_str(x3))
+        parts.append("\"userGroups\":" + imagebuilder_json_arr(e3))
+    if v.organizationArns.is_some():
+        auto u4 = v.organizationArns.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(imagebuilder_json_str(x5))
+        parts.append("\"organizationArns\":" + imagebuilder_json_arr(e5))
+    if v.organizationalUnitArns.is_some():
+        auto u6 = v.organizationalUnitArns.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(imagebuilder_json_str(x7))
+        parts.append("\"organizationalUnitArns\":" + imagebuilder_json_arr(e7))
+    return imagebuilder_json_obj(parts)
+
+# Serialize LifecyclePolicyDetail to a compact JSON object (declaration order).
+def lifecycle_policy_detail_to_json(LifecyclePolicyDetail v) -> str:
+    list[str] parts = []
+    parts.append("\"action\":" + v.action.to_json())
+    parts.append("\"filter\":" + v.filter.to_json())
+    if v.exclusionRules.is_some():
+        auto u0 = v.exclusionRules.unwrap()
+        parts.append("\"exclusionRules\":" + lifecycle_policy_detail_exclusion_rules_to_json(u0))
+    return imagebuilder_json_obj(parts)
+
+# Serialize LifecyclePolicyDetailExclusionRules to a compact JSON object (declaration order).
+def lifecycle_policy_detail_exclusion_rules_to_json(LifecyclePolicyDetailExclusionRules v) -> str:
+    list[str] parts = []
+    if v.tagMap.is_some():
+        auto u0 = v.tagMap.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(imagebuilder_json_str(k1) + ":" + imagebuilder_json_str(u0[k1]))
+        parts.append("\"tagMap\":" + imagebuilder_json_obj(m1))
+    if v.amis.is_some():
+        auto u2 = v.amis.unwrap()
+        parts.append("\"amis\":" + lifecycle_policy_detail_exclusion_rules_amis_to_json(u2))
+    return imagebuilder_json_obj(parts)
+
+# Serialize LifecyclePolicyDetailExclusionRulesAmis to a compact JSON object (declaration order).
+def lifecycle_policy_detail_exclusion_rules_amis_to_json(LifecyclePolicyDetailExclusionRulesAmis v) -> str:
+    list[str] parts = []
+    if v.isPublic.is_some():
+        auto u0 = v.isPublic.unwrap()
+        parts.append("\"isPublic\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.regions.is_some():
+        auto u1 = v.regions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(imagebuilder_json_str(x2))
+        parts.append("\"regions\":" + imagebuilder_json_arr(e2))
+    if v.sharedAccounts.is_some():
+        auto u3 = v.sharedAccounts.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(imagebuilder_json_str(x4))
+        parts.append("\"sharedAccounts\":" + imagebuilder_json_arr(e4))
+    if v.lastLaunched.is_some():
+        auto u5 = v.lastLaunched.unwrap()
+        parts.append("\"lastLaunched\":" + u5.to_json())
+    if v.tagMap.is_some():
+        auto u6 = v.tagMap.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(imagebuilder_json_str(k7) + ":" + imagebuilder_json_str(u6[k7]))
+        parts.append("\"tagMap\":" + imagebuilder_json_obj(m7))
+    return imagebuilder_json_obj(parts)
+
+# Serialize LifecyclePolicyResourceSelection to a compact JSON object (declaration order).
+def lifecycle_policy_resource_selection_to_json(LifecyclePolicyResourceSelection v) -> str:
+    list[str] parts = []
+    if v.recipes.is_some():
+        auto u0 = v.recipes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"recipes\":" + imagebuilder_json_arr(e1))
+    if v.tagMap.is_some():
+        auto u2 = v.tagMap.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(imagebuilder_json_str(k3) + ":" + imagebuilder_json_str(u2[k3]))
+        parts.append("\"tagMap\":" + imagebuilder_json_obj(m3))
+    return imagebuilder_json_obj(parts)
+
+# Serialize ResourceStateUpdateExclusionRules to a compact JSON object (declaration order).
+def resource_state_update_exclusion_rules_to_json(ResourceStateUpdateExclusionRules v) -> str:
+    list[str] parts = []
+    if v.amis.is_some():
+        auto u0 = v.amis.unwrap()
+        parts.append("\"amis\":" + lifecycle_policy_detail_exclusion_rules_amis_to_json(u0))
+    return imagebuilder_json_obj(parts)
+
+# Serialize WorkflowConfiguration to a compact JSON object (declaration order).
+def workflow_configuration_to_json(WorkflowConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"workflowArn\":" + imagebuilder_json_str(v.workflowArn))
+    if v.parameters.is_some():
+        auto u0 = v.parameters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(workflow_parameter_to_json(x1))
+        parts.append("\"parameters\":" + imagebuilder_json_arr(e1))
+    if v.parallelGroup.is_some():
+        auto u2 = v.parallelGroup.unwrap()
+        parts.append("\"parallelGroup\":" + imagebuilder_json_str(u2))
+    if v.onFailure.is_some():
+        auto u3 = v.onFailure.unwrap()
+        parts.append("\"onFailure\":" + u3.to_json())
+    return imagebuilder_json_obj(parts)
+
+# Serialize WorkflowParameter to a compact JSON object (declaration order).
+def workflow_parameter_to_json(WorkflowParameter v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + imagebuilder_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.value:
+        e0.append(imagebuilder_json_str(x0))
+    parts.append("\"value\":" + imagebuilder_json_arr(e0))
+    return imagebuilder_json_obj(parts)
+
 # A bound imagebuilder client: credentials + region, threaded into every operation.
 struct imagebuilderClient:
     core.Credentials creds
@@ -2765,6 +3134,437 @@ struct imagebuilderClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/CancelLifecycleExecution", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelLifecycleExecutionDocument(lifecycleExecutionId=input.lifecycleExecutionId, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # CreateComponent  PUT /CreateComponent
+    # errors: CallRateLimitExceededException, ClientException, DryRunOperationException, ForbiddenException, IdempotentParameterMismatchException, InvalidParameterCombinationException, InvalidRequestException, InvalidVersionNumberException, ResourceInUseException, ServiceException, ServiceQuotaExceededException, ServiceUnavailableException
+    def create_component(self, CreateComponentRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/CreateComponent", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + imagebuilder_json_str(input.name))
+        parts.append("\"semanticVersion\":" + imagebuilder_json_str(input.semanticVersion))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + imagebuilder_json_str(u0))
+        if input.changeDescription.is_some():
+            auto u1 = input.changeDescription.unwrap()
+            parts.append("\"changeDescription\":" + imagebuilder_json_str(u1))
+        parts.append("\"platform\":" + input.platform.to_json())
+        if input.supportedOsVersions.is_some():
+            auto u2 = input.supportedOsVersions.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(imagebuilder_json_str(x3))
+            parts.append("\"supportedOsVersions\":" + imagebuilder_json_arr(e3))
+        if input.data.is_some():
+            auto u4 = input.data.unwrap()
+            parts.append("\"data\":" + imagebuilder_json_str(u4))
+        if input.uri.is_some():
+            auto u5 = input.uri.unwrap()
+            parts.append("\"uri\":" + imagebuilder_json_str(u5))
+        if input.kmsKeyId.is_some():
+            auto u6 = input.kmsKeyId.unwrap()
+            parts.append("\"kmsKeyId\":" + imagebuilder_json_str(u6))
+        if input.tags.is_some():
+            auto u7 = input.tags.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(imagebuilder_json_str(k8) + ":" + imagebuilder_json_str(u7[k8]))
+            parts.append("\"tags\":" + imagebuilder_json_obj(m8))
+        parts.append("\"clientToken\":" + imagebuilder_json_str(input.clientToken))
+        if input.dryRun.is_some():
+            auto u9 = input.dryRun.unwrap()
+            parts.append("\"dryRun\":" + json.dumps(JsonValue.Bool(u9)))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # CreateContainerRecipe  PUT /CreateContainerRecipe
+    # errors: CallRateLimitExceededException, ClientException, DryRunOperationException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, InvalidVersionNumberException, ResourceAlreadyExistsException, ResourceInUseException, ServiceException, ServiceQuotaExceededException, ServiceUnavailableException
+    def create_container_recipe(self, CreateContainerRecipeRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/CreateContainerRecipe", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"containerType\":" + imagebuilder_json_str(input.containerType))
+        parts.append("\"name\":" + imagebuilder_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + imagebuilder_json_str(u0))
+        parts.append("\"semanticVersion\":" + imagebuilder_json_str(input.semanticVersion))
+        if input.components.is_some():
+            auto u1 = input.components.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(component_configuration_to_json(x2))
+            parts.append("\"components\":" + imagebuilder_json_arr(e2))
+        if input.instanceConfiguration.is_some():
+            auto u3 = input.instanceConfiguration.unwrap()
+            parts.append("\"instanceConfiguration\":" + instance_configuration_to_json(u3))
+        if input.dockerfileTemplateData.is_some():
+            auto u4 = input.dockerfileTemplateData.unwrap()
+            parts.append("\"dockerfileTemplateData\":" + imagebuilder_json_str(u4))
+        if input.dockerfileTemplateUri.is_some():
+            auto u5 = input.dockerfileTemplateUri.unwrap()
+            parts.append("\"dockerfileTemplateUri\":" + imagebuilder_json_str(u5))
+        if input.platformOverride.is_some():
+            auto u6 = input.platformOverride.unwrap()
+            parts.append("\"platformOverride\":" + u6.to_json())
+        if input.imageOsVersionOverride.is_some():
+            auto u7 = input.imageOsVersionOverride.unwrap()
+            parts.append("\"imageOsVersionOverride\":" + imagebuilder_json_str(u7))
+        parts.append("\"parentImage\":" + imagebuilder_json_str(input.parentImage))
+        if input.tags.is_some():
+            auto u8 = input.tags.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(imagebuilder_json_str(k9) + ":" + imagebuilder_json_str(u8[k9]))
+            parts.append("\"tags\":" + imagebuilder_json_obj(m9))
+        if input.workingDirectory.is_some():
+            auto u10 = input.workingDirectory.unwrap()
+            parts.append("\"workingDirectory\":" + imagebuilder_json_str(u10))
+        parts.append("\"targetRepository\":" + input.targetRepository.to_json())
+        if input.kmsKeyId.is_some():
+            auto u11 = input.kmsKeyId.unwrap()
+            parts.append("\"kmsKeyId\":" + imagebuilder_json_str(u11))
+        parts.append("\"clientToken\":" + imagebuilder_json_str(input.clientToken))
+        if input.dryRun.is_some():
+            auto u12 = input.dryRun.unwrap()
+            parts.append("\"dryRun\":" + json.dumps(JsonValue.Bool(u12)))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # CreateDistributionConfiguration  PUT /CreateDistributionConfiguration
+    # errors: CallRateLimitExceededException, ClientException, DryRunOperationException, ForbiddenException, IdempotentParameterMismatchException, InvalidParameterCombinationException, InvalidRequestException, ResourceAlreadyExistsException, ResourceInUseException, ServiceException, ServiceQuotaExceededException, ServiceUnavailableException
+    def create_distribution_configuration(self, CreateDistributionConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/CreateDistributionConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + imagebuilder_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + imagebuilder_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.distributions:
+            e1.append(distribution_to_json(x1))
+        parts.append("\"distributions\":" + imagebuilder_json_arr(e1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(imagebuilder_json_str(k3) + ":" + imagebuilder_json_str(u2[k3]))
+            parts.append("\"tags\":" + imagebuilder_json_obj(m3))
+        parts.append("\"clientToken\":" + imagebuilder_json_str(input.clientToken))
+        if input.dryRun.is_some():
+            auto u4 = input.dryRun.unwrap()
+            parts.append("\"dryRun\":" + json.dumps(JsonValue.Bool(u4)))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # CreateImage  PUT /CreateImage
+    # errors: CallRateLimitExceededException, ClientException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, ResourceInUseException, ServiceException, ServiceQuotaExceededException, ServiceUnavailableException
+    def create_image(self, CreateImageRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/CreateImage", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.imageRecipeArn.is_some():
+            auto u0 = input.imageRecipeArn.unwrap()
+            parts.append("\"imageRecipeArn\":" + imagebuilder_json_str(u0))
+        if input.containerRecipeArn.is_some():
+            auto u1 = input.containerRecipeArn.unwrap()
+            parts.append("\"containerRecipeArn\":" + imagebuilder_json_str(u1))
+        if input.distributionConfigurationArn.is_some():
+            auto u2 = input.distributionConfigurationArn.unwrap()
+            parts.append("\"distributionConfigurationArn\":" + imagebuilder_json_str(u2))
+        parts.append("\"infrastructureConfigurationArn\":" + imagebuilder_json_str(input.infrastructureConfigurationArn))
+        if input.imageTestsConfiguration.is_some():
+            auto u3 = input.imageTestsConfiguration.unwrap()
+            parts.append("\"imageTestsConfiguration\":" + u3.to_json())
+        if input.enhancedImageMetadataEnabled.is_some():
+            auto u4 = input.enhancedImageMetadataEnabled.unwrap()
+            parts.append("\"enhancedImageMetadataEnabled\":" + json.dumps(JsonValue.Bool(u4)))
+        if input.tags.is_some():
+            auto u5 = input.tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(imagebuilder_json_str(k6) + ":" + imagebuilder_json_str(u5[k6]))
+            parts.append("\"tags\":" + imagebuilder_json_obj(m6))
+        parts.append("\"clientToken\":" + imagebuilder_json_str(input.clientToken))
+        if input.imageScanningConfiguration.is_some():
+            auto u7 = input.imageScanningConfiguration.unwrap()
+            parts.append("\"imageScanningConfiguration\":" + image_scanning_configuration_to_json(u7))
+        if input.workflows.is_some():
+            auto u8 = input.workflows.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(workflow_configuration_to_json(x9))
+            parts.append("\"workflows\":" + imagebuilder_json_arr(e9))
+        if input.executionRole.is_some():
+            auto u10 = input.executionRole.unwrap()
+            parts.append("\"executionRole\":" + imagebuilder_json_str(u10))
+        if input.loggingConfiguration.is_some():
+            auto u11 = input.loggingConfiguration.unwrap()
+            parts.append("\"loggingConfiguration\":" + u11.to_json())
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # CreateImagePipeline  PUT /CreateImagePipeline
+    # errors: CallRateLimitExceededException, ClientException, DryRunOperationException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, ResourceAlreadyExistsException, ResourceInUseException, ServiceException, ServiceQuotaExceededException, ServiceUnavailableException
+    def create_image_pipeline(self, CreateImagePipelineRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/CreateImagePipeline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + imagebuilder_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + imagebuilder_json_str(u0))
+        if input.imageRecipeArn.is_some():
+            auto u1 = input.imageRecipeArn.unwrap()
+            parts.append("\"imageRecipeArn\":" + imagebuilder_json_str(u1))
+        if input.containerRecipeArn.is_some():
+            auto u2 = input.containerRecipeArn.unwrap()
+            parts.append("\"containerRecipeArn\":" + imagebuilder_json_str(u2))
+        parts.append("\"infrastructureConfigurationArn\":" + imagebuilder_json_str(input.infrastructureConfigurationArn))
+        if input.distributionConfigurationArn.is_some():
+            auto u3 = input.distributionConfigurationArn.unwrap()
+            parts.append("\"distributionConfigurationArn\":" + imagebuilder_json_str(u3))
+        if input.imageTestsConfiguration.is_some():
+            auto u4 = input.imageTestsConfiguration.unwrap()
+            parts.append("\"imageTestsConfiguration\":" + u4.to_json())
+        if input.enhancedImageMetadataEnabled.is_some():
+            auto u5 = input.enhancedImageMetadataEnabled.unwrap()
+            parts.append("\"enhancedImageMetadataEnabled\":" + json.dumps(JsonValue.Bool(u5)))
+        if input.schedule.is_some():
+            auto u6 = input.schedule.unwrap()
+            parts.append("\"schedule\":" + u6.to_json())
+        if input.status.is_some():
+            auto u7 = input.status.unwrap()
+            parts.append("\"status\":" + u7.to_json())
+        if input.tags.is_some():
+            auto u8 = input.tags.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(imagebuilder_json_str(k9) + ":" + imagebuilder_json_str(u8[k9]))
+            parts.append("\"tags\":" + imagebuilder_json_obj(m9))
+        if input.imageTags.is_some():
+            auto u10 = input.imageTags.unwrap()
+            list[str] m11 = []
+            for k11 in sorted(u10.keys()):
+                m11.append(imagebuilder_json_str(k11) + ":" + imagebuilder_json_str(u10[k11]))
+            parts.append("\"imageTags\":" + imagebuilder_json_obj(m11))
+        parts.append("\"clientToken\":" + imagebuilder_json_str(input.clientToken))
+        if input.imageScanningConfiguration.is_some():
+            auto u12 = input.imageScanningConfiguration.unwrap()
+            parts.append("\"imageScanningConfiguration\":" + image_scanning_configuration_to_json(u12))
+        if input.workflows.is_some():
+            auto u13 = input.workflows.unwrap()
+            list[str] e14 = []
+            for x14 in u13:
+                e14.append(workflow_configuration_to_json(x14))
+            parts.append("\"workflows\":" + imagebuilder_json_arr(e14))
+        if input.executionRole.is_some():
+            auto u15 = input.executionRole.unwrap()
+            parts.append("\"executionRole\":" + imagebuilder_json_str(u15))
+        if input.loggingConfiguration.is_some():
+            auto u16 = input.loggingConfiguration.unwrap()
+            parts.append("\"loggingConfiguration\":" + u16.to_json())
+        if input.dryRun.is_some():
+            auto u17 = input.dryRun.unwrap()
+            parts.append("\"dryRun\":" + json.dumps(JsonValue.Bool(u17)))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # CreateImageRecipe  PUT /CreateImageRecipe
+    # errors: CallRateLimitExceededException, ClientException, DryRunOperationException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, InvalidVersionNumberException, ResourceAlreadyExistsException, ResourceInUseException, ServiceException, ServiceQuotaExceededException, ServiceUnavailableException
+    def create_image_recipe(self, CreateImageRecipeRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/CreateImageRecipe", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + imagebuilder_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + imagebuilder_json_str(u0))
+        parts.append("\"semanticVersion\":" + imagebuilder_json_str(input.semanticVersion))
+        if input.components.is_some():
+            auto u1 = input.components.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(component_configuration_to_json(x2))
+            parts.append("\"components\":" + imagebuilder_json_arr(e2))
+        parts.append("\"parentImage\":" + imagebuilder_json_str(input.parentImage))
+        if input.blockDeviceMappings.is_some():
+            auto u3 = input.blockDeviceMappings.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"blockDeviceMappings\":" + imagebuilder_json_arr(e4))
+        if input.tags.is_some():
+            auto u5 = input.tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(imagebuilder_json_str(k6) + ":" + imagebuilder_json_str(u5[k6]))
+            parts.append("\"tags\":" + imagebuilder_json_obj(m6))
+        if input.workingDirectory.is_some():
+            auto u7 = input.workingDirectory.unwrap()
+            parts.append("\"workingDirectory\":" + imagebuilder_json_str(u7))
+        if input.additionalInstanceConfiguration.is_some():
+            auto u8 = input.additionalInstanceConfiguration.unwrap()
+            parts.append("\"additionalInstanceConfiguration\":" + u8.to_json())
+        if input.amiTags.is_some():
+            auto u9 = input.amiTags.unwrap()
+            list[str] m10 = []
+            for k10 in sorted(u9.keys()):
+                m10.append(imagebuilder_json_str(k10) + ":" + imagebuilder_json_str(u9[k10]))
+            parts.append("\"amiTags\":" + imagebuilder_json_obj(m10))
+        if input.amiWatermarks.is_some():
+            auto u11 = input.amiWatermarks.unwrap()
+            list[str] e12 = []
+            for x12 in u11:
+                e12.append(imagebuilder_json_str(x12))
+            parts.append("\"amiWatermarks\":" + imagebuilder_json_arr(e12))
+        parts.append("\"clientToken\":" + imagebuilder_json_str(input.clientToken))
+        if input.dryRun.is_some():
+            auto u13 = input.dryRun.unwrap()
+            parts.append("\"dryRun\":" + json.dumps(JsonValue.Bool(u13)))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # CreateInfrastructureConfiguration  PUT /CreateInfrastructureConfiguration
+    # errors: CallRateLimitExceededException, ClientException, DryRunOperationException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, ResourceAlreadyExistsException, ResourceInUseException, ServiceException, ServiceQuotaExceededException, ServiceUnavailableException
+    def create_infrastructure_configuration(self, CreateInfrastructureConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/CreateInfrastructureConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + imagebuilder_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + imagebuilder_json_str(u0))
+        if input.instanceTypes.is_some():
+            auto u1 = input.instanceTypes.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(imagebuilder_json_str(x2))
+            parts.append("\"instanceTypes\":" + imagebuilder_json_arr(e2))
+        parts.append("\"instanceProfileName\":" + imagebuilder_json_str(input.instanceProfileName))
+        if input.securityGroupIds.is_some():
+            auto u3 = input.securityGroupIds.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(imagebuilder_json_str(x4))
+            parts.append("\"securityGroupIds\":" + imagebuilder_json_arr(e4))
+        if input.subnetId.is_some():
+            auto u5 = input.subnetId.unwrap()
+            parts.append("\"subnetId\":" + imagebuilder_json_str(u5))
+        if input.logging.is_some():
+            auto u6 = input.logging.unwrap()
+            parts.append("\"logging\":" + u6.to_json())
+        if input.keyPair.is_some():
+            auto u7 = input.keyPair.unwrap()
+            parts.append("\"keyPair\":" + imagebuilder_json_str(u7))
+        if input.terminateInstanceOnFailure.is_some():
+            auto u8 = input.terminateInstanceOnFailure.unwrap()
+            parts.append("\"terminateInstanceOnFailure\":" + json.dumps(JsonValue.Bool(u8)))
+        if input.terminateInstanceOnCompletion.is_some():
+            auto u9 = input.terminateInstanceOnCompletion.unwrap()
+            parts.append("\"terminateInstanceOnCompletion\":" + json.dumps(JsonValue.Bool(u9)))
+        if input.snsTopicArn.is_some():
+            auto u10 = input.snsTopicArn.unwrap()
+            parts.append("\"snsTopicArn\":" + imagebuilder_json_str(u10))
+        if input.resourceTags.is_some():
+            auto u11 = input.resourceTags.unwrap()
+            list[str] m12 = []
+            for k12 in sorted(u11.keys()):
+                m12.append(imagebuilder_json_str(k12) + ":" + imagebuilder_json_str(u11[k12]))
+            parts.append("\"resourceTags\":" + imagebuilder_json_obj(m12))
+        if input.instanceMetadataOptions.is_some():
+            auto u13 = input.instanceMetadataOptions.unwrap()
+            parts.append("\"instanceMetadataOptions\":" + u13.to_json())
+        if input.tags.is_some():
+            auto u14 = input.tags.unwrap()
+            list[str] m15 = []
+            for k15 in sorted(u14.keys()):
+                m15.append(imagebuilder_json_str(k15) + ":" + imagebuilder_json_str(u14[k15]))
+            parts.append("\"tags\":" + imagebuilder_json_obj(m15))
+        if input.placement.is_some():
+            auto u16 = input.placement.unwrap()
+            parts.append("\"placement\":" + u16.to_json())
+        if input.parentInstance.is_some():
+            auto u17 = input.parentInstance.unwrap()
+            parts.append("\"parentInstance\":" + u17.to_json())
+        parts.append("\"clientToken\":" + imagebuilder_json_str(input.clientToken))
+        if input.dryRun.is_some():
+            auto u18 = input.dryRun.unwrap()
+            parts.append("\"dryRun\":" + json.dumps(JsonValue.Bool(u18)))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # CreateLifecyclePolicy  PUT /CreateLifecyclePolicy
+    # errors: CallRateLimitExceededException, ClientException, DryRunOperationException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, ResourceAlreadyExistsException, ResourceInUseException, ServiceException, ServiceQuotaExceededException, ServiceUnavailableException
+    def create_lifecycle_policy(self, CreateLifecyclePolicyRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/CreateLifecyclePolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + imagebuilder_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + imagebuilder_json_str(u0))
+        if input.status.is_some():
+            auto u1 = input.status.unwrap()
+            parts.append("\"status\":" + u1.to_json())
+        parts.append("\"executionRole\":" + imagebuilder_json_str(input.executionRole))
+        parts.append("\"resourceType\":" + input.resourceType.to_json())
+        list[str] e2 = []
+        for x2 in input.policyDetails:
+            e2.append(lifecycle_policy_detail_to_json(x2))
+        parts.append("\"policyDetails\":" + imagebuilder_json_arr(e2))
+        parts.append("\"resourceSelection\":" + lifecycle_policy_resource_selection_to_json(input.resourceSelection))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(imagebuilder_json_str(k4) + ":" + imagebuilder_json_str(u3[k4]))
+            parts.append("\"tags\":" + imagebuilder_json_obj(m4))
+        parts.append("\"clientToken\":" + imagebuilder_json_str(input.clientToken))
+        if input.dryRun.is_some():
+            auto u5 = input.dryRun.unwrap()
+            parts.append("\"dryRun\":" + json.dumps(JsonValue.Bool(u5)))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # CreateWorkflow  PUT /CreateWorkflow
+    # errors: CallRateLimitExceededException, ClientException, DryRunOperationException, ForbiddenException, IdempotentParameterMismatchException, InvalidParameterCombinationException, InvalidRequestException, InvalidVersionNumberException, ResourceInUseException, ServiceException, ServiceQuotaExceededException, ServiceUnavailableException
+    def create_workflow(self, CreateWorkflowRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/CreateWorkflow", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + imagebuilder_json_str(input.name))
+        parts.append("\"semanticVersion\":" + imagebuilder_json_str(input.semanticVersion))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + imagebuilder_json_str(u0))
+        if input.changeDescription.is_some():
+            auto u1 = input.changeDescription.unwrap()
+            parts.append("\"changeDescription\":" + imagebuilder_json_str(u1))
+        if input.data.is_some():
+            auto u2 = input.data.unwrap()
+            parts.append("\"data\":" + imagebuilder_json_str(u2))
+        if input.uri.is_some():
+            auto u3 = input.uri.unwrap()
+            parts.append("\"uri\":" + imagebuilder_json_str(u3))
+        if input.kmsKeyId.is_some():
+            auto u4 = input.kmsKeyId.unwrap()
+            parts.append("\"kmsKeyId\":" + imagebuilder_json_str(u4))
+        if input.tags.is_some():
+            auto u5 = input.tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(imagebuilder_json_str(k6) + ":" + imagebuilder_json_str(u5[k6]))
+            parts.append("\"tags\":" + imagebuilder_json_obj(m6))
+        parts.append("\"clientToken\":" + imagebuilder_json_str(input.clientToken))
+        parts.append("\"type\":" + input.type.to_json())
+        if input.dryRun.is_some():
+            auto u7 = input.dryRun.unwrap()
+            parts.append("\"dryRun\":" + json.dumps(JsonValue.Bool(u7)))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
 
     # DeleteComponent  DELETE /DeleteComponent
@@ -2847,6 +3647,28 @@ struct imagebuilderClient:
         query["workflowBuildVersionArn"] = input.workflowBuildVersionArn
         auto b = binding.HttpBinding(method="DELETE", path_template="/DeleteWorkflow", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
+
+    # DistributeImage  PUT /DistributeImage
+    # errors: AccessDeniedException, CallRateLimitExceededException, ClientException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException, ServiceException, ServiceQuotaExceededException, ServiceUnavailableException, TooManyRequestsException
+    def distribute_image(self, DistributeImageRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/DistributeImage", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"sourceImage\":" + imagebuilder_json_str(input.sourceImage))
+        parts.append("\"distributionConfigurationArn\":" + imagebuilder_json_str(input.distributionConfigurationArn))
+        parts.append("\"executionRole\":" + imagebuilder_json_str(input.executionRole))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(imagebuilder_json_str(k1) + ":" + imagebuilder_json_str(u0[k1]))
+            parts.append("\"tags\":" + imagebuilder_json_obj(m1))
+        parts.append("\"clientToken\":" + imagebuilder_json_str(input.clientToken))
+        if input.loggingConfiguration.is_some():
+            auto u2 = input.loggingConfiguration.unwrap()
+            parts.append("\"loggingConfiguration\":" + u2.to_json())
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
 
     # GetComponent  GET /GetComponent
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidRequestException, ServiceException, ServiceUnavailableException
@@ -3001,6 +3823,108 @@ struct imagebuilderClient:
         auto b = binding.HttpBinding(method="GET", path_template="/GetWorkflowStepExecution", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
+    # ImportComponent  PUT /ImportComponent
+    # errors: CallRateLimitExceededException, ClientException, ForbiddenException, IdempotentParameterMismatchException, InvalidParameterCombinationException, InvalidRequestException, InvalidVersionNumberException, ResourceInUseException, ServiceException, ServiceUnavailableException
+    def import_component(self, ImportComponentRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/ImportComponent", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + imagebuilder_json_str(input.name))
+        parts.append("\"semanticVersion\":" + imagebuilder_json_str(input.semanticVersion))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + imagebuilder_json_str(u0))
+        if input.changeDescription.is_some():
+            auto u1 = input.changeDescription.unwrap()
+            parts.append("\"changeDescription\":" + imagebuilder_json_str(u1))
+        parts.append("\"type\":" + input.type.to_json())
+        parts.append("\"format\":" + imagebuilder_json_str(input.format))
+        parts.append("\"platform\":" + input.platform.to_json())
+        if input.data.is_some():
+            auto u2 = input.data.unwrap()
+            parts.append("\"data\":" + imagebuilder_json_str(u2))
+        if input.uri.is_some():
+            auto u3 = input.uri.unwrap()
+            parts.append("\"uri\":" + imagebuilder_json_str(u3))
+        if input.kmsKeyId.is_some():
+            auto u4 = input.kmsKeyId.unwrap()
+            parts.append("\"kmsKeyId\":" + imagebuilder_json_str(u4))
+        if input.tags.is_some():
+            auto u5 = input.tags.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(imagebuilder_json_str(k6) + ":" + imagebuilder_json_str(u5[k6]))
+            parts.append("\"tags\":" + imagebuilder_json_obj(m6))
+        parts.append("\"clientToken\":" + imagebuilder_json_str(input.clientToken))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # ImportDiskImage  PUT /ImportDiskImage
+    # errors: AccessDeniedException, ClientException, ServiceException, ServiceUnavailableException, TooManyRequestsException
+    def import_disk_image(self, ImportDiskImageRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/ImportDiskImage", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + imagebuilder_json_str(input.name))
+        parts.append("\"semanticVersion\":" + imagebuilder_json_str(input.semanticVersion))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + imagebuilder_json_str(u0))
+        parts.append("\"platform\":" + imagebuilder_json_str(input.platform))
+        parts.append("\"osVersion\":" + imagebuilder_json_str(input.osVersion))
+        if input.executionRole.is_some():
+            auto u1 = input.executionRole.unwrap()
+            parts.append("\"executionRole\":" + imagebuilder_json_str(u1))
+        parts.append("\"infrastructureConfigurationArn\":" + imagebuilder_json_str(input.infrastructureConfigurationArn))
+        parts.append("\"uri\":" + imagebuilder_json_str(input.uri))
+        if input.loggingConfiguration.is_some():
+            auto u2 = input.loggingConfiguration.unwrap()
+            parts.append("\"loggingConfiguration\":" + u2.to_json())
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(imagebuilder_json_str(k4) + ":" + imagebuilder_json_str(u3[k4]))
+            parts.append("\"tags\":" + imagebuilder_json_obj(m4))
+        if input.registerImageOptions.is_some():
+            auto u5 = input.registerImageOptions.unwrap()
+            parts.append("\"registerImageOptions\":" + u5.to_json())
+        if input.windowsConfiguration.is_some():
+            auto u6 = input.windowsConfiguration.unwrap()
+            parts.append("\"windowsConfiguration\":" + u6.to_json())
+        parts.append("\"clientToken\":" + imagebuilder_json_str(input.clientToken))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # ImportVmImage  PUT /ImportVmImage
+    # errors: ClientException, ServiceException, ServiceUnavailableException
+    def import_vm_image(self, ImportVmImageRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/ImportVmImage", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + imagebuilder_json_str(input.name))
+        parts.append("\"semanticVersion\":" + imagebuilder_json_str(input.semanticVersion))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + imagebuilder_json_str(u0))
+        parts.append("\"platform\":" + input.platform.to_json())
+        if input.osVersion.is_some():
+            auto u1 = input.osVersion.unwrap()
+            parts.append("\"osVersion\":" + imagebuilder_json_str(u1))
+        parts.append("\"vmImportTaskId\":" + imagebuilder_json_str(input.vmImportTaskId))
+        if input.loggingConfiguration.is_some():
+            auto u2 = input.loggingConfiguration.unwrap()
+            parts.append("\"loggingConfiguration\":" + u2.to_json())
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(imagebuilder_json_str(k4) + ":" + imagebuilder_json_str(u3[k4]))
+            parts.append("\"tags\":" + imagebuilder_json_obj(m4))
+        parts.append("\"clientToken\":" + imagebuilder_json_str(input.clientToken))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
     # ListComponentBuildVersions  POST /ListComponentBuildVersions
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
     def list_component_build_versions(self, ListComponentBuildVersionsRequest input) -> str:
@@ -3010,6 +3934,102 @@ struct imagebuilderClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
 
+    # ListComponents  POST /ListComponents
+    # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
+    def list_components(self, ListComponentsRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListComponents", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.owner.is_some():
+            auto u0 = input.owner.unwrap()
+            parts.append("\"owner\":" + u0.to_json())
+        if input.filters.is_some():
+            auto u1 = input.filters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(filter_to_json(x2))
+            parts.append("\"filters\":" + imagebuilder_json_arr(e2))
+        if input.byName.is_some():
+            auto u3 = input.byName.unwrap()
+            parts.append("\"byName\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.maxResults.is_some():
+            auto u4 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u4))
+        if input.nextToken.is_some():
+            auto u5 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + imagebuilder_json_str(u5))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # ListContainerRecipes  POST /ListContainerRecipes
+    # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
+    def list_container_recipes(self, ListContainerRecipesRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListContainerRecipes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.owner.is_some():
+            auto u0 = input.owner.unwrap()
+            parts.append("\"owner\":" + u0.to_json())
+        if input.filters.is_some():
+            auto u1 = input.filters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(filter_to_json(x2))
+            parts.append("\"filters\":" + imagebuilder_json_arr(e2))
+        if input.maxResults.is_some():
+            auto u3 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u3))
+        if input.nextToken.is_some():
+            auto u4 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + imagebuilder_json_str(u4))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # ListDistributionConfigurations  POST /ListDistributionConfigurations
+    # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
+    def list_distribution_configurations(self, ListDistributionConfigurationsRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListDistributionConfigurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(filter_to_json(x1))
+            parts.append("\"filters\":" + imagebuilder_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + imagebuilder_json_str(u3))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # ListImageBuildVersions  POST /ListImageBuildVersions
+    # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
+    def list_image_build_versions(self, ListImageBuildVersionsRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListImageBuildVersions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.imageVersionArn.is_some():
+            auto u0 = input.imageVersionArn.unwrap()
+            parts.append("\"imageVersionArn\":" + imagebuilder_json_str(u0))
+        if input.filters.is_some():
+            auto u1 = input.filters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(filter_to_json(x2))
+            parts.append("\"filters\":" + imagebuilder_json_arr(e2))
+        if input.maxResults.is_some():
+            auto u3 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u3))
+        if input.nextToken.is_some():
+            auto u4 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + imagebuilder_json_str(u4))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
     # ListImagePackages  POST /ListImagePackages
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ResourceNotFoundException, ServiceException, ServiceUnavailableException
     def list_image_packages(self, ListImagePackagesRequest input) -> str:
@@ -3017,6 +4037,160 @@ struct imagebuilderClient:
         auto b = binding.HttpBinding(method="POST", path_template="/ListImagePackages", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListImagePackagesDocument(imageBuildVersionArn=input.imageBuildVersionArn, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # ListImagePipelineImages  POST /ListImagePipelineImages
+    # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ResourceNotFoundException, ServiceException, ServiceUnavailableException
+    def list_image_pipeline_images(self, ListImagePipelineImagesRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListImagePipelineImages", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"imagePipelineArn\":" + imagebuilder_json_str(input.imagePipelineArn))
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(filter_to_json(x1))
+            parts.append("\"filters\":" + imagebuilder_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + imagebuilder_json_str(u3))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # ListImagePipelines  POST /ListImagePipelines
+    # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
+    def list_image_pipelines(self, ListImagePipelinesRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListImagePipelines", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(filter_to_json(x1))
+            parts.append("\"filters\":" + imagebuilder_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + imagebuilder_json_str(u3))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # ListImageRecipes  POST /ListImageRecipes
+    # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
+    def list_image_recipes(self, ListImageRecipesRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListImageRecipes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.owner.is_some():
+            auto u0 = input.owner.unwrap()
+            parts.append("\"owner\":" + u0.to_json())
+        if input.filters.is_some():
+            auto u1 = input.filters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(filter_to_json(x2))
+            parts.append("\"filters\":" + imagebuilder_json_arr(e2))
+        if input.maxResults.is_some():
+            auto u3 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u3))
+        if input.nextToken.is_some():
+            auto u4 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + imagebuilder_json_str(u4))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # ListImageScanFindingAggregations  POST /ListImageScanFindingAggregations
+    # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
+    def list_image_scan_finding_aggregations(self, ListImageScanFindingAggregationsRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListImageScanFindingAggregations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filter.is_some():
+            auto u0 = input.filter.unwrap()
+            parts.append("\"filter\":" + filter_to_json(u0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + imagebuilder_json_str(u1))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # ListImageScanFindings  POST /ListImageScanFindings
+    # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
+    def list_image_scan_findings(self, ListImageScanFindingsRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListImageScanFindings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(image_scan_findings_filter_to_json(x1))
+            parts.append("\"filters\":" + imagebuilder_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + imagebuilder_json_str(u3))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # ListImages  POST /ListImages
+    # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
+    def list_images(self, ListImagesRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListImages", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.owner.is_some():
+            auto u0 = input.owner.unwrap()
+            parts.append("\"owner\":" + u0.to_json())
+        if input.filters.is_some():
+            auto u1 = input.filters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(filter_to_json(x2))
+            parts.append("\"filters\":" + imagebuilder_json_arr(e2))
+        if input.byName.is_some():
+            auto u3 = input.byName.unwrap()
+            parts.append("\"byName\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.maxResults.is_some():
+            auto u4 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u4))
+        if input.nextToken.is_some():
+            auto u5 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + imagebuilder_json_str(u5))
+        if input.includeDeprecated.is_some():
+            auto u6 = input.includeDeprecated.unwrap()
+            parts.append("\"includeDeprecated\":" + json.dumps(JsonValue.Bool(u6)))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # ListInfrastructureConfigurations  POST /ListInfrastructureConfigurations
+    # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
+    def list_infrastructure_configurations(self, ListInfrastructureConfigurationsRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListInfrastructureConfigurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(filter_to_json(x1))
+            parts.append("\"filters\":" + imagebuilder_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + imagebuilder_json_str(u3))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
 
     # ListLifecycleExecutionResources  POST /ListLifecycleExecutionResources
@@ -3035,6 +4209,27 @@ struct imagebuilderClient:
         auto b = binding.HttpBinding(method="POST", path_template="/ListLifecycleExecutions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListLifecycleExecutionsDocument(maxResults=input.maxResults, nextToken=input.nextToken, resourceArn=input.resourceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # ListLifecyclePolicies  POST /ListLifecyclePolicies
+    # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
+    def list_lifecycle_policies(self, ListLifecyclePoliciesRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListLifecyclePolicies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(filter_to_json(x1))
+            parts.append("\"filters\":" + imagebuilder_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + imagebuilder_json_str(u3))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -3080,6 +4275,33 @@ struct imagebuilderClient:
         auto b = binding.HttpBinding(method="POST", path_template="/ListWorkflowStepExecutions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListWorkflowStepExecutionsDocument(maxResults=input.maxResults, nextToken=input.nextToken, workflowExecutionId=input.workflowExecutionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # ListWorkflows  POST /ListWorkflows
+    # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
+    def list_workflows(self, ListWorkflowsRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListWorkflows", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.owner.is_some():
+            auto u0 = input.owner.unwrap()
+            parts.append("\"owner\":" + u0.to_json())
+        if input.filters.is_some():
+            auto u1 = input.filters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(filter_to_json(x2))
+            parts.append("\"filters\":" + imagebuilder_json_arr(e2))
+        if input.byName.is_some():
+            auto u3 = input.byName.unwrap()
+            parts.append("\"byName\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.maxResults.is_some():
+            auto u4 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u4))
+        if input.nextToken.is_some():
+            auto u5 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + imagebuilder_json_str(u5))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
 
     # PutComponentPolicy  PUT /PutComponentPolicy
@@ -3136,6 +4358,221 @@ struct imagebuilderClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
 
+    # StartImagePipelineExecution  PUT /StartImagePipelineExecution
+    # errors: CallRateLimitExceededException, ClientException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException, ServiceException, ServiceUnavailableException
+    def start_image_pipeline_execution(self, StartImagePipelineExecutionRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/StartImagePipelineExecution", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"imagePipelineArn\":" + imagebuilder_json_str(input.imagePipelineArn))
+        parts.append("\"clientToken\":" + imagebuilder_json_str(input.clientToken))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(imagebuilder_json_str(k1) + ":" + imagebuilder_json_str(u0[k1]))
+            parts.append("\"tags\":" + imagebuilder_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # StartResourceStateUpdate  PUT /StartResourceStateUpdate
+    # errors: CallRateLimitExceededException, ClientException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException, ServiceException, ServiceUnavailableException
+    def start_resource_state_update(self, StartResourceStateUpdateRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/StartResourceStateUpdate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceArn\":" + imagebuilder_json_str(input.resourceArn))
+        parts.append("\"state\":" + input.state.to_json())
+        if input.executionRole.is_some():
+            auto u0 = input.executionRole.unwrap()
+            parts.append("\"executionRole\":" + imagebuilder_json_str(u0))
+        if input.includeResources.is_some():
+            auto u1 = input.includeResources.unwrap()
+            parts.append("\"includeResources\":" + u1.to_json())
+        if input.exclusionRules.is_some():
+            auto u2 = input.exclusionRules.unwrap()
+            parts.append("\"exclusionRules\":" + resource_state_update_exclusion_rules_to_json(u2))
+        if input.updateAt.is_some():
+            auto u3 = input.updateAt.unwrap()
+            parts.append("\"updateAt\":" + str(datetime.to_timestamp(u3)))
+        parts.append("\"clientToken\":" + imagebuilder_json_str(input.clientToken))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InvalidParameterException, ResourceNotFoundException, ServiceException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(imagebuilder_json_str(k0) + ":" + imagebuilder_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + imagebuilder_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # UpdateDistributionConfiguration  PUT /UpdateDistributionConfiguration
+    # errors: CallRateLimitExceededException, ClientException, ForbiddenException, IdempotentParameterMismatchException, InvalidParameterCombinationException, InvalidRequestException, ResourceInUseException, ServiceException, ServiceUnavailableException
+    def update_distribution_configuration(self, UpdateDistributionConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/UpdateDistributionConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"distributionConfigurationArn\":" + imagebuilder_json_str(input.distributionConfigurationArn))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + imagebuilder_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.distributions:
+            e1.append(distribution_to_json(x1))
+        parts.append("\"distributions\":" + imagebuilder_json_arr(e1))
+        parts.append("\"clientToken\":" + imagebuilder_json_str(input.clientToken))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # UpdateImagePipeline  PUT /UpdateImagePipeline
+    # errors: CallRateLimitExceededException, ClientException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, ResourceInUseException, ServiceException, ServiceUnavailableException
+    def update_image_pipeline(self, UpdateImagePipelineRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/UpdateImagePipeline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"imagePipelineArn\":" + imagebuilder_json_str(input.imagePipelineArn))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + imagebuilder_json_str(u0))
+        if input.imageRecipeArn.is_some():
+            auto u1 = input.imageRecipeArn.unwrap()
+            parts.append("\"imageRecipeArn\":" + imagebuilder_json_str(u1))
+        if input.containerRecipeArn.is_some():
+            auto u2 = input.containerRecipeArn.unwrap()
+            parts.append("\"containerRecipeArn\":" + imagebuilder_json_str(u2))
+        parts.append("\"infrastructureConfigurationArn\":" + imagebuilder_json_str(input.infrastructureConfigurationArn))
+        if input.distributionConfigurationArn.is_some():
+            auto u3 = input.distributionConfigurationArn.unwrap()
+            parts.append("\"distributionConfigurationArn\":" + imagebuilder_json_str(u3))
+        if input.imageTestsConfiguration.is_some():
+            auto u4 = input.imageTestsConfiguration.unwrap()
+            parts.append("\"imageTestsConfiguration\":" + u4.to_json())
+        if input.enhancedImageMetadataEnabled.is_some():
+            auto u5 = input.enhancedImageMetadataEnabled.unwrap()
+            parts.append("\"enhancedImageMetadataEnabled\":" + json.dumps(JsonValue.Bool(u5)))
+        if input.schedule.is_some():
+            auto u6 = input.schedule.unwrap()
+            parts.append("\"schedule\":" + u6.to_json())
+        if input.status.is_some():
+            auto u7 = input.status.unwrap()
+            parts.append("\"status\":" + u7.to_json())
+        parts.append("\"clientToken\":" + imagebuilder_json_str(input.clientToken))
+        if input.imageScanningConfiguration.is_some():
+            auto u8 = input.imageScanningConfiguration.unwrap()
+            parts.append("\"imageScanningConfiguration\":" + image_scanning_configuration_to_json(u8))
+        if input.workflows.is_some():
+            auto u9 = input.workflows.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(workflow_configuration_to_json(x10))
+            parts.append("\"workflows\":" + imagebuilder_json_arr(e10))
+        if input.loggingConfiguration.is_some():
+            auto u11 = input.loggingConfiguration.unwrap()
+            parts.append("\"loggingConfiguration\":" + u11.to_json())
+        if input.executionRole.is_some():
+            auto u12 = input.executionRole.unwrap()
+            parts.append("\"executionRole\":" + imagebuilder_json_str(u12))
+        if input.imageTags.is_some():
+            auto u13 = input.imageTags.unwrap()
+            list[str] m14 = []
+            for k14 in sorted(u13.keys()):
+                m14.append(imagebuilder_json_str(k14) + ":" + imagebuilder_json_str(u13[k14]))
+            parts.append("\"imageTags\":" + imagebuilder_json_obj(m14))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # UpdateInfrastructureConfiguration  PUT /UpdateInfrastructureConfiguration
+    # errors: CallRateLimitExceededException, ClientException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, ResourceInUseException, ServiceException, ServiceUnavailableException
+    def update_infrastructure_configuration(self, UpdateInfrastructureConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/UpdateInfrastructureConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"infrastructureConfigurationArn\":" + imagebuilder_json_str(input.infrastructureConfigurationArn))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + imagebuilder_json_str(u0))
+        if input.instanceTypes.is_some():
+            auto u1 = input.instanceTypes.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(imagebuilder_json_str(x2))
+            parts.append("\"instanceTypes\":" + imagebuilder_json_arr(e2))
+        parts.append("\"instanceProfileName\":" + imagebuilder_json_str(input.instanceProfileName))
+        if input.securityGroupIds.is_some():
+            auto u3 = input.securityGroupIds.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(imagebuilder_json_str(x4))
+            parts.append("\"securityGroupIds\":" + imagebuilder_json_arr(e4))
+        if input.subnetId.is_some():
+            auto u5 = input.subnetId.unwrap()
+            parts.append("\"subnetId\":" + imagebuilder_json_str(u5))
+        if input.logging.is_some():
+            auto u6 = input.logging.unwrap()
+            parts.append("\"logging\":" + u6.to_json())
+        if input.keyPair.is_some():
+            auto u7 = input.keyPair.unwrap()
+            parts.append("\"keyPair\":" + imagebuilder_json_str(u7))
+        if input.terminateInstanceOnFailure.is_some():
+            auto u8 = input.terminateInstanceOnFailure.unwrap()
+            parts.append("\"terminateInstanceOnFailure\":" + json.dumps(JsonValue.Bool(u8)))
+        if input.terminateInstanceOnCompletion.is_some():
+            auto u9 = input.terminateInstanceOnCompletion.unwrap()
+            parts.append("\"terminateInstanceOnCompletion\":" + json.dumps(JsonValue.Bool(u9)))
+        if input.snsTopicArn.is_some():
+            auto u10 = input.snsTopicArn.unwrap()
+            parts.append("\"snsTopicArn\":" + imagebuilder_json_str(u10))
+        if input.resourceTags.is_some():
+            auto u11 = input.resourceTags.unwrap()
+            list[str] m12 = []
+            for k12 in sorted(u11.keys()):
+                m12.append(imagebuilder_json_str(k12) + ":" + imagebuilder_json_str(u11[k12]))
+            parts.append("\"resourceTags\":" + imagebuilder_json_obj(m12))
+        if input.instanceMetadataOptions.is_some():
+            auto u13 = input.instanceMetadataOptions.unwrap()
+            parts.append("\"instanceMetadataOptions\":" + u13.to_json())
+        if input.placement.is_some():
+            auto u14 = input.placement.unwrap()
+            parts.append("\"placement\":" + u14.to_json())
+        if input.parentInstance.is_some():
+            auto u15 = input.parentInstance.unwrap()
+            parts.append("\"parentInstance\":" + u15.to_json())
+        parts.append("\"clientToken\":" + imagebuilder_json_str(input.clientToken))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
+    # UpdateLifecyclePolicy  PUT /UpdateLifecyclePolicy
+    # errors: CallRateLimitExceededException, ClientException, ForbiddenException, IdempotentParameterMismatchException, InvalidParameterCombinationException, InvalidRequestException, ResourceInUseException, ServiceException, ServiceUnavailableException
+    def update_lifecycle_policy(self, UpdateLifecyclePolicyRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/UpdateLifecyclePolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"lifecyclePolicyArn\":" + imagebuilder_json_str(input.lifecyclePolicyArn))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + imagebuilder_json_str(u0))
+        if input.status.is_some():
+            auto u1 = input.status.unwrap()
+            parts.append("\"status\":" + u1.to_json())
+        parts.append("\"executionRole\":" + imagebuilder_json_str(input.executionRole))
+        parts.append("\"resourceType\":" + input.resourceType.to_json())
+        list[str] e2 = []
+        for x2 in input.policyDetails:
+            e2.append(lifecycle_policy_detail_to_json(x2))
+        parts.append("\"policyDetails\":" + imagebuilder_json_arr(e2))
+        parts.append("\"resourceSelection\":" + lifecycle_policy_resource_selection_to_json(input.resourceSelection))
+        parts.append("\"clientToken\":" + imagebuilder_json_str(input.clientToken))
+        auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
+
     # Paginator for ListComponentBuildVersions — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: componentSummaryList).
     def paginate_list_component_build_versions(self, ListComponentBuildVersionsRequest input):
@@ -3149,12 +4586,155 @@ struct imagebuilderClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListComponents — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: componentVersionList).
+    def paginate_list_components(self, ListComponentsRequest input):
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        while True:
+            auto raw = self.list_components(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListContainerRecipes — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: containerRecipeSummaryList).
+    def paginate_list_container_recipes(self, ListContainerRecipesRequest input):
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        while True:
+            auto raw = self.list_container_recipes(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListDistributionConfigurations — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: distributionConfigurationSummaryList).
+    def paginate_list_distribution_configurations(self, ListDistributionConfigurationsRequest input):
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        while True:
+            auto raw = self.list_distribution_configurations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListImageBuildVersions — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: imageSummaryList).
+    def paginate_list_image_build_versions(self, ListImageBuildVersionsRequest input):
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        while True:
+            auto raw = self.list_image_build_versions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListImagePackages — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: imagePackageList).
     def paginate_list_image_packages(self, ListImagePackagesRequest input):
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         while True:
             auto raw = self.list_image_packages(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListImagePipelineImages — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: imageSummaryList).
+    def paginate_list_image_pipeline_images(self, ListImagePipelineImagesRequest input):
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        while True:
+            auto raw = self.list_image_pipeline_images(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListImagePipelines — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: imagePipelineList).
+    def paginate_list_image_pipelines(self, ListImagePipelinesRequest input):
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        while True:
+            auto raw = self.list_image_pipelines(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListImageRecipes — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: imageRecipeSummaryList).
+    def paginate_list_image_recipes(self, ListImageRecipesRequest input):
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        while True:
+            auto raw = self.list_image_recipes(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListImageScanFindingAggregations — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: responses).
+    def paginate_list_image_scan_finding_aggregations(self, ListImageScanFindingAggregationsRequest input):
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        while True:
+            auto raw = self.list_image_scan_finding_aggregations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListImageScanFindings — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: findings).
+    def paginate_list_image_scan_findings(self, ListImageScanFindingsRequest input):
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        while True:
+            auto raw = self.list_image_scan_findings(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListImages — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: imageVersionList).
+    def paginate_list_images(self, ListImagesRequest input):
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        while True:
+            auto raw = self.list_images(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListInfrastructureConfigurations — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: infrastructureConfigurationSummaryList).
+    def paginate_list_infrastructure_configurations(self, ListInfrastructureConfigurationsRequest input):
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        while True:
+            auto raw = self.list_infrastructure_configurations(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -3181,6 +4761,19 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         while True:
             auto raw = self.list_lifecycle_executions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListLifecyclePolicies — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: lifecyclePolicySummaryList).
+    def paginate_list_lifecycle_policies(self, ListLifecyclePoliciesRequest input):
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        while True:
+            auto raw = self.list_lifecycle_policies(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -3233,6 +4826,19 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         while True:
             auto raw = self.list_workflow_step_executions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListWorkflows — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: workflowVersionList).
+    def paginate_list_workflows(self, ListWorkflowsRequest input):
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        while True:
+            auto raw = self.list_workflows(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

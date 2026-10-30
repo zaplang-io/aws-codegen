@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 25 operations — 16 with a generated method,
-#   9 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 25 operations — 22 with a generated method,
+#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   210 structs (144 @derive(Json)), 41 enums, 10 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -685,8 +685,9 @@ struct ApiKeyCredentials:
     str apiKey
     Optional[str] apiSecretKey
 
-# no @derive(Json): member(s) connectorSuppliedValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectorSuppliedValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthParameter:
     Optional[str] key
     Optional[bool] isRequired
@@ -695,8 +696,9 @@ struct AuthParameter:
     Optional[bool] isSensitiveField
     Optional[list[str]] connectorSuppliedValues
 
-# no @derive(Json): member(s) oAuth2Defaults: OAuth2Defaults, customAuthConfigs: list[CustomAuthConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oAuth2Defaults: OAuth2Defaults, customAuthConfigs: list[CustomAuthConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthenticationConfig:
     Optional[bool] isBasicAuthSupported
     Optional[bool] isApiKeyAuthSupported
@@ -716,8 +718,9 @@ struct CancelFlowExecutionsRequest:
     str flowName
     Optional[list[str]] executionIds
 
-# no @derive(Json): member(s) invalidExecutions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) invalidExecutions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CancelFlowExecutionsResponse:
     Optional[list[str]] invalidExecutions
 
@@ -729,8 +732,9 @@ struct ConflictException:
 struct ConnectorAuthenticationException:
     Optional[str] message
 
-# no @derive(Json): member(s) supportedDestinationConnectors: list[ConnectorType], supportedSchedulingFrequencies: list[ScheduleFrequencyType], supportedTriggerTypes: list[TriggerType], connectorMetadata: ConnectorMetadata, connectorModes: list[str], authenticationConfig: AuthenticationConfig, connectorRuntimeSettings: list[ConnectorRuntimeSetting], supportedApiVersions: list[str], supportedOperators: list[Operators], supportedWriteOperations: list[WriteOperationType], supportedDataTransferTypes: list[SupportedDataTransferType], supportedDataTransferApis: list[DataTransferApi] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) supportedDestinationConnectors: list[ConnectorType], supportedSchedulingFrequencies: list[ScheduleFrequencyType], supportedTriggerTypes: list[TriggerType], connectorMetadata: ConnectorMetadata, connectorModes: list[str], authenticationConfig: AuthenticationConfig, connectorRuntimeSettings: list[ConnectorRuntimeSetting], supportedApiVersions: list[str], supportedOperators: list[Operators], supportedWriteOperations: list[WriteOperationType], supportedDataTransferTypes: list[SupportedDataTransferType], supportedDataTransferApis: list[DataTransferApi] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectorConfiguration:
     Optional[bool] canUseAsSource
     Optional[bool] canUseAsDestination
@@ -761,8 +765,9 @@ struct ConnectorConfiguration:
     Optional[list[SupportedDataTransferType]] supportedDataTransferTypes
     Optional[list[DataTransferApi]] supportedDataTransferApis
 
-# no @derive(Json): member(s) connectorModes: list[str], supportedDataTransferTypes: list[SupportedDataTransferType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectorModes: list[str], supportedDataTransferTypes: list[SupportedDataTransferType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectorDetail:
     Optional[str] connectorDescription
     Optional[str] connectorName
@@ -783,8 +788,9 @@ struct ConnectorEntity:
     Optional[str] label
     Optional[bool] hasNestedEntities
 
-# no @derive(Json): member(s) supportedFieldTypeDetails: SupportedFieldTypeDetails, destinationProperties: DestinationFieldProperties, customProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) supportedFieldTypeDetails: SupportedFieldTypeDetails, destinationProperties: DestinationFieldProperties, customProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectorEntityField:
     str identifier
     Optional[str] parentIdentifier
@@ -798,8 +804,9 @@ struct ConnectorEntityField:
     Optional[DestinationFieldProperties] destinationProperties
     Optional[dict[str, str]] customProperties
 
-# no @derive(Json): member(s) GoogleAnalytics: GoogleAnalyticsMetadata, Salesforce: SalesforceMetadata, Slack: SlackMetadata, Snowflake: SnowflakeMetadata, Zendesk: ZendeskMetadata, Honeycode: HoneycodeMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GoogleAnalytics: GoogleAnalyticsMetadata, Salesforce: SalesforceMetadata, Slack: SlackMetadata, Snowflake: SnowflakeMetadata, Zendesk: ZendeskMetadata, Honeycode: HoneycodeMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectorMetadata:
     Optional[AmplitudeMetadata] Amplitude
     Optional[DatadogMetadata] Datadog
@@ -850,8 +857,9 @@ struct ConnectorOperator:
     Optional[Operator] CustomConnector
     Optional[PardotConnectorOperator] Pardot
 
-# no @derive(Json): member(s) connectorProfileProperties: ConnectorProfileProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectorProfileProperties: ConnectorProfileProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectorProfile:
     Optional[str] connectorProfileArn
     Optional[str] connectorProfileName
@@ -864,14 +872,16 @@ struct ConnectorProfile:
     Optional[DateTime] lastUpdatedAt
     Optional[PrivateConnectionProvisioningState] privateConnectionProvisioningState
 
-# no @derive(Json): member(s) connectorProfileProperties: ConnectorProfileProperties, connectorProfileCredentials: ConnectorProfileCredentials not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectorProfileProperties: ConnectorProfileProperties, connectorProfileCredentials: ConnectorProfileCredentials not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectorProfileConfig:
     ConnectorProfileProperties connectorProfileProperties
     Optional[ConnectorProfileCredentials] connectorProfileCredentials
 
-# no @derive(Json): member(s) CustomConnector: CustomConnectorProfileCredentials not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomConnector: CustomConnectorProfileCredentials not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectorProfileCredentials:
     Optional[AmplitudeConnectorProfileCredentials] Amplitude
     Optional[DatadogConnectorProfileCredentials] Datadog
@@ -893,8 +903,9 @@ struct ConnectorProfileCredentials:
     Optional[CustomConnectorProfileCredentials] CustomConnector
     Optional[PardotConnectorProfileCredentials] Pardot
 
-# no @derive(Json): member(s) SAPOData: SAPODataConnectorProfileProperties, CustomConnector: CustomConnectorProfileProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SAPOData: SAPODataConnectorProfileProperties, CustomConnector: CustomConnectorProfileProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectorProfileProperties:
     Optional[AmplitudeConnectorProfileProperties] Amplitude
     Optional[DatadogConnectorProfileProperties] Datadog
@@ -921,8 +932,9 @@ struct ConnectorProvisioningConfig:
     # wire name "lambda" differs from field; derive rename is a #346 follow-up
     Optional[LambdaConnectorProvisioningConfig] lambda_
 
-# no @derive(Json): member(s) connectorSuppliedValueOptions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectorSuppliedValueOptions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectorRuntimeSetting:
     Optional[str] key
     Optional[str] dataType
@@ -971,20 +983,23 @@ struct CreateFlowResponse:
     Optional[str] flowArn
     Optional[FlowStatus] flowStatus
 
-# no @derive(Json): member(s) authParameters: list[AuthParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authParameters: list[AuthParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomAuthConfig:
     Optional[str] customAuthenticationType
     Optional[list[AuthParameter]] authParameters
 
-# no @derive(Json): member(s) credentialsMap: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) credentialsMap: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomAuthCredentials:
     str customAuthenticationType
     Optional[dict[str, str]] credentialsMap
 
-# no @derive(Json): member(s) idFieldNames: list[str], customProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) idFieldNames: list[str], customProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomConnectorDestinationProperties:
     str entityName
     Optional[ErrorHandlingConfig] errorHandlingConfig
@@ -992,8 +1007,9 @@ struct CustomConnectorDestinationProperties:
     Optional[list[str]] idFieldNames
     Optional[dict[str, str]] customProperties
 
-# no @derive(Json): member(s) custom: CustomAuthCredentials not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) custom: CustomAuthCredentials not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomConnectorProfileCredentials:
     AuthenticationType authenticationType
     Optional[BasicAuthCredentials] basic
@@ -1001,14 +1017,16 @@ struct CustomConnectorProfileCredentials:
     Optional[ApiKeyCredentials] apiKey
     Optional[CustomAuthCredentials] custom
 
-# no @derive(Json): member(s) profileProperties: dict[str, str], oAuth2Properties: OAuth2Properties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) profileProperties: dict[str, str], oAuth2Properties: OAuth2Properties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomConnectorProfileProperties:
     Optional[dict[str, str]] profileProperties
     Optional[OAuth2Properties] oAuth2Properties
 
-# no @derive(Json): member(s) customProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomConnectorSourceProperties:
     str entityName
     Optional[dict[str, str]] customProperties
@@ -1077,8 +1095,9 @@ struct DescribeConnectorEntityRequest:
     Optional[str] connectorProfileName
     Optional[str] apiVersion
 
-# no @derive(Json): member(s) connectorEntityFields: list[ConnectorEntityField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectorEntityFields: list[ConnectorEntityField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConnectorEntityResponse:
     list[ConnectorEntityField] connectorEntityFields
 
@@ -1091,8 +1110,9 @@ struct DescribeConnectorProfilesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) connectorProfileDetails: list[ConnectorProfile] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectorProfileDetails: list[ConnectorProfile] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConnectorProfilesResponse:
     Optional[list[ConnectorProfile]] connectorProfileDetails
     Optional[str] nextToken
@@ -1103,8 +1123,9 @@ struct DescribeConnectorRequest:
     ConnectorType connectorType
     Optional[str] connectorLabel
 
-# no @derive(Json): member(s) connectorConfiguration: ConnectorConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectorConfiguration: ConnectorConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConnectorResponse:
     Optional[ConnectorConfiguration] connectorConfiguration
 
@@ -1115,8 +1136,9 @@ struct DescribeConnectorsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) connectorConfigurations: dict[ConnectorType, ConnectorConfiguration], connectors: list[ConnectorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectorConfigurations: dict[ConnectorType, ConnectorConfiguration], connectors: list[ConnectorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConnectorsResponse:
     Optional[dict[ConnectorType, ConnectorConfiguration]] connectorConfigurations
     Optional[list[ConnectorDetail]] connectors
@@ -1129,8 +1151,9 @@ struct DescribeFlowExecutionRecordsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) flowExecutions: list[ExecutionRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) flowExecutions: list[ExecutionRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFlowExecutionRecordsResponse:
     Optional[list[ExecutionRecord]] flowExecutions
     Optional[str] nextToken
@@ -1140,8 +1163,9 @@ struct DescribeFlowExecutionRecordsResponse:
 struct DescribeFlowRequest:
     str flowName
 
-# no @derive(Json): member(s) sourceFlowConfig: SourceFlowConfig, destinationFlowConfigList: list[DestinationFlowConfig], tasks: list[Task], tags: dict[str, str], lastRunMetadataCatalogDetails: list[MetadataCatalogDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceFlowConfig: SourceFlowConfig, destinationFlowConfigList: list[DestinationFlowConfig], tasks: list[Task], tags: dict[str, str], lastRunMetadataCatalogDetails: list[MetadataCatalogDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFlowResponse:
     Optional[str] flowArn
     Optional[str] description
@@ -1163,8 +1187,9 @@ struct DescribeFlowResponse:
     Optional[list[MetadataCatalogDetail]] lastRunMetadataCatalogDetails
     Optional[int64] schemaVersion
 
-# no @derive(Json): member(s) S3: S3DestinationProperties, Salesforce: SalesforceDestinationProperties, Upsolver: UpsolverDestinationProperties, Zendesk: ZendeskDestinationProperties, CustomConnector: CustomConnectorDestinationProperties, SAPOData: SAPODataDestinationProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3: S3DestinationProperties, Salesforce: SalesforceDestinationProperties, Upsolver: UpsolverDestinationProperties, Zendesk: ZendeskDestinationProperties, CustomConnector: CustomConnectorDestinationProperties, SAPOData: SAPODataDestinationProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DestinationConnectorProperties:
     Optional[RedshiftDestinationProperties] Redshift
     Optional[S3DestinationProperties] S3
@@ -1180,8 +1205,9 @@ struct DestinationConnectorProperties:
     Optional[CustomConnectorDestinationProperties] CustomConnector
     Optional[SAPODataDestinationProperties] SAPOData
 
-# no @derive(Json): member(s) supportedWriteOperations: list[WriteOperationType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) supportedWriteOperations: list[WriteOperationType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DestinationFieldProperties:
     Optional[bool] isCreatable
     Optional[bool] isNullable
@@ -1190,8 +1216,9 @@ struct DestinationFieldProperties:
     Optional[bool] isDefaultedOnCreate
     Optional[list[WriteOperationType]] supportedWriteOperations
 
-# no @derive(Json): member(s) destinationConnectorProperties: DestinationConnectorProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) destinationConnectorProperties: DestinationConnectorProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DestinationFlowConfig:
     ConnectorType connectorType
     Optional[str] apiVersion
@@ -1242,8 +1269,9 @@ struct ExecutionDetails:
     Optional[DateTime] mostRecentExecutionTime
     Optional[ExecutionStatus] mostRecentExecutionStatus
 
-# no @derive(Json): member(s) metadataCatalogDetails: list[MetadataCatalogDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadataCatalogDetails: list[MetadataCatalogDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecutionRecord:
     Optional[str] executionId
     Optional[ExecutionStatus] executionStatus
@@ -1263,8 +1291,9 @@ struct ExecutionResult:
     Optional[int64] numParallelProcesses
     Optional[int64] maxPageSize
 
-# no @derive(Json): member(s) filterOperators: list[Operator], supportedValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filterOperators: list[Operator], supportedValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FieldTypeDetails:
     str fieldType
     list[Operator] filterOperators
@@ -1274,8 +1303,9 @@ struct FieldTypeDetails:
     Optional[Range] fieldValueRange
     Optional[Range] fieldLengthRange
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FlowDefinition:
     Optional[str] flowArn
     Optional[str] description
@@ -1312,8 +1342,9 @@ struct GoogleAnalyticsConnectorProfileProperties:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) oAuthScopes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oAuthScopes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GoogleAnalyticsMetadata:
     Optional[list[str]] oAuthScopes
 
@@ -1337,8 +1368,9 @@ struct HoneycodeDestinationProperties:
     str object
     Optional[ErrorHandlingConfig] errorHandlingConfig
 
-# no @derive(Json): member(s) oAuthScopes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oAuthScopes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HoneycodeMetadata:
     Optional[list[str]] oAuthScopes
 
@@ -1384,8 +1416,9 @@ struct ListConnectorEntitiesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) connectorEntityMap: dict[str, list[ConnectorEntity]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectorEntityMap: dict[str, list[ConnectorEntity]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectorEntitiesResponse:
     dict[str, list[ConnectorEntity]] connectorEntityMap
     Optional[str] nextToken
@@ -1396,8 +1429,9 @@ struct ListConnectorsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) connectors: list[ConnectorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectors: list[ConnectorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectorsResponse:
     Optional[list[ConnectorDetail]] connectors
     Optional[str] nextToken
@@ -1408,8 +1442,9 @@ struct ListFlowsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) flows: list[FlowDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) flows: list[FlowDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFlowsResponse:
     Optional[list[FlowDefinition]] flows
     Optional[str] nextToken
@@ -1419,8 +1454,9 @@ struct ListFlowsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -1473,8 +1509,9 @@ struct OAuth2Credentials:
     Optional[str] refreshToken
     Optional[ConnectorOAuthRequest] oAuthRequest
 
-# no @derive(Json): member(s) connectorSuppliedValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) connectorSuppliedValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OAuth2CustomParameter:
     Optional[str] key
     Optional[bool] isRequired
@@ -1484,8 +1521,9 @@ struct OAuth2CustomParameter:
     Optional[list[str]] connectorSuppliedValues
     Optional[OAuth2CustomPropType] type
 
-# no @derive(Json): member(s) oauthScopes: list[str], tokenUrls: list[str], authCodeUrls: list[str], oauth2GrantTypesSupported: list[OAuth2GrantType], oauth2CustomProperties: list[OAuth2CustomParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oauthScopes: list[str], tokenUrls: list[str], authCodeUrls: list[str], oauth2GrantTypesSupported: list[OAuth2GrantType], oauth2CustomProperties: list[OAuth2CustomParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OAuth2Defaults:
     Optional[list[str]] oauthScopes
     Optional[list[str]] tokenUrls
@@ -1493,8 +1531,9 @@ struct OAuth2Defaults:
     Optional[list[OAuth2GrantType]] oauth2GrantTypesSupported
     Optional[list[OAuth2CustomParameter]] oauth2CustomProperties
 
-# no @derive(Json): member(s) tokenUrlCustomProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tokenUrlCustomProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OAuth2Properties:
     str tokenUrl
     OAuth2GrantType oAuth2GrantType
@@ -1508,8 +1547,9 @@ struct OAuthCredentials:
     Optional[str] refreshToken
     Optional[ConnectorOAuthRequest] oAuthRequest
 
-# no @derive(Json): member(s) oAuthScopes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oAuthScopes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OAuthProperties:
     str tokenUrl
     str authCodeUrl
@@ -1537,8 +1577,9 @@ struct PardotMetadata:
 struct PardotSourceProperties:
     str object
 
-# no @derive(Json): member(s) pathPrefixHierarchy: list[PathPrefix] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pathPrefixHierarchy: list[PathPrefix] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrefixConfig:
     Optional[PrefixType] prefixType
     Optional[PrefixFormat] prefixFormat
@@ -1621,8 +1662,9 @@ struct ResetConnectorMetadataCacheResponse:
 struct ResourceNotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) s3OutputFormatConfig: S3OutputFormatConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) s3OutputFormatConfig: S3OutputFormatConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3DestinationProperties:
     str bucketName
     Optional[str] bucketPrefix
@@ -1637,8 +1679,9 @@ struct S3Metadata:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) prefixConfig: PrefixConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) prefixConfig: PrefixConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3OutputFormatConfig:
     Optional[FileType] fileType
     Optional[PrefixConfig] prefixConfig
@@ -1656,8 +1699,9 @@ struct SAPODataConnectorProfileCredentials:
     Optional[BasicAuthCredentials] basicAuthCredentials
     Optional[OAuthCredentials] oAuthCredentials
 
-# no @derive(Json): member(s) oAuthProperties: OAuthProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oAuthProperties: OAuthProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SAPODataConnectorProfileProperties:
     str applicationHostUrl
     str applicationServicePath
@@ -1668,8 +1712,9 @@ struct SAPODataConnectorProfileProperties:
     Optional[OAuthProperties] oAuthProperties
     Optional[bool] disableSSO
 
-# no @derive(Json): member(s) idFieldNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) idFieldNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SAPODataDestinationProperties:
     str objectPath
     Optional[SuccessResponseHandlingConfig] successResponseHandlingConfig
@@ -1711,8 +1756,9 @@ struct SalesforceConnectorProfileProperties:
     Optional[bool] isSandboxEnvironment
     Optional[bool] usePrivateLinkForMetadataAndAuthorization
 
-# no @derive(Json): member(s) idFieldNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) idFieldNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SalesforceDestinationProperties:
     str object
     Optional[list[str]] idFieldNames
@@ -1720,8 +1766,9 @@ struct SalesforceDestinationProperties:
     Optional[WriteOperationType] writeOperationType
     Optional[SalesforceDataTransferApi] dataTransferApi
 
-# no @derive(Json): member(s) oAuthScopes: list[str], dataTransferApis: list[SalesforceDataTransferApi], oauth2GrantTypesSupported: list[OAuth2GrantType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oAuthScopes: list[str], dataTransferApis: list[SalesforceDataTransferApi], oauth2GrantTypesSupported: list[OAuth2GrantType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SalesforceMetadata:
     Optional[list[str]] oAuthScopes
     Optional[list[SalesforceDataTransferApi]] dataTransferApis
@@ -1797,8 +1844,9 @@ struct SlackConnectorProfileCredentials:
 struct SlackConnectorProfileProperties:
     str instanceUrl
 
-# no @derive(Json): member(s) oAuthScopes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oAuthScopes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SlackMetadata:
     Optional[list[str]] oAuthScopes
 
@@ -1829,13 +1877,15 @@ struct SnowflakeDestinationProperties:
     Optional[str] bucketPrefix
     Optional[ErrorHandlingConfig] errorHandlingConfig
 
-# no @derive(Json): member(s) supportedRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) supportedRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnowflakeMetadata:
     Optional[list[str]] supportedRegions
 
-# no @derive(Json): member(s) CustomConnector: CustomConnectorSourceProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomConnector: CustomConnectorSourceProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceConnectorProperties:
     Optional[AmplitudeSourceProperties] Amplitude
     Optional[DatadogSourceProperties] Datadog
@@ -1861,8 +1911,9 @@ struct SourceFieldProperties:
     Optional[bool] isQueryable
     Optional[bool] isTimestampFieldForIncrementalQueries
 
-# no @derive(Json): member(s) sourceConnectorProperties: SourceConnectorProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceConnectorProperties: SourceConnectorProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceFlowConfig:
     ConnectorType connectorType
     Optional[str] apiVersion
@@ -1897,8 +1948,9 @@ struct SuccessResponseHandlingConfig:
     Optional[str] bucketPrefix
     Optional[str] bucketName
 
-# no @derive(Json): member(s) v1: FieldTypeDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) v1: FieldTypeDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SupportedFieldTypeDetails:
     FieldTypeDetails v1
 
@@ -1913,8 +1965,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) sourceFields: list[str], taskProperties: dict[OperatorPropertiesKeys, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceFields: list[str], taskProperties: dict[OperatorPropertiesKeys, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Task:
     list[str] sourceFields
     Optional[ConnectorOperator] connectorOperator
@@ -2019,8 +2072,9 @@ struct UpdateFlowRequest:
 struct UpdateFlowResponse:
     Optional[FlowStatus] flowStatus
 
-# no @derive(Json): member(s) s3OutputFormatConfig: UpsolverS3OutputFormatConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) s3OutputFormatConfig: UpsolverS3OutputFormatConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpsolverDestinationProperties:
     str bucketName
     Optional[str] bucketPrefix
@@ -2031,8 +2085,9 @@ struct UpsolverMetadata:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) prefixConfig: PrefixConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) prefixConfig: PrefixConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpsolverS3OutputFormatConfig:
     Optional[FileType] fileType
     PrefixConfig prefixConfig
@@ -2075,16 +2130,18 @@ struct ZendeskConnectorProfileCredentials:
 struct ZendeskConnectorProfileProperties:
     str instanceUrl
 
-# no @derive(Json): member(s) idFieldNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) idFieldNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ZendeskDestinationProperties:
     str object
     Optional[list[str]] idFieldNames
     Optional[ErrorHandlingConfig] errorHandlingConfig
     Optional[WriteOperationType] writeOperationType
 
-# no @derive(Json): member(s) oAuthScopes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oAuthScopes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ZendeskMetadata:
     Optional[list[str]] oAuthScopes
 
@@ -2139,15 +2196,9 @@ def appflow_error_from_code(str code) -> AppflowError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CancelFlowExecutions (document member `executionIds: list[str]` is not serializable by derive)
-#   CreateConnectorProfile (document member `connectorProfileConfig: ConnectorProfileConfig` is not serializable by derive)
-#   CreateFlow (document member `sourceFlowConfig: SourceFlowConfig` is not serializable by derive)
-#   DescribeConnectorProfiles (document member `connectorProfileNames: list[str]` is not serializable by derive)
-#   DescribeConnectors (document member `connectorTypes: list[ConnectorType]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
+#   CreateFlow (document member `tasks: list[Task]` is not serializable)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateConnectorProfile (document member `connectorProfileConfig: ConnectorProfileConfig` is not serializable by derive)
-#   UpdateFlow (document member `sourceFlowConfig: SourceFlowConfig` is not serializable by derive)
+#   UpdateFlow (document member `tasks: list[Task]` is not serializable)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -2255,10 +2306,300 @@ struct UpdateConnectorRegistrationDocument:
     Optional[ConnectorProvisioningConfig] connectorProvisioningConfig
     Optional[str] clientToken
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def appflow_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def appflow_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def appflow_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ConnectorProfileConfig to a compact JSON object (declaration order).
+def connector_profile_config_to_json(ConnectorProfileConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"connectorProfileProperties\":" + connector_profile_properties_to_json(v.connectorProfileProperties))
+    if v.connectorProfileCredentials.is_some():
+        auto u0 = v.connectorProfileCredentials.unwrap()
+        parts.append("\"connectorProfileCredentials\":" + connector_profile_credentials_to_json(u0))
+    return appflow_json_obj(parts)
+
+# Serialize ConnectorProfileCredentials to a compact JSON object (declaration order).
+def connector_profile_credentials_to_json(ConnectorProfileCredentials v) -> str:
+    list[str] parts = []
+    if v.Amplitude.is_some():
+        auto u0 = v.Amplitude.unwrap()
+        parts.append("\"Amplitude\":" + u0.to_json())
+    if v.Datadog.is_some():
+        auto u1 = v.Datadog.unwrap()
+        parts.append("\"Datadog\":" + u1.to_json())
+    if v.Dynatrace.is_some():
+        auto u2 = v.Dynatrace.unwrap()
+        parts.append("\"Dynatrace\":" + u2.to_json())
+    if v.GoogleAnalytics.is_some():
+        auto u3 = v.GoogleAnalytics.unwrap()
+        parts.append("\"GoogleAnalytics\":" + u3.to_json())
+    if v.Honeycode.is_some():
+        auto u4 = v.Honeycode.unwrap()
+        parts.append("\"Honeycode\":" + u4.to_json())
+    if v.InforNexus.is_some():
+        auto u5 = v.InforNexus.unwrap()
+        parts.append("\"InforNexus\":" + u5.to_json())
+    if v.Marketo.is_some():
+        auto u6 = v.Marketo.unwrap()
+        parts.append("\"Marketo\":" + u6.to_json())
+    if v.Redshift.is_some():
+        auto u7 = v.Redshift.unwrap()
+        parts.append("\"Redshift\":" + u7.to_json())
+    if v.Salesforce.is_some():
+        auto u8 = v.Salesforce.unwrap()
+        parts.append("\"Salesforce\":" + u8.to_json())
+    if v.ServiceNow.is_some():
+        auto u9 = v.ServiceNow.unwrap()
+        parts.append("\"ServiceNow\":" + u9.to_json())
+    if v.Singular.is_some():
+        auto u10 = v.Singular.unwrap()
+        parts.append("\"Singular\":" + u10.to_json())
+    if v.Slack.is_some():
+        auto u11 = v.Slack.unwrap()
+        parts.append("\"Slack\":" + u11.to_json())
+    if v.Snowflake.is_some():
+        auto u12 = v.Snowflake.unwrap()
+        parts.append("\"Snowflake\":" + u12.to_json())
+    if v.Trendmicro.is_some():
+        auto u13 = v.Trendmicro.unwrap()
+        parts.append("\"Trendmicro\":" + u13.to_json())
+    if v.Veeva.is_some():
+        auto u14 = v.Veeva.unwrap()
+        parts.append("\"Veeva\":" + u14.to_json())
+    if v.Zendesk.is_some():
+        auto u15 = v.Zendesk.unwrap()
+        parts.append("\"Zendesk\":" + u15.to_json())
+    if v.SAPOData.is_some():
+        auto u16 = v.SAPOData.unwrap()
+        parts.append("\"SAPOData\":" + u16.to_json())
+    if v.CustomConnector.is_some():
+        auto u17 = v.CustomConnector.unwrap()
+        parts.append("\"CustomConnector\":" + custom_connector_profile_credentials_to_json(u17))
+    if v.Pardot.is_some():
+        auto u18 = v.Pardot.unwrap()
+        parts.append("\"Pardot\":" + u18.to_json())
+    return appflow_json_obj(parts)
+
+# Serialize ConnectorProfileProperties to a compact JSON object (declaration order).
+def connector_profile_properties_to_json(ConnectorProfileProperties v) -> str:
+    list[str] parts = []
+    if v.Amplitude.is_some():
+        auto u0 = v.Amplitude.unwrap()
+        parts.append("\"Amplitude\":" + u0.to_json())
+    if v.Datadog.is_some():
+        auto u1 = v.Datadog.unwrap()
+        parts.append("\"Datadog\":" + u1.to_json())
+    if v.Dynatrace.is_some():
+        auto u2 = v.Dynatrace.unwrap()
+        parts.append("\"Dynatrace\":" + u2.to_json())
+    if v.GoogleAnalytics.is_some():
+        auto u3 = v.GoogleAnalytics.unwrap()
+        parts.append("\"GoogleAnalytics\":" + u3.to_json())
+    if v.Honeycode.is_some():
+        auto u4 = v.Honeycode.unwrap()
+        parts.append("\"Honeycode\":" + u4.to_json())
+    if v.InforNexus.is_some():
+        auto u5 = v.InforNexus.unwrap()
+        parts.append("\"InforNexus\":" + u5.to_json())
+    if v.Marketo.is_some():
+        auto u6 = v.Marketo.unwrap()
+        parts.append("\"Marketo\":" + u6.to_json())
+    if v.Redshift.is_some():
+        auto u7 = v.Redshift.unwrap()
+        parts.append("\"Redshift\":" + u7.to_json())
+    if v.Salesforce.is_some():
+        auto u8 = v.Salesforce.unwrap()
+        parts.append("\"Salesforce\":" + u8.to_json())
+    if v.ServiceNow.is_some():
+        auto u9 = v.ServiceNow.unwrap()
+        parts.append("\"ServiceNow\":" + u9.to_json())
+    if v.Singular.is_some():
+        auto u10 = v.Singular.unwrap()
+        parts.append("\"Singular\":" + u10.to_json())
+    if v.Slack.is_some():
+        auto u11 = v.Slack.unwrap()
+        parts.append("\"Slack\":" + u11.to_json())
+    if v.Snowflake.is_some():
+        auto u12 = v.Snowflake.unwrap()
+        parts.append("\"Snowflake\":" + u12.to_json())
+    if v.Trendmicro.is_some():
+        auto u13 = v.Trendmicro.unwrap()
+        parts.append("\"Trendmicro\":" + u13.to_json())
+    if v.Veeva.is_some():
+        auto u14 = v.Veeva.unwrap()
+        parts.append("\"Veeva\":" + u14.to_json())
+    if v.Zendesk.is_some():
+        auto u15 = v.Zendesk.unwrap()
+        parts.append("\"Zendesk\":" + u15.to_json())
+    if v.SAPOData.is_some():
+        auto u16 = v.SAPOData.unwrap()
+        parts.append("\"SAPOData\":" + sapo_data_connector_profile_properties_to_json(u16))
+    if v.CustomConnector.is_some():
+        auto u17 = v.CustomConnector.unwrap()
+        parts.append("\"CustomConnector\":" + custom_connector_profile_properties_to_json(u17))
+    if v.Pardot.is_some():
+        auto u18 = v.Pardot.unwrap()
+        parts.append("\"Pardot\":" + u18.to_json())
+    return appflow_json_obj(parts)
+
+# Serialize CustomAuthCredentials to a compact JSON object (declaration order).
+def custom_auth_credentials_to_json(CustomAuthCredentials v) -> str:
+    list[str] parts = []
+    parts.append("\"customAuthenticationType\":" + appflow_json_str(v.customAuthenticationType))
+    if v.credentialsMap.is_some():
+        auto u0 = v.credentialsMap.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(appflow_json_str(k1) + ":" + appflow_json_str(u0[k1]))
+        parts.append("\"credentialsMap\":" + appflow_json_obj(m1))
+    return appflow_json_obj(parts)
+
+# Serialize CustomConnectorProfileCredentials to a compact JSON object (declaration order).
+def custom_connector_profile_credentials_to_json(CustomConnectorProfileCredentials v) -> str:
+    list[str] parts = []
+    parts.append("\"authenticationType\":" + v.authenticationType.to_json())
+    if v.basic.is_some():
+        auto u0 = v.basic.unwrap()
+        parts.append("\"basic\":" + u0.to_json())
+    if v.oauth2.is_some():
+        auto u1 = v.oauth2.unwrap()
+        parts.append("\"oauth2\":" + u1.to_json())
+    if v.apiKey.is_some():
+        auto u2 = v.apiKey.unwrap()
+        parts.append("\"apiKey\":" + u2.to_json())
+    if v.custom.is_some():
+        auto u3 = v.custom.unwrap()
+        parts.append("\"custom\":" + custom_auth_credentials_to_json(u3))
+    return appflow_json_obj(parts)
+
+# Serialize CustomConnectorProfileProperties to a compact JSON object (declaration order).
+def custom_connector_profile_properties_to_json(CustomConnectorProfileProperties v) -> str:
+    list[str] parts = []
+    if v.profileProperties.is_some():
+        auto u0 = v.profileProperties.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(appflow_json_str(k1) + ":" + appflow_json_str(u0[k1]))
+        parts.append("\"profileProperties\":" + appflow_json_obj(m1))
+    if v.oAuth2Properties.is_some():
+        auto u2 = v.oAuth2Properties.unwrap()
+        parts.append("\"oAuth2Properties\":" + o_auth2_properties_to_json(u2))
+    return appflow_json_obj(parts)
+
+# Serialize OAuth2Properties to a compact JSON object (declaration order).
+def o_auth2_properties_to_json(OAuth2Properties v) -> str:
+    list[str] parts = []
+    parts.append("\"tokenUrl\":" + appflow_json_str(v.tokenUrl))
+    parts.append("\"oAuth2GrantType\":" + v.oAuth2GrantType.to_json())
+    if v.tokenUrlCustomProperties.is_some():
+        auto u0 = v.tokenUrlCustomProperties.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(appflow_json_str(k1) + ":" + appflow_json_str(u0[k1]))
+        parts.append("\"tokenUrlCustomProperties\":" + appflow_json_obj(m1))
+    return appflow_json_obj(parts)
+
+# Serialize OAuthProperties to a compact JSON object (declaration order).
+def o_auth_properties_to_json(OAuthProperties v) -> str:
+    list[str] parts = []
+    parts.append("\"tokenUrl\":" + appflow_json_str(v.tokenUrl))
+    parts.append("\"authCodeUrl\":" + appflow_json_str(v.authCodeUrl))
+    list[str] e0 = []
+    for x0 in v.oAuthScopes:
+        e0.append(appflow_json_str(x0))
+    parts.append("\"oAuthScopes\":" + appflow_json_arr(e0))
+    return appflow_json_obj(parts)
+
+# Serialize SAPODataConnectorProfileProperties to a compact JSON object (declaration order).
+def sapo_data_connector_profile_properties_to_json(SAPODataConnectorProfileProperties v) -> str:
+    list[str] parts = []
+    parts.append("\"applicationHostUrl\":" + appflow_json_str(v.applicationHostUrl))
+    parts.append("\"applicationServicePath\":" + appflow_json_str(v.applicationServicePath))
+    parts.append("\"portNumber\":" + str(v.portNumber))
+    parts.append("\"clientNumber\":" + appflow_json_str(v.clientNumber))
+    if v.logonLanguage.is_some():
+        auto u0 = v.logonLanguage.unwrap()
+        parts.append("\"logonLanguage\":" + appflow_json_str(u0))
+    if v.privateLinkServiceName.is_some():
+        auto u1 = v.privateLinkServiceName.unwrap()
+        parts.append("\"privateLinkServiceName\":" + appflow_json_str(u1))
+    if v.oAuthProperties.is_some():
+        auto u2 = v.oAuthProperties.unwrap()
+        parts.append("\"oAuthProperties\":" + o_auth_properties_to_json(u2))
+    if v.disableSSO.is_some():
+        auto u3 = v.disableSSO.unwrap()
+        parts.append("\"disableSSO\":" + json.dumps(JsonValue.Bool(u3)))
+    return appflow_json_obj(parts)
+
 # A bound Appflow client: credentials + region, threaded into every operation.
 struct AppflowClient:
     core.Credentials creds
     str region
+
+    # CancelFlowExecutions  POST /cancel-flow-executions
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def cancel_flow_executions(self, CancelFlowExecutionsRequest input) -> str:
+        auto host = endpoints.regional_host(appflow_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/cancel-flow-executions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"flowName\":" + appflow_json_str(input.flowName))
+        if input.executionIds.is_some():
+            auto u0 = input.executionIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(appflow_json_str(x1))
+            parts.append("\"executionIds\":" + appflow_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, appflow_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appflow_service(), self.region, host)
+
+    # CreateConnectorProfile  POST /create-connector-profile
+    # errors: ConflictException, ConnectorAuthenticationException, InternalServerException, ServiceQuotaExceededException, ValidationException
+    def create_connector_profile(self, CreateConnectorProfileRequest input) -> str:
+        auto host = endpoints.regional_host(appflow_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/create-connector-profile", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"connectorProfileName\":" + appflow_json_str(input.connectorProfileName))
+        if input.kmsArn.is_some():
+            auto u0 = input.kmsArn.unwrap()
+            parts.append("\"kmsArn\":" + appflow_json_str(u0))
+        parts.append("\"connectorType\":" + input.connectorType.to_json())
+        if input.connectorLabel.is_some():
+            auto u1 = input.connectorLabel.unwrap()
+            parts.append("\"connectorLabel\":" + appflow_json_str(u1))
+        parts.append("\"connectionMode\":" + input.connectionMode.to_json())
+        parts.append("\"connectorProfileConfig\":" + connector_profile_config_to_json(input.connectorProfileConfig))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + appflow_json_str(u2))
+        auto bp = restjson.rest_json_document(b, appflow_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appflow_service(), self.region, host)
 
     # DeleteConnectorProfile  POST /delete-connector-profile
     # errors: ConflictException, InternalServerException, ResourceNotFoundException
@@ -2294,6 +2635,54 @@ struct AppflowClient:
         auto b = binding.HttpBinding(method="POST", path_template="/describe-connector-entity", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeConnectorEntityDocument(connectorEntityName=input.connectorEntityName, connectorType=input.connectorType, connectorProfileName=input.connectorProfileName, apiVersion=input.apiVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, appflow_service(), self.region, host)
+
+    # DescribeConnectorProfiles  POST /describe-connector-profiles
+    # errors: InternalServerException, ValidationException
+    def describe_connector_profiles(self, DescribeConnectorProfilesRequest input) -> str:
+        auto host = endpoints.regional_host(appflow_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/describe-connector-profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.connectorProfileNames.is_some():
+            auto u0 = input.connectorProfileNames.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(appflow_json_str(x1))
+            parts.append("\"connectorProfileNames\":" + appflow_json_arr(e1))
+        if input.connectorType.is_some():
+            auto u2 = input.connectorType.unwrap()
+            parts.append("\"connectorType\":" + u2.to_json())
+        if input.connectorLabel.is_some():
+            auto u3 = input.connectorLabel.unwrap()
+            parts.append("\"connectorLabel\":" + appflow_json_str(u3))
+        if input.maxResults.is_some():
+            auto u4 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u4))
+        if input.nextToken.is_some():
+            auto u5 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + appflow_json_str(u5))
+        auto bp = restjson.rest_json_document(b, appflow_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appflow_service(), self.region, host)
+
+    # DescribeConnectors  POST /describe-connectors
+    # errors: InternalServerException, ValidationException
+    def describe_connectors(self, DescribeConnectorsRequest input) -> str:
+        auto host = endpoints.regional_host(appflow_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/describe-connectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.connectorTypes.is_some():
+            auto u0 = input.connectorTypes.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"connectorTypes\":" + appflow_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + appflow_json_str(u3))
+        auto bp = restjson.rest_json_document(b, appflow_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, appflow_service(), self.region, host)
 
     # DescribeFlow  POST /describe-flow
@@ -2386,6 +2775,21 @@ struct AppflowClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appflow_service(), self.region, host)
 
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(appflow_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(appflow_json_str(k0) + ":" + appflow_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + appflow_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, appflow_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, appflow_service(), self.region, host)
+
     # UnregisterConnector  POST /unregister-connector
     # errors: ConflictException, InternalServerException, ResourceNotFoundException
     def unregister_connector(self, UnregisterConnectorRequest input) -> str:
@@ -2393,6 +2797,21 @@ struct AppflowClient:
         auto b = binding.HttpBinding(method="POST", path_template="/unregister-connector", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UnregisterConnectorDocument(connectorLabel=input.connectorLabel, forceDelete=input.forceDelete)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, appflow_service(), self.region, host)
+
+    # UpdateConnectorProfile  POST /update-connector-profile
+    # errors: ConflictException, ConnectorAuthenticationException, InternalServerException, ResourceNotFoundException, ValidationException
+    def update_connector_profile(self, UpdateConnectorProfileRequest input) -> str:
+        auto host = endpoints.regional_host(appflow_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/update-connector-profile", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"connectorProfileName\":" + appflow_json_str(input.connectorProfileName))
+        parts.append("\"connectionMode\":" + input.connectionMode.to_json())
+        parts.append("\"connectorProfileConfig\":" + connector_profile_config_to_json(input.connectorProfileConfig))
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + appflow_json_str(u0))
+        auto bp = restjson.rest_json_document(b, appflow_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, appflow_service(), self.region, host)
 
     # UpdateConnectorRegistration  POST /update-connector-registration

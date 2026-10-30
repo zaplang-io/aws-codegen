@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 26 operations — 19 with a generated method,
-#   7 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 26 operations — 26 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   101 structs (77 @derive(Json)), 13 enums, 8 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -165,8 +165,9 @@ struct AgentInputMessage:
     str Body
     AgentInputMessageType Type
 
-# no @derive(Json): member(s) EndOfOutputEvent: EndOfOutputEvent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndOfOutputEvent: EndOfOutputEvent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentOutputMessageStream:
     Optional[TextMessageEvent] TextMessageEvent
     Optional[ProgressEvent] ProgressEvent
@@ -193,8 +194,9 @@ struct ConflictException:
 struct ContinuousBackupRestoreConfiguration:
     Optional[DateTime] RestorePointTime
 
-# no @derive(Json): member(s) Source: CreateDataTransformationProfileSource, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Source: CreateDataTransformationProfileSource, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDataTransformationProfileRequest:
     SourceFormat SourceFormat
     CreateDataTransformationProfileSource Source
@@ -213,16 +215,18 @@ struct CreateDataTransformationProfileResponse:
     str ProfileName
     DateTime LastUpdatedAt
 
-# no @derive(Json): member(s) ProfileMapping: ProfileMappingSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProfileMapping: ProfileMappingSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDataTransformationProfileSource:
     Optional[StarterProfileSource] StarterProfile
     Optional[ExistingVersionedProfileSource] ExistingVersionedProfileId
     Optional[ProfileMappingSource] ProfileMapping
     Optional[SampleDataSource] SampleData
 
-# no @derive(Json): member(s) Tags: list[Tag], ProfileConfiguration: ProfileConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], ProfileConfiguration: ProfileConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateFHIRDatastoreRequest:
     Optional[str] DatastoreName
     str DatastoreTypeVersion
@@ -283,8 +287,9 @@ struct DatastoreFilter:
     Optional[DateTime] CreatedBefore
     Optional[DateTime] CreatedAfter
 
-# no @derive(Json): member(s) ProfileConfiguration: ProfileConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProfileConfiguration: ProfileConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatastoreProperties:
     str DatastoreId
     str DatastoreArn
@@ -335,8 +340,9 @@ struct DescribeDataTransformationJobResponse:
 struct DescribeFHIRDatastoreRequest:
     str DatastoreId
 
-# no @derive(Json): member(s) DatastoreProperties: DatastoreProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatastoreProperties: DatastoreProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFHIRDatastoreResponse:
     DatastoreProperties DatastoreProperties
 
@@ -358,8 +364,9 @@ struct DescribeFHIRImportJobRequest:
 struct DescribeFHIRImportJobResponse:
     ImportJobProperties ImportJobProperties
 
-# no @derive(Json): member(s) Options: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Options: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EndOfOutputEvent:
     str FinalResponseMessage
     Optional[list[str]] Options
@@ -401,8 +408,9 @@ struct GetDataTransformationProfileRequest:
     str ProfileId
     Optional[int64] ProfileVersion
 
-# no @derive(Json): member(s) ProfileMapping: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProfileMapping: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataTransformationProfileResponse:
     str ProfileId
     int64 Version
@@ -483,8 +491,9 @@ struct ListDataTransformationJobsRequest:
     Optional[DateTime] SubmittedAfter
     Optional[DateTime] SubmittedBefore
 
-# no @derive(Json): member(s) Items: list[TransformationJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[TransformationJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataTransformationJobsResponse:
     list[TransformationJobSummary] Items
     Optional[str] NextToken
@@ -495,8 +504,9 @@ struct ListDataTransformationProfileVersionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[DataTransformationProfileVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[DataTransformationProfileVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataTransformationProfileVersionsResponse:
     list[DataTransformationProfileVersionSummary] Items
     Optional[str] NextToken
@@ -507,8 +517,9 @@ struct ListDataTransformationProfilesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[DataTransformationProfileSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[DataTransformationProfileSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataTransformationProfilesResponse:
     list[DataTransformationProfileSummary] Items
     Optional[str] NextToken
@@ -519,8 +530,9 @@ struct ListFHIRDatastoresRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DatastorePropertiesList: list[DatastoreProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatastorePropertiesList: list[DatastoreProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFHIRDatastoresResponse:
     list[DatastoreProperties] DatastorePropertiesList
     Optional[str] NextToken
@@ -535,8 +547,9 @@ struct ListFHIRExportJobsRequest:
     Optional[DateTime] SubmittedBefore
     Optional[DateTime] SubmittedAfter
 
-# no @derive(Json): member(s) ExportJobPropertiesList: list[ExportJobProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExportJobPropertiesList: list[ExportJobProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFHIRExportJobsResponse:
     list[ExportJobProperties] ExportJobPropertiesList
     Optional[str] NextToken
@@ -551,8 +564,9 @@ struct ListFHIRImportJobsRequest:
     Optional[DateTime] SubmittedBefore
     Optional[DateTime] SubmittedAfter
 
-# no @derive(Json): member(s) ImportJobPropertiesList: list[ImportJobProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ImportJobPropertiesList: list[ImportJobProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFHIRImportJobsResponse:
     list[ImportJobProperties] ImportJobPropertiesList
     Optional[str] NextToken
@@ -561,8 +575,9 @@ struct ListFHIRImportJobsResponse:
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -578,13 +593,15 @@ struct OutputDataConfig:
 struct PreloadDataConfig:
     str PreloadDataType
 
-# no @derive(Json): member(s) DefaultProfiles: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultProfiles: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProfileConfiguration:
     Optional[list[str]] DefaultProfiles
 
-# no @derive(Json): member(s) ProfileMapping: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProfileMapping: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProfileMappingSource:
     dict[str, str] ProfileMapping
 
@@ -616,8 +633,9 @@ struct ResourceNotFoundException:
 struct RestoreConfiguration:
     Optional[ContinuousBackupRestoreConfiguration] ContinuousBackupRestoreConfiguration
 
-# no @derive(Json): member(s) Tags: list[Tag], ProfileConfiguration: ProfileConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], ProfileConfiguration: ProfileConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestoreFHIRDatastoreRequest:
     str SourceDatastoreId
     RestoreConfiguration RestoreConfiguration
@@ -713,8 +731,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceARN
     list[Tag] Tags
@@ -775,8 +794,9 @@ struct TransformationJobSummary:
 struct TransformationOutputDataConfig:
     DataTransformationS3Configuration S3Configuration
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceARN
     list[str] TagKeys
@@ -786,8 +806,9 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ProfileMapping: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProfileMapping: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDataTransformationProfileRequest:
     str ProfileId
     dict[str, str] ProfileMapping
@@ -801,8 +822,9 @@ struct UpdateDataTransformationProfileResponse:
     Optional[str] ProfileName
     DateTime LastUpdatedAt
 
-# no @derive(Json): member(s) ProfileConfiguration: ProfileConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProfileConfiguration: ProfileConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFHIRDatastoreRequest:
     str DatastoreId
     Optional[str] DatastoreName
@@ -812,8 +834,9 @@ struct UpdateFHIRDatastoreRequest:
     Optional[IdentityProviderConfiguration] IdentityProviderConfiguration
     Optional[BackupConfiguration] BackupConfiguration
 
-# no @derive(Json): member(s) DatastoreProperties: DatastoreProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatastoreProperties: DatastoreProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateFHIRDatastoreResponse:
     DatastoreProperties DatastoreProperties
 
@@ -823,8 +846,9 @@ struct UpdateProfileWithAgentRequest:
     AgentInputMessage InputMessage
     Optional[str] ConversationId
 
-# no @derive(Json): member(s) AgentResponse: AgentOutputMessageStream not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AgentResponse: AgentOutputMessageStream not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateProfileWithAgentResponse:
     AgentOutputMessageStream AgentResponse
 
@@ -869,20 +893,242 @@ def healthlake_error_from_code(str code) -> HealthLakeError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateDataTransformationProfile (input CreateDataTransformationProfileRequest)
-#   CreateFHIRDatastore (input CreateFHIRDatastoreRequest)
-#   RestoreFHIRDatastore (input RestoreFHIRDatastoreRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateDataTransformationProfile (input UpdateDataTransformationProfileRequest)
-#   UpdateFHIRDatastore (input UpdateFHIRDatastoreRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def healthlake_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def healthlake_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def healthlake_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateDataTransformationProfileRequest to a compact JSON object (declaration order).
+def create_data_transformation_profile_request_to_json(CreateDataTransformationProfileRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SourceFormat\":" + v.SourceFormat.to_json())
+    parts.append("\"Source\":" + create_data_transformation_profile_source_to_json(v.Source))
+    if v.KmsKeyId.is_some():
+        auto u0 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + healthlake_json_str(u0))
+    if v.ProfileDescription.is_some():
+        auto u1 = v.ProfileDescription.unwrap()
+        parts.append("\"ProfileDescription\":" + healthlake_json_str(u1))
+    parts.append("\"ProfileName\":" + healthlake_json_str(v.ProfileName))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(healthlake_json_str(k3) + ":" + healthlake_json_str(u2[k3]))
+        parts.append("\"Tags\":" + healthlake_json_obj(m3))
+    if v.ClientToken.is_some():
+        auto u4 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + healthlake_json_str(u4))
+    return healthlake_json_obj(parts)
+
+# Serialize CreateDataTransformationProfileSource to a compact JSON object (declaration order).
+def create_data_transformation_profile_source_to_json(CreateDataTransformationProfileSource v) -> str:
+    list[str] parts = []
+    if v.StarterProfile.is_some():
+        auto u0 = v.StarterProfile.unwrap()
+        parts.append("\"StarterProfile\":" + u0.to_json())
+    if v.ExistingVersionedProfileId.is_some():
+        auto u1 = v.ExistingVersionedProfileId.unwrap()
+        parts.append("\"ExistingVersionedProfileId\":" + u1.to_json())
+    if v.ProfileMapping.is_some():
+        auto u2 = v.ProfileMapping.unwrap()
+        parts.append("\"ProfileMapping\":" + profile_mapping_source_to_json(u2))
+    if v.SampleData.is_some():
+        auto u3 = v.SampleData.unwrap()
+        parts.append("\"SampleData\":" + u3.to_json())
+    return healthlake_json_obj(parts)
+
+# Serialize CreateFHIRDatastoreRequest to a compact JSON object (declaration order).
+def create_fhir_datastore_request_to_json(CreateFHIRDatastoreRequest v) -> str:
+    list[str] parts = []
+    if v.DatastoreName.is_some():
+        auto u0 = v.DatastoreName.unwrap()
+        parts.append("\"DatastoreName\":" + healthlake_json_str(u0))
+    parts.append("\"DatastoreTypeVersion\":" + healthlake_json_str(v.DatastoreTypeVersion))
+    if v.SseConfiguration.is_some():
+        auto u1 = v.SseConfiguration.unwrap()
+        parts.append("\"SseConfiguration\":" + u1.to_json())
+    if v.PreloadDataConfig.is_some():
+        auto u2 = v.PreloadDataConfig.unwrap()
+        parts.append("\"PreloadDataConfig\":" + u2.to_json())
+    if v.ClientToken.is_some():
+        auto u3 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + healthlake_json_str(u3))
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Tags\":" + healthlake_json_arr(e5))
+    if v.IdentityProviderConfiguration.is_some():
+        auto u6 = v.IdentityProviderConfiguration.unwrap()
+        parts.append("\"IdentityProviderConfiguration\":" + u6.to_json())
+    if v.AnalyticsConfiguration.is_some():
+        auto u7 = v.AnalyticsConfiguration.unwrap()
+        parts.append("\"AnalyticsConfiguration\":" + u7.to_json())
+    if v.NlpConfiguration.is_some():
+        auto u8 = v.NlpConfiguration.unwrap()
+        parts.append("\"NlpConfiguration\":" + u8.to_json())
+    if v.ProfileConfiguration.is_some():
+        auto u9 = v.ProfileConfiguration.unwrap()
+        parts.append("\"ProfileConfiguration\":" + profile_configuration_to_json(u9))
+    if v.BackupConfiguration.is_some():
+        auto u10 = v.BackupConfiguration.unwrap()
+        parts.append("\"BackupConfiguration\":" + u10.to_json())
+    return healthlake_json_obj(parts)
+
+# Serialize ProfileConfiguration to a compact JSON object (declaration order).
+def profile_configuration_to_json(ProfileConfiguration v) -> str:
+    list[str] parts = []
+    if v.DefaultProfiles.is_some():
+        auto u0 = v.DefaultProfiles.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(healthlake_json_str(x1))
+        parts.append("\"DefaultProfiles\":" + healthlake_json_arr(e1))
+    return healthlake_json_obj(parts)
+
+# Serialize ProfileMappingSource to a compact JSON object (declaration order).
+def profile_mapping_source_to_json(ProfileMappingSource v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.ProfileMapping.keys()):
+        m0.append(healthlake_json_str(k0) + ":" + healthlake_json_str(v.ProfileMapping[k0]))
+    parts.append("\"ProfileMapping\":" + healthlake_json_obj(m0))
+    return healthlake_json_obj(parts)
+
+# Serialize RestoreFHIRDatastoreRequest to a compact JSON object (declaration order).
+def restore_fhir_datastore_request_to_json(RestoreFHIRDatastoreRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"SourceDatastoreId\":" + healthlake_json_str(v.SourceDatastoreId))
+    parts.append("\"RestoreConfiguration\":" + v.RestoreConfiguration.to_json())
+    if v.DatastoreName.is_some():
+        auto u0 = v.DatastoreName.unwrap()
+        parts.append("\"DatastoreName\":" + healthlake_json_str(u0))
+    if v.SseConfiguration.is_some():
+        auto u1 = v.SseConfiguration.unwrap()
+        parts.append("\"SseConfiguration\":" + u1.to_json())
+    if v.ClientToken.is_some():
+        auto u2 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + healthlake_json_str(u2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + healthlake_json_arr(e4))
+    if v.IdentityProviderConfiguration.is_some():
+        auto u5 = v.IdentityProviderConfiguration.unwrap()
+        parts.append("\"IdentityProviderConfiguration\":" + u5.to_json())
+    if v.AnalyticsConfiguration.is_some():
+        auto u6 = v.AnalyticsConfiguration.unwrap()
+        parts.append("\"AnalyticsConfiguration\":" + u6.to_json())
+    if v.NlpConfiguration.is_some():
+        auto u7 = v.NlpConfiguration.unwrap()
+        parts.append("\"NlpConfiguration\":" + u7.to_json())
+    if v.ProfileConfiguration.is_some():
+        auto u8 = v.ProfileConfiguration.unwrap()
+        parts.append("\"ProfileConfiguration\":" + profile_configuration_to_json(u8))
+    return healthlake_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + healthlake_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + healthlake_json_arr(e0))
+    return healthlake_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + healthlake_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(healthlake_json_str(x0))
+    parts.append("\"TagKeys\":" + healthlake_json_arr(e0))
+    return healthlake_json_obj(parts)
+
+# Serialize UpdateDataTransformationProfileRequest to a compact JSON object (declaration order).
+def update_data_transformation_profile_request_to_json(UpdateDataTransformationProfileRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ProfileId\":" + healthlake_json_str(v.ProfileId))
+    list[str] m0 = []
+    for k0 in sorted(v.ProfileMapping.keys()):
+        m0.append(healthlake_json_str(k0) + ":" + healthlake_json_str(v.ProfileMapping[k0]))
+    parts.append("\"ProfileMapping\":" + healthlake_json_obj(m0))
+    if v.ChangeDescription.is_some():
+        auto u1 = v.ChangeDescription.unwrap()
+        parts.append("\"ChangeDescription\":" + healthlake_json_str(u1))
+    return healthlake_json_obj(parts)
+
+# Serialize UpdateFHIRDatastoreRequest to a compact JSON object (declaration order).
+def update_fhir_datastore_request_to_json(UpdateFHIRDatastoreRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DatastoreId\":" + healthlake_json_str(v.DatastoreId))
+    if v.DatastoreName.is_some():
+        auto u0 = v.DatastoreName.unwrap()
+        parts.append("\"DatastoreName\":" + healthlake_json_str(u0))
+    if v.AnalyticsConfiguration.is_some():
+        auto u1 = v.AnalyticsConfiguration.unwrap()
+        parts.append("\"AnalyticsConfiguration\":" + u1.to_json())
+    if v.NlpConfiguration.is_some():
+        auto u2 = v.NlpConfiguration.unwrap()
+        parts.append("\"NlpConfiguration\":" + u2.to_json())
+    if v.ProfileConfiguration.is_some():
+        auto u3 = v.ProfileConfiguration.unwrap()
+        parts.append("\"ProfileConfiguration\":" + profile_configuration_to_json(u3))
+    if v.IdentityProviderConfiguration.is_some():
+        auto u4 = v.IdentityProviderConfiguration.unwrap()
+        parts.append("\"IdentityProviderConfiguration\":" + u4.to_json())
+    if v.BackupConfiguration.is_some():
+        auto u5 = v.BackupConfiguration.unwrap()
+        parts.append("\"BackupConfiguration\":" + u5.to_json())
+    return healthlake_json_obj(parts)
 
 # A bound HealthLake client: credentials + region, threaded into every operation.
 struct HealthLakeClient:
     core.Credentials creds
     str region
+
+    # CreateDataTransformationProfile
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_data_transformation_profile(self, CreateDataTransformationProfileRequest input) -> str:
+        auto body = create_data_transformation_profile_request_to_json(input)
+        return awsjson.awsjson_request_now(healthlake_protocol(), self.creds, self.region, "CreateDataTransformationProfile", body)
+
+    # CreateFHIRDatastore
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def create_fhir_datastore(self, CreateFHIRDatastoreRequest input) -> str:
+        auto body = create_fhir_datastore_request_to_json(input)
+        return awsjson.awsjson_request_now(healthlake_protocol(), self.creds, self.region, "CreateFHIRDatastore", body)
 
     # DeleteDataTransformationProfile
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -974,6 +1220,12 @@ struct HealthLakeClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(healthlake_protocol(), self.creds, self.region, "PublishDataTransformationProfile", body)
 
+    # RestoreFHIRDatastore
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def restore_fhir_datastore(self, RestoreFHIRDatastoreRequest input) -> str:
+        auto body = restore_fhir_datastore_request_to_json(input)
+        return awsjson.awsjson_request_now(healthlake_protocol(), self.creds, self.region, "RestoreFHIRDatastore", body)
+
     # StartDataTransformationJob
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_data_transformation_job(self, StartDataTransformationJobRequest input) -> str:
@@ -991,6 +1243,30 @@ struct HealthLakeClient:
     def start_fhir_import_job(self, StartFHIRImportJobRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(healthlake_protocol(), self.creds, self.region, "StartFHIRImportJob", body)
+
+    # TagResource
+    # errors: ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(healthlake_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(healthlake_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateDataTransformationProfile
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_data_transformation_profile(self, UpdateDataTransformationProfileRequest input) -> str:
+        auto body = update_data_transformation_profile_request_to_json(input)
+        return awsjson.awsjson_request_now(healthlake_protocol(), self.creds, self.region, "UpdateDataTransformationProfile", body)
+
+    # UpdateFHIRDatastore
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_fhir_datastore(self, UpdateFHIRDatastoreRequest input) -> str:
+        auto body = update_fhir_datastore_request_to_json(input)
+        return awsjson.awsjson_request_now(healthlake_protocol(), self.creds, self.region, "UpdateFHIRDatastore", body)
 
     # UpdateProfileWithAgent
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 16 operations — 10 with a generated method,
-#   6 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 16 operations — 16 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   56 structs (43 @derive(Json)), 12 enums, 12 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -201,8 +201,9 @@ struct BatchCreateAttendeeRequest:
     str MeetingId
     list[CreateAttendeeRequestItem] Attendees
 
-# no @derive(Json): member(s) Attendees: list[Attendee], Errors: list[CreateAttendeeError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attendees: list[Attendee], Errors: list[CreateAttendeeError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateAttendeeResponse:
     Optional[list[Attendee]] Attendees
     Optional[list[CreateAttendeeError]] Errors
@@ -260,8 +261,9 @@ struct CreateMeetingRequest:
     Optional[list[Tag]] Tags
     Optional[MediaPlacementNetworkType] MediaPlacementNetworkType
 
-# no @derive(Json): member(s) Meeting: Meeting not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Meeting: Meeting not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMeetingResponse:
     Optional[Meeting] Meeting
 
@@ -280,8 +282,9 @@ struct CreateMeetingWithAttendeesRequest:
     Optional[list[Tag]] Tags
     Optional[MediaPlacementNetworkType] MediaPlacementNetworkType
 
-# no @derive(Json): member(s) Meeting: Meeting, Attendees: list[Attendee], Errors: list[CreateAttendeeError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Meeting: Meeting, Attendees: list[Attendee], Errors: list[CreateAttendeeError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMeetingWithAttendeesResponse:
     Optional[Meeting] Meeting
     Optional[list[Attendee]] Attendees
@@ -347,8 +350,9 @@ struct GetAttendeeResponse:
 struct GetMeetingRequest:
     str MeetingId
 
-# no @derive(Json): member(s) Meeting: Meeting not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Meeting: Meeting not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMeetingResponse:
     Optional[Meeting] Meeting
 
@@ -365,8 +369,9 @@ struct ListAttendeesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Attendees: list[Attendee] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attendees: list[Attendee] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAttendeesResponse:
     Optional[list[Attendee]] Attendees
     Optional[str] NextToken
@@ -376,8 +381,9 @@ struct ListAttendeesResponse:
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -392,8 +398,9 @@ struct MediaPlacement:
     Optional[str] ScreenSharingUrl
     Optional[str] EventIngestionUrl
 
-# no @derive(Json): member(s) TenantIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TenantIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Meeting:
     Optional[str] MeetingId
     Optional[str] MeetingHostId
@@ -577,16 +584,6 @@ def meetings_chime_error_from_code(str code) -> Chime_SDK_MeetingsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   BatchCreateAttendee (document member `Attendees: list[CreateAttendeeRequestItem]` is not serializable by derive)
-#   BatchUpdateAttendeeCapabilitiesExcept (document member `ExcludedAttendeeIds: list[AttendeeIdItem]` is not serializable by derive)
-#   CreateMeeting (document member `TenantIds: list[str]` is not serializable by derive)
-#   CreateMeetingWithAttendees (document member `Attendees: list[CreateAttendeeRequestItem]` is not serializable by derive)
-#   TagResource (document member `Tags: list[Tag]` is not serializable by derive)
-#   UntagResource (document member `TagKeys: list[str]` is not serializable by derive)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -611,6 +608,37 @@ struct Chime_SDK_MeetingsClient:
     core.Credentials creds
     str region
 
+    # BatchCreateAttendee  POST /meetings/{MeetingId}/attendees?operation=batch-create
+    # errors: BadRequestException, ForbiddenException, LimitExceededException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottlingException, UnauthorizedException, UnprocessableEntityException
+    def batch_create_attendee(self, BatchCreateAttendeeRequest input) -> str:
+        auto host = endpoints.regional_host(meetings_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["MeetingId"] = input.MeetingId
+        auto b = binding.HttpBinding(method="POST", path_template="/meetings/{MeetingId}/attendees?operation=batch-create", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Attendees:
+            e0.append(x0.to_json())
+        parts.append("\"Attendees\":" + meetings_chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, meetings_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, meetings_chime_service(), self.region, host)
+
+    # BatchUpdateAttendeeCapabilitiesExcept  PUT /meetings/{MeetingId}/attendees/capabilities?operation=batch-update-except
+    # errors: BadRequestException, ConflictException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def batch_update_attendee_capabilities_except(self, BatchUpdateAttendeeCapabilitiesExceptRequest input) -> str:
+        auto host = endpoints.regional_host(meetings_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["MeetingId"] = input.MeetingId
+        auto b = binding.HttpBinding(method="PUT", path_template="/meetings/{MeetingId}/attendees/capabilities?operation=batch-update-except", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.ExcludedAttendeeIds:
+            e0.append(x0.to_json())
+        parts.append("\"ExcludedAttendeeIds\":" + meetings_chime_json_arr(e0))
+        parts.append("\"Capabilities\":" + input.Capabilities.to_json())
+        auto bp = restjson.rest_json_document(b, meetings_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, meetings_chime_service(), self.region, host)
+
     # CreateAttendee  POST /meetings/{MeetingId}/attendees
     # errors: BadRequestException, ForbiddenException, LimitExceededException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottlingException, UnauthorizedException, UnprocessableEntityException
     def create_attendee(self, CreateAttendeeRequest input) -> str:
@@ -620,6 +648,88 @@ struct Chime_SDK_MeetingsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/meetings/{MeetingId}/attendees", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateAttendeeDocument(ExternalUserId=input.ExternalUserId, Capabilities=input.Capabilities)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, meetings_chime_service(), self.region, host)
+
+    # CreateMeeting  POST /meetings
+    # errors: BadRequestException, ConflictException, ForbiddenException, LimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def create_meeting(self, CreateMeetingRequest input) -> str:
+        auto host = endpoints.regional_host(meetings_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/meetings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ClientRequestToken\":" + meetings_chime_json_str(input.ClientRequestToken))
+        parts.append("\"MediaRegion\":" + meetings_chime_json_str(input.MediaRegion))
+        if input.MeetingHostId.is_some():
+            auto u0 = input.MeetingHostId.unwrap()
+            parts.append("\"MeetingHostId\":" + meetings_chime_json_str(u0))
+        parts.append("\"ExternalMeetingId\":" + meetings_chime_json_str(input.ExternalMeetingId))
+        if input.NotificationsConfiguration.is_some():
+            auto u1 = input.NotificationsConfiguration.unwrap()
+            parts.append("\"NotificationsConfiguration\":" + u1.to_json())
+        if input.MeetingFeatures.is_some():
+            auto u2 = input.MeetingFeatures.unwrap()
+            parts.append("\"MeetingFeatures\":" + u2.to_json())
+        if input.PrimaryMeetingId.is_some():
+            auto u3 = input.PrimaryMeetingId.unwrap()
+            parts.append("\"PrimaryMeetingId\":" + meetings_chime_json_str(u3))
+        if input.TenantIds.is_some():
+            auto u4 = input.TenantIds.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(meetings_chime_json_str(x5))
+            parts.append("\"TenantIds\":" + meetings_chime_json_arr(e5))
+        if input.Tags.is_some():
+            auto u6 = input.Tags.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"Tags\":" + meetings_chime_json_arr(e7))
+        if input.MediaPlacementNetworkType.is_some():
+            auto u8 = input.MediaPlacementNetworkType.unwrap()
+            parts.append("\"MediaPlacementNetworkType\":" + u8.to_json())
+        auto bp = restjson.rest_json_document(b, meetings_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, meetings_chime_service(), self.region, host)
+
+    # CreateMeetingWithAttendees  POST /meetings?operation=create-attendees
+    # errors: BadRequestException, ConflictException, ForbiddenException, LimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def create_meeting_with_attendees(self, CreateMeetingWithAttendeesRequest input) -> str:
+        auto host = endpoints.regional_host(meetings_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/meetings?operation=create-attendees", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ClientRequestToken\":" + meetings_chime_json_str(input.ClientRequestToken))
+        parts.append("\"MediaRegion\":" + meetings_chime_json_str(input.MediaRegion))
+        if input.MeetingHostId.is_some():
+            auto u0 = input.MeetingHostId.unwrap()
+            parts.append("\"MeetingHostId\":" + meetings_chime_json_str(u0))
+        parts.append("\"ExternalMeetingId\":" + meetings_chime_json_str(input.ExternalMeetingId))
+        if input.MeetingFeatures.is_some():
+            auto u1 = input.MeetingFeatures.unwrap()
+            parts.append("\"MeetingFeatures\":" + u1.to_json())
+        if input.NotificationsConfiguration.is_some():
+            auto u2 = input.NotificationsConfiguration.unwrap()
+            parts.append("\"NotificationsConfiguration\":" + u2.to_json())
+        list[str] e3 = []
+        for x3 in input.Attendees:
+            e3.append(x3.to_json())
+        parts.append("\"Attendees\":" + meetings_chime_json_arr(e3))
+        if input.PrimaryMeetingId.is_some():
+            auto u4 = input.PrimaryMeetingId.unwrap()
+            parts.append("\"PrimaryMeetingId\":" + meetings_chime_json_str(u4))
+        if input.TenantIds.is_some():
+            auto u5 = input.TenantIds.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(meetings_chime_json_str(x6))
+            parts.append("\"TenantIds\":" + meetings_chime_json_arr(e6))
+        if input.Tags.is_some():
+            auto u7 = input.Tags.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"Tags\":" + meetings_chime_json_arr(e8))
+        if input.MediaPlacementNetworkType.is_some():
+            auto u9 = input.MediaPlacementNetworkType.unwrap()
+            parts.append("\"MediaPlacementNetworkType\":" + u9.to_json())
+        auto bp = restjson.rest_json_document(b, meetings_chime_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, meetings_chime_service(), self.region, host)
 
     # DeleteAttendee  DELETE /meetings/{MeetingId}/attendees/{AttendeeId}
@@ -702,6 +812,34 @@ struct Chime_SDK_MeetingsClient:
         labels["MeetingId"] = input.MeetingId
         auto b = binding.HttpBinding(method="POST", path_template="/meetings/{MeetingId}/transcription?operation=stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, meetings_chime_service(), self.region, host)
+
+    # TagResource  POST /tags?operation=tag-resource
+    # errors: BadRequestException, ForbiddenException, LimitExceededException, ResourceNotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottlingException, TooManyTagsException, UnauthorizedException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(meetings_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=tag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceARN\":" + meetings_chime_json_str(input.ResourceARN))
+        list[str] e0 = []
+        for x0 in input.Tags:
+            e0.append(x0.to_json())
+        parts.append("\"Tags\":" + meetings_chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, meetings_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, meetings_chime_service(), self.region, host)
+
+    # UntagResource  POST /tags?operation=untag-resource
+    # errors: BadRequestException, ForbiddenException, LimitExceededException, ResourceNotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(meetings_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=untag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceARN\":" + meetings_chime_json_str(input.ResourceARN))
+        list[str] e0 = []
+        for x0 in input.TagKeys:
+            e0.append(meetings_chime_json_str(x0))
+        parts.append("\"TagKeys\":" + meetings_chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, meetings_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, meetings_chime_service(), self.region, host)
 
     # UpdateAttendeeCapabilities  PUT /meetings/{MeetingId}/attendees/{AttendeeId}/capabilities
     # errors: BadRequestException, ConflictException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottlingException, UnauthorizedException

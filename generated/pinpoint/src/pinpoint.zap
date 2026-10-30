@@ -16,12 +16,12 @@
 # Response.
 #
 # Coverage (rest-json): 122 operations — 92 with a generated method,
-#   30 skipped (a member type is not yet bindable/serializable by derive).
+#   30 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   459 structs (254 @derive(Json)), 28 enums, 8 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -332,8 +332,9 @@ struct ADMChannelResponse:
     str Platform
     Optional[int64] Version
 
-# no @derive(Json): member(s) Data: dict[str, str], Substitutions: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Data: dict[str, str], Substitutions: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ADMMessage:
     Optional[Action] Action
     Optional[str] Body
@@ -378,8 +379,9 @@ struct APNSChannelResponse:
     str Platform
     Optional[int64] Version
 
-# no @derive(Json): member(s) Data: dict[str, str], Substitutions: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Data: dict[str, str], Substitutions: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct APNSMessage:
     Optional[str] APNSPushType
     Optional[Action] Action
@@ -488,14 +490,16 @@ struct APNSVoipSandboxChannelResponse:
     str Platform
     Optional[int64] Version
 
-# no @derive(Json): member(s) Item: list[ActivityResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Item: list[ActivityResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActivitiesResponse:
     list[ActivityResponse] Item
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CUSTOM: CustomMessageActivity, ConditionalSplit: ConditionalSplitActivity, MultiCondition: MultiConditionalSplitActivity, RandomSplit: RandomSplitActivity not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CUSTOM: CustomMessageActivity, ConditionalSplit: ConditionalSplitActivity, MultiCondition: MultiConditionalSplitActivity, RandomSplit: RandomSplitActivity not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Activity:
     Optional[CustomMessageActivity] CUSTOM
     Optional[ConditionalSplitActivity] ConditionalSplit
@@ -509,8 +513,9 @@ struct Activity:
     Optional[WaitActivity] Wait
     Optional[ContactCenterActivity] ContactCenter
 
-# no @derive(Json): member(s) ExecutionMetrics: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExecutionMetrics: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActivityResponse:
     str ApplicationId
     str CampaignId
@@ -527,8 +532,9 @@ struct ActivityResponse:
     Optional[str] TreatmentId
     Optional[dict[str, str]] ExecutionMetrics
 
-# no @derive(Json): member(s) Context: dict[str, str], Substitutions: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Context: dict[str, str], Substitutions: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddressConfiguration:
     Optional[str] BodyOverride
     Optional[ChannelType] ChannelType
@@ -549,8 +555,9 @@ struct AndroidPushNotificationTemplate:
     Optional[str] Title
     Optional[str] Url
 
-# no @derive(Json): member(s) KpiResult: BaseKpiResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KpiResult: BaseKpiResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationDateRangeKpiResponse:
     str ApplicationId
     DateTime EndTime
@@ -559,8 +566,9 @@ struct ApplicationDateRangeKpiResponse:
     Optional[str] NextToken
     DateTime StartTime
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationResponse:
     str Arn
     str Id
@@ -583,20 +591,23 @@ struct ApplicationSettingsResource:
     Optional[QuietTime] QuietTime
     Optional[ApplicationSettingsJourneyLimits] JourneyLimits
 
-# no @derive(Json): member(s) Item: list[ApplicationResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Item: list[ApplicationResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationsResponse:
     Optional[list[ApplicationResponse]] Item
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributeDimension:
     Optional[AttributeType] AttributeType
     list[str] Values
 
-# no @derive(Json): member(s) Attributes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttributesResource:
     str ApplicationId
     str AttributeType
@@ -627,8 +638,9 @@ struct BaiduChannelResponse:
     str Platform
     Optional[int64] Version
 
-# no @derive(Json): member(s) Data: dict[str, str], Substitutions: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Data: dict[str, str], Substitutions: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BaiduMessage:
     Optional[Action] Action
     Optional[str] Body
@@ -645,8 +657,9 @@ struct BaiduMessage:
     Optional[str] Title
     Optional[str] Url
 
-# no @derive(Json): member(s) Rows: list[ResultRow] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rows: list[ResultRow] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BaseKpiResult:
     list[ResultRow] Rows
 
@@ -654,8 +667,9 @@ struct BaseKpiResult:
 struct CampaignCustomMessage:
     Optional[str] Data
 
-# no @derive(Json): member(s) KpiResult: BaseKpiResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KpiResult: BaseKpiResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CampaignDateRangeKpiResponse:
     str ApplicationId
     str CampaignId
@@ -665,8 +679,9 @@ struct CampaignDateRangeKpiResponse:
     Optional[str] NextToken
     DateTime StartTime
 
-# no @derive(Json): member(s) Headers: list[MessageHeader] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Headers: list[MessageHeader] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CampaignEmailMessage:
     Optional[str] Body
     Optional[str] FromAddress
@@ -674,8 +689,9 @@ struct CampaignEmailMessage:
     Optional[str] HtmlBody
     Optional[str] Title
 
-# no @derive(Json): member(s) Dimensions: EventDimensions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: EventDimensions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CampaignEventFilter:
     EventDimensions Dimensions
     FilterType FilterType
@@ -686,8 +702,9 @@ struct CampaignHook:
     Optional[Mode] Mode
     Optional[str] WebUrl
 
-# no @derive(Json): member(s) Content: list[InAppMessageContent], CustomConfig: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Content: list[InAppMessageContent], CustomConfig: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CampaignInAppMessage:
     Optional[str] Body
     Optional[list[InAppMessageContent]] Content
@@ -702,8 +719,9 @@ struct CampaignLimits:
     Optional[int64] Total
     Optional[int64] Session
 
-# no @derive(Json): member(s) AdditionalTreatments: list[TreatmentResource], CustomDeliveryConfiguration: CustomDeliveryConfiguration, MessageConfiguration: MessageConfiguration, Schedule: Schedule, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalTreatments: list[TreatmentResource], CustomDeliveryConfiguration: CustomDeliveryConfiguration, MessageConfiguration: MessageConfiguration, Schedule: Schedule, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CampaignResponse:
     Optional[list[TreatmentResource]] AdditionalTreatments
     str ApplicationId
@@ -744,8 +762,9 @@ struct CampaignSmsMessage:
 struct CampaignState:
     Optional[CampaignStatus] CampaignStatus
 
-# no @derive(Json): member(s) Item: list[CampaignResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Item: list[CampaignResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CampaignsResponse:
     list[CampaignResponse] Item
     Optional[str] NextToken
@@ -762,13 +781,15 @@ struct ChannelResponse:
     Optional[str] LastModifiedDate
     Optional[int64] Version
 
-# no @derive(Json): member(s) Channels: dict[str, ChannelResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channels: dict[str, ChannelResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChannelsResponse:
     dict[str, ChannelResponse] Channels
 
-# no @derive(Json): member(s) EMAIL: list[ClosedDaysRule], SMS: list[ClosedDaysRule], PUSH: list[ClosedDaysRule], VOICE: list[ClosedDaysRule], CUSTOM: list[ClosedDaysRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EMAIL: list[ClosedDaysRule], SMS: list[ClosedDaysRule], PUSH: list[ClosedDaysRule], VOICE: list[ClosedDaysRule], CUSTOM: list[ClosedDaysRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClosedDays:
     Optional[list[ClosedDaysRule]] EMAIL
     Optional[list[ClosedDaysRule]] SMS
@@ -782,14 +803,16 @@ struct ClosedDaysRule:
     Optional[str] StartDateTime
     Optional[str] EndDateTime
 
-# no @derive(Json): member(s) Conditions: list[SimpleCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Conditions: list[SimpleCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Condition:
     Optional[list[SimpleCondition]] Conditions
     Optional[Operator] Operator
 
-# no @derive(Json): member(s) Condition: Condition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Condition: Condition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConditionalSplitActivity:
     Optional[Condition] Condition
     Optional[WaitTime] EvaluationWaitTime
@@ -810,13 +833,15 @@ struct ContactCenterActivity:
 struct CreateAppRequest:
     CreateApplicationRequest CreateApplicationRequest
 
-# no @derive(Json): member(s) ApplicationResponse: ApplicationResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationResponse: ApplicationResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAppResponse:
     ApplicationResponse ApplicationResponse
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateApplicationRequest:
     str Name
     Optional[dict[str, str]] tags
@@ -827,8 +852,9 @@ struct CreateCampaignRequest:
     str ApplicationId
     WriteCampaignRequest WriteCampaignRequest
 
-# no @derive(Json): member(s) CampaignResponse: CampaignResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CampaignResponse: CampaignResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCampaignResponse:
     CampaignResponse CampaignResponse
 
@@ -848,8 +874,9 @@ struct CreateExportJobRequest:
     str ApplicationId
     ExportJobRequest ExportJobRequest
 
-# no @derive(Json): member(s) ExportJobResponse: ExportJobResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExportJobResponse: ExportJobResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateExportJobResponse:
     ExportJobResponse ExportJobResponse
 
@@ -859,8 +886,9 @@ struct CreateImportJobRequest:
     str ApplicationId
     ImportJobRequest ImportJobRequest
 
-# no @derive(Json): member(s) ImportJobResponse: ImportJobResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ImportJobResponse: ImportJobResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateImportJobResponse:
     ImportJobResponse ImportJobResponse
 
@@ -880,8 +908,9 @@ struct CreateJourneyRequest:
     str ApplicationId
     WriteJourneyRequest WriteJourneyRequest
 
-# no @derive(Json): member(s) JourneyResponse: JourneyResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JourneyResponse: JourneyResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateJourneyResponse:
     JourneyResponse JourneyResponse
 
@@ -895,8 +924,9 @@ struct CreatePushTemplateRequest:
 struct CreatePushTemplateResponse:
     CreateTemplateMessageBody CreateTemplateMessageBody
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRecommenderConfiguration:
     Optional[dict[str, str]] Attributes
     Optional[str] Description
@@ -913,8 +943,9 @@ struct CreateRecommenderConfiguration:
 struct CreateRecommenderConfigurationRequest:
     CreateRecommenderConfiguration CreateRecommenderConfiguration
 
-# no @derive(Json): member(s) RecommenderConfigurationResponse: RecommenderConfigurationResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecommenderConfigurationResponse: RecommenderConfigurationResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRecommenderConfigurationResponse:
     RecommenderConfigurationResponse RecommenderConfigurationResponse
 
@@ -924,8 +955,9 @@ struct CreateSegmentRequest:
     str ApplicationId
     WriteSegmentRequest WriteSegmentRequest
 
-# no @derive(Json): member(s) SegmentResponse: SegmentResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SegmentResponse: SegmentResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSegmentResponse:
     SegmentResponse SegmentResponse
 
@@ -955,14 +987,16 @@ struct CreateVoiceTemplateRequest:
 struct CreateVoiceTemplateResponse:
     CreateTemplateMessageBody CreateTemplateMessageBody
 
-# no @derive(Json): member(s) EndpointTypes: list[__EndpointTypesElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointTypes: list[__EndpointTypesElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomDeliveryConfiguration:
     str DeliveryUri
     Optional[list[__EndpointTypesElement]] EndpointTypes
 
-# no @derive(Json): member(s) EndpointTypes: list[__EndpointTypesElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointTypes: list[__EndpointTypesElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomMessageActivity:
     Optional[str] DeliveryUri
     Optional[list[__EndpointTypesElement]] EndpointTypes
@@ -980,14 +1014,16 @@ struct DefaultButtonConfiguration:
     str Text
     Optional[str] TextColor
 
-# no @derive(Json): member(s) Substitutions: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Substitutions: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DefaultMessage:
     Optional[str] Body
     Optional[dict[str, list[str]]] Substitutions
 
-# no @derive(Json): member(s) Data: dict[str, str], Substitutions: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Data: dict[str, str], Substitutions: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DefaultPushNotificationMessage:
     Optional[Action] Action
     Optional[str] Body
@@ -1055,8 +1091,9 @@ struct DeleteApnsVoipSandboxChannelResponse:
 struct DeleteAppRequest:
     str ApplicationId
 
-# no @derive(Json): member(s) ApplicationResponse: ApplicationResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationResponse: ApplicationResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteAppResponse:
     ApplicationResponse ApplicationResponse
 
@@ -1075,8 +1112,9 @@ struct DeleteCampaignRequest:
     str ApplicationId
     str CampaignId
 
-# no @derive(Json): member(s) CampaignResponse: CampaignResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CampaignResponse: CampaignResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteCampaignResponse:
     CampaignResponse CampaignResponse
 
@@ -1105,8 +1143,9 @@ struct DeleteEndpointRequest:
     str ApplicationId
     str EndpointId
 
-# no @derive(Json): member(s) EndpointResponse: EndpointResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointResponse: EndpointResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteEndpointResponse:
     EndpointResponse EndpointResponse
 
@@ -1144,8 +1183,9 @@ struct DeleteJourneyRequest:
     str ApplicationId
     str JourneyId
 
-# no @derive(Json): member(s) JourneyResponse: JourneyResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JourneyResponse: JourneyResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteJourneyResponse:
     JourneyResponse JourneyResponse
 
@@ -1164,8 +1204,9 @@ struct DeletePushTemplateResponse:
 struct DeleteRecommenderConfigurationRequest:
     str RecommenderId
 
-# no @derive(Json): member(s) RecommenderConfigurationResponse: RecommenderConfigurationResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecommenderConfigurationResponse: RecommenderConfigurationResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteRecommenderConfigurationResponse:
     RecommenderConfigurationResponse RecommenderConfigurationResponse
 
@@ -1175,8 +1216,9 @@ struct DeleteSegmentRequest:
     str ApplicationId
     str SegmentId
 
-# no @derive(Json): member(s) SegmentResponse: SegmentResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SegmentResponse: SegmentResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteSegmentResponse:
     SegmentResponse SegmentResponse
 
@@ -1205,8 +1247,9 @@ struct DeleteUserEndpointsRequest:
     str ApplicationId
     str UserId
 
-# no @derive(Json): member(s) EndpointsResponse: EndpointsResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointsResponse: EndpointsResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteUserEndpointsResponse:
     EndpointsResponse EndpointsResponse
 
@@ -1229,8 +1272,9 @@ struct DeleteVoiceTemplateRequest:
 struct DeleteVoiceTemplateResponse:
     MessageBody MessageBody
 
-# no @derive(Json): member(s) ADMMessage: ADMMessage, APNSMessage: APNSMessage, BaiduMessage: BaiduMessage, DefaultMessage: DefaultMessage, DefaultPushNotificationMessage: DefaultPushNotificationMessage, EmailMessage: EmailMessage, GCMMessage: GCMMessage, SMSMessage: SMSMessage, VoiceMessage: VoiceMessage not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ADMMessage: ADMMessage, APNSMessage: APNSMessage, BaiduMessage: BaiduMessage, DefaultMessage: DefaultMessage, DefaultPushNotificationMessage: DefaultPushNotificationMessage, EmailMessage: EmailMessage, GCMMessage: GCMMessage, SMSMessage: SMSMessage, VoiceMessage: VoiceMessage not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DirectMessageConfiguration:
     Optional[ADMMessage] ADMMessage
     Optional[APNSMessage] APNSMessage
@@ -1270,8 +1314,9 @@ struct EmailChannelResponse:
     Optional[str] OrchestrationSendingRoleArn
     Optional[int64] Version
 
-# no @derive(Json): member(s) ReplyToAddresses: list[str], SimpleEmail: SimpleEmail, Substitutions: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplyToAddresses: list[str], SimpleEmail: SimpleEmail, Substitutions: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EmailMessage:
     Optional[str] Body
     Optional[str] FeedbackForwardingAddress
@@ -1288,8 +1333,9 @@ struct EmailMessageActivity:
     Optional[str] TemplateName
     Optional[str] TemplateVersion
 
-# no @derive(Json): member(s) Headers: list[MessageHeader], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Headers: list[MessageHeader], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EmailTemplateRequest:
     Optional[str] DefaultSubstitutions
     Optional[str] HtmlPart
@@ -1300,8 +1346,9 @@ struct EmailTemplateRequest:
     Optional[str] TemplateDescription
     Optional[str] TextPart
 
-# no @derive(Json): member(s) Headers: list[MessageHeader], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Headers: list[MessageHeader], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EmailTemplateResponse:
     Optional[str] Arn
     str CreationDate
@@ -1318,8 +1365,9 @@ struct EmailTemplateResponse:
     Optional[str] TextPart
     Optional[str] Version
 
-# no @derive(Json): member(s) Attributes: dict[str, list[str]], Metrics: dict[str, float64], User: EndpointUser not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, list[str]], Metrics: dict[str, float64], User: EndpointUser not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EndpointBatchItem:
     Optional[str] Address
     Optional[dict[str, list[str]]] Attributes
@@ -1334,8 +1382,9 @@ struct EndpointBatchItem:
     Optional[str] RequestId
     Optional[EndpointUser] User
 
-# no @derive(Json): member(s) Item: list[EndpointBatchItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Item: list[EndpointBatchItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EndpointBatchRequest:
     list[EndpointBatchItem] Item
 
@@ -1373,8 +1422,9 @@ struct EndpointMessageResult:
     Optional[str] StatusMessage
     Optional[str] UpdatedToken
 
-# no @derive(Json): member(s) Attributes: dict[str, list[str]], Metrics: dict[str, float64], User: EndpointUser not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, list[str]], Metrics: dict[str, float64], User: EndpointUser not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EndpointRequest:
     Optional[str] Address
     Optional[dict[str, list[str]]] Attributes
@@ -1388,8 +1438,9 @@ struct EndpointRequest:
     Optional[str] RequestId
     Optional[EndpointUser] User
 
-# no @derive(Json): member(s) Attributes: dict[str, list[str]], Metrics: dict[str, float64], User: EndpointUser not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, list[str]], Metrics: dict[str, float64], User: EndpointUser not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EndpointResponse:
     Optional[str] Address
     Optional[str] ApplicationId
@@ -1407,8 +1458,9 @@ struct EndpointResponse:
     Optional[str] RequestId
     Optional[EndpointUser] User
 
-# no @derive(Json): member(s) Context: dict[str, str], Substitutions: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Context: dict[str, str], Substitutions: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EndpointSendConfiguration:
     Optional[str] BodyOverride
     Optional[dict[str, str]] Context
@@ -1416,19 +1468,22 @@ struct EndpointSendConfiguration:
     Optional[dict[str, list[str]]] Substitutions
     Optional[str] TitleOverride
 
-# no @derive(Json): member(s) UserAttributes: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserAttributes: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EndpointUser:
     Optional[dict[str, list[str]]] UserAttributes
     Optional[str] UserId
 
-# no @derive(Json): member(s) Item: list[EndpointResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Item: list[EndpointResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EndpointsResponse:
     list[EndpointResponse] Item
 
-# no @derive(Json): member(s) Attributes: dict[str, str], Metrics: dict[str, float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, str], Metrics: dict[str, float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Event:
     Optional[str] AppPackageName
     Optional[str] AppTitle
@@ -1441,21 +1496,24 @@ struct Event:
     Optional[Session] Session
     str Timestamp
 
-# no @derive(Json): member(s) Dimensions: EventDimensions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: EventDimensions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventCondition:
     Optional[EventDimensions] Dimensions
     Optional[str] MessageActivity
 
-# no @derive(Json): member(s) Attributes: dict[str, AttributeDimension], EventType: SetDimension, Metrics: dict[str, MetricDimension] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, AttributeDimension], EventType: SetDimension, Metrics: dict[str, MetricDimension] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventDimensions:
     Optional[dict[str, AttributeDimension]] Attributes
     Optional[SetDimension] EventType
     Optional[dict[str, MetricDimension]] Metrics
 
-# no @derive(Json): member(s) Dimensions: EventDimensions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: EventDimensions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventFilter:
     EventDimensions Dimensions
     FilterType FilterType
@@ -1465,8 +1523,9 @@ struct EventItemResponse:
     Optional[str] Message
     Optional[int64] StatusCode
 
-# no @derive(Json): member(s) EventFilter: EventFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventFilter: EventFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventStartCondition:
     Optional[EventFilter] EventFilter
     Optional[str] SegmentId
@@ -1480,19 +1539,22 @@ struct EventStream:
     Optional[str] LastUpdatedBy
     str RoleArn
 
-# no @derive(Json): member(s) Endpoint: PublicEndpoint, Events: dict[str, Event] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoint: PublicEndpoint, Events: dict[str, Event] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventsBatch:
     PublicEndpoint Endpoint
     dict[str, Event] Events
 
-# no @derive(Json): member(s) BatchItem: dict[str, EventsBatch] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BatchItem: dict[str, EventsBatch] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventsRequest:
     dict[str, EventsBatch] BatchItem
 
-# no @derive(Json): member(s) Results: dict[str, ItemResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: dict[str, ItemResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventsResponse:
     Optional[dict[str, ItemResponse]] Results
 
@@ -1510,8 +1572,9 @@ struct ExportJobResource:
     Optional[str] SegmentId
     Optional[int64] SegmentVersion
 
-# no @derive(Json): member(s) Failures: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Failures: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportJobResponse:
     str ApplicationId
     Optional[int64] CompletedPieces
@@ -1527,8 +1590,9 @@ struct ExportJobResponse:
     Optional[int64] TotalProcessed
     str Type
 
-# no @derive(Json): member(s) Item: list[ExportJobResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Item: list[ExportJobResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportJobsResponse:
     list[ExportJobResponse] Item
     Optional[str] NextToken
@@ -1561,8 +1625,9 @@ struct GCMChannelResponse:
     str Platform
     Optional[int64] Version
 
-# no @derive(Json): member(s) Data: dict[str, str], Substitutions: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Data: dict[str, str], Substitutions: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GCMMessage:
     Optional[Action] Action
     Optional[str] Body
@@ -1643,8 +1708,9 @@ struct GetApnsVoipSandboxChannelResponse:
 struct GetAppRequest:
     str ApplicationId
 
-# no @derive(Json): member(s) ApplicationResponse: ApplicationResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationResponse: ApplicationResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAppResponse:
     ApplicationResponse ApplicationResponse
 
@@ -1658,8 +1724,9 @@ struct GetApplicationDateRangeKpiRequest:
     Optional[str] PageSize
     Optional[DateTime] StartTime
 
-# no @derive(Json): member(s) ApplicationDateRangeKpiResponse: ApplicationDateRangeKpiResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationDateRangeKpiResponse: ApplicationDateRangeKpiResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetApplicationDateRangeKpiResponse:
     ApplicationDateRangeKpiResponse ApplicationDateRangeKpiResponse
 
@@ -1678,8 +1745,9 @@ struct GetAppsRequest:
     Optional[str] PageSize
     Optional[str] Token
 
-# no @derive(Json): member(s) ApplicationsResponse: ApplicationsResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationsResponse: ApplicationsResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAppsResponse:
     ApplicationsResponse ApplicationsResponse
 
@@ -1700,8 +1768,9 @@ struct GetCampaignActivitiesRequest:
     Optional[str] PageSize
     Optional[str] Token
 
-# no @derive(Json): member(s) ActivitiesResponse: ActivitiesResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActivitiesResponse: ActivitiesResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCampaignActivitiesResponse:
     ActivitiesResponse ActivitiesResponse
 
@@ -1716,8 +1785,9 @@ struct GetCampaignDateRangeKpiRequest:
     Optional[str] PageSize
     Optional[DateTime] StartTime
 
-# no @derive(Json): member(s) CampaignDateRangeKpiResponse: CampaignDateRangeKpiResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CampaignDateRangeKpiResponse: CampaignDateRangeKpiResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCampaignDateRangeKpiResponse:
     CampaignDateRangeKpiResponse CampaignDateRangeKpiResponse
 
@@ -1727,8 +1797,9 @@ struct GetCampaignRequest:
     str ApplicationId
     str CampaignId
 
-# no @derive(Json): member(s) CampaignResponse: CampaignResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CampaignResponse: CampaignResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCampaignResponse:
     CampaignResponse CampaignResponse
 
@@ -1739,8 +1810,9 @@ struct GetCampaignVersionRequest:
     str CampaignId
     str Version
 
-# no @derive(Json): member(s) CampaignResponse: CampaignResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CampaignResponse: CampaignResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCampaignVersionResponse:
     CampaignResponse CampaignResponse
 
@@ -1752,8 +1824,9 @@ struct GetCampaignVersionsRequest:
     Optional[str] PageSize
     Optional[str] Token
 
-# no @derive(Json): member(s) CampaignsResponse: CampaignsResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CampaignsResponse: CampaignsResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCampaignVersionsResponse:
     CampaignsResponse CampaignsResponse
 
@@ -1764,8 +1837,9 @@ struct GetCampaignsRequest:
     Optional[str] PageSize
     Optional[str] Token
 
-# no @derive(Json): member(s) CampaignsResponse: CampaignsResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CampaignsResponse: CampaignsResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCampaignsResponse:
     CampaignsResponse CampaignsResponse
 
@@ -1774,8 +1848,9 @@ struct GetCampaignsResponse:
 struct GetChannelsRequest:
     str ApplicationId
 
-# no @derive(Json): member(s) ChannelsResponse: ChannelsResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelsResponse: ChannelsResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetChannelsResponse:
     ChannelsResponse ChannelsResponse
 
@@ -1794,8 +1869,9 @@ struct GetEmailTemplateRequest:
     str TemplateName
     Optional[str] Version
 
-# no @derive(Json): member(s) EmailTemplateResponse: EmailTemplateResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EmailTemplateResponse: EmailTemplateResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEmailTemplateResponse:
     EmailTemplateResponse EmailTemplateResponse
 
@@ -1805,8 +1881,9 @@ struct GetEndpointRequest:
     str ApplicationId
     str EndpointId
 
-# no @derive(Json): member(s) EndpointResponse: EndpointResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointResponse: EndpointResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEndpointResponse:
     EndpointResponse EndpointResponse
 
@@ -1825,8 +1902,9 @@ struct GetExportJobRequest:
     str ApplicationId
     str JobId
 
-# no @derive(Json): member(s) ExportJobResponse: ExportJobResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExportJobResponse: ExportJobResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetExportJobResponse:
     ExportJobResponse ExportJobResponse
 
@@ -1837,8 +1915,9 @@ struct GetExportJobsRequest:
     Optional[str] PageSize
     Optional[str] Token
 
-# no @derive(Json): member(s) ExportJobsResponse: ExportJobsResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExportJobsResponse: ExportJobsResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetExportJobsResponse:
     ExportJobsResponse ExportJobsResponse
 
@@ -1857,8 +1936,9 @@ struct GetImportJobRequest:
     str ApplicationId
     str JobId
 
-# no @derive(Json): member(s) ImportJobResponse: ImportJobResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ImportJobResponse: ImportJobResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetImportJobResponse:
     ImportJobResponse ImportJobResponse
 
@@ -1869,8 +1949,9 @@ struct GetImportJobsRequest:
     Optional[str] PageSize
     Optional[str] Token
 
-# no @derive(Json): member(s) ImportJobsResponse: ImportJobsResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ImportJobsResponse: ImportJobsResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetImportJobsResponse:
     ImportJobsResponse ImportJobsResponse
 
@@ -1880,8 +1961,9 @@ struct GetInAppMessagesRequest:
     str ApplicationId
     str EndpointId
 
-# no @derive(Json): member(s) InAppMessagesResponse: InAppMessagesResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InAppMessagesResponse: InAppMessagesResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInAppMessagesResponse:
     InAppMessagesResponse InAppMessagesResponse
 
@@ -1891,8 +1973,9 @@ struct GetInAppTemplateRequest:
     str TemplateName
     Optional[str] Version
 
-# no @derive(Json): member(s) InAppTemplateResponse: InAppTemplateResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InAppTemplateResponse: InAppTemplateResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInAppTemplateResponse:
     InAppTemplateResponse InAppTemplateResponse
 
@@ -1907,8 +1990,9 @@ struct GetJourneyDateRangeKpiRequest:
     Optional[str] PageSize
     Optional[DateTime] StartTime
 
-# no @derive(Json): member(s) JourneyDateRangeKpiResponse: JourneyDateRangeKpiResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JourneyDateRangeKpiResponse: JourneyDateRangeKpiResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetJourneyDateRangeKpiResponse:
     JourneyDateRangeKpiResponse JourneyDateRangeKpiResponse
 
@@ -1921,8 +2005,9 @@ struct GetJourneyExecutionActivityMetricsRequest:
     Optional[str] NextToken
     Optional[str] PageSize
 
-# no @derive(Json): member(s) JourneyExecutionActivityMetricsResponse: JourneyExecutionActivityMetricsResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JourneyExecutionActivityMetricsResponse: JourneyExecutionActivityMetricsResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetJourneyExecutionActivityMetricsResponse:
     JourneyExecutionActivityMetricsResponse JourneyExecutionActivityMetricsResponse
 
@@ -1934,8 +2019,9 @@ struct GetJourneyExecutionMetricsRequest:
     Optional[str] NextToken
     Optional[str] PageSize
 
-# no @derive(Json): member(s) JourneyExecutionMetricsResponse: JourneyExecutionMetricsResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JourneyExecutionMetricsResponse: JourneyExecutionMetricsResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetJourneyExecutionMetricsResponse:
     JourneyExecutionMetricsResponse JourneyExecutionMetricsResponse
 
@@ -1945,8 +2031,9 @@ struct GetJourneyRequest:
     str ApplicationId
     str JourneyId
 
-# no @derive(Json): member(s) JourneyResponse: JourneyResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JourneyResponse: JourneyResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetJourneyResponse:
     JourneyResponse JourneyResponse
 
@@ -1960,8 +2047,9 @@ struct GetJourneyRunExecutionActivityMetricsRequest:
     Optional[str] PageSize
     str RunId
 
-# no @derive(Json): member(s) JourneyRunExecutionActivityMetricsResponse: JourneyRunExecutionActivityMetricsResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JourneyRunExecutionActivityMetricsResponse: JourneyRunExecutionActivityMetricsResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetJourneyRunExecutionActivityMetricsResponse:
     JourneyRunExecutionActivityMetricsResponse JourneyRunExecutionActivityMetricsResponse
 
@@ -1974,8 +2062,9 @@ struct GetJourneyRunExecutionMetricsRequest:
     Optional[str] PageSize
     str RunId
 
-# no @derive(Json): member(s) JourneyRunExecutionMetricsResponse: JourneyRunExecutionMetricsResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JourneyRunExecutionMetricsResponse: JourneyRunExecutionMetricsResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetJourneyRunExecutionMetricsResponse:
     JourneyRunExecutionMetricsResponse JourneyRunExecutionMetricsResponse
 
@@ -1987,8 +2076,9 @@ struct GetJourneyRunsRequest:
     Optional[str] PageSize
     Optional[str] Token
 
-# no @derive(Json): member(s) JourneyRunsResponse: JourneyRunsResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JourneyRunsResponse: JourneyRunsResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetJourneyRunsResponse:
     JourneyRunsResponse JourneyRunsResponse
 
@@ -1998,8 +2088,9 @@ struct GetPushTemplateRequest:
     str TemplateName
     Optional[str] Version
 
-# no @derive(Json): member(s) PushNotificationTemplateResponse: PushNotificationTemplateResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PushNotificationTemplateResponse: PushNotificationTemplateResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPushTemplateResponse:
     PushNotificationTemplateResponse PushNotificationTemplateResponse
 
@@ -2008,8 +2099,9 @@ struct GetPushTemplateResponse:
 struct GetRecommenderConfigurationRequest:
     str RecommenderId
 
-# no @derive(Json): member(s) RecommenderConfigurationResponse: RecommenderConfigurationResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecommenderConfigurationResponse: RecommenderConfigurationResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecommenderConfigurationResponse:
     RecommenderConfigurationResponse RecommenderConfigurationResponse
 
@@ -2019,8 +2111,9 @@ struct GetRecommenderConfigurationsRequest:
     Optional[str] PageSize
     Optional[str] Token
 
-# no @derive(Json): member(s) ListRecommenderConfigurationsResponse: ListRecommenderConfigurationsResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ListRecommenderConfigurationsResponse: ListRecommenderConfigurationsResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecommenderConfigurationsResponse:
     ListRecommenderConfigurationsResponse ListRecommenderConfigurationsResponse
 
@@ -2032,8 +2125,9 @@ struct GetSegmentExportJobsRequest:
     str SegmentId
     Optional[str] Token
 
-# no @derive(Json): member(s) ExportJobsResponse: ExportJobsResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExportJobsResponse: ExportJobsResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSegmentExportJobsResponse:
     ExportJobsResponse ExportJobsResponse
 
@@ -2045,8 +2139,9 @@ struct GetSegmentImportJobsRequest:
     str SegmentId
     Optional[str] Token
 
-# no @derive(Json): member(s) ImportJobsResponse: ImportJobsResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ImportJobsResponse: ImportJobsResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSegmentImportJobsResponse:
     ImportJobsResponse ImportJobsResponse
 
@@ -2056,8 +2151,9 @@ struct GetSegmentRequest:
     str ApplicationId
     str SegmentId
 
-# no @derive(Json): member(s) SegmentResponse: SegmentResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SegmentResponse: SegmentResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSegmentResponse:
     SegmentResponse SegmentResponse
 
@@ -2068,8 +2164,9 @@ struct GetSegmentVersionRequest:
     str SegmentId
     str Version
 
-# no @derive(Json): member(s) SegmentResponse: SegmentResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SegmentResponse: SegmentResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSegmentVersionResponse:
     SegmentResponse SegmentResponse
 
@@ -2081,8 +2178,9 @@ struct GetSegmentVersionsRequest:
     str SegmentId
     Optional[str] Token
 
-# no @derive(Json): member(s) SegmentsResponse: SegmentsResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SegmentsResponse: SegmentsResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSegmentVersionsResponse:
     SegmentsResponse SegmentsResponse
 
@@ -2093,8 +2191,9 @@ struct GetSegmentsRequest:
     Optional[str] PageSize
     Optional[str] Token
 
-# no @derive(Json): member(s) SegmentsResponse: SegmentsResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SegmentsResponse: SegmentsResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSegmentsResponse:
     SegmentsResponse SegmentsResponse
 
@@ -2113,8 +2212,9 @@ struct GetSmsTemplateRequest:
     str TemplateName
     Optional[str] Version
 
-# no @derive(Json): member(s) SMSTemplateResponse: SMSTemplateResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SMSTemplateResponse: SMSTemplateResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSmsTemplateResponse:
     SMSTemplateResponse SMSTemplateResponse
 
@@ -2124,8 +2224,9 @@ struct GetUserEndpointsRequest:
     str ApplicationId
     str UserId
 
-# no @derive(Json): member(s) EndpointsResponse: EndpointsResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointsResponse: EndpointsResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUserEndpointsResponse:
     EndpointsResponse EndpointsResponse
 
@@ -2144,8 +2245,9 @@ struct GetVoiceTemplateRequest:
     str TemplateName
     Optional[str] Version
 
-# no @derive(Json): member(s) VoiceTemplateResponse: VoiceTemplateResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VoiceTemplateResponse: VoiceTemplateResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetVoiceTemplateResponse:
     VoiceTemplateResponse VoiceTemplateResponse
 
@@ -2176,8 +2278,9 @@ struct ImportJobResource:
     Optional[str] SegmentId
     Optional[str] SegmentName
 
-# no @derive(Json): member(s) Failures: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Failures: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportJobResponse:
     str ApplicationId
     Optional[int64] CompletedPieces
@@ -2193,21 +2296,24 @@ struct ImportJobResponse:
     Optional[int64] TotalProcessed
     str Type
 
-# no @derive(Json): member(s) Item: list[ImportJobResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Item: list[ImportJobResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportJobsResponse:
     list[ImportJobResponse] Item
     Optional[str] NextToken
 
-# no @derive(Json): member(s) EventFilter: CampaignEventFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventFilter: CampaignEventFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InAppCampaignSchedule:
     Optional[str] EndDate
     Optional[CampaignEventFilter] EventFilter
     Optional[QuietTime] QuietTime
 
-# no @derive(Json): member(s) Content: list[InAppMessageContent], CustomConfig: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Content: list[InAppMessageContent], CustomConfig: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InAppMessage:
     Optional[list[InAppMessageContent]] Content
     Optional[dict[str, str]] CustomConfig
@@ -2226,8 +2332,9 @@ struct InAppMessageButton:
     Optional[OverrideButtonConfiguration] IOS
     Optional[OverrideButtonConfiguration] Web
 
-# no @derive(Json): member(s) InAppMessage: InAppMessage, Schedule: InAppCampaignSchedule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InAppMessage: InAppMessage, Schedule: InAppCampaignSchedule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InAppMessageCampaign:
     Optional[str] CampaignId
     Optional[int64] DailyCap
@@ -2253,13 +2360,15 @@ struct InAppMessageHeaderConfig:
     str Header
     str TextColor
 
-# no @derive(Json): member(s) InAppMessageCampaigns: list[InAppMessageCampaign] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InAppMessageCampaigns: list[InAppMessageCampaign] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InAppMessagesResponse:
     Optional[list[InAppMessageCampaign]] InAppMessageCampaigns
 
-# no @derive(Json): member(s) Content: list[InAppMessageContent], CustomConfig: dict[str, str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Content: list[InAppMessageContent], CustomConfig: dict[str, str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InAppTemplateRequest:
     Optional[list[InAppMessageContent]] Content
     Optional[dict[str, str]] CustomConfig
@@ -2267,8 +2376,9 @@ struct InAppTemplateRequest:
     Optional[dict[str, str]] tags
     Optional[str] TemplateDescription
 
-# no @derive(Json): member(s) Content: list[InAppMessageContent], CustomConfig: dict[str, str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Content: list[InAppMessageContent], CustomConfig: dict[str, str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InAppTemplateResponse:
     Optional[str] Arn
     Optional[list[InAppMessageContent]] Content
@@ -2287,8 +2397,9 @@ struct InternalServerErrorException:
     Optional[str] Message
     Optional[str] RequestID
 
-# no @derive(Json): member(s) EventsItemResponse: dict[str, EventItemResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventsItemResponse: dict[str, EventItemResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ItemResponse:
     Optional[EndpointItemResponse] EndpointItemResponse
     Optional[dict[str, EventItemResponse]] EventsItemResponse
@@ -2302,8 +2413,9 @@ struct JourneyChannelSettings:
 struct JourneyCustomMessage:
     Optional[str] Data
 
-# no @derive(Json): member(s) KpiResult: BaseKpiResult not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KpiResult: BaseKpiResult not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JourneyDateRangeKpiResponse:
     str ApplicationId
     DateTime EndTime
@@ -2317,8 +2429,9 @@ struct JourneyDateRangeKpiResponse:
 struct JourneyEmailMessage:
     Optional[str] FromAddress
 
-# no @derive(Json): member(s) Metrics: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metrics: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JourneyExecutionActivityMetricsResponse:
     str ActivityType
     str ApplicationId
@@ -2327,8 +2440,9 @@ struct JourneyExecutionActivityMetricsResponse:
     str LastEvaluatedTime
     dict[str, str] Metrics
 
-# no @derive(Json): member(s) Metrics: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metrics: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JourneyExecutionMetricsResponse:
     str ApplicationId
     str JourneyId
@@ -2348,8 +2462,9 @@ struct JourneyLimits:
 struct JourneyPushMessage:
     Optional[str] TimeToLive
 
-# no @derive(Json): member(s) Activities: dict[str, Activity], StartCondition: StartCondition, tags: dict[str, str], OpenHours: OpenHours, ClosedDays: ClosedDays, TimezoneEstimationMethods: list[__TimezoneEstimationMethodsElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Activities: dict[str, Activity], StartCondition: StartCondition, tags: dict[str, str], OpenHours: OpenHours, ClosedDays: ClosedDays, TimezoneEstimationMethods: list[__TimezoneEstimationMethodsElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JourneyResponse:
     Optional[dict[str, Activity]] Activities
     str ApplicationId
@@ -2374,8 +2489,9 @@ struct JourneyResponse:
     Optional[ClosedDays] ClosedDays
     Optional[list[__TimezoneEstimationMethodsElement]] TimezoneEstimationMethods
 
-# no @derive(Json): member(s) Metrics: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metrics: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JourneyRunExecutionActivityMetricsResponse:
     str ActivityType
     str ApplicationId
@@ -2385,8 +2501,9 @@ struct JourneyRunExecutionActivityMetricsResponse:
     dict[str, str] Metrics
     str RunId
 
-# no @derive(Json): member(s) Metrics: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Metrics: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JourneyRunExecutionMetricsResponse:
     str ApplicationId
     str JourneyId
@@ -2401,8 +2518,9 @@ struct JourneyRunResponse:
     str RunId
     JourneyRunStatus Status
 
-# no @derive(Json): member(s) Item: list[JourneyRunResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Item: list[JourneyRunResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JourneyRunsResponse:
     list[JourneyRunResponse] Item
     Optional[str] NextToken
@@ -2432,8 +2550,9 @@ struct JourneyTimeframeCap:
     Optional[int64] Cap
     Optional[int64] Days
 
-# no @derive(Json): member(s) Item: list[JourneyResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Item: list[JourneyResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JourneysResponse:
     list[JourneyResponse] Item
     Optional[str] NextToken
@@ -2445,13 +2564,15 @@ struct ListJourneysRequest:
     Optional[str] PageSize
     Optional[str] Token
 
-# no @derive(Json): member(s) JourneysResponse: JourneysResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JourneysResponse: JourneysResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJourneysResponse:
     JourneysResponse JourneysResponse
 
-# no @derive(Json): member(s) Item: list[RecommenderConfigurationResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Item: list[RecommenderConfigurationResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecommenderConfigurationsResponse:
     list[RecommenderConfigurationResponse] Item
     Optional[str] NextToken
@@ -2461,8 +2582,9 @@ struct ListRecommenderConfigurationsResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) TagsModel: TagsModel not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagsModel: TagsModel not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     TagsModel TagsModel
 
@@ -2474,8 +2596,9 @@ struct ListTemplateVersionsRequest:
     str TemplateName
     str TemplateType
 
-# no @derive(Json): member(s) TemplateVersionsResponse: TemplateVersionsResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TemplateVersionsResponse: TemplateVersionsResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTemplateVersionsResponse:
     TemplateVersionsResponse TemplateVersionsResponse
 
@@ -2487,8 +2610,9 @@ struct ListTemplatesRequest:
     Optional[str] Prefix
     Optional[str] TemplateType
 
-# no @derive(Json): member(s) TemplatesResponse: TemplatesResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TemplatesResponse: TemplatesResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTemplatesResponse:
     TemplatesResponse TemplatesResponse
 
@@ -2512,8 +2636,9 @@ struct MessageBody:
     Optional[str] Message
     Optional[str] RequestID
 
-# no @derive(Json): member(s) EmailMessage: CampaignEmailMessage, InAppMessage: CampaignInAppMessage not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EmailMessage: CampaignEmailMessage, InAppMessage: CampaignInAppMessage not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MessageConfiguration:
     Optional[Message] ADMMessage
     Optional[Message] APNSMessage
@@ -2530,8 +2655,9 @@ struct MessageHeader:
     Optional[str] Name
     Optional[str] Value
 
-# no @derive(Json): member(s) Addresses: dict[str, AddressConfiguration], Context: dict[str, str], Endpoints: dict[str, EndpointSendConfiguration], MessageConfiguration: DirectMessageConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Addresses: dict[str, AddressConfiguration], Context: dict[str, str], Endpoints: dict[str, EndpointSendConfiguration], MessageConfiguration: DirectMessageConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MessageRequest:
     Optional[dict[str, AddressConfiguration]] Addresses
     Optional[dict[str, str]] Context
@@ -2540,8 +2666,9 @@ struct MessageRequest:
     Optional[TemplateConfiguration] TemplateConfiguration
     Optional[str] TraceId
 
-# no @derive(Json): member(s) EndpointResult: dict[str, EndpointMessageResult], Result: dict[str, MessageResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EndpointResult: dict[str, EndpointMessageResult], Result: dict[str, MessageResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MessageResponse:
     str ApplicationId
     Optional[dict[str, EndpointMessageResult]] EndpointResult
@@ -2566,14 +2693,16 @@ struct MetricDimension:
     str ComparisonOperator
     float64 Value
 
-# no @derive(Json): member(s) Condition: SimpleCondition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Condition: SimpleCondition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MultiConditionalBranch:
     Optional[SimpleCondition] Condition
     Optional[str] NextActivity
 
-# no @derive(Json): member(s) Branches: list[MultiConditionalBranch] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Branches: list[MultiConditionalBranch] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MultiConditionalSplitActivity:
     Optional[list[MultiConditionalBranch]] Branches
     Optional[str] DefaultActivity
@@ -2606,8 +2735,9 @@ struct NumberValidateResponse:
     Optional[str] Timezone
     Optional[str] ZipCode
 
-# no @derive(Json): member(s) EMAIL: dict[DayOfWeek, list[OpenHoursRule]], SMS: dict[DayOfWeek, list[OpenHoursRule]], PUSH: dict[DayOfWeek, list[OpenHoursRule]], VOICE: dict[DayOfWeek, list[OpenHoursRule]], CUSTOM: dict[DayOfWeek, list[OpenHoursRule]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EMAIL: dict[DayOfWeek, list[OpenHoursRule]], SMS: dict[DayOfWeek, list[OpenHoursRule]], PUSH: dict[DayOfWeek, list[OpenHoursRule]], VOICE: dict[DayOfWeek, list[OpenHoursRule]], CUSTOM: dict[DayOfWeek, list[OpenHoursRule]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenHours:
     Optional[dict[DayOfWeek, list[OpenHoursRule]]] EMAIL
     Optional[dict[DayOfWeek, list[OpenHoursRule]]] SMS
@@ -2639,8 +2769,9 @@ struct PhoneNumberValidateRequest:
 struct PhoneNumberValidateResponse:
     NumberValidateResponse NumberValidateResponse
 
-# no @derive(Json): member(s) Attributes: dict[str, list[str]], Metrics: dict[str, float64], User: EndpointUser not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, list[str]], Metrics: dict[str, float64], User: EndpointUser not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PublicEndpoint:
     Optional[str] Address
     Optional[dict[str, list[str]]] Attributes
@@ -2661,8 +2792,9 @@ struct PushMessageActivity:
     Optional[str] TemplateName
     Optional[str] TemplateVersion
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PushNotificationTemplateRequest:
     Optional[AndroidPushNotificationTemplate] ADM
     Optional[APNSPushNotificationTemplate] APNS
@@ -2674,8 +2806,9 @@ struct PushNotificationTemplateRequest:
     Optional[dict[str, str]] tags
     Optional[str] TemplateDescription
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PushNotificationTemplateResponse:
     Optional[AndroidPushNotificationTemplate] ADM
     Optional[APNSPushNotificationTemplate] APNS
@@ -2709,8 +2842,9 @@ struct PutEventsRequest:
     str ApplicationId
     EventsRequest EventsRequest
 
-# no @derive(Json): member(s) EventsResponse: EventsResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventsResponse: EventsResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutEventsResponse:
     EventsResponse EventsResponse
 
@@ -2719,8 +2853,9 @@ struct QuietTime:
     Optional[str] End
     Optional[str] Start
 
-# no @derive(Json): member(s) Branches: list[RandomSplitEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Branches: list[RandomSplitEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RandomSplitActivity:
     Optional[list[RandomSplitEntry]] Branches
 
@@ -2738,8 +2873,9 @@ struct RecencyDimension:
     Duration Duration
     RecencyType RecencyType
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommenderConfigurationResponse:
     Optional[dict[str, str]] Attributes
     str CreationDate
@@ -2761,13 +2897,15 @@ struct RemoveAttributesRequest:
     str AttributeType
     UpdateAttributesRequest UpdateAttributesRequest
 
-# no @derive(Json): member(s) AttributesResource: AttributesResource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributesResource: AttributesResource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveAttributesResponse:
     AttributesResource AttributesResource
 
-# no @derive(Json): member(s) GroupedBys: list[ResultRowValue], Values: list[ResultRowValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GroupedBys: list[ResultRowValue], Values: list[ResultRowValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResultRow:
     list[ResultRowValue] GroupedBys
     list[ResultRowValue] Values
@@ -2801,8 +2939,9 @@ struct SMSChannelResponse:
     Optional[int64] TransactionalMessagesPerSecond
     Optional[int64] Version
 
-# no @derive(Json): member(s) Substitutions: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Substitutions: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SMSMessage:
     Optional[str] Body
     Optional[str] Keyword
@@ -2821,8 +2960,9 @@ struct SMSMessageActivity:
     Optional[str] TemplateName
     Optional[str] TemplateVersion
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SMSTemplateRequest:
     Optional[str] Body
     Optional[str] DefaultSubstitutions
@@ -2830,8 +2970,9 @@ struct SMSTemplateRequest:
     Optional[dict[str, str]] tags
     Optional[str] TemplateDescription
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SMSTemplateResponse:
     Optional[str] Arn
     Optional[str] Body
@@ -2845,8 +2986,9 @@ struct SMSTemplateResponse:
     TemplateType TemplateType
     Optional[str] Version
 
-# no @derive(Json): member(s) EventFilter: CampaignEventFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventFilter: CampaignEventFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Schedule:
     Optional[str] EndTime
     Optional[CampaignEventFilter] EventFilter
@@ -2864,8 +3006,9 @@ struct SegmentBehaviors:
 struct SegmentCondition:
     str SegmentId
 
-# no @derive(Json): member(s) AppVersion: SetDimension, Channel: SetDimension, DeviceType: SetDimension, Make: SetDimension, Model: SetDimension, Platform: SetDimension not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AppVersion: SetDimension, Channel: SetDimension, DeviceType: SetDimension, Make: SetDimension, Model: SetDimension, Platform: SetDimension not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SegmentDemographics:
     Optional[SetDimension] AppVersion
     Optional[SetDimension] Channel
@@ -2874,8 +3017,9 @@ struct SegmentDemographics:
     Optional[SetDimension] Model
     Optional[SetDimension] Platform
 
-# no @derive(Json): member(s) Attributes: dict[str, AttributeDimension], Demographic: SegmentDemographics, Location: SegmentLocation, Metrics: dict[str, MetricDimension], UserAttributes: dict[str, AttributeDimension] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, AttributeDimension], Demographic: SegmentDemographics, Location: SegmentLocation, Metrics: dict[str, MetricDimension], UserAttributes: dict[str, AttributeDimension] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SegmentDimensions:
     Optional[dict[str, AttributeDimension]] Attributes
     Optional[SegmentBehaviors] Behavior
@@ -2884,22 +3028,25 @@ struct SegmentDimensions:
     Optional[dict[str, MetricDimension]] Metrics
     Optional[dict[str, AttributeDimension]] UserAttributes
 
-# no @derive(Json): member(s) Dimensions: list[SegmentDimensions], SourceSegments: list[SegmentReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: list[SegmentDimensions], SourceSegments: list[SegmentReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SegmentGroup:
     Optional[list[SegmentDimensions]] Dimensions
     Optional[list[SegmentReference]] SourceSegments
     Optional[SourceType] SourceType
     Optional[Type] Type
 
-# no @derive(Json): member(s) Groups: list[SegmentGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[SegmentGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SegmentGroupList:
     Optional[list[SegmentGroup]] Groups
     Optional[Include] Include
 
-# no @derive(Json): member(s) ChannelCounts: dict[str, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelCounts: dict[str, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SegmentImportResource:
     Optional[dict[str, int64]] ChannelCounts
     str ExternalId
@@ -2908,8 +3055,9 @@ struct SegmentImportResource:
     str S3Url
     int64 Size
 
-# no @derive(Json): member(s) Country: SetDimension not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Country: SetDimension not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SegmentLocation:
     Optional[SetDimension] Country
     Optional[GPSPointDimension] GPSPoint
@@ -2919,8 +3067,9 @@ struct SegmentReference:
     str Id
     Optional[int64] Version
 
-# no @derive(Json): member(s) Dimensions: SegmentDimensions, ImportDefinition: SegmentImportResource, SegmentGroups: SegmentGroupList, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: SegmentDimensions, ImportDefinition: SegmentImportResource, SegmentGroups: SegmentGroupList, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SegmentResponse:
     str ApplicationId
     str Arn
@@ -2935,8 +3084,9 @@ struct SegmentResponse:
     Optional[dict[str, str]] tags
     Optional[int64] Version
 
-# no @derive(Json): member(s) Item: list[SegmentResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Item: list[SegmentResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SegmentsResponse:
     list[SegmentResponse] Item
     Optional[str] NextToken
@@ -2947,8 +3097,9 @@ struct SendMessagesRequest:
     str ApplicationId
     MessageRequest MessageRequest
 
-# no @derive(Json): member(s) MessageResponse: MessageResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MessageResponse: MessageResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendMessagesResponse:
     MessageResponse MessageResponse
 
@@ -2972,13 +3123,15 @@ struct SendOTPMessageRequestParameters:
     Optional[str] TemplateId
     Optional[int64] ValidityPeriod
 
-# no @derive(Json): member(s) MessageResponse: MessageResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MessageResponse: MessageResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendOTPMessageResponse:
     MessageResponse MessageResponse
 
-# no @derive(Json): member(s) Context: dict[str, str], MessageConfiguration: DirectMessageConfiguration, Users: dict[str, EndpointSendConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Context: dict[str, str], MessageConfiguration: DirectMessageConfiguration, Users: dict[str, EndpointSendConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendUsersMessageRequest:
     Optional[dict[str, str]] Context
     DirectMessageConfiguration MessageConfiguration
@@ -2986,8 +3139,9 @@ struct SendUsersMessageRequest:
     Optional[str] TraceId
     dict[str, EndpointSendConfiguration] Users
 
-# no @derive(Json): member(s) Result: dict[str, dict[str, EndpointMessageResult]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Result: dict[str, dict[str, EndpointMessageResult]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendUsersMessageResponse:
     str ApplicationId
     Optional[str] RequestId
@@ -2999,8 +3153,9 @@ struct SendUsersMessagesRequest:
     str ApplicationId
     SendUsersMessageRequest SendUsersMessageRequest
 
-# no @derive(Json): member(s) SendUsersMessageResponse: SendUsersMessageResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SendUsersMessageResponse: SendUsersMessageResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendUsersMessagesResponse:
     SendUsersMessageResponse SendUsersMessageResponse
 
@@ -3011,21 +3166,24 @@ struct Session:
     str StartTimestamp
     Optional[str] StopTimestamp
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetDimension:
     Optional[DimensionType] DimensionType
     list[str] Values
 
-# no @derive(Json): member(s) EventCondition: EventCondition, SegmentDimensions: SegmentDimensions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventCondition: EventCondition, SegmentDimensions: SegmentDimensions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SimpleCondition:
     Optional[EventCondition] EventCondition
     Optional[SegmentCondition] SegmentCondition
     Optional[SegmentDimensions] SegmentDimensions
 
-# no @derive(Json): member(s) Headers: list[MessageHeader] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Headers: list[MessageHeader] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SimpleEmail:
     Optional[SimpleEmailPart] HtmlPart
     Optional[SimpleEmailPart] Subject
@@ -3037,8 +3195,9 @@ struct SimpleEmailPart:
     Optional[str] Charset
     Optional[str] Data
 
-# no @derive(Json): member(s) EventStartCondition: EventStartCondition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EventStartCondition: EventStartCondition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartCondition:
     Optional[str] Description
     Optional[EventStartCondition] EventStartCondition
@@ -3050,8 +3209,9 @@ struct TagResourceRequest:
     str ResourceArn
     TagsModel TagsModel
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagsModel:
     dict[str, str] tags
 
@@ -3078,8 +3238,9 @@ struct TemplateCreateMessageBody:
     Optional[str] Message
     Optional[str] RequestID
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TemplateResponse:
     Optional[str] Arn
     str CreationDate
@@ -3101,16 +3262,18 @@ struct TemplateVersionResponse:
     str TemplateType
     Optional[str] Version
 
-# no @derive(Json): member(s) Item: list[TemplateVersionResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Item: list[TemplateVersionResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TemplateVersionsResponse:
     list[TemplateVersionResponse] Item
     Optional[str] Message
     Optional[str] NextToken
     Optional[str] RequestID
 
-# no @derive(Json): member(s) Item: list[TemplateResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Item: list[TemplateResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TemplatesResponse:
     list[TemplateResponse] Item
     Optional[str] NextToken
@@ -3120,8 +3283,9 @@ struct TooManyRequestsException:
     Optional[str] Message
     Optional[str] RequestID
 
-# no @derive(Json): member(s) CustomDeliveryConfiguration: CustomDeliveryConfiguration, MessageConfiguration: MessageConfiguration, Schedule: Schedule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomDeliveryConfiguration: CustomDeliveryConfiguration, MessageConfiguration: MessageConfiguration, Schedule: Schedule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TreatmentResource:
     Optional[CustomDeliveryConfiguration] CustomDeliveryConfiguration
     str Id
@@ -3199,8 +3363,9 @@ struct UpdateApplicationSettingsRequest:
 struct UpdateApplicationSettingsResponse:
     ApplicationSettingsResource ApplicationSettingsResource
 
-# no @derive(Json): member(s) Blacklist: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Blacklist: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAttributesRequest:
     Optional[list[str]] Blacklist
 
@@ -3221,8 +3386,9 @@ struct UpdateCampaignRequest:
     str CampaignId
     WriteCampaignRequest WriteCampaignRequest
 
-# no @derive(Json): member(s) CampaignResponse: CampaignResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CampaignResponse: CampaignResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCampaignResponse:
     CampaignResponse CampaignResponse
 
@@ -3298,8 +3464,9 @@ struct UpdateJourneyRequest:
     str JourneyId
     WriteJourneyRequest WriteJourneyRequest
 
-# no @derive(Json): member(s) JourneyResponse: JourneyResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JourneyResponse: JourneyResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateJourneyResponse:
     JourneyResponse JourneyResponse
 
@@ -3310,8 +3477,9 @@ struct UpdateJourneyStateRequest:
     str JourneyId
     JourneyStateRequest JourneyStateRequest
 
-# no @derive(Json): member(s) JourneyResponse: JourneyResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JourneyResponse: JourneyResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateJourneyStateResponse:
     JourneyResponse JourneyResponse
 
@@ -3327,8 +3495,9 @@ struct UpdatePushTemplateRequest:
 struct UpdatePushTemplateResponse:
     MessageBody MessageBody
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRecommenderConfiguration:
     Optional[dict[str, str]] Attributes
     Optional[str] Description
@@ -3346,8 +3515,9 @@ struct UpdateRecommenderConfigurationRequest:
     str RecommenderId
     UpdateRecommenderConfiguration UpdateRecommenderConfiguration
 
-# no @derive(Json): member(s) RecommenderConfigurationResponse: RecommenderConfigurationResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecommenderConfigurationResponse: RecommenderConfigurationResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRecommenderConfigurationResponse:
     RecommenderConfigurationResponse RecommenderConfigurationResponse
 
@@ -3358,8 +3528,9 @@ struct UpdateSegmentRequest:
     str SegmentId
     WriteSegmentRequest WriteSegmentRequest
 
-# no @derive(Json): member(s) SegmentResponse: SegmentResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SegmentResponse: SegmentResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSegmentResponse:
     SegmentResponse SegmentResponse
 
@@ -3455,8 +3626,9 @@ struct VoiceChannelResponse:
     str Platform
     Optional[int64] Version
 
-# no @derive(Json): member(s) Substitutions: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Substitutions: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VoiceMessage:
     Optional[str] Body
     Optional[str] LanguageCode
@@ -3464,8 +3636,9 @@ struct VoiceMessage:
     Optional[dict[str, list[str]]] Substitutions
     Optional[str] VoiceId
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VoiceTemplateRequest:
     Optional[str] Body
     Optional[str] DefaultSubstitutions
@@ -3474,8 +3647,9 @@ struct VoiceTemplateRequest:
     Optional[str] TemplateDescription
     Optional[str] VoiceId
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VoiceTemplateResponse:
     Optional[str] Arn
     Optional[str] Body
@@ -3509,8 +3683,9 @@ struct WriteApplicationSettingsRequest:
     Optional[QuietTime] QuietTime
     Optional[ApplicationSettingsJourneyLimits] JourneyLimits
 
-# no @derive(Json): member(s) AdditionalTreatments: list[WriteTreatmentResource], CustomDeliveryConfiguration: CustomDeliveryConfiguration, MessageConfiguration: MessageConfiguration, Schedule: Schedule, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalTreatments: list[WriteTreatmentResource], CustomDeliveryConfiguration: CustomDeliveryConfiguration, MessageConfiguration: MessageConfiguration, Schedule: Schedule, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WriteCampaignRequest:
     Optional[list[WriteTreatmentResource]] AdditionalTreatments
     Optional[CustomDeliveryConfiguration] CustomDeliveryConfiguration
@@ -3535,8 +3710,9 @@ struct WriteEventStream:
     str DestinationStreamArn
     str RoleArn
 
-# no @derive(Json): member(s) Activities: dict[str, Activity], StartCondition: StartCondition, OpenHours: OpenHours, ClosedDays: ClosedDays, TimezoneEstimationMethods: list[__TimezoneEstimationMethodsElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Activities: dict[str, Activity], StartCondition: StartCondition, OpenHours: OpenHours, ClosedDays: ClosedDays, TimezoneEstimationMethods: list[__TimezoneEstimationMethodsElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WriteJourneyRequest:
     Optional[dict[str, Activity]] Activities
     Optional[str] CreationDate
@@ -3558,16 +3734,18 @@ struct WriteJourneyRequest:
     Optional[ClosedDays] ClosedDays
     Optional[list[__TimezoneEstimationMethodsElement]] TimezoneEstimationMethods
 
-# no @derive(Json): member(s) Dimensions: SegmentDimensions, SegmentGroups: SegmentGroupList, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: SegmentDimensions, SegmentGroups: SegmentGroupList, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WriteSegmentRequest:
     Optional[SegmentDimensions] Dimensions
     Optional[str] Name
     Optional[SegmentGroupList] SegmentGroups
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) CustomDeliveryConfiguration: CustomDeliveryConfiguration, MessageConfiguration: MessageConfiguration, Schedule: Schedule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomDeliveryConfiguration: CustomDeliveryConfiguration, MessageConfiguration: MessageConfiguration, Schedule: Schedule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WriteTreatmentResource:
     Optional[CustomDeliveryConfiguration] CustomDeliveryConfiguration
     Optional[MessageConfiguration] MessageConfiguration

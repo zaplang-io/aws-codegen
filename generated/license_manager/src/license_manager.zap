@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 62 operations — 26 with a generated method,
-#   36 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 62 operations — 62 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   198 structs (102 @derive(Json)), 19 enums, 17 error variants.
-#   2 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import datetime
 
 # The License_Manager awsJson protocol: version 1.1, API id "AWSLicenseManager".
 def license_manager_protocol() -> awsjson.AwsJson:
@@ -271,8 +272,9 @@ struct AcceptGrantResponse:
 struct AccessDeniedException:
     Optional[str] Message
 
-# no @derive(Json): member(s) MatchingRuleStatements: list[MatchingRuleStatement], ScriptRuleStatements: list[ScriptRuleStatement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchingRuleStatements: list[MatchingRuleStatement], ScriptRuleStatements: list[ScriptRuleStatement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AndRuleStatement:
     Optional[list[MatchingRuleStatement]] MatchingRuleStatements
     Optional[list[ScriptRuleStatement]] ScriptRuleStatements
@@ -305,8 +307,9 @@ struct CheckInLicenseResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Entitlements: list[EntitlementData], CheckoutMetadata: list[Metadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entitlements: list[EntitlementData], CheckoutMetadata: list[Metadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CheckoutBorrowLicenseRequest:
     str LicenseArn
     list[EntitlementData] Entitlements
@@ -315,8 +318,9 @@ struct CheckoutBorrowLicenseRequest:
     Optional[list[Metadata]] CheckoutMetadata
     str ClientToken
 
-# no @derive(Json): member(s) EntitlementsAllowed: list[EntitlementData], CheckoutMetadata: list[Metadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntitlementsAllowed: list[EntitlementData], CheckoutMetadata: list[Metadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CheckoutBorrowLicenseResponse:
     Optional[str] LicenseArn
     Optional[str] LicenseConsumptionToken
@@ -327,8 +331,9 @@ struct CheckoutBorrowLicenseResponse:
     Optional[str] Expiration
     Optional[list[Metadata]] CheckoutMetadata
 
-# no @derive(Json): member(s) Entitlements: list[EntitlementData] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entitlements: list[EntitlementData] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CheckoutLicenseRequest:
     str ProductSKU
     CheckoutType CheckoutType
@@ -338,8 +343,9 @@ struct CheckoutLicenseRequest:
     Optional[str] Beneficiary
     Optional[str] NodeId
 
-# no @derive(Json): member(s) EntitlementsAllowed: list[EntitlementData] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntitlementsAllowed: list[EntitlementData] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CheckoutLicenseResponse:
     Optional[CheckoutType] CheckoutType
     Optional[str] LicenseConsumptionToken
@@ -365,8 +371,9 @@ struct ConsumptionConfiguration:
     Optional[ProvisionalConfiguration] ProvisionalConfiguration
     Optional[BorrowConfiguration] BorrowConfiguration
 
-# no @derive(Json): member(s) Principals: list[str], AllowedOperations: list[AllowedOperation], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Principals: list[str], AllowedOperations: list[AllowedOperation], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateGrantRequest:
     str ClientToken
     str GrantName
@@ -384,8 +391,9 @@ struct CreateGrantResponse:
     Optional[GrantStatus] Status
     Optional[str] Version
 
-# no @derive(Json): member(s) AllowedOperations: list[AllowedOperation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowedOperations: list[AllowedOperation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateGrantVersionRequest:
     str ClientToken
     str GrantArn
@@ -402,8 +410,9 @@ struct CreateGrantVersionResponse:
     Optional[GrantStatus] Status
     Optional[str] Version
 
-# no @derive(Json): member(s) LicenseAssetGroupConfigurations: list[LicenseAssetGroupConfiguration], AssociatedLicenseAssetRulesetARNs: list[str], Properties: list[LicenseAssetGroupProperty], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseAssetGroupConfigurations: list[LicenseAssetGroupConfiguration], AssociatedLicenseAssetRulesetARNs: list[str], Properties: list[LicenseAssetGroupProperty], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLicenseAssetGroupRequest:
     str Name
     Optional[str] Description
@@ -418,8 +427,9 @@ struct CreateLicenseAssetGroupResponse:
     str LicenseAssetGroupArn
     str Status
 
-# no @derive(Json): member(s) Rules: list[LicenseAssetRule], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[LicenseAssetRule], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLicenseAssetRulesetRequest:
     str Name
     Optional[str] Description
@@ -431,8 +441,9 @@ struct CreateLicenseAssetRulesetRequest:
 struct CreateLicenseAssetRulesetResponse:
     str LicenseAssetRulesetArn
 
-# no @derive(Json): member(s) LicenseRules: list[str], Tags: list[Tag], ProductInformationList: list[ProductInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseRules: list[str], Tags: list[Tag], ProductInformationList: list[ProductInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLicenseConfigurationRequest:
     str Name
     Optional[str] Description
@@ -449,8 +460,9 @@ struct CreateLicenseConfigurationRequest:
 struct CreateLicenseConfigurationResponse:
     Optional[str] LicenseConfigurationArn
 
-# no @derive(Json): member(s) SourceLicenseContext: LicenseConversionContext, DestinationLicenseContext: LicenseConversionContext not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceLicenseContext: LicenseConversionContext, DestinationLicenseContext: LicenseConversionContext not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLicenseConversionTaskForResourceRequest:
     str ResourceArn
     LicenseConversionContext SourceLicenseContext
@@ -460,8 +472,9 @@ struct CreateLicenseConversionTaskForResourceRequest:
 struct CreateLicenseConversionTaskForResourceResponse:
     Optional[str] LicenseConversionTaskId
 
-# no @derive(Json): member(s) Type: list[ReportType], ReportContext: ReportContext, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Type: list[ReportType], ReportContext: ReportContext, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLicenseManagerReportGeneratorRequest:
     str ReportGeneratorName
     list[ReportType] Type
@@ -475,8 +488,9 @@ struct CreateLicenseManagerReportGeneratorRequest:
 struct CreateLicenseManagerReportGeneratorResponse:
     Optional[str] LicenseManagerReportGeneratorArn
 
-# no @derive(Json): member(s) Entitlements: list[Entitlement], LicenseMetadata: list[Metadata], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entitlements: list[Entitlement], LicenseMetadata: list[Metadata], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLicenseRequest:
     str LicenseName
     str ProductName
@@ -497,8 +511,9 @@ struct CreateLicenseResponse:
     Optional[LicenseStatus] Status
     Optional[str] Version
 
-# no @derive(Json): member(s) LicenseMetadata: list[Metadata], Entitlements: list[Entitlement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseMetadata: list[Metadata], Entitlements: list[Entitlement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLicenseVersionRequest:
     str LicenseArn
     str LicenseName
@@ -520,8 +535,9 @@ struct CreateLicenseVersionResponse:
     Optional[str] Version
     Optional[LicenseStatus] Status
 
-# no @derive(Json): member(s) RoleArns: list[str], TokenProperties: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RoleArns: list[str], TokenProperties: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTokenRequest:
     str LicenseArn
     Optional[list[str]] RoleArns
@@ -539,8 +555,9 @@ struct CreateTokenResponse:
 struct CrossAccountDiscoveryServiceStatus:
     Optional[str] Message
 
-# no @derive(Json): member(s) Message: dict[str, RegionStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Message: dict[str, RegionStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CrossRegionDiscoveryStatus:
     Optional[dict[str, RegionStatus]] Message
 
@@ -656,8 +673,9 @@ struct FailedDependencyException:
     Optional[str] Message
     Optional[str] ErrorCode
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filter:
     Optional[str] Name
     Optional[list[str]] Values
@@ -666,8 +684,9 @@ struct Filter:
 struct FilterLimitExceededException:
     Optional[str] Message
 
-# no @derive(Json): member(s) TokenProperties: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TokenProperties: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAccessTokenRequest:
     str Token
     Optional[list[str]] TokenProperties
@@ -681,8 +700,9 @@ struct GetGrantRequest:
     str GrantArn
     Optional[str] Version
 
-# no @derive(Json): member(s) Grant: Grant not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Grant: Grant not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetGrantResponse:
     Optional[Grant] Grant
 
@@ -690,8 +710,9 @@ struct GetGrantResponse:
 struct GetLicenseAssetGroupRequest:
     str LicenseAssetGroupArn
 
-# no @derive(Json): member(s) LicenseAssetGroup: LicenseAssetGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseAssetGroup: LicenseAssetGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLicenseAssetGroupResponse:
     LicenseAssetGroup LicenseAssetGroup
 
@@ -699,8 +720,9 @@ struct GetLicenseAssetGroupResponse:
 struct GetLicenseAssetRulesetRequest:
     str LicenseAssetRulesetArn
 
-# no @derive(Json): member(s) LicenseAssetRuleset: LicenseAssetRuleset not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseAssetRuleset: LicenseAssetRuleset not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLicenseAssetRulesetResponse:
     LicenseAssetRuleset LicenseAssetRuleset
 
@@ -708,8 +730,9 @@ struct GetLicenseAssetRulesetResponse:
 struct GetLicenseConfigurationRequest:
     str LicenseConfigurationArn
 
-# no @derive(Json): member(s) LicenseRules: list[str], ConsumedLicenseSummaryList: list[ConsumedLicenseSummary], ManagedResourceSummaryList: list[ManagedResourceSummary], Tags: list[Tag], ProductInformationList: list[ProductInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseRules: list[str], ConsumedLicenseSummaryList: list[ConsumedLicenseSummary], ManagedResourceSummaryList: list[ManagedResourceSummary], Tags: list[Tag], ProductInformationList: list[ProductInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLicenseConfigurationResponse:
     Optional[str] LicenseConfigurationId
     Optional[str] LicenseConfigurationArn
@@ -734,8 +757,9 @@ struct GetLicenseConfigurationResponse:
 struct GetLicenseConversionTaskRequest:
     str LicenseConversionTaskId
 
-# no @derive(Json): member(s) SourceLicenseContext: LicenseConversionContext, DestinationLicenseContext: LicenseConversionContext not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceLicenseContext: LicenseConversionContext, DestinationLicenseContext: LicenseConversionContext not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLicenseConversionTaskResponse:
     Optional[str] LicenseConversionTaskId
     Optional[str] ResourceArn
@@ -751,8 +775,9 @@ struct GetLicenseConversionTaskResponse:
 struct GetLicenseManagerReportGeneratorRequest:
     str LicenseManagerReportGeneratorArn
 
-# no @derive(Json): member(s) ReportGenerator: ReportGenerator not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReportGenerator: ReportGenerator not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLicenseManagerReportGeneratorResponse:
     Optional[ReportGenerator] ReportGenerator
 
@@ -761,8 +786,9 @@ struct GetLicenseRequest:
     str LicenseArn
     Optional[str] Version
 
-# no @derive(Json): member(s) License: License not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) License: License not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLicenseResponse:
     Optional[License] License
 
@@ -770,8 +796,9 @@ struct GetLicenseResponse:
 struct GetLicenseUsageRequest:
     str LicenseArn
 
-# no @derive(Json): member(s) LicenseUsage: LicenseUsage not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseUsage: LicenseUsage not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLicenseUsageResponse:
     Optional[LicenseUsage] LicenseUsage
 
@@ -780,8 +807,9 @@ struct GetServiceSettingsRequest:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) CrossRegionDiscoverySourceRegions: list[str], ServiceStatus: ServiceStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CrossRegionDiscoverySourceRegions: list[str], ServiceStatus: ServiceStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetServiceSettingsResponse:
     Optional[str] S3BucketArn
     Optional[str] SnsTopicArn
@@ -792,8 +820,9 @@ struct GetServiceSettingsResponse:
     Optional[list[str]] CrossRegionDiscoverySourceRegions
     Optional[ServiceStatus] ServiceStatus
 
-# no @derive(Json): member(s) GrantedOperations: list[AllowedOperation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GrantedOperations: list[AllowedOperation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Grant:
     str GrantArn
     str GrantName
@@ -808,8 +837,9 @@ struct Grant:
     Optional[Options] Options
     Optional[GrantType] GrantType
 
-# no @derive(Json): member(s) Entitlements: list[Entitlement], LicenseMetadata: list[Metadata], ReceivedMetadata: ReceivedMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entitlements: list[Entitlement], LicenseMetadata: list[Metadata], ReceivedMetadata: ReceivedMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GrantedLicense:
     Optional[str] LicenseArn
     Optional[str] LicenseName
@@ -827,8 +857,9 @@ struct GrantedLicense:
     Optional[str] Version
     Optional[ReceivedMetadata] ReceivedMetadata
 
-# no @derive(Json): member(s) AndRuleStatement: AndRuleStatement, OrRuleStatement: OrRuleStatement, MatchingRuleStatement: MatchingRuleStatement not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AndRuleStatement: AndRuleStatement, OrRuleStatement: OrRuleStatement, MatchingRuleStatement: MatchingRuleStatement not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceRuleStatement:
     Optional[AndRuleStatement] AndRuleStatement
     Optional[OrRuleStatement] OrRuleStatement
@@ -860,8 +891,9 @@ struct IssuerDetails:
     Optional[str] SignKey
     Optional[str] KeyFingerprint
 
-# no @derive(Json): member(s) Entitlements: list[Entitlement], LicenseMetadata: list[Metadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entitlements: list[Entitlement], LicenseMetadata: list[Metadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct License:
     Optional[str] LicenseArn
     Optional[str] LicenseName
@@ -878,8 +910,9 @@ struct License:
     Optional[str] CreateTime
     Optional[str] Version
 
-# no @derive(Json): member(s) LicenseAssetGroupConfigurations: list[LicenseAssetGroupConfiguration], AssociatedLicenseAssetRulesetARNs: list[str], Properties: list[LicenseAssetGroupProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseAssetGroupConfigurations: list[LicenseAssetGroupConfiguration], AssociatedLicenseAssetRulesetARNs: list[str], Properties: list[LicenseAssetGroupProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LicenseAssetGroup:
     str Name
     Optional[str] Description
@@ -901,21 +934,24 @@ struct LicenseAssetGroupProperty:
     str Key
     str Value
 
-# no @derive(Json): member(s) RuleStatement: RuleStatement not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleStatement: RuleStatement not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LicenseAssetRule:
     RuleStatement RuleStatement
 
-# no @derive(Json): member(s) Rules: list[LicenseAssetRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[LicenseAssetRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LicenseAssetRuleset:
     str Name
     Optional[str] Description
     list[LicenseAssetRule] Rules
     str LicenseAssetRulesetArn
 
-# no @derive(Json): member(s) LicenseRules: list[str], ConsumedLicenseSummaryList: list[ConsumedLicenseSummary], ManagedResourceSummaryList: list[ManagedResourceSummary], ProductInformationList: list[ProductInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseRules: list[str], ConsumedLicenseSummaryList: list[ConsumedLicenseSummary], ManagedResourceSummaryList: list[ManagedResourceSummary], ProductInformationList: list[ProductInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LicenseConfiguration:
     Optional[str] LicenseConfigurationId
     Optional[str] LicenseConfigurationArn
@@ -943,8 +979,9 @@ struct LicenseConfigurationAssociation:
     Optional[DateTime] AssociationTime
     Optional[str] AmiAssociationScope
 
-# no @derive(Json): member(s) AndRuleStatement: AndRuleStatement, OrRuleStatement: OrRuleStatement, MatchingRuleStatement: MatchingRuleStatement not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AndRuleStatement: AndRuleStatement, OrRuleStatement: OrRuleStatement, MatchingRuleStatement: MatchingRuleStatement not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LicenseConfigurationRuleStatement:
     Optional[AndRuleStatement] AndRuleStatement
     Optional[OrRuleStatement] OrRuleStatement
@@ -959,14 +996,16 @@ struct LicenseConfigurationUsage:
     Optional[DateTime] AssociationTime
     Optional[int64] ConsumedLicenses
 
-# no @derive(Json): member(s) ProductCodes: list[ProductCodeListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProductCodes: list[ProductCodeListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LicenseConversionContext:
     Optional[str] UsageOperation
     Optional[list[ProductCodeListItem]] ProductCodes
 
-# no @derive(Json): member(s) SourceLicenseContext: LicenseConversionContext, DestinationLicenseContext: LicenseConversionContext not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceLicenseContext: LicenseConversionContext, DestinationLicenseContext: LicenseConversionContext not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LicenseConversionTask:
     Optional[str] LicenseConversionTaskId
     Optional[str] ResourceArn
@@ -978,8 +1017,9 @@ struct LicenseConversionTask:
     Optional[DateTime] LicenseConversionTime
     Optional[DateTime] EndTime
 
-# no @derive(Json): member(s) MetadataList: list[Metadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetadataList: list[Metadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LicenseOperationFailure:
     Optional[str] ResourceArn
     Optional[ResourceType] ResourceType
@@ -990,8 +1030,9 @@ struct LicenseOperationFailure:
     Optional[str] OperationRequestedBy
     Optional[list[Metadata]] MetadataList
 
-# no @derive(Json): member(s) AndRuleStatement: AndRuleStatement, OrRuleStatement: OrRuleStatement, MatchingRuleStatement: MatchingRuleStatement not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AndRuleStatement: AndRuleStatement, OrRuleStatement: OrRuleStatement, MatchingRuleStatement: MatchingRuleStatement not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LicenseRuleStatement:
     Optional[AndRuleStatement] AndRuleStatement
     Optional[OrRuleStatement] OrRuleStatement
@@ -1002,8 +1043,9 @@ struct LicenseSpecification:
     str LicenseConfigurationArn
     Optional[str] AmiAssociationScope
 
-# no @derive(Json): member(s) EntitlementUsages: list[EntitlementUsage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EntitlementUsages: list[EntitlementUsage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LicenseUsage:
     Optional[list[EntitlementUsage]] EntitlementUsages
 
@@ -1018,8 +1060,9 @@ struct ListAssetsForLicenseAssetGroupRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Assets: list[Asset] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Assets: list[Asset] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssetsForLicenseAssetGroupResponse:
     Optional[list[Asset]] Assets
     Optional[str] NextToken
@@ -1030,22 +1073,25 @@ struct ListAssociationsForLicenseConfigurationRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) LicenseConfigurationAssociations: list[LicenseConfigurationAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseConfigurationAssociations: list[LicenseConfigurationAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssociationsForLicenseConfigurationResponse:
     Optional[list[LicenseConfigurationAssociation]] LicenseConfigurationAssociations
     Optional[str] NextToken
 
-# no @derive(Json): member(s) GrantArns: list[str], Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GrantArns: list[str], Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDistributedGrantsRequest:
     Optional[list[str]] GrantArns
     Optional[list[Filter]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Grants: list[Grant] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Grants: list[Grant] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDistributedGrantsResponse:
     Optional[list[Grant]] Grants
     Optional[str] NextToken
@@ -1056,89 +1102,102 @@ struct ListFailuresForLicenseConfigurationOperationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) LicenseOperationFailureList: list[LicenseOperationFailure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseOperationFailureList: list[LicenseOperationFailure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFailuresForLicenseConfigurationOperationsResponse:
     Optional[list[LicenseOperationFailure]] LicenseOperationFailureList
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLicenseAssetGroupsRequest:
     Optional[list[Filter]] Filters
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) LicenseAssetGroups: list[LicenseAssetGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseAssetGroups: list[LicenseAssetGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLicenseAssetGroupsResponse:
     Optional[list[LicenseAssetGroup]] LicenseAssetGroups
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLicenseAssetRulesetsRequest:
     Optional[list[Filter]] Filters
     Optional[bool] ShowAWSManagedLicenseAssetRulesets
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) LicenseAssetRulesets: list[LicenseAssetRuleset] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseAssetRulesets: list[LicenseAssetRuleset] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLicenseAssetRulesetsResponse:
     Optional[list[LicenseAssetRuleset]] LicenseAssetRulesets
     Optional[str] NextToken
 
-# no @derive(Json): member(s) LicenseConfigurationArns: list[str], Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseConfigurationArns: list[str], Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLicenseConfigurationsForOrganizationRequest:
     Optional[list[str]] LicenseConfigurationArns
     Optional[int64] MaxResults
     Optional[str] NextToken
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) LicenseConfigurations: list[LicenseConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseConfigurations: list[LicenseConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLicenseConfigurationsForOrganizationResponse:
     Optional[list[LicenseConfiguration]] LicenseConfigurations
     Optional[str] NextToken
 
-# no @derive(Json): member(s) LicenseConfigurationArns: list[str], Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseConfigurationArns: list[str], Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLicenseConfigurationsRequest:
     Optional[list[str]] LicenseConfigurationArns
     Optional[int64] MaxResults
     Optional[str] NextToken
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) LicenseConfigurations: list[LicenseConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseConfigurations: list[LicenseConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLicenseConfigurationsResponse:
     Optional[list[LicenseConfiguration]] LicenseConfigurations
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLicenseConversionTasksRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) LicenseConversionTasks: list[LicenseConversionTask] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseConversionTasks: list[LicenseConversionTask] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLicenseConversionTasksResponse:
     Optional[list[LicenseConversionTask]] LicenseConversionTasks
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLicenseManagerReportGeneratorsRequest:
     Optional[list[Filter]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ReportGenerators: list[ReportGenerator] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReportGenerators: list[ReportGenerator] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLicenseManagerReportGeneratorsResponse:
     Optional[list[ReportGenerator]] ReportGenerators
     Optional[str] NextToken
@@ -1149,8 +1208,9 @@ struct ListLicenseSpecificationsForResourceRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) LicenseSpecifications: list[LicenseSpecification] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseSpecifications: list[LicenseSpecification] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLicenseSpecificationsForResourceResponse:
     Optional[list[LicenseSpecification]] LicenseSpecifications
     Optional[str] NextToken
@@ -1161,90 +1221,103 @@ struct ListLicenseVersionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Licenses: list[License] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Licenses: list[License] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLicenseVersionsResponse:
     Optional[list[License]] Licenses
     Optional[str] NextToken
 
-# no @derive(Json): member(s) LicenseArns: list[str], Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseArns: list[str], Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLicensesRequest:
     Optional[list[str]] LicenseArns
     Optional[list[Filter]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Licenses: list[License] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Licenses: list[License] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLicensesResponse:
     Optional[list[License]] Licenses
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReceivedGrantsForOrganizationRequest:
     str LicenseArn
     Optional[list[Filter]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Grants: list[Grant] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Grants: list[Grant] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReceivedGrantsForOrganizationResponse:
     Optional[list[Grant]] Grants
     Optional[str] NextToken
 
-# no @derive(Json): member(s) GrantArns: list[str], Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GrantArns: list[str], Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReceivedGrantsRequest:
     Optional[list[str]] GrantArns
     Optional[list[Filter]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Grants: list[Grant] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Grants: list[Grant] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReceivedGrantsResponse:
     Optional[list[Grant]] Grants
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReceivedLicensesForOrganizationRequest:
     Optional[list[Filter]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Licenses: list[GrantedLicense] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Licenses: list[GrantedLicense] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReceivedLicensesForOrganizationResponse:
     Optional[list[GrantedLicense]] Licenses
     Optional[str] NextToken
 
-# no @derive(Json): member(s) LicenseArns: list[str], Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseArns: list[str], Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReceivedLicensesRequest:
     Optional[list[str]] LicenseArns
     Optional[list[Filter]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Licenses: list[GrantedLicense] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Licenses: list[GrantedLicense] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReceivedLicensesResponse:
     Optional[list[GrantedLicense]] Licenses
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[InventoryFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[InventoryFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceInventoryRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
     Optional[list[InventoryFilter]] Filters
 
-# no @derive(Json): member(s) ResourceInventoryList: list[ResourceInventory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceInventoryList: list[ResourceInventory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceInventoryResponse:
     Optional[list[ResourceInventory]] ResourceInventoryList
     Optional[str] NextToken
@@ -1253,35 +1326,40 @@ struct ListResourceInventoryResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) TokenIds: list[str], Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TokenIds: list[str], Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTokensRequest:
     Optional[list[str]] TokenIds
     Optional[list[Filter]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Tokens: list[TokenData] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tokens: list[TokenData] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTokensResponse:
     Optional[list[TokenData]] Tokens
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUsageForLicenseConfigurationRequest:
     str LicenseConfigurationArn
     Optional[int64] MaxResults
     Optional[str] NextToken
     Optional[list[Filter]] Filters
 
-# no @derive(Json): member(s) LicenseConfigurationUsageList: list[LicenseConfigurationUsage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseConfigurationUsageList: list[LicenseConfigurationUsage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUsageForLicenseConfigurationResponse:
     Optional[list[LicenseConfigurationUsage]] LicenseConfigurationUsageList
     Optional[str] NextToken
@@ -1291,8 +1369,9 @@ struct ManagedResourceSummary:
     Optional[ResourceType] ResourceType
     Optional[int64] AssociationCount
 
-# no @derive(Json): member(s) ValueToMatch: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ValueToMatch: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MatchingRuleStatement:
     str KeyToMatch
     str Constraint
@@ -1312,8 +1391,9 @@ struct Options:
     Optional[ActivationOverrideBehavior] ActivationOverrideBehavior
     Optional[GrantStatus] DesiredStatus
 
-# no @derive(Json): member(s) MatchingRuleStatements: list[MatchingRuleStatement], ScriptRuleStatements: list[ScriptRuleStatement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchingRuleStatements: list[MatchingRuleStatement], ScriptRuleStatements: list[ScriptRuleStatement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OrRuleStatement:
     Optional[list[MatchingRuleStatement]] MatchingRuleStatements
     Optional[list[ScriptRuleStatement]] ScriptRuleStatements
@@ -1327,14 +1407,16 @@ struct ProductCodeListItem:
     str ProductCodeId
     str ProductCodeType
 
-# no @derive(Json): member(s) ProductInformationFilterList: list[ProductInformationFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProductInformationFilterList: list[ProductInformationFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProductInformation:
     str ResourceType
     list[ProductInformationFilter] ProductInformationFilterList
 
-# no @derive(Json): member(s) ProductInformationFilterValue: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProductInformationFilterValue: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProductInformationFilter:
     str ProductInformationFilterName
     Optional[list[str]] ProductInformationFilterValue
@@ -1348,8 +1430,9 @@ struct ProvisionalConfiguration:
 struct RateLimitExceededException:
     Optional[str] Message
 
-# no @derive(Json): member(s) AllowedOperations: list[AllowedOperation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowedOperations: list[AllowedOperation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReceivedMetadata:
     Optional[ReceivedStatus] ReceivedStatus
     Optional[str] ReceivedStatusReason
@@ -1375,8 +1458,9 @@ struct RejectGrantResponse:
     Optional[GrantStatus] Status
     Optional[str] Version
 
-# no @derive(Json): member(s) licenseConfigurationArns: list[str], licenseAssetGroupArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) licenseConfigurationArns: list[str], licenseAssetGroupArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReportContext:
     Optional[list[str]] licenseConfigurationArns
     Optional[list[str]] licenseAssetGroupArns
@@ -1388,8 +1472,9 @@ struct ReportFrequency:
     Optional[int64] value
     Optional[ReportFrequencyType] period
 
-# no @derive(Json): member(s) ReportType: list[ReportType], ReportContext: ReportContext, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReportType: list[ReportType], ReportContext: ReportContext, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReportGenerator:
     Optional[str] ReportGeneratorName
     Optional[list[ReportType]] ReportType
@@ -1405,8 +1490,9 @@ struct ReportGenerator:
     Optional[str] CreateTime
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) MarketplaceProductCodes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MarketplaceProductCodes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceInventory:
     Optional[str] ResourceId
     Optional[ResourceType] ResourceType
@@ -1429,8 +1515,9 @@ struct ResourceLimitExceededException:
 struct ResourceNotFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) LicenseConfigurationRuleStatement: LicenseConfigurationRuleStatement, LicenseRuleStatement: LicenseRuleStatement, InstanceRuleStatement: InstanceRuleStatement not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseConfigurationRuleStatement: LicenseConfigurationRuleStatement, LicenseRuleStatement: LicenseRuleStatement, InstanceRuleStatement: InstanceRuleStatement not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleStatement:
     Optional[LicenseConfigurationRuleStatement] LicenseConfigurationRuleStatement
     Optional[LicenseRuleStatement] LicenseRuleStatement
@@ -1450,8 +1537,9 @@ struct ScriptRuleStatement:
 struct ServerInternalException:
     Optional[str] Message
 
-# no @derive(Json): member(s) CrossRegionDiscovery: CrossRegionDiscoveryStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CrossRegionDiscovery: CrossRegionDiscoveryStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceStatus:
     Optional[CrossAccountDiscoveryServiceStatus] CrossAccountDiscovery
     Optional[CrossRegionDiscoveryStatus] CrossRegionDiscovery
@@ -1461,8 +1549,9 @@ struct Tag:
     Optional[str] Key
     Optional[str] Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     list[Tag] Tags
@@ -1472,8 +1561,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TokenProperties: list[str], RoleArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TokenProperties: list[str], RoleArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TokenData:
     Optional[str] TokenId
     Optional[str] TokenType
@@ -1487,8 +1577,9 @@ struct TokenData:
 struct UnsupportedDigitalSignatureMethodException:
     Optional[str] Message
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] TagKeys
@@ -1498,8 +1589,9 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) LicenseAssetGroupConfigurations: list[LicenseAssetGroupConfiguration], AssociatedLicenseAssetRulesetARNs: list[str], Properties: list[LicenseAssetGroupProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseAssetGroupConfigurations: list[LicenseAssetGroupConfiguration], AssociatedLicenseAssetRulesetARNs: list[str], Properties: list[LicenseAssetGroupProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateLicenseAssetGroupRequest:
     Optional[str] Name
     Optional[str] Description
@@ -1515,8 +1607,9 @@ struct UpdateLicenseAssetGroupResponse:
     str LicenseAssetGroupArn
     str Status
 
-# no @derive(Json): member(s) Rules: list[LicenseAssetRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[LicenseAssetRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateLicenseAssetRulesetRequest:
     Optional[str] Name
     Optional[str] Description
@@ -1528,8 +1621,9 @@ struct UpdateLicenseAssetRulesetRequest:
 struct UpdateLicenseAssetRulesetResponse:
     str LicenseAssetRulesetArn
 
-# no @derive(Json): member(s) LicenseRules: list[str], ProductInformationList: list[ProductInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LicenseRules: list[str], ProductInformationList: list[ProductInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateLicenseConfigurationRequest:
     str LicenseConfigurationArn
     Optional[LicenseConfigurationStatus] LicenseConfigurationStatus
@@ -1547,8 +1641,9 @@ struct UpdateLicenseConfigurationResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Type: list[ReportType], ReportContext: ReportContext not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Type: list[ReportType], ReportContext: ReportContext not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateLicenseManagerReportGeneratorRequest:
     str LicenseManagerReportGeneratorArn
     str ReportGeneratorName
@@ -1563,8 +1658,9 @@ struct UpdateLicenseManagerReportGeneratorResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) AddLicenseSpecifications: list[LicenseSpecification], RemoveLicenseSpecifications: list[LicenseSpecification] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AddLicenseSpecifications: list[LicenseSpecification], RemoveLicenseSpecifications: list[LicenseSpecification] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateLicenseSpecificationsForResourceRequest:
     str ResourceArn
     Optional[list[LicenseSpecification]] AddLicenseSpecifications
@@ -1575,8 +1671,9 @@ struct UpdateLicenseSpecificationsForResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) EnabledDiscoverySourceRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EnabledDiscoverySourceRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateServiceSettingsRequest:
     Optional[str] S3BucketArn
     Optional[str] SnsTopicArn
@@ -1657,50 +1754,998 @@ def license_manager_error_from_code(str code) -> License_ManagerError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CheckoutBorrowLicense (input CheckoutBorrowLicenseRequest)
-#   CheckoutLicense (input CheckoutLicenseRequest)
-#   CreateGrant (input CreateGrantRequest)
-#   CreateGrantVersion (input CreateGrantVersionRequest)
-#   CreateLicense (input CreateLicenseRequest)
-#   CreateLicenseAssetGroup (input CreateLicenseAssetGroupRequest)
-#   CreateLicenseAssetRuleset (input CreateLicenseAssetRulesetRequest)
-#   CreateLicenseConfiguration (input CreateLicenseConfigurationRequest)
-#   CreateLicenseConversionTaskForResource (input CreateLicenseConversionTaskForResourceRequest)
-#   CreateLicenseManagerReportGenerator (input CreateLicenseManagerReportGeneratorRequest)
-#   CreateLicenseVersion (input CreateLicenseVersionRequest)
-#   CreateToken (input CreateTokenRequest)
-#   GetAccessToken (input GetAccessTokenRequest)
-#   ListDistributedGrants (input ListDistributedGrantsRequest)
-#   ListLicenseAssetGroups (input ListLicenseAssetGroupsRequest)
-#   ListLicenseAssetRulesets (input ListLicenseAssetRulesetsRequest)
-#   ListLicenseConfigurations (input ListLicenseConfigurationsRequest)
-#   ListLicenseConfigurationsForOrganization (input ListLicenseConfigurationsForOrganizationRequest)
-#   ListLicenseConversionTasks (input ListLicenseConversionTasksRequest)
-#   ListLicenseManagerReportGenerators (input ListLicenseManagerReportGeneratorsRequest)
-#   ListLicenses (input ListLicensesRequest)
-#   ListReceivedGrants (input ListReceivedGrantsRequest)
-#   ListReceivedGrantsForOrganization (input ListReceivedGrantsForOrganizationRequest)
-#   ListReceivedLicenses (input ListReceivedLicensesRequest)
-#   ListReceivedLicensesForOrganization (input ListReceivedLicensesForOrganizationRequest)
-#   ListResourceInventory (input ListResourceInventoryRequest)
-#   ListTokens (input ListTokensRequest)
-#   ListUsageForLicenseConfiguration (input ListUsageForLicenseConfigurationRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateLicenseAssetGroup (input UpdateLicenseAssetGroupRequest)
-#   UpdateLicenseAssetRuleset (input UpdateLicenseAssetRulesetRequest)
-#   UpdateLicenseConfiguration (input UpdateLicenseConfigurationRequest)
-#   UpdateLicenseManagerReportGenerator (input UpdateLicenseManagerReportGeneratorRequest)
-#   UpdateLicenseSpecificationsForResource (input UpdateLicenseSpecificationsForResourceRequest)
-#   UpdateServiceSettings (input UpdateServiceSettingsRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def license_manager_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListLicenseConfigurations (input not derivable (no generated method))
-#   ListResourceInventory (input not derivable (no generated method))
-#   ListUsageForLicenseConfiguration (input not derivable (no generated method))
+def license_manager_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def license_manager_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AndRuleStatement to a compact JSON object (declaration order).
+def and_rule_statement_to_json(AndRuleStatement v) -> str:
+    list[str] parts = []
+    if v.MatchingRuleStatements.is_some():
+        auto u0 = v.MatchingRuleStatements.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(matching_rule_statement_to_json(x1))
+        parts.append("\"MatchingRuleStatements\":" + license_manager_json_arr(e1))
+    if v.ScriptRuleStatements.is_some():
+        auto u2 = v.ScriptRuleStatements.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ScriptRuleStatements\":" + license_manager_json_arr(e3))
+    return license_manager_json_obj(parts)
+
+# Serialize CheckoutBorrowLicenseRequest to a compact JSON object (declaration order).
+def checkout_borrow_license_request_to_json(CheckoutBorrowLicenseRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"LicenseArn\":" + license_manager_json_str(v.LicenseArn))
+    list[str] e0 = []
+    for x0 in v.Entitlements:
+        e0.append(x0.to_json())
+    parts.append("\"Entitlements\":" + license_manager_json_arr(e0))
+    parts.append("\"DigitalSignatureMethod\":" + license_manager_json_str(v.DigitalSignatureMethod))
+    if v.NodeId.is_some():
+        auto u1 = v.NodeId.unwrap()
+        parts.append("\"NodeId\":" + license_manager_json_str(u1))
+    if v.CheckoutMetadata.is_some():
+        auto u2 = v.CheckoutMetadata.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"CheckoutMetadata\":" + license_manager_json_arr(e3))
+    parts.append("\"ClientToken\":" + license_manager_json_str(v.ClientToken))
+    return license_manager_json_obj(parts)
+
+# Serialize CheckoutLicenseRequest to a compact JSON object (declaration order).
+def checkout_license_request_to_json(CheckoutLicenseRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ProductSKU\":" + license_manager_json_str(v.ProductSKU))
+    parts.append("\"CheckoutType\":" + v.CheckoutType.to_json())
+    parts.append("\"KeyFingerprint\":" + license_manager_json_str(v.KeyFingerprint))
+    list[str] e0 = []
+    for x0 in v.Entitlements:
+        e0.append(x0.to_json())
+    parts.append("\"Entitlements\":" + license_manager_json_arr(e0))
+    parts.append("\"ClientToken\":" + license_manager_json_str(v.ClientToken))
+    if v.Beneficiary.is_some():
+        auto u1 = v.Beneficiary.unwrap()
+        parts.append("\"Beneficiary\":" + license_manager_json_str(u1))
+    if v.NodeId.is_some():
+        auto u2 = v.NodeId.unwrap()
+        parts.append("\"NodeId\":" + license_manager_json_str(u2))
+    return license_manager_json_obj(parts)
+
+# Serialize CreateGrantRequest to a compact JSON object (declaration order).
+def create_grant_request_to_json(CreateGrantRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClientToken\":" + license_manager_json_str(v.ClientToken))
+    parts.append("\"GrantName\":" + license_manager_json_str(v.GrantName))
+    parts.append("\"LicenseArn\":" + license_manager_json_str(v.LicenseArn))
+    list[str] e0 = []
+    for x0 in v.Principals:
+        e0.append(license_manager_json_str(x0))
+    parts.append("\"Principals\":" + license_manager_json_arr(e0))
+    parts.append("\"HomeRegion\":" + license_manager_json_str(v.HomeRegion))
+    list[str] e1 = []
+    for x1 in v.AllowedOperations:
+        e1.append(x1.to_json())
+    parts.append("\"AllowedOperations\":" + license_manager_json_arr(e1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + license_manager_json_arr(e3))
+    if v.GrantType.is_some():
+        auto u4 = v.GrantType.unwrap()
+        parts.append("\"GrantType\":" + u4.to_json())
+    if v.Options.is_some():
+        auto u5 = v.Options.unwrap()
+        parts.append("\"Options\":" + u5.to_json())
+    return license_manager_json_obj(parts)
+
+# Serialize CreateGrantVersionRequest to a compact JSON object (declaration order).
+def create_grant_version_request_to_json(CreateGrantVersionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ClientToken\":" + license_manager_json_str(v.ClientToken))
+    parts.append("\"GrantArn\":" + license_manager_json_str(v.GrantArn))
+    if v.GrantName.is_some():
+        auto u0 = v.GrantName.unwrap()
+        parts.append("\"GrantName\":" + license_manager_json_str(u0))
+    if v.AllowedOperations.is_some():
+        auto u1 = v.AllowedOperations.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"AllowedOperations\":" + license_manager_json_arr(e2))
+    if v.Status.is_some():
+        auto u3 = v.Status.unwrap()
+        parts.append("\"Status\":" + u3.to_json())
+    if v.StatusReason.is_some():
+        auto u4 = v.StatusReason.unwrap()
+        parts.append("\"StatusReason\":" + license_manager_json_str(u4))
+    if v.SourceVersion.is_some():
+        auto u5 = v.SourceVersion.unwrap()
+        parts.append("\"SourceVersion\":" + license_manager_json_str(u5))
+    if v.Options.is_some():
+        auto u6 = v.Options.unwrap()
+        parts.append("\"Options\":" + u6.to_json())
+    return license_manager_json_obj(parts)
+
+# Serialize CreateLicenseAssetGroupRequest to a compact JSON object (declaration order).
+def create_license_asset_group_request_to_json(CreateLicenseAssetGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + license_manager_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + license_manager_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.LicenseAssetGroupConfigurations:
+        e1.append(x1.to_json())
+    parts.append("\"LicenseAssetGroupConfigurations\":" + license_manager_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.AssociatedLicenseAssetRulesetARNs:
+        e2.append(license_manager_json_str(x2))
+    parts.append("\"AssociatedLicenseAssetRulesetARNs\":" + license_manager_json_arr(e2))
+    if v.Properties.is_some():
+        auto u3 = v.Properties.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Properties\":" + license_manager_json_arr(e4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + license_manager_json_arr(e6))
+    parts.append("\"ClientToken\":" + license_manager_json_str(v.ClientToken))
+    return license_manager_json_obj(parts)
+
+# Serialize CreateLicenseAssetRulesetRequest to a compact JSON object (declaration order).
+def create_license_asset_ruleset_request_to_json(CreateLicenseAssetRulesetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + license_manager_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + license_manager_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.Rules:
+        e1.append(license_asset_rule_to_json(x1))
+    parts.append("\"Rules\":" + license_manager_json_arr(e1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + license_manager_json_arr(e3))
+    parts.append("\"ClientToken\":" + license_manager_json_str(v.ClientToken))
+    return license_manager_json_obj(parts)
+
+# Serialize CreateLicenseConfigurationRequest to a compact JSON object (declaration order).
+def create_license_configuration_request_to_json(CreateLicenseConfigurationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + license_manager_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + license_manager_json_str(u0))
+    parts.append("\"LicenseCountingType\":" + v.LicenseCountingType.to_json())
+    if v.LicenseCount.is_some():
+        auto u1 = v.LicenseCount.unwrap()
+        parts.append("\"LicenseCount\":" + str(u1))
+    if v.LicenseCountHardLimit.is_some():
+        auto u2 = v.LicenseCountHardLimit.unwrap()
+        parts.append("\"LicenseCountHardLimit\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.LicenseRules.is_some():
+        auto u3 = v.LicenseRules.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(license_manager_json_str(x4))
+        parts.append("\"LicenseRules\":" + license_manager_json_arr(e4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + license_manager_json_arr(e6))
+    if v.DisassociateWhenNotFound.is_some():
+        auto u7 = v.DisassociateWhenNotFound.unwrap()
+        parts.append("\"DisassociateWhenNotFound\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.ProductInformationList.is_some():
+        auto u8 = v.ProductInformationList.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(product_information_to_json(x9))
+        parts.append("\"ProductInformationList\":" + license_manager_json_arr(e9))
+    if v.LicenseExpiry.is_some():
+        auto u10 = v.LicenseExpiry.unwrap()
+        parts.append("\"LicenseExpiry\":" + str(u10))
+    return license_manager_json_obj(parts)
+
+# Serialize CreateLicenseConversionTaskForResourceRequest to a compact JSON object (declaration order).
+def create_license_conversion_task_for_resource_request_to_json(CreateLicenseConversionTaskForResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + license_manager_json_str(v.ResourceArn))
+    parts.append("\"SourceLicenseContext\":" + license_conversion_context_to_json(v.SourceLicenseContext))
+    parts.append("\"DestinationLicenseContext\":" + license_conversion_context_to_json(v.DestinationLicenseContext))
+    return license_manager_json_obj(parts)
+
+# Serialize CreateLicenseManagerReportGeneratorRequest to a compact JSON object (declaration order).
+def create_license_manager_report_generator_request_to_json(CreateLicenseManagerReportGeneratorRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ReportGeneratorName\":" + license_manager_json_str(v.ReportGeneratorName))
+    list[str] e0 = []
+    for x0 in v.Type:
+        e0.append(x0.to_json())
+    parts.append("\"Type\":" + license_manager_json_arr(e0))
+    parts.append("\"ReportContext\":" + report_context_to_json(v.ReportContext))
+    parts.append("\"ReportFrequency\":" + v.ReportFrequency.to_json())
+    parts.append("\"ClientToken\":" + license_manager_json_str(v.ClientToken))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + license_manager_json_str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + license_manager_json_arr(e3))
+    return license_manager_json_obj(parts)
+
+# Serialize CreateLicenseRequest to a compact JSON object (declaration order).
+def create_license_request_to_json(CreateLicenseRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"LicenseName\":" + license_manager_json_str(v.LicenseName))
+    parts.append("\"ProductName\":" + license_manager_json_str(v.ProductName))
+    parts.append("\"ProductSKU\":" + license_manager_json_str(v.ProductSKU))
+    parts.append("\"Issuer\":" + v.Issuer.to_json())
+    parts.append("\"HomeRegion\":" + license_manager_json_str(v.HomeRegion))
+    parts.append("\"Validity\":" + v.Validity.to_json())
+    list[str] e0 = []
+    for x0 in v.Entitlements:
+        e0.append(x0.to_json())
+    parts.append("\"Entitlements\":" + license_manager_json_arr(e0))
+    parts.append("\"Beneficiary\":" + license_manager_json_str(v.Beneficiary))
+    parts.append("\"ConsumptionConfiguration\":" + v.ConsumptionConfiguration.to_json())
+    if v.LicenseMetadata.is_some():
+        auto u1 = v.LicenseMetadata.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"LicenseMetadata\":" + license_manager_json_arr(e2))
+    parts.append("\"ClientToken\":" + license_manager_json_str(v.ClientToken))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + license_manager_json_arr(e4))
+    return license_manager_json_obj(parts)
+
+# Serialize CreateLicenseVersionRequest to a compact JSON object (declaration order).
+def create_license_version_request_to_json(CreateLicenseVersionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"LicenseArn\":" + license_manager_json_str(v.LicenseArn))
+    parts.append("\"LicenseName\":" + license_manager_json_str(v.LicenseName))
+    parts.append("\"ProductName\":" + license_manager_json_str(v.ProductName))
+    parts.append("\"Issuer\":" + v.Issuer.to_json())
+    parts.append("\"HomeRegion\":" + license_manager_json_str(v.HomeRegion))
+    parts.append("\"Validity\":" + v.Validity.to_json())
+    if v.LicenseMetadata.is_some():
+        auto u0 = v.LicenseMetadata.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"LicenseMetadata\":" + license_manager_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.Entitlements:
+        e2.append(x2.to_json())
+    parts.append("\"Entitlements\":" + license_manager_json_arr(e2))
+    parts.append("\"ConsumptionConfiguration\":" + v.ConsumptionConfiguration.to_json())
+    parts.append("\"Status\":" + v.Status.to_json())
+    parts.append("\"ClientToken\":" + license_manager_json_str(v.ClientToken))
+    if v.SourceVersion.is_some():
+        auto u3 = v.SourceVersion.unwrap()
+        parts.append("\"SourceVersion\":" + license_manager_json_str(u3))
+    if v.ResetUsage.is_some():
+        auto u4 = v.ResetUsage.unwrap()
+        parts.append("\"ResetUsage\":" + json.dumps(JsonValue.Bool(u4)))
+    return license_manager_json_obj(parts)
+
+# Serialize CreateTokenRequest to a compact JSON object (declaration order).
+def create_token_request_to_json(CreateTokenRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"LicenseArn\":" + license_manager_json_str(v.LicenseArn))
+    if v.RoleArns.is_some():
+        auto u0 = v.RoleArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(license_manager_json_str(x1))
+        parts.append("\"RoleArns\":" + license_manager_json_arr(e1))
+    if v.ExpirationInDays.is_some():
+        auto u2 = v.ExpirationInDays.unwrap()
+        parts.append("\"ExpirationInDays\":" + str(u2))
+    if v.TokenProperties.is_some():
+        auto u3 = v.TokenProperties.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(license_manager_json_str(x4))
+        parts.append("\"TokenProperties\":" + license_manager_json_arr(e4))
+    parts.append("\"ClientToken\":" + license_manager_json_str(v.ClientToken))
+    return license_manager_json_obj(parts)
+
+# Serialize Filter to a compact JSON object (declaration order).
+def filter_to_json(Filter v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + license_manager_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(license_manager_json_str(x2))
+        parts.append("\"Values\":" + license_manager_json_arr(e2))
+    return license_manager_json_obj(parts)
+
+# Serialize GetAccessTokenRequest to a compact JSON object (declaration order).
+def get_access_token_request_to_json(GetAccessTokenRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Token\":" + license_manager_json_str(v.Token))
+    if v.TokenProperties.is_some():
+        auto u0 = v.TokenProperties.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(license_manager_json_str(x1))
+        parts.append("\"TokenProperties\":" + license_manager_json_arr(e1))
+    return license_manager_json_obj(parts)
+
+# Serialize InstanceRuleStatement to a compact JSON object (declaration order).
+def instance_rule_statement_to_json(InstanceRuleStatement v) -> str:
+    list[str] parts = []
+    if v.AndRuleStatement.is_some():
+        auto u0 = v.AndRuleStatement.unwrap()
+        parts.append("\"AndRuleStatement\":" + and_rule_statement_to_json(u0))
+    if v.OrRuleStatement.is_some():
+        auto u1 = v.OrRuleStatement.unwrap()
+        parts.append("\"OrRuleStatement\":" + or_rule_statement_to_json(u1))
+    if v.MatchingRuleStatement.is_some():
+        auto u2 = v.MatchingRuleStatement.unwrap()
+        parts.append("\"MatchingRuleStatement\":" + matching_rule_statement_to_json(u2))
+    if v.ScriptRuleStatement.is_some():
+        auto u3 = v.ScriptRuleStatement.unwrap()
+        parts.append("\"ScriptRuleStatement\":" + u3.to_json())
+    return license_manager_json_obj(parts)
+
+# Serialize LicenseAssetRule to a compact JSON object (declaration order).
+def license_asset_rule_to_json(LicenseAssetRule v) -> str:
+    list[str] parts = []
+    parts.append("\"RuleStatement\":" + rule_statement_to_json(v.RuleStatement))
+    return license_manager_json_obj(parts)
+
+# Serialize LicenseConfigurationRuleStatement to a compact JSON object (declaration order).
+def license_configuration_rule_statement_to_json(LicenseConfigurationRuleStatement v) -> str:
+    list[str] parts = []
+    if v.AndRuleStatement.is_some():
+        auto u0 = v.AndRuleStatement.unwrap()
+        parts.append("\"AndRuleStatement\":" + and_rule_statement_to_json(u0))
+    if v.OrRuleStatement.is_some():
+        auto u1 = v.OrRuleStatement.unwrap()
+        parts.append("\"OrRuleStatement\":" + or_rule_statement_to_json(u1))
+    if v.MatchingRuleStatement.is_some():
+        auto u2 = v.MatchingRuleStatement.unwrap()
+        parts.append("\"MatchingRuleStatement\":" + matching_rule_statement_to_json(u2))
+    return license_manager_json_obj(parts)
+
+# Serialize LicenseConversionContext to a compact JSON object (declaration order).
+def license_conversion_context_to_json(LicenseConversionContext v) -> str:
+    list[str] parts = []
+    if v.UsageOperation.is_some():
+        auto u0 = v.UsageOperation.unwrap()
+        parts.append("\"UsageOperation\":" + license_manager_json_str(u0))
+    if v.ProductCodes.is_some():
+        auto u1 = v.ProductCodes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"ProductCodes\":" + license_manager_json_arr(e2))
+    return license_manager_json_obj(parts)
+
+# Serialize LicenseRuleStatement to a compact JSON object (declaration order).
+def license_rule_statement_to_json(LicenseRuleStatement v) -> str:
+    list[str] parts = []
+    if v.AndRuleStatement.is_some():
+        auto u0 = v.AndRuleStatement.unwrap()
+        parts.append("\"AndRuleStatement\":" + and_rule_statement_to_json(u0))
+    if v.OrRuleStatement.is_some():
+        auto u1 = v.OrRuleStatement.unwrap()
+        parts.append("\"OrRuleStatement\":" + or_rule_statement_to_json(u1))
+    if v.MatchingRuleStatement.is_some():
+        auto u2 = v.MatchingRuleStatement.unwrap()
+        parts.append("\"MatchingRuleStatement\":" + matching_rule_statement_to_json(u2))
+    return license_manager_json_obj(parts)
+
+# Serialize ListDistributedGrantsRequest to a compact JSON object (declaration order).
+def list_distributed_grants_request_to_json(ListDistributedGrantsRequest v) -> str:
+    list[str] parts = []
+    if v.GrantArns.is_some():
+        auto u0 = v.GrantArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(license_manager_json_str(x1))
+        parts.append("\"GrantArns\":" + license_manager_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(filter_to_json(x3))
+        parts.append("\"Filters\":" + license_manager_json_arr(e3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + license_manager_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    return license_manager_json_obj(parts)
+
+# Serialize ListLicenseAssetGroupsRequest to a compact JSON object (declaration order).
+def list_license_asset_groups_request_to_json(ListLicenseAssetGroupsRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + license_manager_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + license_manager_json_str(u3))
+    return license_manager_json_obj(parts)
+
+# Serialize ListLicenseAssetRulesetsRequest to a compact JSON object (declaration order).
+def list_license_asset_rulesets_request_to_json(ListLicenseAssetRulesetsRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + license_manager_json_arr(e1))
+    if v.ShowAWSManagedLicenseAssetRulesets.is_some():
+        auto u2 = v.ShowAWSManagedLicenseAssetRulesets.unwrap()
+        parts.append("\"ShowAWSManagedLicenseAssetRulesets\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + license_manager_json_str(u4))
+    return license_manager_json_obj(parts)
+
+# Serialize ListLicenseConfigurationsForOrganizationRequest to a compact JSON object (declaration order).
+def list_license_configurations_for_organization_request_to_json(ListLicenseConfigurationsForOrganizationRequest v) -> str:
+    list[str] parts = []
+    if v.LicenseConfigurationArns.is_some():
+        auto u0 = v.LicenseConfigurationArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(license_manager_json_str(x1))
+        parts.append("\"LicenseConfigurationArns\":" + license_manager_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + license_manager_json_str(u3))
+    if v.Filters.is_some():
+        auto u4 = v.Filters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(filter_to_json(x5))
+        parts.append("\"Filters\":" + license_manager_json_arr(e5))
+    return license_manager_json_obj(parts)
+
+# Serialize ListLicenseConfigurationsRequest to a compact JSON object (declaration order).
+def list_license_configurations_request_to_json(ListLicenseConfigurationsRequest v) -> str:
+    list[str] parts = []
+    if v.LicenseConfigurationArns.is_some():
+        auto u0 = v.LicenseConfigurationArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(license_manager_json_str(x1))
+        parts.append("\"LicenseConfigurationArns\":" + license_manager_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + license_manager_json_str(u3))
+    if v.Filters.is_some():
+        auto u4 = v.Filters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(filter_to_json(x5))
+        parts.append("\"Filters\":" + license_manager_json_arr(e5))
+    return license_manager_json_obj(parts)
+
+# Serialize ListLicenseConversionTasksRequest to a compact JSON object (declaration order).
+def list_license_conversion_tasks_request_to_json(ListLicenseConversionTasksRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + license_manager_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(filter_to_json(x3))
+        parts.append("\"Filters\":" + license_manager_json_arr(e3))
+    return license_manager_json_obj(parts)
+
+# Serialize ListLicenseManagerReportGeneratorsRequest to a compact JSON object (declaration order).
+def list_license_manager_report_generators_request_to_json(ListLicenseManagerReportGeneratorsRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + license_manager_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + license_manager_json_str(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    return license_manager_json_obj(parts)
+
+# Serialize ListLicensesRequest to a compact JSON object (declaration order).
+def list_licenses_request_to_json(ListLicensesRequest v) -> str:
+    list[str] parts = []
+    if v.LicenseArns.is_some():
+        auto u0 = v.LicenseArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(license_manager_json_str(x1))
+        parts.append("\"LicenseArns\":" + license_manager_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(filter_to_json(x3))
+        parts.append("\"Filters\":" + license_manager_json_arr(e3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + license_manager_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    return license_manager_json_obj(parts)
+
+# Serialize ListReceivedGrantsForOrganizationRequest to a compact JSON object (declaration order).
+def list_received_grants_for_organization_request_to_json(ListReceivedGrantsForOrganizationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"LicenseArn\":" + license_manager_json_str(v.LicenseArn))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + license_manager_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + license_manager_json_str(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    return license_manager_json_obj(parts)
+
+# Serialize ListReceivedGrantsRequest to a compact JSON object (declaration order).
+def list_received_grants_request_to_json(ListReceivedGrantsRequest v) -> str:
+    list[str] parts = []
+    if v.GrantArns.is_some():
+        auto u0 = v.GrantArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(license_manager_json_str(x1))
+        parts.append("\"GrantArns\":" + license_manager_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(filter_to_json(x3))
+        parts.append("\"Filters\":" + license_manager_json_arr(e3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + license_manager_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    return license_manager_json_obj(parts)
+
+# Serialize ListReceivedLicensesForOrganizationRequest to a compact JSON object (declaration order).
+def list_received_licenses_for_organization_request_to_json(ListReceivedLicensesForOrganizationRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(filter_to_json(x1))
+        parts.append("\"Filters\":" + license_manager_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + license_manager_json_str(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    return license_manager_json_obj(parts)
+
+# Serialize ListReceivedLicensesRequest to a compact JSON object (declaration order).
+def list_received_licenses_request_to_json(ListReceivedLicensesRequest v) -> str:
+    list[str] parts = []
+    if v.LicenseArns.is_some():
+        auto u0 = v.LicenseArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(license_manager_json_str(x1))
+        parts.append("\"LicenseArns\":" + license_manager_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(filter_to_json(x3))
+        parts.append("\"Filters\":" + license_manager_json_arr(e3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + license_manager_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    return license_manager_json_obj(parts)
+
+# Serialize ListResourceInventoryRequest to a compact JSON object (declaration order).
+def list_resource_inventory_request_to_json(ListResourceInventoryRequest v) -> str:
+    list[str] parts = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + license_manager_json_str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Filters\":" + license_manager_json_arr(e3))
+    return license_manager_json_obj(parts)
+
+# Serialize ListTokensRequest to a compact JSON object (declaration order).
+def list_tokens_request_to_json(ListTokensRequest v) -> str:
+    list[str] parts = []
+    if v.TokenIds.is_some():
+        auto u0 = v.TokenIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(license_manager_json_str(x1))
+        parts.append("\"TokenIds\":" + license_manager_json_arr(e1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(filter_to_json(x3))
+        parts.append("\"Filters\":" + license_manager_json_arr(e3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + license_manager_json_str(u4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    return license_manager_json_obj(parts)
+
+# Serialize ListUsageForLicenseConfigurationRequest to a compact JSON object (declaration order).
+def list_usage_for_license_configuration_request_to_json(ListUsageForLicenseConfigurationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"LicenseConfigurationArn\":" + license_manager_json_str(v.LicenseConfigurationArn))
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + license_manager_json_str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(filter_to_json(x3))
+        parts.append("\"Filters\":" + license_manager_json_arr(e3))
+    return license_manager_json_obj(parts)
+
+# Serialize MatchingRuleStatement to a compact JSON object (declaration order).
+def matching_rule_statement_to_json(MatchingRuleStatement v) -> str:
+    list[str] parts = []
+    parts.append("\"KeyToMatch\":" + license_manager_json_str(v.KeyToMatch))
+    parts.append("\"Constraint\":" + license_manager_json_str(v.Constraint))
+    list[str] e0 = []
+    for x0 in v.ValueToMatch:
+        e0.append(license_manager_json_str(x0))
+    parts.append("\"ValueToMatch\":" + license_manager_json_arr(e0))
+    return license_manager_json_obj(parts)
+
+# Serialize OrRuleStatement to a compact JSON object (declaration order).
+def or_rule_statement_to_json(OrRuleStatement v) -> str:
+    list[str] parts = []
+    if v.MatchingRuleStatements.is_some():
+        auto u0 = v.MatchingRuleStatements.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(matching_rule_statement_to_json(x1))
+        parts.append("\"MatchingRuleStatements\":" + license_manager_json_arr(e1))
+    if v.ScriptRuleStatements.is_some():
+        auto u2 = v.ScriptRuleStatements.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"ScriptRuleStatements\":" + license_manager_json_arr(e3))
+    return license_manager_json_obj(parts)
+
+# Serialize ProductInformation to a compact JSON object (declaration order).
+def product_information_to_json(ProductInformation v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceType\":" + license_manager_json_str(v.ResourceType))
+    list[str] e0 = []
+    for x0 in v.ProductInformationFilterList:
+        e0.append(product_information_filter_to_json(x0))
+    parts.append("\"ProductInformationFilterList\":" + license_manager_json_arr(e0))
+    return license_manager_json_obj(parts)
+
+# Serialize ProductInformationFilter to a compact JSON object (declaration order).
+def product_information_filter_to_json(ProductInformationFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"ProductInformationFilterName\":" + license_manager_json_str(v.ProductInformationFilterName))
+    if v.ProductInformationFilterValue.is_some():
+        auto u0 = v.ProductInformationFilterValue.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(license_manager_json_str(x1))
+        parts.append("\"ProductInformationFilterValue\":" + license_manager_json_arr(e1))
+    parts.append("\"ProductInformationFilterComparator\":" + license_manager_json_str(v.ProductInformationFilterComparator))
+    return license_manager_json_obj(parts)
+
+# Serialize ReportContext to a compact JSON object (declaration order).
+def report_context_to_json(ReportContext v) -> str:
+    list[str] parts = []
+    if v.licenseConfigurationArns.is_some():
+        auto u0 = v.licenseConfigurationArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(license_manager_json_str(x1))
+        parts.append("\"licenseConfigurationArns\":" + license_manager_json_arr(e1))
+    if v.licenseAssetGroupArns.is_some():
+        auto u2 = v.licenseAssetGroupArns.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(license_manager_json_str(x3))
+        parts.append("\"licenseAssetGroupArns\":" + license_manager_json_arr(e3))
+    if v.reportStartDate.is_some():
+        auto u4 = v.reportStartDate.unwrap()
+        parts.append("\"reportStartDate\":" + str(datetime.to_timestamp(u4)))
+    if v.reportEndDate.is_some():
+        auto u5 = v.reportEndDate.unwrap()
+        parts.append("\"reportEndDate\":" + str(datetime.to_timestamp(u5)))
+    return license_manager_json_obj(parts)
+
+# Serialize RuleStatement to a compact JSON object (declaration order).
+def rule_statement_to_json(RuleStatement v) -> str:
+    list[str] parts = []
+    if v.LicenseConfigurationRuleStatement.is_some():
+        auto u0 = v.LicenseConfigurationRuleStatement.unwrap()
+        parts.append("\"LicenseConfigurationRuleStatement\":" + license_configuration_rule_statement_to_json(u0))
+    if v.LicenseRuleStatement.is_some():
+        auto u1 = v.LicenseRuleStatement.unwrap()
+        parts.append("\"LicenseRuleStatement\":" + license_rule_statement_to_json(u1))
+    if v.InstanceRuleStatement.is_some():
+        auto u2 = v.InstanceRuleStatement.unwrap()
+        parts.append("\"InstanceRuleStatement\":" + instance_rule_statement_to_json(u2))
+    return license_manager_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + license_manager_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + license_manager_json_arr(e0))
+    return license_manager_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + license_manager_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(license_manager_json_str(x0))
+    parts.append("\"TagKeys\":" + license_manager_json_arr(e0))
+    return license_manager_json_obj(parts)
+
+# Serialize UpdateLicenseAssetGroupRequest to a compact JSON object (declaration order).
+def update_license_asset_group_request_to_json(UpdateLicenseAssetGroupRequest v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + license_manager_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + license_manager_json_str(u1))
+    if v.LicenseAssetGroupConfigurations.is_some():
+        auto u2 = v.LicenseAssetGroupConfigurations.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"LicenseAssetGroupConfigurations\":" + license_manager_json_arr(e3))
+    list[str] e4 = []
+    for x4 in v.AssociatedLicenseAssetRulesetARNs:
+        e4.append(license_manager_json_str(x4))
+    parts.append("\"AssociatedLicenseAssetRulesetARNs\":" + license_manager_json_arr(e4))
+    if v.Properties.is_some():
+        auto u5 = v.Properties.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Properties\":" + license_manager_json_arr(e6))
+    parts.append("\"LicenseAssetGroupArn\":" + license_manager_json_str(v.LicenseAssetGroupArn))
+    if v.Status.is_some():
+        auto u7 = v.Status.unwrap()
+        parts.append("\"Status\":" + u7.to_json())
+    parts.append("\"ClientToken\":" + license_manager_json_str(v.ClientToken))
+    return license_manager_json_obj(parts)
+
+# Serialize UpdateLicenseAssetRulesetRequest to a compact JSON object (declaration order).
+def update_license_asset_ruleset_request_to_json(UpdateLicenseAssetRulesetRequest v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + license_manager_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + license_manager_json_str(u1))
+    list[str] e2 = []
+    for x2 in v.Rules:
+        e2.append(license_asset_rule_to_json(x2))
+    parts.append("\"Rules\":" + license_manager_json_arr(e2))
+    parts.append("\"LicenseAssetRulesetArn\":" + license_manager_json_str(v.LicenseAssetRulesetArn))
+    parts.append("\"ClientToken\":" + license_manager_json_str(v.ClientToken))
+    return license_manager_json_obj(parts)
+
+# Serialize UpdateLicenseConfigurationRequest to a compact JSON object (declaration order).
+def update_license_configuration_request_to_json(UpdateLicenseConfigurationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"LicenseConfigurationArn\":" + license_manager_json_str(v.LicenseConfigurationArn))
+    if v.LicenseConfigurationStatus.is_some():
+        auto u0 = v.LicenseConfigurationStatus.unwrap()
+        parts.append("\"LicenseConfigurationStatus\":" + u0.to_json())
+    if v.LicenseRules.is_some():
+        auto u1 = v.LicenseRules.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(license_manager_json_str(x2))
+        parts.append("\"LicenseRules\":" + license_manager_json_arr(e2))
+    if v.LicenseCount.is_some():
+        auto u3 = v.LicenseCount.unwrap()
+        parts.append("\"LicenseCount\":" + str(u3))
+    if v.LicenseCountHardLimit.is_some():
+        auto u4 = v.LicenseCountHardLimit.unwrap()
+        parts.append("\"LicenseCountHardLimit\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.Name.is_some():
+        auto u5 = v.Name.unwrap()
+        parts.append("\"Name\":" + license_manager_json_str(u5))
+    if v.Description.is_some():
+        auto u6 = v.Description.unwrap()
+        parts.append("\"Description\":" + license_manager_json_str(u6))
+    if v.ProductInformationList.is_some():
+        auto u7 = v.ProductInformationList.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(product_information_to_json(x8))
+        parts.append("\"ProductInformationList\":" + license_manager_json_arr(e8))
+    if v.DisassociateWhenNotFound.is_some():
+        auto u9 = v.DisassociateWhenNotFound.unwrap()
+        parts.append("\"DisassociateWhenNotFound\":" + json.dumps(JsonValue.Bool(u9)))
+    if v.LicenseExpiry.is_some():
+        auto u10 = v.LicenseExpiry.unwrap()
+        parts.append("\"LicenseExpiry\":" + str(u10))
+    return license_manager_json_obj(parts)
+
+# Serialize UpdateLicenseManagerReportGeneratorRequest to a compact JSON object (declaration order).
+def update_license_manager_report_generator_request_to_json(UpdateLicenseManagerReportGeneratorRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"LicenseManagerReportGeneratorArn\":" + license_manager_json_str(v.LicenseManagerReportGeneratorArn))
+    parts.append("\"ReportGeneratorName\":" + license_manager_json_str(v.ReportGeneratorName))
+    list[str] e0 = []
+    for x0 in v.Type:
+        e0.append(x0.to_json())
+    parts.append("\"Type\":" + license_manager_json_arr(e0))
+    parts.append("\"ReportContext\":" + report_context_to_json(v.ReportContext))
+    parts.append("\"ReportFrequency\":" + v.ReportFrequency.to_json())
+    parts.append("\"ClientToken\":" + license_manager_json_str(v.ClientToken))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + license_manager_json_str(u1))
+    return license_manager_json_obj(parts)
+
+# Serialize UpdateLicenseSpecificationsForResourceRequest to a compact JSON object (declaration order).
+def update_license_specifications_for_resource_request_to_json(UpdateLicenseSpecificationsForResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + license_manager_json_str(v.ResourceArn))
+    if v.AddLicenseSpecifications.is_some():
+        auto u0 = v.AddLicenseSpecifications.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AddLicenseSpecifications\":" + license_manager_json_arr(e1))
+    if v.RemoveLicenseSpecifications.is_some():
+        auto u2 = v.RemoveLicenseSpecifications.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"RemoveLicenseSpecifications\":" + license_manager_json_arr(e3))
+    return license_manager_json_obj(parts)
+
+# Serialize UpdateServiceSettingsRequest to a compact JSON object (declaration order).
+def update_service_settings_request_to_json(UpdateServiceSettingsRequest v) -> str:
+    list[str] parts = []
+    if v.S3BucketArn.is_some():
+        auto u0 = v.S3BucketArn.unwrap()
+        parts.append("\"S3BucketArn\":" + license_manager_json_str(u0))
+    if v.SnsTopicArn.is_some():
+        auto u1 = v.SnsTopicArn.unwrap()
+        parts.append("\"SnsTopicArn\":" + license_manager_json_str(u1))
+    if v.OrganizationConfiguration.is_some():
+        auto u2 = v.OrganizationConfiguration.unwrap()
+        parts.append("\"OrganizationConfiguration\":" + u2.to_json())
+    if v.EnableCrossAccountsDiscovery.is_some():
+        auto u3 = v.EnableCrossAccountsDiscovery.unwrap()
+        parts.append("\"EnableCrossAccountsDiscovery\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.EnabledDiscoverySourceRegions.is_some():
+        auto u4 = v.EnabledDiscoverySourceRegions.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(license_manager_json_str(x5))
+        parts.append("\"EnabledDiscoverySourceRegions\":" + license_manager_json_arr(e5))
+    return license_manager_json_obj(parts)
 
 # A bound License_Manager client: credentials + region, threaded into every operation.
 struct License_ManagerClient:
@@ -1718,6 +2763,78 @@ struct License_ManagerClient:
     def check_in_license(self, CheckInLicenseRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "CheckInLicense", body)
+
+    # CheckoutBorrowLicense
+    # errors: AccessDeniedException, AuthorizationException, EntitlementNotAllowedException, InvalidParameterValueException, NoEntitlementsAllowedException, RateLimitExceededException, RedirectException, ResourceNotFoundException, ServerInternalException, UnsupportedDigitalSignatureMethodException, ValidationException
+    def checkout_borrow_license(self, CheckoutBorrowLicenseRequest input) -> str:
+        auto body = checkout_borrow_license_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "CheckoutBorrowLicense", body)
+
+    # CheckoutLicense
+    # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, NoEntitlementsAllowedException, RateLimitExceededException, RedirectException, ResourceNotFoundException, ServerInternalException, UnsupportedDigitalSignatureMethodException, ValidationException
+    def checkout_license(self, CheckoutLicenseRequest input) -> str:
+        auto body = checkout_license_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "CheckoutLicense", body)
+
+    # CreateGrant
+    # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ResourceLimitExceededException, ServerInternalException, ValidationException
+    def create_grant(self, CreateGrantRequest input) -> str:
+        auto body = create_grant_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "CreateGrant", body)
+
+    # CreateGrantVersion
+    # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ResourceLimitExceededException, ServerInternalException, ValidationException
+    def create_grant_version(self, CreateGrantVersionRequest input) -> str:
+        auto body = create_grant_version_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "CreateGrantVersion", body)
+
+    # CreateLicense
+    # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, RedirectException, ServerInternalException, ValidationException
+    def create_license(self, CreateLicenseRequest input) -> str:
+        auto body = create_license_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "CreateLicense", body)
+
+    # CreateLicenseAssetGroup
+    # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ServerInternalException, ValidationException
+    def create_license_asset_group(self, CreateLicenseAssetGroupRequest input) -> str:
+        auto body = create_license_asset_group_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "CreateLicenseAssetGroup", body)
+
+    # CreateLicenseAssetRuleset
+    # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ServerInternalException, ValidationException
+    def create_license_asset_ruleset(self, CreateLicenseAssetRulesetRequest input) -> str:
+        auto body = create_license_asset_ruleset_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "CreateLicenseAssetRuleset", body)
+
+    # CreateLicenseConfiguration
+    # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ResourceLimitExceededException, ServerInternalException
+    def create_license_configuration(self, CreateLicenseConfigurationRequest input) -> str:
+        auto body = create_license_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "CreateLicenseConfiguration", body)
+
+    # CreateLicenseConversionTaskForResource
+    # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ServerInternalException, ValidationException
+    def create_license_conversion_task_for_resource(self, CreateLicenseConversionTaskForResourceRequest input) -> str:
+        auto body = create_license_conversion_task_for_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "CreateLicenseConversionTaskForResource", body)
+
+    # CreateLicenseManagerReportGenerator
+    # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ResourceLimitExceededException, ResourceNotFoundException, ServerInternalException, ValidationException
+    def create_license_manager_report_generator(self, CreateLicenseManagerReportGeneratorRequest input) -> str:
+        auto body = create_license_manager_report_generator_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "CreateLicenseManagerReportGenerator", body)
+
+    # CreateLicenseVersion
+    # errors: AccessDeniedException, AuthorizationException, ConflictException, RateLimitExceededException, RedirectException, ResourceNotFoundException, ServerInternalException, ValidationException
+    def create_license_version(self, CreateLicenseVersionRequest input) -> str:
+        auto body = create_license_version_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "CreateLicenseVersion", body)
+
+    # CreateToken
+    # errors: AccessDeniedException, AuthorizationException, RateLimitExceededException, RedirectException, ResourceLimitExceededException, ResourceNotFoundException, ServerInternalException, ValidationException
+    def create_token(self, CreateTokenRequest input) -> str:
+        auto body = create_token_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "CreateToken", body)
 
     # DeleteGrant
     # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ResourceLimitExceededException, ServerInternalException, ValidationException
@@ -1766,6 +2883,12 @@ struct License_ManagerClient:
     def extend_license_consumption(self, ExtendLicenseConsumptionRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "ExtendLicenseConsumption", body)
+
+    # GetAccessToken
+    # errors: AccessDeniedException, AuthorizationException, RateLimitExceededException, ServerInternalException, ValidationException
+    def get_access_token(self, GetAccessTokenRequest input) -> str:
+        auto body = get_access_token_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "GetAccessToken", body)
 
     # GetGrant
     # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ResourceLimitExceededException, ServerInternalException, ValidationException
@@ -1833,11 +2956,53 @@ struct License_ManagerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "ListAssociationsForLicenseConfiguration", body)
 
+    # ListDistributedGrants
+    # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ResourceLimitExceededException, ServerInternalException, ValidationException
+    def list_distributed_grants(self, ListDistributedGrantsRequest input) -> str:
+        auto body = list_distributed_grants_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "ListDistributedGrants", body)
+
     # ListFailuresForLicenseConfigurationOperations
     # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ServerInternalException
     def list_failures_for_license_configuration_operations(self, ListFailuresForLicenseConfigurationOperationsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "ListFailuresForLicenseConfigurationOperations", body)
+
+    # ListLicenseAssetGroups
+    # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ServerInternalException, ValidationException
+    def list_license_asset_groups(self, ListLicenseAssetGroupsRequest input) -> str:
+        auto body = list_license_asset_groups_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "ListLicenseAssetGroups", body)
+
+    # ListLicenseAssetRulesets
+    # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ServerInternalException, ValidationException
+    def list_license_asset_rulesets(self, ListLicenseAssetRulesetsRequest input) -> str:
+        auto body = list_license_asset_rulesets_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "ListLicenseAssetRulesets", body)
+
+    # ListLicenseConfigurations
+    # errors: AccessDeniedException, AuthorizationException, FilterLimitExceededException, InvalidParameterValueException, RateLimitExceededException, ServerInternalException
+    def list_license_configurations(self, ListLicenseConfigurationsRequest input) -> str:
+        auto body = list_license_configurations_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "ListLicenseConfigurations", body)
+
+    # ListLicenseConfigurationsForOrganization
+    # errors: AccessDeniedException, AuthorizationException, FilterLimitExceededException, InvalidParameterValueException, RateLimitExceededException, ServerInternalException
+    def list_license_configurations_for_organization(self, ListLicenseConfigurationsForOrganizationRequest input) -> str:
+        auto body = list_license_configurations_for_organization_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "ListLicenseConfigurationsForOrganization", body)
+
+    # ListLicenseConversionTasks
+    # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ServerInternalException
+    def list_license_conversion_tasks(self, ListLicenseConversionTasksRequest input) -> str:
+        auto body = list_license_conversion_tasks_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "ListLicenseConversionTasks", body)
+
+    # ListLicenseManagerReportGenerators
+    # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ResourceLimitExceededException, ResourceNotFoundException, ServerInternalException, ValidationException
+    def list_license_manager_report_generators(self, ListLicenseManagerReportGeneratorsRequest input) -> str:
+        auto body = list_license_manager_report_generators_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "ListLicenseManagerReportGenerators", body)
 
     # ListLicenseSpecificationsForResource
     # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ServerInternalException
@@ -1851,17 +3016,113 @@ struct License_ManagerClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "ListLicenseVersions", body)
 
+    # ListLicenses
+    # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ServerInternalException, ValidationException
+    def list_licenses(self, ListLicensesRequest input) -> str:
+        auto body = list_licenses_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "ListLicenses", body)
+
+    # ListReceivedGrants
+    # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ResourceLimitExceededException, ServerInternalException, ValidationException
+    def list_received_grants(self, ListReceivedGrantsRequest input) -> str:
+        auto body = list_received_grants_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "ListReceivedGrants", body)
+
+    # ListReceivedGrantsForOrganization
+    # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ResourceLimitExceededException, ServerInternalException, ValidationException
+    def list_received_grants_for_organization(self, ListReceivedGrantsForOrganizationRequest input) -> str:
+        auto body = list_received_grants_for_organization_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "ListReceivedGrantsForOrganization", body)
+
+    # ListReceivedLicenses
+    # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ResourceLimitExceededException, ServerInternalException, ValidationException
+    def list_received_licenses(self, ListReceivedLicensesRequest input) -> str:
+        auto body = list_received_licenses_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "ListReceivedLicenses", body)
+
+    # ListReceivedLicensesForOrganization
+    # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ResourceLimitExceededException, ServerInternalException, ValidationException
+    def list_received_licenses_for_organization(self, ListReceivedLicensesForOrganizationRequest input) -> str:
+        auto body = list_received_licenses_for_organization_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "ListReceivedLicensesForOrganization", body)
+
+    # ListResourceInventory
+    # errors: AccessDeniedException, AuthorizationException, FailedDependencyException, FilterLimitExceededException, InvalidParameterValueException, RateLimitExceededException, ServerInternalException
+    def list_resource_inventory(self, ListResourceInventoryRequest input) -> str:
+        auto body = list_resource_inventory_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "ListResourceInventory", body)
+
     # ListTagsForResource
     # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ServerInternalException, ValidationException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "ListTagsForResource", body)
 
+    # ListTokens
+    # errors: AccessDeniedException, AuthorizationException, RateLimitExceededException, ServerInternalException, ValidationException
+    def list_tokens(self, ListTokensRequest input) -> str:
+        auto body = list_tokens_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "ListTokens", body)
+
+    # ListUsageForLicenseConfiguration
+    # errors: AccessDeniedException, AuthorizationException, FilterLimitExceededException, InvalidParameterValueException, RateLimitExceededException, ServerInternalException
+    def list_usage_for_license_configuration(self, ListUsageForLicenseConfigurationRequest input) -> str:
+        auto body = list_usage_for_license_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "ListUsageForLicenseConfiguration", body)
+
     # RejectGrant
     # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ResourceLimitExceededException, ServerInternalException, ValidationException
     def reject_grant(self, RejectGrantRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "RejectGrant", body)
+
+    # TagResource
+    # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ServerInternalException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ServerInternalException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateLicenseAssetGroup
+    # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ServerInternalException, ValidationException
+    def update_license_asset_group(self, UpdateLicenseAssetGroupRequest input) -> str:
+        auto body = update_license_asset_group_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "UpdateLicenseAssetGroup", body)
+
+    # UpdateLicenseAssetRuleset
+    # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ServerInternalException, ValidationException
+    def update_license_asset_ruleset(self, UpdateLicenseAssetRulesetRequest input) -> str:
+        auto body = update_license_asset_ruleset_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "UpdateLicenseAssetRuleset", body)
+
+    # UpdateLicenseConfiguration
+    # errors: AccessDeniedException, AuthorizationException, ConflictException, InvalidParameterValueException, RateLimitExceededException, ResourceLimitExceededException, ServerInternalException
+    def update_license_configuration(self, UpdateLicenseConfigurationRequest input) -> str:
+        auto body = update_license_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "UpdateLicenseConfiguration", body)
+
+    # UpdateLicenseManagerReportGenerator
+    # errors: AccessDeniedException, AuthorizationException, InvalidParameterValueException, RateLimitExceededException, ResourceLimitExceededException, ResourceNotFoundException, ServerInternalException, ValidationException
+    def update_license_manager_report_generator(self, UpdateLicenseManagerReportGeneratorRequest input) -> str:
+        auto body = update_license_manager_report_generator_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "UpdateLicenseManagerReportGenerator", body)
+
+    # UpdateLicenseSpecificationsForResource
+    # errors: AccessDeniedException, AuthorizationException, ConflictException, InvalidParameterValueException, InvalidResourceStateException, LicenseUsageException, RateLimitExceededException, ServerInternalException
+    def update_license_specifications_for_resource(self, UpdateLicenseSpecificationsForResourceRequest input) -> str:
+        auto body = update_license_specifications_for_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "UpdateLicenseSpecificationsForResource", body)
+
+    # UpdateServiceSettings
+    # errors: AccessDeniedException, AuthorizationException, ConflictException, InvalidParameterValueException, RateLimitExceededException, ServerInternalException, ValidationException
+    def update_service_settings(self, UpdateServiceSettingsRequest input) -> str:
+        auto body = update_service_settings_request_to_json(input)
+        return awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "UpdateServiceSettings", body)
 
     # Paginator for ListAssociationsForLicenseConfiguration — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: LicenseConfigurationAssociations).
@@ -1877,6 +3138,20 @@ struct License_ManagerClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListLicenseConfigurations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: LicenseConfigurations).
+    def paginate_list_license_configurations(self, ListLicenseConfigurationsRequest input):
+        auto host = endpoints.regional_host(license_manager_protocol().service, self.region)
+        while True:
+            auto body = list_license_configurations_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "ListLicenseConfigurations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListLicenseSpecificationsForResource — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: LicenseSpecifications).
     def paginate_list_license_specifications_for_resource(self, ListLicenseSpecificationsForResourceRequest input):
@@ -1884,6 +3159,34 @@ struct License_ManagerClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "ListLicenseSpecificationsForResource", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListResourceInventory — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ResourceInventoryList).
+    def paginate_list_resource_inventory(self, ListResourceInventoryRequest input):
+        auto host = endpoints.regional_host(license_manager_protocol().service, self.region)
+        while True:
+            auto body = list_resource_inventory_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "ListResourceInventory", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListUsageForLicenseConfiguration — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: LicenseConfigurationUsageList).
+    def paginate_list_usage_for_license_configuration(self, ListUsageForLicenseConfigurationRequest input):
+        auto host = endpoints.regional_host(license_manager_protocol().service, self.region)
+        while True:
+            auto body = list_usage_for_license_configuration_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(license_manager_protocol(), self.creds, self.region, "ListUsageForLicenseConfiguration", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

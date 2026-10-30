@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 37 operations — 21 with a generated method,
-#   16 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 37 operations — 37 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   108 structs (55 @derive(Json)), 18 enums, 11 error variants.
-#   5 paginators generated (4 paginated ops skipped) from paginators-1.json.
+#   9 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -265,14 +265,16 @@ struct AccessDeniedException:
     AccessDeniedErrorCode errorCode
     bool canRetry
 
-# no @derive(Json): member(s) findingArns: list[str], attributes: list[Attribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findingArns: list[str], attributes: list[Attribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddAttributesToFindingsRequest:
     list[str] findingArns
     list[Attribute] attributes
 
-# no @derive(Json): member(s) failedItems: dict[str, FailedItemDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failedItems: dict[str, FailedItemDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddAttributesToFindingsResponse:
     dict[str, FailedItemDetails] failedItems
 
@@ -281,8 +283,9 @@ struct AgentAlreadyRunningAssessment:
     str agentId
     str assessmentRunArn
 
-# no @derive(Json): member(s) agentHealths: list[AgentHealth], agentHealthCodes: list[AgentHealthCode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentHealths: list[AgentHealth], agentHealthCodes: list[AgentHealthCode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentFilter:
     list[AgentHealth] agentHealths
     list[AgentHealthCode] agentHealthCodes
@@ -298,16 +301,18 @@ struct AgentPreview:
     Optional[str] kernelVersion
     Optional[str] ipv4Address
 
-# no @derive(Json): member(s) agents: list[AgentAlreadyRunningAssessment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agents: list[AgentAlreadyRunningAssessment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentsAlreadyRunningAssessmentException:
     str message
     list[AgentAlreadyRunningAssessment] agents
     bool agentsTruncated
     bool canRetry
 
-# no @derive(Json): member(s) rulesPackageArns: list[str], userAttributesForFindings: list[Attribute], stateChanges: list[AssessmentRunStateChange], notifications: list[AssessmentRunNotification], findingCounts: dict[Severity, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rulesPackageArns: list[str], userAttributesForFindings: list[Attribute], stateChanges: list[AssessmentRunStateChange], notifications: list[AssessmentRunNotification], findingCounts: dict[Severity, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssessmentRun:
     str arn
     str name
@@ -325,8 +330,9 @@ struct AssessmentRun:
     list[AssessmentRunNotification] notifications
     dict[Severity, int64] findingCounts
 
-# no @derive(Json): member(s) telemetryMetadata: list[TelemetryMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) telemetryMetadata: list[TelemetryMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssessmentRunAgent:
     str agentId
     str assessmentRunArn
@@ -336,8 +342,9 @@ struct AssessmentRunAgent:
     Optional[str] autoScalingGroup
     list[TelemetryMetadata] telemetryMetadata
 
-# no @derive(Json): member(s) states: list[AssessmentRunState], rulesPackageArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) states: list[AssessmentRunState], rulesPackageArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssessmentRunFilter:
     Optional[str] namePattern
     Optional[list[AssessmentRunState]] states
@@ -347,8 +354,9 @@ struct AssessmentRunFilter:
     Optional[TimestampRange] completionTimeRange
     Optional[TimestampRange] stateChangeTimeRange
 
-# no @derive(Json): member(s) assessmentRunArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessmentRunArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssessmentRunInProgressException:
     str message
     list[str] assessmentRunArns
@@ -381,8 +389,9 @@ struct AssessmentTarget:
 struct AssessmentTargetFilter:
     Optional[str] assessmentTargetNamePattern
 
-# no @derive(Json): member(s) rulesPackageArns: list[str], userAttributesForFindings: list[Attribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rulesPackageArns: list[str], userAttributesForFindings: list[Attribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssessmentTemplate:
     str arn
     str name
@@ -394,15 +403,17 @@ struct AssessmentTemplate:
     int64 assessmentRunCount
     DateTime createdAt
 
-# no @derive(Json): member(s) rulesPackageArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rulesPackageArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssessmentTemplateFilter:
     Optional[str] namePattern
     Optional[DurationRange] durationRange
     Optional[list[str]] rulesPackageArns
 
-# no @derive(Json): member(s) ipv4Addresses: list[str], tags: list[Tag], networkInterfaces: list[NetworkInterface] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ipv4Addresses: list[str], tags: list[Tag], networkInterfaces: list[NetworkInterface] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetAttributes:
     int64 schemaVersion
     Optional[str] agentId
@@ -427,8 +438,9 @@ struct CreateAssessmentTargetRequest:
 struct CreateAssessmentTargetResponse:
     str assessmentTargetArn
 
-# no @derive(Json): member(s) rulesPackageArns: list[str], userAttributesForFindings: list[Attribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rulesPackageArns: list[str], userAttributesForFindings: list[Attribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAssessmentTemplateRequest:
     str assessmentTargetArn
     str assessmentTemplateName
@@ -448,8 +460,9 @@ struct CreateExclusionsPreviewRequest:
 struct CreateExclusionsPreviewResponse:
     str previewToken
 
-# no @derive(Json): member(s) resourceGroupTags: list[ResourceGroupTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceGroupTags: list[ResourceGroupTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateResourceGroupRequest:
     list[ResourceGroupTag] resourceGroupTags
 
@@ -469,35 +482,41 @@ struct DeleteAssessmentTargetRequest:
 struct DeleteAssessmentTemplateRequest:
     str assessmentTemplateArn
 
-# no @derive(Json): member(s) assessmentRunArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessmentRunArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAssessmentRunsRequest:
     list[str] assessmentRunArns
 
-# no @derive(Json): member(s) assessmentRuns: list[AssessmentRun], failedItems: dict[str, FailedItemDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessmentRuns: list[AssessmentRun], failedItems: dict[str, FailedItemDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAssessmentRunsResponse:
     list[AssessmentRun] assessmentRuns
     dict[str, FailedItemDetails] failedItems
 
-# no @derive(Json): member(s) assessmentTargetArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessmentTargetArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAssessmentTargetsRequest:
     list[str] assessmentTargetArns
 
-# no @derive(Json): member(s) assessmentTargets: list[AssessmentTarget], failedItems: dict[str, FailedItemDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessmentTargets: list[AssessmentTarget], failedItems: dict[str, FailedItemDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAssessmentTargetsResponse:
     list[AssessmentTarget] assessmentTargets
     dict[str, FailedItemDetails] failedItems
 
-# no @derive(Json): member(s) assessmentTemplateArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessmentTemplateArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAssessmentTemplatesRequest:
     list[str] assessmentTemplateArns
 
-# no @derive(Json): member(s) assessmentTemplates: list[AssessmentTemplate], failedItems: dict[str, FailedItemDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessmentTemplates: list[AssessmentTemplate], failedItems: dict[str, FailedItemDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAssessmentTemplatesResponse:
     list[AssessmentTemplate] assessmentTemplates
     dict[str, FailedItemDetails] failedItems
@@ -508,49 +527,57 @@ struct DescribeCrossAccountAccessRoleResponse:
     bool valid
     DateTime registeredAt
 
-# no @derive(Json): member(s) exclusionArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exclusionArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeExclusionsRequest:
     list[str] exclusionArns
     Optional[str] locale
 
-# no @derive(Json): member(s) exclusions: dict[str, Exclusion], failedItems: dict[str, FailedItemDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exclusions: dict[str, Exclusion], failedItems: dict[str, FailedItemDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeExclusionsResponse:
     dict[str, Exclusion] exclusions
     dict[str, FailedItemDetails] failedItems
 
-# no @derive(Json): member(s) findingArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findingArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFindingsRequest:
     list[str] findingArns
     Optional[str] locale
 
-# no @derive(Json): member(s) findings: list[Finding], failedItems: dict[str, FailedItemDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findings: list[Finding], failedItems: dict[str, FailedItemDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeFindingsResponse:
     list[Finding] findings
     dict[str, FailedItemDetails] failedItems
 
-# no @derive(Json): member(s) resourceGroupArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceGroupArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeResourceGroupsRequest:
     list[str] resourceGroupArns
 
-# no @derive(Json): member(s) resourceGroups: list[ResourceGroup], failedItems: dict[str, FailedItemDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceGroups: list[ResourceGroup], failedItems: dict[str, FailedItemDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeResourceGroupsResponse:
     list[ResourceGroup] resourceGroups
     dict[str, FailedItemDetails] failedItems
 
-# no @derive(Json): member(s) rulesPackageArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rulesPackageArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRulesPackagesRequest:
     list[str] rulesPackageArns
     Optional[str] locale
 
-# no @derive(Json): member(s) rulesPackages: list[RulesPackage], failedItems: dict[str, FailedItemDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rulesPackages: list[RulesPackage], failedItems: dict[str, FailedItemDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRulesPackagesResponse:
     list[RulesPackage] rulesPackages
     dict[str, FailedItemDetails] failedItems
@@ -565,8 +592,9 @@ struct EventSubscription:
     InspectorEvent event
     DateTime subscribedAt
 
-# no @derive(Json): member(s) scopes: list[Scope], attributes: list[Attribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scopes: list[Scope], attributes: list[Attribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Exclusion:
     str arn
     str title
@@ -575,8 +603,9 @@ struct Exclusion:
     list[Scope] scopes
     Optional[list[Attribute]] attributes
 
-# no @derive(Json): member(s) scopes: list[Scope], attributes: list[Attribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scopes: list[Scope], attributes: list[Attribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExclusionPreview:
     str title
     str description
@@ -589,8 +618,9 @@ struct FailedItemDetails:
     FailedItemErrorCode failureCode
     bool retryable
 
-# no @derive(Json): member(s) assetAttributes: AssetAttributes, attributes: list[Attribute], userAttributes: list[Attribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetAttributes: AssetAttributes, attributes: list[Attribute], userAttributes: list[Attribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Finding:
     str arn
     Optional[int64] schemaVersion
@@ -611,8 +641,9 @@ struct Finding:
     DateTime createdAt
     DateTime updatedAt
 
-# no @derive(Json): member(s) agentIds: list[str], autoScalingGroups: list[str], ruleNames: list[str], severities: list[Severity], rulesPackageArns: list[str], attributes: list[Attribute], userAttributes: list[Attribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentIds: list[str], autoScalingGroups: list[str], ruleNames: list[str], severities: list[Severity], rulesPackageArns: list[str], attributes: list[Attribute], userAttributes: list[Attribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FindingFilter:
     Optional[list[str]] agentIds
     Optional[list[str]] autoScalingGroups
@@ -642,8 +673,9 @@ struct GetExclusionsPreviewRequest:
     Optional[int64] maxResults
     Optional[str] locale
 
-# no @derive(Json): member(s) exclusionPreviews: list[ExclusionPreview] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exclusionPreviews: list[ExclusionPreview] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetExclusionsPreviewResponse:
     PreviewStatus previewStatus
     Optional[list[ExclusionPreview]] exclusionPreviews
@@ -653,8 +685,9 @@ struct GetExclusionsPreviewResponse:
 struct GetTelemetryMetadataRequest:
     str assessmentRunArn
 
-# no @derive(Json): member(s) telemetryMetadata: list[TelemetryMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) telemetryMetadata: list[TelemetryMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTelemetryMetadataResponse:
     list[TelemetryMetadata] telemetryMetadata
 
@@ -687,30 +720,34 @@ struct LimitExceededException:
     LimitExceededErrorCode errorCode
     bool canRetry
 
-# no @derive(Json): member(s) filter: AgentFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filter: AgentFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssessmentRunAgentsRequest:
     str assessmentRunArn
     Optional[AgentFilter] filter
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) assessmentRunAgents: list[AssessmentRunAgent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessmentRunAgents: list[AssessmentRunAgent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssessmentRunAgentsResponse:
     list[AssessmentRunAgent] assessmentRunAgents
     Optional[str] nextToken
 
-# no @derive(Json): member(s) assessmentTemplateArns: list[str], filter: AssessmentRunFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessmentTemplateArns: list[str], filter: AssessmentRunFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssessmentRunsRequest:
     Optional[list[str]] assessmentTemplateArns
     Optional[AssessmentRunFilter] filter
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) assessmentRunArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessmentRunArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssessmentRunsResponse:
     list[str] assessmentRunArns
     Optional[str] nextToken
@@ -721,22 +758,25 @@ struct ListAssessmentTargetsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) assessmentTargetArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessmentTargetArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssessmentTargetsResponse:
     list[str] assessmentTargetArns
     Optional[str] nextToken
 
-# no @derive(Json): member(s) assessmentTargetArns: list[str], filter: AssessmentTemplateFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessmentTargetArns: list[str], filter: AssessmentTemplateFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssessmentTemplatesRequest:
     Optional[list[str]] assessmentTargetArns
     Optional[AssessmentTemplateFilter] filter
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) assessmentTemplateArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessmentTemplateArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssessmentTemplatesResponse:
     list[str] assessmentTemplateArns
     Optional[str] nextToken
@@ -747,8 +787,9 @@ struct ListEventSubscriptionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) subscriptions: list[Subscription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subscriptions: list[Subscription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventSubscriptionsResponse:
     list[Subscription] subscriptions
     Optional[str] nextToken
@@ -759,22 +800,25 @@ struct ListExclusionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) exclusionArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exclusionArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExclusionsResponse:
     list[str] exclusionArns
     Optional[str] nextToken
 
-# no @derive(Json): member(s) assessmentRunArns: list[str], filter: FindingFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assessmentRunArns: list[str], filter: FindingFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFindingsRequest:
     Optional[list[str]] assessmentRunArns
     Optional[FindingFilter] filter
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) findingArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findingArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFindingsResponse:
     list[str] findingArns
     Optional[str] nextToken
@@ -784,8 +828,9 @@ struct ListRulesPackagesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) rulesPackageArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rulesPackageArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRulesPackagesResponse:
     list[str] rulesPackageArns
     Optional[str] nextToken
@@ -794,13 +839,15 @@ struct ListRulesPackagesResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     list[Tag] tags
 
-# no @derive(Json): member(s) privateIpAddresses: list[PrivateIp], ipv6Addresses: list[str], securityGroups: list[SecurityGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) privateIpAddresses: list[PrivateIp], ipv6Addresses: list[str], securityGroups: list[SecurityGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkInterface:
     Optional[str] networkInterfaceId
     Optional[str] subnetId
@@ -825,8 +872,9 @@ struct PreviewAgentsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) agentPreviews: list[AgentPreview] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentPreviews: list[AgentPreview] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PreviewAgentsResponse:
     list[AgentPreview] agentPreviews
     Optional[str] nextToken
@@ -844,19 +892,22 @@ struct PrivateIp:
 struct RegisterCrossAccountAccessRoleRequest:
     str roleArn
 
-# no @derive(Json): member(s) findingArns: list[str], attributeKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findingArns: list[str], attributeKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveAttributesFromFindingsRequest:
     list[str] findingArns
     list[str] attributeKeys
 
-# no @derive(Json): member(s) failedItems: dict[str, FailedItemDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failedItems: dict[str, FailedItemDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveAttributesFromFindingsResponse:
     dict[str, FailedItemDetails] failedItems
 
-# no @derive(Json): member(s) tags: list[ResourceGroupTag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[ResourceGroupTag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceGroup:
     str arn
     list[ResourceGroupTag] tags
@@ -890,8 +941,9 @@ struct ServiceTemporarilyUnavailableException:
     str message
     bool canRetry
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetTagsForResourceRequest:
     str resourceArn
     Optional[list[Tag]] tags
@@ -916,8 +968,9 @@ struct SubscribeToEventRequest:
     InspectorEvent event
     str topicArn
 
-# no @derive(Json): member(s) eventSubscriptions: list[EventSubscription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventSubscriptions: list[EventSubscription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Subscription:
     str resourceArn
     str topicArn
@@ -1002,36 +1055,370 @@ def inspector_error_from_code(str code) -> InspectorError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AddAttributesToFindings (input AddAttributesToFindingsRequest)
-#   CreateAssessmentTemplate (input CreateAssessmentTemplateRequest)
-#   CreateResourceGroup (input CreateResourceGroupRequest)
-#   DescribeAssessmentRuns (input DescribeAssessmentRunsRequest)
-#   DescribeAssessmentTargets (input DescribeAssessmentTargetsRequest)
-#   DescribeAssessmentTemplates (input DescribeAssessmentTemplatesRequest)
-#   DescribeExclusions (input DescribeExclusionsRequest)
-#   DescribeFindings (input DescribeFindingsRequest)
-#   DescribeResourceGroups (input DescribeResourceGroupsRequest)
-#   DescribeRulesPackages (input DescribeRulesPackagesRequest)
-#   ListAssessmentRunAgents (input ListAssessmentRunAgentsRequest)
-#   ListAssessmentRuns (input ListAssessmentRunsRequest)
-#   ListAssessmentTemplates (input ListAssessmentTemplatesRequest)
-#   ListFindings (input ListFindingsRequest)
-#   RemoveAttributesFromFindings (input RemoveAttributesFromFindingsRequest)
-#   SetTagsForResource (input SetTagsForResourceRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def inspector_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListAssessmentRunAgents (input not derivable (no generated method))
-#   ListAssessmentRuns (input not derivable (no generated method))
-#   ListAssessmentTemplates (input not derivable (no generated method))
-#   ListFindings (input not derivable (no generated method))
+def inspector_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def inspector_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AddAttributesToFindingsRequest to a compact JSON object (declaration order).
+def add_attributes_to_findings_request_to_json(AddAttributesToFindingsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.findingArns:
+        e0.append(inspector_json_str(x0))
+    parts.append("\"findingArns\":" + inspector_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.attributes:
+        e1.append(x1.to_json())
+    parts.append("\"attributes\":" + inspector_json_arr(e1))
+    return inspector_json_obj(parts)
+
+# Serialize AgentFilter to a compact JSON object (declaration order).
+def agent_filter_to_json(AgentFilter v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.agentHealths:
+        e0.append(x0.to_json())
+    parts.append("\"agentHealths\":" + inspector_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.agentHealthCodes:
+        e1.append(x1.to_json())
+    parts.append("\"agentHealthCodes\":" + inspector_json_arr(e1))
+    return inspector_json_obj(parts)
+
+# Serialize AssessmentRunFilter to a compact JSON object (declaration order).
+def assessment_run_filter_to_json(AssessmentRunFilter v) -> str:
+    list[str] parts = []
+    if v.namePattern.is_some():
+        auto u0 = v.namePattern.unwrap()
+        parts.append("\"namePattern\":" + inspector_json_str(u0))
+    if v.states.is_some():
+        auto u1 = v.states.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"states\":" + inspector_json_arr(e2))
+    if v.durationRange.is_some():
+        auto u3 = v.durationRange.unwrap()
+        parts.append("\"durationRange\":" + u3.to_json())
+    if v.rulesPackageArns.is_some():
+        auto u4 = v.rulesPackageArns.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(inspector_json_str(x5))
+        parts.append("\"rulesPackageArns\":" + inspector_json_arr(e5))
+    if v.startTimeRange.is_some():
+        auto u6 = v.startTimeRange.unwrap()
+        parts.append("\"startTimeRange\":" + u6.to_json())
+    if v.completionTimeRange.is_some():
+        auto u7 = v.completionTimeRange.unwrap()
+        parts.append("\"completionTimeRange\":" + u7.to_json())
+    if v.stateChangeTimeRange.is_some():
+        auto u8 = v.stateChangeTimeRange.unwrap()
+        parts.append("\"stateChangeTimeRange\":" + u8.to_json())
+    return inspector_json_obj(parts)
+
+# Serialize AssessmentTemplateFilter to a compact JSON object (declaration order).
+def assessment_template_filter_to_json(AssessmentTemplateFilter v) -> str:
+    list[str] parts = []
+    if v.namePattern.is_some():
+        auto u0 = v.namePattern.unwrap()
+        parts.append("\"namePattern\":" + inspector_json_str(u0))
+    if v.durationRange.is_some():
+        auto u1 = v.durationRange.unwrap()
+        parts.append("\"durationRange\":" + u1.to_json())
+    if v.rulesPackageArns.is_some():
+        auto u2 = v.rulesPackageArns.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(inspector_json_str(x3))
+        parts.append("\"rulesPackageArns\":" + inspector_json_arr(e3))
+    return inspector_json_obj(parts)
+
+# Serialize CreateAssessmentTemplateRequest to a compact JSON object (declaration order).
+def create_assessment_template_request_to_json(CreateAssessmentTemplateRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"assessmentTargetArn\":" + inspector_json_str(v.assessmentTargetArn))
+    parts.append("\"assessmentTemplateName\":" + inspector_json_str(v.assessmentTemplateName))
+    parts.append("\"durationInSeconds\":" + str(v.durationInSeconds))
+    list[str] e0 = []
+    for x0 in v.rulesPackageArns:
+        e0.append(inspector_json_str(x0))
+    parts.append("\"rulesPackageArns\":" + inspector_json_arr(e0))
+    if v.userAttributesForFindings.is_some():
+        auto u1 = v.userAttributesForFindings.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"userAttributesForFindings\":" + inspector_json_arr(e2))
+    return inspector_json_obj(parts)
+
+# Serialize CreateResourceGroupRequest to a compact JSON object (declaration order).
+def create_resource_group_request_to_json(CreateResourceGroupRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.resourceGroupTags:
+        e0.append(x0.to_json())
+    parts.append("\"resourceGroupTags\":" + inspector_json_arr(e0))
+    return inspector_json_obj(parts)
+
+# Serialize DescribeAssessmentRunsRequest to a compact JSON object (declaration order).
+def describe_assessment_runs_request_to_json(DescribeAssessmentRunsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.assessmentRunArns:
+        e0.append(inspector_json_str(x0))
+    parts.append("\"assessmentRunArns\":" + inspector_json_arr(e0))
+    return inspector_json_obj(parts)
+
+# Serialize DescribeAssessmentTargetsRequest to a compact JSON object (declaration order).
+def describe_assessment_targets_request_to_json(DescribeAssessmentTargetsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.assessmentTargetArns:
+        e0.append(inspector_json_str(x0))
+    parts.append("\"assessmentTargetArns\":" + inspector_json_arr(e0))
+    return inspector_json_obj(parts)
+
+# Serialize DescribeAssessmentTemplatesRequest to a compact JSON object (declaration order).
+def describe_assessment_templates_request_to_json(DescribeAssessmentTemplatesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.assessmentTemplateArns:
+        e0.append(inspector_json_str(x0))
+    parts.append("\"assessmentTemplateArns\":" + inspector_json_arr(e0))
+    return inspector_json_obj(parts)
+
+# Serialize DescribeExclusionsRequest to a compact JSON object (declaration order).
+def describe_exclusions_request_to_json(DescribeExclusionsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.exclusionArns:
+        e0.append(inspector_json_str(x0))
+    parts.append("\"exclusionArns\":" + inspector_json_arr(e0))
+    if v.locale.is_some():
+        auto u1 = v.locale.unwrap()
+        parts.append("\"locale\":" + inspector_json_str(u1))
+    return inspector_json_obj(parts)
+
+# Serialize DescribeFindingsRequest to a compact JSON object (declaration order).
+def describe_findings_request_to_json(DescribeFindingsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.findingArns:
+        e0.append(inspector_json_str(x0))
+    parts.append("\"findingArns\":" + inspector_json_arr(e0))
+    if v.locale.is_some():
+        auto u1 = v.locale.unwrap()
+        parts.append("\"locale\":" + inspector_json_str(u1))
+    return inspector_json_obj(parts)
+
+# Serialize DescribeResourceGroupsRequest to a compact JSON object (declaration order).
+def describe_resource_groups_request_to_json(DescribeResourceGroupsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.resourceGroupArns:
+        e0.append(inspector_json_str(x0))
+    parts.append("\"resourceGroupArns\":" + inspector_json_arr(e0))
+    return inspector_json_obj(parts)
+
+# Serialize DescribeRulesPackagesRequest to a compact JSON object (declaration order).
+def describe_rules_packages_request_to_json(DescribeRulesPackagesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.rulesPackageArns:
+        e0.append(inspector_json_str(x0))
+    parts.append("\"rulesPackageArns\":" + inspector_json_arr(e0))
+    if v.locale.is_some():
+        auto u1 = v.locale.unwrap()
+        parts.append("\"locale\":" + inspector_json_str(u1))
+    return inspector_json_obj(parts)
+
+# Serialize FindingFilter to a compact JSON object (declaration order).
+def finding_filter_to_json(FindingFilter v) -> str:
+    list[str] parts = []
+    if v.agentIds.is_some():
+        auto u0 = v.agentIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(inspector_json_str(x1))
+        parts.append("\"agentIds\":" + inspector_json_arr(e1))
+    if v.autoScalingGroups.is_some():
+        auto u2 = v.autoScalingGroups.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(inspector_json_str(x3))
+        parts.append("\"autoScalingGroups\":" + inspector_json_arr(e3))
+    if v.ruleNames.is_some():
+        auto u4 = v.ruleNames.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(inspector_json_str(x5))
+        parts.append("\"ruleNames\":" + inspector_json_arr(e5))
+    if v.severities.is_some():
+        auto u6 = v.severities.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"severities\":" + inspector_json_arr(e7))
+    if v.rulesPackageArns.is_some():
+        auto u8 = v.rulesPackageArns.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(inspector_json_str(x9))
+        parts.append("\"rulesPackageArns\":" + inspector_json_arr(e9))
+    if v.attributes.is_some():
+        auto u10 = v.attributes.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(x11.to_json())
+        parts.append("\"attributes\":" + inspector_json_arr(e11))
+    if v.userAttributes.is_some():
+        auto u12 = v.userAttributes.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"userAttributes\":" + inspector_json_arr(e13))
+    if v.creationTimeRange.is_some():
+        auto u14 = v.creationTimeRange.unwrap()
+        parts.append("\"creationTimeRange\":" + u14.to_json())
+    return inspector_json_obj(parts)
+
+# Serialize ListAssessmentRunAgentsRequest to a compact JSON object (declaration order).
+def list_assessment_run_agents_request_to_json(ListAssessmentRunAgentsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"assessmentRunArn\":" + inspector_json_str(v.assessmentRunArn))
+    if v.filter.is_some():
+        auto u0 = v.filter.unwrap()
+        parts.append("\"filter\":" + agent_filter_to_json(u0))
+    if v.nextToken.is_some():
+        auto u1 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + inspector_json_str(u1))
+    if v.maxResults.is_some():
+        auto u2 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u2))
+    return inspector_json_obj(parts)
+
+# Serialize ListAssessmentRunsRequest to a compact JSON object (declaration order).
+def list_assessment_runs_request_to_json(ListAssessmentRunsRequest v) -> str:
+    list[str] parts = []
+    if v.assessmentTemplateArns.is_some():
+        auto u0 = v.assessmentTemplateArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(inspector_json_str(x1))
+        parts.append("\"assessmentTemplateArns\":" + inspector_json_arr(e1))
+    if v.filter.is_some():
+        auto u2 = v.filter.unwrap()
+        parts.append("\"filter\":" + assessment_run_filter_to_json(u2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + inspector_json_str(u3))
+    if v.maxResults.is_some():
+        auto u4 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u4))
+    return inspector_json_obj(parts)
+
+# Serialize ListAssessmentTemplatesRequest to a compact JSON object (declaration order).
+def list_assessment_templates_request_to_json(ListAssessmentTemplatesRequest v) -> str:
+    list[str] parts = []
+    if v.assessmentTargetArns.is_some():
+        auto u0 = v.assessmentTargetArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(inspector_json_str(x1))
+        parts.append("\"assessmentTargetArns\":" + inspector_json_arr(e1))
+    if v.filter.is_some():
+        auto u2 = v.filter.unwrap()
+        parts.append("\"filter\":" + assessment_template_filter_to_json(u2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + inspector_json_str(u3))
+    if v.maxResults.is_some():
+        auto u4 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u4))
+    return inspector_json_obj(parts)
+
+# Serialize ListFindingsRequest to a compact JSON object (declaration order).
+def list_findings_request_to_json(ListFindingsRequest v) -> str:
+    list[str] parts = []
+    if v.assessmentRunArns.is_some():
+        auto u0 = v.assessmentRunArns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(inspector_json_str(x1))
+        parts.append("\"assessmentRunArns\":" + inspector_json_arr(e1))
+    if v.filter.is_some():
+        auto u2 = v.filter.unwrap()
+        parts.append("\"filter\":" + finding_filter_to_json(u2))
+    if v.nextToken.is_some():
+        auto u3 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + inspector_json_str(u3))
+    if v.maxResults.is_some():
+        auto u4 = v.maxResults.unwrap()
+        parts.append("\"maxResults\":" + str(u4))
+    return inspector_json_obj(parts)
+
+# Serialize RemoveAttributesFromFindingsRequest to a compact JSON object (declaration order).
+def remove_attributes_from_findings_request_to_json(RemoveAttributesFromFindingsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.findingArns:
+        e0.append(inspector_json_str(x0))
+    parts.append("\"findingArns\":" + inspector_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.attributeKeys:
+        e1.append(inspector_json_str(x1))
+    parts.append("\"attributeKeys\":" + inspector_json_arr(e1))
+    return inspector_json_obj(parts)
+
+# Serialize SetTagsForResourceRequest to a compact JSON object (declaration order).
+def set_tags_for_resource_request_to_json(SetTagsForResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + inspector_json_str(v.resourceArn))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + inspector_json_arr(e1))
+    return inspector_json_obj(parts)
 
 # A bound Inspector client: credentials + region, threaded into every operation.
 struct InspectorClient:
     core.Credentials creds
     str region
+
+    # AddAttributesToFindings
+    # errors: AccessDeniedException, InternalException, InvalidInputException, NoSuchEntityException, ServiceTemporarilyUnavailableException
+    def add_attributes_to_findings(self, AddAttributesToFindingsRequest input) -> str:
+        auto body = add_attributes_to_findings_request_to_json(input)
+        return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "AddAttributesToFindings", body)
 
     # CreateAssessmentTarget
     # errors: AccessDeniedException, InternalException, InvalidCrossAccountRoleException, InvalidInputException, LimitExceededException, NoSuchEntityException, ServiceTemporarilyUnavailableException
@@ -1039,11 +1426,23 @@ struct InspectorClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "CreateAssessmentTarget", body)
 
+    # CreateAssessmentTemplate
+    # errors: AccessDeniedException, InternalException, InvalidInputException, LimitExceededException, NoSuchEntityException, ServiceTemporarilyUnavailableException
+    def create_assessment_template(self, CreateAssessmentTemplateRequest input) -> str:
+        auto body = create_assessment_template_request_to_json(input)
+        return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "CreateAssessmentTemplate", body)
+
     # CreateExclusionsPreview
     # errors: AccessDeniedException, InternalException, InvalidInputException, NoSuchEntityException, PreviewGenerationInProgressException, ServiceTemporarilyUnavailableException
     def create_exclusions_preview(self, CreateExclusionsPreviewRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "CreateExclusionsPreview", body)
+
+    # CreateResourceGroup
+    # errors: AccessDeniedException, InternalException, InvalidInputException, LimitExceededException, ServiceTemporarilyUnavailableException
+    def create_resource_group(self, CreateResourceGroupRequest input) -> str:
+        auto body = create_resource_group_request_to_json(input)
+        return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "CreateResourceGroup", body)
 
     # DeleteAssessmentRun
     # errors: AccessDeniedException, AssessmentRunInProgressException, InternalException, InvalidInputException, NoSuchEntityException, ServiceTemporarilyUnavailableException
@@ -1063,11 +1462,53 @@ struct InspectorClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "DeleteAssessmentTemplate", body)
 
+    # DescribeAssessmentRuns
+    # errors: InternalException, InvalidInputException
+    def describe_assessment_runs(self, DescribeAssessmentRunsRequest input) -> str:
+        auto body = describe_assessment_runs_request_to_json(input)
+        return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "DescribeAssessmentRuns", body)
+
+    # DescribeAssessmentTargets
+    # errors: InternalException, InvalidInputException
+    def describe_assessment_targets(self, DescribeAssessmentTargetsRequest input) -> str:
+        auto body = describe_assessment_targets_request_to_json(input)
+        return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "DescribeAssessmentTargets", body)
+
+    # DescribeAssessmentTemplates
+    # errors: InternalException, InvalidInputException
+    def describe_assessment_templates(self, DescribeAssessmentTemplatesRequest input) -> str:
+        auto body = describe_assessment_templates_request_to_json(input)
+        return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "DescribeAssessmentTemplates", body)
+
     # DescribeCrossAccountAccessRole
     # errors: InternalException
     def describe_cross_account_access_role(self) -> str:
         auto body = "{}"
         return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "DescribeCrossAccountAccessRole", body)
+
+    # DescribeExclusions
+    # errors: InternalException, InvalidInputException
+    def describe_exclusions(self, DescribeExclusionsRequest input) -> str:
+        auto body = describe_exclusions_request_to_json(input)
+        return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "DescribeExclusions", body)
+
+    # DescribeFindings
+    # errors: InternalException, InvalidInputException
+    def describe_findings(self, DescribeFindingsRequest input) -> str:
+        auto body = describe_findings_request_to_json(input)
+        return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "DescribeFindings", body)
+
+    # DescribeResourceGroups
+    # errors: InternalException, InvalidInputException
+    def describe_resource_groups(self, DescribeResourceGroupsRequest input) -> str:
+        auto body = describe_resource_groups_request_to_json(input)
+        return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "DescribeResourceGroups", body)
+
+    # DescribeRulesPackages
+    # errors: InternalException, InvalidInputException
+    def describe_rules_packages(self, DescribeRulesPackagesRequest input) -> str:
+        auto body = describe_rules_packages_request_to_json(input)
+        return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "DescribeRulesPackages", body)
 
     # GetAssessmentReport
     # errors: AccessDeniedException, AssessmentRunInProgressException, InternalException, InvalidInputException, NoSuchEntityException, ServiceTemporarilyUnavailableException, UnsupportedFeatureException
@@ -1087,11 +1528,29 @@ struct InspectorClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "GetTelemetryMetadata", body)
 
+    # ListAssessmentRunAgents
+    # errors: AccessDeniedException, InternalException, InvalidInputException, NoSuchEntityException
+    def list_assessment_run_agents(self, ListAssessmentRunAgentsRequest input) -> str:
+        auto body = list_assessment_run_agents_request_to_json(input)
+        return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "ListAssessmentRunAgents", body)
+
+    # ListAssessmentRuns
+    # errors: AccessDeniedException, InternalException, InvalidInputException, NoSuchEntityException
+    def list_assessment_runs(self, ListAssessmentRunsRequest input) -> str:
+        auto body = list_assessment_runs_request_to_json(input)
+        return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "ListAssessmentRuns", body)
+
     # ListAssessmentTargets
     # errors: AccessDeniedException, InternalException, InvalidInputException
     def list_assessment_targets(self, ListAssessmentTargetsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "ListAssessmentTargets", body)
+
+    # ListAssessmentTemplates
+    # errors: AccessDeniedException, InternalException, InvalidInputException, NoSuchEntityException
+    def list_assessment_templates(self, ListAssessmentTemplatesRequest input) -> str:
+        auto body = list_assessment_templates_request_to_json(input)
+        return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "ListAssessmentTemplates", body)
 
     # ListEventSubscriptions
     # errors: AccessDeniedException, InternalException, InvalidInputException, NoSuchEntityException
@@ -1104,6 +1563,12 @@ struct InspectorClient:
     def list_exclusions(self, ListExclusionsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "ListExclusions", body)
+
+    # ListFindings
+    # errors: AccessDeniedException, InternalException, InvalidInputException, NoSuchEntityException
+    def list_findings(self, ListFindingsRequest input) -> str:
+        auto body = list_findings_request_to_json(input)
+        return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "ListFindings", body)
 
     # ListRulesPackages
     # errors: AccessDeniedException, InternalException, InvalidInputException
@@ -1128,6 +1593,18 @@ struct InspectorClient:
     def register_cross_account_access_role(self, RegisterCrossAccountAccessRoleRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "RegisterCrossAccountAccessRole", body)
+
+    # RemoveAttributesFromFindings
+    # errors: AccessDeniedException, InternalException, InvalidInputException, NoSuchEntityException, ServiceTemporarilyUnavailableException
+    def remove_attributes_from_findings(self, RemoveAttributesFromFindingsRequest input) -> str:
+        auto body = remove_attributes_from_findings_request_to_json(input)
+        return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "RemoveAttributesFromFindings", body)
+
+    # SetTagsForResource
+    # errors: AccessDeniedException, InternalException, InvalidInputException, NoSuchEntityException, ServiceTemporarilyUnavailableException
+    def set_tags_for_resource(self, SetTagsForResourceRequest input) -> str:
+        auto body = set_tags_for_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "SetTagsForResource", body)
 
     # StartAssessmentRun
     # errors: AccessDeniedException, AgentsAlreadyRunningAssessmentException, InternalException, InvalidCrossAccountRoleException, InvalidInputException, LimitExceededException, NoSuchEntityException, ServiceTemporarilyUnavailableException
@@ -1159,6 +1636,34 @@ struct InspectorClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "UpdateAssessmentTarget", body)
 
+    # Paginator for ListAssessmentRunAgents — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: assessmentRunAgents).
+    def paginate_list_assessment_run_agents(self, ListAssessmentRunAgentsRequest input):
+        auto host = endpoints.regional_host(inspector_protocol().service, self.region)
+        while True:
+            auto body = list_assessment_run_agents_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "ListAssessmentRunAgents", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListAssessmentRuns — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: assessmentRunArns).
+    def paginate_list_assessment_runs(self, ListAssessmentRunsRequest input):
+        auto host = endpoints.regional_host(inspector_protocol().service, self.region)
+        while True:
+            auto body = list_assessment_runs_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "ListAssessmentRuns", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListAssessmentTargets — yields each Response page, threading the
     # nextToken -> nextToken continuation token until the output token is absent (result key: assessmentTargetArns).
     def paginate_list_assessment_targets(self, ListAssessmentTargetsRequest input):
@@ -1166,6 +1671,20 @@ struct InspectorClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "ListAssessmentTargets", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListAssessmentTemplates — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: assessmentTemplateArns).
+    def paginate_list_assessment_templates(self, ListAssessmentTemplatesRequest input):
+        auto host = endpoints.regional_host(inspector_protocol().service, self.region)
+        while True:
+            auto body = list_assessment_templates_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "ListAssessmentTemplates", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -1194,6 +1713,20 @@ struct InspectorClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "ListExclusions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListFindings — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until the output token is absent (result key: findingArns).
+    def paginate_list_findings(self, ListFindingsRequest input):
+        auto host = endpoints.regional_host(inspector_protocol().service, self.region)
+        while True:
+            auto body = list_findings_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(inspector_protocol(), self.creds, self.region, "ListFindings", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

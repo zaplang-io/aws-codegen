@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 66 operations — 46 with a generated method,
-#   20 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 66 operations — 66 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   261 structs (170 @derive(Json)), 11 enums, 35 error variants.
-#   16 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   19 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -230,8 +230,9 @@ struct AttachTypedLinkRequest:
     TypedLinkSchemaAndFacetName TypedLinkFacet
     list[AttributeNameAndValue] Attributes
 
-# no @derive(Json): member(s) TypedLinkSpecifier: TypedLinkSpecifier not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TypedLinkSpecifier: TypedLinkSpecifier not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AttachTypedLinkResponse:
     Optional[TypedLinkSpecifier] TypedLinkSpecifier
 
@@ -251,8 +252,9 @@ struct AttributeNameAndValue:
     str AttributeName
     TypedAttributeValue Value
 
-# no @derive(Json): member(s) ObjectAttributeList: list[AttributeKeyAndValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ObjectAttributeList: list[AttributeKeyAndValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchAddFacetToObject:
     SchemaFacet SchemaFacet
     list[AttributeKeyAndValue] ObjectAttributeList
@@ -292,21 +294,24 @@ struct BatchAttachToIndex:
 struct BatchAttachToIndexResponse:
     Optional[str] AttachedObjectIdentifier
 
-# no @derive(Json): member(s) Attributes: list[AttributeNameAndValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[AttributeNameAndValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchAttachTypedLink:
     ObjectReference SourceObjectReference
     ObjectReference TargetObjectReference
     TypedLinkSchemaAndFacetName TypedLinkFacet
     list[AttributeNameAndValue] Attributes
 
-# no @derive(Json): member(s) TypedLinkSpecifier: TypedLinkSpecifier not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TypedLinkSpecifier: TypedLinkSpecifier not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchAttachTypedLinkResponse:
     Optional[TypedLinkSpecifier] TypedLinkSpecifier
 
-# no @derive(Json): member(s) OrderedIndexedAttributeList: list[AttributeKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrderedIndexedAttributeList: list[AttributeKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateIndex:
     list[AttributeKey] OrderedIndexedAttributeList
     bool IsUnique
@@ -318,8 +323,9 @@ struct BatchCreateIndex:
 struct BatchCreateIndexResponse:
     Optional[str] ObjectIdentifier
 
-# no @derive(Json): member(s) SchemaFacet: list[SchemaFacet], ObjectAttributeList: list[AttributeKeyAndValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SchemaFacet: list[SchemaFacet], ObjectAttributeList: list[AttributeKeyAndValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateObject:
     list[SchemaFacet] SchemaFacet
     list[AttributeKeyAndValue] ObjectAttributeList
@@ -369,8 +375,9 @@ struct BatchDetachPolicyResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TypedLinkSpecifier: TypedLinkSpecifier not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TypedLinkSpecifier: TypedLinkSpecifier not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDetachTypedLink:
     TypedLinkSpecifier TypedLinkSpecifier
 
@@ -379,26 +386,30 @@ struct BatchDetachTypedLinkResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TypedLinkSpecifier: TypedLinkSpecifier, AttributeNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TypedLinkSpecifier: TypedLinkSpecifier, AttributeNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetLinkAttributes:
     TypedLinkSpecifier TypedLinkSpecifier
     list[str] AttributeNames
 
-# no @derive(Json): member(s) Attributes: list[AttributeKeyAndValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[AttributeKeyAndValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetLinkAttributesResponse:
     Optional[list[AttributeKeyAndValue]] Attributes
 
-# no @derive(Json): member(s) AttributeNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetObjectAttributes:
     ObjectReference ObjectReference
     SchemaFacet SchemaFacet
     list[str] AttributeNames
 
-# no @derive(Json): member(s) Attributes: list[AttributeKeyAndValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[AttributeKeyAndValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetObjectAttributesResponse:
     Optional[list[AttributeKeyAndValue]] Attributes
 
@@ -406,8 +417,9 @@ struct BatchGetObjectAttributesResponse:
 struct BatchGetObjectInformation:
     ObjectReference ObjectReference
 
-# no @derive(Json): member(s) SchemaFacets: list[SchemaFacet] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SchemaFacets: list[SchemaFacet] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetObjectInformationResponse:
     Optional[list[SchemaFacet]] SchemaFacets
     Optional[str] ObjectIdentifier
@@ -418,14 +430,16 @@ struct BatchListAttachedIndices:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) IndexAttachments: list[IndexAttachment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IndexAttachments: list[IndexAttachment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchListAttachedIndicesResponse:
     Optional[list[IndexAttachment]] IndexAttachments
     Optional[str] NextToken
 
-# no @derive(Json): member(s) FilterAttributeRanges: list[TypedLinkAttributeRange] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterAttributeRanges: list[TypedLinkAttributeRange] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchListIncomingTypedLinks:
     ObjectReference ObjectReference
     Optional[list[TypedLinkAttributeRange]] FilterAttributeRanges
@@ -433,22 +447,25 @@ struct BatchListIncomingTypedLinks:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) LinkSpecifiers: list[TypedLinkSpecifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LinkSpecifiers: list[TypedLinkSpecifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchListIncomingTypedLinksResponse:
     Optional[list[TypedLinkSpecifier]] LinkSpecifiers
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RangesOnIndexedValues: list[ObjectAttributeRange] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RangesOnIndexedValues: list[ObjectAttributeRange] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchListIndex:
     Optional[list[ObjectAttributeRange]] RangesOnIndexedValues
     ObjectReference IndexReference
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) IndexAttachments: list[IndexAttachment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IndexAttachments: list[IndexAttachment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchListIndexResponse:
     Optional[list[IndexAttachment]] IndexAttachments
     Optional[str] NextToken
@@ -460,8 +477,9 @@ struct BatchListObjectAttributes:
     Optional[int64] MaxResults
     Optional[SchemaFacet] FacetFilter
 
-# no @derive(Json): member(s) Attributes: list[AttributeKeyAndValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[AttributeKeyAndValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchListObjectAttributesResponse:
     Optional[list[AttributeKeyAndValue]] Attributes
     Optional[str] NextToken
@@ -472,8 +490,9 @@ struct BatchListObjectChildren:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Children: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Children: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchListObjectChildrenResponse:
     Optional[dict[str, str]] Children
     Optional[str] NextToken
@@ -484,8 +503,9 @@ struct BatchListObjectParentPaths:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) PathToObjectIdentifiersList: list[PathToObjectIdentifiers] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PathToObjectIdentifiersList: list[PathToObjectIdentifiers] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchListObjectParentPathsResponse:
     Optional[list[PathToObjectIdentifiers]] PathToObjectIdentifiersList
     Optional[str] NextToken
@@ -496,8 +516,9 @@ struct BatchListObjectParents:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ParentLinks: list[ObjectIdentifierAndLinkNameTuple] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ParentLinks: list[ObjectIdentifierAndLinkNameTuple] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchListObjectParentsResponse:
     Optional[list[ObjectIdentifierAndLinkNameTuple]] ParentLinks
     Optional[str] NextToken
@@ -508,14 +529,16 @@ struct BatchListObjectPolicies:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) AttachedPolicyIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttachedPolicyIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchListObjectPoliciesResponse:
     Optional[list[str]] AttachedPolicyIds
     Optional[str] NextToken
 
-# no @derive(Json): member(s) FilterAttributeRanges: list[TypedLinkAttributeRange] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterAttributeRanges: list[TypedLinkAttributeRange] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchListOutgoingTypedLinks:
     ObjectReference ObjectReference
     Optional[list[TypedLinkAttributeRange]] FilterAttributeRanges
@@ -523,8 +546,9 @@ struct BatchListOutgoingTypedLinks:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TypedLinkSpecifiers: list[TypedLinkSpecifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TypedLinkSpecifiers: list[TypedLinkSpecifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchListOutgoingTypedLinksResponse:
     Optional[list[TypedLinkSpecifier]] TypedLinkSpecifiers
     Optional[str] NextToken
@@ -535,8 +559,9 @@ struct BatchListPolicyAttachments:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ObjectIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ObjectIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchListPolicyAttachmentsResponse:
     Optional[list[str]] ObjectIdentifiers
     Optional[str] NextToken
@@ -547,8 +572,9 @@ struct BatchLookupPolicy:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) PolicyToPathList: list[PolicyToPath] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PolicyToPathList: list[PolicyToPath] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchLookupPolicyResponse:
     Optional[list[PolicyToPath]] PolicyToPathList
     Optional[str] NextToken
@@ -558,8 +584,9 @@ struct BatchReadException:
     Optional[BatchReadExceptionType] Type
     Optional[str] Message
 
-# no @derive(Json): member(s) GetObjectAttributes: BatchGetObjectAttributes, ListIndex: BatchListIndex, ListOutgoingTypedLinks: BatchListOutgoingTypedLinks, ListIncomingTypedLinks: BatchListIncomingTypedLinks, GetLinkAttributes: BatchGetLinkAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GetObjectAttributes: BatchGetObjectAttributes, ListIndex: BatchListIndex, ListOutgoingTypedLinks: BatchListOutgoingTypedLinks, ListIncomingTypedLinks: BatchListIncomingTypedLinks, GetLinkAttributes: BatchGetLinkAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchReadOperation:
     Optional[BatchListObjectAttributes] ListObjectAttributes
     Optional[BatchListObjectChildren] ListObjectChildren
@@ -576,8 +603,9 @@ struct BatchReadOperation:
     Optional[BatchListIncomingTypedLinks] ListIncomingTypedLinks
     Optional[BatchGetLinkAttributes] GetLinkAttributes
 
-# no @derive(Json): member(s) SuccessfulResponse: BatchReadSuccessfulResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SuccessfulResponse: BatchReadSuccessfulResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchReadOperationResponse:
     Optional[BatchReadSuccessfulResponse] SuccessfulResponse
     Optional[BatchReadException] ExceptionResponse
@@ -590,13 +618,15 @@ struct BatchReadRequest:
     # wire string of the ConsistencyLevel enum (header binding)
     Optional[str] ConsistencyLevel
 
-# no @derive(Json): member(s) Responses: list[BatchReadOperationResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Responses: list[BatchReadOperationResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchReadResponse:
     Optional[list[BatchReadOperationResponse]] Responses
 
-# no @derive(Json): member(s) ListObjectAttributes: BatchListObjectAttributesResponse, ListObjectChildren: BatchListObjectChildrenResponse, GetObjectInformation: BatchGetObjectInformationResponse, GetObjectAttributes: BatchGetObjectAttributesResponse, ListAttachedIndices: BatchListAttachedIndicesResponse, ListObjectParentPaths: BatchListObjectParentPathsResponse, ListObjectPolicies: BatchListObjectPoliciesResponse, ListPolicyAttachments: BatchListPolicyAttachmentsResponse, LookupPolicy: BatchLookupPolicyResponse, ListIndex: BatchListIndexResponse, ListOutgoingTypedLinks: BatchListOutgoingTypedLinksResponse, ListIncomingTypedLinks: BatchListIncomingTypedLinksResponse, GetLinkAttributes: BatchGetLinkAttributesResponse, ListObjectParents: BatchListObjectParentsResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ListObjectAttributes: BatchListObjectAttributesResponse, ListObjectChildren: BatchListObjectChildrenResponse, GetObjectInformation: BatchGetObjectInformationResponse, GetObjectAttributes: BatchGetObjectAttributesResponse, ListAttachedIndices: BatchListAttachedIndicesResponse, ListObjectParentPaths: BatchListObjectParentPathsResponse, ListObjectPolicies: BatchListObjectPoliciesResponse, ListPolicyAttachments: BatchListPolicyAttachmentsResponse, LookupPolicy: BatchLookupPolicyResponse, ListIndex: BatchListIndexResponse, ListOutgoingTypedLinks: BatchListOutgoingTypedLinksResponse, ListIncomingTypedLinks: BatchListIncomingTypedLinksResponse, GetLinkAttributes: BatchGetLinkAttributesResponse, ListObjectParents: BatchListObjectParentsResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchReadSuccessfulResponse:
     Optional[BatchListObjectAttributesResponse] ListObjectAttributes
     Optional[BatchListObjectChildrenResponse] ListObjectChildren
@@ -623,8 +653,9 @@ struct BatchRemoveFacetFromObjectResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TypedLinkSpecifier: TypedLinkSpecifier, AttributeUpdates: list[LinkAttributeUpdate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TypedLinkSpecifier: TypedLinkSpecifier, AttributeUpdates: list[LinkAttributeUpdate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateLinkAttributes:
     TypedLinkSpecifier TypedLinkSpecifier
     list[LinkAttributeUpdate] AttributeUpdates
@@ -634,8 +665,9 @@ struct BatchUpdateLinkAttributesResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) AttributeUpdates: list[ObjectAttributeUpdate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeUpdates: list[ObjectAttributeUpdate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateObjectAttributes:
     ObjectReference ObjectReference
     list[ObjectAttributeUpdate] AttributeUpdates
@@ -650,8 +682,9 @@ struct BatchWriteException:
     Optional[BatchWriteExceptionType] Type
     Optional[str] Message
 
-# no @derive(Json): member(s) CreateObject: BatchCreateObject, UpdateObjectAttributes: BatchUpdateObjectAttributes, AddFacetToObject: BatchAddFacetToObject, CreateIndex: BatchCreateIndex, AttachTypedLink: BatchAttachTypedLink, DetachTypedLink: BatchDetachTypedLink, UpdateLinkAttributes: BatchUpdateLinkAttributes not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CreateObject: BatchCreateObject, UpdateObjectAttributes: BatchUpdateObjectAttributes, AddFacetToObject: BatchAddFacetToObject, CreateIndex: BatchCreateIndex, AttachTypedLink: BatchAttachTypedLink, DetachTypedLink: BatchDetachTypedLink, UpdateLinkAttributes: BatchUpdateLinkAttributes not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchWriteOperation:
     Optional[BatchCreateObject] CreateObject
     Optional[BatchAttachObject] AttachObject
@@ -669,8 +702,9 @@ struct BatchWriteOperation:
     Optional[BatchDetachTypedLink] DetachTypedLink
     Optional[BatchUpdateLinkAttributes] UpdateLinkAttributes
 
-# no @derive(Json): member(s) AttachTypedLink: BatchAttachTypedLinkResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttachTypedLink: BatchAttachTypedLinkResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchWriteOperationResponse:
     Optional[BatchCreateObjectResponse] CreateObject
     Optional[BatchAttachObjectResponse] AttachObject
@@ -694,8 +728,9 @@ struct BatchWriteRequest:
     str DirectoryArn
     list[BatchWriteOperation] Operations
 
-# no @derive(Json): member(s) Responses: list[BatchWriteOperationResponse] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Responses: list[BatchWriteOperationResponse] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchWriteResponse:
     Optional[list[BatchWriteOperationResponse]] Responses
 
@@ -918,16 +953,18 @@ struct Facet:
 struct FacetAlreadyExistsException:
     Optional[str] Message
 
-# no @derive(Json): member(s) AttributeDefinition: FacetAttributeDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributeDefinition: FacetAttributeDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FacetAttribute:
     str Name
     Optional[FacetAttributeDefinition] AttributeDefinition
     Optional[FacetAttributeReference] AttributeReference
     Optional[RequiredAttributeBehavior] RequiredBehavior
 
-# no @derive(Json): member(s) Rules: dict[str, Rule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: dict[str, Rule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FacetAttributeDefinition:
     FacetAttributeType Type
     Optional[TypedAttributeValue] DefaultValue
@@ -939,8 +976,9 @@ struct FacetAttributeReference:
     str TargetFacetName
     str TargetAttributeName
 
-# no @derive(Json): member(s) Attribute: FacetAttribute not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attribute: FacetAttribute not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FacetAttributeUpdate:
     Optional[FacetAttribute] Attribute
     Optional[UpdateActionType] Action
@@ -993,8 +1031,9 @@ struct GetLinkAttributesRequest:
     list[str] AttributeNames
     Optional[ConsistencyLevel] ConsistencyLevel
 
-# no @derive(Json): member(s) Attributes: list[AttributeKeyAndValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[AttributeKeyAndValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLinkAttributesResponse:
     Optional[list[AttributeKeyAndValue]] Attributes
 
@@ -1008,8 +1047,9 @@ struct GetObjectAttributesRequest:
     SchemaFacet SchemaFacet
     list[str] AttributeNames
 
-# no @derive(Json): member(s) Attributes: list[AttributeKeyAndValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[AttributeKeyAndValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetObjectAttributesResponse:
     Optional[list[AttributeKeyAndValue]] Attributes
 
@@ -1021,8 +1061,9 @@ struct GetObjectInformationRequest:
     # wire string of the ConsistencyLevel enum (header binding)
     Optional[str] ConsistencyLevel
 
-# no @derive(Json): member(s) SchemaFacets: list[SchemaFacet] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SchemaFacets: list[SchemaFacet] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetObjectInformationResponse:
     Optional[list[SchemaFacet]] SchemaFacets
     Optional[str] ObjectIdentifier
@@ -1043,8 +1084,9 @@ struct GetTypedLinkFacetInformationRequest:
     str SchemaArn
     str Name
 
-# no @derive(Json): member(s) IdentityAttributeOrder: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentityAttributeOrder: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTypedLinkFacetInformationResponse:
     Optional[list[str]] IdentityAttributeOrder
 
@@ -1052,8 +1094,9 @@ struct GetTypedLinkFacetInformationResponse:
 struct IncompatibleSchemaException:
     Optional[str] Message
 
-# no @derive(Json): member(s) IndexedAttributes: list[AttributeKeyAndValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IndexedAttributes: list[AttributeKeyAndValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IndexAttachment:
     Optional[list[AttributeKeyAndValue]] IndexedAttributes
     Optional[str] ObjectIdentifier
@@ -1120,8 +1163,9 @@ struct ListAppliedSchemaArnsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) SchemaArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SchemaArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAppliedSchemaArnsResponse:
     Optional[list[str]] SchemaArns
     Optional[str] NextToken
@@ -1136,8 +1180,9 @@ struct ListAttachedIndicesRequest:
     # wire string of the ConsistencyLevel enum (header binding)
     Optional[str] ConsistencyLevel
 
-# no @derive(Json): member(s) IndexAttachments: list[IndexAttachment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IndexAttachments: list[IndexAttachment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAttachedIndicesResponse:
     Optional[list[IndexAttachment]] IndexAttachments
     Optional[str] NextToken
@@ -1148,8 +1193,9 @@ struct ListDevelopmentSchemaArnsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) SchemaArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SchemaArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDevelopmentSchemaArnsResponse:
     Optional[list[str]] SchemaArns
     Optional[str] NextToken
@@ -1161,8 +1207,9 @@ struct ListDirectoriesRequest:
     Optional[int64] MaxResults
     Optional[DirectoryState] state
 
-# no @derive(Json): member(s) Directories: list[Directory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Directories: list[Directory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDirectoriesResponse:
     list[Directory] Directories
     Optional[str] NextToken
@@ -1175,8 +1222,9 @@ struct ListFacetAttributesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Attributes: list[FacetAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[FacetAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFacetAttributesResponse:
     Optional[list[FacetAttribute]] Attributes
     Optional[str] NextToken
@@ -1188,8 +1236,9 @@ struct ListFacetNamesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) FacetNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FacetNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFacetNamesResponse:
     Optional[list[str]] FacetNames
     Optional[str] NextToken
@@ -1205,8 +1254,9 @@ struct ListIncomingTypedLinksRequest:
     Optional[int64] MaxResults
     Optional[ConsistencyLevel] ConsistencyLevel
 
-# no @derive(Json): member(s) LinkSpecifiers: list[TypedLinkSpecifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LinkSpecifiers: list[TypedLinkSpecifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIncomingTypedLinksResponse:
     Optional[list[TypedLinkSpecifier]] LinkSpecifiers
     Optional[str] NextToken
@@ -1222,8 +1272,9 @@ struct ListIndexRequest:
     # wire string of the ConsistencyLevel enum (header binding)
     Optional[str] ConsistencyLevel
 
-# no @derive(Json): member(s) IndexAttachments: list[IndexAttachment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IndexAttachments: list[IndexAttachment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIndexResponse:
     Optional[list[IndexAttachment]] IndexAttachments
     Optional[str] NextToken
@@ -1235,8 +1286,9 @@ struct ListManagedSchemaArnsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) SchemaArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SchemaArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListManagedSchemaArnsResponse:
     Optional[list[str]] SchemaArns
     Optional[str] NextToken
@@ -1252,8 +1304,9 @@ struct ListObjectAttributesRequest:
     Optional[str] ConsistencyLevel
     Optional[SchemaFacet] FacetFilter
 
-# no @derive(Json): member(s) Attributes: list[AttributeKeyAndValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[AttributeKeyAndValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListObjectAttributesResponse:
     Optional[list[AttributeKeyAndValue]] Attributes
     Optional[str] NextToken
@@ -1268,8 +1321,9 @@ struct ListObjectChildrenRequest:
     # wire string of the ConsistencyLevel enum (header binding)
     Optional[str] ConsistencyLevel
 
-# no @derive(Json): member(s) Children: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Children: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListObjectChildrenResponse:
     Optional[dict[str, str]] Children
     Optional[str] NextToken
@@ -1282,8 +1336,9 @@ struct ListObjectParentPathsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) PathToObjectIdentifiersList: list[PathToObjectIdentifiers] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PathToObjectIdentifiersList: list[PathToObjectIdentifiers] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListObjectParentPathsResponse:
     Optional[list[PathToObjectIdentifiers]] PathToObjectIdentifiersList
     Optional[str] NextToken
@@ -1299,8 +1354,9 @@ struct ListObjectParentsRequest:
     Optional[str] ConsistencyLevel
     Optional[bool] IncludeAllLinksToEachParent
 
-# no @derive(Json): member(s) Parents: dict[str, str], ParentLinks: list[ObjectIdentifierAndLinkNameTuple] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parents: dict[str, str], ParentLinks: list[ObjectIdentifierAndLinkNameTuple] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListObjectParentsResponse:
     Optional[dict[str, str]] Parents
     Optional[str] NextToken
@@ -1316,8 +1372,9 @@ struct ListObjectPoliciesRequest:
     # wire string of the ConsistencyLevel enum (header binding)
     Optional[str] ConsistencyLevel
 
-# no @derive(Json): member(s) AttachedPolicyIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttachedPolicyIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListObjectPoliciesResponse:
     Optional[list[str]] AttachedPolicyIds
     Optional[str] NextToken
@@ -1333,8 +1390,9 @@ struct ListOutgoingTypedLinksRequest:
     Optional[int64] MaxResults
     Optional[ConsistencyLevel] ConsistencyLevel
 
-# no @derive(Json): member(s) TypedLinkSpecifiers: list[TypedLinkSpecifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TypedLinkSpecifiers: list[TypedLinkSpecifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOutgoingTypedLinksResponse:
     Optional[list[TypedLinkSpecifier]] TypedLinkSpecifiers
     Optional[str] NextToken
@@ -1349,8 +1407,9 @@ struct ListPolicyAttachmentsRequest:
     # wire string of the ConsistencyLevel enum (header binding)
     Optional[str] ConsistencyLevel
 
-# no @derive(Json): member(s) ObjectIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ObjectIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPolicyAttachmentsResponse:
     Optional[list[str]] ObjectIdentifiers
     Optional[str] NextToken
@@ -1362,8 +1421,9 @@ struct ListPublishedSchemaArnsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) SchemaArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SchemaArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPublishedSchemaArnsResponse:
     Optional[list[str]] SchemaArns
     Optional[str] NextToken
@@ -1375,8 +1435,9 @@ struct ListTagsForResourceRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
     Optional[str] NextToken
@@ -1389,8 +1450,9 @@ struct ListTypedLinkFacetAttributesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Attributes: list[TypedLinkAttributeDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[TypedLinkAttributeDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTypedLinkFacetAttributesResponse:
     Optional[list[TypedLinkAttributeDefinition]] Attributes
     Optional[str] NextToken
@@ -1402,8 +1464,9 @@ struct ListTypedLinkFacetNamesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) FacetNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FacetNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTypedLinkFacetNamesResponse:
     Optional[list[str]] FacetNames
     Optional[str] NextToken
@@ -1416,8 +1479,9 @@ struct LookupPolicyRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) PolicyToPathList: list[PolicyToPath] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PolicyToPathList: list[PolicyToPath] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LookupPolicyResponse:
     Optional[list[PolicyToPath]] PolicyToPathList
     Optional[str] NextToken
@@ -1466,8 +1530,9 @@ struct ObjectNotDetachedException:
 struct ObjectReference:
     Optional[str] Selector
 
-# no @derive(Json): member(s) ObjectIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ObjectIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PathToObjectIdentifiers:
     Optional[str] Path
     Optional[list[str]] ObjectIdentifiers
@@ -1478,8 +1543,9 @@ struct PolicyAttachment:
     Optional[str] ObjectIdentifier
     Optional[str] PolicyType
 
-# no @derive(Json): member(s) Policies: list[PolicyAttachment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Policies: list[PolicyAttachment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PolicyToPath:
     Optional[str] Path
     Optional[list[PolicyAttachment]] Policies
@@ -1526,8 +1592,9 @@ struct ResourceNotFoundException:
 struct RetryableConflictException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Rule:
     Optional[RuleType] Type
     Optional[dict[str, str]] Parameters
@@ -1580,8 +1647,9 @@ struct TypedAttributeValueRange:
     RangeMode EndMode
     Optional[TypedAttributeValue] EndValue
 
-# no @derive(Json): member(s) Rules: dict[str, Rule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: dict[str, Rule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TypedLinkAttributeDefinition:
     str Name
     FacetAttributeType Type
@@ -1595,15 +1663,17 @@ struct TypedLinkAttributeRange:
     Optional[str] AttributeName
     TypedAttributeValueRange Range
 
-# no @derive(Json): member(s) Attributes: list[TypedLinkAttributeDefinition], IdentityAttributeOrder: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[TypedLinkAttributeDefinition], IdentityAttributeOrder: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TypedLinkFacet:
     str Name
     list[TypedLinkAttributeDefinition] Attributes
     list[str] IdentityAttributeOrder
 
-# no @derive(Json): member(s) Attribute: TypedLinkAttributeDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attribute: TypedLinkAttributeDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TypedLinkFacetAttributeUpdate:
     TypedLinkAttributeDefinition Attribute
     UpdateActionType Action
@@ -1613,8 +1683,9 @@ struct TypedLinkSchemaAndFacetName:
     str SchemaArn
     str TypedLinkName
 
-# no @derive(Json): member(s) IdentityAttributeValues: list[AttributeNameAndValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentityAttributeValues: list[AttributeNameAndValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TypedLinkSpecifier:
     TypedLinkSchemaAndFacetName TypedLinkFacet
     ObjectReference SourceObjectReference
@@ -1841,36 +1912,6 @@ def clouddirectory_error_from_code(str code) -> CloudDirectoryError:
     return CloudDirectoryError.Unknown(code=code)
 
 # --- client ----------------------------------------------------------------
-
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   AddFacetToObject (document member `ObjectAttributeList: list[AttributeKeyAndValue]` is not serializable by derive)
-#   AttachTypedLink (document member `Attributes: list[AttributeNameAndValue]` is not serializable by derive)
-#   BatchRead (document member `Operations: list[BatchReadOperation]` is not serializable by derive)
-#   BatchWrite (document member `Operations: list[BatchWriteOperation]` is not serializable by derive)
-#   CreateFacet (document member `Attributes: list[FacetAttribute]` is not serializable by derive)
-#   CreateIndex (document member `OrderedIndexedAttributeList: list[AttributeKey]` is not serializable by derive)
-#   CreateObject (document member `SchemaFacets: list[SchemaFacet]` is not serializable by derive)
-#   CreateTypedLinkFacet (document member `Facet: TypedLinkFacet` is not serializable by derive)
-#   DetachTypedLink (document member `TypedLinkSpecifier: TypedLinkSpecifier` is not serializable by derive)
-#   GetLinkAttributes (document member `TypedLinkSpecifier: TypedLinkSpecifier` is not serializable by derive)
-#   GetObjectAttributes (document member `AttributeNames: list[str]` is not serializable by derive)
-#   ListIncomingTypedLinks (document member `FilterAttributeRanges: list[TypedLinkAttributeRange]` is not serializable by derive)
-#   ListIndex (document member `RangesOnIndexedValues: list[ObjectAttributeRange]` is not serializable by derive)
-#   ListOutgoingTypedLinks (document member `FilterAttributeRanges: list[TypedLinkAttributeRange]` is not serializable by derive)
-#   TagResource (document member `Tags: list[Tag]` is not serializable by derive)
-#   UntagResource (document member `TagKeys: list[str]` is not serializable by derive)
-#   UpdateFacet (document member `AttributeUpdates: list[FacetAttributeUpdate]` is not serializable by derive)
-#   UpdateLinkAttributes (document member `TypedLinkSpecifier: TypedLinkSpecifier` is not serializable by derive)
-#   UpdateObjectAttributes (document member `AttributeUpdates: list[ObjectAttributeUpdate]` is not serializable by derive)
-#   UpdateTypedLinkFacet (document member `AttributeUpdates: list[TypedLinkFacetAttributeUpdate]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListIncomingTypedLinks (operation not generated)
-#   ListIndex (operation not generated)
-#   ListOutgoingTypedLinks (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -2126,10 +2167,438 @@ struct UpgradePublishedSchemaDocument:
     str MinorVersion
     Optional[bool] DryRun
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def clouddirectory_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def clouddirectory_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def clouddirectory_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize BatchAddFacetToObject to a compact JSON object (declaration order).
+def batch_add_facet_to_object_to_json(BatchAddFacetToObject v) -> str:
+    list[str] parts = []
+    parts.append("\"SchemaFacet\":" + v.SchemaFacet.to_json())
+    list[str] e0 = []
+    for x0 in v.ObjectAttributeList:
+        e0.append(x0.to_json())
+    parts.append("\"ObjectAttributeList\":" + clouddirectory_json_arr(e0))
+    parts.append("\"ObjectReference\":" + v.ObjectReference.to_json())
+    return clouddirectory_json_obj(parts)
+
+# Serialize BatchAttachTypedLink to a compact JSON object (declaration order).
+def batch_attach_typed_link_to_json(BatchAttachTypedLink v) -> str:
+    list[str] parts = []
+    parts.append("\"SourceObjectReference\":" + v.SourceObjectReference.to_json())
+    parts.append("\"TargetObjectReference\":" + v.TargetObjectReference.to_json())
+    parts.append("\"TypedLinkFacet\":" + v.TypedLinkFacet.to_json())
+    list[str] e0 = []
+    for x0 in v.Attributes:
+        e0.append(x0.to_json())
+    parts.append("\"Attributes\":" + clouddirectory_json_arr(e0))
+    return clouddirectory_json_obj(parts)
+
+# Serialize BatchCreateIndex to a compact JSON object (declaration order).
+def batch_create_index_to_json(BatchCreateIndex v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.OrderedIndexedAttributeList:
+        e0.append(x0.to_json())
+    parts.append("\"OrderedIndexedAttributeList\":" + clouddirectory_json_arr(e0))
+    parts.append("\"IsUnique\":" + json.dumps(JsonValue.Bool(v.IsUnique)))
+    if v.ParentReference.is_some():
+        auto u1 = v.ParentReference.unwrap()
+        parts.append("\"ParentReference\":" + u1.to_json())
+    if v.LinkName.is_some():
+        auto u2 = v.LinkName.unwrap()
+        parts.append("\"LinkName\":" + clouddirectory_json_str(u2))
+    if v.BatchReferenceName.is_some():
+        auto u3 = v.BatchReferenceName.unwrap()
+        parts.append("\"BatchReferenceName\":" + clouddirectory_json_str(u3))
+    return clouddirectory_json_obj(parts)
+
+# Serialize BatchCreateObject to a compact JSON object (declaration order).
+def batch_create_object_to_json(BatchCreateObject v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SchemaFacet:
+        e0.append(x0.to_json())
+    parts.append("\"SchemaFacet\":" + clouddirectory_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.ObjectAttributeList:
+        e1.append(x1.to_json())
+    parts.append("\"ObjectAttributeList\":" + clouddirectory_json_arr(e1))
+    if v.ParentReference.is_some():
+        auto u2 = v.ParentReference.unwrap()
+        parts.append("\"ParentReference\":" + u2.to_json())
+    if v.LinkName.is_some():
+        auto u3 = v.LinkName.unwrap()
+        parts.append("\"LinkName\":" + clouddirectory_json_str(u3))
+    if v.BatchReferenceName.is_some():
+        auto u4 = v.BatchReferenceName.unwrap()
+        parts.append("\"BatchReferenceName\":" + clouddirectory_json_str(u4))
+    return clouddirectory_json_obj(parts)
+
+# Serialize BatchDetachTypedLink to a compact JSON object (declaration order).
+def batch_detach_typed_link_to_json(BatchDetachTypedLink v) -> str:
+    list[str] parts = []
+    parts.append("\"TypedLinkSpecifier\":" + typed_link_specifier_to_json(v.TypedLinkSpecifier))
+    return clouddirectory_json_obj(parts)
+
+# Serialize BatchGetLinkAttributes to a compact JSON object (declaration order).
+def batch_get_link_attributes_to_json(BatchGetLinkAttributes v) -> str:
+    list[str] parts = []
+    parts.append("\"TypedLinkSpecifier\":" + typed_link_specifier_to_json(v.TypedLinkSpecifier))
+    list[str] e0 = []
+    for x0 in v.AttributeNames:
+        e0.append(clouddirectory_json_str(x0))
+    parts.append("\"AttributeNames\":" + clouddirectory_json_arr(e0))
+    return clouddirectory_json_obj(parts)
+
+# Serialize BatchGetObjectAttributes to a compact JSON object (declaration order).
+def batch_get_object_attributes_to_json(BatchGetObjectAttributes v) -> str:
+    list[str] parts = []
+    parts.append("\"ObjectReference\":" + v.ObjectReference.to_json())
+    parts.append("\"SchemaFacet\":" + v.SchemaFacet.to_json())
+    list[str] e0 = []
+    for x0 in v.AttributeNames:
+        e0.append(clouddirectory_json_str(x0))
+    parts.append("\"AttributeNames\":" + clouddirectory_json_arr(e0))
+    return clouddirectory_json_obj(parts)
+
+# Serialize BatchListIncomingTypedLinks to a compact JSON object (declaration order).
+def batch_list_incoming_typed_links_to_json(BatchListIncomingTypedLinks v) -> str:
+    list[str] parts = []
+    parts.append("\"ObjectReference\":" + v.ObjectReference.to_json())
+    if v.FilterAttributeRanges.is_some():
+        auto u0 = v.FilterAttributeRanges.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"FilterAttributeRanges\":" + clouddirectory_json_arr(e1))
+    if v.FilterTypedLink.is_some():
+        auto u2 = v.FilterTypedLink.unwrap()
+        parts.append("\"FilterTypedLink\":" + u2.to_json())
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + clouddirectory_json_str(u3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    return clouddirectory_json_obj(parts)
+
+# Serialize BatchListIndex to a compact JSON object (declaration order).
+def batch_list_index_to_json(BatchListIndex v) -> str:
+    list[str] parts = []
+    if v.RangesOnIndexedValues.is_some():
+        auto u0 = v.RangesOnIndexedValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"RangesOnIndexedValues\":" + clouddirectory_json_arr(e1))
+    parts.append("\"IndexReference\":" + v.IndexReference.to_json())
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + clouddirectory_json_str(u3))
+    return clouddirectory_json_obj(parts)
+
+# Serialize BatchListOutgoingTypedLinks to a compact JSON object (declaration order).
+def batch_list_outgoing_typed_links_to_json(BatchListOutgoingTypedLinks v) -> str:
+    list[str] parts = []
+    parts.append("\"ObjectReference\":" + v.ObjectReference.to_json())
+    if v.FilterAttributeRanges.is_some():
+        auto u0 = v.FilterAttributeRanges.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"FilterAttributeRanges\":" + clouddirectory_json_arr(e1))
+    if v.FilterTypedLink.is_some():
+        auto u2 = v.FilterTypedLink.unwrap()
+        parts.append("\"FilterTypedLink\":" + u2.to_json())
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + clouddirectory_json_str(u3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    return clouddirectory_json_obj(parts)
+
+# Serialize BatchReadOperation to a compact JSON object (declaration order).
+def batch_read_operation_to_json(BatchReadOperation v) -> str:
+    list[str] parts = []
+    if v.ListObjectAttributes.is_some():
+        auto u0 = v.ListObjectAttributes.unwrap()
+        parts.append("\"ListObjectAttributes\":" + u0.to_json())
+    if v.ListObjectChildren.is_some():
+        auto u1 = v.ListObjectChildren.unwrap()
+        parts.append("\"ListObjectChildren\":" + u1.to_json())
+    if v.ListAttachedIndices.is_some():
+        auto u2 = v.ListAttachedIndices.unwrap()
+        parts.append("\"ListAttachedIndices\":" + u2.to_json())
+    if v.ListObjectParentPaths.is_some():
+        auto u3 = v.ListObjectParentPaths.unwrap()
+        parts.append("\"ListObjectParentPaths\":" + u3.to_json())
+    if v.GetObjectInformation.is_some():
+        auto u4 = v.GetObjectInformation.unwrap()
+        parts.append("\"GetObjectInformation\":" + u4.to_json())
+    if v.GetObjectAttributes.is_some():
+        auto u5 = v.GetObjectAttributes.unwrap()
+        parts.append("\"GetObjectAttributes\":" + batch_get_object_attributes_to_json(u5))
+    if v.ListObjectParents.is_some():
+        auto u6 = v.ListObjectParents.unwrap()
+        parts.append("\"ListObjectParents\":" + u6.to_json())
+    if v.ListObjectPolicies.is_some():
+        auto u7 = v.ListObjectPolicies.unwrap()
+        parts.append("\"ListObjectPolicies\":" + u7.to_json())
+    if v.ListPolicyAttachments.is_some():
+        auto u8 = v.ListPolicyAttachments.unwrap()
+        parts.append("\"ListPolicyAttachments\":" + u8.to_json())
+    if v.LookupPolicy.is_some():
+        auto u9 = v.LookupPolicy.unwrap()
+        parts.append("\"LookupPolicy\":" + u9.to_json())
+    if v.ListIndex.is_some():
+        auto u10 = v.ListIndex.unwrap()
+        parts.append("\"ListIndex\":" + batch_list_index_to_json(u10))
+    if v.ListOutgoingTypedLinks.is_some():
+        auto u11 = v.ListOutgoingTypedLinks.unwrap()
+        parts.append("\"ListOutgoingTypedLinks\":" + batch_list_outgoing_typed_links_to_json(u11))
+    if v.ListIncomingTypedLinks.is_some():
+        auto u12 = v.ListIncomingTypedLinks.unwrap()
+        parts.append("\"ListIncomingTypedLinks\":" + batch_list_incoming_typed_links_to_json(u12))
+    if v.GetLinkAttributes.is_some():
+        auto u13 = v.GetLinkAttributes.unwrap()
+        parts.append("\"GetLinkAttributes\":" + batch_get_link_attributes_to_json(u13))
+    return clouddirectory_json_obj(parts)
+
+# Serialize BatchUpdateLinkAttributes to a compact JSON object (declaration order).
+def batch_update_link_attributes_to_json(BatchUpdateLinkAttributes v) -> str:
+    list[str] parts = []
+    parts.append("\"TypedLinkSpecifier\":" + typed_link_specifier_to_json(v.TypedLinkSpecifier))
+    list[str] e0 = []
+    for x0 in v.AttributeUpdates:
+        e0.append(x0.to_json())
+    parts.append("\"AttributeUpdates\":" + clouddirectory_json_arr(e0))
+    return clouddirectory_json_obj(parts)
+
+# Serialize BatchUpdateObjectAttributes to a compact JSON object (declaration order).
+def batch_update_object_attributes_to_json(BatchUpdateObjectAttributes v) -> str:
+    list[str] parts = []
+    parts.append("\"ObjectReference\":" + v.ObjectReference.to_json())
+    list[str] e0 = []
+    for x0 in v.AttributeUpdates:
+        e0.append(x0.to_json())
+    parts.append("\"AttributeUpdates\":" + clouddirectory_json_arr(e0))
+    return clouddirectory_json_obj(parts)
+
+# Serialize BatchWriteOperation to a compact JSON object (declaration order).
+def batch_write_operation_to_json(BatchWriteOperation v) -> str:
+    list[str] parts = []
+    if v.CreateObject.is_some():
+        auto u0 = v.CreateObject.unwrap()
+        parts.append("\"CreateObject\":" + batch_create_object_to_json(u0))
+    if v.AttachObject.is_some():
+        auto u1 = v.AttachObject.unwrap()
+        parts.append("\"AttachObject\":" + u1.to_json())
+    if v.DetachObject.is_some():
+        auto u2 = v.DetachObject.unwrap()
+        parts.append("\"DetachObject\":" + u2.to_json())
+    if v.UpdateObjectAttributes.is_some():
+        auto u3 = v.UpdateObjectAttributes.unwrap()
+        parts.append("\"UpdateObjectAttributes\":" + batch_update_object_attributes_to_json(u3))
+    if v.DeleteObject.is_some():
+        auto u4 = v.DeleteObject.unwrap()
+        parts.append("\"DeleteObject\":" + u4.to_json())
+    if v.AddFacetToObject.is_some():
+        auto u5 = v.AddFacetToObject.unwrap()
+        parts.append("\"AddFacetToObject\":" + batch_add_facet_to_object_to_json(u5))
+    if v.RemoveFacetFromObject.is_some():
+        auto u6 = v.RemoveFacetFromObject.unwrap()
+        parts.append("\"RemoveFacetFromObject\":" + u6.to_json())
+    if v.AttachPolicy.is_some():
+        auto u7 = v.AttachPolicy.unwrap()
+        parts.append("\"AttachPolicy\":" + u7.to_json())
+    if v.DetachPolicy.is_some():
+        auto u8 = v.DetachPolicy.unwrap()
+        parts.append("\"DetachPolicy\":" + u8.to_json())
+    if v.CreateIndex.is_some():
+        auto u9 = v.CreateIndex.unwrap()
+        parts.append("\"CreateIndex\":" + batch_create_index_to_json(u9))
+    if v.AttachToIndex.is_some():
+        auto u10 = v.AttachToIndex.unwrap()
+        parts.append("\"AttachToIndex\":" + u10.to_json())
+    if v.DetachFromIndex.is_some():
+        auto u11 = v.DetachFromIndex.unwrap()
+        parts.append("\"DetachFromIndex\":" + u11.to_json())
+    if v.AttachTypedLink.is_some():
+        auto u12 = v.AttachTypedLink.unwrap()
+        parts.append("\"AttachTypedLink\":" + batch_attach_typed_link_to_json(u12))
+    if v.DetachTypedLink.is_some():
+        auto u13 = v.DetachTypedLink.unwrap()
+        parts.append("\"DetachTypedLink\":" + batch_detach_typed_link_to_json(u13))
+    if v.UpdateLinkAttributes.is_some():
+        auto u14 = v.UpdateLinkAttributes.unwrap()
+        parts.append("\"UpdateLinkAttributes\":" + batch_update_link_attributes_to_json(u14))
+    return clouddirectory_json_obj(parts)
+
+# Serialize FacetAttribute to a compact JSON object (declaration order).
+def facet_attribute_to_json(FacetAttribute v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + clouddirectory_json_str(v.Name))
+    if v.AttributeDefinition.is_some():
+        auto u0 = v.AttributeDefinition.unwrap()
+        parts.append("\"AttributeDefinition\":" + facet_attribute_definition_to_json(u0))
+    if v.AttributeReference.is_some():
+        auto u1 = v.AttributeReference.unwrap()
+        parts.append("\"AttributeReference\":" + u1.to_json())
+    if v.RequiredBehavior.is_some():
+        auto u2 = v.RequiredBehavior.unwrap()
+        parts.append("\"RequiredBehavior\":" + u2.to_json())
+    return clouddirectory_json_obj(parts)
+
+# Serialize FacetAttributeDefinition to a compact JSON object (declaration order).
+def facet_attribute_definition_to_json(FacetAttributeDefinition v) -> str:
+    list[str] parts = []
+    parts.append("\"Type\":" + v.Type.to_json())
+    if v.DefaultValue.is_some():
+        auto u0 = v.DefaultValue.unwrap()
+        parts.append("\"DefaultValue\":" + u0.to_json())
+    if v.IsImmutable.is_some():
+        auto u1 = v.IsImmutable.unwrap()
+        parts.append("\"IsImmutable\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.Rules.is_some():
+        auto u2 = v.Rules.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(clouddirectory_json_str(k3) + ":" + rule_to_json(u2[k3]))
+        parts.append("\"Rules\":" + clouddirectory_json_obj(m3))
+    return clouddirectory_json_obj(parts)
+
+# Serialize FacetAttributeUpdate to a compact JSON object (declaration order).
+def facet_attribute_update_to_json(FacetAttributeUpdate v) -> str:
+    list[str] parts = []
+    if v.Attribute.is_some():
+        auto u0 = v.Attribute.unwrap()
+        parts.append("\"Attribute\":" + facet_attribute_to_json(u0))
+    if v.Action.is_some():
+        auto u1 = v.Action.unwrap()
+        parts.append("\"Action\":" + u1.to_json())
+    return clouddirectory_json_obj(parts)
+
+# Serialize Rule to a compact JSON object (declaration order).
+def rule_to_json(Rule v) -> str:
+    list[str] parts = []
+    if v.Type.is_some():
+        auto u0 = v.Type.unwrap()
+        parts.append("\"Type\":" + u0.to_json())
+    if v.Parameters.is_some():
+        auto u1 = v.Parameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(clouddirectory_json_str(k2) + ":" + clouddirectory_json_str(u1[k2]))
+        parts.append("\"Parameters\":" + clouddirectory_json_obj(m2))
+    return clouddirectory_json_obj(parts)
+
+# Serialize TypedLinkAttributeDefinition to a compact JSON object (declaration order).
+def typed_link_attribute_definition_to_json(TypedLinkAttributeDefinition v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + clouddirectory_json_str(v.Name))
+    parts.append("\"Type\":" + v.Type.to_json())
+    if v.DefaultValue.is_some():
+        auto u0 = v.DefaultValue.unwrap()
+        parts.append("\"DefaultValue\":" + u0.to_json())
+    if v.IsImmutable.is_some():
+        auto u1 = v.IsImmutable.unwrap()
+        parts.append("\"IsImmutable\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.Rules.is_some():
+        auto u2 = v.Rules.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(clouddirectory_json_str(k3) + ":" + rule_to_json(u2[k3]))
+        parts.append("\"Rules\":" + clouddirectory_json_obj(m3))
+    parts.append("\"RequiredBehavior\":" + v.RequiredBehavior.to_json())
+    return clouddirectory_json_obj(parts)
+
+# Serialize TypedLinkFacet to a compact JSON object (declaration order).
+def typed_link_facet_to_json(TypedLinkFacet v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + clouddirectory_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.Attributes:
+        e0.append(typed_link_attribute_definition_to_json(x0))
+    parts.append("\"Attributes\":" + clouddirectory_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.IdentityAttributeOrder:
+        e1.append(clouddirectory_json_str(x1))
+    parts.append("\"IdentityAttributeOrder\":" + clouddirectory_json_arr(e1))
+    return clouddirectory_json_obj(parts)
+
+# Serialize TypedLinkFacetAttributeUpdate to a compact JSON object (declaration order).
+def typed_link_facet_attribute_update_to_json(TypedLinkFacetAttributeUpdate v) -> str:
+    list[str] parts = []
+    parts.append("\"Attribute\":" + typed_link_attribute_definition_to_json(v.Attribute))
+    parts.append("\"Action\":" + v.Action.to_json())
+    return clouddirectory_json_obj(parts)
+
+# Serialize TypedLinkSpecifier to a compact JSON object (declaration order).
+def typed_link_specifier_to_json(TypedLinkSpecifier v) -> str:
+    list[str] parts = []
+    parts.append("\"TypedLinkFacet\":" + v.TypedLinkFacet.to_json())
+    parts.append("\"SourceObjectReference\":" + v.SourceObjectReference.to_json())
+    parts.append("\"TargetObjectReference\":" + v.TargetObjectReference.to_json())
+    list[str] e0 = []
+    for x0 in v.IdentityAttributeValues:
+        e0.append(x0.to_json())
+    parts.append("\"IdentityAttributeValues\":" + clouddirectory_json_arr(e0))
+    return clouddirectory_json_obj(parts)
+
 # A bound CloudDirectory client: credentials + region, threaded into every operation.
 struct CloudDirectoryClient:
     core.Credentials creds
     str region
+
+    # AddFacetToObject  PUT /amazonclouddirectory/2017-01-11/object/facets
+    # errors: AccessDeniedException, DirectoryNotEnabledException, FacetValidationException, InternalServiceException, InvalidArnException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException
+    def add_facet_to_object(self, AddFacetToObjectRequest input) -> str:
+        auto host = endpoints.regional_host(clouddirectory_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-data-partition"] = input.DirectoryArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/object/facets", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"SchemaFacet\":" + input.SchemaFacet.to_json())
+        if input.ObjectAttributeList.is_some():
+            auto u0 = input.ObjectAttributeList.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"ObjectAttributeList\":" + clouddirectory_json_arr(e1))
+        parts.append("\"ObjectReference\":" + input.ObjectReference.to_json())
+        auto bp = restjson.rest_json_document(b, clouddirectory_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
 
     # ApplySchema  PUT /amazonclouddirectory/2017-01-11/schema/apply
     # errors: AccessDeniedException, InternalServiceException, InvalidArnException, InvalidAttachmentException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, SchemaAlreadyExistsException, ValidationException
@@ -2175,6 +2644,56 @@ struct CloudDirectoryClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
 
+    # AttachTypedLink  PUT /amazonclouddirectory/2017-01-11/typedlink/attach
+    # errors: AccessDeniedException, DirectoryNotEnabledException, FacetValidationException, InternalServiceException, InvalidArnException, InvalidAttachmentException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException, ValidationException
+    def attach_typed_link(self, AttachTypedLinkRequest input) -> str:
+        auto host = endpoints.regional_host(clouddirectory_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-data-partition"] = input.DirectoryArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/typedlink/attach", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"SourceObjectReference\":" + input.SourceObjectReference.to_json())
+        parts.append("\"TargetObjectReference\":" + input.TargetObjectReference.to_json())
+        parts.append("\"TypedLinkFacet\":" + input.TypedLinkFacet.to_json())
+        list[str] e0 = []
+        for x0 in input.Attributes:
+            e0.append(x0.to_json())
+        parts.append("\"Attributes\":" + clouddirectory_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, clouddirectory_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
+
+    # BatchRead  POST /amazonclouddirectory/2017-01-11/batchread
+    # errors: AccessDeniedException, DirectoryNotEnabledException, InternalServiceException, InvalidArnException, LimitExceededException, RetryableConflictException, ValidationException
+    def batch_read(self, BatchReadRequest input) -> str:
+        auto host = endpoints.regional_host(clouddirectory_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-data-partition"] = input.DirectoryArn
+        if input.ConsistencyLevel.is_some():
+            headers["x-amz-consistency-level"] = input.ConsistencyLevel.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/batchread", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Operations:
+            e0.append(batch_read_operation_to_json(x0))
+        parts.append("\"Operations\":" + clouddirectory_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, clouddirectory_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
+
+    # BatchWrite  PUT /amazonclouddirectory/2017-01-11/batchwrite
+    # errors: AccessDeniedException, BatchWriteException, DirectoryNotEnabledException, InternalServiceException, InvalidArnException, LimitExceededException, RetryableConflictException, ValidationException
+    def batch_write(self, BatchWriteRequest input) -> str:
+        auto host = endpoints.regional_host(clouddirectory_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-data-partition"] = input.DirectoryArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/batchwrite", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Operations:
+            e0.append(batch_write_operation_to_json(x0))
+        parts.append("\"Operations\":" + clouddirectory_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, clouddirectory_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
+
     # CreateDirectory  PUT /amazonclouddirectory/2017-01-11/directory/create
     # errors: AccessDeniedException, DirectoryAlreadyExistsException, InternalServiceException, InvalidArnException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException
     def create_directory(self, CreateDirectoryRequest input) -> str:
@@ -2186,6 +2705,79 @@ struct CloudDirectoryClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
 
+    # CreateFacet  PUT /amazonclouddirectory/2017-01-11/facet/create
+    # errors: AccessDeniedException, FacetAlreadyExistsException, FacetValidationException, InternalServiceException, InvalidArnException, InvalidRuleException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException
+    def create_facet(self, CreateFacetRequest input) -> str:
+        auto host = endpoints.regional_host(clouddirectory_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-data-partition"] = input.SchemaArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/facet/create", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + clouddirectory_json_str(input.Name))
+        if input.Attributes.is_some():
+            auto u0 = input.Attributes.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(facet_attribute_to_json(x1))
+            parts.append("\"Attributes\":" + clouddirectory_json_arr(e1))
+        if input.ObjectType.is_some():
+            auto u2 = input.ObjectType.unwrap()
+            parts.append("\"ObjectType\":" + u2.to_json())
+        if input.FacetStyle.is_some():
+            auto u3 = input.FacetStyle.unwrap()
+            parts.append("\"FacetStyle\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, clouddirectory_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
+
+    # CreateIndex  PUT /amazonclouddirectory/2017-01-11/index
+    # errors: AccessDeniedException, DirectoryNotEnabledException, FacetValidationException, InternalServiceException, InvalidArnException, LimitExceededException, LinkNameAlreadyInUseException, ResourceNotFoundException, RetryableConflictException, UnsupportedIndexTypeException, ValidationException
+    def create_index(self, CreateIndexRequest input) -> str:
+        auto host = endpoints.regional_host(clouddirectory_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-data-partition"] = input.DirectoryArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/index", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.OrderedIndexedAttributeList:
+            e0.append(x0.to_json())
+        parts.append("\"OrderedIndexedAttributeList\":" + clouddirectory_json_arr(e0))
+        parts.append("\"IsUnique\":" + json.dumps(JsonValue.Bool(input.IsUnique)))
+        if input.ParentReference.is_some():
+            auto u1 = input.ParentReference.unwrap()
+            parts.append("\"ParentReference\":" + u1.to_json())
+        if input.LinkName.is_some():
+            auto u2 = input.LinkName.unwrap()
+            parts.append("\"LinkName\":" + clouddirectory_json_str(u2))
+        auto bp = restjson.rest_json_document(b, clouddirectory_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
+
+    # CreateObject  PUT /amazonclouddirectory/2017-01-11/object
+    # errors: AccessDeniedException, DirectoryNotEnabledException, FacetValidationException, InternalServiceException, InvalidArnException, LimitExceededException, LinkNameAlreadyInUseException, ResourceNotFoundException, RetryableConflictException, UnsupportedIndexTypeException, ValidationException
+    def create_object(self, CreateObjectRequest input) -> str:
+        auto host = endpoints.regional_host(clouddirectory_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-data-partition"] = input.DirectoryArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/object", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.SchemaFacets:
+            e0.append(x0.to_json())
+        parts.append("\"SchemaFacets\":" + clouddirectory_json_arr(e0))
+        if input.ObjectAttributeList.is_some():
+            auto u1 = input.ObjectAttributeList.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"ObjectAttributeList\":" + clouddirectory_json_arr(e2))
+        if input.ParentReference.is_some():
+            auto u3 = input.ParentReference.unwrap()
+            parts.append("\"ParentReference\":" + u3.to_json())
+        if input.LinkName.is_some():
+            auto u4 = input.LinkName.unwrap()
+            parts.append("\"LinkName\":" + clouddirectory_json_str(u4))
+        auto bp = restjson.rest_json_document(b, clouddirectory_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
+
     # CreateSchema  PUT /amazonclouddirectory/2017-01-11/schema/create
     # errors: AccessDeniedException, AccessDeniedException, InternalServiceException, InvalidArnException, LimitExceededException, RetryableConflictException, SchemaAlreadyExistsException, ValidationException
     def create_schema(self, CreateSchemaRequest input) -> str:
@@ -2193,6 +2785,18 @@ struct CloudDirectoryClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/schema/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateSchemaDocument(Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
+
+    # CreateTypedLinkFacet  PUT /amazonclouddirectory/2017-01-11/typedlink/facet/create
+    # errors: AccessDeniedException, FacetAlreadyExistsException, FacetValidationException, InternalServiceException, InvalidArnException, InvalidRuleException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException
+    def create_typed_link_facet(self, CreateTypedLinkFacetRequest input) -> str:
+        auto host = endpoints.regional_host(clouddirectory_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-data-partition"] = input.SchemaArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/typedlink/facet/create", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Facet\":" + typed_link_facet_to_json(input.Facet))
+        auto bp = restjson.rest_json_document(b, clouddirectory_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
 
     # DeleteDirectory  PUT /amazonclouddirectory/2017-01-11/directory
@@ -2279,6 +2883,18 @@ struct CloudDirectoryClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
 
+    # DetachTypedLink  PUT /amazonclouddirectory/2017-01-11/typedlink/detach
+    # errors: AccessDeniedException, DirectoryNotEnabledException, FacetValidationException, InternalServiceException, InvalidArnException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException
+    def detach_typed_link(self, DetachTypedLinkRequest input) -> str:
+        auto host = endpoints.regional_host(clouddirectory_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-data-partition"] = input.DirectoryArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/typedlink/detach", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"TypedLinkSpecifier\":" + typed_link_specifier_to_json(input.TypedLinkSpecifier))
+        auto bp = restjson.rest_json_document(b, clouddirectory_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
+
     # DisableDirectory  PUT /amazonclouddirectory/2017-01-11/directory/disable
     # errors: AccessDeniedException, DirectoryDeletedException, InternalServiceException, InvalidArnException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException
     def disable_directory(self, DisableDirectoryRequest input) -> str:
@@ -2324,6 +2940,44 @@ struct CloudDirectoryClient:
         auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/facet", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetFacetDocument(Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
+
+    # GetLinkAttributes  POST /amazonclouddirectory/2017-01-11/typedlink/attributes/get
+    # errors: AccessDeniedException, DirectoryNotEnabledException, FacetValidationException, InternalServiceException, InvalidArnException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException
+    def get_link_attributes(self, GetLinkAttributesRequest input) -> str:
+        auto host = endpoints.regional_host(clouddirectory_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-data-partition"] = input.DirectoryArn
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/typedlink/attributes/get", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"TypedLinkSpecifier\":" + typed_link_specifier_to_json(input.TypedLinkSpecifier))
+        list[str] e0 = []
+        for x0 in input.AttributeNames:
+            e0.append(clouddirectory_json_str(x0))
+        parts.append("\"AttributeNames\":" + clouddirectory_json_arr(e0))
+        if input.ConsistencyLevel.is_some():
+            auto u1 = input.ConsistencyLevel.unwrap()
+            parts.append("\"ConsistencyLevel\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, clouddirectory_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
+
+    # GetObjectAttributes  POST /amazonclouddirectory/2017-01-11/object/attributes/get
+    # errors: AccessDeniedException, DirectoryNotEnabledException, FacetValidationException, InternalServiceException, InvalidArnException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException
+    def get_object_attributes(self, GetObjectAttributesRequest input) -> str:
+        auto host = endpoints.regional_host(clouddirectory_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-data-partition"] = input.DirectoryArn
+        if input.ConsistencyLevel.is_some():
+            headers["x-amz-consistency-level"] = input.ConsistencyLevel.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/object/attributes/get", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ObjectReference\":" + input.ObjectReference.to_json())
+        parts.append("\"SchemaFacet\":" + input.SchemaFacet.to_json())
+        list[str] e0 = []
+        for x0 in input.AttributeNames:
+            e0.append(clouddirectory_json_str(x0))
+        parts.append("\"AttributeNames\":" + clouddirectory_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, clouddirectory_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
 
     # GetObjectInformation  POST /amazonclouddirectory/2017-01-11/object/information
@@ -2421,6 +3075,62 @@ struct CloudDirectoryClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
 
+    # ListIncomingTypedLinks  POST /amazonclouddirectory/2017-01-11/typedlink/incoming
+    # errors: AccessDeniedException, DirectoryNotEnabledException, FacetValidationException, InternalServiceException, InvalidArnException, InvalidNextTokenException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException
+    def list_incoming_typed_links(self, ListIncomingTypedLinksRequest input) -> str:
+        auto host = endpoints.regional_host(clouddirectory_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-data-partition"] = input.DirectoryArn
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/typedlink/incoming", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ObjectReference\":" + input.ObjectReference.to_json())
+        if input.FilterAttributeRanges.is_some():
+            auto u0 = input.FilterAttributeRanges.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"FilterAttributeRanges\":" + clouddirectory_json_arr(e1))
+        if input.FilterTypedLink.is_some():
+            auto u2 = input.FilterTypedLink.unwrap()
+            parts.append("\"FilterTypedLink\":" + u2.to_json())
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + clouddirectory_json_str(u3))
+        if input.MaxResults.is_some():
+            auto u4 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u4))
+        if input.ConsistencyLevel.is_some():
+            auto u5 = input.ConsistencyLevel.unwrap()
+            parts.append("\"ConsistencyLevel\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, clouddirectory_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
+
+    # ListIndex  POST /amazonclouddirectory/2017-01-11/index/targets
+    # errors: AccessDeniedException, DirectoryNotEnabledException, FacetValidationException, InternalServiceException, InvalidArnException, InvalidNextTokenException, LimitExceededException, NotIndexException, ResourceNotFoundException, RetryableConflictException, ValidationException
+    def list_index(self, ListIndexRequest input) -> str:
+        auto host = endpoints.regional_host(clouddirectory_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-data-partition"] = input.DirectoryArn
+        if input.ConsistencyLevel.is_some():
+            headers["x-amz-consistency-level"] = input.ConsistencyLevel.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/index/targets", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.RangesOnIndexedValues.is_some():
+            auto u0 = input.RangesOnIndexedValues.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"RangesOnIndexedValues\":" + clouddirectory_json_arr(e1))
+        parts.append("\"IndexReference\":" + input.IndexReference.to_json())
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + clouddirectory_json_str(u3))
+        auto bp = restjson.rest_json_document(b, clouddirectory_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
+
     # ListManagedSchemaArns  POST /amazonclouddirectory/2017-01-11/schema/managed
     # errors: AccessDeniedException, InternalServiceException, InvalidArnException, InvalidNextTokenException, ResourceNotFoundException, ValidationException
     def list_managed_schema_arns(self, ListManagedSchemaArnsRequest input) -> str:
@@ -2491,6 +3201,36 @@ struct CloudDirectoryClient:
         auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/object/policy", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListObjectPoliciesDocument(ObjectReference=input.ObjectReference, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
+
+    # ListOutgoingTypedLinks  POST /amazonclouddirectory/2017-01-11/typedlink/outgoing
+    # errors: AccessDeniedException, DirectoryNotEnabledException, FacetValidationException, InternalServiceException, InvalidArnException, InvalidNextTokenException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException
+    def list_outgoing_typed_links(self, ListOutgoingTypedLinksRequest input) -> str:
+        auto host = endpoints.regional_host(clouddirectory_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-data-partition"] = input.DirectoryArn
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/typedlink/outgoing", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ObjectReference\":" + input.ObjectReference.to_json())
+        if input.FilterAttributeRanges.is_some():
+            auto u0 = input.FilterAttributeRanges.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"FilterAttributeRanges\":" + clouddirectory_json_arr(e1))
+        if input.FilterTypedLink.is_some():
+            auto u2 = input.FilterTypedLink.unwrap()
+            parts.append("\"FilterTypedLink\":" + u2.to_json())
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + clouddirectory_json_str(u3))
+        if input.MaxResults.is_some():
+            auto u4 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u4))
+        if input.ConsistencyLevel.is_some():
+            auto u5 = input.ConsistencyLevel.unwrap()
+            parts.append("\"ConsistencyLevel\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, clouddirectory_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
 
     # ListPolicyAttachments  POST /amazonclouddirectory/2017-01-11/policy/attachment
@@ -2590,6 +3330,87 @@ struct CloudDirectoryClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
 
+    # TagResource  PUT /amazonclouddirectory/2017-01-11/tags/add
+    # errors: AccessDeniedException, InternalServiceException, InvalidArnException, InvalidTaggingRequestException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(clouddirectory_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/tags/add", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceArn\":" + clouddirectory_json_str(input.ResourceArn))
+        list[str] e0 = []
+        for x0 in input.Tags:
+            e0.append(x0.to_json())
+        parts.append("\"Tags\":" + clouddirectory_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, clouddirectory_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
+
+    # UntagResource  PUT /amazonclouddirectory/2017-01-11/tags/remove
+    # errors: AccessDeniedException, InternalServiceException, InvalidArnException, InvalidTaggingRequestException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(clouddirectory_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/tags/remove", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceArn\":" + clouddirectory_json_str(input.ResourceArn))
+        list[str] e0 = []
+        for x0 in input.TagKeys:
+            e0.append(clouddirectory_json_str(x0))
+        parts.append("\"TagKeys\":" + clouddirectory_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, clouddirectory_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
+
+    # UpdateFacet  PUT /amazonclouddirectory/2017-01-11/facet
+    # errors: AccessDeniedException, FacetNotFoundException, FacetValidationException, InternalServiceException, InvalidArnException, InvalidFacetUpdateException, InvalidRuleException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException
+    def update_facet(self, UpdateFacetRequest input) -> str:
+        auto host = endpoints.regional_host(clouddirectory_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-data-partition"] = input.SchemaArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/facet", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + clouddirectory_json_str(input.Name))
+        if input.AttributeUpdates.is_some():
+            auto u0 = input.AttributeUpdates.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(facet_attribute_update_to_json(x1))
+            parts.append("\"AttributeUpdates\":" + clouddirectory_json_arr(e1))
+        if input.ObjectType.is_some():
+            auto u2 = input.ObjectType.unwrap()
+            parts.append("\"ObjectType\":" + u2.to_json())
+        auto bp = restjson.rest_json_document(b, clouddirectory_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
+
+    # UpdateLinkAttributes  POST /amazonclouddirectory/2017-01-11/typedlink/attributes/update
+    # errors: AccessDeniedException, DirectoryNotEnabledException, FacetValidationException, InternalServiceException, InvalidArnException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException
+    def update_link_attributes(self, UpdateLinkAttributesRequest input) -> str:
+        auto host = endpoints.regional_host(clouddirectory_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-data-partition"] = input.DirectoryArn
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/typedlink/attributes/update", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"TypedLinkSpecifier\":" + typed_link_specifier_to_json(input.TypedLinkSpecifier))
+        list[str] e0 = []
+        for x0 in input.AttributeUpdates:
+            e0.append(x0.to_json())
+        parts.append("\"AttributeUpdates\":" + clouddirectory_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, clouddirectory_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
+
+    # UpdateObjectAttributes  PUT /amazonclouddirectory/2017-01-11/object/update
+    # errors: AccessDeniedException, DirectoryNotEnabledException, FacetValidationException, InternalServiceException, InvalidArnException, LimitExceededException, LinkNameAlreadyInUseException, ResourceNotFoundException, RetryableConflictException, ValidationException
+    def update_object_attributes(self, UpdateObjectAttributesRequest input) -> str:
+        auto host = endpoints.regional_host(clouddirectory_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-data-partition"] = input.DirectoryArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/object/update", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ObjectReference\":" + input.ObjectReference.to_json())
+        list[str] e0 = []
+        for x0 in input.AttributeUpdates:
+            e0.append(x0.to_json())
+        parts.append("\"AttributeUpdates\":" + clouddirectory_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, clouddirectory_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
+
     # UpdateSchema  PUT /amazonclouddirectory/2017-01-11/schema/update
     # errors: AccessDeniedException, InternalServiceException, InvalidArnException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException
     def update_schema(self, UpdateSchemaRequest input) -> str:
@@ -2599,6 +3420,26 @@ struct CloudDirectoryClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/schema/update", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSchemaDocument(Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
+
+    # UpdateTypedLinkFacet  PUT /amazonclouddirectory/2017-01-11/typedlink/facet
+    # errors: AccessDeniedException, FacetNotFoundException, FacetValidationException, InternalServiceException, InvalidArnException, InvalidFacetUpdateException, InvalidRuleException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException
+    def update_typed_link_facet(self, UpdateTypedLinkFacetRequest input) -> str:
+        auto host = endpoints.regional_host(clouddirectory_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-data-partition"] = input.SchemaArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/typedlink/facet", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + clouddirectory_json_str(input.Name))
+        list[str] e0 = []
+        for x0 in input.AttributeUpdates:
+            e0.append(typed_link_facet_attribute_update_to_json(x0))
+        parts.append("\"AttributeUpdates\":" + clouddirectory_json_arr(e0))
+        list[str] e1 = []
+        for x1 in input.IdentityAttributeOrder:
+            e1.append(clouddirectory_json_str(x1))
+        parts.append("\"IdentityAttributeOrder\":" + clouddirectory_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, clouddirectory_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
 
     # UpgradeAppliedSchema  PUT /amazonclouddirectory/2017-01-11/schema/upgradeapplied
@@ -2697,6 +3538,32 @@ struct CloudDirectoryClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListIncomingTypedLinks — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: LinkSpecifiers).
+    def paginate_list_incoming_typed_links(self, ListIncomingTypedLinksRequest input):
+        auto host = endpoints.regional_host(clouddirectory_service(), self.region)
+        while True:
+            auto raw = self.list_incoming_typed_links(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListIndex — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: IndexAttachments).
+    def paginate_list_index(self, ListIndexRequest input):
+        auto host = endpoints.regional_host(clouddirectory_service(), self.region)
+        while True:
+            auto raw = self.list_index(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListManagedSchemaArns — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: SchemaArns).
     def paginate_list_managed_schema_arns(self, ListManagedSchemaArnsRequest input):
@@ -2742,6 +3609,19 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         while True:
             auto raw = self.list_object_policies(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListOutgoingTypedLinks — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: TypedLinkSpecifiers).
+    def paginate_list_outgoing_typed_links(self, ListOutgoingTypedLinksRequest input):
+        auto host = endpoints.regional_host(clouddirectory_service(), self.region)
+        while True:
+            auto raw = self.list_outgoing_typed_links(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

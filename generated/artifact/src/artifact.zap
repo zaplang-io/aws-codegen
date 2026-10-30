@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 17 operations — 12 with a generated method,
-#   5 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 17 operations — 16 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   53 structs (34 @derive(Json)), 15 enums, 7 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import base64
 
 # The Artifact rest-json protocol: SigV4 service "artifact" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -194,14 +195,16 @@ struct CreateComplianceInquiryRequest:
     Optional[str] supportMode
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateComplianceInquiryResponse:
     Optional[InquirySummary] complianceInquirySummary
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) acceptanceTerms: list[str], terminateTerms: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) acceptanceTerms: list[str], terminateTerms: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomerAgreementSummary:
     Optional[str] name
     Optional[str] arn
@@ -224,8 +227,9 @@ struct ExportComplianceInquiryRequest:
     Optional[list[int64]] queryIdentifiers
     Optional[bool] includeCitations
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExportComplianceInquiryResponse:
     Optional[str] documentPresignedUrl
     Optional[dict[str, str]] tags
@@ -245,8 +249,9 @@ struct GetAccountSettingsResponse:
 struct GetComplianceInquiryMetadataRequest:
     str complianceInquiryId
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetComplianceInquiryMetadataResponse:
     Optional[InquiryDetail] complianceInquiryDetail
     Optional[dict[str, str]] tags
@@ -283,8 +288,9 @@ struct GetTermForReportResponse:
     Optional[str] documentPresignedUrl
     Optional[str] termToken
 
-# no @derive(Json): member(s) fileContent: InquiryFileContent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fileContent: InquiryFileContent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InquiryContent:
     Optional[str] query
     Optional[InquiryFileContent] fileContent
@@ -303,8 +309,9 @@ struct InquiryDetail:
     Optional[DateTime] updatedAt
     Optional[str] supportMode
 
-# no @derive(Json): member(s) fileSections: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fileSections: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InquiryFileContent:
     Optional[list[str]] fileSections
     bytes content
@@ -331,8 +338,9 @@ struct ListComplianceInquiriesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) complianceInquiries: list[InquirySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) complianceInquiries: list[InquirySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListComplianceInquiriesResponse:
     Optional[list[InquirySummary]] complianceInquiries
     Optional[str] nextToken
@@ -344,8 +352,9 @@ struct ListComplianceInquiryQueriesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) queries: list[QuerySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) queries: list[QuerySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListComplianceInquiryQueriesResponse:
     Optional[list[QuerySummary]] queries
     Optional[str] nextToken
@@ -356,8 +365,9 @@ struct ListCustomerAgreementsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) customerAgreements: list[CustomerAgreementSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customerAgreements: list[CustomerAgreementSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomerAgreementsResponse:
     list[CustomerAgreementSummary] customerAgreements
     Optional[str] nextToken
@@ -369,8 +379,9 @@ struct ListReportVersionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) reports: list[ReportSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reports: list[ReportSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReportVersionsResponse:
     list[ReportSummary] reports
     Optional[str] nextToken
@@ -381,8 +392,9 @@ struct ListReportsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) reports: list[ReportSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reports: list[ReportSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReportsResponse:
     Optional[list[ReportSummary]] reports
     Optional[str] nextToken
@@ -392,8 +404,9 @@ struct ListReportsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -422,8 +435,9 @@ struct PutComplianceInquiryFeedbackResponse:
     @json(timestamp="iso8601")
     DateTime submittedAt
 
-# no @derive(Json): member(s) citations: list[Citation], updatedResponseVersions: list[ResponseVersion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) citations: list[Citation], updatedResponseVersions: list[ResponseVersion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuerySummary:
     int64 queryIdentifier
     str query
@@ -532,8 +546,9 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -582,10 +597,6 @@ def artifact_error_from_code(str code) -> ArtifactError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateComplianceInquiry (document member `inquiryContent: InquiryContent` is not serializable by derive)
-#   ExportComplianceInquiry (document member `queryIdentifiers: list[int64]` is not serializable by derive)
-#   PutComplianceInquiryFeedback (document member `reasonCodes: list[FeedbackReasonCode]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -596,10 +607,105 @@ struct PutAccountSettingsDocument:
     # document members of PutAccountSettings
     Optional[NotificationSubscriptionStatus] notificationSubscriptionStatus
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def artifact_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def artifact_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def artifact_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize InquiryContent to a compact JSON object (declaration order).
+def inquiry_content_to_json(InquiryContent v) -> str:
+    list[str] parts = []
+    if v.query.is_some():
+        auto u0 = v.query.unwrap()
+        parts.append("\"query\":" + artifact_json_str(u0))
+    if v.fileContent.is_some():
+        auto u1 = v.fileContent.unwrap()
+        parts.append("\"fileContent\":" + inquiry_file_content_to_json(u1))
+    return artifact_json_obj(parts)
+
+# Serialize InquiryFileContent to a compact JSON object (declaration order).
+def inquiry_file_content_to_json(InquiryFileContent v) -> str:
+    list[str] parts = []
+    if v.fileSections.is_some():
+        auto u0 = v.fileSections.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(artifact_json_str(x1))
+        parts.append("\"fileSections\":" + artifact_json_arr(e1))
+    parts.append("\"content\":" + artifact_json_str(base64.encode(v.content)))
+    return artifact_json_obj(parts)
+
 # A bound Artifact client: credentials + region, threaded into every operation.
 struct ArtifactClient:
     core.Credentials creds
     str region
+
+    # CreateComplianceInquiry  POST /v1/compliance-inquiry/create
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def create_compliance_inquiry(self, CreateComplianceInquiryRequest input) -> str:
+        auto host = endpoints.regional_host(artifact_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/compliance-inquiry/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + artifact_json_str(input.name))
+        parts.append("\"inquiryContent\":" + inquiry_content_to_json(input.inquiryContent))
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + artifact_json_str(u0))
+        if input.supportMode.is_some():
+            auto u1 = input.supportMode.unwrap()
+            parts.append("\"supportMode\":" + artifact_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(artifact_json_str(k3) + ":" + artifact_json_str(u2[k3]))
+            parts.append("\"tags\":" + artifact_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, artifact_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, artifact_service(), self.region, host)
+
+    # ExportComplianceInquiry  POST /v1/compliance-inquiry/export
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def export_compliance_inquiry(self, ExportComplianceInquiryRequest input) -> str:
+        auto host = endpoints.regional_host(artifact_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/compliance-inquiry/export", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"complianceInquiryId\":" + artifact_json_str(input.complianceInquiryId))
+        if input.queryIdentifiers.is_some():
+            auto u0 = input.queryIdentifiers.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(str(x1))
+            parts.append("\"queryIdentifiers\":" + artifact_json_arr(e1))
+        if input.includeCitations.is_some():
+            auto u2 = input.includeCitations.unwrap()
+            parts.append("\"includeCitations\":" + json.dumps(JsonValue.Bool(u2)))
+        auto bp = restjson.rest_json_document(b, artifact_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, artifact_service(), self.region, host)
 
     # GetAccountSettings  GET /v1/account-settings/get
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -729,6 +835,50 @@ struct ArtifactClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/v1/account-settings/put", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutAccountSettingsDocument(notificationSubscriptionStatus=input.notificationSubscriptionStatus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, artifact_service(), self.region, host)
+
+    # PutComplianceInquiryFeedback  PUT /v1/compliance-inquiry/putFeedback
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def put_compliance_inquiry_feedback(self, PutComplianceInquiryFeedbackRequest input) -> str:
+        auto host = endpoints.regional_host(artifact_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/compliance-inquiry/putFeedback", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"complianceInquiryId\":" + artifact_json_str(input.complianceInquiryId))
+        if input.queryIdentifier.is_some():
+            auto u0 = input.queryIdentifier.unwrap()
+            parts.append("\"queryIdentifier\":" + str(u0))
+        parts.append("\"rating\":" + input.rating.to_json())
+        if input.responseRevisionId.is_some():
+            auto u1 = input.responseRevisionId.unwrap()
+            parts.append("\"responseRevisionId\":" + str(u1))
+        if input.reasonCodes.is_some():
+            auto u2 = input.reasonCodes.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"reasonCodes\":" + artifact_json_arr(e3))
+        if input.comment.is_some():
+            auto u4 = input.comment.unwrap()
+            parts.append("\"comment\":" + artifact_json_str(u4))
+        if input.clientToken.is_some():
+            auto u5 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + artifact_json_str(u5))
+        auto bp = restjson.rest_json_document(b, artifact_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, artifact_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(artifact_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(artifact_json_str(k0) + ":" + artifact_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + artifact_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, artifact_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, artifact_service(), self.region, host)
 
     # Paginator for ListComplianceInquiries — yields each Response page, threading the

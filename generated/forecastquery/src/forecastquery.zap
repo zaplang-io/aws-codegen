@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 2 operations — 0 with a generated method,
-#   2 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 2 operations — 2 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   11 structs (6 @derive(Json)), 0 enums, 5 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -39,8 +39,9 @@ struct DataPoint:
     Optional[str] Timestamp
     Optional[float64] Value
 
-# no @derive(Json): member(s) Predictions: dict[str, list[DataPoint]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Predictions: dict[str, list[DataPoint]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Forecast:
     Optional[dict[str, list[DataPoint]]] Predictions
 
@@ -56,8 +57,9 @@ struct InvalidNextTokenException:
 struct LimitExceededException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Filters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryForecastRequest:
     str ForecastArn
     Optional[str] StartDate
@@ -65,13 +67,15 @@ struct QueryForecastRequest:
     dict[str, str] Filters
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Forecast: Forecast not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Forecast: Forecast not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryForecastResponse:
     Optional[Forecast] Forecast
 
-# no @derive(Json): member(s) Filters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryWhatIfForecastRequest:
     str WhatIfForecastArn
     Optional[str] StartDate
@@ -79,8 +83,9 @@ struct QueryWhatIfForecastRequest:
     dict[str, str] Filters
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Forecast: Forecast not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Forecast: Forecast not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryWhatIfForecastResponse:
     Optional[Forecast] Forecast
 
@@ -120,17 +125,91 @@ def forecastquery_error_from_code(str code) -> forecastqueryError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   QueryForecast (input QueryForecastRequest)
-#   QueryWhatIfForecast (input QueryWhatIfForecastRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def forecastquery_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def forecastquery_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def forecastquery_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize QueryForecastRequest to a compact JSON object (declaration order).
+def query_forecast_request_to_json(QueryForecastRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ForecastArn\":" + forecastquery_json_str(v.ForecastArn))
+    if v.StartDate.is_some():
+        auto u0 = v.StartDate.unwrap()
+        parts.append("\"StartDate\":" + forecastquery_json_str(u0))
+    if v.EndDate.is_some():
+        auto u1 = v.EndDate.unwrap()
+        parts.append("\"EndDate\":" + forecastquery_json_str(u1))
+    list[str] m2 = []
+    for k2 in sorted(v.Filters.keys()):
+        m2.append(forecastquery_json_str(k2) + ":" + forecastquery_json_str(v.Filters[k2]))
+    parts.append("\"Filters\":" + forecastquery_json_obj(m2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + forecastquery_json_str(u3))
+    return forecastquery_json_obj(parts)
+
+# Serialize QueryWhatIfForecastRequest to a compact JSON object (declaration order).
+def query_what_if_forecast_request_to_json(QueryWhatIfForecastRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"WhatIfForecastArn\":" + forecastquery_json_str(v.WhatIfForecastArn))
+    if v.StartDate.is_some():
+        auto u0 = v.StartDate.unwrap()
+        parts.append("\"StartDate\":" + forecastquery_json_str(u0))
+    if v.EndDate.is_some():
+        auto u1 = v.EndDate.unwrap()
+        parts.append("\"EndDate\":" + forecastquery_json_str(u1))
+    list[str] m2 = []
+    for k2 in sorted(v.Filters.keys()):
+        m2.append(forecastquery_json_str(k2) + ":" + forecastquery_json_str(v.Filters[k2]))
+    parts.append("\"Filters\":" + forecastquery_json_obj(m2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + forecastquery_json_str(u3))
+    return forecastquery_json_obj(parts)
 
 # A bound forecastquery client: credentials + region, threaded into every operation.
 struct forecastqueryClient:
     core.Credentials creds
     str region
 
-    # no derivable-input operations were generated for this service in v0
+    # QueryForecast
+    # errors: InvalidInputException, InvalidNextTokenException, LimitExceededException, ResourceInUseException, ResourceNotFoundException
+    def query_forecast(self, QueryForecastRequest input) -> str:
+        auto body = query_forecast_request_to_json(input)
+        return awsjson.awsjson_request_now(forecastquery_protocol(), self.creds, self.region, "QueryForecast", body)
+
+    # QueryWhatIfForecast
+    # errors: InvalidInputException, InvalidNextTokenException, LimitExceededException, ResourceInUseException, ResourceNotFoundException
+    def query_what_if_forecast(self, QueryWhatIfForecastRequest input) -> str:
+        auto body = query_what_if_forecast_request_to_json(input)
+        return awsjson.awsjson_request_now(forecastquery_protocol(), self.creds, self.region, "QueryWhatIfForecast", body)
+
 # Construct a forecastqueryClient bound to credentials + region.
 def forecastquery_client(core.Credentials creds, str region) -> forecastqueryClient:
     return forecastqueryClient(creds=creds, region=region)

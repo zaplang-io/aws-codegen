@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 29 operations — 20 with a generated method,
-#   9 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 29 operations — 28 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   79 structs (53 @derive(Json)), 13 enums, 7 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -181,8 +181,9 @@ struct BatchGetGraphMemberDatasourcesRequest:
     str GraphArn
     list[str] AccountIds
 
-# no @derive(Json): member(s) MemberDatasources: list[MembershipDatasources], UnprocessedAccounts: list[UnprocessedAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MemberDatasources: list[MembershipDatasources], UnprocessedAccounts: list[UnprocessedAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetGraphMemberDatasourcesResponse:
     Optional[list[MembershipDatasources]] MemberDatasources
     Optional[list[UnprocessedAccount]] UnprocessedAccounts
@@ -192,8 +193,9 @@ struct BatchGetGraphMemberDatasourcesResponse:
 struct BatchGetMembershipDatasourcesRequest:
     list[str] GraphArns
 
-# no @derive(Json): member(s) MembershipDatasources: list[MembershipDatasources], UnprocessedGraphs: list[UnprocessedGraph] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MembershipDatasources: list[MembershipDatasources], UnprocessedGraphs: list[UnprocessedGraph] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetMembershipDatasourcesResponse:
     Optional[list[MembershipDatasources]] MembershipDatasources
     Optional[list[UnprocessedGraph]] UnprocessedGraphs
@@ -219,14 +221,16 @@ struct CreateMembersRequest:
     Optional[bool] DisableEmailNotification
     list[Account] Accounts
 
-# no @derive(Json): member(s) Members: list[MemberDetail], UnprocessedAccounts: list[UnprocessedAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Members: list[MemberDetail], UnprocessedAccounts: list[UnprocessedAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMembersResponse:
     Optional[list[MemberDetail]] Members
     Optional[list[UnprocessedAccount]] UnprocessedAccounts
 
-# no @derive(Json): member(s) LastIngestStateChange: dict[DatasourcePackageIngestState, TimestampForCollection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LastIngestStateChange: dict[DatasourcePackageIngestState, TimestampForCollection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatasourcePackageIngestDetail:
     Optional[DatasourcePackageIngestState] DatasourcePackageIngestState
     Optional[dict[DatasourcePackageIngestState, TimestampForCollection]] LastIngestStateChange
@@ -255,8 +259,9 @@ struct DeleteMembersRequest:
     str GraphArn
     list[str] AccountIds
 
-# no @derive(Json): member(s) AccountIds: list[str], UnprocessedAccounts: list[UnprocessedAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccountIds: list[str], UnprocessedAccounts: list[UnprocessedAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteMembersResponse:
     Optional[list[str]] AccountIds
     Optional[list[UnprocessedAccount]] UnprocessedAccounts
@@ -321,8 +326,9 @@ struct GetMembersRequest:
     str GraphArn
     list[str] AccountIds
 
-# no @derive(Json): member(s) MemberDetails: list[MemberDetail], UnprocessedAccounts: list[UnprocessedAccount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MemberDetails: list[MemberDetail], UnprocessedAccounts: list[UnprocessedAccount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMembersResponse:
     Optional[list[MemberDetail]] MemberDetails
     Optional[list[UnprocessedAccount]] UnprocessedAccounts
@@ -379,8 +385,9 @@ struct ListDatasourcePackagesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DatasourcePackages: dict[DatasourcePackage, DatasourcePackageIngestDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatasourcePackages: dict[DatasourcePackage, DatasourcePackageIngestDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatasourcePackagesResponse:
     Optional[dict[DatasourcePackage, DatasourcePackageIngestDetail]] DatasourcePackages
     Optional[str] NextToken
@@ -391,8 +398,9 @@ struct ListGraphsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) GraphList: list[Graph] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GraphList: list[Graph] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGraphsResponse:
     Optional[list[Graph]] GraphList
     Optional[str] NextToken
@@ -406,8 +414,9 @@ struct ListIndicatorsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Indicators: list[Indicator] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Indicators: list[Indicator] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIndicatorsResponse:
     Optional[str] GraphArn
     Optional[str] InvestigationId
@@ -423,8 +432,9 @@ struct ListInvestigationsRequest:
     Optional[FilterCriteria] FilterCriteria
     Optional[SortCriteria] SortCriteria
 
-# no @derive(Json): member(s) InvestigationDetails: list[InvestigationDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InvestigationDetails: list[InvestigationDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInvestigationsResponse:
     Optional[list[InvestigationDetail]] InvestigationDetails
     Optional[str] NextToken
@@ -435,8 +445,9 @@ struct ListInvitationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Invitations: list[MemberDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Invitations: list[MemberDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInvitationsResponse:
     Optional[list[MemberDetail]] Invitations
     Optional[str] NextToken
@@ -448,8 +459,9 @@ struct ListMembersRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) MemberDetails: list[MemberDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MemberDetails: list[MemberDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMembersResponse:
     Optional[list[MemberDetail]] MemberDetails
     Optional[str] NextToken
@@ -460,8 +472,9 @@ struct ListOrganizationAdminAccountsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Administrators: list[Administrator] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Administrators: list[Administrator] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOrganizationAdminAccountsResponse:
     Optional[list[Administrator]] Administrators
     Optional[str] NextToken
@@ -471,13 +484,15 @@ struct ListOrganizationAdminAccountsResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) VolumeUsageByDatasourcePackage: dict[DatasourcePackage, DatasourcePackageUsageInfo], DatasourcePackageIngestStates: dict[DatasourcePackage, DatasourcePackageIngestState] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VolumeUsageByDatasourcePackage: dict[DatasourcePackage, DatasourcePackageUsageInfo], DatasourcePackageIngestStates: dict[DatasourcePackage, DatasourcePackageIngestState] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MemberDetail:
     Optional[str] AccountId
     Optional[str] EmailAddress
@@ -496,8 +511,9 @@ struct MemberDetail:
     Optional[dict[DatasourcePackage, DatasourcePackageUsageInfo]] VolumeUsageByDatasourcePackage
     Optional[dict[DatasourcePackage, DatasourcePackageIngestState]] DatasourcePackageIngestStates
 
-# no @derive(Json): member(s) DatasourcePackageIngestHistory: dict[DatasourcePackage, dict[DatasourcePackageIngestState, TimestampForCollection]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatasourcePackageIngestHistory: dict[DatasourcePackage, dict[DatasourcePackageIngestState, TimestampForCollection]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MembershipDatasources:
     Optional[str] AccountId
     Optional[str] GraphArn
@@ -538,8 +554,9 @@ struct RelatedFindingGroupDetail:
 struct ResourceNotFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Resources: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resources: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceQuotaExceededException:
     Optional[str] Message
     Optional[list[str]] Resources
@@ -685,15 +702,7 @@ def api_detective_error_from_code(str code) -> DetectiveError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchGetGraphMemberDatasources (document member `AccountIds: list[str]` is not serializable by derive)
-#   BatchGetMembershipDatasources (document member `GraphArns: list[str]` is not serializable by derive)
-#   CreateGraph (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateMembers (document member `Accounts: list[Account]` is not serializable by derive)
-#   DeleteMembers (document member `AccountIds: list[str]` is not serializable by derive)
-#   GetMembers (document member `AccountIds: list[str]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateDatasourcePackages (document member `DatasourcePackages: list[DatasourcePackage]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -825,6 +834,68 @@ struct DetectiveClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
 
+    # BatchGetGraphMemberDatasources  POST /graph/datasources/get
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
+    def batch_get_graph_member_datasources(self, BatchGetGraphMemberDatasourcesRequest input) -> str:
+        auto host = endpoints.regional_host(api_detective_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/graph/datasources/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"GraphArn\":" + api_detective_json_str(input.GraphArn))
+        list[str] e0 = []
+        for x0 in input.AccountIds:
+            e0.append(api_detective_json_str(x0))
+        parts.append("\"AccountIds\":" + api_detective_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, api_detective_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
+
+    # BatchGetMembershipDatasources  POST /membership/datasources/get
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
+    def batch_get_membership_datasources(self, BatchGetMembershipDatasourcesRequest input) -> str:
+        auto host = endpoints.regional_host(api_detective_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/membership/datasources/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.GraphArns:
+            e0.append(api_detective_json_str(x0))
+        parts.append("\"GraphArns\":" + api_detective_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, api_detective_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
+
+    # CreateGraph  POST /graph
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException
+    def create_graph(self, CreateGraphRequest input) -> str:
+        auto host = endpoints.regional_host(api_detective_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/graph", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(api_detective_json_str(k1) + ":" + api_detective_json_str(u0[k1]))
+            parts.append("\"Tags\":" + api_detective_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, api_detective_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
+
+    # CreateMembers  POST /graph/members
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def create_members(self, CreateMembersRequest input) -> str:
+        auto host = endpoints.regional_host(api_detective_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/graph/members", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"GraphArn\":" + api_detective_json_str(input.GraphArn))
+        if input.Message.is_some():
+            auto u0 = input.Message.unwrap()
+            parts.append("\"Message\":" + api_detective_json_str(u0))
+        if input.DisableEmailNotification.is_some():
+            auto u1 = input.DisableEmailNotification.unwrap()
+            parts.append("\"DisableEmailNotification\":" + json.dumps(JsonValue.Bool(u1)))
+        list[str] e2 = []
+        for x2 in input.Accounts:
+            e2.append(x2.to_json())
+        parts.append("\"Accounts\":" + api_detective_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, api_detective_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
+
     # DeleteGraph  POST /graph/removal
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
     def delete_graph(self, DeleteGraphRequest input) -> str:
@@ -832,6 +903,20 @@ struct DetectiveClient:
         auto b = binding.HttpBinding(method="POST", path_template="/graph/removal", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteGraphDocument(GraphArn=input.GraphArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
+
+    # DeleteMembers  POST /graph/members/removal
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
+    def delete_members(self, DeleteMembersRequest input) -> str:
+        auto host = endpoints.regional_host(api_detective_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/graph/members/removal", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"GraphArn\":" + api_detective_json_str(input.GraphArn))
+        list[str] e0 = []
+        for x0 in input.AccountIds:
+            e0.append(api_detective_json_str(x0))
+        parts.append("\"AccountIds\":" + api_detective_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, api_detective_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
 
     # DescribeOrganizationConfiguration  POST /orgs/describeOrganizationConfiguration
@@ -875,6 +960,20 @@ struct DetectiveClient:
         auto b = binding.HttpBinding(method="POST", path_template="/investigations/getInvestigation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetInvestigationDocument(GraphArn=input.GraphArn, InvestigationId=input.InvestigationId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
+
+    # GetMembers  POST /graph/members/get
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
+    def get_members(self, GetMembersRequest input) -> str:
+        auto host = endpoints.regional_host(api_detective_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/graph/members/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"GraphArn\":" + api_detective_json_str(input.GraphArn))
+        list[str] e0 = []
+        for x0 in input.AccountIds:
+            e0.append(api_detective_json_str(x0))
+        parts.append("\"AccountIds\":" + api_detective_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, api_detective_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
 
     # ListDatasourcePackages  POST /graph/datasources/list
@@ -974,6 +1073,35 @@ struct DetectiveClient:
         auto b = binding.HttpBinding(method="POST", path_template="/graph/member/monitoringstate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartMonitoringMemberDocument(GraphArn=input.GraphArn, AccountId=input.AccountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
+
+    # TagResource  POST /tags/{ResourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(api_detective_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(api_detective_json_str(k0) + ":" + api_detective_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + api_detective_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, api_detective_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
+
+    # UpdateDatasourcePackages  POST /graph/datasources/update
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def update_datasource_packages(self, UpdateDatasourcePackagesRequest input) -> str:
+        auto host = endpoints.regional_host(api_detective_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/graph/datasources/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"GraphArn\":" + api_detective_json_str(input.GraphArn))
+        list[str] e0 = []
+        for x0 in input.DatasourcePackages:
+            e0.append(x0.to_json())
+        parts.append("\"DatasourcePackages\":" + api_detective_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, api_detective_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
 
     # UpdateInvestigationState  POST /investigations/updateInvestigationState

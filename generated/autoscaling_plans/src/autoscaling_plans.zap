@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 6 operations — 3 with a generated method,
-#   3 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 6 operations — 6 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   31 structs (16 @derive(Json)), 11 enums, 6 error variants.
-#   1 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -149,8 +149,9 @@ enum ServiceNamespace:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) TagFilters: list[TagFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagFilters: list[TagFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationSource:
     Optional[str] CloudFormationStackARN
     Optional[list[TagFilter]] TagFilters
@@ -159,8 +160,9 @@ struct ApplicationSource:
 struct ConcurrentUpdateException:
     Optional[str] Message
 
-# no @derive(Json): member(s) ApplicationSource: ApplicationSource, ScalingInstructions: list[ScalingInstruction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationSource: ApplicationSource, ScalingInstructions: list[ScalingInstruction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateScalingPlanRequest:
     str ScalingPlanName
     ApplicationSource ApplicationSource
@@ -170,8 +172,9 @@ struct CreateScalingPlanRequest:
 struct CreateScalingPlanResponse:
     int64 ScalingPlanVersion
 
-# no @derive(Json): member(s) Dimensions: list[MetricDimension] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: list[MetricDimension] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomizedLoadMetricSpecification:
     str MetricName
     str Namespace
@@ -179,8 +182,9 @@ struct CustomizedLoadMetricSpecification:
     MetricStatistic Statistic
     Optional[str] Unit
 
-# no @derive(Json): member(s) Dimensions: list[MetricDimension] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: list[MetricDimension] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomizedScalingMetricSpecification:
     str MetricName
     str Namespace
@@ -210,14 +214,16 @@ struct DescribeScalingPlanResourcesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ScalingPlanResources: list[ScalingPlanResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScalingPlanResources: list[ScalingPlanResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeScalingPlanResourcesResponse:
     Optional[list[ScalingPlanResource]] ScalingPlanResources
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ScalingPlanNames: list[str], ApplicationSources: list[ApplicationSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScalingPlanNames: list[str], ApplicationSources: list[ApplicationSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeScalingPlansRequest:
     Optional[list[str]] ScalingPlanNames
     Optional[int64] ScalingPlanVersion
@@ -225,8 +231,9 @@ struct DescribeScalingPlansRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ScalingPlans: list[ScalingPlan] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScalingPlans: list[ScalingPlan] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeScalingPlansResponse:
     Optional[list[ScalingPlan]] ScalingPlans
     Optional[str] NextToken
@@ -242,8 +249,9 @@ struct GetScalingPlanResourceForecastDataRequest:
     DateTime StartTime
     DateTime EndTime
 
-# no @derive(Json): member(s) Datapoints: list[Datapoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Datapoints: list[Datapoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetScalingPlanResourceForecastDataResponse:
     list[Datapoint] Datapoints
 
@@ -278,8 +286,9 @@ struct PredefinedScalingMetricSpecification:
     ScalingMetricType PredefinedScalingMetricType
     Optional[str] ResourceLabel
 
-# no @derive(Json): member(s) TargetTrackingConfigurations: list[TargetTrackingConfiguration], CustomizedLoadMetricSpecification: CustomizedLoadMetricSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetTrackingConfigurations: list[TargetTrackingConfiguration], CustomizedLoadMetricSpecification: CustomizedLoadMetricSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScalingInstruction:
     ServiceNamespace ServiceNamespace
     str ResourceId
@@ -296,8 +305,9 @@ struct ScalingInstruction:
     Optional[ScalingPolicyUpdateBehavior] ScalingPolicyUpdateBehavior
     Optional[bool] DisableDynamicScaling
 
-# no @derive(Json): member(s) ApplicationSource: ApplicationSource, ScalingInstructions: list[ScalingInstruction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationSource: ApplicationSource, ScalingInstructions: list[ScalingInstruction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScalingPlan:
     str ScalingPlanName
     int64 ScalingPlanVersion
@@ -308,8 +318,9 @@ struct ScalingPlan:
     Optional[DateTime] StatusStartTime
     Optional[DateTime] CreationTime
 
-# no @derive(Json): member(s) ScalingPolicies: list[ScalingPolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScalingPolicies: list[ScalingPolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScalingPlanResource:
     str ScalingPlanName
     int64 ScalingPlanVersion
@@ -320,21 +331,24 @@ struct ScalingPlanResource:
     ScalingStatusCode ScalingStatusCode
     Optional[str] ScalingStatusMessage
 
-# no @derive(Json): member(s) TargetTrackingConfiguration: TargetTrackingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetTrackingConfiguration: TargetTrackingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScalingPolicy:
     str PolicyName
     str PolicyType
     Optional[TargetTrackingConfiguration] TargetTrackingConfiguration
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagFilter:
     Optional[str] Key
     Optional[list[str]] Values
 
-# no @derive(Json): member(s) CustomizedScalingMetricSpecification: CustomizedScalingMetricSpecification not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomizedScalingMetricSpecification: CustomizedScalingMetricSpecification not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TargetTrackingConfiguration:
     Optional[PredefinedScalingMetricSpecification] PredefinedScalingMetricSpecification
     Optional[CustomizedScalingMetricSpecification] CustomizedScalingMetricSpecification
@@ -344,8 +358,9 @@ struct TargetTrackingConfiguration:
     Optional[int64] ScaleInCooldown
     Optional[int64] EstimatedInstanceWarmup
 
-# no @derive(Json): member(s) ApplicationSource: ApplicationSource, ScalingInstructions: list[ScalingInstruction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationSource: ApplicationSource, ScalingInstructions: list[ScalingInstruction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateScalingPlanRequest:
     str ScalingPlanName
     int64 ScalingPlanVersion
@@ -392,20 +407,223 @@ def autoscaling_plans_error_from_code(str code) -> Auto_Scaling_PlansError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateScalingPlan (input CreateScalingPlanRequest)
-#   DescribeScalingPlans (input DescribeScalingPlansRequest)
-#   UpdateScalingPlan (input UpdateScalingPlanRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def autoscaling_plans_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   DescribeScalingPlans (input not derivable (no generated method))
+def autoscaling_plans_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def autoscaling_plans_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ApplicationSource to a compact JSON object (declaration order).
+def application_source_to_json(ApplicationSource v) -> str:
+    list[str] parts = []
+    if v.CloudFormationStackARN.is_some():
+        auto u0 = v.CloudFormationStackARN.unwrap()
+        parts.append("\"CloudFormationStackARN\":" + autoscaling_plans_json_str(u0))
+    if v.TagFilters.is_some():
+        auto u1 = v.TagFilters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(tag_filter_to_json(x2))
+        parts.append("\"TagFilters\":" + autoscaling_plans_json_arr(e2))
+    return autoscaling_plans_json_obj(parts)
+
+# Serialize CreateScalingPlanRequest to a compact JSON object (declaration order).
+def create_scaling_plan_request_to_json(CreateScalingPlanRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ScalingPlanName\":" + autoscaling_plans_json_str(v.ScalingPlanName))
+    parts.append("\"ApplicationSource\":" + application_source_to_json(v.ApplicationSource))
+    list[str] e0 = []
+    for x0 in v.ScalingInstructions:
+        e0.append(scaling_instruction_to_json(x0))
+    parts.append("\"ScalingInstructions\":" + autoscaling_plans_json_arr(e0))
+    return autoscaling_plans_json_obj(parts)
+
+# Serialize CustomizedLoadMetricSpecification to a compact JSON object (declaration order).
+def customized_load_metric_specification_to_json(CustomizedLoadMetricSpecification v) -> str:
+    list[str] parts = []
+    parts.append("\"MetricName\":" + autoscaling_plans_json_str(v.MetricName))
+    parts.append("\"Namespace\":" + autoscaling_plans_json_str(v.Namespace))
+    if v.Dimensions.is_some():
+        auto u0 = v.Dimensions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Dimensions\":" + autoscaling_plans_json_arr(e1))
+    parts.append("\"Statistic\":" + v.Statistic.to_json())
+    if v.Unit.is_some():
+        auto u2 = v.Unit.unwrap()
+        parts.append("\"Unit\":" + autoscaling_plans_json_str(u2))
+    return autoscaling_plans_json_obj(parts)
+
+# Serialize CustomizedScalingMetricSpecification to a compact JSON object (declaration order).
+def customized_scaling_metric_specification_to_json(CustomizedScalingMetricSpecification v) -> str:
+    list[str] parts = []
+    parts.append("\"MetricName\":" + autoscaling_plans_json_str(v.MetricName))
+    parts.append("\"Namespace\":" + autoscaling_plans_json_str(v.Namespace))
+    if v.Dimensions.is_some():
+        auto u0 = v.Dimensions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Dimensions\":" + autoscaling_plans_json_arr(e1))
+    parts.append("\"Statistic\":" + v.Statistic.to_json())
+    if v.Unit.is_some():
+        auto u2 = v.Unit.unwrap()
+        parts.append("\"Unit\":" + autoscaling_plans_json_str(u2))
+    return autoscaling_plans_json_obj(parts)
+
+# Serialize DescribeScalingPlansRequest to a compact JSON object (declaration order).
+def describe_scaling_plans_request_to_json(DescribeScalingPlansRequest v) -> str:
+    list[str] parts = []
+    if v.ScalingPlanNames.is_some():
+        auto u0 = v.ScalingPlanNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(autoscaling_plans_json_str(x1))
+        parts.append("\"ScalingPlanNames\":" + autoscaling_plans_json_arr(e1))
+    if v.ScalingPlanVersion.is_some():
+        auto u2 = v.ScalingPlanVersion.unwrap()
+        parts.append("\"ScalingPlanVersion\":" + str(u2))
+    if v.ApplicationSources.is_some():
+        auto u3 = v.ApplicationSources.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(application_source_to_json(x4))
+        parts.append("\"ApplicationSources\":" + autoscaling_plans_json_arr(e4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    if v.NextToken.is_some():
+        auto u6 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + autoscaling_plans_json_str(u6))
+    return autoscaling_plans_json_obj(parts)
+
+# Serialize ScalingInstruction to a compact JSON object (declaration order).
+def scaling_instruction_to_json(ScalingInstruction v) -> str:
+    list[str] parts = []
+    parts.append("\"ServiceNamespace\":" + v.ServiceNamespace.to_json())
+    parts.append("\"ResourceId\":" + autoscaling_plans_json_str(v.ResourceId))
+    parts.append("\"ScalableDimension\":" + v.ScalableDimension.to_json())
+    parts.append("\"MinCapacity\":" + str(v.MinCapacity))
+    parts.append("\"MaxCapacity\":" + str(v.MaxCapacity))
+    list[str] e0 = []
+    for x0 in v.TargetTrackingConfigurations:
+        e0.append(target_tracking_configuration_to_json(x0))
+    parts.append("\"TargetTrackingConfigurations\":" + autoscaling_plans_json_arr(e0))
+    if v.PredefinedLoadMetricSpecification.is_some():
+        auto u1 = v.PredefinedLoadMetricSpecification.unwrap()
+        parts.append("\"PredefinedLoadMetricSpecification\":" + u1.to_json())
+    if v.CustomizedLoadMetricSpecification.is_some():
+        auto u2 = v.CustomizedLoadMetricSpecification.unwrap()
+        parts.append("\"CustomizedLoadMetricSpecification\":" + customized_load_metric_specification_to_json(u2))
+    if v.ScheduledActionBufferTime.is_some():
+        auto u3 = v.ScheduledActionBufferTime.unwrap()
+        parts.append("\"ScheduledActionBufferTime\":" + str(u3))
+    if v.PredictiveScalingMaxCapacityBehavior.is_some():
+        auto u4 = v.PredictiveScalingMaxCapacityBehavior.unwrap()
+        parts.append("\"PredictiveScalingMaxCapacityBehavior\":" + u4.to_json())
+    if v.PredictiveScalingMaxCapacityBuffer.is_some():
+        auto u5 = v.PredictiveScalingMaxCapacityBuffer.unwrap()
+        parts.append("\"PredictiveScalingMaxCapacityBuffer\":" + str(u5))
+    if v.PredictiveScalingMode.is_some():
+        auto u6 = v.PredictiveScalingMode.unwrap()
+        parts.append("\"PredictiveScalingMode\":" + u6.to_json())
+    if v.ScalingPolicyUpdateBehavior.is_some():
+        auto u7 = v.ScalingPolicyUpdateBehavior.unwrap()
+        parts.append("\"ScalingPolicyUpdateBehavior\":" + u7.to_json())
+    if v.DisableDynamicScaling.is_some():
+        auto u8 = v.DisableDynamicScaling.unwrap()
+        parts.append("\"DisableDynamicScaling\":" + json.dumps(JsonValue.Bool(u8)))
+    return autoscaling_plans_json_obj(parts)
+
+# Serialize TagFilter to a compact JSON object (declaration order).
+def tag_filter_to_json(TagFilter v) -> str:
+    list[str] parts = []
+    if v.Key.is_some():
+        auto u0 = v.Key.unwrap()
+        parts.append("\"Key\":" + autoscaling_plans_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(autoscaling_plans_json_str(x2))
+        parts.append("\"Values\":" + autoscaling_plans_json_arr(e2))
+    return autoscaling_plans_json_obj(parts)
+
+# Serialize TargetTrackingConfiguration to a compact JSON object (declaration order).
+def target_tracking_configuration_to_json(TargetTrackingConfiguration v) -> str:
+    list[str] parts = []
+    if v.PredefinedScalingMetricSpecification.is_some():
+        auto u0 = v.PredefinedScalingMetricSpecification.unwrap()
+        parts.append("\"PredefinedScalingMetricSpecification\":" + u0.to_json())
+    if v.CustomizedScalingMetricSpecification.is_some():
+        auto u1 = v.CustomizedScalingMetricSpecification.unwrap()
+        parts.append("\"CustomizedScalingMetricSpecification\":" + customized_scaling_metric_specification_to_json(u1))
+    parts.append("\"TargetValue\":" + str(v.TargetValue))
+    if v.DisableScaleIn.is_some():
+        auto u2 = v.DisableScaleIn.unwrap()
+        parts.append("\"DisableScaleIn\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.ScaleOutCooldown.is_some():
+        auto u3 = v.ScaleOutCooldown.unwrap()
+        parts.append("\"ScaleOutCooldown\":" + str(u3))
+    if v.ScaleInCooldown.is_some():
+        auto u4 = v.ScaleInCooldown.unwrap()
+        parts.append("\"ScaleInCooldown\":" + str(u4))
+    if v.EstimatedInstanceWarmup.is_some():
+        auto u5 = v.EstimatedInstanceWarmup.unwrap()
+        parts.append("\"EstimatedInstanceWarmup\":" + str(u5))
+    return autoscaling_plans_json_obj(parts)
+
+# Serialize UpdateScalingPlanRequest to a compact JSON object (declaration order).
+def update_scaling_plan_request_to_json(UpdateScalingPlanRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ScalingPlanName\":" + autoscaling_plans_json_str(v.ScalingPlanName))
+    parts.append("\"ScalingPlanVersion\":" + str(v.ScalingPlanVersion))
+    if v.ApplicationSource.is_some():
+        auto u0 = v.ApplicationSource.unwrap()
+        parts.append("\"ApplicationSource\":" + application_source_to_json(u0))
+    if v.ScalingInstructions.is_some():
+        auto u1 = v.ScalingInstructions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(scaling_instruction_to_json(x2))
+        parts.append("\"ScalingInstructions\":" + autoscaling_plans_json_arr(e2))
+    return autoscaling_plans_json_obj(parts)
 
 # A bound Auto_Scaling_Plans client: credentials + region, threaded into every operation.
 struct Auto_Scaling_PlansClient:
     core.Credentials creds
     str region
+
+    # CreateScalingPlan
+    # errors: ConcurrentUpdateException, InternalServiceException, LimitExceededException, ValidationException
+    def create_scaling_plan(self, CreateScalingPlanRequest input) -> str:
+        auto body = create_scaling_plan_request_to_json(input)
+        return awsjson.awsjson_request_now(autoscaling_plans_protocol(), self.creds, self.region, "CreateScalingPlan", body)
 
     # DeleteScalingPlan
     # errors: ConcurrentUpdateException, InternalServiceException, ObjectNotFoundException, ValidationException
@@ -419,11 +637,23 @@ struct Auto_Scaling_PlansClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(autoscaling_plans_protocol(), self.creds, self.region, "DescribeScalingPlanResources", body)
 
+    # DescribeScalingPlans
+    # errors: ConcurrentUpdateException, InternalServiceException, InvalidNextTokenException, ValidationException
+    def describe_scaling_plans(self, DescribeScalingPlansRequest input) -> str:
+        auto body = describe_scaling_plans_request_to_json(input)
+        return awsjson.awsjson_request_now(autoscaling_plans_protocol(), self.creds, self.region, "DescribeScalingPlans", body)
+
     # GetScalingPlanResourceForecastData
     # errors: InternalServiceException, ValidationException
     def get_scaling_plan_resource_forecast_data(self, GetScalingPlanResourceForecastDataRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(autoscaling_plans_protocol(), self.creds, self.region, "GetScalingPlanResourceForecastData", body)
+
+    # UpdateScalingPlan
+    # errors: ConcurrentUpdateException, InternalServiceException, ObjectNotFoundException, ValidationException
+    def update_scaling_plan(self, UpdateScalingPlanRequest input) -> str:
+        auto body = update_scaling_plan_request_to_json(input)
+        return awsjson.awsjson_request_now(autoscaling_plans_protocol(), self.creds, self.region, "UpdateScalingPlan", body)
 
     # Paginator for DescribeScalingPlanResources — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: ScalingPlanResources).
@@ -432,6 +662,20 @@ struct Auto_Scaling_PlansClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(autoscaling_plans_protocol(), self.creds, self.region, "DescribeScalingPlanResources", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeScalingPlans — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ScalingPlans).
+    def paginate_describe_scaling_plans(self, DescribeScalingPlansRequest input):
+        auto host = endpoints.regional_host(autoscaling_plans_protocol().service, self.region)
+        while True:
+            auto body = describe_scaling_plans_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(autoscaling_plans_protocol(), self.creds, self.region, "DescribeScalingPlans", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

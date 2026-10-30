@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 7 operations — 3 with a generated method,
-#   4 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 7 operations — 7 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   22 structs (15 @derive(Json)), 8 enums, 5 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -137,8 +137,9 @@ struct DescribeReportDefinitionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ReportDefinitions: list[ReportDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReportDefinitions: list[ReportDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReportDefinitionsResponse:
     Optional[list[ReportDefinition]] ReportDefinitions
     Optional[str] NextToken
@@ -155,13 +156,15 @@ struct InternalErrorException:
 struct ListTagsForResourceRequest:
     str ReportName
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) ReportDefinition: ReportDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReportDefinition: ReportDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyReportDefinitionRequest:
     str ReportName
     ReportDefinition ReportDefinition
@@ -171,8 +174,9 @@ struct ModifyReportDefinitionResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ReportDefinition: ReportDefinition, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReportDefinition: ReportDefinition, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutReportDefinitionRequest:
     ReportDefinition ReportDefinition
     Optional[list[Tag]] Tags
@@ -182,8 +186,9 @@ struct PutReportDefinitionResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) AdditionalSchemaElements: list[SchemaElement], AdditionalArtifacts: list[AdditionalArtifact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalSchemaElements: list[SchemaElement], AdditionalArtifacts: list[AdditionalArtifact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReportDefinition:
     str ReportName
     TimeUnit TimeUnit
@@ -217,8 +222,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ReportName
     list[Tag] Tags
@@ -228,8 +234,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ReportName
     list[str] TagKeys
@@ -271,12 +278,108 @@ def cur_error_from_code(str code) -> Cost_and_Usage_Report_ServiceError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   ModifyReportDefinition (input ModifyReportDefinitionRequest)
-#   PutReportDefinition (input PutReportDefinitionRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def cur_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def cur_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def cur_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ModifyReportDefinitionRequest to a compact JSON object (declaration order).
+def modify_report_definition_request_to_json(ModifyReportDefinitionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ReportName\":" + cur_json_str(v.ReportName))
+    parts.append("\"ReportDefinition\":" + report_definition_to_json(v.ReportDefinition))
+    return cur_json_obj(parts)
+
+# Serialize PutReportDefinitionRequest to a compact JSON object (declaration order).
+def put_report_definition_request_to_json(PutReportDefinitionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ReportDefinition\":" + report_definition_to_json(v.ReportDefinition))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + cur_json_arr(e1))
+    return cur_json_obj(parts)
+
+# Serialize ReportDefinition to a compact JSON object (declaration order).
+def report_definition_to_json(ReportDefinition v) -> str:
+    list[str] parts = []
+    parts.append("\"ReportName\":" + cur_json_str(v.ReportName))
+    parts.append("\"TimeUnit\":" + v.TimeUnit.to_json())
+    parts.append("\"Format\":" + v.Format.to_json())
+    parts.append("\"Compression\":" + v.Compression.to_json())
+    list[str] e0 = []
+    for x0 in v.AdditionalSchemaElements:
+        e0.append(x0.to_json())
+    parts.append("\"AdditionalSchemaElements\":" + cur_json_arr(e0))
+    parts.append("\"S3Bucket\":" + cur_json_str(v.S3Bucket))
+    parts.append("\"S3Prefix\":" + cur_json_str(v.S3Prefix))
+    parts.append("\"S3Region\":" + v.S3Region.to_json())
+    if v.AdditionalArtifacts.is_some():
+        auto u1 = v.AdditionalArtifacts.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"AdditionalArtifacts\":" + cur_json_arr(e2))
+    if v.RefreshClosedReports.is_some():
+        auto u3 = v.RefreshClosedReports.unwrap()
+        parts.append("\"RefreshClosedReports\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.ReportVersioning.is_some():
+        auto u4 = v.ReportVersioning.unwrap()
+        parts.append("\"ReportVersioning\":" + u4.to_json())
+    if v.BillingViewArn.is_some():
+        auto u5 = v.BillingViewArn.unwrap()
+        parts.append("\"BillingViewArn\":" + cur_json_str(u5))
+    if v.ReportStatus.is_some():
+        auto u6 = v.ReportStatus.unwrap()
+        parts.append("\"ReportStatus\":" + u6.to_json())
+    return cur_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ReportName\":" + cur_json_str(v.ReportName))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + cur_json_arr(e0))
+    return cur_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ReportName\":" + cur_json_str(v.ReportName))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(cur_json_str(x0))
+    parts.append("\"TagKeys\":" + cur_json_arr(e0))
+    return cur_json_obj(parts)
 
 # A bound Cost_and_Usage_Report_Service client: credentials + region, threaded into every operation.
 struct Cost_and_Usage_Report_ServiceClient:
@@ -300,6 +403,30 @@ struct Cost_and_Usage_Report_ServiceClient:
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cur_protocol(), self.creds, self.region, "ListTagsForResource", body)
+
+    # ModifyReportDefinition
+    # errors: InternalErrorException, ValidationException
+    def modify_report_definition(self, ModifyReportDefinitionRequest input) -> str:
+        auto body = modify_report_definition_request_to_json(input)
+        return awsjson.awsjson_request_now(cur_protocol(), self.creds, self.region, "ModifyReportDefinition", body)
+
+    # PutReportDefinition
+    # errors: DuplicateReportNameException, InternalErrorException, ReportLimitReachedException, ResourceNotFoundException, ValidationException
+    def put_report_definition(self, PutReportDefinitionRequest input) -> str:
+        auto body = put_report_definition_request_to_json(input)
+        return awsjson.awsjson_request_now(cur_protocol(), self.creds, self.region, "PutReportDefinition", body)
+
+    # TagResource
+    # errors: InternalErrorException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(cur_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: InternalErrorException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(cur_protocol(), self.creds, self.region, "UntagResource", body)
 
     # Paginator for DescribeReportDefinitions — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: ReportDefinitions).

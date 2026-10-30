@@ -53,13 +53,15 @@ fn checked_in_kinesis_output_is_current() {
 fn kinesis_coverage() {
     let (_src, cov) = generate_kinesis();
     assert_eq!(cov.operations_total, 45, "ops: {}", cov.operations_total);
+    // Every op now serializes: the collection/nested input bodies that were
+    // skipped pre-#424 are emitted via explicit `<shape>_to_json` serializers.
     assert_eq!(
-        cov.operations_methods, 34,
+        cov.operations_methods, 45,
         "methods: {}",
         cov.operations_methods
     );
     assert_eq!(
-        cov.operations_skipped, 11,
+        cov.operations_skipped, 0,
         "skipped: {}",
         cov.operations_skipped
     );
@@ -71,12 +73,13 @@ fn kinesis_coverage() {
     );
     assert_eq!(cov.enums, 16, "enums: {}", cov.enums);
     assert_eq!(cov.error_variants, 17, "errors: {}", cov.error_variants);
-    // 4 paginated ops have simple NextToken input; DescribeStream's output_token
-    // is a nested path (skipped by the flat-token guard) and ListChannels' input
-    // is non-derivable, so 3 generate and 2 are skipped.
-    assert_eq!(cov.paginators, 3, "paginators: {}", cov.paginators);
+    // ListChannels' input is now explicitly serializable (zaplang-io/zap#424),
+    // so its paginator surfaces too; only DescribeStream stays skipped (its
+    // output_token is a nested JMESPath path, not a flat field). So 4 generate,
+    // 1 is skipped.
+    assert_eq!(cov.paginators, 4, "paginators: {}", cov.paginators);
     assert_eq!(
-        cov.paginators_skipped, 2,
+        cov.paginators_skipped, 1,
         "skipped: {}",
         cov.paginators_skipped
     );
@@ -193,5 +196,56 @@ fn kinesis_nested_output_token_paginator_is_skipped() {
     assert!(
         src.contains("DescribeStream (output_token StreamDescription.Shards[-1].ShardId is a nested path, not a flat field)"),
         "the nested-path skip must be documented with its reason"
+    );
+}
+
+#[test]
+fn generated_put_records_request_matches_golden() {
+    // zaplang-io/zap#424: a **list-of-structures** awsJson body. `Records` is a
+    // required list of (derivable) PutRecordsRequestEntry, serialized by the
+    // explicit `put_records_input_to_json` via each entry's `.to_json()`.
+    let (src, _cov) = generate_kinesis();
+
+    // The method serializes its input through the explicit serializer, not
+    // `input.to_json()` (the input holds a list and is non-derivable).
+    assert!(
+        src.contains(
+            "def put_records(self, PutRecordsInput input) -> str:\n        auto body = put_records_input_to_json(input)"
+        ),
+        "PutRecords dispatches through the explicit collection serializer"
+    );
+    // The serializer: Records list -> array of entry `.to_json()`, then StreamName.
+    assert!(src.contains("def put_records_input_to_json(PutRecordsInput v) -> str:"));
+    assert!(src.contains("for x0 in v.Records:"));
+    assert!(src.contains("e0.append(x0.to_json())"));
+    assert!(src.contains("parts.append(\"\\\"Records\\\":\" + kinesis_json_arr(e0))"));
+
+    let (prefix, service, content_type) = parse_protocol(&src);
+    let op = parse_dispatch_op(&src, "def put_records(self, PutRecordsInput input) -> str:");
+    assert_eq!(op, "PutRecords");
+
+    // The entry is a derivable struct: Data (blob -> base64), then PartitionKey
+    // (ExplicitHashKey omitted while None) in declaration order.
+    let body = concat!(
+        r#"{"Records":[{"Data":"aGVsbG8=","PartitionKey":"pk1"}],"#,
+        r#""StreamName":"my-stream"}"#,
+    )
+    .to_string();
+
+    let host = "kinesis.us-east-1.amazonaws.com";
+    let target = format!("{prefix}.{op}");
+    let headers = vec![
+        ("content-type", content_type),
+        ("host", host.to_string()),
+        ("x-amz-content-sha256", hex_sha256(&body)),
+        ("x-amz-date", AMZ_DATE.to_string()),
+        ("x-amz-target", target),
+    ];
+    let generated = sign_request(&service, "POST", "/", &body, &headers);
+    assert_eq!(
+        generated,
+        read("tests/expected/kinesis_put_records.http"),
+        "generated Kinesis PutRecords request is NOT byte-identical to the golden.\n\
+         If intended, re-pin with `python3 tools/verify_goldens.py --emit`."
     );
 }

@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 65 operations — 52 with a generated method,
-#   13 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 65 operations — 65 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   170 structs (107 @derive(Json)), 16 enums, 12 error variants.
 #   14 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import datetime
 
 # The Redshift_Serverless awsJson protocol: version 1.1, API id "RedshiftServerless".
 def redshift_serverless_protocol() -> awsjson.AwsJson:
@@ -184,16 +185,18 @@ struct ConfigParameter:
 struct ConflictException:
     str message
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConvertRecoveryPointToSnapshotRequest:
     str recoveryPointId
     Optional[int64] retentionPeriod
     str snapshotName
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) snapshot: Snapshot not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) snapshot: Snapshot not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConvertRecoveryPointToSnapshotResponse:
     Optional[Snapshot] snapshot
 
@@ -211,8 +214,9 @@ struct CreateCustomDomainAssociationResponse:
     Optional[str] customDomainName
     Optional[str] workgroupName
 
-# no @derive(Json): member(s) subnetIds: list[str], vpcSecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], vpcSecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEndpointAccessRequest:
     str endpointName
     Optional[str] ownerAccount
@@ -220,13 +224,15 @@ struct CreateEndpointAccessRequest:
     Optional[list[str]] vpcSecurityGroupIds
     str workgroupName
 
-# no @derive(Json): member(s) endpoint: EndpointAccess not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) endpoint: EndpointAccess not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateEndpointAccessResponse:
     Optional[EndpointAccess] endpoint
 
-# no @derive(Json): member(s) iamRoles: list[str], logExports: list[LogExport], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) iamRoles: list[str], logExports: list[LogExport], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateNamespaceRequest:
     Optional[str] adminPasswordSecretKmsKeyId
     Optional[str] adminUserPassword
@@ -241,8 +247,9 @@ struct CreateNamespaceRequest:
     Optional[str] redshiftIdcApplicationArn
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) namespace: Namespace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespace: Namespace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateNamespaceResponse:
     Optional[Namespace] namespace
 
@@ -256,8 +263,9 @@ struct CreateReservationRequest:
 struct CreateReservationResponse:
     Optional[Reservation] reservation
 
-# no @derive(Json): member(s) targetAction: TargetAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetAction: TargetAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateScheduledActionRequest:
     Optional[bool] enabled
     Optional[DateTime] endTime
@@ -269,8 +277,9 @@ struct CreateScheduledActionRequest:
     Optional[DateTime] startTime
     TargetAction targetAction
 
-# no @derive(Json): member(s) scheduledAction: ScheduledActionResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scheduledAction: ScheduledActionResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateScheduledActionResponse:
     Optional[ScheduledActionResponse] scheduledAction
 
@@ -285,21 +294,24 @@ struct CreateSnapshotCopyConfigurationRequest:
 struct CreateSnapshotCopyConfigurationResponse:
     SnapshotCopyConfiguration snapshotCopyConfiguration
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSnapshotRequest:
     str namespaceName
     Optional[int64] retentionPeriod
     str snapshotName
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) snapshot: Snapshot not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) snapshot: Snapshot not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSnapshotResponse:
     Optional[Snapshot] snapshot
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSnapshotScheduleActionParameters:
     str namespaceName
     Optional[int64] retentionPeriod
@@ -318,8 +330,9 @@ struct CreateUsageLimitRequest:
 struct CreateUsageLimitResponse:
     Optional[UsageLimit] usageLimit
 
-# no @derive(Json): member(s) configParameters: list[ConfigParameter], securityGroupIds: list[str], subnetIds: list[str], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configParameters: list[ConfigParameter], securityGroupIds: list[str], subnetIds: list[str], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWorkgroupRequest:
     Optional[int64] baseCapacity
     Optional[list[ConfigParameter]] configParameters
@@ -337,8 +350,9 @@ struct CreateWorkgroupRequest:
     Optional[str] trackName
     str workgroupName
 
-# no @derive(Json): member(s) workgroup: Workgroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workgroup: Workgroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWorkgroupResponse:
     Optional[Workgroup] workgroup
 
@@ -356,8 +370,9 @@ struct DeleteCustomDomainAssociationResponse:
 struct DeleteEndpointAccessRequest:
     str endpointName
 
-# no @derive(Json): member(s) endpoint: EndpointAccess not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) endpoint: EndpointAccess not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteEndpointAccessResponse:
     Optional[EndpointAccess] endpoint
 
@@ -367,8 +382,9 @@ struct DeleteNamespaceRequest:
     Optional[int64] finalSnapshotRetentionPeriod
     str namespaceName
 
-# no @derive(Json): member(s) namespace: Namespace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespace: Namespace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteNamespaceResponse:
     Namespace namespace
 
@@ -385,8 +401,9 @@ struct DeleteResourcePolicyResponse:
 struct DeleteScheduledActionRequest:
     str scheduledActionName
 
-# no @derive(Json): member(s) scheduledAction: ScheduledActionResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scheduledAction: ScheduledActionResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteScheduledActionResponse:
     Optional[ScheduledActionResponse] scheduledAction
 
@@ -402,8 +419,9 @@ struct DeleteSnapshotCopyConfigurationResponse:
 struct DeleteSnapshotRequest:
     str snapshotName
 
-# no @derive(Json): member(s) snapshot: Snapshot not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) snapshot: Snapshot not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteSnapshotResponse:
     Optional[Snapshot] snapshot
 
@@ -419,8 +437,9 @@ struct DeleteUsageLimitResponse:
 struct DeleteWorkgroupRequest:
     str workgroupName
 
-# no @derive(Json): member(s) workgroup: Workgroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workgroup: Workgroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteWorkgroupResponse:
     Workgroup workgroup
 
@@ -428,15 +447,17 @@ struct DeleteWorkgroupResponse:
 struct DryRunException:
     str message
 
-# no @derive(Json): member(s) vpcEndpoints: list[VpcEndpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcEndpoints: list[VpcEndpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Endpoint:
     Optional[str] address
     Optional[int64] port
     Optional[list[VpcEndpoint]] vpcEndpoints
 
-# no @derive(Json): member(s) subnetIds: list[str], vpcEndpoint: VpcEndpoint, vpcSecurityGroups: list[VpcSecurityGroupMembership] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], vpcEndpoint: VpcEndpoint, vpcSecurityGroups: list[VpcSecurityGroupMembership] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EndpointAccess:
     Optional[str] address
     Optional[str] endpointArn
@@ -480,13 +501,15 @@ struct GetCustomDomainAssociationResponse:
 struct GetEndpointAccessRequest:
     str endpointName
 
-# no @derive(Json): member(s) endpoint: EndpointAccess not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) endpoint: EndpointAccess not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEndpointAccessResponse:
     Optional[EndpointAccess] endpoint
 
-# no @derive(Json): member(s) workgroupNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workgroupNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIdentityCenterAuthTokenRequest:
     list[str] workgroupNames
 
@@ -500,8 +523,9 @@ struct GetIdentityCenterAuthTokenResponse:
 struct GetNamespaceRequest:
     str namespaceName
 
-# no @derive(Json): member(s) namespace: Namespace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespace: Namespace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetNamespaceResponse:
     Namespace namespace
 
@@ -541,8 +565,9 @@ struct GetResourcePolicyResponse:
 struct GetScheduledActionRequest:
     str scheduledActionName
 
-# no @derive(Json): member(s) scheduledAction: ScheduledActionResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scheduledAction: ScheduledActionResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetScheduledActionResponse:
     Optional[ScheduledActionResponse] scheduledAction
 
@@ -552,8 +577,9 @@ struct GetSnapshotRequest:
     Optional[str] snapshotArn
     Optional[str] snapshotName
 
-# no @derive(Json): member(s) snapshot: Snapshot not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) snapshot: Snapshot not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSnapshotResponse:
     Optional[Snapshot] snapshot
 
@@ -569,8 +595,9 @@ struct GetTableRestoreStatusResponse:
 struct GetTrackRequest:
     str trackName
 
-# no @derive(Json): member(s) track: ServerlessTrack not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) track: ServerlessTrack not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTrackResponse:
     Optional[ServerlessTrack] track
 
@@ -586,8 +613,9 @@ struct GetUsageLimitResponse:
 struct GetWorkgroupRequest:
     str workgroupName
 
-# no @derive(Json): member(s) workgroup: Workgroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workgroup: Workgroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWorkgroupResponse:
     Workgroup workgroup
 
@@ -614,8 +642,9 @@ struct ListCustomDomainAssociationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) associations: list[Association] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associations: list[Association] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomDomainAssociationsResponse:
     Optional[list[Association]] associations
     Optional[str] nextToken
@@ -628,8 +657,9 @@ struct ListEndpointAccessRequest:
     Optional[str] vpcId
     Optional[str] workgroupName
 
-# no @derive(Json): member(s) endpoints: list[EndpointAccess] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) endpoints: list[EndpointAccess] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEndpointAccessResponse:
     list[EndpointAccess] endpoints
     Optional[str] nextToken
@@ -640,8 +670,9 @@ struct ListManagedWorkgroupsRequest:
     Optional[str] nextToken
     Optional[str] sourceArn
 
-# no @derive(Json): member(s) managedWorkgroups: list[ManagedWorkgroupListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) managedWorkgroups: list[ManagedWorkgroupListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListManagedWorkgroupsResponse:
     Optional[list[ManagedWorkgroupListItem]] managedWorkgroups
     Optional[str] nextToken
@@ -651,8 +682,9 @@ struct ListNamespacesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) namespaces: list[Namespace] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespaces: list[Namespace] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNamespacesResponse:
     list[Namespace] namespaces
     Optional[str] nextToken
@@ -666,8 +698,9 @@ struct ListRecoveryPointsRequest:
     Optional[str] nextToken
     Optional[DateTime] startTime
 
-# no @derive(Json): member(s) recoveryPoints: list[RecoveryPoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recoveryPoints: list[RecoveryPoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecoveryPointsResponse:
     Optional[str] nextToken
     Optional[list[RecoveryPoint]] recoveryPoints
@@ -677,8 +710,9 @@ struct ListReservationOfferingsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) reservationOfferingsList: list[ReservationOffering] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reservationOfferingsList: list[ReservationOffering] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReservationOfferingsResponse:
     Optional[str] nextToken
     list[ReservationOffering] reservationOfferingsList
@@ -688,8 +722,9 @@ struct ListReservationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) reservationsList: list[Reservation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reservationsList: list[Reservation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReservationsResponse:
     Optional[str] nextToken
     list[Reservation] reservationsList
@@ -700,8 +735,9 @@ struct ListScheduledActionsRequest:
     Optional[str] namespaceName
     Optional[str] nextToken
 
-# no @derive(Json): member(s) scheduledActions: list[ScheduledActionAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scheduledActions: list[ScheduledActionAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListScheduledActionsResponse:
     Optional[str] nextToken
     Optional[list[ScheduledActionAssociation]] scheduledActions
@@ -712,8 +748,9 @@ struct ListSnapshotCopyConfigurationsRequest:
     Optional[str] namespaceName
     Optional[str] nextToken
 
-# no @derive(Json): member(s) snapshotCopyConfigurations: list[SnapshotCopyConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) snapshotCopyConfigurations: list[SnapshotCopyConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSnapshotCopyConfigurationsResponse:
     Optional[str] nextToken
     list[SnapshotCopyConfiguration] snapshotCopyConfigurations
@@ -728,8 +765,9 @@ struct ListSnapshotsRequest:
     Optional[str] ownerAccount
     Optional[DateTime] startTime
 
-# no @derive(Json): member(s) snapshots: list[Snapshot] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) snapshots: list[Snapshot] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSnapshotsResponse:
     Optional[str] nextToken
     Optional[list[Snapshot]] snapshots
@@ -741,8 +779,9 @@ struct ListTableRestoreStatusRequest:
     Optional[str] nextToken
     Optional[str] workgroupName
 
-# no @derive(Json): member(s) tableRestoreStatuses: list[TableRestoreStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tableRestoreStatuses: list[TableRestoreStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTableRestoreStatusResponse:
     Optional[str] nextToken
     Optional[list[TableRestoreStatus]] tableRestoreStatuses
@@ -751,8 +790,9 @@ struct ListTableRestoreStatusResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] tags
 
@@ -761,8 +801,9 @@ struct ListTracksRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) tracks: list[ServerlessTrack] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tracks: list[ServerlessTrack] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTracksResponse:
     Optional[str] nextToken
     Optional[list[ServerlessTrack]] tracks
@@ -774,8 +815,9 @@ struct ListUsageLimitsRequest:
     Optional[str] resourceArn
     Optional[UsageLimitUsageType] usageType
 
-# no @derive(Json): member(s) usageLimits: list[UsageLimit] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) usageLimits: list[UsageLimit] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUsageLimitsResponse:
     Optional[str] nextToken
     Optional[list[UsageLimit]] usageLimits
@@ -786,8 +828,9 @@ struct ListWorkgroupsRequest:
     Optional[str] nextToken
     Optional[str] ownerAccount
 
-# no @derive(Json): member(s) workgroups: list[Workgroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workgroups: list[Workgroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkgroupsResponse:
     Optional[str] nextToken
     list[Workgroup] workgroups
@@ -801,8 +844,9 @@ struct ManagedWorkgroupListItem:
     Optional[str] sourceArn
     Optional[ManagedWorkgroupStatus] status
 
-# no @derive(Json): member(s) iamRoles: list[str], logExports: list[LogExport], s3TablePublishStatus: S3TablePublishStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) iamRoles: list[str], logExports: list[LogExport], s3TablePublishStatus: S3TablePublishStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Namespace:
     Optional[str] adminPasswordSecretArn
     Optional[str] adminPasswordSecretKmsKeyId
@@ -891,8 +935,9 @@ struct RestoreFromRecoveryPointRequest:
     str recoveryPointId
     str workgroupName
 
-# no @derive(Json): member(s) namespace: Namespace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespace: Namespace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestoreFromRecoveryPointResponse:
     Optional[Namespace] namespace
     Optional[str] recoveryPointId
@@ -908,8 +953,9 @@ struct RestoreFromSnapshotRequest:
     Optional[str] snapshotName
     str workgroupName
 
-# no @derive(Json): member(s) namespace: Namespace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespace: Namespace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestoreFromSnapshotResponse:
     Optional[Namespace] namespace
     Optional[str] ownerAccount
@@ -949,8 +995,9 @@ struct RestoreTableFromSnapshotRequest:
 struct RestoreTableFromSnapshotResponse:
     Optional[TableRestoreStatus] tableRestoreStatus
 
-# no @derive(Json): member(s) lastIngestionTimes: dict[str, str], s3Tables: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lastIngestionTimes: dict[str, str], s3Tables: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3TablePublishStatus:
     Optional[bool] enabledAll
     Optional[dict[str, str]] lastIngestionTimes
@@ -968,8 +1015,9 @@ struct ScheduledActionAssociation:
     Optional[str] namespaceName
     Optional[str] scheduledActionName
 
-# no @derive(Json): member(s) nextInvocations: list[DateTime], targetAction: TargetAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) nextInvocations: list[DateTime], targetAction: TargetAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ScheduledActionResponse:
     Optional[DateTime] endTime
     Optional[str] namespaceName
@@ -983,8 +1031,9 @@ struct ScheduledActionResponse:
     Optional[State] state
     Optional[TargetAction] targetAction
 
-# no @derive(Json): member(s) updateTargets: list[UpdateTarget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) updateTargets: list[UpdateTarget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServerlessTrack:
     Optional[str] trackName
     Optional[list[UpdateTarget]] updateTargets
@@ -994,8 +1043,9 @@ struct ServerlessTrack:
 struct ServiceQuotaExceededException:
     str message
 
-# no @derive(Json): member(s) accountsWithProvisionedRestoreAccess: list[str], accountsWithRestoreAccess: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountsWithProvisionedRestoreAccess: list[str], accountsWithRestoreAccess: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Snapshot:
     Optional[list[str]] accountsWithProvisionedRestoreAccess
     Optional[list[str]] accountsWithRestoreAccess
@@ -1053,8 +1103,9 @@ struct Tag:
     str key
     str value
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str resourceArn
     list[Tag] tags
@@ -1064,8 +1115,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) createSnapshot: CreateSnapshotScheduleActionParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) createSnapshot: CreateSnapshotScheduleActionParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TargetAction:
     Optional[CreateSnapshotScheduleActionParameters] createSnapshot
 
@@ -1079,8 +1131,9 @@ struct TooManyTagsException:
     Optional[str] message
     Optional[str] resourceName
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str resourceArn
     list[str] tagKeys
@@ -1104,14 +1157,16 @@ struct UpdateCustomDomainAssociationResponse:
     Optional[str] customDomainName
     Optional[str] workgroupName
 
-# no @derive(Json): member(s) vpcSecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcSecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEndpointAccessRequest:
     str endpointName
     Optional[list[str]] vpcSecurityGroupIds
 
-# no @derive(Json): member(s) endpoint: EndpointAccess not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) endpoint: EndpointAccess not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateEndpointAccessResponse:
     Optional[EndpointAccess] endpoint
 
@@ -1131,8 +1186,9 @@ struct UpdateLakehouseConfigurationResponse:
     Optional[str] lakehouseRegistrationStatus
     Optional[str] namespaceName
 
-# no @derive(Json): member(s) iamRoles: list[str], logExports: list[LogExport], s3TableNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) iamRoles: list[str], logExports: list[LogExport], s3TableNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateNamespaceRequest:
     Optional[str] adminPasswordSecretKmsKeyId
     Optional[str] adminUserPassword
@@ -1149,13 +1205,15 @@ struct UpdateNamespaceRequest:
     Optional[str] s3TableKmsKeyId
     Optional[list[str]] s3TableNames
 
-# no @derive(Json): member(s) namespace: Namespace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespace: Namespace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateNamespaceResponse:
     Namespace namespace
 
-# no @derive(Json): member(s) targetAction: TargetAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targetAction: TargetAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateScheduledActionRequest:
     Optional[bool] enabled
     Optional[DateTime] endTime
@@ -1166,8 +1224,9 @@ struct UpdateScheduledActionRequest:
     Optional[DateTime] startTime
     Optional[TargetAction] targetAction
 
-# no @derive(Json): member(s) scheduledAction: ScheduledActionResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scheduledAction: ScheduledActionResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateScheduledActionResponse:
     Optional[ScheduledActionResponse] scheduledAction
 
@@ -1185,8 +1244,9 @@ struct UpdateSnapshotRequest:
     Optional[int64] retentionPeriod
     str snapshotName
 
-# no @derive(Json): member(s) snapshot: Snapshot not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) snapshot: Snapshot not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSnapshotResponse:
     Optional[Snapshot] snapshot
 
@@ -1205,8 +1265,9 @@ struct UpdateUsageLimitRequest:
 struct UpdateUsageLimitResponse:
     Optional[UsageLimit] usageLimit
 
-# no @derive(Json): member(s) configParameters: list[ConfigParameter], securityGroupIds: list[str], subnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configParameters: list[ConfigParameter], securityGroupIds: list[str], subnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateWorkgroupRequest:
     Optional[int64] baseCapacity
     Optional[list[ConfigParameter]] configParameters
@@ -1222,8 +1283,9 @@ struct UpdateWorkgroupRequest:
     Optional[str] trackName
     str workgroupName
 
-# no @derive(Json): member(s) workgroup: Workgroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workgroup: Workgroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateWorkgroupResponse:
     Workgroup workgroup
 
@@ -1241,8 +1303,9 @@ struct UsageLimit:
 struct ValidationException:
     str message
 
-# no @derive(Json): member(s) networkInterfaces: list[NetworkInterface] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkInterfaces: list[NetworkInterface] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcEndpoint:
     Optional[list[NetworkInterface]] networkInterfaces
     Optional[str] vpcEndpointId
@@ -1253,8 +1316,9 @@ struct VpcSecurityGroupMembership:
     Optional[str] status
     Optional[str] vpcSecurityGroupId
 
-# no @derive(Json): member(s) configParameters: list[ConfigParameter], crossAccountVpcs: list[str], endpoint: Endpoint, securityGroupIds: list[str], subnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configParameters: list[ConfigParameter], crossAccountVpcs: list[str], endpoint: Endpoint, securityGroupIds: list[str], subnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Workgroup:
     Optional[int64] baseCapacity
     Optional[list[ConfigParameter]] configParameters
@@ -1332,26 +1396,423 @@ def redshift_serverless_error_from_code(str code) -> Redshift_ServerlessError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   ConvertRecoveryPointToSnapshot (input ConvertRecoveryPointToSnapshotRequest)
-#   CreateEndpointAccess (input CreateEndpointAccessRequest)
-#   CreateNamespace (input CreateNamespaceRequest)
-#   CreateScheduledAction (input CreateScheduledActionRequest)
-#   CreateSnapshot (input CreateSnapshotRequest)
-#   CreateWorkgroup (input CreateWorkgroupRequest)
-#   GetIdentityCenterAuthToken (input GetIdentityCenterAuthTokenRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateEndpointAccess (input UpdateEndpointAccessRequest)
-#   UpdateNamespace (input UpdateNamespaceRequest)
-#   UpdateScheduledAction (input UpdateScheduledActionRequest)
-#   UpdateWorkgroup (input UpdateWorkgroupRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def redshift_serverless_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def redshift_serverless_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def redshift_serverless_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ConvertRecoveryPointToSnapshotRequest to a compact JSON object (declaration order).
+def convert_recovery_point_to_snapshot_request_to_json(ConvertRecoveryPointToSnapshotRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"recoveryPointId\":" + redshift_serverless_json_str(v.recoveryPointId))
+    if v.retentionPeriod.is_some():
+        auto u0 = v.retentionPeriod.unwrap()
+        parts.append("\"retentionPeriod\":" + str(u0))
+    parts.append("\"snapshotName\":" + redshift_serverless_json_str(v.snapshotName))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + redshift_serverless_json_arr(e2))
+    return redshift_serverless_json_obj(parts)
+
+# Serialize CreateEndpointAccessRequest to a compact JSON object (declaration order).
+def create_endpoint_access_request_to_json(CreateEndpointAccessRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"endpointName\":" + redshift_serverless_json_str(v.endpointName))
+    if v.ownerAccount.is_some():
+        auto u0 = v.ownerAccount.unwrap()
+        parts.append("\"ownerAccount\":" + redshift_serverless_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.subnetIds:
+        e1.append(redshift_serverless_json_str(x1))
+    parts.append("\"subnetIds\":" + redshift_serverless_json_arr(e1))
+    if v.vpcSecurityGroupIds.is_some():
+        auto u2 = v.vpcSecurityGroupIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(redshift_serverless_json_str(x3))
+        parts.append("\"vpcSecurityGroupIds\":" + redshift_serverless_json_arr(e3))
+    parts.append("\"workgroupName\":" + redshift_serverless_json_str(v.workgroupName))
+    return redshift_serverless_json_obj(parts)
+
+# Serialize CreateNamespaceRequest to a compact JSON object (declaration order).
+def create_namespace_request_to_json(CreateNamespaceRequest v) -> str:
+    list[str] parts = []
+    if v.adminPasswordSecretKmsKeyId.is_some():
+        auto u0 = v.adminPasswordSecretKmsKeyId.unwrap()
+        parts.append("\"adminPasswordSecretKmsKeyId\":" + redshift_serverless_json_str(u0))
+    if v.adminUserPassword.is_some():
+        auto u1 = v.adminUserPassword.unwrap()
+        parts.append("\"adminUserPassword\":" + redshift_serverless_json_str(u1))
+    if v.adminUsername.is_some():
+        auto u2 = v.adminUsername.unwrap()
+        parts.append("\"adminUsername\":" + redshift_serverless_json_str(u2))
+    if v.dbName.is_some():
+        auto u3 = v.dbName.unwrap()
+        parts.append("\"dbName\":" + redshift_serverless_json_str(u3))
+    if v.defaultIamRoleArn.is_some():
+        auto u4 = v.defaultIamRoleArn.unwrap()
+        parts.append("\"defaultIamRoleArn\":" + redshift_serverless_json_str(u4))
+    if v.iamRoles.is_some():
+        auto u5 = v.iamRoles.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(redshift_serverless_json_str(x6))
+        parts.append("\"iamRoles\":" + redshift_serverless_json_arr(e6))
+    if v.kmsKeyId.is_some():
+        auto u7 = v.kmsKeyId.unwrap()
+        parts.append("\"kmsKeyId\":" + redshift_serverless_json_str(u7))
+    if v.logExports.is_some():
+        auto u8 = v.logExports.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"logExports\":" + redshift_serverless_json_arr(e9))
+    if v.manageAdminPassword.is_some():
+        auto u10 = v.manageAdminPassword.unwrap()
+        parts.append("\"manageAdminPassword\":" + json.dumps(JsonValue.Bool(u10)))
+    parts.append("\"namespaceName\":" + redshift_serverless_json_str(v.namespaceName))
+    if v.redshiftIdcApplicationArn.is_some():
+        auto u11 = v.redshiftIdcApplicationArn.unwrap()
+        parts.append("\"redshiftIdcApplicationArn\":" + redshift_serverless_json_str(u11))
+    if v.tags.is_some():
+        auto u12 = v.tags.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"tags\":" + redshift_serverless_json_arr(e13))
+    return redshift_serverless_json_obj(parts)
+
+# Serialize CreateScheduledActionRequest to a compact JSON object (declaration order).
+def create_scheduled_action_request_to_json(CreateScheduledActionRequest v) -> str:
+    list[str] parts = []
+    if v.enabled.is_some():
+        auto u0 = v.enabled.unwrap()
+        parts.append("\"enabled\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.endTime.is_some():
+        auto u1 = v.endTime.unwrap()
+        parts.append("\"endTime\":" + str(datetime.to_timestamp(u1)))
+    parts.append("\"namespaceName\":" + redshift_serverless_json_str(v.namespaceName))
+    parts.append("\"roleArn\":" + redshift_serverless_json_str(v.roleArn))
+    parts.append("\"schedule\":" + v.schedule.to_json())
+    if v.scheduledActionDescription.is_some():
+        auto u2 = v.scheduledActionDescription.unwrap()
+        parts.append("\"scheduledActionDescription\":" + redshift_serverless_json_str(u2))
+    parts.append("\"scheduledActionName\":" + redshift_serverless_json_str(v.scheduledActionName))
+    if v.startTime.is_some():
+        auto u3 = v.startTime.unwrap()
+        parts.append("\"startTime\":" + str(datetime.to_timestamp(u3)))
+    parts.append("\"targetAction\":" + target_action_to_json(v.targetAction))
+    return redshift_serverless_json_obj(parts)
+
+# Serialize CreateSnapshotRequest to a compact JSON object (declaration order).
+def create_snapshot_request_to_json(CreateSnapshotRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"namespaceName\":" + redshift_serverless_json_str(v.namespaceName))
+    if v.retentionPeriod.is_some():
+        auto u0 = v.retentionPeriod.unwrap()
+        parts.append("\"retentionPeriod\":" + str(u0))
+    parts.append("\"snapshotName\":" + redshift_serverless_json_str(v.snapshotName))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + redshift_serverless_json_arr(e2))
+    return redshift_serverless_json_obj(parts)
+
+# Serialize CreateSnapshotScheduleActionParameters to a compact JSON object (declaration order).
+def create_snapshot_schedule_action_parameters_to_json(CreateSnapshotScheduleActionParameters v) -> str:
+    list[str] parts = []
+    parts.append("\"namespaceName\":" + redshift_serverless_json_str(v.namespaceName))
+    if v.retentionPeriod.is_some():
+        auto u0 = v.retentionPeriod.unwrap()
+        parts.append("\"retentionPeriod\":" + str(u0))
+    parts.append("\"snapshotNamePrefix\":" + redshift_serverless_json_str(v.snapshotNamePrefix))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + redshift_serverless_json_arr(e2))
+    return redshift_serverless_json_obj(parts)
+
+# Serialize CreateWorkgroupRequest to a compact JSON object (declaration order).
+def create_workgroup_request_to_json(CreateWorkgroupRequest v) -> str:
+    list[str] parts = []
+    if v.baseCapacity.is_some():
+        auto u0 = v.baseCapacity.unwrap()
+        parts.append("\"baseCapacity\":" + str(u0))
+    if v.configParameters.is_some():
+        auto u1 = v.configParameters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"configParameters\":" + redshift_serverless_json_arr(e2))
+    if v.enhancedVpcRouting.is_some():
+        auto u3 = v.enhancedVpcRouting.unwrap()
+        parts.append("\"enhancedVpcRouting\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.extraComputeForAutomaticOptimization.is_some():
+        auto u4 = v.extraComputeForAutomaticOptimization.unwrap()
+        parts.append("\"extraComputeForAutomaticOptimization\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.ipAddressType.is_some():
+        auto u5 = v.ipAddressType.unwrap()
+        parts.append("\"ipAddressType\":" + redshift_serverless_json_str(u5))
+    if v.maxCapacity.is_some():
+        auto u6 = v.maxCapacity.unwrap()
+        parts.append("\"maxCapacity\":" + str(u6))
+    parts.append("\"namespaceName\":" + redshift_serverless_json_str(v.namespaceName))
+    if v.port.is_some():
+        auto u7 = v.port.unwrap()
+        parts.append("\"port\":" + str(u7))
+    if v.pricePerformanceTarget.is_some():
+        auto u8 = v.pricePerformanceTarget.unwrap()
+        parts.append("\"pricePerformanceTarget\":" + u8.to_json())
+    if v.publiclyAccessible.is_some():
+        auto u9 = v.publiclyAccessible.unwrap()
+        parts.append("\"publiclyAccessible\":" + json.dumps(JsonValue.Bool(u9)))
+    if v.securityGroupIds.is_some():
+        auto u10 = v.securityGroupIds.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(redshift_serverless_json_str(x11))
+        parts.append("\"securityGroupIds\":" + redshift_serverless_json_arr(e11))
+    if v.subnetIds.is_some():
+        auto u12 = v.subnetIds.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(redshift_serverless_json_str(x13))
+        parts.append("\"subnetIds\":" + redshift_serverless_json_arr(e13))
+    if v.tags.is_some():
+        auto u14 = v.tags.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(x15.to_json())
+        parts.append("\"tags\":" + redshift_serverless_json_arr(e15))
+    if v.trackName.is_some():
+        auto u16 = v.trackName.unwrap()
+        parts.append("\"trackName\":" + redshift_serverless_json_str(u16))
+    parts.append("\"workgroupName\":" + redshift_serverless_json_str(v.workgroupName))
+    return redshift_serverless_json_obj(parts)
+
+# Serialize GetIdentityCenterAuthTokenRequest to a compact JSON object (declaration order).
+def get_identity_center_auth_token_request_to_json(GetIdentityCenterAuthTokenRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.workgroupNames:
+        e0.append(redshift_serverless_json_str(x0))
+    parts.append("\"workgroupNames\":" + redshift_serverless_json_arr(e0))
+    return redshift_serverless_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + redshift_serverless_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tags:
+        e0.append(x0.to_json())
+    parts.append("\"tags\":" + redshift_serverless_json_arr(e0))
+    return redshift_serverless_json_obj(parts)
+
+# Serialize TargetAction to a compact JSON object (declaration order).
+def target_action_to_json(TargetAction v) -> str:
+    list[str] parts = []
+    if v.createSnapshot.is_some():
+        auto u0 = v.createSnapshot.unwrap()
+        parts.append("\"createSnapshot\":" + create_snapshot_schedule_action_parameters_to_json(u0))
+    return redshift_serverless_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + redshift_serverless_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(redshift_serverless_json_str(x0))
+    parts.append("\"tagKeys\":" + redshift_serverless_json_arr(e0))
+    return redshift_serverless_json_obj(parts)
+
+# Serialize UpdateEndpointAccessRequest to a compact JSON object (declaration order).
+def update_endpoint_access_request_to_json(UpdateEndpointAccessRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"endpointName\":" + redshift_serverless_json_str(v.endpointName))
+    if v.vpcSecurityGroupIds.is_some():
+        auto u0 = v.vpcSecurityGroupIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(redshift_serverless_json_str(x1))
+        parts.append("\"vpcSecurityGroupIds\":" + redshift_serverless_json_arr(e1))
+    return redshift_serverless_json_obj(parts)
+
+# Serialize UpdateNamespaceRequest to a compact JSON object (declaration order).
+def update_namespace_request_to_json(UpdateNamespaceRequest v) -> str:
+    list[str] parts = []
+    if v.adminPasswordSecretKmsKeyId.is_some():
+        auto u0 = v.adminPasswordSecretKmsKeyId.unwrap()
+        parts.append("\"adminPasswordSecretKmsKeyId\":" + redshift_serverless_json_str(u0))
+    if v.adminUserPassword.is_some():
+        auto u1 = v.adminUserPassword.unwrap()
+        parts.append("\"adminUserPassword\":" + redshift_serverless_json_str(u1))
+    if v.adminUsername.is_some():
+        auto u2 = v.adminUsername.unwrap()
+        parts.append("\"adminUsername\":" + redshift_serverless_json_str(u2))
+    if v.defaultIamRoleArn.is_some():
+        auto u3 = v.defaultIamRoleArn.unwrap()
+        parts.append("\"defaultIamRoleArn\":" + redshift_serverless_json_str(u3))
+    if v.iamRoles.is_some():
+        auto u4 = v.iamRoles.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(redshift_serverless_json_str(x5))
+        parts.append("\"iamRoles\":" + redshift_serverless_json_arr(e5))
+    if v.kmsKeyId.is_some():
+        auto u6 = v.kmsKeyId.unwrap()
+        parts.append("\"kmsKeyId\":" + redshift_serverless_json_str(u6))
+    if v.logDestinationType.is_some():
+        auto u7 = v.logDestinationType.unwrap()
+        parts.append("\"logDestinationType\":" + u7.to_json())
+    if v.logExports.is_some():
+        auto u8 = v.logExports.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"logExports\":" + redshift_serverless_json_arr(e9))
+    if v.manageAdminPassword.is_some():
+        auto u10 = v.manageAdminPassword.unwrap()
+        parts.append("\"manageAdminPassword\":" + json.dumps(JsonValue.Bool(u10)))
+    parts.append("\"namespaceName\":" + redshift_serverless_json_str(v.namespaceName))
+    if v.s3TableAction.is_some():
+        auto u11 = v.s3TableAction.unwrap()
+        parts.append("\"s3TableAction\":" + u11.to_json())
+    if v.s3TableGranularity.is_some():
+        auto u12 = v.s3TableGranularity.unwrap()
+        parts.append("\"s3TableGranularity\":" + u12.to_json())
+    if v.s3TableKmsKeyId.is_some():
+        auto u13 = v.s3TableKmsKeyId.unwrap()
+        parts.append("\"s3TableKmsKeyId\":" + redshift_serverless_json_str(u13))
+    if v.s3TableNames.is_some():
+        auto u14 = v.s3TableNames.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(redshift_serverless_json_str(x15))
+        parts.append("\"s3TableNames\":" + redshift_serverless_json_arr(e15))
+    return redshift_serverless_json_obj(parts)
+
+# Serialize UpdateScheduledActionRequest to a compact JSON object (declaration order).
+def update_scheduled_action_request_to_json(UpdateScheduledActionRequest v) -> str:
+    list[str] parts = []
+    if v.enabled.is_some():
+        auto u0 = v.enabled.unwrap()
+        parts.append("\"enabled\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.endTime.is_some():
+        auto u1 = v.endTime.unwrap()
+        parts.append("\"endTime\":" + str(datetime.to_timestamp(u1)))
+    if v.roleArn.is_some():
+        auto u2 = v.roleArn.unwrap()
+        parts.append("\"roleArn\":" + redshift_serverless_json_str(u2))
+    if v.schedule.is_some():
+        auto u3 = v.schedule.unwrap()
+        parts.append("\"schedule\":" + u3.to_json())
+    if v.scheduledActionDescription.is_some():
+        auto u4 = v.scheduledActionDescription.unwrap()
+        parts.append("\"scheduledActionDescription\":" + redshift_serverless_json_str(u4))
+    parts.append("\"scheduledActionName\":" + redshift_serverless_json_str(v.scheduledActionName))
+    if v.startTime.is_some():
+        auto u5 = v.startTime.unwrap()
+        parts.append("\"startTime\":" + str(datetime.to_timestamp(u5)))
+    if v.targetAction.is_some():
+        auto u6 = v.targetAction.unwrap()
+        parts.append("\"targetAction\":" + target_action_to_json(u6))
+    return redshift_serverless_json_obj(parts)
+
+# Serialize UpdateWorkgroupRequest to a compact JSON object (declaration order).
+def update_workgroup_request_to_json(UpdateWorkgroupRequest v) -> str:
+    list[str] parts = []
+    if v.baseCapacity.is_some():
+        auto u0 = v.baseCapacity.unwrap()
+        parts.append("\"baseCapacity\":" + str(u0))
+    if v.configParameters.is_some():
+        auto u1 = v.configParameters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"configParameters\":" + redshift_serverless_json_arr(e2))
+    if v.enhancedVpcRouting.is_some():
+        auto u3 = v.enhancedVpcRouting.unwrap()
+        parts.append("\"enhancedVpcRouting\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.extraComputeForAutomaticOptimization.is_some():
+        auto u4 = v.extraComputeForAutomaticOptimization.unwrap()
+        parts.append("\"extraComputeForAutomaticOptimization\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.ipAddressType.is_some():
+        auto u5 = v.ipAddressType.unwrap()
+        parts.append("\"ipAddressType\":" + redshift_serverless_json_str(u5))
+    if v.maxCapacity.is_some():
+        auto u6 = v.maxCapacity.unwrap()
+        parts.append("\"maxCapacity\":" + str(u6))
+    if v.port.is_some():
+        auto u7 = v.port.unwrap()
+        parts.append("\"port\":" + str(u7))
+    if v.pricePerformanceTarget.is_some():
+        auto u8 = v.pricePerformanceTarget.unwrap()
+        parts.append("\"pricePerformanceTarget\":" + u8.to_json())
+    if v.publiclyAccessible.is_some():
+        auto u9 = v.publiclyAccessible.unwrap()
+        parts.append("\"publiclyAccessible\":" + json.dumps(JsonValue.Bool(u9)))
+    if v.securityGroupIds.is_some():
+        auto u10 = v.securityGroupIds.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(redshift_serverless_json_str(x11))
+        parts.append("\"securityGroupIds\":" + redshift_serverless_json_arr(e11))
+    if v.subnetIds.is_some():
+        auto u12 = v.subnetIds.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(redshift_serverless_json_str(x13))
+        parts.append("\"subnetIds\":" + redshift_serverless_json_arr(e13))
+    if v.trackName.is_some():
+        auto u14 = v.trackName.unwrap()
+        parts.append("\"trackName\":" + redshift_serverless_json_str(u14))
+    parts.append("\"workgroupName\":" + redshift_serverless_json_str(v.workgroupName))
+    return redshift_serverless_json_obj(parts)
 
 # A bound Redshift_Serverless client: credentials + region, threaded into every operation.
 struct Redshift_ServerlessClient:
     core.Credentials creds
     str region
+
+    # ConvertRecoveryPointToSnapshot
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, TooManyTagsException, ValidationException
+    def convert_recovery_point_to_snapshot(self, ConvertRecoveryPointToSnapshotRequest input) -> str:
+        auto body = convert_recovery_point_to_snapshot_request_to_json(input)
+        return awsjson.awsjson_request_now(redshift_serverless_protocol(), self.creds, self.region, "ConvertRecoveryPointToSnapshot", body)
 
     # CreateCustomDomainAssociation
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1359,11 +1820,35 @@ struct Redshift_ServerlessClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(redshift_serverless_protocol(), self.creds, self.region, "CreateCustomDomainAssociation", body)
 
+    # CreateEndpointAccess
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def create_endpoint_access(self, CreateEndpointAccessRequest input) -> str:
+        auto body = create_endpoint_access_request_to_json(input)
+        return awsjson.awsjson_request_now(redshift_serverless_protocol(), self.creds, self.region, "CreateEndpointAccess", body)
+
+    # CreateNamespace
+    # errors: ConflictException, InternalServerException, TooManyTagsException, ValidationException
+    def create_namespace(self, CreateNamespaceRequest input) -> str:
+        auto body = create_namespace_request_to_json(input)
+        return awsjson.awsjson_request_now(redshift_serverless_protocol(), self.creds, self.region, "CreateNamespace", body)
+
     # CreateReservation
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, TooManyTagsException, ValidationException
     def create_reservation(self, CreateReservationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(redshift_serverless_protocol(), self.creds, self.region, "CreateReservation", body)
+
+    # CreateScheduledAction
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
+    def create_scheduled_action(self, CreateScheduledActionRequest input) -> str:
+        auto body = create_scheduled_action_request_to_json(input)
+        return awsjson.awsjson_request_now(redshift_serverless_protocol(), self.creds, self.region, "CreateScheduledAction", body)
+
+    # CreateSnapshot
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, TooManyTagsException, ValidationException
+    def create_snapshot(self, CreateSnapshotRequest input) -> str:
+        auto body = create_snapshot_request_to_json(input)
+        return awsjson.awsjson_request_now(redshift_serverless_protocol(), self.creds, self.region, "CreateSnapshot", body)
 
     # CreateSnapshotCopyConfiguration
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
@@ -1376,6 +1861,12 @@ struct Redshift_ServerlessClient:
     def create_usage_limit(self, CreateUsageLimitRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(redshift_serverless_protocol(), self.creds, self.region, "CreateUsageLimit", body)
+
+    # CreateWorkgroup
+    # errors: ConflictException, InsufficientCapacityException, InternalServerException, Ipv6CidrBlockNotFoundException, ResourceNotFoundException, TooManyTagsException, ValidationException
+    def create_workgroup(self, CreateWorkgroupRequest input) -> str:
+        auto body = create_workgroup_request_to_json(input)
+        return awsjson.awsjson_request_now(redshift_serverless_protocol(), self.creds, self.region, "CreateWorkgroup", body)
 
     # DeleteCustomDomainAssociation
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1448,6 +1939,12 @@ struct Redshift_ServerlessClient:
     def get_endpoint_access(self, GetEndpointAccessRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(redshift_serverless_protocol(), self.creds, self.region, "GetEndpointAccess", body)
+
+    # GetIdentityCenterAuthToken
+    # errors: AccessDeniedException, ConflictException, DryRunException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_identity_center_auth_token(self, GetIdentityCenterAuthTokenRequest input) -> str:
+        auto body = get_identity_center_auth_token_request_to_json(input)
+        return awsjson.awsjson_request_now(redshift_serverless_protocol(), self.creds, self.region, "GetIdentityCenterAuthToken", body)
 
     # GetNamespace
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
@@ -1635,17 +2132,47 @@ struct Redshift_ServerlessClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(redshift_serverless_protocol(), self.creds, self.region, "RestoreTableFromSnapshot", body)
 
+    # TagResource
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, TooManyTagsException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(redshift_serverless_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(redshift_serverless_protocol(), self.creds, self.region, "UntagResource", body)
+
     # UpdateCustomDomainAssociation
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_custom_domain_association(self, UpdateCustomDomainAssociationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(redshift_serverless_protocol(), self.creds, self.region, "UpdateCustomDomainAssociation", body)
 
+    # UpdateEndpointAccess
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
+    def update_endpoint_access(self, UpdateEndpointAccessRequest input) -> str:
+        auto body = update_endpoint_access_request_to_json(input)
+        return awsjson.awsjson_request_now(redshift_serverless_protocol(), self.creds, self.region, "UpdateEndpointAccess", body)
+
     # UpdateLakehouseConfiguration
     # errors: ConflictException, DryRunException, InternalServerException, ResourceNotFoundException, ValidationException
     def update_lakehouse_configuration(self, UpdateLakehouseConfigurationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(redshift_serverless_protocol(), self.creds, self.region, "UpdateLakehouseConfiguration", body)
+
+    # UpdateNamespace
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
+    def update_namespace(self, UpdateNamespaceRequest input) -> str:
+        auto body = update_namespace_request_to_json(input)
+        return awsjson.awsjson_request_now(redshift_serverless_protocol(), self.creds, self.region, "UpdateNamespace", body)
+
+    # UpdateScheduledAction
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
+    def update_scheduled_action(self, UpdateScheduledActionRequest input) -> str:
+        auto body = update_scheduled_action_request_to_json(input)
+        return awsjson.awsjson_request_now(redshift_serverless_protocol(), self.creds, self.region, "UpdateScheduledAction", body)
 
     # UpdateSnapshot
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
@@ -1664,6 +2191,12 @@ struct Redshift_ServerlessClient:
     def update_usage_limit(self, UpdateUsageLimitRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(redshift_serverless_protocol(), self.creds, self.region, "UpdateUsageLimit", body)
+
+    # UpdateWorkgroup
+    # errors: ConflictException, InsufficientCapacityException, InternalServerException, Ipv6CidrBlockNotFoundException, ResourceNotFoundException, ValidationException
+    def update_workgroup(self, UpdateWorkgroupRequest input) -> str:
+        auto body = update_workgroup_request_to_json(input)
+        return awsjson.awsjson_request_now(redshift_serverless_protocol(), self.creds, self.region, "UpdateWorkgroup", body)
 
     # Paginator for ListCustomDomainAssociations — yields each Response page, threading the
     # nextToken -> nextToken continuation token until the output token is absent (result key: associations).

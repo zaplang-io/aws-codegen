@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 19 operations — 8 with a generated method,
-#   11 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 19 operations — 19 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   56 structs (28 @derive(Json)), 2 enums, 5 error variants.
-#   1 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import datetime
 
 # The Data_Pipeline awsJson protocol: version 1.1, API id "DataPipeline".
 def datapipeline_protocol() -> awsjson.AwsJson:
@@ -55,8 +56,9 @@ enum TaskStatus:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) parameterValues: list[ParameterValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameterValues: list[ParameterValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ActivatePipelineInput:
     str pipelineId
     Optional[list[ParameterValue]] parameterValues
@@ -67,8 +69,9 @@ struct ActivatePipelineOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddTagsInput:
     str pipelineId
     list[Tag] tags
@@ -78,8 +81,9 @@ struct AddTagsOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePipelineInput:
     str name
     str uniqueId
@@ -104,28 +108,32 @@ struct DeactivatePipelineOutput:
 struct DeletePipelineInput:
     str pipelineId
 
-# no @derive(Json): member(s) objectIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) objectIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeObjectsInput:
     str pipelineId
     list[str] objectIds
     Optional[bool] evaluateExpressions
     Optional[str] marker
 
-# no @derive(Json): member(s) pipelineObjects: list[PipelineObject] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pipelineObjects: list[PipelineObject] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeObjectsOutput:
     list[PipelineObject] pipelineObjects
     Optional[str] marker
     Optional[bool] hasMoreResults
 
-# no @derive(Json): member(s) pipelineIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pipelineIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePipelinesInput:
     list[str] pipelineIds
 
-# no @derive(Json): member(s) pipelineDescriptionList: list[PipelineDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pipelineDescriptionList: list[PipelineDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePipelinesOutput:
     list[PipelineDescription] pipelineDescriptionList
 
@@ -150,8 +158,9 @@ struct GetPipelineDefinitionInput:
     str pipelineId
     Optional[str] version
 
-# no @derive(Json): member(s) pipelineObjects: list[PipelineObject], parameterObjects: list[ParameterObject], parameterValues: list[ParameterValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pipelineObjects: list[PipelineObject], parameterObjects: list[ParameterObject], parameterValues: list[ParameterValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPipelineDefinitionOutput:
     Optional[list[PipelineObject]] pipelineObjects
     Optional[list[ParameterObject]] parameterObjects
@@ -174,15 +183,17 @@ struct InvalidRequestException:
 struct ListPipelinesInput:
     Optional[str] marker
 
-# no @derive(Json): member(s) pipelineIdList: list[PipelineIdName] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pipelineIdList: list[PipelineIdName] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPipelinesOutput:
     list[PipelineIdName] pipelineIdList
     Optional[str] marker
     Optional[bool] hasMoreResults
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Operator:
     Optional[OperatorType] type
     Optional[list[str]] values
@@ -192,8 +203,9 @@ struct ParameterAttribute:
     str key
     str stringValue
 
-# no @derive(Json): member(s) attributes: list[ParameterAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) attributes: list[ParameterAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParameterObject:
     str id
     list[ParameterAttribute] attributes
@@ -207,8 +219,9 @@ struct ParameterValue:
 struct PipelineDeletedException:
     Optional[str] message
 
-# no @derive(Json): member(s) fields: list[Field], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[Field], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipelineDescription:
     str pipelineId
     str name
@@ -225,8 +238,9 @@ struct PipelineIdName:
 struct PipelineNotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) fields: list[Field] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[Field] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipelineObject:
     str id
     str name
@@ -238,33 +252,38 @@ struct PollForTaskInput:
     Optional[str] hostname
     Optional[InstanceIdentity] instanceIdentity
 
-# no @derive(Json): member(s) taskObject: TaskObject not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskObject: TaskObject not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PollForTaskOutput:
     Optional[TaskObject] taskObject
 
-# no @derive(Json): member(s) pipelineObjects: list[PipelineObject], parameterObjects: list[ParameterObject], parameterValues: list[ParameterValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pipelineObjects: list[PipelineObject], parameterObjects: list[ParameterObject], parameterValues: list[ParameterValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutPipelineDefinitionInput:
     str pipelineId
     list[PipelineObject] pipelineObjects
     Optional[list[ParameterObject]] parameterObjects
     Optional[list[ParameterValue]] parameterValues
 
-# no @derive(Json): member(s) validationErrors: list[ValidationError], validationWarnings: list[ValidationWarning] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) validationErrors: list[ValidationError], validationWarnings: list[ValidationWarning] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutPipelineDefinitionOutput:
     Optional[list[ValidationError]] validationErrors
     Optional[list[ValidationWarning]] validationWarnings
     bool errored
 
-# no @derive(Json): member(s) selectors: list[Selector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) selectors: list[Selector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Query:
     Optional[list[Selector]] selectors
 
-# no @derive(Json): member(s) query: Query not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) query: Query not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryObjectsInput:
     str pipelineId
     Optional[Query] query
@@ -272,15 +291,17 @@ struct QueryObjectsInput:
     Optional[str] marker
     Optional[int64] limit
 
-# no @derive(Json): member(s) ids: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ids: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QueryObjectsOutput:
     Optional[list[str]] ids
     Optional[str] marker
     Optional[bool] hasMoreResults
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RemoveTagsInput:
     str pipelineId
     list[str] tagKeys
@@ -290,8 +311,9 @@ struct RemoveTagsOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) fields: list[Field] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[Field] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReportTaskProgressInput:
     str taskId
     Optional[list[Field]] fields
@@ -310,14 +332,16 @@ struct ReportTaskRunnerHeartbeatInput:
 struct ReportTaskRunnerHeartbeatOutput:
     bool terminate
 
-# no @derive(Json): member(s) operator: Operator not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operator: Operator not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Selector:
     Optional[str] fieldName
     Optional[Operator] operator
 
-# no @derive(Json): member(s) objectIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) objectIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SetStatusInput:
     str pipelineId
     list[str] objectIds
@@ -345,37 +369,42 @@ struct Tag:
 struct TaskNotFoundException:
     Optional[str] message
 
-# no @derive(Json): member(s) objects: dict[str, PipelineObject] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) objects: dict[str, PipelineObject] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaskObject:
     Optional[str] taskId
     Optional[str] pipelineId
     Optional[str] attemptId
     Optional[dict[str, PipelineObject]] objects
 
-# no @derive(Json): member(s) pipelineObjects: list[PipelineObject], parameterObjects: list[ParameterObject], parameterValues: list[ParameterValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pipelineObjects: list[PipelineObject], parameterObjects: list[ParameterObject], parameterValues: list[ParameterValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidatePipelineDefinitionInput:
     str pipelineId
     list[PipelineObject] pipelineObjects
     Optional[list[ParameterObject]] parameterObjects
     Optional[list[ParameterValue]] parameterValues
 
-# no @derive(Json): member(s) validationErrors: list[ValidationError], validationWarnings: list[ValidationWarning] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) validationErrors: list[ValidationError], validationWarnings: list[ValidationWarning] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidatePipelineDefinitionOutput:
     Optional[list[ValidationError]] validationErrors
     Optional[list[ValidationWarning]] validationWarnings
     bool errored
 
-# no @derive(Json): member(s) errors: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationError:
     Optional[str] id
     Optional[list[str]] errors
 
-# no @derive(Json): member(s) warnings: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) warnings: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationWarning:
     Optional[str] id
     Optional[list[str]] warnings
@@ -408,29 +437,274 @@ def datapipeline_error_from_code(str code) -> Data_PipelineError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   ActivatePipeline (input ActivatePipelineInput)
-#   AddTags (input AddTagsInput)
-#   CreatePipeline (input CreatePipelineInput)
-#   DescribeObjects (input DescribeObjectsInput)
-#   DescribePipelines (input DescribePipelinesInput)
-#   PutPipelineDefinition (input PutPipelineDefinitionInput)
-#   QueryObjects (input QueryObjectsInput)
-#   RemoveTags (input RemoveTagsInput)
-#   ReportTaskProgress (input ReportTaskProgressInput)
-#   SetStatus (input SetStatusInput)
-#   ValidatePipelineDefinition (input ValidatePipelineDefinitionInput)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def datapipeline_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   DescribeObjects (input not derivable (no generated method))
-#   QueryObjects (input not derivable (no generated method))
+def datapipeline_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def datapipeline_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ActivatePipelineInput to a compact JSON object (declaration order).
+def activate_pipeline_input_to_json(ActivatePipelineInput v) -> str:
+    list[str] parts = []
+    parts.append("\"pipelineId\":" + datapipeline_json_str(v.pipelineId))
+    if v.parameterValues.is_some():
+        auto u0 = v.parameterValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"parameterValues\":" + datapipeline_json_arr(e1))
+    if v.startTimestamp.is_some():
+        auto u2 = v.startTimestamp.unwrap()
+        parts.append("\"startTimestamp\":" + str(datetime.to_timestamp(u2)))
+    return datapipeline_json_obj(parts)
+
+# Serialize AddTagsInput to a compact JSON object (declaration order).
+def add_tags_input_to_json(AddTagsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"pipelineId\":" + datapipeline_json_str(v.pipelineId))
+    list[str] e0 = []
+    for x0 in v.tags:
+        e0.append(x0.to_json())
+    parts.append("\"tags\":" + datapipeline_json_arr(e0))
+    return datapipeline_json_obj(parts)
+
+# Serialize CreatePipelineInput to a compact JSON object (declaration order).
+def create_pipeline_input_to_json(CreatePipelineInput v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + datapipeline_json_str(v.name))
+    parts.append("\"uniqueId\":" + datapipeline_json_str(v.uniqueId))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + datapipeline_json_str(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + datapipeline_json_arr(e2))
+    return datapipeline_json_obj(parts)
+
+# Serialize DescribeObjectsInput to a compact JSON object (declaration order).
+def describe_objects_input_to_json(DescribeObjectsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"pipelineId\":" + datapipeline_json_str(v.pipelineId))
+    list[str] e0 = []
+    for x0 in v.objectIds:
+        e0.append(datapipeline_json_str(x0))
+    parts.append("\"objectIds\":" + datapipeline_json_arr(e0))
+    if v.evaluateExpressions.is_some():
+        auto u1 = v.evaluateExpressions.unwrap()
+        parts.append("\"evaluateExpressions\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.marker.is_some():
+        auto u2 = v.marker.unwrap()
+        parts.append("\"marker\":" + datapipeline_json_str(u2))
+    return datapipeline_json_obj(parts)
+
+# Serialize DescribePipelinesInput to a compact JSON object (declaration order).
+def describe_pipelines_input_to_json(DescribePipelinesInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.pipelineIds:
+        e0.append(datapipeline_json_str(x0))
+    parts.append("\"pipelineIds\":" + datapipeline_json_arr(e0))
+    return datapipeline_json_obj(parts)
+
+# Serialize Operator to a compact JSON object (declaration order).
+def operator_to_json(Operator v) -> str:
+    list[str] parts = []
+    if v.type.is_some():
+        auto u0 = v.type.unwrap()
+        parts.append("\"type\":" + u0.to_json())
+    if v.values.is_some():
+        auto u1 = v.values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(datapipeline_json_str(x2))
+        parts.append("\"values\":" + datapipeline_json_arr(e2))
+    return datapipeline_json_obj(parts)
+
+# Serialize ParameterObject to a compact JSON object (declaration order).
+def parameter_object_to_json(ParameterObject v) -> str:
+    list[str] parts = []
+    parts.append("\"id\":" + datapipeline_json_str(v.id))
+    list[str] e0 = []
+    for x0 in v.attributes:
+        e0.append(x0.to_json())
+    parts.append("\"attributes\":" + datapipeline_json_arr(e0))
+    return datapipeline_json_obj(parts)
+
+# Serialize PipelineObject to a compact JSON object (declaration order).
+def pipeline_object_to_json(PipelineObject v) -> str:
+    list[str] parts = []
+    parts.append("\"id\":" + datapipeline_json_str(v.id))
+    parts.append("\"name\":" + datapipeline_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.fields:
+        e0.append(x0.to_json())
+    parts.append("\"fields\":" + datapipeline_json_arr(e0))
+    return datapipeline_json_obj(parts)
+
+# Serialize PutPipelineDefinitionInput to a compact JSON object (declaration order).
+def put_pipeline_definition_input_to_json(PutPipelineDefinitionInput v) -> str:
+    list[str] parts = []
+    parts.append("\"pipelineId\":" + datapipeline_json_str(v.pipelineId))
+    list[str] e0 = []
+    for x0 in v.pipelineObjects:
+        e0.append(pipeline_object_to_json(x0))
+    parts.append("\"pipelineObjects\":" + datapipeline_json_arr(e0))
+    if v.parameterObjects.is_some():
+        auto u1 = v.parameterObjects.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(parameter_object_to_json(x2))
+        parts.append("\"parameterObjects\":" + datapipeline_json_arr(e2))
+    if v.parameterValues.is_some():
+        auto u3 = v.parameterValues.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"parameterValues\":" + datapipeline_json_arr(e4))
+    return datapipeline_json_obj(parts)
+
+# Serialize Query to a compact JSON object (declaration order).
+def query_to_json(Query v) -> str:
+    list[str] parts = []
+    if v.selectors.is_some():
+        auto u0 = v.selectors.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(selector_to_json(x1))
+        parts.append("\"selectors\":" + datapipeline_json_arr(e1))
+    return datapipeline_json_obj(parts)
+
+# Serialize QueryObjectsInput to a compact JSON object (declaration order).
+def query_objects_input_to_json(QueryObjectsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"pipelineId\":" + datapipeline_json_str(v.pipelineId))
+    if v.query.is_some():
+        auto u0 = v.query.unwrap()
+        parts.append("\"query\":" + query_to_json(u0))
+    parts.append("\"sphere\":" + datapipeline_json_str(v.sphere))
+    if v.marker.is_some():
+        auto u1 = v.marker.unwrap()
+        parts.append("\"marker\":" + datapipeline_json_str(u1))
+    if v.limit.is_some():
+        auto u2 = v.limit.unwrap()
+        parts.append("\"limit\":" + str(u2))
+    return datapipeline_json_obj(parts)
+
+# Serialize RemoveTagsInput to a compact JSON object (declaration order).
+def remove_tags_input_to_json(RemoveTagsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"pipelineId\":" + datapipeline_json_str(v.pipelineId))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(datapipeline_json_str(x0))
+    parts.append("\"tagKeys\":" + datapipeline_json_arr(e0))
+    return datapipeline_json_obj(parts)
+
+# Serialize ReportTaskProgressInput to a compact JSON object (declaration order).
+def report_task_progress_input_to_json(ReportTaskProgressInput v) -> str:
+    list[str] parts = []
+    parts.append("\"taskId\":" + datapipeline_json_str(v.taskId))
+    if v.fields.is_some():
+        auto u0 = v.fields.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"fields\":" + datapipeline_json_arr(e1))
+    return datapipeline_json_obj(parts)
+
+# Serialize Selector to a compact JSON object (declaration order).
+def selector_to_json(Selector v) -> str:
+    list[str] parts = []
+    if v.fieldName.is_some():
+        auto u0 = v.fieldName.unwrap()
+        parts.append("\"fieldName\":" + datapipeline_json_str(u0))
+    if v.operator.is_some():
+        auto u1 = v.operator.unwrap()
+        parts.append("\"operator\":" + operator_to_json(u1))
+    return datapipeline_json_obj(parts)
+
+# Serialize SetStatusInput to a compact JSON object (declaration order).
+def set_status_input_to_json(SetStatusInput v) -> str:
+    list[str] parts = []
+    parts.append("\"pipelineId\":" + datapipeline_json_str(v.pipelineId))
+    list[str] e0 = []
+    for x0 in v.objectIds:
+        e0.append(datapipeline_json_str(x0))
+    parts.append("\"objectIds\":" + datapipeline_json_arr(e0))
+    parts.append("\"status\":" + datapipeline_json_str(v.status))
+    return datapipeline_json_obj(parts)
+
+# Serialize ValidatePipelineDefinitionInput to a compact JSON object (declaration order).
+def validate_pipeline_definition_input_to_json(ValidatePipelineDefinitionInput v) -> str:
+    list[str] parts = []
+    parts.append("\"pipelineId\":" + datapipeline_json_str(v.pipelineId))
+    list[str] e0 = []
+    for x0 in v.pipelineObjects:
+        e0.append(pipeline_object_to_json(x0))
+    parts.append("\"pipelineObjects\":" + datapipeline_json_arr(e0))
+    if v.parameterObjects.is_some():
+        auto u1 = v.parameterObjects.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(parameter_object_to_json(x2))
+        parts.append("\"parameterObjects\":" + datapipeline_json_arr(e2))
+    if v.parameterValues.is_some():
+        auto u3 = v.parameterValues.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"parameterValues\":" + datapipeline_json_arr(e4))
+    return datapipeline_json_obj(parts)
 
 # A bound Data_Pipeline client: credentials + region, threaded into every operation.
 struct Data_PipelineClient:
     core.Credentials creds
     str region
+
+    # ActivatePipeline
+    # errors: InternalServiceError, InvalidRequestException, PipelineDeletedException, PipelineNotFoundException
+    def activate_pipeline(self, ActivatePipelineInput input) -> str:
+        auto body = activate_pipeline_input_to_json(input)
+        return awsjson.awsjson_request_now(datapipeline_protocol(), self.creds, self.region, "ActivatePipeline", body)
+
+    # AddTags
+    # errors: InternalServiceError, InvalidRequestException, PipelineDeletedException, PipelineNotFoundException
+    def add_tags(self, AddTagsInput input) -> str:
+        auto body = add_tags_input_to_json(input)
+        return awsjson.awsjson_request_now(datapipeline_protocol(), self.creds, self.region, "AddTags", body)
+
+    # CreatePipeline
+    # errors: InternalServiceError, InvalidRequestException
+    def create_pipeline(self, CreatePipelineInput input) -> str:
+        auto body = create_pipeline_input_to_json(input)
+        return awsjson.awsjson_request_now(datapipeline_protocol(), self.creds, self.region, "CreatePipeline", body)
 
     # DeactivatePipeline
     # errors: InternalServiceError, InvalidRequestException, PipelineDeletedException, PipelineNotFoundException
@@ -443,6 +717,18 @@ struct Data_PipelineClient:
     def delete_pipeline(self, DeletePipelineInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(datapipeline_protocol(), self.creds, self.region, "DeletePipeline", body)
+
+    # DescribeObjects
+    # errors: InternalServiceError, InvalidRequestException, PipelineDeletedException, PipelineNotFoundException
+    def describe_objects(self, DescribeObjectsInput input) -> str:
+        auto body = describe_objects_input_to_json(input)
+        return awsjson.awsjson_request_now(datapipeline_protocol(), self.creds, self.region, "DescribeObjects", body)
+
+    # DescribePipelines
+    # errors: InternalServiceError, InvalidRequestException, PipelineDeletedException, PipelineNotFoundException
+    def describe_pipelines(self, DescribePipelinesInput input) -> str:
+        auto body = describe_pipelines_input_to_json(input)
+        return awsjson.awsjson_request_now(datapipeline_protocol(), self.creds, self.region, "DescribePipelines", body)
 
     # EvaluateExpression
     # errors: InternalServiceError, InvalidRequestException, PipelineDeletedException, PipelineNotFoundException, TaskNotFoundException
@@ -468,17 +754,67 @@ struct Data_PipelineClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(datapipeline_protocol(), self.creds, self.region, "PollForTask", body)
 
+    # PutPipelineDefinition
+    # errors: InternalServiceError, InvalidRequestException, PipelineDeletedException, PipelineNotFoundException
+    def put_pipeline_definition(self, PutPipelineDefinitionInput input) -> str:
+        auto body = put_pipeline_definition_input_to_json(input)
+        return awsjson.awsjson_request_now(datapipeline_protocol(), self.creds, self.region, "PutPipelineDefinition", body)
+
+    # QueryObjects
+    # errors: InternalServiceError, InvalidRequestException, PipelineDeletedException, PipelineNotFoundException
+    def query_objects(self, QueryObjectsInput input) -> str:
+        auto body = query_objects_input_to_json(input)
+        return awsjson.awsjson_request_now(datapipeline_protocol(), self.creds, self.region, "QueryObjects", body)
+
+    # RemoveTags
+    # errors: InternalServiceError, InvalidRequestException, PipelineDeletedException, PipelineNotFoundException
+    def remove_tags(self, RemoveTagsInput input) -> str:
+        auto body = remove_tags_input_to_json(input)
+        return awsjson.awsjson_request_now(datapipeline_protocol(), self.creds, self.region, "RemoveTags", body)
+
+    # ReportTaskProgress
+    # errors: InternalServiceError, InvalidRequestException, PipelineDeletedException, PipelineNotFoundException, TaskNotFoundException
+    def report_task_progress(self, ReportTaskProgressInput input) -> str:
+        auto body = report_task_progress_input_to_json(input)
+        return awsjson.awsjson_request_now(datapipeline_protocol(), self.creds, self.region, "ReportTaskProgress", body)
+
     # ReportTaskRunnerHeartbeat
     # errors: InternalServiceError, InvalidRequestException
     def report_task_runner_heartbeat(self, ReportTaskRunnerHeartbeatInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(datapipeline_protocol(), self.creds, self.region, "ReportTaskRunnerHeartbeat", body)
 
+    # SetStatus
+    # errors: InternalServiceError, InvalidRequestException, PipelineDeletedException, PipelineNotFoundException
+    def set_status(self, SetStatusInput input) -> str:
+        auto body = set_status_input_to_json(input)
+        return awsjson.awsjson_request_now(datapipeline_protocol(), self.creds, self.region, "SetStatus", body)
+
     # SetTaskStatus
     # errors: InternalServiceError, InvalidRequestException, PipelineDeletedException, PipelineNotFoundException, TaskNotFoundException
     def set_task_status(self, SetTaskStatusInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(datapipeline_protocol(), self.creds, self.region, "SetTaskStatus", body)
+
+    # ValidatePipelineDefinition
+    # errors: InternalServiceError, InvalidRequestException, PipelineDeletedException, PipelineNotFoundException
+    def validate_pipeline_definition(self, ValidatePipelineDefinitionInput input) -> str:
+        auto body = validate_pipeline_definition_input_to_json(input)
+        return awsjson.awsjson_request_now(datapipeline_protocol(), self.creds, self.region, "ValidatePipelineDefinition", body)
+
+    # Paginator for DescribeObjects — yields each Response page, threading the
+    # marker -> marker continuation token until the output token is absent (result key: pipelineObjects).
+    def paginate_describe_objects(self, DescribeObjectsInput input):
+        auto host = endpoints.regional_host(datapipeline_protocol().service, self.region)
+        while True:
+            auto body = describe_objects_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(datapipeline_protocol(), self.creds, self.region, "DescribeObjects", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "marker")
+            if not np.has_more:
+                break
+            input.marker = Optional.Some(np.token)
 
     # Paginator for ListPipelines — yields each Response page, threading the
     # marker -> marker continuation token until the output token is absent (result key: pipelineIdList).
@@ -487,6 +823,20 @@ struct Data_PipelineClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(datapipeline_protocol(), self.creds, self.region, "ListPipelines", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "marker")
+            if not np.has_more:
+                break
+            input.marker = Optional.Some(np.token)
+
+    # Paginator for QueryObjects — yields each Response page, threading the
+    # marker -> marker continuation token until the output token is absent (result key: ids).
+    def paginate_query_objects(self, QueryObjectsInput input):
+        auto host = endpoints.regional_host(datapipeline_protocol().service, self.region)
+        while True:
+            auto body = query_objects_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(datapipeline_protocol(), self.creds, self.region, "QueryObjects", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "marker")

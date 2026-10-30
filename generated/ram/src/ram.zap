@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 35 operations — 21 with a generated method,
-#   14 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 35 operations — 35 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   112 structs (69 @derive(Json)), 14 enums, 28 error variants.
-#   0 paginators generated (7 paginated ops skipped) from paginators-1.json.
+#   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -168,8 +168,9 @@ struct AcceptResourceShareInvitationRequest:
     str resourceShareInvitationArn
     Optional[str] clientToken
 
-# no @derive(Json): member(s) resourceShareInvitation: ResourceShareInvitation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceShareInvitation: ResourceShareInvitation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AcceptResourceShareInvitationResponse:
     Optional[ResourceShareInvitation] resourceShareInvitation
     Optional[str] clientToken
@@ -197,8 +198,9 @@ struct AssociateResourceShareRequest:
     Optional[str] clientToken
     Optional[list[str]] sources
 
-# no @derive(Json): member(s) resourceShareAssociations: list[ResourceShareAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceShareAssociations: list[ResourceShareAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateResourceShareResponse:
     Optional[list[ResourceShareAssociation]] resourceShareAssociations
     Optional[str] clientToken
@@ -233,8 +235,9 @@ struct CreatePermissionRequest:
     Optional[str] clientToken
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) permission: ResourceSharePermissionSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) permission: ResourceSharePermissionSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePermissionResponse:
     Optional[ResourceSharePermissionSummary] permission
     Optional[str] clientToken
@@ -246,8 +249,9 @@ struct CreatePermissionVersionRequest:
     str policyTemplate
     Optional[str] clientToken
 
-# no @derive(Json): member(s) permission: ResourceSharePermissionDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) permission: ResourceSharePermissionDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePermissionVersionResponse:
     Optional[ResourceSharePermissionDetail] permission
     Optional[str] clientToken
@@ -265,8 +269,9 @@ struct CreateResourceShareRequest:
     Optional[list[str]] sources
     Optional[ResourceShareConfiguration] resourceShareConfiguration
 
-# no @derive(Json): member(s) resourceShare: ResourceShare not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceShare: ResourceShare not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateResourceShareResponse:
     Optional[ResourceShare] resourceShare
     Optional[str] clientToken
@@ -328,8 +333,9 @@ struct DisassociateResourceShareRequest:
     Optional[str] clientToken
     Optional[list[str]] sources
 
-# no @derive(Json): member(s) resourceShareAssociations: list[ResourceShareAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceShareAssociations: list[ResourceShareAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateResourceShareResponse:
     Optional[list[ResourceShareAssociation]] resourceShareAssociations
     Optional[str] clientToken
@@ -350,8 +356,9 @@ struct GetPermissionRequest:
     str permissionArn
     Optional[int64] permissionVersion
 
-# no @derive(Json): member(s) permission: ResourceSharePermissionDetail not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) permission: ResourceSharePermissionDetail not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPermissionResponse:
     Optional[ResourceSharePermissionDetail] permission
 
@@ -363,8 +370,9 @@ struct GetResourcePoliciesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) policies: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policies: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourcePoliciesResponse:
     Optional[list[str]] policies
     Optional[str] nextToken
@@ -380,8 +388,9 @@ struct GetResourceShareAssociationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) resourceShareAssociations: list[ResourceShareAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceShareAssociations: list[ResourceShareAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourceShareAssociationsResponse:
     Optional[list[ResourceShareAssociation]] resourceShareAssociations
     Optional[str] nextToken
@@ -394,8 +403,9 @@ struct GetResourceShareInvitationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) resourceShareInvitations: list[ResourceShareInvitation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceShareInvitations: list[ResourceShareInvitation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourceShareInvitationsResponse:
     Optional[list[ResourceShareInvitation]] resourceShareInvitations
     Optional[str] nextToken
@@ -413,8 +423,9 @@ struct GetResourceSharesRequest:
     Optional[str] permissionArn
     Optional[int64] permissionVersion
 
-# no @derive(Json): member(s) resourceShares: list[ResourceShare] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceShares: list[ResourceShare] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourceSharesResponse:
     Optional[list[ResourceShare]] resourceShares
     Optional[str] nextToken
@@ -459,8 +470,9 @@ struct ListPendingInvitationResourcesRequest:
     Optional[int64] maxResults
     Optional[ResourceRegionScopeFilter] resourceRegionScope
 
-# no @derive(Json): member(s) resources: list[Resource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resources: list[Resource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPendingInvitationResourcesResponse:
     Optional[list[Resource]] resources
     Optional[str] nextToken
@@ -477,8 +489,9 @@ struct ListPermissionAssociationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) permissions: list[AssociatedPermission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) permissions: list[AssociatedPermission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPermissionAssociationsResponse:
     Optional[list[AssociatedPermission]] permissions
     Optional[str] nextToken
@@ -490,8 +503,9 @@ struct ListPermissionVersionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) permissions: list[ResourceSharePermissionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) permissions: list[ResourceSharePermissionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPermissionVersionsResponse:
     Optional[list[ResourceSharePermissionSummary]] permissions
     Optional[str] nextToken
@@ -504,8 +518,9 @@ struct ListPermissionsRequest:
     Optional[int64] maxResults
     Optional[PermissionTypeFilter] permissionType
 
-# no @derive(Json): member(s) permissions: list[ResourceSharePermissionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) permissions: list[ResourceSharePermissionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPermissionsResponse:
     Optional[list[ResourceSharePermissionSummary]] permissions
     Optional[str] nextToken
@@ -521,8 +536,9 @@ struct ListPrincipalsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) principals: list[Principal] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) principals: list[Principal] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPrincipalsResponse:
     Optional[list[Principal]] principals
     Optional[str] nextToken
@@ -535,8 +551,9 @@ struct ListReplacePermissionAssociationsWorkRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) replacePermissionAssociationsWorks: list[ReplacePermissionAssociationsWork] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) replacePermissionAssociationsWorks: list[ReplacePermissionAssociationsWork] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReplacePermissionAssociationsWorkResponse:
     Optional[list[ReplacePermissionAssociationsWork]] replacePermissionAssociationsWorks
     Optional[str] nextToken
@@ -548,8 +565,9 @@ struct ListResourceSharePermissionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) permissions: list[ResourceSharePermissionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) permissions: list[ResourceSharePermissionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceSharePermissionsResponse:
     Optional[list[ResourceSharePermissionSummary]] permissions
     Optional[str] nextToken
@@ -561,8 +579,9 @@ struct ListResourceTypesRequest:
     Optional[int64] maxResults
     Optional[ResourceRegionScopeFilter] resourceRegionScope
 
-# no @derive(Json): member(s) resourceTypes: list[ServiceNameAndResourceType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceTypes: list[ServiceNameAndResourceType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceTypesResponse:
     Optional[list[ServiceNameAndResourceType]] resourceTypes
     Optional[str] nextToken
@@ -579,8 +598,9 @@ struct ListResourcesRequest:
     Optional[int64] maxResults
     Optional[ResourceRegionScopeFilter] resourceRegionScope
 
-# no @derive(Json): member(s) resources: list[Resource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resources: list[Resource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourcesResponse:
     Optional[list[Resource]] resources
     Optional[str] nextToken
@@ -595,8 +615,9 @@ struct ListSourceAssociationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) sourceAssociations: list[AssociatedSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceAssociations: list[AssociatedSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSourceAssociationsResponse:
     Optional[list[AssociatedSource]] sourceAssociations
     Optional[str] nextToken
@@ -644,8 +665,9 @@ struct PromotePermissionCreatedFromPolicyRequest:
     str name
     Optional[str] clientToken
 
-# no @derive(Json): member(s) permission: ResourceSharePermissionSummary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) permission: ResourceSharePermissionSummary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PromotePermissionCreatedFromPolicyResponse:
     Optional[ResourceSharePermissionSummary] permission
     Optional[str] clientToken
@@ -665,8 +687,9 @@ struct RejectResourceShareInvitationRequest:
     str resourceShareInvitationArn
     Optional[str] clientToken
 
-# no @derive(Json): member(s) resourceShareInvitation: ResourceShareInvitation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceShareInvitation: ResourceShareInvitation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RejectResourceShareInvitationResponse:
     Optional[ResourceShareInvitation] resourceShareInvitation
     Optional[str] clientToken
@@ -712,8 +735,9 @@ struct Resource:
 struct ResourceArnNotFoundException:
     str message
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceShare:
     Optional[str] resourceShareArn
     Optional[str] name
@@ -743,8 +767,9 @@ struct ResourceShareAssociation:
 struct ResourceShareConfiguration:
     Optional[bool] retainSharingOnAccountLeaveOrganization
 
-# no @derive(Json): member(s) resourceShareAssociations: list[ResourceShareAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceShareAssociations: list[ResourceShareAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceShareInvitation:
     Optional[str] resourceShareInvitationArn
     Optional[str] resourceShareName
@@ -776,8 +801,9 @@ struct ResourceShareInvitationExpiredException:
 struct ResourceShareLimitExceededException:
     str message
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceSharePermissionDetail:
     Optional[str] arn
     Optional[str] version
@@ -793,8 +819,9 @@ struct ResourceSharePermissionDetail:
     Optional[PermissionStatus] status
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResourceSharePermissionSummary:
     Optional[str] arn
     Optional[str] version
@@ -840,8 +867,9 @@ struct Tag:
     Optional[str] key
     Optional[str] value
 
-# no @derive(Json): member(s) tagValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagFilter:
     Optional[str] tagKey
     Optional[list[str]] tagValues
@@ -898,8 +926,9 @@ struct UpdateResourceShareRequest:
     Optional[bool] allowExternalPrincipals
     Optional[str] clientToken
 
-# no @derive(Json): member(s) resourceShare: ResourceShare not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resourceShare: ResourceShare not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateResourceShareResponse:
     Optional[ResourceShare] resourceShare
     Optional[str] clientToken
@@ -1001,34 +1030,6 @@ def ram_error_from_code(str code) -> RAMError:
     return RAMError.Unknown(code=code)
 
 # --- client ----------------------------------------------------------------
-
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   AssociateResourceShare (document member `resourceArns: list[str]` is not serializable by derive)
-#   CreatePermission (document member `tags: list[Tag]` is not serializable by derive)
-#   CreateResourceShare (document member `resourceArns: list[str]` is not serializable by derive)
-#   DisassociateResourceShare (document member `resourceArns: list[str]` is not serializable by derive)
-#   GetResourcePolicies (document member `resourceArns: list[str]` is not serializable by derive)
-#   GetResourceShareAssociations (document member `resourceShareArns: list[str]` is not serializable by derive)
-#   GetResourceShareInvitations (document member `resourceShareInvitationArns: list[str]` is not serializable by derive)
-#   GetResourceShares (document member `resourceShareArns: list[str]` is not serializable by derive)
-#   ListPrincipals (document member `principals: list[str]` is not serializable by derive)
-#   ListReplacePermissionAssociationsWork (document member `workIds: list[str]` is not serializable by derive)
-#   ListResources (document member `resourceArns: list[str]` is not serializable by derive)
-#   ListSourceAssociations (document member `resourceShareArns: list[str]` is not serializable by derive)
-#   TagResource (document member `tags: list[Tag]` is not serializable by derive)
-#   UntagResource (document member `tagKeys: list[str]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   GetResourcePolicies (operation not generated)
-#   GetResourceShareAssociations (operation not generated)
-#   GetResourceShareInvitations (operation not generated)
-#   GetResourceShares (operation not generated)
-#   ListPrincipals (operation not generated)
-#   ListResources (operation not generated)
-#   ListSourceAssociations (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1153,6 +1154,50 @@ struct UpdateResourceShareDocument:
     Optional[bool] allowExternalPrincipals
     Optional[str] clientToken
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def ram_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def ram_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def ram_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize TagFilter to a compact JSON object (declaration order).
+def tag_filter_to_json(TagFilter v) -> str:
+    list[str] parts = []
+    if v.tagKey.is_some():
+        auto u0 = v.tagKey.unwrap()
+        parts.append("\"tagKey\":" + ram_json_str(u0))
+    if v.tagValues.is_some():
+        auto u1 = v.tagValues.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(ram_json_str(x2))
+        parts.append("\"tagValues\":" + ram_json_arr(e2))
+    return ram_json_obj(parts)
+
 # A bound RAM client: credentials + region, threaded into every operation.
 struct RAMClient:
     core.Credentials creds
@@ -1167,6 +1212,37 @@ struct RAMClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
 
+    # AssociateResourceShare  POST /associateresourceshare
+    # errors: IdempotentParameterMismatchException, InvalidClientTokenException, InvalidParameterException, InvalidStateTransitionException, InvalidStateTransitionException, MalformedArnException, OperationNotPermittedException, ResourceShareLimitExceededException, ServerInternalException, ServiceUnavailableException, ThrottlingException, UnknownResourceException, UnknownResourceException
+    def associate_resource_share(self, AssociateResourceShareRequest input) -> str:
+        auto host = endpoints.regional_host(ram_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/associateresourceshare", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceShareArn\":" + ram_json_str(input.resourceShareArn))
+        if input.resourceArns.is_some():
+            auto u0 = input.resourceArns.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(ram_json_str(x1))
+            parts.append("\"resourceArns\":" + ram_json_arr(e1))
+        if input.principals.is_some():
+            auto u2 = input.principals.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(ram_json_str(x3))
+            parts.append("\"principals\":" + ram_json_arr(e3))
+        if input.clientToken.is_some():
+            auto u4 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + ram_json_str(u4))
+        if input.sources.is_some():
+            auto u5 = input.sources.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(ram_json_str(x6))
+            parts.append("\"sources\":" + ram_json_arr(e6))
+        auto bp = restjson.rest_json_document(b, ram_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
+
     # AssociateResourceSharePermission  POST /associateresourcesharepermission
     # errors: InvalidClientTokenException, InvalidParameterException, MalformedArnException, OperationNotPermittedException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
     def associate_resource_share_permission(self, AssociateResourceSharePermissionRequest input) -> str:
@@ -1176,6 +1252,27 @@ struct RAMClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
 
+    # CreatePermission  POST /createpermission
+    # errors: IdempotentParameterMismatchException, InvalidClientTokenException, InvalidParameterException, InvalidPolicyException, MalformedPolicyTemplateException, OperationNotPermittedException, PermissionAlreadyExistsException, PermissionLimitExceededException, ServerInternalException, ServiceUnavailableException
+    def create_permission(self, CreatePermissionRequest input) -> str:
+        auto host = endpoints.regional_host(ram_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/createpermission", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + ram_json_str(input.name))
+        parts.append("\"resourceType\":" + ram_json_str(input.resourceType))
+        parts.append("\"policyTemplate\":" + ram_json_str(input.policyTemplate))
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + ram_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"tags\":" + ram_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, ram_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
+
     # CreatePermissionVersion  POST /createpermissionversion
     # errors: IdempotentParameterMismatchException, InvalidClientTokenException, InvalidParameterException, InvalidPolicyException, MalformedArnException, MalformedPolicyTemplateException, PermissionVersionsLimitExceededException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
     def create_permission_version(self, CreatePermissionVersionRequest input) -> str:
@@ -1183,6 +1280,55 @@ struct RAMClient:
         auto b = binding.HttpBinding(method="POST", path_template="/createpermissionversion", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreatePermissionVersionDocument(permissionArn=input.permissionArn, policyTemplate=input.policyTemplate, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
+
+    # CreateResourceShare  POST /createresourceshare
+    # errors: IdempotentParameterMismatchException, InvalidClientTokenException, InvalidParameterException, InvalidStateTransitionException, MalformedArnException, OperationNotPermittedException, ResourceShareLimitExceededException, ServerInternalException, ServiceUnavailableException, TagLimitExceededException, TagPolicyViolationException, ThrottlingException, UnknownResourceException
+    def create_resource_share(self, CreateResourceShareRequest input) -> str:
+        auto host = endpoints.regional_host(ram_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/createresourceshare", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + ram_json_str(input.name))
+        if input.resourceArns.is_some():
+            auto u0 = input.resourceArns.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(ram_json_str(x1))
+            parts.append("\"resourceArns\":" + ram_json_arr(e1))
+        if input.principals.is_some():
+            auto u2 = input.principals.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(ram_json_str(x3))
+            parts.append("\"principals\":" + ram_json_arr(e3))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"tags\":" + ram_json_arr(e5))
+        if input.allowExternalPrincipals.is_some():
+            auto u6 = input.allowExternalPrincipals.unwrap()
+            parts.append("\"allowExternalPrincipals\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.clientToken.is_some():
+            auto u7 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + ram_json_str(u7))
+        if input.permissionArns.is_some():
+            auto u8 = input.permissionArns.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(ram_json_str(x9))
+            parts.append("\"permissionArns\":" + ram_json_arr(e9))
+        if input.sources.is_some():
+            auto u10 = input.sources.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(ram_json_str(x11))
+            parts.append("\"sources\":" + ram_json_arr(e11))
+        if input.resourceShareConfiguration.is_some():
+            auto u12 = input.resourceShareConfiguration.unwrap()
+            parts.append("\"resourceShareConfiguration\":" + u12.to_json())
+        auto bp = restjson.rest_json_document(b, ram_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
 
     # DeletePermission  DELETE /deletepermission
@@ -1219,6 +1365,37 @@ struct RAMClient:
         auto b = binding.HttpBinding(method="DELETE", path_template="/deleteresourceshare", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ram_service(), self.region, host)
 
+    # DisassociateResourceShare  POST /disassociateresourceshare
+    # errors: IdempotentParameterMismatchException, InvalidClientTokenException, InvalidParameterException, InvalidStateTransitionException, MalformedArnException, OperationNotPermittedException, ResourceShareLimitExceededException, ServerInternalException, ServiceUnavailableException, ThrottlingException, UnknownResourceException
+    def disassociate_resource_share(self, DisassociateResourceShareRequest input) -> str:
+        auto host = endpoints.regional_host(ram_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/disassociateresourceshare", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceShareArn\":" + ram_json_str(input.resourceShareArn))
+        if input.resourceArns.is_some():
+            auto u0 = input.resourceArns.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(ram_json_str(x1))
+            parts.append("\"resourceArns\":" + ram_json_arr(e1))
+        if input.principals.is_some():
+            auto u2 = input.principals.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(ram_json_str(x3))
+            parts.append("\"principals\":" + ram_json_arr(e3))
+        if input.clientToken.is_some():
+            auto u4 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + ram_json_str(u4))
+        if input.sources.is_some():
+            auto u5 = input.sources.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(ram_json_str(x6))
+            parts.append("\"sources\":" + ram_json_arr(e6))
+        auto bp = restjson.rest_json_document(b, ram_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
+
     # DisassociateResourceSharePermission  POST /disassociateresourcesharepermission
     # errors: InvalidClientTokenException, InvalidParameterException, InvalidStateTransitionException, MalformedArnException, OperationNotPermittedException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
     def disassociate_resource_share_permission(self, DisassociateResourceSharePermissionRequest input) -> str:
@@ -1242,6 +1419,126 @@ struct RAMClient:
         auto b = binding.HttpBinding(method="POST", path_template="/getpermission", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetPermissionDocument(permissionArn=input.permissionArn, permissionVersion=input.permissionVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
+
+    # GetResourcePolicies  POST /getresourcepolicies
+    # errors: InvalidNextTokenException, InvalidParameterException, MalformedArnException, ResourceArnNotFoundException, ServerInternalException, ServiceUnavailableException
+    def get_resource_policies(self, GetResourcePoliciesRequest input) -> str:
+        auto host = endpoints.regional_host(ram_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/getresourcepolicies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.resourceArns:
+            e0.append(ram_json_str(x0))
+        parts.append("\"resourceArns\":" + ram_json_arr(e0))
+        if input.principal.is_some():
+            auto u1 = input.principal.unwrap()
+            parts.append("\"principal\":" + ram_json_str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + ram_json_str(u2))
+        if input.maxResults.is_some():
+            auto u3 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u3))
+        auto bp = restjson.rest_json_document(b, ram_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
+
+    # GetResourceShareAssociations  POST /getresourceshareassociations
+    # errors: InvalidNextTokenException, InvalidParameterException, MalformedArnException, OperationNotPermittedException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
+    def get_resource_share_associations(self, GetResourceShareAssociationsRequest input) -> str:
+        auto host = endpoints.regional_host(ram_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/getresourceshareassociations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"associationType\":" + input.associationType.to_json())
+        if input.resourceShareArns.is_some():
+            auto u0 = input.resourceShareArns.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(ram_json_str(x1))
+            parts.append("\"resourceShareArns\":" + ram_json_arr(e1))
+        if input.resourceArn.is_some():
+            auto u2 = input.resourceArn.unwrap()
+            parts.append("\"resourceArn\":" + ram_json_str(u2))
+        if input.principal.is_some():
+            auto u3 = input.principal.unwrap()
+            parts.append("\"principal\":" + ram_json_str(u3))
+        if input.associationStatus.is_some():
+            auto u4 = input.associationStatus.unwrap()
+            parts.append("\"associationStatus\":" + u4.to_json())
+        if input.nextToken.is_some():
+            auto u5 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + ram_json_str(u5))
+        if input.maxResults.is_some():
+            auto u6 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u6))
+        auto bp = restjson.rest_json_document(b, ram_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
+
+    # GetResourceShareInvitations  POST /getresourceshareinvitations
+    # errors: InvalidMaxResultsException, InvalidNextTokenException, InvalidParameterException, MalformedArnException, ResourceShareInvitationArnNotFoundException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
+    def get_resource_share_invitations(self, GetResourceShareInvitationsRequest input) -> str:
+        auto host = endpoints.regional_host(ram_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/getresourceshareinvitations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.resourceShareInvitationArns.is_some():
+            auto u0 = input.resourceShareInvitationArns.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(ram_json_str(x1))
+            parts.append("\"resourceShareInvitationArns\":" + ram_json_arr(e1))
+        if input.resourceShareArns.is_some():
+            auto u2 = input.resourceShareArns.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(ram_json_str(x3))
+            parts.append("\"resourceShareArns\":" + ram_json_arr(e3))
+        if input.nextToken.is_some():
+            auto u4 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + ram_json_str(u4))
+        if input.maxResults.is_some():
+            auto u5 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u5))
+        auto bp = restjson.rest_json_document(b, ram_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
+
+    # GetResourceShares  POST /getresourceshares
+    # errors: InvalidNextTokenException, InvalidParameterException, MalformedArnException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
+    def get_resource_shares(self, GetResourceSharesRequest input) -> str:
+        auto host = endpoints.regional_host(ram_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/getresourceshares", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.resourceShareArns.is_some():
+            auto u0 = input.resourceShareArns.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(ram_json_str(x1))
+            parts.append("\"resourceShareArns\":" + ram_json_arr(e1))
+        if input.resourceShareStatus.is_some():
+            auto u2 = input.resourceShareStatus.unwrap()
+            parts.append("\"resourceShareStatus\":" + u2.to_json())
+        parts.append("\"resourceOwner\":" + input.resourceOwner.to_json())
+        if input.name.is_some():
+            auto u3 = input.name.unwrap()
+            parts.append("\"name\":" + ram_json_str(u3))
+        if input.tagFilters.is_some():
+            auto u4 = input.tagFilters.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(tag_filter_to_json(x5))
+            parts.append("\"tagFilters\":" + ram_json_arr(e5))
+        if input.nextToken.is_some():
+            auto u6 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + ram_json_str(u6))
+        if input.maxResults.is_some():
+            auto u7 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u7))
+        if input.permissionArn.is_some():
+            auto u8 = input.permissionArn.unwrap()
+            parts.append("\"permissionArn\":" + ram_json_str(u8))
+        if input.permissionVersion.is_some():
+            auto u9 = input.permissionVersion.unwrap()
+            parts.append("\"permissionVersion\":" + str(u9))
+        auto bp = restjson.rest_json_document(b, ram_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
 
     # ListPendingInvitationResources  POST /listpendinginvitationresources
@@ -1280,6 +1577,64 @@ struct RAMClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
 
+    # ListPrincipals  POST /listprincipals
+    # errors: InvalidNextTokenException, InvalidParameterException, MalformedArnException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
+    def list_principals(self, ListPrincipalsRequest input) -> str:
+        auto host = endpoints.regional_host(ram_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/listprincipals", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceOwner\":" + input.resourceOwner.to_json())
+        if input.resourceArn.is_some():
+            auto u0 = input.resourceArn.unwrap()
+            parts.append("\"resourceArn\":" + ram_json_str(u0))
+        if input.principals.is_some():
+            auto u1 = input.principals.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(ram_json_str(x2))
+            parts.append("\"principals\":" + ram_json_arr(e2))
+        if input.resourceType.is_some():
+            auto u3 = input.resourceType.unwrap()
+            parts.append("\"resourceType\":" + ram_json_str(u3))
+        if input.resourceShareArns.is_some():
+            auto u4 = input.resourceShareArns.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(ram_json_str(x5))
+            parts.append("\"resourceShareArns\":" + ram_json_arr(e5))
+        if input.nextToken.is_some():
+            auto u6 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + ram_json_str(u6))
+        if input.maxResults.is_some():
+            auto u7 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u7))
+        auto bp = restjson.rest_json_document(b, ram_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
+
+    # ListReplacePermissionAssociationsWork  POST /listreplacepermissionassociationswork
+    # errors: InvalidNextTokenException, InvalidParameterException, ServerInternalException, ServiceUnavailableException
+    def list_replace_permission_associations_work(self, ListReplacePermissionAssociationsWorkRequest input) -> str:
+        auto host = endpoints.regional_host(ram_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/listreplacepermissionassociationswork", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.workIds.is_some():
+            auto u0 = input.workIds.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(ram_json_str(x1))
+            parts.append("\"workIds\":" + ram_json_arr(e1))
+        if input.status.is_some():
+            auto u2 = input.status.unwrap()
+            parts.append("\"status\":" + u2.to_json())
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + ram_json_str(u3))
+        if input.maxResults.is_some():
+            auto u4 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u4))
+        auto bp = restjson.rest_json_document(b, ram_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
+
     # ListResourceSharePermissions  POST /listresourcesharepermissions
     # errors: InvalidNextTokenException, InvalidParameterException, MalformedArnException, OperationNotPermittedException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
     def list_resource_share_permissions(self, ListResourceSharePermissionsRequest input) -> str:
@@ -1296,6 +1651,73 @@ struct RAMClient:
         auto b = binding.HttpBinding(method="POST", path_template="/listresourcetypes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListResourceTypesDocument(nextToken=input.nextToken, maxResults=input.maxResults, resourceRegionScope=input.resourceRegionScope)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
+
+    # ListResources  POST /listresources
+    # errors: InvalidNextTokenException, InvalidParameterException, InvalidResourceTypeException, MalformedArnException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
+    def list_resources(self, ListResourcesRequest input) -> str:
+        auto host = endpoints.regional_host(ram_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/listresources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceOwner\":" + input.resourceOwner.to_json())
+        if input.principal.is_some():
+            auto u0 = input.principal.unwrap()
+            parts.append("\"principal\":" + ram_json_str(u0))
+        if input.resourceType.is_some():
+            auto u1 = input.resourceType.unwrap()
+            parts.append("\"resourceType\":" + ram_json_str(u1))
+        if input.resourceArns.is_some():
+            auto u2 = input.resourceArns.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(ram_json_str(x3))
+            parts.append("\"resourceArns\":" + ram_json_arr(e3))
+        if input.resourceShareArns.is_some():
+            auto u4 = input.resourceShareArns.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(ram_json_str(x5))
+            parts.append("\"resourceShareArns\":" + ram_json_arr(e5))
+        if input.nextToken.is_some():
+            auto u6 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + ram_json_str(u6))
+        if input.maxResults.is_some():
+            auto u7 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u7))
+        if input.resourceRegionScope.is_some():
+            auto u8 = input.resourceRegionScope.unwrap()
+            parts.append("\"resourceRegionScope\":" + u8.to_json())
+        auto bp = restjson.rest_json_document(b, ram_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
+
+    # ListSourceAssociations  POST /listsourceassociations
+    # errors: InvalidNextTokenException, InvalidParameterException, MalformedArnException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
+    def list_source_associations(self, ListSourceAssociationsRequest input) -> str:
+        auto host = endpoints.regional_host(ram_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/listsourceassociations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.resourceShareArns.is_some():
+            auto u0 = input.resourceShareArns.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(ram_json_str(x1))
+            parts.append("\"resourceShareArns\":" + ram_json_arr(e1))
+        if input.sourceId.is_some():
+            auto u2 = input.sourceId.unwrap()
+            parts.append("\"sourceId\":" + ram_json_str(u2))
+        if input.sourceType.is_some():
+            auto u3 = input.sourceType.unwrap()
+            parts.append("\"sourceType\":" + ram_json_str(u3))
+        if input.associationStatus.is_some():
+            auto u4 = input.associationStatus.unwrap()
+            parts.append("\"associationStatus\":" + u4.to_json())
+        if input.nextToken.is_some():
+            auto u5 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + ram_json_str(u5))
+        if input.maxResults.is_some():
+            auto u6 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u6))
+        auto bp = restjson.rest_json_document(b, ram_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
 
     # PromotePermissionCreatedFromPolicy  POST /promotepermissioncreatedfrompolicy
@@ -1343,6 +1765,44 @@ struct RAMClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
 
+    # TagResource  POST /tagresource
+    # errors: InvalidParameterException, MalformedArnException, ResourceArnNotFoundException, ServerInternalException, ServiceUnavailableException, TagLimitExceededException, TagPolicyViolationException, UnknownResourceException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(ram_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/tagresource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.resourceShareArn.is_some():
+            auto u0 = input.resourceShareArn.unwrap()
+            parts.append("\"resourceShareArn\":" + ram_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.tags:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + ram_json_arr(e1))
+        if input.resourceArn.is_some():
+            auto u2 = input.resourceArn.unwrap()
+            parts.append("\"resourceArn\":" + ram_json_str(u2))
+        auto bp = restjson.rest_json_document(b, ram_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
+
+    # UntagResource  POST /untagresource
+    # errors: InvalidParameterException, MalformedArnException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(ram_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/untagresource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.resourceShareArn.is_some():
+            auto u0 = input.resourceShareArn.unwrap()
+            parts.append("\"resourceShareArn\":" + ram_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.tagKeys:
+            e1.append(ram_json_str(x1))
+        parts.append("\"tagKeys\":" + ram_json_arr(e1))
+        if input.resourceArn.is_some():
+            auto u2 = input.resourceArn.unwrap()
+            parts.append("\"resourceArn\":" + ram_json_str(u2))
+        auto bp = restjson.rest_json_document(b, ram_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
+
     # UpdateResourceShare  POST /updateresourceshare
     # errors: IdempotentParameterMismatchException, InvalidClientTokenException, InvalidParameterException, MalformedArnException, MissingRequiredParameterException, OperationNotPermittedException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
     def update_resource_share(self, UpdateResourceShareRequest input) -> str:
@@ -1351,6 +1811,97 @@ struct RAMClient:
         auto doc = UpdateResourceShareDocument(resourceShareArn=input.resourceShareArn, name=input.name, allowExternalPrincipals=input.allowExternalPrincipals, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
+
+    # Paginator for GetResourcePolicies — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: policies).
+    def paginate_get_resource_policies(self, GetResourcePoliciesRequest input):
+        auto host = endpoints.regional_host(ram_service(), self.region)
+        while True:
+            auto raw = self.get_resource_policies(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for GetResourceShareAssociations — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: resourceShareAssociations).
+    def paginate_get_resource_share_associations(self, GetResourceShareAssociationsRequest input):
+        auto host = endpoints.regional_host(ram_service(), self.region)
+        while True:
+            auto raw = self.get_resource_share_associations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for GetResourceShareInvitations — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: resourceShareInvitations).
+    def paginate_get_resource_share_invitations(self, GetResourceShareInvitationsRequest input):
+        auto host = endpoints.regional_host(ram_service(), self.region)
+        while True:
+            auto raw = self.get_resource_share_invitations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for GetResourceShares — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: resourceShares).
+    def paginate_get_resource_shares(self, GetResourceSharesRequest input):
+        auto host = endpoints.regional_host(ram_service(), self.region)
+        while True:
+            auto raw = self.get_resource_shares(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListPrincipals — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: principals).
+    def paginate_list_principals(self, ListPrincipalsRequest input):
+        auto host = endpoints.regional_host(ram_service(), self.region)
+        while True:
+            auto raw = self.list_principals(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListResources — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: resources).
+    def paginate_list_resources(self, ListResourcesRequest input):
+        auto host = endpoints.regional_host(ram_service(), self.region)
+        while True:
+            auto raw = self.list_resources(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListSourceAssociations — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: sourceAssociations).
+    def paginate_list_source_associations(self, ListSourceAssociationsRequest input):
+        auto host = endpoints.regional_host(ram_service(), self.region)
+        while True:
+            auto raw = self.list_source_associations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
 
 # Construct a RAMClient bound to credentials + region.
 def ram_client(core.Credentials creds, str region) -> RAMClient:

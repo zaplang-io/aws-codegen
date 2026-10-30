@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 17 operations — 10 with a generated method,
-#   7 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 17 operations — 16 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   48 structs (29 @derive(Json)), 4 enums, 8 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -115,8 +115,9 @@ struct CreateLoggingConfigurationRequest:
     DestinationConfiguration destinationConfiguration
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLoggingConfigurationResponse:
     Optional[str] arn
     Optional[str] id
@@ -137,8 +138,9 @@ struct CreateRoomRequest:
     Optional[dict[str, str]] tags
     Optional[list[str]] loggingConfigurationIdentifiers
 
-# no @derive(Json): member(s) tags: dict[str, str], loggingConfigurationIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], loggingConfigurationIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRoomResponse:
     Optional[str] arn
     Optional[str] id
@@ -199,8 +201,9 @@ struct FirehoseDestinationConfiguration:
 struct GetLoggingConfigurationRequest:
     str identifier
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLoggingConfigurationResponse:
     Optional[str] arn
     Optional[str] id
@@ -216,8 +219,9 @@ struct GetLoggingConfigurationResponse:
 struct GetRoomRequest:
     str identifier
 
-# no @derive(Json): member(s) tags: dict[str, str], loggingConfigurationIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], loggingConfigurationIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRoomResponse:
     Optional[str] arn
     Optional[str] id
@@ -240,8 +244,9 @@ struct ListLoggingConfigurationsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) loggingConfigurations: list[LoggingConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) loggingConfigurations: list[LoggingConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLoggingConfigurationsResponse:
     list[LoggingConfigurationSummary] loggingConfigurations
     Optional[str] nextToken
@@ -255,8 +260,9 @@ struct ListRoomsRequest:
     Optional[str] messageReviewHandlerUri
     Optional[str] loggingConfigurationIdentifier
 
-# no @derive(Json): member(s) rooms: list[RoomSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rooms: list[RoomSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRoomsResponse:
     list[RoomSummary] rooms
     Optional[str] nextToken
@@ -266,13 +272,15 @@ struct ListRoomsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     dict[str, str] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LoggingConfigurationSummary:
     Optional[str] arn
     Optional[str] id
@@ -298,8 +306,9 @@ struct ResourceNotFoundException:
     str resourceId
     str resourceType
 
-# no @derive(Json): member(s) tags: dict[str, str], loggingConfigurationIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], loggingConfigurationIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoomSummary:
     Optional[str] arn
     Optional[str] id
@@ -368,8 +377,9 @@ struct UpdateLoggingConfigurationRequest:
     Optional[str] name
     Optional[DestinationConfiguration] destinationConfiguration
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateLoggingConfigurationResponse:
     Optional[str] arn
     Optional[str] id
@@ -390,8 +400,9 @@ struct UpdateRoomRequest:
     Optional[MessageReviewHandler] messageReviewHandler
     Optional[list[str]] loggingConfigurationIdentifiers
 
-# no @derive(Json): member(s) tags: dict[str, str], loggingConfigurationIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], loggingConfigurationIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRoomResponse:
     Optional[str] arn
     Optional[str] id
@@ -404,8 +415,9 @@ struct UpdateRoomResponse:
     Optional[dict[str, str]] tags
     Optional[list[str]] loggingConfigurationIdentifiers
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -457,13 +469,7 @@ def ivschat_error_from_code(str code) -> ivschatError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateChatToken (document member `capabilities: list[ChatTokenCapability]` is not serializable by derive)
-#   CreateLoggingConfiguration (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateRoom (document member `tags: dict[str, str]` is not serializable by derive)
-#   SendEvent (document member `attributes: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateRoom (document member `loggingConfigurationIdentifiers: list[str]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -528,6 +534,84 @@ struct UpdateLoggingConfigurationDocument:
 struct ivschatClient:
     core.Credentials creds
     str region
+
+    # CreateChatToken  POST /CreateChatToken
+    # errors: AccessDeniedException, PendingVerification, ResourceNotFoundException, ValidationException
+    def create_chat_token(self, CreateChatTokenRequest input) -> str:
+        auto host = endpoints.regional_host(ivschat_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateChatToken", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"roomIdentifier\":" + ivschat_json_str(input.roomIdentifier))
+        parts.append("\"userId\":" + ivschat_json_str(input.userId))
+        if input.capabilities.is_some():
+            auto u0 = input.capabilities.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"capabilities\":" + ivschat_json_arr(e1))
+        if input.sessionDurationInMinutes.is_some():
+            auto u2 = input.sessionDurationInMinutes.unwrap()
+            parts.append("\"sessionDurationInMinutes\":" + str(u2))
+        if input.attributes.is_some():
+            auto u3 = input.attributes.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(ivschat_json_str(k4) + ":" + ivschat_json_str(u3[k4]))
+            parts.append("\"attributes\":" + ivschat_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, ivschat_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivschat_service(), self.region, host)
+
+    # CreateLoggingConfiguration  POST /CreateLoggingConfiguration
+    # errors: AccessDeniedException, ConflictException, PendingVerification, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def create_logging_configuration(self, CreateLoggingConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(ivschat_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateLoggingConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + ivschat_json_str(u0))
+        parts.append("\"destinationConfiguration\":" + input.destinationConfiguration.to_json())
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(ivschat_json_str(k2) + ":" + ivschat_json_str(u1[k2]))
+            parts.append("\"tags\":" + ivschat_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, ivschat_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivschat_service(), self.region, host)
+
+    # CreateRoom  POST /CreateRoom
+    # errors: AccessDeniedException, ConflictException, PendingVerification, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
+    def create_room(self, CreateRoomRequest input) -> str:
+        auto host = endpoints.regional_host(ivschat_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateRoom", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + ivschat_json_str(u0))
+        if input.maximumMessageRatePerSecond.is_some():
+            auto u1 = input.maximumMessageRatePerSecond.unwrap()
+            parts.append("\"maximumMessageRatePerSecond\":" + str(u1))
+        if input.maximumMessageLength.is_some():
+            auto u2 = input.maximumMessageLength.unwrap()
+            parts.append("\"maximumMessageLength\":" + str(u2))
+        if input.messageReviewHandler.is_some():
+            auto u3 = input.messageReviewHandler.unwrap()
+            parts.append("\"messageReviewHandler\":" + u3.to_json())
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(ivschat_json_str(k5) + ":" + ivschat_json_str(u4[k5]))
+            parts.append("\"tags\":" + ivschat_json_obj(m5))
+        if input.loggingConfigurationIdentifiers.is_some():
+            auto u6 = input.loggingConfigurationIdentifiers.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(ivschat_json_str(x7))
+            parts.append("\"loggingConfigurationIdentifiers\":" + ivschat_json_arr(e7))
+        auto bp = restjson.rest_json_document(b, ivschat_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivschat_service(), self.region, host)
 
     # DeleteLoggingConfiguration  POST /DeleteLoggingConfiguration
     # errors: AccessDeniedException, ConflictException, PendingVerification, ResourceNotFoundException, ValidationException
@@ -610,6 +694,38 @@ struct ivschatClient:
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ivschat_service(), self.region, host)
 
+    # SendEvent  POST /SendEvent
+    # errors: AccessDeniedException, PendingVerification, ResourceNotFoundException, ThrottlingException, ValidationException
+    def send_event(self, SendEventRequest input) -> str:
+        auto host = endpoints.regional_host(ivschat_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/SendEvent", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"roomIdentifier\":" + ivschat_json_str(input.roomIdentifier))
+        parts.append("\"eventName\":" + ivschat_json_str(input.eventName))
+        if input.attributes.is_some():
+            auto u0 = input.attributes.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(ivschat_json_str(k1) + ":" + ivschat_json_str(u0[k1]))
+            parts.append("\"attributes\":" + ivschat_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, ivschat_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivschat_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(ivschat_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(ivschat_json_str(k0) + ":" + ivschat_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + ivschat_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, ivschat_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ivschat_service(), self.region, host)
+
     # UpdateLoggingConfiguration  POST /UpdateLoggingConfiguration
     # errors: AccessDeniedException, ConflictException, PendingVerification, ResourceNotFoundException, ValidationException
     def update_logging_configuration(self, UpdateLoggingConfigurationRequest input) -> str:
@@ -617,6 +733,34 @@ struct ivschatClient:
         auto b = binding.HttpBinding(method="POST", path_template="/UpdateLoggingConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateLoggingConfigurationDocument(identifier=input.identifier, name=input.name, destinationConfiguration=input.destinationConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, ivschat_service(), self.region, host)
+
+    # UpdateRoom  POST /UpdateRoom
+    # errors: AccessDeniedException, PendingVerification, ResourceNotFoundException, ValidationException
+    def update_room(self, UpdateRoomRequest input) -> str:
+        auto host = endpoints.regional_host(ivschat_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateRoom", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"identifier\":" + ivschat_json_str(input.identifier))
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + ivschat_json_str(u0))
+        if input.maximumMessageRatePerSecond.is_some():
+            auto u1 = input.maximumMessageRatePerSecond.unwrap()
+            parts.append("\"maximumMessageRatePerSecond\":" + str(u1))
+        if input.maximumMessageLength.is_some():
+            auto u2 = input.maximumMessageLength.unwrap()
+            parts.append("\"maximumMessageLength\":" + str(u2))
+        if input.messageReviewHandler.is_some():
+            auto u3 = input.messageReviewHandler.unwrap()
+            parts.append("\"messageReviewHandler\":" + u3.to_json())
+        if input.loggingConfigurationIdentifiers.is_some():
+            auto u4 = input.loggingConfigurationIdentifiers.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(ivschat_json_str(x5))
+            parts.append("\"loggingConfigurationIdentifiers\":" + ivschat_json_arr(e5))
+        auto bp = restjson.rest_json_document(b, ivschat_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, ivschat_service(), self.region, host)
 
 # Construct a ivschatClient bound to credentials + region.

@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 306 operations — 182 with a generated method,
-#   124 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 306 operations — 301 with a generated method,
+#   5 skipped (input has a non-string-keyed map or free-form document member).
 #   1134 structs (632 @derive(Json)), 144 enums, 49 error variants.
-#   26 paginators generated (11 paginated ops skipped) from paginators-1.json.
+#   37 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import datetime
 
 # The Glue awsJson protocol: version 1.1, API id "AWSGlue".
 def glue_protocol() -> awsjson.AwsJson:
@@ -1500,8 +1501,9 @@ enum WorkflowRunStatus:
 struct AccessDeniedException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Arguments: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Arguments: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Action:
     Optional[str] JobName
     Optional[dict[str, str]] Arguments
@@ -1510,16 +1512,18 @@ struct Action:
     Optional[NotificationProperty] NotificationProperty
     Optional[str] CrawlerName
 
-# no @derive(Json): member(s) Inputs: list[str], Groups: list[list[str]], Aggs: list[AggregateOperation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], Groups: list[list[str]], Aggs: list[AggregateOperation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Aggregate:
     str Name
     list[str] Inputs
     list[list[str]] Groups
     list[AggregateOperation] Aggs
 
-# no @derive(Json): member(s) Column: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Column: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AggregateOperation:
     list[str] Column
     AggFunction AggFunc
@@ -1538,8 +1542,9 @@ struct AmazonRedshiftAdvancedOption:
     Optional[str] Key
     Optional[str] Value
 
-# no @derive(Json): member(s) AdvancedOptions: list[AmazonRedshiftAdvancedOption], TableSchema: list[Option], SelectedColumns: list[Option] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdvancedOptions: list[AmazonRedshiftAdvancedOption], TableSchema: list[Option], SelectedColumns: list[Option] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmazonRedshiftNodeData:
     Optional[str] AccessType
     Optional[str] SourceType
@@ -1568,14 +1573,16 @@ struct AmazonRedshiftNodeData:
     Optional[str] StagingTable
     Optional[list[Option]] SelectedColumns
 
-# no @derive(Json): member(s) Data: AmazonRedshiftNodeData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Data: AmazonRedshiftNodeData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmazonRedshiftSource:
     Optional[str] Name
     Optional[AmazonRedshiftNodeData] Data
 
-# no @derive(Json): member(s) Data: AmazonRedshiftNodeData, Inputs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Data: AmazonRedshiftNodeData, Inputs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmazonRedshiftTarget:
     Optional[str] Name
     Optional[AmazonRedshiftNodeData] Data
@@ -1587,8 +1594,9 @@ struct AnnotationError:
     Optional[str] StatisticId
     Optional[str] FailureReason
 
-# no @derive(Json): member(s) Inputs: list[str], Mapping: list[Mapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], Mapping: list[Mapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplyMapping:
     str Name
     list[str] Inputs
@@ -1608,8 +1616,9 @@ struct AssetTypeItem:
     Optional[str] Id
     Optional[str] Name
 
-# no @derive(Json): member(s) GlossaryTermIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlossaryTermIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateGlossaryTermsRequest:
     str AssetIdentifier
     Optional[str] IterableFormName
@@ -1617,16 +1626,18 @@ struct AssociateGlossaryTermsRequest:
     list[str] GlossaryTermIdentifiers
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) GlossaryTerms: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlossaryTerms: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateGlossaryTermsResponse:
     Optional[str] AssetIdentifier
     Optional[str] IterableFormName
     Optional[str] ItemIdentifier
     Optional[list[str]] GlossaryTerms
 
-# no @derive(Json): member(s) OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AthenaConnectorSource:
     str Name
     str ConnectionName
@@ -1636,15 +1647,17 @@ struct AthenaConnectorSource:
     str SchemaName
     Optional[list[GlueSchema]] OutputSchemas
 
-# no @derive(Json): member(s) RequestedColumns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestedColumns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuditContext:
     Optional[str] AdditionalAuditContext
     Optional[list[str]] RequestedColumns
     Optional[bool] AllColumnsRequested
 
-# no @derive(Json): member(s) AuthenticationType: Property, SecretArn: Property, OAuth2Properties: dict[str, Property], BasicAuthenticationProperties: dict[str, Property], CustomAuthenticationProperties: dict[str, Property] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthenticationType: Property, SecretArn: Property, OAuth2Properties: dict[str, Property], BasicAuthenticationProperties: dict[str, Property], CustomAuthenticationProperties: dict[str, Property] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthConfiguration:
     Property AuthenticationType
     Optional[Property] SecretArn
@@ -1652,16 +1665,18 @@ struct AuthConfiguration:
     Optional[dict[str, Property]] BasicAuthenticationProperties
     Optional[dict[str, Property]] CustomAuthenticationProperties
 
-# no @derive(Json): member(s) OAuth2Properties: OAuth2Properties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OAuth2Properties: OAuth2Properties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthenticationConfiguration:
     Optional[AuthenticationType] AuthenticationType
     Optional[str] SecretArn
     Optional[str] KmsKeyArn
     Optional[OAuth2Properties] OAuth2Properties
 
-# no @derive(Json): member(s) OAuth2Properties: OAuth2PropertiesInput, CustomAuthenticationCredentials: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OAuth2Properties: OAuth2PropertiesInput, CustomAuthenticationCredentials: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthenticationConfigurationInput:
     Optional[AuthenticationType] AuthenticationType
     Optional[OAuth2PropertiesInput] OAuth2Properties
@@ -1680,8 +1695,9 @@ struct AutoDataQuality:
     Optional[bool] IsEnabled
     Optional[str] EvaluationContext
 
-# no @derive(Json): member(s) Partitions: list[PartitionValueList] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Partitions: list[PartitionValueList] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BackfillError:
     Optional[BackfillErrorCode] Code
     Optional[list[PartitionValueList]] Partitions
@@ -1691,14 +1707,16 @@ struct BasicAuthenticationCredentials:
     Optional[str] Username
     Optional[str] Password
 
-# no @derive(Json): member(s) Username: ConnectorProperty, Password: ConnectorProperty not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Username: ConnectorProperty, Password: ConnectorProperty not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BasicAuthenticationProperties:
     Optional[ConnectorProperty] Username
     Optional[ConnectorProperty] Password
 
-# no @derive(Json): member(s) Inputs: list[str], PartitionKeys: list[list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], PartitionKeys: list[list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BasicCatalogTarget:
     str Name
     list[str] Inputs
@@ -1706,175 +1724,204 @@ struct BasicCatalogTarget:
     str Database
     str Table
 
-# no @derive(Json): member(s) PartitionInputList: list[PartitionInput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionInputList: list[PartitionInput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreatePartitionRequest:
     Optional[str] CatalogId
     str DatabaseName
     str TableName
     list[PartitionInput] PartitionInputList
 
-# no @derive(Json): member(s) Errors: list[PartitionError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[PartitionError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreatePartitionResponse:
     Optional[list[PartitionError]] Errors
 
-# no @derive(Json): member(s) ConnectionNameList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectionNameList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteConnectionRequest:
     Optional[str] CatalogId
     list[str] ConnectionNameList
 
-# no @derive(Json): member(s) Succeeded: list[str], Errors: dict[str, ErrorDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Succeeded: list[str], Errors: dict[str, ErrorDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteConnectionResponse:
     Optional[list[str]] Succeeded
     Optional[dict[str, ErrorDetail]] Errors
 
-# no @derive(Json): member(s) PartitionsToDelete: list[PartitionValueList] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionsToDelete: list[PartitionValueList] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeletePartitionRequest:
     Optional[str] CatalogId
     str DatabaseName
     str TableName
     list[PartitionValueList] PartitionsToDelete
 
-# no @derive(Json): member(s) Errors: list[PartitionError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[PartitionError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeletePartitionResponse:
     Optional[list[PartitionError]] Errors
 
-# no @derive(Json): member(s) TablesToDelete: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TablesToDelete: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteTableRequest:
     Optional[str] CatalogId
     str DatabaseName
     list[str] TablesToDelete
     Optional[str] TransactionId
 
-# no @derive(Json): member(s) Errors: list[TableError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[TableError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteTableResponse:
     Optional[list[TableError]] Errors
 
-# no @derive(Json): member(s) VersionIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VersionIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteTableVersionRequest:
     Optional[str] CatalogId
     str DatabaseName
     str TableName
     list[str] VersionIds
 
-# no @derive(Json): member(s) Errors: list[TableVersionError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[TableVersionError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteTableVersionResponse:
     Optional[list[TableVersionError]] Errors
 
-# no @derive(Json): member(s) Names: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Names: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetBlueprintsRequest:
     list[str] Names
     Optional[bool] IncludeBlueprint
     Optional[bool] IncludeParameterSpec
 
-# no @derive(Json): member(s) Blueprints: list[Blueprint], MissingBlueprints: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Blueprints: list[Blueprint], MissingBlueprints: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetBlueprintsResponse:
     Optional[list[Blueprint]] Blueprints
     Optional[list[str]] MissingBlueprints
 
-# no @derive(Json): member(s) CrawlerNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CrawlerNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetCrawlersRequest:
     list[str] CrawlerNames
 
-# no @derive(Json): member(s) Crawlers: list[Crawler], CrawlersNotFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Crawlers: list[Crawler], CrawlersNotFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetCrawlersResponse:
     Optional[list[Crawler]] Crawlers
     Optional[list[str]] CrawlersNotFound
 
-# no @derive(Json): member(s) Names: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Names: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetCustomEntityTypesRequest:
     list[str] Names
 
-# no @derive(Json): member(s) CustomEntityTypes: list[CustomEntityType], CustomEntityTypesNotFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomEntityTypes: list[CustomEntityType], CustomEntityTypesNotFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetCustomEntityTypesResponse:
     Optional[list[CustomEntityType]] CustomEntityTypes
     Optional[list[str]] CustomEntityTypesNotFound
 
-# no @derive(Json): member(s) ResultIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResultIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetDataQualityResultRequest:
     list[str] ResultIds
 
-# no @derive(Json): member(s) Results: list[DataQualityResult], ResultsNotFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[DataQualityResult], ResultsNotFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetDataQualityResultResponse:
     list[DataQualityResult] Results
     Optional[list[str]] ResultsNotFound
 
-# no @derive(Json): member(s) ResultIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResultIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetDataQualityResultV2Request:
     list[str] ResultIds
 
-# no @derive(Json): member(s) Results: list[DataQualityResultV2Item], ResultsNotFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[DataQualityResultV2Item], ResultsNotFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetDataQualityResultV2Response:
     list[DataQualityResultV2Item] Results
     Optional[list[str]] ResultsNotFound
 
-# no @derive(Json): member(s) RunIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RunIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetDataQualityRulesetEvaluationRunRequest:
     list[str] RunIds
 
-# no @derive(Json): member(s) Runs: list[DataQualityRulesetEvaluationRun], RunsNotFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Runs: list[DataQualityRulesetEvaluationRun], RunsNotFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetDataQualityRulesetEvaluationRunResponse:
     Optional[list[DataQualityRulesetEvaluationRun]] Runs
     Optional[list[str]] RunsNotFound
 
-# no @derive(Json): member(s) DevEndpointNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DevEndpointNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetDevEndpointsRequest:
     list[str] DevEndpointNames
 
-# no @derive(Json): member(s) DevEndpoints: list[DevEndpoint], DevEndpointsNotFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DevEndpoints: list[DevEndpoint], DevEndpointsNotFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetDevEndpointsResponse:
     Optional[list[DevEndpoint]] DevEndpoints
     Optional[list[str]] DevEndpointsNotFound
 
-# no @derive(Json): member(s) ItemIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ItemIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetIterableFormsRequest:
     str AssetIdentifier
     str IterableFormName
     list[str] ItemIdentifiers
 
-# no @derive(Json): member(s) Items: list[IterableFormItem], Errors: list[ItemError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[IterableFormItem], Errors: list[ItemError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetIterableFormsResponse:
     Optional[list[IterableFormItem]] Items
     Optional[list[ItemError]] Errors
 
-# no @derive(Json): member(s) JobNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetJobsRequest:
     list[str] JobNames
 
-# no @derive(Json): member(s) Jobs: list[Job], JobsNotFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Jobs: list[Job], JobsNotFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetJobsResponse:
     Optional[list[Job]] Jobs
     Optional[list[str]] JobsNotFound
 
-# no @derive(Json): member(s) PartitionsToGet: list[PartitionValueList], AuditContext: AuditContext, QuerySessionContext: QuerySessionContext not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionsToGet: list[PartitionValueList], AuditContext: AuditContext, QuerySessionContext: QuerySessionContext not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetPartitionRequest:
     Optional[str] CatalogId
     str DatabaseName
@@ -1883,8 +1930,9 @@ struct BatchGetPartitionRequest:
     Optional[AuditContext] AuditContext
     Optional[QuerySessionContext] QuerySessionContext
 
-# no @derive(Json): member(s) Partitions: list[Partition], UnprocessedKeys: list[PartitionValueList] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Partitions: list[Partition], UnprocessedKeys: list[PartitionValueList] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetPartitionResponse:
     Optional[list[Partition]] Partitions
     Optional[list[PartitionValueList]] UnprocessedKeys
@@ -1904,48 +1952,56 @@ struct BatchGetTableOptimizerError:
     Optional[str] tableName
     Optional[TableOptimizerType] type
 
-# no @derive(Json): member(s) Entries: list[BatchGetTableOptimizerEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entries: list[BatchGetTableOptimizerEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetTableOptimizerRequest:
     list[BatchGetTableOptimizerEntry] Entries
 
-# no @derive(Json): member(s) TableOptimizers: list[BatchTableOptimizer], Failures: list[BatchGetTableOptimizerError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableOptimizers: list[BatchTableOptimizer], Failures: list[BatchGetTableOptimizerError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetTableOptimizerResponse:
     Optional[list[BatchTableOptimizer]] TableOptimizers
     Optional[list[BatchGetTableOptimizerError]] Failures
 
-# no @derive(Json): member(s) TriggerNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TriggerNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetTriggersRequest:
     list[str] TriggerNames
 
-# no @derive(Json): member(s) Triggers: list[Trigger], TriggersNotFound: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Triggers: list[Trigger], TriggersNotFound: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetTriggersResponse:
     Optional[list[Trigger]] Triggers
     Optional[list[str]] TriggersNotFound
 
-# no @derive(Json): member(s) Names: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Names: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetWorkflowsRequest:
     list[str] Names
     Optional[bool] IncludeGraph
 
-# no @derive(Json): member(s) Workflows: list[Workflow], MissingWorkflows: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Workflows: list[Workflow], MissingWorkflows: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetWorkflowsResponse:
     Optional[list[Workflow]] Workflows
     Optional[list[str]] MissingWorkflows
 
-# no @derive(Json): member(s) InclusionAnnotations: list[DatapointInclusionAnnotation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InclusionAnnotations: list[DatapointInclusionAnnotation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchPutDataQualityStatisticAnnotationRequest:
     list[DatapointInclusionAnnotation] InclusionAnnotations
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) FailedInclusionAnnotations: list[AnnotationError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedInclusionAnnotations: list[AnnotationError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchPutDataQualityStatisticAnnotationResponse:
     Optional[list[AnnotationError]] FailedInclusionAnnotations
 
@@ -1955,14 +2011,16 @@ struct BatchStopJobRunError:
     Optional[str] JobRunId
     Optional[ErrorDetail] ErrorDetail
 
-# no @derive(Json): member(s) JobRunIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobRunIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchStopJobRunRequest:
     str JobName
     list[str] JobRunIds
 
-# no @derive(Json): member(s) SuccessfulSubmissions: list[BatchStopJobRunSuccessfulSubmission], Errors: list[BatchStopJobRunError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SuccessfulSubmissions: list[BatchStopJobRunSuccessfulSubmission], Errors: list[BatchStopJobRunError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchStopJobRunResponse:
     Optional[list[BatchStopJobRunSuccessfulSubmission]] SuccessfulSubmissions
     Optional[list[BatchStopJobRunError]] Errors
@@ -1979,28 +2037,32 @@ struct BatchTableOptimizer:
     Optional[str] tableName
     Optional[TableOptimizer] tableOptimizer
 
-# no @derive(Json): member(s) PartitionValueList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionValueList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdatePartitionFailureEntry:
     Optional[list[str]] PartitionValueList
     Optional[ErrorDetail] ErrorDetail
 
-# no @derive(Json): member(s) Entries: list[BatchUpdatePartitionRequestEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entries: list[BatchUpdatePartitionRequestEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdatePartitionRequest:
     Optional[str] CatalogId
     str DatabaseName
     str TableName
     list[BatchUpdatePartitionRequestEntry] Entries
 
-# no @derive(Json): member(s) PartitionValueList: list[str], PartitionInput: PartitionInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionValueList: list[str], PartitionInput: PartitionInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdatePartitionRequestEntry:
     list[str] PartitionValueList
     PartitionInput PartitionInput
 
-# no @derive(Json): member(s) Errors: list[BatchUpdatePartitionFailureEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[BatchUpdatePartitionFailureEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdatePartitionResponse:
     Optional[list[BatchUpdatePartitionFailureEntry]] Errors
 
@@ -2093,15 +2155,17 @@ struct CancelStatementResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) SupportedAuthenticationTypes: list[AuthenticationType], SupportedDataOperations: list[DataOperation], SupportedComputeEnvironments: list[ComputeEnvironment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupportedAuthenticationTypes: list[AuthenticationType], SupportedDataOperations: list[DataOperation], SupportedComputeEnvironments: list[ComputeEnvironment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Capabilities:
     list[AuthenticationType] SupportedAuthenticationTypes
     list[DataOperation] SupportedDataOperations
     list[ComputeEnvironment] SupportedComputeEnvironments
 
-# no @derive(Json): member(s) Parameters: dict[str, str], CatalogProperties: CatalogPropertiesOutput, CreateTableDefaultPermissions: list[PrincipalPermissions], CreateDatabaseDefaultPermissions: list[PrincipalPermissions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, str], CatalogProperties: CatalogPropertiesOutput, CreateTableDefaultPermissions: list[PrincipalPermissions], CreateDatabaseDefaultPermissions: list[PrincipalPermissions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Catalog:
     Optional[str] CatalogId
     str Name
@@ -2117,8 +2181,9 @@ struct Catalog:
     Optional[list[PrincipalPermissions]] CreateDatabaseDefaultPermissions
     Optional[AllowFullTableExternalDataAccessEnum] AllowFullTableExternalDataAccess
 
-# no @derive(Json): member(s) AdditionalDeltaOptions: dict[str, str], OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalDeltaOptions: dict[str, str], OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CatalogDeltaSource:
     str Name
     str Database
@@ -2131,8 +2196,9 @@ struct CatalogEntry:
     str DatabaseName
     str TableName
 
-# no @derive(Json): member(s) AdditionalHudiOptions: dict[str, str], OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalHudiOptions: dict[str, str], OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CatalogHudiSource:
     str Name
     str Database
@@ -2140,8 +2206,9 @@ struct CatalogHudiSource:
     Optional[dict[str, str]] AdditionalHudiOptions
     Optional[list[GlueSchema]] OutputSchemas
 
-# no @derive(Json): member(s) AdditionalIcebergOptions: dict[str, str], OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalIcebergOptions: dict[str, str], OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CatalogIcebergSource:
     str Name
     str Database
@@ -2155,8 +2222,9 @@ struct CatalogImportStatus:
     Optional[DateTime] ImportTime
     Optional[str] ImportedBy
 
-# no @derive(Json): member(s) Parameters: dict[str, str], CatalogProperties: CatalogProperties, CreateTableDefaultPermissions: list[PrincipalPermissions], CreateDatabaseDefaultPermissions: list[PrincipalPermissions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, str], CatalogProperties: CatalogProperties, CreateTableDefaultPermissions: list[PrincipalPermissions], CreateDatabaseDefaultPermissions: list[PrincipalPermissions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CatalogInput:
     Optional[str] Description
     Optional[FederatedCatalog] FederatedCatalog
@@ -2188,15 +2256,17 @@ struct CatalogKinesisSource:
     Optional[KinesisStreamingSourceOptions] StreamingOptions
     Optional[StreamingDataPreviewOptions] DataPreviewOptions
 
-# no @derive(Json): member(s) IcebergOptimizationProperties: IcebergOptimizationProperties, CustomProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IcebergOptimizationProperties: IcebergOptimizationProperties, CustomProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CatalogProperties:
     Optional[DataLakeAccessProperties] DataLakeAccessProperties
     Optional[IcebergOptimizationProperties] IcebergOptimizationProperties
     Optional[dict[str, str]] CustomProperties
 
-# no @derive(Json): member(s) IcebergOptimizationProperties: IcebergOptimizationPropertiesOutput, CustomProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IcebergOptimizationProperties: IcebergOptimizationPropertiesOutput, CustomProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CatalogPropertiesOutput:
     Optional[DataLakeAccessPropertiesOutput] DataLakeAccessProperties
     Optional[IcebergOptimizationPropertiesOutput] IcebergOptimizationProperties
@@ -2207,8 +2277,9 @@ struct CatalogSchemaChangePolicy:
     Optional[bool] EnableUpdateCatalog
     Optional[UpdateCatalogBehavior] UpdateBehavior
 
-# no @derive(Json): member(s) OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CatalogSource:
     str Name
     str Database
@@ -2223,8 +2294,9 @@ struct CatalogTableConfigOptions:
     Optional[str] S3Location
     Optional[str] CatalogId
 
-# no @derive(Json): member(s) Tables: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tables: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CatalogTarget:
     str DatabaseName
     list[str] Tables
@@ -2242,16 +2314,18 @@ struct CheckSchemaVersionValidityResponse:
     Optional[bool] Valid
     Optional[str] Error
 
-# no @derive(Json): member(s) CsvClassifier: CsvClassifier not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CsvClassifier: CsvClassifier not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Classifier:
     Optional[GrokClassifier] GrokClassifier
     Optional[XMLClassifier] XMLClassifier
     Optional[JsonClassifier] JsonClassifier
     Optional[CsvClassifier] CsvClassifier
 
-# no @derive(Json): member(s) TokenUrl: ConnectorProperty, ClientId: ConnectorProperty, ClientSecret: ConnectorProperty, Scope: ConnectorProperty, TokenUrlParameters: list[ConnectorProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TokenUrl: ConnectorProperty, ClientId: ConnectorProperty, ClientSecret: ConnectorProperty, Scope: ConnectorProperty, TokenUrlParameters: list[ConnectorProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClientCredentialsProperties:
     Optional[ConnectorProperty] TokenUrl
     Optional[HTTPMethod] RequestMethod
@@ -2266,8 +2340,9 @@ struct CloudWatchEncryption:
     Optional[CloudWatchEncryptionMode] CloudWatchEncryptionMode
     Optional[str] KmsKeyArn
 
-# no @derive(Json): member(s) AthenaConnectorSource: AthenaConnectorSource, JDBCConnectorSource: JDBCConnectorSource, SparkConnectorSource: SparkConnectorSource, CatalogSource: CatalogSource, S3CsvSource: S3CsvSource, S3JsonSource: S3JsonSource, S3ParquetSource: S3ParquetSource, JDBCConnectorTarget: JDBCConnectorTarget, SparkConnectorTarget: SparkConnectorTarget, CatalogTarget: BasicCatalogTarget, RedshiftTarget: RedshiftTarget, S3CatalogTarget: S3CatalogTarget, S3GlueParquetTarget: S3GlueParquetTarget, S3DirectTarget: S3DirectTarget, ApplyMapping: ApplyMapping, SelectFields: SelectFields, DropFields: DropFields, RenameField: RenameField, Spigot: Spigot, Join: Join, SplitFields: SplitFields, SelectFromCollection: SelectFromCollection, FillMissingValues: FillMissingValues, Filter: Filter, CustomCode: CustomCode, SparkSQL: SparkSQL, DropNullFields: DropNullFields, Merge: Merge, Union: Union, PIIDetection: PIIDetection, Aggregate: Aggregate, DropDuplicates: DropDuplicates, GovernedCatalogTarget: GovernedCatalogTarget, MicrosoftSQLServerCatalogTarget: MicrosoftSQLServerCatalogTarget, MySQLCatalogTarget: MySQLCatalogTarget, OracleSQLCatalogTarget: OracleSQLCatalogTarget, PostgreSQLCatalogTarget: PostgreSQLCatalogTarget, Route: Route, DynamicTransform: DynamicTransform, EvaluateDataQuality: EvaluateDataQuality, S3CatalogHudiSource: S3CatalogHudiSource, CatalogHudiSource: CatalogHudiSource, S3HudiSource: S3HudiSource, S3HudiCatalogTarget: S3HudiCatalogTarget, S3HudiDirectTarget: S3HudiDirectTarget, DirectJDBCSource: DirectJDBCSource, S3CatalogDeltaSource: S3CatalogDeltaSource, CatalogDeltaSource: CatalogDeltaSource, S3DeltaSource: S3DeltaSource, S3DeltaCatalogTarget: S3DeltaCatalogTarget, S3DeltaDirectTarget: S3DeltaDirectTarget, AmazonRedshiftSource: AmazonRedshiftSource, AmazonRedshiftTarget: AmazonRedshiftTarget, EvaluateDataQualityMultiFrame: EvaluateDataQualityMultiFrame, Recipe: Recipe, SnowflakeSource: SnowflakeSource, SnowflakeTarget: SnowflakeTarget, ConnectorDataSource: ConnectorDataSource, ConnectorDataTarget: ConnectorDataTarget, S3CatalogIcebergSource: S3CatalogIcebergSource, CatalogIcebergSource: CatalogIcebergSource, S3IcebergCatalogTarget: S3IcebergCatalogTarget, S3IcebergDirectTarget: S3IcebergDirectTarget, S3ExcelSource: S3ExcelSource, S3HyperDirectTarget: S3HyperDirectTarget, DynamoDBELTConnectorSource: DynamoDBELTConnectorSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AthenaConnectorSource: AthenaConnectorSource, JDBCConnectorSource: JDBCConnectorSource, SparkConnectorSource: SparkConnectorSource, CatalogSource: CatalogSource, S3CsvSource: S3CsvSource, S3JsonSource: S3JsonSource, S3ParquetSource: S3ParquetSource, JDBCConnectorTarget: JDBCConnectorTarget, SparkConnectorTarget: SparkConnectorTarget, CatalogTarget: BasicCatalogTarget, RedshiftTarget: RedshiftTarget, S3CatalogTarget: S3CatalogTarget, S3GlueParquetTarget: S3GlueParquetTarget, S3DirectTarget: S3DirectTarget, ApplyMapping: ApplyMapping, SelectFields: SelectFields, DropFields: DropFields, RenameField: RenameField, Spigot: Spigot, Join: Join, SplitFields: SplitFields, SelectFromCollection: SelectFromCollection, FillMissingValues: FillMissingValues, Filter: Filter, CustomCode: CustomCode, SparkSQL: SparkSQL, DropNullFields: DropNullFields, Merge: Merge, Union: Union, PIIDetection: PIIDetection, Aggregate: Aggregate, DropDuplicates: DropDuplicates, GovernedCatalogTarget: GovernedCatalogTarget, MicrosoftSQLServerCatalogTarget: MicrosoftSQLServerCatalogTarget, MySQLCatalogTarget: MySQLCatalogTarget, OracleSQLCatalogTarget: OracleSQLCatalogTarget, PostgreSQLCatalogTarget: PostgreSQLCatalogTarget, Route: Route, DynamicTransform: DynamicTransform, EvaluateDataQuality: EvaluateDataQuality, S3CatalogHudiSource: S3CatalogHudiSource, CatalogHudiSource: CatalogHudiSource, S3HudiSource: S3HudiSource, S3HudiCatalogTarget: S3HudiCatalogTarget, S3HudiDirectTarget: S3HudiDirectTarget, DirectJDBCSource: DirectJDBCSource, S3CatalogDeltaSource: S3CatalogDeltaSource, CatalogDeltaSource: CatalogDeltaSource, S3DeltaSource: S3DeltaSource, S3DeltaCatalogTarget: S3DeltaCatalogTarget, S3DeltaDirectTarget: S3DeltaDirectTarget, AmazonRedshiftSource: AmazonRedshiftSource, AmazonRedshiftTarget: AmazonRedshiftTarget, EvaluateDataQualityMultiFrame: EvaluateDataQualityMultiFrame, Recipe: Recipe, SnowflakeSource: SnowflakeSource, SnowflakeTarget: SnowflakeTarget, ConnectorDataSource: ConnectorDataSource, ConnectorDataTarget: ConnectorDataTarget, S3CatalogIcebergSource: S3CatalogIcebergSource, CatalogIcebergSource: CatalogIcebergSource, S3IcebergCatalogTarget: S3IcebergCatalogTarget, S3IcebergDirectTarget: S3IcebergDirectTarget, S3ExcelSource: S3ExcelSource, S3HyperDirectTarget: S3HyperDirectTarget, DynamoDBELTConnectorSource: DynamoDBELTConnectorSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeGenConfigurationNode:
     Optional[AthenaConnectorSource] AthenaConnectorSource
     Optional[JDBCConnectorSource] JDBCConnectorSource
@@ -2355,8 +2430,9 @@ struct CodeGenEdge:
     str Target
     Optional[str] TargetParameter
 
-# no @derive(Json): member(s) Args: list[CodeGenNodeArg] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Args: list[CodeGenNodeArg] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeGenNode:
     str Id
     str NodeType
@@ -2369,8 +2445,9 @@ struct CodeGenNodeArg:
     str Value
     Optional[bool] Param
 
-# no @derive(Json): member(s) Parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Column:
     str Name
     Optional[str] Type
@@ -2419,8 +2496,9 @@ struct ColumnStatisticsError:
 struct ColumnStatisticsTaskNotRunningException:
     Optional[str] Message
 
-# no @derive(Json): member(s) ColumnNameList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnNameList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ColumnStatisticsTaskRun:
     Optional[str] CustomerId
     Optional[str] ColumnStatisticsTaskRunId
@@ -2446,8 +2524,9 @@ struct ColumnStatisticsTaskRun:
 struct ColumnStatisticsTaskRunningException:
     Optional[str] Message
 
-# no @derive(Json): member(s) ColumnNameList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnNameList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ColumnStatisticsTaskSettings:
     Optional[str] DatabaseName
     Optional[str] TableName
@@ -2473,8 +2552,9 @@ struct CompactionConfiguration:
 struct CompactionMetrics:
     Optional[IcebergCompactionMetrics] IcebergMetrics
 
-# no @derive(Json): member(s) SupportedAuthenticationTypes: list[AuthenticationType], ConnectionOptions: dict[str, Property], ConnectionPropertyNameOverrides: dict[str, str], ConnectionOptionNameOverrides: dict[str, str], ConnectionPropertiesRequiredOverrides: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupportedAuthenticationTypes: list[AuthenticationType], ConnectionOptions: dict[str, Property], ConnectionPropertyNameOverrides: dict[str, str], ConnectionOptionNameOverrides: dict[str, str], ConnectionPropertiesRequiredOverrides: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputeEnvironmentConfiguration:
     str Name
     str Description
@@ -2512,8 +2592,9 @@ struct ConditionExpression:
     Optional[str] Value
     str TargetColumn
 
-# no @derive(Json): member(s) AllowedValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowedValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationObject:
     Optional[str] DefaultValue
     Optional[list[str]] AllowedValues
@@ -2531,8 +2612,9 @@ struct ConfusionMatrix:
     Optional[int64] NumTrueNegatives
     Optional[int64] NumFalseNegatives
 
-# no @derive(Json): member(s) MatchCriteria: list[str], ConnectionProperties: dict[ConnectionPropertyKey, str], SparkProperties: dict[str, str], AthenaProperties: dict[str, str], PythonProperties: dict[str, str], PhysicalConnectionRequirements: PhysicalConnectionRequirements, AuthenticationConfiguration: AuthenticationConfiguration, CompatibleComputeEnvironments: list[ComputeEnvironment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchCriteria: list[str], ConnectionProperties: dict[ConnectionPropertyKey, str], SparkProperties: dict[str, str], AthenaProperties: dict[str, str], PythonProperties: dict[str, str], PhysicalConnectionRequirements: PhysicalConnectionRequirements, AuthenticationConfiguration: AuthenticationConfiguration, CompatibleComputeEnvironments: list[ComputeEnvironment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Connection:
     Optional[str] Name
     Optional[str] Description
@@ -2553,8 +2635,9 @@ struct Connection:
     Optional[int64] ConnectionSchemaVersion
     Optional[list[ComputeEnvironment]] CompatibleComputeEnvironments
 
-# no @derive(Json): member(s) MatchCriteria: list[str], ConnectionProperties: dict[ConnectionPropertyKey, str], SparkProperties: dict[str, str], AthenaProperties: dict[str, str], PythonProperties: dict[str, str], PhysicalConnectionRequirements: PhysicalConnectionRequirements, AuthenticationConfiguration: AuthenticationConfigurationInput, ValidateForComputeEnvironments: list[ComputeEnvironment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchCriteria: list[str], ConnectionProperties: dict[ConnectionPropertyKey, str], SparkProperties: dict[str, str], AthenaProperties: dict[str, str], PythonProperties: dict[str, str], PhysicalConnectionRequirements: PhysicalConnectionRequirements, AuthenticationConfiguration: AuthenticationConfigurationInput, ValidateForComputeEnvironments: list[ComputeEnvironment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectionInput:
     str Name
     Optional[str] Description
@@ -2574,14 +2657,16 @@ struct ConnectionPasswordEncryption:
     bool ReturnConnectionPasswordEncrypted
     Optional[str] AwsKmsKeyId
 
-# no @derive(Json): member(s) Url: ConnectorProperty, AdditionalRequestParameters: list[ConnectorProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Url: ConnectorProperty, AdditionalRequestParameters: list[ConnectorProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectionPropertiesConfiguration:
     Optional[ConnectorProperty] Url
     Optional[list[ConnectorProperty]] AdditionalRequestParameters
 
-# no @derive(Json): member(s) Categories: list[str], Capabilities: Capabilities, ConnectionTypeVariants: list[ConnectionTypeVariant] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Categories: list[str], Capabilities: Capabilities, ConnectionTypeVariants: list[ConnectionTypeVariant] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectionTypeBrief:
     Optional[ConnectionType] ConnectionType
     Optional[str] DisplayName
@@ -2599,21 +2684,24 @@ struct ConnectionTypeVariant:
     Optional[str] Description
     Optional[str] LogoUrl
 
-# no @derive(Json): member(s) Connections: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Connections: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectionsList:
     Optional[list[str]] Connections
 
-# no @derive(Json): member(s) AuthenticationTypes: list[AuthenticationType], OAuth2Properties: ConnectorOAuth2Properties, BasicAuthenticationProperties: BasicAuthenticationProperties, CustomAuthenticationProperties: CustomAuthenticationProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthenticationTypes: list[AuthenticationType], OAuth2Properties: ConnectorOAuth2Properties, BasicAuthenticationProperties: BasicAuthenticationProperties, CustomAuthenticationProperties: CustomAuthenticationProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectorAuthenticationConfiguration:
     list[AuthenticationType] AuthenticationTypes
     Optional[ConnectorOAuth2Properties] OAuth2Properties
     Optional[BasicAuthenticationProperties] BasicAuthenticationProperties
     Optional[CustomAuthenticationProperties] CustomAuthenticationProperties
 
-# no @derive(Json): member(s) AuthorizationCodeUrl: ConnectorProperty, AuthorizationCode: ConnectorProperty, RedirectUri: ConnectorProperty, TokenUrl: ConnectorProperty, ClientId: ConnectorProperty, ClientSecret: ConnectorProperty, Scope: ConnectorProperty, Prompt: ConnectorProperty, TokenUrlParameters: list[ConnectorProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthorizationCodeUrl: ConnectorProperty, AuthorizationCode: ConnectorProperty, RedirectUri: ConnectorProperty, TokenUrl: ConnectorProperty, ClientId: ConnectorProperty, ClientSecret: ConnectorProperty, Scope: ConnectorProperty, Prompt: ConnectorProperty, TokenUrlParameters: list[ConnectorProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectorAuthorizationCodeProperties:
     Optional[ConnectorProperty] AuthorizationCodeUrl
     Optional[ConnectorProperty] AuthorizationCode
@@ -2627,32 +2715,36 @@ struct ConnectorAuthorizationCodeProperties:
     Optional[ConnectorProperty] Prompt
     Optional[list[ConnectorProperty]] TokenUrlParameters
 
-# no @derive(Json): member(s) Data: dict[str, str], OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Data: dict[str, str], OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectorDataSource:
     str Name
     str ConnectionType
     dict[str, str] Data
     Optional[list[GlueSchema]] OutputSchemas
 
-# no @derive(Json): member(s) Data: dict[str, str], Inputs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Data: dict[str, str], Inputs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectorDataTarget:
     str Name
     str ConnectionType
     dict[str, str] Data
     Optional[list[str]] Inputs
 
-# no @derive(Json): member(s) ClientCredentialsProperties: ClientCredentialsProperties, JWTBearerProperties: JWTBearerProperties, AuthorizationCodeProperties: ConnectorAuthorizationCodeProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClientCredentialsProperties: ClientCredentialsProperties, JWTBearerProperties: JWTBearerProperties, AuthorizationCodeProperties: ConnectorAuthorizationCodeProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectorOAuth2Properties:
     ConnectorOAuth2GrantType OAuth2GrantType
     Optional[ClientCredentialsProperties] ClientCredentialsProperties
     Optional[JWTBearerProperties] JWTBearerProperties
     Optional[ConnectorAuthorizationCodeProperties] AuthorizationCodeProperties
 
-# no @derive(Json): member(s) AllowedValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowedValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectorProperty:
     str Name
     Optional[str] KeyOverride
@@ -2672,8 +2764,9 @@ struct Crawl:
     Optional[str] LogGroup
     Optional[str] LogStream
 
-# no @derive(Json): member(s) Targets: CrawlerTargets, Classifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: CrawlerTargets, Classifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Crawler:
     Optional[str] Name
     Optional[str] Role
@@ -2721,8 +2814,9 @@ struct CrawlerMetrics:
     Optional[int64] TablesUpdated
     Optional[int64] TablesDeleted
 
-# no @derive(Json): member(s) Crawls: list[Crawl] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Crawls: list[Crawl] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CrawlerNodeDetails:
     Optional[list[Crawl]] Crawls
 
@@ -2738,8 +2832,9 @@ struct CrawlerRunningException:
 struct CrawlerStoppingException:
     Optional[str] Message
 
-# no @derive(Json): member(s) S3Targets: list[S3Target], JdbcTargets: list[JdbcTarget], MongoDBTargets: list[MongoDBTarget], DynamoDBTargets: list[DynamoDBTarget], CatalogTargets: list[CatalogTarget], DeltaTargets: list[DeltaTarget], IcebergTargets: list[IcebergTarget], HudiTargets: list[HudiTarget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3Targets: list[S3Target], JdbcTargets: list[JdbcTarget], MongoDBTargets: list[MongoDBTarget], DynamoDBTargets: list[DynamoDBTarget], CatalogTargets: list[CatalogTarget], DeltaTargets: list[DeltaTarget], IcebergTargets: list[IcebergTarget], HudiTargets: list[HudiTarget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CrawlerTargets:
     Optional[list[S3Target]] S3Targets
     Optional[list[JdbcTarget]] JdbcTargets
@@ -2756,8 +2851,9 @@ struct CrawlsFilter:
     Optional[FilterOperator] FilterOperator
     Optional[str] FieldValue
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBlueprintRequest:
     str Name
     Optional[str] Description
@@ -2768,8 +2864,9 @@ struct CreateBlueprintRequest:
 struct CreateBlueprintResponse:
     Optional[str] Name
 
-# no @derive(Json): member(s) CatalogInput: CatalogInput, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CatalogInput: CatalogInput, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCatalogRequest:
     str Name
     CatalogInput CatalogInput
@@ -2780,8 +2877,9 @@ struct CreateCatalogResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) CsvClassifier: CreateCsvClassifierRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CsvClassifier: CreateCsvClassifierRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateClassifierRequest:
     Optional[CreateGrokClassifierRequest] GrokClassifier
     Optional[CreateXMLClassifierRequest] XMLClassifier
@@ -2793,8 +2891,9 @@ struct CreateClassifierResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ColumnNameList: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnNameList: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateColumnStatisticsTaskSettingsRequest:
     str DatabaseName
     str TableName
@@ -2811,8 +2910,9 @@ struct CreateColumnStatisticsTaskSettingsResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ConnectionInput: ConnectionInput, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectionInput: ConnectionInput, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConnectionRequest:
     Optional[str] CatalogId
     ConnectionInput ConnectionInput
@@ -2822,8 +2922,9 @@ struct CreateConnectionRequest:
 struct CreateConnectionResponse:
     Optional[ConnectionStatus] CreateConnectionStatus
 
-# no @derive(Json): member(s) Targets: CrawlerTargets, Classifiers: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: CrawlerTargets, Classifiers: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCrawlerRequest:
     str Name
     str Role
@@ -2847,8 +2948,9 @@ struct CreateCrawlerResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Header: list[str], CustomDatatypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Header: list[str], CustomDatatypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCsvClassifierRequest:
     str Name
     Optional[str] Delimiter
@@ -2861,8 +2963,9 @@ struct CreateCsvClassifierRequest:
     Optional[list[str]] CustomDatatypes
     Optional[CsvSerdeOption] Serde
 
-# no @derive(Json): member(s) ContextWords: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContextWords: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCustomEntityTypeRequest:
     str Name
     str RegexString
@@ -2873,8 +2976,9 @@ struct CreateCustomEntityTypeRequest:
 struct CreateCustomEntityTypeResponse:
     Optional[str] Name
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDataQualityRulesetRequest:
     str Name
     Optional[str] Description
@@ -2888,8 +2992,9 @@ struct CreateDataQualityRulesetRequest:
 struct CreateDataQualityRulesetResponse:
     Optional[str] Name
 
-# no @derive(Json): member(s) DatabaseInput: DatabaseInput, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatabaseInput: DatabaseInput, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDatabaseRequest:
     Optional[str] CatalogId
     DatabaseInput DatabaseInput
@@ -2900,8 +3005,9 @@ struct CreateDatabaseResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], PublicKeys: list[str], Tags: dict[str, str], Arguments: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], PublicKeys: list[str], Tags: dict[str, str], Arguments: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDevEndpointRequest:
     str EndpointName
     str RoleArn
@@ -2919,8 +3025,9 @@ struct CreateDevEndpointRequest:
     Optional[dict[str, str]] Tags
     Optional[dict[str, str]] Arguments
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], Arguments: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], Arguments: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDevEndpointResponse:
     Optional[str] EndpointName
     Optional[str] Status
@@ -2970,8 +3077,9 @@ struct CreateGlossaryTermResponse:
     Optional[str] ShortDescription
     Optional[str] LongDescription
 
-# no @derive(Json): member(s) Scopes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Scopes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateGlueIdentityCenterConfigurationRequest:
     str InstanceArn
     Optional[list[str]] Scopes
@@ -2988,8 +3096,9 @@ struct CreateGrokClassifierRequest:
     str GrokPattern
     Optional[str] CustomPatterns
 
-# no @derive(Json): member(s) Schema: IcebergSchema, PartitionSpec: IcebergPartitionSpec, WriteOrder: IcebergSortOrder, Properties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Schema: IcebergSchema, PartitionSpec: IcebergPartitionSpec, WriteOrder: IcebergSortOrder, Properties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIcebergTableInput:
     str Location
     IcebergSchema Schema
@@ -2997,8 +3106,9 @@ struct CreateIcebergTableInput:
     Optional[IcebergSortOrder] WriteOrder
     Optional[dict[str, str]] Properties
 
-# no @derive(Json): member(s) AdditionalEncryptionContext: dict[str, str], Tags: list[Tag], IntegrationConfig: IntegrationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalEncryptionContext: dict[str, str], Tags: list[Tag], IntegrationConfig: IntegrationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIntegrationRequest:
     str IntegrationName
     str SourceArn
@@ -3010,8 +3120,9 @@ struct CreateIntegrationRequest:
     Optional[list[Tag]] Tags
     Optional[IntegrationConfig] IntegrationConfig
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIntegrationResourcePropertyRequest:
     str ResourceArn
     Optional[SourceProcessingProperties] SourceProcessingProperties
@@ -3025,8 +3136,9 @@ struct CreateIntegrationResourcePropertyResponse:
     Optional[SourceProcessingProperties] SourceProcessingProperties
     Optional[TargetProcessingProperties] TargetProcessingProperties
 
-# no @derive(Json): member(s) AdditionalEncryptionContext: dict[str, str], Tags: list[Tag], Errors: list[IntegrationError], IntegrationConfig: IntegrationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalEncryptionContext: dict[str, str], Tags: list[Tag], Errors: list[IntegrationError], IntegrationConfig: IntegrationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIntegrationResponse:
     str SourceArn
     str TargetArn
@@ -3042,8 +3154,9 @@ struct CreateIntegrationResponse:
     Optional[str] DataFilter
     Optional[IntegrationConfig] IntegrationConfig
 
-# no @derive(Json): member(s) SourceTableConfig: SourceTableConfig, TargetTableConfig: TargetTableConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceTableConfig: SourceTableConfig, TargetTableConfig: TargetTableConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIntegrationTablePropertiesRequest:
     str ResourceArn
     str TableName
@@ -3055,8 +3168,9 @@ struct CreateIntegrationTablePropertiesResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) DefaultArguments: dict[str, str], NonOverridableArguments: dict[str, str], Connections: ConnectionsList, Tags: dict[str, str], CodeGenConfigurationNodes: dict[str, CodeGenConfigurationNode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultArguments: dict[str, str], NonOverridableArguments: dict[str, str], Connections: ConnectionsList, Tags: dict[str, str], CodeGenConfigurationNodes: dict[str, CodeGenConfigurationNode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateJobRequest:
     str Name
     Optional[JobMode] JobMode
@@ -3093,8 +3207,9 @@ struct CreateJsonClassifierRequest:
     str Name
     str JsonPath
 
-# no @derive(Json): member(s) InputRecordTables: list[GlueTable], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputRecordTables: list[GlueTable], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMLTransformRequest:
     str Name
     Optional[str] Description
@@ -3114,8 +3229,9 @@ struct CreateMLTransformRequest:
 struct CreateMLTransformResponse:
     Optional[str] TransformId
 
-# no @derive(Json): member(s) PartitionIndex: PartitionIndex not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionIndex: PartitionIndex not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePartitionIndexRequest:
     Optional[str] CatalogId
     str DatabaseName
@@ -3127,8 +3243,9 @@ struct CreatePartitionIndexResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) PartitionInput: PartitionInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionInput: PartitionInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePartitionRequest:
     Optional[str] CatalogId
     str DatabaseName
@@ -3140,23 +3257,26 @@ struct CreatePartitionResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRegistryInput:
     str RegistryName
     Optional[str] Description
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRegistryResponse:
     Optional[str] RegistryArn
     Optional[str] RegistryName
     Optional[str] Description
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSchemaInput:
     Optional[RegistryId] RegistryId
     str SchemaName
@@ -3166,8 +3286,9 @@ struct CreateSchemaInput:
     Optional[dict[str, str]] Tags
     Optional[str] SchemaDefinition
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSchemaResponse:
     Optional[str] RegistryName
     Optional[str] RegistryArn
@@ -3184,8 +3305,9 @@ struct CreateSchemaResponse:
     Optional[str] SchemaVersionId
     Optional[SchemaVersionStatus] SchemaVersionStatus
 
-# no @derive(Json): member(s) DagNodes: list[CodeGenNode], DagEdges: list[CodeGenEdge] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DagNodes: list[CodeGenNode], DagEdges: list[CodeGenEdge] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateScriptRequest:
     Optional[list[CodeGenNode]] DagNodes
     Optional[list[CodeGenEdge]] DagEdges
@@ -3196,8 +3318,9 @@ struct CreateScriptResponse:
     Optional[str] PythonScript
     Optional[str] ScalaCode
 
-# no @derive(Json): member(s) EncryptionConfiguration: EncryptionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EncryptionConfiguration: EncryptionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSecurityConfigurationRequest:
     str Name
     EncryptionConfiguration EncryptionConfiguration
@@ -3207,8 +3330,9 @@ struct CreateSecurityConfigurationResponse:
     Optional[str] Name
     Optional[DateTime] CreatedTimestamp
 
-# no @derive(Json): member(s) DefaultArguments: dict[str, str], Connections: ConnectionsList, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultArguments: dict[str, str], Connections: ConnectionsList, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSessionRequest:
     str Id
     Optional[str] Description
@@ -3227,8 +3351,9 @@ struct CreateSessionRequest:
     Optional[str] RequestOrigin
     Optional[SessionType] SessionType
 
-# no @derive(Json): member(s) Session: Session not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Session: Session not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSessionResponse:
     Optional[Session] Session
 
@@ -3245,8 +3370,9 @@ struct CreateTableOptimizerResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TableInput: TableInput, PartitionIndexes: list[PartitionIndex], OpenTableFormatInput: OpenTableFormatInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableInput: TableInput, PartitionIndexes: list[PartitionIndex], OpenTableFormatInput: OpenTableFormatInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTableRequest:
     Optional[str] CatalogId
     str DatabaseName
@@ -3261,8 +3387,9 @@ struct CreateTableResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Predicate: Predicate, Actions: list[Action], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Predicate: Predicate, Actions: list[Action], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTriggerRequest:
     str Name
     Optional[str] WorkflowName
@@ -3279,8 +3406,9 @@ struct CreateTriggerRequest:
 struct CreateTriggerResponse:
     Optional[str] Name
 
-# no @derive(Json): member(s) Configuration: ProfileConfiguration, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: ProfileConfiguration, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateUsageProfileRequest:
     str Name
     Optional[str] Description
@@ -3291,8 +3419,9 @@ struct CreateUsageProfileRequest:
 struct CreateUsageProfileResponse:
     Optional[str] Name
 
-# no @derive(Json): member(s) FunctionInput: UserDefinedFunctionInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FunctionInput: UserDefinedFunctionInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateUserDefinedFunctionRequest:
     Optional[str] CatalogId
     str DatabaseName
@@ -3303,8 +3432,9 @@ struct CreateUserDefinedFunctionResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) DefaultRunProperties: dict[str, str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultRunProperties: dict[str, str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWorkflowRequest:
     str Name
     Optional[str] Description
@@ -3322,8 +3452,9 @@ struct CreateXMLClassifierRequest:
     str Name
     Optional[str] RowTag
 
-# no @derive(Json): member(s) Header: list[str], CustomDatatypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Header: list[str], CustomDatatypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CsvClassifier:
     str Name
     Optional[DateTime] CreationTime
@@ -3344,13 +3475,15 @@ struct CursorConfiguration:
     ExtractedParameter NextPage
     Optional[ExtractedParameter] LimitParameter
 
-# no @derive(Json): member(s) AuthenticationParameters: list[ConnectorProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuthenticationParameters: list[ConnectorProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomAuthenticationProperties:
     list[ConnectorProperty] AuthenticationParameters
 
-# no @derive(Json): member(s) Inputs: list[str], OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomCode:
     str Name
     list[str] Inputs
@@ -3358,8 +3491,9 @@ struct CustomCode:
     str ClassName
     Optional[list[GlueSchema]] OutputSchemas
 
-# no @derive(Json): member(s) ContextWords: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContextWords: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomEntityType:
     str Name
     str RegexString
@@ -3427,8 +3561,9 @@ struct DataQualityAggregatedMetrics:
     Optional[float64] TotalRulesPassed
     Optional[float64] TotalRulesFailed
 
-# no @derive(Json): member(s) EvaluatedMetrics: dict[str, float64], EvaluatedDistributions: dict[str, DistributionData] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EvaluatedMetrics: dict[str, float64], EvaluatedDistributions: dict[str, DistributionData] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataQualityAnalyzerResult:
     Optional[str] Name
     Optional[str] Description
@@ -3459,8 +3594,9 @@ struct DataQualityEvaluationRunAdditionalRunOptions:
     Optional[DataQualityRuleResultsOptions] DataQualityRuleResults
     Optional[ObservationResultsOptions] ObservationResults
 
-# no @derive(Json): member(s) AdditionalOptions: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalOptions: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataQualityGlueTable:
     str DatabaseName
     str TableName
@@ -3476,14 +3612,16 @@ struct DataQualityMetricValues:
     Optional[float64] LowerLimit
     Optional[float64] UpperLimit
 
-# no @derive(Json): member(s) MetricBasedObservation: MetricBasedObservation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricBasedObservation: MetricBasedObservation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataQualityObservation:
     Optional[str] Description
     Optional[MetricBasedObservation] MetricBasedObservation
 
-# no @derive(Json): member(s) DataSource: DataSource, RuleResults: list[DataQualityRuleResult], AnalyzerResults: list[DataQualityAnalyzerResult], Observations: list[DataQualityObservation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSource: DataSource, RuleResults: list[DataQualityRuleResult], AnalyzerResults: list[DataQualityAnalyzerResult], Observations: list[DataQualityObservation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataQualityResult:
     Optional[str] ResultId
     Optional[str] ProfileId
@@ -3501,8 +3639,9 @@ struct DataQualityResult:
     Optional[list[DataQualityObservation]] Observations
     Optional[DataQualityAggregatedMetrics] AggregatedMetrics
 
-# no @derive(Json): member(s) DataSource: DataSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSource: DataSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataQualityResultDescription:
     Optional[str] ResultId
     Optional[DataSource] DataSource
@@ -3510,8 +3649,9 @@ struct DataQualityResultDescription:
     Optional[str] JobRunId
     Optional[DateTime] StartedOn
 
-# no @derive(Json): member(s) DataSource: DataSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSource: DataSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataQualityResultFilterCriteria:
     Optional[DataSource] DataSource
     Optional[str] JobName
@@ -3519,8 +3659,9 @@ struct DataQualityResultFilterCriteria:
     Optional[DateTime] StartedAfter
     Optional[DateTime] StartedBefore
 
-# no @derive(Json): member(s) DataSource: DataSource, Dimensions: dict[str, str], Tags: dict[str, str], RuleResults: list[DataQualityRuleResult], AnalyzerResults: list[DataQualityAnalyzerResult], Observations: list[DataQualityObservation], Descriptors: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSource: DataSource, Dimensions: dict[str, str], Tags: dict[str, str], RuleResults: list[DataQualityRuleResult], AnalyzerResults: list[DataQualityAnalyzerResult], Observations: list[DataQualityObservation], Descriptors: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataQualityResultV2Item:
     str ResultId
     Optional[DataSource] DataSource
@@ -3538,8 +3679,9 @@ struct DataQualityResultV2Item:
     Optional[DataQualityAggregatedMetrics] AggregatedMetrics
     Optional[str] RulesetName
 
-# no @derive(Json): member(s) DataSource: DataSource, Dimensions: dict[str, str], Descriptors: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSource: DataSource, Dimensions: dict[str, str], Descriptors: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataQualityResultsV2Description:
     Optional[str] ResultId
     Optional[DataSource] DataSource
@@ -3548,8 +3690,9 @@ struct DataQualityResultsV2Description:
     Optional[str] EvaluationContext
     Optional[dict[str, str]] Descriptors
 
-# no @derive(Json): member(s) DataSource: DataSource, Dimensions: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSource: DataSource, Dimensions: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataQualityResultsV2FilterCriteria:
     Optional[DataSource] DataSource
     Optional[DateTime] PublishedAfter
@@ -3561,8 +3704,9 @@ struct DataQualityResultsV2FilterCriteria:
 struct DataQualityRuleRecommendationRunAdditionalRunOptions:
     Optional[str] CustomLogGroupPrefix
 
-# no @derive(Json): member(s) DataSource: DataSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSource: DataSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataQualityRuleRecommendationRunDescription:
     Optional[str] RunId
     Optional[TaskStatusType] Status
@@ -3571,15 +3715,17 @@ struct DataQualityRuleRecommendationRunDescription:
     Optional[str] CreatedRulesetName
     Optional[RecommendationMode] RecommendationMode
 
-# no @derive(Json): member(s) DataSource: DataSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSource: DataSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataQualityRuleRecommendationRunFilter:
     DataSource DataSource
     Optional[DateTime] StartedBefore
     Optional[DateTime] StartedAfter
 
-# no @derive(Json): member(s) EvaluatedMetrics: dict[str, float64], RuleMetrics: dict[str, float64], Labels: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EvaluatedMetrics: dict[str, float64], RuleMetrics: dict[str, float64], Labels: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataQualityRuleResult:
     Optional[str] Name
     Optional[str] Description
@@ -3595,8 +3741,9 @@ struct DataQualityRuleResultsOptions:
     Optional[bool] WriteDataQualityRuleResultsEnabled
     Optional[CatalogTableConfigOptions] CatalogTableConfig
 
-# no @derive(Json): member(s) DataSource: DataSource, RulesetNames: list[str], ResultIds: list[str], AdditionalDataSources: dict[str, DataSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSource: DataSource, RulesetNames: list[str], ResultIds: list[str], AdditionalDataSources: dict[str, DataSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataQualityRulesetEvaluationRun:
     Optional[str] RunId
     Optional[DataSource] DataSource
@@ -3614,16 +3761,18 @@ struct DataQualityRulesetEvaluationRun:
     Optional[list[str]] ResultIds
     Optional[dict[str, DataSource]] AdditionalDataSources
 
-# no @derive(Json): member(s) DataSource: DataSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSource: DataSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataQualityRulesetEvaluationRunDescription:
     Optional[str] RunId
     Optional[TaskStatusType] Status
     Optional[DateTime] StartedOn
     Optional[DataSource] DataSource
 
-# no @derive(Json): member(s) DataSource: DataSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSource: DataSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataQualityRulesetEvaluationRunFilter:
     DataSource DataSource
     Optional[DateTime] StartedBefore
@@ -3656,8 +3805,9 @@ struct DataQualityTargetTable:
     str DatabaseName
     Optional[str] CatalogId
 
-# no @derive(Json): member(s) FlagsEnabled: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FlagsEnabled: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataQualityTelemetry:
     Optional[float64] VcpuHours
     Optional[dict[str, str]] FlagsEnabled
@@ -3666,14 +3816,16 @@ struct DataQualityTelemetry:
     Optional[str] HostRuntimeVersion
     Optional[DataQualityEngine] Engine
 
-# no @derive(Json): member(s) GlueTable: GlueTable, DataQualityGlueTable: DataQualityGlueTable not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlueTable: GlueTable, DataQualityGlueTable: DataQualityGlueTable not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSource:
     Optional[GlueTable] GlueTable
     Optional[DataQualityGlueTable] DataQualityGlueTable
 
-# no @derive(Json): member(s) Parameters: dict[str, str], CreateTableDefaultPermissions: list[PrincipalPermissions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, str], CreateTableDefaultPermissions: list[PrincipalPermissions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Database:
     str Name
     Optional[str] Description
@@ -3691,8 +3843,9 @@ struct DatabaseIdentifier:
     Optional[str] DatabaseName
     Optional[str] Region
 
-# no @derive(Json): member(s) Parameters: dict[str, str], CreateTableDefaultPermissions: list[PrincipalPermissions] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, str], CreateTableDefaultPermissions: list[PrincipalPermissions] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatabaseInput:
     str Name
     Optional[str] Description
@@ -3789,8 +3942,9 @@ struct DeleteClassifierResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) PartitionValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteColumnStatisticsForPartitionRequest:
     Optional[str] CatalogId
     str DatabaseName
@@ -3940,8 +4094,9 @@ struct DeleteIntegrationResourcePropertyResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) AdditionalEncryptionContext: dict[str, str], Tags: list[Tag], Errors: list[IntegrationError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalEncryptionContext: dict[str, str], Tags: list[Tag], Errors: list[IntegrationError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteIntegrationResponse:
     str SourceArn
     str TargetArn
@@ -3994,8 +4149,9 @@ struct DeletePartitionIndexResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) PartitionValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeletePartitionRequest:
     Optional[str] CatalogId
     str DatabaseName
@@ -4042,8 +4198,9 @@ struct DeleteSchemaVersionsInput:
     SchemaId SchemaId
     str Versions
 
-# no @derive(Json): member(s) SchemaVersionErrors: list[SchemaVersionErrorItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SchemaVersionErrors: list[SchemaVersionErrorItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteSchemaVersionsResponse:
     Optional[list[SchemaVersionErrorItem]] SchemaVersionErrors
 
@@ -4137,8 +4294,9 @@ struct DeleteWorkflowRequest:
 struct DeleteWorkflowResponse:
     Optional[str] Name
 
-# no @derive(Json): member(s) DeltaTables: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeltaTables: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeltaTarget:
     Optional[list[str]] DeltaTables
     Optional[str] ConnectionName
@@ -4149,8 +4307,9 @@ struct DeltaTarget:
 struct DescribeConnectionTypeRequest:
     str ConnectionType
 
-# no @derive(Json): member(s) Capabilities: Capabilities, ConnectionProperties: dict[str, Property], ConnectionOptions: dict[str, Property], AuthenticationConfiguration: AuthConfiguration, ComputeEnvironmentConfigurations: dict[str, ComputeEnvironmentConfiguration], PhysicalConnectionRequirements: dict[str, Property], AthenaConnectionProperties: dict[str, Property], PythonConnectionProperties: dict[str, Property], SparkConnectionProperties: dict[str, Property], RestConfiguration: RestConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Capabilities: Capabilities, ConnectionProperties: dict[str, Property], ConnectionOptions: dict[str, Property], AuthenticationConfiguration: AuthConfiguration, ComputeEnvironmentConfigurations: dict[str, ComputeEnvironmentConfiguration], PhysicalConnectionRequirements: dict[str, Property], AthenaConnectionProperties: dict[str, Property], PythonConnectionProperties: dict[str, Property], SparkConnectionProperties: dict[str, Property], RestConfiguration: RestConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConnectionTypeResponse:
     Optional[str] ConnectionType
     Optional[str] Description
@@ -4173,8 +4332,9 @@ struct DescribeEntityRequest:
     Optional[str] NextToken
     Optional[str] DataStoreApiVersion
 
-# no @derive(Json): member(s) Fields: list[Field] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fields: list[Field] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEntityResponse:
     Optional[list[Field]] Fields
     Optional[str] NextToken
@@ -4186,28 +4346,32 @@ struct DescribeInboundIntegrationsRequest:
     Optional[int64] MaxRecords
     Optional[str] TargetArn
 
-# no @derive(Json): member(s) InboundIntegrations: list[InboundIntegration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InboundIntegrations: list[InboundIntegration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeInboundIntegrationsResponse:
     Optional[list[InboundIntegration]] InboundIntegrations
     Optional[str] Marker
 
-# no @derive(Json): member(s) Filters: list[IntegrationFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[IntegrationFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeIntegrationsRequest:
     Optional[str] IntegrationIdentifier
     Optional[str] Marker
     Optional[int64] MaxRecords
     Optional[list[IntegrationFilter]] Filters
 
-# no @derive(Json): member(s) Integrations: list[Integration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Integrations: list[Integration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeIntegrationsResponse:
     Optional[list[Integration]] Integrations
     Optional[str] Marker
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], PublicKeys: list[str], Arguments: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], PublicKeys: list[str], Arguments: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DevEndpoint:
     Optional[str] EndpointName
     Optional[str] RoleArn
@@ -4240,8 +4404,9 @@ struct DevEndpointCustomLibraries:
     Optional[str] ExtraPythonLibsS3Path
     Optional[str] ExtraJarsS3Path
 
-# no @derive(Json): member(s) OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DirectJDBCSource:
     str Name
     str Database
@@ -4274,8 +4439,9 @@ struct DirectSchemaChangePolicy:
     Optional[str] Table
     Optional[str] Database
 
-# no @derive(Json): member(s) GlossaryTermIdentifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlossaryTermIdentifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateGlossaryTermsRequest:
     str AssetIdentifier
     Optional[str] IterableFormName
@@ -4283,16 +4449,18 @@ struct DisassociateGlossaryTermsRequest:
     list[str] GlossaryTermIdentifiers
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) GlossaryTerms: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlossaryTerms: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateGlossaryTermsResponse:
     Optional[str] AssetIdentifier
     Optional[str] IterableFormName
     Optional[str] ItemIdentifier
     Optional[list[str]] GlossaryTerms
 
-# no @derive(Json): member(s) BinEdges: list[str], Count: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BinEdges: list[str], Count: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DistributionData:
     Optional[list[str]] BinEdges
     Optional[list[int64]] Count
@@ -4310,30 +4478,34 @@ struct DoubleColumnStatisticsData:
     int64 NumberOfNulls
     int64 NumberOfDistinctValues
 
-# no @derive(Json): member(s) Inputs: list[str], Columns: list[list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], Columns: list[list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DropDuplicates:
     str Name
     list[str] Inputs
     Optional[list[list[str]]] Columns
 
-# no @derive(Json): member(s) Inputs: list[str], Paths: list[list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], Paths: list[list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DropFields:
     str Name
     list[str] Inputs
     list[list[str]] Paths
 
-# no @derive(Json): member(s) Inputs: list[str], NullTextList: list[NullValueField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], NullTextList: list[NullValueField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DropNullFields:
     str Name
     list[str] Inputs
     Optional[NullCheckBoxList] NullCheckBoxList
     Optional[list[NullValueField]] NullTextList
 
-# no @derive(Json): member(s) Inputs: list[str], Parameters: list[TransformConfigParameter], OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], Parameters: list[TransformConfigParameter], OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DynamicTransform:
     str Name
     str TransformName
@@ -4352,8 +4524,9 @@ struct DynamoDBCatalogSource:
     Optional[bool] PitrEnabled
     Optional[DDBELTCatalogAdditionalOptions] AdditionalOptions
 
-# no @derive(Json): member(s) OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DynamoDBELTConnectorSource:
     str Name
     Optional[DDBELTConnectionOptions] ConnectionOptions
@@ -4376,16 +4549,18 @@ struct EncryptionAtRest:
     Optional[str] SseAwsKmsKeyId
     Optional[str] CatalogEncryptionServiceRole
 
-# no @derive(Json): member(s) S3Encryption: list[S3Encryption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3Encryption: list[S3Encryption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EncryptionConfiguration:
     Optional[list[S3Encryption]] S3Encryption
     Optional[CloudWatchEncryption] CloudWatchEncryption
     Optional[JobBookmarksEncryption] JobBookmarksEncryption
     Optional[DataQualityEncryption] DataQualityEncryption
 
-# no @derive(Json): member(s) CustomProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Entity:
     Optional[str] EntityName
     Optional[str] Label
@@ -4394,8 +4569,9 @@ struct Entity:
     Optional[str] Category
     Optional[dict[str, str]] CustomProperties
 
-# no @derive(Json): member(s) SourceConfiguration: SourceConfiguration, Schema: dict[str, FieldDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceConfiguration: SourceConfiguration, Schema: dict[str, FieldDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EntityConfiguration:
     Optional[SourceConfiguration] SourceConfiguration
     Optional[dict[str, FieldDefinition]] Schema
@@ -4415,8 +4591,9 @@ struct ErrorDetails:
     Optional[str] ErrorCode
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) Inputs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluateDataQuality:
     str Name
     list[str] Inputs
@@ -4425,8 +4602,9 @@ struct EvaluateDataQuality:
     Optional[DQResultsPublishingOptions] PublishingOptions
     Optional[DQStopJobOnFailureOptions] StopJobOnFailureOptions
 
-# no @derive(Json): member(s) Inputs: list[str], AdditionalDataSources: dict[str, str], AdditionalOptions: dict[AdditionalOptionKeys, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], AdditionalDataSources: dict[str, str], AdditionalOptions: dict[AdditionalOptionKeys, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluateDataQualityMultiFrame:
     str Name
     list[str] Inputs
@@ -4436,8 +4614,9 @@ struct EvaluateDataQualityMultiFrame:
     Optional[dict[AdditionalOptionKeys, str]] AdditionalOptions
     Optional[DQStopJobOnFailureOptions] StopJobOnFailureOptions
 
-# no @derive(Json): member(s) FindMatchesMetrics: FindMatchesMetrics not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FindMatchesMetrics: FindMatchesMetrics not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationMetrics:
     str TransformType
     Optional[FindMatchesMetrics] FindMatchesMetrics
@@ -4507,8 +4686,9 @@ struct FederationSourceException:
 struct FederationSourceRetryableException:
     Optional[str] Message
 
-# no @derive(Json): member(s) SupportedValues: list[str], SupportedFilterOperators: list[FieldFilterOperator], CustomProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SupportedValues: list[str], SupportedFilterOperators: list[FieldFilterOperator], CustomProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Field:
     Optional[str] FieldName
     Optional[str] Label
@@ -4529,8 +4709,9 @@ struct Field:
     Optional[str] NativeDataType
     Optional[dict[str, str]] CustomProperties
 
-# no @derive(Json): member(s) FilterOverrides: FilterOverrides not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterOverrides: FilterOverrides not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FieldDefinition:
     str Name
     FieldDataType FieldDataType
@@ -4541,24 +4722,27 @@ struct FieldDefinition:
     Optional[bool] IsOrderable
     Optional[FilterOverrides] FilterOverrides
 
-# no @derive(Json): member(s) Inputs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FillMissingValues:
     str Name
     list[str] Inputs
     str ImputedPath
     Optional[str] FilledPath
 
-# no @derive(Json): member(s) Inputs: list[str], Filters: list[FilterExpression] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], Filters: list[FilterExpression] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filter:
     str Name
     list[str] Inputs
     FilterLogicalOperator LogicalOperator
     list[FilterExpression] Filters
 
-# no @derive(Json): member(s) OperatorMappings: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OperatorMappings: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterConfiguration:
     FilterMode FilterMode
     Optional[dict[str, str]] OperatorMappings
@@ -4567,15 +4751,17 @@ struct FilterConfiguration:
     Optional[BetweenConfiguration] BetweenConfiguration
     Optional[FilterStringConfiguration] FilterStringConfiguration
 
-# no @derive(Json): member(s) Values: list[FilterValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[FilterValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterExpression:
     FilterOperation Operation
     Optional[bool] Negated
     list[FilterValue] Values
 
-# no @derive(Json): member(s) OperatorMappings: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OperatorMappings: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterOverrides:
     Optional[str] FieldName
     Optional[dict[str, str]] OperatorMappings
@@ -4588,14 +4774,16 @@ struct FilterStringConfiguration:
     Optional[bool] QuoteStringValues
     Optional[str] QuoteCharacter
 
-# no @derive(Json): member(s) Value: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Value: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FilterValue:
     FilterValueType Type
     list[str] Value
 
-# no @derive(Json): member(s) ColumnImportances: list[ColumnImportance] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnImportances: list[ColumnImportance] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FindMatchesMetrics:
     Optional[float64] AreaUnderPRCurve
     Optional[float64] Precision
@@ -4626,8 +4814,9 @@ struct FormTypeItem:
 struct GetAssetInput:
     str Identifier
 
-# no @derive(Json): member(s) GlossaryTerms: list[str], Forms: dict[str, AssetFormEntry], Attachments: dict[str, AssetFormEntry], IterableForms: dict[str, IterableFormEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlossaryTerms: list[str], Forms: dict[str, AssetFormEntry], Attachments: dict[str, AssetFormEntry], IterableForms: dict[str, IterableFormEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAssetOutput:
     str Id
     Optional[str] Name
@@ -4644,8 +4833,9 @@ struct GetAssetOutput:
 struct GetAssetTypeRequest:
     str Identifier
 
-# no @derive(Json): member(s) Forms: dict[str, AssetTypeFormReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Forms: dict[str, AssetTypeFormReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAssetTypeResponse:
     Optional[str] Id
     Optional[str] Name
@@ -4676,8 +4866,9 @@ struct GetBlueprintRunsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) BlueprintRuns: list[BlueprintRun] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BlueprintRuns: list[BlueprintRun] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBlueprintRunsResponse:
     Optional[list[BlueprintRun]] BlueprintRuns
     Optional[str] NextToken
@@ -4694,8 +4885,9 @@ struct GetCatalogImportStatusResponse:
 struct GetCatalogRequest:
     str CatalogId
 
-# no @derive(Json): member(s) Catalog: Catalog not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Catalog: Catalog not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCatalogResponse:
     Optional[Catalog] Catalog
 
@@ -4708,8 +4900,9 @@ struct GetCatalogsRequest:
     Optional[bool] IncludeRoot
     Optional[bool] HasDatabases
 
-# no @derive(Json): member(s) CatalogList: list[Catalog] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CatalogList: list[Catalog] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCatalogsResponse:
     list[Catalog] CatalogList
     Optional[str] NextToken
@@ -4718,8 +4911,9 @@ struct GetCatalogsResponse:
 struct GetClassifierRequest:
     str Name
 
-# no @derive(Json): member(s) Classifier: Classifier not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Classifier: Classifier not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetClassifierResponse:
     Optional[Classifier] Classifier
 
@@ -4728,14 +4922,16 @@ struct GetClassifiersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Classifiers: list[Classifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Classifiers: list[Classifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetClassifiersResponse:
     Optional[list[Classifier]] Classifiers
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PartitionValues: list[str], ColumnNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionValues: list[str], ColumnNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetColumnStatisticsForPartitionRequest:
     Optional[str] CatalogId
     str DatabaseName
@@ -4743,22 +4939,25 @@ struct GetColumnStatisticsForPartitionRequest:
     list[str] PartitionValues
     list[str] ColumnNames
 
-# no @derive(Json): member(s) ColumnStatisticsList: list[ColumnStatistics], Errors: list[ColumnError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnStatisticsList: list[ColumnStatistics], Errors: list[ColumnError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetColumnStatisticsForPartitionResponse:
     Optional[list[ColumnStatistics]] ColumnStatisticsList
     Optional[list[ColumnError]] Errors
 
-# no @derive(Json): member(s) ColumnNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetColumnStatisticsForTableRequest:
     Optional[str] CatalogId
     str DatabaseName
     str TableName
     list[str] ColumnNames
 
-# no @derive(Json): member(s) ColumnStatisticsList: list[ColumnStatistics], Errors: list[ColumnError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnStatisticsList: list[ColumnStatistics], Errors: list[ColumnError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetColumnStatisticsForTableResponse:
     Optional[list[ColumnStatistics]] ColumnStatisticsList
     Optional[list[ColumnError]] Errors
@@ -4767,8 +4966,9 @@ struct GetColumnStatisticsForTableResponse:
 struct GetColumnStatisticsTaskRunRequest:
     str ColumnStatisticsTaskRunId
 
-# no @derive(Json): member(s) ColumnStatisticsTaskRun: ColumnStatisticsTaskRun not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnStatisticsTaskRun: ColumnStatisticsTaskRun not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetColumnStatisticsTaskRunResponse:
     Optional[ColumnStatisticsTaskRun] ColumnStatisticsTaskRun
 
@@ -4780,8 +4980,9 @@ struct GetColumnStatisticsTaskRunsRequest:
     Optional[str] NextToken
     Optional[str] CatalogID
 
-# no @derive(Json): member(s) ColumnStatisticsTaskRuns: list[ColumnStatisticsTaskRun] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnStatisticsTaskRuns: list[ColumnStatisticsTaskRun] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetColumnStatisticsTaskRunsResponse:
     Optional[list[ColumnStatisticsTaskRun]] ColumnStatisticsTaskRuns
     Optional[str] NextToken
@@ -4792,8 +4993,9 @@ struct GetColumnStatisticsTaskSettingsRequest:
     str TableName
     Optional[str] CatalogID
 
-# no @derive(Json): member(s) ColumnStatisticsTaskSettings: ColumnStatisticsTaskSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnStatisticsTaskSettings: ColumnStatisticsTaskSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetColumnStatisticsTaskSettingsResponse:
     Optional[ColumnStatisticsTaskSettings] ColumnStatisticsTaskSettings
 
@@ -4804,20 +5006,23 @@ struct GetConnectionRequest:
     Optional[bool] HidePassword
     Optional[ComputeEnvironment] ApplyOverrideForComputeEnvironment
 
-# no @derive(Json): member(s) Connection: Connection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Connection: Connection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConnectionResponse:
     Optional[Connection] Connection
 
-# no @derive(Json): member(s) MatchCriteria: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchCriteria: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConnectionsFilter:
     Optional[list[str]] MatchCriteria
     Optional[ConnectionType] ConnectionType
     Optional[int64] ConnectionSchemaVersion
 
-# no @derive(Json): member(s) Filter: GetConnectionsFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filter: GetConnectionsFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConnectionsRequest:
     Optional[str] CatalogId
     Optional[GetConnectionsFilter] Filter
@@ -4825,21 +5030,24 @@ struct GetConnectionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ConnectionList: list[Connection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectionList: list[Connection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConnectionsResponse:
     Optional[list[Connection]] ConnectionList
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CrawlerNameList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CrawlerNameList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCrawlerMetricsRequest:
     Optional[list[str]] CrawlerNameList
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CrawlerMetricsList: list[CrawlerMetrics] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CrawlerMetricsList: list[CrawlerMetrics] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCrawlerMetricsResponse:
     Optional[list[CrawlerMetrics]] CrawlerMetricsList
     Optional[str] NextToken
@@ -4848,8 +5056,9 @@ struct GetCrawlerMetricsResponse:
 struct GetCrawlerRequest:
     str Name
 
-# no @derive(Json): member(s) Crawler: Crawler not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Crawler: Crawler not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCrawlerResponse:
     Optional[Crawler] Crawler
 
@@ -4858,8 +5067,9 @@ struct GetCrawlersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Crawlers: list[Crawler] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Crawlers: list[Crawler] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCrawlersResponse:
     Optional[list[Crawler]] Crawlers
     Optional[str] NextToken
@@ -4868,8 +5078,9 @@ struct GetCrawlersResponse:
 struct GetCustomEntityTypeRequest:
     str Name
 
-# no @derive(Json): member(s) ContextWords: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContextWords: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCustomEntityTypeResponse:
     Optional[str] Name
     Optional[str] RegexString
@@ -4924,8 +5135,9 @@ struct GetDataQualityModelResultRequest:
     str StatisticId
     str ProfileId
 
-# no @derive(Json): member(s) Model: list[StatisticModelResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Model: list[StatisticModelResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataQualityModelResultResponse:
     Optional[DateTime] CompletedOn
     Optional[list[StatisticModelResult]] Model
@@ -4934,8 +5146,9 @@ struct GetDataQualityModelResultResponse:
 struct GetDataQualityResultRequest:
     str ResultId
 
-# no @derive(Json): member(s) DataSource: DataSource, RuleResults: list[DataQualityRuleResult], AnalyzerResults: list[DataQualityAnalyzerResult], Observations: list[DataQualityObservation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSource: DataSource, RuleResults: list[DataQualityRuleResult], AnalyzerResults: list[DataQualityAnalyzerResult], Observations: list[DataQualityObservation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataQualityResultResponse:
     Optional[str] ResultId
     Optional[str] ProfileId
@@ -4957,8 +5170,9 @@ struct GetDataQualityResultResponse:
 struct GetDataQualityResultV2Request:
     str ResultId
 
-# no @derive(Json): member(s) DataSource: DataSource, Dimensions: dict[str, str], Tags: dict[str, str], RuleResults: list[DataQualityRuleResult], AnalyzerResults: list[DataQualityAnalyzerResult], Observations: list[DataQualityObservation], Descriptors: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSource: DataSource, Dimensions: dict[str, str], Tags: dict[str, str], RuleResults: list[DataQualityRuleResult], AnalyzerResults: list[DataQualityAnalyzerResult], Observations: list[DataQualityObservation], Descriptors: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataQualityResultV2Response:
     Optional[str] ResultId
     Optional[DataSource] DataSource
@@ -4981,8 +5195,9 @@ struct GetDataQualityResultV2Response:
 struct GetDataQualityRuleRecommendationRunRequest:
     str RunId
 
-# no @derive(Json): member(s) DataSource: DataSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSource: DataSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataQualityRuleRecommendationRunResponse:
     Optional[str] RunId
     Optional[DataSource] DataSource
@@ -5005,8 +5220,9 @@ struct GetDataQualityRuleRecommendationRunResponse:
 struct GetDataQualityRulesetEvaluationRunRequest:
     str RunId
 
-# no @derive(Json): member(s) DataSource: DataSource, RulesetNames: list[str], ResultIds: list[str], AdditionalDataSources: dict[str, DataSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSource: DataSource, RulesetNames: list[str], ResultIds: list[str], AdditionalDataSources: dict[str, DataSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataQualityRulesetEvaluationRunResponse:
     Optional[str] RunId
     Optional[DataSource] DataSource
@@ -5044,13 +5260,15 @@ struct GetDatabaseRequest:
     Optional[str] CatalogId
     str Name
 
-# no @derive(Json): member(s) Database: Database not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Database: Database not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDatabaseResponse:
     Optional[Database] Database
 
-# no @derive(Json): member(s) AttributesToGet: list[DatabaseAttributes] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttributesToGet: list[DatabaseAttributes] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDatabasesRequest:
     Optional[str] CatalogId
     Optional[str] NextToken
@@ -5058,8 +5276,9 @@ struct GetDatabasesRequest:
     Optional[ResourceShareType] ResourceShareType
     Optional[list[DatabaseAttributes]] AttributesToGet
 
-# no @derive(Json): member(s) DatabaseList: list[Database] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatabaseList: list[Database] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDatabasesResponse:
     list[Database] DatabaseList
     Optional[str] NextToken
@@ -5068,8 +5287,9 @@ struct GetDatabasesResponse:
 struct GetDataflowGraphRequest:
     Optional[str] PythonScript
 
-# no @derive(Json): member(s) DagNodes: list[CodeGenNode], DagEdges: list[CodeGenEdge] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DagNodes: list[CodeGenNode], DagEdges: list[CodeGenEdge] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDataflowGraphResponse:
     Optional[list[CodeGenNode]] DagNodes
     Optional[list[CodeGenEdge]] DagEdges
@@ -5078,8 +5298,9 @@ struct GetDataflowGraphResponse:
 struct GetDevEndpointRequest:
     str EndpointName
 
-# no @derive(Json): member(s) DevEndpoint: DevEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DevEndpoint: DevEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDevEndpointResponse:
     Optional[DevEndpoint] DevEndpoint
 
@@ -5088,14 +5309,16 @@ struct GetDevEndpointsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) DevEndpoints: list[DevEndpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DevEndpoints: list[DevEndpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDevEndpointsResponse:
     Optional[list[DevEndpoint]] DevEndpoints
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConnectionOptions: dict[str, str], SelectedFields: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectionOptions: dict[str, str], SelectedFields: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEntityRecordsRequest:
     Optional[str] ConnectionName
     Optional[str] CatalogId
@@ -5108,8 +5331,9 @@ struct GetEntityRecordsRequest:
     Optional[str] OrderBy
     Optional[list[str]] SelectedFields
 
-# no @derive(Json): member(s) Records: list[Record] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Records: list[Record] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEntityRecordsResponse:
     Optional[list[Record]] Records
     Optional[str] NextToken
@@ -5151,8 +5375,9 @@ struct GetGlueIdentityCenterConfigurationRequest:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Scopes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Scopes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetGlueIdentityCenterConfigurationResponse:
     Optional[str] ApplicationArn
     Optional[str] InstanceArn
@@ -5175,8 +5400,9 @@ struct GetIntegrationTablePropertiesRequest:
     str ResourceArn
     str TableName
 
-# no @derive(Json): member(s) SourceTableConfig: SourceTableConfig, TargetTableConfig: TargetTableConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceTableConfig: SourceTableConfig, TargetTableConfig: TargetTableConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIntegrationTablePropertiesResponse:
     Optional[str] ResourceArn
     Optional[str] TableName
@@ -5196,8 +5422,9 @@ struct GetJobBookmarkResponse:
 struct GetJobRequest:
     str JobName
 
-# no @derive(Json): member(s) Job: Job not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Job: Job not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetJobResponse:
     Optional[Job] Job
 
@@ -5207,8 +5434,9 @@ struct GetJobRunRequest:
     str RunId
     Optional[bool] PredecessorsIncluded
 
-# no @derive(Json): member(s) JobRun: JobRun not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobRun: JobRun not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetJobRunResponse:
     Optional[JobRun] JobRun
 
@@ -5218,8 +5446,9 @@ struct GetJobRunsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) JobRuns: list[JobRun] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobRuns: list[JobRun] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetJobRunsResponse:
     Optional[list[JobRun]] JobRuns
     Optional[str] NextToken
@@ -5229,8 +5458,9 @@ struct GetJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Jobs: list[Job] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Jobs: list[Job] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetJobsResponse:
     Optional[list[Job]] Jobs
     Optional[str] NextToken
@@ -5261,8 +5491,9 @@ struct GetMLTaskRunsRequest:
     Optional[TaskRunFilterCriteria] Filter
     Optional[TaskRunSortCriteria] Sort
 
-# no @derive(Json): member(s) TaskRuns: list[TaskRun] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TaskRuns: list[TaskRun] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMLTaskRunsResponse:
     Optional[list[TaskRun]] TaskRuns
     Optional[str] NextToken
@@ -5271,8 +5502,9 @@ struct GetMLTaskRunsResponse:
 struct GetMLTransformRequest:
     str TransformId
 
-# no @derive(Json): member(s) InputRecordTables: list[GlueTable], EvaluationMetrics: EvaluationMetrics, Schema: list[SchemaColumn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputRecordTables: list[GlueTable], EvaluationMetrics: EvaluationMetrics, Schema: list[SchemaColumn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMLTransformResponse:
     Optional[str] TransformId
     Optional[str] Name
@@ -5294,29 +5526,33 @@ struct GetMLTransformResponse:
     Optional[int64] MaxRetries
     Optional[TransformEncryption] TransformEncryption
 
-# no @derive(Json): member(s) Filter: TransformFilterCriteria not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filter: TransformFilterCriteria not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMLTransformsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[TransformFilterCriteria] Filter
     Optional[TransformSortCriteria] Sort
 
-# no @derive(Json): member(s) Transforms: list[MLTransform] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Transforms: list[MLTransform] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMLTransformsResponse:
     list[MLTransform] Transforms
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Sinks: list[CatalogEntry], Location: Location not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sinks: list[CatalogEntry], Location: Location not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMappingRequest:
     CatalogEntry Source
     Optional[list[CatalogEntry]] Sinks
     Optional[Location] Location
 
-# no @derive(Json): member(s) Mapping: list[MappingEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Mapping: list[MappingEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMappingResponse:
     list[MappingEntry] Mapping
 
@@ -5336,14 +5572,16 @@ struct GetPartitionIndexesRequest:
     str TableName
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PartitionIndexDescriptorList: list[PartitionIndexDescriptor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionIndexDescriptorList: list[PartitionIndexDescriptor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPartitionIndexesResponse:
     Optional[list[PartitionIndexDescriptor]] PartitionIndexDescriptorList
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PartitionValues: list[str], AuditContext: AuditContext not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionValues: list[str], AuditContext: AuditContext not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPartitionRequest:
     Optional[str] CatalogId
     str DatabaseName
@@ -5351,13 +5589,15 @@ struct GetPartitionRequest:
     list[str] PartitionValues
     Optional[AuditContext] AuditContext
 
-# no @derive(Json): member(s) Partition: Partition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Partition: Partition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPartitionResponse:
     Optional[Partition] Partition
 
-# no @derive(Json): member(s) AuditContext: AuditContext not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuditContext: AuditContext not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPartitionsRequest:
     Optional[str] CatalogId
     str DatabaseName
@@ -5371,14 +5611,16 @@ struct GetPartitionsRequest:
     Optional[DateTime] QueryAsOfTime
     Optional[AuditContext] AuditContext
 
-# no @derive(Json): member(s) Partitions: list[Partition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Partitions: list[Partition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPartitionsResponse:
     Optional[list[Partition]] Partitions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Mapping: list[MappingEntry], Sinks: list[CatalogEntry], Location: Location, AdditionalPlanOptionsMap: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Mapping: list[MappingEntry], Sinks: list[CatalogEntry], Location: Location, AdditionalPlanOptionsMap: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPlanRequest:
     list[MappingEntry] Mapping
     CatalogEntry Source
@@ -5410,8 +5652,9 @@ struct GetResourcePoliciesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) GetResourcePoliciesResponseList: list[GluePolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GetResourcePoliciesResponseList: list[GluePolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetResourcePoliciesResponse:
     Optional[list[GluePolicy]] GetResourcePoliciesResponseList
     Optional[str] NextToken
@@ -5491,8 +5734,9 @@ struct GetSchemaVersionsDiffResponse:
 struct GetSecurityConfigurationRequest:
     str Name
 
-# no @derive(Json): member(s) SecurityConfiguration: SecurityConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityConfiguration: SecurityConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSecurityConfigurationResponse:
     Optional[SecurityConfiguration] SecurityConfiguration
 
@@ -5501,8 +5745,9 @@ struct GetSecurityConfigurationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SecurityConfigurations: list[SecurityConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityConfigurations: list[SecurityConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSecurityConfigurationsResponse:
     Optional[list[SecurityConfiguration]] SecurityConfigurations
     Optional[str] NextToken
@@ -5520,8 +5765,9 @@ struct GetSessionRequest:
     str Id
     Optional[str] RequestOrigin
 
-# no @derive(Json): member(s) Session: Session not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Session: Session not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSessionResponse:
     Optional[Session] Session
 
@@ -5531,8 +5777,9 @@ struct GetStatementRequest:
     int64 Id
     Optional[str] RequestOrigin
 
-# no @derive(Json): member(s) Statement: Statement not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Statement: Statement not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetStatementResponse:
     Optional[Statement] Statement
 
@@ -5567,8 +5814,9 @@ struct GetTableOptimizerResponse:
     Optional[str] TableName
     Optional[TableOptimizer] TableOptimizer
 
-# no @derive(Json): member(s) AuditContext: AuditContext, AttributesToGet: list[TableAttributes] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuditContext: AuditContext, AttributesToGet: list[TableAttributes] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTableRequest:
     Optional[str] CatalogId
     str DatabaseName
@@ -5579,13 +5827,15 @@ struct GetTableRequest:
     Optional[bool] IncludeStatusDetails
     Optional[list[TableAttributes]] AttributesToGet
 
-# no @derive(Json): member(s) Table: Table not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Table: Table not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTableResponse:
     Optional[Table] Table
 
-# no @derive(Json): member(s) AuditContext: AuditContext not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuditContext: AuditContext not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTableVersionRequest:
     Optional[str] CatalogId
     str DatabaseName
@@ -5593,13 +5843,15 @@ struct GetTableVersionRequest:
     Optional[str] VersionId
     Optional[AuditContext] AuditContext
 
-# no @derive(Json): member(s) TableVersion: TableVersion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableVersion: TableVersion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTableVersionResponse:
     Optional[TableVersion] TableVersion
 
-# no @derive(Json): member(s) AuditContext: AuditContext not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuditContext: AuditContext not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTableVersionsRequest:
     Optional[str] CatalogId
     str DatabaseName
@@ -5608,14 +5860,16 @@ struct GetTableVersionsRequest:
     Optional[int64] MaxResults
     Optional[AuditContext] AuditContext
 
-# no @derive(Json): member(s) TableVersions: list[TableVersion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableVersions: list[TableVersion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTableVersionsResponse:
     Optional[list[TableVersion]] TableVersions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AuditContext: AuditContext, AttributesToGet: list[TableAttributes] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuditContext: AuditContext, AttributesToGet: list[TableAttributes] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTablesRequest:
     Optional[str] CatalogId
     str DatabaseName
@@ -5629,8 +5883,9 @@ struct GetTablesRequest:
     Optional[bool] IncludeStatusDetails
     Optional[list[TableAttributes]] AttributesToGet
 
-# no @derive(Json): member(s) TableList: list[Table] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableList: list[Table] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTablesResponse:
     Optional[list[Table]] TableList
     Optional[str] NextToken
@@ -5639,8 +5894,9 @@ struct GetTablesResponse:
 struct GetTagsRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTagsResponse:
     Optional[dict[str, str]] Tags
 
@@ -5648,8 +5904,9 @@ struct GetTagsResponse:
 struct GetTriggerRequest:
     str Name
 
-# no @derive(Json): member(s) Trigger: Trigger not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Trigger: Trigger not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTriggerResponse:
     Optional[Trigger] Trigger
 
@@ -5659,14 +5916,16 @@ struct GetTriggersRequest:
     Optional[str] DependentJobName
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Triggers: list[Trigger] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Triggers: list[Trigger] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTriggersResponse:
     Optional[list[Trigger]] Triggers
     Optional[str] NextToken
 
-# no @derive(Json): member(s) PartitionValues: list[str], AuditContext: AuditContext, SupportedPermissionTypes: list[PermissionType], QuerySessionContext: QuerySessionContext not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionValues: list[str], AuditContext: AuditContext, SupportedPermissionTypes: list[PermissionType], QuerySessionContext: QuerySessionContext not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUnfilteredPartitionMetadataRequest:
     Optional[str] Region
     str CatalogId
@@ -5677,15 +5936,17 @@ struct GetUnfilteredPartitionMetadataRequest:
     list[PermissionType] SupportedPermissionTypes
     Optional[QuerySessionContext] QuerySessionContext
 
-# no @derive(Json): member(s) Partition: Partition, AuthorizedColumns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Partition: Partition, AuthorizedColumns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUnfilteredPartitionMetadataResponse:
     Optional[Partition] Partition
     Optional[list[str]] AuthorizedColumns
     Optional[bool] IsRegisteredWithLakeFormation
 
-# no @derive(Json): member(s) AuditContext: AuditContext, SupportedPermissionTypes: list[PermissionType], QuerySessionContext: QuerySessionContext not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuditContext: AuditContext, SupportedPermissionTypes: list[PermissionType], QuerySessionContext: QuerySessionContext not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUnfilteredPartitionsMetadataRequest:
     Optional[str] Region
     str CatalogId
@@ -5699,14 +5960,16 @@ struct GetUnfilteredPartitionsMetadataRequest:
     Optional[int64] MaxResults
     Optional[QuerySessionContext] QuerySessionContext
 
-# no @derive(Json): member(s) UnfilteredPartitions: list[UnfilteredPartition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UnfilteredPartitions: list[UnfilteredPartition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUnfilteredPartitionsMetadataResponse:
     Optional[list[UnfilteredPartition]] UnfilteredPartitions
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AuditContext: AuditContext, SupportedPermissionTypes: list[PermissionType], Permissions: list[Permission], QuerySessionContext: QuerySessionContext not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AuditContext: AuditContext, SupportedPermissionTypes: list[PermissionType], Permissions: list[Permission], QuerySessionContext: QuerySessionContext not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUnfilteredTableMetadataRequest:
     Optional[str] Region
     str CatalogId
@@ -5720,8 +5983,9 @@ struct GetUnfilteredTableMetadataRequest:
     Optional[list[Permission]] Permissions
     Optional[QuerySessionContext] QuerySessionContext
 
-# no @derive(Json): member(s) Table: Table, AuthorizedColumns: list[str], CellFilters: list[ColumnRowFilter], Permissions: list[Permission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Table: Table, AuthorizedColumns: list[str], CellFilters: list[ColumnRowFilter], Permissions: list[Permission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUnfilteredTableMetadataResponse:
     Optional[Table] Table
     Optional[list[str]] AuthorizedColumns
@@ -5739,8 +6003,9 @@ struct GetUnfilteredTableMetadataResponse:
 struct GetUsageProfileRequest:
     str Name
 
-# no @derive(Json): member(s) Configuration: ProfileConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: ProfileConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUsageProfileResponse:
     Optional[str] Name
     Optional[str] Description
@@ -5754,8 +6019,9 @@ struct GetUserDefinedFunctionRequest:
     str DatabaseName
     str FunctionName
 
-# no @derive(Json): member(s) UserDefinedFunction: UserDefinedFunction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserDefinedFunction: UserDefinedFunction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUserDefinedFunctionResponse:
     Optional[UserDefinedFunction] UserDefinedFunction
 
@@ -5768,8 +6034,9 @@ struct GetUserDefinedFunctionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) UserDefinedFunctions: list[UserDefinedFunction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserDefinedFunctions: list[UserDefinedFunction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetUserDefinedFunctionsResponse:
     Optional[list[UserDefinedFunction]] UserDefinedFunctions
     Optional[str] NextToken
@@ -5779,8 +6046,9 @@ struct GetWorkflowRequest:
     str Name
     Optional[bool] IncludeGraph
 
-# no @derive(Json): member(s) Workflow: Workflow not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Workflow: Workflow not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWorkflowResponse:
     Optional[Workflow] Workflow
 
@@ -5789,8 +6057,9 @@ struct GetWorkflowRunPropertiesRequest:
     str Name
     str RunId
 
-# no @derive(Json): member(s) RunProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RunProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWorkflowRunPropertiesResponse:
     Optional[dict[str, str]] RunProperties
 
@@ -5800,8 +6069,9 @@ struct GetWorkflowRunRequest:
     str RunId
     Optional[bool] IncludeGraph
 
-# no @derive(Json): member(s) Run: WorkflowRun not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Run: WorkflowRun not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWorkflowRunResponse:
     Optional[WorkflowRun] Run
 
@@ -5812,8 +6082,9 @@ struct GetWorkflowRunsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Runs: list[WorkflowRun] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Runs: list[WorkflowRun] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWorkflowRunsResponse:
     Optional[list[WorkflowRun]] Runs
     Optional[str] NextToken
@@ -5841,8 +6112,9 @@ struct GluePolicy:
     Optional[DateTime] CreateTime
     Optional[DateTime] UpdateTime
 
-# no @derive(Json): member(s) Columns: list[GlueStudioSchemaColumn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Columns: list[GlueStudioSchemaColumn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GlueSchema:
     Optional[list[GlueStudioSchemaColumn]] Columns
 
@@ -5852,8 +6124,9 @@ struct GlueStudioSchemaColumn:
     Optional[str] Type
     Optional[str] GlueStudioType
 
-# no @derive(Json): member(s) AdditionalOptions: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalOptions: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GlueTable:
     str DatabaseName
     str TableName
@@ -5869,8 +6142,9 @@ struct GovernedCatalogSource:
     Optional[str] PartitionPredicate
     Optional[S3SourceAdditionalOptions] AdditionalOptions
 
-# no @derive(Json): member(s) Inputs: list[str], PartitionKeys: list[list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], PartitionKeys: list[list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GovernedCatalogTarget:
     str Name
     list[str] Inputs
@@ -5889,15 +6163,17 @@ struct GrokClassifier:
     str GrokPattern
     Optional[str] CustomPatterns
 
-# no @derive(Json): member(s) Filters: list[FilterExpression] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[FilterExpression] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GroupFilters:
     str GroupName
     list[FilterExpression] Filters
     FilterLogicalOperator LogicalOperator
 
-# no @derive(Json): member(s) Paths: list[str], Exclusions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Paths: list[str], Exclusions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HudiTarget:
     Optional[list[str]] Paths
     Optional[str] ConnectionName
@@ -5923,31 +6199,35 @@ struct IcebergDocument:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Properties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IcebergEncryptedKey:
     str KeyId
     str EncryptedKeyMetadata
     Optional[str] EncryptedById
     Optional[dict[str, str]] Properties
 
-# no @derive(Json): member(s) CreateIcebergTableInput: CreateIcebergTableInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CreateIcebergTableInput: CreateIcebergTableInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IcebergInput:
     str MetadataOperation
     Optional[str] Version
     Optional[CreateIcebergTableInput] CreateIcebergTableInput
 
-# no @derive(Json): member(s) Compaction: dict[str, str], Retention: dict[str, str], OrphanFileDeletion: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Compaction: dict[str, str], Retention: dict[str, str], OrphanFileDeletion: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IcebergOptimizationProperties:
     Optional[str] RoleArn
     Optional[dict[str, str]] Compaction
     Optional[dict[str, str]] Retention
     Optional[dict[str, str]] OrphanFileDeletion
 
-# no @derive(Json): member(s) Compaction: dict[str, str], Retention: dict[str, str], OrphanFileDeletion: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Compaction: dict[str, str], Retention: dict[str, str], OrphanFileDeletion: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IcebergOptimizationPropertiesOutput:
     Optional[str] RoleArn
     Optional[dict[str, str]] Compaction
@@ -5975,8 +6255,9 @@ struct IcebergPartitionField:
     str Name
     Optional[int64] FieldId
 
-# no @derive(Json): member(s) Fields: list[IcebergPartitionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fields: list[IcebergPartitionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IcebergPartitionSpec:
     list[IcebergPartitionField] Fields
     Optional[int64] SpecId
@@ -5997,8 +6278,9 @@ struct IcebergRetentionMetrics:
     Optional[int64] NumberOfDpus
     Optional[float64] JobDurationInHour
 
-# no @derive(Json): member(s) IdentifierFieldIds: list[int64], Fields: list[IcebergStructField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IdentifierFieldIds: list[int64], Fields: list[IcebergStructField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IcebergSchema:
     Optional[int64] SchemaId
     Optional[list[int64]] IdentifierFieldIds
@@ -6012,8 +6294,9 @@ struct IcebergSortField:
     IcebergSortDirection Direction
     IcebergNullOrder NullOrder
 
-# no @derive(Json): member(s) Fields: list[IcebergSortField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fields: list[IcebergSortField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IcebergSortOrder:
     int64 OrderId
     list[IcebergSortField] Fields
@@ -6028,8 +6311,9 @@ struct IcebergStructField:
     Optional[IcebergDocument] InitialDefault
     Optional[IcebergDocument] WriteDefault
 
-# no @derive(Json): member(s) Properties: dict[str, str], Schemas: list[IcebergSchema], PartitionSpecs: list[IcebergPartitionSpec], SortOrders: list[IcebergSortOrder] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Properties: dict[str, str], Schemas: list[IcebergSchema], PartitionSpecs: list[IcebergPartitionSpec], SortOrders: list[IcebergSortOrder] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IcebergTableMetadata:
     Optional[str] FormatVersion
     Optional[str] TableUuid
@@ -6044,8 +6328,9 @@ struct IcebergTableMetadata:
     Optional[list[IcebergSortOrder]] SortOrders
     Optional[int64] DefaultSortOrderId
 
-# no @derive(Json): member(s) Schema: IcebergSchema, PartitionSpec: IcebergPartitionSpec, SortOrder: IcebergSortOrder, Properties: dict[str, str], EncryptionKey: IcebergEncryptedKey not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Schema: IcebergSchema, PartitionSpec: IcebergPartitionSpec, SortOrder: IcebergSortOrder, Properties: dict[str, str], EncryptionKey: IcebergEncryptedKey not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IcebergTableUpdate:
     IcebergSchema Schema
     Optional[IcebergPartitionSpec] PartitionSpec
@@ -6056,8 +6341,9 @@ struct IcebergTableUpdate:
     Optional[IcebergEncryptedKey] EncryptionKey
     Optional[str] KeyId
 
-# no @derive(Json): member(s) Paths: list[str], Exclusions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Paths: list[str], Exclusions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IcebergTarget:
     Optional[list[str]] Paths
     Optional[str] ConnectionName
@@ -6094,8 +6380,9 @@ struct ImportLabelsTaskRunProperties:
     Optional[str] InputS3Path
     Optional[bool] Replace
 
-# no @derive(Json): member(s) IntegrationConfig: IntegrationConfig, Errors: list[IntegrationError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IntegrationConfig: IntegrationConfig, Errors: list[IntegrationError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InboundIntegration:
     str SourceArn
     str TargetArn
@@ -6105,8 +6392,9 @@ struct InboundIntegration:
     Optional[IntegrationConfig] IntegrationConfig
     Optional[list[IntegrationError]] Errors
 
-# no @derive(Json): member(s) AdditionalEncryptionContext: dict[str, str], Tags: list[Tag], IntegrationConfig: IntegrationConfig, Errors: list[IntegrationError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalEncryptionContext: dict[str, str], Tags: list[Tag], IntegrationConfig: IntegrationConfig, Errors: list[IntegrationError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Integration:
     str SourceArn
     str TargetArn
@@ -6122,8 +6410,9 @@ struct Integration:
     Optional[list[IntegrationError]] Errors
     Optional[str] DataFilter
 
-# no @derive(Json): member(s) SourceProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntegrationConfig:
     Optional[str] RefreshInterval
     Optional[dict[str, str]] SourceProperties
@@ -6139,8 +6428,9 @@ struct IntegrationError:
     Optional[str] ErrorCode
     Optional[str] ErrorMessage
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntegrationFilter:
     Optional[str] Name
     Optional[list[str]] Values
@@ -6166,22 +6456,25 @@ struct IntegrationResourceProperty:
     Optional[SourceProcessingProperties] SourceProcessingProperties
     Optional[TargetProcessingProperties] TargetProcessingProperties
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntegrationResourcePropertyFilter:
     Optional[str] Name
     Optional[list[str]] Values
 
-# no @derive(Json): member(s) SourceTableConfig: SourceTableConfig, TargetTableConfig: TargetTableConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceTableConfig: SourceTableConfig, TargetTableConfig: TargetTableConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntegrationTableProperties:
     str ResourceArn
     str TableName
     Optional[SourceTableConfig] SourceTableConfig
     Optional[TargetTableConfig] TargetTableConfig
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IntegrationTablePropertiesFilter:
     Optional[str] Name
     Optional[list[str]] Values
@@ -6217,8 +6510,9 @@ struct ItemError:
 struct IterableFormEntry:
     Optional[str] FormTypeId
 
-# no @derive(Json): member(s) GlossaryTerms: list[str], Forms: dict[str, AssetFormEntry], Attachments: dict[str, AssetFormEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlossaryTerms: list[str], Forms: dict[str, AssetFormEntry], Attachments: dict[str, AssetFormEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IterableFormItem:
     Optional[str] ItemId
     Optional[str] ItemName
@@ -6226,16 +6520,18 @@ struct IterableFormItem:
     Optional[dict[str, AssetFormEntry]] Forms
     Optional[dict[str, AssetFormEntry]] Attachments
 
-# no @derive(Json): member(s) GlossaryTerms: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlossaryTerms: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IterableFormListItem:
     Optional[str] ItemId
     Optional[str] ItemName
     Optional[str] Description
     Optional[list[str]] GlossaryTerms
 
-# no @derive(Json): member(s) JobBookmarkKeys: list[str], DataTypeMapping: dict[JDBCDataType, GlueRecordType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobBookmarkKeys: list[str], DataTypeMapping: dict[JDBCDataType, GlueRecordType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JDBCConnectorOptions:
     Optional[str] FilterPredicate
     Optional[str] PartitionColumn
@@ -6246,8 +6542,9 @@ struct JDBCConnectorOptions:
     Optional[str] JobBookmarkKeysSortOrder
     Optional[dict[JDBCDataType, GlueRecordType]] DataTypeMapping
 
-# no @derive(Json): member(s) AdditionalOptions: JDBCConnectorOptions, OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalOptions: JDBCConnectorOptions, OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JDBCConnectorSource:
     str Name
     str ConnectionName
@@ -6258,8 +6555,9 @@ struct JDBCConnectorSource:
     Optional[str] Query
     Optional[list[GlueSchema]] OutputSchemas
 
-# no @derive(Json): member(s) Inputs: list[str], AdditionalOptions: dict[str, str], OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], AdditionalOptions: dict[str, str], OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JDBCConnectorTarget:
     str Name
     list[str] Inputs
@@ -6270,8 +6568,9 @@ struct JDBCConnectorTarget:
     Optional[dict[str, str]] AdditionalOptions
     Optional[list[GlueSchema]] OutputSchemas
 
-# no @derive(Json): member(s) TokenUrl: ConnectorProperty, JwtToken: ConnectorProperty, TokenUrlParameters: list[ConnectorProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TokenUrl: ConnectorProperty, JwtToken: ConnectorProperty, TokenUrlParameters: list[ConnectorProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JWTBearerProperties:
     Optional[ConnectorProperty] TokenUrl
     Optional[HTTPMethod] RequestMethod
@@ -6279,16 +6578,18 @@ struct JWTBearerProperties:
     Optional[ConnectorProperty] JwtToken
     Optional[list[ConnectorProperty]] TokenUrlParameters
 
-# no @derive(Json): member(s) Exclusions: list[str], EnableAdditionalMetadata: list[JdbcMetadataEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Exclusions: list[str], EnableAdditionalMetadata: list[JdbcMetadataEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JdbcTarget:
     Optional[str] ConnectionName
     Optional[str] Path
     Optional[list[str]] Exclusions
     Optional[list[JdbcMetadataEntry]] EnableAdditionalMetadata
 
-# no @derive(Json): member(s) DefaultArguments: dict[str, str], NonOverridableArguments: dict[str, str], Connections: ConnectionsList, CodeGenConfigurationNodes: dict[str, CodeGenConfigurationNode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultArguments: dict[str, str], NonOverridableArguments: dict[str, str], Connections: ConnectionsList, CodeGenConfigurationNodes: dict[str, CodeGenConfigurationNode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Job:
     Optional[str] Name
     Optional[JobMode] JobMode
@@ -6340,13 +6641,15 @@ struct JobCommand:
     Optional[str] PythonVersion
     Optional[str] Runtime
 
-# no @derive(Json): member(s) JobRuns: list[JobRun] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobRuns: list[JobRun] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobNodeDetails:
     Optional[list[JobRun]] JobRuns
 
-# no @derive(Json): member(s) Arguments: dict[str, str], PredecessorRuns: list[Predecessor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Arguments: dict[str, str], PredecessorRuns: list[Predecessor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobRun:
     Optional[str] Id
     Optional[int64] Attempt
@@ -6379,8 +6682,9 @@ struct JobRun:
     Optional[str] StateDetail
     Optional[str] ExecutionRoleSessionPolicy
 
-# no @derive(Json): member(s) DefaultArguments: dict[str, str], NonOverridableArguments: dict[str, str], Connections: ConnectionsList, CodeGenConfigurationNodes: dict[str, CodeGenConfigurationNode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultArguments: dict[str, str], NonOverridableArguments: dict[str, str], Connections: ConnectionsList, CodeGenConfigurationNodes: dict[str, CodeGenConfigurationNode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobUpdate:
     Optional[JobMode] JobMode
     Optional[bool] JobRunQueuingEnabled
@@ -6406,16 +6710,18 @@ struct JobUpdate:
     Optional[SourceControlDetails] SourceControlDetails
     Optional[str] MaintenanceWindow
 
-# no @derive(Json): member(s) Inputs: list[str], Columns: list[JoinColumn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], Columns: list[JoinColumn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Join:
     str Name
     list[str] Inputs
     JoinType JoinType
     list[JoinColumn] Columns
 
-# no @derive(Json): member(s) Keys: list[list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Keys: list[list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JoinColumn:
     str From
     list[list[str]] Keys
@@ -6521,21 +6827,24 @@ struct ListAssetTypesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[AssetTypeItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[AssetTypeItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssetTypesResponse:
     Optional[list[AssetTypeItem]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBlueprintsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Blueprints: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Blueprints: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBlueprintsResponse:
     Optional[list[str]] Blueprints
     Optional[str] NextToken
@@ -6545,8 +6854,9 @@ struct ListColumnStatisticsTaskRunsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ColumnStatisticsTaskRunIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnStatisticsTaskRunIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListColumnStatisticsTaskRunsResponse:
     Optional[list[str]] ColumnStatisticsTaskRunIds
     Optional[str] NextToken
@@ -6556,115 +6866,132 @@ struct ListConnectionTypesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ConnectionTypes: list[ConnectionTypeBrief] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectionTypes: list[ConnectionTypeBrief] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConnectionTypesResponse:
     Optional[list[ConnectionTypeBrief]] ConnectionTypes
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCrawlersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) CrawlerNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CrawlerNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCrawlersResponse:
     Optional[list[str]] CrawlerNames
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[CrawlsFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[CrawlsFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCrawlsRequest:
     str CrawlerName
     Optional[int64] MaxResults
     Optional[list[CrawlsFilter]] Filters
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Crawls: list[CrawlerHistory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Crawls: list[CrawlerHistory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCrawlsResponse:
     Optional[list[CrawlerHistory]] Crawls
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomEntityTypesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) CustomEntityTypes: list[CustomEntityType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomEntityTypes: list[CustomEntityType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCustomEntityTypesResponse:
     Optional[list[CustomEntityType]] CustomEntityTypes
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filter: DataQualityResultFilterCriteria not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filter: DataQualityResultFilterCriteria not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataQualityResultsRequest:
     Optional[DataQualityResultFilterCriteria] Filter
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Results: list[DataQualityResultDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[DataQualityResultDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataQualityResultsResponse:
     list[DataQualityResultDescription] Results
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filter: DataQualityResultsV2FilterCriteria not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filter: DataQualityResultsV2FilterCriteria not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataQualityResultsV2Request:
     Optional[DataQualityResultsV2FilterCriteria] Filter
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Results: list[DataQualityResultsV2Description] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[DataQualityResultsV2Description] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataQualityResultsV2Response:
     list[DataQualityResultsV2Description] Results
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filter: DataQualityRuleRecommendationRunFilter, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filter: DataQualityRuleRecommendationRunFilter, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataQualityRuleRecommendationRunsRequest:
     Optional[DataQualityRuleRecommendationRunFilter] Filter
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Runs: list[DataQualityRuleRecommendationRunDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Runs: list[DataQualityRuleRecommendationRunDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataQualityRuleRecommendationRunsResponse:
     Optional[list[DataQualityRuleRecommendationRunDescription]] Runs
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filter: DataQualityRulesetEvaluationRunFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filter: DataQualityRulesetEvaluationRunFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataQualityRulesetEvaluationRunsRequest:
     Optional[DataQualityRulesetEvaluationRunFilter] Filter
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Runs: list[DataQualityRulesetEvaluationRunDescription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Runs: list[DataQualityRulesetEvaluationRunDescription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataQualityRulesetEvaluationRunsResponse:
     Optional[list[DataQualityRulesetEvaluationRunDescription]] Runs
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataQualityRulesetsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[DataQualityRulesetFilterCriteria] Filter
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Rulesets: list[DataQualityRulesetListDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rulesets: list[DataQualityRulesetListDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataQualityRulesetsResponse:
     Optional[list[DataQualityRulesetListDetails]] Rulesets
     Optional[str] NextToken
@@ -6677,8 +7004,9 @@ struct ListDataQualityStatisticAnnotationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Annotations: list[StatisticAnnotation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Annotations: list[StatisticAnnotation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataQualityStatisticAnnotationsResponse:
     Optional[list[StatisticAnnotation]] Annotations
     Optional[str] NextToken
@@ -6691,21 +7019,24 @@ struct ListDataQualityStatisticsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Statistics: list[StatisticSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Statistics: list[StatisticSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDataQualityStatisticsResponse:
     Optional[list[StatisticSummary]] Statistics
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDevEndpointsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) DevEndpointNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DevEndpointNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDevEndpointsResponse:
     Optional[list[str]] DevEndpointNames
     Optional[str] NextToken
@@ -6718,8 +7049,9 @@ struct ListEntitiesRequest:
     Optional[str] NextToken
     Optional[str] DataStoreApiVersion
 
-# no @derive(Json): member(s) Entities: list[Entity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Entities: list[Entity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEntitiesResponse:
     Optional[list[Entity]] Entities
     Optional[str] NextToken
@@ -6729,8 +7061,9 @@ struct ListFormTypesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[FormTypeItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[FormTypeItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFormTypesResponse:
     list[FormTypeItem] Items
     Optional[str] NextToken
@@ -6740,8 +7073,9 @@ struct ListGlossariesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[GlossaryItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[GlossaryItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGlossariesResponse:
     Optional[list[GlossaryItem]] Items
     Optional[str] NextToken
@@ -6752,34 +7086,39 @@ struct ListGlossaryTermsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[GlossaryTermItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[GlossaryTermItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGlossaryTermsResponse:
     Optional[list[GlossaryTermItem]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: list[IntegrationResourcePropertyFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[IntegrationResourcePropertyFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIntegrationResourcePropertiesRequest:
     Optional[str] Marker
     Optional[list[IntegrationResourcePropertyFilter]] Filters
     Optional[int64] MaxRecords
 
-# no @derive(Json): member(s) IntegrationResourcePropertyList: list[IntegrationResourceProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IntegrationResourcePropertyList: list[IntegrationResourceProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIntegrationResourcePropertiesResponse:
     Optional[list[IntegrationResourceProperty]] IntegrationResourcePropertyList
     Optional[str] Marker
 
-# no @derive(Json): member(s) Filters: list[IntegrationTablePropertiesFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[IntegrationTablePropertiesFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIntegrationTablePropertiesRequest:
     Optional[str] Marker
     Optional[list[IntegrationTablePropertiesFilter]] Filters
     Optional[int64] MaxRecords
 
-# no @derive(Json): member(s) IntegrationTablePropertiesList: list[IntegrationTableProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IntegrationTablePropertiesList: list[IntegrationTableProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIntegrationTablePropertiesResponse:
     Optional[list[IntegrationTableProperties]] IntegrationTablePropertiesList
     Optional[str] Marker
@@ -6791,27 +7130,31 @@ struct ListIterableFormsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Items: list[IterableFormListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[IterableFormListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIterableFormsResponse:
     Optional[list[IterableFormListItem]] Items
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) JobNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListJobsResponse:
     Optional[list[str]] JobNames
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filter: TransformFilterCriteria, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filter: TransformFilterCriteria, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMLTransformsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
@@ -6819,8 +7162,9 @@ struct ListMLTransformsRequest:
     Optional[TransformSortCriteria] Sort
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) TransformIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TransformIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMLTransformsResponse:
     list[str] TransformIds
     Optional[str] NextToken
@@ -6833,8 +7177,9 @@ struct ListMaterializedViewRefreshTaskRunsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) MaterializedViewRefreshTaskRuns: list[MaterializedViewRefreshTaskRun] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MaterializedViewRefreshTaskRuns: list[MaterializedViewRefreshTaskRun] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMaterializedViewRefreshTaskRunsResponse:
     Optional[list[MaterializedViewRefreshTaskRun]] MaterializedViewRefreshTaskRuns
     Optional[str] NextToken
@@ -6844,8 +7189,9 @@ struct ListRegistriesInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Registries: list[RegistryListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Registries: list[RegistryListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRegistriesResponse:
     Optional[list[RegistryListItem]] Registries
     Optional[str] NextToken
@@ -6856,8 +7202,9 @@ struct ListSchemaVersionsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Schemas: list[SchemaVersionListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Schemas: list[SchemaVersionListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSchemaVersionsResponse:
     Optional[list[SchemaVersionListItem]] Schemas
     Optional[str] NextToken
@@ -6868,22 +7215,25 @@ struct ListSchemasInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Schemas: list[SchemaListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Schemas: list[SchemaListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSchemasResponse:
     Optional[list[SchemaListItem]] Schemas
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSessionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
     Optional[dict[str, str]] Tags
     Optional[str] RequestOrigin
 
-# no @derive(Json): member(s) Ids: list[str], Sessions: list[Session] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Ids: list[str], Sessions: list[Session] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSessionsResponse:
     Optional[list[str]] Ids
     Optional[list[Session]] Sessions
@@ -6895,8 +7245,9 @@ struct ListStatementsRequest:
     Optional[str] RequestOrigin
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Statements: list[Statement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Statements: list[Statement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStatementsResponse:
     Optional[list[Statement]] Statements
     Optional[str] NextToken
@@ -6910,8 +7261,9 @@ struct ListTableOptimizerRunsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TableOptimizerRuns: list[TableOptimizerRun] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableOptimizerRuns: list[TableOptimizerRun] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTableOptimizerRunsResponse:
     Optional[str] CatalogId
     Optional[str] DatabaseName
@@ -6919,16 +7271,18 @@ struct ListTableOptimizerRunsResponse:
     Optional[str] NextToken
     Optional[list[TableOptimizerRun]] TableOptimizerRuns
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTriggersRequest:
     Optional[str] NextToken
     Optional[str] DependentJobName
     Optional[int64] MaxResults
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) TriggerNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TriggerNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTriggersResponse:
     Optional[list[str]] TriggerNames
     Optional[str] NextToken
@@ -6938,8 +7292,9 @@ struct ListUsageProfilesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Profiles: list[UsageProfileDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Profiles: list[UsageProfileDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUsageProfilesResponse:
     Optional[list[UsageProfileDefinition]] Profiles
     Optional[str] NextToken
@@ -6949,14 +7304,16 @@ struct ListWorkflowsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Workflows: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Workflows: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkflowsResponse:
     Optional[list[str]] Workflows
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Jdbc: list[CodeGenNodeArg], S3: list[CodeGenNodeArg], DynamoDB: list[CodeGenNodeArg] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Jdbc: list[CodeGenNodeArg], S3: list[CodeGenNodeArg], DynamoDB: list[CodeGenNodeArg] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Location:
     Optional[list[CodeGenNodeArg]] Jdbc
     Optional[list[CodeGenNodeArg]] S3
@@ -6969,8 +7326,9 @@ struct LongColumnStatisticsData:
     int64 NumberOfNulls
     int64 NumberOfDistinctValues
 
-# no @derive(Json): member(s) InputRecordTables: list[GlueTable], EvaluationMetrics: EvaluationMetrics, Schema: list[SchemaColumn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InputRecordTables: list[GlueTable], EvaluationMetrics: EvaluationMetrics, Schema: list[SchemaColumn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MLTransform:
     Optional[str] TransformId
     Optional[str] Name
@@ -7001,8 +7359,9 @@ struct MLUserDataEncryption:
     MLUserDataEncryptionModeString MlUserDataEncryptionMode
     Optional[str] KmsKeyId
 
-# no @derive(Json): member(s) FromPath: list[str], Children: list[Mapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FromPath: list[str], Children: list[Mapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Mapping:
     Optional[str] ToKey
     Optional[list[str]] FromPath
@@ -7050,16 +7409,18 @@ struct MaterializedViewRefreshTaskRunningException:
 struct MaterializedViewRefreshTaskStoppingException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Inputs: list[str], PrimaryKeys: list[list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], PrimaryKeys: list[list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Merge:
     str Name
     list[str] Inputs
     str Source
     list[list[str]] PrimaryKeys
 
-# no @derive(Json): member(s) OtherMetadataValueList: list[OtherMetadataValueListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OtherMetadataValueList: list[OtherMetadataValueListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetadataInfo:
     Optional[str] MetadataValue
     Optional[str] CreatedTime
@@ -7070,8 +7431,9 @@ struct MetadataKeyValuePair:
     Optional[str] MetadataKey
     Optional[str] MetadataValue
 
-# no @derive(Json): member(s) NewRules: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NewRules: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricBasedObservation:
     Optional[str] MetricName
     Optional[str] StatisticId
@@ -7084,16 +7446,18 @@ struct MicrosoftSQLServerCatalogSource:
     str Database
     str Table
 
-# no @derive(Json): member(s) Inputs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MicrosoftSQLServerCatalogTarget:
     str Name
     list[str] Inputs
     str Database
     str Table
 
-# no @derive(Json): member(s) IntegrationConfig: IntegrationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IntegrationConfig: IntegrationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyIntegrationRequest:
     str IntegrationIdentifier
     Optional[str] Description
@@ -7101,8 +7465,9 @@ struct ModifyIntegrationRequest:
     Optional[IntegrationConfig] IntegrationConfig
     Optional[str] IntegrationName
 
-# no @derive(Json): member(s) AdditionalEncryptionContext: dict[str, str], Tags: list[Tag], Errors: list[IntegrationError], IntegrationConfig: IntegrationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalEncryptionContext: dict[str, str], Tags: list[Tag], Errors: list[IntegrationError], IntegrationConfig: IntegrationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyIntegrationResponse:
     str SourceArn
     str TargetArn
@@ -7130,8 +7495,9 @@ struct MySQLCatalogSource:
     str Database
     str Table
 
-# no @derive(Json): member(s) Inputs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MySQLCatalogTarget:
     str Name
     list[str] Inputs
@@ -7142,8 +7508,9 @@ struct MySQLCatalogTarget:
 struct NoScheduleException:
     Optional[str] Message
 
-# no @derive(Json): member(s) TriggerDetails: TriggerNodeDetails, JobDetails: JobNodeDetails, CrawlerDetails: CrawlerNodeDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TriggerDetails: TriggerNodeDetails, JobDetails: JobNodeDetails, CrawlerDetails: CrawlerNodeDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Node:
     Optional[NodeType] Type
     Optional[str] Name
@@ -7179,16 +7546,18 @@ struct OAuth2Credentials:
     Optional[str] RefreshToken
     Optional[str] JwtToken
 
-# no @derive(Json): member(s) TokenUrlParametersMap: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TokenUrlParametersMap: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OAuth2Properties:
     Optional[OAuth2GrantType] OAuth2GrantType
     Optional[OAuth2ClientApplication] OAuth2ClientApplication
     Optional[str] TokenUrl
     Optional[dict[str, str]] TokenUrlParametersMap
 
-# no @derive(Json): member(s) TokenUrlParametersMap: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TokenUrlParametersMap: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OAuth2PropertiesInput:
     Optional[OAuth2GrantType] OAuth2GrantType
     Optional[OAuth2ClientApplication] OAuth2ClientApplication
@@ -7207,8 +7576,9 @@ struct OffsetConfiguration:
     ExtractedParameter OffsetParameter
     ExtractedParameter LimitParameter
 
-# no @derive(Json): member(s) IcebergInput: IcebergInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IcebergInput: IcebergInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OpenTableFormatInput:
     Optional[IcebergInput] IcebergInput
 
@@ -7232,8 +7602,9 @@ struct OracleSQLCatalogSource:
     str Database
     str Table
 
-# no @derive(Json): member(s) Inputs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OracleSQLCatalogTarget:
     str Name
     list[str] Inputs
@@ -7258,8 +7629,9 @@ struct OtherMetadataValueListItem:
     Optional[str] MetadataValue
     Optional[str] CreatedTime
 
-# no @derive(Json): member(s) Inputs: list[str], EntityTypesToDetect: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], EntityTypesToDetect: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PIIDetection:
     str Name
     list[str] Inputs
@@ -7282,8 +7654,9 @@ struct PaginationConfiguration:
     Optional[CursorConfiguration] CursorConfiguration
     Optional[OffsetConfiguration] OffsetConfiguration
 
-# no @derive(Json): member(s) Values: list[str], StorageDescriptor: StorageDescriptor, Parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str], StorageDescriptor: StorageDescriptor, Parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Partition:
     Optional[list[str]] Values
     Optional[str] DatabaseName
@@ -7295,28 +7668,32 @@ struct Partition:
     Optional[DateTime] LastAnalyzedTime
     Optional[str] CatalogId
 
-# no @derive(Json): member(s) PartitionValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PartitionError:
     Optional[list[str]] PartitionValues
     Optional[ErrorDetail] ErrorDetail
 
-# no @derive(Json): member(s) Keys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Keys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PartitionIndex:
     list[str] Keys
     str IndexName
 
-# no @derive(Json): member(s) Keys: list[KeySchemaElement], BackfillErrors: list[BackfillError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Keys: list[KeySchemaElement], BackfillErrors: list[BackfillError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PartitionIndexDescriptor:
     str IndexName
     list[KeySchemaElement] Keys
     PartitionIndexStatus IndexStatus
     Optional[list[BackfillError]] BackfillErrors
 
-# no @derive(Json): member(s) Values: list[str], StorageDescriptor: StorageDescriptor, Parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str], StorageDescriptor: StorageDescriptor, Parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PartitionInput:
     Optional[list[str]] Values
     Optional[DateTime] LastAccessTime
@@ -7324,8 +7701,9 @@ struct PartitionInput:
     Optional[dict[str, str]] Parameters
     Optional[DateTime] LastAnalyzedTime
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PartitionValueList:
     list[str] Values
 
@@ -7333,8 +7711,9 @@ struct PartitionValueList:
 struct PermissionTypeMismatchException:
     Optional[str] Message
 
-# no @derive(Json): member(s) SecurityGroupIdList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIdList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PhysicalConnectionRequirements:
     Optional[str] SubnetId
     Optional[list[str]] SecurityGroupIdList
@@ -7346,8 +7725,9 @@ struct PostgreSQLCatalogSource:
     str Database
     str Table
 
-# no @derive(Json): member(s) Inputs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PostgreSQLCatalogTarget:
     str Name
     list[str] Inputs
@@ -7359,20 +7739,23 @@ struct Predecessor:
     Optional[str] JobName
     Optional[str] RunId
 
-# no @derive(Json): member(s) Conditions: list[Condition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Conditions: list[Condition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Predicate:
     Optional[Logical] Logical
     Optional[list[Condition]] Conditions
 
-# no @derive(Json): member(s) Permissions: list[Permission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[Permission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrincipalPermissions:
     Optional[DataLakePrincipal] Principal
     Optional[list[Permission]] Permissions
 
-# no @derive(Json): member(s) SessionConfiguration: dict[str, ConfigurationObject], JobConfiguration: dict[str, ConfigurationObject] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SessionConfiguration: dict[str, ConfigurationObject], JobConfiguration: dict[str, ConfigurationObject] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProfileConfiguration:
     Optional[dict[str, ConfigurationObject]] SessionConfiguration
     Optional[dict[str, ConfigurationObject]] JobConfiguration
@@ -7383,8 +7766,9 @@ struct ProfilingResultsOptions:
     Optional[CatalogTableConfigOptions] CatalogTableConfig
     Optional[DistributionResultsOptions] DistributionResults
 
-# no @derive(Json): member(s) PropertyTypes: list[PropertyType], AllowedValues: list[AllowedValue], DataOperationScopes: list[DataOperation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PropertyTypes: list[PropertyType], AllowedValues: list[AllowedValue], DataOperationScopes: list[DataOperation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Property:
     str Name
     str Description
@@ -7402,8 +7786,9 @@ struct PropertyPredicate:
     Optional[str] Value
     Optional[Comparator] Comparator
 
-# no @derive(Json): member(s) Dimensions: dict[str, str], Tags: dict[str, str], RuleResults: list[DataQualityRuleResult], AnalyzerResults: list[DataQualityAnalyzerResult], Observations: list[DataQualityObservation], Statistics: list[StatisticSummary], Descriptors: dict[str, str], Telemetry: DataQualityTelemetry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: dict[str, str], Tags: dict[str, str], RuleResults: list[DataQualityRuleResult], AnalyzerResults: list[DataQualityAnalyzerResult], Observations: list[DataQualityObservation], Statistics: list[StatisticSummary], Descriptors: dict[str, str], Telemetry: DataQualityTelemetry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PublishDataQualityResultV2Request:
     dict[str, str] Dimensions
     Optional[dict[str, str]] Tags
@@ -7427,8 +7812,9 @@ struct PublishDataQualityResultV2Request:
 struct PublishDataQualityResultV2Response:
     str ResultId
 
-# no @derive(Json): member(s) Forms: dict[str, AssetFormEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Forms: dict[str, AssetFormEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutAssetRequest:
     str AssetTypeId
     str Identifier
@@ -7437,8 +7823,9 @@ struct PutAssetRequest:
     dict[str, AssetFormEntry] Forms
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) Forms: dict[str, AssetFormEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Forms: dict[str, AssetFormEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutAssetResponse:
     str Id
     str Name
@@ -7446,15 +7833,17 @@ struct PutAssetResponse:
     Optional[DateTime] CreatedAt
     Optional[dict[str, AssetFormEntry]] Forms
 
-# no @derive(Json): member(s) Forms: dict[str, AssetTypeFormReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Forms: dict[str, AssetTypeFormReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutAssetTypeRequest:
     str Name
     dict[str, AssetTypeFormReference] Forms
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) Forms: dict[str, AssetTypeFormReference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Forms: dict[str, AssetTypeFormReference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutAssetTypeResponse:
     Optional[str] Id
     Optional[str] Name
@@ -7551,8 +7940,9 @@ struct PutSchemaVersionMetadataResponse:
     Optional[str] MetadataKey
     Optional[str] MetadataValue
 
-# no @derive(Json): member(s) RunProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RunProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutWorkflowRunPropertiesRequest:
     str Name
     str RunId
@@ -7563,8 +7953,9 @@ struct PutWorkflowRunPropertiesResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) MetadataList: list[MetadataKeyValuePair] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetadataList: list[MetadataKeyValuePair] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuerySchemaVersionMetadataInput:
     Optional[SchemaId] SchemaId
     Optional[SchemaVersionNumber] SchemaVersionNumber
@@ -7573,15 +7964,17 @@ struct QuerySchemaVersionMetadataInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) MetadataInfoMap: dict[str, MetadataInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetadataInfoMap: dict[str, MetadataInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuerySchemaVersionMetadataResponse:
     Optional[dict[str, MetadataInfo]] MetadataInfoMap
     Optional[str] SchemaVersionId
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AdditionalContext: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalContext: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct QuerySessionContext:
     Optional[str] QueryId
     Optional[DateTime] QueryStartTime
@@ -7593,16 +7986,18 @@ struct QuerySessionContext:
 struct RLSProperties:
     Optional[str] DefaultRLSPolicy
 
-# no @derive(Json): member(s) Inputs: list[str], RecipeSteps: list[RecipeStep] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], RecipeSteps: list[RecipeStep] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Recipe:
     str Name
     list[str] Inputs
     Optional[RecipeReference] RecipeReference
     Optional[list[RecipeStep]] RecipeSteps
 
-# no @derive(Json): member(s) Parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecipeAction:
     str Operation
     Optional[dict[str, str]] Parameters
@@ -7612,8 +8007,9 @@ struct RecipeReference:
     str RecipeArn
     str RecipeVersion
 
-# no @derive(Json): member(s) Action: RecipeAction, ConditionExpressions: list[ConditionExpression] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Action: RecipeAction, ConditionExpressions: list[ConditionExpression] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecipeStep:
     RecipeAction Action
     Optional[list[ConditionExpression]] ConditionExpressions
@@ -7635,8 +8031,9 @@ struct RedshiftSource:
     Optional[str] RedshiftTmpDir
     Optional[str] TmpDirIAMRole
 
-# no @derive(Json): member(s) Inputs: list[str], UpsertRedshiftOptions: UpsertRedshiftTargetOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], UpsertRedshiftOptions: UpsertRedshiftTargetOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RedshiftTarget:
     str Name
     list[str] Inputs
@@ -7646,8 +8043,9 @@ struct RedshiftTarget:
     Optional[str] TmpDirIAMRole
     Optional[UpsertRedshiftTargetOptions] UpsertRedshiftOptions
 
-# no @derive(Json): member(s) ConnectionProperties: ConnectionPropertiesConfiguration, ConnectorAuthenticationConfiguration: ConnectorAuthenticationConfiguration, RestConfiguration: RestConfiguration, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectionProperties: ConnectionPropertiesConfiguration, ConnectorAuthenticationConfiguration: ConnectorAuthenticationConfiguration, RestConfiguration: RestConfiguration, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegisterConnectionTypeRequest:
     str ConnectionType
     str IntegrationType
@@ -7710,8 +8108,9 @@ struct RemoveSchemaVersionMetadataResponse:
     Optional[str] MetadataKey
     Optional[str] MetadataValue
 
-# no @derive(Json): member(s) Inputs: list[str], SourcePath: list[str], TargetPath: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], SourcePath: list[str], TargetPath: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RenameField:
     str Name
     list[str] Inputs
@@ -7754,22 +8153,25 @@ struct ResponseExtractionMapping:
     Optional[str] ContentPath
     Optional[str] HeaderKey
 
-# no @derive(Json): member(s) GlobalSourceConfiguration: SourceConfiguration, ValidationEndpointConfiguration: SourceConfiguration, EntityConfigurations: dict[str, EntityConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GlobalSourceConfiguration: SourceConfiguration, ValidationEndpointConfiguration: SourceConfiguration, EntityConfigurations: dict[str, EntityConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestConfiguration:
     Optional[SourceConfiguration] GlobalSourceConfiguration
     Optional[SourceConfiguration] ValidationEndpointConfiguration
     Optional[dict[str, EntityConfiguration]] EntityConfigurations
 
-# no @derive(Json): member(s) NodeIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NodeIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResumeWorkflowRunRequest:
     str Name
     str RunId
     list[str] NodeIds
 
-# no @derive(Json): member(s) NodeIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NodeIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResumeWorkflowRunResponse:
     Optional[str] RunId
     Optional[list[str]] NodeIds
@@ -7782,8 +8184,9 @@ struct RetentionConfiguration:
 struct RetentionMetrics:
     Optional[IcebergRetentionMetrics] IcebergMetrics
 
-# no @derive(Json): member(s) Inputs: list[str], GroupFiltersList: list[GroupFilters] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], GroupFiltersList: list[GroupFilters] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Route:
     str Name
     list[str] Inputs
@@ -7817,8 +8220,9 @@ struct RunStatementRequest:
 struct RunStatementResponse:
     Optional[int64] Id
 
-# no @derive(Json): member(s) AdditionalDeltaOptions: dict[str, str], OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalDeltaOptions: dict[str, str], OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3CatalogDeltaSource:
     str Name
     str Database
@@ -7826,8 +8230,9 @@ struct S3CatalogDeltaSource:
     Optional[dict[str, str]] AdditionalDeltaOptions
     Optional[list[GlueSchema]] OutputSchemas
 
-# no @derive(Json): member(s) AdditionalHudiOptions: dict[str, str], OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalHudiOptions: dict[str, str], OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3CatalogHudiSource:
     str Name
     str Database
@@ -7835,8 +8240,9 @@ struct S3CatalogHudiSource:
     Optional[dict[str, str]] AdditionalHudiOptions
     Optional[list[GlueSchema]] OutputSchemas
 
-# no @derive(Json): member(s) AdditionalIcebergOptions: dict[str, str], OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalIcebergOptions: dict[str, str], OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3CatalogIcebergSource:
     str Name
     str Database
@@ -7852,8 +8258,9 @@ struct S3CatalogSource:
     Optional[str] PartitionPredicate
     Optional[S3SourceAdditionalOptions] AdditionalOptions
 
-# no @derive(Json): member(s) Inputs: list[str], PartitionKeys: list[list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], PartitionKeys: list[list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3CatalogTarget:
     str Name
     list[str] Inputs
@@ -7863,8 +8270,9 @@ struct S3CatalogTarget:
     Optional[CatalogSchemaChangePolicy] SchemaChangePolicy
     Optional[AutoDataQuality] AutoDataQuality
 
-# no @derive(Json): member(s) Paths: list[str], Exclusions: list[str], OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Paths: list[str], Exclusions: list[str], OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3CsvSource:
     str Name
     list[str] Paths
@@ -7886,8 +8294,9 @@ struct S3CsvSource:
     Optional[bool] OptimizePerformance
     Optional[list[GlueSchema]] OutputSchemas
 
-# no @derive(Json): member(s) Inputs: list[str], PartitionKeys: list[list[str]], AdditionalOptions: dict[str, str], OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], PartitionKeys: list[list[str]], AdditionalOptions: dict[str, str], OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3DeltaCatalogTarget:
     str Name
     list[str] Inputs
@@ -7899,8 +8308,9 @@ struct S3DeltaCatalogTarget:
     Optional[AutoDataQuality] AutoDataQuality
     Optional[list[GlueSchema]] OutputSchemas
 
-# no @derive(Json): member(s) Inputs: list[str], PartitionKeys: list[list[str]], AdditionalOptions: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], PartitionKeys: list[list[str]], AdditionalOptions: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3DeltaDirectTarget:
     str Name
     list[str] Inputs
@@ -7913,8 +8323,9 @@ struct S3DeltaDirectTarget:
     Optional[DirectSchemaChangePolicy] SchemaChangePolicy
     Optional[AutoDataQuality] AutoDataQuality
 
-# no @derive(Json): member(s) Paths: list[str], AdditionalDeltaOptions: dict[str, str], OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Paths: list[str], AdditionalDeltaOptions: dict[str, str], OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3DeltaSource:
     str Name
     list[str] Paths
@@ -7929,8 +8340,9 @@ struct S3DirectSourceAdditionalOptions:
     Optional[bool] EnableSamplePath
     Optional[str] SamplePath
 
-# no @derive(Json): member(s) Inputs: list[str], PartitionKeys: list[list[str]], OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], PartitionKeys: list[list[str]], OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3DirectTarget:
     str Name
     list[str] Inputs
@@ -7948,8 +8360,9 @@ struct S3Encryption:
     Optional[S3EncryptionMode] S3EncryptionMode
     Optional[str] KmsKeyArn
 
-# no @derive(Json): member(s) Paths: list[str], Exclusions: list[str], OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Paths: list[str], Exclusions: list[str], OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3ExcelSource:
     str Name
     list[str] Paths
@@ -7965,8 +8378,9 @@ struct S3ExcelSource:
     Optional[int64] SkipFooter
     Optional[list[GlueSchema]] OutputSchemas
 
-# no @derive(Json): member(s) Inputs: list[str], PartitionKeys: list[list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], PartitionKeys: list[list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3GlueParquetTarget:
     str Name
     list[str] Inputs
@@ -7977,8 +8391,9 @@ struct S3GlueParquetTarget:
     Optional[DirectSchemaChangePolicy] SchemaChangePolicy
     Optional[AutoDataQuality] AutoDataQuality
 
-# no @derive(Json): member(s) Inputs: list[str], PartitionKeys: list[list[str]], AdditionalOptions: dict[str, str], OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], PartitionKeys: list[list[str]], AdditionalOptions: dict[str, str], OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3HudiCatalogTarget:
     str Name
     list[str] Inputs
@@ -7990,8 +8405,9 @@ struct S3HudiCatalogTarget:
     Optional[AutoDataQuality] AutoDataQuality
     Optional[list[GlueSchema]] OutputSchemas
 
-# no @derive(Json): member(s) Inputs: list[str], PartitionKeys: list[list[str]], AdditionalOptions: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], PartitionKeys: list[list[str]], AdditionalOptions: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3HudiDirectTarget:
     str Name
     list[str] Inputs
@@ -8004,8 +8420,9 @@ struct S3HudiDirectTarget:
     Optional[DirectSchemaChangePolicy] SchemaChangePolicy
     Optional[AutoDataQuality] AutoDataQuality
 
-# no @derive(Json): member(s) Paths: list[str], AdditionalHudiOptions: dict[str, str], OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Paths: list[str], AdditionalHudiOptions: dict[str, str], OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3HudiSource:
     str Name
     list[str] Paths
@@ -8013,8 +8430,9 @@ struct S3HudiSource:
     Optional[S3DirectSourceAdditionalOptions] AdditionalOptions
     Optional[list[GlueSchema]] OutputSchemas
 
-# no @derive(Json): member(s) Inputs: list[str], PartitionKeys: list[list[str]], OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], PartitionKeys: list[list[str]], OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3HyperDirectTarget:
     str Name
     list[str] Inputs
@@ -8026,8 +8444,9 @@ struct S3HyperDirectTarget:
     Optional[AutoDataQuality] AutoDataQuality
     Optional[list[GlueSchema]] OutputSchemas
 
-# no @derive(Json): member(s) Inputs: list[str], PartitionKeys: list[list[str]], AdditionalOptions: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], PartitionKeys: list[list[str]], AdditionalOptions: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3IcebergCatalogTarget:
     str Name
     list[str] Inputs
@@ -8038,8 +8457,9 @@ struct S3IcebergCatalogTarget:
     Optional[CatalogSchemaChangePolicy] SchemaChangePolicy
     Optional[AutoDataQuality] AutoDataQuality
 
-# no @derive(Json): member(s) Inputs: list[str], PartitionKeys: list[list[str]], AdditionalOptions: dict[str, str], OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], PartitionKeys: list[list[str]], AdditionalOptions: dict[str, str], OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3IcebergDirectTarget:
     str Name
     list[str] Inputs
@@ -8053,8 +8473,9 @@ struct S3IcebergDirectTarget:
     Optional[str] NumberTargetPartitions
     Optional[list[GlueSchema]] OutputSchemas
 
-# no @derive(Json): member(s) Paths: list[str], Exclusions: list[str], OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Paths: list[str], Exclusions: list[str], OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3JsonSource:
     str Name
     list[str] Paths
@@ -8070,8 +8491,9 @@ struct S3JsonSource:
     Optional[bool] Multiline
     Optional[list[GlueSchema]] OutputSchemas
 
-# no @derive(Json): member(s) Paths: list[str], Exclusions: list[str], OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Paths: list[str], Exclusions: list[str], OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3ParquetSource:
     str Name
     list[str] Paths
@@ -8090,8 +8512,9 @@ struct S3SourceAdditionalOptions:
     Optional[int64] BoundedSize
     Optional[int64] BoundedFiles
 
-# no @derive(Json): member(s) Exclusions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Exclusions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3Target:
     Optional[str] Path
     Optional[list[str]] Exclusions
@@ -8167,8 +8590,9 @@ struct SchemaVersionNumber:
     Optional[bool] LatestVersion
     Optional[int64] VersionNumber
 
-# no @derive(Json): member(s) FilterClause: SearchFilterClause not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilterClause: SearchFilterClause not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchAssetsInput:
     Optional[str] SearchText
     Optional[int64] MaxResults
@@ -8176,8 +8600,9 @@ struct SearchAssetsInput:
     Optional[SearchSort] Sort
     Optional[SearchFilterClause] FilterClause
 
-# no @derive(Json): member(s) Items: list[SearchResultItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Items: list[SearchResultItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchAssetsOutput:
     Optional[list[SearchResultItem]] Items
     Optional[str] NextToken
@@ -8188,8 +8613,9 @@ struct SearchAttributeFilter:
     SearchFilterOperator Operator
     Optional[SearchFilterValue] Value
 
-# no @derive(Json): member(s) AndAllFilters: list[SearchFilterClause], OrAnyFilters: list[SearchFilterClause] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AndAllFilters: list[SearchFilterClause], OrAnyFilters: list[SearchFilterClause] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchFilterClause:
     Optional[list[SearchFilterClause]] AndAllFilters
     Optional[list[SearchFilterClause]] OrAnyFilters
@@ -8224,8 +8650,9 @@ struct SearchSort:
     str Attribute
     Optional[SearchSortOrder] Order
 
-# no @derive(Json): member(s) Filters: list[PropertyPredicate], SortCriteria: list[SortCriterion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[PropertyPredicate], SortCriteria: list[SortCriterion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchTablesRequest:
     Optional[str] CatalogId
     Optional[str] NextToken
@@ -8236,14 +8663,16 @@ struct SearchTablesRequest:
     Optional[ResourceShareType] ResourceShareType
     Optional[bool] IncludeStatusDetails
 
-# no @derive(Json): member(s) TableList: list[Table] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableList: list[Table] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchTablesResponse:
     Optional[str] NextToken
     Optional[list[Table]] TableList
 
-# no @derive(Json): member(s) EncryptionConfiguration: EncryptionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EncryptionConfiguration: EncryptionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SecurityConfiguration:
     Optional[str] Name
     Optional[DateTime] CreatedTimeStamp
@@ -8254,29 +8683,33 @@ struct Segment:
     int64 SegmentNumber
     int64 TotalSegments
 
-# no @derive(Json): member(s) Inputs: list[str], Paths: list[list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], Paths: list[list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SelectFields:
     str Name
     list[str] Inputs
     list[list[str]] Paths
 
-# no @derive(Json): member(s) Inputs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SelectFromCollection:
     str Name
     list[str] Inputs
     int64 Index
 
-# no @derive(Json): member(s) Parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SerDeInfo:
     Optional[str] Name
     Optional[str] SerializationLibrary
     Optional[dict[str, str]] Parameters
 
-# no @derive(Json): member(s) DefaultArguments: dict[str, str], Connections: ConnectionsList not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultArguments: dict[str, str], Connections: ConnectionsList not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Session:
     Optional[str] Id
     Optional[DateTime] CreatedOn
@@ -8315,15 +8748,17 @@ struct SessionEndpoint:
     str AuthToken
     DateTime AuthTokenExpirationTime
 
-# no @derive(Json): member(s) SkewedColumnNames: list[str], SkewedColumnValues: list[str], SkewedColumnValueLocationMaps: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SkewedColumnNames: list[str], SkewedColumnValues: list[str], SkewedColumnValueLocationMaps: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SkewedInfo:
     Optional[list[str]] SkewedColumnNames
     Optional[list[str]] SkewedColumnValues
     Optional[dict[str, str]] SkewedColumnValueLocationMaps
 
-# no @derive(Json): member(s) AdditionalOptions: dict[str, str], SelectedColumns: list[Option], TableSchema: list[Option] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalOptions: dict[str, str], SelectedColumns: list[Option], TableSchema: list[Option] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnowflakeNodeData:
     Optional[str] SourceType
     Optional[Option] Connection
@@ -8347,15 +8782,17 @@ struct SnowflakeNodeData:
     Optional[bool] AutoPushdown
     Optional[list[Option]] TableSchema
 
-# no @derive(Json): member(s) Data: SnowflakeNodeData, OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Data: SnowflakeNodeData, OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnowflakeSource:
     str Name
     SnowflakeNodeData Data
     Optional[list[GlueSchema]] OutputSchemas
 
-# no @derive(Json): member(s) Data: SnowflakeNodeData, Inputs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Data: SnowflakeNodeData, Inputs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnowflakeTarget:
     str Name
     SnowflakeNodeData Data
@@ -8366,8 +8803,9 @@ struct SortCriterion:
     Optional[str] FieldName
     Optional[Sort] Sort
 
-# no @derive(Json): member(s) RequestParameters: list[ConnectorProperty], FilterConfiguration: FilterConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestParameters: list[ConnectorProperty], FilterConfiguration: FilterConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceConfiguration:
     Optional[HTTPMethod] RequestMethod
     Optional[str] RequestPath
@@ -8391,16 +8829,18 @@ struct SourceControlDetails:
 struct SourceProcessingProperties:
     Optional[str] RoleArn
 
-# no @derive(Json): member(s) Fields: list[str], PrimaryKey: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fields: list[str], PrimaryKey: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceTableConfig:
     Optional[list[str]] Fields
     Optional[str] FilterPredicate
     Optional[list[str]] PrimaryKey
     Optional[str] RecordUpdateField
 
-# no @derive(Json): member(s) AdditionalOptions: dict[str, str], OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalOptions: dict[str, str], OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SparkConnectorSource:
     str Name
     str ConnectionName
@@ -8409,8 +8849,9 @@ struct SparkConnectorSource:
     Optional[dict[str, str]] AdditionalOptions
     Optional[list[GlueSchema]] OutputSchemas
 
-# no @derive(Json): member(s) Inputs: list[str], AdditionalOptions: dict[str, str], OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], AdditionalOptions: dict[str, str], OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SparkConnectorTarget:
     str Name
     list[str] Inputs
@@ -8420,8 +8861,9 @@ struct SparkConnectorTarget:
     Optional[dict[str, str]] AdditionalOptions
     Optional[list[GlueSchema]] OutputSchemas
 
-# no @derive(Json): member(s) Inputs: list[str], SqlAliases: list[SqlAlias], OutputSchemas: list[GlueSchema] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], SqlAliases: list[SqlAlias], OutputSchemas: list[GlueSchema] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SparkSQL:
     str Name
     list[str] Inputs
@@ -8429,8 +8871,9 @@ struct SparkSQL:
     list[SqlAlias] SqlAliases
     Optional[list[GlueSchema]] OutputSchemas
 
-# no @derive(Json): member(s) Inputs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Spigot:
     str Name
     list[str] Inputs
@@ -8438,8 +8881,9 @@ struct Spigot:
     Optional[int64] Topk
     Optional[float64] Prob
 
-# no @derive(Json): member(s) Inputs: list[str], Paths: list[list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str], Paths: list[list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SplitFields:
     str Name
     list[str] Inputs
@@ -8460,8 +8904,9 @@ struct StartBlueprintRunRequest:
 struct StartBlueprintRunResponse:
     Optional[str] RunId
 
-# no @derive(Json): member(s) ColumnNameList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnNameList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartColumnStatisticsTaskRunRequest:
     str DatabaseName
     str TableName
@@ -8504,8 +8949,9 @@ struct StartCrawlerScheduleResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) DataSource: DataSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSource: DataSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartDataQualityRuleRecommendationRunRequest:
     DataSource DataSource
     str Role
@@ -8521,8 +8967,9 @@ struct StartDataQualityRuleRecommendationRunRequest:
 struct StartDataQualityRuleRecommendationRunResponse:
     Optional[str] RunId
 
-# no @derive(Json): member(s) DataSource: DataSource, RulesetNames: list[str], AdditionalDataSources: dict[str, DataSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataSource: DataSource, RulesetNames: list[str], AdditionalDataSources: dict[str, DataSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartDataQualityRulesetEvaluationRunRequest:
     DataSource DataSource
     str Role
@@ -8556,8 +9003,9 @@ struct StartImportLabelsTaskRunRequest:
 struct StartImportLabelsTaskRunResponse:
     Optional[str] TaskRunId
 
-# no @derive(Json): member(s) Arguments: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Arguments: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartJobRunRequest:
     str JobName
     Optional[bool] JobRunQueuingEnabled
@@ -8613,8 +9061,9 @@ struct StartTriggerRequest:
 struct StartTriggerResponse:
     Optional[str] Name
 
-# no @derive(Json): member(s) RunProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RunProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartWorkflowRunRequest:
     str Name
     Optional[dict[str, str]] RunProperties
@@ -8628,8 +9077,9 @@ struct StartingEventBatchCondition:
     Optional[int64] BatchSize
     Optional[int64] BatchWindow
 
-# no @derive(Json): member(s) Output: StatementOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Output: StatementOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Statement:
     Optional[int64] Id
     Optional[str] Code
@@ -8639,8 +9089,9 @@ struct Statement:
     Optional[int64] StartedOn
     Optional[int64] CompletedOn
 
-# no @derive(Json): member(s) Traceback: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Traceback: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StatementOutput:
     Optional[StatementOutputData] Data
     Optional[int64] ExecutionCount
@@ -8669,8 +9120,9 @@ struct StatisticModelResult:
     Optional[DateTime] Date
     Optional[InclusionAnnotationValue] InclusionAnnotation
 
-# no @derive(Json): member(s) DistributionValue: DistributionData, ColumnsReferenced: list[str], ReferencedDatasets: list[str], StatisticProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DistributionValue: DistributionData, ColumnsReferenced: list[str], ReferencedDatasets: list[str], StatisticProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StatisticSummary:
     Optional[str] StatisticId
     Optional[str] ProfileId
@@ -8685,8 +9137,9 @@ struct StatisticSummary:
     Optional[DateTime] RecordedOn
     Optional[TimestampedInclusionAnnotation] InclusionAnnotation
 
-# no @derive(Json): member(s) RequestedChange: Table, ViewValidations: list[ViewValidation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestedChange: Table, ViewValidations: list[ViewValidation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StatusDetails:
     Optional[Table] RequestedChange
     Optional[list[ViewValidation]] ViewValidations
@@ -8769,8 +9222,9 @@ struct StopWorkflowRunResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Columns: list[Column], AdditionalLocations: list[str], SerdeInfo: SerDeInfo, BucketColumns: list[str], SortColumns: list[Order], Parameters: dict[str, str], SkewedInfo: SkewedInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Columns: list[Column], AdditionalLocations: list[str], SerdeInfo: SerDeInfo, BucketColumns: list[str], SortColumns: list[Order], Parameters: dict[str, str], SkewedInfo: SkewedInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StorageDescriptor:
     Optional[list[Column]] Columns
     Optional[str] Location
@@ -8812,8 +9266,9 @@ struct SupportedDialect:
     Optional[ViewDialect] Dialect
     Optional[str] DialectVersion
 
-# no @derive(Json): member(s) StorageDescriptor: StorageDescriptor, PartitionKeys: list[Column], Parameters: dict[str, str], ViewDefinition: ViewDefinition, IcebergTableMetadata: IcebergTableMetadata, Status: TableStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StorageDescriptor: StorageDescriptor, PartitionKeys: list[Column], Parameters: dict[str, str], ViewDefinition: ViewDefinition, IcebergTableMetadata: IcebergTableMetadata, Status: TableStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Table:
     str Name
     Optional[str] DatabaseName
@@ -8855,8 +9310,9 @@ struct TableIdentifier:
     Optional[str] Name
     Optional[str] Region
 
-# no @derive(Json): member(s) StorageDescriptor: StorageDescriptor, PartitionKeys: list[Column], Parameters: dict[str, str], ViewDefinition: ViewDefinitionInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StorageDescriptor: StorageDescriptor, PartitionKeys: list[Column], Parameters: dict[str, str], ViewDefinition: ViewDefinitionInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableInput:
     str Name
     Optional[str] Description
@@ -8906,8 +9362,9 @@ struct TableOptimizerRun:
 struct TableOptimizerVpcConfiguration:
     Optional[str] glueConnectionName
 
-# no @derive(Json): member(s) Details: StatusDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Details: StatusDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableStatus:
     Optional[str] RequestedBy
     Optional[str] UpdatedBy
@@ -8918,8 +9375,9 @@ struct TableStatus:
     Optional[ErrorDetail] Error
     Optional[StatusDetails] Details
 
-# no @derive(Json): member(s) Table: Table not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Table: Table not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableVersion:
     Optional[Table] Table
     Optional[str] VersionId
@@ -8935,8 +9393,9 @@ struct Tag:
     Optional[str] key
     Optional[str] value
 
-# no @derive(Json): member(s) TagsToAdd: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagsToAdd: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceArn
     dict[str, str] TagsToAdd
@@ -8961,8 +9420,9 @@ struct TargetRedshiftCatalog:
 struct TargetResourceNotFound:
     Optional[str] Message
 
-# no @derive(Json): member(s) PartitionSpec: list[IntegrationPartition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionSpec: list[IntegrationPartition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TargetTableConfig:
     Optional[UnnestSpec] UnnestSpec
     Optional[list[IntegrationPartition]] PartitionSpec
@@ -9002,15 +9462,17 @@ struct TaskRunSortCriteria:
     TaskRunSortColumnType Column
     SortDirectionType SortDirection
 
-# no @derive(Json): member(s) ConnectionProperties: dict[ConnectionPropertyKey, str], AuthenticationConfiguration: AuthenticationConfigurationInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectionProperties: dict[ConnectionPropertyKey, str], AuthenticationConfiguration: AuthenticationConfigurationInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestConnectionInput:
     ConnectionType ConnectionType
     dict[ConnectionPropertyKey, str] ConnectionProperties
     Optional[AuthenticationConfigurationInput] AuthenticationConfiguration
 
-# no @derive(Json): member(s) TestConnectionInput: TestConnectionInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TestConnectionInput: TestConnectionInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestConnectionRequest:
     Optional[str] ConnectionName
     Optional[str] CatalogId
@@ -9035,8 +9497,9 @@ struct TimestampedInclusionAnnotation:
     Optional[InclusionAnnotationValue] Value
     Optional[DateTime] LastModifiedOn
 
-# no @derive(Json): member(s) Value: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Value: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TransformConfigParameter:
     str Name
     ParamType Type
@@ -9051,8 +9514,9 @@ struct TransformEncryption:
     Optional[MLUserDataEncryption] MlUserDataEncryption
     Optional[str] TaskRunSecurityConfigurationName
 
-# no @derive(Json): member(s) Schema: list[SchemaColumn] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Schema: list[SchemaColumn] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TransformFilterCriteria:
     Optional[str] Name
     Optional[str] TransformType
@@ -9074,8 +9538,9 @@ struct TransformSortCriteria:
     TransformSortColumnType Column
     SortDirectionType SortDirection
 
-# no @derive(Json): member(s) Actions: list[Action], Predicate: Predicate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: list[Action], Predicate: Predicate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Trigger:
     Optional[str] Name
     Optional[str] WorkflowName
@@ -9088,13 +9553,15 @@ struct Trigger:
     Optional[Predicate] Predicate
     Optional[EventBatchingCondition] EventBatchingCondition
 
-# no @derive(Json): member(s) Trigger: Trigger not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Trigger: Trigger not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TriggerNodeDetails:
     Optional[Trigger] Trigger
 
-# no @derive(Json): member(s) Actions: list[Action], Predicate: Predicate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: list[Action], Predicate: Predicate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TriggerUpdate:
     Optional[str] Name
     Optional[str] Description
@@ -9103,22 +9570,25 @@ struct TriggerUpdate:
     Optional[Predicate] Predicate
     Optional[EventBatchingCondition] EventBatchingCondition
 
-# no @derive(Json): member(s) Partition: Partition, AuthorizedColumns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Partition: Partition, AuthorizedColumns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UnfilteredPartition:
     Optional[Partition] Partition
     Optional[list[str]] AuthorizedColumns
     Optional[bool] IsRegisteredWithLakeFormation
 
-# no @derive(Json): member(s) Inputs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Inputs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Union:
     str Name
     list[str] Inputs
     UnionType UnionType
 
-# no @derive(Json): member(s) TagsToRemove: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagsToRemove: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceArn
     list[str] TagsToRemove
@@ -9152,8 +9622,9 @@ struct UpdateBlueprintRequest:
 struct UpdateBlueprintResponse:
     Optional[str] Name
 
-# no @derive(Json): member(s) CatalogInput: CatalogInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CatalogInput: CatalogInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCatalogRequest:
     str CatalogId
     CatalogInput CatalogInput
@@ -9163,8 +9634,9 @@ struct UpdateCatalogResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) CsvClassifier: UpdateCsvClassifierRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CsvClassifier: UpdateCsvClassifierRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateClassifierRequest:
     Optional[UpdateGrokClassifierRequest] GrokClassifier
     Optional[UpdateXMLClassifierRequest] XMLClassifier
@@ -9176,8 +9648,9 @@ struct UpdateClassifierResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) PartitionValues: list[str], ColumnStatisticsList: list[ColumnStatistics] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionValues: list[str], ColumnStatisticsList: list[ColumnStatistics] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateColumnStatisticsForPartitionRequest:
     Optional[str] CatalogId
     str DatabaseName
@@ -9185,26 +9658,30 @@ struct UpdateColumnStatisticsForPartitionRequest:
     list[str] PartitionValues
     list[ColumnStatistics] ColumnStatisticsList
 
-# no @derive(Json): member(s) Errors: list[ColumnStatisticsError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[ColumnStatisticsError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateColumnStatisticsForPartitionResponse:
     Optional[list[ColumnStatisticsError]] Errors
 
-# no @derive(Json): member(s) ColumnStatisticsList: list[ColumnStatistics] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnStatisticsList: list[ColumnStatistics] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateColumnStatisticsForTableRequest:
     Optional[str] CatalogId
     str DatabaseName
     str TableName
     list[ColumnStatistics] ColumnStatisticsList
 
-# no @derive(Json): member(s) Errors: list[ColumnStatisticsError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Errors: list[ColumnStatisticsError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateColumnStatisticsForTableResponse:
     Optional[list[ColumnStatisticsError]] Errors
 
-# no @derive(Json): member(s) ColumnNameList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ColumnNameList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateColumnStatisticsTaskSettingsRequest:
     str DatabaseName
     str TableName
@@ -9220,8 +9697,9 @@ struct UpdateColumnStatisticsTaskSettingsResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ConnectionInput: ConnectionInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectionInput: ConnectionInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateConnectionRequest:
     Optional[str] CatalogId
     str Name
@@ -9232,8 +9710,9 @@ struct UpdateConnectionResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Targets: CrawlerTargets, Classifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: CrawlerTargets, Classifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCrawlerRequest:
     str Name
     Optional[str] Role
@@ -9266,8 +9745,9 @@ struct UpdateCrawlerScheduleResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Header: list[str], CustomDatatypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Header: list[str], CustomDatatypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCsvClassifierRequest:
     str Name
     Optional[str] Delimiter
@@ -9292,8 +9772,9 @@ struct UpdateDataQualityRulesetResponse:
     Optional[str] Description
     Optional[str] Ruleset
 
-# no @derive(Json): member(s) DatabaseInput: DatabaseInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DatabaseInput: DatabaseInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDatabaseRequest:
     Optional[str] CatalogId
     str Name
@@ -9304,8 +9785,9 @@ struct UpdateDatabaseResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) AddPublicKeys: list[str], DeletePublicKeys: list[str], DeleteArguments: list[str], AddArguments: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AddPublicKeys: list[str], DeletePublicKeys: list[str], DeleteArguments: list[str], AddArguments: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDevEndpointRequest:
     str EndpointName
     Optional[str] PublicKey
@@ -9350,8 +9832,9 @@ struct UpdateGlossaryTermResponse:
     Optional[str] ShortDescription
     Optional[str] LongDescription
 
-# no @derive(Json): member(s) Scopes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Scopes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateGlueIdentityCenterConfigurationRequest:
     Optional[list[str]] Scopes
     Optional[bool] UserBackgroundSessionsEnabled
@@ -9368,13 +9851,15 @@ struct UpdateGrokClassifierRequest:
     Optional[str] GrokPattern
     Optional[str] CustomPatterns
 
-# no @derive(Json): member(s) UpdateIcebergTableInput: UpdateIcebergTableInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UpdateIcebergTableInput: UpdateIcebergTableInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIcebergInput:
     UpdateIcebergTableInput UpdateIcebergTableInput
 
-# no @derive(Json): member(s) Updates: list[IcebergTableUpdate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Updates: list[IcebergTableUpdate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIcebergTableInput:
     list[IcebergTableUpdate] Updates
 
@@ -9391,8 +9876,9 @@ struct UpdateIntegrationResourcePropertyResponse:
     Optional[SourceProcessingProperties] SourceProcessingProperties
     Optional[TargetProcessingProperties] TargetProcessingProperties
 
-# no @derive(Json): member(s) SourceTableConfig: SourceTableConfig, TargetTableConfig: TargetTableConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceTableConfig: SourceTableConfig, TargetTableConfig: TargetTableConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIntegrationTablePropertiesRequest:
     str ResourceArn
     str TableName
@@ -9420,8 +9906,9 @@ struct UpdateJobFromSourceControlRequest:
 struct UpdateJobFromSourceControlResponse:
     Optional[str] JobName
 
-# no @derive(Json): member(s) JobUpdate: JobUpdate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JobUpdate: JobUpdate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateJobRequest:
     str JobName
     JobUpdate JobUpdate
@@ -9453,13 +9940,15 @@ struct UpdateMLTransformRequest:
 struct UpdateMLTransformResponse:
     Optional[str] TransformId
 
-# no @derive(Json): member(s) UpdateIcebergInput: UpdateIcebergInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UpdateIcebergInput: UpdateIcebergInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateOpenTableFormatInput:
     Optional[UpdateIcebergInput] UpdateIcebergInput
 
-# no @derive(Json): member(s) PartitionValueList: list[str], PartitionInput: PartitionInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionValueList: list[str], PartitionInput: PartitionInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePartitionRequest:
     Optional[str] CatalogId
     str DatabaseName
@@ -9524,8 +10013,9 @@ struct UpdateTableOptimizerResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TableInput: TableInput, UpdateOpenTableFormatInput: UpdateOpenTableFormatInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TableInput: TableInput, UpdateOpenTableFormatInput: UpdateOpenTableFormatInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTableRequest:
     Optional[str] CatalogId
     str DatabaseName
@@ -9543,19 +10033,22 @@ struct UpdateTableResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TriggerUpdate: TriggerUpdate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TriggerUpdate: TriggerUpdate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTriggerRequest:
     str Name
     TriggerUpdate TriggerUpdate
 
-# no @derive(Json): member(s) Trigger: Trigger not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Trigger: Trigger not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTriggerResponse:
     Optional[Trigger] Trigger
 
-# no @derive(Json): member(s) Configuration: ProfileConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configuration: ProfileConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateUsageProfileRequest:
     str Name
     Optional[str] Description
@@ -9565,8 +10058,9 @@ struct UpdateUsageProfileRequest:
 struct UpdateUsageProfileResponse:
     Optional[str] Name
 
-# no @derive(Json): member(s) FunctionInput: UserDefinedFunctionInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FunctionInput: UserDefinedFunctionInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateUserDefinedFunctionRequest:
     Optional[str] CatalogId
     str DatabaseName
@@ -9578,8 +10072,9 @@ struct UpdateUserDefinedFunctionResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) DefaultRunProperties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultRunProperties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateWorkflowRequest:
     str Name
     Optional[str] Description
@@ -9596,8 +10091,9 @@ struct UpdateXMLClassifierRequest:
     Optional[str] Classification
     Optional[str] RowTag
 
-# no @derive(Json): member(s) UpsertKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UpsertKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpsertRedshiftTargetOptions:
     Optional[str] TableLocation
     Optional[str] ConnectionName
@@ -9610,8 +10106,9 @@ struct UsageProfileDefinition:
     Optional[DateTime] CreatedOn
     Optional[DateTime] LastModifiedOn
 
-# no @derive(Json): member(s) ResourceUris: list[ResourceUri] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceUris: list[ResourceUri] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserDefinedFunction:
     Optional[str] FunctionName
     Optional[str] DatabaseName
@@ -9623,8 +10120,9 @@ struct UserDefinedFunction:
     Optional[list[ResourceUri]] ResourceUris
     Optional[str] CatalogId
 
-# no @derive(Json): member(s) ResourceUris: list[ResourceUri] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceUris: list[ResourceUri] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserDefinedFunctionInput:
     Optional[str] FunctionName
     Optional[str] ClassName
@@ -9641,8 +10139,9 @@ struct ValidationException:
 struct VersionMismatchException:
     Optional[str] Message
 
-# no @derive(Json): member(s) SubObjects: list[str], SubObjectVersionIds: list[int64], SubObjectsStatistics: list[SubObjectStatistics], Representations: list[ViewRepresentation], SparkPipelineInfo: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubObjects: list[str], SubObjectVersionIds: list[int64], SubObjectsStatistics: list[SubObjectStatistics], Representations: list[ViewRepresentation], SparkPipelineInfo: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ViewDefinition:
     Optional[bool] IsProtected
     Optional[bool] IsManaged
@@ -9657,8 +10156,9 @@ struct ViewDefinition:
     Optional[list[ViewRepresentation]] Representations
     Optional[dict[str, str]] SparkPipelineInfo
 
-# no @derive(Json): member(s) Representations: list[ViewRepresentationInput], SubObjects: list[str], SubObjectVersionIds: list[int64], SubObjectsStatistics: list[SubObjectStatistics], SparkPipelineInfo: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Representations: list[ViewRepresentationInput], SubObjects: list[str], SubObjectVersionIds: list[int64], SubObjectsStatistics: list[SubObjectStatistics], SparkPipelineInfo: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ViewDefinitionInput:
     Optional[bool] IsProtected
     Optional[bool] IsManaged
@@ -9699,8 +10199,9 @@ struct ViewValidation:
     Optional[ResourceState] State
     Optional[ErrorDetail] Error
 
-# no @derive(Json): member(s) DefaultRunProperties: dict[str, str], LastRun: WorkflowRun, Graph: WorkflowGraph not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultRunProperties: dict[str, str], LastRun: WorkflowRun, Graph: WorkflowGraph not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Workflow:
     Optional[str] Name
     Optional[str] Description
@@ -9712,14 +10213,16 @@ struct Workflow:
     Optional[int64] MaxConcurrentRuns
     Optional[BlueprintDetails] BlueprintDetails
 
-# no @derive(Json): member(s) Nodes: list[Node], Edges: list[Edge] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Nodes: list[Node], Edges: list[Edge] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkflowGraph:
     Optional[list[Node]] Nodes
     Optional[list[Edge]] Edges
 
-# no @derive(Json): member(s) WorkflowRunProperties: dict[str, str], Graph: WorkflowGraph not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WorkflowRunProperties: dict[str, str], Graph: WorkflowGraph not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkflowRun:
     Optional[str] Name
     Optional[str] WorkflowRunId
@@ -9913,151 +10416,4423 @@ def glue_error_from_code(str code) -> GlueError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   AssociateGlossaryTerms (input AssociateGlossaryTermsRequest)
-#   BatchCreatePartition (input BatchCreatePartitionRequest)
-#   BatchDeleteConnection (input BatchDeleteConnectionRequest)
-#   BatchDeletePartition (input BatchDeletePartitionRequest)
-#   BatchDeleteTable (input BatchDeleteTableRequest)
-#   BatchDeleteTableVersion (input BatchDeleteTableVersionRequest)
-#   BatchGetBlueprints (input BatchGetBlueprintsRequest)
-#   BatchGetCrawlers (input BatchGetCrawlersRequest)
-#   BatchGetCustomEntityTypes (input BatchGetCustomEntityTypesRequest)
-#   BatchGetDataQualityResult (input BatchGetDataQualityResultRequest)
-#   BatchGetDataQualityResultV2 (input BatchGetDataQualityResultV2Request)
-#   BatchGetDataQualityRulesetEvaluationRun (input BatchGetDataQualityRulesetEvaluationRunRequest)
-#   BatchGetDevEndpoints (input BatchGetDevEndpointsRequest)
-#   BatchGetIterableForms (input BatchGetIterableFormsRequest)
-#   BatchGetJobs (input BatchGetJobsRequest)
-#   BatchGetPartition (input BatchGetPartitionRequest)
-#   BatchGetTableOptimizer (input BatchGetTableOptimizerRequest)
-#   BatchGetTriggers (input BatchGetTriggersRequest)
-#   BatchGetWorkflows (input BatchGetWorkflowsRequest)
-#   BatchPutDataQualityStatisticAnnotation (input BatchPutDataQualityStatisticAnnotationRequest)
-#   BatchStopJobRun (input BatchStopJobRunRequest)
-#   BatchUpdatePartition (input BatchUpdatePartitionRequest)
-#   CreateBlueprint (input CreateBlueprintRequest)
-#   CreateCatalog (input CreateCatalogRequest)
-#   CreateClassifier (input CreateClassifierRequest)
-#   CreateColumnStatisticsTaskSettings (input CreateColumnStatisticsTaskSettingsRequest)
+# Operations skipped in v0 (a member type is not yet serializable — a map
+# with a non-string key, or a free-form document member):
 #   CreateConnection (input CreateConnectionRequest)
-#   CreateCrawler (input CreateCrawlerRequest)
-#   CreateCustomEntityType (input CreateCustomEntityTypeRequest)
-#   CreateDataQualityRuleset (input CreateDataQualityRulesetRequest)
-#   CreateDatabase (input CreateDatabaseRequest)
-#   CreateDevEndpoint (input CreateDevEndpointRequest)
-#   CreateGlueIdentityCenterConfiguration (input CreateGlueIdentityCenterConfigurationRequest)
-#   CreateIntegration (input CreateIntegrationRequest)
-#   CreateIntegrationResourceProperty (input CreateIntegrationResourcePropertyRequest)
-#   CreateIntegrationTableProperties (input CreateIntegrationTablePropertiesRequest)
 #   CreateJob (input CreateJobRequest)
-#   CreateMLTransform (input CreateMLTransformRequest)
-#   CreatePartition (input CreatePartitionRequest)
-#   CreatePartitionIndex (input CreatePartitionIndexRequest)
-#   CreateRegistry (input CreateRegistryInput)
-#   CreateSchema (input CreateSchemaInput)
-#   CreateScript (input CreateScriptRequest)
-#   CreateSecurityConfiguration (input CreateSecurityConfigurationRequest)
-#   CreateSession (input CreateSessionRequest)
-#   CreateTable (input CreateTableRequest)
-#   CreateTrigger (input CreateTriggerRequest)
-#   CreateUsageProfile (input CreateUsageProfileRequest)
-#   CreateUserDefinedFunction (input CreateUserDefinedFunctionRequest)
-#   CreateWorkflow (input CreateWorkflowRequest)
-#   DeleteColumnStatisticsForPartition (input DeleteColumnStatisticsForPartitionRequest)
-#   DeletePartition (input DeletePartitionRequest)
-#   DescribeIntegrations (input DescribeIntegrationsRequest)
-#   DisassociateGlossaryTerms (input DisassociateGlossaryTermsRequest)
-#   GetColumnStatisticsForPartition (input GetColumnStatisticsForPartitionRequest)
-#   GetColumnStatisticsForTable (input GetColumnStatisticsForTableRequest)
-#   GetConnections (input GetConnectionsRequest)
-#   GetCrawlerMetrics (input GetCrawlerMetricsRequest)
-#   GetDatabases (input GetDatabasesRequest)
-#   GetEntityRecords (input GetEntityRecordsRequest)
-#   GetMLTransforms (input GetMLTransformsRequest)
-#   GetMapping (input GetMappingRequest)
-#   GetPartition (input GetPartitionRequest)
-#   GetPartitions (input GetPartitionsRequest)
-#   GetPlan (input GetPlanRequest)
-#   GetTable (input GetTableRequest)
-#   GetTableVersion (input GetTableVersionRequest)
-#   GetTableVersions (input GetTableVersionsRequest)
-#   GetTables (input GetTablesRequest)
-#   GetUnfilteredPartitionMetadata (input GetUnfilteredPartitionMetadataRequest)
-#   GetUnfilteredPartitionsMetadata (input GetUnfilteredPartitionsMetadataRequest)
-#   GetUnfilteredTableMetadata (input GetUnfilteredTableMetadataRequest)
-#   ListBlueprints (input ListBlueprintsRequest)
-#   ListCrawlers (input ListCrawlersRequest)
-#   ListCrawls (input ListCrawlsRequest)
-#   ListCustomEntityTypes (input ListCustomEntityTypesRequest)
-#   ListDataQualityResults (input ListDataQualityResultsRequest)
-#   ListDataQualityResultsV2 (input ListDataQualityResultsV2Request)
-#   ListDataQualityRuleRecommendationRuns (input ListDataQualityRuleRecommendationRunsRequest)
-#   ListDataQualityRulesetEvaluationRuns (input ListDataQualityRulesetEvaluationRunsRequest)
-#   ListDataQualityRulesets (input ListDataQualityRulesetsRequest)
-#   ListDevEndpoints (input ListDevEndpointsRequest)
-#   ListIntegrationResourceProperties (input ListIntegrationResourcePropertiesRequest)
-#   ListIntegrationTableProperties (input ListIntegrationTablePropertiesRequest)
-#   ListJobs (input ListJobsRequest)
-#   ListMLTransforms (input ListMLTransformsRequest)
-#   ListSessions (input ListSessionsRequest)
-#   ListTriggers (input ListTriggersRequest)
-#   ModifyIntegration (input ModifyIntegrationRequest)
-#   PublishDataQualityResultV2 (input PublishDataQualityResultV2Request)
-#   PutAsset (input PutAssetRequest)
-#   PutAssetType (input PutAssetTypeRequest)
-#   PutWorkflowRunProperties (input PutWorkflowRunPropertiesRequest)
-#   QuerySchemaVersionMetadata (input QuerySchemaVersionMetadataInput)
-#   RegisterConnectionType (input RegisterConnectionTypeRequest)
-#   ResumeWorkflowRun (input ResumeWorkflowRunRequest)
-#   SearchAssets (input SearchAssetsInput)
-#   SearchTables (input SearchTablesRequest)
-#   StartColumnStatisticsTaskRun (input StartColumnStatisticsTaskRunRequest)
-#   StartDataQualityRuleRecommendationRun (input StartDataQualityRuleRecommendationRunRequest)
-#   StartDataQualityRulesetEvaluationRun (input StartDataQualityRulesetEvaluationRunRequest)
-#   StartJobRun (input StartJobRunRequest)
-#   StartWorkflowRun (input StartWorkflowRunRequest)
-#   TagResource (input TagResourceRequest)
 #   TestConnection (input TestConnectionRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateCatalog (input UpdateCatalogRequest)
-#   UpdateClassifier (input UpdateClassifierRequest)
-#   UpdateColumnStatisticsForPartition (input UpdateColumnStatisticsForPartitionRequest)
-#   UpdateColumnStatisticsForTable (input UpdateColumnStatisticsForTableRequest)
-#   UpdateColumnStatisticsTaskSettings (input UpdateColumnStatisticsTaskSettingsRequest)
 #   UpdateConnection (input UpdateConnectionRequest)
-#   UpdateCrawler (input UpdateCrawlerRequest)
-#   UpdateDatabase (input UpdateDatabaseRequest)
-#   UpdateDevEndpoint (input UpdateDevEndpointRequest)
-#   UpdateGlueIdentityCenterConfiguration (input UpdateGlueIdentityCenterConfigurationRequest)
-#   UpdateIntegrationTableProperties (input UpdateIntegrationTablePropertiesRequest)
 #   UpdateJob (input UpdateJobRequest)
-#   UpdatePartition (input UpdatePartitionRequest)
-#   UpdateTable (input UpdateTableRequest)
-#   UpdateTrigger (input UpdateTriggerRequest)
-#   UpdateUsageProfile (input UpdateUsageProfileRequest)
-#   UpdateUserDefinedFunction (input UpdateUserDefinedFunctionRequest)
-#   UpdateWorkflow (input UpdateWorkflowRequest)
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   GetConnections (input not derivable (no generated method))
-#   GetCrawlerMetrics (input not derivable (no generated method))
-#   GetDatabases (input not derivable (no generated method))
-#   GetPartitions (input not derivable (no generated method))
-#   GetTableVersions (input not derivable (no generated method))
-#   GetTables (input not derivable (no generated method))
-#   ListBlueprints (input not derivable (no generated method))
-#   ListDataQualityResultsV2 (input not derivable (no generated method))
-#   ListJobs (input not derivable (no generated method))
-#   ListTriggers (input not derivable (no generated method))
-#   SearchAssets (input not derivable (no generated method))
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def glue_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def glue_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def glue_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize Action to a compact JSON object (declaration order).
+def action_to_json(Action v) -> str:
+    list[str] parts = []
+    if v.JobName.is_some():
+        auto u0 = v.JobName.unwrap()
+        parts.append("\"JobName\":" + glue_json_str(u0))
+    if v.Arguments.is_some():
+        auto u1 = v.Arguments.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(glue_json_str(k2) + ":" + glue_json_str(u1[k2]))
+        parts.append("\"Arguments\":" + glue_json_obj(m2))
+    if v.Timeout.is_some():
+        auto u3 = v.Timeout.unwrap()
+        parts.append("\"Timeout\":" + str(u3))
+    if v.SecurityConfiguration.is_some():
+        auto u4 = v.SecurityConfiguration.unwrap()
+        parts.append("\"SecurityConfiguration\":" + glue_json_str(u4))
+    if v.NotificationProperty.is_some():
+        auto u5 = v.NotificationProperty.unwrap()
+        parts.append("\"NotificationProperty\":" + u5.to_json())
+    if v.CrawlerName.is_some():
+        auto u6 = v.CrawlerName.unwrap()
+        parts.append("\"CrawlerName\":" + glue_json_str(u6))
+    return glue_json_obj(parts)
+
+# Serialize AssociateGlossaryTermsRequest to a compact JSON object (declaration order).
+def associate_glossary_terms_request_to_json(AssociateGlossaryTermsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AssetIdentifier\":" + glue_json_str(v.AssetIdentifier))
+    if v.IterableFormName.is_some():
+        auto u0 = v.IterableFormName.unwrap()
+        parts.append("\"IterableFormName\":" + glue_json_str(u0))
+    if v.ItemIdentifier.is_some():
+        auto u1 = v.ItemIdentifier.unwrap()
+        parts.append("\"ItemIdentifier\":" + glue_json_str(u1))
+    list[str] e2 = []
+    for x2 in v.GlossaryTermIdentifiers:
+        e2.append(glue_json_str(x2))
+    parts.append("\"GlossaryTermIdentifiers\":" + glue_json_arr(e2))
+    if v.ClientToken.is_some():
+        auto u3 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + glue_json_str(u3))
+    return glue_json_obj(parts)
+
+# Serialize AuditContext to a compact JSON object (declaration order).
+def audit_context_to_json(AuditContext v) -> str:
+    list[str] parts = []
+    if v.AdditionalAuditContext.is_some():
+        auto u0 = v.AdditionalAuditContext.unwrap()
+        parts.append("\"AdditionalAuditContext\":" + glue_json_str(u0))
+    if v.RequestedColumns.is_some():
+        auto u1 = v.RequestedColumns.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(glue_json_str(x2))
+        parts.append("\"RequestedColumns\":" + glue_json_arr(e2))
+    if v.AllColumnsRequested.is_some():
+        auto u3 = v.AllColumnsRequested.unwrap()
+        parts.append("\"AllColumnsRequested\":" + json.dumps(JsonValue.Bool(u3)))
+    return glue_json_obj(parts)
+
+# Serialize BasicAuthenticationProperties to a compact JSON object (declaration order).
+def basic_authentication_properties_to_json(BasicAuthenticationProperties v) -> str:
+    list[str] parts = []
+    if v.Username.is_some():
+        auto u0 = v.Username.unwrap()
+        parts.append("\"Username\":" + connector_property_to_json(u0))
+    if v.Password.is_some():
+        auto u1 = v.Password.unwrap()
+        parts.append("\"Password\":" + connector_property_to_json(u1))
+    return glue_json_obj(parts)
+
+# Serialize BatchCreatePartitionRequest to a compact JSON object (declaration order).
+def batch_create_partition_request_to_json(BatchCreatePartitionRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    list[str] e1 = []
+    for x1 in v.PartitionInputList:
+        e1.append(partition_input_to_json(x1))
+    parts.append("\"PartitionInputList\":" + glue_json_arr(e1))
+    return glue_json_obj(parts)
+
+# Serialize BatchDeleteConnectionRequest to a compact JSON object (declaration order).
+def batch_delete_connection_request_to_json(BatchDeleteConnectionRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.ConnectionNameList:
+        e1.append(glue_json_str(x1))
+    parts.append("\"ConnectionNameList\":" + glue_json_arr(e1))
+    return glue_json_obj(parts)
+
+# Serialize BatchDeletePartitionRequest to a compact JSON object (declaration order).
+def batch_delete_partition_request_to_json(BatchDeletePartitionRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    list[str] e1 = []
+    for x1 in v.PartitionsToDelete:
+        e1.append(partition_value_list_to_json(x1))
+    parts.append("\"PartitionsToDelete\":" + glue_json_arr(e1))
+    return glue_json_obj(parts)
+
+# Serialize BatchDeleteTableRequest to a compact JSON object (declaration order).
+def batch_delete_table_request_to_json(BatchDeleteTableRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    list[str] e1 = []
+    for x1 in v.TablesToDelete:
+        e1.append(glue_json_str(x1))
+    parts.append("\"TablesToDelete\":" + glue_json_arr(e1))
+    if v.TransactionId.is_some():
+        auto u2 = v.TransactionId.unwrap()
+        parts.append("\"TransactionId\":" + glue_json_str(u2))
+    return glue_json_obj(parts)
+
+# Serialize BatchDeleteTableVersionRequest to a compact JSON object (declaration order).
+def batch_delete_table_version_request_to_json(BatchDeleteTableVersionRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    list[str] e1 = []
+    for x1 in v.VersionIds:
+        e1.append(glue_json_str(x1))
+    parts.append("\"VersionIds\":" + glue_json_arr(e1))
+    return glue_json_obj(parts)
+
+# Serialize BatchGetBlueprintsRequest to a compact JSON object (declaration order).
+def batch_get_blueprints_request_to_json(BatchGetBlueprintsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Names:
+        e0.append(glue_json_str(x0))
+    parts.append("\"Names\":" + glue_json_arr(e0))
+    if v.IncludeBlueprint.is_some():
+        auto u1 = v.IncludeBlueprint.unwrap()
+        parts.append("\"IncludeBlueprint\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.IncludeParameterSpec.is_some():
+        auto u2 = v.IncludeParameterSpec.unwrap()
+        parts.append("\"IncludeParameterSpec\":" + json.dumps(JsonValue.Bool(u2)))
+    return glue_json_obj(parts)
+
+# Serialize BatchGetCrawlersRequest to a compact JSON object (declaration order).
+def batch_get_crawlers_request_to_json(BatchGetCrawlersRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.CrawlerNames:
+        e0.append(glue_json_str(x0))
+    parts.append("\"CrawlerNames\":" + glue_json_arr(e0))
+    return glue_json_obj(parts)
+
+# Serialize BatchGetCustomEntityTypesRequest to a compact JSON object (declaration order).
+def batch_get_custom_entity_types_request_to_json(BatchGetCustomEntityTypesRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Names:
+        e0.append(glue_json_str(x0))
+    parts.append("\"Names\":" + glue_json_arr(e0))
+    return glue_json_obj(parts)
+
+# Serialize BatchGetDataQualityResultRequest to a compact JSON object (declaration order).
+def batch_get_data_quality_result_request_to_json(BatchGetDataQualityResultRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ResultIds:
+        e0.append(glue_json_str(x0))
+    parts.append("\"ResultIds\":" + glue_json_arr(e0))
+    return glue_json_obj(parts)
+
+# Serialize BatchGetDataQualityResultV2Request to a compact JSON object (declaration order).
+def batch_get_data_quality_result_v2_request_to_json(BatchGetDataQualityResultV2Request v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ResultIds:
+        e0.append(glue_json_str(x0))
+    parts.append("\"ResultIds\":" + glue_json_arr(e0))
+    return glue_json_obj(parts)
+
+# Serialize BatchGetDataQualityRulesetEvaluationRunRequest to a compact JSON object (declaration order).
+def batch_get_data_quality_ruleset_evaluation_run_request_to_json(BatchGetDataQualityRulesetEvaluationRunRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.RunIds:
+        e0.append(glue_json_str(x0))
+    parts.append("\"RunIds\":" + glue_json_arr(e0))
+    return glue_json_obj(parts)
+
+# Serialize BatchGetDevEndpointsRequest to a compact JSON object (declaration order).
+def batch_get_dev_endpoints_request_to_json(BatchGetDevEndpointsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.DevEndpointNames:
+        e0.append(glue_json_str(x0))
+    parts.append("\"DevEndpointNames\":" + glue_json_arr(e0))
+    return glue_json_obj(parts)
+
+# Serialize BatchGetIterableFormsRequest to a compact JSON object (declaration order).
+def batch_get_iterable_forms_request_to_json(BatchGetIterableFormsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AssetIdentifier\":" + glue_json_str(v.AssetIdentifier))
+    parts.append("\"IterableFormName\":" + glue_json_str(v.IterableFormName))
+    list[str] e0 = []
+    for x0 in v.ItemIdentifiers:
+        e0.append(glue_json_str(x0))
+    parts.append("\"ItemIdentifiers\":" + glue_json_arr(e0))
+    return glue_json_obj(parts)
+
+# Serialize BatchGetJobsRequest to a compact JSON object (declaration order).
+def batch_get_jobs_request_to_json(BatchGetJobsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.JobNames:
+        e0.append(glue_json_str(x0))
+    parts.append("\"JobNames\":" + glue_json_arr(e0))
+    return glue_json_obj(parts)
+
+# Serialize BatchGetPartitionRequest to a compact JSON object (declaration order).
+def batch_get_partition_request_to_json(BatchGetPartitionRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    list[str] e1 = []
+    for x1 in v.PartitionsToGet:
+        e1.append(partition_value_list_to_json(x1))
+    parts.append("\"PartitionsToGet\":" + glue_json_arr(e1))
+    if v.AuditContext.is_some():
+        auto u2 = v.AuditContext.unwrap()
+        parts.append("\"AuditContext\":" + audit_context_to_json(u2))
+    if v.QuerySessionContext.is_some():
+        auto u3 = v.QuerySessionContext.unwrap()
+        parts.append("\"QuerySessionContext\":" + query_session_context_to_json(u3))
+    return glue_json_obj(parts)
+
+# Serialize BatchGetTableOptimizerRequest to a compact JSON object (declaration order).
+def batch_get_table_optimizer_request_to_json(BatchGetTableOptimizerRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Entries:
+        e0.append(x0.to_json())
+    parts.append("\"Entries\":" + glue_json_arr(e0))
+    return glue_json_obj(parts)
+
+# Serialize BatchGetTriggersRequest to a compact JSON object (declaration order).
+def batch_get_triggers_request_to_json(BatchGetTriggersRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.TriggerNames:
+        e0.append(glue_json_str(x0))
+    parts.append("\"TriggerNames\":" + glue_json_arr(e0))
+    return glue_json_obj(parts)
+
+# Serialize BatchGetWorkflowsRequest to a compact JSON object (declaration order).
+def batch_get_workflows_request_to_json(BatchGetWorkflowsRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Names:
+        e0.append(glue_json_str(x0))
+    parts.append("\"Names\":" + glue_json_arr(e0))
+    if v.IncludeGraph.is_some():
+        auto u1 = v.IncludeGraph.unwrap()
+        parts.append("\"IncludeGraph\":" + json.dumps(JsonValue.Bool(u1)))
+    return glue_json_obj(parts)
+
+# Serialize BatchPutDataQualityStatisticAnnotationRequest to a compact JSON object (declaration order).
+def batch_put_data_quality_statistic_annotation_request_to_json(BatchPutDataQualityStatisticAnnotationRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.InclusionAnnotations:
+        e0.append(x0.to_json())
+    parts.append("\"InclusionAnnotations\":" + glue_json_arr(e0))
+    if v.ClientToken.is_some():
+        auto u1 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + glue_json_str(u1))
+    return glue_json_obj(parts)
+
+# Serialize BatchStopJobRunRequest to a compact JSON object (declaration order).
+def batch_stop_job_run_request_to_json(BatchStopJobRunRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"JobName\":" + glue_json_str(v.JobName))
+    list[str] e0 = []
+    for x0 in v.JobRunIds:
+        e0.append(glue_json_str(x0))
+    parts.append("\"JobRunIds\":" + glue_json_arr(e0))
+    return glue_json_obj(parts)
+
+# Serialize BatchUpdatePartitionRequest to a compact JSON object (declaration order).
+def batch_update_partition_request_to_json(BatchUpdatePartitionRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    list[str] e1 = []
+    for x1 in v.Entries:
+        e1.append(batch_update_partition_request_entry_to_json(x1))
+    parts.append("\"Entries\":" + glue_json_arr(e1))
+    return glue_json_obj(parts)
+
+# Serialize BatchUpdatePartitionRequestEntry to a compact JSON object (declaration order).
+def batch_update_partition_request_entry_to_json(BatchUpdatePartitionRequestEntry v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.PartitionValueList:
+        e0.append(glue_json_str(x0))
+    parts.append("\"PartitionValueList\":" + glue_json_arr(e0))
+    parts.append("\"PartitionInput\":" + partition_input_to_json(v.PartitionInput))
+    return glue_json_obj(parts)
+
+# Serialize CatalogInput to a compact JSON object (declaration order).
+def catalog_input_to_json(CatalogInput v) -> str:
+    list[str] parts = []
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + glue_json_str(u0))
+    if v.FederatedCatalog.is_some():
+        auto u1 = v.FederatedCatalog.unwrap()
+        parts.append("\"FederatedCatalog\":" + u1.to_json())
+    if v.Parameters.is_some():
+        auto u2 = v.Parameters.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(glue_json_str(k3) + ":" + glue_json_str(u2[k3]))
+        parts.append("\"Parameters\":" + glue_json_obj(m3))
+    if v.TargetRedshiftCatalog.is_some():
+        auto u4 = v.TargetRedshiftCatalog.unwrap()
+        parts.append("\"TargetRedshiftCatalog\":" + u4.to_json())
+    if v.CatalogProperties.is_some():
+        auto u5 = v.CatalogProperties.unwrap()
+        parts.append("\"CatalogProperties\":" + catalog_properties_to_json(u5))
+    if v.CreateTableDefaultPermissions.is_some():
+        auto u6 = v.CreateTableDefaultPermissions.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(principal_permissions_to_json(x7))
+        parts.append("\"CreateTableDefaultPermissions\":" + glue_json_arr(e7))
+    if v.CreateDatabaseDefaultPermissions.is_some():
+        auto u8 = v.CreateDatabaseDefaultPermissions.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(principal_permissions_to_json(x9))
+        parts.append("\"CreateDatabaseDefaultPermissions\":" + glue_json_arr(e9))
+    if v.AllowFullTableExternalDataAccess.is_some():
+        auto u10 = v.AllowFullTableExternalDataAccess.unwrap()
+        parts.append("\"AllowFullTableExternalDataAccess\":" + u10.to_json())
+    if v.OverwriteChildResourcePermissionsWithDefault.is_some():
+        auto u11 = v.OverwriteChildResourcePermissionsWithDefault.unwrap()
+        parts.append("\"OverwriteChildResourcePermissionsWithDefault\":" + u11.to_json())
+    return glue_json_obj(parts)
+
+# Serialize CatalogProperties to a compact JSON object (declaration order).
+def catalog_properties_to_json(CatalogProperties v) -> str:
+    list[str] parts = []
+    if v.DataLakeAccessProperties.is_some():
+        auto u0 = v.DataLakeAccessProperties.unwrap()
+        parts.append("\"DataLakeAccessProperties\":" + u0.to_json())
+    if v.IcebergOptimizationProperties.is_some():
+        auto u1 = v.IcebergOptimizationProperties.unwrap()
+        parts.append("\"IcebergOptimizationProperties\":" + iceberg_optimization_properties_to_json(u1))
+    if v.CustomProperties.is_some():
+        auto u2 = v.CustomProperties.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(glue_json_str(k3) + ":" + glue_json_str(u2[k3]))
+        parts.append("\"CustomProperties\":" + glue_json_obj(m3))
+    return glue_json_obj(parts)
+
+# Serialize CatalogTarget to a compact JSON object (declaration order).
+def catalog_target_to_json(CatalogTarget v) -> str:
+    list[str] parts = []
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    list[str] e0 = []
+    for x0 in v.Tables:
+        e0.append(glue_json_str(x0))
+    parts.append("\"Tables\":" + glue_json_arr(e0))
+    if v.ConnectionName.is_some():
+        auto u1 = v.ConnectionName.unwrap()
+        parts.append("\"ConnectionName\":" + glue_json_str(u1))
+    if v.EventQueueArn.is_some():
+        auto u2 = v.EventQueueArn.unwrap()
+        parts.append("\"EventQueueArn\":" + glue_json_str(u2))
+    if v.DlqEventQueueArn.is_some():
+        auto u3 = v.DlqEventQueueArn.unwrap()
+        parts.append("\"DlqEventQueueArn\":" + glue_json_str(u3))
+    return glue_json_obj(parts)
+
+# Serialize ClientCredentialsProperties to a compact JSON object (declaration order).
+def client_credentials_properties_to_json(ClientCredentialsProperties v) -> str:
+    list[str] parts = []
+    if v.TokenUrl.is_some():
+        auto u0 = v.TokenUrl.unwrap()
+        parts.append("\"TokenUrl\":" + connector_property_to_json(u0))
+    if v.RequestMethod.is_some():
+        auto u1 = v.RequestMethod.unwrap()
+        parts.append("\"RequestMethod\":" + u1.to_json())
+    if v.ContentType.is_some():
+        auto u2 = v.ContentType.unwrap()
+        parts.append("\"ContentType\":" + u2.to_json())
+    if v.ClientId.is_some():
+        auto u3 = v.ClientId.unwrap()
+        parts.append("\"ClientId\":" + connector_property_to_json(u3))
+    if v.ClientSecret.is_some():
+        auto u4 = v.ClientSecret.unwrap()
+        parts.append("\"ClientSecret\":" + connector_property_to_json(u4))
+    if v.Scope.is_some():
+        auto u5 = v.Scope.unwrap()
+        parts.append("\"Scope\":" + connector_property_to_json(u5))
+    if v.TokenUrlParameters.is_some():
+        auto u6 = v.TokenUrlParameters.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(connector_property_to_json(x7))
+        parts.append("\"TokenUrlParameters\":" + glue_json_arr(e7))
+    return glue_json_obj(parts)
+
+# Serialize CodeGenNode to a compact JSON object (declaration order).
+def code_gen_node_to_json(CodeGenNode v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + glue_json_str(v.Id))
+    parts.append("\"NodeType\":" + glue_json_str(v.NodeType))
+    list[str] e0 = []
+    for x0 in v.Args:
+        e0.append(x0.to_json())
+    parts.append("\"Args\":" + glue_json_arr(e0))
+    if v.LineNumber.is_some():
+        auto u1 = v.LineNumber.unwrap()
+        parts.append("\"LineNumber\":" + str(u1))
+    return glue_json_obj(parts)
+
+# Serialize Column to a compact JSON object (declaration order).
+def column_to_json(Column v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    if v.Type.is_some():
+        auto u0 = v.Type.unwrap()
+        parts.append("\"Type\":" + glue_json_str(u0))
+    if v.Comment.is_some():
+        auto u1 = v.Comment.unwrap()
+        parts.append("\"Comment\":" + glue_json_str(u1))
+    if v.Parameters.is_some():
+        auto u2 = v.Parameters.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(glue_json_str(k3) + ":" + glue_json_str(u2[k3]))
+        parts.append("\"Parameters\":" + glue_json_obj(m3))
+    return glue_json_obj(parts)
+
+# Serialize ConfigurationObject to a compact JSON object (declaration order).
+def configuration_object_to_json(ConfigurationObject v) -> str:
+    list[str] parts = []
+    if v.DefaultValue.is_some():
+        auto u0 = v.DefaultValue.unwrap()
+        parts.append("\"DefaultValue\":" + glue_json_str(u0))
+    if v.AllowedValues.is_some():
+        auto u1 = v.AllowedValues.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(glue_json_str(x2))
+        parts.append("\"AllowedValues\":" + glue_json_arr(e2))
+    if v.MinValue.is_some():
+        auto u3 = v.MinValue.unwrap()
+        parts.append("\"MinValue\":" + glue_json_str(u3))
+    if v.MaxValue.is_some():
+        auto u4 = v.MaxValue.unwrap()
+        parts.append("\"MaxValue\":" + glue_json_str(u4))
+    return glue_json_obj(parts)
+
+# Serialize ConnectionPropertiesConfiguration to a compact JSON object (declaration order).
+def connection_properties_configuration_to_json(ConnectionPropertiesConfiguration v) -> str:
+    list[str] parts = []
+    if v.Url.is_some():
+        auto u0 = v.Url.unwrap()
+        parts.append("\"Url\":" + connector_property_to_json(u0))
+    if v.AdditionalRequestParameters.is_some():
+        auto u1 = v.AdditionalRequestParameters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(connector_property_to_json(x2))
+        parts.append("\"AdditionalRequestParameters\":" + glue_json_arr(e2))
+    return glue_json_obj(parts)
+
+# Serialize ConnectionsList to a compact JSON object (declaration order).
+def connections_list_to_json(ConnectionsList v) -> str:
+    list[str] parts = []
+    if v.Connections.is_some():
+        auto u0 = v.Connections.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(glue_json_str(x1))
+        parts.append("\"Connections\":" + glue_json_arr(e1))
+    return glue_json_obj(parts)
+
+# Serialize ConnectorAuthenticationConfiguration to a compact JSON object (declaration order).
+def connector_authentication_configuration_to_json(ConnectorAuthenticationConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AuthenticationTypes:
+        e0.append(x0.to_json())
+    parts.append("\"AuthenticationTypes\":" + glue_json_arr(e0))
+    if v.OAuth2Properties.is_some():
+        auto u1 = v.OAuth2Properties.unwrap()
+        parts.append("\"OAuth2Properties\":" + connector_o_auth2_properties_to_json(u1))
+    if v.BasicAuthenticationProperties.is_some():
+        auto u2 = v.BasicAuthenticationProperties.unwrap()
+        parts.append("\"BasicAuthenticationProperties\":" + basic_authentication_properties_to_json(u2))
+    if v.CustomAuthenticationProperties.is_some():
+        auto u3 = v.CustomAuthenticationProperties.unwrap()
+        parts.append("\"CustomAuthenticationProperties\":" + custom_authentication_properties_to_json(u3))
+    return glue_json_obj(parts)
+
+# Serialize ConnectorAuthorizationCodeProperties to a compact JSON object (declaration order).
+def connector_authorization_code_properties_to_json(ConnectorAuthorizationCodeProperties v) -> str:
+    list[str] parts = []
+    if v.AuthorizationCodeUrl.is_some():
+        auto u0 = v.AuthorizationCodeUrl.unwrap()
+        parts.append("\"AuthorizationCodeUrl\":" + connector_property_to_json(u0))
+    if v.AuthorizationCode.is_some():
+        auto u1 = v.AuthorizationCode.unwrap()
+        parts.append("\"AuthorizationCode\":" + connector_property_to_json(u1))
+    if v.RedirectUri.is_some():
+        auto u2 = v.RedirectUri.unwrap()
+        parts.append("\"RedirectUri\":" + connector_property_to_json(u2))
+    if v.TokenUrl.is_some():
+        auto u3 = v.TokenUrl.unwrap()
+        parts.append("\"TokenUrl\":" + connector_property_to_json(u3))
+    if v.RequestMethod.is_some():
+        auto u4 = v.RequestMethod.unwrap()
+        parts.append("\"RequestMethod\":" + u4.to_json())
+    if v.ContentType.is_some():
+        auto u5 = v.ContentType.unwrap()
+        parts.append("\"ContentType\":" + u5.to_json())
+    if v.ClientId.is_some():
+        auto u6 = v.ClientId.unwrap()
+        parts.append("\"ClientId\":" + connector_property_to_json(u6))
+    if v.ClientSecret.is_some():
+        auto u7 = v.ClientSecret.unwrap()
+        parts.append("\"ClientSecret\":" + connector_property_to_json(u7))
+    if v.Scope.is_some():
+        auto u8 = v.Scope.unwrap()
+        parts.append("\"Scope\":" + connector_property_to_json(u8))
+    if v.Prompt.is_some():
+        auto u9 = v.Prompt.unwrap()
+        parts.append("\"Prompt\":" + connector_property_to_json(u9))
+    if v.TokenUrlParameters.is_some():
+        auto u10 = v.TokenUrlParameters.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(connector_property_to_json(x11))
+        parts.append("\"TokenUrlParameters\":" + glue_json_arr(e11))
+    return glue_json_obj(parts)
+
+# Serialize ConnectorOAuth2Properties to a compact JSON object (declaration order).
+def connector_o_auth2_properties_to_json(ConnectorOAuth2Properties v) -> str:
+    list[str] parts = []
+    parts.append("\"OAuth2GrantType\":" + v.OAuth2GrantType.to_json())
+    if v.ClientCredentialsProperties.is_some():
+        auto u0 = v.ClientCredentialsProperties.unwrap()
+        parts.append("\"ClientCredentialsProperties\":" + client_credentials_properties_to_json(u0))
+    if v.JWTBearerProperties.is_some():
+        auto u1 = v.JWTBearerProperties.unwrap()
+        parts.append("\"JWTBearerProperties\":" + jwt_bearer_properties_to_json(u1))
+    if v.AuthorizationCodeProperties.is_some():
+        auto u2 = v.AuthorizationCodeProperties.unwrap()
+        parts.append("\"AuthorizationCodeProperties\":" + connector_authorization_code_properties_to_json(u2))
+    return glue_json_obj(parts)
+
+# Serialize ConnectorProperty to a compact JSON object (declaration order).
+def connector_property_to_json(ConnectorProperty v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    if v.KeyOverride.is_some():
+        auto u0 = v.KeyOverride.unwrap()
+        parts.append("\"KeyOverride\":" + glue_json_str(u0))
+    parts.append("\"Required\":" + json.dumps(JsonValue.Bool(v.Required)))
+    if v.DefaultValue.is_some():
+        auto u1 = v.DefaultValue.unwrap()
+        parts.append("\"DefaultValue\":" + glue_json_str(u1))
+    if v.AllowedValues.is_some():
+        auto u2 = v.AllowedValues.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(glue_json_str(x3))
+        parts.append("\"AllowedValues\":" + glue_json_arr(e3))
+    if v.PropertyLocation.is_some():
+        auto u4 = v.PropertyLocation.unwrap()
+        parts.append("\"PropertyLocation\":" + u4.to_json())
+    parts.append("\"PropertyType\":" + v.PropertyType.to_json())
+    if v.Format.is_some():
+        auto u5 = v.Format.unwrap()
+        parts.append("\"Format\":" + glue_json_str(u5))
+    return glue_json_obj(parts)
+
+# Serialize CrawlerTargets to a compact JSON object (declaration order).
+def crawler_targets_to_json(CrawlerTargets v) -> str:
+    list[str] parts = []
+    if v.S3Targets.is_some():
+        auto u0 = v.S3Targets.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(s3_target_to_json(x1))
+        parts.append("\"S3Targets\":" + glue_json_arr(e1))
+    if v.JdbcTargets.is_some():
+        auto u2 = v.JdbcTargets.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(jdbc_target_to_json(x3))
+        parts.append("\"JdbcTargets\":" + glue_json_arr(e3))
+    if v.MongoDBTargets.is_some():
+        auto u4 = v.MongoDBTargets.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"MongoDBTargets\":" + glue_json_arr(e5))
+    if v.DynamoDBTargets.is_some():
+        auto u6 = v.DynamoDBTargets.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"DynamoDBTargets\":" + glue_json_arr(e7))
+    if v.CatalogTargets.is_some():
+        auto u8 = v.CatalogTargets.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(catalog_target_to_json(x9))
+        parts.append("\"CatalogTargets\":" + glue_json_arr(e9))
+    if v.DeltaTargets.is_some():
+        auto u10 = v.DeltaTargets.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(delta_target_to_json(x11))
+        parts.append("\"DeltaTargets\":" + glue_json_arr(e11))
+    if v.IcebergTargets.is_some():
+        auto u12 = v.IcebergTargets.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(iceberg_target_to_json(x13))
+        parts.append("\"IcebergTargets\":" + glue_json_arr(e13))
+    if v.HudiTargets.is_some():
+        auto u14 = v.HudiTargets.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(hudi_target_to_json(x15))
+        parts.append("\"HudiTargets\":" + glue_json_arr(e15))
+    return glue_json_obj(parts)
+
+# Serialize CreateBlueprintRequest to a compact JSON object (declaration order).
+def create_blueprint_request_to_json(CreateBlueprintRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + glue_json_str(u0))
+    parts.append("\"BlueprintLocation\":" + glue_json_str(v.BlueprintLocation))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(glue_json_str(k2) + ":" + glue_json_str(u1[k2]))
+        parts.append("\"Tags\":" + glue_json_obj(m2))
+    return glue_json_obj(parts)
+
+# Serialize CreateCatalogRequest to a compact JSON object (declaration order).
+def create_catalog_request_to_json(CreateCatalogRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    parts.append("\"CatalogInput\":" + catalog_input_to_json(v.CatalogInput))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(glue_json_str(k1) + ":" + glue_json_str(u0[k1]))
+        parts.append("\"Tags\":" + glue_json_obj(m1))
+    return glue_json_obj(parts)
+
+# Serialize CreateClassifierRequest to a compact JSON object (declaration order).
+def create_classifier_request_to_json(CreateClassifierRequest v) -> str:
+    list[str] parts = []
+    if v.GrokClassifier.is_some():
+        auto u0 = v.GrokClassifier.unwrap()
+        parts.append("\"GrokClassifier\":" + u0.to_json())
+    if v.XMLClassifier.is_some():
+        auto u1 = v.XMLClassifier.unwrap()
+        parts.append("\"XMLClassifier\":" + u1.to_json())
+    if v.JsonClassifier.is_some():
+        auto u2 = v.JsonClassifier.unwrap()
+        parts.append("\"JsonClassifier\":" + u2.to_json())
+    if v.CsvClassifier.is_some():
+        auto u3 = v.CsvClassifier.unwrap()
+        parts.append("\"CsvClassifier\":" + create_csv_classifier_request_to_json(u3))
+    return glue_json_obj(parts)
+
+# Serialize CreateColumnStatisticsTaskSettingsRequest to a compact JSON object (declaration order).
+def create_column_statistics_task_settings_request_to_json(CreateColumnStatisticsTaskSettingsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    parts.append("\"Role\":" + glue_json_str(v.Role))
+    if v.Schedule.is_some():
+        auto u0 = v.Schedule.unwrap()
+        parts.append("\"Schedule\":" + glue_json_str(u0))
+    if v.ColumnNameList.is_some():
+        auto u1 = v.ColumnNameList.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(glue_json_str(x2))
+        parts.append("\"ColumnNameList\":" + glue_json_arr(e2))
+    if v.SampleSize.is_some():
+        auto u3 = v.SampleSize.unwrap()
+        parts.append("\"SampleSize\":" + str(u3))
+    if v.CatalogID.is_some():
+        auto u4 = v.CatalogID.unwrap()
+        parts.append("\"CatalogID\":" + glue_json_str(u4))
+    if v.SecurityConfiguration.is_some():
+        auto u5 = v.SecurityConfiguration.unwrap()
+        parts.append("\"SecurityConfiguration\":" + glue_json_str(u5))
+    if v.Tags.is_some():
+        auto u6 = v.Tags.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(glue_json_str(k7) + ":" + glue_json_str(u6[k7]))
+        parts.append("\"Tags\":" + glue_json_obj(m7))
+    return glue_json_obj(parts)
+
+# Serialize CreateCrawlerRequest to a compact JSON object (declaration order).
+def create_crawler_request_to_json(CreateCrawlerRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    parts.append("\"Role\":" + glue_json_str(v.Role))
+    if v.DatabaseName.is_some():
+        auto u0 = v.DatabaseName.unwrap()
+        parts.append("\"DatabaseName\":" + glue_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + glue_json_str(u1))
+    parts.append("\"Targets\":" + crawler_targets_to_json(v.Targets))
+    if v.Schedule.is_some():
+        auto u2 = v.Schedule.unwrap()
+        parts.append("\"Schedule\":" + glue_json_str(u2))
+    if v.Classifiers.is_some():
+        auto u3 = v.Classifiers.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(glue_json_str(x4))
+        parts.append("\"Classifiers\":" + glue_json_arr(e4))
+    if v.TablePrefix.is_some():
+        auto u5 = v.TablePrefix.unwrap()
+        parts.append("\"TablePrefix\":" + glue_json_str(u5))
+    if v.SchemaChangePolicy.is_some():
+        auto u6 = v.SchemaChangePolicy.unwrap()
+        parts.append("\"SchemaChangePolicy\":" + u6.to_json())
+    if v.RecrawlPolicy.is_some():
+        auto u7 = v.RecrawlPolicy.unwrap()
+        parts.append("\"RecrawlPolicy\":" + u7.to_json())
+    if v.LineageConfiguration.is_some():
+        auto u8 = v.LineageConfiguration.unwrap()
+        parts.append("\"LineageConfiguration\":" + u8.to_json())
+    if v.LakeFormationConfiguration.is_some():
+        auto u9 = v.LakeFormationConfiguration.unwrap()
+        parts.append("\"LakeFormationConfiguration\":" + u9.to_json())
+    if v.Configuration.is_some():
+        auto u10 = v.Configuration.unwrap()
+        parts.append("\"Configuration\":" + glue_json_str(u10))
+    if v.CrawlerSecurityConfiguration.is_some():
+        auto u11 = v.CrawlerSecurityConfiguration.unwrap()
+        parts.append("\"CrawlerSecurityConfiguration\":" + glue_json_str(u11))
+    if v.Tags.is_some():
+        auto u12 = v.Tags.unwrap()
+        list[str] m13 = []
+        for k13 in sorted(u12.keys()):
+            m13.append(glue_json_str(k13) + ":" + glue_json_str(u12[k13]))
+        parts.append("\"Tags\":" + glue_json_obj(m13))
+    if v.CatalogId.is_some():
+        auto u14 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u14))
+    return glue_json_obj(parts)
+
+# Serialize CreateCsvClassifierRequest to a compact JSON object (declaration order).
+def create_csv_classifier_request_to_json(CreateCsvClassifierRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    if v.Delimiter.is_some():
+        auto u0 = v.Delimiter.unwrap()
+        parts.append("\"Delimiter\":" + glue_json_str(u0))
+    if v.QuoteSymbol.is_some():
+        auto u1 = v.QuoteSymbol.unwrap()
+        parts.append("\"QuoteSymbol\":" + glue_json_str(u1))
+    if v.ContainsHeader.is_some():
+        auto u2 = v.ContainsHeader.unwrap()
+        parts.append("\"ContainsHeader\":" + u2.to_json())
+    if v.Header.is_some():
+        auto u3 = v.Header.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(glue_json_str(x4))
+        parts.append("\"Header\":" + glue_json_arr(e4))
+    if v.DisableValueTrimming.is_some():
+        auto u5 = v.DisableValueTrimming.unwrap()
+        parts.append("\"DisableValueTrimming\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.AllowSingleColumn.is_some():
+        auto u6 = v.AllowSingleColumn.unwrap()
+        parts.append("\"AllowSingleColumn\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.CustomDatatypeConfigured.is_some():
+        auto u7 = v.CustomDatatypeConfigured.unwrap()
+        parts.append("\"CustomDatatypeConfigured\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.CustomDatatypes.is_some():
+        auto u8 = v.CustomDatatypes.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(glue_json_str(x9))
+        parts.append("\"CustomDatatypes\":" + glue_json_arr(e9))
+    if v.Serde.is_some():
+        auto u10 = v.Serde.unwrap()
+        parts.append("\"Serde\":" + u10.to_json())
+    return glue_json_obj(parts)
+
+# Serialize CreateCustomEntityTypeRequest to a compact JSON object (declaration order).
+def create_custom_entity_type_request_to_json(CreateCustomEntityTypeRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    parts.append("\"RegexString\":" + glue_json_str(v.RegexString))
+    if v.ContextWords.is_some():
+        auto u0 = v.ContextWords.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(glue_json_str(x1))
+        parts.append("\"ContextWords\":" + glue_json_arr(e1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(glue_json_str(k3) + ":" + glue_json_str(u2[k3]))
+        parts.append("\"Tags\":" + glue_json_obj(m3))
+    return glue_json_obj(parts)
+
+# Serialize CreateDataQualityRulesetRequest to a compact JSON object (declaration order).
+def create_data_quality_ruleset_request_to_json(CreateDataQualityRulesetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + glue_json_str(u0))
+    parts.append("\"Ruleset\":" + glue_json_str(v.Ruleset))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(glue_json_str(k2) + ":" + glue_json_str(u1[k2]))
+        parts.append("\"Tags\":" + glue_json_obj(m2))
+    if v.TargetTable.is_some():
+        auto u3 = v.TargetTable.unwrap()
+        parts.append("\"TargetTable\":" + u3.to_json())
+    if v.DataQualitySecurityConfiguration.is_some():
+        auto u4 = v.DataQualitySecurityConfiguration.unwrap()
+        parts.append("\"DataQualitySecurityConfiguration\":" + glue_json_str(u4))
+    if v.ClientToken.is_some():
+        auto u5 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + glue_json_str(u5))
+    return glue_json_obj(parts)
+
+# Serialize CreateDatabaseRequest to a compact JSON object (declaration order).
+def create_database_request_to_json(CreateDatabaseRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseInput\":" + database_input_to_json(v.DatabaseInput))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(glue_json_str(k2) + ":" + glue_json_str(u1[k2]))
+        parts.append("\"Tags\":" + glue_json_obj(m2))
+    return glue_json_obj(parts)
+
+# Serialize CreateDevEndpointRequest to a compact JSON object (declaration order).
+def create_dev_endpoint_request_to_json(CreateDevEndpointRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"EndpointName\":" + glue_json_str(v.EndpointName))
+    parts.append("\"RoleArn\":" + glue_json_str(v.RoleArn))
+    if v.SecurityGroupIds.is_some():
+        auto u0 = v.SecurityGroupIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(glue_json_str(x1))
+        parts.append("\"SecurityGroupIds\":" + glue_json_arr(e1))
+    if v.SubnetId.is_some():
+        auto u2 = v.SubnetId.unwrap()
+        parts.append("\"SubnetId\":" + glue_json_str(u2))
+    if v.PublicKey.is_some():
+        auto u3 = v.PublicKey.unwrap()
+        parts.append("\"PublicKey\":" + glue_json_str(u3))
+    if v.PublicKeys.is_some():
+        auto u4 = v.PublicKeys.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(glue_json_str(x5))
+        parts.append("\"PublicKeys\":" + glue_json_arr(e5))
+    if v.NumberOfNodes.is_some():
+        auto u6 = v.NumberOfNodes.unwrap()
+        parts.append("\"NumberOfNodes\":" + str(u6))
+    if v.WorkerType.is_some():
+        auto u7 = v.WorkerType.unwrap()
+        parts.append("\"WorkerType\":" + u7.to_json())
+    if v.GlueVersion.is_some():
+        auto u8 = v.GlueVersion.unwrap()
+        parts.append("\"GlueVersion\":" + glue_json_str(u8))
+    if v.NumberOfWorkers.is_some():
+        auto u9 = v.NumberOfWorkers.unwrap()
+        parts.append("\"NumberOfWorkers\":" + str(u9))
+    if v.ExtraPythonLibsS3Path.is_some():
+        auto u10 = v.ExtraPythonLibsS3Path.unwrap()
+        parts.append("\"ExtraPythonLibsS3Path\":" + glue_json_str(u10))
+    if v.ExtraJarsS3Path.is_some():
+        auto u11 = v.ExtraJarsS3Path.unwrap()
+        parts.append("\"ExtraJarsS3Path\":" + glue_json_str(u11))
+    if v.SecurityConfiguration.is_some():
+        auto u12 = v.SecurityConfiguration.unwrap()
+        parts.append("\"SecurityConfiguration\":" + glue_json_str(u12))
+    if v.Tags.is_some():
+        auto u13 = v.Tags.unwrap()
+        list[str] m14 = []
+        for k14 in sorted(u13.keys()):
+            m14.append(glue_json_str(k14) + ":" + glue_json_str(u13[k14]))
+        parts.append("\"Tags\":" + glue_json_obj(m14))
+    if v.Arguments.is_some():
+        auto u15 = v.Arguments.unwrap()
+        list[str] m16 = []
+        for k16 in sorted(u15.keys()):
+            m16.append(glue_json_str(k16) + ":" + glue_json_str(u15[k16]))
+        parts.append("\"Arguments\":" + glue_json_obj(m16))
+    return glue_json_obj(parts)
+
+# Serialize CreateGlueIdentityCenterConfigurationRequest to a compact JSON object (declaration order).
+def create_glue_identity_center_configuration_request_to_json(CreateGlueIdentityCenterConfigurationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"InstanceArn\":" + glue_json_str(v.InstanceArn))
+    if v.Scopes.is_some():
+        auto u0 = v.Scopes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(glue_json_str(x1))
+        parts.append("\"Scopes\":" + glue_json_arr(e1))
+    if v.UserBackgroundSessionsEnabled.is_some():
+        auto u2 = v.UserBackgroundSessionsEnabled.unwrap()
+        parts.append("\"UserBackgroundSessionsEnabled\":" + json.dumps(JsonValue.Bool(u2)))
+    return glue_json_obj(parts)
+
+# Serialize CreateIcebergTableInput to a compact JSON object (declaration order).
+def create_iceberg_table_input_to_json(CreateIcebergTableInput v) -> str:
+    list[str] parts = []
+    parts.append("\"Location\":" + glue_json_str(v.Location))
+    parts.append("\"Schema\":" + iceberg_schema_to_json(v.Schema))
+    if v.PartitionSpec.is_some():
+        auto u0 = v.PartitionSpec.unwrap()
+        parts.append("\"PartitionSpec\":" + iceberg_partition_spec_to_json(u0))
+    if v.WriteOrder.is_some():
+        auto u1 = v.WriteOrder.unwrap()
+        parts.append("\"WriteOrder\":" + iceberg_sort_order_to_json(u1))
+    if v.Properties.is_some():
+        auto u2 = v.Properties.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(glue_json_str(k3) + ":" + glue_json_str(u2[k3]))
+        parts.append("\"Properties\":" + glue_json_obj(m3))
+    return glue_json_obj(parts)
+
+# Serialize CreateIntegrationRequest to a compact JSON object (declaration order).
+def create_integration_request_to_json(CreateIntegrationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IntegrationName\":" + glue_json_str(v.IntegrationName))
+    parts.append("\"SourceArn\":" + glue_json_str(v.SourceArn))
+    parts.append("\"TargetArn\":" + glue_json_str(v.TargetArn))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + glue_json_str(u0))
+    if v.DataFilter.is_some():
+        auto u1 = v.DataFilter.unwrap()
+        parts.append("\"DataFilter\":" + glue_json_str(u1))
+    if v.KmsKeyId.is_some():
+        auto u2 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + glue_json_str(u2))
+    if v.AdditionalEncryptionContext.is_some():
+        auto u3 = v.AdditionalEncryptionContext.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(glue_json_str(k4) + ":" + glue_json_str(u3[k4]))
+        parts.append("\"AdditionalEncryptionContext\":" + glue_json_obj(m4))
+    if v.Tags.is_some():
+        auto u5 = v.Tags.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"Tags\":" + glue_json_arr(e6))
+    if v.IntegrationConfig.is_some():
+        auto u7 = v.IntegrationConfig.unwrap()
+        parts.append("\"IntegrationConfig\":" + integration_config_to_json(u7))
+    return glue_json_obj(parts)
+
+# Serialize CreateIntegrationResourcePropertyRequest to a compact JSON object (declaration order).
+def create_integration_resource_property_request_to_json(CreateIntegrationResourcePropertyRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + glue_json_str(v.ResourceArn))
+    if v.SourceProcessingProperties.is_some():
+        auto u0 = v.SourceProcessingProperties.unwrap()
+        parts.append("\"SourceProcessingProperties\":" + u0.to_json())
+    if v.TargetProcessingProperties.is_some():
+        auto u1 = v.TargetProcessingProperties.unwrap()
+        parts.append("\"TargetProcessingProperties\":" + u1.to_json())
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + glue_json_arr(e3))
+    return glue_json_obj(parts)
+
+# Serialize CreateIntegrationTablePropertiesRequest to a compact JSON object (declaration order).
+def create_integration_table_properties_request_to_json(CreateIntegrationTablePropertiesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + glue_json_str(v.ResourceArn))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    if v.SourceTableConfig.is_some():
+        auto u0 = v.SourceTableConfig.unwrap()
+        parts.append("\"SourceTableConfig\":" + source_table_config_to_json(u0))
+    if v.TargetTableConfig.is_some():
+        auto u1 = v.TargetTableConfig.unwrap()
+        parts.append("\"TargetTableConfig\":" + target_table_config_to_json(u1))
+    return glue_json_obj(parts)
+
+# Serialize CreateMLTransformRequest to a compact JSON object (declaration order).
+def create_ml_transform_request_to_json(CreateMLTransformRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + glue_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.InputRecordTables:
+        e1.append(glue_table_to_json(x1))
+    parts.append("\"InputRecordTables\":" + glue_json_arr(e1))
+    parts.append("\"Parameters\":" + v.Parameters.to_json())
+    parts.append("\"Role\":" + glue_json_str(v.Role))
+    if v.GlueVersion.is_some():
+        auto u2 = v.GlueVersion.unwrap()
+        parts.append("\"GlueVersion\":" + glue_json_str(u2))
+    if v.MaxCapacity.is_some():
+        auto u3 = v.MaxCapacity.unwrap()
+        parts.append("\"MaxCapacity\":" + str(u3))
+    if v.WorkerType.is_some():
+        auto u4 = v.WorkerType.unwrap()
+        parts.append("\"WorkerType\":" + u4.to_json())
+    if v.NumberOfWorkers.is_some():
+        auto u5 = v.NumberOfWorkers.unwrap()
+        parts.append("\"NumberOfWorkers\":" + str(u5))
+    if v.Timeout.is_some():
+        auto u6 = v.Timeout.unwrap()
+        parts.append("\"Timeout\":" + str(u6))
+    if v.MaxRetries.is_some():
+        auto u7 = v.MaxRetries.unwrap()
+        parts.append("\"MaxRetries\":" + str(u7))
+    if v.Tags.is_some():
+        auto u8 = v.Tags.unwrap()
+        list[str] m9 = []
+        for k9 in sorted(u8.keys()):
+            m9.append(glue_json_str(k9) + ":" + glue_json_str(u8[k9]))
+        parts.append("\"Tags\":" + glue_json_obj(m9))
+    if v.TransformEncryption.is_some():
+        auto u10 = v.TransformEncryption.unwrap()
+        parts.append("\"TransformEncryption\":" + u10.to_json())
+    return glue_json_obj(parts)
+
+# Serialize CreatePartitionIndexRequest to a compact JSON object (declaration order).
+def create_partition_index_request_to_json(CreatePartitionIndexRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    parts.append("\"PartitionIndex\":" + partition_index_to_json(v.PartitionIndex))
+    return glue_json_obj(parts)
+
+# Serialize CreatePartitionRequest to a compact JSON object (declaration order).
+def create_partition_request_to_json(CreatePartitionRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    parts.append("\"PartitionInput\":" + partition_input_to_json(v.PartitionInput))
+    return glue_json_obj(parts)
+
+# Serialize CreateRegistryInput to a compact JSON object (declaration order).
+def create_registry_input_to_json(CreateRegistryInput v) -> str:
+    list[str] parts = []
+    parts.append("\"RegistryName\":" + glue_json_str(v.RegistryName))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + glue_json_str(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(glue_json_str(k2) + ":" + glue_json_str(u1[k2]))
+        parts.append("\"Tags\":" + glue_json_obj(m2))
+    return glue_json_obj(parts)
+
+# Serialize CreateSchemaInput to a compact JSON object (declaration order).
+def create_schema_input_to_json(CreateSchemaInput v) -> str:
+    list[str] parts = []
+    if v.RegistryId.is_some():
+        auto u0 = v.RegistryId.unwrap()
+        parts.append("\"RegistryId\":" + u0.to_json())
+    parts.append("\"SchemaName\":" + glue_json_str(v.SchemaName))
+    parts.append("\"DataFormat\":" + v.DataFormat.to_json())
+    if v.Compatibility.is_some():
+        auto u1 = v.Compatibility.unwrap()
+        parts.append("\"Compatibility\":" + u1.to_json())
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"Description\":" + glue_json_str(u2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(glue_json_str(k4) + ":" + glue_json_str(u3[k4]))
+        parts.append("\"Tags\":" + glue_json_obj(m4))
+    if v.SchemaDefinition.is_some():
+        auto u5 = v.SchemaDefinition.unwrap()
+        parts.append("\"SchemaDefinition\":" + glue_json_str(u5))
+    return glue_json_obj(parts)
+
+# Serialize CreateScriptRequest to a compact JSON object (declaration order).
+def create_script_request_to_json(CreateScriptRequest v) -> str:
+    list[str] parts = []
+    if v.DagNodes.is_some():
+        auto u0 = v.DagNodes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(code_gen_node_to_json(x1))
+        parts.append("\"DagNodes\":" + glue_json_arr(e1))
+    if v.DagEdges.is_some():
+        auto u2 = v.DagEdges.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"DagEdges\":" + glue_json_arr(e3))
+    if v.Language.is_some():
+        auto u4 = v.Language.unwrap()
+        parts.append("\"Language\":" + u4.to_json())
+    return glue_json_obj(parts)
+
+# Serialize CreateSecurityConfigurationRequest to a compact JSON object (declaration order).
+def create_security_configuration_request_to_json(CreateSecurityConfigurationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    parts.append("\"EncryptionConfiguration\":" + encryption_configuration_to_json(v.EncryptionConfiguration))
+    return glue_json_obj(parts)
+
+# Serialize CreateSessionRequest to a compact JSON object (declaration order).
+def create_session_request_to_json(CreateSessionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Id\":" + glue_json_str(v.Id))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + glue_json_str(u0))
+    parts.append("\"Role\":" + glue_json_str(v.Role))
+    parts.append("\"Command\":" + v.Command.to_json())
+    if v.Timeout.is_some():
+        auto u1 = v.Timeout.unwrap()
+        parts.append("\"Timeout\":" + str(u1))
+    if v.IdleTimeout.is_some():
+        auto u2 = v.IdleTimeout.unwrap()
+        parts.append("\"IdleTimeout\":" + str(u2))
+    if v.DefaultArguments.is_some():
+        auto u3 = v.DefaultArguments.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(glue_json_str(k4) + ":" + glue_json_str(u3[k4]))
+        parts.append("\"DefaultArguments\":" + glue_json_obj(m4))
+    if v.Connections.is_some():
+        auto u5 = v.Connections.unwrap()
+        parts.append("\"Connections\":" + connections_list_to_json(u5))
+    if v.MaxCapacity.is_some():
+        auto u6 = v.MaxCapacity.unwrap()
+        parts.append("\"MaxCapacity\":" + str(u6))
+    if v.NumberOfWorkers.is_some():
+        auto u7 = v.NumberOfWorkers.unwrap()
+        parts.append("\"NumberOfWorkers\":" + str(u7))
+    if v.WorkerType.is_some():
+        auto u8 = v.WorkerType.unwrap()
+        parts.append("\"WorkerType\":" + u8.to_json())
+    if v.SecurityConfiguration.is_some():
+        auto u9 = v.SecurityConfiguration.unwrap()
+        parts.append("\"SecurityConfiguration\":" + glue_json_str(u9))
+    if v.GlueVersion.is_some():
+        auto u10 = v.GlueVersion.unwrap()
+        parts.append("\"GlueVersion\":" + glue_json_str(u10))
+    if v.Tags.is_some():
+        auto u11 = v.Tags.unwrap()
+        list[str] m12 = []
+        for k12 in sorted(u11.keys()):
+            m12.append(glue_json_str(k12) + ":" + glue_json_str(u11[k12]))
+        parts.append("\"Tags\":" + glue_json_obj(m12))
+    if v.RequestOrigin.is_some():
+        auto u13 = v.RequestOrigin.unwrap()
+        parts.append("\"RequestOrigin\":" + glue_json_str(u13))
+    if v.SessionType.is_some():
+        auto u14 = v.SessionType.unwrap()
+        parts.append("\"SessionType\":" + u14.to_json())
+    return glue_json_obj(parts)
+
+# Serialize CreateTableRequest to a compact JSON object (declaration order).
+def create_table_request_to_json(CreateTableRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    if v.Name.is_some():
+        auto u1 = v.Name.unwrap()
+        parts.append("\"Name\":" + glue_json_str(u1))
+    if v.TableInput.is_some():
+        auto u2 = v.TableInput.unwrap()
+        parts.append("\"TableInput\":" + table_input_to_json(u2))
+    if v.PartitionIndexes.is_some():
+        auto u3 = v.PartitionIndexes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(partition_index_to_json(x4))
+        parts.append("\"PartitionIndexes\":" + glue_json_arr(e4))
+    if v.TransactionId.is_some():
+        auto u5 = v.TransactionId.unwrap()
+        parts.append("\"TransactionId\":" + glue_json_str(u5))
+    if v.OpenTableFormatInput.is_some():
+        auto u6 = v.OpenTableFormatInput.unwrap()
+        parts.append("\"OpenTableFormatInput\":" + open_table_format_input_to_json(u6))
+    return glue_json_obj(parts)
+
+# Serialize CreateTriggerRequest to a compact JSON object (declaration order).
+def create_trigger_request_to_json(CreateTriggerRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    if v.WorkflowName.is_some():
+        auto u0 = v.WorkflowName.unwrap()
+        parts.append("\"WorkflowName\":" + glue_json_str(u0))
+    parts.append("\"Type\":" + v.Type.to_json())
+    if v.Schedule.is_some():
+        auto u1 = v.Schedule.unwrap()
+        parts.append("\"Schedule\":" + glue_json_str(u1))
+    if v.Predicate.is_some():
+        auto u2 = v.Predicate.unwrap()
+        parts.append("\"Predicate\":" + predicate_to_json(u2))
+    list[str] e3 = []
+    for x3 in v.Actions:
+        e3.append(action_to_json(x3))
+    parts.append("\"Actions\":" + glue_json_arr(e3))
+    if v.Description.is_some():
+        auto u4 = v.Description.unwrap()
+        parts.append("\"Description\":" + glue_json_str(u4))
+    if v.StartOnCreation.is_some():
+        auto u5 = v.StartOnCreation.unwrap()
+        parts.append("\"StartOnCreation\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.Tags.is_some():
+        auto u6 = v.Tags.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(glue_json_str(k7) + ":" + glue_json_str(u6[k7]))
+        parts.append("\"Tags\":" + glue_json_obj(m7))
+    if v.EventBatchingCondition.is_some():
+        auto u8 = v.EventBatchingCondition.unwrap()
+        parts.append("\"EventBatchingCondition\":" + u8.to_json())
+    return glue_json_obj(parts)
+
+# Serialize CreateUsageProfileRequest to a compact JSON object (declaration order).
+def create_usage_profile_request_to_json(CreateUsageProfileRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + glue_json_str(u0))
+    parts.append("\"Configuration\":" + profile_configuration_to_json(v.Configuration))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(glue_json_str(k2) + ":" + glue_json_str(u1[k2]))
+        parts.append("\"Tags\":" + glue_json_obj(m2))
+    return glue_json_obj(parts)
+
+# Serialize CreateUserDefinedFunctionRequest to a compact JSON object (declaration order).
+def create_user_defined_function_request_to_json(CreateUserDefinedFunctionRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"FunctionInput\":" + user_defined_function_input_to_json(v.FunctionInput))
+    return glue_json_obj(parts)
+
+# Serialize CreateWorkflowRequest to a compact JSON object (declaration order).
+def create_workflow_request_to_json(CreateWorkflowRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + glue_json_str(u0))
+    if v.DefaultRunProperties.is_some():
+        auto u1 = v.DefaultRunProperties.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(glue_json_str(k2) + ":" + glue_json_str(u1[k2]))
+        parts.append("\"DefaultRunProperties\":" + glue_json_obj(m2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(glue_json_str(k4) + ":" + glue_json_str(u3[k4]))
+        parts.append("\"Tags\":" + glue_json_obj(m4))
+    if v.MaxConcurrentRuns.is_some():
+        auto u5 = v.MaxConcurrentRuns.unwrap()
+        parts.append("\"MaxConcurrentRuns\":" + str(u5))
+    return glue_json_obj(parts)
+
+# Serialize CustomAuthenticationProperties to a compact JSON object (declaration order).
+def custom_authentication_properties_to_json(CustomAuthenticationProperties v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AuthenticationParameters:
+        e0.append(connector_property_to_json(x0))
+    parts.append("\"AuthenticationParameters\":" + glue_json_arr(e0))
+    return glue_json_obj(parts)
+
+# Serialize DataQualityAnalyzerResult to a compact JSON object (declaration order).
+def data_quality_analyzer_result_to_json(DataQualityAnalyzerResult v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + glue_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + glue_json_str(u1))
+    if v.EvaluationMessage.is_some():
+        auto u2 = v.EvaluationMessage.unwrap()
+        parts.append("\"EvaluationMessage\":" + glue_json_str(u2))
+    if v.EvaluatedMetrics.is_some():
+        auto u3 = v.EvaluatedMetrics.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(glue_json_str(k4) + ":" + str(u3[k4]))
+        parts.append("\"EvaluatedMetrics\":" + glue_json_obj(m4))
+    if v.EvaluatedDistributions.is_some():
+        auto u5 = v.EvaluatedDistributions.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(glue_json_str(k6) + ":" + distribution_data_to_json(u5[k6]))
+        parts.append("\"EvaluatedDistributions\":" + glue_json_obj(m6))
+    return glue_json_obj(parts)
+
+# Serialize DataQualityGlueTable to a compact JSON object (declaration order).
+def data_quality_glue_table_to_json(DataQualityGlueTable v) -> str:
+    list[str] parts = []
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    if v.ConnectionName.is_some():
+        auto u1 = v.ConnectionName.unwrap()
+        parts.append("\"ConnectionName\":" + glue_json_str(u1))
+    if v.AdditionalOptions.is_some():
+        auto u2 = v.AdditionalOptions.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(glue_json_str(k3) + ":" + glue_json_str(u2[k3]))
+        parts.append("\"AdditionalOptions\":" + glue_json_obj(m3))
+    if v.PreProcessingQuery.is_some():
+        auto u4 = v.PreProcessingQuery.unwrap()
+        parts.append("\"PreProcessingQuery\":" + glue_json_str(u4))
+    return glue_json_obj(parts)
+
+# Serialize DataQualityObservation to a compact JSON object (declaration order).
+def data_quality_observation_to_json(DataQualityObservation v) -> str:
+    list[str] parts = []
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + glue_json_str(u0))
+    if v.MetricBasedObservation.is_some():
+        auto u1 = v.MetricBasedObservation.unwrap()
+        parts.append("\"MetricBasedObservation\":" + metric_based_observation_to_json(u1))
+    return glue_json_obj(parts)
+
+# Serialize DataQualityResultFilterCriteria to a compact JSON object (declaration order).
+def data_quality_result_filter_criteria_to_json(DataQualityResultFilterCriteria v) -> str:
+    list[str] parts = []
+    if v.DataSource.is_some():
+        auto u0 = v.DataSource.unwrap()
+        parts.append("\"DataSource\":" + data_source_to_json(u0))
+    if v.JobName.is_some():
+        auto u1 = v.JobName.unwrap()
+        parts.append("\"JobName\":" + glue_json_str(u1))
+    if v.JobRunId.is_some():
+        auto u2 = v.JobRunId.unwrap()
+        parts.append("\"JobRunId\":" + glue_json_str(u2))
+    if v.StartedAfter.is_some():
+        auto u3 = v.StartedAfter.unwrap()
+        parts.append("\"StartedAfter\":" + str(datetime.to_timestamp(u3)))
+    if v.StartedBefore.is_some():
+        auto u4 = v.StartedBefore.unwrap()
+        parts.append("\"StartedBefore\":" + str(datetime.to_timestamp(u4)))
+    return glue_json_obj(parts)
+
+# Serialize DataQualityResultsV2FilterCriteria to a compact JSON object (declaration order).
+def data_quality_results_v2_filter_criteria_to_json(DataQualityResultsV2FilterCriteria v) -> str:
+    list[str] parts = []
+    if v.DataSource.is_some():
+        auto u0 = v.DataSource.unwrap()
+        parts.append("\"DataSource\":" + data_source_to_json(u0))
+    if v.PublishedAfter.is_some():
+        auto u1 = v.PublishedAfter.unwrap()
+        parts.append("\"PublishedAfter\":" + str(datetime.to_timestamp(u1)))
+    if v.PublishedBefore.is_some():
+        auto u2 = v.PublishedBefore.unwrap()
+        parts.append("\"PublishedBefore\":" + str(datetime.to_timestamp(u2)))
+    if v.Dimensions.is_some():
+        auto u3 = v.Dimensions.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(glue_json_str(k4) + ":" + glue_json_str(u3[k4]))
+        parts.append("\"Dimensions\":" + glue_json_obj(m4))
+    if v.EvaluationContext.is_some():
+        auto u5 = v.EvaluationContext.unwrap()
+        parts.append("\"EvaluationContext\":" + glue_json_str(u5))
+    return glue_json_obj(parts)
+
+# Serialize DataQualityRuleRecommendationRunFilter to a compact JSON object (declaration order).
+def data_quality_rule_recommendation_run_filter_to_json(DataQualityRuleRecommendationRunFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"DataSource\":" + data_source_to_json(v.DataSource))
+    if v.StartedBefore.is_some():
+        auto u0 = v.StartedBefore.unwrap()
+        parts.append("\"StartedBefore\":" + str(datetime.to_timestamp(u0)))
+    if v.StartedAfter.is_some():
+        auto u1 = v.StartedAfter.unwrap()
+        parts.append("\"StartedAfter\":" + str(datetime.to_timestamp(u1)))
+    return glue_json_obj(parts)
+
+# Serialize DataQualityRuleResult to a compact JSON object (declaration order).
+def data_quality_rule_result_to_json(DataQualityRuleResult v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + glue_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + glue_json_str(u1))
+    if v.EvaluationMessage.is_some():
+        auto u2 = v.EvaluationMessage.unwrap()
+        parts.append("\"EvaluationMessage\":" + glue_json_str(u2))
+    if v.Result.is_some():
+        auto u3 = v.Result.unwrap()
+        parts.append("\"Result\":" + u3.to_json())
+    if v.EvaluatedMetrics.is_some():
+        auto u4 = v.EvaluatedMetrics.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(glue_json_str(k5) + ":" + str(u4[k5]))
+        parts.append("\"EvaluatedMetrics\":" + glue_json_obj(m5))
+    if v.EvaluatedRule.is_some():
+        auto u6 = v.EvaluatedRule.unwrap()
+        parts.append("\"EvaluatedRule\":" + glue_json_str(u6))
+    if v.RuleMetrics.is_some():
+        auto u7 = v.RuleMetrics.unwrap()
+        list[str] m8 = []
+        for k8 in sorted(u7.keys()):
+            m8.append(glue_json_str(k8) + ":" + str(u7[k8]))
+        parts.append("\"RuleMetrics\":" + glue_json_obj(m8))
+    if v.Labels.is_some():
+        auto u9 = v.Labels.unwrap()
+        list[str] m10 = []
+        for k10 in sorted(u9.keys()):
+            m10.append(glue_json_str(k10) + ":" + glue_json_str(u9[k10]))
+        parts.append("\"Labels\":" + glue_json_obj(m10))
+    return glue_json_obj(parts)
+
+# Serialize DataQualityRulesetEvaluationRunFilter to a compact JSON object (declaration order).
+def data_quality_ruleset_evaluation_run_filter_to_json(DataQualityRulesetEvaluationRunFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"DataSource\":" + data_source_to_json(v.DataSource))
+    if v.StartedBefore.is_some():
+        auto u0 = v.StartedBefore.unwrap()
+        parts.append("\"StartedBefore\":" + str(datetime.to_timestamp(u0)))
+    if v.StartedAfter.is_some():
+        auto u1 = v.StartedAfter.unwrap()
+        parts.append("\"StartedAfter\":" + str(datetime.to_timestamp(u1)))
+    if v.RulesetName.is_some():
+        auto u2 = v.RulesetName.unwrap()
+        parts.append("\"RulesetName\":" + glue_json_str(u2))
+    return glue_json_obj(parts)
+
+# Serialize DataQualityTelemetry to a compact JSON object (declaration order).
+def data_quality_telemetry_to_json(DataQualityTelemetry v) -> str:
+    list[str] parts = []
+    if v.VcpuHours.is_some():
+        auto u0 = v.VcpuHours.unwrap()
+        parts.append("\"VcpuHours\":" + str(u0))
+    if v.FlagsEnabled.is_some():
+        auto u1 = v.FlagsEnabled.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(glue_json_str(k2) + ":" + glue_json_str(u1[k2]))
+        parts.append("\"FlagsEnabled\":" + glue_json_obj(m2))
+    if v.LibraryVersion.is_some():
+        auto u3 = v.LibraryVersion.unwrap()
+        parts.append("\"LibraryVersion\":" + glue_json_str(u3))
+    if v.SparkVersion.is_some():
+        auto u4 = v.SparkVersion.unwrap()
+        parts.append("\"SparkVersion\":" + glue_json_str(u4))
+    if v.HostRuntimeVersion.is_some():
+        auto u5 = v.HostRuntimeVersion.unwrap()
+        parts.append("\"HostRuntimeVersion\":" + glue_json_str(u5))
+    if v.Engine.is_some():
+        auto u6 = v.Engine.unwrap()
+        parts.append("\"Engine\":" + u6.to_json())
+    return glue_json_obj(parts)
+
+# Serialize DataSource to a compact JSON object (declaration order).
+def data_source_to_json(DataSource v) -> str:
+    list[str] parts = []
+    if v.GlueTable.is_some():
+        auto u0 = v.GlueTable.unwrap()
+        parts.append("\"GlueTable\":" + glue_table_to_json(u0))
+    if v.DataQualityGlueTable.is_some():
+        auto u1 = v.DataQualityGlueTable.unwrap()
+        parts.append("\"DataQualityGlueTable\":" + data_quality_glue_table_to_json(u1))
+    return glue_json_obj(parts)
+
+# Serialize DatabaseInput to a compact JSON object (declaration order).
+def database_input_to_json(DatabaseInput v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + glue_json_str(u0))
+    if v.LocationUri.is_some():
+        auto u1 = v.LocationUri.unwrap()
+        parts.append("\"LocationUri\":" + glue_json_str(u1))
+    if v.Parameters.is_some():
+        auto u2 = v.Parameters.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(glue_json_str(k3) + ":" + glue_json_str(u2[k3]))
+        parts.append("\"Parameters\":" + glue_json_obj(m3))
+    if v.CreateTableDefaultPermissions.is_some():
+        auto u4 = v.CreateTableDefaultPermissions.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(principal_permissions_to_json(x5))
+        parts.append("\"CreateTableDefaultPermissions\":" + glue_json_arr(e5))
+    if v.TargetDatabase.is_some():
+        auto u6 = v.TargetDatabase.unwrap()
+        parts.append("\"TargetDatabase\":" + u6.to_json())
+    if v.FederatedDatabase.is_some():
+        auto u7 = v.FederatedDatabase.unwrap()
+        parts.append("\"FederatedDatabase\":" + u7.to_json())
+    return glue_json_obj(parts)
+
+# Serialize DeleteColumnStatisticsForPartitionRequest to a compact JSON object (declaration order).
+def delete_column_statistics_for_partition_request_to_json(DeleteColumnStatisticsForPartitionRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    list[str] e1 = []
+    for x1 in v.PartitionValues:
+        e1.append(glue_json_str(x1))
+    parts.append("\"PartitionValues\":" + glue_json_arr(e1))
+    parts.append("\"ColumnName\":" + glue_json_str(v.ColumnName))
+    return glue_json_obj(parts)
+
+# Serialize DeletePartitionRequest to a compact JSON object (declaration order).
+def delete_partition_request_to_json(DeletePartitionRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    list[str] e1 = []
+    for x1 in v.PartitionValues:
+        e1.append(glue_json_str(x1))
+    parts.append("\"PartitionValues\":" + glue_json_arr(e1))
+    return glue_json_obj(parts)
+
+# Serialize DeltaTarget to a compact JSON object (declaration order).
+def delta_target_to_json(DeltaTarget v) -> str:
+    list[str] parts = []
+    if v.DeltaTables.is_some():
+        auto u0 = v.DeltaTables.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(glue_json_str(x1))
+        parts.append("\"DeltaTables\":" + glue_json_arr(e1))
+    if v.ConnectionName.is_some():
+        auto u2 = v.ConnectionName.unwrap()
+        parts.append("\"ConnectionName\":" + glue_json_str(u2))
+    if v.WriteManifest.is_some():
+        auto u3 = v.WriteManifest.unwrap()
+        parts.append("\"WriteManifest\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.CreateNativeDeltaTable.is_some():
+        auto u4 = v.CreateNativeDeltaTable.unwrap()
+        parts.append("\"CreateNativeDeltaTable\":" + json.dumps(JsonValue.Bool(u4)))
+    return glue_json_obj(parts)
+
+# Serialize DescribeIntegrationsRequest to a compact JSON object (declaration order).
+def describe_integrations_request_to_json(DescribeIntegrationsRequest v) -> str:
+    list[str] parts = []
+    if v.IntegrationIdentifier.is_some():
+        auto u0 = v.IntegrationIdentifier.unwrap()
+        parts.append("\"IntegrationIdentifier\":" + glue_json_str(u0))
+    if v.Marker.is_some():
+        auto u1 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + glue_json_str(u1))
+    if v.MaxRecords.is_some():
+        auto u2 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u2))
+    if v.Filters.is_some():
+        auto u3 = v.Filters.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(integration_filter_to_json(x4))
+        parts.append("\"Filters\":" + glue_json_arr(e4))
+    return glue_json_obj(parts)
+
+# Serialize DisassociateGlossaryTermsRequest to a compact JSON object (declaration order).
+def disassociate_glossary_terms_request_to_json(DisassociateGlossaryTermsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AssetIdentifier\":" + glue_json_str(v.AssetIdentifier))
+    if v.IterableFormName.is_some():
+        auto u0 = v.IterableFormName.unwrap()
+        parts.append("\"IterableFormName\":" + glue_json_str(u0))
+    if v.ItemIdentifier.is_some():
+        auto u1 = v.ItemIdentifier.unwrap()
+        parts.append("\"ItemIdentifier\":" + glue_json_str(u1))
+    list[str] e2 = []
+    for x2 in v.GlossaryTermIdentifiers:
+        e2.append(glue_json_str(x2))
+    parts.append("\"GlossaryTermIdentifiers\":" + glue_json_arr(e2))
+    if v.ClientToken.is_some():
+        auto u3 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + glue_json_str(u3))
+    return glue_json_obj(parts)
+
+# Serialize DistributionData to a compact JSON object (declaration order).
+def distribution_data_to_json(DistributionData v) -> str:
+    list[str] parts = []
+    if v.BinEdges.is_some():
+        auto u0 = v.BinEdges.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(glue_json_str(x1))
+        parts.append("\"BinEdges\":" + glue_json_arr(e1))
+    if v.Count.is_some():
+        auto u2 = v.Count.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(str(x3))
+        parts.append("\"Count\":" + glue_json_arr(e3))
+    if v.DataType.is_some():
+        auto u4 = v.DataType.unwrap()
+        parts.append("\"DataType\":" + glue_json_str(u4))
+    return glue_json_obj(parts)
+
+# Serialize EncryptionConfiguration to a compact JSON object (declaration order).
+def encryption_configuration_to_json(EncryptionConfiguration v) -> str:
+    list[str] parts = []
+    if v.S3Encryption.is_some():
+        auto u0 = v.S3Encryption.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"S3Encryption\":" + glue_json_arr(e1))
+    if v.CloudWatchEncryption.is_some():
+        auto u2 = v.CloudWatchEncryption.unwrap()
+        parts.append("\"CloudWatchEncryption\":" + u2.to_json())
+    if v.JobBookmarksEncryption.is_some():
+        auto u3 = v.JobBookmarksEncryption.unwrap()
+        parts.append("\"JobBookmarksEncryption\":" + u3.to_json())
+    if v.DataQualityEncryption.is_some():
+        auto u4 = v.DataQualityEncryption.unwrap()
+        parts.append("\"DataQualityEncryption\":" + u4.to_json())
+    return glue_json_obj(parts)
+
+# Serialize EntityConfiguration to a compact JSON object (declaration order).
+def entity_configuration_to_json(EntityConfiguration v) -> str:
+    list[str] parts = []
+    if v.SourceConfiguration.is_some():
+        auto u0 = v.SourceConfiguration.unwrap()
+        parts.append("\"SourceConfiguration\":" + source_configuration_to_json(u0))
+    if v.Schema.is_some():
+        auto u1 = v.Schema.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(glue_json_str(k2) + ":" + field_definition_to_json(u1[k2]))
+        parts.append("\"Schema\":" + glue_json_obj(m2))
+    return glue_json_obj(parts)
+
+# Serialize FieldDefinition to a compact JSON object (declaration order).
+def field_definition_to_json(FieldDefinition v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    parts.append("\"FieldDataType\":" + v.FieldDataType.to_json())
+    if v.ResponseDateFormat.is_some():
+        auto u0 = v.ResponseDateFormat.unwrap()
+        parts.append("\"ResponseDateFormat\":" + glue_json_str(u0))
+    if v.IsPartitionable.is_some():
+        auto u1 = v.IsPartitionable.unwrap()
+        parts.append("\"IsPartitionable\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.IsNullable.is_some():
+        auto u2 = v.IsNullable.unwrap()
+        parts.append("\"IsNullable\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.IsQueryable.is_some():
+        auto u3 = v.IsQueryable.unwrap()
+        parts.append("\"IsQueryable\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.IsOrderable.is_some():
+        auto u4 = v.IsOrderable.unwrap()
+        parts.append("\"IsOrderable\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.FilterOverrides.is_some():
+        auto u5 = v.FilterOverrides.unwrap()
+        parts.append("\"FilterOverrides\":" + filter_overrides_to_json(u5))
+    return glue_json_obj(parts)
+
+# Serialize FilterConfiguration to a compact JSON object (declaration order).
+def filter_configuration_to_json(FilterConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"FilterMode\":" + v.FilterMode.to_json())
+    if v.OperatorMappings.is_some():
+        auto u0 = v.OperatorMappings.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(glue_json_str(k1) + ":" + glue_json_str(u0[k1]))
+        parts.append("\"OperatorMappings\":" + glue_json_obj(m1))
+    if v.DateTimeFormat.is_some():
+        auto u2 = v.DateTimeFormat.unwrap()
+        parts.append("\"DateTimeFormat\":" + glue_json_str(u2))
+    if v.StripQuotes.is_some():
+        auto u3 = v.StripQuotes.unwrap()
+        parts.append("\"StripQuotes\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.BetweenConfiguration.is_some():
+        auto u4 = v.BetweenConfiguration.unwrap()
+        parts.append("\"BetweenConfiguration\":" + u4.to_json())
+    if v.FilterStringConfiguration.is_some():
+        auto u5 = v.FilterStringConfiguration.unwrap()
+        parts.append("\"FilterStringConfiguration\":" + u5.to_json())
+    return glue_json_obj(parts)
+
+# Serialize FilterOverrides to a compact JSON object (declaration order).
+def filter_overrides_to_json(FilterOverrides v) -> str:
+    list[str] parts = []
+    if v.FieldName.is_some():
+        auto u0 = v.FieldName.unwrap()
+        parts.append("\"FieldName\":" + glue_json_str(u0))
+    if v.OperatorMappings.is_some():
+        auto u1 = v.OperatorMappings.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(glue_json_str(k2) + ":" + glue_json_str(u1[k2]))
+        parts.append("\"OperatorMappings\":" + glue_json_obj(m2))
+    if v.BetweenConfiguration.is_some():
+        auto u3 = v.BetweenConfiguration.unwrap()
+        parts.append("\"BetweenConfiguration\":" + u3.to_json())
+    if v.DateTimeFormat.is_some():
+        auto u4 = v.DateTimeFormat.unwrap()
+        parts.append("\"DateTimeFormat\":" + glue_json_str(u4))
+    return glue_json_obj(parts)
+
+# Serialize GetColumnStatisticsForPartitionRequest to a compact JSON object (declaration order).
+def get_column_statistics_for_partition_request_to_json(GetColumnStatisticsForPartitionRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    list[str] e1 = []
+    for x1 in v.PartitionValues:
+        e1.append(glue_json_str(x1))
+    parts.append("\"PartitionValues\":" + glue_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.ColumnNames:
+        e2.append(glue_json_str(x2))
+    parts.append("\"ColumnNames\":" + glue_json_arr(e2))
+    return glue_json_obj(parts)
+
+# Serialize GetColumnStatisticsForTableRequest to a compact JSON object (declaration order).
+def get_column_statistics_for_table_request_to_json(GetColumnStatisticsForTableRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    list[str] e1 = []
+    for x1 in v.ColumnNames:
+        e1.append(glue_json_str(x1))
+    parts.append("\"ColumnNames\":" + glue_json_arr(e1))
+    return glue_json_obj(parts)
+
+# Serialize GetConnectionsFilter to a compact JSON object (declaration order).
+def get_connections_filter_to_json(GetConnectionsFilter v) -> str:
+    list[str] parts = []
+    if v.MatchCriteria.is_some():
+        auto u0 = v.MatchCriteria.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(glue_json_str(x1))
+        parts.append("\"MatchCriteria\":" + glue_json_arr(e1))
+    if v.ConnectionType.is_some():
+        auto u2 = v.ConnectionType.unwrap()
+        parts.append("\"ConnectionType\":" + u2.to_json())
+    if v.ConnectionSchemaVersion.is_some():
+        auto u3 = v.ConnectionSchemaVersion.unwrap()
+        parts.append("\"ConnectionSchemaVersion\":" + str(u3))
+    return glue_json_obj(parts)
+
+# Serialize GetConnectionsRequest to a compact JSON object (declaration order).
+def get_connections_request_to_json(GetConnectionsRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    if v.Filter.is_some():
+        auto u1 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + get_connections_filter_to_json(u1))
+    if v.HidePassword.is_some():
+        auto u2 = v.HidePassword.unwrap()
+        parts.append("\"HidePassword\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    return glue_json_obj(parts)
+
+# Serialize GetCrawlerMetricsRequest to a compact JSON object (declaration order).
+def get_crawler_metrics_request_to_json(GetCrawlerMetricsRequest v) -> str:
+    list[str] parts = []
+    if v.CrawlerNameList.is_some():
+        auto u0 = v.CrawlerNameList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(glue_json_str(x1))
+        parts.append("\"CrawlerNameList\":" + glue_json_arr(e1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u3))
+    return glue_json_obj(parts)
+
+# Serialize GetDatabasesRequest to a compact JSON object (declaration order).
+def get_databases_request_to_json(GetDatabasesRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.ResourceShareType.is_some():
+        auto u3 = v.ResourceShareType.unwrap()
+        parts.append("\"ResourceShareType\":" + u3.to_json())
+    if v.AttributesToGet.is_some():
+        auto u4 = v.AttributesToGet.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"AttributesToGet\":" + glue_json_arr(e5))
+    return glue_json_obj(parts)
+
+# Serialize GetEntityRecordsRequest to a compact JSON object (declaration order).
+def get_entity_records_request_to_json(GetEntityRecordsRequest v) -> str:
+    list[str] parts = []
+    if v.ConnectionName.is_some():
+        auto u0 = v.ConnectionName.unwrap()
+        parts.append("\"ConnectionName\":" + glue_json_str(u0))
+    if v.CatalogId.is_some():
+        auto u1 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u1))
+    parts.append("\"EntityName\":" + glue_json_str(v.EntityName))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u2))
+    if v.DataStoreApiVersion.is_some():
+        auto u3 = v.DataStoreApiVersion.unwrap()
+        parts.append("\"DataStoreApiVersion\":" + glue_json_str(u3))
+    if v.ConnectionOptions.is_some():
+        auto u4 = v.ConnectionOptions.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(glue_json_str(k5) + ":" + glue_json_str(u4[k5]))
+        parts.append("\"ConnectionOptions\":" + glue_json_obj(m5))
+    if v.FilterPredicate.is_some():
+        auto u6 = v.FilterPredicate.unwrap()
+        parts.append("\"FilterPredicate\":" + glue_json_str(u6))
+    parts.append("\"Limit\":" + str(v.Limit))
+    if v.OrderBy.is_some():
+        auto u7 = v.OrderBy.unwrap()
+        parts.append("\"OrderBy\":" + glue_json_str(u7))
+    if v.SelectedFields.is_some():
+        auto u8 = v.SelectedFields.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(glue_json_str(x9))
+        parts.append("\"SelectedFields\":" + glue_json_arr(e9))
+    return glue_json_obj(parts)
+
+# Serialize GetMLTransformsRequest to a compact JSON object (declaration order).
+def get_ml_transforms_request_to_json(GetMLTransformsRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.Filter.is_some():
+        auto u2 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + transform_filter_criteria_to_json(u2))
+    if v.Sort.is_some():
+        auto u3 = v.Sort.unwrap()
+        parts.append("\"Sort\":" + u3.to_json())
+    return glue_json_obj(parts)
+
+# Serialize GetMappingRequest to a compact JSON object (declaration order).
+def get_mapping_request_to_json(GetMappingRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Source\":" + v.Source.to_json())
+    if v.Sinks.is_some():
+        auto u0 = v.Sinks.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Sinks\":" + glue_json_arr(e1))
+    if v.Location.is_some():
+        auto u2 = v.Location.unwrap()
+        parts.append("\"Location\":" + location_to_json(u2))
+    return glue_json_obj(parts)
+
+# Serialize GetPartitionRequest to a compact JSON object (declaration order).
+def get_partition_request_to_json(GetPartitionRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    list[str] e1 = []
+    for x1 in v.PartitionValues:
+        e1.append(glue_json_str(x1))
+    parts.append("\"PartitionValues\":" + glue_json_arr(e1))
+    if v.AuditContext.is_some():
+        auto u2 = v.AuditContext.unwrap()
+        parts.append("\"AuditContext\":" + audit_context_to_json(u2))
+    return glue_json_obj(parts)
+
+# Serialize GetPartitionsRequest to a compact JSON object (declaration order).
+def get_partitions_request_to_json(GetPartitionsRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    if v.Expression.is_some():
+        auto u1 = v.Expression.unwrap()
+        parts.append("\"Expression\":" + glue_json_str(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u2))
+    if v.Segment.is_some():
+        auto u3 = v.Segment.unwrap()
+        parts.append("\"Segment\":" + u3.to_json())
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    if v.ExcludeColumnSchema.is_some():
+        auto u5 = v.ExcludeColumnSchema.unwrap()
+        parts.append("\"ExcludeColumnSchema\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.TransactionId.is_some():
+        auto u6 = v.TransactionId.unwrap()
+        parts.append("\"TransactionId\":" + glue_json_str(u6))
+    if v.QueryAsOfTime.is_some():
+        auto u7 = v.QueryAsOfTime.unwrap()
+        parts.append("\"QueryAsOfTime\":" + str(datetime.to_timestamp(u7)))
+    if v.AuditContext.is_some():
+        auto u8 = v.AuditContext.unwrap()
+        parts.append("\"AuditContext\":" + audit_context_to_json(u8))
+    return glue_json_obj(parts)
+
+# Serialize GetPlanRequest to a compact JSON object (declaration order).
+def get_plan_request_to_json(GetPlanRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Mapping:
+        e0.append(x0.to_json())
+    parts.append("\"Mapping\":" + glue_json_arr(e0))
+    parts.append("\"Source\":" + v.Source.to_json())
+    if v.Sinks.is_some():
+        auto u1 = v.Sinks.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Sinks\":" + glue_json_arr(e2))
+    if v.Location.is_some():
+        auto u3 = v.Location.unwrap()
+        parts.append("\"Location\":" + location_to_json(u3))
+    if v.Language.is_some():
+        auto u4 = v.Language.unwrap()
+        parts.append("\"Language\":" + u4.to_json())
+    if v.AdditionalPlanOptionsMap.is_some():
+        auto u5 = v.AdditionalPlanOptionsMap.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(glue_json_str(k6) + ":" + glue_json_str(u5[k6]))
+        parts.append("\"AdditionalPlanOptionsMap\":" + glue_json_obj(m6))
+    return glue_json_obj(parts)
+
+# Serialize GetTableRequest to a compact JSON object (declaration order).
+def get_table_request_to_json(GetTableRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    if v.TransactionId.is_some():
+        auto u1 = v.TransactionId.unwrap()
+        parts.append("\"TransactionId\":" + glue_json_str(u1))
+    if v.QueryAsOfTime.is_some():
+        auto u2 = v.QueryAsOfTime.unwrap()
+        parts.append("\"QueryAsOfTime\":" + str(datetime.to_timestamp(u2)))
+    if v.AuditContext.is_some():
+        auto u3 = v.AuditContext.unwrap()
+        parts.append("\"AuditContext\":" + audit_context_to_json(u3))
+    if v.IncludeStatusDetails.is_some():
+        auto u4 = v.IncludeStatusDetails.unwrap()
+        parts.append("\"IncludeStatusDetails\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.AttributesToGet.is_some():
+        auto u5 = v.AttributesToGet.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"AttributesToGet\":" + glue_json_arr(e6))
+    return glue_json_obj(parts)
+
+# Serialize GetTableVersionRequest to a compact JSON object (declaration order).
+def get_table_version_request_to_json(GetTableVersionRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    if v.VersionId.is_some():
+        auto u1 = v.VersionId.unwrap()
+        parts.append("\"VersionId\":" + glue_json_str(u1))
+    if v.AuditContext.is_some():
+        auto u2 = v.AuditContext.unwrap()
+        parts.append("\"AuditContext\":" + audit_context_to_json(u2))
+    return glue_json_obj(parts)
+
+# Serialize GetTableVersionsRequest to a compact JSON object (declaration order).
+def get_table_versions_request_to_json(GetTableVersionsRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.AuditContext.is_some():
+        auto u3 = v.AuditContext.unwrap()
+        parts.append("\"AuditContext\":" + audit_context_to_json(u3))
+    return glue_json_obj(parts)
+
+# Serialize GetTablesRequest to a compact JSON object (declaration order).
+def get_tables_request_to_json(GetTablesRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    if v.Expression.is_some():
+        auto u1 = v.Expression.unwrap()
+        parts.append("\"Expression\":" + glue_json_str(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    if v.TransactionId.is_some():
+        auto u4 = v.TransactionId.unwrap()
+        parts.append("\"TransactionId\":" + glue_json_str(u4))
+    if v.QueryAsOfTime.is_some():
+        auto u5 = v.QueryAsOfTime.unwrap()
+        parts.append("\"QueryAsOfTime\":" + str(datetime.to_timestamp(u5)))
+    if v.AuditContext.is_some():
+        auto u6 = v.AuditContext.unwrap()
+        parts.append("\"AuditContext\":" + audit_context_to_json(u6))
+    if v.ResourceShareType.is_some():
+        auto u7 = v.ResourceShareType.unwrap()
+        parts.append("\"ResourceShareType\":" + u7.to_json())
+    if v.IncludeStatusDetails.is_some():
+        auto u8 = v.IncludeStatusDetails.unwrap()
+        parts.append("\"IncludeStatusDetails\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.AttributesToGet.is_some():
+        auto u9 = v.AttributesToGet.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"AttributesToGet\":" + glue_json_arr(e10))
+    return glue_json_obj(parts)
+
+# Serialize GetUnfilteredPartitionMetadataRequest to a compact JSON object (declaration order).
+def get_unfiltered_partition_metadata_request_to_json(GetUnfilteredPartitionMetadataRequest v) -> str:
+    list[str] parts = []
+    if v.Region.is_some():
+        auto u0 = v.Region.unwrap()
+        parts.append("\"Region\":" + glue_json_str(u0))
+    parts.append("\"CatalogId\":" + glue_json_str(v.CatalogId))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    list[str] e1 = []
+    for x1 in v.PartitionValues:
+        e1.append(glue_json_str(x1))
+    parts.append("\"PartitionValues\":" + glue_json_arr(e1))
+    if v.AuditContext.is_some():
+        auto u2 = v.AuditContext.unwrap()
+        parts.append("\"AuditContext\":" + audit_context_to_json(u2))
+    list[str] e3 = []
+    for x3 in v.SupportedPermissionTypes:
+        e3.append(x3.to_json())
+    parts.append("\"SupportedPermissionTypes\":" + glue_json_arr(e3))
+    if v.QuerySessionContext.is_some():
+        auto u4 = v.QuerySessionContext.unwrap()
+        parts.append("\"QuerySessionContext\":" + query_session_context_to_json(u4))
+    return glue_json_obj(parts)
+
+# Serialize GetUnfilteredPartitionsMetadataRequest to a compact JSON object (declaration order).
+def get_unfiltered_partitions_metadata_request_to_json(GetUnfilteredPartitionsMetadataRequest v) -> str:
+    list[str] parts = []
+    if v.Region.is_some():
+        auto u0 = v.Region.unwrap()
+        parts.append("\"Region\":" + glue_json_str(u0))
+    parts.append("\"CatalogId\":" + glue_json_str(v.CatalogId))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    if v.Expression.is_some():
+        auto u1 = v.Expression.unwrap()
+        parts.append("\"Expression\":" + glue_json_str(u1))
+    if v.AuditContext.is_some():
+        auto u2 = v.AuditContext.unwrap()
+        parts.append("\"AuditContext\":" + audit_context_to_json(u2))
+    list[str] e3 = []
+    for x3 in v.SupportedPermissionTypes:
+        e3.append(x3.to_json())
+    parts.append("\"SupportedPermissionTypes\":" + glue_json_arr(e3))
+    if v.NextToken.is_some():
+        auto u4 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u4))
+    if v.Segment.is_some():
+        auto u5 = v.Segment.unwrap()
+        parts.append("\"Segment\":" + u5.to_json())
+    if v.MaxResults.is_some():
+        auto u6 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u6))
+    if v.QuerySessionContext.is_some():
+        auto u7 = v.QuerySessionContext.unwrap()
+        parts.append("\"QuerySessionContext\":" + query_session_context_to_json(u7))
+    return glue_json_obj(parts)
+
+# Serialize GetUnfilteredTableMetadataRequest to a compact JSON object (declaration order).
+def get_unfiltered_table_metadata_request_to_json(GetUnfilteredTableMetadataRequest v) -> str:
+    list[str] parts = []
+    if v.Region.is_some():
+        auto u0 = v.Region.unwrap()
+        parts.append("\"Region\":" + glue_json_str(u0))
+    parts.append("\"CatalogId\":" + glue_json_str(v.CatalogId))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    if v.AuditContext.is_some():
+        auto u1 = v.AuditContext.unwrap()
+        parts.append("\"AuditContext\":" + audit_context_to_json(u1))
+    list[str] e2 = []
+    for x2 in v.SupportedPermissionTypes:
+        e2.append(x2.to_json())
+    parts.append("\"SupportedPermissionTypes\":" + glue_json_arr(e2))
+    if v.ParentResourceArn.is_some():
+        auto u3 = v.ParentResourceArn.unwrap()
+        parts.append("\"ParentResourceArn\":" + glue_json_str(u3))
+    if v.RootResourceArn.is_some():
+        auto u4 = v.RootResourceArn.unwrap()
+        parts.append("\"RootResourceArn\":" + glue_json_str(u4))
+    if v.SupportedDialect.is_some():
+        auto u5 = v.SupportedDialect.unwrap()
+        parts.append("\"SupportedDialect\":" + u5.to_json())
+    if v.Permissions.is_some():
+        auto u6 = v.Permissions.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"Permissions\":" + glue_json_arr(e7))
+    if v.QuerySessionContext.is_some():
+        auto u8 = v.QuerySessionContext.unwrap()
+        parts.append("\"QuerySessionContext\":" + query_session_context_to_json(u8))
+    return glue_json_obj(parts)
+
+# Serialize GlueTable to a compact JSON object (declaration order).
+def glue_table_to_json(GlueTable v) -> str:
+    list[str] parts = []
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    if v.ConnectionName.is_some():
+        auto u1 = v.ConnectionName.unwrap()
+        parts.append("\"ConnectionName\":" + glue_json_str(u1))
+    if v.AdditionalOptions.is_some():
+        auto u2 = v.AdditionalOptions.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(glue_json_str(k3) + ":" + glue_json_str(u2[k3]))
+        parts.append("\"AdditionalOptions\":" + glue_json_obj(m3))
+    return glue_json_obj(parts)
+
+# Serialize HudiTarget to a compact JSON object (declaration order).
+def hudi_target_to_json(HudiTarget v) -> str:
+    list[str] parts = []
+    if v.Paths.is_some():
+        auto u0 = v.Paths.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(glue_json_str(x1))
+        parts.append("\"Paths\":" + glue_json_arr(e1))
+    if v.ConnectionName.is_some():
+        auto u2 = v.ConnectionName.unwrap()
+        parts.append("\"ConnectionName\":" + glue_json_str(u2))
+    if v.Exclusions.is_some():
+        auto u3 = v.Exclusions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(glue_json_str(x4))
+        parts.append("\"Exclusions\":" + glue_json_arr(e4))
+    if v.MaximumTraversalDepth.is_some():
+        auto u5 = v.MaximumTraversalDepth.unwrap()
+        parts.append("\"MaximumTraversalDepth\":" + str(u5))
+    return glue_json_obj(parts)
+
+# Serialize IcebergEncryptedKey to a compact JSON object (declaration order).
+def iceberg_encrypted_key_to_json(IcebergEncryptedKey v) -> str:
+    list[str] parts = []
+    parts.append("\"KeyId\":" + glue_json_str(v.KeyId))
+    parts.append("\"EncryptedKeyMetadata\":" + glue_json_str(v.EncryptedKeyMetadata))
+    if v.EncryptedById.is_some():
+        auto u0 = v.EncryptedById.unwrap()
+        parts.append("\"EncryptedById\":" + glue_json_str(u0))
+    if v.Properties.is_some():
+        auto u1 = v.Properties.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(glue_json_str(k2) + ":" + glue_json_str(u1[k2]))
+        parts.append("\"Properties\":" + glue_json_obj(m2))
+    return glue_json_obj(parts)
+
+# Serialize IcebergInput to a compact JSON object (declaration order).
+def iceberg_input_to_json(IcebergInput v) -> str:
+    list[str] parts = []
+    parts.append("\"MetadataOperation\":" + glue_json_str(v.MetadataOperation))
+    if v.Version.is_some():
+        auto u0 = v.Version.unwrap()
+        parts.append("\"Version\":" + glue_json_str(u0))
+    if v.CreateIcebergTableInput.is_some():
+        auto u1 = v.CreateIcebergTableInput.unwrap()
+        parts.append("\"CreateIcebergTableInput\":" + create_iceberg_table_input_to_json(u1))
+    return glue_json_obj(parts)
+
+# Serialize IcebergOptimizationProperties to a compact JSON object (declaration order).
+def iceberg_optimization_properties_to_json(IcebergOptimizationProperties v) -> str:
+    list[str] parts = []
+    if v.RoleArn.is_some():
+        auto u0 = v.RoleArn.unwrap()
+        parts.append("\"RoleArn\":" + glue_json_str(u0))
+    if v.Compaction.is_some():
+        auto u1 = v.Compaction.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(glue_json_str(k2) + ":" + glue_json_str(u1[k2]))
+        parts.append("\"Compaction\":" + glue_json_obj(m2))
+    if v.Retention.is_some():
+        auto u3 = v.Retention.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(glue_json_str(k4) + ":" + glue_json_str(u3[k4]))
+        parts.append("\"Retention\":" + glue_json_obj(m4))
+    if v.OrphanFileDeletion.is_some():
+        auto u5 = v.OrphanFileDeletion.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(glue_json_str(k6) + ":" + glue_json_str(u5[k6]))
+        parts.append("\"OrphanFileDeletion\":" + glue_json_obj(m6))
+    return glue_json_obj(parts)
+
+# Serialize IcebergPartitionSpec to a compact JSON object (declaration order).
+def iceberg_partition_spec_to_json(IcebergPartitionSpec v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Fields:
+        e0.append(x0.to_json())
+    parts.append("\"Fields\":" + glue_json_arr(e0))
+    if v.SpecId.is_some():
+        auto u1 = v.SpecId.unwrap()
+        parts.append("\"SpecId\":" + str(u1))
+    return glue_json_obj(parts)
+
+# Serialize IcebergSchema to a compact JSON object (declaration order).
+def iceberg_schema_to_json(IcebergSchema v) -> str:
+    list[str] parts = []
+    if v.SchemaId.is_some():
+        auto u0 = v.SchemaId.unwrap()
+        parts.append("\"SchemaId\":" + str(u0))
+    if v.IdentifierFieldIds.is_some():
+        auto u1 = v.IdentifierFieldIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(str(x2))
+        parts.append("\"IdentifierFieldIds\":" + glue_json_arr(e2))
+    if v.Type.is_some():
+        auto u3 = v.Type.unwrap()
+        parts.append("\"Type\":" + glue_json_str(u3))
+    list[str] e4 = []
+    for x4 in v.Fields:
+        e4.append(x4.to_json())
+    parts.append("\"Fields\":" + glue_json_arr(e4))
+    return glue_json_obj(parts)
+
+# Serialize IcebergSortOrder to a compact JSON object (declaration order).
+def iceberg_sort_order_to_json(IcebergSortOrder v) -> str:
+    list[str] parts = []
+    parts.append("\"OrderId\":" + str(v.OrderId))
+    list[str] e0 = []
+    for x0 in v.Fields:
+        e0.append(x0.to_json())
+    parts.append("\"Fields\":" + glue_json_arr(e0))
+    return glue_json_obj(parts)
+
+# Serialize IcebergTableUpdate to a compact JSON object (declaration order).
+def iceberg_table_update_to_json(IcebergTableUpdate v) -> str:
+    list[str] parts = []
+    parts.append("\"Schema\":" + iceberg_schema_to_json(v.Schema))
+    if v.PartitionSpec.is_some():
+        auto u0 = v.PartitionSpec.unwrap()
+        parts.append("\"PartitionSpec\":" + iceberg_partition_spec_to_json(u0))
+    if v.SortOrder.is_some():
+        auto u1 = v.SortOrder.unwrap()
+        parts.append("\"SortOrder\":" + iceberg_sort_order_to_json(u1))
+    parts.append("\"Location\":" + glue_json_str(v.Location))
+    if v.Properties.is_some():
+        auto u2 = v.Properties.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(glue_json_str(k3) + ":" + glue_json_str(u2[k3]))
+        parts.append("\"Properties\":" + glue_json_obj(m3))
+    if v.Action.is_some():
+        auto u4 = v.Action.unwrap()
+        parts.append("\"Action\":" + u4.to_json())
+    if v.EncryptionKey.is_some():
+        auto u5 = v.EncryptionKey.unwrap()
+        parts.append("\"EncryptionKey\":" + iceberg_encrypted_key_to_json(u5))
+    if v.KeyId.is_some():
+        auto u6 = v.KeyId.unwrap()
+        parts.append("\"KeyId\":" + glue_json_str(u6))
+    return glue_json_obj(parts)
+
+# Serialize IcebergTarget to a compact JSON object (declaration order).
+def iceberg_target_to_json(IcebergTarget v) -> str:
+    list[str] parts = []
+    if v.Paths.is_some():
+        auto u0 = v.Paths.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(glue_json_str(x1))
+        parts.append("\"Paths\":" + glue_json_arr(e1))
+    if v.ConnectionName.is_some():
+        auto u2 = v.ConnectionName.unwrap()
+        parts.append("\"ConnectionName\":" + glue_json_str(u2))
+    if v.Exclusions.is_some():
+        auto u3 = v.Exclusions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(glue_json_str(x4))
+        parts.append("\"Exclusions\":" + glue_json_arr(e4))
+    if v.MaximumTraversalDepth.is_some():
+        auto u5 = v.MaximumTraversalDepth.unwrap()
+        parts.append("\"MaximumTraversalDepth\":" + str(u5))
+    return glue_json_obj(parts)
+
+# Serialize IntegrationConfig to a compact JSON object (declaration order).
+def integration_config_to_json(IntegrationConfig v) -> str:
+    list[str] parts = []
+    if v.RefreshInterval.is_some():
+        auto u0 = v.RefreshInterval.unwrap()
+        parts.append("\"RefreshInterval\":" + glue_json_str(u0))
+    if v.SourceProperties.is_some():
+        auto u1 = v.SourceProperties.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(glue_json_str(k2) + ":" + glue_json_str(u1[k2]))
+        parts.append("\"SourceProperties\":" + glue_json_obj(m2))
+    if v.ContinuousSync.is_some():
+        auto u3 = v.ContinuousSync.unwrap()
+        parts.append("\"ContinuousSync\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.TargetNamespace.is_some():
+        auto u4 = v.TargetNamespace.unwrap()
+        parts.append("\"TargetNamespace\":" + glue_json_str(u4))
+    return glue_json_obj(parts)
+
+# Serialize IntegrationFilter to a compact JSON object (declaration order).
+def integration_filter_to_json(IntegrationFilter v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + glue_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(glue_json_str(x2))
+        parts.append("\"Values\":" + glue_json_arr(e2))
+    return glue_json_obj(parts)
+
+# Serialize IntegrationResourcePropertyFilter to a compact JSON object (declaration order).
+def integration_resource_property_filter_to_json(IntegrationResourcePropertyFilter v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + glue_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(glue_json_str(x2))
+        parts.append("\"Values\":" + glue_json_arr(e2))
+    return glue_json_obj(parts)
+
+# Serialize IntegrationTablePropertiesFilter to a compact JSON object (declaration order).
+def integration_table_properties_filter_to_json(IntegrationTablePropertiesFilter v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + glue_json_str(u0))
+    if v.Values.is_some():
+        auto u1 = v.Values.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(glue_json_str(x2))
+        parts.append("\"Values\":" + glue_json_arr(e2))
+    return glue_json_obj(parts)
+
+# Serialize JWTBearerProperties to a compact JSON object (declaration order).
+def jwt_bearer_properties_to_json(JWTBearerProperties v) -> str:
+    list[str] parts = []
+    if v.TokenUrl.is_some():
+        auto u0 = v.TokenUrl.unwrap()
+        parts.append("\"TokenUrl\":" + connector_property_to_json(u0))
+    if v.RequestMethod.is_some():
+        auto u1 = v.RequestMethod.unwrap()
+        parts.append("\"RequestMethod\":" + u1.to_json())
+    if v.ContentType.is_some():
+        auto u2 = v.ContentType.unwrap()
+        parts.append("\"ContentType\":" + u2.to_json())
+    if v.JwtToken.is_some():
+        auto u3 = v.JwtToken.unwrap()
+        parts.append("\"JwtToken\":" + connector_property_to_json(u3))
+    if v.TokenUrlParameters.is_some():
+        auto u4 = v.TokenUrlParameters.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(connector_property_to_json(x5))
+        parts.append("\"TokenUrlParameters\":" + glue_json_arr(e5))
+    return glue_json_obj(parts)
+
+# Serialize JdbcTarget to a compact JSON object (declaration order).
+def jdbc_target_to_json(JdbcTarget v) -> str:
+    list[str] parts = []
+    if v.ConnectionName.is_some():
+        auto u0 = v.ConnectionName.unwrap()
+        parts.append("\"ConnectionName\":" + glue_json_str(u0))
+    if v.Path.is_some():
+        auto u1 = v.Path.unwrap()
+        parts.append("\"Path\":" + glue_json_str(u1))
+    if v.Exclusions.is_some():
+        auto u2 = v.Exclusions.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(glue_json_str(x3))
+        parts.append("\"Exclusions\":" + glue_json_arr(e3))
+    if v.EnableAdditionalMetadata.is_some():
+        auto u4 = v.EnableAdditionalMetadata.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"EnableAdditionalMetadata\":" + glue_json_arr(e5))
+    return glue_json_obj(parts)
+
+# Serialize ListBlueprintsRequest to a compact JSON object (declaration order).
+def list_blueprints_request_to_json(ListBlueprintsRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(glue_json_str(k3) + ":" + glue_json_str(u2[k3]))
+        parts.append("\"Tags\":" + glue_json_obj(m3))
+    return glue_json_obj(parts)
+
+# Serialize ListCrawlersRequest to a compact JSON object (declaration order).
+def list_crawlers_request_to_json(ListCrawlersRequest v) -> str:
+    list[str] parts = []
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(glue_json_str(k3) + ":" + glue_json_str(u2[k3]))
+        parts.append("\"Tags\":" + glue_json_obj(m3))
+    return glue_json_obj(parts)
+
+# Serialize ListCrawlsRequest to a compact JSON object (declaration order).
+def list_crawls_request_to_json(ListCrawlsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CrawlerName\":" + glue_json_str(v.CrawlerName))
+    if v.MaxResults.is_some():
+        auto u0 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u0))
+    if v.Filters.is_some():
+        auto u1 = v.Filters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Filters\":" + glue_json_arr(e2))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u3))
+    return glue_json_obj(parts)
+
+# Serialize ListCustomEntityTypesRequest to a compact JSON object (declaration order).
+def list_custom_entity_types_request_to_json(ListCustomEntityTypesRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(glue_json_str(k3) + ":" + glue_json_str(u2[k3]))
+        parts.append("\"Tags\":" + glue_json_obj(m3))
+    return glue_json_obj(parts)
+
+# Serialize ListDataQualityResultsRequest to a compact JSON object (declaration order).
+def list_data_quality_results_request_to_json(ListDataQualityResultsRequest v) -> str:
+    list[str] parts = []
+    if v.Filter.is_some():
+        auto u0 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + data_quality_result_filter_criteria_to_json(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    return glue_json_obj(parts)
+
+# Serialize ListDataQualityResultsV2Request to a compact JSON object (declaration order).
+def list_data_quality_results_v2_request_to_json(ListDataQualityResultsV2Request v) -> str:
+    list[str] parts = []
+    if v.Filter.is_some():
+        auto u0 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + data_quality_results_v2_filter_criteria_to_json(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    return glue_json_obj(parts)
+
+# Serialize ListDataQualityRuleRecommendationRunsRequest to a compact JSON object (declaration order).
+def list_data_quality_rule_recommendation_runs_request_to_json(ListDataQualityRuleRecommendationRunsRequest v) -> str:
+    list[str] parts = []
+    if v.Filter.is_some():
+        auto u0 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + data_quality_rule_recommendation_run_filter_to_json(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(glue_json_str(k4) + ":" + glue_json_str(u3[k4]))
+        parts.append("\"Tags\":" + glue_json_obj(m4))
+    return glue_json_obj(parts)
+
+# Serialize ListDataQualityRulesetEvaluationRunsRequest to a compact JSON object (declaration order).
+def list_data_quality_ruleset_evaluation_runs_request_to_json(ListDataQualityRulesetEvaluationRunsRequest v) -> str:
+    list[str] parts = []
+    if v.Filter.is_some():
+        auto u0 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + data_quality_ruleset_evaluation_run_filter_to_json(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    return glue_json_obj(parts)
+
+# Serialize ListDataQualityRulesetsRequest to a compact JSON object (declaration order).
+def list_data_quality_rulesets_request_to_json(ListDataQualityRulesetsRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.Filter.is_some():
+        auto u2 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + u2.to_json())
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(glue_json_str(k4) + ":" + glue_json_str(u3[k4]))
+        parts.append("\"Tags\":" + glue_json_obj(m4))
+    return glue_json_obj(parts)
+
+# Serialize ListDevEndpointsRequest to a compact JSON object (declaration order).
+def list_dev_endpoints_request_to_json(ListDevEndpointsRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(glue_json_str(k3) + ":" + glue_json_str(u2[k3]))
+        parts.append("\"Tags\":" + glue_json_obj(m3))
+    return glue_json_obj(parts)
+
+# Serialize ListIntegrationResourcePropertiesRequest to a compact JSON object (declaration order).
+def list_integration_resource_properties_request_to_json(ListIntegrationResourcePropertiesRequest v) -> str:
+    list[str] parts = []
+    if v.Marker.is_some():
+        auto u0 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + glue_json_str(u0))
+    if v.Filters.is_some():
+        auto u1 = v.Filters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(integration_resource_property_filter_to_json(x2))
+        parts.append("\"Filters\":" + glue_json_arr(e2))
+    if v.MaxRecords.is_some():
+        auto u3 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u3))
+    return glue_json_obj(parts)
+
+# Serialize ListIntegrationTablePropertiesRequest to a compact JSON object (declaration order).
+def list_integration_table_properties_request_to_json(ListIntegrationTablePropertiesRequest v) -> str:
+    list[str] parts = []
+    if v.Marker.is_some():
+        auto u0 = v.Marker.unwrap()
+        parts.append("\"Marker\":" + glue_json_str(u0))
+    if v.Filters.is_some():
+        auto u1 = v.Filters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(integration_table_properties_filter_to_json(x2))
+        parts.append("\"Filters\":" + glue_json_arr(e2))
+    if v.MaxRecords.is_some():
+        auto u3 = v.MaxRecords.unwrap()
+        parts.append("\"MaxRecords\":" + str(u3))
+    return glue_json_obj(parts)
+
+# Serialize ListJobsRequest to a compact JSON object (declaration order).
+def list_jobs_request_to_json(ListJobsRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(glue_json_str(k3) + ":" + glue_json_str(u2[k3]))
+        parts.append("\"Tags\":" + glue_json_obj(m3))
+    return glue_json_obj(parts)
+
+# Serialize ListMLTransformsRequest to a compact JSON object (declaration order).
+def list_ml_transforms_request_to_json(ListMLTransformsRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.Filter.is_some():
+        auto u2 = v.Filter.unwrap()
+        parts.append("\"Filter\":" + transform_filter_criteria_to_json(u2))
+    if v.Sort.is_some():
+        auto u3 = v.Sort.unwrap()
+        parts.append("\"Sort\":" + u3.to_json())
+    if v.Tags.is_some():
+        auto u4 = v.Tags.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(glue_json_str(k5) + ":" + glue_json_str(u4[k5]))
+        parts.append("\"Tags\":" + glue_json_obj(m5))
+    return glue_json_obj(parts)
+
+# Serialize ListSessionsRequest to a compact JSON object (declaration order).
+def list_sessions_request_to_json(ListSessionsRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(glue_json_str(k3) + ":" + glue_json_str(u2[k3]))
+        parts.append("\"Tags\":" + glue_json_obj(m3))
+    if v.RequestOrigin.is_some():
+        auto u4 = v.RequestOrigin.unwrap()
+        parts.append("\"RequestOrigin\":" + glue_json_str(u4))
+    return glue_json_obj(parts)
+
+# Serialize ListTriggersRequest to a compact JSON object (declaration order).
+def list_triggers_request_to_json(ListTriggersRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u0))
+    if v.DependentJobName.is_some():
+        auto u1 = v.DependentJobName.unwrap()
+        parts.append("\"DependentJobName\":" + glue_json_str(u1))
+    if v.MaxResults.is_some():
+        auto u2 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(glue_json_str(k4) + ":" + glue_json_str(u3[k4]))
+        parts.append("\"Tags\":" + glue_json_obj(m4))
+    return glue_json_obj(parts)
+
+# Serialize Location to a compact JSON object (declaration order).
+def location_to_json(Location v) -> str:
+    list[str] parts = []
+    if v.Jdbc.is_some():
+        auto u0 = v.Jdbc.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Jdbc\":" + glue_json_arr(e1))
+    if v.S3.is_some():
+        auto u2 = v.S3.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"S3\":" + glue_json_arr(e3))
+    if v.DynamoDB.is_some():
+        auto u4 = v.DynamoDB.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"DynamoDB\":" + glue_json_arr(e5))
+    return glue_json_obj(parts)
+
+# Serialize MetricBasedObservation to a compact JSON object (declaration order).
+def metric_based_observation_to_json(MetricBasedObservation v) -> str:
+    list[str] parts = []
+    if v.MetricName.is_some():
+        auto u0 = v.MetricName.unwrap()
+        parts.append("\"MetricName\":" + glue_json_str(u0))
+    if v.StatisticId.is_some():
+        auto u1 = v.StatisticId.unwrap()
+        parts.append("\"StatisticId\":" + glue_json_str(u1))
+    if v.MetricValues.is_some():
+        auto u2 = v.MetricValues.unwrap()
+        parts.append("\"MetricValues\":" + u2.to_json())
+    if v.NewRules.is_some():
+        auto u3 = v.NewRules.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(glue_json_str(x4))
+        parts.append("\"NewRules\":" + glue_json_arr(e4))
+    return glue_json_obj(parts)
+
+# Serialize ModifyIntegrationRequest to a compact JSON object (declaration order).
+def modify_integration_request_to_json(ModifyIntegrationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"IntegrationIdentifier\":" + glue_json_str(v.IntegrationIdentifier))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + glue_json_str(u0))
+    if v.DataFilter.is_some():
+        auto u1 = v.DataFilter.unwrap()
+        parts.append("\"DataFilter\":" + glue_json_str(u1))
+    if v.IntegrationConfig.is_some():
+        auto u2 = v.IntegrationConfig.unwrap()
+        parts.append("\"IntegrationConfig\":" + integration_config_to_json(u2))
+    if v.IntegrationName.is_some():
+        auto u3 = v.IntegrationName.unwrap()
+        parts.append("\"IntegrationName\":" + glue_json_str(u3))
+    return glue_json_obj(parts)
+
+# Serialize OpenTableFormatInput to a compact JSON object (declaration order).
+def open_table_format_input_to_json(OpenTableFormatInput v) -> str:
+    list[str] parts = []
+    if v.IcebergInput.is_some():
+        auto u0 = v.IcebergInput.unwrap()
+        parts.append("\"IcebergInput\":" + iceberg_input_to_json(u0))
+    return glue_json_obj(parts)
+
+# Serialize PartitionIndex to a compact JSON object (declaration order).
+def partition_index_to_json(PartitionIndex v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Keys:
+        e0.append(glue_json_str(x0))
+    parts.append("\"Keys\":" + glue_json_arr(e0))
+    parts.append("\"IndexName\":" + glue_json_str(v.IndexName))
+    return glue_json_obj(parts)
+
+# Serialize PartitionInput to a compact JSON object (declaration order).
+def partition_input_to_json(PartitionInput v) -> str:
+    list[str] parts = []
+    if v.Values.is_some():
+        auto u0 = v.Values.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(glue_json_str(x1))
+        parts.append("\"Values\":" + glue_json_arr(e1))
+    if v.LastAccessTime.is_some():
+        auto u2 = v.LastAccessTime.unwrap()
+        parts.append("\"LastAccessTime\":" + str(datetime.to_timestamp(u2)))
+    if v.StorageDescriptor.is_some():
+        auto u3 = v.StorageDescriptor.unwrap()
+        parts.append("\"StorageDescriptor\":" + storage_descriptor_to_json(u3))
+    if v.Parameters.is_some():
+        auto u4 = v.Parameters.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(glue_json_str(k5) + ":" + glue_json_str(u4[k5]))
+        parts.append("\"Parameters\":" + glue_json_obj(m5))
+    if v.LastAnalyzedTime.is_some():
+        auto u6 = v.LastAnalyzedTime.unwrap()
+        parts.append("\"LastAnalyzedTime\":" + str(datetime.to_timestamp(u6)))
+    return glue_json_obj(parts)
+
+# Serialize PartitionValueList to a compact JSON object (declaration order).
+def partition_value_list_to_json(PartitionValueList v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(glue_json_str(x0))
+    parts.append("\"Values\":" + glue_json_arr(e0))
+    return glue_json_obj(parts)
+
+# Serialize Predicate to a compact JSON object (declaration order).
+def predicate_to_json(Predicate v) -> str:
+    list[str] parts = []
+    if v.Logical.is_some():
+        auto u0 = v.Logical.unwrap()
+        parts.append("\"Logical\":" + u0.to_json())
+    if v.Conditions.is_some():
+        auto u1 = v.Conditions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Conditions\":" + glue_json_arr(e2))
+    return glue_json_obj(parts)
+
+# Serialize PrincipalPermissions to a compact JSON object (declaration order).
+def principal_permissions_to_json(PrincipalPermissions v) -> str:
+    list[str] parts = []
+    if v.Principal.is_some():
+        auto u0 = v.Principal.unwrap()
+        parts.append("\"Principal\":" + u0.to_json())
+    if v.Permissions.is_some():
+        auto u1 = v.Permissions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Permissions\":" + glue_json_arr(e2))
+    return glue_json_obj(parts)
+
+# Serialize ProfileConfiguration to a compact JSON object (declaration order).
+def profile_configuration_to_json(ProfileConfiguration v) -> str:
+    list[str] parts = []
+    if v.SessionConfiguration.is_some():
+        auto u0 = v.SessionConfiguration.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(glue_json_str(k1) + ":" + configuration_object_to_json(u0[k1]))
+        parts.append("\"SessionConfiguration\":" + glue_json_obj(m1))
+    if v.JobConfiguration.is_some():
+        auto u2 = v.JobConfiguration.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(glue_json_str(k3) + ":" + configuration_object_to_json(u2[k3]))
+        parts.append("\"JobConfiguration\":" + glue_json_obj(m3))
+    return glue_json_obj(parts)
+
+# Serialize PublishDataQualityResultV2Request to a compact JSON object (declaration order).
+def publish_data_quality_result_v2_request_to_json(PublishDataQualityResultV2Request v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.Dimensions.keys()):
+        m0.append(glue_json_str(k0) + ":" + glue_json_str(v.Dimensions[k0]))
+    parts.append("\"Dimensions\":" + glue_json_obj(m0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(glue_json_str(k2) + ":" + glue_json_str(u1[k2]))
+        parts.append("\"Tags\":" + glue_json_obj(m2))
+    if v.ExecutionStartedOn.is_some():
+        auto u3 = v.ExecutionStartedOn.unwrap()
+        parts.append("\"ExecutionStartedOn\":" + str(datetime.to_timestamp(u3)))
+    if v.ExecutionCompletedOn.is_some():
+        auto u4 = v.ExecutionCompletedOn.unwrap()
+        parts.append("\"ExecutionCompletedOn\":" + str(datetime.to_timestamp(u4)))
+    parts.append("\"Score\":" + str(v.Score))
+    list[str] e5 = []
+    for x5 in v.RuleResults:
+        e5.append(data_quality_rule_result_to_json(x5))
+    parts.append("\"RuleResults\":" + glue_json_arr(e5))
+    if v.AnalyzerResults.is_some():
+        auto u6 = v.AnalyzerResults.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(data_quality_analyzer_result_to_json(x7))
+        parts.append("\"AnalyzerResults\":" + glue_json_arr(e7))
+    if v.Observations.is_some():
+        auto u8 = v.Observations.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(data_quality_observation_to_json(x9))
+        parts.append("\"Observations\":" + glue_json_arr(e9))
+    if v.AggregatedMetrics.is_some():
+        auto u10 = v.AggregatedMetrics.unwrap()
+        parts.append("\"AggregatedMetrics\":" + u10.to_json())
+    if v.Statistics.is_some():
+        auto u11 = v.Statistics.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(statistic_summary_to_json(x12))
+        parts.append("\"Statistics\":" + glue_json_arr(e12))
+    if v.RunConfiguration.is_some():
+        auto u13 = v.RunConfiguration.unwrap()
+        parts.append("\"RunConfiguration\":" + u13.to_json())
+    if v.ClientToken.is_some():
+        auto u14 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + glue_json_str(u14))
+    parts.append("\"EvaluationContext\":" + glue_json_str(v.EvaluationContext))
+    if v.Descriptors.is_some():
+        auto u15 = v.Descriptors.unwrap()
+        list[str] m16 = []
+        for k16 in sorted(u15.keys()):
+            m16.append(glue_json_str(k16) + ":" + glue_json_str(u15[k16]))
+        parts.append("\"Descriptors\":" + glue_json_obj(m16))
+    if v.RulesetName.is_some():
+        auto u17 = v.RulesetName.unwrap()
+        parts.append("\"RulesetName\":" + glue_json_str(u17))
+    if v.DataQualitySecurityConfiguration.is_some():
+        auto u18 = v.DataQualitySecurityConfiguration.unwrap()
+        parts.append("\"DataQualitySecurityConfiguration\":" + glue_json_str(u18))
+    if v.Telemetry.is_some():
+        auto u19 = v.Telemetry.unwrap()
+        parts.append("\"Telemetry\":" + data_quality_telemetry_to_json(u19))
+    return glue_json_obj(parts)
+
+# Serialize PutAssetRequest to a compact JSON object (declaration order).
+def put_asset_request_to_json(PutAssetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"AssetTypeId\":" + glue_json_str(v.AssetTypeId))
+    parts.append("\"Identifier\":" + glue_json_str(v.Identifier))
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + glue_json_str(u0))
+    list[str] m1 = []
+    for k1 in sorted(v.Forms.keys()):
+        m1.append(glue_json_str(k1) + ":" + v.Forms[k1].to_json())
+    parts.append("\"Forms\":" + glue_json_obj(m1))
+    if v.ClientToken.is_some():
+        auto u2 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + glue_json_str(u2))
+    return glue_json_obj(parts)
+
+# Serialize PutAssetTypeRequest to a compact JSON object (declaration order).
+def put_asset_type_request_to_json(PutAssetTypeRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    list[str] m0 = []
+    for k0 in sorted(v.Forms.keys()):
+        m0.append(glue_json_str(k0) + ":" + v.Forms[k0].to_json())
+    parts.append("\"Forms\":" + glue_json_obj(m0))
+    if v.ClientToken.is_some():
+        auto u1 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + glue_json_str(u1))
+    return glue_json_obj(parts)
+
+# Serialize PutWorkflowRunPropertiesRequest to a compact JSON object (declaration order).
+def put_workflow_run_properties_request_to_json(PutWorkflowRunPropertiesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    parts.append("\"RunId\":" + glue_json_str(v.RunId))
+    list[str] m0 = []
+    for k0 in sorted(v.RunProperties.keys()):
+        m0.append(glue_json_str(k0) + ":" + glue_json_str(v.RunProperties[k0]))
+    parts.append("\"RunProperties\":" + glue_json_obj(m0))
+    return glue_json_obj(parts)
+
+# Serialize QuerySchemaVersionMetadataInput to a compact JSON object (declaration order).
+def query_schema_version_metadata_input_to_json(QuerySchemaVersionMetadataInput v) -> str:
+    list[str] parts = []
+    if v.SchemaId.is_some():
+        auto u0 = v.SchemaId.unwrap()
+        parts.append("\"SchemaId\":" + u0.to_json())
+    if v.SchemaVersionNumber.is_some():
+        auto u1 = v.SchemaVersionNumber.unwrap()
+        parts.append("\"SchemaVersionNumber\":" + u1.to_json())
+    if v.SchemaVersionId.is_some():
+        auto u2 = v.SchemaVersionId.unwrap()
+        parts.append("\"SchemaVersionId\":" + glue_json_str(u2))
+    if v.MetadataList.is_some():
+        auto u3 = v.MetadataList.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"MetadataList\":" + glue_json_arr(e4))
+    if v.MaxResults.is_some():
+        auto u5 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u5))
+    if v.NextToken.is_some():
+        auto u6 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u6))
+    return glue_json_obj(parts)
+
+# Serialize QuerySessionContext to a compact JSON object (declaration order).
+def query_session_context_to_json(QuerySessionContext v) -> str:
+    list[str] parts = []
+    if v.QueryId.is_some():
+        auto u0 = v.QueryId.unwrap()
+        parts.append("\"QueryId\":" + glue_json_str(u0))
+    if v.QueryStartTime.is_some():
+        auto u1 = v.QueryStartTime.unwrap()
+        parts.append("\"QueryStartTime\":" + str(datetime.to_timestamp(u1)))
+    if v.ClusterId.is_some():
+        auto u2 = v.ClusterId.unwrap()
+        parts.append("\"ClusterId\":" + glue_json_str(u2))
+    if v.QueryAuthorizationId.is_some():
+        auto u3 = v.QueryAuthorizationId.unwrap()
+        parts.append("\"QueryAuthorizationId\":" + glue_json_str(u3))
+    if v.AdditionalContext.is_some():
+        auto u4 = v.AdditionalContext.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(glue_json_str(k5) + ":" + glue_json_str(u4[k5]))
+        parts.append("\"AdditionalContext\":" + glue_json_obj(m5))
+    return glue_json_obj(parts)
+
+# Serialize RegisterConnectionTypeRequest to a compact JSON object (declaration order).
+def register_connection_type_request_to_json(RegisterConnectionTypeRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ConnectionType\":" + glue_json_str(v.ConnectionType))
+    parts.append("\"IntegrationType\":" + glue_json_str(v.IntegrationType))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + glue_json_str(u0))
+    parts.append("\"ConnectionProperties\":" + connection_properties_configuration_to_json(v.ConnectionProperties))
+    parts.append("\"ConnectorAuthenticationConfiguration\":" + connector_authentication_configuration_to_json(v.ConnectorAuthenticationConfiguration))
+    parts.append("\"RestConfiguration\":" + rest_configuration_to_json(v.RestConfiguration))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(glue_json_str(k2) + ":" + glue_json_str(u1[k2]))
+        parts.append("\"Tags\":" + glue_json_obj(m2))
+    return glue_json_obj(parts)
+
+# Serialize RestConfiguration to a compact JSON object (declaration order).
+def rest_configuration_to_json(RestConfiguration v) -> str:
+    list[str] parts = []
+    if v.GlobalSourceConfiguration.is_some():
+        auto u0 = v.GlobalSourceConfiguration.unwrap()
+        parts.append("\"GlobalSourceConfiguration\":" + source_configuration_to_json(u0))
+    if v.ValidationEndpointConfiguration.is_some():
+        auto u1 = v.ValidationEndpointConfiguration.unwrap()
+        parts.append("\"ValidationEndpointConfiguration\":" + source_configuration_to_json(u1))
+    if v.EntityConfigurations.is_some():
+        auto u2 = v.EntityConfigurations.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(glue_json_str(k3) + ":" + entity_configuration_to_json(u2[k3]))
+        parts.append("\"EntityConfigurations\":" + glue_json_obj(m3))
+    return glue_json_obj(parts)
+
+# Serialize ResumeWorkflowRunRequest to a compact JSON object (declaration order).
+def resume_workflow_run_request_to_json(ResumeWorkflowRunRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    parts.append("\"RunId\":" + glue_json_str(v.RunId))
+    list[str] e0 = []
+    for x0 in v.NodeIds:
+        e0.append(glue_json_str(x0))
+    parts.append("\"NodeIds\":" + glue_json_arr(e0))
+    return glue_json_obj(parts)
+
+# Serialize S3Target to a compact JSON object (declaration order).
+def s3_target_to_json(S3Target v) -> str:
+    list[str] parts = []
+    if v.Path.is_some():
+        auto u0 = v.Path.unwrap()
+        parts.append("\"Path\":" + glue_json_str(u0))
+    if v.Exclusions.is_some():
+        auto u1 = v.Exclusions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(glue_json_str(x2))
+        parts.append("\"Exclusions\":" + glue_json_arr(e2))
+    if v.ConnectionName.is_some():
+        auto u3 = v.ConnectionName.unwrap()
+        parts.append("\"ConnectionName\":" + glue_json_str(u3))
+    if v.SampleSize.is_some():
+        auto u4 = v.SampleSize.unwrap()
+        parts.append("\"SampleSize\":" + str(u4))
+    if v.EventQueueArn.is_some():
+        auto u5 = v.EventQueueArn.unwrap()
+        parts.append("\"EventQueueArn\":" + glue_json_str(u5))
+    if v.DlqEventQueueArn.is_some():
+        auto u6 = v.DlqEventQueueArn.unwrap()
+        parts.append("\"DlqEventQueueArn\":" + glue_json_str(u6))
+    return glue_json_obj(parts)
+
+# Serialize SearchAssetsInput to a compact JSON object (declaration order).
+def search_assets_input_to_json(SearchAssetsInput v) -> str:
+    list[str] parts = []
+    if v.SearchText.is_some():
+        auto u0 = v.SearchText.unwrap()
+        parts.append("\"SearchText\":" + glue_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u2))
+    if v.Sort.is_some():
+        auto u3 = v.Sort.unwrap()
+        parts.append("\"Sort\":" + u3.to_json())
+    if v.FilterClause.is_some():
+        auto u4 = v.FilterClause.unwrap()
+        parts.append("\"FilterClause\":" + search_filter_clause_to_json(u4))
+    return glue_json_obj(parts)
+
+# Serialize SearchFilterClause to a compact JSON object (declaration order).
+def search_filter_clause_to_json(SearchFilterClause v) -> str:
+    list[str] parts = []
+    if v.AndAllFilters.is_some():
+        auto u0 = v.AndAllFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(search_filter_clause_to_json(x1))
+        parts.append("\"AndAllFilters\":" + glue_json_arr(e1))
+    if v.OrAnyFilters.is_some():
+        auto u2 = v.OrAnyFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(search_filter_clause_to_json(x3))
+        parts.append("\"OrAnyFilters\":" + glue_json_arr(e3))
+    if v.AttributeFilter.is_some():
+        auto u4 = v.AttributeFilter.unwrap()
+        parts.append("\"AttributeFilter\":" + u4.to_json())
+    if v.MapFilter.is_some():
+        auto u5 = v.MapFilter.unwrap()
+        parts.append("\"MapFilter\":" + u5.to_json())
+    return glue_json_obj(parts)
+
+# Serialize SearchTablesRequest to a compact JSON object (declaration order).
+def search_tables_request_to_json(SearchTablesRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    if v.NextToken.is_some():
+        auto u1 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + glue_json_str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Filters\":" + glue_json_arr(e3))
+    if v.SearchText.is_some():
+        auto u4 = v.SearchText.unwrap()
+        parts.append("\"SearchText\":" + glue_json_str(u4))
+    if v.SortCriteria.is_some():
+        auto u5 = v.SortCriteria.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"SortCriteria\":" + glue_json_arr(e6))
+    if v.MaxResults.is_some():
+        auto u7 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u7))
+    if v.ResourceShareType.is_some():
+        auto u8 = v.ResourceShareType.unwrap()
+        parts.append("\"ResourceShareType\":" + u8.to_json())
+    if v.IncludeStatusDetails.is_some():
+        auto u9 = v.IncludeStatusDetails.unwrap()
+        parts.append("\"IncludeStatusDetails\":" + json.dumps(JsonValue.Bool(u9)))
+    return glue_json_obj(parts)
+
+# Serialize SerDeInfo to a compact JSON object (declaration order).
+def ser_de_info_to_json(SerDeInfo v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + glue_json_str(u0))
+    if v.SerializationLibrary.is_some():
+        auto u1 = v.SerializationLibrary.unwrap()
+        parts.append("\"SerializationLibrary\":" + glue_json_str(u1))
+    if v.Parameters.is_some():
+        auto u2 = v.Parameters.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(glue_json_str(k3) + ":" + glue_json_str(u2[k3]))
+        parts.append("\"Parameters\":" + glue_json_obj(m3))
+    return glue_json_obj(parts)
+
+# Serialize SkewedInfo to a compact JSON object (declaration order).
+def skewed_info_to_json(SkewedInfo v) -> str:
+    list[str] parts = []
+    if v.SkewedColumnNames.is_some():
+        auto u0 = v.SkewedColumnNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(glue_json_str(x1))
+        parts.append("\"SkewedColumnNames\":" + glue_json_arr(e1))
+    if v.SkewedColumnValues.is_some():
+        auto u2 = v.SkewedColumnValues.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(glue_json_str(x3))
+        parts.append("\"SkewedColumnValues\":" + glue_json_arr(e3))
+    if v.SkewedColumnValueLocationMaps.is_some():
+        auto u4 = v.SkewedColumnValueLocationMaps.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(glue_json_str(k5) + ":" + glue_json_str(u4[k5]))
+        parts.append("\"SkewedColumnValueLocationMaps\":" + glue_json_obj(m5))
+    return glue_json_obj(parts)
+
+# Serialize SourceConfiguration to a compact JSON object (declaration order).
+def source_configuration_to_json(SourceConfiguration v) -> str:
+    list[str] parts = []
+    if v.RequestMethod.is_some():
+        auto u0 = v.RequestMethod.unwrap()
+        parts.append("\"RequestMethod\":" + u0.to_json())
+    if v.RequestPath.is_some():
+        auto u1 = v.RequestPath.unwrap()
+        parts.append("\"RequestPath\":" + glue_json_str(u1))
+    if v.RequestParameters.is_some():
+        auto u2 = v.RequestParameters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(connector_property_to_json(x3))
+        parts.append("\"RequestParameters\":" + glue_json_arr(e3))
+    if v.ResponseConfiguration.is_some():
+        auto u4 = v.ResponseConfiguration.unwrap()
+        parts.append("\"ResponseConfiguration\":" + u4.to_json())
+    if v.PaginationConfiguration.is_some():
+        auto u5 = v.PaginationConfiguration.unwrap()
+        parts.append("\"PaginationConfiguration\":" + u5.to_json())
+    if v.FilterConfiguration.is_some():
+        auto u6 = v.FilterConfiguration.unwrap()
+        parts.append("\"FilterConfiguration\":" + filter_configuration_to_json(u6))
+    return glue_json_obj(parts)
+
+# Serialize SourceTableConfig to a compact JSON object (declaration order).
+def source_table_config_to_json(SourceTableConfig v) -> str:
+    list[str] parts = []
+    if v.Fields.is_some():
+        auto u0 = v.Fields.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(glue_json_str(x1))
+        parts.append("\"Fields\":" + glue_json_arr(e1))
+    if v.FilterPredicate.is_some():
+        auto u2 = v.FilterPredicate.unwrap()
+        parts.append("\"FilterPredicate\":" + glue_json_str(u2))
+    if v.PrimaryKey.is_some():
+        auto u3 = v.PrimaryKey.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(glue_json_str(x4))
+        parts.append("\"PrimaryKey\":" + glue_json_arr(e4))
+    if v.RecordUpdateField.is_some():
+        auto u5 = v.RecordUpdateField.unwrap()
+        parts.append("\"RecordUpdateField\":" + glue_json_str(u5))
+    return glue_json_obj(parts)
+
+# Serialize StartColumnStatisticsTaskRunRequest to a compact JSON object (declaration order).
+def start_column_statistics_task_run_request_to_json(StartColumnStatisticsTaskRunRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    if v.ColumnNameList.is_some():
+        auto u0 = v.ColumnNameList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(glue_json_str(x1))
+        parts.append("\"ColumnNameList\":" + glue_json_arr(e1))
+    parts.append("\"Role\":" + glue_json_str(v.Role))
+    if v.SampleSize.is_some():
+        auto u2 = v.SampleSize.unwrap()
+        parts.append("\"SampleSize\":" + str(u2))
+    if v.CatalogID.is_some():
+        auto u3 = v.CatalogID.unwrap()
+        parts.append("\"CatalogID\":" + glue_json_str(u3))
+    if v.SecurityConfiguration.is_some():
+        auto u4 = v.SecurityConfiguration.unwrap()
+        parts.append("\"SecurityConfiguration\":" + glue_json_str(u4))
+    return glue_json_obj(parts)
+
+# Serialize StartDataQualityRuleRecommendationRunRequest to a compact JSON object (declaration order).
+def start_data_quality_rule_recommendation_run_request_to_json(StartDataQualityRuleRecommendationRunRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DataSource\":" + data_source_to_json(v.DataSource))
+    parts.append("\"Role\":" + glue_json_str(v.Role))
+    if v.NumberOfWorkers.is_some():
+        auto u0 = v.NumberOfWorkers.unwrap()
+        parts.append("\"NumberOfWorkers\":" + str(u0))
+    if v.Timeout.is_some():
+        auto u1 = v.Timeout.unwrap()
+        parts.append("\"Timeout\":" + str(u1))
+    if v.CreatedRulesetName.is_some():
+        auto u2 = v.CreatedRulesetName.unwrap()
+        parts.append("\"CreatedRulesetName\":" + glue_json_str(u2))
+    if v.DataQualitySecurityConfiguration.is_some():
+        auto u3 = v.DataQualitySecurityConfiguration.unwrap()
+        parts.append("\"DataQualitySecurityConfiguration\":" + glue_json_str(u3))
+    if v.ClientToken.is_some():
+        auto u4 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + glue_json_str(u4))
+    if v.AdditionalRunOptions.is_some():
+        auto u5 = v.AdditionalRunOptions.unwrap()
+        parts.append("\"AdditionalRunOptions\":" + u5.to_json())
+    if v.RecommendationMode.is_some():
+        auto u6 = v.RecommendationMode.unwrap()
+        parts.append("\"RecommendationMode\":" + u6.to_json())
+    return glue_json_obj(parts)
+
+# Serialize StartDataQualityRulesetEvaluationRunRequest to a compact JSON object (declaration order).
+def start_data_quality_ruleset_evaluation_run_request_to_json(StartDataQualityRulesetEvaluationRunRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DataSource\":" + data_source_to_json(v.DataSource))
+    parts.append("\"Role\":" + glue_json_str(v.Role))
+    if v.NumberOfWorkers.is_some():
+        auto u0 = v.NumberOfWorkers.unwrap()
+        parts.append("\"NumberOfWorkers\":" + str(u0))
+    if v.Timeout.is_some():
+        auto u1 = v.Timeout.unwrap()
+        parts.append("\"Timeout\":" + str(u1))
+    if v.ClientToken.is_some():
+        auto u2 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + glue_json_str(u2))
+    if v.AdditionalRunOptions.is_some():
+        auto u3 = v.AdditionalRunOptions.unwrap()
+        parts.append("\"AdditionalRunOptions\":" + u3.to_json())
+    list[str] e4 = []
+    for x4 in v.RulesetNames:
+        e4.append(glue_json_str(x4))
+    parts.append("\"RulesetNames\":" + glue_json_arr(e4))
+    if v.AdditionalDataSources.is_some():
+        auto u5 = v.AdditionalDataSources.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(glue_json_str(k6) + ":" + data_source_to_json(u5[k6]))
+        parts.append("\"AdditionalDataSources\":" + glue_json_obj(m6))
+    return glue_json_obj(parts)
+
+# Serialize StartJobRunRequest to a compact JSON object (declaration order).
+def start_job_run_request_to_json(StartJobRunRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"JobName\":" + glue_json_str(v.JobName))
+    if v.JobRunQueuingEnabled.is_some():
+        auto u0 = v.JobRunQueuingEnabled.unwrap()
+        parts.append("\"JobRunQueuingEnabled\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.JobRunId.is_some():
+        auto u1 = v.JobRunId.unwrap()
+        parts.append("\"JobRunId\":" + glue_json_str(u1))
+    if v.Arguments.is_some():
+        auto u2 = v.Arguments.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(glue_json_str(k3) + ":" + glue_json_str(u2[k3]))
+        parts.append("\"Arguments\":" + glue_json_obj(m3))
+    if v.AllocatedCapacity.is_some():
+        auto u4 = v.AllocatedCapacity.unwrap()
+        parts.append("\"AllocatedCapacity\":" + str(u4))
+    if v.Timeout.is_some():
+        auto u5 = v.Timeout.unwrap()
+        parts.append("\"Timeout\":" + str(u5))
+    if v.MaxCapacity.is_some():
+        auto u6 = v.MaxCapacity.unwrap()
+        parts.append("\"MaxCapacity\":" + str(u6))
+    if v.SecurityConfiguration.is_some():
+        auto u7 = v.SecurityConfiguration.unwrap()
+        parts.append("\"SecurityConfiguration\":" + glue_json_str(u7))
+    if v.NotificationProperty.is_some():
+        auto u8 = v.NotificationProperty.unwrap()
+        parts.append("\"NotificationProperty\":" + u8.to_json())
+    if v.WorkerType.is_some():
+        auto u9 = v.WorkerType.unwrap()
+        parts.append("\"WorkerType\":" + u9.to_json())
+    if v.NumberOfWorkers.is_some():
+        auto u10 = v.NumberOfWorkers.unwrap()
+        parts.append("\"NumberOfWorkers\":" + str(u10))
+    if v.ExecutionClass.is_some():
+        auto u11 = v.ExecutionClass.unwrap()
+        parts.append("\"ExecutionClass\":" + u11.to_json())
+    if v.ExecutionRoleSessionPolicy.is_some():
+        auto u12 = v.ExecutionRoleSessionPolicy.unwrap()
+        parts.append("\"ExecutionRoleSessionPolicy\":" + glue_json_str(u12))
+    return glue_json_obj(parts)
+
+# Serialize StartWorkflowRunRequest to a compact JSON object (declaration order).
+def start_workflow_run_request_to_json(StartWorkflowRunRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    if v.RunProperties.is_some():
+        auto u0 = v.RunProperties.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(glue_json_str(k1) + ":" + glue_json_str(u0[k1]))
+        parts.append("\"RunProperties\":" + glue_json_obj(m1))
+    return glue_json_obj(parts)
+
+# Serialize StatisticSummary to a compact JSON object (declaration order).
+def statistic_summary_to_json(StatisticSummary v) -> str:
+    list[str] parts = []
+    if v.StatisticId.is_some():
+        auto u0 = v.StatisticId.unwrap()
+        parts.append("\"StatisticId\":" + glue_json_str(u0))
+    if v.ProfileId.is_some():
+        auto u1 = v.ProfileId.unwrap()
+        parts.append("\"ProfileId\":" + glue_json_str(u1))
+    if v.RunIdentifier.is_some():
+        auto u2 = v.RunIdentifier.unwrap()
+        parts.append("\"RunIdentifier\":" + u2.to_json())
+    if v.StatisticName.is_some():
+        auto u3 = v.StatisticName.unwrap()
+        parts.append("\"StatisticName\":" + glue_json_str(u3))
+    if v.DoubleValue.is_some():
+        auto u4 = v.DoubleValue.unwrap()
+        parts.append("\"DoubleValue\":" + str(u4))
+    if v.DistributionValue.is_some():
+        auto u5 = v.DistributionValue.unwrap()
+        parts.append("\"DistributionValue\":" + distribution_data_to_json(u5))
+    if v.EvaluationLevel.is_some():
+        auto u6 = v.EvaluationLevel.unwrap()
+        parts.append("\"EvaluationLevel\":" + u6.to_json())
+    if v.ColumnsReferenced.is_some():
+        auto u7 = v.ColumnsReferenced.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(glue_json_str(x8))
+        parts.append("\"ColumnsReferenced\":" + glue_json_arr(e8))
+    if v.ReferencedDatasets.is_some():
+        auto u9 = v.ReferencedDatasets.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(glue_json_str(x10))
+        parts.append("\"ReferencedDatasets\":" + glue_json_arr(e10))
+    if v.StatisticProperties.is_some():
+        auto u11 = v.StatisticProperties.unwrap()
+        list[str] m12 = []
+        for k12 in sorted(u11.keys()):
+            m12.append(glue_json_str(k12) + ":" + glue_json_str(u11[k12]))
+        parts.append("\"StatisticProperties\":" + glue_json_obj(m12))
+    if v.RecordedOn.is_some():
+        auto u13 = v.RecordedOn.unwrap()
+        parts.append("\"RecordedOn\":" + str(datetime.to_timestamp(u13)))
+    if v.InclusionAnnotation.is_some():
+        auto u14 = v.InclusionAnnotation.unwrap()
+        parts.append("\"InclusionAnnotation\":" + u14.to_json())
+    return glue_json_obj(parts)
+
+# Serialize StorageDescriptor to a compact JSON object (declaration order).
+def storage_descriptor_to_json(StorageDescriptor v) -> str:
+    list[str] parts = []
+    if v.Columns.is_some():
+        auto u0 = v.Columns.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(column_to_json(x1))
+        parts.append("\"Columns\":" + glue_json_arr(e1))
+    if v.Location.is_some():
+        auto u2 = v.Location.unwrap()
+        parts.append("\"Location\":" + glue_json_str(u2))
+    if v.AdditionalLocations.is_some():
+        auto u3 = v.AdditionalLocations.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(glue_json_str(x4))
+        parts.append("\"AdditionalLocations\":" + glue_json_arr(e4))
+    if v.InputFormat.is_some():
+        auto u5 = v.InputFormat.unwrap()
+        parts.append("\"InputFormat\":" + glue_json_str(u5))
+    if v.OutputFormat.is_some():
+        auto u6 = v.OutputFormat.unwrap()
+        parts.append("\"OutputFormat\":" + glue_json_str(u6))
+    if v.Compressed.is_some():
+        auto u7 = v.Compressed.unwrap()
+        parts.append("\"Compressed\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.NumberOfBuckets.is_some():
+        auto u8 = v.NumberOfBuckets.unwrap()
+        parts.append("\"NumberOfBuckets\":" + str(u8))
+    if v.SerdeInfo.is_some():
+        auto u9 = v.SerdeInfo.unwrap()
+        parts.append("\"SerdeInfo\":" + ser_de_info_to_json(u9))
+    if v.BucketColumns.is_some():
+        auto u10 = v.BucketColumns.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(glue_json_str(x11))
+        parts.append("\"BucketColumns\":" + glue_json_arr(e11))
+    if v.SortColumns.is_some():
+        auto u12 = v.SortColumns.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"SortColumns\":" + glue_json_arr(e13))
+    if v.Parameters.is_some():
+        auto u14 = v.Parameters.unwrap()
+        list[str] m15 = []
+        for k15 in sorted(u14.keys()):
+            m15.append(glue_json_str(k15) + ":" + glue_json_str(u14[k15]))
+        parts.append("\"Parameters\":" + glue_json_obj(m15))
+    if v.SkewedInfo.is_some():
+        auto u16 = v.SkewedInfo.unwrap()
+        parts.append("\"SkewedInfo\":" + skewed_info_to_json(u16))
+    if v.StoredAsSubDirectories.is_some():
+        auto u17 = v.StoredAsSubDirectories.unwrap()
+        parts.append("\"StoredAsSubDirectories\":" + json.dumps(JsonValue.Bool(u17)))
+    if v.SchemaReference.is_some():
+        auto u18 = v.SchemaReference.unwrap()
+        parts.append("\"SchemaReference\":" + u18.to_json())
+    return glue_json_obj(parts)
+
+# Serialize TableInput to a compact JSON object (declaration order).
+def table_input_to_json(TableInput v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + glue_json_str(u0))
+    if v.Owner.is_some():
+        auto u1 = v.Owner.unwrap()
+        parts.append("\"Owner\":" + glue_json_str(u1))
+    if v.LastAccessTime.is_some():
+        auto u2 = v.LastAccessTime.unwrap()
+        parts.append("\"LastAccessTime\":" + str(datetime.to_timestamp(u2)))
+    if v.LastAnalyzedTime.is_some():
+        auto u3 = v.LastAnalyzedTime.unwrap()
+        parts.append("\"LastAnalyzedTime\":" + str(datetime.to_timestamp(u3)))
+    if v.Retention.is_some():
+        auto u4 = v.Retention.unwrap()
+        parts.append("\"Retention\":" + str(u4))
+    if v.StorageDescriptor.is_some():
+        auto u5 = v.StorageDescriptor.unwrap()
+        parts.append("\"StorageDescriptor\":" + storage_descriptor_to_json(u5))
+    if v.PartitionKeys.is_some():
+        auto u6 = v.PartitionKeys.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(column_to_json(x7))
+        parts.append("\"PartitionKeys\":" + glue_json_arr(e7))
+    if v.ViewOriginalText.is_some():
+        auto u8 = v.ViewOriginalText.unwrap()
+        parts.append("\"ViewOriginalText\":" + glue_json_str(u8))
+    if v.ViewExpandedText.is_some():
+        auto u9 = v.ViewExpandedText.unwrap()
+        parts.append("\"ViewExpandedText\":" + glue_json_str(u9))
+    if v.TableType.is_some():
+        auto u10 = v.TableType.unwrap()
+        parts.append("\"TableType\":" + glue_json_str(u10))
+    if v.Parameters.is_some():
+        auto u11 = v.Parameters.unwrap()
+        list[str] m12 = []
+        for k12 in sorted(u11.keys()):
+            m12.append(glue_json_str(k12) + ":" + glue_json_str(u11[k12]))
+        parts.append("\"Parameters\":" + glue_json_obj(m12))
+    if v.TargetTable.is_some():
+        auto u13 = v.TargetTable.unwrap()
+        parts.append("\"TargetTable\":" + u13.to_json())
+    if v.FederatedTable.is_some():
+        auto u14 = v.FederatedTable.unwrap()
+        parts.append("\"FederatedTable\":" + u14.to_json())
+    if v.ViewDefinition.is_some():
+        auto u15 = v.ViewDefinition.unwrap()
+        parts.append("\"ViewDefinition\":" + view_definition_input_to_json(u15))
+    return glue_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + glue_json_str(v.ResourceArn))
+    list[str] m0 = []
+    for k0 in sorted(v.TagsToAdd.keys()):
+        m0.append(glue_json_str(k0) + ":" + glue_json_str(v.TagsToAdd[k0]))
+    parts.append("\"TagsToAdd\":" + glue_json_obj(m0))
+    return glue_json_obj(parts)
+
+# Serialize TargetTableConfig to a compact JSON object (declaration order).
+def target_table_config_to_json(TargetTableConfig v) -> str:
+    list[str] parts = []
+    if v.UnnestSpec.is_some():
+        auto u0 = v.UnnestSpec.unwrap()
+        parts.append("\"UnnestSpec\":" + u0.to_json())
+    if v.PartitionSpec.is_some():
+        auto u1 = v.PartitionSpec.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"PartitionSpec\":" + glue_json_arr(e2))
+    if v.TargetTableName.is_some():
+        auto u3 = v.TargetTableName.unwrap()
+        parts.append("\"TargetTableName\":" + glue_json_str(u3))
+    if v.IntegrationArn.is_some():
+        auto u4 = v.IntegrationArn.unwrap()
+        parts.append("\"IntegrationArn\":" + glue_json_str(u4))
+    return glue_json_obj(parts)
+
+# Serialize TransformFilterCriteria to a compact JSON object (declaration order).
+def transform_filter_criteria_to_json(TransformFilterCriteria v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + glue_json_str(u0))
+    if v.TransformType.is_some():
+        auto u1 = v.TransformType.unwrap()
+        parts.append("\"TransformType\":" + glue_json_str(u1))
+    if v.Status.is_some():
+        auto u2 = v.Status.unwrap()
+        parts.append("\"Status\":" + u2.to_json())
+    if v.GlueVersion.is_some():
+        auto u3 = v.GlueVersion.unwrap()
+        parts.append("\"GlueVersion\":" + glue_json_str(u3))
+    if v.CreatedBefore.is_some():
+        auto u4 = v.CreatedBefore.unwrap()
+        parts.append("\"CreatedBefore\":" + str(datetime.to_timestamp(u4)))
+    if v.CreatedAfter.is_some():
+        auto u5 = v.CreatedAfter.unwrap()
+        parts.append("\"CreatedAfter\":" + str(datetime.to_timestamp(u5)))
+    if v.LastModifiedBefore.is_some():
+        auto u6 = v.LastModifiedBefore.unwrap()
+        parts.append("\"LastModifiedBefore\":" + str(datetime.to_timestamp(u6)))
+    if v.LastModifiedAfter.is_some():
+        auto u7 = v.LastModifiedAfter.unwrap()
+        parts.append("\"LastModifiedAfter\":" + str(datetime.to_timestamp(u7)))
+    if v.Schema.is_some():
+        auto u8 = v.Schema.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"Schema\":" + glue_json_arr(e9))
+    return glue_json_obj(parts)
+
+# Serialize TriggerUpdate to a compact JSON object (declaration order).
+def trigger_update_to_json(TriggerUpdate v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + glue_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + glue_json_str(u1))
+    if v.Schedule.is_some():
+        auto u2 = v.Schedule.unwrap()
+        parts.append("\"Schedule\":" + glue_json_str(u2))
+    if v.Actions.is_some():
+        auto u3 = v.Actions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(action_to_json(x4))
+        parts.append("\"Actions\":" + glue_json_arr(e4))
+    if v.Predicate.is_some():
+        auto u5 = v.Predicate.unwrap()
+        parts.append("\"Predicate\":" + predicate_to_json(u5))
+    if v.EventBatchingCondition.is_some():
+        auto u6 = v.EventBatchingCondition.unwrap()
+        parts.append("\"EventBatchingCondition\":" + u6.to_json())
+    return glue_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + glue_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.TagsToRemove:
+        e0.append(glue_json_str(x0))
+    parts.append("\"TagsToRemove\":" + glue_json_arr(e0))
+    return glue_json_obj(parts)
+
+# Serialize UpdateCatalogRequest to a compact JSON object (declaration order).
+def update_catalog_request_to_json(UpdateCatalogRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"CatalogId\":" + glue_json_str(v.CatalogId))
+    parts.append("\"CatalogInput\":" + catalog_input_to_json(v.CatalogInput))
+    return glue_json_obj(parts)
+
+# Serialize UpdateClassifierRequest to a compact JSON object (declaration order).
+def update_classifier_request_to_json(UpdateClassifierRequest v) -> str:
+    list[str] parts = []
+    if v.GrokClassifier.is_some():
+        auto u0 = v.GrokClassifier.unwrap()
+        parts.append("\"GrokClassifier\":" + u0.to_json())
+    if v.XMLClassifier.is_some():
+        auto u1 = v.XMLClassifier.unwrap()
+        parts.append("\"XMLClassifier\":" + u1.to_json())
+    if v.JsonClassifier.is_some():
+        auto u2 = v.JsonClassifier.unwrap()
+        parts.append("\"JsonClassifier\":" + u2.to_json())
+    if v.CsvClassifier.is_some():
+        auto u3 = v.CsvClassifier.unwrap()
+        parts.append("\"CsvClassifier\":" + update_csv_classifier_request_to_json(u3))
+    return glue_json_obj(parts)
+
+# Serialize UpdateColumnStatisticsForPartitionRequest to a compact JSON object (declaration order).
+def update_column_statistics_for_partition_request_to_json(UpdateColumnStatisticsForPartitionRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    list[str] e1 = []
+    for x1 in v.PartitionValues:
+        e1.append(glue_json_str(x1))
+    parts.append("\"PartitionValues\":" + glue_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.ColumnStatisticsList:
+        e2.append(x2.to_json())
+    parts.append("\"ColumnStatisticsList\":" + glue_json_arr(e2))
+    return glue_json_obj(parts)
+
+# Serialize UpdateColumnStatisticsForTableRequest to a compact JSON object (declaration order).
+def update_column_statistics_for_table_request_to_json(UpdateColumnStatisticsForTableRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    list[str] e1 = []
+    for x1 in v.ColumnStatisticsList:
+        e1.append(x1.to_json())
+    parts.append("\"ColumnStatisticsList\":" + glue_json_arr(e1))
+    return glue_json_obj(parts)
+
+# Serialize UpdateColumnStatisticsTaskSettingsRequest to a compact JSON object (declaration order).
+def update_column_statistics_task_settings_request_to_json(UpdateColumnStatisticsTaskSettingsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    if v.Role.is_some():
+        auto u0 = v.Role.unwrap()
+        parts.append("\"Role\":" + glue_json_str(u0))
+    if v.Schedule.is_some():
+        auto u1 = v.Schedule.unwrap()
+        parts.append("\"Schedule\":" + glue_json_str(u1))
+    if v.ColumnNameList.is_some():
+        auto u2 = v.ColumnNameList.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(glue_json_str(x3))
+        parts.append("\"ColumnNameList\":" + glue_json_arr(e3))
+    if v.SampleSize.is_some():
+        auto u4 = v.SampleSize.unwrap()
+        parts.append("\"SampleSize\":" + str(u4))
+    if v.CatalogID.is_some():
+        auto u5 = v.CatalogID.unwrap()
+        parts.append("\"CatalogID\":" + glue_json_str(u5))
+    if v.SecurityConfiguration.is_some():
+        auto u6 = v.SecurityConfiguration.unwrap()
+        parts.append("\"SecurityConfiguration\":" + glue_json_str(u6))
+    return glue_json_obj(parts)
+
+# Serialize UpdateCrawlerRequest to a compact JSON object (declaration order).
+def update_crawler_request_to_json(UpdateCrawlerRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    if v.Role.is_some():
+        auto u0 = v.Role.unwrap()
+        parts.append("\"Role\":" + glue_json_str(u0))
+    if v.DatabaseName.is_some():
+        auto u1 = v.DatabaseName.unwrap()
+        parts.append("\"DatabaseName\":" + glue_json_str(u1))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"Description\":" + glue_json_str(u2))
+    if v.Targets.is_some():
+        auto u3 = v.Targets.unwrap()
+        parts.append("\"Targets\":" + crawler_targets_to_json(u3))
+    if v.Schedule.is_some():
+        auto u4 = v.Schedule.unwrap()
+        parts.append("\"Schedule\":" + glue_json_str(u4))
+    if v.Classifiers.is_some():
+        auto u5 = v.Classifiers.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(glue_json_str(x6))
+        parts.append("\"Classifiers\":" + glue_json_arr(e6))
+    if v.TablePrefix.is_some():
+        auto u7 = v.TablePrefix.unwrap()
+        parts.append("\"TablePrefix\":" + glue_json_str(u7))
+    if v.SchemaChangePolicy.is_some():
+        auto u8 = v.SchemaChangePolicy.unwrap()
+        parts.append("\"SchemaChangePolicy\":" + u8.to_json())
+    if v.RecrawlPolicy.is_some():
+        auto u9 = v.RecrawlPolicy.unwrap()
+        parts.append("\"RecrawlPolicy\":" + u9.to_json())
+    if v.LineageConfiguration.is_some():
+        auto u10 = v.LineageConfiguration.unwrap()
+        parts.append("\"LineageConfiguration\":" + u10.to_json())
+    if v.LakeFormationConfiguration.is_some():
+        auto u11 = v.LakeFormationConfiguration.unwrap()
+        parts.append("\"LakeFormationConfiguration\":" + u11.to_json())
+    if v.Configuration.is_some():
+        auto u12 = v.Configuration.unwrap()
+        parts.append("\"Configuration\":" + glue_json_str(u12))
+    if v.CrawlerSecurityConfiguration.is_some():
+        auto u13 = v.CrawlerSecurityConfiguration.unwrap()
+        parts.append("\"CrawlerSecurityConfiguration\":" + glue_json_str(u13))
+    if v.CatalogId.is_some():
+        auto u14 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u14))
+    return glue_json_obj(parts)
+
+# Serialize UpdateCsvClassifierRequest to a compact JSON object (declaration order).
+def update_csv_classifier_request_to_json(UpdateCsvClassifierRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    if v.Delimiter.is_some():
+        auto u0 = v.Delimiter.unwrap()
+        parts.append("\"Delimiter\":" + glue_json_str(u0))
+    if v.QuoteSymbol.is_some():
+        auto u1 = v.QuoteSymbol.unwrap()
+        parts.append("\"QuoteSymbol\":" + glue_json_str(u1))
+    if v.ContainsHeader.is_some():
+        auto u2 = v.ContainsHeader.unwrap()
+        parts.append("\"ContainsHeader\":" + u2.to_json())
+    if v.Header.is_some():
+        auto u3 = v.Header.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(glue_json_str(x4))
+        parts.append("\"Header\":" + glue_json_arr(e4))
+    if v.DisableValueTrimming.is_some():
+        auto u5 = v.DisableValueTrimming.unwrap()
+        parts.append("\"DisableValueTrimming\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.AllowSingleColumn.is_some():
+        auto u6 = v.AllowSingleColumn.unwrap()
+        parts.append("\"AllowSingleColumn\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.CustomDatatypeConfigured.is_some():
+        auto u7 = v.CustomDatatypeConfigured.unwrap()
+        parts.append("\"CustomDatatypeConfigured\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.CustomDatatypes.is_some():
+        auto u8 = v.CustomDatatypes.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(glue_json_str(x9))
+        parts.append("\"CustomDatatypes\":" + glue_json_arr(e9))
+    if v.Serde.is_some():
+        auto u10 = v.Serde.unwrap()
+        parts.append("\"Serde\":" + u10.to_json())
+    return glue_json_obj(parts)
+
+# Serialize UpdateDatabaseRequest to a compact JSON object (declaration order).
+def update_database_request_to_json(UpdateDatabaseRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    parts.append("\"DatabaseInput\":" + database_input_to_json(v.DatabaseInput))
+    return glue_json_obj(parts)
+
+# Serialize UpdateDevEndpointRequest to a compact JSON object (declaration order).
+def update_dev_endpoint_request_to_json(UpdateDevEndpointRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"EndpointName\":" + glue_json_str(v.EndpointName))
+    if v.PublicKey.is_some():
+        auto u0 = v.PublicKey.unwrap()
+        parts.append("\"PublicKey\":" + glue_json_str(u0))
+    if v.AddPublicKeys.is_some():
+        auto u1 = v.AddPublicKeys.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(glue_json_str(x2))
+        parts.append("\"AddPublicKeys\":" + glue_json_arr(e2))
+    if v.DeletePublicKeys.is_some():
+        auto u3 = v.DeletePublicKeys.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(glue_json_str(x4))
+        parts.append("\"DeletePublicKeys\":" + glue_json_arr(e4))
+    if v.CustomLibraries.is_some():
+        auto u5 = v.CustomLibraries.unwrap()
+        parts.append("\"CustomLibraries\":" + u5.to_json())
+    if v.UpdateEtlLibraries.is_some():
+        auto u6 = v.UpdateEtlLibraries.unwrap()
+        parts.append("\"UpdateEtlLibraries\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.DeleteArguments.is_some():
+        auto u7 = v.DeleteArguments.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(glue_json_str(x8))
+        parts.append("\"DeleteArguments\":" + glue_json_arr(e8))
+    if v.AddArguments.is_some():
+        auto u9 = v.AddArguments.unwrap()
+        list[str] m10 = []
+        for k10 in sorted(u9.keys()):
+            m10.append(glue_json_str(k10) + ":" + glue_json_str(u9[k10]))
+        parts.append("\"AddArguments\":" + glue_json_obj(m10))
+    return glue_json_obj(parts)
+
+# Serialize UpdateGlueIdentityCenterConfigurationRequest to a compact JSON object (declaration order).
+def update_glue_identity_center_configuration_request_to_json(UpdateGlueIdentityCenterConfigurationRequest v) -> str:
+    list[str] parts = []
+    if v.Scopes.is_some():
+        auto u0 = v.Scopes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(glue_json_str(x1))
+        parts.append("\"Scopes\":" + glue_json_arr(e1))
+    if v.UserBackgroundSessionsEnabled.is_some():
+        auto u2 = v.UserBackgroundSessionsEnabled.unwrap()
+        parts.append("\"UserBackgroundSessionsEnabled\":" + json.dumps(JsonValue.Bool(u2)))
+    return glue_json_obj(parts)
+
+# Serialize UpdateIcebergInput to a compact JSON object (declaration order).
+def update_iceberg_input_to_json(UpdateIcebergInput v) -> str:
+    list[str] parts = []
+    parts.append("\"UpdateIcebergTableInput\":" + update_iceberg_table_input_to_json(v.UpdateIcebergTableInput))
+    return glue_json_obj(parts)
+
+# Serialize UpdateIcebergTableInput to a compact JSON object (declaration order).
+def update_iceberg_table_input_to_json(UpdateIcebergTableInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Updates:
+        e0.append(iceberg_table_update_to_json(x0))
+    parts.append("\"Updates\":" + glue_json_arr(e0))
+    return glue_json_obj(parts)
+
+# Serialize UpdateIntegrationTablePropertiesRequest to a compact JSON object (declaration order).
+def update_integration_table_properties_request_to_json(UpdateIntegrationTablePropertiesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + glue_json_str(v.ResourceArn))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    if v.SourceTableConfig.is_some():
+        auto u0 = v.SourceTableConfig.unwrap()
+        parts.append("\"SourceTableConfig\":" + source_table_config_to_json(u0))
+    if v.TargetTableConfig.is_some():
+        auto u1 = v.TargetTableConfig.unwrap()
+        parts.append("\"TargetTableConfig\":" + target_table_config_to_json(u1))
+    return glue_json_obj(parts)
+
+# Serialize UpdateOpenTableFormatInput to a compact JSON object (declaration order).
+def update_open_table_format_input_to_json(UpdateOpenTableFormatInput v) -> str:
+    list[str] parts = []
+    if v.UpdateIcebergInput.is_some():
+        auto u0 = v.UpdateIcebergInput.unwrap()
+        parts.append("\"UpdateIcebergInput\":" + update_iceberg_input_to_json(u0))
+    return glue_json_obj(parts)
+
+# Serialize UpdatePartitionRequest to a compact JSON object (declaration order).
+def update_partition_request_to_json(UpdatePartitionRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + glue_json_str(v.TableName))
+    list[str] e1 = []
+    for x1 in v.PartitionValueList:
+        e1.append(glue_json_str(x1))
+    parts.append("\"PartitionValueList\":" + glue_json_arr(e1))
+    parts.append("\"PartitionInput\":" + partition_input_to_json(v.PartitionInput))
+    return glue_json_obj(parts)
+
+# Serialize UpdateTableRequest to a compact JSON object (declaration order).
+def update_table_request_to_json(UpdateTableRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    if v.Name.is_some():
+        auto u1 = v.Name.unwrap()
+        parts.append("\"Name\":" + glue_json_str(u1))
+    if v.TableInput.is_some():
+        auto u2 = v.TableInput.unwrap()
+        parts.append("\"TableInput\":" + table_input_to_json(u2))
+    if v.SkipArchive.is_some():
+        auto u3 = v.SkipArchive.unwrap()
+        parts.append("\"SkipArchive\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.TransactionId.is_some():
+        auto u4 = v.TransactionId.unwrap()
+        parts.append("\"TransactionId\":" + glue_json_str(u4))
+    if v.VersionId.is_some():
+        auto u5 = v.VersionId.unwrap()
+        parts.append("\"VersionId\":" + glue_json_str(u5))
+    if v.ViewUpdateAction.is_some():
+        auto u6 = v.ViewUpdateAction.unwrap()
+        parts.append("\"ViewUpdateAction\":" + u6.to_json())
+    if v.Force.is_some():
+        auto u7 = v.Force.unwrap()
+        parts.append("\"Force\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.UpdateOpenTableFormatInput.is_some():
+        auto u8 = v.UpdateOpenTableFormatInput.unwrap()
+        parts.append("\"UpdateOpenTableFormatInput\":" + update_open_table_format_input_to_json(u8))
+    return glue_json_obj(parts)
+
+# Serialize UpdateTriggerRequest to a compact JSON object (declaration order).
+def update_trigger_request_to_json(UpdateTriggerRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    parts.append("\"TriggerUpdate\":" + trigger_update_to_json(v.TriggerUpdate))
+    return glue_json_obj(parts)
+
+# Serialize UpdateUsageProfileRequest to a compact JSON object (declaration order).
+def update_usage_profile_request_to_json(UpdateUsageProfileRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + glue_json_str(u0))
+    parts.append("\"Configuration\":" + profile_configuration_to_json(v.Configuration))
+    return glue_json_obj(parts)
+
+# Serialize UpdateUserDefinedFunctionRequest to a compact JSON object (declaration order).
+def update_user_defined_function_request_to_json(UpdateUserDefinedFunctionRequest v) -> str:
+    list[str] parts = []
+    if v.CatalogId.is_some():
+        auto u0 = v.CatalogId.unwrap()
+        parts.append("\"CatalogId\":" + glue_json_str(u0))
+    parts.append("\"DatabaseName\":" + glue_json_str(v.DatabaseName))
+    parts.append("\"FunctionName\":" + glue_json_str(v.FunctionName))
+    parts.append("\"FunctionInput\":" + user_defined_function_input_to_json(v.FunctionInput))
+    return glue_json_obj(parts)
+
+# Serialize UpdateWorkflowRequest to a compact JSON object (declaration order).
+def update_workflow_request_to_json(UpdateWorkflowRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + glue_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + glue_json_str(u0))
+    if v.DefaultRunProperties.is_some():
+        auto u1 = v.DefaultRunProperties.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(glue_json_str(k2) + ":" + glue_json_str(u1[k2]))
+        parts.append("\"DefaultRunProperties\":" + glue_json_obj(m2))
+    if v.MaxConcurrentRuns.is_some():
+        auto u3 = v.MaxConcurrentRuns.unwrap()
+        parts.append("\"MaxConcurrentRuns\":" + str(u3))
+    return glue_json_obj(parts)
+
+# Serialize UserDefinedFunctionInput to a compact JSON object (declaration order).
+def user_defined_function_input_to_json(UserDefinedFunctionInput v) -> str:
+    list[str] parts = []
+    if v.FunctionName.is_some():
+        auto u0 = v.FunctionName.unwrap()
+        parts.append("\"FunctionName\":" + glue_json_str(u0))
+    if v.ClassName.is_some():
+        auto u1 = v.ClassName.unwrap()
+        parts.append("\"ClassName\":" + glue_json_str(u1))
+    if v.OwnerName.is_some():
+        auto u2 = v.OwnerName.unwrap()
+        parts.append("\"OwnerName\":" + glue_json_str(u2))
+    if v.FunctionType.is_some():
+        auto u3 = v.FunctionType.unwrap()
+        parts.append("\"FunctionType\":" + u3.to_json())
+    if v.OwnerType.is_some():
+        auto u4 = v.OwnerType.unwrap()
+        parts.append("\"OwnerType\":" + u4.to_json())
+    if v.ResourceUris.is_some():
+        auto u5 = v.ResourceUris.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"ResourceUris\":" + glue_json_arr(e6))
+    return glue_json_obj(parts)
+
+# Serialize ViewDefinitionInput to a compact JSON object (declaration order).
+def view_definition_input_to_json(ViewDefinitionInput v) -> str:
+    list[str] parts = []
+    if v.IsProtected.is_some():
+        auto u0 = v.IsProtected.unwrap()
+        parts.append("\"IsProtected\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.IsManaged.is_some():
+        auto u1 = v.IsManaged.unwrap()
+        parts.append("\"IsManaged\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.Definer.is_some():
+        auto u2 = v.Definer.unwrap()
+        parts.append("\"Definer\":" + glue_json_str(u2))
+    if v.Representations.is_some():
+        auto u3 = v.Representations.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Representations\":" + glue_json_arr(e4))
+    if v.ViewVersionId.is_some():
+        auto u5 = v.ViewVersionId.unwrap()
+        parts.append("\"ViewVersionId\":" + str(u5))
+    if v.ViewVersionToken.is_some():
+        auto u6 = v.ViewVersionToken.unwrap()
+        parts.append("\"ViewVersionToken\":" + glue_json_str(u6))
+    if v.RefreshSeconds.is_some():
+        auto u7 = v.RefreshSeconds.unwrap()
+        parts.append("\"RefreshSeconds\":" + str(u7))
+    if v.LastRefreshType.is_some():
+        auto u8 = v.LastRefreshType.unwrap()
+        parts.append("\"LastRefreshType\":" + u8.to_json())
+    if v.SubObjects.is_some():
+        auto u9 = v.SubObjects.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(glue_json_str(x10))
+        parts.append("\"SubObjects\":" + glue_json_arr(e10))
+    if v.SubObjectVersionIds.is_some():
+        auto u11 = v.SubObjectVersionIds.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(str(x12))
+        parts.append("\"SubObjectVersionIds\":" + glue_json_arr(e12))
+    if v.SubObjectsStatistics.is_some():
+        auto u13 = v.SubObjectsStatistics.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(x14.to_json())
+        parts.append("\"SubObjectsStatistics\":" + glue_json_arr(e14))
+    if v.SparkPipelineInfo.is_some():
+        auto u15 = v.SparkPipelineInfo.unwrap()
+        list[str] m16 = []
+        for k16 in sorted(u15.keys()):
+            m16.append(glue_json_str(k16) + ":" + glue_json_str(u15[k16]))
+        parts.append("\"SparkPipelineInfo\":" + glue_json_obj(m16))
+    return glue_json_obj(parts)
 
 # A bound Glue client: credentials + region, threaded into every operation.
 struct GlueClient:
     core.Credentials creds
     str region
+
+    # AssociateGlossaryTerms
+    # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, ThrottlingException
+    def associate_glossary_terms(self, AssociateGlossaryTermsRequest input) -> str:
+        auto body = associate_glossary_terms_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "AssociateGlossaryTerms", body)
+
+    # BatchCreatePartition
+    # errors: AlreadyExistsException, ConcurrentModificationException, EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def batch_create_partition(self, BatchCreatePartitionRequest input) -> str:
+        auto body = batch_create_partition_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "BatchCreatePartition", body)
+
+    # BatchDeleteConnection
+    # errors: InternalServiceException, OperationTimeoutException
+    def batch_delete_connection(self, BatchDeleteConnectionRequest input) -> str:
+        auto body = batch_delete_connection_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "BatchDeleteConnection", body)
+
+    # BatchDeletePartition
+    # errors: ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def batch_delete_partition(self, BatchDeletePartitionRequest input) -> str:
+        auto body = batch_delete_partition_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "BatchDeletePartition", body)
+
+    # BatchDeleteTable
+    # errors: ConcurrentModificationException, EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNotReadyException
+    def batch_delete_table(self, BatchDeleteTableRequest input) -> str:
+        auto body = batch_delete_table_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "BatchDeleteTable", body)
+
+    # BatchDeleteTableVersion
+    # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def batch_delete_table_version(self, BatchDeleteTableVersionRequest input) -> str:
+        auto body = batch_delete_table_version_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "BatchDeleteTableVersion", body)
+
+    # BatchGetBlueprints
+    # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
+    def batch_get_blueprints(self, BatchGetBlueprintsRequest input) -> str:
+        auto body = batch_get_blueprints_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "BatchGetBlueprints", body)
+
+    # BatchGetCrawlers
+    # errors: InvalidInputException, OperationTimeoutException
+    def batch_get_crawlers(self, BatchGetCrawlersRequest input) -> str:
+        auto body = batch_get_crawlers_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "BatchGetCrawlers", body)
+
+    # BatchGetCustomEntityTypes
+    # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
+    def batch_get_custom_entity_types(self, BatchGetCustomEntityTypesRequest input) -> str:
+        auto body = batch_get_custom_entity_types_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "BatchGetCustomEntityTypes", body)
+
+    # BatchGetDataQualityResult
+    # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
+    def batch_get_data_quality_result(self, BatchGetDataQualityResultRequest input) -> str:
+        auto body = batch_get_data_quality_result_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "BatchGetDataQualityResult", body)
+
+    # BatchGetDataQualityResultV2
+    # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
+    def batch_get_data_quality_result_v2(self, BatchGetDataQualityResultV2Request input) -> str:
+        auto body = batch_get_data_quality_result_v2_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "BatchGetDataQualityResultV2", body)
+
+    # BatchGetDataQualityRulesetEvaluationRun
+    # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
+    def batch_get_data_quality_ruleset_evaluation_run(self, BatchGetDataQualityRulesetEvaluationRunRequest input) -> str:
+        auto body = batch_get_data_quality_ruleset_evaluation_run_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "BatchGetDataQualityRulesetEvaluationRun", body)
+
+    # BatchGetDevEndpoints
+    # errors: AccessDeniedException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def batch_get_dev_endpoints(self, BatchGetDevEndpointsRequest input) -> str:
+        auto body = batch_get_dev_endpoints_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "BatchGetDevEndpoints", body)
+
+    # BatchGetIterableForms
+    # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, ThrottlingException
+    def batch_get_iterable_forms(self, BatchGetIterableFormsRequest input) -> str:
+        auto body = batch_get_iterable_forms_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "BatchGetIterableForms", body)
+
+    # BatchGetJobs
+    # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
+    def batch_get_jobs(self, BatchGetJobsRequest input) -> str:
+        auto body = batch_get_jobs_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "BatchGetJobs", body)
+
+    # BatchGetPartition
+    # errors: EntityNotFoundException, FederationSourceException, FederationSourceRetryableException, GlueEncryptionException, InternalServiceException, InvalidInputException, InvalidStateException, OperationTimeoutException
+    def batch_get_partition(self, BatchGetPartitionRequest input) -> str:
+        auto body = batch_get_partition_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "BatchGetPartition", body)
+
+    # BatchGetTableOptimizer
+    # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, ThrottlingException
+    def batch_get_table_optimizer(self, BatchGetTableOptimizerRequest input) -> str:
+        auto body = batch_get_table_optimizer_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "BatchGetTableOptimizer", body)
+
+    # BatchGetTriggers
+    # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
+    def batch_get_triggers(self, BatchGetTriggersRequest input) -> str:
+        auto body = batch_get_triggers_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "BatchGetTriggers", body)
+
+    # BatchGetWorkflows
+    # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
+    def batch_get_workflows(self, BatchGetWorkflowsRequest input) -> str:
+        auto body = batch_get_workflows_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "BatchGetWorkflows", body)
+
+    # BatchPutDataQualityStatisticAnnotation
+    # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, ResourceNumberLimitExceededException
+    def batch_put_data_quality_statistic_annotation(self, BatchPutDataQualityStatisticAnnotationRequest input) -> str:
+        auto body = batch_put_data_quality_statistic_annotation_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "BatchPutDataQualityStatisticAnnotation", body)
+
+    # BatchStopJobRun
+    # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
+    def batch_stop_job_run(self, BatchStopJobRunRequest input) -> str:
+        auto body = batch_stop_job_run_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "BatchStopJobRun", body)
+
+    # BatchUpdatePartition
+    # errors: ConcurrentModificationException, EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def batch_update_partition(self, BatchUpdatePartitionRequest input) -> str:
+        auto body = batch_update_partition_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "BatchUpdatePartition", body)
 
     # CancelDataQualityRuleRecommendationRun
     # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
@@ -10089,6 +14864,60 @@ struct GlueClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CheckSchemaVersionValidity", body)
 
+    # CreateBlueprint
+    # errors: AlreadyExistsException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def create_blueprint(self, CreateBlueprintRequest input) -> str:
+        auto body = create_blueprint_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateBlueprint", body)
+
+    # CreateCatalog
+    # errors: AccessDeniedException, AlreadyExistsException, ConcurrentModificationException, EntityNotFoundException, FederatedResourceAlreadyExistsException, FederationSourceException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def create_catalog(self, CreateCatalogRequest input) -> str:
+        auto body = create_catalog_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateCatalog", body)
+
+    # CreateClassifier
+    # errors: AlreadyExistsException, InvalidInputException, OperationTimeoutException
+    def create_classifier(self, CreateClassifierRequest input) -> str:
+        auto body = create_classifier_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateClassifier", body)
+
+    # CreateColumnStatisticsTaskSettings
+    # errors: AccessDeniedException, AlreadyExistsException, ColumnStatisticsTaskRunningException, EntityNotFoundException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def create_column_statistics_task_settings(self, CreateColumnStatisticsTaskSettingsRequest input) -> str:
+        auto body = create_column_statistics_task_settings_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateColumnStatisticsTaskSettings", body)
+
+    # CreateCrawler
+    # errors: AlreadyExistsException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def create_crawler(self, CreateCrawlerRequest input) -> str:
+        auto body = create_crawler_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateCrawler", body)
+
+    # CreateCustomEntityType
+    # errors: AccessDeniedException, AlreadyExistsException, IdempotentParameterMismatchException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def create_custom_entity_type(self, CreateCustomEntityTypeRequest input) -> str:
+        auto body = create_custom_entity_type_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateCustomEntityType", body)
+
+    # CreateDataQualityRuleset
+    # errors: AlreadyExistsException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def create_data_quality_ruleset(self, CreateDataQualityRulesetRequest input) -> str:
+        auto body = create_data_quality_ruleset_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateDataQualityRuleset", body)
+
+    # CreateDatabase
+    # errors: AlreadyExistsException, ConcurrentModificationException, FederatedResourceAlreadyExistsException, FederationSourceException, FederationSourceRetryableException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def create_database(self, CreateDatabaseRequest input) -> str:
+        auto body = create_database_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateDatabase", body)
+
+    # CreateDevEndpoint
+    # errors: AccessDeniedException, AlreadyExistsException, IdempotentParameterMismatchException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException, ValidationException
+    def create_dev_endpoint(self, CreateDevEndpointRequest input) -> str:
+        auto body = create_dev_endpoint_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateDevEndpoint", body)
+
     # CreateGlossary
     # errors: AccessDeniedException, AlreadyExistsException, ConcurrentModificationException, InternalServiceException, InvalidInputException, ThrottlingException
     def create_glossary(self, CreateGlossaryRequest input) -> str:
@@ -10101,11 +14930,113 @@ struct GlueClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateGlossaryTerm", body)
 
+    # CreateGlueIdentityCenterConfiguration
+    # errors: AccessDeniedException, AlreadyExistsException, ConcurrentModificationException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def create_glue_identity_center_configuration(self, CreateGlueIdentityCenterConfigurationRequest input) -> str:
+        auto body = create_glue_identity_center_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateGlueIdentityCenterConfiguration", body)
+
+    # CreateIntegration
+    # errors: AccessDeniedException, ConflictException, EntityNotFoundException, IntegrationConflictOperationFault, IntegrationQuotaExceededFault, InternalServerException, InternalServiceException, InvalidInputException, KMSKeyNotAccessibleFault, ResourceNotFoundException, ResourceNumberLimitExceededException, ValidationException
+    def create_integration(self, CreateIntegrationRequest input) -> str:
+        auto body = create_integration_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateIntegration", body)
+
+    # CreateIntegrationResourceProperty
+    # errors: AccessDeniedException, ConflictException, EntityNotFoundException, InternalServerException, InternalServiceException, InvalidInputException, ResourceNotFoundException, ValidationException
+    def create_integration_resource_property(self, CreateIntegrationResourcePropertyRequest input) -> str:
+        auto body = create_integration_resource_property_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateIntegrationResourceProperty", body)
+
+    # CreateIntegrationTableProperties
+    # errors: AccessDeniedException, EntityNotFoundException, InternalServerException, InternalServiceException, InvalidInputException, ResourceNotFoundException, ValidationException
+    def create_integration_table_properties(self, CreateIntegrationTablePropertiesRequest input) -> str:
+        auto body = create_integration_table_properties_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateIntegrationTableProperties", body)
+
+    # CreateMLTransform
+    # errors: AccessDeniedException, AlreadyExistsException, IdempotentParameterMismatchException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def create_ml_transform(self, CreateMLTransformRequest input) -> str:
+        auto body = create_ml_transform_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateMLTransform", body)
+
+    # CreatePartition
+    # errors: AlreadyExistsException, EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def create_partition(self, CreatePartitionRequest input) -> str:
+        auto body = create_partition_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreatePartition", body)
+
+    # CreatePartitionIndex
+    # errors: AlreadyExistsException, EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def create_partition_index(self, CreatePartitionIndexRequest input) -> str:
+        auto body = create_partition_index_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreatePartitionIndex", body)
+
+    # CreateRegistry
+    # errors: AccessDeniedException, AlreadyExistsException, ConcurrentModificationException, InternalServiceException, InvalidInputException, ResourceNumberLimitExceededException
+    def create_registry(self, CreateRegistryInput input) -> str:
+        auto body = create_registry_input_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateRegistry", body)
+
+    # CreateSchema
+    # errors: AccessDeniedException, AlreadyExistsException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, ResourceNumberLimitExceededException
+    def create_schema(self, CreateSchemaInput input) -> str:
+        auto body = create_schema_input_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateSchema", body)
+
+    # CreateScript
+    # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
+    def create_script(self, CreateScriptRequest input) -> str:
+        auto body = create_script_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateScript", body)
+
+    # CreateSecurityConfiguration
+    # errors: AlreadyExistsException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def create_security_configuration(self, CreateSecurityConfigurationRequest input) -> str:
+        auto body = create_security_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateSecurityConfiguration", body)
+
+    # CreateSession
+    # errors: AccessDeniedException, AlreadyExistsException, IdempotentParameterMismatchException, InternalServiceException, InvalidInputException, OperationNotSupportedException, OperationTimeoutException, ResourceNumberLimitExceededException, ValidationException
+    def create_session(self, CreateSessionRequest input) -> str:
+        auto body = create_session_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateSession", body)
+
+    # CreateTable
+    # errors: AlreadyExistsException, ConcurrentModificationException, EntityNotFoundException, FederationSourceException, FederationSourceRetryableException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNotReadyException, ResourceNumberLimitExceededException
+    def create_table(self, CreateTableRequest input) -> str:
+        auto body = create_table_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateTable", body)
+
     # CreateTableOptimizer
     # errors: AccessDeniedException, AlreadyExistsException, EntityNotFoundException, InternalServiceException, InvalidInputException, ThrottlingException, ValidationException
     def create_table_optimizer(self, CreateTableOptimizerRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateTableOptimizer", body)
+
+    # CreateTrigger
+    # errors: AlreadyExistsException, ConcurrentModificationException, EntityNotFoundException, IdempotentParameterMismatchException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def create_trigger(self, CreateTriggerRequest input) -> str:
+        auto body = create_trigger_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateTrigger", body)
+
+    # CreateUsageProfile
+    # errors: AlreadyExistsException, InternalServiceException, InvalidInputException, OperationNotSupportedException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def create_usage_profile(self, CreateUsageProfileRequest input) -> str:
+        auto body = create_usage_profile_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateUsageProfile", body)
+
+    # CreateUserDefinedFunction
+    # errors: AlreadyExistsException, EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def create_user_defined_function(self, CreateUserDefinedFunctionRequest input) -> str:
+        auto body = create_user_defined_function_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateUserDefinedFunction", body)
+
+    # CreateWorkflow
+    # errors: AlreadyExistsException, ConcurrentModificationException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def create_workflow(self, CreateWorkflowRequest input) -> str:
+        auto body = create_workflow_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "CreateWorkflow", body)
 
     # DeleteAsset
     # errors: AccessDeniedException, ConcurrentModificationException, InternalServiceException, InvalidInputException, ThrottlingException
@@ -10142,6 +15073,12 @@ struct GlueClient:
     def delete_classifier(self, DeleteClassifierRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "DeleteClassifier", body)
+
+    # DeleteColumnStatisticsForPartition
+    # errors: EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def delete_column_statistics_for_partition(self, DeleteColumnStatisticsForPartitionRequest input) -> str:
+        auto body = delete_column_statistics_for_partition_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "DeleteColumnStatisticsForPartition", body)
 
     # DeleteColumnStatisticsForTable
     # errors: EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
@@ -10251,6 +15188,12 @@ struct GlueClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "DeleteMLTransform", body)
 
+    # DeletePartition
+    # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def delete_partition(self, DeletePartitionRequest input) -> str:
+        auto body = delete_partition_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "DeletePartition", body)
+
     # DeletePartitionIndex
     # errors: ConflictException, EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def delete_partition_index(self, DeletePartitionIndexRequest input) -> str:
@@ -10353,6 +15296,18 @@ struct GlueClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "DescribeInboundIntegrations", body)
 
+    # DescribeIntegrations
+    # errors: AccessDeniedException, EntityNotFoundException, IntegrationNotFoundFault, InternalServerException, InternalServiceException, InvalidInputException, ValidationException
+    def describe_integrations(self, DescribeIntegrationsRequest input) -> str:
+        auto body = describe_integrations_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "DescribeIntegrations", body)
+
+    # DisassociateGlossaryTerms
+    # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, ThrottlingException
+    def disassociate_glossary_terms(self, DisassociateGlossaryTermsRequest input) -> str:
+        auto body = disassociate_glossary_terms_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "DisassociateGlossaryTerms", body)
+
     # GetAsset
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, ThrottlingException
     def get_asset(self, GetAssetInput input) -> str:
@@ -10413,6 +15368,18 @@ struct GlueClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetClassifiers", body)
 
+    # GetColumnStatisticsForPartition
+    # errors: EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def get_column_statistics_for_partition(self, GetColumnStatisticsForPartitionRequest input) -> str:
+        auto body = get_column_statistics_for_partition_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetColumnStatisticsForPartition", body)
+
+    # GetColumnStatisticsForTable
+    # errors: EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def get_column_statistics_for_table(self, GetColumnStatisticsForTableRequest input) -> str:
+        auto body = get_column_statistics_for_table_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetColumnStatisticsForTable", body)
+
     # GetColumnStatisticsTaskRun
     # errors: EntityNotFoundException, InvalidInputException, OperationTimeoutException
     def get_column_statistics_task_run(self, GetColumnStatisticsTaskRunRequest input) -> str:
@@ -10437,11 +15404,23 @@ struct GlueClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetConnection", body)
 
+    # GetConnections
+    # errors: EntityNotFoundException, GlueEncryptionException, InvalidInputException, OperationTimeoutException
+    def get_connections(self, GetConnectionsRequest input) -> str:
+        auto body = get_connections_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetConnections", body)
+
     # GetCrawler
     # errors: EntityNotFoundException, OperationTimeoutException
     def get_crawler(self, GetCrawlerRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetCrawler", body)
+
+    # GetCrawlerMetrics
+    # errors: OperationTimeoutException
+    def get_crawler_metrics(self, GetCrawlerMetricsRequest input) -> str:
+        auto body = get_crawler_metrics_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetCrawlerMetrics", body)
 
     # GetCrawlers
     # errors: OperationTimeoutException
@@ -10521,6 +15500,12 @@ struct GlueClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetDatabase", body)
 
+    # GetDatabases
+    # errors: EntityNotFoundException, FederationSourceException, FederationSourceRetryableException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def get_databases(self, GetDatabasesRequest input) -> str:
+        auto body = get_databases_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetDatabases", body)
+
     # GetDataflowGraph
     # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
     def get_dataflow_graph(self, GetDataflowGraphRequest input) -> str:
@@ -10538,6 +15523,12 @@ struct GlueClient:
     def get_dev_endpoints(self, GetDevEndpointsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetDevEndpoints", body)
+
+    # GetEntityRecords
+    # errors: AccessDeniedException, EntityNotFoundException, FederationSourceException, GlueEncryptionException, InvalidInputException, OperationTimeoutException, ValidationException
+    def get_entity_records(self, GetEntityRecordsRequest input) -> str:
+        auto body = get_entity_records_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetEntityRecords", body)
 
     # GetFormType
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, ThrottlingException
@@ -10623,17 +15614,47 @@ struct GlueClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetMLTransform", body)
 
+    # GetMLTransforms
+    # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def get_ml_transforms(self, GetMLTransformsRequest input) -> str:
+        auto body = get_ml_transforms_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetMLTransforms", body)
+
+    # GetMapping
+    # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def get_mapping(self, GetMappingRequest input) -> str:
+        auto body = get_mapping_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetMapping", body)
+
     # GetMaterializedViewRefreshTaskRun
     # errors: AccessDeniedException, EntityNotFoundException, InvalidInputException, OperationTimeoutException
     def get_materialized_view_refresh_task_run(self, GetMaterializedViewRefreshTaskRunRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetMaterializedViewRefreshTaskRun", body)
 
+    # GetPartition
+    # errors: EntityNotFoundException, FederationSourceException, FederationSourceRetryableException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def get_partition(self, GetPartitionRequest input) -> str:
+        auto body = get_partition_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetPartition", body)
+
     # GetPartitionIndexes
     # errors: ConflictException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def get_partition_indexes(self, GetPartitionIndexesRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetPartitionIndexes", body)
+
+    # GetPartitions
+    # errors: EntityNotFoundException, FederationSourceException, FederationSourceRetryableException, GlueEncryptionException, InternalServiceException, InvalidInputException, InvalidStateException, OperationTimeoutException, ResourceNotReadyException
+    def get_partitions(self, GetPartitionsRequest input) -> str:
+        auto body = get_partitions_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetPartitions", body)
+
+    # GetPlan
+    # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
+    def get_plan(self, GetPlanRequest input) -> str:
+        auto body = get_plan_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetPlan", body)
 
     # GetRegistry
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException
@@ -10719,11 +15740,35 @@ struct GlueClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetSystemLogsForSession", body)
 
+    # GetTable
+    # errors: EntityNotFoundException, FederationSourceException, FederationSourceRetryableException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNotReadyException
+    def get_table(self, GetTableRequest input) -> str:
+        auto body = get_table_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetTable", body)
+
     # GetTableOptimizer
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, ThrottlingException
     def get_table_optimizer(self, GetTableOptimizerRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetTableOptimizer", body)
+
+    # GetTableVersion
+    # errors: EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def get_table_version(self, GetTableVersionRequest input) -> str:
+        auto body = get_table_version_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetTableVersion", body)
+
+    # GetTableVersions
+    # errors: EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def get_table_versions(self, GetTableVersionsRequest input) -> str:
+        auto body = get_table_versions_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetTableVersions", body)
+
+    # GetTables
+    # errors: EntityNotFoundException, FederationSourceException, FederationSourceRetryableException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def get_tables(self, GetTablesRequest input) -> str:
+        auto body = get_tables_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetTables", body)
 
     # GetTags
     # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
@@ -10742,6 +15787,24 @@ struct GlueClient:
     def get_triggers(self, GetTriggersRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetTriggers", body)
+
+    # GetUnfilteredPartitionMetadata
+    # errors: EntityNotFoundException, FederationSourceException, FederationSourceRetryableException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException, PermissionTypeMismatchException
+    def get_unfiltered_partition_metadata(self, GetUnfilteredPartitionMetadataRequest input) -> str:
+        auto body = get_unfiltered_partition_metadata_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetUnfilteredPartitionMetadata", body)
+
+    # GetUnfilteredPartitionsMetadata
+    # errors: EntityNotFoundException, FederationSourceException, FederationSourceRetryableException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException, PermissionTypeMismatchException
+    def get_unfiltered_partitions_metadata(self, GetUnfilteredPartitionsMetadataRequest input) -> str:
+        auto body = get_unfiltered_partitions_metadata_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetUnfilteredPartitionsMetadata", body)
+
+    # GetUnfilteredTableMetadata
+    # errors: EntityNotFoundException, FederationSourceException, FederationSourceRetryableException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException, PermissionTypeMismatchException
+    def get_unfiltered_table_metadata(self, GetUnfilteredTableMetadataRequest input) -> str:
+        auto body = get_unfiltered_table_metadata_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetUnfilteredTableMetadata", body)
 
     # GetUsageProfile
     # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationNotSupportedException, OperationTimeoutException
@@ -10797,6 +15860,12 @@ struct GlueClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListAssetTypes", body)
 
+    # ListBlueprints
+    # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
+    def list_blueprints(self, ListBlueprintsRequest input) -> str:
+        auto body = list_blueprints_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListBlueprints", body)
+
     # ListColumnStatisticsTaskRuns
     # errors: OperationTimeoutException
     def list_column_statistics_task_runs(self, ListColumnStatisticsTaskRunsRequest input) -> str:
@@ -10809,6 +15878,54 @@ struct GlueClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListConnectionTypes", body)
 
+    # ListCrawlers
+    # errors: OperationTimeoutException
+    def list_crawlers(self, ListCrawlersRequest input) -> str:
+        auto body = list_crawlers_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListCrawlers", body)
+
+    # ListCrawls
+    # errors: EntityNotFoundException, InvalidInputException, OperationTimeoutException
+    def list_crawls(self, ListCrawlsRequest input) -> str:
+        auto body = list_crawls_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListCrawls", body)
+
+    # ListCustomEntityTypes
+    # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
+    def list_custom_entity_types(self, ListCustomEntityTypesRequest input) -> str:
+        auto body = list_custom_entity_types_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListCustomEntityTypes", body)
+
+    # ListDataQualityResults
+    # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
+    def list_data_quality_results(self, ListDataQualityResultsRequest input) -> str:
+        auto body = list_data_quality_results_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListDataQualityResults", body)
+
+    # ListDataQualityResultsV2
+    # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
+    def list_data_quality_results_v2(self, ListDataQualityResultsV2Request input) -> str:
+        auto body = list_data_quality_results_v2_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListDataQualityResultsV2", body)
+
+    # ListDataQualityRuleRecommendationRuns
+    # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
+    def list_data_quality_rule_recommendation_runs(self, ListDataQualityRuleRecommendationRunsRequest input) -> str:
+        auto body = list_data_quality_rule_recommendation_runs_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListDataQualityRuleRecommendationRuns", body)
+
+    # ListDataQualityRulesetEvaluationRuns
+    # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
+    def list_data_quality_ruleset_evaluation_runs(self, ListDataQualityRulesetEvaluationRunsRequest input) -> str:
+        auto body = list_data_quality_ruleset_evaluation_runs_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListDataQualityRulesetEvaluationRuns", body)
+
+    # ListDataQualityRulesets
+    # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def list_data_quality_rulesets(self, ListDataQualityRulesetsRequest input) -> str:
+        auto body = list_data_quality_rulesets_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListDataQualityRulesets", body)
+
     # ListDataQualityStatisticAnnotations
     # errors: InternalServiceException, InvalidInputException
     def list_data_quality_statistic_annotations(self, ListDataQualityStatisticAnnotationsRequest input) -> str:
@@ -10820,6 +15937,12 @@ struct GlueClient:
     def list_data_quality_statistics(self, ListDataQualityStatisticsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListDataQualityStatistics", body)
+
+    # ListDevEndpoints
+    # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def list_dev_endpoints(self, ListDevEndpointsRequest input) -> str:
+        auto body = list_dev_endpoints_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListDevEndpoints", body)
 
     # ListEntities
     # errors: AccessDeniedException, EntityNotFoundException, FederationSourceException, GlueEncryptionException, InvalidInputException, OperationTimeoutException, ValidationException
@@ -10845,11 +15968,35 @@ struct GlueClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListGlossaryTerms", body)
 
+    # ListIntegrationResourceProperties
+    # errors: AccessDeniedException, EntityNotFoundException, InternalServerException, InternalServiceException, InvalidInputException, ResourceNotFoundException, ValidationException
+    def list_integration_resource_properties(self, ListIntegrationResourcePropertiesRequest input) -> str:
+        auto body = list_integration_resource_properties_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListIntegrationResourceProperties", body)
+
+    # ListIntegrationTableProperties
+    # errors: AccessDeniedException, EntityNotFoundException, InternalServerException, InternalServiceException, InvalidInputException, ResourceNotFoundException, ValidationException
+    def list_integration_table_properties(self, ListIntegrationTablePropertiesRequest input) -> str:
+        auto body = list_integration_table_properties_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListIntegrationTableProperties", body)
+
     # ListIterableForms
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, ThrottlingException
     def list_iterable_forms(self, ListIterableFormsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListIterableForms", body)
+
+    # ListJobs
+    # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def list_jobs(self, ListJobsRequest input) -> str:
+        auto body = list_jobs_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListJobs", body)
+
+    # ListMLTransforms
+    # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def list_ml_transforms(self, ListMLTransformsRequest input) -> str:
+        auto body = list_ml_transforms_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListMLTransforms", body)
 
     # ListMaterializedViewRefreshTaskRuns
     # errors: AccessDeniedException, InvalidInputException, OperationTimeoutException
@@ -10875,6 +16022,12 @@ struct GlueClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListSchemas", body)
 
+    # ListSessions
+    # errors: AccessDeniedException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def list_sessions(self, ListSessionsRequest input) -> str:
+        auto body = list_sessions_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListSessions", body)
+
     # ListStatements
     # errors: AccessDeniedException, EntityNotFoundException, IllegalSessionStateException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def list_statements(self, ListStatementsRequest input) -> str:
@@ -10887,6 +16040,12 @@ struct GlueClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListTableOptimizerRuns", body)
 
+    # ListTriggers
+    # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def list_triggers(self, ListTriggersRequest input) -> str:
+        auto body = list_triggers_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListTriggers", body)
+
     # ListUsageProfiles
     # errors: InternalServiceException, InvalidInputException, OperationNotSupportedException, OperationTimeoutException
     def list_usage_profiles(self, ListUsageProfilesRequest input) -> str:
@@ -10898,6 +16057,30 @@ struct GlueClient:
     def list_workflows(self, ListWorkflowsRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListWorkflows", body)
+
+    # ModifyIntegration
+    # errors: AccessDeniedException, ConflictException, EntityNotFoundException, IntegrationConflictOperationFault, IntegrationNotFoundFault, InternalServerException, InternalServiceException, InvalidInputException, InvalidIntegrationStateFault, InvalidStateException, ValidationException
+    def modify_integration(self, ModifyIntegrationRequest input) -> str:
+        auto body = modify_integration_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ModifyIntegration", body)
+
+    # PublishDataQualityResultV2
+    # errors: IdempotentParameterMismatchException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def publish_data_quality_result_v2(self, PublishDataQualityResultV2Request input) -> str:
+        auto body = publish_data_quality_result_v2_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "PublishDataQualityResultV2", body)
+
+    # PutAsset
+    # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, ThrottlingException
+    def put_asset(self, PutAssetRequest input) -> str:
+        auto body = put_asset_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "PutAsset", body)
+
+    # PutAssetType
+    # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, ThrottlingException
+    def put_asset_type(self, PutAssetTypeRequest input) -> str:
+        auto body = put_asset_type_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "PutAssetType", body)
 
     # PutAttachment
     # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, ThrottlingException
@@ -10941,6 +16124,24 @@ struct GlueClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "PutSchemaVersionMetadata", body)
 
+    # PutWorkflowRunProperties
+    # errors: AlreadyExistsException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def put_workflow_run_properties(self, PutWorkflowRunPropertiesRequest input) -> str:
+        auto body = put_workflow_run_properties_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "PutWorkflowRunProperties", body)
+
+    # QuerySchemaVersionMetadata
+    # errors: AccessDeniedException, EntityNotFoundException, InvalidInputException
+    def query_schema_version_metadata(self, QuerySchemaVersionMetadataInput input) -> str:
+        auto body = query_schema_version_metadata_input_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "QuerySchemaVersionMetadata", body)
+
+    # RegisterConnectionType
+    # errors: AccessDeniedException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException, ValidationException
+    def register_connection_type(self, RegisterConnectionTypeRequest input) -> str:
+        auto body = register_connection_type_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "RegisterConnectionType", body)
+
     # RegisterSchemaVersion
     # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, ResourceNumberLimitExceededException
     def register_schema_version(self, RegisterSchemaVersionInput input) -> str:
@@ -10959,17 +16160,41 @@ struct GlueClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ResetJobBookmark", body)
 
+    # ResumeWorkflowRun
+    # errors: ConcurrentRunsExceededException, EntityNotFoundException, IllegalWorkflowStateException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def resume_workflow_run(self, ResumeWorkflowRunRequest input) -> str:
+        auto body = resume_workflow_run_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ResumeWorkflowRun", body)
+
     # RunStatement
     # errors: AccessDeniedException, EntityNotFoundException, IllegalSessionStateException, InternalServiceException, InvalidInputException, OperationNotSupportedException, OperationTimeoutException, ResourceNumberLimitExceededException, SessionBusyException, ValidationException
     def run_statement(self, RunStatementRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "RunStatement", body)
 
+    # SearchAssets
+    # errors: AccessDeniedException, InternalServiceException, InvalidInputException, ThrottlingException
+    def search_assets(self, SearchAssetsInput input) -> str:
+        auto body = search_assets_input_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "SearchAssets", body)
+
+    # SearchTables
+    # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
+    def search_tables(self, SearchTablesRequest input) -> str:
+        auto body = search_tables_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "SearchTables", body)
+
     # StartBlueprintRun
     # errors: EntityNotFoundException, IllegalBlueprintStateException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
     def start_blueprint_run(self, StartBlueprintRunRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "StartBlueprintRun", body)
+
+    # StartColumnStatisticsTaskRun
+    # errors: AccessDeniedException, ColumnStatisticsTaskRunningException, EntityNotFoundException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def start_column_statistics_task_run(self, StartColumnStatisticsTaskRunRequest input) -> str:
+        auto body = start_column_statistics_task_run_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "StartColumnStatisticsTaskRun", body)
 
     # StartColumnStatisticsTaskRunSchedule
     # errors: AccessDeniedException, EntityNotFoundException, InvalidInputException, OperationTimeoutException
@@ -10989,6 +16214,18 @@ struct GlueClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "StartCrawlerSchedule", body)
 
+    # StartDataQualityRuleRecommendationRun
+    # errors: ConflictException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def start_data_quality_rule_recommendation_run(self, StartDataQualityRuleRecommendationRunRequest input) -> str:
+        auto body = start_data_quality_rule_recommendation_run_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "StartDataQualityRuleRecommendationRun", body)
+
+    # StartDataQualityRulesetEvaluationRun
+    # errors: ConflictException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def start_data_quality_ruleset_evaluation_run(self, StartDataQualityRulesetEvaluationRunRequest input) -> str:
+        auto body = start_data_quality_ruleset_evaluation_run_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "StartDataQualityRulesetEvaluationRun", body)
+
     # StartExportLabelsTaskRun
     # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def start_export_labels_task_run(self, StartExportLabelsTaskRunRequest input) -> str:
@@ -11000,6 +16237,12 @@ struct GlueClient:
     def start_import_labels_task_run(self, StartImportLabelsTaskRunRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "StartImportLabelsTaskRun", body)
+
+    # StartJobRun
+    # errors: ConcurrentRunsExceededException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def start_job_run(self, StartJobRunRequest input) -> str:
+        auto body = start_job_run_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "StartJobRun", body)
 
     # StartMLEvaluationTaskRun
     # errors: ConcurrentRunsExceededException, EntityNotFoundException, InternalServiceException, InvalidInputException, MLTransformNotReadyException, OperationTimeoutException
@@ -11024,6 +16267,12 @@ struct GlueClient:
     def start_trigger(self, StartTriggerRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "StartTrigger", body)
+
+    # StartWorkflowRun
+    # errors: ConcurrentRunsExceededException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
+    def start_workflow_run(self, StartWorkflowRunRequest input) -> str:
+        auto body = start_workflow_run_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "StartWorkflowRun", body)
 
     # StopColumnStatisticsTaskRun
     # errors: ColumnStatisticsTaskNotRunningException, ColumnStatisticsTaskStoppingException, EntityNotFoundException, OperationTimeoutException
@@ -11073,6 +16322,18 @@ struct GlueClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "StopWorkflowRun", body)
 
+    # TagResource
+    # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UntagResource", body)
+
     # UpdateAsset
     # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, ThrottlingException
     def update_asset(self, UpdateAssetRequest input) -> str:
@@ -11084,6 +16345,42 @@ struct GlueClient:
     def update_blueprint(self, UpdateBlueprintRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdateBlueprint", body)
+
+    # UpdateCatalog
+    # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, FederationSourceException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def update_catalog(self, UpdateCatalogRequest input) -> str:
+        auto body = update_catalog_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdateCatalog", body)
+
+    # UpdateClassifier
+    # errors: EntityNotFoundException, InvalidInputException, OperationTimeoutException, VersionMismatchException
+    def update_classifier(self, UpdateClassifierRequest input) -> str:
+        auto body = update_classifier_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdateClassifier", body)
+
+    # UpdateColumnStatisticsForPartition
+    # errors: EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def update_column_statistics_for_partition(self, UpdateColumnStatisticsForPartitionRequest input) -> str:
+        auto body = update_column_statistics_for_partition_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdateColumnStatisticsForPartition", body)
+
+    # UpdateColumnStatisticsForTable
+    # errors: EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def update_column_statistics_for_table(self, UpdateColumnStatisticsForTableRequest input) -> str:
+        auto body = update_column_statistics_for_table_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdateColumnStatisticsForTable", body)
+
+    # UpdateColumnStatisticsTaskSettings
+    # errors: AccessDeniedException, EntityNotFoundException, InvalidInputException, OperationTimeoutException, VersionMismatchException
+    def update_column_statistics_task_settings(self, UpdateColumnStatisticsTaskSettingsRequest input) -> str:
+        auto body = update_column_statistics_task_settings_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdateColumnStatisticsTaskSettings", body)
+
+    # UpdateCrawler
+    # errors: CrawlerRunningException, EntityNotFoundException, InvalidInputException, OperationTimeoutException, VersionMismatchException
+    def update_crawler(self, UpdateCrawlerRequest input) -> str:
+        auto body = update_crawler_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdateCrawler", body)
 
     # UpdateCrawlerSchedule
     # errors: EntityNotFoundException, InvalidInputException, OperationTimeoutException, SchedulerTransitioningException, VersionMismatchException
@@ -11097,6 +16394,18 @@ struct GlueClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdateDataQualityRuleset", body)
 
+    # UpdateDatabase
+    # errors: AlreadyExistsException, ConcurrentModificationException, EntityNotFoundException, FederationSourceException, FederationSourceRetryableException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def update_database(self, UpdateDatabaseRequest input) -> str:
+        auto body = update_database_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdateDatabase", body)
+
+    # UpdateDevEndpoint
+    # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ValidationException
+    def update_dev_endpoint(self, UpdateDevEndpointRequest input) -> str:
+        auto body = update_dev_endpoint_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdateDevEndpoint", body)
+
     # UpdateGlossary
     # errors: AccessDeniedException, AlreadyExistsException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, ThrottlingException
     def update_glossary(self, UpdateGlossaryRequest input) -> str:
@@ -11109,11 +16418,23 @@ struct GlueClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdateGlossaryTerm", body)
 
+    # UpdateGlueIdentityCenterConfiguration
+    # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def update_glue_identity_center_configuration(self, UpdateGlueIdentityCenterConfigurationRequest input) -> str:
+        auto body = update_glue_identity_center_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdateGlueIdentityCenterConfiguration", body)
+
     # UpdateIntegrationResourceProperty
     # errors: AccessDeniedException, EntityNotFoundException, InternalServerException, InternalServiceException, InvalidInputException, ResourceNotFoundException, ValidationException
     def update_integration_resource_property(self, UpdateIntegrationResourcePropertyRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdateIntegrationResourceProperty", body)
+
+    # UpdateIntegrationTableProperties
+    # errors: AccessDeniedException, EntityNotFoundException, InternalServerException, InternalServiceException, InvalidInputException, ResourceNotFoundException, ValidationException
+    def update_integration_table_properties(self, UpdateIntegrationTablePropertiesRequest input) -> str:
+        auto body = update_integration_table_properties_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdateIntegrationTableProperties", body)
 
     # UpdateJobFromSourceControl
     # errors: AccessDeniedException, AlreadyExistsException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ValidationException
@@ -11126,6 +16447,12 @@ struct GlueClient:
     def update_ml_transform(self, UpdateMLTransformRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdateMLTransform", body)
+
+    # UpdatePartition
+    # errors: EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def update_partition(self, UpdatePartitionRequest input) -> str:
+        auto body = update_partition_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdatePartition", body)
 
     # UpdateRegistry
     # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException
@@ -11145,11 +16472,41 @@ struct GlueClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdateSourceControlFromJob", body)
 
+    # UpdateTable
+    # errors: AlreadyExistsException, ConcurrentModificationException, EntityNotFoundException, FederationSourceException, FederationSourceRetryableException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNotReadyException, ResourceNumberLimitExceededException
+    def update_table(self, UpdateTableRequest input) -> str:
+        auto body = update_table_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdateTable", body)
+
     # UpdateTableOptimizer
     # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, ThrottlingException, ValidationException
     def update_table_optimizer(self, UpdateTableOptimizerRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdateTableOptimizer", body)
+
+    # UpdateTrigger
+    # errors: ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def update_trigger(self, UpdateTriggerRequest input) -> str:
+        auto body = update_trigger_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdateTrigger", body)
+
+    # UpdateUsageProfile
+    # errors: ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationNotSupportedException, OperationTimeoutException
+    def update_usage_profile(self, UpdateUsageProfileRequest input) -> str:
+        auto body = update_usage_profile_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdateUsageProfile", body)
+
+    # UpdateUserDefinedFunction
+    # errors: EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def update_user_defined_function(self, UpdateUserDefinedFunctionRequest input) -> str:
+        auto body = update_user_defined_function_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdateUserDefinedFunction", body)
+
+    # UpdateWorkflow
+    # errors: ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
+    def update_workflow(self, UpdateWorkflowRequest input) -> str:
+        auto body = update_workflow_request_to_json(input)
+        return awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "UpdateWorkflow", body)
 
     # Paginator for DescribeEntity — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: Fields).
@@ -11179,6 +16536,34 @@ struct GlueClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for GetConnections — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ConnectionList).
+    def paginate_get_connections(self, GetConnectionsRequest input):
+        auto host = endpoints.regional_host(glue_protocol().service, self.region)
+        while True:
+            auto body = get_connections_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetConnections", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetCrawlerMetrics — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: CrawlerMetricsList).
+    def paginate_get_crawler_metrics(self, GetCrawlerMetricsRequest input):
+        auto host = endpoints.regional_host(glue_protocol().service, self.region)
+        while True:
+            auto body = get_crawler_metrics_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetCrawlerMetrics", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for GetCrawlers — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: Crawlers).
     def paginate_get_crawlers(self, GetCrawlersRequest input):
@@ -11186,6 +16571,20 @@ struct GlueClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetCrawlers", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetDatabases — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: DatabaseList).
+    def paginate_get_databases(self, GetDatabasesRequest input):
+        auto host = endpoints.regional_host(glue_protocol().service, self.region)
+        while True:
+            auto body = get_databases_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetDatabases", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")
@@ -11249,6 +16648,20 @@ struct GlueClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for GetPartitions — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Partitions).
+    def paginate_get_partitions(self, GetPartitionsRequest input):
+        auto host = endpoints.regional_host(glue_protocol().service, self.region)
+        while True:
+            auto body = get_partitions_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetPartitions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for GetResourcePolicies — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: GetResourcePoliciesResponseList).
     def paginate_get_resource_policies(self, GetResourcePoliciesRequest input):
@@ -11270,6 +16683,34 @@ struct GlueClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetSecurityConfigurations", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetTableVersions — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: TableVersions).
+    def paginate_get_table_versions(self, GetTableVersionsRequest input):
+        auto host = endpoints.regional_host(glue_protocol().service, self.region)
+        while True:
+            auto body = get_table_versions_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetTableVersions", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetTables — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: TableList).
+    def paginate_get_tables(self, GetTablesRequest input):
+        auto host = endpoints.regional_host(glue_protocol().service, self.region)
+        while True:
+            auto body = get_tables_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "GetTables", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")
@@ -11333,6 +16774,20 @@ struct GlueClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListBlueprints — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Blueprints).
+    def paginate_list_blueprints(self, ListBlueprintsRequest input):
+        auto host = endpoints.regional_host(glue_protocol().service, self.region)
+        while True:
+            auto body = list_blueprints_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListBlueprints", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListConnectionTypes — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: ConnectionTypes).
     def paginate_list_connection_types(self, ListConnectionTypesRequest input):
@@ -11340,6 +16795,20 @@ struct GlueClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListConnectionTypes", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListDataQualityResultsV2 — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Results).
+    def paginate_list_data_quality_results_v2(self, ListDataQualityResultsV2Request input):
+        auto host = endpoints.regional_host(glue_protocol().service, self.region)
+        while True:
+            auto body = list_data_quality_results_v2_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListDataQualityResultsV2", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")
@@ -11417,6 +16886,20 @@ struct GlueClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListJobs — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: JobNames).
+    def paginate_list_jobs(self, ListJobsRequest input):
+        auto host = endpoints.regional_host(glue_protocol().service, self.region)
+        while True:
+            auto body = list_jobs_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListJobs", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListMaterializedViewRefreshTaskRuns — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: MaterializedViewRefreshTaskRuns).
     def paginate_list_materialized_view_refresh_task_runs(self, ListMaterializedViewRefreshTaskRunsRequest input):
@@ -11487,6 +16970,20 @@ struct GlueClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListTriggers — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: TriggerNames).
+    def paginate_list_triggers(self, ListTriggersRequest input):
+        auto host = endpoints.regional_host(glue_protocol().service, self.region)
+        while True:
+            auto body = list_triggers_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListTriggers", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListUsageProfiles — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: Profiles).
     def paginate_list_usage_profiles(self, ListUsageProfilesRequest input):
@@ -11508,6 +17005,20 @@ struct GlueClient:
         while True:
             auto body = input.to_json()
             auto raw = awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "ListWorkflows", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for SearchAssets — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Items).
+    def paginate_search_assets(self, SearchAssetsInput input):
+        auto host = endpoints.regional_host(glue_protocol().service, self.region)
+        while True:
+            auto body = search_assets_input_to_json(input)
+            auto raw = awsjson.awsjson_request_now(glue_protocol(), self.creds, self.region, "SearchAssets", body)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

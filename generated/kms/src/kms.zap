@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 56 operations — 35 with a generated method,
-#   21 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 56 operations — 56 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   160 structs (124 @derive(Json)), 27 enums, 48 error variants.
 #   8 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import base64
 
 # The KMS awsJson protocol: version 1.1, API id "TrentService".
 def kms_protocol() -> awsjson.AwsJson:
@@ -424,8 +425,9 @@ struct CreateCustomKeyStoreRequest:
 struct CreateCustomKeyStoreResponse:
     Optional[str] CustomKeyStoreId
 
-# no @derive(Json): member(s) Operations: list[GrantOperation], Constraints: GrantConstraints, GrantTokens: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Operations: list[GrantOperation], Constraints: GrantConstraints, GrantTokens: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateGrantRequest:
     str KeyId
     Optional[str] GranteePrincipal
@@ -443,8 +445,9 @@ struct CreateGrantResponse:
     Optional[str] GrantToken
     Optional[str] GrantId
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateKeyRequest:
     Optional[str] Policy
     Optional[str] Description
@@ -458,8 +461,9 @@ struct CreateKeyRequest:
     Optional[bool] MultiRegion
     Optional[str] XksKeyId
 
-# no @derive(Json): member(s) KeyMetadata: KeyMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeyMetadata: KeyMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateKeyResponse:
     Optional[KeyMetadata] KeyMetadata
 
@@ -491,8 +495,9 @@ struct CustomKeyStoresListEntry:
     Optional[CustomKeyStoreType] CustomKeyStoreType
     Optional[XksProxyConfigurationType] XksProxyConfiguration
 
-# no @derive(Json): member(s) GrantTokens: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GrantTokens: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DecapsulateRequest:
     str KeyId
     bytes SharedSecretCiphertextBlob
@@ -506,8 +511,9 @@ struct DecapsulateResponse:
     Optional[bytes] SharedSecret
     Optional[str] EncapsulationAlgorithm
 
-# no @derive(Json): member(s) EncryptionContext: dict[str, str], GrantTokens: list[str], DryRunModifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EncryptionContext: dict[str, str], GrantTokens: list[str], DryRunModifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DecryptRequest:
     Optional[bytes] CiphertextBlob
     Optional[dict[str, str]] EncryptionContext
@@ -553,8 +559,9 @@ struct DeleteImportedKeyMaterialResponse:
 struct DependencyTimeoutException:
     Optional[str] message
 
-# no @derive(Json): member(s) GrantTokens: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GrantTokens: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeriveSharedSecretRequest:
     str KeyId
     str KeyAgreementAlgorithm
@@ -578,21 +585,24 @@ struct DescribeCustomKeyStoresRequest:
     Optional[int64] Limit
     Optional[str] Marker
 
-# no @derive(Json): member(s) CustomKeyStores: list[CustomKeyStoresListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomKeyStores: list[CustomKeyStoresListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCustomKeyStoresResponse:
     Optional[list[CustomKeyStoresListEntry]] CustomKeyStores
     Optional[str] NextMarker
     Optional[bool] Truncated
 
-# no @derive(Json): member(s) GrantTokens: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GrantTokens: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeKeyRequest:
     str KeyId
     Optional[list[str]] GrantTokens
 
-# no @derive(Json): member(s) KeyMetadata: KeyMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeyMetadata: KeyMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeKeyResponse:
     Optional[KeyMetadata] KeyMetadata
 
@@ -630,8 +640,9 @@ struct EnableKeyRotationRequest:
     str KeyId
     Optional[int64] RotationPeriodInDays
 
-# no @derive(Json): member(s) GrantTokens: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GrantTokens: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EncapsulateRequest:
     str KeyId
     str EncapsulationAlgorithm
@@ -645,8 +656,9 @@ struct EncapsulateResponse:
     Optional[bytes] SharedSecretCiphertextBlob
     Optional[str] EncapsulationAlgorithm
 
-# no @derive(Json): member(s) EncryptionContext: dict[str, str], GrantTokens: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EncryptionContext: dict[str, str], GrantTokens: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EncryptRequest:
     str KeyId
     bytes Plaintext
@@ -665,8 +677,9 @@ struct EncryptResponse:
 struct ExpiredImportTokenException:
     Optional[str] message
 
-# no @derive(Json): member(s) EncryptionContext: dict[str, str], GrantTokens: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EncryptionContext: dict[str, str], GrantTokens: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GenerateDataKeyPairRequest:
     Optional[dict[str, str]] EncryptionContext
     str KeyId
@@ -685,8 +698,9 @@ struct GenerateDataKeyPairResponse:
     Optional[bytes] CiphertextForRecipient
     Optional[str] KeyMaterialId
 
-# no @derive(Json): member(s) EncryptionContext: dict[str, str], GrantTokens: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EncryptionContext: dict[str, str], GrantTokens: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GenerateDataKeyPairWithoutPlaintextRequest:
     Optional[dict[str, str]] EncryptionContext
     str KeyId
@@ -702,8 +716,9 @@ struct GenerateDataKeyPairWithoutPlaintextResponse:
     Optional[DataKeyPairSpec] KeyPairSpec
     Optional[str] KeyMaterialId
 
-# no @derive(Json): member(s) EncryptionContext: dict[str, str], GrantTokens: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EncryptionContext: dict[str, str], GrantTokens: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GenerateDataKeyRequest:
     str KeyId
     Optional[dict[str, str]] EncryptionContext
@@ -721,8 +736,9 @@ struct GenerateDataKeyResponse:
     Optional[bytes] CiphertextForRecipient
     Optional[str] KeyMaterialId
 
-# no @derive(Json): member(s) EncryptionContext: dict[str, str], GrantTokens: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EncryptionContext: dict[str, str], GrantTokens: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GenerateDataKeyWithoutPlaintextRequest:
     str KeyId
     Optional[dict[str, str]] EncryptionContext
@@ -737,8 +753,9 @@ struct GenerateDataKeyWithoutPlaintextResponse:
     Optional[str] KeyId
     Optional[str] KeyMaterialId
 
-# no @derive(Json): member(s) GrantTokens: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GrantTokens: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GenerateMacRequest:
     bytes Message
     str KeyId
@@ -809,14 +826,16 @@ struct GetParametersForImportResponse:
     Optional[bytes] PublicKey
     Optional[DateTime] ParametersValidTo
 
-# no @derive(Json): member(s) GrantTokens: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GrantTokens: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPublicKeyRequest:
     str KeyId
     Optional[list[str]] GrantTokens
 
-# no @derive(Json): member(s) EncryptionAlgorithms: list[EncryptionAlgorithmSpec], SigningAlgorithms: list[SigningAlgorithmSpec], KeyAgreementAlgorithms: list[str], EncapsulationAlgorithms: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EncryptionAlgorithms: list[EncryptionAlgorithmSpec], SigningAlgorithms: list[SigningAlgorithmSpec], KeyAgreementAlgorithms: list[str], EncapsulationAlgorithms: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPublicKeyResponse:
     Optional[str] KeyId
     Optional[bytes] PublicKey
@@ -828,15 +847,17 @@ struct GetPublicKeyResponse:
     Optional[list[str]] KeyAgreementAlgorithms
     Optional[list[str]] EncapsulationAlgorithms
 
-# no @derive(Json): member(s) EncryptionContextSubset: dict[str, str], EncryptionContextEquals: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EncryptionContextSubset: dict[str, str], EncryptionContextEquals: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GrantConstraints:
     Optional[dict[str, str]] EncryptionContextSubset
     Optional[dict[str, str]] EncryptionContextEquals
     Optional[str] SourceArn
 
-# no @derive(Json): member(s) Operations: list[GrantOperation], Constraints: GrantConstraints not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Operations: list[GrantOperation], Constraints: GrantConstraints not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GrantListEntry:
     Optional[str] KeyId
     Optional[str] GrantId
@@ -938,8 +959,9 @@ struct KeyListEntry:
     Optional[str] KeyId
     Optional[str] KeyArn
 
-# no @derive(Json): member(s) EncryptionAlgorithms: list[EncryptionAlgorithmSpec], SigningAlgorithms: list[SigningAlgorithmSpec], KeyAgreementAlgorithms: list[str], EncapsulationAlgorithms: list[str], MultiRegionConfiguration: MultiRegionConfiguration, MacAlgorithms: list[MacAlgorithmSpec] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EncryptionAlgorithms: list[EncryptionAlgorithmSpec], SigningAlgorithms: list[SigningAlgorithmSpec], KeyAgreementAlgorithms: list[str], EncapsulationAlgorithms: list[str], MultiRegionConfiguration: MultiRegionConfiguration, MacAlgorithms: list[MacAlgorithmSpec] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KeyMetadata:
     Optional[str] AWSAccountId
     str KeyId
@@ -983,8 +1005,9 @@ struct ListAliasesRequest:
     Optional[int64] Limit
     Optional[str] Marker
 
-# no @derive(Json): member(s) Aliases: list[AliasListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Aliases: list[AliasListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAliasesResponse:
     Optional[list[AliasListEntry]] Aliases
     Optional[str] NextMarker
@@ -999,8 +1022,9 @@ struct ListGrantsRequest:
     Optional[str] GranteePrincipal
     Optional[str] GranteeServicePrincipal
 
-# no @derive(Json): member(s) Grants: list[GrantListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Grants: list[GrantListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGrantsResponse:
     Optional[list[GrantListEntry]] Grants
     Optional[str] NextMarker
@@ -1012,8 +1036,9 @@ struct ListKeyPoliciesRequest:
     Optional[int64] Limit
     Optional[str] Marker
 
-# no @derive(Json): member(s) PolicyNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PolicyNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListKeyPoliciesResponse:
     Optional[list[str]] PolicyNames
     Optional[str] NextMarker
@@ -1026,8 +1051,9 @@ struct ListKeyRotationsRequest:
     Optional[int64] Limit
     Optional[str] Marker
 
-# no @derive(Json): member(s) Rotations: list[RotationsListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rotations: list[RotationsListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListKeyRotationsResponse:
     Optional[list[RotationsListEntry]] Rotations
     Optional[str] NextMarker
@@ -1038,8 +1064,9 @@ struct ListKeysRequest:
     Optional[int64] Limit
     Optional[str] Marker
 
-# no @derive(Json): member(s) Keys: list[KeyListEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Keys: list[KeyListEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListKeysResponse:
     Optional[list[KeyListEntry]] Keys
     Optional[str] NextMarker
@@ -1051,8 +1078,9 @@ struct ListResourceTagsRequest:
     Optional[int64] Limit
     Optional[str] Marker
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceTagsResponse:
     Optional[list[Tag]] Tags
     Optional[str] NextMarker
@@ -1069,8 +1097,9 @@ struct ListRetirableGrantsRequest:
 struct MalformedPolicyDocumentException:
     Optional[str] message
 
-# no @derive(Json): member(s) ReplicaKeys: list[MultiRegionKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicaKeys: list[MultiRegionKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MultiRegionConfiguration:
     Optional[MultiRegionKeyType] MultiRegionKeyType
     Optional[MultiRegionKey] PrimaryKey
@@ -1092,8 +1121,9 @@ struct PutKeyPolicyRequest:
     str Policy
     Optional[bool] BypassPolicyLockoutSafetyCheck
 
-# no @derive(Json): member(s) SourceEncryptionContext: dict[str, str], DestinationEncryptionContext: dict[str, str], GrantTokens: list[str], DryRunModifiers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceEncryptionContext: dict[str, str], DestinationEncryptionContext: dict[str, str], GrantTokens: list[str], DryRunModifiers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReEncryptRequest:
     Optional[bytes] CiphertextBlob
     Optional[dict[str, str]] SourceEncryptionContext
@@ -1121,8 +1151,9 @@ struct RecipientInfo:
     Optional[str] KeyEncryptionAlgorithm
     Optional[bytes] AttestationDocument
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicateKeyRequest:
     str KeyId
     str ReplicaRegion
@@ -1131,8 +1162,9 @@ struct ReplicateKeyRequest:
     Optional[str] Description
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) ReplicaKeyMetadata: KeyMetadata, ReplicaTags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReplicaKeyMetadata: KeyMetadata, ReplicaTags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicateKeyResponse:
     Optional[KeyMetadata] ReplicaKeyMetadata
     Optional[str] ReplicaPolicy
@@ -1183,8 +1215,9 @@ struct ScheduleKeyDeletionResponse:
     Optional[KeyState] KeyState
     Optional[int64] PendingWindowInDays
 
-# no @derive(Json): member(s) GrantTokens: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GrantTokens: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SignRequest:
     str KeyId
     bytes Message
@@ -1208,8 +1241,9 @@ struct Tag:
 struct TagException:
     Optional[str] message
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str KeyId
     list[Tag] Tags
@@ -1218,8 +1252,9 @@ struct TagResourceRequest:
 struct UnsupportedOperationException:
     Optional[str] message
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str KeyId
     list[str] TagKeys
@@ -1257,8 +1292,9 @@ struct UpdatePrimaryRegionRequest:
     str KeyId
     str PrimaryRegion
 
-# no @derive(Json): member(s) GrantTokens: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GrantTokens: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VerifyMacRequest:
     bytes Message
     str KeyId
@@ -1273,8 +1309,9 @@ struct VerifyMacResponse:
     Optional[bool] MacValid
     Optional[MacAlgorithmSpec] MacAlgorithm
 
-# no @derive(Json): member(s) GrantTokens: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) GrantTokens: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VerifyRequest:
     str KeyId
     bytes Message
@@ -1513,29 +1550,540 @@ def kms_error_from_code(str code) -> KMSError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateGrant (input CreateGrantRequest)
-#   CreateKey (input CreateKeyRequest)
-#   Decapsulate (input DecapsulateRequest)
-#   Decrypt (input DecryptRequest)
-#   DeriveSharedSecret (input DeriveSharedSecretRequest)
-#   DescribeKey (input DescribeKeyRequest)
-#   Encapsulate (input EncapsulateRequest)
-#   Encrypt (input EncryptRequest)
-#   GenerateDataKey (input GenerateDataKeyRequest)
-#   GenerateDataKeyPair (input GenerateDataKeyPairRequest)
-#   GenerateDataKeyPairWithoutPlaintext (input GenerateDataKeyPairWithoutPlaintextRequest)
-#   GenerateDataKeyWithoutPlaintext (input GenerateDataKeyWithoutPlaintextRequest)
-#   GenerateMac (input GenerateMacRequest)
-#   GetPublicKey (input GetPublicKeyRequest)
-#   ReEncrypt (input ReEncryptRequest)
-#   ReplicateKey (input ReplicateKeyRequest)
-#   Sign (input SignRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   Verify (input VerifyRequest)
-#   VerifyMac (input VerifyMacRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def kms_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def kms_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def kms_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateGrantRequest to a compact JSON object (declaration order).
+def create_grant_request_to_json(CreateGrantRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"KeyId\":" + kms_json_str(v.KeyId))
+    if v.GranteePrincipal.is_some():
+        auto u0 = v.GranteePrincipal.unwrap()
+        parts.append("\"GranteePrincipal\":" + kms_json_str(u0))
+    if v.RetiringPrincipal.is_some():
+        auto u1 = v.RetiringPrincipal.unwrap()
+        parts.append("\"RetiringPrincipal\":" + kms_json_str(u1))
+    list[str] e2 = []
+    for x2 in v.Operations:
+        e2.append(x2.to_json())
+    parts.append("\"Operations\":" + kms_json_arr(e2))
+    if v.Constraints.is_some():
+        auto u3 = v.Constraints.unwrap()
+        parts.append("\"Constraints\":" + grant_constraints_to_json(u3))
+    if v.GrantTokens.is_some():
+        auto u4 = v.GrantTokens.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(kms_json_str(x5))
+        parts.append("\"GrantTokens\":" + kms_json_arr(e5))
+    if v.Name.is_some():
+        auto u6 = v.Name.unwrap()
+        parts.append("\"Name\":" + kms_json_str(u6))
+    if v.DryRun.is_some():
+        auto u7 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.GranteeServicePrincipal.is_some():
+        auto u8 = v.GranteeServicePrincipal.unwrap()
+        parts.append("\"GranteeServicePrincipal\":" + kms_json_str(u8))
+    if v.RetiringServicePrincipal.is_some():
+        auto u9 = v.RetiringServicePrincipal.unwrap()
+        parts.append("\"RetiringServicePrincipal\":" + kms_json_str(u9))
+    return kms_json_obj(parts)
+
+# Serialize CreateKeyRequest to a compact JSON object (declaration order).
+def create_key_request_to_json(CreateKeyRequest v) -> str:
+    list[str] parts = []
+    if v.Policy.is_some():
+        auto u0 = v.Policy.unwrap()
+        parts.append("\"Policy\":" + kms_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + kms_json_str(u1))
+    if v.KeyUsage.is_some():
+        auto u2 = v.KeyUsage.unwrap()
+        parts.append("\"KeyUsage\":" + u2.to_json())
+    if v.CustomerMasterKeySpec.is_some():
+        auto u3 = v.CustomerMasterKeySpec.unwrap()
+        parts.append("\"CustomerMasterKeySpec\":" + u3.to_json())
+    if v.KeySpec.is_some():
+        auto u4 = v.KeySpec.unwrap()
+        parts.append("\"KeySpec\":" + u4.to_json())
+    if v.Origin.is_some():
+        auto u5 = v.Origin.unwrap()
+        parts.append("\"Origin\":" + u5.to_json())
+    if v.CustomKeyStoreId.is_some():
+        auto u6 = v.CustomKeyStoreId.unwrap()
+        parts.append("\"CustomKeyStoreId\":" + kms_json_str(u6))
+    if v.BypassPolicyLockoutSafetyCheck.is_some():
+        auto u7 = v.BypassPolicyLockoutSafetyCheck.unwrap()
+        parts.append("\"BypassPolicyLockoutSafetyCheck\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.Tags.is_some():
+        auto u8 = v.Tags.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"Tags\":" + kms_json_arr(e9))
+    if v.MultiRegion.is_some():
+        auto u10 = v.MultiRegion.unwrap()
+        parts.append("\"MultiRegion\":" + json.dumps(JsonValue.Bool(u10)))
+    if v.XksKeyId.is_some():
+        auto u11 = v.XksKeyId.unwrap()
+        parts.append("\"XksKeyId\":" + kms_json_str(u11))
+    return kms_json_obj(parts)
+
+# Serialize DecapsulateRequest to a compact JSON object (declaration order).
+def decapsulate_request_to_json(DecapsulateRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"KeyId\":" + kms_json_str(v.KeyId))
+    parts.append("\"SharedSecretCiphertextBlob\":" + kms_json_str(base64.encode(v.SharedSecretCiphertextBlob)))
+    parts.append("\"EncapsulationAlgorithm\":" + kms_json_str(v.EncapsulationAlgorithm))
+    if v.GrantTokens.is_some():
+        auto u0 = v.GrantTokens.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(kms_json_str(x1))
+        parts.append("\"GrantTokens\":" + kms_json_arr(e1))
+    if v.DryRun.is_some():
+        auto u2 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u2)))
+    return kms_json_obj(parts)
+
+# Serialize DecryptRequest to a compact JSON object (declaration order).
+def decrypt_request_to_json(DecryptRequest v) -> str:
+    list[str] parts = []
+    if v.CiphertextBlob.is_some():
+        auto u0 = v.CiphertextBlob.unwrap()
+        parts.append("\"CiphertextBlob\":" + kms_json_str(base64.encode(u0)))
+    if v.EncryptionContext.is_some():
+        auto u1 = v.EncryptionContext.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(kms_json_str(k2) + ":" + kms_json_str(u1[k2]))
+        parts.append("\"EncryptionContext\":" + kms_json_obj(m2))
+    if v.GrantTokens.is_some():
+        auto u3 = v.GrantTokens.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(kms_json_str(x4))
+        parts.append("\"GrantTokens\":" + kms_json_arr(e4))
+    if v.KeyId.is_some():
+        auto u5 = v.KeyId.unwrap()
+        parts.append("\"KeyId\":" + kms_json_str(u5))
+    if v.EncryptionAlgorithm.is_some():
+        auto u6 = v.EncryptionAlgorithm.unwrap()
+        parts.append("\"EncryptionAlgorithm\":" + u6.to_json())
+    if v.Recipient.is_some():
+        auto u7 = v.Recipient.unwrap()
+        parts.append("\"Recipient\":" + u7.to_json())
+    if v.DryRun.is_some():
+        auto u8 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.DryRunModifiers.is_some():
+        auto u9 = v.DryRunModifiers.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(kms_json_str(x10))
+        parts.append("\"DryRunModifiers\":" + kms_json_arr(e10))
+    return kms_json_obj(parts)
+
+# Serialize DeriveSharedSecretRequest to a compact JSON object (declaration order).
+def derive_shared_secret_request_to_json(DeriveSharedSecretRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"KeyId\":" + kms_json_str(v.KeyId))
+    parts.append("\"KeyAgreementAlgorithm\":" + kms_json_str(v.KeyAgreementAlgorithm))
+    parts.append("\"PublicKey\":" + kms_json_str(base64.encode(v.PublicKey)))
+    if v.GrantTokens.is_some():
+        auto u0 = v.GrantTokens.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(kms_json_str(x1))
+        parts.append("\"GrantTokens\":" + kms_json_arr(e1))
+    if v.DryRun.is_some():
+        auto u2 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.Recipient.is_some():
+        auto u3 = v.Recipient.unwrap()
+        parts.append("\"Recipient\":" + u3.to_json())
+    return kms_json_obj(parts)
+
+# Serialize DescribeKeyRequest to a compact JSON object (declaration order).
+def describe_key_request_to_json(DescribeKeyRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"KeyId\":" + kms_json_str(v.KeyId))
+    if v.GrantTokens.is_some():
+        auto u0 = v.GrantTokens.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(kms_json_str(x1))
+        parts.append("\"GrantTokens\":" + kms_json_arr(e1))
+    return kms_json_obj(parts)
+
+# Serialize EncapsulateRequest to a compact JSON object (declaration order).
+def encapsulate_request_to_json(EncapsulateRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"KeyId\":" + kms_json_str(v.KeyId))
+    parts.append("\"EncapsulationAlgorithm\":" + kms_json_str(v.EncapsulationAlgorithm))
+    if v.GrantTokens.is_some():
+        auto u0 = v.GrantTokens.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(kms_json_str(x1))
+        parts.append("\"GrantTokens\":" + kms_json_arr(e1))
+    if v.DryRun.is_some():
+        auto u2 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u2)))
+    return kms_json_obj(parts)
+
+# Serialize EncryptRequest to a compact JSON object (declaration order).
+def encrypt_request_to_json(EncryptRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"KeyId\":" + kms_json_str(v.KeyId))
+    parts.append("\"Plaintext\":" + kms_json_str(base64.encode(v.Plaintext)))
+    if v.EncryptionContext.is_some():
+        auto u0 = v.EncryptionContext.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(kms_json_str(k1) + ":" + kms_json_str(u0[k1]))
+        parts.append("\"EncryptionContext\":" + kms_json_obj(m1))
+    if v.GrantTokens.is_some():
+        auto u2 = v.GrantTokens.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(kms_json_str(x3))
+        parts.append("\"GrantTokens\":" + kms_json_arr(e3))
+    if v.EncryptionAlgorithm.is_some():
+        auto u4 = v.EncryptionAlgorithm.unwrap()
+        parts.append("\"EncryptionAlgorithm\":" + u4.to_json())
+    if v.DryRun.is_some():
+        auto u5 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u5)))
+    return kms_json_obj(parts)
+
+# Serialize GenerateDataKeyPairRequest to a compact JSON object (declaration order).
+def generate_data_key_pair_request_to_json(GenerateDataKeyPairRequest v) -> str:
+    list[str] parts = []
+    if v.EncryptionContext.is_some():
+        auto u0 = v.EncryptionContext.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(kms_json_str(k1) + ":" + kms_json_str(u0[k1]))
+        parts.append("\"EncryptionContext\":" + kms_json_obj(m1))
+    parts.append("\"KeyId\":" + kms_json_str(v.KeyId))
+    parts.append("\"KeyPairSpec\":" + v.KeyPairSpec.to_json())
+    if v.GrantTokens.is_some():
+        auto u2 = v.GrantTokens.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(kms_json_str(x3))
+        parts.append("\"GrantTokens\":" + kms_json_arr(e3))
+    if v.Recipient.is_some():
+        auto u4 = v.Recipient.unwrap()
+        parts.append("\"Recipient\":" + u4.to_json())
+    if v.DryRun.is_some():
+        auto u5 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u5)))
+    return kms_json_obj(parts)
+
+# Serialize GenerateDataKeyPairWithoutPlaintextRequest to a compact JSON object (declaration order).
+def generate_data_key_pair_without_plaintext_request_to_json(GenerateDataKeyPairWithoutPlaintextRequest v) -> str:
+    list[str] parts = []
+    if v.EncryptionContext.is_some():
+        auto u0 = v.EncryptionContext.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(kms_json_str(k1) + ":" + kms_json_str(u0[k1]))
+        parts.append("\"EncryptionContext\":" + kms_json_obj(m1))
+    parts.append("\"KeyId\":" + kms_json_str(v.KeyId))
+    parts.append("\"KeyPairSpec\":" + v.KeyPairSpec.to_json())
+    if v.GrantTokens.is_some():
+        auto u2 = v.GrantTokens.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(kms_json_str(x3))
+        parts.append("\"GrantTokens\":" + kms_json_arr(e3))
+    if v.DryRun.is_some():
+        auto u4 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u4)))
+    return kms_json_obj(parts)
+
+# Serialize GenerateDataKeyRequest to a compact JSON object (declaration order).
+def generate_data_key_request_to_json(GenerateDataKeyRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"KeyId\":" + kms_json_str(v.KeyId))
+    if v.EncryptionContext.is_some():
+        auto u0 = v.EncryptionContext.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(kms_json_str(k1) + ":" + kms_json_str(u0[k1]))
+        parts.append("\"EncryptionContext\":" + kms_json_obj(m1))
+    if v.NumberOfBytes.is_some():
+        auto u2 = v.NumberOfBytes.unwrap()
+        parts.append("\"NumberOfBytes\":" + str(u2))
+    if v.KeySpec.is_some():
+        auto u3 = v.KeySpec.unwrap()
+        parts.append("\"KeySpec\":" + u3.to_json())
+    if v.GrantTokens.is_some():
+        auto u4 = v.GrantTokens.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(kms_json_str(x5))
+        parts.append("\"GrantTokens\":" + kms_json_arr(e5))
+    if v.Recipient.is_some():
+        auto u6 = v.Recipient.unwrap()
+        parts.append("\"Recipient\":" + u6.to_json())
+    if v.DryRun.is_some():
+        auto u7 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u7)))
+    return kms_json_obj(parts)
+
+# Serialize GenerateDataKeyWithoutPlaintextRequest to a compact JSON object (declaration order).
+def generate_data_key_without_plaintext_request_to_json(GenerateDataKeyWithoutPlaintextRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"KeyId\":" + kms_json_str(v.KeyId))
+    if v.EncryptionContext.is_some():
+        auto u0 = v.EncryptionContext.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(kms_json_str(k1) + ":" + kms_json_str(u0[k1]))
+        parts.append("\"EncryptionContext\":" + kms_json_obj(m1))
+    if v.KeySpec.is_some():
+        auto u2 = v.KeySpec.unwrap()
+        parts.append("\"KeySpec\":" + u2.to_json())
+    if v.NumberOfBytes.is_some():
+        auto u3 = v.NumberOfBytes.unwrap()
+        parts.append("\"NumberOfBytes\":" + str(u3))
+    if v.GrantTokens.is_some():
+        auto u4 = v.GrantTokens.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(kms_json_str(x5))
+        parts.append("\"GrantTokens\":" + kms_json_arr(e5))
+    if v.DryRun.is_some():
+        auto u6 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u6)))
+    return kms_json_obj(parts)
+
+# Serialize GenerateMacRequest to a compact JSON object (declaration order).
+def generate_mac_request_to_json(GenerateMacRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Message\":" + kms_json_str(base64.encode(v.Message)))
+    parts.append("\"KeyId\":" + kms_json_str(v.KeyId))
+    parts.append("\"MacAlgorithm\":" + v.MacAlgorithm.to_json())
+    if v.GrantTokens.is_some():
+        auto u0 = v.GrantTokens.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(kms_json_str(x1))
+        parts.append("\"GrantTokens\":" + kms_json_arr(e1))
+    if v.DryRun.is_some():
+        auto u2 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u2)))
+    return kms_json_obj(parts)
+
+# Serialize GetPublicKeyRequest to a compact JSON object (declaration order).
+def get_public_key_request_to_json(GetPublicKeyRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"KeyId\":" + kms_json_str(v.KeyId))
+    if v.GrantTokens.is_some():
+        auto u0 = v.GrantTokens.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(kms_json_str(x1))
+        parts.append("\"GrantTokens\":" + kms_json_arr(e1))
+    return kms_json_obj(parts)
+
+# Serialize GrantConstraints to a compact JSON object (declaration order).
+def grant_constraints_to_json(GrantConstraints v) -> str:
+    list[str] parts = []
+    if v.EncryptionContextSubset.is_some():
+        auto u0 = v.EncryptionContextSubset.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(kms_json_str(k1) + ":" + kms_json_str(u0[k1]))
+        parts.append("\"EncryptionContextSubset\":" + kms_json_obj(m1))
+    if v.EncryptionContextEquals.is_some():
+        auto u2 = v.EncryptionContextEquals.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(kms_json_str(k3) + ":" + kms_json_str(u2[k3]))
+        parts.append("\"EncryptionContextEquals\":" + kms_json_obj(m3))
+    if v.SourceArn.is_some():
+        auto u4 = v.SourceArn.unwrap()
+        parts.append("\"SourceArn\":" + kms_json_str(u4))
+    return kms_json_obj(parts)
+
+# Serialize ReEncryptRequest to a compact JSON object (declaration order).
+def re_encrypt_request_to_json(ReEncryptRequest v) -> str:
+    list[str] parts = []
+    if v.CiphertextBlob.is_some():
+        auto u0 = v.CiphertextBlob.unwrap()
+        parts.append("\"CiphertextBlob\":" + kms_json_str(base64.encode(u0)))
+    if v.SourceEncryptionContext.is_some():
+        auto u1 = v.SourceEncryptionContext.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(kms_json_str(k2) + ":" + kms_json_str(u1[k2]))
+        parts.append("\"SourceEncryptionContext\":" + kms_json_obj(m2))
+    if v.SourceKeyId.is_some():
+        auto u3 = v.SourceKeyId.unwrap()
+        parts.append("\"SourceKeyId\":" + kms_json_str(u3))
+    parts.append("\"DestinationKeyId\":" + kms_json_str(v.DestinationKeyId))
+    if v.DestinationEncryptionContext.is_some():
+        auto u4 = v.DestinationEncryptionContext.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(kms_json_str(k5) + ":" + kms_json_str(u4[k5]))
+        parts.append("\"DestinationEncryptionContext\":" + kms_json_obj(m5))
+    if v.SourceEncryptionAlgorithm.is_some():
+        auto u6 = v.SourceEncryptionAlgorithm.unwrap()
+        parts.append("\"SourceEncryptionAlgorithm\":" + u6.to_json())
+    if v.DestinationEncryptionAlgorithm.is_some():
+        auto u7 = v.DestinationEncryptionAlgorithm.unwrap()
+        parts.append("\"DestinationEncryptionAlgorithm\":" + u7.to_json())
+    if v.GrantTokens.is_some():
+        auto u8 = v.GrantTokens.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(kms_json_str(x9))
+        parts.append("\"GrantTokens\":" + kms_json_arr(e9))
+    if v.DryRun.is_some():
+        auto u10 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u10)))
+    if v.DryRunModifiers.is_some():
+        auto u11 = v.DryRunModifiers.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(kms_json_str(x12))
+        parts.append("\"DryRunModifiers\":" + kms_json_arr(e12))
+    return kms_json_obj(parts)
+
+# Serialize ReplicateKeyRequest to a compact JSON object (declaration order).
+def replicate_key_request_to_json(ReplicateKeyRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"KeyId\":" + kms_json_str(v.KeyId))
+    parts.append("\"ReplicaRegion\":" + kms_json_str(v.ReplicaRegion))
+    if v.Policy.is_some():
+        auto u0 = v.Policy.unwrap()
+        parts.append("\"Policy\":" + kms_json_str(u0))
+    if v.BypassPolicyLockoutSafetyCheck.is_some():
+        auto u1 = v.BypassPolicyLockoutSafetyCheck.unwrap()
+        parts.append("\"BypassPolicyLockoutSafetyCheck\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"Description\":" + kms_json_str(u2))
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + kms_json_arr(e4))
+    return kms_json_obj(parts)
+
+# Serialize SignRequest to a compact JSON object (declaration order).
+def sign_request_to_json(SignRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"KeyId\":" + kms_json_str(v.KeyId))
+    parts.append("\"Message\":" + kms_json_str(base64.encode(v.Message)))
+    if v.MessageType.is_some():
+        auto u0 = v.MessageType.unwrap()
+        parts.append("\"MessageType\":" + u0.to_json())
+    if v.GrantTokens.is_some():
+        auto u1 = v.GrantTokens.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(kms_json_str(x2))
+        parts.append("\"GrantTokens\":" + kms_json_arr(e2))
+    parts.append("\"SigningAlgorithm\":" + v.SigningAlgorithm.to_json())
+    if v.DryRun.is_some():
+        auto u3 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u3)))
+    return kms_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"KeyId\":" + kms_json_str(v.KeyId))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + kms_json_arr(e0))
+    return kms_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"KeyId\":" + kms_json_str(v.KeyId))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(kms_json_str(x0))
+    parts.append("\"TagKeys\":" + kms_json_arr(e0))
+    return kms_json_obj(parts)
+
+# Serialize VerifyMacRequest to a compact JSON object (declaration order).
+def verify_mac_request_to_json(VerifyMacRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Message\":" + kms_json_str(base64.encode(v.Message)))
+    parts.append("\"KeyId\":" + kms_json_str(v.KeyId))
+    parts.append("\"MacAlgorithm\":" + v.MacAlgorithm.to_json())
+    parts.append("\"Mac\":" + kms_json_str(base64.encode(v.Mac)))
+    if v.GrantTokens.is_some():
+        auto u0 = v.GrantTokens.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(kms_json_str(x1))
+        parts.append("\"GrantTokens\":" + kms_json_arr(e1))
+    if v.DryRun.is_some():
+        auto u2 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u2)))
+    return kms_json_obj(parts)
+
+# Serialize VerifyRequest to a compact JSON object (declaration order).
+def verify_request_to_json(VerifyRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"KeyId\":" + kms_json_str(v.KeyId))
+    parts.append("\"Message\":" + kms_json_str(base64.encode(v.Message)))
+    if v.MessageType.is_some():
+        auto u0 = v.MessageType.unwrap()
+        parts.append("\"MessageType\":" + u0.to_json())
+    parts.append("\"Signature\":" + kms_json_str(base64.encode(v.Signature)))
+    parts.append("\"SigningAlgorithm\":" + v.SigningAlgorithm.to_json())
+    if v.GrantTokens.is_some():
+        auto u1 = v.GrantTokens.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(kms_json_str(x2))
+        parts.append("\"GrantTokens\":" + kms_json_arr(e2))
+    if v.DryRun.is_some():
+        auto u3 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u3)))
+    return kms_json_obj(parts)
 
 # A bound KMS client: credentials + region, threaded into every operation.
 struct KMSClient:
@@ -1566,6 +2114,30 @@ struct KMSClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "CreateCustomKeyStore", body)
 
+    # CreateGrant
+    # errors: DependencyTimeoutException, DisabledException, DryRunOperationException, InvalidArnException, InvalidGrantTokenException, KMSInternalException, KMSInvalidStateException, LimitExceededException, NotFoundException
+    def create_grant(self, CreateGrantRequest input) -> str:
+        auto body = create_grant_request_to_json(input)
+        return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "CreateGrant", body)
+
+    # CreateKey
+    # errors: CloudHsmClusterInvalidConfigurationException, CustomKeyStoreInvalidStateException, CustomKeyStoreNotFoundException, DependencyTimeoutException, InvalidArnException, KMSInternalException, LimitExceededException, MalformedPolicyDocumentException, TagException, UnsupportedOperationException, XksKeyAlreadyInUseException, XksKeyInvalidConfigurationException, XksKeyNotFoundException
+    def create_key(self, CreateKeyRequest input) -> str:
+        auto body = create_key_request_to_json(input)
+        return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "CreateKey", body)
+
+    # Decapsulate
+    # errors: DependencyTimeoutException, DisabledException, DryRunOperationException, InvalidCiphertextException, InvalidGrantTokenException, InvalidKeyUsageException, KMSInternalException, KMSInvalidStateException, KeyUnavailableException, NotFoundException
+    def decapsulate(self, DecapsulateRequest input) -> str:
+        auto body = decapsulate_request_to_json(input)
+        return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "Decapsulate", body)
+
+    # Decrypt
+    # errors: DependencyTimeoutException, DisabledException, DryRunOperationException, IncorrectKeyException, InvalidCiphertextException, InvalidGrantTokenException, InvalidKeyUsageException, KMSInternalException, KMSInvalidStateException, KeyUnavailableException, NotFoundException
+    def decrypt(self, DecryptRequest input) -> str:
+        auto body = decrypt_request_to_json(input)
+        return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "Decrypt", body)
+
     # DeleteAlias
     # errors: DependencyTimeoutException, KMSInternalException, KMSInvalidStateException, NotFoundException
     def delete_alias(self, DeleteAliasRequest input) -> str:
@@ -1584,11 +2156,23 @@ struct KMSClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "DeleteImportedKeyMaterial", body)
 
+    # DeriveSharedSecret
+    # errors: DependencyTimeoutException, DisabledException, DryRunOperationException, InvalidGrantTokenException, InvalidKeyUsageException, KMSInternalException, KMSInvalidStateException, KeyUnavailableException, NotFoundException
+    def derive_shared_secret(self, DeriveSharedSecretRequest input) -> str:
+        auto body = derive_shared_secret_request_to_json(input)
+        return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "DeriveSharedSecret", body)
+
     # DescribeCustomKeyStores
     # errors: CustomKeyStoreNotFoundException, InvalidMarkerException, KMSInternalException
     def describe_custom_key_stores(self, DescribeCustomKeyStoresRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "DescribeCustomKeyStores", body)
+
+    # DescribeKey
+    # errors: DependencyTimeoutException, InvalidArnException, KMSInternalException, NotFoundException
+    def describe_key(self, DescribeKeyRequest input) -> str:
+        auto body = describe_key_request_to_json(input)
+        return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "DescribeKey", body)
 
     # DisableKey
     # errors: DependencyTimeoutException, InvalidArnException, KMSInternalException, KMSInvalidStateException, NotFoundException
@@ -1620,6 +2204,48 @@ struct KMSClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "EnableKeyRotation", body)
 
+    # Encapsulate
+    # errors: DependencyTimeoutException, DisabledException, DryRunOperationException, InvalidGrantTokenException, InvalidKeyUsageException, KMSInternalException, KMSInvalidStateException, KeyUnavailableException, NotFoundException
+    def encapsulate(self, EncapsulateRequest input) -> str:
+        auto body = encapsulate_request_to_json(input)
+        return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "Encapsulate", body)
+
+    # Encrypt
+    # errors: DependencyTimeoutException, DisabledException, DryRunOperationException, InvalidGrantTokenException, InvalidKeyUsageException, KMSInternalException, KMSInvalidStateException, KeyUnavailableException, NotFoundException
+    def encrypt(self, EncryptRequest input) -> str:
+        auto body = encrypt_request_to_json(input)
+        return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "Encrypt", body)
+
+    # GenerateDataKey
+    # errors: DependencyTimeoutException, DisabledException, DryRunOperationException, InvalidGrantTokenException, InvalidKeyUsageException, KMSInternalException, KMSInvalidStateException, KeyUnavailableException, NotFoundException
+    def generate_data_key(self, GenerateDataKeyRequest input) -> str:
+        auto body = generate_data_key_request_to_json(input)
+        return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "GenerateDataKey", body)
+
+    # GenerateDataKeyPair
+    # errors: DependencyTimeoutException, DisabledException, DryRunOperationException, InvalidGrantTokenException, InvalidKeyUsageException, KMSInternalException, KMSInvalidStateException, KeyUnavailableException, NotFoundException, UnsupportedOperationException
+    def generate_data_key_pair(self, GenerateDataKeyPairRequest input) -> str:
+        auto body = generate_data_key_pair_request_to_json(input)
+        return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "GenerateDataKeyPair", body)
+
+    # GenerateDataKeyPairWithoutPlaintext
+    # errors: DependencyTimeoutException, DisabledException, DryRunOperationException, InvalidGrantTokenException, InvalidKeyUsageException, KMSInternalException, KMSInvalidStateException, KeyUnavailableException, NotFoundException, UnsupportedOperationException
+    def generate_data_key_pair_without_plaintext(self, GenerateDataKeyPairWithoutPlaintextRequest input) -> str:
+        auto body = generate_data_key_pair_without_plaintext_request_to_json(input)
+        return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "GenerateDataKeyPairWithoutPlaintext", body)
+
+    # GenerateDataKeyWithoutPlaintext
+    # errors: DependencyTimeoutException, DisabledException, DryRunOperationException, InvalidGrantTokenException, InvalidKeyUsageException, KMSInternalException, KMSInvalidStateException, KeyUnavailableException, NotFoundException
+    def generate_data_key_without_plaintext(self, GenerateDataKeyWithoutPlaintextRequest input) -> str:
+        auto body = generate_data_key_without_plaintext_request_to_json(input)
+        return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "GenerateDataKeyWithoutPlaintext", body)
+
+    # GenerateMac
+    # errors: DisabledException, DryRunOperationException, InvalidGrantTokenException, InvalidKeyUsageException, KMSInternalException, KMSInvalidStateException, KeyUnavailableException, NotFoundException
+    def generate_mac(self, GenerateMacRequest input) -> str:
+        auto body = generate_mac_request_to_json(input)
+        return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "GenerateMac", body)
+
     # GenerateRandom
     # errors: CustomKeyStoreInvalidStateException, CustomKeyStoreNotFoundException, DependencyTimeoutException, KMSInternalException, UnsupportedOperationException
     def generate_random(self, GenerateRandomRequest input) -> str:
@@ -1649,6 +2275,12 @@ struct KMSClient:
     def get_parameters_for_import(self, GetParametersForImportRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "GetParametersForImport", body)
+
+    # GetPublicKey
+    # errors: DependencyTimeoutException, DisabledException, InvalidArnException, InvalidGrantTokenException, InvalidKeyUsageException, KMSInternalException, KMSInvalidStateException, KeyUnavailableException, NotFoundException, UnsupportedOperationException
+    def get_public_key(self, GetPublicKeyRequest input) -> str:
+        auto body = get_public_key_request_to_json(input)
+        return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "GetPublicKey", body)
 
     # ImportKeyMaterial
     # errors: DependencyTimeoutException, ExpiredImportTokenException, IncorrectKeyMaterialException, InvalidArnException, InvalidCiphertextException, InvalidImportTokenException, KMSInternalException, KMSInvalidStateException, NotFoundException, UnsupportedOperationException
@@ -1704,6 +2336,18 @@ struct KMSClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "PutKeyPolicy", body)
 
+    # ReEncrypt
+    # errors: DependencyTimeoutException, DisabledException, DryRunOperationException, IncorrectKeyException, InvalidCiphertextException, InvalidGrantTokenException, InvalidKeyUsageException, KMSInternalException, KMSInvalidStateException, KeyUnavailableException, NotFoundException
+    def re_encrypt(self, ReEncryptRequest input) -> str:
+        auto body = re_encrypt_request_to_json(input)
+        return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "ReEncrypt", body)
+
+    # ReplicateKey
+    # errors: AlreadyExistsException, DisabledException, InvalidArnException, KMSInternalException, KMSInvalidStateException, LimitExceededException, MalformedPolicyDocumentException, NotFoundException, TagException, UnsupportedOperationException
+    def replicate_key(self, ReplicateKeyRequest input) -> str:
+        auto body = replicate_key_request_to_json(input)
+        return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "ReplicateKey", body)
+
     # RetireGrant
     # errors: DependencyTimeoutException, DryRunOperationException, InvalidArnException, InvalidGrantIdException, InvalidGrantTokenException, KMSInternalException, KMSInvalidStateException, NotFoundException
     def retire_grant(self, RetireGrantRequest input) -> str:
@@ -1728,6 +2372,24 @@ struct KMSClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "ScheduleKeyDeletion", body)
 
+    # Sign
+    # errors: DependencyTimeoutException, DisabledException, DryRunOperationException, InvalidGrantTokenException, InvalidKeyUsageException, KMSInternalException, KMSInvalidStateException, KeyUnavailableException, NotFoundException
+    def sign(self, SignRequest input) -> str:
+        auto body = sign_request_to_json(input)
+        return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "Sign", body)
+
+    # TagResource
+    # errors: InvalidArnException, KMSInternalException, KMSInvalidStateException, LimitExceededException, NotFoundException, TagException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: InvalidArnException, KMSInternalException, KMSInvalidStateException, NotFoundException, TagException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "UntagResource", body)
+
     # UpdateAlias
     # errors: DependencyTimeoutException, KMSInternalException, KMSInvalidStateException, LimitExceededException, NotFoundException
     def update_alias(self, UpdateAliasRequest input) -> str:
@@ -1751,6 +2413,18 @@ struct KMSClient:
     def update_primary_region(self, UpdatePrimaryRegionRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "UpdatePrimaryRegion", body)
+
+    # Verify
+    # errors: DependencyTimeoutException, DisabledException, DryRunOperationException, InvalidGrantTokenException, InvalidKeyUsageException, KMSInternalException, KMSInvalidSignatureException, KMSInvalidStateException, KeyUnavailableException, NotFoundException
+    def verify(self, VerifyRequest input) -> str:
+        auto body = verify_request_to_json(input)
+        return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "Verify", body)
+
+    # VerifyMac
+    # errors: DisabledException, DryRunOperationException, InvalidGrantTokenException, InvalidKeyUsageException, KMSInternalException, KMSInvalidMacException, KMSInvalidStateException, KeyUnavailableException, NotFoundException
+    def verify_mac(self, VerifyMacRequest input) -> str:
+        auto body = verify_mac_request_to_json(input)
+        return awsjson.awsjson_request_now(kms_protocol(), self.creds, self.region, "VerifyMac", body)
 
     # Paginator for DescribeCustomKeyStores — yields each Response page, threading the
     # NextMarker -> Marker continuation token until the output token is absent (result key: CustomKeyStores).

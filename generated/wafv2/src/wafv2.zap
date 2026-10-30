@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 59 operations — 41 with a generated method,
-#   18 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 59 operations — 57 with a generated method,
+#   2 skipped (input has a non-string-keyed map or free-form document member).
 #   292 structs (162 @derive(Json)), 44 enums, 20 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -27,6 +27,7 @@
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
 import aws_core.awsjson
+import base64
 
 # The WAFV2 awsJson protocol: version 1.1, API id "AWSWAF_20190729".
 def wafv2_protocol() -> awsjson.AwsJson:
@@ -752,16 +753,18 @@ enum UsageOfAction:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) TokenDomains: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TokenDomains: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct APIKeySummary:
     Optional[list[str]] TokenDomains
     Optional[str] APIKey
     Optional[DateTime] CreationTimestamp
     Optional[int64] Version
 
-# no @derive(Json): member(s) RequestInspection: RequestInspectionACFP, ResponseInspection: ResponseInspection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestInspection: RequestInspectionACFP, ResponseInspection: ResponseInspection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AWSManagedRulesACFPRuleSet:
     str CreationPath
     str RegistrationPagePath
@@ -769,16 +772,18 @@ struct AWSManagedRulesACFPRuleSet:
     Optional[ResponseInspection] ResponseInspection
     Optional[bool] EnableRegexInPath
 
-# no @derive(Json): member(s) ResponseInspection: ResponseInspection not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResponseInspection: ResponseInspection not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AWSManagedRulesATPRuleSet:
     str LoginPath
     Optional[RequestInspection] RequestInspection
     Optional[ResponseInspection] ResponseInspection
     Optional[bool] EnableRegexInPath
 
-# no @derive(Json): member(s) ClientSideActionConfig: ClientSideActionConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClientSideActionConfig: ClientSideActionConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AWSManagedRulesAntiDDoSRuleSet:
     ClientSideActionConfig ClientSideActionConfig
     Optional[SensitivityToAct] SensitivityToBlock
@@ -806,29 +811,34 @@ struct AllQueryArguments:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) CustomRequestHandling: CustomRequestHandling not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomRequestHandling: CustomRequestHandling not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AllowAction:
     Optional[CustomRequestHandling] CustomRequestHandling
 
-# no @derive(Json): member(s) Statements: list[Statement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Statements: list[Statement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AndStatement:
     list[Statement] Statements
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationAttribute:
     Optional[str] Name
     Optional[list[str]] Values
 
-# no @derive(Json): member(s) Attributes: list[ApplicationAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[ApplicationAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApplicationConfig:
     Optional[list[ApplicationAttribute]] Attributes
 
-# no @derive(Json): member(s) AsnList: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AsnList: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AsnMatchStatement:
     list[int64] AsnList
     Optional[ForwardedIPConfig] ForwardedIPConfig
@@ -843,13 +853,15 @@ struct AssociateWebACLResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) RequestBody: dict[AssociatedResourceType, RequestBodyAssociatedResourceTypeConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RequestBody: dict[AssociatedResourceType, RequestBodyAssociatedResourceTypeConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociationConfig:
     Optional[dict[AssociatedResourceType, RequestBodyAssociatedResourceTypeConfig]] RequestBody
 
-# no @derive(Json): member(s) CustomResponse: CustomResponse not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomResponse: CustomResponse not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BlockAction:
     Optional[CustomResponse] CustomResponse
 
@@ -863,8 +875,9 @@ struct BotStatistics:
     int64 RequestCount
     float64 Percentage
 
-# no @derive(Json): member(s) FieldToMatch: FieldToMatch, TextTransformations: list[TextTransformation], PreParseTextTransformations: list[PreParseTextTransformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldToMatch: FieldToMatch, TextTransformations: list[TextTransformation], PreParseTextTransformations: list[PreParseTextTransformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ByteMatchStatement:
     bytes SearchString
     FieldToMatch FieldToMatch
@@ -872,8 +885,9 @@ struct ByteMatchStatement:
     Optional[list[PreParseTextTransformation]] PreParseTextTransformations
     PositionalConstraint PositionalConstraint
 
-# no @derive(Json): member(s) CustomRequestHandling: CustomRequestHandling not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomRequestHandling: CustomRequestHandling not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CaptchaAction:
     Optional[CustomRequestHandling] CustomRequestHandling
 
@@ -887,8 +901,9 @@ struct CaptchaResponse:
     Optional[int64] SolveTimestamp
     Optional[FailureReason] FailureReason
 
-# no @derive(Json): member(s) CustomRequestHandling: CustomRequestHandling not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomRequestHandling: CustomRequestHandling not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChallengeAction:
     Optional[CustomRequestHandling] CustomRequestHandling
 
@@ -902,8 +917,9 @@ struct ChallengeResponse:
     Optional[int64] SolveTimestamp
     Optional[FailureReason] FailureReason
 
-# no @derive(Json): member(s) Rules: list[Rule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[Rule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CheckCapacityRequest:
     Scope Scope
     list[Rule] Rules
@@ -912,15 +928,17 @@ struct CheckCapacityRequest:
 struct CheckCapacityResponse:
     Optional[int64] Capacity
 
-# no @derive(Json): member(s) ExemptUriRegularExpressions: list[Regex] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExemptUriRegularExpressions: list[Regex] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClientSideAction:
     UsageOfAction UsageOfAction
     Optional[SensitivityToAct] Sensitivity
     Optional[list[Regex]] ExemptUriRegularExpressions
 
-# no @derive(Json): member(s) Challenge: ClientSideAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Challenge: ClientSideAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClientSideActionConfig:
     ClientSideAction Challenge
 
@@ -929,27 +947,31 @@ struct Condition:
     Optional[ActionCondition] ActionCondition
     Optional[LabelNameCondition] LabelNameCondition
 
-# no @derive(Json): member(s) IncludedCookies: list[str], ExcludedCookies: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IncludedCookies: list[str], ExcludedCookies: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CookieMatchPattern:
     Optional[All] All
     Optional[list[str]] IncludedCookies
     Optional[list[str]] ExcludedCookies
 
-# no @derive(Json): member(s) MatchPattern: CookieMatchPattern not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchPattern: CookieMatchPattern not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Cookies:
     CookieMatchPattern MatchPattern
     MapMatchScope MatchScope
     OversizeHandling OversizeHandling
 
-# no @derive(Json): member(s) CustomRequestHandling: CustomRequestHandling not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CustomRequestHandling: CustomRequestHandling not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CountAction:
     Optional[CustomRequestHandling] CustomRequestHandling
 
-# no @derive(Json): member(s) TokenDomains: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TokenDomains: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAPIKeyRequest:
     Scope Scope
     list[str] TokenDomains
@@ -958,8 +980,9 @@ struct CreateAPIKeyRequest:
 struct CreateAPIKeyResponse:
     Optional[str] APIKey
 
-# no @derive(Json): member(s) Addresses: list[str], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Addresses: list[str], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateIPSetRequest:
     str Name
     Scope Scope
@@ -972,8 +995,9 @@ struct CreateIPSetRequest:
 struct CreateIPSetResponse:
     Optional[IPSetSummary] Summary
 
-# no @derive(Json): member(s) RegularExpressionList: list[Regex], Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegularExpressionList: list[Regex], Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRegexPatternSetRequest:
     str Name
     Scope Scope
@@ -985,8 +1009,9 @@ struct CreateRegexPatternSetRequest:
 struct CreateRegexPatternSetResponse:
     Optional[RegexPatternSetSummary] Summary
 
-# no @derive(Json): member(s) Rules: list[Rule], Tags: list[Tag], CustomResponseBodies: dict[str, CustomResponseBody], MonetizationConfig: MonetizationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[Rule], Tags: list[Tag], CustomResponseBodies: dict[str, CustomResponseBody], MonetizationConfig: MonetizationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRuleGroupRequest:
     str Name
     Scope Scope
@@ -1002,8 +1027,9 @@ struct CreateRuleGroupRequest:
 struct CreateRuleGroupResponse:
     Optional[RuleGroupSummary] Summary
 
-# no @derive(Json): member(s) DefaultAction: DefaultAction, Rules: list[Rule], DataProtectionConfig: DataProtectionConfig, Tags: list[Tag], CustomResponseBodies: dict[str, CustomResponseBody], TokenDomains: list[str], AssociationConfig: AssociationConfig, ApplicationConfig: ApplicationConfig, MonetizationConfig: MonetizationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultAction: DefaultAction, Rules: list[Rule], DataProtectionConfig: DataProtectionConfig, Tags: list[Tag], CustomResponseBodies: dict[str, CustomResponseBody], TokenDomains: list[str], AssociationConfig: AssociationConfig, ApplicationConfig: ApplicationConfig, MonetizationConfig: MonetizationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWebACLRequest:
     str Name
     Scope Scope
@@ -1026,8 +1052,9 @@ struct CreateWebACLRequest:
 struct CreateWebACLResponse:
     Optional[WebACLSummary] Summary
 
-# no @derive(Json): member(s) PaymentNetworks: list[PaymentNetwork] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PaymentNetworks: list[PaymentNetwork] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CryptoConfig:
     list[PaymentNetwork] PaymentNetworks
 
@@ -1036,13 +1063,15 @@ struct CustomHTTPHeader:
     str Name
     str Value
 
-# no @derive(Json): member(s) InsertHeaders: list[CustomHTTPHeader] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InsertHeaders: list[CustomHTTPHeader] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomRequestHandling:
     list[CustomHTTPHeader] InsertHeaders
 
-# no @derive(Json): member(s) ResponseHeaders: list[CustomHTTPHeader] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResponseHeaders: list[CustomHTTPHeader] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomResponse:
     int64 ResponseCode
     Optional[str] CustomResponseBodyKey
@@ -1063,21 +1092,24 @@ struct DataPointEntry:
     Optional[str] Intent
     Optional[str] GroupByValue
 
-# no @derive(Json): member(s) Field: FieldToProtect not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Field: FieldToProtect not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataProtection:
     FieldToProtect Field
     DataProtectionAction Action
     Optional[bool] ExcludeRuleMatchDetails
     Optional[bool] ExcludeRateBasedDetails
 
-# no @derive(Json): member(s) DataProtections: list[DataProtection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataProtections: list[DataProtection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataProtectionConfig:
     list[DataProtection] DataProtections
 
-# no @derive(Json): member(s) Block: BlockAction, Allow: AllowAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Block: BlockAction, Allow: AllowAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DefaultAction:
     Optional[BlockAction] Block
     Optional[AllowAction] Allow
@@ -1173,8 +1205,9 @@ struct DeleteWebACLResponse:
 struct DescribeAllManagedProductsRequest:
     Scope Scope
 
-# no @derive(Json): member(s) ManagedProducts: list[ManagedProductDescriptor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ManagedProducts: list[ManagedProductDescriptor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAllManagedProductsResponse:
     Optional[list[ManagedProductDescriptor]] ManagedProducts
 
@@ -1183,8 +1216,9 @@ struct DescribeManagedProductsByVendorRequest:
     str VendorName
     Scope Scope
 
-# no @derive(Json): member(s) ManagedProducts: list[ManagedProductDescriptor] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ManagedProducts: list[ManagedProductDescriptor] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeManagedProductsByVendorResponse:
     Optional[list[ManagedProductDescriptor]] ManagedProducts
 
@@ -1195,8 +1229,9 @@ struct DescribeManagedRuleGroupRequest:
     Scope Scope
     Optional[str] VersionName
 
-# no @derive(Json): member(s) Rules: list[RuleSummary], AvailableLabels: list[LabelSummary], ConsumedLabels: list[LabelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[RuleSummary], AvailableLabels: list[LabelSummary], ConsumedLabels: list[LabelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeManagedRuleGroupResponse:
     Optional[str] VersionName
     Optional[str] SnsTopicArn
@@ -1228,8 +1263,9 @@ struct EmailField:
 struct ExcludedRule:
     str Name
 
-# no @derive(Json): member(s) JsonBody: JsonBody, Headers: Headers, Cookies: Cookies not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) JsonBody: JsonBody, Headers: Headers, Cookies: Cookies not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FieldToMatch:
     Optional[SingleHeader] SingleHeader
     Optional[SingleQueryArgument] SingleQueryArgument
@@ -1246,14 +1282,16 @@ struct FieldToMatch:
     Optional[JA4Fingerprint] JA4Fingerprint
     Optional[UriFragment] UriFragment
 
-# no @derive(Json): member(s) FieldKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FieldToProtect:
     FieldToProtectType FieldType
     Optional[list[str]] FieldKeys
 
-# no @derive(Json): member(s) Conditions: list[Condition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Conditions: list[Condition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filter:
     FilterBehavior Behavior
     FilterRequirement Requirement
@@ -1265,8 +1303,9 @@ struct FilterSource:
     Optional[str] BotOrganization
     Optional[str] BotName
 
-# no @derive(Json): member(s) FirewallManagerStatement: FirewallManagerStatement, OverrideAction: OverrideAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FirewallManagerStatement: FirewallManagerStatement, OverrideAction: OverrideAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FirewallManagerRuleGroup:
     str Name
     int64 Priority
@@ -1274,8 +1313,9 @@ struct FirewallManagerRuleGroup:
     OverrideAction OverrideAction
     VisibilityConfig VisibilityConfig
 
-# no @derive(Json): member(s) ManagedRuleGroupStatement: ManagedRuleGroupStatement, RuleGroupReferenceStatement: RuleGroupReferenceStatement not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ManagedRuleGroupStatement: ManagedRuleGroupStatement, RuleGroupReferenceStatement: RuleGroupReferenceStatement not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FirewallManagerStatement:
     Optional[ManagedRuleGroupStatement] ManagedRuleGroupStatement
     Optional[RuleGroupReferenceStatement] RuleGroupReferenceStatement
@@ -1294,8 +1334,9 @@ struct GenerateMobileSdkReleaseUrlRequest:
 struct GenerateMobileSdkReleaseUrlResponse:
     Optional[str] Url
 
-# no @derive(Json): member(s) CountryCodes: list[CountryCode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CountryCodes: list[CountryCode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GeoMatchStatement:
     Optional[list[CountryCode]] CountryCodes
     Optional[ForwardedIPConfig] ForwardedIPConfig
@@ -1305,8 +1346,9 @@ struct GetDecryptedAPIKeyRequest:
     Scope Scope
     str APIKey
 
-# no @derive(Json): member(s) TokenDomains: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TokenDomains: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDecryptedAPIKeyResponse:
     Optional[list[str]] TokenDomains
     Optional[DateTime] CreationTimestamp
@@ -1317,8 +1359,9 @@ struct GetIPSetRequest:
     Scope Scope
     str Id
 
-# no @derive(Json): member(s) IPSet: IPSet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IPSet: IPSet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIPSetResponse:
     Optional[IPSet] IPSet
     Optional[str] LockToken
@@ -1329,8 +1372,9 @@ struct GetLoggingConfigurationRequest:
     Optional[str] LogType
     Optional[LogScope] LogScope
 
-# no @derive(Json): member(s) LoggingConfiguration: LoggingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LoggingConfiguration: LoggingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLoggingConfigurationResponse:
     Optional[LoggingConfiguration] LoggingConfiguration
 
@@ -1340,8 +1384,9 @@ struct GetManagedRuleSetRequest:
     Scope Scope
     str Id
 
-# no @derive(Json): member(s) ManagedRuleSet: ManagedRuleSet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ManagedRuleSet: ManagedRuleSet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetManagedRuleSetResponse:
     Optional[ManagedRuleSet] ManagedRuleSet
     Optional[str] LockToken
@@ -1351,8 +1396,9 @@ struct GetMobileSdkReleaseRequest:
     Platform Platform
     str ReleaseVersion
 
-# no @derive(Json): member(s) MobileSdkRelease: MobileSdkRelease not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MobileSdkRelease: MobileSdkRelease not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMobileSdkReleaseResponse:
     Optional[MobileSdkRelease] MobileSdkRelease
 
@@ -1372,8 +1418,9 @@ struct GetRateBasedStatementManagedKeysRequest:
     Optional[str] RuleGroupRuleName
     str RuleName
 
-# no @derive(Json): member(s) ManagedKeysIPV4: RateBasedStatementManagedKeysIPSet, ManagedKeysIPV6: RateBasedStatementManagedKeysIPSet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ManagedKeysIPV4: RateBasedStatementManagedKeysIPSet, ManagedKeysIPV6: RateBasedStatementManagedKeysIPSet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRateBasedStatementManagedKeysResponse:
     Optional[RateBasedStatementManagedKeysIPSet] ManagedKeysIPV4
     Optional[RateBasedStatementManagedKeysIPSet] ManagedKeysIPV6
@@ -1384,14 +1431,16 @@ struct GetRegexPatternSetRequest:
     Scope Scope
     str Id
 
-# no @derive(Json): member(s) RegexPatternSet: RegexPatternSet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegexPatternSet: RegexPatternSet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRegexPatternSetResponse:
     Optional[RegexPatternSet] RegexPatternSet
     Optional[str] LockToken
 
-# no @derive(Json): member(s) Filters: list[MonetizationFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[MonetizationFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRevenueStatisticsRequest:
     RankingStatisticType StatisticType
     TimeWindow TimeWindow
@@ -1404,15 +1453,17 @@ struct GetRevenueStatisticsRequest:
     Optional[RankingSortBy] SortBy
     Optional[SortOrder] SortOrder
 
-# no @derive(Json): member(s) SourceStatistics: list[SourceStatistics], RevenuePathStatistics: list[RevenuePathStatistics] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceStatistics: list[SourceStatistics], RevenuePathStatistics: list[RevenuePathStatistics] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRevenueStatisticsResponse:
     Optional[list[SourceStatistics]] SourceStatistics
     Optional[list[RevenuePathStatistics]] RevenuePathStatistics
     Optional[str] NextMarker
 
-# no @derive(Json): member(s) Filters: list[MonetizationFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[MonetizationFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRevenueStatisticsSummaryRequest:
     TimeWindow TimeWindow
     Scope Scope
@@ -1423,8 +1474,9 @@ struct GetRevenueStatisticsSummaryRequest:
 struct GetRevenueStatisticsSummaryResponse:
     Optional[RevenueBreakdown] RevenueBreakdown
 
-# no @derive(Json): member(s) Filters: list[MonetizationFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[MonetizationFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRevenueStatisticsTimeSeriesRequest:
     TimeSeriesStatisticType StatisticType
     TimeWindow TimeWindow
@@ -1436,8 +1488,9 @@ struct GetRevenueStatisticsTimeSeriesRequest:
     Optional[int64] Limit
     Optional[str] NextMarker
 
-# no @derive(Json): member(s) DataPoints: list[DataPointEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataPoints: list[DataPointEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRevenueStatisticsTimeSeriesResponse:
     Optional[list[DataPointEntry]] DataPoints
     Optional[str] NextMarker
@@ -1449,8 +1502,9 @@ struct GetRuleGroupRequest:
     Optional[str] Id
     Optional[str] ARN
 
-# no @derive(Json): member(s) RuleGroup: RuleGroup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleGroup: RuleGroup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRuleGroupResponse:
     Optional[RuleGroup] RuleGroup
     Optional[str] LockToken
@@ -1463,8 +1517,9 @@ struct GetSampledRequestsRequest:
     TimeWindow TimeWindow
     int64 MaxItems
 
-# no @derive(Json): member(s) SampledRequests: list[SampledHTTPRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SampledRequests: list[SampledHTTPRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSampledRequestsResponse:
     Optional[list[SampledHTTPRequest]] SampledRequests
     Optional[int64] PopulationSize
@@ -1483,8 +1538,9 @@ struct GetTopPathStatisticsByTrafficRequest:
     int64 NumberOfTopTrafficBotsPerPath
     Optional[str] NextMarker
 
-# no @derive(Json): member(s) PathStatistics: list[PathStatistics], TopCategories: list[PathStatistics] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PathStatistics: list[PathStatistics], TopCategories: list[PathStatistics] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTopPathStatisticsByTrafficResponse:
     list[PathStatistics] PathStatistics
     int64 TotalRequestCount
@@ -1495,8 +1551,9 @@ struct GetTopPathStatisticsByTrafficResponse:
 struct GetWebACLForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) WebACL: WebACL not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WebACL: WebACL not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWebACLForResourceResponse:
     Optional[WebACL] WebACL
 
@@ -1507,8 +1564,9 @@ struct GetWebACLRequest:
     Optional[str] Id
     Optional[str] ARN
 
-# no @derive(Json): member(s) WebACL: WebACL not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WebACL: WebACL not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWebACLResponse:
     Optional[WebACL] WebACL
     Optional[str] LockToken
@@ -1519,8 +1577,9 @@ struct HTTPHeader:
     Optional[str] Name
     Optional[str] Value
 
-# no @derive(Json): member(s) Headers: list[HTTPHeader] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Headers: list[HTTPHeader] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HTTPRequest:
     Optional[str] ClientIP
     Optional[str] Country
@@ -1529,8 +1588,9 @@ struct HTTPRequest:
     Optional[str] HTTPVersion
     Optional[list[HTTPHeader]] Headers
 
-# no @derive(Json): member(s) IncludedHeaders: list[str], ExcludedHeaders: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IncludedHeaders: list[str], ExcludedHeaders: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HeaderMatchPattern:
     Optional[All] All
     Optional[list[str]] IncludedHeaders
@@ -1540,15 +1600,17 @@ struct HeaderMatchPattern:
 struct HeaderOrder:
     OversizeHandling OversizeHandling
 
-# no @derive(Json): member(s) MatchPattern: HeaderMatchPattern not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchPattern: HeaderMatchPattern not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Headers:
     HeaderMatchPattern MatchPattern
     MapMatchScope MatchScope
     OversizeHandling OversizeHandling
 
-# no @derive(Json): member(s) Addresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Addresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IPSet:
     str Name
     str Id
@@ -1588,16 +1650,18 @@ struct JA3Fingerprint:
 struct JA4Fingerprint:
     FallbackBehavior FallbackBehavior
 
-# no @derive(Json): member(s) MatchPattern: JsonMatchPattern not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchPattern: JsonMatchPattern not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JsonBody:
     JsonMatchPattern MatchPattern
     JsonMatchScope MatchScope
     Optional[BodyParsingFallbackBehavior] InvalidFallbackBehavior
     Optional[OversizeHandling] OversizeHandling
 
-# no @derive(Json): member(s) IncludedPaths: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IncludedPaths: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JsonMatchPattern:
     Optional[All] All
     Optional[list[str]] IncludedPaths
@@ -1625,8 +1689,9 @@ struct ListAPIKeysRequest:
     Optional[str] NextMarker
     Optional[int64] Limit
 
-# no @derive(Json): member(s) APIKeySummaries: list[APIKeySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) APIKeySummaries: list[APIKeySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAPIKeysResponse:
     Optional[str] NextMarker
     Optional[list[APIKeySummary]] APIKeySummaries
@@ -1640,8 +1705,9 @@ struct ListAvailableManagedRuleGroupVersionsRequest:
     Optional[str] NextMarker
     Optional[int64] Limit
 
-# no @derive(Json): member(s) Versions: list[ManagedRuleGroupVersion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Versions: list[ManagedRuleGroupVersion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAvailableManagedRuleGroupVersionsResponse:
     Optional[str] NextMarker
     Optional[list[ManagedRuleGroupVersion]] Versions
@@ -1653,8 +1719,9 @@ struct ListAvailableManagedRuleGroupsRequest:
     Optional[str] NextMarker
     Optional[int64] Limit
 
-# no @derive(Json): member(s) ManagedRuleGroups: list[ManagedRuleGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ManagedRuleGroups: list[ManagedRuleGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAvailableManagedRuleGroupsResponse:
     Optional[str] NextMarker
     Optional[list[ManagedRuleGroupSummary]] ManagedRuleGroups
@@ -1665,8 +1732,9 @@ struct ListIPSetsRequest:
     Optional[str] NextMarker
     Optional[int64] Limit
 
-# no @derive(Json): member(s) IPSets: list[IPSetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IPSets: list[IPSetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListIPSetsResponse:
     Optional[str] NextMarker
     Optional[list[IPSetSummary]] IPSets
@@ -1678,8 +1746,9 @@ struct ListLoggingConfigurationsRequest:
     Optional[int64] Limit
     Optional[LogScope] LogScope
 
-# no @derive(Json): member(s) LoggingConfigurations: list[LoggingConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LoggingConfigurations: list[LoggingConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLoggingConfigurationsResponse:
     Optional[list[LoggingConfiguration]] LoggingConfigurations
     Optional[str] NextMarker
@@ -1690,8 +1759,9 @@ struct ListManagedRuleSetsRequest:
     Optional[str] NextMarker
     Optional[int64] Limit
 
-# no @derive(Json): member(s) ManagedRuleSets: list[ManagedRuleSetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ManagedRuleSets: list[ManagedRuleSetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListManagedRuleSetsResponse:
     Optional[str] NextMarker
     Optional[list[ManagedRuleSetSummary]] ManagedRuleSets
@@ -1702,8 +1772,9 @@ struct ListMobileSdkReleasesRequest:
     Optional[str] NextMarker
     Optional[int64] Limit
 
-# no @derive(Json): member(s) ReleaseSummaries: list[ReleaseSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ReleaseSummaries: list[ReleaseSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMobileSdkReleasesResponse:
     Optional[list[ReleaseSummary]] ReleaseSummaries
     Optional[str] NextMarker
@@ -1714,8 +1785,9 @@ struct ListRegexPatternSetsRequest:
     Optional[str] NextMarker
     Optional[int64] Limit
 
-# no @derive(Json): member(s) RegexPatternSets: list[RegexPatternSetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegexPatternSets: list[RegexPatternSetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRegexPatternSetsResponse:
     Optional[str] NextMarker
     Optional[list[RegexPatternSetSummary]] RegexPatternSets
@@ -1725,8 +1797,9 @@ struct ListResourcesForWebACLRequest:
     str WebACLArn
     Optional[ResourceType] ResourceType
 
-# no @derive(Json): member(s) ResourceArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourcesForWebACLResponse:
     Optional[list[str]] ResourceArns
 
@@ -1736,14 +1809,16 @@ struct ListRuleGroupsRequest:
     Optional[str] NextMarker
     Optional[int64] Limit
 
-# no @derive(Json): member(s) RuleGroups: list[RuleGroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleGroups: list[RuleGroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRuleGroupsResponse:
     Optional[str] NextMarker
     Optional[list[RuleGroupSummary]] RuleGroups
 
-# no @derive(Json): member(s) Filters: list[MonetizationFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[MonetizationFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSettlementRecordsRequest:
     TimeWindow TimeWindow
     Scope Scope
@@ -1754,8 +1829,9 @@ struct ListSettlementRecordsRequest:
     Optional[int64] Limit
     Optional[str] NextMarker
 
-# no @derive(Json): member(s) Settlements: list[SettlementRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Settlements: list[SettlementRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSettlementRecordsResponse:
     Optional[list[SettlementRecord]] Settlements
     Optional[str] NextMarker
@@ -1766,8 +1842,9 @@ struct ListTagsForResourceRequest:
     Optional[int64] Limit
     str ResourceARN
 
-# no @derive(Json): member(s) TagInfoForResource: TagInfoForResource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagInfoForResource: TagInfoForResource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[str] NextMarker
     Optional[TagInfoForResource] TagInfoForResource
@@ -1778,14 +1855,16 @@ struct ListWebACLsRequest:
     Optional[str] NextMarker
     Optional[int64] Limit
 
-# no @derive(Json): member(s) WebACLs: list[WebACLSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) WebACLs: list[WebACLSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWebACLsResponse:
     Optional[str] NextMarker
     Optional[list[WebACLSummary]] WebACLs
 
-# no @derive(Json): member(s) LogDestinationConfigs: list[str], RedactedFields: list[FieldToMatch], LoggingFilter: LoggingFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LogDestinationConfigs: list[str], RedactedFields: list[FieldToMatch], LoggingFilter: LoggingFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LoggingConfiguration:
     str ResourceArn
     list[str] LogDestinationConfigs
@@ -1795,8 +1874,9 @@ struct LoggingConfiguration:
     Optional[str] LogType
     Optional[LogScope] LogScope
 
-# no @derive(Json): member(s) Filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LoggingFilter:
     list[Filter] Filters
     FilterBehavior DefaultBehavior
@@ -1813,8 +1893,9 @@ struct ManagedProductDescriptor:
     Optional[bool] IsVersioningSupported
     Optional[bool] IsAdvancedManagedRuleSet
 
-# no @derive(Json): member(s) AWSManagedRulesATPRuleSet: AWSManagedRulesATPRuleSet, AWSManagedRulesACFPRuleSet: AWSManagedRulesACFPRuleSet, AWSManagedRulesAntiDDoSRuleSet: AWSManagedRulesAntiDDoSRuleSet not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AWSManagedRulesATPRuleSet: AWSManagedRulesATPRuleSet, AWSManagedRulesACFPRuleSet: AWSManagedRulesACFPRuleSet, AWSManagedRulesAntiDDoSRuleSet: AWSManagedRulesAntiDDoSRuleSet not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedRuleGroupConfig:
     Optional[str] LoginPath
     Optional[PayloadType] PayloadType
@@ -1825,8 +1906,9 @@ struct ManagedRuleGroupConfig:
     Optional[AWSManagedRulesACFPRuleSet] AWSManagedRulesACFPRuleSet
     Optional[AWSManagedRulesAntiDDoSRuleSet] AWSManagedRulesAntiDDoSRuleSet
 
-# no @derive(Json): member(s) ExcludedRules: list[ExcludedRule], ScopeDownStatement: Statement, ManagedRuleGroupConfigs: list[ManagedRuleGroupConfig], RuleActionOverrides: list[RuleActionOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExcludedRules: list[ExcludedRule], ScopeDownStatement: Statement, ManagedRuleGroupConfigs: list[ManagedRuleGroupConfig], RuleActionOverrides: list[RuleActionOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedRuleGroupStatement:
     str VendorName
     str Name
@@ -1848,8 +1930,9 @@ struct ManagedRuleGroupVersion:
     Optional[str] Name
     Optional[DateTime] LastUpdateTimestamp
 
-# no @derive(Json): member(s) PublishedVersions: dict[str, ManagedRuleSetVersion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PublishedVersions: dict[str, ManagedRuleSetVersion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedRuleSet:
     str Name
     str Id
@@ -1882,22 +1965,25 @@ struct Method:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MobileSdkRelease:
     Optional[str] ReleaseVersion
     Optional[DateTime] Timestamp
     Optional[str] ReleaseNotes
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) CryptoConfig: CryptoConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CryptoConfig: CryptoConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MonetizationConfig:
     Optional[CryptoConfig] CryptoConfig
     Optional[CurrencyMode] CurrencyMode
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MonetizationFilter:
     str Name
     list[str] Values
@@ -1911,8 +1997,9 @@ struct NoneAction:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Statement: Statement not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Statement: Statement not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotStatement:
     Statement Statement
 
@@ -1920,13 +2007,15 @@ struct NotStatement:
 struct OnSourceDDoSProtectionConfig:
     LowReputationMode ALBLowReputationMode
 
-# no @derive(Json): member(s) Statements: list[Statement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Statements: list[Statement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OrStatement:
     list[Statement] Statements
 
-# no @derive(Json): member(s) Count: CountAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Count: CountAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OverrideAction:
     Optional[CountAction] Count
     # wire name "None" differs from field; derive rename is a #346 follow-up
@@ -1936,8 +2025,9 @@ struct OverrideAction:
 struct PasswordField:
     str Identifier
 
-# no @derive(Json): member(s) TopBots: list[BotStatistics] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TopBots: list[BotStatistics] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PathStatistics:
     Optional[FilterSource] Source
     str Path
@@ -1945,8 +2035,9 @@ struct PathStatistics:
     float64 Percentage
     Optional[list[BotStatistics]] TopBots
 
-# no @derive(Json): member(s) Prices: list[Price] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Prices: list[Price] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PaymentNetwork:
     BlockchainChain Chain
     str WalletAddress
@@ -1966,18 +2057,21 @@ struct Price:
     str Amount
     str Currency
 
-# no @derive(Json): member(s) LoggingConfiguration: LoggingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LoggingConfiguration: LoggingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutLoggingConfigurationRequest:
     LoggingConfiguration LoggingConfiguration
 
-# no @derive(Json): member(s) LoggingConfiguration: LoggingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LoggingConfiguration: LoggingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutLoggingConfigurationResponse:
     Optional[LoggingConfiguration] LoggingConfiguration
 
-# no @derive(Json): member(s) VersionsToPublish: dict[str, VersionToPublish] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VersionsToPublish: dict[str, VersionToPublish] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutManagedRuleSetVersionsRequest:
     str Name
     Scope Scope
@@ -2005,8 +2099,9 @@ struct QueryString:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ScopeDownStatement: Statement, CustomKeys: list[RateBasedStatementCustomKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ScopeDownStatement: Statement, CustomKeys: list[RateBasedStatementCustomKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RateBasedStatement:
     int64 Limit
     Optional[int64] EvaluationWindowSec
@@ -2015,8 +2110,9 @@ struct RateBasedStatement:
     Optional[ForwardedIPConfig] ForwardedIPConfig
     Optional[list[RateBasedStatementCustomKey]] CustomKeys
 
-# no @derive(Json): member(s) Header: RateLimitHeader, Cookie: RateLimitCookie, QueryArgument: RateLimitQueryArgument, QueryString: RateLimitQueryString, UriPath: RateLimitUriPath not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Header: RateLimitHeader, Cookie: RateLimitCookie, QueryArgument: RateLimitQueryArgument, QueryString: RateLimitQueryString, UriPath: RateLimitUriPath not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RateBasedStatementCustomKey:
     Optional[RateLimitHeader] Header
     Optional[RateLimitCookie] Cookie
@@ -2031,8 +2127,9 @@ struct RateBasedStatementCustomKey:
     Optional[RateLimitJA4Fingerprint] JA4Fingerprint
     Optional[RateLimitAsn] ASN
 
-# no @derive(Json): member(s) Addresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Addresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RateBasedStatementManagedKeysIPSet:
     Optional[IPAddressVersion] IPAddressVersion
     Optional[list[str]] Addresses
@@ -2042,8 +2139,9 @@ struct RateLimitAsn:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TextTransformations: list[TextTransformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TextTransformations: list[TextTransformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RateLimitCookie:
     str Name
     list[TextTransformation] TextTransformations
@@ -2058,8 +2156,9 @@ struct RateLimitHTTPMethod:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TextTransformations: list[TextTransformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TextTransformations: list[TextTransformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RateLimitHeader:
     str Name
     list[TextTransformation] TextTransformations
@@ -2081,19 +2180,22 @@ struct RateLimitJA4Fingerprint:
 struct RateLimitLabelNamespace:
     str Namespace
 
-# no @derive(Json): member(s) TextTransformations: list[TextTransformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TextTransformations: list[TextTransformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RateLimitQueryArgument:
     str Name
     list[TextTransformation] TextTransformations
 
-# no @derive(Json): member(s) TextTransformations: list[TextTransformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TextTransformations: list[TextTransformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RateLimitQueryString:
     list[TextTransformation] TextTransformations
 
-# no @derive(Json): member(s) TextTransformations: list[TextTransformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TextTransformations: list[TextTransformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RateLimitUriPath:
     list[TextTransformation] TextTransformations
 
@@ -2101,16 +2203,18 @@ struct RateLimitUriPath:
 struct Regex:
     Optional[str] RegexString
 
-# no @derive(Json): member(s) FieldToMatch: FieldToMatch, TextTransformations: list[TextTransformation], PreParseTextTransformations: list[PreParseTextTransformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldToMatch: FieldToMatch, TextTransformations: list[TextTransformation], PreParseTextTransformations: list[PreParseTextTransformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegexMatchStatement:
     str RegexString
     FieldToMatch FieldToMatch
     list[TextTransformation] TextTransformations
     Optional[list[PreParseTextTransformation]] PreParseTextTransformations
 
-# no @derive(Json): member(s) RegularExpressionList: list[Regex] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegularExpressionList: list[Regex] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegexPatternSet:
     Optional[str] Name
     Optional[str] Id
@@ -2118,8 +2222,9 @@ struct RegexPatternSet:
     Optional[str] Description
     Optional[list[Regex]] RegularExpressionList
 
-# no @derive(Json): member(s) FieldToMatch: FieldToMatch, TextTransformations: list[TextTransformation], PreParseTextTransformations: list[PreParseTextTransformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldToMatch: FieldToMatch, TextTransformations: list[TextTransformation], PreParseTextTransformations: list[PreParseTextTransformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegexPatternSetReferenceStatement:
     str ARN
     FieldToMatch FieldToMatch
@@ -2149,8 +2254,9 @@ struct RequestInspection:
     UsernameField UsernameField
     PasswordField PasswordField
 
-# no @derive(Json): member(s) PhoneNumberFields: list[PhoneNumberField], AddressFields: list[AddressField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PhoneNumberFields: list[PhoneNumberField], AddressFields: list[AddressField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RequestInspectionACFP:
     PayloadType PayloadType
     Optional[UsernameField] UsernameField
@@ -2159,36 +2265,41 @@ struct RequestInspectionACFP:
     Optional[list[PhoneNumberField]] PhoneNumberFields
     Optional[list[AddressField]] AddressFields
 
-# no @derive(Json): member(s) StatusCode: ResponseInspectionStatusCode, Header: ResponseInspectionHeader, BodyContains: ResponseInspectionBodyContains, Json: ResponseInspectionJson not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StatusCode: ResponseInspectionStatusCode, Header: ResponseInspectionHeader, BodyContains: ResponseInspectionBodyContains, Json: ResponseInspectionJson not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResponseInspection:
     Optional[ResponseInspectionStatusCode] StatusCode
     Optional[ResponseInspectionHeader] Header
     Optional[ResponseInspectionBodyContains] BodyContains
     Optional[ResponseInspectionJson] Json
 
-# no @derive(Json): member(s) SuccessStrings: list[str], FailureStrings: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SuccessStrings: list[str], FailureStrings: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResponseInspectionBodyContains:
     list[str] SuccessStrings
     list[str] FailureStrings
 
-# no @derive(Json): member(s) SuccessValues: list[str], FailureValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SuccessValues: list[str], FailureValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResponseInspectionHeader:
     str Name
     list[str] SuccessValues
     list[str] FailureValues
 
-# no @derive(Json): member(s) SuccessValues: list[str], FailureValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SuccessValues: list[str], FailureValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResponseInspectionJson:
     str Identifier
     list[str] SuccessValues
     list[str] FailureValues
 
-# no @derive(Json): member(s) SuccessCodes: list[int64], FailureCodes: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SuccessCodes: list[int64], FailureCodes: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResponseInspectionStatusCode:
     list[int64] SuccessCodes
     list[int64] FailureCodes
@@ -2209,8 +2320,9 @@ struct RevenuePathStatistics:
     str Amount
     int64 RequestCount
 
-# no @derive(Json): member(s) Statement: Statement, Action: RuleAction, OverrideAction: OverrideAction, RuleLabels: list[Label] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Statement: Statement, Action: RuleAction, OverrideAction: OverrideAction, RuleLabels: list[Label] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Rule:
     str Name
     int64 Priority
@@ -2222,8 +2334,9 @@ struct Rule:
     Optional[CaptchaConfig] CaptchaConfig
     Optional[ChallengeConfig] ChallengeConfig
 
-# no @derive(Json): member(s) Block: BlockAction, Allow: AllowAction, Count: CountAction, Captcha: CaptchaAction, Challenge: ChallengeAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Block: BlockAction, Allow: AllowAction, Count: CountAction, Captcha: CaptchaAction, Challenge: ChallengeAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleAction:
     Optional[BlockAction] Block
     Optional[AllowAction] Allow
@@ -2232,14 +2345,16 @@ struct RuleAction:
     Optional[ChallengeAction] Challenge
     Optional[MonetizeAction] Monetize
 
-# no @derive(Json): member(s) ActionToUse: RuleAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActionToUse: RuleAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleActionOverride:
     str Name
     RuleAction ActionToUse
 
-# no @derive(Json): member(s) Rules: list[Rule], CustomResponseBodies: dict[str, CustomResponseBody], AvailableLabels: list[LabelSummary], ConsumedLabels: list[LabelSummary], MonetizationConfig: MonetizationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[Rule], CustomResponseBodies: dict[str, CustomResponseBody], AvailableLabels: list[LabelSummary], ConsumedLabels: list[LabelSummary], MonetizationConfig: MonetizationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleGroup:
     str Name
     str Id
@@ -2254,8 +2369,9 @@ struct RuleGroup:
     Optional[list[LabelSummary]] ConsumedLabels
     Optional[MonetizationConfig] MonetizationConfig
 
-# no @derive(Json): member(s) ExcludedRules: list[ExcludedRule], RuleActionOverrides: list[RuleActionOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExcludedRules: list[ExcludedRule], RuleActionOverrides: list[RuleActionOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleGroupReferenceStatement:
     str ARN
     Optional[list[ExcludedRule]] ExcludedRules
@@ -2269,14 +2385,16 @@ struct RuleGroupSummary:
     Optional[str] LockToken
     Optional[str] ARN
 
-# no @derive(Json): member(s) Action: RuleAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Action: RuleAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleSummary:
     Optional[str] Name
     Optional[RuleAction] Action
 
-# no @derive(Json): member(s) Request: HTTPRequest, RequestHeadersInserted: list[HTTPHeader], Labels: list[Label] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Request: HTTPRequest, RequestHeadersInserted: list[HTTPHeader], Labels: list[Label] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SampledHTTPRequest:
     HTTPRequest Request
     int64 Weight
@@ -2318,8 +2436,9 @@ struct SingleHeader:
 struct SingleQueryArgument:
     str Name
 
-# no @derive(Json): member(s) FieldToMatch: FieldToMatch, TextTransformations: list[TextTransformation], PreParseTextTransformations: list[PreParseTextTransformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldToMatch: FieldToMatch, TextTransformations: list[TextTransformation], PreParseTextTransformations: list[PreParseTextTransformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SizeConstraintStatement:
     FieldToMatch FieldToMatch
     ComparisonOperator ComparisonOperator
@@ -2339,16 +2458,18 @@ struct SourceStatistics:
     Optional[bool] Verified
     Optional[str] GroupByValue
 
-# no @derive(Json): member(s) FieldToMatch: FieldToMatch, TextTransformations: list[TextTransformation], PreParseTextTransformations: list[PreParseTextTransformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldToMatch: FieldToMatch, TextTransformations: list[TextTransformation], PreParseTextTransformations: list[PreParseTextTransformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SqliMatchStatement:
     FieldToMatch FieldToMatch
     list[TextTransformation] TextTransformations
     Optional[list[PreParseTextTransformation]] PreParseTextTransformations
     Optional[SensitivityLevel] SensitivityLevel
 
-# no @derive(Json): member(s) ByteMatchStatement: ByteMatchStatement, SqliMatchStatement: SqliMatchStatement, XssMatchStatement: XssMatchStatement, SizeConstraintStatement: SizeConstraintStatement, GeoMatchStatement: GeoMatchStatement, RuleGroupReferenceStatement: RuleGroupReferenceStatement, RegexPatternSetReferenceStatement: RegexPatternSetReferenceStatement, RateBasedStatement: RateBasedStatement, AndStatement: AndStatement, OrStatement: OrStatement, NotStatement: NotStatement, ManagedRuleGroupStatement: ManagedRuleGroupStatement, RegexMatchStatement: RegexMatchStatement, AsnMatchStatement: AsnMatchStatement not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ByteMatchStatement: ByteMatchStatement, SqliMatchStatement: SqliMatchStatement, XssMatchStatement: XssMatchStatement, SizeConstraintStatement: SizeConstraintStatement, GeoMatchStatement: GeoMatchStatement, RuleGroupReferenceStatement: RuleGroupReferenceStatement, RegexPatternSetReferenceStatement: RegexPatternSetReferenceStatement, RateBasedStatement: RateBasedStatement, AndStatement: AndStatement, OrStatement: OrStatement, NotStatement: NotStatement, ManagedRuleGroupStatement: ManagedRuleGroupStatement, RegexMatchStatement: RegexMatchStatement, AsnMatchStatement: AsnMatchStatement not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Statement:
     Optional[ByteMatchStatement] ByteMatchStatement
     Optional[SqliMatchStatement] SqliMatchStatement
@@ -2372,14 +2493,16 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) TagList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagInfoForResource:
     Optional[str] ResourceARN
     Optional[list[Tag]] TagList
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceARN
     list[Tag] Tags
@@ -2399,8 +2522,9 @@ struct TimeWindow:
     DateTime StartTime
     DateTime EndTime
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceARN
     list[str] TagKeys
@@ -2410,8 +2534,9 @@ struct UntagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Addresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Addresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateIPSetRequest:
     str Name
     Scope Scope
@@ -2439,8 +2564,9 @@ struct UpdateManagedRuleSetVersionExpiryDateResponse:
     Optional[DateTime] ExpiryTimestamp
     Optional[str] NextLockToken
 
-# no @derive(Json): member(s) RegularExpressionList: list[Regex] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegularExpressionList: list[Regex] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRegexPatternSetRequest:
     str Name
     Scope Scope
@@ -2453,8 +2579,9 @@ struct UpdateRegexPatternSetRequest:
 struct UpdateRegexPatternSetResponse:
     Optional[str] NextLockToken
 
-# no @derive(Json): member(s) Rules: list[Rule], CustomResponseBodies: dict[str, CustomResponseBody], MonetizationConfig: MonetizationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[Rule], CustomResponseBodies: dict[str, CustomResponseBody], MonetizationConfig: MonetizationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRuleGroupRequest:
     str Name
     Scope Scope
@@ -2470,8 +2597,9 @@ struct UpdateRuleGroupRequest:
 struct UpdateRuleGroupResponse:
     Optional[str] NextLockToken
 
-# no @derive(Json): member(s) DefaultAction: DefaultAction, Rules: list[Rule], DataProtectionConfig: DataProtectionConfig, CustomResponseBodies: dict[str, CustomResponseBody], TokenDomains: list[str], AssociationConfig: AssociationConfig, ApplicationConfig: ApplicationConfig, MonetizationConfig: MonetizationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultAction: DefaultAction, Rules: list[Rule], DataProtectionConfig: DataProtectionConfig, CustomResponseBodies: dict[str, CustomResponseBody], TokenDomains: list[str], AssociationConfig: AssociationConfig, ApplicationConfig: ApplicationConfig, MonetizationConfig: MonetizationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateWebACLRequest:
     str Name
     Scope Scope
@@ -2535,8 +2663,9 @@ struct WAFDuplicateItemException:
 struct WAFExpiredManagedRuleGroupVersionException:
     Optional[str] Message
 
-# no @derive(Json): member(s) DisallowedFeatures: list[DisallowedFeature] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DisallowedFeatures: list[DisallowedFeature] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WAFFeatureNotIncludedInPricingPlanException:
     Optional[str] Message
     Optional[list[DisallowedFeature]] DisallowedFeatures
@@ -2605,8 +2734,9 @@ struct WAFUnavailableEntityException:
 struct WAFUnsupportedAggregateKeyTypeException:
     Optional[str] Message
 
-# no @derive(Json): member(s) DefaultAction: DefaultAction, Rules: list[Rule], DataProtectionConfig: DataProtectionConfig, PreProcessFirewallManagerRuleGroups: list[FirewallManagerRuleGroup], PostProcessFirewallManagerRuleGroups: list[FirewallManagerRuleGroup], CustomResponseBodies: dict[str, CustomResponseBody], TokenDomains: list[str], AssociationConfig: AssociationConfig, ApplicationConfig: ApplicationConfig, MonetizationConfig: MonetizationConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DefaultAction: DefaultAction, Rules: list[Rule], DataProtectionConfig: DataProtectionConfig, PreProcessFirewallManagerRuleGroups: list[FirewallManagerRuleGroup], PostProcessFirewallManagerRuleGroups: list[FirewallManagerRuleGroup], CustomResponseBodies: dict[str, CustomResponseBody], TokenDomains: list[str], AssociationConfig: AssociationConfig, ApplicationConfig: ApplicationConfig, MonetizationConfig: MonetizationConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WebACL:
     str Name
     str Id
@@ -2639,8 +2769,9 @@ struct WebACLSummary:
     Optional[str] LockToken
     Optional[str] ARN
 
-# no @derive(Json): member(s) FieldToMatch: FieldToMatch, TextTransformations: list[TextTransformation], PreParseTextTransformations: list[PreParseTextTransformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldToMatch: FieldToMatch, TextTransformations: list[TextTransformation], PreParseTextTransformations: list[PreParseTextTransformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct XssMatchStatement:
     FieldToMatch FieldToMatch
     list[TextTransformation] TextTransformations
@@ -2719,26 +2850,1239 @@ def wafv2_error_from_code(str code) -> WAFV2Error:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CheckCapacity (input CheckCapacityRequest)
-#   CreateAPIKey (input CreateAPIKeyRequest)
-#   CreateIPSet (input CreateIPSetRequest)
-#   CreateRegexPatternSet (input CreateRegexPatternSetRequest)
-#   CreateRuleGroup (input CreateRuleGroupRequest)
+# Operations skipped in v0 (a member type is not yet serializable — a map
+# with a non-string key, or a free-form document member):
 #   CreateWebACL (input CreateWebACLRequest)
-#   GetRevenueStatistics (input GetRevenueStatisticsRequest)
-#   GetRevenueStatisticsSummary (input GetRevenueStatisticsSummaryRequest)
-#   GetRevenueStatisticsTimeSeries (input GetRevenueStatisticsTimeSeriesRequest)
-#   ListSettlementRecords (input ListSettlementRecordsRequest)
-#   PutLoggingConfiguration (input PutLoggingConfigurationRequest)
-#   PutManagedRuleSetVersions (input PutManagedRuleSetVersionsRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateIPSet (input UpdateIPSetRequest)
-#   UpdateRegexPatternSet (input UpdateRegexPatternSetRequest)
-#   UpdateRuleGroup (input UpdateRuleGroupRequest)
 #   UpdateWebACL (input UpdateWebACLRequest)
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def wafv2_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def wafv2_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def wafv2_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AWSManagedRulesACFPRuleSet to a compact JSON object (declaration order).
+def aws_managed_rules_acfp_rule_set_to_json(AWSManagedRulesACFPRuleSet v) -> str:
+    list[str] parts = []
+    parts.append("\"CreationPath\":" + wafv2_json_str(v.CreationPath))
+    parts.append("\"RegistrationPagePath\":" + wafv2_json_str(v.RegistrationPagePath))
+    parts.append("\"RequestInspection\":" + request_inspection_acfp_to_json(v.RequestInspection))
+    if v.ResponseInspection.is_some():
+        auto u0 = v.ResponseInspection.unwrap()
+        parts.append("\"ResponseInspection\":" + response_inspection_to_json(u0))
+    if v.EnableRegexInPath.is_some():
+        auto u1 = v.EnableRegexInPath.unwrap()
+        parts.append("\"EnableRegexInPath\":" + json.dumps(JsonValue.Bool(u1)))
+    return wafv2_json_obj(parts)
+
+# Serialize AWSManagedRulesATPRuleSet to a compact JSON object (declaration order).
+def aws_managed_rules_atp_rule_set_to_json(AWSManagedRulesATPRuleSet v) -> str:
+    list[str] parts = []
+    parts.append("\"LoginPath\":" + wafv2_json_str(v.LoginPath))
+    if v.RequestInspection.is_some():
+        auto u0 = v.RequestInspection.unwrap()
+        parts.append("\"RequestInspection\":" + u0.to_json())
+    if v.ResponseInspection.is_some():
+        auto u1 = v.ResponseInspection.unwrap()
+        parts.append("\"ResponseInspection\":" + response_inspection_to_json(u1))
+    if v.EnableRegexInPath.is_some():
+        auto u2 = v.EnableRegexInPath.unwrap()
+        parts.append("\"EnableRegexInPath\":" + json.dumps(JsonValue.Bool(u2)))
+    return wafv2_json_obj(parts)
+
+# Serialize AWSManagedRulesAntiDDoSRuleSet to a compact JSON object (declaration order).
+def aws_managed_rules_anti_d_do_s_rule_set_to_json(AWSManagedRulesAntiDDoSRuleSet v) -> str:
+    list[str] parts = []
+    parts.append("\"ClientSideActionConfig\":" + client_side_action_config_to_json(v.ClientSideActionConfig))
+    if v.SensitivityToBlock.is_some():
+        auto u0 = v.SensitivityToBlock.unwrap()
+        parts.append("\"SensitivityToBlock\":" + u0.to_json())
+    return wafv2_json_obj(parts)
+
+# Serialize AllowAction to a compact JSON object (declaration order).
+def allow_action_to_json(AllowAction v) -> str:
+    list[str] parts = []
+    if v.CustomRequestHandling.is_some():
+        auto u0 = v.CustomRequestHandling.unwrap()
+        parts.append("\"CustomRequestHandling\":" + custom_request_handling_to_json(u0))
+    return wafv2_json_obj(parts)
+
+# Serialize AndStatement to a compact JSON object (declaration order).
+def and_statement_to_json(AndStatement v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Statements:
+        e0.append(statement_to_json(x0))
+    parts.append("\"Statements\":" + wafv2_json_arr(e0))
+    return wafv2_json_obj(parts)
+
+# Serialize AsnMatchStatement to a compact JSON object (declaration order).
+def asn_match_statement_to_json(AsnMatchStatement v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AsnList:
+        e0.append(str(x0))
+    parts.append("\"AsnList\":" + wafv2_json_arr(e0))
+    if v.ForwardedIPConfig.is_some():
+        auto u1 = v.ForwardedIPConfig.unwrap()
+        parts.append("\"ForwardedIPConfig\":" + u1.to_json())
+    return wafv2_json_obj(parts)
+
+# Serialize BlockAction to a compact JSON object (declaration order).
+def block_action_to_json(BlockAction v) -> str:
+    list[str] parts = []
+    if v.CustomResponse.is_some():
+        auto u0 = v.CustomResponse.unwrap()
+        parts.append("\"CustomResponse\":" + custom_response_to_json(u0))
+    return wafv2_json_obj(parts)
+
+# Serialize ByteMatchStatement to a compact JSON object (declaration order).
+def byte_match_statement_to_json(ByteMatchStatement v) -> str:
+    list[str] parts = []
+    parts.append("\"SearchString\":" + wafv2_json_str(base64.encode(v.SearchString)))
+    parts.append("\"FieldToMatch\":" + field_to_match_to_json(v.FieldToMatch))
+    list[str] e0 = []
+    for x0 in v.TextTransformations:
+        e0.append(x0.to_json())
+    parts.append("\"TextTransformations\":" + wafv2_json_arr(e0))
+    if v.PreParseTextTransformations.is_some():
+        auto u1 = v.PreParseTextTransformations.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"PreParseTextTransformations\":" + wafv2_json_arr(e2))
+    parts.append("\"PositionalConstraint\":" + v.PositionalConstraint.to_json())
+    return wafv2_json_obj(parts)
+
+# Serialize CaptchaAction to a compact JSON object (declaration order).
+def captcha_action_to_json(CaptchaAction v) -> str:
+    list[str] parts = []
+    if v.CustomRequestHandling.is_some():
+        auto u0 = v.CustomRequestHandling.unwrap()
+        parts.append("\"CustomRequestHandling\":" + custom_request_handling_to_json(u0))
+    return wafv2_json_obj(parts)
+
+# Serialize ChallengeAction to a compact JSON object (declaration order).
+def challenge_action_to_json(ChallengeAction v) -> str:
+    list[str] parts = []
+    if v.CustomRequestHandling.is_some():
+        auto u0 = v.CustomRequestHandling.unwrap()
+        parts.append("\"CustomRequestHandling\":" + custom_request_handling_to_json(u0))
+    return wafv2_json_obj(parts)
+
+# Serialize CheckCapacityRequest to a compact JSON object (declaration order).
+def check_capacity_request_to_json(CheckCapacityRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Scope\":" + v.Scope.to_json())
+    list[str] e0 = []
+    for x0 in v.Rules:
+        e0.append(rule_to_json(x0))
+    parts.append("\"Rules\":" + wafv2_json_arr(e0))
+    return wafv2_json_obj(parts)
+
+# Serialize ClientSideAction to a compact JSON object (declaration order).
+def client_side_action_to_json(ClientSideAction v) -> str:
+    list[str] parts = []
+    parts.append("\"UsageOfAction\":" + v.UsageOfAction.to_json())
+    if v.Sensitivity.is_some():
+        auto u0 = v.Sensitivity.unwrap()
+        parts.append("\"Sensitivity\":" + u0.to_json())
+    if v.ExemptUriRegularExpressions.is_some():
+        auto u1 = v.ExemptUriRegularExpressions.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"ExemptUriRegularExpressions\":" + wafv2_json_arr(e2))
+    return wafv2_json_obj(parts)
+
+# Serialize ClientSideActionConfig to a compact JSON object (declaration order).
+def client_side_action_config_to_json(ClientSideActionConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"Challenge\":" + client_side_action_to_json(v.Challenge))
+    return wafv2_json_obj(parts)
+
+# Serialize CookieMatchPattern to a compact JSON object (declaration order).
+def cookie_match_pattern_to_json(CookieMatchPattern v) -> str:
+    list[str] parts = []
+    if v.All.is_some():
+        auto u0 = v.All.unwrap()
+        parts.append("\"All\":" + u0.to_json())
+    if v.IncludedCookies.is_some():
+        auto u1 = v.IncludedCookies.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(wafv2_json_str(x2))
+        parts.append("\"IncludedCookies\":" + wafv2_json_arr(e2))
+    if v.ExcludedCookies.is_some():
+        auto u3 = v.ExcludedCookies.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(wafv2_json_str(x4))
+        parts.append("\"ExcludedCookies\":" + wafv2_json_arr(e4))
+    return wafv2_json_obj(parts)
+
+# Serialize Cookies to a compact JSON object (declaration order).
+def cookies_to_json(Cookies v) -> str:
+    list[str] parts = []
+    parts.append("\"MatchPattern\":" + cookie_match_pattern_to_json(v.MatchPattern))
+    parts.append("\"MatchScope\":" + v.MatchScope.to_json())
+    parts.append("\"OversizeHandling\":" + v.OversizeHandling.to_json())
+    return wafv2_json_obj(parts)
+
+# Serialize CountAction to a compact JSON object (declaration order).
+def count_action_to_json(CountAction v) -> str:
+    list[str] parts = []
+    if v.CustomRequestHandling.is_some():
+        auto u0 = v.CustomRequestHandling.unwrap()
+        parts.append("\"CustomRequestHandling\":" + custom_request_handling_to_json(u0))
+    return wafv2_json_obj(parts)
+
+# Serialize CreateAPIKeyRequest to a compact JSON object (declaration order).
+def create_api_key_request_to_json(CreateAPIKeyRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Scope\":" + v.Scope.to_json())
+    list[str] e0 = []
+    for x0 in v.TokenDomains:
+        e0.append(wafv2_json_str(x0))
+    parts.append("\"TokenDomains\":" + wafv2_json_arr(e0))
+    return wafv2_json_obj(parts)
+
+# Serialize CreateIPSetRequest to a compact JSON object (declaration order).
+def create_ip_set_request_to_json(CreateIPSetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + wafv2_json_str(v.Name))
+    parts.append("\"Scope\":" + v.Scope.to_json())
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + wafv2_json_str(u0))
+    parts.append("\"IPAddressVersion\":" + v.IPAddressVersion.to_json())
+    list[str] e1 = []
+    for x1 in v.Addresses:
+        e1.append(wafv2_json_str(x1))
+    parts.append("\"Addresses\":" + wafv2_json_arr(e1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + wafv2_json_arr(e3))
+    return wafv2_json_obj(parts)
+
+# Serialize CreateRegexPatternSetRequest to a compact JSON object (declaration order).
+def create_regex_pattern_set_request_to_json(CreateRegexPatternSetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + wafv2_json_str(v.Name))
+    parts.append("\"Scope\":" + v.Scope.to_json())
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + wafv2_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.RegularExpressionList:
+        e1.append(x1.to_json())
+    parts.append("\"RegularExpressionList\":" + wafv2_json_arr(e1))
+    if v.Tags.is_some():
+        auto u2 = v.Tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Tags\":" + wafv2_json_arr(e3))
+    return wafv2_json_obj(parts)
+
+# Serialize CreateRuleGroupRequest to a compact JSON object (declaration order).
+def create_rule_group_request_to_json(CreateRuleGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + wafv2_json_str(v.Name))
+    parts.append("\"Scope\":" + v.Scope.to_json())
+    parts.append("\"Capacity\":" + str(v.Capacity))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + wafv2_json_str(u0))
+    if v.Rules.is_some():
+        auto u1 = v.Rules.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(rule_to_json(x2))
+        parts.append("\"Rules\":" + wafv2_json_arr(e2))
+    parts.append("\"VisibilityConfig\":" + v.VisibilityConfig.to_json())
+    if v.Tags.is_some():
+        auto u3 = v.Tags.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Tags\":" + wafv2_json_arr(e4))
+    if v.CustomResponseBodies.is_some():
+        auto u5 = v.CustomResponseBodies.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(wafv2_json_str(k6) + ":" + u5[k6].to_json())
+        parts.append("\"CustomResponseBodies\":" + wafv2_json_obj(m6))
+    if v.MonetizationConfig.is_some():
+        auto u7 = v.MonetizationConfig.unwrap()
+        parts.append("\"MonetizationConfig\":" + monetization_config_to_json(u7))
+    return wafv2_json_obj(parts)
+
+# Serialize CryptoConfig to a compact JSON object (declaration order).
+def crypto_config_to_json(CryptoConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.PaymentNetworks:
+        e0.append(payment_network_to_json(x0))
+    parts.append("\"PaymentNetworks\":" + wafv2_json_arr(e0))
+    return wafv2_json_obj(parts)
+
+# Serialize CustomRequestHandling to a compact JSON object (declaration order).
+def custom_request_handling_to_json(CustomRequestHandling v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.InsertHeaders:
+        e0.append(x0.to_json())
+    parts.append("\"InsertHeaders\":" + wafv2_json_arr(e0))
+    return wafv2_json_obj(parts)
+
+# Serialize CustomResponse to a compact JSON object (declaration order).
+def custom_response_to_json(CustomResponse v) -> str:
+    list[str] parts = []
+    parts.append("\"ResponseCode\":" + str(v.ResponseCode))
+    if v.CustomResponseBodyKey.is_some():
+        auto u0 = v.CustomResponseBodyKey.unwrap()
+        parts.append("\"CustomResponseBodyKey\":" + wafv2_json_str(u0))
+    if v.ResponseHeaders.is_some():
+        auto u1 = v.ResponseHeaders.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"ResponseHeaders\":" + wafv2_json_arr(e2))
+    return wafv2_json_obj(parts)
+
+# Serialize FieldToMatch to a compact JSON object (declaration order).
+def field_to_match_to_json(FieldToMatch v) -> str:
+    list[str] parts = []
+    if v.SingleHeader.is_some():
+        auto u0 = v.SingleHeader.unwrap()
+        parts.append("\"SingleHeader\":" + u0.to_json())
+    if v.SingleQueryArgument.is_some():
+        auto u1 = v.SingleQueryArgument.unwrap()
+        parts.append("\"SingleQueryArgument\":" + u1.to_json())
+    if v.AllQueryArguments.is_some():
+        auto u2 = v.AllQueryArguments.unwrap()
+        parts.append("\"AllQueryArguments\":" + u2.to_json())
+    if v.UriPath.is_some():
+        auto u3 = v.UriPath.unwrap()
+        parts.append("\"UriPath\":" + u3.to_json())
+    if v.QueryString.is_some():
+        auto u4 = v.QueryString.unwrap()
+        parts.append("\"QueryString\":" + u4.to_json())
+    if v.Body.is_some():
+        auto u5 = v.Body.unwrap()
+        parts.append("\"Body\":" + u5.to_json())
+    if v.Method.is_some():
+        auto u6 = v.Method.unwrap()
+        parts.append("\"Method\":" + u6.to_json())
+    if v.JsonBody.is_some():
+        auto u7 = v.JsonBody.unwrap()
+        parts.append("\"JsonBody\":" + json_body_to_json(u7))
+    if v.Headers.is_some():
+        auto u8 = v.Headers.unwrap()
+        parts.append("\"Headers\":" + headers_to_json(u8))
+    if v.Cookies.is_some():
+        auto u9 = v.Cookies.unwrap()
+        parts.append("\"Cookies\":" + cookies_to_json(u9))
+    if v.HeaderOrder.is_some():
+        auto u10 = v.HeaderOrder.unwrap()
+        parts.append("\"HeaderOrder\":" + u10.to_json())
+    if v.JA3Fingerprint.is_some():
+        auto u11 = v.JA3Fingerprint.unwrap()
+        parts.append("\"JA3Fingerprint\":" + u11.to_json())
+    if v.JA4Fingerprint.is_some():
+        auto u12 = v.JA4Fingerprint.unwrap()
+        parts.append("\"JA4Fingerprint\":" + u12.to_json())
+    if v.UriFragment.is_some():
+        auto u13 = v.UriFragment.unwrap()
+        parts.append("\"UriFragment\":" + u13.to_json())
+    return wafv2_json_obj(parts)
+
+# Serialize Filter to a compact JSON object (declaration order).
+def filter_to_json(Filter v) -> str:
+    list[str] parts = []
+    parts.append("\"Behavior\":" + v.Behavior.to_json())
+    parts.append("\"Requirement\":" + v.Requirement.to_json())
+    list[str] e0 = []
+    for x0 in v.Conditions:
+        e0.append(x0.to_json())
+    parts.append("\"Conditions\":" + wafv2_json_arr(e0))
+    return wafv2_json_obj(parts)
+
+# Serialize GeoMatchStatement to a compact JSON object (declaration order).
+def geo_match_statement_to_json(GeoMatchStatement v) -> str:
+    list[str] parts = []
+    if v.CountryCodes.is_some():
+        auto u0 = v.CountryCodes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"CountryCodes\":" + wafv2_json_arr(e1))
+    if v.ForwardedIPConfig.is_some():
+        auto u2 = v.ForwardedIPConfig.unwrap()
+        parts.append("\"ForwardedIPConfig\":" + u2.to_json())
+    return wafv2_json_obj(parts)
+
+# Serialize GetRevenueStatisticsRequest to a compact JSON object (declaration order).
+def get_revenue_statistics_request_to_json(GetRevenueStatisticsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"StatisticType\":" + v.StatisticType.to_json())
+    parts.append("\"TimeWindow\":" + v.TimeWindow.to_json())
+    parts.append("\"Scope\":" + v.Scope.to_json())
+    parts.append("\"Currency\":" + wafv2_json_str(v.Currency))
+    if v.GroupBy.is_some():
+        auto u0 = v.GroupBy.unwrap()
+        parts.append("\"GroupBy\":" + u0.to_json())
+    if v.Filters.is_some():
+        auto u1 = v.Filters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(monetization_filter_to_json(x2))
+        parts.append("\"Filters\":" + wafv2_json_arr(e2))
+    if v.NextMarker.is_some():
+        auto u3 = v.NextMarker.unwrap()
+        parts.append("\"NextMarker\":" + wafv2_json_str(u3))
+    if v.Limit.is_some():
+        auto u4 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u4))
+    if v.SortBy.is_some():
+        auto u5 = v.SortBy.unwrap()
+        parts.append("\"SortBy\":" + u5.to_json())
+    if v.SortOrder.is_some():
+        auto u6 = v.SortOrder.unwrap()
+        parts.append("\"SortOrder\":" + u6.to_json())
+    return wafv2_json_obj(parts)
+
+# Serialize GetRevenueStatisticsSummaryRequest to a compact JSON object (declaration order).
+def get_revenue_statistics_summary_request_to_json(GetRevenueStatisticsSummaryRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TimeWindow\":" + v.TimeWindow.to_json())
+    parts.append("\"Scope\":" + v.Scope.to_json())
+    parts.append("\"Currency\":" + wafv2_json_str(v.Currency))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(monetization_filter_to_json(x1))
+        parts.append("\"Filters\":" + wafv2_json_arr(e1))
+    return wafv2_json_obj(parts)
+
+# Serialize GetRevenueStatisticsTimeSeriesRequest to a compact JSON object (declaration order).
+def get_revenue_statistics_time_series_request_to_json(GetRevenueStatisticsTimeSeriesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"StatisticType\":" + v.StatisticType.to_json())
+    parts.append("\"TimeWindow\":" + v.TimeWindow.to_json())
+    parts.append("\"Scope\":" + v.Scope.to_json())
+    parts.append("\"Interval\":" + v.Interval.to_json())
+    parts.append("\"Currency\":" + wafv2_json_str(v.Currency))
+    if v.GroupBy.is_some():
+        auto u0 = v.GroupBy.unwrap()
+        parts.append("\"GroupBy\":" + u0.to_json())
+    if v.Filters.is_some():
+        auto u1 = v.Filters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(monetization_filter_to_json(x2))
+        parts.append("\"Filters\":" + wafv2_json_arr(e2))
+    if v.Limit.is_some():
+        auto u3 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u3))
+    if v.NextMarker.is_some():
+        auto u4 = v.NextMarker.unwrap()
+        parts.append("\"NextMarker\":" + wafv2_json_str(u4))
+    return wafv2_json_obj(parts)
+
+# Serialize HeaderMatchPattern to a compact JSON object (declaration order).
+def header_match_pattern_to_json(HeaderMatchPattern v) -> str:
+    list[str] parts = []
+    if v.All.is_some():
+        auto u0 = v.All.unwrap()
+        parts.append("\"All\":" + u0.to_json())
+    if v.IncludedHeaders.is_some():
+        auto u1 = v.IncludedHeaders.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(wafv2_json_str(x2))
+        parts.append("\"IncludedHeaders\":" + wafv2_json_arr(e2))
+    if v.ExcludedHeaders.is_some():
+        auto u3 = v.ExcludedHeaders.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(wafv2_json_str(x4))
+        parts.append("\"ExcludedHeaders\":" + wafv2_json_arr(e4))
+    return wafv2_json_obj(parts)
+
+# Serialize Headers to a compact JSON object (declaration order).
+def headers_to_json(Headers v) -> str:
+    list[str] parts = []
+    parts.append("\"MatchPattern\":" + header_match_pattern_to_json(v.MatchPattern))
+    parts.append("\"MatchScope\":" + v.MatchScope.to_json())
+    parts.append("\"OversizeHandling\":" + v.OversizeHandling.to_json())
+    return wafv2_json_obj(parts)
+
+# Serialize JsonBody to a compact JSON object (declaration order).
+def json_body_to_json(JsonBody v) -> str:
+    list[str] parts = []
+    parts.append("\"MatchPattern\":" + json_match_pattern_to_json(v.MatchPattern))
+    parts.append("\"MatchScope\":" + v.MatchScope.to_json())
+    if v.InvalidFallbackBehavior.is_some():
+        auto u0 = v.InvalidFallbackBehavior.unwrap()
+        parts.append("\"InvalidFallbackBehavior\":" + u0.to_json())
+    if v.OversizeHandling.is_some():
+        auto u1 = v.OversizeHandling.unwrap()
+        parts.append("\"OversizeHandling\":" + u1.to_json())
+    return wafv2_json_obj(parts)
+
+# Serialize JsonMatchPattern to a compact JSON object (declaration order).
+def json_match_pattern_to_json(JsonMatchPattern v) -> str:
+    list[str] parts = []
+    if v.All.is_some():
+        auto u0 = v.All.unwrap()
+        parts.append("\"All\":" + u0.to_json())
+    if v.IncludedPaths.is_some():
+        auto u1 = v.IncludedPaths.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(wafv2_json_str(x2))
+        parts.append("\"IncludedPaths\":" + wafv2_json_arr(e2))
+    return wafv2_json_obj(parts)
+
+# Serialize ListSettlementRecordsRequest to a compact JSON object (declaration order).
+def list_settlement_records_request_to_json(ListSettlementRecordsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"TimeWindow\":" + v.TimeWindow.to_json())
+    parts.append("\"Scope\":" + v.Scope.to_json())
+    parts.append("\"Currency\":" + wafv2_json_str(v.Currency))
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(monetization_filter_to_json(x1))
+        parts.append("\"Filters\":" + wafv2_json_arr(e1))
+    if v.SortBy.is_some():
+        auto u2 = v.SortBy.unwrap()
+        parts.append("\"SortBy\":" + u2.to_json())
+    if v.SortOrder.is_some():
+        auto u3 = v.SortOrder.unwrap()
+        parts.append("\"SortOrder\":" + u3.to_json())
+    if v.Limit.is_some():
+        auto u4 = v.Limit.unwrap()
+        parts.append("\"Limit\":" + str(u4))
+    if v.NextMarker.is_some():
+        auto u5 = v.NextMarker.unwrap()
+        parts.append("\"NextMarker\":" + wafv2_json_str(u5))
+    return wafv2_json_obj(parts)
+
+# Serialize LoggingConfiguration to a compact JSON object (declaration order).
+def logging_configuration_to_json(LoggingConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceArn\":" + wafv2_json_str(v.ResourceArn))
+    list[str] e0 = []
+    for x0 in v.LogDestinationConfigs:
+        e0.append(wafv2_json_str(x0))
+    parts.append("\"LogDestinationConfigs\":" + wafv2_json_arr(e0))
+    if v.RedactedFields.is_some():
+        auto u1 = v.RedactedFields.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(field_to_match_to_json(x2))
+        parts.append("\"RedactedFields\":" + wafv2_json_arr(e2))
+    if v.ManagedByFirewallManager.is_some():
+        auto u3 = v.ManagedByFirewallManager.unwrap()
+        parts.append("\"ManagedByFirewallManager\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.LoggingFilter.is_some():
+        auto u4 = v.LoggingFilter.unwrap()
+        parts.append("\"LoggingFilter\":" + logging_filter_to_json(u4))
+    if v.LogType.is_some():
+        auto u5 = v.LogType.unwrap()
+        parts.append("\"LogType\":" + wafv2_json_str(u5))
+    if v.LogScope.is_some():
+        auto u6 = v.LogScope.unwrap()
+        parts.append("\"LogScope\":" + u6.to_json())
+    return wafv2_json_obj(parts)
+
+# Serialize LoggingFilter to a compact JSON object (declaration order).
+def logging_filter_to_json(LoggingFilter v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Filters:
+        e0.append(filter_to_json(x0))
+    parts.append("\"Filters\":" + wafv2_json_arr(e0))
+    parts.append("\"DefaultBehavior\":" + v.DefaultBehavior.to_json())
+    return wafv2_json_obj(parts)
+
+# Serialize ManagedRuleGroupConfig to a compact JSON object (declaration order).
+def managed_rule_group_config_to_json(ManagedRuleGroupConfig v) -> str:
+    list[str] parts = []
+    if v.LoginPath.is_some():
+        auto u0 = v.LoginPath.unwrap()
+        parts.append("\"LoginPath\":" + wafv2_json_str(u0))
+    if v.PayloadType.is_some():
+        auto u1 = v.PayloadType.unwrap()
+        parts.append("\"PayloadType\":" + u1.to_json())
+    if v.UsernameField.is_some():
+        auto u2 = v.UsernameField.unwrap()
+        parts.append("\"UsernameField\":" + u2.to_json())
+    if v.PasswordField.is_some():
+        auto u3 = v.PasswordField.unwrap()
+        parts.append("\"PasswordField\":" + u3.to_json())
+    if v.AWSManagedRulesBotControlRuleSet.is_some():
+        auto u4 = v.AWSManagedRulesBotControlRuleSet.unwrap()
+        parts.append("\"AWSManagedRulesBotControlRuleSet\":" + u4.to_json())
+    if v.AWSManagedRulesATPRuleSet.is_some():
+        auto u5 = v.AWSManagedRulesATPRuleSet.unwrap()
+        parts.append("\"AWSManagedRulesATPRuleSet\":" + aws_managed_rules_atp_rule_set_to_json(u5))
+    if v.AWSManagedRulesACFPRuleSet.is_some():
+        auto u6 = v.AWSManagedRulesACFPRuleSet.unwrap()
+        parts.append("\"AWSManagedRulesACFPRuleSet\":" + aws_managed_rules_acfp_rule_set_to_json(u6))
+    if v.AWSManagedRulesAntiDDoSRuleSet.is_some():
+        auto u7 = v.AWSManagedRulesAntiDDoSRuleSet.unwrap()
+        parts.append("\"AWSManagedRulesAntiDDoSRuleSet\":" + aws_managed_rules_anti_d_do_s_rule_set_to_json(u7))
+    return wafv2_json_obj(parts)
+
+# Serialize ManagedRuleGroupStatement to a compact JSON object (declaration order).
+def managed_rule_group_statement_to_json(ManagedRuleGroupStatement v) -> str:
+    list[str] parts = []
+    parts.append("\"VendorName\":" + wafv2_json_str(v.VendorName))
+    parts.append("\"Name\":" + wafv2_json_str(v.Name))
+    if v.Version.is_some():
+        auto u0 = v.Version.unwrap()
+        parts.append("\"Version\":" + wafv2_json_str(u0))
+    if v.ExcludedRules.is_some():
+        auto u1 = v.ExcludedRules.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"ExcludedRules\":" + wafv2_json_arr(e2))
+    if v.ScopeDownStatement.is_some():
+        auto u3 = v.ScopeDownStatement.unwrap()
+        parts.append("\"ScopeDownStatement\":" + statement_to_json(u3))
+    if v.ManagedRuleGroupConfigs.is_some():
+        auto u4 = v.ManagedRuleGroupConfigs.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(managed_rule_group_config_to_json(x5))
+        parts.append("\"ManagedRuleGroupConfigs\":" + wafv2_json_arr(e5))
+    if v.RuleActionOverrides.is_some():
+        auto u6 = v.RuleActionOverrides.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(rule_action_override_to_json(x7))
+        parts.append("\"RuleActionOverrides\":" + wafv2_json_arr(e7))
+    return wafv2_json_obj(parts)
+
+# Serialize MonetizationConfig to a compact JSON object (declaration order).
+def monetization_config_to_json(MonetizationConfig v) -> str:
+    list[str] parts = []
+    if v.CryptoConfig.is_some():
+        auto u0 = v.CryptoConfig.unwrap()
+        parts.append("\"CryptoConfig\":" + crypto_config_to_json(u0))
+    if v.CurrencyMode.is_some():
+        auto u1 = v.CurrencyMode.unwrap()
+        parts.append("\"CurrencyMode\":" + u1.to_json())
+    return wafv2_json_obj(parts)
+
+# Serialize MonetizationFilter to a compact JSON object (declaration order).
+def monetization_filter_to_json(MonetizationFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + wafv2_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.Values:
+        e0.append(wafv2_json_str(x0))
+    parts.append("\"Values\":" + wafv2_json_arr(e0))
+    return wafv2_json_obj(parts)
+
+# Serialize NotStatement to a compact JSON object (declaration order).
+def not_statement_to_json(NotStatement v) -> str:
+    list[str] parts = []
+    parts.append("\"Statement\":" + statement_to_json(v.Statement))
+    return wafv2_json_obj(parts)
+
+# Serialize OrStatement to a compact JSON object (declaration order).
+def or_statement_to_json(OrStatement v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Statements:
+        e0.append(statement_to_json(x0))
+    parts.append("\"Statements\":" + wafv2_json_arr(e0))
+    return wafv2_json_obj(parts)
+
+# Serialize OverrideAction to a compact JSON object (declaration order).
+def override_action_to_json(OverrideAction v) -> str:
+    list[str] parts = []
+    if v.Count.is_some():
+        auto u0 = v.Count.unwrap()
+        parts.append("\"Count\":" + count_action_to_json(u0))
+    if v.None_.is_some():
+        auto u1 = v.None_.unwrap()
+        parts.append("\"None\":" + u1.to_json())
+    return wafv2_json_obj(parts)
+
+# Serialize PaymentNetwork to a compact JSON object (declaration order).
+def payment_network_to_json(PaymentNetwork v) -> str:
+    list[str] parts = []
+    parts.append("\"Chain\":" + v.Chain.to_json())
+    parts.append("\"WalletAddress\":" + wafv2_json_str(v.WalletAddress))
+    list[str] e0 = []
+    for x0 in v.Prices:
+        e0.append(x0.to_json())
+    parts.append("\"Prices\":" + wafv2_json_arr(e0))
+    return wafv2_json_obj(parts)
+
+# Serialize PutLoggingConfigurationRequest to a compact JSON object (declaration order).
+def put_logging_configuration_request_to_json(PutLoggingConfigurationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"LoggingConfiguration\":" + logging_configuration_to_json(v.LoggingConfiguration))
+    return wafv2_json_obj(parts)
+
+# Serialize PutManagedRuleSetVersionsRequest to a compact JSON object (declaration order).
+def put_managed_rule_set_versions_request_to_json(PutManagedRuleSetVersionsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + wafv2_json_str(v.Name))
+    parts.append("\"Scope\":" + v.Scope.to_json())
+    parts.append("\"Id\":" + wafv2_json_str(v.Id))
+    parts.append("\"LockToken\":" + wafv2_json_str(v.LockToken))
+    if v.RecommendedVersion.is_some():
+        auto u0 = v.RecommendedVersion.unwrap()
+        parts.append("\"RecommendedVersion\":" + wafv2_json_str(u0))
+    if v.VersionsToPublish.is_some():
+        auto u1 = v.VersionsToPublish.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(wafv2_json_str(k2) + ":" + u1[k2].to_json())
+        parts.append("\"VersionsToPublish\":" + wafv2_json_obj(m2))
+    return wafv2_json_obj(parts)
+
+# Serialize RateBasedStatement to a compact JSON object (declaration order).
+def rate_based_statement_to_json(RateBasedStatement v) -> str:
+    list[str] parts = []
+    parts.append("\"Limit\":" + str(v.Limit))
+    if v.EvaluationWindowSec.is_some():
+        auto u0 = v.EvaluationWindowSec.unwrap()
+        parts.append("\"EvaluationWindowSec\":" + str(u0))
+    parts.append("\"AggregateKeyType\":" + v.AggregateKeyType.to_json())
+    if v.ScopeDownStatement.is_some():
+        auto u1 = v.ScopeDownStatement.unwrap()
+        parts.append("\"ScopeDownStatement\":" + statement_to_json(u1))
+    if v.ForwardedIPConfig.is_some():
+        auto u2 = v.ForwardedIPConfig.unwrap()
+        parts.append("\"ForwardedIPConfig\":" + u2.to_json())
+    if v.CustomKeys.is_some():
+        auto u3 = v.CustomKeys.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(rate_based_statement_custom_key_to_json(x4))
+        parts.append("\"CustomKeys\":" + wafv2_json_arr(e4))
+    return wafv2_json_obj(parts)
+
+# Serialize RateBasedStatementCustomKey to a compact JSON object (declaration order).
+def rate_based_statement_custom_key_to_json(RateBasedStatementCustomKey v) -> str:
+    list[str] parts = []
+    if v.Header.is_some():
+        auto u0 = v.Header.unwrap()
+        parts.append("\"Header\":" + rate_limit_header_to_json(u0))
+    if v.Cookie.is_some():
+        auto u1 = v.Cookie.unwrap()
+        parts.append("\"Cookie\":" + rate_limit_cookie_to_json(u1))
+    if v.QueryArgument.is_some():
+        auto u2 = v.QueryArgument.unwrap()
+        parts.append("\"QueryArgument\":" + rate_limit_query_argument_to_json(u2))
+    if v.QueryString.is_some():
+        auto u3 = v.QueryString.unwrap()
+        parts.append("\"QueryString\":" + rate_limit_query_string_to_json(u3))
+    if v.HTTPMethod.is_some():
+        auto u4 = v.HTTPMethod.unwrap()
+        parts.append("\"HTTPMethod\":" + u4.to_json())
+    if v.ForwardedIP.is_some():
+        auto u5 = v.ForwardedIP.unwrap()
+        parts.append("\"ForwardedIP\":" + u5.to_json())
+    if v.IP.is_some():
+        auto u6 = v.IP.unwrap()
+        parts.append("\"IP\":" + u6.to_json())
+    if v.LabelNamespace.is_some():
+        auto u7 = v.LabelNamespace.unwrap()
+        parts.append("\"LabelNamespace\":" + u7.to_json())
+    if v.UriPath.is_some():
+        auto u8 = v.UriPath.unwrap()
+        parts.append("\"UriPath\":" + rate_limit_uri_path_to_json(u8))
+    if v.JA3Fingerprint.is_some():
+        auto u9 = v.JA3Fingerprint.unwrap()
+        parts.append("\"JA3Fingerprint\":" + u9.to_json())
+    if v.JA4Fingerprint.is_some():
+        auto u10 = v.JA4Fingerprint.unwrap()
+        parts.append("\"JA4Fingerprint\":" + u10.to_json())
+    if v.ASN.is_some():
+        auto u11 = v.ASN.unwrap()
+        parts.append("\"ASN\":" + u11.to_json())
+    return wafv2_json_obj(parts)
+
+# Serialize RateLimitCookie to a compact JSON object (declaration order).
+def rate_limit_cookie_to_json(RateLimitCookie v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + wafv2_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.TextTransformations:
+        e0.append(x0.to_json())
+    parts.append("\"TextTransformations\":" + wafv2_json_arr(e0))
+    return wafv2_json_obj(parts)
+
+# Serialize RateLimitHeader to a compact JSON object (declaration order).
+def rate_limit_header_to_json(RateLimitHeader v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + wafv2_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.TextTransformations:
+        e0.append(x0.to_json())
+    parts.append("\"TextTransformations\":" + wafv2_json_arr(e0))
+    return wafv2_json_obj(parts)
+
+# Serialize RateLimitQueryArgument to a compact JSON object (declaration order).
+def rate_limit_query_argument_to_json(RateLimitQueryArgument v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + wafv2_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.TextTransformations:
+        e0.append(x0.to_json())
+    parts.append("\"TextTransformations\":" + wafv2_json_arr(e0))
+    return wafv2_json_obj(parts)
+
+# Serialize RateLimitQueryString to a compact JSON object (declaration order).
+def rate_limit_query_string_to_json(RateLimitQueryString v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.TextTransformations:
+        e0.append(x0.to_json())
+    parts.append("\"TextTransformations\":" + wafv2_json_arr(e0))
+    return wafv2_json_obj(parts)
+
+# Serialize RateLimitUriPath to a compact JSON object (declaration order).
+def rate_limit_uri_path_to_json(RateLimitUriPath v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.TextTransformations:
+        e0.append(x0.to_json())
+    parts.append("\"TextTransformations\":" + wafv2_json_arr(e0))
+    return wafv2_json_obj(parts)
+
+# Serialize RegexMatchStatement to a compact JSON object (declaration order).
+def regex_match_statement_to_json(RegexMatchStatement v) -> str:
+    list[str] parts = []
+    parts.append("\"RegexString\":" + wafv2_json_str(v.RegexString))
+    parts.append("\"FieldToMatch\":" + field_to_match_to_json(v.FieldToMatch))
+    list[str] e0 = []
+    for x0 in v.TextTransformations:
+        e0.append(x0.to_json())
+    parts.append("\"TextTransformations\":" + wafv2_json_arr(e0))
+    if v.PreParseTextTransformations.is_some():
+        auto u1 = v.PreParseTextTransformations.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"PreParseTextTransformations\":" + wafv2_json_arr(e2))
+    return wafv2_json_obj(parts)
+
+# Serialize RegexPatternSetReferenceStatement to a compact JSON object (declaration order).
+def regex_pattern_set_reference_statement_to_json(RegexPatternSetReferenceStatement v) -> str:
+    list[str] parts = []
+    parts.append("\"ARN\":" + wafv2_json_str(v.ARN))
+    parts.append("\"FieldToMatch\":" + field_to_match_to_json(v.FieldToMatch))
+    list[str] e0 = []
+    for x0 in v.TextTransformations:
+        e0.append(x0.to_json())
+    parts.append("\"TextTransformations\":" + wafv2_json_arr(e0))
+    if v.PreParseTextTransformations.is_some():
+        auto u1 = v.PreParseTextTransformations.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"PreParseTextTransformations\":" + wafv2_json_arr(e2))
+    return wafv2_json_obj(parts)
+
+# Serialize RequestInspectionACFP to a compact JSON object (declaration order).
+def request_inspection_acfp_to_json(RequestInspectionACFP v) -> str:
+    list[str] parts = []
+    parts.append("\"PayloadType\":" + v.PayloadType.to_json())
+    if v.UsernameField.is_some():
+        auto u0 = v.UsernameField.unwrap()
+        parts.append("\"UsernameField\":" + u0.to_json())
+    if v.PasswordField.is_some():
+        auto u1 = v.PasswordField.unwrap()
+        parts.append("\"PasswordField\":" + u1.to_json())
+    if v.EmailField.is_some():
+        auto u2 = v.EmailField.unwrap()
+        parts.append("\"EmailField\":" + u2.to_json())
+    if v.PhoneNumberFields.is_some():
+        auto u3 = v.PhoneNumberFields.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"PhoneNumberFields\":" + wafv2_json_arr(e4))
+    if v.AddressFields.is_some():
+        auto u5 = v.AddressFields.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"AddressFields\":" + wafv2_json_arr(e6))
+    return wafv2_json_obj(parts)
+
+# Serialize ResponseInspection to a compact JSON object (declaration order).
+def response_inspection_to_json(ResponseInspection v) -> str:
+    list[str] parts = []
+    if v.StatusCode.is_some():
+        auto u0 = v.StatusCode.unwrap()
+        parts.append("\"StatusCode\":" + response_inspection_status_code_to_json(u0))
+    if v.Header.is_some():
+        auto u1 = v.Header.unwrap()
+        parts.append("\"Header\":" + response_inspection_header_to_json(u1))
+    if v.BodyContains.is_some():
+        auto u2 = v.BodyContains.unwrap()
+        parts.append("\"BodyContains\":" + response_inspection_body_contains_to_json(u2))
+    if v.Json.is_some():
+        auto u3 = v.Json.unwrap()
+        parts.append("\"Json\":" + response_inspection_json_to_json(u3))
+    return wafv2_json_obj(parts)
+
+# Serialize ResponseInspectionBodyContains to a compact JSON object (declaration order).
+def response_inspection_body_contains_to_json(ResponseInspectionBodyContains v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SuccessStrings:
+        e0.append(wafv2_json_str(x0))
+    parts.append("\"SuccessStrings\":" + wafv2_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.FailureStrings:
+        e1.append(wafv2_json_str(x1))
+    parts.append("\"FailureStrings\":" + wafv2_json_arr(e1))
+    return wafv2_json_obj(parts)
+
+# Serialize ResponseInspectionHeader to a compact JSON object (declaration order).
+def response_inspection_header_to_json(ResponseInspectionHeader v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + wafv2_json_str(v.Name))
+    list[str] e0 = []
+    for x0 in v.SuccessValues:
+        e0.append(wafv2_json_str(x0))
+    parts.append("\"SuccessValues\":" + wafv2_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.FailureValues:
+        e1.append(wafv2_json_str(x1))
+    parts.append("\"FailureValues\":" + wafv2_json_arr(e1))
+    return wafv2_json_obj(parts)
+
+# Serialize ResponseInspectionJson to a compact JSON object (declaration order).
+def response_inspection_json_to_json(ResponseInspectionJson v) -> str:
+    list[str] parts = []
+    parts.append("\"Identifier\":" + wafv2_json_str(v.Identifier))
+    list[str] e0 = []
+    for x0 in v.SuccessValues:
+        e0.append(wafv2_json_str(x0))
+    parts.append("\"SuccessValues\":" + wafv2_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.FailureValues:
+        e1.append(wafv2_json_str(x1))
+    parts.append("\"FailureValues\":" + wafv2_json_arr(e1))
+    return wafv2_json_obj(parts)
+
+# Serialize ResponseInspectionStatusCode to a compact JSON object (declaration order).
+def response_inspection_status_code_to_json(ResponseInspectionStatusCode v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SuccessCodes:
+        e0.append(str(x0))
+    parts.append("\"SuccessCodes\":" + wafv2_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.FailureCodes:
+        e1.append(str(x1))
+    parts.append("\"FailureCodes\":" + wafv2_json_arr(e1))
+    return wafv2_json_obj(parts)
+
+# Serialize Rule to a compact JSON object (declaration order).
+def rule_to_json(Rule v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + wafv2_json_str(v.Name))
+    parts.append("\"Priority\":" + str(v.Priority))
+    parts.append("\"Statement\":" + statement_to_json(v.Statement))
+    if v.Action.is_some():
+        auto u0 = v.Action.unwrap()
+        parts.append("\"Action\":" + rule_action_to_json(u0))
+    if v.OverrideAction.is_some():
+        auto u1 = v.OverrideAction.unwrap()
+        parts.append("\"OverrideAction\":" + override_action_to_json(u1))
+    if v.RuleLabels.is_some():
+        auto u2 = v.RuleLabels.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"RuleLabels\":" + wafv2_json_arr(e3))
+    parts.append("\"VisibilityConfig\":" + v.VisibilityConfig.to_json())
+    if v.CaptchaConfig.is_some():
+        auto u4 = v.CaptchaConfig.unwrap()
+        parts.append("\"CaptchaConfig\":" + u4.to_json())
+    if v.ChallengeConfig.is_some():
+        auto u5 = v.ChallengeConfig.unwrap()
+        parts.append("\"ChallengeConfig\":" + u5.to_json())
+    return wafv2_json_obj(parts)
+
+# Serialize RuleAction to a compact JSON object (declaration order).
+def rule_action_to_json(RuleAction v) -> str:
+    list[str] parts = []
+    if v.Block.is_some():
+        auto u0 = v.Block.unwrap()
+        parts.append("\"Block\":" + block_action_to_json(u0))
+    if v.Allow.is_some():
+        auto u1 = v.Allow.unwrap()
+        parts.append("\"Allow\":" + allow_action_to_json(u1))
+    if v.Count.is_some():
+        auto u2 = v.Count.unwrap()
+        parts.append("\"Count\":" + count_action_to_json(u2))
+    if v.Captcha.is_some():
+        auto u3 = v.Captcha.unwrap()
+        parts.append("\"Captcha\":" + captcha_action_to_json(u3))
+    if v.Challenge.is_some():
+        auto u4 = v.Challenge.unwrap()
+        parts.append("\"Challenge\":" + challenge_action_to_json(u4))
+    if v.Monetize.is_some():
+        auto u5 = v.Monetize.unwrap()
+        parts.append("\"Monetize\":" + u5.to_json())
+    return wafv2_json_obj(parts)
+
+# Serialize RuleActionOverride to a compact JSON object (declaration order).
+def rule_action_override_to_json(RuleActionOverride v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + wafv2_json_str(v.Name))
+    parts.append("\"ActionToUse\":" + rule_action_to_json(v.ActionToUse))
+    return wafv2_json_obj(parts)
+
+# Serialize RuleGroupReferenceStatement to a compact JSON object (declaration order).
+def rule_group_reference_statement_to_json(RuleGroupReferenceStatement v) -> str:
+    list[str] parts = []
+    parts.append("\"ARN\":" + wafv2_json_str(v.ARN))
+    if v.ExcludedRules.is_some():
+        auto u0 = v.ExcludedRules.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ExcludedRules\":" + wafv2_json_arr(e1))
+    if v.RuleActionOverrides.is_some():
+        auto u2 = v.RuleActionOverrides.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(rule_action_override_to_json(x3))
+        parts.append("\"RuleActionOverrides\":" + wafv2_json_arr(e3))
+    return wafv2_json_obj(parts)
+
+# Serialize SizeConstraintStatement to a compact JSON object (declaration order).
+def size_constraint_statement_to_json(SizeConstraintStatement v) -> str:
+    list[str] parts = []
+    parts.append("\"FieldToMatch\":" + field_to_match_to_json(v.FieldToMatch))
+    parts.append("\"ComparisonOperator\":" + v.ComparisonOperator.to_json())
+    parts.append("\"Size\":" + str(v.Size))
+    list[str] e0 = []
+    for x0 in v.TextTransformations:
+        e0.append(x0.to_json())
+    parts.append("\"TextTransformations\":" + wafv2_json_arr(e0))
+    if v.PreParseTextTransformations.is_some():
+        auto u1 = v.PreParseTextTransformations.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"PreParseTextTransformations\":" + wafv2_json_arr(e2))
+    return wafv2_json_obj(parts)
+
+# Serialize SqliMatchStatement to a compact JSON object (declaration order).
+def sqli_match_statement_to_json(SqliMatchStatement v) -> str:
+    list[str] parts = []
+    parts.append("\"FieldToMatch\":" + field_to_match_to_json(v.FieldToMatch))
+    list[str] e0 = []
+    for x0 in v.TextTransformations:
+        e0.append(x0.to_json())
+    parts.append("\"TextTransformations\":" + wafv2_json_arr(e0))
+    if v.PreParseTextTransformations.is_some():
+        auto u1 = v.PreParseTextTransformations.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"PreParseTextTransformations\":" + wafv2_json_arr(e2))
+    if v.SensitivityLevel.is_some():
+        auto u3 = v.SensitivityLevel.unwrap()
+        parts.append("\"SensitivityLevel\":" + u3.to_json())
+    return wafv2_json_obj(parts)
+
+# Serialize Statement to a compact JSON object (declaration order).
+def statement_to_json(Statement v) -> str:
+    list[str] parts = []
+    if v.ByteMatchStatement.is_some():
+        auto u0 = v.ByteMatchStatement.unwrap()
+        parts.append("\"ByteMatchStatement\":" + byte_match_statement_to_json(u0))
+    if v.SqliMatchStatement.is_some():
+        auto u1 = v.SqliMatchStatement.unwrap()
+        parts.append("\"SqliMatchStatement\":" + sqli_match_statement_to_json(u1))
+    if v.XssMatchStatement.is_some():
+        auto u2 = v.XssMatchStatement.unwrap()
+        parts.append("\"XssMatchStatement\":" + xss_match_statement_to_json(u2))
+    if v.SizeConstraintStatement.is_some():
+        auto u3 = v.SizeConstraintStatement.unwrap()
+        parts.append("\"SizeConstraintStatement\":" + size_constraint_statement_to_json(u3))
+    if v.GeoMatchStatement.is_some():
+        auto u4 = v.GeoMatchStatement.unwrap()
+        parts.append("\"GeoMatchStatement\":" + geo_match_statement_to_json(u4))
+    if v.RuleGroupReferenceStatement.is_some():
+        auto u5 = v.RuleGroupReferenceStatement.unwrap()
+        parts.append("\"RuleGroupReferenceStatement\":" + rule_group_reference_statement_to_json(u5))
+    if v.IPSetReferenceStatement.is_some():
+        auto u6 = v.IPSetReferenceStatement.unwrap()
+        parts.append("\"IPSetReferenceStatement\":" + u6.to_json())
+    if v.RegexPatternSetReferenceStatement.is_some():
+        auto u7 = v.RegexPatternSetReferenceStatement.unwrap()
+        parts.append("\"RegexPatternSetReferenceStatement\":" + regex_pattern_set_reference_statement_to_json(u7))
+    if v.RateBasedStatement.is_some():
+        auto u8 = v.RateBasedStatement.unwrap()
+        parts.append("\"RateBasedStatement\":" + rate_based_statement_to_json(u8))
+    if v.AndStatement.is_some():
+        auto u9 = v.AndStatement.unwrap()
+        parts.append("\"AndStatement\":" + and_statement_to_json(u9))
+    if v.OrStatement.is_some():
+        auto u10 = v.OrStatement.unwrap()
+        parts.append("\"OrStatement\":" + or_statement_to_json(u10))
+    if v.NotStatement.is_some():
+        auto u11 = v.NotStatement.unwrap()
+        parts.append("\"NotStatement\":" + not_statement_to_json(u11))
+    if v.ManagedRuleGroupStatement.is_some():
+        auto u12 = v.ManagedRuleGroupStatement.unwrap()
+        parts.append("\"ManagedRuleGroupStatement\":" + managed_rule_group_statement_to_json(u12))
+    if v.LabelMatchStatement.is_some():
+        auto u13 = v.LabelMatchStatement.unwrap()
+        parts.append("\"LabelMatchStatement\":" + u13.to_json())
+    if v.RegexMatchStatement.is_some():
+        auto u14 = v.RegexMatchStatement.unwrap()
+        parts.append("\"RegexMatchStatement\":" + regex_match_statement_to_json(u14))
+    if v.AsnMatchStatement.is_some():
+        auto u15 = v.AsnMatchStatement.unwrap()
+        parts.append("\"AsnMatchStatement\":" + asn_match_statement_to_json(u15))
+    return wafv2_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + wafv2_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + wafv2_json_arr(e0))
+    return wafv2_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + wafv2_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(wafv2_json_str(x0))
+    parts.append("\"TagKeys\":" + wafv2_json_arr(e0))
+    return wafv2_json_obj(parts)
+
+# Serialize UpdateIPSetRequest to a compact JSON object (declaration order).
+def update_ip_set_request_to_json(UpdateIPSetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + wafv2_json_str(v.Name))
+    parts.append("\"Scope\":" + v.Scope.to_json())
+    parts.append("\"Id\":" + wafv2_json_str(v.Id))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + wafv2_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.Addresses:
+        e1.append(wafv2_json_str(x1))
+    parts.append("\"Addresses\":" + wafv2_json_arr(e1))
+    parts.append("\"LockToken\":" + wafv2_json_str(v.LockToken))
+    return wafv2_json_obj(parts)
+
+# Serialize UpdateRegexPatternSetRequest to a compact JSON object (declaration order).
+def update_regex_pattern_set_request_to_json(UpdateRegexPatternSetRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + wafv2_json_str(v.Name))
+    parts.append("\"Scope\":" + v.Scope.to_json())
+    parts.append("\"Id\":" + wafv2_json_str(v.Id))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + wafv2_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.RegularExpressionList:
+        e1.append(x1.to_json())
+    parts.append("\"RegularExpressionList\":" + wafv2_json_arr(e1))
+    parts.append("\"LockToken\":" + wafv2_json_str(v.LockToken))
+    return wafv2_json_obj(parts)
+
+# Serialize UpdateRuleGroupRequest to a compact JSON object (declaration order).
+def update_rule_group_request_to_json(UpdateRuleGroupRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + wafv2_json_str(v.Name))
+    parts.append("\"Scope\":" + v.Scope.to_json())
+    parts.append("\"Id\":" + wafv2_json_str(v.Id))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + wafv2_json_str(u0))
+    if v.Rules.is_some():
+        auto u1 = v.Rules.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(rule_to_json(x2))
+        parts.append("\"Rules\":" + wafv2_json_arr(e2))
+    parts.append("\"VisibilityConfig\":" + v.VisibilityConfig.to_json())
+    parts.append("\"LockToken\":" + wafv2_json_str(v.LockToken))
+    if v.CustomResponseBodies.is_some():
+        auto u3 = v.CustomResponseBodies.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(wafv2_json_str(k4) + ":" + u3[k4].to_json())
+        parts.append("\"CustomResponseBodies\":" + wafv2_json_obj(m4))
+    if v.MonetizationConfig.is_some():
+        auto u5 = v.MonetizationConfig.unwrap()
+        parts.append("\"MonetizationConfig\":" + monetization_config_to_json(u5))
+    return wafv2_json_obj(parts)
+
+# Serialize XssMatchStatement to a compact JSON object (declaration order).
+def xss_match_statement_to_json(XssMatchStatement v) -> str:
+    list[str] parts = []
+    parts.append("\"FieldToMatch\":" + field_to_match_to_json(v.FieldToMatch))
+    list[str] e0 = []
+    for x0 in v.TextTransformations:
+        e0.append(x0.to_json())
+    parts.append("\"TextTransformations\":" + wafv2_json_arr(e0))
+    if v.PreParseTextTransformations.is_some():
+        auto u1 = v.PreParseTextTransformations.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"PreParseTextTransformations\":" + wafv2_json_arr(e2))
+    return wafv2_json_obj(parts)
 
 # A bound WAFV2 client: credentials + region, threaded into every operation.
 struct WAFV2Client:
@@ -2750,6 +4094,36 @@ struct WAFV2Client:
     def associate_web_acl(self, AssociateWebACLRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(wafv2_protocol(), self.creds, self.region, "AssociateWebACL", body)
+
+    # CheckCapacity
+    # errors: WAFExpiredManagedRuleGroupVersionException, WAFInternalErrorException, WAFInvalidOperationException, WAFInvalidParameterException, WAFInvalidResourceException, WAFLimitsExceededException, WAFNonexistentItemException, WAFSubscriptionNotFoundException, WAFUnavailableEntityException
+    def check_capacity(self, CheckCapacityRequest input) -> str:
+        auto body = check_capacity_request_to_json(input)
+        return awsjson.awsjson_request_now(wafv2_protocol(), self.creds, self.region, "CheckCapacity", body)
+
+    # CreateAPIKey
+    # errors: WAFInternalErrorException, WAFInvalidOperationException, WAFInvalidParameterException, WAFLimitsExceededException
+    def create_api_key(self, CreateAPIKeyRequest input) -> str:
+        auto body = create_api_key_request_to_json(input)
+        return awsjson.awsjson_request_now(wafv2_protocol(), self.creds, self.region, "CreateAPIKey", body)
+
+    # CreateIPSet
+    # errors: WAFDuplicateItemException, WAFInternalErrorException, WAFInvalidOperationException, WAFInvalidParameterException, WAFLimitsExceededException, WAFOptimisticLockException, WAFTagOperationException, WAFTagOperationInternalErrorException
+    def create_ip_set(self, CreateIPSetRequest input) -> str:
+        auto body = create_ip_set_request_to_json(input)
+        return awsjson.awsjson_request_now(wafv2_protocol(), self.creds, self.region, "CreateIPSet", body)
+
+    # CreateRegexPatternSet
+    # errors: WAFDuplicateItemException, WAFInternalErrorException, WAFInvalidOperationException, WAFInvalidParameterException, WAFLimitsExceededException, WAFOptimisticLockException, WAFTagOperationException, WAFTagOperationInternalErrorException
+    def create_regex_pattern_set(self, CreateRegexPatternSetRequest input) -> str:
+        auto body = create_regex_pattern_set_request_to_json(input)
+        return awsjson.awsjson_request_now(wafv2_protocol(), self.creds, self.region, "CreateRegexPatternSet", body)
+
+    # CreateRuleGroup
+    # errors: WAFDuplicateItemException, WAFInternalErrorException, WAFInvalidOperationException, WAFInvalidParameterException, WAFLimitsExceededException, WAFNonexistentItemException, WAFOptimisticLockException, WAFSubscriptionNotFoundException, WAFTagOperationException, WAFTagOperationInternalErrorException, WAFUnavailableEntityException
+    def create_rule_group(self, CreateRuleGroupRequest input) -> str:
+        auto body = create_rule_group_request_to_json(input)
+        return awsjson.awsjson_request_now(wafv2_protocol(), self.creds, self.region, "CreateRuleGroup", body)
 
     # DeleteAPIKey
     # errors: WAFInternalErrorException, WAFInvalidOperationException, WAFInvalidParameterException, WAFNonexistentItemException, WAFOptimisticLockException
@@ -2877,6 +4251,24 @@ struct WAFV2Client:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(wafv2_protocol(), self.creds, self.region, "GetRegexPatternSet", body)
 
+    # GetRevenueStatistics
+    # errors: WAFInternalErrorException, WAFInvalidOperationException, WAFInvalidParameterException, WAFNonexistentItemException
+    def get_revenue_statistics(self, GetRevenueStatisticsRequest input) -> str:
+        auto body = get_revenue_statistics_request_to_json(input)
+        return awsjson.awsjson_request_now(wafv2_protocol(), self.creds, self.region, "GetRevenueStatistics", body)
+
+    # GetRevenueStatisticsSummary
+    # errors: WAFInternalErrorException, WAFInvalidOperationException, WAFInvalidParameterException, WAFNonexistentItemException
+    def get_revenue_statistics_summary(self, GetRevenueStatisticsSummaryRequest input) -> str:
+        auto body = get_revenue_statistics_summary_request_to_json(input)
+        return awsjson.awsjson_request_now(wafv2_protocol(), self.creds, self.region, "GetRevenueStatisticsSummary", body)
+
+    # GetRevenueStatisticsTimeSeries
+    # errors: WAFInternalErrorException, WAFInvalidOperationException, WAFInvalidParameterException, WAFNonexistentItemException
+    def get_revenue_statistics_time_series(self, GetRevenueStatisticsTimeSeriesRequest input) -> str:
+        auto body = get_revenue_statistics_time_series_request_to_json(input)
+        return awsjson.awsjson_request_now(wafv2_protocol(), self.creds, self.region, "GetRevenueStatisticsTimeSeries", body)
+
     # GetRuleGroup
     # errors: WAFInternalErrorException, WAFInvalidOperationException, WAFInvalidParameterException, WAFNonexistentItemException
     def get_rule_group(self, GetRuleGroupRequest input) -> str:
@@ -2967,6 +4359,12 @@ struct WAFV2Client:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(wafv2_protocol(), self.creds, self.region, "ListRuleGroups", body)
 
+    # ListSettlementRecords
+    # errors: WAFInternalErrorException, WAFInvalidOperationException, WAFInvalidParameterException, WAFNonexistentItemException
+    def list_settlement_records(self, ListSettlementRecordsRequest input) -> str:
+        auto body = list_settlement_records_request_to_json(input)
+        return awsjson.awsjson_request_now(wafv2_protocol(), self.creds, self.region, "ListSettlementRecords", body)
+
     # ListTagsForResource
     # errors: WAFInternalErrorException, WAFInvalidOperationException, WAFInvalidParameterException, WAFNonexistentItemException, WAFTagOperationException, WAFTagOperationInternalErrorException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
@@ -2979,17 +4377,59 @@ struct WAFV2Client:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(wafv2_protocol(), self.creds, self.region, "ListWebACLs", body)
 
+    # PutLoggingConfiguration
+    # errors: WAFFeatureNotIncludedInPricingPlanException, WAFInternalErrorException, WAFInvalidOperationException, WAFInvalidParameterException, WAFLimitsExceededException, WAFLogDestinationPermissionIssueException, WAFNonexistentItemException, WAFOptimisticLockException, WAFServiceLinkedRoleErrorException
+    def put_logging_configuration(self, PutLoggingConfigurationRequest input) -> str:
+        auto body = put_logging_configuration_request_to_json(input)
+        return awsjson.awsjson_request_now(wafv2_protocol(), self.creds, self.region, "PutLoggingConfiguration", body)
+
+    # PutManagedRuleSetVersions
+    # errors: WAFInternalErrorException, WAFInvalidOperationException, WAFInvalidParameterException, WAFNonexistentItemException, WAFOptimisticLockException
+    def put_managed_rule_set_versions(self, PutManagedRuleSetVersionsRequest input) -> str:
+        auto body = put_managed_rule_set_versions_request_to_json(input)
+        return awsjson.awsjson_request_now(wafv2_protocol(), self.creds, self.region, "PutManagedRuleSetVersions", body)
+
     # PutPermissionPolicy
     # errors: WAFInternalErrorException, WAFInvalidParameterException, WAFInvalidPermissionPolicyException, WAFNonexistentItemException
     def put_permission_policy(self, PutPermissionPolicyRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(wafv2_protocol(), self.creds, self.region, "PutPermissionPolicy", body)
 
+    # TagResource
+    # errors: WAFInternalErrorException, WAFInvalidOperationException, WAFInvalidParameterException, WAFLimitsExceededException, WAFNonexistentItemException, WAFTagOperationException, WAFTagOperationInternalErrorException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(wafv2_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: WAFInternalErrorException, WAFInvalidOperationException, WAFInvalidParameterException, WAFNonexistentItemException, WAFTagOperationException, WAFTagOperationInternalErrorException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(wafv2_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateIPSet
+    # errors: WAFDuplicateItemException, WAFInternalErrorException, WAFInvalidOperationException, WAFInvalidParameterException, WAFLimitsExceededException, WAFNonexistentItemException, WAFOptimisticLockException
+    def update_ip_set(self, UpdateIPSetRequest input) -> str:
+        auto body = update_ip_set_request_to_json(input)
+        return awsjson.awsjson_request_now(wafv2_protocol(), self.creds, self.region, "UpdateIPSet", body)
+
     # UpdateManagedRuleSetVersionExpiryDate
     # errors: WAFInternalErrorException, WAFInvalidOperationException, WAFInvalidParameterException, WAFNonexistentItemException, WAFOptimisticLockException
     def update_managed_rule_set_version_expiry_date(self, UpdateManagedRuleSetVersionExpiryDateRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(wafv2_protocol(), self.creds, self.region, "UpdateManagedRuleSetVersionExpiryDate", body)
+
+    # UpdateRegexPatternSet
+    # errors: WAFDuplicateItemException, WAFInternalErrorException, WAFInvalidOperationException, WAFInvalidParameterException, WAFLimitsExceededException, WAFNonexistentItemException, WAFOptimisticLockException
+    def update_regex_pattern_set(self, UpdateRegexPatternSetRequest input) -> str:
+        auto body = update_regex_pattern_set_request_to_json(input)
+        return awsjson.awsjson_request_now(wafv2_protocol(), self.creds, self.region, "UpdateRegexPatternSet", body)
+
+    # UpdateRuleGroup
+    # errors: WAFConfigurationWarningException, WAFDuplicateItemException, WAFInternalErrorException, WAFInvalidOperationException, WAFInvalidParameterException, WAFLimitsExceededException, WAFNonexistentItemException, WAFOptimisticLockException, WAFSubscriptionNotFoundException, WAFUnavailableEntityException
+    def update_rule_group(self, UpdateRuleGroupRequest input) -> str:
+        auto body = update_rule_group_request_to_json(input)
+        return awsjson.awsjson_request_now(wafv2_protocol(), self.creds, self.region, "UpdateRuleGroup", body)
 
 # Construct a WAFV2Client bound to credentials + region.
 def wafv2_client(core.Credentials creds, str region) -> WAFV2Client:

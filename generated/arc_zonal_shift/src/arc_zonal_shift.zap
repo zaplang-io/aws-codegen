@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 15 operations — 13 with a generated method,
-#   2 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 15 operations — 15 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   41 structs (31 @derive(Json)), 10 enums, 6 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -199,8 +199,9 @@ struct CreatePracticeRunConfigurationRequest:
     Optional[list[str]] allowedWindows
     list[ControlCondition] outcomeAlarms
 
-# no @derive(Json): member(s) practiceRunConfiguration: PracticeRunConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) practiceRunConfiguration: PracticeRunConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePracticeRunConfigurationResponse:
     str arn
     str name
@@ -233,8 +234,9 @@ struct GetAutoshiftObserverNotificationStatusResponse:
 struct GetManagedResourceRequest:
     str resourceIdentifier
 
-# no @derive(Json): member(s) appliedWeights: dict[str, float64], zonalShifts: list[ZonalShiftInResource], autoshifts: list[AutoshiftInResource], practiceRunConfiguration: PracticeRunConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) appliedWeights: dict[str, float64], zonalShifts: list[ZonalShiftInResource], autoshifts: list[AutoshiftInResource], practiceRunConfiguration: PracticeRunConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetManagedResourceResponse:
     Optional[str] arn
     Optional[str] name
@@ -256,8 +258,9 @@ struct ListAutoshiftsRequest:
     Optional[str] status
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[AutoshiftSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[AutoshiftSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAutoshiftsResponse:
     Optional[list[AutoshiftSummary]] items
     Optional[str] nextToken
@@ -268,8 +271,9 @@ struct ListManagedResourcesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[ManagedResourceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ManagedResourceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListManagedResourcesResponse:
     list[ManagedResourceSummary] items
     Optional[str] nextToken
@@ -283,14 +287,16 @@ struct ListZonalShiftsRequest:
     Optional[int64] maxResults
     Optional[str] resourceIdentifier
 
-# no @derive(Json): member(s) items: list[ZonalShiftSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ZonalShiftSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListZonalShiftsResponse:
     Optional[list[ZonalShiftSummary]] items
     Optional[str] nextToken
 
-# no @derive(Json): member(s) availabilityZones: list[str], appliedWeights: dict[str, float64], zonalShifts: list[ZonalShiftInResource], autoshifts: list[AutoshiftInResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) availabilityZones: list[str], appliedWeights: dict[str, float64], zonalShifts: list[ZonalShiftInResource], autoshifts: list[AutoshiftInResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedResourceSummary:
     Optional[str] arn
     Optional[str] name
@@ -301,8 +307,9 @@ struct ManagedResourceSummary:
     Optional[ZonalAutoshiftStatus] zonalAutoshiftStatus
     Optional[ZonalAutoshiftStatus] practiceRunStatus
 
-# no @derive(Json): member(s) blockingAlarms: list[ControlCondition], outcomeAlarms: list[ControlCondition], blockedWindows: list[str], allowedWindows: list[str], blockedDates: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) blockingAlarms: list[ControlCondition], outcomeAlarms: list[ControlCondition], blockedWindows: list[str], allowedWindows: list[str], blockedDates: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PracticeRunConfiguration:
     Optional[list[ControlCondition]] blockingAlarms
     list[ControlCondition] outcomeAlarms
@@ -362,8 +369,9 @@ struct UpdatePracticeRunConfigurationRequest:
     Optional[list[str]] allowedWindows
     Optional[list[ControlCondition]] outcomeAlarms
 
-# no @derive(Json): member(s) practiceRunConfiguration: PracticeRunConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) practiceRunConfiguration: PracticeRunConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePracticeRunConfigurationResponse:
     str arn
     str name
@@ -459,12 +467,6 @@ def arc_zonal_shift_error_from_code(str code) -> ARC_Zonal_ShiftError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CreatePracticeRunConfiguration (document member `blockedWindows: list[str]` is not serializable by derive)
-#   UpdatePracticeRunConfiguration (document member `blockedWindows: list[str]` is not serializable by derive)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -521,6 +523,44 @@ struct ARC_Zonal_ShiftClient:
         labels["zonalShiftId"] = input.zonalShiftId
         auto b = binding.HttpBinding(method="DELETE", path_template="/zonalshifts/{zonalShiftId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, arc_zonal_shift_service(), self.region, host)
+
+    # CreatePracticeRunConfiguration  POST /configuration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_practice_run_configuration(self, CreatePracticeRunConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(arc_zonal_shift_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceIdentifier\":" + arc_zonal_shift_json_str(input.resourceIdentifier))
+        if input.blockedWindows.is_some():
+            auto u0 = input.blockedWindows.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(arc_zonal_shift_json_str(x1))
+            parts.append("\"blockedWindows\":" + arc_zonal_shift_json_arr(e1))
+        if input.blockedDates.is_some():
+            auto u2 = input.blockedDates.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(arc_zonal_shift_json_str(x3))
+            parts.append("\"blockedDates\":" + arc_zonal_shift_json_arr(e3))
+        if input.blockingAlarms.is_some():
+            auto u4 = input.blockingAlarms.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"blockingAlarms\":" + arc_zonal_shift_json_arr(e5))
+        if input.allowedWindows.is_some():
+            auto u6 = input.allowedWindows.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(arc_zonal_shift_json_str(x7))
+            parts.append("\"allowedWindows\":" + arc_zonal_shift_json_arr(e7))
+        list[str] e8 = []
+        for x8 in input.outcomeAlarms:
+            e8.append(x8.to_json())
+        parts.append("\"outcomeAlarms\":" + arc_zonal_shift_json_arr(e8))
+        auto bp = restjson.rest_json_document(b, arc_zonal_shift_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, arc_zonal_shift_service(), self.region, host)
 
     # DeletePracticeRunConfiguration  DELETE /configuration/{resourceIdentifier}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -614,6 +654,47 @@ struct ARC_Zonal_ShiftClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/autoshift-observer-notification", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAutoshiftObserverNotificationStatusDocument(status=input.status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, arc_zonal_shift_service(), self.region, host)
+
+    # UpdatePracticeRunConfiguration  PATCH /configuration/{resourceIdentifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_practice_run_configuration(self, UpdatePracticeRunConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(arc_zonal_shift_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceIdentifier"] = input.resourceIdentifier
+        auto b = binding.HttpBinding(method="PATCH", path_template="/configuration/{resourceIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.blockedWindows.is_some():
+            auto u0 = input.blockedWindows.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(arc_zonal_shift_json_str(x1))
+            parts.append("\"blockedWindows\":" + arc_zonal_shift_json_arr(e1))
+        if input.blockedDates.is_some():
+            auto u2 = input.blockedDates.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(arc_zonal_shift_json_str(x3))
+            parts.append("\"blockedDates\":" + arc_zonal_shift_json_arr(e3))
+        if input.blockingAlarms.is_some():
+            auto u4 = input.blockingAlarms.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"blockingAlarms\":" + arc_zonal_shift_json_arr(e5))
+        if input.allowedWindows.is_some():
+            auto u6 = input.allowedWindows.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(arc_zonal_shift_json_str(x7))
+            parts.append("\"allowedWindows\":" + arc_zonal_shift_json_arr(e7))
+        if input.outcomeAlarms.is_some():
+            auto u8 = input.outcomeAlarms.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"outcomeAlarms\":" + arc_zonal_shift_json_arr(e9))
+        auto bp = restjson.rest_json_document(b, arc_zonal_shift_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, arc_zonal_shift_service(), self.region, host)
 
     # UpdateZonalAutoshiftConfiguration  PUT /managedresources/{resourceIdentifier}

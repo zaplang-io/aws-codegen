@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 11 operations — 4 with a generated method,
-#   7 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 11 operations — 10 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   31 structs (15 @derive(Json)), 5 enums, 4 error variants.
-#   0 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -91,8 +91,9 @@ struct DeregisterSubscriptionProviderResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filter:
     Optional[str] Name
     Optional[Operator] Operator
@@ -118,8 +119,9 @@ struct GetServiceSettingsRequest:
     # empty shape in the model; reserved field keeps it valid
     Optional[str] reserved
 
-# no @derive(Json): member(s) HomeRegions: list[str], LinuxSubscriptionsDiscoverySettings: LinuxSubscriptionsDiscoverySettings, StatusMessage: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HomeRegions: list[str], LinuxSubscriptionsDiscoverySettings: LinuxSubscriptionsDiscoverySettings, StatusMessage: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetServiceSettingsResponse:
     Optional[list[str]] HomeRegions
     Optional[LinuxSubscriptionsDiscovery] LinuxSubscriptionsDiscovery
@@ -127,8 +129,9 @@ struct GetServiceSettingsResponse:
     Optional[Status] Status
     Optional[dict[str, str]] StatusMessage
 
-# no @derive(Json): member(s) ProductCode: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProductCode: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Instance:
     Optional[str] AccountID
     Optional[str] AmiId
@@ -150,8 +153,9 @@ struct Instance:
 struct InternalServerException:
     Optional[str] message
 
-# no @derive(Json): member(s) SourceRegions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceRegions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LinuxSubscriptionsDiscoverySettings:
     OrganizationIntegration OrganizationIntegration
     list[str] SourceRegions
@@ -163,8 +167,9 @@ struct ListLinuxSubscriptionInstancesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Instances: list[Instance] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Instances: list[Instance] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLinuxSubscriptionInstancesResponse:
     Optional[list[Instance]] Instances
     Optional[str] NextToken
@@ -176,8 +181,9 @@ struct ListLinuxSubscriptionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Subscriptions: list[Subscription] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subscriptions: list[Subscription] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLinuxSubscriptionsResponse:
     Optional[str] NextToken
     Optional[list[Subscription]] Subscriptions
@@ -189,8 +195,9 @@ struct ListRegisteredSubscriptionProvidersRequest:
     Optional[str] NextToken
     Optional[list[str]] SubscriptionProviderSources
 
-# no @derive(Json): member(s) RegisteredSubscriptionProviders: list[RegisteredSubscriptionProvider] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RegisteredSubscriptionProviders: list[RegisteredSubscriptionProvider] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRegisteredSubscriptionProvidersResponse:
     Optional[str] NextToken
     Optional[list[RegisteredSubscriptionProvider]] RegisteredSubscriptionProviders
@@ -200,8 +207,9 @@ struct ListRegisteredSubscriptionProvidersResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -270,8 +278,9 @@ struct UpdateServiceSettingsRequest:
     LinuxSubscriptionsDiscovery LinuxSubscriptionsDiscovery
     LinuxSubscriptionsDiscoverySettings LinuxSubscriptionsDiscoverySettings
 
-# no @derive(Json): member(s) HomeRegions: list[str], LinuxSubscriptionsDiscoverySettings: LinuxSubscriptionsDiscoverySettings, StatusMessage: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HomeRegions: list[str], LinuxSubscriptionsDiscoverySettings: LinuxSubscriptionsDiscoverySettings, StatusMessage: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateServiceSettingsResponse:
     Optional[list[str]] HomeRegions
     Optional[LinuxSubscriptionsDiscovery] LinuxSubscriptionsDiscovery
@@ -312,19 +321,7 @@ def license_manager_linux_subscriptions_error_from_code(str code) -> License_Man
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   ListLinuxSubscriptionInstances (document member `Filters: list[Filter]` is not serializable by derive)
-#   ListLinuxSubscriptions (document member `Filters: list[Filter]` is not serializable by derive)
-#   ListRegisteredSubscriptionProviders (document member `SubscriptionProviderSources: list[str]` is not serializable by derive)
-#   RegisterSubscriptionProvider (document member `Tags: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateServiceSettings (document member `LinuxSubscriptionsDiscoverySettings: LinuxSubscriptionsDiscoverySettings` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListLinuxSubscriptionInstances (operation not generated)
-#   ListLinuxSubscriptions (operation not generated)
-#   ListRegisteredSubscriptionProviders (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -338,6 +335,63 @@ struct DeregisterSubscriptionProviderDocument:
 struct GetRegisteredSubscriptionProviderDocument:
     # document members of GetRegisteredSubscriptionProvider
     str SubscriptionProviderArn
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def license_manager_linux_subscriptions_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def license_manager_linux_subscriptions_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def license_manager_linux_subscriptions_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize Filter to a compact JSON object (declaration order).
+def filter_to_json(Filter v) -> str:
+    list[str] parts = []
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + license_manager_linux_subscriptions_json_str(u0))
+    if v.Operator.is_some():
+        auto u1 = v.Operator.unwrap()
+        parts.append("\"Operator\":" + u1.to_json())
+    if v.Values.is_some():
+        auto u2 = v.Values.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(license_manager_linux_subscriptions_json_str(x3))
+        parts.append("\"Values\":" + license_manager_linux_subscriptions_json_arr(e3))
+    return license_manager_linux_subscriptions_json_obj(parts)
+
+# Serialize LinuxSubscriptionsDiscoverySettings to a compact JSON object (declaration order).
+def linux_subscriptions_discovery_settings_to_json(LinuxSubscriptionsDiscoverySettings v) -> str:
+    list[str] parts = []
+    parts.append("\"OrganizationIntegration\":" + v.OrganizationIntegration.to_json())
+    list[str] e0 = []
+    for x0 in v.SourceRegions:
+        e0.append(license_manager_linux_subscriptions_json_str(x0))
+    parts.append("\"SourceRegions\":" + license_manager_linux_subscriptions_json_arr(e0))
+    return license_manager_linux_subscriptions_json_obj(parts)
 
 # A bound License_Manager_Linux_Subscriptions client: credentials + region, threaded into every operation.
 struct License_Manager_Linux_SubscriptionsClient:
@@ -369,6 +423,69 @@ struct License_Manager_Linux_SubscriptionsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/subscription/GetServiceSettings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, license_manager_linux_subscriptions_service(), self.region, host)
 
+    # ListLinuxSubscriptionInstances  POST /subscription/ListLinuxSubscriptionInstances
+    # errors: InternalServerException, ThrottlingException, ValidationException
+    def list_linux_subscription_instances(self, ListLinuxSubscriptionInstancesRequest input) -> str:
+        auto host = endpoints.regional_host(license_manager_linux_subscriptions_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/subscription/ListLinuxSubscriptionInstances", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(filter_to_json(x1))
+            parts.append("\"Filters\":" + license_manager_linux_subscriptions_json_arr(e1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + license_manager_linux_subscriptions_json_str(u3))
+        auto bp = restjson.rest_json_document(b, license_manager_linux_subscriptions_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, license_manager_linux_subscriptions_service(), self.region, host)
+
+    # ListLinuxSubscriptions  POST /subscription/ListLinuxSubscriptions
+    # errors: InternalServerException, ThrottlingException, ValidationException
+    def list_linux_subscriptions(self, ListLinuxSubscriptionsRequest input) -> str:
+        auto host = endpoints.regional_host(license_manager_linux_subscriptions_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/subscription/ListLinuxSubscriptions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Filters.is_some():
+            auto u0 = input.Filters.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(filter_to_json(x1))
+            parts.append("\"Filters\":" + license_manager_linux_subscriptions_json_arr(e1))
+        if input.MaxResults.is_some():
+            auto u2 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u2))
+        if input.NextToken.is_some():
+            auto u3 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + license_manager_linux_subscriptions_json_str(u3))
+        auto bp = restjson.rest_json_document(b, license_manager_linux_subscriptions_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, license_manager_linux_subscriptions_service(), self.region, host)
+
+    # ListRegisteredSubscriptionProviders  POST /subscription/ListRegisteredSubscriptionProviders
+    # errors: InternalServerException, ThrottlingException, ValidationException
+    def list_registered_subscription_providers(self, ListRegisteredSubscriptionProvidersRequest input) -> str:
+        auto host = endpoints.regional_host(license_manager_linux_subscriptions_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/subscription/ListRegisteredSubscriptionProviders", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.MaxResults.is_some():
+            auto u0 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + license_manager_linux_subscriptions_json_str(u1))
+        if input.SubscriptionProviderSources.is_some():
+            auto u2 = input.SubscriptionProviderSources.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(license_manager_linux_subscriptions_json_str(x3))
+            parts.append("\"SubscriptionProviderSources\":" + license_manager_linux_subscriptions_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, license_manager_linux_subscriptions_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, license_manager_linux_subscriptions_service(), self.region, host)
+
     # ListTagsForResource  GET /tags/{resourceArn}
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
@@ -377,6 +494,91 @@ struct License_Manager_Linux_SubscriptionsClient:
         labels["resourceArn"] = input.resourceArn
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, license_manager_linux_subscriptions_service(), self.region, host)
+
+    # RegisterSubscriptionProvider  POST /subscription/RegisterSubscriptionProvider
+    # errors: InternalServerException, ThrottlingException, ValidationException
+    def register_subscription_provider(self, RegisterSubscriptionProviderRequest input) -> str:
+        auto host = endpoints.regional_host(license_manager_linux_subscriptions_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/subscription/RegisterSubscriptionProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"SecretArn\":" + license_manager_linux_subscriptions_json_str(input.SecretArn))
+        parts.append("\"SubscriptionProviderSource\":" + license_manager_linux_subscriptions_json_str(input.SubscriptionProviderSource))
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(license_manager_linux_subscriptions_json_str(k1) + ":" + license_manager_linux_subscriptions_json_str(u0[k1]))
+            parts.append("\"Tags\":" + license_manager_linux_subscriptions_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, license_manager_linux_subscriptions_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, license_manager_linux_subscriptions_service(), self.region, host)
+
+    # TagResource  PUT /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(license_manager_linux_subscriptions_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(license_manager_linux_subscriptions_json_str(k0) + ":" + license_manager_linux_subscriptions_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + license_manager_linux_subscriptions_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, license_manager_linux_subscriptions_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, license_manager_linux_subscriptions_service(), self.region, host)
+
+    # UpdateServiceSettings  POST /subscription/UpdateServiceSettings
+    # errors: InternalServerException, ThrottlingException, ValidationException
+    def update_service_settings(self, UpdateServiceSettingsRequest input) -> str:
+        auto host = endpoints.regional_host(license_manager_linux_subscriptions_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/subscription/UpdateServiceSettings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AllowUpdate.is_some():
+            auto u0 = input.AllowUpdate.unwrap()
+            parts.append("\"AllowUpdate\":" + json.dumps(JsonValue.Bool(u0)))
+        parts.append("\"LinuxSubscriptionsDiscovery\":" + input.LinuxSubscriptionsDiscovery.to_json())
+        parts.append("\"LinuxSubscriptionsDiscoverySettings\":" + linux_subscriptions_discovery_settings_to_json(input.LinuxSubscriptionsDiscoverySettings))
+        auto bp = restjson.rest_json_document(b, license_manager_linux_subscriptions_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, license_manager_linux_subscriptions_service(), self.region, host)
+
+    # Paginator for ListLinuxSubscriptionInstances — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Instances).
+    def paginate_list_linux_subscription_instances(self, ListLinuxSubscriptionInstancesRequest input):
+        auto host = endpoints.regional_host(license_manager_linux_subscriptions_service(), self.region)
+        while True:
+            auto raw = self.list_linux_subscription_instances(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListLinuxSubscriptions — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Subscriptions).
+    def paginate_list_linux_subscriptions(self, ListLinuxSubscriptionsRequest input):
+        auto host = endpoints.regional_host(license_manager_linux_subscriptions_service(), self.region)
+        while True:
+            auto raw = self.list_linux_subscriptions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListRegisteredSubscriptionProviders — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: RegisteredSubscriptionProviders).
+    def paginate_list_registered_subscription_providers(self, ListRegisteredSubscriptionProvidersRequest input):
+        auto host = endpoints.regional_host(license_manager_linux_subscriptions_service(), self.region)
+        while True:
+            auto raw = self.list_registered_subscription_providers(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
 # Construct a License_Manager_Linux_SubscriptionsClient bound to credentials + region.
 def license_manager_linux_subscriptions_client(core.Credentials creds, str region) -> License_Manager_Linux_SubscriptionsClient:

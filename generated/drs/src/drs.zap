@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 70 operations — 44 with a generated method,
-#   26 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 70 operations — 69 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   213 structs (107 @derive(Json)), 46 enums, 8 error variants.
-#   8 paginators generated (7 paginated ops skipped) from paginators-1.json.
+#   15 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -544,8 +544,9 @@ struct AssociateSourceNetworkStackRequest:
     str sourceNetworkID
     str cfnStackName
 
-# no @derive(Json): member(s) job: Job not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) job: Job not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateSourceNetworkStackResponse:
     Optional[Job] job
 
@@ -559,8 +560,9 @@ struct CPU:
 struct CancelRecoveryPlanExecutionRequest:
     str recoveryPlanExecutionArn
 
-# no @derive(Json): member(s) recoveryPlanExecution: RecoveryPlanExecution not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recoveryPlanExecution: RecoveryPlanExecution not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CancelRecoveryPlanExecutionResponse:
     RecoveryPlanExecution recoveryPlanExecution
 
@@ -571,8 +573,9 @@ struct ConflictException:
     Optional[str] resourceId
     Optional[str] resourceType
 
-# no @derive(Json): member(s) volumeToConversionMap: dict[str, dict[str, str]], volumeToVolumeSize: dict[str, int64], volumeToProductCodes: dict[str, list[ProductCode]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) volumeToConversionMap: dict[str, dict[str, str]], volumeToVolumeSize: dict[str, int64], volumeToProductCodes: dict[str, list[ProductCode]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConversionProperties:
     Optional[dict[str, dict[str, str]]] volumeToConversionMap
     Optional[str] rootVolumeName
@@ -587,8 +590,9 @@ struct CreateExtendedSourceServerRequest:
     str sourceServerArn
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) sourceServer: SourceServer not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceServer: SourceServer not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateExtendedSourceServerResponse:
     Optional[SourceServer] sourceServer
 
@@ -606,8 +610,9 @@ struct CreateLaunchConfigurationTemplateRequest:
     Optional[bool] launchIntoSourceInstance
     Optional[RecoveryMode] recoveryMode
 
-# no @derive(Json): member(s) launchConfigurationTemplate: LaunchConfigurationTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) launchConfigurationTemplate: LaunchConfigurationTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateLaunchConfigurationTemplateResponse:
     Optional[LaunchConfigurationTemplate] launchConfigurationTemplate
 
@@ -619,8 +624,9 @@ struct CreateRecoveryPlanRequest:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) recoveryPlan: RecoveryPlan not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recoveryPlan: RecoveryPlan not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRecoveryPlanResponse:
     RecoveryPlan recoveryPlan
 
@@ -633,8 +639,9 @@ struct CreateRecoveryPlanStepRequest:
     RecoveryPlanStepConfiguration configuration
     Optional[str] clientToken
 
-# no @derive(Json): member(s) recoveryPlanStep: RecoveryPlanStep not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recoveryPlanStep: RecoveryPlanStep not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRecoveryPlanStepResponse:
     RecoveryPlanStep recoveryPlanStep
 
@@ -675,8 +682,9 @@ struct DataReplicationError:
     Optional[DataReplicationErrorString] error
     Optional[str] rawError
 
-# no @derive(Json): member(s) replicatedDisks: list[DataReplicationInfoReplicatedDisk], dataReplicationInitiation: DataReplicationInitiation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) replicatedDisks: list[DataReplicationInfoReplicatedDisk], dataReplicationInitiation: DataReplicationInitiation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataReplicationInfo:
     Optional[str] lagDuration
     Optional[str] etaDateTime
@@ -696,8 +704,9 @@ struct DataReplicationInfoReplicatedDisk:
     Optional[int64] backloggedStorageBytes
     Optional[VolumeStatus] volumeStatus
 
-# no @derive(Json): member(s) steps: list[DataReplicationInitiationStep] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) steps: list[DataReplicationInitiationStep] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataReplicationInitiation:
     Optional[str] startDateTime
     Optional[str] nextAttemptDateTime
@@ -808,8 +817,9 @@ struct DescribeJobLogItemsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[JobLog] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[JobLog] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeJobLogItemsResponse:
     Optional[list[JobLog]] items
     Optional[str] nextToken
@@ -821,15 +831,17 @@ struct DescribeJobsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) jobIDs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobIDs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeJobsRequestFilters:
     Optional[list[str]] jobIDs
     Optional[str] fromDate
     Optional[str] toDate
 
-# no @derive(Json): member(s) items: list[Job] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[Job] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeJobsResponse:
     Optional[list[Job]] items
     Optional[str] nextToken
@@ -841,8 +853,9 @@ struct DescribeLaunchConfigurationTemplatesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[LaunchConfigurationTemplate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[LaunchConfigurationTemplate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeLaunchConfigurationTemplatesResponse:
     Optional[list[LaunchConfigurationTemplate]] items
     Optional[str] nextToken
@@ -854,14 +867,16 @@ struct DescribeRecoveryInstancesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) recoveryInstanceIDs: list[str], sourceServerIDs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recoveryInstanceIDs: list[str], sourceServerIDs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRecoveryInstancesRequestFilters:
     Optional[list[str]] recoveryInstanceIDs
     Optional[list[str]] sourceServerIDs
 
-# no @derive(Json): member(s) items: list[RecoveryInstance] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[RecoveryInstance] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRecoveryInstancesResponse:
     Optional[str] nextToken
     Optional[list[RecoveryInstance]] items
@@ -880,8 +895,9 @@ struct DescribeRecoverySnapshotsRequestFilters:
     Optional[str] fromDateTime
     Optional[str] toDateTime
 
-# no @derive(Json): member(s) items: list[RecoverySnapshot] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[RecoverySnapshot] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRecoverySnapshotsResponse:
     Optional[list[RecoverySnapshot]] items
     Optional[str] nextToken
@@ -893,8 +909,9 @@ struct DescribeReplicationConfigurationTemplatesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[ReplicationConfigurationTemplate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ReplicationConfigurationTemplate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReplicationConfigurationTemplatesResponse:
     Optional[list[ReplicationConfigurationTemplate]] items
     Optional[str] nextToken
@@ -906,15 +923,17 @@ struct DescribeSourceNetworksRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) sourceNetworkIDs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceNetworkIDs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSourceNetworksRequestFilters:
     Optional[list[str]] sourceNetworkIDs
     Optional[str] originAccountID
     Optional[str] originRegion
 
-# no @derive(Json): member(s) items: list[SourceNetwork] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[SourceNetwork] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSourceNetworksResponse:
     Optional[list[SourceNetwork]] items
     Optional[str] nextToken
@@ -926,15 +945,17 @@ struct DescribeSourceServersRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) sourceServerIDs: list[str], stagingAccountIDs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceServerIDs: list[str], stagingAccountIDs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSourceServersRequestFilters:
     Optional[list[str]] sourceServerIDs
     Optional[str] hardwareId
     Optional[list[str]] stagingAccountIDs
 
-# no @derive(Json): member(s) items: list[SourceServer] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[SourceServer] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSourceServersResponse:
     Optional[list[SourceServer]] items
     Optional[str] nextToken
@@ -964,8 +985,9 @@ struct ErrorDetail:
 struct EventResourceData:
     Optional[SourceNetworkData] sourceNetworkData
 
-# no @derive(Json): member(s) servers: list[RecoveryPlanExecutionServer] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) servers: list[RecoveryPlanExecutionServer] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecutionServerStepConfiguration:
     list[RecoveryPlanExecutionServer] servers
 
@@ -1001,8 +1023,9 @@ struct GetLaunchConfigurationRequest:
 struct GetRecoveryPlanExecutionRequest:
     str recoveryPlanExecutionArn
 
-# no @derive(Json): member(s) recoveryPlanExecution: RecoveryPlanExecution not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recoveryPlanExecution: RecoveryPlanExecution not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecoveryPlanExecutionResponse:
     RecoveryPlanExecution recoveryPlanExecution
 
@@ -1011,8 +1034,9 @@ struct GetRecoveryPlanExecutionResponse:
 struct GetRecoveryPlanExecutionStepRequest:
     str recoveryPlanExecutionStepArn
 
-# no @derive(Json): member(s) recoveryPlanExecutionStep: RecoveryPlanExecutionStep not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recoveryPlanExecutionStep: RecoveryPlanExecutionStep not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecoveryPlanExecutionStepResponse:
     RecoveryPlanExecutionStep recoveryPlanExecutionStep
 
@@ -1021,8 +1045,9 @@ struct GetRecoveryPlanExecutionStepResponse:
 struct GetRecoveryPlanRequest:
     str recoveryPlanArn
 
-# no @derive(Json): member(s) recoveryPlan: RecoveryPlan not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recoveryPlan: RecoveryPlan not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecoveryPlanResponse:
     RecoveryPlan recoveryPlan
 
@@ -1031,8 +1056,9 @@ struct GetRecoveryPlanResponse:
 struct GetRecoveryPlanStepRequest:
     str recoveryPlanStepArn
 
-# no @derive(Json): member(s) recoveryPlanStep: RecoveryPlanStep not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recoveryPlanStep: RecoveryPlanStep not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecoveryPlanStepResponse:
     RecoveryPlanStep recoveryPlanStep
 
@@ -1064,8 +1090,9 @@ struct InternalServerException:
     str message
     Optional[int64] retryAfterSeconds
 
-# no @derive(Json): member(s) participatingServers: list[ParticipatingServer], tags: dict[str, str], participatingResources: list[ParticipatingResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) participatingServers: list[ParticipatingServer], tags: dict[str, str], participatingResources: list[ParticipatingResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Job:
     str jobID
     Optional[str] arn
@@ -1078,15 +1105,17 @@ struct Job:
     Optional[dict[str, str]] tags
     Optional[list[ParticipatingResource]] participatingResources
 
-# no @derive(Json): member(s) eventData: JobLogEventData not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventData: JobLogEventData not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobLog:
     Optional[str] logDateTime
     Optional[JobLogEvent] event
     Optional[JobLogEventData] eventData
 
-# no @derive(Json): member(s) conversionProperties: ConversionProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) conversionProperties: ConversionProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobLogEventData:
     Optional[str] sourceServerID
     Optional[str] conversionServerID
@@ -1097,8 +1126,9 @@ struct JobLogEventData:
     Optional[int64] attemptCount
     Optional[int64] maxAttemptsCount
 
-# no @derive(Json): member(s) parameters: dict[str, LaunchActionParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: dict[str, LaunchActionParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LaunchAction:
     Optional[str] actionId
     Optional[str] actionCode
@@ -1117,21 +1147,24 @@ struct LaunchActionParameter:
     Optional[str] value
     Optional[LaunchActionParameterType] type
 
-# no @derive(Json): member(s) action: LaunchAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) action: LaunchAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LaunchActionRun:
     Optional[LaunchAction] action
     Optional[str] runId
     Optional[LaunchActionRunStatus] status
     Optional[str] failureReason
 
-# no @derive(Json): member(s) actionIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actionIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LaunchActionsRequestFilters:
     Optional[list[str]] actionIds
 
-# no @derive(Json): member(s) runs: list[LaunchActionRun] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) runs: list[LaunchActionRun] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LaunchActionsStatus:
     Optional[str] ssmAgentDiscoveryDatetime
     Optional[list[LaunchActionRun]] runs
@@ -1150,8 +1183,9 @@ struct LaunchConfiguration:
     Optional[LaunchIntoInstanceProperties] launchIntoInstanceProperties
     Optional[RecoveryMode] recoveryMode
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LaunchConfigurationTemplate:
     Optional[str] launchConfigurationTemplateID
     Optional[str] arn
@@ -1200,8 +1234,9 @@ struct ListExtensibleSourceServersRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[StagingSourceServer] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[StagingSourceServer] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExtensibleSourceServersResponse:
     Optional[list[StagingSourceServer]] items
     Optional[str] nextToken
@@ -1214,8 +1249,9 @@ struct ListLaunchActionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[LaunchAction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[LaunchAction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListLaunchActionsResponse:
     Optional[list[LaunchAction]] items
     Optional[str] nextToken
@@ -1232,8 +1268,9 @@ struct ListRecoveryPlanExecutionStepsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) recoveryPlanExecutionSteps: list[RecoveryPlanExecutionStepSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recoveryPlanExecutionSteps: list[RecoveryPlanExecutionStepSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecoveryPlanExecutionStepsResponse:
     list[RecoveryPlanExecutionStepSummary] recoveryPlanExecutionSteps
     Optional[str] nextToken
@@ -1246,8 +1283,9 @@ struct ListRecoveryPlanExecutionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) recoveryPlanExecutions: list[RecoveryPlanExecutionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recoveryPlanExecutions: list[RecoveryPlanExecutionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecoveryPlanExecutionsResponse:
     list[RecoveryPlanExecutionSummary] recoveryPlanExecutions
     Optional[str] nextToken
@@ -1259,8 +1297,9 @@ struct ListRecoveryPlanStepsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) recoveryPlanSteps: list[RecoveryPlanStep] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recoveryPlanSteps: list[RecoveryPlanStep] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecoveryPlanStepsResponse:
     list[RecoveryPlanStep] recoveryPlanSteps
     Optional[str] nextToken
@@ -1271,8 +1310,9 @@ struct ListRecoveryPlansRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) recoveryPlans: list[RecoveryPlanSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recoveryPlans: list[RecoveryPlanSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecoveryPlansResponse:
     list[RecoveryPlanSummary] recoveryPlans
     Optional[str] nextToken
@@ -1283,8 +1323,9 @@ struct ListStagingAccountsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) accounts: list[Account] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accounts: list[Account] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStagingAccountsResponse:
     Optional[list[Account]] accounts
     Optional[str] nextToken
@@ -1294,13 +1335,15 @@ struct ListStagingAccountsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) ips: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ips: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkInterface:
     Optional[str] macAddress
     Optional[list[str]] ips
@@ -1327,8 +1370,9 @@ struct ParticipatingResource:
 struct ParticipatingResourceID:
     Optional[str] sourceNetworkID
 
-# no @derive(Json): member(s) launchActionsStatus: LaunchActionsStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) launchActionsStatus: LaunchActionsStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ParticipatingServer:
     Optional[str] sourceServerID
     Optional[str] recoveryInstanceID
@@ -1355,8 +1399,9 @@ struct PutLaunchActionRequest:
     Optional[dict[str, LaunchActionParameter]] parameters
     str description
 
-# no @derive(Json): member(s) parameters: dict[str, LaunchActionParameter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: dict[str, LaunchActionParameter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutLaunchActionResponse:
     Optional[str] resourceId
     Optional[str] actionId
@@ -1371,8 +1416,9 @@ struct PutLaunchActionResponse:
     Optional[str] description
     Optional[LaunchActionCategory] category
 
-# no @derive(Json): member(s) tags: dict[str, str], dataReplicationInfo: RecoveryInstanceDataReplicationInfo, recoveryInstanceProperties: RecoveryInstanceProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], dataReplicationInfo: RecoveryInstanceDataReplicationInfo, recoveryInstanceProperties: RecoveryInstanceProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecoveryInstance:
     Optional[str] ec2InstanceID
     Optional[EC2InstanceState] ec2InstanceState
@@ -1396,8 +1442,9 @@ struct RecoveryInstanceDataReplicationError:
     Optional[FailbackReplicationError] error
     Optional[str] rawError
 
-# no @derive(Json): member(s) replicatedDisks: list[RecoveryInstanceDataReplicationInfoReplicatedDisk], dataReplicationInitiation: RecoveryInstanceDataReplicationInitiation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) replicatedDisks: list[RecoveryInstanceDataReplicationInfoReplicatedDisk], dataReplicationInitiation: RecoveryInstanceDataReplicationInitiation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecoveryInstanceDataReplicationInfo:
     Optional[str] lagDuration
     Optional[str] etaDateTime
@@ -1416,8 +1463,9 @@ struct RecoveryInstanceDataReplicationInfoReplicatedDisk:
     Optional[int64] rescannedStorageBytes
     Optional[int64] backloggedStorageBytes
 
-# no @derive(Json): member(s) steps: list[RecoveryInstanceDataReplicationInitiationStep] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) steps: list[RecoveryInstanceDataReplicationInitiationStep] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecoveryInstanceDataReplicationInitiation:
     Optional[str] startDateTime
     Optional[list[RecoveryInstanceDataReplicationInitiationStep]] steps
@@ -1447,8 +1495,9 @@ struct RecoveryInstanceFailback:
     Optional[str] elapsedReplicationDuration
     Optional[FailbackLaunchType] failbackLaunchType
 
-# no @derive(Json): member(s) networkInterfaces: list[NetworkInterface], disks: list[RecoveryInstanceDisk], cpus: list[CPU] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkInterfaces: list[NetworkInterface], disks: list[RecoveryInstanceDisk], cpus: list[CPU] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecoveryInstanceProperties:
     Optional[str] lastUpdatedDateTime
     Optional[IdentificationHints] identificationHints
@@ -1465,8 +1514,9 @@ struct RecoveryLifeCycle:
     Optional[str] jobID
     Optional[RecoveryResult] lastRecoveryResult
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecoveryPlan:
     str recoveryPlanArn
     str name
@@ -1476,8 +1526,9 @@ struct RecoveryPlan:
     str updatedAt
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecoveryPlanExecution:
     str recoveryPlanExecutionArn
     str recoveryPlanArn
@@ -1499,8 +1550,9 @@ struct RecoveryPlanExecutionSourceServer:
     str sourceServerID
     str recoverySnapshotID
 
-# no @derive(Json): member(s) configuration: RecoveryPlanExecutionStepConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: RecoveryPlanExecutionStepConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecoveryPlanExecutionStep:
     str recoveryPlanExecutionStepArn
     int64 stepIndex
@@ -1512,14 +1564,16 @@ struct RecoveryPlanExecutionStep:
     str createdAt
     str updatedAt
 
-# no @derive(Json): member(s) executionServerStepConfiguration: ExecutionServerStepConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) executionServerStepConfiguration: ExecutionServerStepConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecoveryPlanExecutionStepConfiguration:
     Optional[ExecutionServerStepConfiguration] executionServerStepConfiguration
     Optional[WaitStepConfiguration] waitStepConfiguration
 
-# no @derive(Json): member(s) configuration: RecoveryPlanExecutionStepConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: RecoveryPlanExecutionStepConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecoveryPlanExecutionStepSummary:
     str recoveryPlanExecutionStepArn
     str stepName
@@ -1542,8 +1596,9 @@ struct RecoveryPlanServer:
     str serverArn
     Optional[RecoveryPlanServerImpactLevel] impactLevel
 
-# no @derive(Json): member(s) configuration: RecoveryPlanStepConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: RecoveryPlanStepConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecoveryPlanStep:
     str recoveryPlanStepArn
     int64 stepOrder
@@ -1552,8 +1607,9 @@ struct RecoveryPlanStep:
     str createdAt
     str updatedAt
 
-# no @derive(Json): member(s) serverStepConfiguration: ServerStepConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) serverStepConfiguration: ServerStepConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecoveryPlanStepConfiguration:
     Optional[ServerStepConfiguration] serverStepConfiguration
     Optional[WaitStepConfiguration] waitStepConfiguration
@@ -1566,8 +1622,9 @@ struct RecoveryPlanSummary:
     str createdAt
     str updatedAt
 
-# no @derive(Json): member(s) ebsSnapshots: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ebsSnapshots: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecoverySnapshot:
     str snapshotID
     str sourceServerID
@@ -1581,13 +1638,15 @@ struct ReorderRecoveryPlanStepsRequest:
     str recoveryPlanArn
     list[str] orderedStepArns
 
-# no @derive(Json): member(s) recoveryPlanSteps: list[RecoveryPlanStep] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recoveryPlanSteps: list[RecoveryPlanStep] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReorderRecoveryPlanStepsResponse:
     list[RecoveryPlanStep] recoveryPlanSteps
 
-# no @derive(Json): member(s) replicationServersSecurityGroupsIDs: list[str], replicatedDisks: list[ReplicationConfigurationReplicatedDisk], stagingAreaTags: dict[str, str], pitPolicy: list[PITPolicyRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) replicationServersSecurityGroupsIDs: list[str], replicatedDisks: list[ReplicationConfigurationReplicatedDisk], stagingAreaTags: dict[str, str], pitPolicy: list[PITPolicyRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicationConfiguration:
     Optional[str] sourceServerID
     Optional[str] name
@@ -1617,8 +1676,9 @@ struct ReplicationConfigurationReplicatedDisk:
     Optional[int64] throughput
     Optional[ReplicationConfigurationReplicatedDiskStagingDiskType] optimizedStagingDiskType
 
-# no @derive(Json): member(s) replicationServersSecurityGroupsIDs: list[str], stagingAreaTags: dict[str, str], tags: dict[str, str], pitPolicy: list[PITPolicyRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) replicationServersSecurityGroupsIDs: list[str], stagingAreaTags: dict[str, str], tags: dict[str, str], pitPolicy: list[PITPolicyRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicationConfigurationTemplate:
     str replicationConfigurationTemplateID
     Optional[str] arn
@@ -1656,8 +1716,9 @@ struct RetryDataReplicationRequest:
 struct RetryRecoveryPlanExecutionStepRequest:
     str recoveryPlanExecutionStepArn
 
-# no @derive(Json): member(s) recoveryPlanExecutionStep: RecoveryPlanExecutionStep not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recoveryPlanExecutionStep: RecoveryPlanExecutionStep not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RetryRecoveryPlanExecutionStepResponse:
     RecoveryPlanExecutionStep recoveryPlanExecutionStep
 
@@ -1670,8 +1731,9 @@ struct ReverseReplicationRequest:
 struct ReverseReplicationResponse:
     Optional[str] reversedDirectionSourceServerArn
 
-# no @derive(Json): member(s) servers: list[RecoveryPlanServer] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) servers: list[RecoveryPlanServer] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServerStepConfiguration:
     list[RecoveryPlanServer] servers
 
@@ -1691,8 +1753,9 @@ struct SourceCloudProperties:
     Optional[str] originAvailabilityZone
     Optional[str] sourceOutpostArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceNetwork:
     Optional[str] sourceNetworkID
     Optional[str] sourceVpcID
@@ -1713,8 +1776,9 @@ struct SourceNetworkData:
     Optional[str] targetVpc
     Optional[str] stackName
 
-# no @derive(Json): member(s) networkInterfaces: list[NetworkInterface], disks: list[Disk], cpus: list[CPU] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkInterfaces: list[NetworkInterface], disks: list[Disk], cpus: list[CPU] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceProperties:
     Optional[str] lastUpdatedDateTime
     Optional[str] recommendedInstanceType
@@ -1727,8 +1791,9 @@ struct SourceProperties:
     Optional[bool] supportsNitroInstances
     Optional[SourceServerArchitecture] architecture
 
-# no @derive(Json): member(s) tags: dict[str, str], dataReplicationInfo: DataReplicationInfo, sourceProperties: SourceProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str], dataReplicationInfo: DataReplicationInfo, sourceProperties: SourceProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceServer:
     Optional[str] sourceServerID
     Optional[str] arn
@@ -1752,8 +1817,9 @@ struct StagingArea:
     Optional[str] stagingSourceServerArn
     Optional[str] errorMessage
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StagingSourceServer:
     Optional[str] hostname
     Optional[str] arn
@@ -1765,8 +1831,9 @@ struct StartFailbackLaunchRequest:
     list[str] recoveryInstanceIDs
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) job: Job not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) job: Job not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartFailbackLaunchResponse:
     Optional[Job] job
 
@@ -1779,8 +1846,9 @@ struct StartRecoveryPlanExecutionRequest:
     Optional[list[RecoveryPlanExecutionSourceServer]] sourceServers
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) recoveryPlanExecution: RecoveryPlanExecution not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recoveryPlanExecution: RecoveryPlanExecution not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartRecoveryPlanExecutionResponse:
     RecoveryPlanExecution recoveryPlanExecution
 
@@ -1796,8 +1864,9 @@ struct StartRecoveryRequestSourceServer:
     str sourceServerID
     Optional[str] recoverySnapshotID
 
-# no @derive(Json): member(s) job: Job not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) job: Job not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartRecoveryResponse:
     Optional[Job] job
 
@@ -1806,8 +1875,9 @@ struct StartRecoveryResponse:
 struct StartReplicationRequest:
     str sourceServerID
 
-# no @derive(Json): member(s) sourceServer: SourceServer not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceServer: SourceServer not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartReplicationResponse:
     Optional[SourceServer] sourceServer
 
@@ -1823,8 +1893,9 @@ struct StartSourceNetworkRecoveryRequestNetworkEntry:
     str sourceNetworkID
     Optional[str] cfnStackName
 
-# no @derive(Json): member(s) job: Job not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) job: Job not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartSourceNetworkRecoveryResponse:
     Optional[Job] job
 
@@ -1833,8 +1904,9 @@ struct StartSourceNetworkRecoveryResponse:
 struct StartSourceNetworkReplicationRequest:
     str sourceNetworkID
 
-# no @derive(Json): member(s) sourceNetwork: SourceNetwork not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceNetwork: SourceNetwork not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartSourceNetworkReplicationResponse:
     Optional[SourceNetwork] sourceNetwork
 
@@ -1848,8 +1920,9 @@ struct StopFailbackRequest:
 struct StopReplicationRequest:
     str sourceServerID
 
-# no @derive(Json): member(s) sourceServer: SourceServer not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceServer: SourceServer not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopReplicationResponse:
     Optional[SourceServer] sourceServer
 
@@ -1858,8 +1931,9 @@ struct StopReplicationResponse:
 struct StopSourceNetworkReplicationRequest:
     str sourceNetworkID
 
-# no @derive(Json): member(s) sourceNetwork: SourceNetwork not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sourceNetwork: SourceNetwork not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StopSourceNetworkReplicationResponse:
     Optional[SourceNetwork] sourceNetwork
 
@@ -1874,8 +1948,9 @@ struct TagResourceRequest:
 struct TerminateRecoveryInstancesRequest:
     list[str] recoveryInstanceIDs
 
-# no @derive(Json): member(s) job: Job not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) job: Job not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TerminateRecoveryInstancesResponse:
     Optional[Job] job
 
@@ -1934,8 +2009,9 @@ struct UpdateLaunchConfigurationTemplateRequest:
     Optional[bool] launchIntoSourceInstance
     Optional[RecoveryMode] recoveryMode
 
-# no @derive(Json): member(s) launchConfigurationTemplate: LaunchConfigurationTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) launchConfigurationTemplate: LaunchConfigurationTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateLaunchConfigurationTemplateResponse:
     Optional[LaunchConfigurationTemplate] launchConfigurationTemplate
 
@@ -1947,8 +2023,9 @@ struct UpdateRecoveryPlanExecutionStepRequest:
     Optional[list[RecoveryPlanServer]] servers
     Optional[int64] waitDurationMinutes
 
-# no @derive(Json): member(s) recoveryPlanExecutionStep: RecoveryPlanExecutionStep not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recoveryPlanExecutionStep: RecoveryPlanExecutionStep not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRecoveryPlanExecutionStepResponse:
     RecoveryPlanExecutionStep recoveryPlanExecutionStep
 
@@ -1959,8 +2036,9 @@ struct UpdateRecoveryPlanRequest:
     Optional[str] name
     Optional[str] description
 
-# no @derive(Json): member(s) recoveryPlan: RecoveryPlan not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recoveryPlan: RecoveryPlan not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRecoveryPlanResponse:
     RecoveryPlan recoveryPlan
 
@@ -1971,8 +2049,9 @@ struct UpdateRecoveryPlanStepRequest:
     Optional[str] stepName
     Optional[RecoveryPlanStepConfiguration] configuration
 
-# no @derive(Json): member(s) recoveryPlanStep: RecoveryPlanStep not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recoveryPlanStep: RecoveryPlanStep not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRecoveryPlanStepResponse:
     RecoveryPlanStep recoveryPlanStep
 
@@ -2019,8 +2098,9 @@ struct UpdateReplicationConfigurationTemplateRequest:
     Optional[bool] autoReplicateNewDisks
     Optional[InternetProtocol] internetProtocol
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     Optional[str] message
     Optional[str] code
@@ -2077,42 +2157,7 @@ def drs_error_from_code(str code) -> drsError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateExtendedSourceServer (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateLaunchConfigurationTemplate (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateRecoveryPlan (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateRecoveryPlanStep (document member `configuration: RecoveryPlanStepConfiguration` is not serializable by derive)
-#   CreateReplicationConfigurationTemplate (document member `replicationServersSecurityGroupsIDs: list[str]` is not serializable by derive)
-#   CreateSourceNetwork (document member `tags: dict[str, str]` is not serializable by derive)
-#   DescribeJobs (document member `filters: DescribeJobsRequestFilters` is not serializable by derive)
-#   DescribeLaunchConfigurationTemplates (document member `launchConfigurationTemplateIDs: list[str]` is not serializable by derive)
-#   DescribeRecoveryInstances (document member `filters: DescribeRecoveryInstancesRequestFilters` is not serializable by derive)
-#   DescribeReplicationConfigurationTemplates (document member `replicationConfigurationTemplateIDs: list[str]` is not serializable by derive)
-#   DescribeSourceNetworks (document member `filters: DescribeSourceNetworksRequestFilters` is not serializable by derive)
-#   DescribeSourceServers (document member `filters: DescribeSourceServersRequestFilters` is not serializable by derive)
-#   ListLaunchActions (document member `filters: LaunchActionsRequestFilters` is not serializable by derive)
-#   PutLaunchAction (document member `parameters: dict[str, LaunchActionParameter]` is not serializable by derive)
-#   ReorderRecoveryPlanSteps (document member `orderedStepArns: list[str]` is not serializable by derive)
-#   StartFailbackLaunch (document member `recoveryInstanceIDs: list[str]` is not serializable by derive)
-#   StartRecovery (document member `sourceServers: list[StartRecoveryRequestSourceServer]` is not serializable by derive)
-#   StartRecoveryPlanExecution (document member `sourceServers: list[RecoveryPlanExecutionSourceServer]` is not serializable by derive)
-#   StartSourceNetworkRecovery (document member `sourceNetworks: list[StartSourceNetworkRecoveryRequestNetworkEntry]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
-#   TerminateRecoveryInstances (document member `recoveryInstanceIDs: list[str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateRecoveryPlanExecutionStep (document member `servers: list[RecoveryPlanServer]` is not serializable by derive)
-#   UpdateRecoveryPlanStep (document member `configuration: RecoveryPlanStepConfiguration` is not serializable by derive)
-#   UpdateReplicationConfiguration (document member `replicationServersSecurityGroupsIDs: list[str]` is not serializable by derive)
-#   UpdateReplicationConfigurationTemplate (document member `replicationServersSecurityGroupsIDs: list[str]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   DescribeJobs (operation not generated)
-#   DescribeLaunchConfigurationTemplates (operation not generated)
-#   DescribeRecoveryInstances (operation not generated)
-#   DescribeReplicationConfigurationTemplates (operation not generated)
-#   DescribeSourceNetworks (operation not generated)
-#   DescribeSourceServers (operation not generated)
-#   ListLaunchActions (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -2365,6 +2410,138 @@ struct UpdateRecoveryPlanDocument:
     Optional[str] name
     Optional[str] description
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def drs_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def drs_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def drs_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize DescribeJobsRequestFilters to a compact JSON object (declaration order).
+def describe_jobs_request_filters_to_json(DescribeJobsRequestFilters v) -> str:
+    list[str] parts = []
+    if v.jobIDs.is_some():
+        auto u0 = v.jobIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(drs_json_str(x1))
+        parts.append("\"jobIDs\":" + drs_json_arr(e1))
+    if v.fromDate.is_some():
+        auto u2 = v.fromDate.unwrap()
+        parts.append("\"fromDate\":" + drs_json_str(u2))
+    if v.toDate.is_some():
+        auto u3 = v.toDate.unwrap()
+        parts.append("\"toDate\":" + drs_json_str(u3))
+    return drs_json_obj(parts)
+
+# Serialize DescribeRecoveryInstancesRequestFilters to a compact JSON object (declaration order).
+def describe_recovery_instances_request_filters_to_json(DescribeRecoveryInstancesRequestFilters v) -> str:
+    list[str] parts = []
+    if v.recoveryInstanceIDs.is_some():
+        auto u0 = v.recoveryInstanceIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(drs_json_str(x1))
+        parts.append("\"recoveryInstanceIDs\":" + drs_json_arr(e1))
+    if v.sourceServerIDs.is_some():
+        auto u2 = v.sourceServerIDs.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(drs_json_str(x3))
+        parts.append("\"sourceServerIDs\":" + drs_json_arr(e3))
+    return drs_json_obj(parts)
+
+# Serialize DescribeSourceNetworksRequestFilters to a compact JSON object (declaration order).
+def describe_source_networks_request_filters_to_json(DescribeSourceNetworksRequestFilters v) -> str:
+    list[str] parts = []
+    if v.sourceNetworkIDs.is_some():
+        auto u0 = v.sourceNetworkIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(drs_json_str(x1))
+        parts.append("\"sourceNetworkIDs\":" + drs_json_arr(e1))
+    if v.originAccountID.is_some():
+        auto u2 = v.originAccountID.unwrap()
+        parts.append("\"originAccountID\":" + drs_json_str(u2))
+    if v.originRegion.is_some():
+        auto u3 = v.originRegion.unwrap()
+        parts.append("\"originRegion\":" + drs_json_str(u3))
+    return drs_json_obj(parts)
+
+# Serialize DescribeSourceServersRequestFilters to a compact JSON object (declaration order).
+def describe_source_servers_request_filters_to_json(DescribeSourceServersRequestFilters v) -> str:
+    list[str] parts = []
+    if v.sourceServerIDs.is_some():
+        auto u0 = v.sourceServerIDs.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(drs_json_str(x1))
+        parts.append("\"sourceServerIDs\":" + drs_json_arr(e1))
+    if v.hardwareId.is_some():
+        auto u2 = v.hardwareId.unwrap()
+        parts.append("\"hardwareId\":" + drs_json_str(u2))
+    if v.stagingAccountIDs.is_some():
+        auto u3 = v.stagingAccountIDs.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(drs_json_str(x4))
+        parts.append("\"stagingAccountIDs\":" + drs_json_arr(e4))
+    return drs_json_obj(parts)
+
+# Serialize LaunchActionsRequestFilters to a compact JSON object (declaration order).
+def launch_actions_request_filters_to_json(LaunchActionsRequestFilters v) -> str:
+    list[str] parts = []
+    if v.actionIds.is_some():
+        auto u0 = v.actionIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(drs_json_str(x1))
+        parts.append("\"actionIds\":" + drs_json_arr(e1))
+    return drs_json_obj(parts)
+
+# Serialize RecoveryPlanStepConfiguration to a compact JSON object (declaration order).
+def recovery_plan_step_configuration_to_json(RecoveryPlanStepConfiguration v) -> str:
+    list[str] parts = []
+    if v.serverStepConfiguration.is_some():
+        auto u0 = v.serverStepConfiguration.unwrap()
+        parts.append("\"serverStepConfiguration\":" + server_step_configuration_to_json(u0))
+    if v.waitStepConfiguration.is_some():
+        auto u1 = v.waitStepConfiguration.unwrap()
+        parts.append("\"waitStepConfiguration\":" + u1.to_json())
+    return drs_json_obj(parts)
+
+# Serialize ServerStepConfiguration to a compact JSON object (declaration order).
+def server_step_configuration_to_json(ServerStepConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.servers:
+        e0.append(x0.to_json())
+    parts.append("\"servers\":" + drs_json_arr(e0))
+    return drs_json_obj(parts)
+
 # A bound drs client: credentials + region, threaded into every operation.
 struct drsClient:
     core.Credentials creds
@@ -2386,6 +2563,179 @@ struct drsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/CancelRecoveryPlanExecution", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelRecoveryPlanExecutionDocument(recoveryPlanExecutionArn=input.recoveryPlanExecutionArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
+    # CreateExtendedSourceServer  POST /CreateExtendedSourceServer
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException, ValidationException
+    def create_extended_source_server(self, CreateExtendedSourceServerRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateExtendedSourceServer", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"sourceServerArn\":" + drs_json_str(input.sourceServerArn))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(drs_json_str(k1) + ":" + drs_json_str(u0[k1]))
+            parts.append("\"tags\":" + drs_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
+    # CreateLaunchConfigurationTemplate  POST /CreateLaunchConfigurationTemplate
+    # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException, ValidationException
+    def create_launch_configuration_template(self, CreateLaunchConfigurationTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateLaunchConfigurationTemplate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(drs_json_str(k1) + ":" + drs_json_str(u0[k1]))
+            parts.append("\"tags\":" + drs_json_obj(m1))
+        if input.launchDisposition.is_some():
+            auto u2 = input.launchDisposition.unwrap()
+            parts.append("\"launchDisposition\":" + u2.to_json())
+        if input.targetInstanceTypeRightSizingMethod.is_some():
+            auto u3 = input.targetInstanceTypeRightSizingMethod.unwrap()
+            parts.append("\"targetInstanceTypeRightSizingMethod\":" + u3.to_json())
+        if input.copyPrivateIp.is_some():
+            auto u4 = input.copyPrivateIp.unwrap()
+            parts.append("\"copyPrivateIp\":" + json.dumps(JsonValue.Bool(u4)))
+        if input.copyTags.is_some():
+            auto u5 = input.copyTags.unwrap()
+            parts.append("\"copyTags\":" + json.dumps(JsonValue.Bool(u5)))
+        if input.licensing.is_some():
+            auto u6 = input.licensing.unwrap()
+            parts.append("\"licensing\":" + u6.to_json())
+        if input.exportBucketArn.is_some():
+            auto u7 = input.exportBucketArn.unwrap()
+            parts.append("\"exportBucketArn\":" + drs_json_str(u7))
+        if input.postLaunchEnabled.is_some():
+            auto u8 = input.postLaunchEnabled.unwrap()
+            parts.append("\"postLaunchEnabled\":" + json.dumps(JsonValue.Bool(u8)))
+        if input.launchIntoSourceInstance.is_some():
+            auto u9 = input.launchIntoSourceInstance.unwrap()
+            parts.append("\"launchIntoSourceInstance\":" + json.dumps(JsonValue.Bool(u9)))
+        if input.recoveryMode.is_some():
+            auto u10 = input.recoveryMode.unwrap()
+            parts.append("\"recoveryMode\":" + u10.to_json())
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
+    # CreateRecoveryPlan  POST /CreateRecoveryPlan
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException, ValidationException
+    def create_recovery_plan(self, CreateRecoveryPlanRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateRecoveryPlan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + drs_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + drs_json_str(u0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + drs_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(drs_json_str(k3) + ":" + drs_json_str(u2[k3]))
+            parts.append("\"tags\":" + drs_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
+    # CreateRecoveryPlanStep  POST /CreateRecoveryPlanStep
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException, ValidationException
+    def create_recovery_plan_step(self, CreateRecoveryPlanStepRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateRecoveryPlanStep", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"recoveryPlanArn\":" + drs_json_str(input.recoveryPlanArn))
+        parts.append("\"stepName\":" + drs_json_str(input.stepName))
+        if input.stepOrder.is_some():
+            auto u0 = input.stepOrder.unwrap()
+            parts.append("\"stepOrder\":" + str(u0))
+        parts.append("\"configuration\":" + recovery_plan_step_configuration_to_json(input.configuration))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + drs_json_str(u1))
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
+    # CreateReplicationConfigurationTemplate  POST /CreateReplicationConfigurationTemplate
+    # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException, ValidationException
+    def create_replication_configuration_template(self, CreateReplicationConfigurationTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateReplicationConfigurationTemplate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"stagingAreaSubnetId\":" + drs_json_str(input.stagingAreaSubnetId))
+        if input.associateDefaultSecurityGroup.is_some():
+            auto u0 = input.associateDefaultSecurityGroup.unwrap()
+            parts.append("\"associateDefaultSecurityGroup\":" + json.dumps(JsonValue.Bool(u0)))
+        list[str] e1 = []
+        for x1 in input.replicationServersSecurityGroupsIDs:
+            e1.append(drs_json_str(x1))
+        parts.append("\"replicationServersSecurityGroupsIDs\":" + drs_json_arr(e1))
+        if input.replicationServerInstanceType.is_some():
+            auto u2 = input.replicationServerInstanceType.unwrap()
+            parts.append("\"replicationServerInstanceType\":" + drs_json_str(u2))
+        if input.useDedicatedReplicationServer.is_some():
+            auto u3 = input.useDedicatedReplicationServer.unwrap()
+            parts.append("\"useDedicatedReplicationServer\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.defaultLargeStagingDiskType.is_some():
+            auto u4 = input.defaultLargeStagingDiskType.unwrap()
+            parts.append("\"defaultLargeStagingDiskType\":" + u4.to_json())
+        parts.append("\"ebsEncryption\":" + input.ebsEncryption.to_json())
+        if input.ebsEncryptionKeyArn.is_some():
+            auto u5 = input.ebsEncryptionKeyArn.unwrap()
+            parts.append("\"ebsEncryptionKeyArn\":" + drs_json_str(u5))
+        parts.append("\"bandwidthThrottling\":" + str(input.bandwidthThrottling))
+        if input.dataPlaneRouting.is_some():
+            auto u6 = input.dataPlaneRouting.unwrap()
+            parts.append("\"dataPlaneRouting\":" + u6.to_json())
+        if input.createPublicIP.is_some():
+            auto u7 = input.createPublicIP.unwrap()
+            parts.append("\"createPublicIP\":" + json.dumps(JsonValue.Bool(u7)))
+        list[str] m8 = []
+        for k8 in sorted(input.stagingAreaTags.keys()):
+            m8.append(drs_json_str(k8) + ":" + drs_json_str(input.stagingAreaTags[k8]))
+        parts.append("\"stagingAreaTags\":" + drs_json_obj(m8))
+        list[str] e9 = []
+        for x9 in input.pitPolicy:
+            e9.append(x9.to_json())
+        parts.append("\"pitPolicy\":" + drs_json_arr(e9))
+        if input.tags.is_some():
+            auto u10 = input.tags.unwrap()
+            list[str] m11 = []
+            for k11 in sorted(u10.keys()):
+                m11.append(drs_json_str(k11) + ":" + drs_json_str(u10[k11]))
+            parts.append("\"tags\":" + drs_json_obj(m11))
+        if input.autoReplicateNewDisks.is_some():
+            auto u12 = input.autoReplicateNewDisks.unwrap()
+            parts.append("\"autoReplicateNewDisks\":" + json.dumps(JsonValue.Bool(u12)))
+        if input.internetProtocol.is_some():
+            auto u13 = input.internetProtocol.unwrap()
+            parts.append("\"internetProtocol\":" + u13.to_json())
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
+    # CreateSourceNetwork  POST /CreateSourceNetwork
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException, ValidationException
+    def create_source_network(self, CreateSourceNetworkRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateSourceNetwork", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"vpcID\":" + drs_json_str(input.vpcID))
+        parts.append("\"originAccountID\":" + drs_json_str(input.originAccountID))
+        parts.append("\"originRegion\":" + drs_json_str(input.originRegion))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(drs_json_str(k1) + ":" + drs_json_str(u0[k1]))
+            parts.append("\"tags\":" + drs_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
 
     # DeleteJob  POST /DeleteJob
@@ -2487,6 +2837,63 @@ struct drsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
 
+    # DescribeJobs  POST /DescribeJobs
+    # errors: InternalServerException, ThrottlingException, UninitializedAccountException, ValidationException
+    def describe_jobs(self, DescribeJobsRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeJobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + describe_jobs_request_filters_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + drs_json_str(u2))
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
+    # DescribeLaunchConfigurationTemplates  POST /DescribeLaunchConfigurationTemplates
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
+    def describe_launch_configuration_templates(self, DescribeLaunchConfigurationTemplatesRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeLaunchConfigurationTemplates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.launchConfigurationTemplateIDs.is_some():
+            auto u0 = input.launchConfigurationTemplateIDs.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(drs_json_str(x1))
+            parts.append("\"launchConfigurationTemplateIDs\":" + drs_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + drs_json_str(u3))
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
+    # DescribeRecoveryInstances  POST /DescribeRecoveryInstances
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, UninitializedAccountException
+    def describe_recovery_instances(self, DescribeRecoveryInstancesRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeRecoveryInstances", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + describe_recovery_instances_request_filters_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + drs_json_str(u2))
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
     # DescribeRecoverySnapshots  POST /DescribeRecoverySnapshots
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, UninitializedAccountException, ValidationException
     def describe_recovery_snapshots(self, DescribeRecoverySnapshotsRequest input) -> str:
@@ -2494,6 +2901,63 @@ struct drsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/DescribeRecoverySnapshots", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeRecoverySnapshotsDocument(sourceServerID=input.sourceServerID, filters=input.filters, order=input.order, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
+    # DescribeReplicationConfigurationTemplates  POST /DescribeReplicationConfigurationTemplates
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
+    def describe_replication_configuration_templates(self, DescribeReplicationConfigurationTemplatesRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeReplicationConfigurationTemplates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.replicationConfigurationTemplateIDs.is_some():
+            auto u0 = input.replicationConfigurationTemplateIDs.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(drs_json_str(x1))
+            parts.append("\"replicationConfigurationTemplateIDs\":" + drs_json_arr(e1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + drs_json_str(u3))
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
+    # DescribeSourceNetworks  POST /DescribeSourceNetworks
+    # errors: InternalServerException, ThrottlingException, UninitializedAccountException, ValidationException
+    def describe_source_networks(self, DescribeSourceNetworksRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeSourceNetworks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + describe_source_networks_request_filters_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + drs_json_str(u2))
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
+    # DescribeSourceServers  POST /DescribeSourceServers
+    # errors: InternalServerException, ThrottlingException, UninitializedAccountException, ValidationException
+    def describe_source_servers(self, DescribeSourceServersRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeSourceServers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + describe_source_servers_request_filters_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + drs_json_str(u2))
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
 
     # DisconnectRecoveryInstance  POST /DisconnectRecoveryInstance
@@ -2602,6 +3066,25 @@ struct drsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
 
+    # ListLaunchActions  POST /ListLaunchActions
+    # errors: InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException
+    def list_launch_actions(self, ListLaunchActionsRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ListLaunchActions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceId\":" + drs_json_str(input.resourceId))
+        if input.filters.is_some():
+            auto u0 = input.filters.unwrap()
+            parts.append("\"filters\":" + launch_actions_request_filters_to_json(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.nextToken.is_some():
+            auto u2 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + drs_json_str(u2))
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
     # ListRecoveryPlanExecutionSteps  POST /ListRecoveryPlanExecutionSteps
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def list_recovery_plan_execution_steps(self, ListRecoveryPlanExecutionStepsRequest input) -> str:
@@ -2659,6 +3142,45 @@ struct drsClient:
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, drs_service(), self.region, host)
 
+    # PutLaunchAction  POST /PutLaunchAction
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
+    def put_launch_action(self, PutLaunchActionRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/PutLaunchAction", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceId\":" + drs_json_str(input.resourceId))
+        parts.append("\"actionCode\":" + drs_json_str(input.actionCode))
+        parts.append("\"order\":" + str(input.order))
+        parts.append("\"actionId\":" + drs_json_str(input.actionId))
+        parts.append("\"optional\":" + json.dumps(JsonValue.Bool(input.optional)))
+        parts.append("\"active\":" + json.dumps(JsonValue.Bool(input.active)))
+        parts.append("\"name\":" + drs_json_str(input.name))
+        parts.append("\"actionVersion\":" + drs_json_str(input.actionVersion))
+        parts.append("\"category\":" + input.category.to_json())
+        if input.parameters.is_some():
+            auto u0 = input.parameters.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(drs_json_str(k1) + ":" + u0[k1].to_json())
+            parts.append("\"parameters\":" + drs_json_obj(m1))
+        parts.append("\"description\":" + drs_json_str(input.description))
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
+    # ReorderRecoveryPlanSteps  POST /ReorderRecoveryPlanSteps
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
+    def reorder_recovery_plan_steps(self, ReorderRecoveryPlanStepsRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/ReorderRecoveryPlanSteps", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"recoveryPlanArn\":" + drs_json_str(input.recoveryPlanArn))
+        list[str] e0 = []
+        for x0 in input.orderedStepArns:
+            e0.append(drs_json_str(x0))
+        parts.append("\"orderedStepArns\":" + drs_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
     # RetryDataReplication  POST /RetryDataReplication
     # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def retry_data_replication(self, RetryDataReplicationRequest input) -> str:
@@ -2686,6 +3208,73 @@ struct drsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
 
+    # StartFailbackLaunch  POST /StartFailbackLaunch
+    # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException, ValidationException
+    def start_failback_launch(self, StartFailbackLaunchRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/StartFailbackLaunch", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.recoveryInstanceIDs:
+            e0.append(drs_json_str(x0))
+        parts.append("\"recoveryInstanceIDs\":" + drs_json_arr(e0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(drs_json_str(k2) + ":" + drs_json_str(u1[k2]))
+            parts.append("\"tags\":" + drs_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
+    # StartRecovery  POST /StartRecovery
+    # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException
+    def start_recovery(self, StartRecoveryRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/StartRecovery", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.sourceServers:
+            e0.append(x0.to_json())
+        parts.append("\"sourceServers\":" + drs_json_arr(e0))
+        if input.isDrill.is_some():
+            auto u1 = input.isDrill.unwrap()
+            parts.append("\"isDrill\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(drs_json_str(k3) + ":" + drs_json_str(u2[k3]))
+            parts.append("\"tags\":" + drs_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
+    # StartRecoveryPlanExecution  POST /StartRecoveryPlanExecution
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException, ValidationException
+    def start_recovery_plan_execution(self, StartRecoveryPlanExecutionRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/StartRecoveryPlanExecution", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"recoveryPlanArn\":" + drs_json_str(input.recoveryPlanArn))
+        parts.append("\"mode\":" + input.mode.to_json())
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + drs_json_str(u0))
+        if input.sourceServers.is_some():
+            auto u1 = input.sourceServers.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"sourceServers\":" + drs_json_arr(e2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(drs_json_str(k4) + ":" + drs_json_str(u3[k4]))
+            parts.append("\"tags\":" + drs_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
     # StartReplication  POST /StartReplication
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException
     def start_replication(self, StartReplicationRequest input) -> str:
@@ -2693,6 +3282,28 @@ struct drsClient:
         auto b = binding.HttpBinding(method="POST", path_template="/StartReplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartReplicationDocument(sourceServerID=input.sourceServerID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
+    # StartSourceNetworkRecovery  POST /StartSourceNetworkRecovery
+    # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException, ValidationException
+    def start_source_network_recovery(self, StartSourceNetworkRecoveryRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/StartSourceNetworkRecovery", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.sourceNetworks:
+            e0.append(x0.to_json())
+        parts.append("\"sourceNetworks\":" + drs_json_arr(e0))
+        if input.deployAsNew.is_some():
+            auto u1 = input.deployAsNew.unwrap()
+            parts.append("\"deployAsNew\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(drs_json_str(k3) + ":" + drs_json_str(u2[k3]))
+            parts.append("\"tags\":" + drs_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
 
     # StartSourceNetworkReplication  POST /StartSourceNetworkReplication
@@ -2731,6 +3342,34 @@ struct drsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
 
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(drs_json_str(k0) + ":" + drs_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + drs_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
+    # TerminateRecoveryInstances  POST /TerminateRecoveryInstances
+    # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException
+    def terminate_recovery_instances(self, TerminateRecoveryInstancesRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/TerminateRecoveryInstances", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.recoveryInstanceIDs:
+            e0.append(drs_json_str(x0))
+        parts.append("\"recoveryInstanceIDs\":" + drs_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
     # UpdateFailbackReplicationConfiguration  POST /UpdateFailbackReplicationConfiguration
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException
     def update_failback_replication_configuration(self, UpdateFailbackReplicationConfigurationRequest input) -> str:
@@ -2767,12 +3406,229 @@ struct drsClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
 
+    # UpdateRecoveryPlanExecutionStep  POST /UpdateRecoveryPlanExecutionStep
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
+    def update_recovery_plan_execution_step(self, UpdateRecoveryPlanExecutionStepRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateRecoveryPlanExecutionStep", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"recoveryPlanExecutionStepArn\":" + drs_json_str(input.recoveryPlanExecutionStepArn))
+        if input.status.is_some():
+            auto u0 = input.status.unwrap()
+            parts.append("\"status\":" + u0.to_json())
+        if input.servers.is_some():
+            auto u1 = input.servers.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"servers\":" + drs_json_arr(e2))
+        if input.waitDurationMinutes.is_some():
+            auto u3 = input.waitDurationMinutes.unwrap()
+            parts.append("\"waitDurationMinutes\":" + str(u3))
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
+    # UpdateRecoveryPlanStep  POST /UpdateRecoveryPlanStep
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
+    def update_recovery_plan_step(self, UpdateRecoveryPlanStepRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateRecoveryPlanStep", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"recoveryPlanStepArn\":" + drs_json_str(input.recoveryPlanStepArn))
+        if input.stepName.is_some():
+            auto u0 = input.stepName.unwrap()
+            parts.append("\"stepName\":" + drs_json_str(u0))
+        if input.configuration.is_some():
+            auto u1 = input.configuration.unwrap()
+            parts.append("\"configuration\":" + recovery_plan_step_configuration_to_json(u1))
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
+    # UpdateReplicationConfiguration  POST /UpdateReplicationConfiguration
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
+    def update_replication_configuration(self, UpdateReplicationConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateReplicationConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"sourceServerID\":" + drs_json_str(input.sourceServerID))
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + drs_json_str(u0))
+        if input.stagingAreaSubnetId.is_some():
+            auto u1 = input.stagingAreaSubnetId.unwrap()
+            parts.append("\"stagingAreaSubnetId\":" + drs_json_str(u1))
+        if input.associateDefaultSecurityGroup.is_some():
+            auto u2 = input.associateDefaultSecurityGroup.unwrap()
+            parts.append("\"associateDefaultSecurityGroup\":" + json.dumps(JsonValue.Bool(u2)))
+        if input.replicationServersSecurityGroupsIDs.is_some():
+            auto u3 = input.replicationServersSecurityGroupsIDs.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(drs_json_str(x4))
+            parts.append("\"replicationServersSecurityGroupsIDs\":" + drs_json_arr(e4))
+        if input.replicationServerInstanceType.is_some():
+            auto u5 = input.replicationServerInstanceType.unwrap()
+            parts.append("\"replicationServerInstanceType\":" + drs_json_str(u5))
+        if input.useDedicatedReplicationServer.is_some():
+            auto u6 = input.useDedicatedReplicationServer.unwrap()
+            parts.append("\"useDedicatedReplicationServer\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.defaultLargeStagingDiskType.is_some():
+            auto u7 = input.defaultLargeStagingDiskType.unwrap()
+            parts.append("\"defaultLargeStagingDiskType\":" + u7.to_json())
+        if input.replicatedDisks.is_some():
+            auto u8 = input.replicatedDisks.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"replicatedDisks\":" + drs_json_arr(e9))
+        if input.ebsEncryption.is_some():
+            auto u10 = input.ebsEncryption.unwrap()
+            parts.append("\"ebsEncryption\":" + u10.to_json())
+        if input.ebsEncryptionKeyArn.is_some():
+            auto u11 = input.ebsEncryptionKeyArn.unwrap()
+            parts.append("\"ebsEncryptionKeyArn\":" + drs_json_str(u11))
+        if input.bandwidthThrottling.is_some():
+            auto u12 = input.bandwidthThrottling.unwrap()
+            parts.append("\"bandwidthThrottling\":" + str(u12))
+        if input.dataPlaneRouting.is_some():
+            auto u13 = input.dataPlaneRouting.unwrap()
+            parts.append("\"dataPlaneRouting\":" + u13.to_json())
+        if input.createPublicIP.is_some():
+            auto u14 = input.createPublicIP.unwrap()
+            parts.append("\"createPublicIP\":" + json.dumps(JsonValue.Bool(u14)))
+        if input.stagingAreaTags.is_some():
+            auto u15 = input.stagingAreaTags.unwrap()
+            list[str] m16 = []
+            for k16 in sorted(u15.keys()):
+                m16.append(drs_json_str(k16) + ":" + drs_json_str(u15[k16]))
+            parts.append("\"stagingAreaTags\":" + drs_json_obj(m16))
+        if input.pitPolicy.is_some():
+            auto u17 = input.pitPolicy.unwrap()
+            list[str] e18 = []
+            for x18 in u17:
+                e18.append(x18.to_json())
+            parts.append("\"pitPolicy\":" + drs_json_arr(e18))
+        if input.autoReplicateNewDisks.is_some():
+            auto u19 = input.autoReplicateNewDisks.unwrap()
+            parts.append("\"autoReplicateNewDisks\":" + json.dumps(JsonValue.Bool(u19)))
+        if input.internetProtocol.is_some():
+            auto u20 = input.internetProtocol.unwrap()
+            parts.append("\"internetProtocol\":" + u20.to_json())
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
+    # UpdateReplicationConfigurationTemplate  POST /UpdateReplicationConfigurationTemplate
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
+    def update_replication_configuration_template(self, UpdateReplicationConfigurationTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateReplicationConfigurationTemplate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"replicationConfigurationTemplateID\":" + drs_json_str(input.replicationConfigurationTemplateID))
+        if input.arn.is_some():
+            auto u0 = input.arn.unwrap()
+            parts.append("\"arn\":" + drs_json_str(u0))
+        if input.stagingAreaSubnetId.is_some():
+            auto u1 = input.stagingAreaSubnetId.unwrap()
+            parts.append("\"stagingAreaSubnetId\":" + drs_json_str(u1))
+        if input.associateDefaultSecurityGroup.is_some():
+            auto u2 = input.associateDefaultSecurityGroup.unwrap()
+            parts.append("\"associateDefaultSecurityGroup\":" + json.dumps(JsonValue.Bool(u2)))
+        if input.replicationServersSecurityGroupsIDs.is_some():
+            auto u3 = input.replicationServersSecurityGroupsIDs.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(drs_json_str(x4))
+            parts.append("\"replicationServersSecurityGroupsIDs\":" + drs_json_arr(e4))
+        if input.replicationServerInstanceType.is_some():
+            auto u5 = input.replicationServerInstanceType.unwrap()
+            parts.append("\"replicationServerInstanceType\":" + drs_json_str(u5))
+        if input.useDedicatedReplicationServer.is_some():
+            auto u6 = input.useDedicatedReplicationServer.unwrap()
+            parts.append("\"useDedicatedReplicationServer\":" + json.dumps(JsonValue.Bool(u6)))
+        if input.defaultLargeStagingDiskType.is_some():
+            auto u7 = input.defaultLargeStagingDiskType.unwrap()
+            parts.append("\"defaultLargeStagingDiskType\":" + u7.to_json())
+        if input.ebsEncryption.is_some():
+            auto u8 = input.ebsEncryption.unwrap()
+            parts.append("\"ebsEncryption\":" + u8.to_json())
+        if input.ebsEncryptionKeyArn.is_some():
+            auto u9 = input.ebsEncryptionKeyArn.unwrap()
+            parts.append("\"ebsEncryptionKeyArn\":" + drs_json_str(u9))
+        if input.bandwidthThrottling.is_some():
+            auto u10 = input.bandwidthThrottling.unwrap()
+            parts.append("\"bandwidthThrottling\":" + str(u10))
+        if input.dataPlaneRouting.is_some():
+            auto u11 = input.dataPlaneRouting.unwrap()
+            parts.append("\"dataPlaneRouting\":" + u11.to_json())
+        if input.createPublicIP.is_some():
+            auto u12 = input.createPublicIP.unwrap()
+            parts.append("\"createPublicIP\":" + json.dumps(JsonValue.Bool(u12)))
+        if input.stagingAreaTags.is_some():
+            auto u13 = input.stagingAreaTags.unwrap()
+            list[str] m14 = []
+            for k14 in sorted(u13.keys()):
+                m14.append(drs_json_str(k14) + ":" + drs_json_str(u13[k14]))
+            parts.append("\"stagingAreaTags\":" + drs_json_obj(m14))
+        if input.pitPolicy.is_some():
+            auto u15 = input.pitPolicy.unwrap()
+            list[str] e16 = []
+            for x16 in u15:
+                e16.append(x16.to_json())
+            parts.append("\"pitPolicy\":" + drs_json_arr(e16))
+        if input.autoReplicateNewDisks.is_some():
+            auto u17 = input.autoReplicateNewDisks.unwrap()
+            parts.append("\"autoReplicateNewDisks\":" + json.dumps(JsonValue.Bool(u17)))
+        if input.internetProtocol.is_some():
+            auto u18 = input.internetProtocol.unwrap()
+            parts.append("\"internetProtocol\":" + u18.to_json())
+        auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
+
     # Paginator for DescribeJobLogItems — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: items).
     def paginate_describe_job_log_items(self, DescribeJobLogItemsRequest input):
         auto host = endpoints.regional_host(drs_service(), self.region)
         while True:
             auto raw = self.describe_job_log_items(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeJobs — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_describe_jobs(self, DescribeJobsRequest input):
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        while True:
+            auto raw = self.describe_jobs(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeLaunchConfigurationTemplates — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_describe_launch_configuration_templates(self, DescribeLaunchConfigurationTemplatesRequest input):
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        while True:
+            auto raw = self.describe_launch_configuration_templates(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeRecoveryInstances — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_describe_recovery_instances(self, DescribeRecoveryInstancesRequest input):
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        while True:
+            auto raw = self.describe_recovery_instances(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -2793,12 +3649,64 @@ struct drsClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for DescribeReplicationConfigurationTemplates — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_describe_replication_configuration_templates(self, DescribeReplicationConfigurationTemplatesRequest input):
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        while True:
+            auto raw = self.describe_replication_configuration_templates(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeSourceNetworks — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_describe_source_networks(self, DescribeSourceNetworksRequest input):
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        while True:
+            auto raw = self.describe_source_networks(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeSourceServers — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_describe_source_servers(self, DescribeSourceServersRequest input):
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        while True:
+            auto raw = self.describe_source_servers(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListExtensibleSourceServers — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: items).
     def paginate_list_extensible_source_servers(self, ListExtensibleSourceServersRequest input):
         auto host = endpoints.regional_host(drs_service(), self.region)
         while True:
             auto raw = self.list_extensible_source_servers(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListLaunchActions — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_launch_actions(self, ListLaunchActionsRequest input):
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        while True:
+            auto raw = self.list_launch_actions(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

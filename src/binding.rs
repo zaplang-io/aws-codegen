@@ -17,6 +17,7 @@
 //! structure payload) makes the whole operation *skipped* with a documented
 //! reason, rather than emitting code that would not round-trip.
 
+use crate::jsonbody::plan_enc;
 use crate::model::{Model, Operation};
 use crate::naming::escape_ident;
 use crate::types::{resolve, ZapType};
@@ -36,6 +37,9 @@ pub struct ScalarBind {
     /// Greedy path label (`{Name+}`): only meaningful for URI labels, where it
     /// keeps "/" unescaped. Always false for query/header binds.
     pub greedy: bool,
+    /// The raw (model) member name, so the emitter can recover the member's
+    /// `ShapeRef` (for JSON document serialization, zaplang-io/zap#424).
+    pub member: String,
 }
 
 /// How a raw `httpPayload` member becomes the request body.
@@ -86,11 +90,15 @@ pub struct OpBinding {
     /// Unbound members forming the JSON document body (empty for a GET/DELETE
     /// with everything bound, or when a raw `payload` is present).
     pub document: Vec<ScalarBind>,
+    /// Whether every document member is `@derive(Json)`-derivable. When true the
+    /// body rides a `@derive(Json)` doc struct (`doc.to_json()`); when false the
+    /// emitter serializes the members inline (zaplang-io/zap#424).
+    pub document_all_derivable: bool,
 }
 
 impl OpBinding {
     /// Whether this operation sends a JSON document body (document members, no
-    /// raw payload) — the emitter must then emit a `@derive(Json)` doc struct.
+    /// raw payload) — the emitter must then serialize those members.
     pub fn has_document_body(&self) -> bool {
         self.payload.is_none() && !self.document.is_empty()
     }
@@ -123,6 +131,7 @@ pub fn plan_operation(
     model: &Model,
     op: &Operation,
     derivable: &HashMap<String, bool>,
+    serializable: &HashMap<String, bool>,
 ) -> Result<OpBinding, String> {
     let http = op
         .http
@@ -142,6 +151,7 @@ pub fn plan_operation(
         prefix_headers: None,
         payload: None,
         document: Vec::new(),
+        document_all_derivable: true,
     };
 
     let input_ref = match op.input.as_ref() {
@@ -208,6 +218,7 @@ pub fn plan_operation(
                     greedy,
                     ty: wire_type(&ty),
                     optional,
+                    member: mn.clone(),
                 });
             }
             Some("querystring") => {
@@ -223,6 +234,7 @@ pub fn plan_operation(
                     ty: wire_type(&ty),
                     optional,
                     greedy: false,
+                    member: mn.clone(),
                 });
             }
             Some("header") => {
@@ -238,6 +250,7 @@ pub fn plan_operation(
                     ty: wire_type(&ty),
                     optional,
                     greedy: false,
+                    member: mn.clone(),
                 });
             }
             Some("headers") => {
@@ -263,13 +276,18 @@ pub fn plan_operation(
                 return Err(format!("member `{mn}` has unknown location `{other}`"));
             }
             None => {
-                // An unbound member: part of the JSON document body. It must be
-                // derivable for `@derive(Json)` to serialize it.
-                if !member_derivable(&ty, derivable) {
+                // An unbound member: part of the JSON document body. A derivable
+                // member rides `@derive(Json)`; a collection/nested member is
+                // serialized inline by the explicit emitter (zaplang-io/zap#424);
+                // anything else (a non-string-keyed map) is skipped.
+                if plan_enc(model, r, derivable, serializable).is_none() {
                     return Err(format!(
-                        "document member `{mn}: {}` is not serializable by derive",
+                        "document member `{mn}: {}` is not serializable",
                         ty.render()
                     ));
+                }
+                if !member_derivable(&ty, derivable) {
+                    plan.document_all_derivable = false;
                 }
                 plan.document.push(ScalarBind {
                     field,
@@ -277,6 +295,7 @@ pub fn plan_operation(
                     ty,
                     optional,
                     greedy: false,
+                    member: mn.clone(),
                 });
             }
         }
@@ -299,12 +318,14 @@ fn member_derivable(ty: &ZapType, derivable: &HashMap<String, bool>) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::jsonbody::compute_json_serializable;
     use crate::types::compute_derivable;
 
     fn plan(model_json: &str, op: &str) -> Result<OpBinding, String> {
         let m = Model::from_json_str(model_json).unwrap();
         let d = compute_derivable(&m);
-        plan_operation(&m, &m.operations[op], &d)
+        let s = compute_json_serializable(&m, &d);
+        plan_operation(&m, &m.operations[op], &d, &s)
     }
 
     // A model exercising every binding kind: a greedy + non-greedy label, a
@@ -333,6 +354,7 @@ mod tests {
         "T":{"type":"timestamp"},
         "Blob":{"type":"blob"},
         "StrMap":{"type":"map","key":{"shape":"S"},"value":{"shape":"S"}},
+        "IntMap":{"type":"map","key":{"shape":"I"},"value":{"shape":"S"}},
         "StrList":{"type":"list","member":{"shape":"S"}},
         "PutObjectRequest":{"type":"structure","required":["Bucket","Key","Body"],
           "members":{
@@ -350,7 +372,7 @@ mod tests {
         "BadLabelRequest":{"type":"structure","required":["When"],
           "members":{"When":{"shape":"T","location":"uri","locationName":"When"}}},
         "BadDocRequest":{"type":"structure",
-          "members":{"Items":{"shape":"StrList"}}}
+          "members":{"Items":{"shape":"IntMap"}}}
       }}"#;
 
     #[test]
@@ -426,7 +448,8 @@ mod tests {
         )
         .unwrap();
         let d = compute_derivable(&m);
-        let p = plan_operation(&m, &m.operations["Op"], &d).unwrap();
+        let s = compute_json_serializable(&m, &d);
+        let p = plan_operation(&m, &m.operations["Op"], &d, &s).unwrap();
         // The enum is bound as its plain wire string.
         assert_eq!(p.query[0].ty, ZapType::Str);
     }

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 38 operations — 26 with a generated method,
-#   12 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 38 operations — 38 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   154 structs (92 @derive(Json)), 9 enums, 10 error variants.
-#   8 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   10 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The XRay rest-json protocol: SigV4 service "xray" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -110,8 +111,9 @@ enum TraceSegmentDestinationStatus:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) Names: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Names: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Alias:
     Optional[str] Name
     Optional[list[str]] Names
@@ -123,8 +125,9 @@ struct AnnotationValue:
     Optional[bool] BooleanValue
     Optional[str] StringValue
 
-# no @derive(Json): member(s) ServiceId: ServiceId not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceId: ServiceId not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AnomalousService:
     Optional[ServiceId] ServiceId
 
@@ -147,8 +150,9 @@ struct BatchGetTracesRequest:
     list[str] TraceIds
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Traces: list[Trace], UnprocessedTraceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Traces: list[Trace], UnprocessedTraceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetTracesResult:
     Optional[list[Trace]] Traces
     Optional[list[str]] UnprocessedTraceIds
@@ -186,8 +190,9 @@ struct CreateSamplingRuleRequest:
     SamplingRule SamplingRule
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) SamplingRuleRecord: SamplingRuleRecord not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SamplingRuleRecord: SamplingRuleRecord not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateSamplingRuleResult:
     Optional[SamplingRuleRecord] SamplingRuleRecord
 
@@ -219,13 +224,15 @@ struct DeleteSamplingRuleRequest:
     Optional[str] RuleName
     Optional[str] RuleARN
 
-# no @derive(Json): member(s) SamplingRuleRecord: SamplingRuleRecord not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SamplingRuleRecord: SamplingRuleRecord not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteSamplingRuleResult:
     Optional[SamplingRuleRecord] SamplingRuleRecord
 
-# no @derive(Json): member(s) ResponseTimeHistogram: list[HistogramEntry], Aliases: list[Alias], ReceivedEventAgeHistogram: list[HistogramEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResponseTimeHistogram: list[HistogramEntry], Aliases: list[Alias], ReceivedEventAgeHistogram: list[HistogramEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Edge:
     Optional[int64] ReferenceId
     Optional[DateTime] StartTime
@@ -250,21 +257,24 @@ struct EncryptionConfig:
     Optional[EncryptionStatus] Status
     Optional[EncryptionType] Type
 
-# no @derive(Json): member(s) Services: list[ErrorRootCauseService] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Services: list[ErrorRootCauseService] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ErrorRootCause:
     Optional[list[ErrorRootCauseService]] Services
     Optional[bool] ClientImpacting
 
-# no @derive(Json): member(s) Exceptions: list[RootCauseException] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Exceptions: list[RootCauseException] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ErrorRootCauseEntity:
     Optional[str] Name
     Optional[list[RootCauseException]] Exceptions
     Optional[bool] Remote
 
-# no @derive(Json): member(s) Names: list[str], EntityPath: list[ErrorRootCauseEntity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Names: list[str], EntityPath: list[ErrorRootCauseEntity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ErrorRootCauseService:
     Optional[str] Name
     Optional[list[str]] Names
@@ -279,21 +289,24 @@ struct ErrorStatistics:
     Optional[int64] OtherCount
     Optional[int64] TotalCount
 
-# no @derive(Json): member(s) Services: list[FaultRootCauseService] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Services: list[FaultRootCauseService] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FaultRootCause:
     Optional[list[FaultRootCauseService]] Services
     Optional[bool] ClientImpacting
 
-# no @derive(Json): member(s) Exceptions: list[RootCauseException] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Exceptions: list[RootCauseException] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FaultRootCauseEntity:
     Optional[str] Name
     Optional[list[RootCauseException]] Exceptions
     Optional[bool] Remote
 
-# no @derive(Json): member(s) Names: list[str], EntityPath: list[FaultRootCauseEntity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Names: list[str], EntityPath: list[FaultRootCauseEntity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FaultRootCauseService:
     Optional[str] Name
     Optional[list[str]] Names
@@ -337,8 +350,9 @@ struct GetGroupResult:
 struct GetGroupsRequest:
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Groups: list[GroupSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[GroupSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetGroupsResult:
     Optional[list[GroupSummary]] Groups
     Optional[str] NextToken
@@ -348,8 +362,9 @@ struct GetGroupsResult:
 struct GetIndexingRulesRequest:
     Optional[str] NextToken
 
-# no @derive(Json): member(s) IndexingRules: list[IndexingRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IndexingRules: list[IndexingRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetIndexingRulesResult:
     Optional[list[IndexingRule]] IndexingRules
     Optional[str] NextToken
@@ -361,8 +376,9 @@ struct GetInsightEventsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) InsightEvents: list[InsightEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InsightEvents: list[InsightEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInsightEventsResult:
     Optional[list[InsightEvent]] InsightEvents
     Optional[str] NextToken
@@ -375,8 +391,9 @@ struct GetInsightImpactGraphRequest:
     DateTime EndTime
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Services: list[InsightImpactGraphService] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Services: list[InsightImpactGraphService] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInsightImpactGraphResult:
     Optional[str] InsightId
     Optional[DateTime] StartTime
@@ -391,8 +408,9 @@ struct GetInsightImpactGraphResult:
 struct GetInsightRequest:
     str InsightId
 
-# no @derive(Json): member(s) Insight: Insight not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Insight: Insight not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInsightResult:
     Optional[Insight] Insight
 
@@ -407,8 +425,9 @@ struct GetInsightSummariesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) InsightSummaries: list[InsightSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) InsightSummaries: list[InsightSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInsightSummariesResult:
     Optional[list[InsightSummary]] InsightSummaries
     Optional[str] NextToken
@@ -419,8 +438,9 @@ struct GetRetrievedTracesGraphRequest:
     str RetrievalToken
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Services: list[RetrievedService] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Services: list[RetrievedService] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRetrievedTracesGraphResult:
     Optional[RetrievalStatus] RetrievalStatus
     Optional[list[RetrievedService]] Services
@@ -431,8 +451,9 @@ struct GetRetrievedTracesGraphResult:
 struct GetSamplingRulesRequest:
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SamplingRuleRecords: list[SamplingRuleRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SamplingRuleRecords: list[SamplingRuleRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSamplingRulesResult:
     Optional[list[SamplingRuleRecord]] SamplingRuleRecords
     Optional[str] NextToken
@@ -442,8 +463,9 @@ struct GetSamplingRulesResult:
 struct GetSamplingStatisticSummariesRequest:
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SamplingStatisticSummaries: list[SamplingStatisticSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SamplingStatisticSummaries: list[SamplingStatisticSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSamplingStatisticSummariesResult:
     Optional[list[SamplingStatisticSummary]] SamplingStatisticSummaries
     Optional[str] NextToken
@@ -454,8 +476,9 @@ struct GetSamplingTargetsRequest:
     list[SamplingStatisticsDocument] SamplingStatisticsDocuments
     Optional[list[SamplingBoostStatisticsDocument]] SamplingBoostStatisticsDocuments
 
-# no @derive(Json): member(s) SamplingTargetDocuments: list[SamplingTargetDocument], UnprocessedStatistics: list[UnprocessedStatistics], UnprocessedBoostStatistics: list[UnprocessedStatistics] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SamplingTargetDocuments: list[SamplingTargetDocument], UnprocessedStatistics: list[UnprocessedStatistics], UnprocessedBoostStatistics: list[UnprocessedStatistics] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSamplingTargetsResult:
     Optional[list[SamplingTargetDocument]] SamplingTargetDocuments
     Optional[DateTime] LastRuleModification
@@ -471,8 +494,9 @@ struct GetServiceGraphRequest:
     Optional[str] GroupARN
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Services: list[Service] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Services: list[Service] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetServiceGraphResult:
     Optional[DateTime] StartTime
     Optional[DateTime] EndTime
@@ -492,8 +516,9 @@ struct GetTimeSeriesServiceStatisticsRequest:
     Optional[bool] ForecastStatistics
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TimeSeriesServiceStatistics: list[TimeSeriesServiceStatistics] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TimeSeriesServiceStatistics: list[TimeSeriesServiceStatistics] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTimeSeriesServiceStatisticsResult:
     Optional[list[TimeSeriesServiceStatistics]] TimeSeriesServiceStatistics
     Optional[bool] ContainsOldGroupVersions
@@ -505,8 +530,9 @@ struct GetTraceGraphRequest:
     list[str] TraceIds
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Services: list[Service] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Services: list[Service] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTraceGraphResult:
     Optional[list[Service]] Services
     Optional[str] NextToken
@@ -533,16 +559,18 @@ struct GetTraceSummariesRequest:
     Optional[str] FilterExpression
     Optional[str] NextToken
 
-# no @derive(Json): member(s) TraceSummaries: list[TraceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TraceSummaries: list[TraceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTraceSummariesResult:
     Optional[list[TraceSummary]] TraceSummaries
     Optional[DateTime] ApproximateTime
     Optional[int64] TracesProcessedCount
     Optional[str] NextToken
 
-# no @derive(Json): member(s) DestinationTraceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DestinationTraceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GraphLink:
     Optional[str] ReferenceType
     Optional[str] SourceTraceId
@@ -589,8 +617,9 @@ struct IndexingRuleValue:
 struct IndexingRuleValueUpdate:
     Optional[ProbabilisticRuleValueUpdate] Probabilistic
 
-# no @derive(Json): member(s) RootCauseServiceId: ServiceId, Categories: list[str], TopAnomalousServices: list[AnomalousService] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RootCauseServiceId: ServiceId, Categories: list[str], TopAnomalousServices: list[AnomalousService] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Insight:
     Optional[str] InsightId
     Optional[str] GroupARN
@@ -605,8 +634,9 @@ struct Insight:
     Optional[RequestImpactStatistics] RootCauseServiceRequestImpactStatistics
     Optional[list[AnomalousService]] TopAnomalousServices
 
-# no @derive(Json): member(s) TopAnomalousServices: list[AnomalousService] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TopAnomalousServices: list[AnomalousService] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InsightEvent:
     Optional[str] Summary
     Optional[DateTime] EventTime
@@ -618,8 +648,9 @@ struct InsightEvent:
 struct InsightImpactGraphEdge:
     Optional[int64] ReferenceId
 
-# no @derive(Json): member(s) Names: list[str], Edges: list[InsightImpactGraphEdge] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Names: list[str], Edges: list[InsightImpactGraphEdge] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InsightImpactGraphService:
     Optional[int64] ReferenceId
     Optional[str] Type
@@ -628,8 +659,9 @@ struct InsightImpactGraphService:
     Optional[str] AccountId
     Optional[list[InsightImpactGraphEdge]] Edges
 
-# no @derive(Json): member(s) RootCauseServiceId: ServiceId, Categories: list[str], TopAnomalousServices: list[AnomalousService] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RootCauseServiceId: ServiceId, Categories: list[str], TopAnomalousServices: list[AnomalousService] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InsightSummary:
     Optional[str] InsightId
     Optional[str] GroupARN
@@ -667,8 +699,9 @@ struct InvalidRequestException:
 struct ListResourcePoliciesRequest:
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ResourcePolicies: list[ResourcePolicy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourcePolicies: list[ResourcePolicy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourcePoliciesResult:
     Optional[list[ResourcePolicy]] ResourcePolicies
     Optional[str] NextToken
@@ -680,8 +713,9 @@ struct ListRetrievedTracesRequest:
     Optional[TraceFormatType] TraceFormat
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Traces: list[RetrievedTrace] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Traces: list[RetrievedTrace] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRetrievedTracesResult:
     Optional[RetrievalStatus] RetrievalStatus
     Optional[TraceFormatType] TraceFormat
@@ -694,8 +728,9 @@ struct ListTagsForResourceRequest:
     str ResourceARN
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
     Optional[str] NextToken
@@ -765,8 +800,9 @@ struct PutTelemetryRecordsResult:
 struct PutTraceSegmentsRequest:
     list[str] TraceSegmentDocuments
 
-# no @derive(Json): member(s) UnprocessedTraceSegments: list[UnprocessedTraceSegment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UnprocessedTraceSegments: list[UnprocessedTraceSegment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutTraceSegmentsResult:
     Optional[list[UnprocessedTraceSegment]] UnprocessedTraceSegments
 
@@ -792,8 +828,9 @@ struct ResourcePolicy:
     Optional[str] PolicyRevisionId
     Optional[DateTime] LastUpdatedTime
 
-# no @derive(Json): member(s) Services: list[ResponseTimeRootCauseService] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Services: list[ResponseTimeRootCauseService] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResponseTimeRootCause:
     Optional[list[ResponseTimeRootCauseService]] Services
     Optional[bool] ClientImpacting
@@ -804,8 +841,9 @@ struct ResponseTimeRootCauseEntity:
     Optional[float64] Coverage
     Optional[bool] Remote
 
-# no @derive(Json): member(s) Names: list[str], EntityPath: list[ResponseTimeRootCauseEntity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Names: list[str], EntityPath: list[ResponseTimeRootCauseEntity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResponseTimeRootCauseService:
     Optional[str] Name
     Optional[list[str]] Names
@@ -814,14 +852,16 @@ struct ResponseTimeRootCauseService:
     Optional[list[ResponseTimeRootCauseEntity]] EntityPath
     Optional[bool] Inferred
 
-# no @derive(Json): member(s) Service: Service, Links: list[GraphLink] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Service: Service, Links: list[GraphLink] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RetrievedService:
     Optional[Service] Service
     Optional[list[GraphLink]] Links
 
-# no @derive(Json): member(s) Spans: list[Span] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Spans: list[Span] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RetrievedTrace:
     Optional[str] Id
     Optional[float64] Duration
@@ -855,8 +895,9 @@ struct SamplingRateBoost:
     float64 MaxRate
     int64 CooldownWindowMinutes
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SamplingRule:
     Optional[str] RuleName
     Optional[str] RuleARN
@@ -873,15 +914,17 @@ struct SamplingRule:
     Optional[dict[str, str]] Attributes
     Optional[SamplingRateBoost] SamplingRateBoost
 
-# no @derive(Json): member(s) SamplingRule: SamplingRule not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SamplingRule: SamplingRule not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SamplingRuleRecord:
     Optional[SamplingRule] SamplingRule
     Optional[DateTime] CreatedAt
     Optional[DateTime] ModifiedAt
 
-# no @derive(Json): member(s) Attributes: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SamplingRuleUpdate:
     Optional[str] RuleName
     Optional[str] RuleARN
@@ -933,8 +976,9 @@ struct Segment:
     Optional[str] Id
     Optional[str] Document
 
-# no @derive(Json): member(s) Names: list[str], Edges: list[Edge], DurationHistogram: list[HistogramEntry], ResponseTimeHistogram: list[HistogramEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Names: list[str], Edges: list[Edge], DurationHistogram: list[HistogramEntry], ResponseTimeHistogram: list[HistogramEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Service:
     Optional[int64] ReferenceId
     Optional[str] Name
@@ -950,8 +994,9 @@ struct Service:
     Optional[list[HistogramEntry]] DurationHistogram
     Optional[list[HistogramEntry]] ResponseTimeHistogram
 
-# no @derive(Json): member(s) Names: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Names: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServiceId:
     Optional[str] Name
     Optional[list[str]] Names
@@ -1011,8 +1056,9 @@ struct TelemetryRecord:
 struct ThrottledException:
     Optional[str] Message
 
-# no @derive(Json): member(s) ResponseTimeHistogram: list[HistogramEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResponseTimeHistogram: list[HistogramEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TimeSeriesServiceStatistics:
     Optional[DateTime] Timestamp
     Optional[EdgeStatistics] EdgeSummaryStatistics
@@ -1025,16 +1071,18 @@ struct TooManyTagsException:
     Optional[str] Message
     Optional[str] ResourceName
 
-# no @derive(Json): member(s) Segments: list[Segment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Segments: list[Segment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Trace:
     Optional[str] Id
     Optional[float64] Duration
     Optional[bool] LimitExceeded
     Optional[list[Segment]] Segments
 
-# no @derive(Json): member(s) Annotations: dict[str, list[ValueWithServiceIds]], Users: list[TraceUser], ServiceIds: list[ServiceId], ResourceARNs: list[ResourceARNDetail], InstanceIds: list[InstanceIdDetail], AvailabilityZones: list[AvailabilityZoneDetail], EntryPoint: ServiceId, FaultRootCauses: list[FaultRootCause], ErrorRootCauses: list[ErrorRootCause], ResponseTimeRootCauses: list[ResponseTimeRootCause] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Annotations: dict[str, list[ValueWithServiceIds]], Users: list[TraceUser], ServiceIds: list[ServiceId], ResourceARNs: list[ResourceARNDetail], InstanceIds: list[InstanceIdDetail], AvailabilityZones: list[AvailabilityZoneDetail], EntryPoint: ServiceId, FaultRootCauses: list[FaultRootCause], ErrorRootCauses: list[ErrorRootCause], ResponseTimeRootCauses: list[ResponseTimeRootCause] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TraceSummary:
     Optional[str] Id
     Optional[DateTime] StartTime
@@ -1058,8 +1106,9 @@ struct TraceSummary:
     Optional[int64] Revision
     Optional[DateTime] MatchedEventTime
 
-# no @derive(Json): member(s) ServiceIds: list[ServiceId] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceIds: list[ServiceId] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TraceUser:
     Optional[str] UserName
     Optional[list[ServiceId]] ServiceIds
@@ -1114,8 +1163,9 @@ struct UpdateIndexingRuleResult:
 struct UpdateSamplingRuleRequest:
     SamplingRuleUpdate SamplingRuleUpdate
 
-# no @derive(Json): member(s) SamplingRuleRecord: SamplingRuleRecord not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SamplingRuleRecord: SamplingRuleRecord not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateSamplingRuleResult:
     Optional[SamplingRuleRecord] SamplingRuleRecord
 
@@ -1130,8 +1180,9 @@ struct UpdateTraceSegmentDestinationResult:
     Optional[TraceSegmentDestination] Destination
     Optional[TraceSegmentDestinationStatus] Status
 
-# no @derive(Json): member(s) ServiceIds: list[ServiceId] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ServiceIds: list[ServiceId] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValueWithServiceIds:
     Optional[AnnotationValue] AnnotationValue
     Optional[list[ServiceId]] ServiceIds
@@ -1179,27 +1230,6 @@ def xray_error_from_code(str code) -> XRayError:
     return XRayError.Unknown(code=code)
 
 # --- client ----------------------------------------------------------------
-
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   BatchGetTraces (document member `TraceIds: list[str]` is not serializable by derive)
-#   CreateGroup (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateSamplingRule (document member `SamplingRule: SamplingRule` is not serializable by derive)
-#   GetInsightSummaries (document member `States: list[InsightState]` is not serializable by derive)
-#   GetSamplingTargets (document member `SamplingStatisticsDocuments: list[SamplingStatisticsDocument]` is not serializable by derive)
-#   GetTraceGraph (document member `TraceIds: list[str]` is not serializable by derive)
-#   PutTelemetryRecords (document member `TelemetryRecords: list[TelemetryRecord]` is not serializable by derive)
-#   PutTraceSegments (document member `TraceSegmentDocuments: list[str]` is not serializable by derive)
-#   StartTraceRetrieval (document member `TraceIds: list[str]` is not serializable by derive)
-#   TagResource (document member `Tags: list[Tag]` is not serializable by derive)
-#   UntagResource (document member `TagKeys: list[str]` is not serializable by derive)
-#   UpdateSamplingRule (document member `SamplingRuleUpdate: SamplingRuleUpdate` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   BatchGetTraces (operation not generated)
-#   GetTraceGraph (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1363,10 +1393,133 @@ struct UpdateTraceSegmentDestinationDocument:
     Optional[TraceSegmentDestination] Destination
     Optional[CloudWatchLogsConfiguration] CloudWatchLogsConfiguration
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def xray_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def xray_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def xray_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize SamplingRule to a compact JSON object (declaration order).
+def sampling_rule_to_json(SamplingRule v) -> str:
+    list[str] parts = []
+    if v.RuleName.is_some():
+        auto u0 = v.RuleName.unwrap()
+        parts.append("\"RuleName\":" + xray_json_str(u0))
+    if v.RuleARN.is_some():
+        auto u1 = v.RuleARN.unwrap()
+        parts.append("\"RuleARN\":" + xray_json_str(u1))
+    parts.append("\"ResourceARN\":" + xray_json_str(v.ResourceARN))
+    parts.append("\"Priority\":" + str(v.Priority))
+    parts.append("\"FixedRate\":" + str(v.FixedRate))
+    parts.append("\"ReservoirSize\":" + str(v.ReservoirSize))
+    parts.append("\"ServiceName\":" + xray_json_str(v.ServiceName))
+    parts.append("\"ServiceType\":" + xray_json_str(v.ServiceType))
+    parts.append("\"Host\":" + xray_json_str(v.Host))
+    parts.append("\"HTTPMethod\":" + xray_json_str(v.HTTPMethod))
+    parts.append("\"URLPath\":" + xray_json_str(v.URLPath))
+    parts.append("\"Version\":" + str(v.Version))
+    if v.Attributes.is_some():
+        auto u2 = v.Attributes.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(xray_json_str(k3) + ":" + xray_json_str(u2[k3]))
+        parts.append("\"Attributes\":" + xray_json_obj(m3))
+    if v.SamplingRateBoost.is_some():
+        auto u4 = v.SamplingRateBoost.unwrap()
+        parts.append("\"SamplingRateBoost\":" + u4.to_json())
+    return xray_json_obj(parts)
+
+# Serialize SamplingRuleUpdate to a compact JSON object (declaration order).
+def sampling_rule_update_to_json(SamplingRuleUpdate v) -> str:
+    list[str] parts = []
+    if v.RuleName.is_some():
+        auto u0 = v.RuleName.unwrap()
+        parts.append("\"RuleName\":" + xray_json_str(u0))
+    if v.RuleARN.is_some():
+        auto u1 = v.RuleARN.unwrap()
+        parts.append("\"RuleARN\":" + xray_json_str(u1))
+    if v.ResourceARN.is_some():
+        auto u2 = v.ResourceARN.unwrap()
+        parts.append("\"ResourceARN\":" + xray_json_str(u2))
+    if v.Priority.is_some():
+        auto u3 = v.Priority.unwrap()
+        parts.append("\"Priority\":" + str(u3))
+    if v.FixedRate.is_some():
+        auto u4 = v.FixedRate.unwrap()
+        parts.append("\"FixedRate\":" + str(u4))
+    if v.ReservoirSize.is_some():
+        auto u5 = v.ReservoirSize.unwrap()
+        parts.append("\"ReservoirSize\":" + str(u5))
+    if v.Host.is_some():
+        auto u6 = v.Host.unwrap()
+        parts.append("\"Host\":" + xray_json_str(u6))
+    if v.ServiceName.is_some():
+        auto u7 = v.ServiceName.unwrap()
+        parts.append("\"ServiceName\":" + xray_json_str(u7))
+    if v.ServiceType.is_some():
+        auto u8 = v.ServiceType.unwrap()
+        parts.append("\"ServiceType\":" + xray_json_str(u8))
+    if v.HTTPMethod.is_some():
+        auto u9 = v.HTTPMethod.unwrap()
+        parts.append("\"HTTPMethod\":" + xray_json_str(u9))
+    if v.URLPath.is_some():
+        auto u10 = v.URLPath.unwrap()
+        parts.append("\"URLPath\":" + xray_json_str(u10))
+    if v.Attributes.is_some():
+        auto u11 = v.Attributes.unwrap()
+        list[str] m12 = []
+        for k12 in sorted(u11.keys()):
+            m12.append(xray_json_str(k12) + ":" + xray_json_str(u11[k12]))
+        parts.append("\"Attributes\":" + xray_json_obj(m12))
+    if v.SamplingRateBoost.is_some():
+        auto u13 = v.SamplingRateBoost.unwrap()
+        parts.append("\"SamplingRateBoost\":" + u13.to_json())
+    return xray_json_obj(parts)
+
 # A bound XRay client: credentials + region, threaded into every operation.
 struct XRayClient:
     core.Credentials creds
     str region
+
+    # BatchGetTraces  POST /Traces
+    # errors: InvalidRequestException, ThrottledException
+    def batch_get_traces(self, BatchGetTracesRequest input) -> str:
+        auto host = endpoints.regional_host(xray_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/Traces", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.TraceIds:
+            e0.append(xray_json_str(x0))
+        parts.append("\"TraceIds\":" + xray_json_arr(e0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + xray_json_str(u1))
+        auto bp = restjson.rest_json_document(b, xray_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
 
     # CancelTraceRetrieval  POST /CancelTraceRetrieval
     # errors: InvalidRequestException, ResourceNotFoundException, ThrottledException
@@ -1375,6 +1528,44 @@ struct XRayClient:
         auto b = binding.HttpBinding(method="POST", path_template="/CancelTraceRetrieval", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelTraceRetrievalDocument(RetrievalToken=input.RetrievalToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
+
+    # CreateGroup  POST /CreateGroup
+    # errors: InvalidRequestException, ThrottledException
+    def create_group(self, CreateGroupRequest input) -> str:
+        auto host = endpoints.regional_host(xray_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateGroup", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"GroupName\":" + xray_json_str(input.GroupName))
+        if input.FilterExpression.is_some():
+            auto u0 = input.FilterExpression.unwrap()
+            parts.append("\"FilterExpression\":" + xray_json_str(u0))
+        if input.InsightsConfiguration.is_some():
+            auto u1 = input.InsightsConfiguration.unwrap()
+            parts.append("\"InsightsConfiguration\":" + u1.to_json())
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"Tags\":" + xray_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, xray_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
+
+    # CreateSamplingRule  POST /CreateSamplingRule
+    # errors: InvalidRequestException, RuleLimitExceededException, ThrottledException
+    def create_sampling_rule(self, CreateSamplingRuleRequest input) -> str:
+        auto host = endpoints.regional_host(xray_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateSamplingRule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"SamplingRule\":" + sampling_rule_to_json(input.SamplingRule))
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Tags\":" + xray_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, xray_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
 
     # DeleteGroup  POST /DeleteGroup
@@ -1465,6 +1656,35 @@ struct XRayClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
 
+    # GetInsightSummaries  POST /InsightSummaries
+    # errors: InvalidRequestException, ThrottledException
+    def get_insight_summaries(self, GetInsightSummariesRequest input) -> str:
+        auto host = endpoints.regional_host(xray_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/InsightSummaries", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.States.is_some():
+            auto u0 = input.States.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"States\":" + xray_json_arr(e1))
+        if input.GroupARN.is_some():
+            auto u2 = input.GroupARN.unwrap()
+            parts.append("\"GroupARN\":" + xray_json_str(u2))
+        if input.GroupName.is_some():
+            auto u3 = input.GroupName.unwrap()
+            parts.append("\"GroupName\":" + xray_json_str(u3))
+        parts.append("\"StartTime\":" + str(datetime.to_timestamp(input.StartTime)))
+        parts.append("\"EndTime\":" + str(datetime.to_timestamp(input.EndTime)))
+        if input.MaxResults.is_some():
+            auto u4 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u4))
+        if input.NextToken.is_some():
+            auto u5 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + xray_json_str(u5))
+        auto bp = restjson.rest_json_document(b, xray_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
+
     # GetRetrievedTracesGraph  POST /GetRetrievedTracesGraph
     # errors: InvalidRequestException, ResourceNotFoundException, ThrottledException
     def get_retrieved_traces_graph(self, GetRetrievedTracesGraphRequest input) -> str:
@@ -1492,6 +1712,25 @@ struct XRayClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
 
+    # GetSamplingTargets  POST /SamplingTargets
+    # errors: InvalidRequestException, ThrottledException
+    def get_sampling_targets(self, GetSamplingTargetsRequest input) -> str:
+        auto host = endpoints.regional_host(xray_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/SamplingTargets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.SamplingStatisticsDocuments:
+            e0.append(x0.to_json())
+        parts.append("\"SamplingStatisticsDocuments\":" + xray_json_arr(e0))
+        if input.SamplingBoostStatisticsDocuments.is_some():
+            auto u1 = input.SamplingBoostStatisticsDocuments.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"SamplingBoostStatisticsDocuments\":" + xray_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, xray_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
+
     # GetServiceGraph  POST /ServiceGraph
     # errors: InvalidRequestException, ThrottledException
     def get_service_graph(self, GetServiceGraphRequest input) -> str:
@@ -1508,6 +1747,22 @@ struct XRayClient:
         auto b = binding.HttpBinding(method="POST", path_template="/TimeSeriesServiceStatistics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetTimeSeriesServiceStatisticsDocument(StartTime=input.StartTime, EndTime=input.EndTime, GroupName=input.GroupName, GroupARN=input.GroupARN, EntitySelectorExpression=input.EntitySelectorExpression, Period=input.Period, ForecastStatistics=input.ForecastStatistics, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
+
+    # GetTraceGraph  POST /TraceGraph
+    # errors: InvalidRequestException, ThrottledException
+    def get_trace_graph(self, GetTraceGraphRequest input) -> str:
+        auto host = endpoints.regional_host(xray_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/TraceGraph", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.TraceIds:
+            e0.append(xray_json_str(x0))
+        parts.append("\"TraceIds\":" + xray_json_arr(e0))
+        if input.NextToken.is_some():
+            auto u1 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + xray_json_str(u1))
+        auto bp = restjson.rest_json_document(b, xray_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
 
     # GetTraceSegmentDestination  POST /GetTraceSegmentDestination
@@ -1571,6 +1826,84 @@ struct XRayClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
 
+    # PutTelemetryRecords  POST /TelemetryRecords
+    # errors: InvalidRequestException, ThrottledException
+    def put_telemetry_records(self, PutTelemetryRecordsRequest input) -> str:
+        auto host = endpoints.regional_host(xray_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/TelemetryRecords", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.TelemetryRecords:
+            e0.append(x0.to_json())
+        parts.append("\"TelemetryRecords\":" + xray_json_arr(e0))
+        if input.EC2InstanceId.is_some():
+            auto u1 = input.EC2InstanceId.unwrap()
+            parts.append("\"EC2InstanceId\":" + xray_json_str(u1))
+        if input.Hostname.is_some():
+            auto u2 = input.Hostname.unwrap()
+            parts.append("\"Hostname\":" + xray_json_str(u2))
+        if input.ResourceARN.is_some():
+            auto u3 = input.ResourceARN.unwrap()
+            parts.append("\"ResourceARN\":" + xray_json_str(u3))
+        auto bp = restjson.rest_json_document(b, xray_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
+
+    # PutTraceSegments  POST /TraceSegments
+    # errors: InvalidRequestException, ThrottledException
+    def put_trace_segments(self, PutTraceSegmentsRequest input) -> str:
+        auto host = endpoints.regional_host(xray_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/TraceSegments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.TraceSegmentDocuments:
+            e0.append(xray_json_str(x0))
+        parts.append("\"TraceSegmentDocuments\":" + xray_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, xray_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
+
+    # StartTraceRetrieval  POST /StartTraceRetrieval
+    # errors: InvalidRequestException, ResourceNotFoundException, ThrottledException
+    def start_trace_retrieval(self, StartTraceRetrievalRequest input) -> str:
+        auto host = endpoints.regional_host(xray_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/StartTraceRetrieval", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.TraceIds:
+            e0.append(xray_json_str(x0))
+        parts.append("\"TraceIds\":" + xray_json_arr(e0))
+        parts.append("\"StartTime\":" + str(datetime.to_timestamp(input.StartTime)))
+        parts.append("\"EndTime\":" + str(datetime.to_timestamp(input.EndTime)))
+        auto bp = restjson.rest_json_document(b, xray_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
+
+    # TagResource  POST /TagResource
+    # errors: InvalidRequestException, ResourceNotFoundException, ThrottledException, TooManyTagsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(xray_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/TagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceARN\":" + xray_json_str(input.ResourceARN))
+        list[str] e0 = []
+        for x0 in input.Tags:
+            e0.append(x0.to_json())
+        parts.append("\"Tags\":" + xray_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, xray_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
+
+    # UntagResource  POST /UntagResource
+    # errors: InvalidRequestException, ResourceNotFoundException, ThrottledException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(xray_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UntagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceARN\":" + xray_json_str(input.ResourceARN))
+        list[str] e0 = []
+        for x0 in input.TagKeys:
+            e0.append(xray_json_str(x0))
+        parts.append("\"TagKeys\":" + xray_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, xray_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
+
     # UpdateGroup  POST /UpdateGroup
     # errors: InvalidRequestException, ThrottledException
     def update_group(self, UpdateGroupRequest input) -> str:
@@ -1589,6 +1922,16 @@ struct XRayClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
 
+    # UpdateSamplingRule  POST /UpdateSamplingRule
+    # errors: InvalidRequestException, ThrottledException
+    def update_sampling_rule(self, UpdateSamplingRuleRequest input) -> str:
+        auto host = endpoints.regional_host(xray_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateSamplingRule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"SamplingRuleUpdate\":" + sampling_rule_update_to_json(input.SamplingRuleUpdate))
+        auto bp = restjson.rest_json_document(b, xray_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
+
     # UpdateTraceSegmentDestination  POST /UpdateTraceSegmentDestination
     # errors: InvalidRequestException, ThrottledException
     def update_trace_segment_destination(self, UpdateTraceSegmentDestinationRequest input) -> str:
@@ -1597,6 +1940,19 @@ struct XRayClient:
         auto doc = UpdateTraceSegmentDestinationDocument(Destination=input.Destination, CloudWatchLogsConfiguration=input.CloudWatchLogsConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
+
+    # Paginator for BatchGetTraces — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Traces).
+    def paginate_batch_get_traces(self, BatchGetTracesRequest input):
+        auto host = endpoints.regional_host(xray_service(), self.region)
+        while True:
+            auto raw = self.batch_get_traces(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
     # Paginator for GetGroups — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: Groups).
@@ -1656,6 +2012,19 @@ struct XRayClient:
         auto host = endpoints.regional_host(xray_service(), self.region)
         while True:
             auto raw = self.get_time_series_service_statistics(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetTraceGraph — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Services).
+    def paginate_get_trace_graph(self, GetTraceGraphRequest input):
+        auto host = endpoints.regional_host(xray_service(), self.region)
+        while True:
+            auto raw = self.get_trace_graph(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

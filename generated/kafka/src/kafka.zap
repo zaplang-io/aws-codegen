@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 64 operations — 50 with a generated method,
-#   14 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 64 operations — 63 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   270 structs (193 @derive(Json)), 27 enums, 17 error variants.
 #   14 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import base64
 
 # The Kafka rest-json protocol: SigV4 service "kafka" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -292,8 +293,9 @@ struct BatchAssociateScramSecretRequest:
     str ClusterArn
     list[str] SecretArnList
 
-# no @derive(Json): member(s) UnprocessedScramSecrets: list[UnprocessedScramSecret] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UnprocessedScramSecrets: list[UnprocessedScramSecret] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchAssociateScramSecretResponse:
     Optional[str] ClusterArn
     Optional[list[UnprocessedScramSecret]] UnprocessedScramSecrets
@@ -304,14 +306,16 @@ struct BatchDisassociateScramSecretRequest:
     str ClusterArn
     list[str] SecretArnList
 
-# no @derive(Json): member(s) UnprocessedScramSecrets: list[UnprocessedScramSecret] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UnprocessedScramSecrets: list[UnprocessedScramSecret] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDisassociateScramSecretResponse:
     Optional[str] ClusterArn
     Optional[list[UnprocessedScramSecret]] UnprocessedScramSecrets
 
-# no @derive(Json): member(s) CreatedBrokerIds: list[float64], DeletedBrokerIds: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CreatedBrokerIds: list[float64], DeletedBrokerIds: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BrokerCountUpdateInfo:
     Optional[list[float64]] CreatedBrokerIds
     Optional[list[float64]] DeletedBrokerIds
@@ -328,8 +332,9 @@ struct BrokerLogs:
     Optional[Firehose] Firehose
     Optional[S3] S3
 
-# no @derive(Json): member(s) ClientSubnets: list[str], SecurityGroups: list[str], ZoneIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClientSubnets: list[str], SecurityGroups: list[str], ZoneIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BrokerNodeGroupInfo:
     Optional[str] BrokerAZDistribution
     list[str] ClientSubnets
@@ -339,8 +344,9 @@ struct BrokerNodeGroupInfo:
     Optional[ConnectivityInfo] ConnectivityInfo
     Optional[list[str]] ZoneIds
 
-# no @derive(Json): member(s) Endpoints: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoints: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BrokerNodeInfo:
     Optional[str] AttachedENIId
     Optional[float64] BrokerId
@@ -381,8 +387,9 @@ struct ChannelStateInfo:
     Optional[str] Code
     Optional[str] Message
 
-# no @derive(Json): member(s) Tls: Tls not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tls: Tls not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClientAuthentication:
     Optional[Sasl] Sasl
     Optional[Tls] Tls
@@ -402,8 +409,9 @@ struct CloudWatchLogs:
     bool Enabled
     Optional[str] LogGroup
 
-# no @derive(Json): member(s) Tags: dict[str, str], Provisioned: Provisioned, Serverless: Serverless not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str], Provisioned: Provisioned, Serverless: Serverless not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Cluster:
     Optional[str] ActiveOperationArn
     Optional[ClusterType] ClusterType
@@ -422,8 +430,9 @@ struct ClusterConnectivityException:
     Optional[str] InvalidParameter
     Optional[str] Message
 
-# no @derive(Json): member(s) BrokerNodeGroupInfo: BrokerNodeGroupInfo, ClientAuthentication: ClientAuthentication, Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BrokerNodeGroupInfo: BrokerNodeGroupInfo, ClientAuthentication: ClientAuthentication, Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterInfo:
     Optional[str] ActiveOperationArn
     Optional[BrokerNodeGroupInfo] BrokerNodeGroupInfo
@@ -447,8 +456,9 @@ struct ClusterInfo:
     Optional[StorageMode] StorageMode
     Optional[CustomerActionStatus] CustomerActionStatus
 
-# no @derive(Json): member(s) OperationSteps: list[ClusterOperationStep], SourceClusterInfo: MutableClusterInfo, TargetClusterInfo: MutableClusterInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OperationSteps: list[ClusterOperationStep], SourceClusterInfo: MutableClusterInfo, TargetClusterInfo: MutableClusterInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterOperationInfo:
     Optional[str] ClientRequestId
     Optional[str] ClusterArn
@@ -472,8 +482,9 @@ struct ClusterOperationStep:
 struct ClusterOperationStepInfo:
     Optional[str] StepStatus
 
-# no @derive(Json): member(s) Provisioned: ClusterOperationV2Provisioned not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Provisioned: ClusterOperationV2Provisioned not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterOperationV2:
     Optional[str] ClusterArn
     Optional[ClusterType] ClusterType
@@ -486,8 +497,9 @@ struct ClusterOperationV2:
     Optional[ClusterOperationV2Provisioned] Provisioned
     Optional[ClusterOperationV2Serverless] Serverless
 
-# no @derive(Json): member(s) OperationSteps: list[ClusterOperationStep], SourceClusterInfo: MutableClusterInfo, TargetClusterInfo: MutableClusterInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OperationSteps: list[ClusterOperationStep], SourceClusterInfo: MutableClusterInfo, TargetClusterInfo: MutableClusterInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusterOperationV2Provisioned:
     Optional[list[ClusterOperationStep]] OperationSteps
     Optional[MutableClusterInfo] SourceClusterInfo
@@ -512,14 +524,16 @@ struct ClusterOperationV2Summary:
     Optional[str] OperationState
     Optional[str] OperationType
 
-# no @derive(Json): member(s) TargetVersions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetVersions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CompatibleKafkaVersion:
     Optional[str] SourceVersion
     Optional[list[str]] TargetVersions
 
-# no @derive(Json): member(s) KafkaVersions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KafkaVersions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Configuration:
     str Arn
     DateTime CreationTime
@@ -552,8 +566,9 @@ struct ConnectivityInfo:
     Optional[VpcConnectivity] VpcConnectivity
     Optional[NetworkType] NetworkType
 
-# no @derive(Json): member(s) ConsumerGroupsToExclude: list[str], ConsumerGroupsToReplicate: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConsumerGroupsToExclude: list[str], ConsumerGroupsToReplicate: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConsumerGroupReplication:
     Optional[list[str]] ConsumerGroupsToExclude
     list[str] ConsumerGroupsToReplicate
@@ -561,8 +576,9 @@ struct ConsumerGroupReplication:
     Optional[bool] SynchroniseConsumerGroupOffsets
     Optional[ConsumerGroupOffsetSyncMode] ConsumerGroupOffsetSyncMode
 
-# no @derive(Json): member(s) ConsumerGroupsToExclude: list[str], ConsumerGroupsToReplicate: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConsumerGroupsToExclude: list[str], ConsumerGroupsToReplicate: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConsumerGroupReplicationUpdate:
     list[str] ConsumerGroupsToExclude
     list[str] ConsumerGroupsToReplicate
@@ -574,8 +590,9 @@ struct ControllerMovedException:
     Optional[str] InvalidParameter
     Optional[str] Message
 
-# no @derive(Json): member(s) Endpoints: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoints: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ControllerNodeInfo:
     Optional[list[str]] Endpoints
 
@@ -693,8 +710,9 @@ struct CreateVpcConnectionRequest:
     list[str] SecurityGroups
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) ClientSubnets: list[str], SecurityGroups: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClientSubnets: list[str], SecurityGroups: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVpcConnectionResponse:
     Optional[str] VpcConnectionArn
     Optional[VpcConnectionState] State
@@ -792,8 +810,9 @@ struct DescribeChannelRequest:
     str ChannelArn
     str ClusterArn
 
-# no @derive(Json): member(s) IcebergDestinationConfiguration: IcebergDestinationConfiguration, TopicConfigurationList: list[TopicConfiguration], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IcebergDestinationConfiguration: IcebergDestinationConfiguration, TopicConfigurationList: list[TopicConfiguration], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeChannelResponse:
     str ChannelArn
     str ChannelName
@@ -814,8 +833,9 @@ struct DescribeChannelResponse:
 struct DescribeClusterOperationRequest:
     str ClusterOperationArn
 
-# no @derive(Json): member(s) ClusterOperationInfo: ClusterOperationInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClusterOperationInfo: ClusterOperationInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClusterOperationResponse:
     Optional[ClusterOperationInfo] ClusterOperationInfo
 
@@ -824,8 +844,9 @@ struct DescribeClusterOperationResponse:
 struct DescribeClusterOperationV2Request:
     str ClusterOperationArn
 
-# no @derive(Json): member(s) ClusterOperationInfo: ClusterOperationV2 not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClusterOperationInfo: ClusterOperationV2 not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClusterOperationV2Response:
     Optional[ClusterOperationV2] ClusterOperationInfo
 
@@ -834,8 +855,9 @@ struct DescribeClusterOperationV2Response:
 struct DescribeClusterRequest:
     str ClusterArn
 
-# no @derive(Json): member(s) ClusterInfo: ClusterInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClusterInfo: ClusterInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClusterResponse:
     Optional[ClusterInfo] ClusterInfo
 
@@ -844,8 +866,9 @@ struct DescribeClusterResponse:
 struct DescribeClusterV2Request:
     str ClusterArn
 
-# no @derive(Json): member(s) ClusterInfo: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClusterInfo: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClusterV2Response:
     Optional[Cluster] ClusterInfo
 
@@ -854,8 +877,9 @@ struct DescribeClusterV2Response:
 struct DescribeConfigurationRequest:
     str Arn
 
-# no @derive(Json): member(s) KafkaVersions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KafkaVersions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConfigurationResponse:
     Optional[str] Arn
     Optional[DateTime] CreationTime
@@ -885,8 +909,9 @@ struct DescribeConfigurationRevisionResponse:
 struct DescribeReplicatorRequest:
     str ReplicatorArn
 
-# no @derive(Json): member(s) KafkaClusters: list[KafkaClusterDescription], ReplicationInfoList: list[ReplicationInfoDescription], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KafkaClusters: list[KafkaClusterDescription], ReplicationInfoList: list[ReplicationInfoDescription], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeReplicatorResponse:
     Optional[DateTime] CreationTime
     Optional[str] CurrentVersion
@@ -911,8 +936,9 @@ struct DescribeTopicPartitionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Partitions: list[TopicPartitionInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Partitions: list[TopicPartitionInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTopicPartitionsResponse:
     Optional[list[TopicPartitionInfo]] Partitions
     Optional[str] NextToken
@@ -937,8 +963,9 @@ struct DescribeTopicResponse:
 struct DescribeVpcConnectionRequest:
     str Arn
 
-# no @derive(Json): member(s) Subnets: list[str], SecurityGroups: list[str], Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Subnets: list[str], SecurityGroups: list[str], Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeVpcConnectionResponse:
     Optional[str] VpcConnectionArn
     Optional[str] TargetClusterArn
@@ -950,8 +977,9 @@ struct DescribeVpcConnectionResponse:
     Optional[DateTime] CreationTime
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) PartitionSpec: PartitionSpec not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PartitionSpec: PartitionSpec not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DestinationTable:
     Optional[str] DestinationDatabaseName
     Optional[str] DestinationTableName
@@ -1037,8 +1065,9 @@ struct GetClusterPolicyResponse:
 struct GetCompatibleKafkaVersionsRequest:
     Optional[str] ClusterArn
 
-# no @derive(Json): member(s) CompatibleKafkaVersions: list[CompatibleKafkaVersion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CompatibleKafkaVersions: list[CompatibleKafkaVersion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCompatibleKafkaVersionsResponse:
     Optional[list[CompatibleKafkaVersion]] CompatibleKafkaVersions
 
@@ -1051,8 +1080,9 @@ struct GroupSubscribedToTopicException:
 struct Iam:
     Optional[bool] Enabled
 
-# no @derive(Json): member(s) DestinationTableList: list[DestinationTable] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DestinationTableList: list[DestinationTable] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IcebergDestinationConfiguration:
     bool AppendOnly
     Optional[Catalog] Catalog
@@ -1081,8 +1111,9 @@ struct JmxExporter:
 struct JmxExporterInfo:
     bool EnabledInBroker
 
-# no @derive(Json): member(s) VpcConfig: KafkaClusterClientVpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfig: KafkaClusterClientVpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KafkaCluster:
     Optional[AmazonMskCluster] AmazonMskCluster
     Optional[ApacheKafkaCluster] ApacheKafkaCluster
@@ -1096,14 +1127,16 @@ struct KafkaClusterClientAuthentication:
     Optional[KafkaClusterMTLSAuthentication] MTLS
     Optional[KafkaClusterSaslOAuthBearerAuthentication] SaslOAuthBearer
 
-# no @derive(Json): member(s) SecurityGroupIds: list[str], SubnetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecurityGroupIds: list[str], SubnetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KafkaClusterClientVpcConfig:
     Optional[list[str]] SecurityGroupIds
     list[str] SubnetIds
 
-# no @derive(Json): member(s) VpcConfig: KafkaClusterClientVpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfig: KafkaClusterClientVpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KafkaClusterDescription:
     Optional[AmazonMskCluster] AmazonMskCluster
     Optional[ApacheKafkaCluster] ApacheKafkaCluster
@@ -1181,8 +1214,9 @@ struct ListChannelsRequest:
     Optional[str] NextToken
     Optional[str] TopicNameFilter
 
-# no @derive(Json): member(s) Channels: list[ChannelInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Channels: list[ChannelInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChannelsResponse:
     Optional[list[ChannelInfo]] Channels
     Optional[str] NextToken
@@ -1194,8 +1228,9 @@ struct ListClientVpcConnectionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ClientVpcConnections: list[ClientVpcConnection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClientVpcConnections: list[ClientVpcConnection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListClientVpcConnectionsResponse:
     Optional[list[ClientVpcConnection]] ClientVpcConnections
     Optional[str] NextToken
@@ -1207,8 +1242,9 @@ struct ListClusterOperationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ClusterOperationInfoList: list[ClusterOperationInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClusterOperationInfoList: list[ClusterOperationInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListClusterOperationsResponse:
     Optional[list[ClusterOperationInfo]] ClusterOperationInfoList
     Optional[str] NextToken
@@ -1220,8 +1256,9 @@ struct ListClusterOperationsV2Request:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ClusterOperationInfoList: list[ClusterOperationV2Summary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClusterOperationInfoList: list[ClusterOperationV2Summary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListClusterOperationsV2Response:
     Optional[list[ClusterOperationV2Summary]] ClusterOperationInfoList
     Optional[str] NextToken
@@ -1233,8 +1270,9 @@ struct ListClustersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ClusterInfoList: list[ClusterInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClusterInfoList: list[ClusterInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListClustersResponse:
     Optional[list[ClusterInfo]] ClusterInfoList
     Optional[str] NextToken
@@ -1247,8 +1285,9 @@ struct ListClustersV2Request:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ClusterInfoList: list[Cluster] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ClusterInfoList: list[Cluster] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListClustersV2Response:
     Optional[list[Cluster]] ClusterInfoList
     Optional[str] NextToken
@@ -1260,8 +1299,9 @@ struct ListConfigurationRevisionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Revisions: list[ConfigurationRevision] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Revisions: list[ConfigurationRevision] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfigurationRevisionsResponse:
     Optional[str] NextToken
     Optional[list[ConfigurationRevision]] Revisions
@@ -1272,8 +1312,9 @@ struct ListConfigurationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Configurations: list[Configuration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configurations: list[Configuration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfigurationsResponse:
     Optional[list[Configuration]] Configurations
     Optional[str] NextToken
@@ -1284,8 +1325,9 @@ struct ListKafkaVersionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) KafkaVersions: list[KafkaVersion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KafkaVersions: list[KafkaVersion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListKafkaVersionsResponse:
     Optional[list[KafkaVersion]] KafkaVersions
     Optional[str] NextToken
@@ -1297,8 +1339,9 @@ struct ListNodesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) NodeInfoList: list[NodeInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NodeInfoList: list[NodeInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNodesResponse:
     Optional[str] NextToken
     Optional[list[NodeInfo]] NodeInfoList
@@ -1310,8 +1353,9 @@ struct ListReplicatorsRequest:
     Optional[str] NextToken
     Optional[str] ReplicatorNameFilter
 
-# no @derive(Json): member(s) Replicators: list[ReplicatorSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Replicators: list[ReplicatorSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListReplicatorsResponse:
     Optional[str] NextToken
     Optional[list[ReplicatorSummary]] Replicators
@@ -1323,8 +1367,9 @@ struct ListScramSecretsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SecretArnList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SecretArnList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListScramSecretsResponse:
     Optional[str] NextToken
     Optional[list[str]] SecretArnList
@@ -1334,8 +1379,9 @@ struct ListScramSecretsResponse:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -1347,8 +1393,9 @@ struct ListTopicsRequest:
     Optional[str] NextToken
     Optional[str] TopicNameFilter
 
-# no @derive(Json): member(s) Topics: list[TopicInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Topics: list[TopicInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTopicsResponse:
     Optional[list[TopicInfo]] Topics
     Optional[str] NextToken
@@ -1359,8 +1406,9 @@ struct ListVpcConnectionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) VpcConnections: list[VpcConnection] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConnections: list[VpcConnection] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListVpcConnectionsResponse:
     Optional[list[VpcConnection]] VpcConnections
     Optional[str] NextToken
@@ -1374,8 +1422,9 @@ struct LoggingInfo:
     Optional[AuthorizerLogs] AuthorizerLogs
     BrokerLogs BrokerLogs
 
-# no @derive(Json): member(s) BrokerEBSVolumeInfo: list[BrokerEBSVolumeInfo], ClientAuthentication: ClientAuthentication, BrokerCountUpdateInfo: BrokerCountUpdateInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BrokerEBSVolumeInfo: list[BrokerEBSVolumeInfo], ClientAuthentication: ClientAuthentication, BrokerCountUpdateInfo: BrokerCountUpdateInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MutableClusterInfo:
     Optional[list[BrokerEBSVolumeInfo]] BrokerEBSVolumeInfo
     Optional[ConfigurationInfo] ConfigurationInfo
@@ -1401,8 +1450,9 @@ struct NodeExporter:
 struct NodeExporterInfo:
     bool EnabledInBroker
 
-# no @derive(Json): member(s) BrokerNodeInfo: BrokerNodeInfo, ControllerNodeInfo: ControllerNodeInfo, ZookeeperNodeInfo: ZookeeperNodeInfo not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BrokerNodeInfo: BrokerNodeInfo, ControllerNodeInfo: ControllerNodeInfo, ZookeeperNodeInfo: ZookeeperNodeInfo not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NodeInfo:
     Optional[str] AddedToClusterTime
     Optional[BrokerNodeInfo] BrokerNodeInfo
@@ -1434,8 +1484,9 @@ struct OpenMonitoringInfo:
 struct PartitionSource:
     Optional[str] SourceName
 
-# no @derive(Json): member(s) SourceList: list[PartitionSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceList: list[PartitionSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PartitionSpec:
     str PartitionStrategy
     Optional[list[PartitionSource]] SourceList
@@ -1450,8 +1501,9 @@ struct PrometheusInfo:
     Optional[JmxExporterInfo] JmxExporter
     Optional[NodeExporterInfo] NodeExporter
 
-# no @derive(Json): member(s) BrokerNodeGroupInfo: BrokerNodeGroupInfo, ClientAuthentication: ClientAuthentication not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BrokerNodeGroupInfo: BrokerNodeGroupInfo, ClientAuthentication: ClientAuthentication not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Provisioned:
     BrokerNodeGroupInfo BrokerNodeGroupInfo
     Optional[Rebalancing] Rebalancing
@@ -1467,8 +1519,9 @@ struct Provisioned:
     Optional[StorageMode] StorageMode
     Optional[CustomerActionStatus] CustomerActionStatus
 
-# no @derive(Json): member(s) BrokerNodeGroupInfo: BrokerNodeGroupInfo, ClientAuthentication: ClientAuthentication not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BrokerNodeGroupInfo: BrokerNodeGroupInfo, ClientAuthentication: ClientAuthentication not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProvisionedRequest:
     BrokerNodeGroupInfo BrokerNodeGroupInfo
     Optional[Rebalancing] Rebalancing
@@ -1541,8 +1594,9 @@ struct RejectClientVpcConnectionResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ConsumerGroupReplication: ConsumerGroupReplication, TopicReplication: TopicReplication not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConsumerGroupReplication: ConsumerGroupReplication, TopicReplication: TopicReplication not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicationInfo:
     ConsumerGroupReplication ConsumerGroupReplication
     Optional[str] SourceKafkaClusterArn
@@ -1552,8 +1606,9 @@ struct ReplicationInfo:
     Optional[str] TargetKafkaClusterId
     TopicReplication TopicReplication
 
-# no @derive(Json): member(s) ConsumerGroupReplication: ConsumerGroupReplication, TopicReplication: TopicReplication not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConsumerGroupReplication: ConsumerGroupReplication, TopicReplication: TopicReplication not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicationInfoDescription:
     Optional[ConsumerGroupReplication] ConsumerGroupReplication
     Optional[str] SourceKafkaClusterAlias
@@ -1601,8 +1656,9 @@ struct ReplicatorS3:
     Optional[str] Bucket
     Optional[str] Prefix
 
-# no @derive(Json): member(s) KafkaClustersSummary: list[KafkaClusterSummary], ReplicationInfoSummaryList: list[ReplicationInfoSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KafkaClustersSummary: list[KafkaClusterSummary], ReplicationInfoSummaryList: list[ReplicationInfoSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReplicatorSummary:
     Optional[DateTime] CreationTime
     Optional[str] CurrentVersion
@@ -1653,8 +1709,9 @@ struct SchemaEvolution:
 struct Scram:
     Optional[bool] Enabled
 
-# no @derive(Json): member(s) VpcConfigs: list[VpcConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfigs: list[VpcConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Serverless:
     list[VpcConfig] VpcConfigs
     Optional[ServerlessClientAuthentication] ClientAuthentication
@@ -1668,8 +1725,9 @@ struct ServerlessClientAuthentication:
 struct ServerlessConnectivityInfo:
     Optional[NetworkType] NetworkType
 
-# no @derive(Json): member(s) VpcConfigs: list[VpcConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) VpcConfigs: list[VpcConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ServerlessRequest:
     list[VpcConfig] VpcConfigs
     Optional[ServerlessClientAuthentication] ClientAuthentication
@@ -1702,8 +1760,9 @@ struct TagResourceRequest:
     str ResourceArn
     dict[str, str] Tags
 
-# no @derive(Json): member(s) CertificateAuthorityArnList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CertificateAuthorityArnList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Tls:
     Optional[list[str]] CertificateAuthorityArnList
     Optional[bool] Enabled
@@ -1732,16 +1791,18 @@ struct TopicInfo:
     Optional[int64] PartitionCount
     Optional[int64] OutOfSyncReplicaCount
 
-# no @derive(Json): member(s) Replicas: list[int64], Isr: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Replicas: list[int64], Isr: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicPartitionInfo:
     Optional[int64] Partition
     Optional[int64] Leader
     Optional[list[int64]] Replicas
     Optional[list[int64]] Isr
 
-# no @derive(Json): member(s) TopicsToExclude: list[str], TopicsToReplicate: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TopicsToExclude: list[str], TopicsToReplicate: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicReplication:
     Optional[bool] CopyAccessControlListsForTopics
     Optional[bool] CopyTopicConfigurations
@@ -1751,8 +1812,9 @@ struct TopicReplication:
     Optional[list[str]] TopicsToExclude
     list[str] TopicsToReplicate
 
-# no @derive(Json): member(s) TopicsToExclude: list[str], TopicsToReplicate: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TopicsToExclude: list[str], TopicsToReplicate: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TopicReplicationUpdate:
     bool CopyAccessControlListsForTopics
     bool CopyTopicConfigurations
@@ -1975,8 +2037,9 @@ struct UserIdentity:
     Optional[UserIdentityType] Type
     Optional[str] PrincipalId
 
-# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], SecurityGroupIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfig:
     list[str] SubnetIds
     Optional[list[str]] SecurityGroupIds
@@ -2037,8 +2100,9 @@ struct VpcConnectivityTls:
 struct ZookeeperAccess:
     Optional[bool] Enabled
 
-# no @derive(Json): member(s) Endpoints: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoints: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ZookeeperNodeInfo:
     Optional[str] AttachedENIId
     Optional[str] ClientVpcIpAddress
@@ -2114,20 +2178,7 @@ def kafka_error_from_code(str code) -> KafkaError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchAssociateScramSecret (document member `SecretArnList: list[str]` is not serializable by derive)
-#   BatchDisassociateScramSecret (document member `SecretArnList: list[str]` is not serializable by derive)
-#   CreateChannel (document member `IcebergDestinationConfiguration: IcebergDestinationConfiguration` is not serializable by derive)
-#   CreateCluster (document member `BrokerNodeGroupInfo: BrokerNodeGroupInfo` is not serializable by derive)
-#   CreateClusterV2 (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateConfiguration (document member `KafkaVersions: list[str]` is not serializable by derive)
-#   CreateReplicator (document member `KafkaClusters: list[KafkaCluster]` is not serializable by derive)
-#   CreateVpcConnection (document member `ClientSubnets: list[str]` is not serializable by derive)
-#   RebootBroker (document member `BrokerIds: list[str]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateBrokerStorage (document member `TargetBrokerEBSVolumeInfo: list[BrokerEBSVolumeInfo]` is not serializable by derive)
-#   UpdateReplicationInfo (document member `ConsumerGroupReplication: ConsumerGroupReplicationUpdate` is not serializable by derive)
-#   UpdateSecurity (document member `ClientAuthentication: ClientAuthentication` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -2223,10 +2274,527 @@ struct UpdateTopicDocument:
     Optional[str] Configs
     Optional[int64] PartitionCount
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def kafka_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def kafka_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def kafka_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize BrokerNodeGroupInfo to a compact JSON object (declaration order).
+def broker_node_group_info_to_json(BrokerNodeGroupInfo v) -> str:
+    list[str] parts = []
+    if v.BrokerAZDistribution.is_some():
+        auto u0 = v.BrokerAZDistribution.unwrap()
+        parts.append("\"brokerAZDistribution\":" + kafka_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.ClientSubnets:
+        e1.append(kafka_json_str(x1))
+    parts.append("\"clientSubnets\":" + kafka_json_arr(e1))
+    parts.append("\"instanceType\":" + kafka_json_str(v.InstanceType))
+    if v.SecurityGroups.is_some():
+        auto u2 = v.SecurityGroups.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(kafka_json_str(x3))
+        parts.append("\"securityGroups\":" + kafka_json_arr(e3))
+    if v.StorageInfo.is_some():
+        auto u4 = v.StorageInfo.unwrap()
+        parts.append("\"storageInfo\":" + u4.to_json())
+    if v.ConnectivityInfo.is_some():
+        auto u5 = v.ConnectivityInfo.unwrap()
+        parts.append("\"connectivityInfo\":" + u5.to_json())
+    if v.ZoneIds.is_some():
+        auto u6 = v.ZoneIds.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(kafka_json_str(x7))
+        parts.append("\"zoneIds\":" + kafka_json_arr(e7))
+    return kafka_json_obj(parts)
+
+# Serialize ClientAuthentication to a compact JSON object (declaration order).
+def client_authentication_to_json(ClientAuthentication v) -> str:
+    list[str] parts = []
+    if v.Sasl.is_some():
+        auto u0 = v.Sasl.unwrap()
+        parts.append("\"sasl\":" + u0.to_json())
+    if v.Tls.is_some():
+        auto u1 = v.Tls.unwrap()
+        parts.append("\"tls\":" + tls_to_json(u1))
+    if v.Unauthenticated.is_some():
+        auto u2 = v.Unauthenticated.unwrap()
+        parts.append("\"unauthenticated\":" + u2.to_json())
+    return kafka_json_obj(parts)
+
+# Serialize ConsumerGroupReplication to a compact JSON object (declaration order).
+def consumer_group_replication_to_json(ConsumerGroupReplication v) -> str:
+    list[str] parts = []
+    if v.ConsumerGroupsToExclude.is_some():
+        auto u0 = v.ConsumerGroupsToExclude.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(kafka_json_str(x1))
+        parts.append("\"consumerGroupsToExclude\":" + kafka_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.ConsumerGroupsToReplicate:
+        e2.append(kafka_json_str(x2))
+    parts.append("\"consumerGroupsToReplicate\":" + kafka_json_arr(e2))
+    if v.DetectAndCopyNewConsumerGroups.is_some():
+        auto u3 = v.DetectAndCopyNewConsumerGroups.unwrap()
+        parts.append("\"detectAndCopyNewConsumerGroups\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.SynchroniseConsumerGroupOffsets.is_some():
+        auto u4 = v.SynchroniseConsumerGroupOffsets.unwrap()
+        parts.append("\"synchroniseConsumerGroupOffsets\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.ConsumerGroupOffsetSyncMode.is_some():
+        auto u5 = v.ConsumerGroupOffsetSyncMode.unwrap()
+        parts.append("\"consumerGroupOffsetSyncMode\":" + u5.to_json())
+    return kafka_json_obj(parts)
+
+# Serialize ConsumerGroupReplicationUpdate to a compact JSON object (declaration order).
+def consumer_group_replication_update_to_json(ConsumerGroupReplicationUpdate v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.ConsumerGroupsToExclude:
+        e0.append(kafka_json_str(x0))
+    parts.append("\"consumerGroupsToExclude\":" + kafka_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.ConsumerGroupsToReplicate:
+        e1.append(kafka_json_str(x1))
+    parts.append("\"consumerGroupsToReplicate\":" + kafka_json_arr(e1))
+    parts.append("\"detectAndCopyNewConsumerGroups\":" + json.dumps(JsonValue.Bool(v.DetectAndCopyNewConsumerGroups)))
+    parts.append("\"synchroniseConsumerGroupOffsets\":" + json.dumps(JsonValue.Bool(v.SynchroniseConsumerGroupOffsets)))
+    return kafka_json_obj(parts)
+
+# Serialize DestinationTable to a compact JSON object (declaration order).
+def destination_table_to_json(DestinationTable v) -> str:
+    list[str] parts = []
+    if v.DestinationDatabaseName.is_some():
+        auto u0 = v.DestinationDatabaseName.unwrap()
+        parts.append("\"destinationDatabaseName\":" + kafka_json_str(u0))
+    if v.DestinationTableName.is_some():
+        auto u1 = v.DestinationTableName.unwrap()
+        parts.append("\"destinationTableName\":" + kafka_json_str(u1))
+    if v.PartitionSpec.is_some():
+        auto u2 = v.PartitionSpec.unwrap()
+        parts.append("\"partitionSpec\":" + partition_spec_to_json(u2))
+    return kafka_json_obj(parts)
+
+# Serialize IcebergDestinationConfiguration to a compact JSON object (declaration order).
+def iceberg_destination_configuration_to_json(IcebergDestinationConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"appendOnly\":" + json.dumps(JsonValue.Bool(v.AppendOnly)))
+    if v.Catalog.is_some():
+        auto u0 = v.Catalog.unwrap()
+        parts.append("\"catalog\":" + u0.to_json())
+    if v.DataFreshnessInSeconds.is_some():
+        auto u1 = v.DataFreshnessInSeconds.unwrap()
+        parts.append("\"dataFreshnessInSeconds\":" + str(u1))
+    parts.append("\"deadLetterQueueS3\":" + v.DeadLetterQueueS3.to_json())
+    list[str] e2 = []
+    for x2 in v.DestinationTableList:
+        e2.append(destination_table_to_json(x2))
+    parts.append("\"destinationTableList\":" + kafka_json_arr(e2))
+    parts.append("\"schemaEvolution\":" + v.SchemaEvolution.to_json())
+    parts.append("\"serviceExecutionRoleArn\":" + kafka_json_str(v.ServiceExecutionRoleArn))
+    parts.append("\"tableCreation\":" + v.TableCreation.to_json())
+    if v.CompressionType.is_some():
+        auto u3 = v.CompressionType.unwrap()
+        parts.append("\"compressionType\":" + u3.to_json())
+    return kafka_json_obj(parts)
+
+# Serialize KafkaCluster to a compact JSON object (declaration order).
+def kafka_cluster_to_json(KafkaCluster v) -> str:
+    list[str] parts = []
+    if v.AmazonMskCluster.is_some():
+        auto u0 = v.AmazonMskCluster.unwrap()
+        parts.append("\"amazonMskCluster\":" + u0.to_json())
+    if v.ApacheKafkaCluster.is_some():
+        auto u1 = v.ApacheKafkaCluster.unwrap()
+        parts.append("\"apacheKafkaCluster\":" + u1.to_json())
+    if v.VpcConfig.is_some():
+        auto u2 = v.VpcConfig.unwrap()
+        parts.append("\"vpcConfig\":" + kafka_cluster_client_vpc_config_to_json(u2))
+    if v.ClientAuthentication.is_some():
+        auto u3 = v.ClientAuthentication.unwrap()
+        parts.append("\"clientAuthentication\":" + u3.to_json())
+    if v.EncryptionInTransit.is_some():
+        auto u4 = v.EncryptionInTransit.unwrap()
+        parts.append("\"encryptionInTransit\":" + u4.to_json())
+    return kafka_json_obj(parts)
+
+# Serialize KafkaClusterClientVpcConfig to a compact JSON object (declaration order).
+def kafka_cluster_client_vpc_config_to_json(KafkaClusterClientVpcConfig v) -> str:
+    list[str] parts = []
+    if v.SecurityGroupIds.is_some():
+        auto u0 = v.SecurityGroupIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(kafka_json_str(x1))
+        parts.append("\"securityGroupIds\":" + kafka_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.SubnetIds:
+        e2.append(kafka_json_str(x2))
+    parts.append("\"subnetIds\":" + kafka_json_arr(e2))
+    return kafka_json_obj(parts)
+
+# Serialize PartitionSpec to a compact JSON object (declaration order).
+def partition_spec_to_json(PartitionSpec v) -> str:
+    list[str] parts = []
+    parts.append("\"partitionStrategy\":" + kafka_json_str(v.PartitionStrategy))
+    if v.SourceList.is_some():
+        auto u0 = v.SourceList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"sourceList\":" + kafka_json_arr(e1))
+    return kafka_json_obj(parts)
+
+# Serialize ProvisionedRequest to a compact JSON object (declaration order).
+def provisioned_request_to_json(ProvisionedRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"brokerNodeGroupInfo\":" + broker_node_group_info_to_json(v.BrokerNodeGroupInfo))
+    if v.Rebalancing.is_some():
+        auto u0 = v.Rebalancing.unwrap()
+        parts.append("\"rebalancing\":" + u0.to_json())
+    if v.ClientAuthentication.is_some():
+        auto u1 = v.ClientAuthentication.unwrap()
+        parts.append("\"clientAuthentication\":" + client_authentication_to_json(u1))
+    if v.ConfigurationInfo.is_some():
+        auto u2 = v.ConfigurationInfo.unwrap()
+        parts.append("\"configurationInfo\":" + u2.to_json())
+    if v.EncryptionInfo.is_some():
+        auto u3 = v.EncryptionInfo.unwrap()
+        parts.append("\"encryptionInfo\":" + u3.to_json())
+    if v.EnhancedMonitoring.is_some():
+        auto u4 = v.EnhancedMonitoring.unwrap()
+        parts.append("\"enhancedMonitoring\":" + u4.to_json())
+    if v.OpenMonitoring.is_some():
+        auto u5 = v.OpenMonitoring.unwrap()
+        parts.append("\"openMonitoring\":" + u5.to_json())
+    parts.append("\"kafkaVersion\":" + kafka_json_str(v.KafkaVersion))
+    if v.LoggingInfo.is_some():
+        auto u6 = v.LoggingInfo.unwrap()
+        parts.append("\"loggingInfo\":" + u6.to_json())
+    parts.append("\"numberOfBrokerNodes\":" + str(v.NumberOfBrokerNodes))
+    if v.StorageMode.is_some():
+        auto u7 = v.StorageMode.unwrap()
+        parts.append("\"storageMode\":" + u7.to_json())
+    return kafka_json_obj(parts)
+
+# Serialize ReplicationInfo to a compact JSON object (declaration order).
+def replication_info_to_json(ReplicationInfo v) -> str:
+    list[str] parts = []
+    parts.append("\"consumerGroupReplication\":" + consumer_group_replication_to_json(v.ConsumerGroupReplication))
+    if v.SourceKafkaClusterArn.is_some():
+        auto u0 = v.SourceKafkaClusterArn.unwrap()
+        parts.append("\"sourceKafkaClusterArn\":" + kafka_json_str(u0))
+    if v.SourceKafkaClusterId.is_some():
+        auto u1 = v.SourceKafkaClusterId.unwrap()
+        parts.append("\"sourceKafkaClusterId\":" + kafka_json_str(u1))
+    parts.append("\"targetCompressionType\":" + v.TargetCompressionType.to_json())
+    if v.TargetKafkaClusterArn.is_some():
+        auto u2 = v.TargetKafkaClusterArn.unwrap()
+        parts.append("\"targetKafkaClusterArn\":" + kafka_json_str(u2))
+    if v.TargetKafkaClusterId.is_some():
+        auto u3 = v.TargetKafkaClusterId.unwrap()
+        parts.append("\"targetKafkaClusterId\":" + kafka_json_str(u3))
+    parts.append("\"topicReplication\":" + topic_replication_to_json(v.TopicReplication))
+    return kafka_json_obj(parts)
+
+# Serialize ServerlessRequest to a compact JSON object (declaration order).
+def serverless_request_to_json(ServerlessRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.VpcConfigs:
+        e0.append(vpc_config_to_json(x0))
+    parts.append("\"vpcConfigs\":" + kafka_json_arr(e0))
+    if v.ClientAuthentication.is_some():
+        auto u1 = v.ClientAuthentication.unwrap()
+        parts.append("\"clientAuthentication\":" + u1.to_json())
+    return kafka_json_obj(parts)
+
+# Serialize Tls to a compact JSON object (declaration order).
+def tls_to_json(Tls v) -> str:
+    list[str] parts = []
+    if v.CertificateAuthorityArnList.is_some():
+        auto u0 = v.CertificateAuthorityArnList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(kafka_json_str(x1))
+        parts.append("\"certificateAuthorityArnList\":" + kafka_json_arr(e1))
+    if v.Enabled.is_some():
+        auto u2 = v.Enabled.unwrap()
+        parts.append("\"enabled\":" + json.dumps(JsonValue.Bool(u2)))
+    return kafka_json_obj(parts)
+
+# Serialize TopicReplication to a compact JSON object (declaration order).
+def topic_replication_to_json(TopicReplication v) -> str:
+    list[str] parts = []
+    if v.CopyAccessControlListsForTopics.is_some():
+        auto u0 = v.CopyAccessControlListsForTopics.unwrap()
+        parts.append("\"copyAccessControlListsForTopics\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.CopyTopicConfigurations.is_some():
+        auto u1 = v.CopyTopicConfigurations.unwrap()
+        parts.append("\"copyTopicConfigurations\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.DetectAndCopyNewTopics.is_some():
+        auto u2 = v.DetectAndCopyNewTopics.unwrap()
+        parts.append("\"detectAndCopyNewTopics\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.StartingPosition.is_some():
+        auto u3 = v.StartingPosition.unwrap()
+        parts.append("\"startingPosition\":" + u3.to_json())
+    if v.TopicNameConfiguration.is_some():
+        auto u4 = v.TopicNameConfiguration.unwrap()
+        parts.append("\"topicNameConfiguration\":" + u4.to_json())
+    if v.TopicsToExclude.is_some():
+        auto u5 = v.TopicsToExclude.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(kafka_json_str(x6))
+        parts.append("\"topicsToExclude\":" + kafka_json_arr(e6))
+    list[str] e7 = []
+    for x7 in v.TopicsToReplicate:
+        e7.append(kafka_json_str(x7))
+    parts.append("\"topicsToReplicate\":" + kafka_json_arr(e7))
+    return kafka_json_obj(parts)
+
+# Serialize TopicReplicationUpdate to a compact JSON object (declaration order).
+def topic_replication_update_to_json(TopicReplicationUpdate v) -> str:
+    list[str] parts = []
+    parts.append("\"copyAccessControlListsForTopics\":" + json.dumps(JsonValue.Bool(v.CopyAccessControlListsForTopics)))
+    parts.append("\"copyTopicConfigurations\":" + json.dumps(JsonValue.Bool(v.CopyTopicConfigurations)))
+    parts.append("\"detectAndCopyNewTopics\":" + json.dumps(JsonValue.Bool(v.DetectAndCopyNewTopics)))
+    list[str] e0 = []
+    for x0 in v.TopicsToExclude:
+        e0.append(kafka_json_str(x0))
+    parts.append("\"topicsToExclude\":" + kafka_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.TopicsToReplicate:
+        e1.append(kafka_json_str(x1))
+    parts.append("\"topicsToReplicate\":" + kafka_json_arr(e1))
+    return kafka_json_obj(parts)
+
+# Serialize VpcConfig to a compact JSON object (declaration order).
+def vpc_config_to_json(VpcConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.SubnetIds:
+        e0.append(kafka_json_str(x0))
+    parts.append("\"subnetIds\":" + kafka_json_arr(e0))
+    if v.SecurityGroupIds.is_some():
+        auto u1 = v.SecurityGroupIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(kafka_json_str(x2))
+        parts.append("\"securityGroupIds\":" + kafka_json_arr(e2))
+    return kafka_json_obj(parts)
+
 # A bound Kafka client: credentials + region, threaded into every operation.
 struct KafkaClient:
     core.Credentials creds
     str region
+
+    # BatchAssociateScramSecret  POST /v1/clusters/{clusterArn}/scram-secrets
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
+    def batch_associate_scram_secret(self, BatchAssociateScramSecretRequest input) -> str:
+        auto host = endpoints.regional_host(kafka_service(), self.region)
+        dict[str, str] labels = {}
+        labels["clusterArn"] = input.ClusterArn
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/clusters/{clusterArn}/scram-secrets", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.SecretArnList:
+            e0.append(kafka_json_str(x0))
+        parts.append("\"secretArnList\":" + kafka_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, kafka_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
+
+    # BatchDisassociateScramSecret  PATCH /v1/clusters/{clusterArn}/scram-secrets
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
+    def batch_disassociate_scram_secret(self, BatchDisassociateScramSecretRequest input) -> str:
+        auto host = endpoints.regional_host(kafka_service(), self.region)
+        dict[str, str] labels = {}
+        labels["clusterArn"] = input.ClusterArn
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/clusters/{clusterArn}/scram-secrets", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.SecretArnList:
+            e0.append(kafka_json_str(x0))
+        parts.append("\"secretArnList\":" + kafka_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, kafka_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
+
+    # CreateChannel  POST /v1/clusters/{clusterArn}/channels
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
+    def create_channel(self, CreateChannelRequest input) -> str:
+        auto host = endpoints.regional_host(kafka_service(), self.region)
+        dict[str, str] labels = {}
+        labels["clusterArn"] = input.ClusterArn
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/clusters/{clusterArn}/channels", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"channelName\":" + kafka_json_str(input.ChannelName))
+        if input.EncryptionConfiguration.is_some():
+            auto u0 = input.EncryptionConfiguration.unwrap()
+            parts.append("\"encryptionConfiguration\":" + u0.to_json())
+        if input.IcebergDestinationConfiguration.is_some():
+            auto u1 = input.IcebergDestinationConfiguration.unwrap()
+            parts.append("\"icebergDestinationConfiguration\":" + iceberg_destination_configuration_to_json(u1))
+        if input.S3DestinationConfiguration.is_some():
+            auto u2 = input.S3DestinationConfiguration.unwrap()
+            parts.append("\"s3DestinationConfiguration\":" + u2.to_json())
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(kafka_json_str(k4) + ":" + kafka_json_str(u3[k4]))
+            parts.append("\"tags\":" + kafka_json_obj(m4))
+        list[str] e5 = []
+        for x5 in input.TopicConfigurationList:
+            e5.append(x5.to_json())
+        parts.append("\"topicConfigurationList\":" + kafka_json_arr(e5))
+        if input.LoggingInfo.is_some():
+            auto u6 = input.LoggingInfo.unwrap()
+            parts.append("\"loggingInfo\":" + u6.to_json())
+        auto bp = restjson.rest_json_document(b, kafka_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
+
+    # CreateCluster  POST /v1/clusters
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
+    def create_cluster(self, CreateClusterRequest input) -> str:
+        auto host = endpoints.regional_host(kafka_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/clusters", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"brokerNodeGroupInfo\":" + broker_node_group_info_to_json(input.BrokerNodeGroupInfo))
+        if input.Rebalancing.is_some():
+            auto u0 = input.Rebalancing.unwrap()
+            parts.append("\"rebalancing\":" + u0.to_json())
+        if input.ClientAuthentication.is_some():
+            auto u1 = input.ClientAuthentication.unwrap()
+            parts.append("\"clientAuthentication\":" + client_authentication_to_json(u1))
+        parts.append("\"clusterName\":" + kafka_json_str(input.ClusterName))
+        if input.ConfigurationInfo.is_some():
+            auto u2 = input.ConfigurationInfo.unwrap()
+            parts.append("\"configurationInfo\":" + u2.to_json())
+        if input.EncryptionInfo.is_some():
+            auto u3 = input.EncryptionInfo.unwrap()
+            parts.append("\"encryptionInfo\":" + u3.to_json())
+        if input.EnhancedMonitoring.is_some():
+            auto u4 = input.EnhancedMonitoring.unwrap()
+            parts.append("\"enhancedMonitoring\":" + u4.to_json())
+        if input.OpenMonitoring.is_some():
+            auto u5 = input.OpenMonitoring.unwrap()
+            parts.append("\"openMonitoring\":" + u5.to_json())
+        parts.append("\"kafkaVersion\":" + kafka_json_str(input.KafkaVersion))
+        if input.LoggingInfo.is_some():
+            auto u6 = input.LoggingInfo.unwrap()
+            parts.append("\"loggingInfo\":" + u6.to_json())
+        parts.append("\"numberOfBrokerNodes\":" + str(input.NumberOfBrokerNodes))
+        if input.Tags.is_some():
+            auto u7 = input.Tags.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(kafka_json_str(k8) + ":" + kafka_json_str(u7[k8]))
+            parts.append("\"tags\":" + kafka_json_obj(m8))
+        if input.StorageMode.is_some():
+            auto u9 = input.StorageMode.unwrap()
+            parts.append("\"storageMode\":" + u9.to_json())
+        auto bp = restjson.rest_json_document(b, kafka_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
+
+    # CreateClusterV2  POST /api/v2/clusters
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
+    def create_cluster_v2(self, CreateClusterV2Request input) -> str:
+        auto host = endpoints.regional_host(kafka_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/api/v2/clusters", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"clusterName\":" + kafka_json_str(input.ClusterName))
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(kafka_json_str(k1) + ":" + kafka_json_str(u0[k1]))
+            parts.append("\"tags\":" + kafka_json_obj(m1))
+        if input.Provisioned.is_some():
+            auto u2 = input.Provisioned.unwrap()
+            parts.append("\"provisioned\":" + provisioned_request_to_json(u2))
+        if input.Serverless.is_some():
+            auto u3 = input.Serverless.unwrap()
+            parts.append("\"serverless\":" + serverless_request_to_json(u3))
+        auto bp = restjson.rest_json_document(b, kafka_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
+
+    # CreateConfiguration  POST /v1/configurations
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
+    def create_configuration(self, CreateConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(kafka_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"description\":" + kafka_json_str(u0))
+        if input.KafkaVersions.is_some():
+            auto u1 = input.KafkaVersions.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(kafka_json_str(x2))
+            parts.append("\"kafkaVersions\":" + kafka_json_arr(e2))
+        parts.append("\"name\":" + kafka_json_str(input.Name))
+        parts.append("\"serverProperties\":" + kafka_json_str(base64.encode(input.ServerProperties)))
+        auto bp = restjson.rest_json_document(b, kafka_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
+
+    # CreateReplicator  POST /replication/v1/replicators
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
+    def create_replicator(self, CreateReplicatorRequest input) -> str:
+        auto host = endpoints.regional_host(kafka_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/replication/v1/replicators", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"description\":" + kafka_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.KafkaClusters:
+            e1.append(kafka_cluster_to_json(x1))
+        parts.append("\"kafkaClusters\":" + kafka_json_arr(e1))
+        list[str] e2 = []
+        for x2 in input.ReplicationInfoList:
+            e2.append(replication_info_to_json(x2))
+        parts.append("\"replicationInfoList\":" + kafka_json_arr(e2))
+        parts.append("\"replicatorName\":" + kafka_json_str(input.ReplicatorName))
+        parts.append("\"serviceExecutionRoleArn\":" + kafka_json_str(input.ServiceExecutionRoleArn))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(kafka_json_str(k4) + ":" + kafka_json_str(u3[k4]))
+            parts.append("\"tags\":" + kafka_json_obj(m4))
+        if input.LogDelivery.is_some():
+            auto u5 = input.LogDelivery.unwrap()
+            parts.append("\"logDelivery\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, kafka_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
 
     # CreateTopic  POST /v1/clusters/{clusterArn}/topics
     # errors: BadRequestException, ClusterConnectivityException, ConflictException, ControllerMovedException, ForbiddenException, GroupSubscribedToTopicException, InternalServerErrorException, KafkaRequestException, KafkaTimeoutException, NotControllerException, ReassignmentInProgressException, ServiceUnavailableException, TooManyRequestsException, TopicExistsException, UnauthorizedException, UnknownTopicOrPartitionException
@@ -2237,6 +2805,32 @@ struct KafkaClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/clusters/{clusterArn}/topics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateTopicDocument(TopicName=input.TopicName, PartitionCount=input.PartitionCount, ReplicationFactor=input.ReplicationFactor, Configs=input.Configs)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
+
+    # CreateVpcConnection  POST /v1/vpc-connection
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
+    def create_vpc_connection(self, CreateVpcConnectionRequest input) -> str:
+        auto host = endpoints.regional_host(kafka_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/vpc-connection", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"targetClusterArn\":" + kafka_json_str(input.TargetClusterArn))
+        parts.append("\"authentication\":" + kafka_json_str(input.Authentication))
+        parts.append("\"vpcId\":" + kafka_json_str(input.VpcId))
+        list[str] e0 = []
+        for x0 in input.ClientSubnets:
+            e0.append(kafka_json_str(x0))
+        parts.append("\"clientSubnets\":" + kafka_json_arr(e0))
+        list[str] e1 = []
+        for x1 in input.SecurityGroups:
+            e1.append(kafka_json_str(x1))
+        parts.append("\"securityGroups\":" + kafka_json_arr(e1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(kafka_json_str(k3) + ":" + kafka_json_str(u2[k3]))
+            parts.append("\"tags\":" + kafka_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, kafka_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
 
     # DeleteChannel  DELETE /v1/clusters/{clusterArn}/channels/{channelArn}
@@ -2662,6 +3256,21 @@ struct KafkaClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
 
+    # RebootBroker  PUT /v1/clusters/{clusterArn}/reboot-broker
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
+    def reboot_broker(self, RebootBrokerRequest input) -> str:
+        auto host = endpoints.regional_host(kafka_service(), self.region)
+        dict[str, str] labels = {}
+        labels["clusterArn"] = input.ClusterArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/reboot-broker", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.BrokerIds:
+            e0.append(kafka_json_str(x0))
+        parts.append("\"brokerIds\":" + kafka_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, kafka_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
+
     # RejectClientVpcConnection  PUT /v1/clusters/{clusterArn}/client-vpc-connection
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, UnauthorizedException
     def reject_client_vpc_connection(self, RejectClientVpcConnectionRequest input) -> str:
@@ -2673,6 +3282,21 @@ struct KafkaClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
 
+    # TagResource  POST /v1/tags/{resourceArn}
+    # errors: BadRequestException, InternalServerErrorException, NotFoundException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(kafka_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(kafka_json_str(k0) + ":" + kafka_json_str(input.Tags[k0]))
+        parts.append("\"tags\":" + kafka_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, kafka_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
+
     # UpdateBrokerCount  PUT /v1/clusters/{clusterArn}/nodes/count
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, UnauthorizedException
     def update_broker_count(self, UpdateBrokerCountRequest input) -> str:
@@ -2682,6 +3306,22 @@ struct KafkaClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/nodes/count", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateBrokerCountDocument(CurrentVersion=input.CurrentVersion, TargetNumberOfBrokerNodes=input.TargetNumberOfBrokerNodes)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
+
+    # UpdateBrokerStorage  PUT /v1/clusters/{clusterArn}/nodes/storage
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, UnauthorizedException
+    def update_broker_storage(self, UpdateBrokerStorageRequest input) -> str:
+        auto host = endpoints.regional_host(kafka_service(), self.region)
+        dict[str, str] labels = {}
+        labels["clusterArn"] = input.ClusterArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/nodes/storage", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"currentVersion\":" + kafka_json_str(input.CurrentVersion))
+        list[str] e0 = []
+        for x0 in input.TargetBrokerEBSVolumeInfo:
+            e0.append(x0.to_json())
+        parts.append("\"targetBrokerEBSVolumeInfo\":" + kafka_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, kafka_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
 
     # UpdateBrokerType  PUT /v1/clusters/{clusterArn}/nodes/type
@@ -2771,6 +3411,57 @@ struct KafkaClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/rebalancing", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRebalancingDocument(CurrentVersion=input.CurrentVersion, Rebalancing=input.Rebalancing)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
+
+    # UpdateReplicationInfo  PUT /replication/v1/replicators/{replicatorArn}/replication-info
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
+    def update_replication_info(self, UpdateReplicationInfoRequest input) -> str:
+        auto host = endpoints.regional_host(kafka_service(), self.region)
+        dict[str, str] labels = {}
+        labels["replicatorArn"] = input.ReplicatorArn
+        auto b = binding.HttpBinding(method="PUT", path_template="/replication/v1/replicators/{replicatorArn}/replication-info", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ConsumerGroupReplication.is_some():
+            auto u0 = input.ConsumerGroupReplication.unwrap()
+            parts.append("\"consumerGroupReplication\":" + consumer_group_replication_update_to_json(u0))
+        parts.append("\"currentVersion\":" + kafka_json_str(input.CurrentVersion))
+        if input.SourceKafkaClusterArn.is_some():
+            auto u1 = input.SourceKafkaClusterArn.unwrap()
+            parts.append("\"sourceKafkaClusterArn\":" + kafka_json_str(u1))
+        if input.SourceKafkaClusterId.is_some():
+            auto u2 = input.SourceKafkaClusterId.unwrap()
+            parts.append("\"sourceKafkaClusterId\":" + kafka_json_str(u2))
+        if input.TargetKafkaClusterArn.is_some():
+            auto u3 = input.TargetKafkaClusterArn.unwrap()
+            parts.append("\"targetKafkaClusterArn\":" + kafka_json_str(u3))
+        if input.TargetKafkaClusterId.is_some():
+            auto u4 = input.TargetKafkaClusterId.unwrap()
+            parts.append("\"targetKafkaClusterId\":" + kafka_json_str(u4))
+        if input.TopicReplication.is_some():
+            auto u5 = input.TopicReplication.unwrap()
+            parts.append("\"topicReplication\":" + topic_replication_update_to_json(u5))
+        if input.LogDelivery.is_some():
+            auto u6 = input.LogDelivery.unwrap()
+            parts.append("\"logDelivery\":" + u6.to_json())
+        auto bp = restjson.rest_json_document(b, kafka_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
+
+    # UpdateSecurity  PATCH /v1/clusters/{clusterArn}/security
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
+    def update_security(self, UpdateSecurityRequest input) -> str:
+        auto host = endpoints.regional_host(kafka_service(), self.region)
+        dict[str, str] labels = {}
+        labels["clusterArn"] = input.ClusterArn
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/clusters/{clusterArn}/security", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientAuthentication.is_some():
+            auto u0 = input.ClientAuthentication.unwrap()
+            parts.append("\"clientAuthentication\":" + client_authentication_to_json(u0))
+        parts.append("\"currentVersion\":" + kafka_json_str(input.CurrentVersion))
+        if input.EncryptionInfo.is_some():
+            auto u1 = input.EncryptionInfo.unwrap()
+            parts.append("\"encryptionInfo\":" + u1.to_json())
+        auto bp = restjson.rest_json_document(b, kafka_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
 
     # UpdateStorage  PUT /v1/clusters/{clusterArn}/storage

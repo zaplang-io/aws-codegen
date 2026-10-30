@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 21 operations — 16 with a generated method,
-#   5 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 21 operations — 21 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   53 structs (42 @derive(Json)), 3 enums, 6 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -82,8 +82,9 @@ struct ContainerNotFoundException:
 struct CorsPolicyNotFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) AllowedOrigins: list[str], AllowedMethods: list[MethodName], AllowedHeaders: list[str], ExposeHeaders: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowedOrigins: list[str], AllowedMethods: list[MethodName], AllowedHeaders: list[str], ExposeHeaders: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CorsRule:
     list[str] AllowedOrigins
     Optional[list[MethodName]] AllowedMethods
@@ -91,8 +92,9 @@ struct CorsRule:
     Optional[int64] MaxAgeSeconds
     Optional[list[str]] ExposeHeaders
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateContainerInput:
     str ContainerName
     Optional[list[Tag]] Tags
@@ -166,8 +168,9 @@ struct GetContainerPolicyOutput:
 struct GetCorsPolicyInput:
     str ContainerName
 
-# no @derive(Json): member(s) CorsPolicy: list[CorsRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CorsPolicy: list[CorsRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCorsPolicyOutput:
     list[CorsRule] CorsPolicy
 
@@ -183,8 +186,9 @@ struct GetLifecyclePolicyOutput:
 struct GetMetricPolicyInput:
     str ContainerName
 
-# no @derive(Json): member(s) MetricPolicy: MetricPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricPolicy: MetricPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMetricPolicyOutput:
     MetricPolicy MetricPolicy
 
@@ -201,8 +205,9 @@ struct ListContainersInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Containers: list[Container] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Containers: list[Container] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListContainersOutput:
     list[Container] Containers
     Optional[str] NextToken
@@ -211,13 +216,15 @@ struct ListContainersOutput:
 struct ListTagsForResourceInput:
     str Resource
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) MetricPolicyRules: list[MetricPolicyRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricPolicyRules: list[MetricPolicyRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetricPolicy:
     ContainerLevelMetrics ContainerLevelMetrics
     Optional[list[MetricPolicyRule]] MetricPolicyRules
@@ -241,8 +248,9 @@ struct PutContainerPolicyOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) CorsPolicy: list[CorsRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CorsPolicy: list[CorsRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutCorsPolicyInput:
     str ContainerName
     list[CorsRule] CorsPolicy
@@ -262,8 +270,9 @@ struct PutLifecyclePolicyOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) MetricPolicy: MetricPolicy not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MetricPolicy: MetricPolicy not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutMetricPolicyInput:
     str ContainerName
     MetricPolicy MetricPolicy
@@ -296,8 +305,9 @@ struct Tag:
     str Key
     Optional[str] Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceInput:
     str Resource
     list[Tag] Tags
@@ -307,8 +317,9 @@ struct TagResourceOutput:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceInput:
     str Resource
     list[str] TagKeys
@@ -349,18 +360,135 @@ def mediastore_error_from_code(str code) -> MediaStoreError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateContainer (input CreateContainerInput)
-#   PutCorsPolicy (input PutCorsPolicyInput)
-#   PutMetricPolicy (input PutMetricPolicyInput)
-#   TagResource (input TagResourceInput)
-#   UntagResource (input UntagResourceInput)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def mediastore_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def mediastore_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def mediastore_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CorsRule to a compact JSON object (declaration order).
+def cors_rule_to_json(CorsRule v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.AllowedOrigins:
+        e0.append(mediastore_json_str(x0))
+    parts.append("\"AllowedOrigins\":" + mediastore_json_arr(e0))
+    if v.AllowedMethods.is_some():
+        auto u1 = v.AllowedMethods.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"AllowedMethods\":" + mediastore_json_arr(e2))
+    list[str] e3 = []
+    for x3 in v.AllowedHeaders:
+        e3.append(mediastore_json_str(x3))
+    parts.append("\"AllowedHeaders\":" + mediastore_json_arr(e3))
+    if v.MaxAgeSeconds.is_some():
+        auto u4 = v.MaxAgeSeconds.unwrap()
+        parts.append("\"MaxAgeSeconds\":" + str(u4))
+    if v.ExposeHeaders.is_some():
+        auto u5 = v.ExposeHeaders.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(mediastore_json_str(x6))
+        parts.append("\"ExposeHeaders\":" + mediastore_json_arr(e6))
+    return mediastore_json_obj(parts)
+
+# Serialize CreateContainerInput to a compact JSON object (declaration order).
+def create_container_input_to_json(CreateContainerInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ContainerName\":" + mediastore_json_str(v.ContainerName))
+    if v.Tags.is_some():
+        auto u0 = v.Tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Tags\":" + mediastore_json_arr(e1))
+    return mediastore_json_obj(parts)
+
+# Serialize MetricPolicy to a compact JSON object (declaration order).
+def metric_policy_to_json(MetricPolicy v) -> str:
+    list[str] parts = []
+    parts.append("\"ContainerLevelMetrics\":" + v.ContainerLevelMetrics.to_json())
+    if v.MetricPolicyRules.is_some():
+        auto u0 = v.MetricPolicyRules.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"MetricPolicyRules\":" + mediastore_json_arr(e1))
+    return mediastore_json_obj(parts)
+
+# Serialize PutCorsPolicyInput to a compact JSON object (declaration order).
+def put_cors_policy_input_to_json(PutCorsPolicyInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ContainerName\":" + mediastore_json_str(v.ContainerName))
+    list[str] e0 = []
+    for x0 in v.CorsPolicy:
+        e0.append(cors_rule_to_json(x0))
+    parts.append("\"CorsPolicy\":" + mediastore_json_arr(e0))
+    return mediastore_json_obj(parts)
+
+# Serialize PutMetricPolicyInput to a compact JSON object (declaration order).
+def put_metric_policy_input_to_json(PutMetricPolicyInput v) -> str:
+    list[str] parts = []
+    parts.append("\"ContainerName\":" + mediastore_json_str(v.ContainerName))
+    parts.append("\"MetricPolicy\":" + metric_policy_to_json(v.MetricPolicy))
+    return mediastore_json_obj(parts)
+
+# Serialize TagResourceInput to a compact JSON object (declaration order).
+def tag_resource_input_to_json(TagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"Resource\":" + mediastore_json_str(v.Resource))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + mediastore_json_arr(e0))
+    return mediastore_json_obj(parts)
+
+# Serialize UntagResourceInput to a compact JSON object (declaration order).
+def untag_resource_input_to_json(UntagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"Resource\":" + mediastore_json_str(v.Resource))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(mediastore_json_str(x0))
+    parts.append("\"TagKeys\":" + mediastore_json_arr(e0))
+    return mediastore_json_obj(parts)
 
 # A bound MediaStore client: credentials + region, threaded into every operation.
 struct MediaStoreClient:
     core.Credentials creds
     str region
+
+    # CreateContainer
+    # errors: ContainerInUseException, InternalServerError, LimitExceededException
+    def create_container(self, CreateContainerInput input) -> str:
+        auto body = create_container_input_to_json(input)
+        return awsjson.awsjson_request_now(mediastore_protocol(), self.creds, self.region, "CreateContainer", body)
 
     # DeleteContainer
     # errors: ContainerInUseException, ContainerNotFoundException, InternalServerError
@@ -440,11 +568,23 @@ struct MediaStoreClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(mediastore_protocol(), self.creds, self.region, "PutContainerPolicy", body)
 
+    # PutCorsPolicy
+    # errors: ContainerInUseException, ContainerNotFoundException, InternalServerError
+    def put_cors_policy(self, PutCorsPolicyInput input) -> str:
+        auto body = put_cors_policy_input_to_json(input)
+        return awsjson.awsjson_request_now(mediastore_protocol(), self.creds, self.region, "PutCorsPolicy", body)
+
     # PutLifecyclePolicy
     # errors: ContainerInUseException, ContainerNotFoundException, InternalServerError
     def put_lifecycle_policy(self, PutLifecyclePolicyInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(mediastore_protocol(), self.creds, self.region, "PutLifecyclePolicy", body)
+
+    # PutMetricPolicy
+    # errors: ContainerInUseException, ContainerNotFoundException, InternalServerError
+    def put_metric_policy(self, PutMetricPolicyInput input) -> str:
+        auto body = put_metric_policy_input_to_json(input)
+        return awsjson.awsjson_request_now(mediastore_protocol(), self.creds, self.region, "PutMetricPolicy", body)
 
     # StartAccessLogging
     # errors: ContainerInUseException, ContainerNotFoundException, InternalServerError
@@ -457,6 +597,18 @@ struct MediaStoreClient:
     def stop_access_logging(self, StopAccessLoggingInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(mediastore_protocol(), self.creds, self.region, "StopAccessLogging", body)
+
+    # TagResource
+    # errors: ContainerInUseException, ContainerNotFoundException, InternalServerError
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto body = tag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(mediastore_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: ContainerInUseException, ContainerNotFoundException, InternalServerError
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto body = untag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(mediastore_protocol(), self.creds, self.region, "UntagResource", body)
 
     # Paginator for ListContainers — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: Containers).

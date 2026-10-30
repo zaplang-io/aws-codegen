@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 16 operations — 11 with a generated method,
-#   5 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 16 operations — 15 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   45 structs (32 @derive(Json)), 6 enums, 7 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -133,8 +133,9 @@ struct CreateClusterInput:
     Optional[str] policy
     Optional[bool] bypassPolicyLockoutSafetyCheck
 
-# no @derive(Json): member(s) multiRegionProperties: MultiRegionProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) multiRegionProperties: MultiRegionProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateClusterOutput:
     str identifier
     str arn
@@ -215,8 +216,9 @@ struct EncryptionDetails:
 struct GetClusterInput:
     str identifier
 
-# no @derive(Json): member(s) multiRegionProperties: MultiRegionProperties, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) multiRegionProperties: MultiRegionProperties, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetClusterOutput:
     str identifier
     str arn
@@ -244,8 +246,9 @@ struct GetStreamInput:
     str clusterIdentifier
     str streamIdentifier
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetStreamOutput:
     str clusterIdentifier
     str streamIdentifier
@@ -284,8 +287,9 @@ struct ListClustersInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) clusters: list[ClusterSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clusters: list[ClusterSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListClustersOutput:
     Optional[str] nextToken
     list[ClusterSummary] clusters
@@ -297,8 +301,9 @@ struct ListStreamsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) streams: list[StreamSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) streams: list[StreamSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStreamsOutput:
     Optional[str] nextToken
     list[StreamSummary] streams
@@ -308,13 +313,15 @@ struct ListStreamsOutput:
 struct ListTagsForResourceInput:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) clusters: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) clusters: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MultiRegionProperties:
     Optional[str] witnessRegion
     Optional[list[str]] clusters
@@ -398,8 +405,9 @@ struct UpdateClusterOutput:
     ClusterStatus status
     DateTime creationTime
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -448,11 +456,7 @@ def dsql_error_from_code(str code) -> DSQLError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateCluster (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateStream (document member `tags: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateCluster (document member `multiRegionProperties: MultiRegionProperties` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -465,10 +469,110 @@ struct PutClusterPolicyDocument:
     Optional[str] expectedPolicyVersion
     Optional[str] clientToken
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def dsql_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def dsql_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def dsql_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize MultiRegionProperties to a compact JSON object (declaration order).
+def multi_region_properties_to_json(MultiRegionProperties v) -> str:
+    list[str] parts = []
+    if v.witnessRegion.is_some():
+        auto u0 = v.witnessRegion.unwrap()
+        parts.append("\"witnessRegion\":" + dsql_json_str(u0))
+    if v.clusters.is_some():
+        auto u1 = v.clusters.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(dsql_json_str(x2))
+        parts.append("\"clusters\":" + dsql_json_arr(e2))
+    return dsql_json_obj(parts)
+
 # A bound DSQL client: credentials + region, threaded into every operation.
 struct DSQLClient:
     core.Credentials creds
     str region
+
+    # CreateCluster  POST /cluster
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_cluster(self, CreateClusterInput input) -> str:
+        auto host = endpoints.regional_host(dsql_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/cluster", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.deletionProtectionEnabled.is_some():
+            auto u0 = input.deletionProtectionEnabled.unwrap()
+            parts.append("\"deletionProtectionEnabled\":" + json.dumps(JsonValue.Bool(u0)))
+        if input.kmsEncryptionKey.is_some():
+            auto u1 = input.kmsEncryptionKey.unwrap()
+            parts.append("\"kmsEncryptionKey\":" + dsql_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(dsql_json_str(k3) + ":" + dsql_json_str(u2[k3]))
+            parts.append("\"tags\":" + dsql_json_obj(m3))
+        if input.clientToken.is_some():
+            auto u4 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + dsql_json_str(u4))
+        if input.multiRegionProperties.is_some():
+            auto u5 = input.multiRegionProperties.unwrap()
+            parts.append("\"multiRegionProperties\":" + multi_region_properties_to_json(u5))
+        if input.policy.is_some():
+            auto u6 = input.policy.unwrap()
+            parts.append("\"policy\":" + dsql_json_str(u6))
+        if input.bypassPolicyLockoutSafetyCheck.is_some():
+            auto u7 = input.bypassPolicyLockoutSafetyCheck.unwrap()
+            parts.append("\"bypassPolicyLockoutSafetyCheck\":" + json.dumps(JsonValue.Bool(u7)))
+        auto bp = restjson.rest_json_document(b, dsql_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, dsql_service(), self.region, host)
+
+    # CreateStream  POST /stream/{clusterIdentifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_stream(self, CreateStreamInput input) -> str:
+        auto host = endpoints.regional_host(dsql_service(), self.region)
+        dict[str, str] labels = {}
+        labels["clusterIdentifier"] = input.clusterIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/stream/{clusterIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"targetDefinition\":" + input.targetDefinition.to_json())
+        parts.append("\"ordering\":" + dsql_json_str(input.ordering))
+        parts.append("\"format\":" + dsql_json_str(input.format))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(dsql_json_str(k1) + ":" + dsql_json_str(u0[k1]))
+            parts.append("\"tags\":" + dsql_json_obj(m1))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + dsql_json_str(u2))
+        auto bp = restjson.rest_json_document(b, dsql_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, dsql_service(), self.region, host)
 
     # DeleteCluster  DELETE /cluster/{identifier}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -590,6 +694,44 @@ struct DSQLClient:
         auto b = binding.HttpBinding(method="POST", path_template="/cluster/{identifier}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutClusterPolicyDocument(policy=input.policy, bypassPolicyLockoutSafetyCheck=input.bypassPolicyLockoutSafetyCheck, expectedPolicyVersion=input.expectedPolicyVersion, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, dsql_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(dsql_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(dsql_json_str(k0) + ":" + dsql_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + dsql_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, dsql_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, dsql_service(), self.region, host)
+
+    # UpdateCluster  POST /cluster/{identifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_cluster(self, UpdateClusterInput input) -> str:
+        auto host = endpoints.regional_host(dsql_service(), self.region)
+        dict[str, str] labels = {}
+        labels["identifier"] = input.identifier
+        auto b = binding.HttpBinding(method="POST", path_template="/cluster/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.deletionProtectionEnabled.is_some():
+            auto u0 = input.deletionProtectionEnabled.unwrap()
+            parts.append("\"deletionProtectionEnabled\":" + json.dumps(JsonValue.Bool(u0)))
+        if input.kmsEncryptionKey.is_some():
+            auto u1 = input.kmsEncryptionKey.unwrap()
+            parts.append("\"kmsEncryptionKey\":" + dsql_json_str(u1))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + dsql_json_str(u2))
+        if input.multiRegionProperties.is_some():
+            auto u3 = input.multiRegionProperties.unwrap()
+            parts.append("\"multiRegionProperties\":" + multi_region_properties_to_json(u3))
+        auto bp = restjson.rest_json_document(b, dsql_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, dsql_service(), self.region, host)
 
     # Paginator for ListClusters — yields each Response page, threading the

@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 39 operations — 31 with a generated method,
-#   8 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 39 operations — 36 with a generated method,
+#   3 skipped (input has a non-string-keyed map or free-form document member).
 #   112 structs (78 @derive(Json)), 9 enums, 8 error variants.
 #   10 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -28,6 +28,7 @@
 import aws_core.core
 import aws_core.endpoints
 import aws_core.awsjson
+import datetime
 
 # The SSM_Contacts awsJson protocol: version 1.1, API id "SSMContacts".
 def ssm_contacts_protocol() -> awsjson.AwsJson:
@@ -145,8 +146,9 @@ struct ChannelTargetInfo:
     str ContactChannelId
     Optional[int64] RetryIntervalInMinutes
 
-# no @derive(Json): member(s) DependentEntities: list[DependentEntity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DependentEntities: list[DependentEntity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConflictException:
     str Message
     str ResourceId
@@ -196,8 +198,9 @@ struct CreateContactChannelRequest:
 struct CreateContactChannelResult:
     str ContactChannelArn
 
-# no @derive(Json): member(s) Plan: Plan, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Plan: Plan, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateContactRequest:
     str Alias
     Optional[str] DisplayName
@@ -210,8 +213,9 @@ struct CreateContactRequest:
 struct CreateContactResult:
     str ContactArn
 
-# no @derive(Json): member(s) NewContactIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NewContactIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRotationOverrideRequest:
     str RotationId
     list[str] NewContactIds
@@ -223,8 +227,9 @@ struct CreateRotationOverrideRequest:
 struct CreateRotationOverrideResult:
     str RotationOverrideId
 
-# no @derive(Json): member(s) ContactIds: list[str], Recurrence: RecurrenceSettings, Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContactIds: list[str], Recurrence: RecurrenceSettings, Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRotationRequest:
     str Name
     list[str] ContactIds
@@ -288,8 +293,9 @@ struct DeleteRotationResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) DependentResourceIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DependentResourceIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DependentEntity:
     str RelationType
     list[str] DependentResourceIds
@@ -365,8 +371,9 @@ struct GetContactPolicyResult:
 struct GetContactRequest:
     str ContactId
 
-# no @derive(Json): member(s) Plan: Plan not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Plan: Plan not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetContactResult:
     str ContactArn
     str Alias
@@ -379,8 +386,9 @@ struct GetRotationOverrideRequest:
     str RotationId
     str RotationOverrideId
 
-# no @derive(Json): member(s) NewContactIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NewContactIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRotationOverrideResult:
     Optional[str] RotationOverrideId
     Optional[str] RotationArn
@@ -393,8 +401,9 @@ struct GetRotationOverrideResult:
 struct GetRotationRequest:
     str RotationId
 
-# no @derive(Json): member(s) ContactIds: list[str], Recurrence: RecurrenceSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContactIds: list[str], Recurrence: RecurrenceSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRotationResult:
     str RotationArn
     str Name
@@ -419,8 +428,9 @@ struct ListContactChannelsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ContactChannels: list[ContactChannel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContactChannels: list[ContactChannel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListContactChannelsResult:
     Optional[str] NextToken
     list[ContactChannel] ContactChannels
@@ -432,8 +442,9 @@ struct ListContactsRequest:
     Optional[str] AliasPrefix
     Optional[ContactType] Type
 
-# no @derive(Json): member(s) Contacts: list[Contact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Contacts: list[Contact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListContactsResult:
     Optional[str] NextToken
     Optional[list[Contact]] Contacts
@@ -445,8 +456,9 @@ struct ListEngagementsRequest:
     Optional[str] IncidentId
     Optional[TimeRange] TimeRangeValue
 
-# no @derive(Json): member(s) Engagements: list[Engagement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Engagements: list[Engagement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEngagementsResult:
     Optional[str] NextToken
     list[Engagement] Engagements
@@ -457,8 +469,9 @@ struct ListPageReceiptsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Receipts: list[Receipt] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Receipts: list[Receipt] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPageReceiptsResult:
     Optional[str] NextToken
     Optional[list[Receipt]] Receipts
@@ -468,8 +481,9 @@ struct ListPageResolutionsRequest:
     Optional[str] NextToken
     str PageId
 
-# no @derive(Json): member(s) PageResolutions: list[ResolutionContact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PageResolutions: list[ResolutionContact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPageResolutionsResult:
     Optional[str] NextToken
     list[ResolutionContact] PageResolutions
@@ -480,8 +494,9 @@ struct ListPagesByContactRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Pages: list[Page] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Pages: list[Page] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPagesByContactResult:
     Optional[str] NextToken
     list[Page] Pages
@@ -492,14 +507,16 @@ struct ListPagesByEngagementRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Pages: list[Page] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Pages: list[Page] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPagesByEngagementResult:
     Optional[str] NextToken
     list[Page] Pages
 
-# no @derive(Json): member(s) Members: list[str], Recurrence: RecurrenceSettings, Overrides: list[PreviewOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Members: list[str], Recurrence: RecurrenceSettings, Overrides: list[PreviewOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPreviewRotationShiftsRequest:
     Optional[DateTime] RotationStartTime
     Optional[DateTime] StartTime
@@ -511,8 +528,9 @@ struct ListPreviewRotationShiftsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) RotationShifts: list[RotationShift] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RotationShifts: list[RotationShift] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPreviewRotationShiftsResult:
     Optional[list[RotationShift]] RotationShifts
     Optional[str] NextToken
@@ -525,8 +543,9 @@ struct ListRotationOverridesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) RotationOverrides: list[RotationOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RotationOverrides: list[RotationOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRotationOverridesResult:
     Optional[list[RotationOverride]] RotationOverrides
     Optional[str] NextToken
@@ -539,8 +558,9 @@ struct ListRotationShiftsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) RotationShifts: list[RotationShift] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RotationShifts: list[RotationShift] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRotationShiftsResult:
     Optional[list[RotationShift]] RotationShifts
     Optional[str] NextToken
@@ -551,8 +571,9 @@ struct ListRotationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Rotations: list[Rotation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rotations: list[Rotation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRotationsResult:
     Optional[str] NextToken
     list[Rotation] Rotations
@@ -561,8 +582,9 @@ struct ListRotationsResult:
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResult:
     Optional[list[Tag]] Tags
 
@@ -582,14 +604,16 @@ struct Page:
     Optional[DateTime] DeliveryTime
     Optional[DateTime] ReadTime
 
-# no @derive(Json): member(s) Stages: list[Stage], RotationIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Stages: list[Stage], RotationIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Plan:
     Optional[list[Stage]] Stages
     Optional[list[str]] RotationIds
 
-# no @derive(Json): member(s) NewMembers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NewMembers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PreviewOverride:
     Optional[list[str]] NewMembers
     Optional[DateTime] StartTime
@@ -612,8 +636,9 @@ struct Receipt:
     Optional[str] ReceiptInfo
     DateTime ReceiptTime
 
-# no @derive(Json): member(s) MonthlySettings: list[MonthlySetting], WeeklySettings: list[WeeklySetting], DailySettings: list[HandOffTime], ShiftCoverages: dict[DayOfWeek, list[CoverageTime]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MonthlySettings: list[MonthlySetting], WeeklySettings: list[WeeklySetting], DailySettings: list[HandOffTime], ShiftCoverages: dict[DayOfWeek, list[CoverageTime]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecurrenceSettings:
     Optional[list[MonthlySetting]] MonthlySettings
     Optional[list[WeeklySetting]] WeeklySettings
@@ -634,8 +659,9 @@ struct ResourceNotFoundException:
     str ResourceId
     str ResourceType
 
-# no @derive(Json): member(s) ContactIds: list[str], Recurrence: RecurrenceSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContactIds: list[str], Recurrence: RecurrenceSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Rotation:
     str RotationArn
     str Name
@@ -644,8 +670,9 @@ struct Rotation:
     Optional[str] TimeZoneId
     Optional[RecurrenceSettings] Recurrence
 
-# no @derive(Json): member(s) NewContactIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) NewContactIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RotationOverride:
     str RotationOverrideId
     list[str] NewContactIds
@@ -653,8 +680,9 @@ struct RotationOverride:
     DateTime EndTime
     DateTime CreateTime
 
-# no @derive(Json): member(s) ContactIds: list[str], ShiftDetails: ShiftDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContactIds: list[str], ShiftDetails: ShiftDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RotationShift:
     Optional[list[str]] ContactIds
     DateTime StartTime
@@ -679,13 +707,15 @@ struct ServiceQuotaExceededException:
     str QuotaCode
     str ServiceCode
 
-# no @derive(Json): member(s) OverriddenContactIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OverriddenContactIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ShiftDetails:
     list[str] OverriddenContactIds
 
-# no @derive(Json): member(s) Targets: list[Target] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Targets: list[Target] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Stage:
     int64 DurationInMinutes
     list[Target] Targets
@@ -720,8 +750,9 @@ struct Tag:
     Optional[str] Key
     Optional[str] Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceARN
     list[Tag] Tags
@@ -748,8 +779,9 @@ struct TimeRange:
     Optional[DateTime] StartTime
     Optional[DateTime] EndTime
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceARN
     list[str] TagKeys
@@ -770,8 +802,9 @@ struct UpdateContactChannelResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Plan: Plan not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Plan: Plan not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateContactRequest:
     str ContactId
     Optional[str] DisplayName
@@ -782,8 +815,9 @@ struct UpdateContactResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) ContactIds: list[str], Recurrence: RecurrenceSettings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContactIds: list[str], Recurrence: RecurrenceSettings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRotationRequest:
     str RotationId
     Optional[list[str]] ContactIds
@@ -796,8 +830,9 @@ struct UpdateRotationResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Fields: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Fields: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str Message
     Optional[ValidationExceptionReason] Reason
@@ -850,20 +885,139 @@ def ssm_contacts_error_from_code(str code) -> SSM_ContactsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateContact (input CreateContactRequest)
+# Operations skipped in v0 (a member type is not yet serializable — a map
+# with a non-string key, or a free-form document member):
 #   CreateRotation (input CreateRotationRequest)
-#   CreateRotationOverride (input CreateRotationOverrideRequest)
 #   ListPreviewRotationShifts (input ListPreviewRotationShiftsRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateContact (input UpdateContactRequest)
 #   UpdateRotation (input UpdateRotationRequest)
 
 # Paginated operations (paginators-1.json) not surfaced in v0 — their input
 # is skipped above, or the continuation token is not a simple string field:
-#   ListPreviewRotationShifts (input not derivable (no generated method))
+#   ListPreviewRotationShifts (input not serializable (no generated method))
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def ssm_contacts_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def ssm_contacts_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def ssm_contacts_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateContactRequest to a compact JSON object (declaration order).
+def create_contact_request_to_json(CreateContactRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Alias\":" + ssm_contacts_json_str(v.Alias))
+    if v.DisplayName.is_some():
+        auto u0 = v.DisplayName.unwrap()
+        parts.append("\"DisplayName\":" + ssm_contacts_json_str(u0))
+    parts.append("\"Type\":" + v.Type.to_json())
+    parts.append("\"Plan\":" + plan_to_json(v.Plan))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + ssm_contacts_json_arr(e2))
+    if v.IdempotencyToken.is_some():
+        auto u3 = v.IdempotencyToken.unwrap()
+        parts.append("\"IdempotencyToken\":" + ssm_contacts_json_str(u3))
+    return ssm_contacts_json_obj(parts)
+
+# Serialize CreateRotationOverrideRequest to a compact JSON object (declaration order).
+def create_rotation_override_request_to_json(CreateRotationOverrideRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"RotationId\":" + ssm_contacts_json_str(v.RotationId))
+    list[str] e0 = []
+    for x0 in v.NewContactIds:
+        e0.append(ssm_contacts_json_str(x0))
+    parts.append("\"NewContactIds\":" + ssm_contacts_json_arr(e0))
+    parts.append("\"StartTime\":" + str(datetime.to_timestamp(v.StartTime)))
+    parts.append("\"EndTime\":" + str(datetime.to_timestamp(v.EndTime)))
+    if v.IdempotencyToken.is_some():
+        auto u1 = v.IdempotencyToken.unwrap()
+        parts.append("\"IdempotencyToken\":" + ssm_contacts_json_str(u1))
+    return ssm_contacts_json_obj(parts)
+
+# Serialize Plan to a compact JSON object (declaration order).
+def plan_to_json(Plan v) -> str:
+    list[str] parts = []
+    if v.Stages.is_some():
+        auto u0 = v.Stages.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(stage_to_json(x1))
+        parts.append("\"Stages\":" + ssm_contacts_json_arr(e1))
+    if v.RotationIds.is_some():
+        auto u2 = v.RotationIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(ssm_contacts_json_str(x3))
+        parts.append("\"RotationIds\":" + ssm_contacts_json_arr(e3))
+    return ssm_contacts_json_obj(parts)
+
+# Serialize Stage to a compact JSON object (declaration order).
+def stage_to_json(Stage v) -> str:
+    list[str] parts = []
+    parts.append("\"DurationInMinutes\":" + str(v.DurationInMinutes))
+    list[str] e0 = []
+    for x0 in v.Targets:
+        e0.append(x0.to_json())
+    parts.append("\"Targets\":" + ssm_contacts_json_arr(e0))
+    return ssm_contacts_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + ssm_contacts_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + ssm_contacts_json_arr(e0))
+    return ssm_contacts_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + ssm_contacts_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(ssm_contacts_json_str(x0))
+    parts.append("\"TagKeys\":" + ssm_contacts_json_arr(e0))
+    return ssm_contacts_json_obj(parts)
+
+# Serialize UpdateContactRequest to a compact JSON object (declaration order).
+def update_contact_request_to_json(UpdateContactRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ContactId\":" + ssm_contacts_json_str(v.ContactId))
+    if v.DisplayName.is_some():
+        auto u0 = v.DisplayName.unwrap()
+        parts.append("\"DisplayName\":" + ssm_contacts_json_str(u0))
+    if v.Plan.is_some():
+        auto u1 = v.Plan.unwrap()
+        parts.append("\"Plan\":" + plan_to_json(u1))
+    return ssm_contacts_json_obj(parts)
 
 # A bound SSM_Contacts client: credentials + region, threaded into every operation.
 struct SSM_ContactsClient:
@@ -882,11 +1036,23 @@ struct SSM_ContactsClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_contacts_protocol(), self.creds, self.region, "ActivateContactChannel", body)
 
+    # CreateContact
+    # errors: AccessDeniedException, ConflictException, DataEncryptionException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_contact(self, CreateContactRequest input) -> str:
+        auto body = create_contact_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_contacts_protocol(), self.creds, self.region, "CreateContact", body)
+
     # CreateContactChannel
     # errors: AccessDeniedException, ConflictException, DataEncryptionException, InternalServerException, ThrottlingException, ValidationException
     def create_contact_channel(self, CreateContactChannelRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_contacts_protocol(), self.creds, self.region, "CreateContactChannel", body)
+
+    # CreateRotationOverride
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_rotation_override(self, CreateRotationOverrideRequest input) -> str:
+        auto body = create_rotation_override_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_contacts_protocol(), self.creds, self.region, "CreateRotationOverride", body)
 
     # DeactivateContactChannel
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1049,6 +1215,24 @@ struct SSM_ContactsClient:
     def stop_engagement(self, StopEngagementRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ssm_contacts_protocol(), self.creds, self.region, "StopEngagement", body)
+
+    # TagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_contacts_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_contacts_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateContact
+    # errors: AccessDeniedException, DataEncryptionException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_contact(self, UpdateContactRequest input) -> str:
+        auto body = update_contact_request_to_json(input)
+        return awsjson.awsjson_request_now(ssm_contacts_protocol(), self.creds, self.region, "UpdateContact", body)
 
     # UpdateContactChannel
     # errors: AccessDeniedException, ConflictException, DataEncryptionException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException

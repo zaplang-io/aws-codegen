@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 31 operations — 23 with a generated method,
-#   8 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 31 operations — 31 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   144 structs (102 @derive(Json)), 14 enums, 4 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -202,14 +202,16 @@ struct BackendAPICodegenRespObj:
 struct BackendAPIConflictResolution:
     Optional[ResolutionStrategy] ResolutionStrategy
 
-# no @derive(Json): member(s) ResourceConfig: BackendAPIResourceConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceConfig: BackendAPIResourceConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BackendAPIReqObj:
     Optional[BackendAPIResourceConfig] ResourceConfig
     str ResourceName
 
-# no @derive(Json): member(s) AdditionalAuthTypes: list[BackendAPIAuthType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalAuthTypes: list[BackendAPIAuthType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BackendAPIResourceConfig:
     Optional[list[BackendAPIAuthType]] AdditionalAuthTypes
     Optional[str] ApiName
@@ -271,8 +273,9 @@ struct BackendJobRespObj:
     Optional[str] Status
     Optional[str] UpdateTime
 
-# no @derive(Json): member(s) Authenticated: list[AuthenticatedElement], UnAuthenticated: list[UnAuthenticatedElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Authenticated: list[AuthenticatedElement], UnAuthenticated: list[UnAuthenticatedElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BackendStoragePermissions:
     list[AuthenticatedElement] Authenticated
     Optional[list[UnAuthenticatedElement]] UnAuthenticated
@@ -317,8 +320,9 @@ struct CloneBackendResponse:
     Optional[str] Operation
     Optional[str] Status
 
-# no @derive(Json): member(s) ResourceConfig: BackendAPIResourceConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceConfig: BackendAPIResourceConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBackendAPIReqObj:
     str BackendEnvironmentName
     BackendAPIResourceConfig ResourceConfig
@@ -352,14 +356,16 @@ struct CreateBackendAuthIdentityPoolConfig:
     str IdentityPoolName
     bool UnauthenticatedLogin
 
-# no @derive(Json): member(s) Settings: Settings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Settings: Settings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBackendAuthMFAConfig:
     MFAMode MFAMode
     Optional[Settings] Settings
 
-# no @derive(Json): member(s) OAuthScopes: list[OAuthScopesElement], RedirectSignInURIs: list[str], RedirectSignOutURIs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OAuthScopes: list[OAuthScopesElement], RedirectSignInURIs: list[str], RedirectSignOutURIs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBackendAuthOAuthConfig:
     Optional[str] DomainPrefix
     OAuthGrantType OAuthGrantType
@@ -368,14 +374,16 @@ struct CreateBackendAuthOAuthConfig:
     list[str] RedirectSignOutURIs
     Optional[SocialProviderSettings] SocialProviderSettings
 
-# no @derive(Json): member(s) AdditionalConstraints: list[AdditionalConstraintsElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalConstraints: list[AdditionalConstraintsElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBackendAuthPasswordPolicyConfig:
     Optional[list[AdditionalConstraintsElement]] AdditionalConstraints
     float64 MinimumLength
 
-# no @derive(Json): member(s) ResourceConfig: CreateBackendAuthResourceConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceConfig: CreateBackendAuthResourceConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBackendAuthReqObj:
     str BackendEnvironmentName
     CreateBackendAuthResourceConfig ResourceConfig
@@ -389,8 +397,9 @@ struct CreateBackendAuthRequest:
     CreateBackendAuthResourceConfig ResourceConfig
     str ResourceName
 
-# no @derive(Json): member(s) UserPoolConfigs: CreateBackendAuthUserPoolConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserPoolConfigs: CreateBackendAuthUserPoolConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBackendAuthResourceConfig:
     AuthResources AuthResources
     Optional[CreateBackendAuthIdentityPoolConfig] IdentityPoolConfigs
@@ -406,8 +415,9 @@ struct CreateBackendAuthResponse:
     Optional[str] Operation
     Optional[str] Status
 
-# no @derive(Json): member(s) Mfa: CreateBackendAuthMFAConfig, OAuth: CreateBackendAuthOAuthConfig, PasswordPolicy: CreateBackendAuthPasswordPolicyConfig, RequiredSignUpAttributes: list[RequiredSignUpAttributesElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Mfa: CreateBackendAuthMFAConfig, OAuth: CreateBackendAuthOAuthConfig, PasswordPolicy: CreateBackendAuthPasswordPolicyConfig, RequiredSignUpAttributes: list[RequiredSignUpAttributesElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBackendAuthUserPoolConfig:
     Optional[CreateBackendAuthForgotPasswordConfig] ForgotPassword
     Optional[CreateBackendAuthMFAConfig] Mfa
@@ -483,8 +493,9 @@ struct CreateBackendResponse:
     Optional[str] Operation
     Optional[str] Status
 
-# no @derive(Json): member(s) ResourceConfig: CreateBackendStorageResourceConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceConfig: CreateBackendStorageResourceConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBackendStorageReqObj:
     str BackendEnvironmentName
     CreateBackendStorageResourceConfig ResourceConfig
@@ -498,8 +509,9 @@ struct CreateBackendStorageRequest:
     CreateBackendStorageResourceConfig ResourceConfig
     str ResourceName
 
-# no @derive(Json): member(s) Permissions: BackendStoragePermissions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: BackendStoragePermissions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBackendStorageResourceConfig:
     Optional[str] BucketName
     BackendStoragePermissions Permissions
@@ -663,8 +675,9 @@ struct GetBackendAPIRequest:
     Optional[BackendAPIResourceConfig] ResourceConfig
     str ResourceName
 
-# no @derive(Json): member(s) ResourceConfig: BackendAPIResourceConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceConfig: BackendAPIResourceConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBackendAPIRespObj:
     str AppId
     str BackendEnvironmentName
@@ -672,8 +685,9 @@ struct GetBackendAPIRespObj:
     Optional[BackendAPIResourceConfig] ResourceConfig
     Optional[str] ResourceName
 
-# no @derive(Json): member(s) ResourceConfig: BackendAPIResourceConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceConfig: BackendAPIResourceConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBackendAPIResponse:
     Optional[str] AppId
     Optional[str] BackendEnvironmentName
@@ -692,8 +706,9 @@ struct GetBackendAuthRequest:
     str BackendEnvironmentName
     str ResourceName
 
-# no @derive(Json): member(s) ResourceConfig: CreateBackendAuthResourceConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceConfig: CreateBackendAuthResourceConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBackendAuthRespObj:
     str AppId
     str BackendEnvironmentName
@@ -701,8 +716,9 @@ struct GetBackendAuthRespObj:
     Optional[CreateBackendAuthResourceConfig] ResourceConfig
     Optional[str] ResourceName
 
-# no @derive(Json): member(s) ResourceConfig: CreateBackendAuthResourceConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceConfig: CreateBackendAuthResourceConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBackendAuthResponse:
     Optional[str] AppId
     Optional[str] BackendEnvironmentName
@@ -738,8 +754,9 @@ struct GetBackendRequest:
     str AppId
     Optional[str] BackendEnvironmentName
 
-# no @derive(Json): member(s) BackendEnvironmentList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackendEnvironmentList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBackendRespObj:
     Optional[str] AmplifyFeatureFlags
     Optional[str] AmplifyMetaConfig
@@ -749,8 +766,9 @@ struct GetBackendRespObj:
     Optional[str] BackendEnvironmentName
     Optional[str] Error
 
-# no @derive(Json): member(s) BackendEnvironmentList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackendEnvironmentList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBackendResponse:
     Optional[str] AmplifyFeatureFlags
     Optional[str] AmplifyMetaConfig
@@ -771,24 +789,27 @@ struct GetBackendStorageRequest:
     str BackendEnvironmentName
     str ResourceName
 
-# no @derive(Json): member(s) Permissions: BackendStoragePermissions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: BackendStoragePermissions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBackendStorageResourceConfig:
     Optional[str] BucketName
     bool Imported
     Optional[BackendStoragePermissions] Permissions
     str ServiceName
 
-# no @derive(Json): member(s) ResourceConfig: GetBackendStorageResourceConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceConfig: GetBackendStorageResourceConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBackendStorageRespObj:
     str AppId
     str BackendEnvironmentName
     Optional[GetBackendStorageResourceConfig] ResourceConfig
     Optional[str] ResourceName
 
-# no @derive(Json): member(s) ResourceConfig: GetBackendStorageResourceConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceConfig: GetBackendStorageResourceConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBackendStorageResponse:
     Optional[str] AppId
     Optional[str] BackendEnvironmentName
@@ -878,8 +899,9 @@ struct ListBackendJobReqObj:
     Optional[str] Operation
     Optional[str] Status
 
-# no @derive(Json): member(s) Jobs: list[BackendJobRespObj] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Jobs: list[BackendJobRespObj] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBackendJobRespObj:
     Optional[list[BackendJobRespObj]] Jobs
     Optional[str] NextToken
@@ -895,8 +917,9 @@ struct ListBackendJobsRequest:
     Optional[str] Operation
     Optional[str] Status
 
-# no @derive(Json): member(s) Jobs: list[BackendJobRespObj] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Jobs: list[BackendJobRespObj] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBackendJobsResponse:
     Optional[list[BackendJobRespObj]] Jobs
     Optional[str] NextToken
@@ -910,14 +933,16 @@ struct ListS3BucketsReqObj:
 struct ListS3BucketsRequest:
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Buckets: list[S3BucketInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Buckets: list[S3BucketInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListS3BucketsRespObj:
     list[S3BucketInfo] Buckets
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Buckets: list[S3BucketInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Buckets: list[S3BucketInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListS3BucketsResponse:
     Optional[list[S3BucketInfo]] Buckets
     Optional[str] NextToken
@@ -992,8 +1017,9 @@ struct S3BucketInfo:
     Optional[str] CreationDate
     Optional[str] Name
 
-# no @derive(Json): member(s) MfaTypes: list[MfaTypesElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MfaTypes: list[MfaTypesElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Settings:
     Optional[list[MfaTypesElement]] MfaTypes
     Optional[str] SmsMessage
@@ -1041,14 +1067,16 @@ struct UpdateBackendAuthForgotPasswordConfig:
 struct UpdateBackendAuthIdentityPoolConfig:
     Optional[bool] UnauthenticatedLogin
 
-# no @derive(Json): member(s) Settings: Settings not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Settings: Settings not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBackendAuthMFAConfig:
     Optional[MFAMode] MFAMode
     Optional[Settings] Settings
 
-# no @derive(Json): member(s) OAuthScopes: list[OAuthScopesElement], RedirectSignInURIs: list[str], RedirectSignOutURIs: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OAuthScopes: list[OAuthScopesElement], RedirectSignInURIs: list[str], RedirectSignOutURIs: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBackendAuthOAuthConfig:
     Optional[str] DomainPrefix
     Optional[OAuthGrantType] OAuthGrantType
@@ -1057,14 +1085,16 @@ struct UpdateBackendAuthOAuthConfig:
     Optional[list[str]] RedirectSignOutURIs
     Optional[SocialProviderSettings] SocialProviderSettings
 
-# no @derive(Json): member(s) AdditionalConstraints: list[AdditionalConstraintsElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AdditionalConstraints: list[AdditionalConstraintsElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBackendAuthPasswordPolicyConfig:
     Optional[list[AdditionalConstraintsElement]] AdditionalConstraints
     Optional[float64] MinimumLength
 
-# no @derive(Json): member(s) ResourceConfig: UpdateBackendAuthResourceConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceConfig: UpdateBackendAuthResourceConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBackendAuthReqObj:
     UpdateBackendAuthResourceConfig ResourceConfig
     str ResourceName
@@ -1077,8 +1107,9 @@ struct UpdateBackendAuthRequest:
     UpdateBackendAuthResourceConfig ResourceConfig
     str ResourceName
 
-# no @derive(Json): member(s) UserPoolConfigs: UpdateBackendAuthUserPoolConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UserPoolConfigs: UpdateBackendAuthUserPoolConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBackendAuthResourceConfig:
     AuthResources AuthResources
     Optional[UpdateBackendAuthIdentityPoolConfig] IdentityPoolConfigs
@@ -1094,8 +1125,9 @@ struct UpdateBackendAuthResponse:
     Optional[str] Operation
     Optional[str] Status
 
-# no @derive(Json): member(s) Mfa: UpdateBackendAuthMFAConfig, OAuth: UpdateBackendAuthOAuthConfig, PasswordPolicy: UpdateBackendAuthPasswordPolicyConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Mfa: UpdateBackendAuthMFAConfig, OAuth: UpdateBackendAuthOAuthConfig, PasswordPolicy: UpdateBackendAuthPasswordPolicyConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBackendAuthUserPoolConfig:
     Optional[UpdateBackendAuthForgotPasswordConfig] ForgotPassword
     Optional[UpdateBackendAuthMFAConfig] Mfa
@@ -1146,8 +1178,9 @@ struct UpdateBackendJobResponse:
     Optional[str] Status
     Optional[str] UpdateTime
 
-# no @derive(Json): member(s) ResourceConfig: UpdateBackendStorageResourceConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceConfig: UpdateBackendStorageResourceConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBackendStorageReqObj:
     UpdateBackendStorageResourceConfig ResourceConfig
     str ResourceName
@@ -1160,8 +1193,9 @@ struct UpdateBackendStorageRequest:
     UpdateBackendStorageResourceConfig ResourceConfig
     str ResourceName
 
-# no @derive(Json): member(s) Permissions: BackendStoragePermissions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: BackendStoragePermissions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBackendStorageResourceConfig:
     BackendStoragePermissions Permissions
     str ServiceName
@@ -1198,18 +1232,6 @@ def amplifybackend_error_from_code(str code) -> AmplifyBackendError:
     return AmplifyBackendError.Unknown(code=code)
 
 # --- client ----------------------------------------------------------------
-
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CreateBackendAPI (document member `ResourceConfig: BackendAPIResourceConfig` is not serializable by derive)
-#   CreateBackendAuth (document member `ResourceConfig: CreateBackendAuthResourceConfig` is not serializable by derive)
-#   CreateBackendStorage (document member `ResourceConfig: CreateBackendStorageResourceConfig` is not serializable by derive)
-#   DeleteBackendAPI (document member `ResourceConfig: BackendAPIResourceConfig` is not serializable by derive)
-#   GetBackendAPI (document member `ResourceConfig: BackendAPIResourceConfig` is not serializable by derive)
-#   UpdateBackendAPI (document member `ResourceConfig: BackendAPIResourceConfig` is not serializable by derive)
-#   UpdateBackendAuth (document member `ResourceConfig: UpdateBackendAuthResourceConfig` is not serializable by derive)
-#   UpdateBackendStorage (document member `ResourceConfig: UpdateBackendStorageResourceConfig` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1313,6 +1335,278 @@ struct UpdateBackendJobDocument:
     Optional[str] Operation
     Optional[str] Status
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def amplifybackend_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def amplifybackend_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def amplifybackend_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize BackendAPIResourceConfig to a compact JSON object (declaration order).
+def backend_api_resource_config_to_json(BackendAPIResourceConfig v) -> str:
+    list[str] parts = []
+    if v.AdditionalAuthTypes.is_some():
+        auto u0 = v.AdditionalAuthTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"additionalAuthTypes\":" + amplifybackend_json_arr(e1))
+    if v.ApiName.is_some():
+        auto u2 = v.ApiName.unwrap()
+        parts.append("\"apiName\":" + amplifybackend_json_str(u2))
+    if v.ConflictResolution.is_some():
+        auto u3 = v.ConflictResolution.unwrap()
+        parts.append("\"conflictResolution\":" + u3.to_json())
+    if v.DefaultAuthType.is_some():
+        auto u4 = v.DefaultAuthType.unwrap()
+        parts.append("\"defaultAuthType\":" + u4.to_json())
+    if v.Service.is_some():
+        auto u5 = v.Service.unwrap()
+        parts.append("\"service\":" + amplifybackend_json_str(u5))
+    if v.TransformSchema.is_some():
+        auto u6 = v.TransformSchema.unwrap()
+        parts.append("\"transformSchema\":" + amplifybackend_json_str(u6))
+    return amplifybackend_json_obj(parts)
+
+# Serialize BackendStoragePermissions to a compact JSON object (declaration order).
+def backend_storage_permissions_to_json(BackendStoragePermissions v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Authenticated:
+        e0.append(x0.to_json())
+    parts.append("\"authenticated\":" + amplifybackend_json_arr(e0))
+    if v.UnAuthenticated.is_some():
+        auto u1 = v.UnAuthenticated.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"unAuthenticated\":" + amplifybackend_json_arr(e2))
+    return amplifybackend_json_obj(parts)
+
+# Serialize CreateBackendAuthMFAConfig to a compact JSON object (declaration order).
+def create_backend_auth_mfa_config_to_json(CreateBackendAuthMFAConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"MFAMode\":" + v.MFAMode.to_json())
+    if v.Settings.is_some():
+        auto u0 = v.Settings.unwrap()
+        parts.append("\"settings\":" + settings_to_json(u0))
+    return amplifybackend_json_obj(parts)
+
+# Serialize CreateBackendAuthOAuthConfig to a compact JSON object (declaration order).
+def create_backend_auth_o_auth_config_to_json(CreateBackendAuthOAuthConfig v) -> str:
+    list[str] parts = []
+    if v.DomainPrefix.is_some():
+        auto u0 = v.DomainPrefix.unwrap()
+        parts.append("\"domainPrefix\":" + amplifybackend_json_str(u0))
+    parts.append("\"oAuthGrantType\":" + v.OAuthGrantType.to_json())
+    list[str] e1 = []
+    for x1 in v.OAuthScopes:
+        e1.append(x1.to_json())
+    parts.append("\"oAuthScopes\":" + amplifybackend_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.RedirectSignInURIs:
+        e2.append(amplifybackend_json_str(x2))
+    parts.append("\"redirectSignInURIs\":" + amplifybackend_json_arr(e2))
+    list[str] e3 = []
+    for x3 in v.RedirectSignOutURIs:
+        e3.append(amplifybackend_json_str(x3))
+    parts.append("\"redirectSignOutURIs\":" + amplifybackend_json_arr(e3))
+    if v.SocialProviderSettings.is_some():
+        auto u4 = v.SocialProviderSettings.unwrap()
+        parts.append("\"socialProviderSettings\":" + u4.to_json())
+    return amplifybackend_json_obj(parts)
+
+# Serialize CreateBackendAuthPasswordPolicyConfig to a compact JSON object (declaration order).
+def create_backend_auth_password_policy_config_to_json(CreateBackendAuthPasswordPolicyConfig v) -> str:
+    list[str] parts = []
+    if v.AdditionalConstraints.is_some():
+        auto u0 = v.AdditionalConstraints.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"additionalConstraints\":" + amplifybackend_json_arr(e1))
+    parts.append("\"minimumLength\":" + str(v.MinimumLength))
+    return amplifybackend_json_obj(parts)
+
+# Serialize CreateBackendAuthResourceConfig to a compact JSON object (declaration order).
+def create_backend_auth_resource_config_to_json(CreateBackendAuthResourceConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"authResources\":" + v.AuthResources.to_json())
+    if v.IdentityPoolConfigs.is_some():
+        auto u0 = v.IdentityPoolConfigs.unwrap()
+        parts.append("\"identityPoolConfigs\":" + u0.to_json())
+    parts.append("\"service\":" + amplifybackend_json_str(v.Service))
+    parts.append("\"userPoolConfigs\":" + create_backend_auth_user_pool_config_to_json(v.UserPoolConfigs))
+    return amplifybackend_json_obj(parts)
+
+# Serialize CreateBackendAuthUserPoolConfig to a compact JSON object (declaration order).
+def create_backend_auth_user_pool_config_to_json(CreateBackendAuthUserPoolConfig v) -> str:
+    list[str] parts = []
+    if v.ForgotPassword.is_some():
+        auto u0 = v.ForgotPassword.unwrap()
+        parts.append("\"forgotPassword\":" + u0.to_json())
+    if v.Mfa.is_some():
+        auto u1 = v.Mfa.unwrap()
+        parts.append("\"mfa\":" + create_backend_auth_mfa_config_to_json(u1))
+    if v.OAuth.is_some():
+        auto u2 = v.OAuth.unwrap()
+        parts.append("\"oAuth\":" + create_backend_auth_o_auth_config_to_json(u2))
+    if v.PasswordPolicy.is_some():
+        auto u3 = v.PasswordPolicy.unwrap()
+        parts.append("\"passwordPolicy\":" + create_backend_auth_password_policy_config_to_json(u3))
+    list[str] e4 = []
+    for x4 in v.RequiredSignUpAttributes:
+        e4.append(x4.to_json())
+    parts.append("\"requiredSignUpAttributes\":" + amplifybackend_json_arr(e4))
+    parts.append("\"signInMethod\":" + v.SignInMethod.to_json())
+    parts.append("\"userPoolName\":" + amplifybackend_json_str(v.UserPoolName))
+    if v.VerificationMessage.is_some():
+        auto u5 = v.VerificationMessage.unwrap()
+        parts.append("\"verificationMessage\":" + u5.to_json())
+    return amplifybackend_json_obj(parts)
+
+# Serialize CreateBackendStorageResourceConfig to a compact JSON object (declaration order).
+def create_backend_storage_resource_config_to_json(CreateBackendStorageResourceConfig v) -> str:
+    list[str] parts = []
+    if v.BucketName.is_some():
+        auto u0 = v.BucketName.unwrap()
+        parts.append("\"bucketName\":" + amplifybackend_json_str(u0))
+    parts.append("\"permissions\":" + backend_storage_permissions_to_json(v.Permissions))
+    parts.append("\"serviceName\":" + amplifybackend_json_str(v.ServiceName))
+    return amplifybackend_json_obj(parts)
+
+# Serialize Settings to a compact JSON object (declaration order).
+def settings_to_json(Settings v) -> str:
+    list[str] parts = []
+    if v.MfaTypes.is_some():
+        auto u0 = v.MfaTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"mfaTypes\":" + amplifybackend_json_arr(e1))
+    if v.SmsMessage.is_some():
+        auto u2 = v.SmsMessage.unwrap()
+        parts.append("\"smsMessage\":" + amplifybackend_json_str(u2))
+    return amplifybackend_json_obj(parts)
+
+# Serialize UpdateBackendAuthMFAConfig to a compact JSON object (declaration order).
+def update_backend_auth_mfa_config_to_json(UpdateBackendAuthMFAConfig v) -> str:
+    list[str] parts = []
+    if v.MFAMode.is_some():
+        auto u0 = v.MFAMode.unwrap()
+        parts.append("\"MFAMode\":" + u0.to_json())
+    if v.Settings.is_some():
+        auto u1 = v.Settings.unwrap()
+        parts.append("\"settings\":" + settings_to_json(u1))
+    return amplifybackend_json_obj(parts)
+
+# Serialize UpdateBackendAuthOAuthConfig to a compact JSON object (declaration order).
+def update_backend_auth_o_auth_config_to_json(UpdateBackendAuthOAuthConfig v) -> str:
+    list[str] parts = []
+    if v.DomainPrefix.is_some():
+        auto u0 = v.DomainPrefix.unwrap()
+        parts.append("\"domainPrefix\":" + amplifybackend_json_str(u0))
+    if v.OAuthGrantType.is_some():
+        auto u1 = v.OAuthGrantType.unwrap()
+        parts.append("\"oAuthGrantType\":" + u1.to_json())
+    if v.OAuthScopes.is_some():
+        auto u2 = v.OAuthScopes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"oAuthScopes\":" + amplifybackend_json_arr(e3))
+    if v.RedirectSignInURIs.is_some():
+        auto u4 = v.RedirectSignInURIs.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(amplifybackend_json_str(x5))
+        parts.append("\"redirectSignInURIs\":" + amplifybackend_json_arr(e5))
+    if v.RedirectSignOutURIs.is_some():
+        auto u6 = v.RedirectSignOutURIs.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(amplifybackend_json_str(x7))
+        parts.append("\"redirectSignOutURIs\":" + amplifybackend_json_arr(e7))
+    if v.SocialProviderSettings.is_some():
+        auto u8 = v.SocialProviderSettings.unwrap()
+        parts.append("\"socialProviderSettings\":" + u8.to_json())
+    return amplifybackend_json_obj(parts)
+
+# Serialize UpdateBackendAuthPasswordPolicyConfig to a compact JSON object (declaration order).
+def update_backend_auth_password_policy_config_to_json(UpdateBackendAuthPasswordPolicyConfig v) -> str:
+    list[str] parts = []
+    if v.AdditionalConstraints.is_some():
+        auto u0 = v.AdditionalConstraints.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"additionalConstraints\":" + amplifybackend_json_arr(e1))
+    if v.MinimumLength.is_some():
+        auto u2 = v.MinimumLength.unwrap()
+        parts.append("\"minimumLength\":" + str(u2))
+    return amplifybackend_json_obj(parts)
+
+# Serialize UpdateBackendAuthResourceConfig to a compact JSON object (declaration order).
+def update_backend_auth_resource_config_to_json(UpdateBackendAuthResourceConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"authResources\":" + v.AuthResources.to_json())
+    if v.IdentityPoolConfigs.is_some():
+        auto u0 = v.IdentityPoolConfigs.unwrap()
+        parts.append("\"identityPoolConfigs\":" + u0.to_json())
+    parts.append("\"service\":" + amplifybackend_json_str(v.Service))
+    parts.append("\"userPoolConfigs\":" + update_backend_auth_user_pool_config_to_json(v.UserPoolConfigs))
+    return amplifybackend_json_obj(parts)
+
+# Serialize UpdateBackendAuthUserPoolConfig to a compact JSON object (declaration order).
+def update_backend_auth_user_pool_config_to_json(UpdateBackendAuthUserPoolConfig v) -> str:
+    list[str] parts = []
+    if v.ForgotPassword.is_some():
+        auto u0 = v.ForgotPassword.unwrap()
+        parts.append("\"forgotPassword\":" + u0.to_json())
+    if v.Mfa.is_some():
+        auto u1 = v.Mfa.unwrap()
+        parts.append("\"mfa\":" + update_backend_auth_mfa_config_to_json(u1))
+    if v.OAuth.is_some():
+        auto u2 = v.OAuth.unwrap()
+        parts.append("\"oAuth\":" + update_backend_auth_o_auth_config_to_json(u2))
+    if v.PasswordPolicy.is_some():
+        auto u3 = v.PasswordPolicy.unwrap()
+        parts.append("\"passwordPolicy\":" + update_backend_auth_password_policy_config_to_json(u3))
+    if v.VerificationMessage.is_some():
+        auto u4 = v.VerificationMessage.unwrap()
+        parts.append("\"verificationMessage\":" + u4.to_json())
+    return amplifybackend_json_obj(parts)
+
+# Serialize UpdateBackendStorageResourceConfig to a compact JSON object (declaration order).
+def update_backend_storage_resource_config_to_json(UpdateBackendStorageResourceConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"permissions\":" + backend_storage_permissions_to_json(v.Permissions))
+    parts.append("\"serviceName\":" + amplifybackend_json_str(v.ServiceName))
+    return amplifybackend_json_obj(parts)
+
 # A bound AmplifyBackend client: credentials + region, threaded into every operation.
 struct AmplifyBackendClient:
     core.Credentials creds
@@ -1339,6 +1633,34 @@ struct AmplifyBackendClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
 
+    # CreateBackendAPI  POST /backend/{appId}/api
+    # errors: BadRequestException, GatewayTimeoutException, NotFoundException, TooManyRequestsException
+    def create_backend_api(self, CreateBackendAPIRequest input) -> str:
+        auto host = endpoints.regional_host(amplifybackend_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appId"] = input.AppId
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/api", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"backendEnvironmentName\":" + amplifybackend_json_str(input.BackendEnvironmentName))
+        parts.append("\"resourceConfig\":" + backend_api_resource_config_to_json(input.ResourceConfig))
+        parts.append("\"resourceName\":" + amplifybackend_json_str(input.ResourceName))
+        auto bp = restjson.rest_json_document(b, amplifybackend_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
+
+    # CreateBackendAuth  POST /backend/{appId}/auth
+    # errors: BadRequestException, GatewayTimeoutException, NotFoundException, TooManyRequestsException
+    def create_backend_auth(self, CreateBackendAuthRequest input) -> str:
+        auto host = endpoints.regional_host(amplifybackend_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appId"] = input.AppId
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/auth", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"backendEnvironmentName\":" + amplifybackend_json_str(input.BackendEnvironmentName))
+        parts.append("\"resourceConfig\":" + create_backend_auth_resource_config_to_json(input.ResourceConfig))
+        parts.append("\"resourceName\":" + amplifybackend_json_str(input.ResourceName))
+        auto bp = restjson.rest_json_document(b, amplifybackend_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
+
     # CreateBackendConfig  POST /backend/{appId}/config
     # errors: BadRequestException, GatewayTimeoutException, NotFoundException, TooManyRequestsException
     def create_backend_config(self, CreateBackendConfigRequest input) -> str:
@@ -1348,6 +1670,20 @@ struct AmplifyBackendClient:
         auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateBackendConfigDocument(BackendManagerAppId=input.BackendManagerAppId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
+
+    # CreateBackendStorage  POST /backend/{appId}/storage
+    # errors: BadRequestException, GatewayTimeoutException, NotFoundException, TooManyRequestsException
+    def create_backend_storage(self, CreateBackendStorageRequest input) -> str:
+        auto host = endpoints.regional_host(amplifybackend_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appId"] = input.AppId
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/storage", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"backendEnvironmentName\":" + amplifybackend_json_str(input.BackendEnvironmentName))
+        parts.append("\"resourceConfig\":" + create_backend_storage_resource_config_to_json(input.ResourceConfig))
+        parts.append("\"resourceName\":" + amplifybackend_json_str(input.ResourceName))
+        auto bp = restjson.rest_json_document(b, amplifybackend_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
 
     # CreateToken  POST /backend/{appId}/challenge
@@ -1368,6 +1704,22 @@ struct AmplifyBackendClient:
         labels["backendEnvironmentName"] = input.BackendEnvironmentName
         auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/environments/{backendEnvironmentName}/remove", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifybackend_service(), self.region, host)
+
+    # DeleteBackendAPI  POST /backend/{appId}/api/{backendEnvironmentName}/remove
+    # errors: BadRequestException, GatewayTimeoutException, NotFoundException, TooManyRequestsException
+    def delete_backend_api(self, DeleteBackendAPIRequest input) -> str:
+        auto host = endpoints.regional_host(amplifybackend_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appId"] = input.AppId
+        labels["backendEnvironmentName"] = input.BackendEnvironmentName
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/api/{backendEnvironmentName}/remove", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ResourceConfig.is_some():
+            auto u0 = input.ResourceConfig.unwrap()
+            parts.append("\"resourceConfig\":" + backend_api_resource_config_to_json(u0))
+        parts.append("\"resourceName\":" + amplifybackend_json_str(input.ResourceName))
+        auto bp = restjson.rest_json_document(b, amplifybackend_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
 
     # DeleteBackendAuth  POST /backend/{appId}/auth/{backendEnvironmentName}/remove
     # errors: BadRequestException, GatewayTimeoutException, NotFoundException, TooManyRequestsException
@@ -1424,6 +1776,22 @@ struct AmplifyBackendClient:
         auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/details", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetBackendDocument(BackendEnvironmentName=input.BackendEnvironmentName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
+
+    # GetBackendAPI  POST /backend/{appId}/api/{backendEnvironmentName}/details
+    # errors: BadRequestException, GatewayTimeoutException, NotFoundException, TooManyRequestsException
+    def get_backend_api(self, GetBackendAPIRequest input) -> str:
+        auto host = endpoints.regional_host(amplifybackend_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appId"] = input.AppId
+        labels["backendEnvironmentName"] = input.BackendEnvironmentName
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/api/{backendEnvironmentName}/details", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ResourceConfig.is_some():
+            auto u0 = input.ResourceConfig.unwrap()
+            parts.append("\"resourceConfig\":" + backend_api_resource_config_to_json(u0))
+        parts.append("\"resourceName\":" + amplifybackend_json_str(input.ResourceName))
+        auto bp = restjson.rest_json_document(b, amplifybackend_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
 
     # GetBackendAPIModels  POST /backend/{appId}/api/{backendEnvironmentName}/getModels
@@ -1548,6 +1916,36 @@ struct AmplifyBackendClient:
         auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/config/remove", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifybackend_service(), self.region, host)
 
+    # UpdateBackendAPI  POST /backend/{appId}/api/{backendEnvironmentName}
+    # errors: BadRequestException, GatewayTimeoutException, NotFoundException, TooManyRequestsException
+    def update_backend_api(self, UpdateBackendAPIRequest input) -> str:
+        auto host = endpoints.regional_host(amplifybackend_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appId"] = input.AppId
+        labels["backendEnvironmentName"] = input.BackendEnvironmentName
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/api/{backendEnvironmentName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ResourceConfig.is_some():
+            auto u0 = input.ResourceConfig.unwrap()
+            parts.append("\"resourceConfig\":" + backend_api_resource_config_to_json(u0))
+        parts.append("\"resourceName\":" + amplifybackend_json_str(input.ResourceName))
+        auto bp = restjson.rest_json_document(b, amplifybackend_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
+
+    # UpdateBackendAuth  POST /backend/{appId}/auth/{backendEnvironmentName}
+    # errors: BadRequestException, GatewayTimeoutException, NotFoundException, TooManyRequestsException
+    def update_backend_auth(self, UpdateBackendAuthRequest input) -> str:
+        auto host = endpoints.regional_host(amplifybackend_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appId"] = input.AppId
+        labels["backendEnvironmentName"] = input.BackendEnvironmentName
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/auth/{backendEnvironmentName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceConfig\":" + update_backend_auth_resource_config_to_json(input.ResourceConfig))
+        parts.append("\"resourceName\":" + amplifybackend_json_str(input.ResourceName))
+        auto bp = restjson.rest_json_document(b, amplifybackend_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
+
     # UpdateBackendConfig  POST /backend/{appId}/config/update
     # errors: BadRequestException, GatewayTimeoutException, NotFoundException, TooManyRequestsException
     def update_backend_config(self, UpdateBackendConfigRequest input) -> str:
@@ -1570,6 +1968,20 @@ struct AmplifyBackendClient:
         auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/job/{backendEnvironmentName}/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateBackendJobDocument(Operation=input.Operation, Status=input.Status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
+
+    # UpdateBackendStorage  POST /backend/{appId}/storage/{backendEnvironmentName}
+    # errors: BadRequestException, GatewayTimeoutException, NotFoundException, TooManyRequestsException
+    def update_backend_storage(self, UpdateBackendStorageRequest input) -> str:
+        auto host = endpoints.regional_host(amplifybackend_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appId"] = input.AppId
+        labels["backendEnvironmentName"] = input.BackendEnvironmentName
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/storage/{backendEnvironmentName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"resourceConfig\":" + update_backend_storage_resource_config_to_json(input.ResourceConfig))
+        parts.append("\"resourceName\":" + amplifybackend_json_str(input.ResourceName))
+        auto bp = restjson.rest_json_document(b, amplifybackend_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
 
     # Paginator for ListBackendJobs — yields each Response page, threading the

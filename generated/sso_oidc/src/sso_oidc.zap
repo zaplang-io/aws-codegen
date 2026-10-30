@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 4 operations — 1 with a generated method,
-#   3 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 4 operations — 4 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   23 structs (19 @derive(Json)), 1 enums, 14 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -104,8 +104,9 @@ struct CreateTokenWithIAMRequest:
     Optional[str] requestedTokenType
     Optional[str] codeVerifier
 
-# no @derive(Json): member(s) scope: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scope: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTokenWithIAMResponse:
     Optional[str] accessToken
     Optional[str] tokenType
@@ -272,13 +273,6 @@ def oidc_error_from_code(str code) -> SSO_OIDCError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CreateToken (document member `scope: list[str]` is not serializable by derive)
-#   CreateTokenWithIAM (document member `scope: list[str]` is not serializable by derive)
-#   RegisterClient (document member `scopes: list[str]` is not serializable by derive)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -293,6 +287,115 @@ struct StartDeviceAuthorizationDocument:
 struct SSO_OIDCClient:
     core.Credentials creds
     str region
+
+    # CreateToken  POST /token
+    # errors: AccessDeniedException, AuthorizationPendingException, ExpiredTokenException, InternalServerException, InvalidClientException, InvalidGrantException, InvalidRequestException, InvalidScopeException, SlowDownException, UnauthorizedClientException, UnsupportedGrantTypeException
+    def create_token(self, CreateTokenRequest input) -> str:
+        auto host = endpoints.regional_host(oidc_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/token", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"clientId\":" + oidc_json_str(input.clientId))
+        parts.append("\"clientSecret\":" + oidc_json_str(input.clientSecret))
+        parts.append("\"grantType\":" + oidc_json_str(input.grantType))
+        if input.deviceCode.is_some():
+            auto u0 = input.deviceCode.unwrap()
+            parts.append("\"deviceCode\":" + oidc_json_str(u0))
+        if input.code.is_some():
+            auto u1 = input.code.unwrap()
+            parts.append("\"code\":" + oidc_json_str(u1))
+        if input.refreshToken.is_some():
+            auto u2 = input.refreshToken.unwrap()
+            parts.append("\"refreshToken\":" + oidc_json_str(u2))
+        if input.scope_.is_some():
+            auto u3 = input.scope_.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(oidc_json_str(x4))
+            parts.append("\"scope\":" + oidc_json_arr(e4))
+        if input.redirectUri.is_some():
+            auto u5 = input.redirectUri.unwrap()
+            parts.append("\"redirectUri\":" + oidc_json_str(u5))
+        if input.codeVerifier.is_some():
+            auto u6 = input.codeVerifier.unwrap()
+            parts.append("\"codeVerifier\":" + oidc_json_str(u6))
+        auto bp = restjson.rest_json_document(b, oidc_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, oidc_service(), self.region, host)
+
+    # CreateTokenWithIAM  POST /token?aws_iam=t
+    # errors: AccessDeniedException, AuthorizationPendingException, ExpiredTokenException, InternalServerException, InvalidClientException, InvalidGrantException, InvalidRequestException, InvalidRequestRegionException, InvalidScopeException, SlowDownException, UnauthorizedClientException, UnsupportedGrantTypeException
+    def create_token_with_iam(self, CreateTokenWithIAMRequest input) -> str:
+        auto host = endpoints.regional_host(oidc_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/token?aws_iam=t", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"clientId\":" + oidc_json_str(input.clientId))
+        parts.append("\"grantType\":" + oidc_json_str(input.grantType))
+        if input.code.is_some():
+            auto u0 = input.code.unwrap()
+            parts.append("\"code\":" + oidc_json_str(u0))
+        if input.refreshToken.is_some():
+            auto u1 = input.refreshToken.unwrap()
+            parts.append("\"refreshToken\":" + oidc_json_str(u1))
+        if input.assertion.is_some():
+            auto u2 = input.assertion.unwrap()
+            parts.append("\"assertion\":" + oidc_json_str(u2))
+        if input.scope_.is_some():
+            auto u3 = input.scope_.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(oidc_json_str(x4))
+            parts.append("\"scope\":" + oidc_json_arr(e4))
+        if input.redirectUri.is_some():
+            auto u5 = input.redirectUri.unwrap()
+            parts.append("\"redirectUri\":" + oidc_json_str(u5))
+        if input.subjectToken.is_some():
+            auto u6 = input.subjectToken.unwrap()
+            parts.append("\"subjectToken\":" + oidc_json_str(u6))
+        if input.subjectTokenType.is_some():
+            auto u7 = input.subjectTokenType.unwrap()
+            parts.append("\"subjectTokenType\":" + oidc_json_str(u7))
+        if input.requestedTokenType.is_some():
+            auto u8 = input.requestedTokenType.unwrap()
+            parts.append("\"requestedTokenType\":" + oidc_json_str(u8))
+        if input.codeVerifier.is_some():
+            auto u9 = input.codeVerifier.unwrap()
+            parts.append("\"codeVerifier\":" + oidc_json_str(u9))
+        auto bp = restjson.rest_json_document(b, oidc_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, oidc_service(), self.region, host)
+
+    # RegisterClient  POST /client/register
+    # errors: InternalServerException, InvalidClientMetadataException, InvalidRedirectUriException, InvalidRequestException, InvalidScopeException, SlowDownException, UnsupportedGrantTypeException
+    def register_client(self, RegisterClientRequest input) -> str:
+        auto host = endpoints.regional_host(oidc_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/client/register", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"clientName\":" + oidc_json_str(input.clientName))
+        parts.append("\"clientType\":" + oidc_json_str(input.clientType))
+        if input.scopes.is_some():
+            auto u0 = input.scopes.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(oidc_json_str(x1))
+            parts.append("\"scopes\":" + oidc_json_arr(e1))
+        if input.redirectUris.is_some():
+            auto u2 = input.redirectUris.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(oidc_json_str(x3))
+            parts.append("\"redirectUris\":" + oidc_json_arr(e3))
+        if input.grantTypes.is_some():
+            auto u4 = input.grantTypes.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(oidc_json_str(x5))
+            parts.append("\"grantTypes\":" + oidc_json_arr(e5))
+        if input.issuerUrl.is_some():
+            auto u6 = input.issuerUrl.unwrap()
+            parts.append("\"issuerUrl\":" + oidc_json_str(u6))
+        if input.entitledApplicationArn.is_some():
+            auto u7 = input.entitledApplicationArn.unwrap()
+            parts.append("\"entitledApplicationArn\":" + oidc_json_str(u7))
+        auto bp = restjson.rest_json_document(b, oidc_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, oidc_service(), self.region, host)
 
     # StartDeviceAuthorization  POST /device_authorization
     # errors: InternalServerException, InvalidClientException, InvalidRequestException, SlowDownException, UnauthorizedClientException

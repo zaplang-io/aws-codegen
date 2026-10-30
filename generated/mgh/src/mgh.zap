@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 21 operations — 19 with a generated method,
-#   2 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 21 operations — 21 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   62 structs (51 @derive(Json)), 3 enums, 10 error variants.
-#   6 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -154,8 +154,9 @@ struct DescribeMigrationTaskRequest:
     str ProgressUpdateStream
     str MigrationTaskName
 
-# no @derive(Json): member(s) MigrationTask: MigrationTask not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MigrationTask: MigrationTask not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMigrationTaskResult:
     Optional[MigrationTask] MigrationTask
 
@@ -227,15 +228,17 @@ struct InternalServerError:
 struct InvalidInputException:
     Optional[str] Message
 
-# no @derive(Json): member(s) ApplicationIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationStatesRequest:
     Optional[list[str]] ApplicationIds
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ApplicationStateList: list[ApplicationState] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ApplicationStateList: list[ApplicationState] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationStatesResult:
     Optional[list[ApplicationState]] ApplicationStateList
     Optional[str] NextToken
@@ -247,8 +250,9 @@ struct ListCreatedArtifactsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) CreatedArtifactList: list[CreatedArtifact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CreatedArtifactList: list[CreatedArtifact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCreatedArtifactsResult:
     Optional[str] NextToken
     Optional[list[CreatedArtifact]] CreatedArtifactList
@@ -260,8 +264,9 @@ struct ListDiscoveredResourcesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) DiscoveredResourceList: list[DiscoveredResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DiscoveredResourceList: list[DiscoveredResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDiscoveredResourcesResult:
     Optional[str] NextToken
     Optional[list[DiscoveredResource]] DiscoveredResourceList
@@ -273,8 +278,9 @@ struct ListMigrationTaskUpdatesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) MigrationTaskUpdateList: list[MigrationTaskUpdate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MigrationTaskUpdateList: list[MigrationTaskUpdate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMigrationTaskUpdatesResult:
     Optional[str] NextToken
     Optional[list[MigrationTaskUpdate]] MigrationTaskUpdateList
@@ -285,8 +291,9 @@ struct ListMigrationTasksRequest:
     Optional[int64] MaxResults
     Optional[str] ResourceName
 
-# no @derive(Json): member(s) MigrationTaskSummaryList: list[MigrationTaskSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MigrationTaskSummaryList: list[MigrationTaskSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMigrationTasksResult:
     Optional[str] NextToken
     Optional[list[MigrationTaskSummary]] MigrationTaskSummaryList
@@ -296,8 +303,9 @@ struct ListProgressUpdateStreamsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ProgressUpdateStreamSummaryList: list[ProgressUpdateStreamSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ProgressUpdateStreamSummaryList: list[ProgressUpdateStreamSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProgressUpdateStreamsResult:
     Optional[list[ProgressUpdateStreamSummary]] ProgressUpdateStreamSummaryList
     Optional[str] NextToken
@@ -309,14 +317,16 @@ struct ListSourceResourcesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) SourceResourceList: list[SourceResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceResourceList: list[SourceResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSourceResourcesResult:
     Optional[str] NextToken
     Optional[list[SourceResource]] SourceResourceList
 
-# no @derive(Json): member(s) ResourceAttributeList: list[ResourceAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceAttributeList: list[ResourceAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MigrationTask:
     Optional[str] ProgressUpdateStream
     Optional[str] MigrationTaskName
@@ -373,8 +383,9 @@ struct PolicyErrorException:
 struct ProgressUpdateStreamSummary:
     Optional[str] ProgressUpdateStreamName
 
-# no @derive(Json): member(s) ResourceAttributeList: list[ResourceAttribute] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceAttributeList: list[ResourceAttribute] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutResourceAttributesRequest:
     str ProgressUpdateStream
     str MigrationTaskName
@@ -463,14 +474,66 @@ def mgh_error_from_code(str code) -> Migration_HubError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   ListApplicationStates (input ListApplicationStatesRequest)
-#   PutResourceAttributes (input PutResourceAttributesRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def mgh_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   ListApplicationStates (input not derivable (no generated method))
+def mgh_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def mgh_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ListApplicationStatesRequest to a compact JSON object (declaration order).
+def list_application_states_request_to_json(ListApplicationStatesRequest v) -> str:
+    list[str] parts = []
+    if v.ApplicationIds.is_some():
+        auto u0 = v.ApplicationIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(mgh_json_str(x1))
+        parts.append("\"ApplicationIds\":" + mgh_json_arr(e1))
+    if v.NextToken.is_some():
+        auto u2 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + mgh_json_str(u2))
+    if v.MaxResults.is_some():
+        auto u3 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u3))
+    return mgh_json_obj(parts)
+
+# Serialize PutResourceAttributesRequest to a compact JSON object (declaration order).
+def put_resource_attributes_request_to_json(PutResourceAttributesRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ProgressUpdateStream\":" + mgh_json_str(v.ProgressUpdateStream))
+    parts.append("\"MigrationTaskName\":" + mgh_json_str(v.MigrationTaskName))
+    list[str] e0 = []
+    for x0 in v.ResourceAttributeList:
+        e0.append(x0.to_json())
+    parts.append("\"ResourceAttributeList\":" + mgh_json_arr(e0))
+    if v.DryRun.is_some():
+        auto u1 = v.DryRun.unwrap()
+        parts.append("\"DryRun\":" + json.dumps(JsonValue.Bool(u1)))
+    return mgh_json_obj(parts)
 
 # A bound Migration_Hub client: credentials + region, threaded into every operation.
 struct Migration_HubClient:
@@ -543,6 +606,12 @@ struct Migration_HubClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(mgh_protocol(), self.creds, self.region, "ImportMigrationTask", body)
 
+    # ListApplicationStates
+    # errors: AccessDeniedException, HomeRegionNotSetException, InternalServerError, InvalidInputException, ServiceUnavailableException, ThrottlingException
+    def list_application_states(self, ListApplicationStatesRequest input) -> str:
+        auto body = list_application_states_request_to_json(input)
+        return awsjson.awsjson_request_now(mgh_protocol(), self.creds, self.region, "ListApplicationStates", body)
+
     # ListCreatedArtifacts
     # errors: AccessDeniedException, HomeRegionNotSetException, InternalServerError, InvalidInputException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
     def list_created_artifacts(self, ListCreatedArtifactsRequest input) -> str:
@@ -590,6 +659,26 @@ struct Migration_HubClient:
     def notify_migration_task_state(self, NotifyMigrationTaskStateRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(mgh_protocol(), self.creds, self.region, "NotifyMigrationTaskState", body)
+
+    # PutResourceAttributes
+    # errors: AccessDeniedException, DryRunOperation, HomeRegionNotSetException, InternalServerError, InvalidInputException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedOperation
+    def put_resource_attributes(self, PutResourceAttributesRequest input) -> str:
+        auto body = put_resource_attributes_request_to_json(input)
+        return awsjson.awsjson_request_now(mgh_protocol(), self.creds, self.region, "PutResourceAttributes", body)
+
+    # Paginator for ListApplicationStates — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: ApplicationStateList).
+    def paginate_list_application_states(self, ListApplicationStatesRequest input):
+        auto host = endpoints.regional_host(mgh_protocol().service, self.region)
+        while True:
+            auto body = list_application_states_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(mgh_protocol(), self.creds, self.region, "ListApplicationStates", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
     # Paginator for ListCreatedArtifacts — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: CreatedArtifactList).

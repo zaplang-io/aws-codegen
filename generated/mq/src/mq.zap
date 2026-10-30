@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 25 operations — 18 with a generated method,
-#   7 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 25 operations — 24 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   107 structs (53 @derive(Json)), 13 enums, 6 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -165,35 +165,40 @@ struct ActionRequired:
 struct AvailabilityZone:
     Optional[str] Name
 
-# no @derive(Json): member(s) ResourceShareErrors: list[ResourceShareError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceShareErrors: list[ResourceShareError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BadRequestException:
     Optional[str] ErrorAttribute
     Optional[str] Message
     Optional[list[ResourceShareError]] ResourceShareErrors
 
-# no @derive(Json): member(s) EngineVersions: list[EngineVersion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EngineVersions: list[EngineVersion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BrokerEngineType:
     Optional[EngineType] EngineType
     Optional[list[EngineVersion]] EngineVersions
 
-# no @derive(Json): member(s) BrokerEngineTypes: list[BrokerEngineType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BrokerEngineTypes: list[BrokerEngineType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BrokerEngineTypeOutput:
     Optional[list[BrokerEngineType]] BrokerEngineTypes
     int64 MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Endpoints: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoints: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BrokerInstance:
     Optional[str] ConsoleURL
     Optional[list[str]] Endpoints
     Optional[str] IpAddress
 
-# no @derive(Json): member(s) AvailabilityZones: list[AvailabilityZone], SupportedDeploymentModes: list[DeploymentMode], SupportedEngineVersions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityZones: list[AvailabilityZone], SupportedDeploymentModes: list[DeploymentMode], SupportedEngineVersions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BrokerInstanceOption:
     Optional[list[AvailabilityZone]] AvailabilityZones
     Optional[EngineType] EngineType
@@ -202,8 +207,9 @@ struct BrokerInstanceOption:
     Optional[list[DeploymentMode]] SupportedDeploymentModes
     Optional[list[str]] SupportedEngineVersions
 
-# no @derive(Json): member(s) BrokerInstanceOptions: list[BrokerInstanceOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BrokerInstanceOptions: list[BrokerInstanceOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BrokerInstanceOptionsOutput:
     Optional[list[BrokerInstanceOption]] BrokerInstanceOptions
     int64 MaxResults
@@ -221,8 +227,9 @@ struct BrokerSummary:
     EngineType EngineType
     Optional[str] HostInstanceType
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Configuration:
     str Arn
     AuthenticationStrategy AuthenticationStrategy
@@ -247,22 +254,25 @@ struct ConfigurationRevision:
     Optional[str] Description
     int64 Revision
 
-# no @derive(Json): member(s) History: list[ConfigurationId] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) History: list[ConfigurationId] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Configurations:
     Optional[ConfigurationId] Current
     Optional[list[ConfigurationId]] History
     Optional[ConfigurationId] Pending
 
-# no @derive(Json): member(s) ResourceShareErrors: list[ResourceShareError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceShareErrors: list[ResourceShareError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConflictException:
     Optional[str] ErrorAttribute
     Optional[str] Message
     Optional[list[ResourceShareError]] ResourceShareErrors
 
-# no @derive(Json): member(s) LdapServerMetadata: LdapServerMetadataInput, SecurityGroups: list[str], SubnetIds: list[str], Tags: dict[str, str], Users: list[User] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LdapServerMetadata: LdapServerMetadataInput, SecurityGroups: list[str], SubnetIds: list[str], Tags: dict[str, str], Users: list[User] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBrokerInput:
     Optional[AuthenticationStrategy] AuthenticationStrategy
     Optional[bool] AutoMinorVersionUpgrade
@@ -323,8 +333,9 @@ struct CreateBrokerResponse:
     Optional[str] BrokerArn
     Optional[str] BrokerId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConfigurationInput:
     Optional[AuthenticationStrategy] AuthenticationStrategy
     EngineType EngineType
@@ -367,8 +378,9 @@ struct CreateTagsRequest:
     str ResourceArn
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Groups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateUserInput:
     Optional[bool] ConsoleAccess
     Optional[list[str]] Groups
@@ -450,8 +462,9 @@ struct DescribeBrokerEngineTypesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) BrokerEngineTypes: list[BrokerEngineType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BrokerEngineTypes: list[BrokerEngineType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBrokerEngineTypesResponse:
     Optional[list[BrokerEngineType]] BrokerEngineTypes
     Optional[int64] MaxResults
@@ -466,15 +479,17 @@ struct DescribeBrokerInstanceOptionsRequest:
     Optional[str] NextToken
     Optional[str] StorageType
 
-# no @derive(Json): member(s) BrokerInstanceOptions: list[BrokerInstanceOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BrokerInstanceOptions: list[BrokerInstanceOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBrokerInstanceOptionsResponse:
     Optional[list[BrokerInstanceOption]] BrokerInstanceOptions
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) ActionsRequired: list[ActionRequired], BrokerInstances: list[BrokerInstance], Configurations: Configurations, LdapServerMetadata: LdapServerMetadataOutput, PendingLdapServerMetadata: LdapServerMetadataOutput, PendingSecurityGroups: list[str], SecurityGroups: list[str], SubnetIds: list[str], Tags: dict[str, str], Users: list[UserSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActionsRequired: list[ActionRequired], BrokerInstances: list[BrokerInstance], Configurations: Configurations, LdapServerMetadata: LdapServerMetadataOutput, PendingLdapServerMetadata: LdapServerMetadataOutput, PendingSecurityGroups: list[str], SecurityGroups: list[str], SubnetIds: list[str], Tags: dict[str, str], Users: list[UserSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBrokerOutput:
     Optional[list[ActionRequired]] ActionsRequired
     Optional[AuthenticationStrategy] AuthenticationStrategy
@@ -517,8 +532,9 @@ struct DescribeBrokerOutput:
 struct DescribeBrokerRequest:
     str BrokerId
 
-# no @derive(Json): member(s) ActionsRequired: list[ActionRequired], BrokerInstances: list[BrokerInstance], Configurations: Configurations, LdapServerMetadata: LdapServerMetadataOutput, PendingLdapServerMetadata: LdapServerMetadataOutput, PendingSecurityGroups: list[str], SecurityGroups: list[str], SubnetIds: list[str], Tags: dict[str, str], Users: list[UserSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ActionsRequired: list[ActionRequired], BrokerInstances: list[BrokerInstance], Configurations: Configurations, LdapServerMetadata: LdapServerMetadataOutput, PendingLdapServerMetadata: LdapServerMetadataOutput, PendingSecurityGroups: list[str], SecurityGroups: list[str], SubnetIds: list[str], Tags: dict[str, str], Users: list[UserSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBrokerResponse:
     Optional[list[ActionRequired]] ActionsRequired
     Optional[AuthenticationStrategy] AuthenticationStrategy
@@ -561,8 +577,9 @@ struct DescribeBrokerResponse:
 struct DescribeConfigurationRequest:
     str ConfigurationId
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeConfigurationResponse:
     Optional[str] Arn
     Optional[AuthenticationStrategy] AuthenticationStrategy
@@ -597,8 +614,9 @@ struct DescribeConfigurationRevisionResponse:
     Optional[str] Data
     Optional[str] Description
 
-# no @derive(Json): member(s) SharedResources: list[SharedResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SharedResources: list[SharedResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSharedResourcesOutput:
     Optional[str] NextToken
     Optional[list[SharedResource]] SharedResources
@@ -610,14 +628,16 @@ struct DescribeSharedResourcesRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) SharedResources: list[SharedResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SharedResources: list[SharedResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeSharedResourcesResponse:
     Optional[str] NextToken
     Optional[list[SharedResource]] SharedResources
 
-# no @derive(Json): member(s) Groups: list[str], Pending: UserPendingChanges not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[str], Pending: UserPendingChanges not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeUserOutput:
     str BrokerId
     Optional[bool] ConsoleAccess
@@ -632,8 +652,9 @@ struct DescribeUserRequest:
     str BrokerId
     str Username
 
-# no @derive(Json): member(s) Groups: list[str], Pending: UserPendingChanges not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[str], Pending: UserPendingChanges not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeUserResponse:
     Optional[str] BrokerId
     Optional[bool] ConsoleAccess
@@ -651,29 +672,33 @@ struct EncryptionOptions:
 struct EngineVersion:
     Optional[str] Name
 
-# no @derive(Json): member(s) ResourceShareErrors: list[ResourceShareError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceShareErrors: list[ResourceShareError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Error:
     Optional[str] ErrorAttribute
     Optional[str] Message
     Optional[list[ResourceShareError]] ResourceShareErrors
 
-# no @derive(Json): member(s) ResourceShareErrors: list[ResourceShareError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceShareErrors: list[ResourceShareError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ForbiddenException:
     Optional[str] ErrorAttribute
     Optional[str] Message
     Optional[list[ResourceShareError]] ResourceShareErrors
 
-# no @derive(Json): member(s) ResourceShareErrors: list[ResourceShareError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceShareErrors: list[ResourceShareError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InternalServerErrorException:
     Optional[str] ErrorAttribute
     Optional[str] Message
     Optional[list[ResourceShareError]] ResourceShareErrors
 
-# no @derive(Json): member(s) Hosts: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Hosts: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LdapServerMetadataInput:
     list[str] Hosts
     str RoleBase
@@ -687,8 +712,9 @@ struct LdapServerMetadataInput:
     str UserSearchMatching
     Optional[bool] UserSearchSubtree
 
-# no @derive(Json): member(s) Hosts: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Hosts: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LdapServerMetadataOutput:
     list[str] Hosts
     str RoleBase
@@ -701,8 +727,9 @@ struct LdapServerMetadataOutput:
     str UserSearchMatching
     Optional[bool] UserSearchSubtree
 
-# no @derive(Json): member(s) BrokerSummaries: list[BrokerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BrokerSummaries: list[BrokerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBrokersOutput:
     Optional[list[BrokerSummary]] BrokerSummaries
     Optional[str] NextToken
@@ -713,14 +740,16 @@ struct ListBrokersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) BrokerSummaries: list[BrokerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BrokerSummaries: list[BrokerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBrokersResponse:
     Optional[list[BrokerSummary]] BrokerSummaries
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Revisions: list[ConfigurationRevision] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Revisions: list[ConfigurationRevision] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfigurationRevisionsOutput:
     Optional[str] ConfigurationId
     Optional[int64] MaxResults
@@ -734,16 +763,18 @@ struct ListConfigurationRevisionsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Revisions: list[ConfigurationRevision] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Revisions: list[ConfigurationRevision] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfigurationRevisionsResponse:
     Optional[str] ConfigurationId
     Optional[int64] MaxResults
     Optional[str] NextToken
     Optional[list[ConfigurationRevision]] Revisions
 
-# no @derive(Json): member(s) Configurations: list[Configuration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configurations: list[Configuration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfigurationsOutput:
     Optional[list[Configuration]] Configurations
     Optional[int64] MaxResults
@@ -755,8 +786,9 @@ struct ListConfigurationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Configurations: list[Configuration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Configurations: list[Configuration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfigurationsResponse:
     Optional[list[Configuration]] Configurations
     Optional[int64] MaxResults
@@ -767,13 +799,15 @@ struct ListConfigurationsResponse:
 struct ListTagsRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsResponse:
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) Users: list[UserSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Users: list[UserSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUsersOutput:
     str BrokerId
     int64 MaxResults
@@ -787,8 +821,9 @@ struct ListUsersRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Users: list[UserSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Users: list[UserSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUsersResponse:
     Optional[str] BrokerId
     Optional[int64] MaxResults
@@ -808,8 +843,9 @@ struct LogsSummary:
     str GeneralLogGroup
     Optional[PendingLogs] Pending
 
-# no @derive(Json): member(s) ResourceShareErrors: list[ResourceShareError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceShareErrors: list[ResourceShareError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NotFoundException:
     Optional[str] ErrorAttribute
     Optional[str] Message
@@ -860,8 +896,9 @@ struct SanitizationWarning:
     Optional[str] ElementName
     SanitizationWarningReason Reason
 
-# no @derive(Json): member(s) DnsNames: list[str], ResourceShareArns: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DnsNames: list[str], ResourceShareArns: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SharedResource:
     Optional[list[str]] DnsNames
     Optional[SharedResourceError] Error
@@ -875,20 +912,23 @@ struct SharedResourceError:
     SharedResourceErrorCode Code
     str Message
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Tags:
     Optional[dict[str, str]] Tags
 
-# no @derive(Json): member(s) ResourceShareErrors: list[ResourceShareError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceShareErrors: list[ResourceShareError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UnauthorizedException:
     Optional[str] ErrorAttribute
     Optional[str] Message
     Optional[list[ResourceShareError]] ResourceShareErrors
 
-# no @derive(Json): member(s) LdapServerMetadata: LdapServerMetadataInput, ResourceShareArns: list[str], SecurityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LdapServerMetadata: LdapServerMetadataInput, ResourceShareArns: list[str], SecurityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBrokerInput:
     Optional[AuthenticationStrategy] AuthenticationStrategy
     Optional[bool] AutoMinorVersionUpgrade
@@ -903,8 +943,9 @@ struct UpdateBrokerInput:
     Optional[list[str]] SecurityGroups
     Optional[int64] StorageSize
 
-# no @derive(Json): member(s) LdapServerMetadata: LdapServerMetadataOutput, ResourceShareArns: list[str], SecurityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LdapServerMetadata: LdapServerMetadataOutput, ResourceShareArns: list[str], SecurityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBrokerOutput:
     Optional[AuthenticationStrategy] AuthenticationStrategy
     Optional[bool] AutoMinorVersionUpgrade
@@ -940,8 +981,9 @@ struct UpdateBrokerRequest:
     Optional[int64] StorageSize
     Optional[DataReplicationMode] DataReplicationMode
 
-# no @derive(Json): member(s) LdapServerMetadata: LdapServerMetadataOutput, ResourceShareArns: list[str], SecurityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LdapServerMetadata: LdapServerMetadataOutput, ResourceShareArns: list[str], SecurityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateBrokerResponse:
     Optional[AuthenticationStrategy] AuthenticationStrategy
     Optional[bool] AutoMinorVersionUpgrade
@@ -965,8 +1007,9 @@ struct UpdateConfigurationInput:
     str Data
     Optional[str] Description
 
-# no @derive(Json): member(s) Warnings: list[SanitizationWarning] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Warnings: list[SanitizationWarning] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateConfigurationOutput:
     str Arn
     DateTime Created
@@ -982,8 +1025,9 @@ struct UpdateConfigurationRequest:
     str Data
     Optional[str] Description
 
-# no @derive(Json): member(s) Warnings: list[SanitizationWarning] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Warnings: list[SanitizationWarning] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateConfigurationResponse:
     Optional[str] Arn
     Optional[DateTime] Created
@@ -992,8 +1036,9 @@ struct UpdateConfigurationResponse:
     Optional[str] Name
     Optional[list[SanitizationWarning]] Warnings
 
-# no @derive(Json): member(s) Groups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateUserInput:
     Optional[bool] ConsoleAccess
     Optional[list[str]] Groups
@@ -1015,8 +1060,9 @@ struct UpdateUserResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Groups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct User:
     Optional[bool] ConsoleAccess
     Optional[list[str]] Groups
@@ -1024,8 +1070,9 @@ struct User:
     str Username
     Optional[bool] ReplicationUser
 
-# no @derive(Json): member(s) Groups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserPendingChanges:
     Optional[bool] ConsoleAccess
     Optional[list[str]] Groups
@@ -1077,13 +1124,7 @@ def mq_error_from_code(str code) -> mqError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateBroker (document member `LdapServerMetadata: LdapServerMetadataInput` is not serializable by derive)
-#   CreateConfiguration (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateTags (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateUser (document member `Groups: list[str]` is not serializable by derive)
 #   DeleteTags (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateBroker (document member `LdapServerMetadata: LdapServerMetadataInput` is not serializable by derive)
-#   UpdateUser (document member `Groups: list[str]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1099,10 +1140,228 @@ struct UpdateConfigurationDocument:
     str Data
     Optional[str] Description
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def mq_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def mq_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def mq_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize LdapServerMetadataInput to a compact JSON object (declaration order).
+def ldap_server_metadata_input_to_json(LdapServerMetadataInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Hosts:
+        e0.append(mq_json_str(x0))
+    parts.append("\"hosts\":" + mq_json_arr(e0))
+    parts.append("\"roleBase\":" + mq_json_str(v.RoleBase))
+    if v.RoleName.is_some():
+        auto u1 = v.RoleName.unwrap()
+        parts.append("\"roleName\":" + mq_json_str(u1))
+    parts.append("\"roleSearchMatching\":" + mq_json_str(v.RoleSearchMatching))
+    if v.RoleSearchSubtree.is_some():
+        auto u2 = v.RoleSearchSubtree.unwrap()
+        parts.append("\"roleSearchSubtree\":" + json.dumps(JsonValue.Bool(u2)))
+    parts.append("\"serviceAccountPassword\":" + mq_json_str(v.ServiceAccountPassword))
+    parts.append("\"serviceAccountUsername\":" + mq_json_str(v.ServiceAccountUsername))
+    parts.append("\"userBase\":" + mq_json_str(v.UserBase))
+    if v.UserRoleName.is_some():
+        auto u3 = v.UserRoleName.unwrap()
+        parts.append("\"userRoleName\":" + mq_json_str(u3))
+    parts.append("\"userSearchMatching\":" + mq_json_str(v.UserSearchMatching))
+    if v.UserSearchSubtree.is_some():
+        auto u4 = v.UserSearchSubtree.unwrap()
+        parts.append("\"userSearchSubtree\":" + json.dumps(JsonValue.Bool(u4)))
+    return mq_json_obj(parts)
+
+# Serialize User to a compact JSON object (declaration order).
+def user_to_json(User v) -> str:
+    list[str] parts = []
+    if v.ConsoleAccess.is_some():
+        auto u0 = v.ConsoleAccess.unwrap()
+        parts.append("\"consoleAccess\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.Groups.is_some():
+        auto u1 = v.Groups.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(mq_json_str(x2))
+        parts.append("\"groups\":" + mq_json_arr(e2))
+    parts.append("\"password\":" + mq_json_str(v.Password))
+    parts.append("\"username\":" + mq_json_str(v.Username))
+    if v.ReplicationUser.is_some():
+        auto u3 = v.ReplicationUser.unwrap()
+        parts.append("\"replicationUser\":" + json.dumps(JsonValue.Bool(u3)))
+    return mq_json_obj(parts)
+
 # A bound mq client: credentials + region, threaded into every operation.
 struct mqClient:
     core.Credentials creds
     str region
+
+    # CreateBroker  POST /v1/brokers
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, UnauthorizedException
+    def create_broker(self, CreateBrokerRequest input) -> str:
+        auto host = endpoints.regional_host(mq_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/brokers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AuthenticationStrategy.is_some():
+            auto u0 = input.AuthenticationStrategy.unwrap()
+            parts.append("\"authenticationStrategy\":" + u0.to_json())
+        if input.AutoMinorVersionUpgrade.is_some():
+            auto u1 = input.AutoMinorVersionUpgrade.unwrap()
+            parts.append("\"autoMinorVersionUpgrade\":" + json.dumps(JsonValue.Bool(u1)))
+        parts.append("\"brokerName\":" + mq_json_str(input.BrokerName))
+        if input.Configuration.is_some():
+            auto u2 = input.Configuration.unwrap()
+            parts.append("\"configuration\":" + u2.to_json())
+        if input.CreatorRequestId.is_some():
+            auto u3 = input.CreatorRequestId.unwrap()
+            parts.append("\"creatorRequestId\":" + mq_json_str(u3))
+        parts.append("\"deploymentMode\":" + input.DeploymentMode.to_json())
+        if input.EncryptionOptions.is_some():
+            auto u4 = input.EncryptionOptions.unwrap()
+            parts.append("\"encryptionOptions\":" + u4.to_json())
+        parts.append("\"engineType\":" + input.EngineType.to_json())
+        if input.EngineVersion.is_some():
+            auto u5 = input.EngineVersion.unwrap()
+            parts.append("\"engineVersion\":" + mq_json_str(u5))
+        parts.append("\"hostInstanceType\":" + mq_json_str(input.HostInstanceType))
+        if input.LdapServerMetadata.is_some():
+            auto u6 = input.LdapServerMetadata.unwrap()
+            parts.append("\"ldapServerMetadata\":" + ldap_server_metadata_input_to_json(u6))
+        if input.Logs.is_some():
+            auto u7 = input.Logs.unwrap()
+            parts.append("\"logs\":" + u7.to_json())
+        if input.MaintenanceWindowStartTime.is_some():
+            auto u8 = input.MaintenanceWindowStartTime.unwrap()
+            parts.append("\"maintenanceWindowStartTime\":" + u8.to_json())
+        parts.append("\"publiclyAccessible\":" + json.dumps(JsonValue.Bool(input.PubliclyAccessible)))
+        if input.SecurityGroups.is_some():
+            auto u9 = input.SecurityGroups.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(mq_json_str(x10))
+            parts.append("\"securityGroups\":" + mq_json_arr(e10))
+        if input.StorageSize.is_some():
+            auto u11 = input.StorageSize.unwrap()
+            parts.append("\"storageSize\":" + str(u11))
+        if input.StorageType.is_some():
+            auto u12 = input.StorageType.unwrap()
+            parts.append("\"storageType\":" + u12.to_json())
+        if input.SubnetIds.is_some():
+            auto u13 = input.SubnetIds.unwrap()
+            list[str] e14 = []
+            for x14 in u13:
+                e14.append(mq_json_str(x14))
+            parts.append("\"subnetIds\":" + mq_json_arr(e14))
+        if input.Tags.is_some():
+            auto u15 = input.Tags.unwrap()
+            list[str] m16 = []
+            for k16 in sorted(u15.keys()):
+                m16.append(mq_json_str(k16) + ":" + mq_json_str(u15[k16]))
+            parts.append("\"tags\":" + mq_json_obj(m16))
+        if input.Users.is_some():
+            auto u17 = input.Users.unwrap()
+            list[str] e18 = []
+            for x18 in u17:
+                e18.append(user_to_json(x18))
+            parts.append("\"users\":" + mq_json_arr(e18))
+        if input.DataReplicationMode.is_some():
+            auto u19 = input.DataReplicationMode.unwrap()
+            parts.append("\"dataReplicationMode\":" + u19.to_json())
+        if input.DataReplicationPrimaryBrokerArn.is_some():
+            auto u20 = input.DataReplicationPrimaryBrokerArn.unwrap()
+            parts.append("\"dataReplicationPrimaryBrokerArn\":" + mq_json_str(u20))
+        auto bp = restjson.rest_json_document(b, mq_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mq_service(), self.region, host)
+
+    # CreateConfiguration  POST /v1/configurations
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException
+    def create_configuration(self, CreateConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(mq_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AuthenticationStrategy.is_some():
+            auto u0 = input.AuthenticationStrategy.unwrap()
+            parts.append("\"authenticationStrategy\":" + u0.to_json())
+        parts.append("\"engineType\":" + input.EngineType.to_json())
+        if input.EngineVersion.is_some():
+            auto u1 = input.EngineVersion.unwrap()
+            parts.append("\"engineVersion\":" + mq_json_str(u1))
+        parts.append("\"name\":" + mq_json_str(input.Name))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(mq_json_str(k3) + ":" + mq_json_str(u2[k3]))
+            parts.append("\"tags\":" + mq_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, mq_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mq_service(), self.region, host)
+
+    # CreateTags  POST /v1/tags/{resource-arn}
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException
+    def create_tags(self, CreateTagsRequest input) -> str:
+        auto host = endpoints.regional_host(mq_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resource-arn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(mq_json_str(k1) + ":" + mq_json_str(u0[k1]))
+            parts.append("\"tags\":" + mq_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, mq_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mq_service(), self.region, host)
+
+    # CreateUser  POST /v1/brokers/{broker-id}/users/{username}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException
+    def create_user(self, CreateUserRequest input) -> str:
+        auto host = endpoints.regional_host(mq_service(), self.region)
+        dict[str, str] labels = {}
+        labels["broker-id"] = input.BrokerId
+        labels["username"] = input.Username
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/brokers/{broker-id}/users/{username}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ConsoleAccess.is_some():
+            auto u0 = input.ConsoleAccess.unwrap()
+            parts.append("\"consoleAccess\":" + json.dumps(JsonValue.Bool(u0)))
+        if input.Groups.is_some():
+            auto u1 = input.Groups.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(mq_json_str(x2))
+            parts.append("\"groups\":" + mq_json_arr(e2))
+        parts.append("\"password\":" + mq_json_str(input.Password))
+        if input.ReplicationUser.is_some():
+            auto u3 = input.ReplicationUser.unwrap()
+            parts.append("\"replicationUser\":" + json.dumps(JsonValue.Bool(u3)))
+        auto bp = restjson.rest_json_document(b, mq_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mq_service(), self.region, host)
 
     # DeleteBroker  DELETE /v1/brokers/{broker-id}
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException
@@ -1297,6 +1556,59 @@ struct mqClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/brokers/{broker-id}/reboot", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mq_service(), self.region, host)
 
+    # UpdateBroker  PUT /v1/brokers/{broker-id}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException
+    def update_broker(self, UpdateBrokerRequest input) -> str:
+        auto host = endpoints.regional_host(mq_service(), self.region)
+        dict[str, str] labels = {}
+        labels["broker-id"] = input.BrokerId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/brokers/{broker-id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.AuthenticationStrategy.is_some():
+            auto u0 = input.AuthenticationStrategy.unwrap()
+            parts.append("\"authenticationStrategy\":" + u0.to_json())
+        if input.AutoMinorVersionUpgrade.is_some():
+            auto u1 = input.AutoMinorVersionUpgrade.unwrap()
+            parts.append("\"autoMinorVersionUpgrade\":" + json.dumps(JsonValue.Bool(u1)))
+        if input.Configuration.is_some():
+            auto u2 = input.Configuration.unwrap()
+            parts.append("\"configuration\":" + u2.to_json())
+        if input.EngineVersion.is_some():
+            auto u3 = input.EngineVersion.unwrap()
+            parts.append("\"engineVersion\":" + mq_json_str(u3))
+        if input.HostInstanceType.is_some():
+            auto u4 = input.HostInstanceType.unwrap()
+            parts.append("\"hostInstanceType\":" + mq_json_str(u4))
+        if input.LdapServerMetadata.is_some():
+            auto u5 = input.LdapServerMetadata.unwrap()
+            parts.append("\"ldapServerMetadata\":" + ldap_server_metadata_input_to_json(u5))
+        if input.Logs.is_some():
+            auto u6 = input.Logs.unwrap()
+            parts.append("\"logs\":" + u6.to_json())
+        if input.MaintenanceWindowStartTime.is_some():
+            auto u7 = input.MaintenanceWindowStartTime.unwrap()
+            parts.append("\"maintenanceWindowStartTime\":" + u7.to_json())
+        if input.ResourceShareArns.is_some():
+            auto u8 = input.ResourceShareArns.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(mq_json_str(x9))
+            parts.append("\"resourceShareArns\":" + mq_json_arr(e9))
+        if input.SecurityGroups.is_some():
+            auto u10 = input.SecurityGroups.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(mq_json_str(x11))
+            parts.append("\"securityGroups\":" + mq_json_arr(e11))
+        if input.StorageSize.is_some():
+            auto u12 = input.StorageSize.unwrap()
+            parts.append("\"storageSize\":" + str(u12))
+        if input.DataReplicationMode.is_some():
+            auto u13 = input.DataReplicationMode.unwrap()
+            parts.append("\"dataReplicationMode\":" + u13.to_json())
+        auto bp = restjson.rest_json_document(b, mq_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, mq_service(), self.region, host)
+
     # UpdateConfiguration  PUT /v1/configurations/{configuration-id}
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException
     def update_configuration(self, UpdateConfigurationRequest input) -> str:
@@ -1306,6 +1618,33 @@ struct mqClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/v1/configurations/{configuration-id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateConfigurationDocument(Data=input.Data, Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, mq_service(), self.region, host)
+
+    # UpdateUser  PUT /v1/brokers/{broker-id}/users/{username}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException
+    def update_user(self, UpdateUserRequest input) -> str:
+        auto host = endpoints.regional_host(mq_service(), self.region)
+        dict[str, str] labels = {}
+        labels["broker-id"] = input.BrokerId
+        labels["username"] = input.Username
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/brokers/{broker-id}/users/{username}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ConsoleAccess.is_some():
+            auto u0 = input.ConsoleAccess.unwrap()
+            parts.append("\"consoleAccess\":" + json.dumps(JsonValue.Bool(u0)))
+        if input.Groups.is_some():
+            auto u1 = input.Groups.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(mq_json_str(x2))
+            parts.append("\"groups\":" + mq_json_arr(e2))
+        if input.Password.is_some():
+            auto u3 = input.Password.unwrap()
+            parts.append("\"password\":" + mq_json_str(u3))
+        if input.ReplicationUser.is_some():
+            auto u4 = input.ReplicationUser.unwrap()
+            parts.append("\"replicationUser\":" + json.dumps(JsonValue.Bool(u4)))
+        auto bp = restjson.rest_json_document(b, mq_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mq_service(), self.region, host)
 
     # Paginator for DescribeSharedResources — yields each Response page, threading the

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 32 operations — 24 with a generated method,
-#   8 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 32 operations — 32 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   105 structs (87 @derive(Json)), 16 enums, 15 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -290,8 +290,9 @@ struct DescribeImageGenerationConfigurationInput:
     Optional[str] StreamName
     Optional[str] StreamARN
 
-# no @derive(Json): member(s) ImageGenerationConfiguration: ImageGenerationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ImageGenerationConfiguration: ImageGenerationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeImageGenerationConfigurationOutput:
     Optional[ImageGenerationConfiguration] ImageGenerationConfiguration
 
@@ -303,8 +304,9 @@ struct DescribeMappedResourceConfigurationInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) MappedResourceConfigurationList: list[MappedResourceConfigurationListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MappedResourceConfigurationList: list[MappedResourceConfigurationListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMappedResourceConfigurationOutput:
     Optional[list[MappedResourceConfigurationListItem]] MappedResourceConfigurationList
     Optional[str] NextToken
@@ -394,13 +396,15 @@ struct GetSignalingChannelEndpointInput:
     str ChannelARN
     Optional[SingleMasterChannelEndpointConfiguration] SingleMasterChannelEndpointConfiguration
 
-# no @derive(Json): member(s) ResourceEndpointList: list[ResourceEndpointListItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ResourceEndpointList: list[ResourceEndpointListItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSignalingChannelEndpointOutput:
     Optional[list[ResourceEndpointListItem]] ResourceEndpointList
 
-# no @derive(Json): member(s) FormatConfig: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FormatConfig: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImageGenerationConfiguration:
     ConfigurationStatus Status
     ImageSelectorType ImageSelectorType
@@ -459,8 +463,9 @@ struct ListEdgeAgentConfigurationsInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) EdgeConfigs: list[ListEdgeAgentConfigurationsEdgeConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) EdgeConfigs: list[ListEdgeAgentConfigurationsEdgeConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEdgeAgentConfigurationsOutput:
     Optional[list[ListEdgeAgentConfigurationsEdgeConfig]] EdgeConfigs
     Optional[str] NextToken
@@ -472,8 +477,9 @@ struct ListSignalingChannelsInput:
     Optional[str] NextToken
     Optional[ChannelNameCondition] ChannelNameCondition
 
-# no @derive(Json): member(s) ChannelInfoList: list[ChannelInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelInfoList: list[ChannelInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSignalingChannelsOutput:
     Optional[list[ChannelInfo]] ChannelInfoList
     Optional[str] NextToken
@@ -485,8 +491,9 @@ struct ListStreamsInput:
     Optional[str] NextToken
     Optional[StreamNameCondition] StreamNameCondition
 
-# no @derive(Json): member(s) StreamInfoList: list[StreamInfo] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StreamInfoList: list[StreamInfo] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListStreamsOutput:
     Optional[list[StreamInfo]] StreamInfoList
     Optional[str] NextToken
@@ -497,8 +504,9 @@ struct ListTagsForResourceInput:
     Optional[str] NextToken
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[str] NextToken
     Optional[dict[str, str]] Tags
@@ -510,8 +518,9 @@ struct ListTagsForStreamInput:
     Optional[str] StreamARN
     Optional[str] StreamName
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForStreamOutput:
     Optional[str] NextToken
     Optional[dict[str, str]] Tags
@@ -576,8 +585,9 @@ struct ScheduleConfig:
     str ScheduleExpression
     int64 DurationInSeconds
 
-# no @derive(Json): member(s) Protocols: list[ChannelProtocol] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Protocols: list[ChannelProtocol] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SingleMasterChannelEndpointConfiguration:
     Optional[list[ChannelProtocol]] Protocols
     Optional[ChannelRole] Role
@@ -838,18 +848,6 @@ def kinesisvideo_error_from_code(str code) -> Kinesis_VideoError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CreateSignalingChannel (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateStream (document member `Tags: dict[str, str]` is not serializable by derive)
-#   GetSignalingChannelEndpoint (document member `SingleMasterChannelEndpointConfiguration: SingleMasterChannelEndpointConfiguration` is not serializable by derive)
-#   TagResource (document member `Tags: list[Tag]` is not serializable by derive)
-#   TagStream (document member `Tags: dict[str, str]` is not serializable by derive)
-#   UntagResource (document member `TagKeyList: list[str]` is not serializable by derive)
-#   UntagStream (document member `TagKeyList: list[str]` is not serializable by derive)
-#   UpdateImageGenerationConfiguration (document member `ImageGenerationConfiguration: ImageGenerationConfiguration` is not serializable by derive)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1015,10 +1013,129 @@ struct UpdateStreamStorageConfigurationDocument:
     str CurrentVersion
     StreamStorageConfiguration StreamStorageConfiguration
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def kinesisvideo_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def kinesisvideo_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def kinesisvideo_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ImageGenerationConfiguration to a compact JSON object (declaration order).
+def image_generation_configuration_to_json(ImageGenerationConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"Status\":" + v.Status.to_json())
+    parts.append("\"ImageSelectorType\":" + v.ImageSelectorType.to_json())
+    parts.append("\"DestinationConfig\":" + v.DestinationConfig.to_json())
+    parts.append("\"SamplingInterval\":" + str(v.SamplingInterval))
+    parts.append("\"Format\":" + v.Format.to_json())
+    if v.FormatConfig.is_some():
+        auto u0 = v.FormatConfig.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(kinesisvideo_json_str(k1) + ":" + kinesisvideo_json_str(u0[k1]))
+        parts.append("\"FormatConfig\":" + kinesisvideo_json_obj(m1))
+    if v.WidthPixels.is_some():
+        auto u2 = v.WidthPixels.unwrap()
+        parts.append("\"WidthPixels\":" + str(u2))
+    if v.HeightPixels.is_some():
+        auto u3 = v.HeightPixels.unwrap()
+        parts.append("\"HeightPixels\":" + str(u3))
+    return kinesisvideo_json_obj(parts)
+
+# Serialize SingleMasterChannelEndpointConfiguration to a compact JSON object (declaration order).
+def single_master_channel_endpoint_configuration_to_json(SingleMasterChannelEndpointConfiguration v) -> str:
+    list[str] parts = []
+    if v.Protocols.is_some():
+        auto u0 = v.Protocols.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Protocols\":" + kinesisvideo_json_arr(e1))
+    if v.Role.is_some():
+        auto u2 = v.Role.unwrap()
+        parts.append("\"Role\":" + u2.to_json())
+    return kinesisvideo_json_obj(parts)
+
 # A bound Kinesis_Video client: credentials + region, threaded into every operation.
 struct Kinesis_VideoClient:
     core.Credentials creds
     str region
+
+    # CreateSignalingChannel  POST /createSignalingChannel
+    # errors: AccessDeniedException, AccountChannelLimitExceededException, ClientLimitExceededException, InvalidArgumentException, ResourceInUseException, TagsPerResourceExceededLimitException
+    def create_signaling_channel(self, CreateSignalingChannelInput input) -> str:
+        auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/createSignalingChannel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ChannelName\":" + kinesisvideo_json_str(input.ChannelName))
+        if input.ChannelType.is_some():
+            auto u0 = input.ChannelType.unwrap()
+            parts.append("\"ChannelType\":" + u0.to_json())
+        if input.SingleMasterConfiguration.is_some():
+            auto u1 = input.SingleMasterConfiguration.unwrap()
+            parts.append("\"SingleMasterConfiguration\":" + u1.to_json())
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"Tags\":" + kinesisvideo_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, kinesisvideo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
+
+    # CreateStream  POST /createStream
+    # errors: AccountStreamLimitExceededException, ClientLimitExceededException, DeviceStreamLimitExceededException, InvalidArgumentException, InvalidDeviceException, ResourceInUseException, TagsPerResourceExceededLimitException
+    def create_stream(self, CreateStreamInput input) -> str:
+        auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/createStream", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.DeviceName.is_some():
+            auto u0 = input.DeviceName.unwrap()
+            parts.append("\"DeviceName\":" + kinesisvideo_json_str(u0))
+        parts.append("\"StreamName\":" + kinesisvideo_json_str(input.StreamName))
+        if input.MediaType.is_some():
+            auto u1 = input.MediaType.unwrap()
+            parts.append("\"MediaType\":" + kinesisvideo_json_str(u1))
+        if input.KmsKeyId.is_some():
+            auto u2 = input.KmsKeyId.unwrap()
+            parts.append("\"KmsKeyId\":" + kinesisvideo_json_str(u2))
+        if input.DataRetentionInHours.is_some():
+            auto u3 = input.DataRetentionInHours.unwrap()
+            parts.append("\"DataRetentionInHours\":" + str(u3))
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(kinesisvideo_json_str(k5) + ":" + kinesisvideo_json_str(u4[k5]))
+            parts.append("\"Tags\":" + kinesisvideo_json_obj(m5))
+        if input.StreamStorageConfiguration.is_some():
+            auto u6 = input.StreamStorageConfiguration.unwrap()
+            parts.append("\"StreamStorageConfiguration\":" + u6.to_json())
+        auto bp = restjson.rest_json_document(b, kinesisvideo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
 
     # DeleteEdgeConfiguration  POST /deleteEdgeConfiguration
     # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, ResourceNotFoundException, StreamEdgeConfigurationNotFoundException
@@ -1128,6 +1245,19 @@ struct Kinesis_VideoClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
 
+    # GetSignalingChannelEndpoint  POST /getSignalingChannelEndpoint
+    # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, ResourceInUseException, ResourceNotFoundException
+    def get_signaling_channel_endpoint(self, GetSignalingChannelEndpointInput input) -> str:
+        auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/getSignalingChannelEndpoint", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ChannelARN\":" + kinesisvideo_json_str(input.ChannelARN))
+        if input.SingleMasterChannelEndpointConfiguration.is_some():
+            auto u0 = input.SingleMasterChannelEndpointConfiguration.unwrap()
+            parts.append("\"SingleMasterChannelEndpointConfiguration\":" + single_master_channel_endpoint_configuration_to_json(u0))
+        auto bp = restjson.rest_json_document(b, kinesisvideo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
+
     # ListEdgeAgentConfigurations  POST /listEdgeAgentConfigurations
     # errors: ClientLimitExceededException, InvalidArgumentException, NotAuthorizedException
     def list_edge_agent_configurations(self, ListEdgeAgentConfigurationsInput input) -> str:
@@ -1182,6 +1312,72 @@ struct Kinesis_VideoClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
 
+    # TagResource  POST /TagResource
+    # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, ResourceNotFoundException, TagsPerResourceExceededLimitException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/TagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceARN\":" + kinesisvideo_json_str(input.ResourceARN))
+        list[str] e0 = []
+        for x0 in input.Tags:
+            e0.append(x0.to_json())
+        parts.append("\"Tags\":" + kinesisvideo_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, kinesisvideo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
+
+    # TagStream  POST /tagStream
+    # errors: ClientLimitExceededException, InvalidArgumentException, InvalidResourceFormatException, NotAuthorizedException, ResourceNotFoundException, TagsPerResourceExceededLimitException
+    def tag_stream(self, TagStreamInput input) -> str:
+        auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/tagStream", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.StreamARN.is_some():
+            auto u0 = input.StreamARN.unwrap()
+            parts.append("\"StreamARN\":" + kinesisvideo_json_str(u0))
+        if input.StreamName.is_some():
+            auto u1 = input.StreamName.unwrap()
+            parts.append("\"StreamName\":" + kinesisvideo_json_str(u1))
+        list[str] m2 = []
+        for k2 in sorted(input.Tags.keys()):
+            m2.append(kinesisvideo_json_str(k2) + ":" + kinesisvideo_json_str(input.Tags[k2]))
+        parts.append("\"Tags\":" + kinesisvideo_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, kinesisvideo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
+
+    # UntagResource  POST /UntagResource
+    # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, ResourceNotFoundException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UntagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceARN\":" + kinesisvideo_json_str(input.ResourceARN))
+        list[str] e0 = []
+        for x0 in input.TagKeyList:
+            e0.append(kinesisvideo_json_str(x0))
+        parts.append("\"TagKeyList\":" + kinesisvideo_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, kinesisvideo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
+
+    # UntagStream  POST /untagStream
+    # errors: ClientLimitExceededException, InvalidArgumentException, InvalidResourceFormatException, NotAuthorizedException, ResourceNotFoundException
+    def untag_stream(self, UntagStreamInput input) -> str:
+        auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/untagStream", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.StreamARN.is_some():
+            auto u0 = input.StreamARN.unwrap()
+            parts.append("\"StreamARN\":" + kinesisvideo_json_str(u0))
+        if input.StreamName.is_some():
+            auto u1 = input.StreamName.unwrap()
+            parts.append("\"StreamName\":" + kinesisvideo_json_str(u1))
+        list[str] e2 = []
+        for x2 in input.TagKeyList:
+            e2.append(kinesisvideo_json_str(x2))
+        parts.append("\"TagKeyList\":" + kinesisvideo_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, kinesisvideo_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
+
     # UpdateDataRetention  POST /updateDataRetention
     # errors: ClientLimitExceededException, InvalidArgumentException, NotAuthorizedException, ResourceInUseException, ResourceNotFoundException, VersionMismatchException
     def update_data_retention(self, UpdateDataRetentionInput input) -> str:
@@ -1189,6 +1385,24 @@ struct Kinesis_VideoClient:
         auto b = binding.HttpBinding(method="POST", path_template="/updateDataRetention", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDataRetentionDocument(StreamName=input.StreamName, StreamARN=input.StreamARN, CurrentVersion=input.CurrentVersion, Operation=input.Operation, DataRetentionChangeInHours=input.DataRetentionChangeInHours)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
+
+    # UpdateImageGenerationConfiguration  POST /updateImageGenerationConfiguration
+    # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, NoDataRetentionException, ResourceInUseException, ResourceNotFoundException
+    def update_image_generation_configuration(self, UpdateImageGenerationConfigurationInput input) -> str:
+        auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/updateImageGenerationConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.StreamName.is_some():
+            auto u0 = input.StreamName.unwrap()
+            parts.append("\"StreamName\":" + kinesisvideo_json_str(u0))
+        if input.StreamARN.is_some():
+            auto u1 = input.StreamARN.unwrap()
+            parts.append("\"StreamARN\":" + kinesisvideo_json_str(u1))
+        if input.ImageGenerationConfiguration.is_some():
+            auto u2 = input.ImageGenerationConfiguration.unwrap()
+            parts.append("\"ImageGenerationConfiguration\":" + image_generation_configuration_to_json(u2))
+        auto bp = restjson.rest_json_document(b, kinesisvideo_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
 
     # UpdateMediaStorageConfiguration  POST /updateMediaStorageConfiguration

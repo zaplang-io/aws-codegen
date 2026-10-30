@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 92 operations — 82 with a generated method,
-#   10 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 92 operations — 92 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   239 structs (199 @derive(Json)), 17 enums, 22 error variants.
 #   10 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -168,8 +168,9 @@ enum UserRole:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) IpRanges: list[str], NotIpRanges: list[str], Actions: list[str], NotActions: list[str], UserIds: list[str], NotUserIds: list[str], ImpersonationRoleIds: list[str], NotImpersonationRoleIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IpRanges: list[str], NotIpRanges: list[str], Actions: list[str], NotActions: list[str], UserIds: list[str], NotUserIds: list[str], ImpersonationRoleIds: list[str], NotImpersonationRoleIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AccessControlRule:
     Optional[str] Name
     Optional[AccessControlRuleEffect] Effect
@@ -287,8 +288,9 @@ struct CreateIdentityCenterApplicationRequest:
 struct CreateIdentityCenterApplicationResponse:
     Optional[str] ApplicationArn
 
-# no @derive(Json): member(s) Rules: list[ImpersonationRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[ImpersonationRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateImpersonationRoleRequest:
     Optional[str] ClientToken
     str OrganizationId
@@ -301,8 +303,9 @@ struct CreateImpersonationRoleRequest:
 struct CreateImpersonationRoleResponse:
     Optional[str] ImpersonationRoleId
 
-# no @derive(Json): member(s) DeviceTypes: list[str], NotDeviceTypes: list[str], DeviceModels: list[str], NotDeviceModels: list[str], DeviceOperatingSystems: list[str], NotDeviceOperatingSystems: list[str], DeviceUserAgents: list[str], NotDeviceUserAgents: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeviceTypes: list[str], NotDeviceTypes: list[str], DeviceModels: list[str], NotDeviceModels: list[str], DeviceOperatingSystems: list[str], NotDeviceOperatingSystems: list[str], DeviceUserAgents: list[str], NotDeviceUserAgents: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMobileDeviceAccessRuleRequest:
     str OrganizationId
     Optional[str] ClientToken
@@ -322,8 +325,9 @@ struct CreateMobileDeviceAccessRuleRequest:
 struct CreateMobileDeviceAccessRuleResponse:
     Optional[str] MobileDeviceAccessRuleId
 
-# no @derive(Json): member(s) Domains: list[Domain] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Domains: list[Domain] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateOrganizationRequest:
     Optional[str] DirectoryId
     str Alias
@@ -775,8 +779,9 @@ struct GetAccessControlEffectRequest:
     Optional[str] UserId
     Optional[str] ImpersonationRoleId
 
-# no @derive(Json): member(s) MatchedRules: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchedRules: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAccessControlEffectResponse:
     Optional[AccessControlRuleEffect] Effect
     Optional[list[str]] MatchedRules
@@ -785,8 +790,9 @@ struct GetAccessControlEffectResponse:
 struct GetDefaultRetentionPolicyRequest:
     str OrganizationId
 
-# no @derive(Json): member(s) FolderConfigurations: list[FolderConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FolderConfigurations: list[FolderConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDefaultRetentionPolicyResponse:
     Optional[str] Id
     Optional[str] Name
@@ -799,8 +805,9 @@ struct GetImpersonationRoleEffectRequest:
     str ImpersonationRoleId
     str TargetUser
 
-# no @derive(Json): member(s) MatchedRules: list[ImpersonationMatchedRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchedRules: list[ImpersonationMatchedRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetImpersonationRoleEffectResponse:
     Optional[ImpersonationRoleType] Type
     Optional[AccessEffect] Effect
@@ -811,8 +818,9 @@ struct GetImpersonationRoleRequest:
     str OrganizationId
     str ImpersonationRoleId
 
-# no @derive(Json): member(s) Rules: list[ImpersonationRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[ImpersonationRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetImpersonationRoleResponse:
     Optional[str] ImpersonationRoleId
     Optional[str] Name
@@ -827,8 +835,9 @@ struct GetMailDomainRequest:
     str OrganizationId
     str DomainName
 
-# no @derive(Json): member(s) Records: list[DnsRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Records: list[DnsRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMailDomainResponse:
     Optional[list[DnsRecord]] Records
     Optional[bool] IsTestDomain
@@ -854,8 +863,9 @@ struct GetMobileDeviceAccessEffectRequest:
     Optional[str] DeviceOperatingSystem
     Optional[str] DeviceUserAgent
 
-# no @derive(Json): member(s) MatchedRules: list[MobileDeviceAccessMatchedRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MatchedRules: list[MobileDeviceAccessMatchedRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMobileDeviceAccessEffectResponse:
     Optional[MobileDeviceAccessRuleEffect] Effect
     Optional[list[MobileDeviceAccessMatchedRule]] MatchedRules
@@ -880,8 +890,9 @@ struct GetPersonalAccessTokenMetadataRequest:
     str OrganizationId
     str PersonalAccessTokenId
 
-# no @derive(Json): member(s) Scopes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Scopes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPersonalAccessTokenMetadataResponse:
     Optional[str] PersonalAccessTokenId
     Optional[str] UserId
@@ -923,8 +934,9 @@ struct ImpersonationRole:
     Optional[DateTime] DateCreated
     Optional[DateTime] DateModified
 
-# no @derive(Json): member(s) TargetUsers: list[str], NotTargetUsers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TargetUsers: list[str], NotTargetUsers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImpersonationRule:
     str ImpersonationRuleId
     Optional[str] Name
@@ -961,8 +973,9 @@ struct LimitExceededException:
 struct ListAccessControlRulesRequest:
     str OrganizationId
 
-# no @derive(Json): member(s) Rules: list[AccessControlRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[AccessControlRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccessControlRulesResponse:
     Optional[list[AccessControlRule]] Rules
 
@@ -973,8 +986,9 @@ struct ListAliasesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Aliases: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Aliases: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAliasesResponse:
     Optional[list[str]] Aliases
     Optional[str] NextToken
@@ -985,8 +999,9 @@ struct ListAvailabilityConfigurationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) AvailabilityConfigurations: list[AvailabilityConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AvailabilityConfigurations: list[AvailabilityConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAvailabilityConfigurationsResponse:
     Optional[list[AvailabilityConfiguration]] AvailabilityConfigurations
     Optional[str] NextToken
@@ -998,8 +1013,9 @@ struct ListGroupMembersRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Members: list[Member] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Members: list[Member] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupMembersResponse:
     Optional[list[Member]] Members
     Optional[str] NextToken
@@ -1022,8 +1038,9 @@ struct ListGroupsForEntityRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Groups: list[GroupIdentifier] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[GroupIdentifier] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupsForEntityResponse:
     Optional[list[GroupIdentifier]] Groups
     Optional[str] NextToken
@@ -1035,8 +1052,9 @@ struct ListGroupsRequest:
     Optional[int64] MaxResults
     Optional[ListGroupsFilters] Filters
 
-# no @derive(Json): member(s) Groups: list[Group] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Groups: list[Group] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGroupsResponse:
     Optional[list[Group]] Groups
     Optional[str] NextToken
@@ -1047,8 +1065,9 @@ struct ListImpersonationRolesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Roles: list[ImpersonationRole] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Roles: list[ImpersonationRole] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImpersonationRolesResponse:
     Optional[list[ImpersonationRole]] Roles
     Optional[str] NextToken
@@ -1059,8 +1078,9 @@ struct ListMailDomainsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) MailDomains: list[MailDomainSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MailDomains: list[MailDomainSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMailDomainsResponse:
     Optional[list[MailDomainSummary]] MailDomains
     Optional[str] NextToken
@@ -1071,8 +1091,9 @@ struct ListMailboxExportJobsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Jobs: list[MailboxExportJob] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Jobs: list[MailboxExportJob] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMailboxExportJobsResponse:
     Optional[list[MailboxExportJob]] Jobs
     Optional[str] NextToken
@@ -1084,8 +1105,9 @@ struct ListMailboxPermissionsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Permissions: list[Permission] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Permissions: list[Permission] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMailboxPermissionsResponse:
     Optional[list[Permission]] Permissions
     Optional[str] NextToken
@@ -1098,8 +1120,9 @@ struct ListMobileDeviceAccessOverridesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Overrides: list[MobileDeviceAccessOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Overrides: list[MobileDeviceAccessOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMobileDeviceAccessOverridesResponse:
     Optional[list[MobileDeviceAccessOverride]] Overrides
     Optional[str] NextToken
@@ -1108,8 +1131,9 @@ struct ListMobileDeviceAccessOverridesResponse:
 struct ListMobileDeviceAccessRulesRequest:
     str OrganizationId
 
-# no @derive(Json): member(s) Rules: list[MobileDeviceAccessRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[MobileDeviceAccessRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMobileDeviceAccessRulesResponse:
     Optional[list[MobileDeviceAccessRule]] Rules
 
@@ -1118,8 +1142,9 @@ struct ListOrganizationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) OrganizationSummaries: list[OrganizationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OrganizationSummaries: list[OrganizationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOrganizationsResponse:
     Optional[list[OrganizationSummary]] OrganizationSummaries
     Optional[str] NextToken
@@ -1131,8 +1156,9 @@ struct ListPersonalAccessTokensRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) PersonalAccessTokenSummaries: list[PersonalAccessTokenSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PersonalAccessTokenSummaries: list[PersonalAccessTokenSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPersonalAccessTokensResponse:
     Optional[str] NextToken
     Optional[list[PersonalAccessTokenSummary]] PersonalAccessTokenSummaries
@@ -1144,8 +1170,9 @@ struct ListResourceDelegatesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Delegates: list[Delegate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Delegates: list[Delegate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourceDelegatesResponse:
     Optional[list[Delegate]] Delegates
     Optional[str] NextToken
@@ -1163,8 +1190,9 @@ struct ListResourcesRequest:
     Optional[int64] MaxResults
     Optional[ListResourcesFilters] Filters
 
-# no @derive(Json): member(s) Resources: list[Resource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Resources: list[Resource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListResourcesResponse:
     Optional[list[Resource]] Resources
     Optional[str] NextToken
@@ -1173,8 +1201,9 @@ struct ListResourcesResponse:
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -1193,8 +1222,9 @@ struct ListUsersRequest:
     Optional[int64] MaxResults
     Optional[ListUsersFilters] Filters
 
-# no @derive(Json): member(s) Users: list[User] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Users: list[User] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListUsersResponse:
     Optional[list[User]] Users
     Optional[str] NextToken
@@ -1251,8 +1281,9 @@ struct MobileDeviceAccessOverride:
     Optional[DateTime] DateCreated
     Optional[DateTime] DateModified
 
-# no @derive(Json): member(s) DeviceTypes: list[str], NotDeviceTypes: list[str], DeviceModels: list[str], NotDeviceModels: list[str], DeviceOperatingSystems: list[str], NotDeviceOperatingSystems: list[str], DeviceUserAgents: list[str], NotDeviceUserAgents: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeviceTypes: list[str], NotDeviceTypes: list[str], DeviceModels: list[str], NotDeviceModels: list[str], DeviceOperatingSystems: list[str], NotDeviceOperatingSystems: list[str], DeviceUserAgents: list[str], NotDeviceUserAgents: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MobileDeviceAccessRule:
     Optional[str] MobileDeviceAccessRuleId
     Optional[str] Name
@@ -1289,8 +1320,9 @@ struct OrganizationSummary:
     Optional[str] ErrorMessage
     Optional[str] State
 
-# no @derive(Json): member(s) PermissionValues: list[PermissionType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PermissionValues: list[PermissionType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Permission:
     str GranteeId
     MemberType GranteeType
@@ -1301,8 +1333,9 @@ struct PersonalAccessTokenConfiguration:
     PersonalAccessTokenConfigurationStatus Status
     Optional[int64] LifetimeInDays
 
-# no @derive(Json): member(s) Scopes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Scopes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PersonalAccessTokenSummary:
     Optional[str] PersonalAccessTokenId
     Optional[str] UserId
@@ -1312,8 +1345,9 @@ struct PersonalAccessTokenSummary:
     Optional[DateTime] ExpiresTime
     Optional[list[str]] Scopes
 
-# no @derive(Json): member(s) IpRanges: list[str], NotIpRanges: list[str], Actions: list[str], NotActions: list[str], UserIds: list[str], NotUserIds: list[str], ImpersonationRoleIds: list[str], NotImpersonationRoleIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) IpRanges: list[str], NotIpRanges: list[str], Actions: list[str], NotActions: list[str], UserIds: list[str], NotUserIds: list[str], ImpersonationRoleIds: list[str], NotImpersonationRoleIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutAccessControlRuleRequest:
     str Name
     AccessControlRuleEffect Effect
@@ -1366,8 +1400,9 @@ struct PutInboundDmarcSettingsResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) PermissionValues: list[PermissionType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PermissionValues: list[PermissionType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutMailboxPermissionsRequest:
     str OrganizationId
     str EntityId
@@ -1392,8 +1427,9 @@ struct PutMobileDeviceAccessOverrideResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) FolderConfigurations: list[FolderConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FolderConfigurations: list[FolderConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutRetentionPolicyRequest:
     str OrganizationId
     Optional[str] Id
@@ -1483,8 +1519,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceARN
     list[Tag] Tags
@@ -1514,8 +1551,9 @@ struct TooManyTagsException:
 struct UnsupportedOperationException:
     Optional[str] Message
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceARN
     list[str] TagKeys
@@ -1558,8 +1596,9 @@ struct UpdateGroupResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Rules: list[ImpersonationRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[ImpersonationRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateImpersonationRoleRequest:
     str OrganizationId
     str ImpersonationRoleId
@@ -1584,8 +1623,9 @@ struct UpdateMailboxQuotaResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) DeviceTypes: list[str], NotDeviceTypes: list[str], DeviceModels: list[str], NotDeviceModels: list[str], DeviceOperatingSystems: list[str], NotDeviceOperatingSystems: list[str], DeviceUserAgents: list[str], NotDeviceUserAgents: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DeviceTypes: list[str], NotDeviceTypes: list[str], DeviceModels: list[str], NotDeviceModels: list[str], DeviceOperatingSystems: list[str], NotDeviceOperatingSystems: list[str], DeviceUserAgents: list[str], NotDeviceUserAgents: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMobileDeviceAccessRuleRequest:
     str OrganizationId
     str MobileDeviceAccessRuleId
@@ -1750,18 +1790,346 @@ def workmail_error_from_code(str code) -> WorkMailError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateImpersonationRole (input CreateImpersonationRoleRequest)
-#   CreateMobileDeviceAccessRule (input CreateMobileDeviceAccessRuleRequest)
-#   CreateOrganization (input CreateOrganizationRequest)
-#   PutAccessControlRule (input PutAccessControlRuleRequest)
-#   PutMailboxPermissions (input PutMailboxPermissionsRequest)
-#   PutRetentionPolicy (input PutRetentionPolicyRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateImpersonationRole (input UpdateImpersonationRoleRequest)
-#   UpdateMobileDeviceAccessRule (input UpdateMobileDeviceAccessRuleRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def workmail_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def workmail_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def workmail_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateImpersonationRoleRequest to a compact JSON object (declaration order).
+def create_impersonation_role_request_to_json(CreateImpersonationRoleRequest v) -> str:
+    list[str] parts = []
+    if v.ClientToken.is_some():
+        auto u0 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + workmail_json_str(u0))
+    parts.append("\"OrganizationId\":" + workmail_json_str(v.OrganizationId))
+    parts.append("\"Name\":" + workmail_json_str(v.Name))
+    parts.append("\"Type\":" + v.Type.to_json())
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + workmail_json_str(u1))
+    list[str] e2 = []
+    for x2 in v.Rules:
+        e2.append(impersonation_rule_to_json(x2))
+    parts.append("\"Rules\":" + workmail_json_arr(e2))
+    return workmail_json_obj(parts)
+
+# Serialize CreateMobileDeviceAccessRuleRequest to a compact JSON object (declaration order).
+def create_mobile_device_access_rule_request_to_json(CreateMobileDeviceAccessRuleRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"OrganizationId\":" + workmail_json_str(v.OrganizationId))
+    if v.ClientToken.is_some():
+        auto u0 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + workmail_json_str(u0))
+    parts.append("\"Name\":" + workmail_json_str(v.Name))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + workmail_json_str(u1))
+    parts.append("\"Effect\":" + v.Effect.to_json())
+    if v.DeviceTypes.is_some():
+        auto u2 = v.DeviceTypes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(workmail_json_str(x3))
+        parts.append("\"DeviceTypes\":" + workmail_json_arr(e3))
+    if v.NotDeviceTypes.is_some():
+        auto u4 = v.NotDeviceTypes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(workmail_json_str(x5))
+        parts.append("\"NotDeviceTypes\":" + workmail_json_arr(e5))
+    if v.DeviceModels.is_some():
+        auto u6 = v.DeviceModels.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(workmail_json_str(x7))
+        parts.append("\"DeviceModels\":" + workmail_json_arr(e7))
+    if v.NotDeviceModels.is_some():
+        auto u8 = v.NotDeviceModels.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(workmail_json_str(x9))
+        parts.append("\"NotDeviceModels\":" + workmail_json_arr(e9))
+    if v.DeviceOperatingSystems.is_some():
+        auto u10 = v.DeviceOperatingSystems.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(workmail_json_str(x11))
+        parts.append("\"DeviceOperatingSystems\":" + workmail_json_arr(e11))
+    if v.NotDeviceOperatingSystems.is_some():
+        auto u12 = v.NotDeviceOperatingSystems.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(workmail_json_str(x13))
+        parts.append("\"NotDeviceOperatingSystems\":" + workmail_json_arr(e13))
+    if v.DeviceUserAgents.is_some():
+        auto u14 = v.DeviceUserAgents.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(workmail_json_str(x15))
+        parts.append("\"DeviceUserAgents\":" + workmail_json_arr(e15))
+    if v.NotDeviceUserAgents.is_some():
+        auto u16 = v.NotDeviceUserAgents.unwrap()
+        list[str] e17 = []
+        for x17 in u16:
+            e17.append(workmail_json_str(x17))
+        parts.append("\"NotDeviceUserAgents\":" + workmail_json_arr(e17))
+    return workmail_json_obj(parts)
+
+# Serialize CreateOrganizationRequest to a compact JSON object (declaration order).
+def create_organization_request_to_json(CreateOrganizationRequest v) -> str:
+    list[str] parts = []
+    if v.DirectoryId.is_some():
+        auto u0 = v.DirectoryId.unwrap()
+        parts.append("\"DirectoryId\":" + workmail_json_str(u0))
+    parts.append("\"Alias\":" + workmail_json_str(v.Alias))
+    if v.ClientToken.is_some():
+        auto u1 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + workmail_json_str(u1))
+    if v.Domains.is_some():
+        auto u2 = v.Domains.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Domains\":" + workmail_json_arr(e3))
+    if v.KmsKeyArn.is_some():
+        auto u4 = v.KmsKeyArn.unwrap()
+        parts.append("\"KmsKeyArn\":" + workmail_json_str(u4))
+    if v.EnableInteroperability.is_some():
+        auto u5 = v.EnableInteroperability.unwrap()
+        parts.append("\"EnableInteroperability\":" + json.dumps(JsonValue.Bool(u5)))
+    return workmail_json_obj(parts)
+
+# Serialize ImpersonationRule to a compact JSON object (declaration order).
+def impersonation_rule_to_json(ImpersonationRule v) -> str:
+    list[str] parts = []
+    parts.append("\"ImpersonationRuleId\":" + workmail_json_str(v.ImpersonationRuleId))
+    if v.Name.is_some():
+        auto u0 = v.Name.unwrap()
+        parts.append("\"Name\":" + workmail_json_str(u0))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + workmail_json_str(u1))
+    parts.append("\"Effect\":" + v.Effect.to_json())
+    if v.TargetUsers.is_some():
+        auto u2 = v.TargetUsers.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(workmail_json_str(x3))
+        parts.append("\"TargetUsers\":" + workmail_json_arr(e3))
+    if v.NotTargetUsers.is_some():
+        auto u4 = v.NotTargetUsers.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(workmail_json_str(x5))
+        parts.append("\"NotTargetUsers\":" + workmail_json_arr(e5))
+    return workmail_json_obj(parts)
+
+# Serialize PutAccessControlRuleRequest to a compact JSON object (declaration order).
+def put_access_control_rule_request_to_json(PutAccessControlRuleRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + workmail_json_str(v.Name))
+    parts.append("\"Effect\":" + v.Effect.to_json())
+    parts.append("\"Description\":" + workmail_json_str(v.Description))
+    if v.IpRanges.is_some():
+        auto u0 = v.IpRanges.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(workmail_json_str(x1))
+        parts.append("\"IpRanges\":" + workmail_json_arr(e1))
+    if v.NotIpRanges.is_some():
+        auto u2 = v.NotIpRanges.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(workmail_json_str(x3))
+        parts.append("\"NotIpRanges\":" + workmail_json_arr(e3))
+    if v.Actions.is_some():
+        auto u4 = v.Actions.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(workmail_json_str(x5))
+        parts.append("\"Actions\":" + workmail_json_arr(e5))
+    if v.NotActions.is_some():
+        auto u6 = v.NotActions.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(workmail_json_str(x7))
+        parts.append("\"NotActions\":" + workmail_json_arr(e7))
+    if v.UserIds.is_some():
+        auto u8 = v.UserIds.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(workmail_json_str(x9))
+        parts.append("\"UserIds\":" + workmail_json_arr(e9))
+    if v.NotUserIds.is_some():
+        auto u10 = v.NotUserIds.unwrap()
+        list[str] e11 = []
+        for x11 in u10:
+            e11.append(workmail_json_str(x11))
+        parts.append("\"NotUserIds\":" + workmail_json_arr(e11))
+    parts.append("\"OrganizationId\":" + workmail_json_str(v.OrganizationId))
+    if v.ImpersonationRoleIds.is_some():
+        auto u12 = v.ImpersonationRoleIds.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(workmail_json_str(x13))
+        parts.append("\"ImpersonationRoleIds\":" + workmail_json_arr(e13))
+    if v.NotImpersonationRoleIds.is_some():
+        auto u14 = v.NotImpersonationRoleIds.unwrap()
+        list[str] e15 = []
+        for x15 in u14:
+            e15.append(workmail_json_str(x15))
+        parts.append("\"NotImpersonationRoleIds\":" + workmail_json_arr(e15))
+    return workmail_json_obj(parts)
+
+# Serialize PutMailboxPermissionsRequest to a compact JSON object (declaration order).
+def put_mailbox_permissions_request_to_json(PutMailboxPermissionsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"OrganizationId\":" + workmail_json_str(v.OrganizationId))
+    parts.append("\"EntityId\":" + workmail_json_str(v.EntityId))
+    parts.append("\"GranteeId\":" + workmail_json_str(v.GranteeId))
+    list[str] e0 = []
+    for x0 in v.PermissionValues:
+        e0.append(x0.to_json())
+    parts.append("\"PermissionValues\":" + workmail_json_arr(e0))
+    return workmail_json_obj(parts)
+
+# Serialize PutRetentionPolicyRequest to a compact JSON object (declaration order).
+def put_retention_policy_request_to_json(PutRetentionPolicyRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"OrganizationId\":" + workmail_json_str(v.OrganizationId))
+    if v.Id.is_some():
+        auto u0 = v.Id.unwrap()
+        parts.append("\"Id\":" + workmail_json_str(u0))
+    parts.append("\"Name\":" + workmail_json_str(v.Name))
+    if v.Description.is_some():
+        auto u1 = v.Description.unwrap()
+        parts.append("\"Description\":" + workmail_json_str(u1))
+    list[str] e2 = []
+    for x2 in v.FolderConfigurations:
+        e2.append(x2.to_json())
+    parts.append("\"FolderConfigurations\":" + workmail_json_arr(e2))
+    return workmail_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + workmail_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + workmail_json_arr(e0))
+    return workmail_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + workmail_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(workmail_json_str(x0))
+    parts.append("\"TagKeys\":" + workmail_json_arr(e0))
+    return workmail_json_obj(parts)
+
+# Serialize UpdateImpersonationRoleRequest to a compact JSON object (declaration order).
+def update_impersonation_role_request_to_json(UpdateImpersonationRoleRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"OrganizationId\":" + workmail_json_str(v.OrganizationId))
+    parts.append("\"ImpersonationRoleId\":" + workmail_json_str(v.ImpersonationRoleId))
+    parts.append("\"Name\":" + workmail_json_str(v.Name))
+    parts.append("\"Type\":" + v.Type.to_json())
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + workmail_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.Rules:
+        e1.append(impersonation_rule_to_json(x1))
+    parts.append("\"Rules\":" + workmail_json_arr(e1))
+    return workmail_json_obj(parts)
+
+# Serialize UpdateMobileDeviceAccessRuleRequest to a compact JSON object (declaration order).
+def update_mobile_device_access_rule_request_to_json(UpdateMobileDeviceAccessRuleRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"OrganizationId\":" + workmail_json_str(v.OrganizationId))
+    parts.append("\"MobileDeviceAccessRuleId\":" + workmail_json_str(v.MobileDeviceAccessRuleId))
+    parts.append("\"Name\":" + workmail_json_str(v.Name))
+    if v.Description.is_some():
+        auto u0 = v.Description.unwrap()
+        parts.append("\"Description\":" + workmail_json_str(u0))
+    parts.append("\"Effect\":" + v.Effect.to_json())
+    if v.DeviceTypes.is_some():
+        auto u1 = v.DeviceTypes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(workmail_json_str(x2))
+        parts.append("\"DeviceTypes\":" + workmail_json_arr(e2))
+    if v.NotDeviceTypes.is_some():
+        auto u3 = v.NotDeviceTypes.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(workmail_json_str(x4))
+        parts.append("\"NotDeviceTypes\":" + workmail_json_arr(e4))
+    if v.DeviceModels.is_some():
+        auto u5 = v.DeviceModels.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(workmail_json_str(x6))
+        parts.append("\"DeviceModels\":" + workmail_json_arr(e6))
+    if v.NotDeviceModels.is_some():
+        auto u7 = v.NotDeviceModels.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(workmail_json_str(x8))
+        parts.append("\"NotDeviceModels\":" + workmail_json_arr(e8))
+    if v.DeviceOperatingSystems.is_some():
+        auto u9 = v.DeviceOperatingSystems.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(workmail_json_str(x10))
+        parts.append("\"DeviceOperatingSystems\":" + workmail_json_arr(e10))
+    if v.NotDeviceOperatingSystems.is_some():
+        auto u11 = v.NotDeviceOperatingSystems.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(workmail_json_str(x12))
+        parts.append("\"NotDeviceOperatingSystems\":" + workmail_json_arr(e12))
+    if v.DeviceUserAgents.is_some():
+        auto u13 = v.DeviceUserAgents.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(workmail_json_str(x14))
+        parts.append("\"DeviceUserAgents\":" + workmail_json_arr(e14))
+    if v.NotDeviceUserAgents.is_some():
+        auto u15 = v.NotDeviceUserAgents.unwrap()
+        list[str] e16 = []
+        for x16 in u15:
+            e16.append(workmail_json_str(x16))
+        parts.append("\"NotDeviceUserAgents\":" + workmail_json_arr(e16))
+    return workmail_json_obj(parts)
 
 # A bound WorkMail client: credentials + region, threaded into every operation.
 struct WorkMailClient:
@@ -1815,6 +2183,24 @@ struct WorkMailClient:
     def create_identity_center_application(self, CreateIdentityCenterApplicationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workmail_protocol(), self.creds, self.region, "CreateIdentityCenterApplication", body)
+
+    # CreateImpersonationRole
+    # errors: EntityNotFoundException, EntityStateException, InvalidParameterException, LimitExceededException, OrganizationNotFoundException, OrganizationStateException
+    def create_impersonation_role(self, CreateImpersonationRoleRequest input) -> str:
+        auto body = create_impersonation_role_request_to_json(input)
+        return awsjson.awsjson_request_now(workmail_protocol(), self.creds, self.region, "CreateImpersonationRole", body)
+
+    # CreateMobileDeviceAccessRule
+    # errors: InvalidParameterException, LimitExceededException, OrganizationNotFoundException, OrganizationStateException
+    def create_mobile_device_access_rule(self, CreateMobileDeviceAccessRuleRequest input) -> str:
+        auto body = create_mobile_device_access_rule_request_to_json(input)
+        return awsjson.awsjson_request_now(workmail_protocol(), self.creds, self.region, "CreateMobileDeviceAccessRule", body)
+
+    # CreateOrganization
+    # errors: DirectoryInUseException, DirectoryUnavailableException, InvalidParameterException, LimitExceededException, NameAvailabilityException
+    def create_organization(self, CreateOrganizationRequest input) -> str:
+        auto body = create_organization_request_to_json(input)
+        return awsjson.awsjson_request_now(workmail_protocol(), self.creds, self.region, "CreateOrganization", body)
 
     # CreateResource
     # errors: DirectoryServiceAuthenticationFailedException, DirectoryUnavailableException, InvalidParameterException, NameAvailabilityException, OrganizationNotFoundException, OrganizationStateException, ReservedNameException, UnsupportedOperationException
@@ -2164,6 +2550,12 @@ struct WorkMailClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workmail_protocol(), self.creds, self.region, "ListUsers", body)
 
+    # PutAccessControlRule
+    # errors: EntityNotFoundException, InvalidParameterException, LimitExceededException, OrganizationNotFoundException, OrganizationStateException, ResourceNotFoundException
+    def put_access_control_rule(self, PutAccessControlRuleRequest input) -> str:
+        auto body = put_access_control_rule_request_to_json(input)
+        return awsjson.awsjson_request_now(workmail_protocol(), self.creds, self.region, "PutAccessControlRule", body)
+
     # PutEmailMonitoringConfiguration
     # errors: InvalidParameterException, OrganizationNotFoundException, OrganizationStateException, ResourceNotFoundException
     def put_email_monitoring_configuration(self, PutEmailMonitoringConfigurationRequest input) -> str:
@@ -2182,11 +2574,23 @@ struct WorkMailClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workmail_protocol(), self.creds, self.region, "PutInboundDmarcSettings", body)
 
+    # PutMailboxPermissions
+    # errors: EntityNotFoundException, EntityStateException, InvalidParameterException, OrganizationNotFoundException, OrganizationStateException
+    def put_mailbox_permissions(self, PutMailboxPermissionsRequest input) -> str:
+        auto body = put_mailbox_permissions_request_to_json(input)
+        return awsjson.awsjson_request_now(workmail_protocol(), self.creds, self.region, "PutMailboxPermissions", body)
+
     # PutMobileDeviceAccessOverride
     # errors: EntityNotFoundException, EntityStateException, InvalidParameterException, OrganizationNotFoundException, OrganizationStateException
     def put_mobile_device_access_override(self, PutMobileDeviceAccessOverrideRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workmail_protocol(), self.creds, self.region, "PutMobileDeviceAccessOverride", body)
+
+    # PutRetentionPolicy
+    # errors: InvalidParameterException, LimitExceededException, OrganizationNotFoundException, OrganizationStateException
+    def put_retention_policy(self, PutRetentionPolicyRequest input) -> str:
+        auto body = put_retention_policy_request_to_json(input)
+        return awsjson.awsjson_request_now(workmail_protocol(), self.creds, self.region, "PutRetentionPolicy", body)
 
     # RegisterMailDomain
     # errors: InvalidParameterException, LimitExceededException, MailDomainInUseException, OrganizationNotFoundException, OrganizationStateException
@@ -2212,11 +2616,23 @@ struct WorkMailClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workmail_protocol(), self.creds, self.region, "StartMailboxExportJob", body)
 
+    # TagResource
+    # errors: InvalidParameterException, OrganizationStateException, ResourceNotFoundException, TooManyTagsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(workmail_protocol(), self.creds, self.region, "TagResource", body)
+
     # TestAvailabilityConfiguration
     # errors: InvalidParameterException, OrganizationNotFoundException, OrganizationStateException, ResourceNotFoundException
     def test_availability_configuration(self, TestAvailabilityConfigurationRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workmail_protocol(), self.creds, self.region, "TestAvailabilityConfiguration", body)
+
+    # UntagResource
+    # errors: ResourceNotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(workmail_protocol(), self.creds, self.region, "UntagResource", body)
 
     # UpdateAvailabilityConfiguration
     # errors: InvalidParameterException, OrganizationNotFoundException, OrganizationStateException, ResourceNotFoundException
@@ -2236,11 +2652,23 @@ struct WorkMailClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workmail_protocol(), self.creds, self.region, "UpdateGroup", body)
 
+    # UpdateImpersonationRole
+    # errors: EntityNotFoundException, EntityStateException, InvalidParameterException, LimitExceededException, OrganizationNotFoundException, OrganizationStateException, ResourceNotFoundException
+    def update_impersonation_role(self, UpdateImpersonationRoleRequest input) -> str:
+        auto body = update_impersonation_role_request_to_json(input)
+        return awsjson.awsjson_request_now(workmail_protocol(), self.creds, self.region, "UpdateImpersonationRole", body)
+
     # UpdateMailboxQuota
     # errors: EntityNotFoundException, EntityStateException, InvalidParameterException, OrganizationNotFoundException, OrganizationStateException
     def update_mailbox_quota(self, UpdateMailboxQuotaRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(workmail_protocol(), self.creds, self.region, "UpdateMailboxQuota", body)
+
+    # UpdateMobileDeviceAccessRule
+    # errors: EntityNotFoundException, InvalidParameterException, OrganizationNotFoundException, OrganizationStateException
+    def update_mobile_device_access_rule(self, UpdateMobileDeviceAccessRuleRequest input) -> str:
+        auto body = update_mobile_device_access_rule_request_to_json(input)
+        return awsjson.awsjson_request_now(workmail_protocol(), self.creds, self.region, "UpdateMobileDeviceAccessRule", body)
 
     # UpdatePrimaryEmailAddress
     # errors: DirectoryServiceAuthenticationFailedException, DirectoryUnavailableException, EmailAddressInUseException, EntityNotFoundException, EntityStateException, InvalidParameterException, InvalidParameterException, MailDomainNotFoundException, MailDomainStateException, OrganizationNotFoundException, OrganizationStateException, UnsupportedOperationException

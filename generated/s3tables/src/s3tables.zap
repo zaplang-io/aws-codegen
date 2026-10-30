@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 49 operations — 42 with a generated method,
-#   7 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 49 operations — 48 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   124 structs (91 @derive(Json)), 14 enums, 8 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -166,8 +166,9 @@ struct CreateNamespaceRequest:
     str tableBucketARN
     list[str] namespace
 
-# no @derive(Json): member(s) namespace: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespace: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateNamespaceResponse:
     str tableBucketARN
     list[str] namespace
@@ -274,8 +275,9 @@ struct GetNamespaceRequest:
     str tableBucketARN
     str namespace
 
-# no @derive(Json): member(s) namespace: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespace: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetNamespaceResponse:
     list[str] namespace
     DateTime createdAt
@@ -298,8 +300,9 @@ struct GetTableBucketEncryptionResponse:
 struct GetTableBucketMaintenanceConfigurationRequest:
     str tableBucketARN
 
-# no @derive(Json): member(s) configuration: dict[str, TableBucketMaintenanceConfigurationValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: dict[str, TableBucketMaintenanceConfigurationValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTableBucketMaintenanceConfigurationResponse:
     str tableBucketARN
     dict[str, TableBucketMaintenanceConfigurationValue] configuration
@@ -328,8 +331,9 @@ struct GetTableBucketPolicyResponse:
 struct GetTableBucketReplicationRequest:
     str tableBucketARN
 
-# no @derive(Json): member(s) configuration: TableBucketReplicationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: TableBucketReplicationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTableBucketReplicationResponse:
     str versionToken
     TableBucketReplicationConfiguration configuration
@@ -376,8 +380,9 @@ struct GetTableMaintenanceConfigurationRequest:
     str namespace
     str name
 
-# no @derive(Json): member(s) configuration: dict[TableMaintenanceType, TableMaintenanceConfigurationValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: dict[TableMaintenanceType, TableMaintenanceConfigurationValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTableMaintenanceConfigurationResponse:
     str tableARN
     dict[TableMaintenanceType, TableMaintenanceConfigurationValue] configuration
@@ -389,8 +394,9 @@ struct GetTableMaintenanceJobStatusRequest:
     str namespace
     str name
 
-# no @derive(Json): member(s) status: dict[TableMaintenanceJobType, TableMaintenanceJobStatusValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) status: dict[TableMaintenanceJobType, TableMaintenanceJobStatusValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTableMaintenanceJobStatusResponse:
     str tableARN
     dict[TableMaintenanceJobType, TableMaintenanceJobStatusValue] status
@@ -446,8 +452,9 @@ struct GetTableRecordExpirationJobStatusResponse:
 struct GetTableReplicationRequest:
     str tableArn
 
-# no @derive(Json): member(s) configuration: TableReplicationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: TableReplicationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTableReplicationResponse:
     str versionToken
     TableReplicationConfiguration configuration
@@ -457,8 +464,9 @@ struct GetTableReplicationResponse:
 struct GetTableReplicationStatusRequest:
     str tableArn
 
-# no @derive(Json): member(s) destinations: list[ReplicationDestinationStatusModel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) destinations: list[ReplicationDestinationStatusModel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTableReplicationStatusResponse:
     str sourceTableArn
     list[ReplicationDestinationStatusModel] destinations
@@ -471,8 +479,9 @@ struct GetTableRequest:
     Optional[str] name
     Optional[str] tableArn
 
-# no @derive(Json): member(s) namespace: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespace: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTableResponse:
     str name
     TableType type
@@ -508,8 +517,9 @@ struct IcebergCompactionSettings:
     Optional[int64] targetFileSizeMB
     Optional[IcebergCompactionStrategy] strategy
 
-# no @derive(Json): member(s) schema: IcebergSchema, schemaV2: IcebergSchemaV2, partitionSpec: IcebergPartitionSpec, writeOrder: IcebergSortOrder, properties: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) schema: IcebergSchema, schemaV2: IcebergSchemaV2, partitionSpec: IcebergPartitionSpec, writeOrder: IcebergSortOrder, properties: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IcebergMetadata:
     Optional[IcebergSchema] schema
     Optional[IcebergSchemaV2] schemaV2
@@ -524,19 +534,22 @@ struct IcebergPartitionField:
     str name
     Optional[int64] fieldId
 
-# no @derive(Json): member(s) fields: list[IcebergPartitionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[IcebergPartitionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IcebergPartitionSpec:
     list[IcebergPartitionField] fields
     Optional[int64] specId
 
-# no @derive(Json): member(s) fields: list[SchemaField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[SchemaField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IcebergSchema:
     list[SchemaField] fields
 
-# no @derive(Json): member(s) fields: list[SchemaV2Field], identifierFieldIds: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[SchemaV2Field], identifierFieldIds: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IcebergSchemaV2:
     str type
     list[SchemaV2Field] fields
@@ -555,8 +568,9 @@ struct IcebergSortField:
     IcebergSortDirection direction
     IcebergNullOrder nullOrder
 
-# no @derive(Json): member(s) fields: list[IcebergSortField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fields: list[IcebergSortField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IcebergSortOrder:
     int64 orderId
     list[IcebergSortField] fields
@@ -584,8 +598,9 @@ struct ListNamespacesRequest:
     Optional[str] continuationToken
     Optional[int64] maxNamespaces
 
-# no @derive(Json): member(s) namespaces: list[NamespaceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespaces: list[NamespaceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListNamespacesResponse:
     list[NamespaceSummary] namespaces
     Optional[str] continuationToken
@@ -599,8 +614,9 @@ struct ListTableBucketsRequest:
     # wire string of the TableBucketType enum (querystring binding)
     Optional[str] type
 
-# no @derive(Json): member(s) tableBuckets: list[TableBucketSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tableBuckets: list[TableBucketSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTableBucketsResponse:
     list[TableBucketSummary] tableBuckets
     Optional[str] continuationToken
@@ -614,8 +630,9 @@ struct ListTablesRequest:
     Optional[str] continuationToken
     Optional[int64] maxTables
 
-# no @derive(Json): member(s) tables: list[TableSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tables: list[TableSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTablesResponse:
     list[TableSummary] tables
     Optional[str] continuationToken
@@ -625,8 +642,9 @@ struct ListTablesResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -638,8 +656,9 @@ struct ManagedTableInformation:
 struct MethodNotAllowedException:
     Optional[str] message
 
-# no @derive(Json): member(s) namespace: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespace: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NamespaceSummary:
     list[str] namespace
     DateTime createdAt
@@ -784,14 +803,16 @@ struct TableBucketMaintenanceConfigurationValue:
 struct TableBucketMaintenanceSettings:
     Optional[IcebergUnreferencedFileRemovalSettings] icebergUnreferencedFileRemoval
 
-# no @derive(Json): member(s) rules: list[TableBucketReplicationRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rules: list[TableBucketReplicationRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableBucketReplicationConfiguration:
     str role
     list[TableBucketReplicationRule] rules
 
-# no @derive(Json): member(s) destinations: list[ReplicationDestination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) destinations: list[ReplicationDestination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableBucketReplicationRule:
     list[ReplicationDestination] destinations
 
@@ -822,8 +843,9 @@ struct TableMaintenanceSettings:
     Optional[IcebergCompactionSettings] icebergCompaction
     Optional[IcebergSnapshotManagementSettings] icebergSnapshotManagement
 
-# no @derive(Json): member(s) iceberg: IcebergMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) iceberg: IcebergMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableMetadata:
     Optional[IcebergMetadata] iceberg
 
@@ -842,19 +864,22 @@ struct TableRecordExpirationJobMetrics:
 struct TableRecordExpirationSettings:
     Optional[int64] days
 
-# no @derive(Json): member(s) rules: list[TableReplicationRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rules: list[TableReplicationRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableReplicationConfiguration:
     str role
     list[TableReplicationRule] rules
 
-# no @derive(Json): member(s) destinations: list[ReplicationDestination] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) destinations: list[ReplicationDestination] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableReplicationRule:
     list[ReplicationDestination] destinations
 
-# no @derive(Json): member(s) namespace: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespace: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TableSummary:
     list[str] namespace
     str name
@@ -901,8 +926,9 @@ struct UpdateTableMetadataLocationRequest:
     str versionToken
     str metadataLocation
 
-# no @derive(Json): member(s) namespace: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespace: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTableMetadataLocationResponse:
     str name
     str tableARN
@@ -951,12 +977,6 @@ def s3tables_error_from_code(str code) -> S3TablesError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateNamespace (document member `namespace: list[str]` is not serializable by derive)
-#   CreateTable (document member `metadata: TableMetadata` is not serializable by derive)
-#   CreateTableBucket (document member `tags: dict[str, str]` is not serializable by derive)
-#   PutTableBucketReplication (document member `configuration: TableBucketReplicationConfiguration` is not serializable by derive)
-#   PutTableReplication (document member `configuration: TableReplicationConfiguration` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -1010,10 +1030,225 @@ struct UpdateTableMetadataLocationDocument:
     str versionToken
     str metadataLocation
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def s3tables_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def s3tables_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def s3tables_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize IcebergMetadata to a compact JSON object (declaration order).
+def iceberg_metadata_to_json(IcebergMetadata v) -> str:
+    list[str] parts = []
+    if v.schema.is_some():
+        auto u0 = v.schema.unwrap()
+        parts.append("\"schema\":" + iceberg_schema_to_json(u0))
+    if v.schemaV2.is_some():
+        auto u1 = v.schemaV2.unwrap()
+        parts.append("\"schemaV2\":" + iceberg_schema_v2_to_json(u1))
+    if v.partitionSpec.is_some():
+        auto u2 = v.partitionSpec.unwrap()
+        parts.append("\"partitionSpec\":" + iceberg_partition_spec_to_json(u2))
+    if v.writeOrder.is_some():
+        auto u3 = v.writeOrder.unwrap()
+        parts.append("\"writeOrder\":" + iceberg_sort_order_to_json(u3))
+    if v.properties.is_some():
+        auto u4 = v.properties.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(s3tables_json_str(k5) + ":" + s3tables_json_str(u4[k5]))
+        parts.append("\"properties\":" + s3tables_json_obj(m5))
+    return s3tables_json_obj(parts)
+
+# Serialize IcebergPartitionSpec to a compact JSON object (declaration order).
+def iceberg_partition_spec_to_json(IcebergPartitionSpec v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.fields:
+        e0.append(x0.to_json())
+    parts.append("\"fields\":" + s3tables_json_arr(e0))
+    if v.specId.is_some():
+        auto u1 = v.specId.unwrap()
+        parts.append("\"spec-id\":" + str(u1))
+    return s3tables_json_obj(parts)
+
+# Serialize IcebergSchema to a compact JSON object (declaration order).
+def iceberg_schema_to_json(IcebergSchema v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.fields:
+        e0.append(x0.to_json())
+    parts.append("\"fields\":" + s3tables_json_arr(e0))
+    return s3tables_json_obj(parts)
+
+# Serialize IcebergSchemaV2 to a compact JSON object (declaration order).
+def iceberg_schema_v2_to_json(IcebergSchemaV2 v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + s3tables_json_str(v.type))
+    list[str] e0 = []
+    for x0 in v.fields:
+        e0.append(x0.to_json())
+    parts.append("\"fields\":" + s3tables_json_arr(e0))
+    if v.schemaId.is_some():
+        auto u1 = v.schemaId.unwrap()
+        parts.append("\"schema-id\":" + str(u1))
+    if v.identifierFieldIds.is_some():
+        auto u2 = v.identifierFieldIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(str(x3))
+        parts.append("\"identifier-field-ids\":" + s3tables_json_arr(e3))
+    return s3tables_json_obj(parts)
+
+# Serialize IcebergSortOrder to a compact JSON object (declaration order).
+def iceberg_sort_order_to_json(IcebergSortOrder v) -> str:
+    list[str] parts = []
+    parts.append("\"order-id\":" + str(v.orderId))
+    list[str] e0 = []
+    for x0 in v.fields:
+        e0.append(x0.to_json())
+    parts.append("\"fields\":" + s3tables_json_arr(e0))
+    return s3tables_json_obj(parts)
+
+# Serialize TableBucketReplicationConfiguration to a compact JSON object (declaration order).
+def table_bucket_replication_configuration_to_json(TableBucketReplicationConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"role\":" + s3tables_json_str(v.role))
+    list[str] e0 = []
+    for x0 in v.rules:
+        e0.append(table_bucket_replication_rule_to_json(x0))
+    parts.append("\"rules\":" + s3tables_json_arr(e0))
+    return s3tables_json_obj(parts)
+
+# Serialize TableBucketReplicationRule to a compact JSON object (declaration order).
+def table_bucket_replication_rule_to_json(TableBucketReplicationRule v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.destinations:
+        e0.append(x0.to_json())
+    parts.append("\"destinations\":" + s3tables_json_arr(e0))
+    return s3tables_json_obj(parts)
+
+# Serialize TableMetadata to a compact JSON object (declaration order).
+def table_metadata_to_json(TableMetadata v) -> str:
+    list[str] parts = []
+    if v.iceberg.is_some():
+        auto u0 = v.iceberg.unwrap()
+        parts.append("\"iceberg\":" + iceberg_metadata_to_json(u0))
+    return s3tables_json_obj(parts)
+
+# Serialize TableReplicationConfiguration to a compact JSON object (declaration order).
+def table_replication_configuration_to_json(TableReplicationConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"role\":" + s3tables_json_str(v.role))
+    list[str] e0 = []
+    for x0 in v.rules:
+        e0.append(table_replication_rule_to_json(x0))
+    parts.append("\"rules\":" + s3tables_json_arr(e0))
+    return s3tables_json_obj(parts)
+
+# Serialize TableReplicationRule to a compact JSON object (declaration order).
+def table_replication_rule_to_json(TableReplicationRule v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.destinations:
+        e0.append(x0.to_json())
+    parts.append("\"destinations\":" + s3tables_json_arr(e0))
+    return s3tables_json_obj(parts)
+
 # A bound S3Tables client: credentials + region, threaded into every operation.
 struct S3TablesClient:
     core.Credentials creds
     str region
+
+    # CreateNamespace  PUT /namespaces/{tableBucketARN}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def create_namespace(self, CreateNamespaceRequest input) -> str:
+        auto host = endpoints.regional_host(s3tables_service(), self.region)
+        dict[str, str] labels = {}
+        labels["tableBucketARN"] = input.tableBucketARN
+        auto b = binding.HttpBinding(method="PUT", path_template="/namespaces/{tableBucketARN}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.namespace:
+            e0.append(s3tables_json_str(x0))
+        parts.append("\"namespace\":" + s3tables_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, s3tables_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, s3tables_service(), self.region, host)
+
+    # CreateTable  PUT /tables/{tableBucketARN}/{namespace}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def create_table(self, CreateTableRequest input) -> str:
+        auto host = endpoints.regional_host(s3tables_service(), self.region)
+        dict[str, str] labels = {}
+        labels["tableBucketARN"] = input.tableBucketARN
+        labels["namespace"] = input.namespace
+        auto b = binding.HttpBinding(method="PUT", path_template="/tables/{tableBucketARN}/{namespace}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + s3tables_json_str(input.name))
+        parts.append("\"format\":" + s3tables_json_str(input.format))
+        if input.metadata.is_some():
+            auto u0 = input.metadata.unwrap()
+            parts.append("\"metadata\":" + table_metadata_to_json(u0))
+        if input.encryptionConfiguration.is_some():
+            auto u1 = input.encryptionConfiguration.unwrap()
+            parts.append("\"encryptionConfiguration\":" + u1.to_json())
+        if input.storageClassConfiguration.is_some():
+            auto u2 = input.storageClassConfiguration.unwrap()
+            parts.append("\"storageClassConfiguration\":" + u2.to_json())
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(s3tables_json_str(k4) + ":" + s3tables_json_str(u3[k4]))
+            parts.append("\"tags\":" + s3tables_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, s3tables_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, s3tables_service(), self.region, host)
+
+    # CreateTableBucket  PUT /buckets
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def create_table_bucket(self, CreateTableBucketRequest input) -> str:
+        auto host = endpoints.regional_host(s3tables_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/buckets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + s3tables_json_str(input.name))
+        if input.encryptionConfiguration.is_some():
+            auto u0 = input.encryptionConfiguration.unwrap()
+            parts.append("\"encryptionConfiguration\":" + u0.to_json())
+        if input.storageClassConfiguration.is_some():
+            auto u1 = input.storageClassConfiguration.unwrap()
+            parts.append("\"storageClassConfiguration\":" + u1.to_json())
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(s3tables_json_str(k3) + ":" + s3tables_json_str(u2[k3]))
+            parts.append("\"tags\":" + s3tables_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, s3tables_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, s3tables_service(), self.region, host)
 
     # DeleteNamespace  DELETE /namespaces/{tableBucketARN}/{namespace}
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
@@ -1400,6 +1635,20 @@ struct S3TablesClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3tables_service(), self.region, host)
 
+    # PutTableBucketReplication  PUT /table-bucket-replication
+    # errors: AccessDeniedException, BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def put_table_bucket_replication(self, PutTableBucketReplicationRequest input) -> str:
+        auto host = endpoints.regional_host(s3tables_service(), self.region)
+        dict[str, str] query = {}
+        query["tableBucketARN"] = input.tableBucketARN
+        if input.versionToken.is_some():
+            query["versionToken"] = input.versionToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/table-bucket-replication", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"configuration\":" + table_bucket_replication_configuration_to_json(input.configuration))
+        auto bp = restjson.rest_json_document(b, s3tables_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, s3tables_service(), self.region, host)
+
     # PutTableBucketStorageClass  PUT /buckets/{tableBucketARN}/storage-class
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
     def put_table_bucket_storage_class(self, PutTableBucketStorageClassRequest input) -> str:
@@ -1449,6 +1698,20 @@ struct S3TablesClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3tables_service(), self.region, host)
 
+    # PutTableReplication  PUT /table-replication
+    # errors: AccessDeniedException, BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def put_table_replication(self, PutTableReplicationRequest input) -> str:
+        auto host = endpoints.regional_host(s3tables_service(), self.region)
+        dict[str, str] query = {}
+        query["tableArn"] = input.tableArn
+        if input.versionToken.is_some():
+            query["versionToken"] = input.versionToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/table-replication", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"configuration\":" + table_replication_configuration_to_json(input.configuration))
+        auto bp = restjson.rest_json_document(b, s3tables_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, s3tables_service(), self.region, host)
+
     # RenameTable  PUT /tables/{tableBucketARN}/{namespace}/{name}/rename
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
     def rename_table(self, RenameTableRequest input) -> str:
@@ -1460,6 +1723,21 @@ struct S3TablesClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/tables/{tableBucketARN}/{namespace}/{name}/rename", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RenameTableDocument(newNamespaceName=input.newNamespaceName, newName=input.newName, versionToken=input.versionToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, s3tables_service(), self.region, host)
+
+    # TagResource  POST /tag/{resourceArn}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(s3tables_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tag/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(s3tables_json_str(k0) + ":" + s3tables_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + s3tables_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, s3tables_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, s3tables_service(), self.region, host)
 
     # UpdateTableMetadataLocation  PUT /tables/{tableBucketARN}/{namespace}/{name}/metadata-location

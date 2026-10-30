@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 73 operations — 49 with a generated method,
-#   24 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 73 operations — 73 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   222 structs (146 @derive(Json)), 14 enums, 7 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -159,8 +159,9 @@ struct ATIMetricDataPoint:
 struct ATIModelPerformance:
     Optional[float64] asi
 
-# no @derive(Json): member(s) metricDataPoints: list[ATIMetricDataPoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metricDataPoints: list[ATIMetricDataPoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ATITrainingMetricsValue:
     Optional[list[ATIMetricDataPoint]] metricDataPoints
     Optional[ATIModelPerformance] modelPerformance
@@ -169,21 +170,24 @@ struct ATITrainingMetricsValue:
 struct AccessDeniedException:
     str message
 
-# no @derive(Json): member(s) variableNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) variableNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AggregatedLogOddsMetric:
     list[str] variableNames
     float64 aggregatedVariablesImportance
 
-# no @derive(Json): member(s) eventVariableNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventVariableNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AggregatedVariablesImpactExplanation:
     Optional[list[str]] eventVariableNames
     Optional[str] relativeImpact
     Optional[float64] logOddsImpact
 
-# no @derive(Json): member(s) logOddsMetrics: list[AggregatedLogOddsMetric] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logOddsMetrics: list[AggregatedLogOddsMetric] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AggregatedVariablesImportanceMetrics:
     Optional[list[AggregatedLogOddsMetric]] logOddsMetrics
 
@@ -202,14 +206,16 @@ struct BatchCreateVariableError:
     Optional[int64] code
     Optional[str] message
 
-# no @derive(Json): member(s) variableEntries: list[VariableEntry], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) variableEntries: list[VariableEntry], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateVariableRequest:
     list[VariableEntry] variableEntries
     Optional[list[Tag]] tags
 
-# no @derive(Json): member(s) errors: list[BatchCreateVariableError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[BatchCreateVariableError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchCreateVariableResult:
     Optional[list[BatchCreateVariableError]] errors
 
@@ -219,13 +225,15 @@ struct BatchGetVariableError:
     Optional[int64] code
     Optional[str] message
 
-# no @derive(Json): member(s) names: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) names: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetVariableRequest:
     list[str] names
 
-# no @derive(Json): member(s) variables: list[Variable], errors: list[BatchGetVariableError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) variables: list[Variable], errors: list[BatchGetVariableError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetVariableResult:
     Optional[list[Variable]] variables
     Optional[list[BatchGetVariableError]] errors
@@ -286,8 +294,9 @@ struct CancelBatchPredictionJobResult:
 struct ConflictException:
     str message
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBatchImportJobRequest:
     str jobId
     str inputPath
@@ -301,8 +310,9 @@ struct CreateBatchImportJobResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBatchPredictionJobRequest:
     str jobId
     str inputPath
@@ -318,8 +328,9 @@ struct CreateBatchPredictionJobResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) externalModelEndpoints: list[str], rules: list[Rule], modelVersions: list[ModelVersion], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) externalModelEndpoints: list[str], rules: list[Rule], modelVersions: list[ModelVersion], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDetectorVersionRequest:
     str detectorId
     Optional[str] description
@@ -335,8 +346,9 @@ struct CreateDetectorVersionResult:
     Optional[str] detectorVersionId
     Optional[DetectorVersionStatus] status
 
-# no @derive(Json): member(s) elements: list[str], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) elements: list[str], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateListRequest:
     str name
     Optional[list[str]] elements
@@ -349,8 +361,9 @@ struct CreateListResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateModelRequest:
     str modelId
     ModelTypeEnum modelType
@@ -363,8 +376,9 @@ struct CreateModelResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) trainingDataSchema: TrainingDataSchema, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) trainingDataSchema: TrainingDataSchema, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateModelVersionRequest:
     str modelId
     ModelTypeEnum modelType
@@ -381,8 +395,9 @@ struct CreateModelVersionResult:
     Optional[str] modelVersionNumber
     Optional[str] status
 
-# no @derive(Json): member(s) outcomes: list[str], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outcomes: list[str], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRuleRequest:
     str ruleId
     str detectorId
@@ -396,8 +411,9 @@ struct CreateRuleRequest:
 struct CreateRuleResult:
     Optional[Rule] rule
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateVariableRequest:
     str name
     DataType dataType
@@ -412,8 +428,9 @@ struct CreateVariableResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) fileLevelMessages: list[FileValidationMessage], fieldLevelMessages: list[FieldValidationMessage] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fileLevelMessages: list[FileValidationMessage], fieldLevelMessages: list[FieldValidationMessage] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataValidationMetrics:
     Optional[list[FileValidationMessage]] fileLevelMessages
     Optional[list[FieldValidationMessage]] fieldLevelMessages
@@ -574,8 +591,9 @@ struct DescribeDetectorRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) detectorVersionSummaries: list[DetectorVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) detectorVersionSummaries: list[DetectorVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDetectorResult:
     Optional[str] detectorId
     Optional[list[DetectorVersionSummary]] detectorVersionSummaries
@@ -590,8 +608,9 @@ struct DescribeModelVersionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) modelVersionDetails: list[ModelVersionDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) modelVersionDetails: list[ModelVersionDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeModelVersionsResult:
     Optional[list[ModelVersionDetail]] modelVersionDetails
     Optional[str] nextToken
@@ -625,24 +644,27 @@ struct EntityType:
     Optional[str] createdTime
     Optional[str] arn
 
-# no @derive(Json): member(s) inputVariables: dict[str, str], outputVariables: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputVariables: dict[str, str], outputVariables: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluatedExternalModel:
     Optional[str] modelEndpoint
     Optional[bool] useEventVariables
     Optional[dict[str, str]] inputVariables
     Optional[dict[str, str]] outputVariables
 
-# no @derive(Json): member(s) evaluations: list[ModelVersionEvaluation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) evaluations: list[ModelVersionEvaluation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluatedModelVersion:
     Optional[str] modelId
     Optional[str] modelVersion
     Optional[str] modelType
     Optional[list[ModelVersionEvaluation]] evaluations
 
-# no @derive(Json): member(s) outcomes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outcomes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluatedRule:
     Optional[str] ruleId
     Optional[str] ruleVersion
@@ -652,8 +674,9 @@ struct EvaluatedRule:
     Optional[bool] evaluated
     Optional[bool] matched
 
-# no @derive(Json): member(s) eventVariables: dict[str, str], entities: list[Entity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventVariables: dict[str, str], entities: list[Entity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Event:
     Optional[str] eventId
     Optional[str] eventTypeName
@@ -676,8 +699,9 @@ struct EventPredictionSummary:
     Optional[str] detectorId
     Optional[str] detectorVersionId
 
-# no @derive(Json): member(s) eventVariables: list[str], labels: list[str], entityTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventVariables: list[str], labels: list[str], entityTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EventType:
     Optional[str] name
     Optional[str] description
@@ -702,8 +726,9 @@ struct ExternalEventsDetail:
     str dataLocation
     str dataAccessRoleArn
 
-# no @derive(Json): member(s) outputConfiguration: ModelOutputConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputConfiguration: ModelOutputConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExternalModel:
     Optional[str] modelEndpoint
     Optional[str] modelSource
@@ -715,8 +740,9 @@ struct ExternalModel:
     Optional[str] createdTime
     Optional[str] arn
 
-# no @derive(Json): member(s) outputs: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputs: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExternalModelOutputs:
     Optional[ExternalModelSummary] externalModel
     Optional[dict[str, str]] outputs
@@ -750,8 +776,9 @@ struct GetBatchImportJobsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) batchImports: list[BatchImport] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) batchImports: list[BatchImport] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBatchImportJobsResult:
     Optional[list[BatchImport]] batchImports
     Optional[str] nextToken
@@ -762,8 +789,9 @@ struct GetBatchPredictionJobsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) batchPredictions: list[BatchPrediction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) batchPredictions: list[BatchPrediction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBatchPredictionJobsResult:
     Optional[list[BatchPrediction]] batchPredictions
     Optional[str] nextToken
@@ -782,8 +810,9 @@ struct GetDetectorVersionRequest:
     str detectorId
     str detectorVersionId
 
-# no @derive(Json): member(s) externalModelEndpoints: list[str], modelVersions: list[ModelVersion], rules: list[Rule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) externalModelEndpoints: list[str], modelVersions: list[ModelVersion], rules: list[Rule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDetectorVersionResult:
     Optional[str] detectorId
     Optional[str] detectorVersionId
@@ -803,8 +832,9 @@ struct GetDetectorsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) detectors: list[Detector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) detectors: list[Detector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDetectorsResult:
     Optional[list[Detector]] detectors
     Optional[str] nextToken
@@ -815,8 +845,9 @@ struct GetEntityTypesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) entityTypes: list[EntityType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entityTypes: list[EntityType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEntityTypesResult:
     Optional[list[EntityType]] entityTypes
     Optional[str] nextToken
@@ -829,8 +860,9 @@ struct GetEventPredictionMetadataRequest:
     str detectorVersionId
     str predictionTimestamp
 
-# no @derive(Json): member(s) eventVariables: list[EventVariableSummary], rules: list[EvaluatedRule], outcomes: list[str], evaluatedModelVersions: list[EvaluatedModelVersion], evaluatedExternalModels: list[EvaluatedExternalModel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventVariables: list[EventVariableSummary], rules: list[EvaluatedRule], outcomes: list[str], evaluatedModelVersions: list[EvaluatedModelVersion], evaluatedExternalModels: list[EvaluatedExternalModel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEventPredictionMetadataResult:
     Optional[str] eventId
     Optional[str] eventTypeName
@@ -848,8 +880,9 @@ struct GetEventPredictionMetadataResult:
     Optional[list[EvaluatedExternalModel]] evaluatedExternalModels
     Optional[str] predictionTimestamp
 
-# no @derive(Json): member(s) entities: list[Entity], eventVariables: dict[str, str], externalModelEndpointDataBlobs: dict[str, ModelEndpointDataBlob] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entities: list[Entity], eventVariables: dict[str, str], externalModelEndpointDataBlobs: dict[str, ModelEndpointDataBlob] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEventPredictionRequest:
     str detectorId
     Optional[str] detectorVersionId
@@ -860,8 +893,9 @@ struct GetEventPredictionRequest:
     dict[str, str] eventVariables
     Optional[dict[str, ModelEndpointDataBlob]] externalModelEndpointDataBlobs
 
-# no @derive(Json): member(s) modelScores: list[ModelScores], ruleResults: list[RuleResult], externalModelOutputs: list[ExternalModelOutputs] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) modelScores: list[ModelScores], ruleResults: list[RuleResult], externalModelOutputs: list[ExternalModelOutputs] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEventPredictionResult:
     Optional[list[ModelScores]] modelScores
     Optional[list[RuleResult]] ruleResults
@@ -872,8 +906,9 @@ struct GetEventRequest:
     str eventId
     str eventTypeName
 
-# no @derive(Json): member(s) event: Event not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) event: Event not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEventResult:
     Optional[Event] event
 
@@ -883,8 +918,9 @@ struct GetEventTypesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) eventTypes: list[EventType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventTypes: list[EventType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEventTypesResult:
     Optional[list[EventType]] eventTypes
     Optional[str] nextToken
@@ -895,8 +931,9 @@ struct GetExternalModelsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) externalModels: list[ExternalModel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) externalModels: list[ExternalModel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetExternalModelsResult:
     Optional[list[ExternalModel]] externalModels
     Optional[str] nextToken
@@ -911,8 +948,9 @@ struct GetLabelsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) labels: list[Label] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) labels: list[Label] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetLabelsResult:
     Optional[list[Label]] labels
     Optional[str] nextToken
@@ -923,8 +961,9 @@ struct GetListElementsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) elements: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) elements: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetListElementsResult:
     Optional[list[str]] elements
     Optional[str] nextToken
@@ -935,8 +974,9 @@ struct GetListsMetadataRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) lists: list[AllowDenyList] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lists: list[AllowDenyList] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetListsMetadataResult:
     Optional[list[AllowDenyList]] lists
     Optional[str] nextToken
@@ -947,8 +987,9 @@ struct GetModelVersionRequest:
     ModelTypeEnum modelType
     str modelVersionNumber
 
-# no @derive(Json): member(s) trainingDataSchema: TrainingDataSchema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) trainingDataSchema: TrainingDataSchema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetModelVersionResult:
     Optional[str] modelId
     Optional[ModelTypeEnum] modelType
@@ -967,8 +1008,9 @@ struct GetModelsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) models: list[Model] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) models: list[Model] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetModelsResult:
     Optional[str] nextToken
     Optional[list[Model]] models
@@ -979,8 +1021,9 @@ struct GetOutcomesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) outcomes: list[Outcome] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outcomes: list[Outcome] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOutcomesResult:
     Optional[list[Outcome]] outcomes
     Optional[str] nextToken
@@ -993,8 +1036,9 @@ struct GetRulesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) ruleDetails: list[RuleDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ruleDetails: list[RuleDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRulesResult:
     Optional[list[RuleDetail]] ruleDetails
     Optional[str] nextToken
@@ -1005,8 +1049,9 @@ struct GetVariablesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) variables: list[Variable] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) variables: list[Variable] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetVariablesResult:
     Optional[list[Variable]] variables
     Optional[str] nextToken
@@ -1044,8 +1089,9 @@ struct Label:
     Optional[str] createdTime
     Optional[str] arn
 
-# no @derive(Json): member(s) labelMapper: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) labelMapper: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LabelSchema:
     Optional[dict[str, list[str]]] labelMapper
     Optional[UnlabeledEventsTreatment] unlabeledEventsTreatment
@@ -1060,8 +1106,9 @@ struct ListEventPredictionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) eventPredictionSummaries: list[EventPredictionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventPredictionSummaries: list[EventPredictionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventPredictionsResult:
     Optional[list[EventPredictionSummary]] eventPredictionSummaries
     Optional[str] nextToken
@@ -1072,8 +1119,9 @@ struct ListTagsForResourceRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResult:
     Optional[list[Tag]] tags
     Optional[str] nextToken
@@ -1114,15 +1162,17 @@ struct ModelInputConfiguration:
     Optional[str] jsonInputTemplate
     Optional[str] csvInputTemplate
 
-# no @derive(Json): member(s) jsonKeyToVariableMap: dict[str, str], csvIndexToVariableMap: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jsonKeyToVariableMap: dict[str, str], csvIndexToVariableMap: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelOutputConfiguration:
     ModelOutputDataFormat format
     Optional[dict[str, str]] jsonKeyToVariableMap
     Optional[dict[str, str]] csvIndexToVariableMap
 
-# no @derive(Json): member(s) scores: dict[str, float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scores: dict[str, float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelScores:
     Optional[ModelVersion] modelVersion
     Optional[dict[str, float64]] scores
@@ -1134,8 +1184,9 @@ struct ModelVersion:
     str modelVersionNumber
     Optional[str] arn
 
-# no @derive(Json): member(s) trainingDataSchema: TrainingDataSchema, trainingResult: TrainingResult, trainingResultV2: TrainingResultV2 not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) trainingDataSchema: TrainingDataSchema, trainingResult: TrainingResult, trainingResultV2: TrainingResultV2 not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelVersionDetail:
     Optional[str] modelId
     Optional[ModelTypeEnum] modelType
@@ -1151,8 +1202,9 @@ struct ModelVersionDetail:
     Optional[str] arn
     Optional[TrainingResultV2] trainingResultV2
 
-# no @derive(Json): member(s) predictionExplanations: PredictionExplanations not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) predictionExplanations: PredictionExplanations not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModelVersionEvaluation:
     Optional[str] outputVariableName
     Optional[str] evaluationScore
@@ -1170,8 +1222,9 @@ struct OFIModelPerformance:
     Optional[float64] auc
     Optional[UncertaintyRange] uncertaintyRange
 
-# no @derive(Json): member(s) metricDataPoints: list[OFIMetricDataPoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metricDataPoints: list[OFIMetricDataPoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OFITrainingMetricsValue:
     Optional[list[OFIMetricDataPoint]] metricDataPoints
     Optional[OFIModelPerformance] modelPerformance
@@ -1184,8 +1237,9 @@ struct Outcome:
     Optional[str] createdTime
     Optional[str] arn
 
-# no @derive(Json): member(s) variableImpactExplanations: list[VariableImpactExplanation], aggregatedVariablesImpactExplanations: list[AggregatedVariablesImpactExplanation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) variableImpactExplanations: list[VariableImpactExplanation], aggregatedVariablesImpactExplanations: list[AggregatedVariablesImpactExplanation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PredictionExplanations:
     Optional[list[VariableImpactExplanation]] variableImpactExplanations
     Optional[list[AggregatedVariablesImpactExplanation]] aggregatedVariablesImpactExplanations
@@ -1195,8 +1249,9 @@ struct PredictionTimeRange:
     str startTime
     str endTime
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutDetectorRequest:
     str detectorId
     Optional[str] description
@@ -1208,8 +1263,9 @@ struct PutDetectorResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutEntityTypeRequest:
     str name
     Optional[str] description
@@ -1220,8 +1276,9 @@ struct PutEntityTypeResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) eventVariables: list[str], labels: list[str], entityTypes: list[str], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventVariables: list[str], labels: list[str], entityTypes: list[str], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutEventTypeRequest:
     str name
     Optional[str] description
@@ -1237,8 +1294,9 @@ struct PutEventTypeResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) outputConfiguration: ModelOutputConfiguration, tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outputConfiguration: ModelOutputConfiguration, tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutExternalModelRequest:
     str modelEndpoint
     str modelSource
@@ -1262,8 +1320,9 @@ struct PutKMSEncryptionKeyResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutLabelRequest:
     str name
     Optional[str] description
@@ -1274,8 +1333,9 @@ struct PutLabelResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutOutcomeRequest:
     str name
     Optional[str] description
@@ -1300,8 +1360,9 @@ struct Rule:
     str ruleId
     str ruleVersion
 
-# no @derive(Json): member(s) outcomes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outcomes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleDetail:
     Optional[str] ruleId
     Optional[str] description
@@ -1314,14 +1375,16 @@ struct RuleDetail:
     Optional[str] createdTime
     Optional[str] arn
 
-# no @derive(Json): member(s) outcomes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outcomes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleResult:
     Optional[str] ruleId
     Optional[list[str]] outcomes
 
-# no @derive(Json): member(s) eventVariables: dict[str, str], entities: list[Entity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) eventVariables: dict[str, str], entities: list[Entity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SendEventRequest:
     str eventId
     str eventTypeName
@@ -1348,8 +1411,9 @@ struct TFIModelPerformance:
     Optional[float64] auc
     Optional[UncertaintyRange] uncertaintyRange
 
-# no @derive(Json): member(s) metricDataPoints: list[TFIMetricDataPoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metricDataPoints: list[TFIMetricDataPoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TFITrainingMetricsValue:
     Optional[list[TFIMetricDataPoint]] metricDataPoints
     Optional[TFIModelPerformance] modelPerformance
@@ -1359,8 +1423,9 @@ struct Tag:
     str key
     str value
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str resourceARN
     list[Tag] tags
@@ -1374,34 +1439,39 @@ struct TagResourceResult:
 struct ThrottlingException:
     str message
 
-# no @derive(Json): member(s) modelVariables: list[str], labelSchema: LabelSchema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) modelVariables: list[str], labelSchema: LabelSchema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrainingDataSchema:
     list[str] modelVariables
     Optional[LabelSchema] labelSchema
 
-# no @derive(Json): member(s) metricDataPoints: list[MetricDataPoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metricDataPoints: list[MetricDataPoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrainingMetrics:
     Optional[float64] auc
     Optional[list[MetricDataPoint]] metricDataPoints
 
-# no @derive(Json): member(s) ofi: OFITrainingMetricsValue, tfi: TFITrainingMetricsValue, ati: ATITrainingMetricsValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ofi: OFITrainingMetricsValue, tfi: TFITrainingMetricsValue, ati: ATITrainingMetricsValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrainingMetricsV2:
     Optional[OFITrainingMetricsValue] ofi
     Optional[TFITrainingMetricsValue] tfi
     Optional[ATITrainingMetricsValue] ati
 
-# no @derive(Json): member(s) dataValidationMetrics: DataValidationMetrics, trainingMetrics: TrainingMetrics, variableImportanceMetrics: VariableImportanceMetrics not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataValidationMetrics: DataValidationMetrics, trainingMetrics: TrainingMetrics, variableImportanceMetrics: VariableImportanceMetrics not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrainingResult:
     Optional[DataValidationMetrics] dataValidationMetrics
     Optional[TrainingMetrics] trainingMetrics
     Optional[VariableImportanceMetrics] variableImportanceMetrics
 
-# no @derive(Json): member(s) dataValidationMetrics: DataValidationMetrics, trainingMetricsV2: TrainingMetricsV2, variableImportanceMetrics: VariableImportanceMetrics, aggregatedVariablesImportanceMetrics: AggregatedVariablesImportanceMetrics not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataValidationMetrics: DataValidationMetrics, trainingMetricsV2: TrainingMetricsV2, variableImportanceMetrics: VariableImportanceMetrics, aggregatedVariablesImportanceMetrics: AggregatedVariablesImportanceMetrics not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrainingResultV2:
     Optional[DataValidationMetrics] dataValidationMetrics
     Optional[TrainingMetricsV2] trainingMetricsV2
@@ -1413,8 +1483,9 @@ struct UncertaintyRange:
     float64 lowerBoundValue
     float64 upperBoundValue
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str resourceARN
     list[str] tagKeys
@@ -1435,8 +1506,9 @@ struct UpdateDetectorVersionMetadataResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) externalModelEndpoints: list[str], rules: list[Rule], modelVersions: list[ModelVersion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) externalModelEndpoints: list[str], rules: list[Rule], modelVersions: list[ModelVersion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDetectorVersionRequest:
     str detectorId
     str detectorVersionId
@@ -1474,8 +1546,9 @@ struct UpdateEventLabelResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) elements: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) elements: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateListRequest:
     str name
     Optional[list[str]] elements
@@ -1499,8 +1572,9 @@ struct UpdateModelResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateModelVersionRequest:
     str modelId
     ModelTypeEnum modelType
@@ -1538,8 +1612,9 @@ struct UpdateRuleMetadataResult:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) outcomes: list[str], tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outcomes: list[str], tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRuleVersionRequest:
     Rule rule
     Optional[str] description
@@ -1595,8 +1670,9 @@ struct VariableImpactExplanation:
     Optional[str] relativeImpact
     Optional[float64] logOddsImpact
 
-# no @derive(Json): member(s) logOddsMetrics: list[LogOddsMetric] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logOddsMetrics: list[LogOddsMetric] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VariableImportanceMetrics:
     Optional[list[LogOddsMetric]] logOddsMetrics
 
@@ -1634,37 +1710,568 @@ def frauddetector_error_from_code(str code) -> FraudDetectorError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   BatchCreateVariable (input BatchCreateVariableRequest)
-#   BatchGetVariable (input BatchGetVariableRequest)
-#   CreateBatchImportJob (input CreateBatchImportJobRequest)
-#   CreateBatchPredictionJob (input CreateBatchPredictionJobRequest)
-#   CreateDetectorVersion (input CreateDetectorVersionRequest)
-#   CreateList (input CreateListRequest)
-#   CreateModel (input CreateModelRequest)
-#   CreateModelVersion (input CreateModelVersionRequest)
-#   CreateRule (input CreateRuleRequest)
-#   CreateVariable (input CreateVariableRequest)
-#   GetEventPrediction (input GetEventPredictionRequest)
-#   PutDetector (input PutDetectorRequest)
-#   PutEntityType (input PutEntityTypeRequest)
-#   PutEventType (input PutEventTypeRequest)
-#   PutExternalModel (input PutExternalModelRequest)
-#   PutLabel (input PutLabelRequest)
-#   PutOutcome (input PutOutcomeRequest)
-#   SendEvent (input SendEventRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateDetectorVersion (input UpdateDetectorVersionRequest)
-#   UpdateList (input UpdateListRequest)
-#   UpdateModelVersion (input UpdateModelVersionRequest)
-#   UpdateRuleVersion (input UpdateRuleVersionRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def frauddetector_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def frauddetector_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def frauddetector_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize BatchCreateVariableRequest to a compact JSON object (declaration order).
+def batch_create_variable_request_to_json(BatchCreateVariableRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.variableEntries:
+        e0.append(x0.to_json())
+    parts.append("\"variableEntries\":" + frauddetector_json_arr(e0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + frauddetector_json_arr(e2))
+    return frauddetector_json_obj(parts)
+
+# Serialize BatchGetVariableRequest to a compact JSON object (declaration order).
+def batch_get_variable_request_to_json(BatchGetVariableRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.names:
+        e0.append(frauddetector_json_str(x0))
+    parts.append("\"names\":" + frauddetector_json_arr(e0))
+    return frauddetector_json_obj(parts)
+
+# Serialize CreateBatchImportJobRequest to a compact JSON object (declaration order).
+def create_batch_import_job_request_to_json(CreateBatchImportJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"jobId\":" + frauddetector_json_str(v.jobId))
+    parts.append("\"inputPath\":" + frauddetector_json_str(v.inputPath))
+    parts.append("\"outputPath\":" + frauddetector_json_str(v.outputPath))
+    parts.append("\"eventTypeName\":" + frauddetector_json_str(v.eventTypeName))
+    parts.append("\"iamRoleArn\":" + frauddetector_json_str(v.iamRoleArn))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + frauddetector_json_arr(e1))
+    return frauddetector_json_obj(parts)
+
+# Serialize CreateBatchPredictionJobRequest to a compact JSON object (declaration order).
+def create_batch_prediction_job_request_to_json(CreateBatchPredictionJobRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"jobId\":" + frauddetector_json_str(v.jobId))
+    parts.append("\"inputPath\":" + frauddetector_json_str(v.inputPath))
+    parts.append("\"outputPath\":" + frauddetector_json_str(v.outputPath))
+    parts.append("\"eventTypeName\":" + frauddetector_json_str(v.eventTypeName))
+    parts.append("\"detectorName\":" + frauddetector_json_str(v.detectorName))
+    if v.detectorVersion.is_some():
+        auto u0 = v.detectorVersion.unwrap()
+        parts.append("\"detectorVersion\":" + frauddetector_json_str(u0))
+    parts.append("\"iamRoleArn\":" + frauddetector_json_str(v.iamRoleArn))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + frauddetector_json_arr(e2))
+    return frauddetector_json_obj(parts)
+
+# Serialize CreateDetectorVersionRequest to a compact JSON object (declaration order).
+def create_detector_version_request_to_json(CreateDetectorVersionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"detectorId\":" + frauddetector_json_str(v.detectorId))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + frauddetector_json_str(u0))
+    if v.externalModelEndpoints.is_some():
+        auto u1 = v.externalModelEndpoints.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(frauddetector_json_str(x2))
+        parts.append("\"externalModelEndpoints\":" + frauddetector_json_arr(e2))
+    list[str] e3 = []
+    for x3 in v.rules:
+        e3.append(x3.to_json())
+    parts.append("\"rules\":" + frauddetector_json_arr(e3))
+    if v.modelVersions.is_some():
+        auto u4 = v.modelVersions.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"modelVersions\":" + frauddetector_json_arr(e5))
+    if v.ruleExecutionMode.is_some():
+        auto u6 = v.ruleExecutionMode.unwrap()
+        parts.append("\"ruleExecutionMode\":" + u6.to_json())
+    if v.tags.is_some():
+        auto u7 = v.tags.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"tags\":" + frauddetector_json_arr(e8))
+    return frauddetector_json_obj(parts)
+
+# Serialize CreateListRequest to a compact JSON object (declaration order).
+def create_list_request_to_json(CreateListRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + frauddetector_json_str(v.name))
+    if v.elements.is_some():
+        auto u0 = v.elements.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(frauddetector_json_str(x1))
+        parts.append("\"elements\":" + frauddetector_json_arr(e1))
+    if v.variableType.is_some():
+        auto u2 = v.variableType.unwrap()
+        parts.append("\"variableType\":" + frauddetector_json_str(u2))
+    if v.description.is_some():
+        auto u3 = v.description.unwrap()
+        parts.append("\"description\":" + frauddetector_json_str(u3))
+    if v.tags.is_some():
+        auto u4 = v.tags.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"tags\":" + frauddetector_json_arr(e5))
+    return frauddetector_json_obj(parts)
+
+# Serialize CreateModelRequest to a compact JSON object (declaration order).
+def create_model_request_to_json(CreateModelRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"modelId\":" + frauddetector_json_str(v.modelId))
+    parts.append("\"modelType\":" + v.modelType.to_json())
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + frauddetector_json_str(u0))
+    parts.append("\"eventTypeName\":" + frauddetector_json_str(v.eventTypeName))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + frauddetector_json_arr(e2))
+    return frauddetector_json_obj(parts)
+
+# Serialize CreateModelVersionRequest to a compact JSON object (declaration order).
+def create_model_version_request_to_json(CreateModelVersionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"modelId\":" + frauddetector_json_str(v.modelId))
+    parts.append("\"modelType\":" + v.modelType.to_json())
+    parts.append("\"trainingDataSource\":" + v.trainingDataSource.to_json())
+    parts.append("\"trainingDataSchema\":" + training_data_schema_to_json(v.trainingDataSchema))
+    if v.externalEventsDetail.is_some():
+        auto u0 = v.externalEventsDetail.unwrap()
+        parts.append("\"externalEventsDetail\":" + u0.to_json())
+    if v.ingestedEventsDetail.is_some():
+        auto u1 = v.ingestedEventsDetail.unwrap()
+        parts.append("\"ingestedEventsDetail\":" + u1.to_json())
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"tags\":" + frauddetector_json_arr(e3))
+    return frauddetector_json_obj(parts)
+
+# Serialize CreateRuleRequest to a compact JSON object (declaration order).
+def create_rule_request_to_json(CreateRuleRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ruleId\":" + frauddetector_json_str(v.ruleId))
+    parts.append("\"detectorId\":" + frauddetector_json_str(v.detectorId))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + frauddetector_json_str(u0))
+    parts.append("\"expression\":" + frauddetector_json_str(v.expression))
+    parts.append("\"language\":" + frauddetector_json_str(v.language))
+    list[str] e1 = []
+    for x1 in v.outcomes:
+        e1.append(frauddetector_json_str(x1))
+    parts.append("\"outcomes\":" + frauddetector_json_arr(e1))
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"tags\":" + frauddetector_json_arr(e3))
+    return frauddetector_json_obj(parts)
+
+# Serialize CreateVariableRequest to a compact JSON object (declaration order).
+def create_variable_request_to_json(CreateVariableRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + frauddetector_json_str(v.name))
+    parts.append("\"dataType\":" + v.dataType.to_json())
+    parts.append("\"dataSource\":" + v.dataSource.to_json())
+    parts.append("\"defaultValue\":" + frauddetector_json_str(v.defaultValue))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + frauddetector_json_str(u0))
+    if v.variableType.is_some():
+        auto u1 = v.variableType.unwrap()
+        parts.append("\"variableType\":" + frauddetector_json_str(u1))
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"tags\":" + frauddetector_json_arr(e3))
+    return frauddetector_json_obj(parts)
+
+# Serialize GetEventPredictionRequest to a compact JSON object (declaration order).
+def get_event_prediction_request_to_json(GetEventPredictionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"detectorId\":" + frauddetector_json_str(v.detectorId))
+    if v.detectorVersionId.is_some():
+        auto u0 = v.detectorVersionId.unwrap()
+        parts.append("\"detectorVersionId\":" + frauddetector_json_str(u0))
+    parts.append("\"eventId\":" + frauddetector_json_str(v.eventId))
+    parts.append("\"eventTypeName\":" + frauddetector_json_str(v.eventTypeName))
+    list[str] e1 = []
+    for x1 in v.entities:
+        e1.append(x1.to_json())
+    parts.append("\"entities\":" + frauddetector_json_arr(e1))
+    parts.append("\"eventTimestamp\":" + frauddetector_json_str(v.eventTimestamp))
+    list[str] m2 = []
+    for k2 in sorted(v.eventVariables.keys()):
+        m2.append(frauddetector_json_str(k2) + ":" + frauddetector_json_str(v.eventVariables[k2]))
+    parts.append("\"eventVariables\":" + frauddetector_json_obj(m2))
+    if v.externalModelEndpointDataBlobs.is_some():
+        auto u3 = v.externalModelEndpointDataBlobs.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(frauddetector_json_str(k4) + ":" + u3[k4].to_json())
+        parts.append("\"externalModelEndpointDataBlobs\":" + frauddetector_json_obj(m4))
+    return frauddetector_json_obj(parts)
+
+# Serialize LabelSchema to a compact JSON object (declaration order).
+def label_schema_to_json(LabelSchema v) -> str:
+    list[str] parts = []
+    if v.labelMapper.is_some():
+        auto u0 = v.labelMapper.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            list[str] e2 = []
+            for x2 in u0[k1]:
+                e2.append(frauddetector_json_str(x2))
+            m1.append(frauddetector_json_str(k1) + ":" + frauddetector_json_arr(e2))
+        parts.append("\"labelMapper\":" + frauddetector_json_obj(m1))
+    if v.unlabeledEventsTreatment.is_some():
+        auto u3 = v.unlabeledEventsTreatment.unwrap()
+        parts.append("\"unlabeledEventsTreatment\":" + u3.to_json())
+    return frauddetector_json_obj(parts)
+
+# Serialize ModelOutputConfiguration to a compact JSON object (declaration order).
+def model_output_configuration_to_json(ModelOutputConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"format\":" + v.format.to_json())
+    if v.jsonKeyToVariableMap.is_some():
+        auto u0 = v.jsonKeyToVariableMap.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(frauddetector_json_str(k1) + ":" + frauddetector_json_str(u0[k1]))
+        parts.append("\"jsonKeyToVariableMap\":" + frauddetector_json_obj(m1))
+    if v.csvIndexToVariableMap.is_some():
+        auto u2 = v.csvIndexToVariableMap.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(frauddetector_json_str(k3) + ":" + frauddetector_json_str(u2[k3]))
+        parts.append("\"csvIndexToVariableMap\":" + frauddetector_json_obj(m3))
+    return frauddetector_json_obj(parts)
+
+# Serialize PutDetectorRequest to a compact JSON object (declaration order).
+def put_detector_request_to_json(PutDetectorRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"detectorId\":" + frauddetector_json_str(v.detectorId))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + frauddetector_json_str(u0))
+    parts.append("\"eventTypeName\":" + frauddetector_json_str(v.eventTypeName))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + frauddetector_json_arr(e2))
+    return frauddetector_json_obj(parts)
+
+# Serialize PutEntityTypeRequest to a compact JSON object (declaration order).
+def put_entity_type_request_to_json(PutEntityTypeRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + frauddetector_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + frauddetector_json_str(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + frauddetector_json_arr(e2))
+    return frauddetector_json_obj(parts)
+
+# Serialize PutEventTypeRequest to a compact JSON object (declaration order).
+def put_event_type_request_to_json(PutEventTypeRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + frauddetector_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + frauddetector_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.eventVariables:
+        e1.append(frauddetector_json_str(x1))
+    parts.append("\"eventVariables\":" + frauddetector_json_arr(e1))
+    if v.labels.is_some():
+        auto u2 = v.labels.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(frauddetector_json_str(x3))
+        parts.append("\"labels\":" + frauddetector_json_arr(e3))
+    list[str] e4 = []
+    for x4 in v.entityTypes:
+        e4.append(frauddetector_json_str(x4))
+    parts.append("\"entityTypes\":" + frauddetector_json_arr(e4))
+    if v.eventIngestion.is_some():
+        auto u5 = v.eventIngestion.unwrap()
+        parts.append("\"eventIngestion\":" + u5.to_json())
+    if v.tags.is_some():
+        auto u6 = v.tags.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"tags\":" + frauddetector_json_arr(e7))
+    if v.eventOrchestration.is_some():
+        auto u8 = v.eventOrchestration.unwrap()
+        parts.append("\"eventOrchestration\":" + u8.to_json())
+    return frauddetector_json_obj(parts)
+
+# Serialize PutExternalModelRequest to a compact JSON object (declaration order).
+def put_external_model_request_to_json(PutExternalModelRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"modelEndpoint\":" + frauddetector_json_str(v.modelEndpoint))
+    parts.append("\"modelSource\":" + frauddetector_json_str(v.modelSource))
+    parts.append("\"invokeModelEndpointRoleArn\":" + frauddetector_json_str(v.invokeModelEndpointRoleArn))
+    parts.append("\"inputConfiguration\":" + v.inputConfiguration.to_json())
+    parts.append("\"outputConfiguration\":" + model_output_configuration_to_json(v.outputConfiguration))
+    parts.append("\"modelEndpointStatus\":" + v.modelEndpointStatus.to_json())
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"tags\":" + frauddetector_json_arr(e1))
+    return frauddetector_json_obj(parts)
+
+# Serialize PutLabelRequest to a compact JSON object (declaration order).
+def put_label_request_to_json(PutLabelRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + frauddetector_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + frauddetector_json_str(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + frauddetector_json_arr(e2))
+    return frauddetector_json_obj(parts)
+
+# Serialize PutOutcomeRequest to a compact JSON object (declaration order).
+def put_outcome_request_to_json(PutOutcomeRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + frauddetector_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + frauddetector_json_str(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"tags\":" + frauddetector_json_arr(e2))
+    return frauddetector_json_obj(parts)
+
+# Serialize SendEventRequest to a compact JSON object (declaration order).
+def send_event_request_to_json(SendEventRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"eventId\":" + frauddetector_json_str(v.eventId))
+    parts.append("\"eventTypeName\":" + frauddetector_json_str(v.eventTypeName))
+    parts.append("\"eventTimestamp\":" + frauddetector_json_str(v.eventTimestamp))
+    list[str] m0 = []
+    for k0 in sorted(v.eventVariables.keys()):
+        m0.append(frauddetector_json_str(k0) + ":" + frauddetector_json_str(v.eventVariables[k0]))
+    parts.append("\"eventVariables\":" + frauddetector_json_obj(m0))
+    if v.assignedLabel.is_some():
+        auto u1 = v.assignedLabel.unwrap()
+        parts.append("\"assignedLabel\":" + frauddetector_json_str(u1))
+    if v.labelTimestamp.is_some():
+        auto u2 = v.labelTimestamp.unwrap()
+        parts.append("\"labelTimestamp\":" + frauddetector_json_str(u2))
+    list[str] e3 = []
+    for x3 in v.entities:
+        e3.append(x3.to_json())
+    parts.append("\"entities\":" + frauddetector_json_arr(e3))
+    return frauddetector_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceARN\":" + frauddetector_json_str(v.resourceARN))
+    list[str] e0 = []
+    for x0 in v.tags:
+        e0.append(x0.to_json())
+    parts.append("\"tags\":" + frauddetector_json_arr(e0))
+    return frauddetector_json_obj(parts)
+
+# Serialize TrainingDataSchema to a compact JSON object (declaration order).
+def training_data_schema_to_json(TrainingDataSchema v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.modelVariables:
+        e0.append(frauddetector_json_str(x0))
+    parts.append("\"modelVariables\":" + frauddetector_json_arr(e0))
+    if v.labelSchema.is_some():
+        auto u1 = v.labelSchema.unwrap()
+        parts.append("\"labelSchema\":" + label_schema_to_json(u1))
+    return frauddetector_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceARN\":" + frauddetector_json_str(v.resourceARN))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(frauddetector_json_str(x0))
+    parts.append("\"tagKeys\":" + frauddetector_json_arr(e0))
+    return frauddetector_json_obj(parts)
+
+# Serialize UpdateDetectorVersionRequest to a compact JSON object (declaration order).
+def update_detector_version_request_to_json(UpdateDetectorVersionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"detectorId\":" + frauddetector_json_str(v.detectorId))
+    parts.append("\"detectorVersionId\":" + frauddetector_json_str(v.detectorVersionId))
+    list[str] e0 = []
+    for x0 in v.externalModelEndpoints:
+        e0.append(frauddetector_json_str(x0))
+    parts.append("\"externalModelEndpoints\":" + frauddetector_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.rules:
+        e1.append(x1.to_json())
+    parts.append("\"rules\":" + frauddetector_json_arr(e1))
+    if v.description.is_some():
+        auto u2 = v.description.unwrap()
+        parts.append("\"description\":" + frauddetector_json_str(u2))
+    if v.modelVersions.is_some():
+        auto u3 = v.modelVersions.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"modelVersions\":" + frauddetector_json_arr(e4))
+    if v.ruleExecutionMode.is_some():
+        auto u5 = v.ruleExecutionMode.unwrap()
+        parts.append("\"ruleExecutionMode\":" + u5.to_json())
+    return frauddetector_json_obj(parts)
+
+# Serialize UpdateListRequest to a compact JSON object (declaration order).
+def update_list_request_to_json(UpdateListRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + frauddetector_json_str(v.name))
+    if v.elements.is_some():
+        auto u0 = v.elements.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(frauddetector_json_str(x1))
+        parts.append("\"elements\":" + frauddetector_json_arr(e1))
+    if v.description.is_some():
+        auto u2 = v.description.unwrap()
+        parts.append("\"description\":" + frauddetector_json_str(u2))
+    if v.updateMode.is_some():
+        auto u3 = v.updateMode.unwrap()
+        parts.append("\"updateMode\":" + u3.to_json())
+    if v.variableType.is_some():
+        auto u4 = v.variableType.unwrap()
+        parts.append("\"variableType\":" + frauddetector_json_str(u4))
+    return frauddetector_json_obj(parts)
+
+# Serialize UpdateModelVersionRequest to a compact JSON object (declaration order).
+def update_model_version_request_to_json(UpdateModelVersionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"modelId\":" + frauddetector_json_str(v.modelId))
+    parts.append("\"modelType\":" + v.modelType.to_json())
+    parts.append("\"majorVersionNumber\":" + frauddetector_json_str(v.majorVersionNumber))
+    if v.externalEventsDetail.is_some():
+        auto u0 = v.externalEventsDetail.unwrap()
+        parts.append("\"externalEventsDetail\":" + u0.to_json())
+    if v.ingestedEventsDetail.is_some():
+        auto u1 = v.ingestedEventsDetail.unwrap()
+        parts.append("\"ingestedEventsDetail\":" + u1.to_json())
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"tags\":" + frauddetector_json_arr(e3))
+    return frauddetector_json_obj(parts)
+
+# Serialize UpdateRuleVersionRequest to a compact JSON object (declaration order).
+def update_rule_version_request_to_json(UpdateRuleVersionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"rule\":" + v.rule.to_json())
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + frauddetector_json_str(u0))
+    parts.append("\"expression\":" + frauddetector_json_str(v.expression))
+    parts.append("\"language\":" + frauddetector_json_str(v.language))
+    list[str] e1 = []
+    for x1 in v.outcomes:
+        e1.append(frauddetector_json_str(x1))
+    parts.append("\"outcomes\":" + frauddetector_json_arr(e1))
+    if v.tags.is_some():
+        auto u2 = v.tags.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"tags\":" + frauddetector_json_arr(e3))
+    return frauddetector_json_obj(parts)
 
 # A bound FraudDetector client: credentials + region, threaded into every operation.
 struct FraudDetectorClient:
     core.Credentials creds
     str region
+
+    # BatchCreateVariable
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def batch_create_variable(self, BatchCreateVariableRequest input) -> str:
+        auto body = batch_create_variable_request_to_json(input)
+        return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "BatchCreateVariable", body)
+
+    # BatchGetVariable
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def batch_get_variable(self, BatchGetVariableRequest input) -> str:
+        auto body = batch_get_variable_request_to_json(input)
+        return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "BatchGetVariable", body)
 
     # CancelBatchImportJob
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1677,6 +2284,54 @@ struct FraudDetectorClient:
     def cancel_batch_prediction_job(self, CancelBatchPredictionJobRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "CancelBatchPredictionJob", body)
+
+    # CreateBatchImportJob
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_batch_import_job(self, CreateBatchImportJobRequest input) -> str:
+        auto body = create_batch_import_job_request_to_json(input)
+        return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "CreateBatchImportJob", body)
+
+    # CreateBatchPredictionJob
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_batch_prediction_job(self, CreateBatchPredictionJobRequest input) -> str:
+        auto body = create_batch_prediction_job_request_to_json(input)
+        return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "CreateBatchPredictionJob", body)
+
+    # CreateDetectorVersion
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_detector_version(self, CreateDetectorVersionRequest input) -> str:
+        auto body = create_detector_version_request_to_json(input)
+        return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "CreateDetectorVersion", body)
+
+    # CreateList
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def create_list(self, CreateListRequest input) -> str:
+        auto body = create_list_request_to_json(input)
+        return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "CreateList", body)
+
+    # CreateModel
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def create_model(self, CreateModelRequest input) -> str:
+        auto body = create_model_request_to_json(input)
+        return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "CreateModel", body)
+
+    # CreateModelVersion
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_model_version(self, CreateModelVersionRequest input) -> str:
+        auto body = create_model_version_request_to_json(input)
+        return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "CreateModelVersion", body)
+
+    # CreateRule
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def create_rule(self, CreateRuleRequest input) -> str:
+        auto body = create_rule_request_to_json(input)
+        return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "CreateRule", body)
+
+    # CreateVariable
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def create_variable(self, CreateVariableRequest input) -> str:
+        auto body = create_variable_request_to_json(input)
+        return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "CreateVariable", body)
 
     # DeleteBatchImportJob
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
@@ -1828,6 +2483,12 @@ struct FraudDetectorClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "GetEvent", body)
 
+    # GetEventPrediction
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ResourceUnavailableException, ThrottlingException, ValidationException
+    def get_event_prediction(self, GetEventPredictionRequest input) -> str:
+        auto body = get_event_prediction_request_to_json(input)
+        return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "GetEventPrediction", body)
+
     # GetEventPredictionMetadata
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_event_prediction_metadata(self, GetEventPredictionMetadataRequest input) -> str:
@@ -1912,11 +2573,71 @@ struct FraudDetectorClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "ListTagsForResource", body)
 
+    # PutDetector
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def put_detector(self, PutDetectorRequest input) -> str:
+        auto body = put_detector_request_to_json(input)
+        return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "PutDetector", body)
+
+    # PutEntityType
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def put_entity_type(self, PutEntityTypeRequest input) -> str:
+        auto body = put_entity_type_request_to_json(input)
+        return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "PutEntityType", body)
+
+    # PutEventType
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def put_event_type(self, PutEventTypeRequest input) -> str:
+        auto body = put_event_type_request_to_json(input)
+        return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "PutEventType", body)
+
+    # PutExternalModel
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def put_external_model(self, PutExternalModelRequest input) -> str:
+        auto body = put_external_model_request_to_json(input)
+        return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "PutExternalModel", body)
+
     # PutKMSEncryptionKey
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def put_kms_encryption_key(self, PutKMSEncryptionKeyRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "PutKMSEncryptionKey", body)
+
+    # PutLabel
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def put_label(self, PutLabelRequest input) -> str:
+        auto body = put_label_request_to_json(input)
+        return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "PutLabel", body)
+
+    # PutOutcome
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def put_outcome(self, PutOutcomeRequest input) -> str:
+        auto body = put_outcome_request_to_json(input)
+        return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "PutOutcome", body)
+
+    # SendEvent
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def send_event(self, SendEventRequest input) -> str:
+        auto body = send_event_request_to_json(input)
+        return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "SendEvent", body)
+
+    # TagResource
+    # errors: AccessDeniedException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: AccessDeniedException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # UpdateDetectorVersion
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_detector_version(self, UpdateDetectorVersionRequest input) -> str:
+        auto body = update_detector_version_request_to_json(input)
+        return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "UpdateDetectorVersion", body)
 
     # UpdateDetectorVersionMetadata
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
@@ -1936,11 +2657,23 @@ struct FraudDetectorClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "UpdateEventLabel", body)
 
+    # UpdateList
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_list(self, UpdateListRequest input) -> str:
+        auto body = update_list_request_to_json(input)
+        return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "UpdateList", body)
+
     # UpdateModel
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_model(self, UpdateModelRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "UpdateModel", body)
+
+    # UpdateModelVersion
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_model_version(self, UpdateModelVersionRequest input) -> str:
+        auto body = update_model_version_request_to_json(input)
+        return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "UpdateModelVersion", body)
 
     # UpdateModelVersionStatus
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1953,6 +2686,12 @@ struct FraudDetectorClient:
     def update_rule_metadata(self, UpdateRuleMetadataRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "UpdateRuleMetadata", body)
+
+    # UpdateRuleVersion
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_rule_version(self, UpdateRuleVersionRequest input) -> str:
+        auto body = update_rule_version_request_to_json(input)
+        return awsjson.awsjson_request_now(frauddetector_protocol(), self.creds, self.region, "UpdateRuleVersion", body)
 
     # UpdateVariable
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException

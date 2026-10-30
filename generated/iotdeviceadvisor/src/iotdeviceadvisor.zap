@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 14 operations — 9 with a generated method,
-#   5 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 14 operations — 13 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   41 structs (25 @derive(Json)), 6 enums, 4 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -160,8 +160,9 @@ struct GetSuiteDefinitionRequest:
     str suiteDefinitionId
     Optional[str] suiteDefinitionVersion
 
-# no @derive(Json): member(s) suiteDefinitionConfiguration: SuiteDefinitionConfiguration, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) suiteDefinitionConfiguration: SuiteDefinitionConfiguration, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSuiteDefinitionResponse:
     Optional[str] suiteDefinitionId
     Optional[str] suiteDefinitionArn
@@ -188,8 +189,9 @@ struct GetSuiteRunRequest:
     str suiteDefinitionId
     str suiteRunId
 
-# no @derive(Json): member(s) suiteRunConfiguration: SuiteRunConfiguration, testResult: TestResult, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) suiteRunConfiguration: SuiteRunConfiguration, testResult: TestResult, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSuiteRunResponse:
     Optional[str] suiteDefinitionId
     Optional[str] suiteDefinitionVersion
@@ -203,8 +205,9 @@ struct GetSuiteRunResponse:
     Optional[str] errorReason
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) tests: list[TestCaseRun] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tests: list[TestCaseRun] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GroupResult:
     Optional[str] groupId
     Optional[str] groupName
@@ -220,8 +223,9 @@ struct ListSuiteDefinitionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) suiteDefinitionInformationList: list[SuiteDefinitionInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) suiteDefinitionInformationList: list[SuiteDefinitionInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSuiteDefinitionsResponse:
     Optional[list[SuiteDefinitionInformation]] suiteDefinitionInformationList
     Optional[str] nextToken
@@ -234,8 +238,9 @@ struct ListSuiteRunsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) suiteRunsList: list[SuiteRunInformation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) suiteRunsList: list[SuiteRunInformation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSuiteRunsResponse:
     Optional[list[SuiteRunInformation]] suiteRunsList
     Optional[str] nextToken
@@ -245,8 +250,9 @@ struct ListSuiteRunsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -280,8 +286,9 @@ struct StopSuiteRunResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) devices: list[DeviceUnderTest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) devices: list[DeviceUnderTest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SuiteDefinitionConfiguration:
     str suiteDefinitionName
     Optional[list[DeviceUnderTest]] devices
@@ -291,8 +298,9 @@ struct SuiteDefinitionConfiguration:
     str devicePermissionRoleArn
     Optional[Protocol] protocol
 
-# no @derive(Json): member(s) defaultDevices: list[DeviceUnderTest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) defaultDevices: list[DeviceUnderTest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SuiteDefinitionInformation:
     Optional[str] suiteDefinitionId
     Optional[str] suiteDefinitionName
@@ -302,8 +310,9 @@ struct SuiteDefinitionInformation:
     Optional[Protocol] protocol
     Optional[DateTime] createdAt
 
-# no @derive(Json): member(s) selectedTestList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) selectedTestList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SuiteRunConfiguration:
     DeviceUnderTest primaryDevice
     Optional[list[str]] selectedTestList
@@ -333,8 +342,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) testScenarios: list[TestCaseScenario] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) testScenarios: list[TestCaseScenario] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestCaseRun:
     Optional[str] testCaseRunId
     Optional[str] testCaseDefinitionId
@@ -355,8 +365,9 @@ struct TestCaseScenario:
     Optional[str] failure
     Optional[str] systemMessage
 
-# no @derive(Json): member(s) groups: list[GroupResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) groups: list[GroupResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestResult:
     Optional[list[GroupResult]] groups
 
@@ -419,16 +430,99 @@ def api_iotdeviceadvisor_error_from_code(str code) -> IotDeviceAdvisorError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateSuiteDefinition (document member `suiteDefinitionConfiguration: SuiteDefinitionConfiguration` is not serializable by derive)
-#   StartSuiteRun (document member `suiteRunConfiguration: SuiteRunConfiguration` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateSuiteDefinition (document member `suiteDefinitionConfiguration: SuiteDefinitionConfiguration` is not serializable by derive)
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def api_iotdeviceadvisor_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def api_iotdeviceadvisor_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def api_iotdeviceadvisor_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize SuiteDefinitionConfiguration to a compact JSON object (declaration order).
+def suite_definition_configuration_to_json(SuiteDefinitionConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"suiteDefinitionName\":" + api_iotdeviceadvisor_json_str(v.suiteDefinitionName))
+    if v.devices.is_some():
+        auto u0 = v.devices.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"devices\":" + api_iotdeviceadvisor_json_arr(e1))
+    if v.intendedForQualification.is_some():
+        auto u2 = v.intendedForQualification.unwrap()
+        parts.append("\"intendedForQualification\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.isLongDurationTest.is_some():
+        auto u3 = v.isLongDurationTest.unwrap()
+        parts.append("\"isLongDurationTest\":" + json.dumps(JsonValue.Bool(u3)))
+    parts.append("\"rootGroup\":" + api_iotdeviceadvisor_json_str(v.rootGroup))
+    parts.append("\"devicePermissionRoleArn\":" + api_iotdeviceadvisor_json_str(v.devicePermissionRoleArn))
+    if v.protocol.is_some():
+        auto u4 = v.protocol.unwrap()
+        parts.append("\"protocol\":" + u4.to_json())
+    return api_iotdeviceadvisor_json_obj(parts)
+
+# Serialize SuiteRunConfiguration to a compact JSON object (declaration order).
+def suite_run_configuration_to_json(SuiteRunConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"primaryDevice\":" + v.primaryDevice.to_json())
+    if v.selectedTestList.is_some():
+        auto u0 = v.selectedTestList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(api_iotdeviceadvisor_json_str(x1))
+        parts.append("\"selectedTestList\":" + api_iotdeviceadvisor_json_arr(e1))
+    if v.parallelRun.is_some():
+        auto u2 = v.parallelRun.unwrap()
+        parts.append("\"parallelRun\":" + json.dumps(JsonValue.Bool(u2)))
+    return api_iotdeviceadvisor_json_obj(parts)
 
 # A bound IotDeviceAdvisor client: credentials + region, threaded into every operation.
 struct IotDeviceAdvisorClient:
     core.Credentials creds
     str region
+
+    # CreateSuiteDefinition  POST /suiteDefinitions
+    # errors: InternalServerException, ValidationException
+    def create_suite_definition(self, CreateSuiteDefinitionRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotdeviceadvisor_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/suiteDefinitions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"suiteDefinitionConfiguration\":" + suite_definition_configuration_to_json(input.suiteDefinitionConfiguration))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(api_iotdeviceadvisor_json_str(k1) + ":" + api_iotdeviceadvisor_json_str(u0[k1]))
+            parts.append("\"tags\":" + api_iotdeviceadvisor_json_obj(m1))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + api_iotdeviceadvisor_json_str(u2))
+        auto bp = restjson.rest_json_document(b, api_iotdeviceadvisor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotdeviceadvisor_service(), self.region, host)
 
     # DeleteSuiteDefinition  DELETE /suiteDefinitions/{suiteDefinitionId}
     # errors: InternalServerException, ValidationException
@@ -524,6 +618,27 @@ struct IotDeviceAdvisorClient:
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotdeviceadvisor_service(), self.region, host)
 
+    # StartSuiteRun  POST /suiteDefinitions/{suiteDefinitionId}/suiteRuns
+    # errors: ConflictException, InternalServerException, ValidationException
+    def start_suite_run(self, StartSuiteRunRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotdeviceadvisor_service(), self.region)
+        dict[str, str] labels = {}
+        labels["suiteDefinitionId"] = input.suiteDefinitionId
+        auto b = binding.HttpBinding(method="POST", path_template="/suiteDefinitions/{suiteDefinitionId}/suiteRuns", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.suiteDefinitionVersion.is_some():
+            auto u0 = input.suiteDefinitionVersion.unwrap()
+            parts.append("\"suiteDefinitionVersion\":" + api_iotdeviceadvisor_json_str(u0))
+        parts.append("\"suiteRunConfiguration\":" + suite_run_configuration_to_json(input.suiteRunConfiguration))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(api_iotdeviceadvisor_json_str(k2) + ":" + api_iotdeviceadvisor_json_str(u1[k2]))
+            parts.append("\"tags\":" + api_iotdeviceadvisor_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, api_iotdeviceadvisor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotdeviceadvisor_service(), self.region, host)
+
     # StopSuiteRun  POST /suiteDefinitions/{suiteDefinitionId}/suiteRuns/{suiteRunId}/stop
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def stop_suite_run(self, StopSuiteRunRequest input) -> str:
@@ -533,6 +648,33 @@ struct IotDeviceAdvisorClient:
         labels["suiteRunId"] = input.suiteRunId
         auto b = binding.HttpBinding(method="POST", path_template="/suiteDefinitions/{suiteDefinitionId}/suiteRuns/{suiteRunId}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotdeviceadvisor_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotdeviceadvisor_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(api_iotdeviceadvisor_json_str(k0) + ":" + api_iotdeviceadvisor_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + api_iotdeviceadvisor_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, api_iotdeviceadvisor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotdeviceadvisor_service(), self.region, host)
+
+    # UpdateSuiteDefinition  PATCH /suiteDefinitions/{suiteDefinitionId}
+    # errors: InternalServerException, ValidationException
+    def update_suite_definition(self, UpdateSuiteDefinitionRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotdeviceadvisor_service(), self.region)
+        dict[str, str] labels = {}
+        labels["suiteDefinitionId"] = input.suiteDefinitionId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/suiteDefinitions/{suiteDefinitionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"suiteDefinitionConfiguration\":" + suite_definition_configuration_to_json(input.suiteDefinitionConfiguration))
+        auto bp = restjson.rest_json_document(b, api_iotdeviceadvisor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, api_iotdeviceadvisor_service(), self.region, host)
 
 # Construct a IotDeviceAdvisorClient bound to credentials + region.
 def api_iotdeviceadvisor_client(core.Credentials creds, str region) -> IotDeviceAdvisorClient:

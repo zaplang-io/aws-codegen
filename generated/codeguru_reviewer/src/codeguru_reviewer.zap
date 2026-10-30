@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 14 operations — 6 with a generated method,
-#   8 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 14 operations — 10 with a generated method,
+#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   61 structs (36 @derive(Json)), 11 enums, 7 error variants.
 #   0 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -153,8 +153,9 @@ struct AssociateRepositoryRequest:
     Optional[dict[str, str]] Tags
     Optional[KMSKeyDetails] KMSKeyDetails
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociateRepositoryResponse:
     Optional[RepositoryAssociation] RepositoryAssociation
     Optional[dict[str, str]] Tags
@@ -173,8 +174,9 @@ struct CodeArtifacts:
 struct CodeCommitRepository:
     str Name
 
-# no @derive(Json): member(s) AnalysisTypes: list[AnalysisType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AnalysisTypes: list[AnalysisType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeReview:
     Optional[str] Name
     Optional[str] CodeReviewArn
@@ -208,8 +210,9 @@ struct CodeReviewSummary:
     Optional[MetricsSummary] MetricsSummary
     Optional[SourceCodeType] SourceCodeType
 
-# no @derive(Json): member(s) AnalysisTypes: list[AnalysisType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AnalysisTypes: list[AnalysisType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeReviewType:
     RepositoryAnalysis RepositoryAnalysis
     Optional[list[AnalysisType]] AnalysisTypes
@@ -232,8 +235,9 @@ struct CreateCodeReviewRequest:
     CodeReviewType Type
     Optional[str] ClientRequestToken
 
-# no @derive(Json): member(s) CodeReview: CodeReview not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CodeReview: CodeReview not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCodeReviewResponse:
     Optional[CodeReview] CodeReview
 
@@ -242,8 +246,9 @@ struct CreateCodeReviewResponse:
 struct DescribeCodeReviewRequest:
     str CodeReviewArn
 
-# no @derive(Json): member(s) CodeReview: CodeReview not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CodeReview: CodeReview not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeCodeReviewResponse:
     Optional[CodeReview] CodeReview
 
@@ -254,8 +259,9 @@ struct DescribeRecommendationFeedbackRequest:
     str RecommendationId
     Optional[str] UserId
 
-# no @derive(Json): member(s) RecommendationFeedback: RecommendationFeedback not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecommendationFeedback: RecommendationFeedback not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRecommendationFeedbackResponse:
     Optional[RecommendationFeedback] RecommendationFeedback
 
@@ -264,8 +270,9 @@ struct DescribeRecommendationFeedbackResponse:
 struct DescribeRepositoryAssociationRequest:
     str AssociationArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeRepositoryAssociationResponse:
     Optional[RepositoryAssociation] RepositoryAssociation
     Optional[dict[str, str]] Tags
@@ -275,8 +282,9 @@ struct DescribeRepositoryAssociationResponse:
 struct DisassociateRepositoryRequest:
     str AssociationArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DisassociateRepositoryResponse:
     Optional[RepositoryAssociation] RepositoryAssociation
     Optional[dict[str, str]] Tags
@@ -306,8 +314,9 @@ struct ListCodeReviewsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) CodeReviewSummaries: list[CodeReviewSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CodeReviewSummaries: list[CodeReviewSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCodeReviewsResponse:
     Optional[list[CodeReviewSummary]] CodeReviewSummaries
     Optional[str] NextToken
@@ -321,8 +330,9 @@ struct ListRecommendationFeedbackRequest:
     Optional[list[str]] UserIds
     Optional[list[str]] RecommendationIds
 
-# no @derive(Json): member(s) RecommendationFeedbackSummaries: list[RecommendationFeedbackSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecommendationFeedbackSummaries: list[RecommendationFeedbackSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecommendationFeedbackResponse:
     Optional[list[RecommendationFeedbackSummary]] RecommendationFeedbackSummaries
     Optional[str] NextToken
@@ -334,8 +344,9 @@ struct ListRecommendationsRequest:
     Optional[int64] MaxResults
     str CodeReviewArn
 
-# no @derive(Json): member(s) RecommendationSummaries: list[RecommendationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecommendationSummaries: list[RecommendationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecommendationsResponse:
     Optional[list[RecommendationSummary]] RecommendationSummaries
     Optional[str] NextToken
@@ -350,8 +361,9 @@ struct ListRepositoryAssociationsRequest:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) RepositoryAssociationSummaries: list[RepositoryAssociationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RepositoryAssociationSummaries: list[RepositoryAssociationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRepositoryAssociationsResponse:
     Optional[list[RepositoryAssociationSummary]] RepositoryAssociationSummaries
     Optional[str] NextToken
@@ -361,8 +373,9 @@ struct ListRepositoryAssociationsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -394,8 +407,9 @@ struct PutRecommendationFeedbackResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Reactions: list[Reaction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Reactions: list[Reaction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationFeedback:
     Optional[str] CodeReviewArn
     Optional[str] RecommendationId
@@ -404,15 +418,17 @@ struct RecommendationFeedback:
     Optional[DateTime] CreatedTimeStamp
     Optional[DateTime] LastUpdatedTimeStamp
 
-# no @derive(Json): member(s) Reactions: list[Reaction] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Reactions: list[Reaction] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationFeedbackSummary:
     Optional[str] RecommendationId
     Optional[list[Reaction]] Reactions
     Optional[str] UserId
 
-# no @derive(Json): member(s) RuleMetadata: RuleMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleMetadata: RuleMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationSummary:
     Optional[str] FilePath
     Optional[str] RecommendationId
@@ -476,8 +492,9 @@ struct RequestMetadata:
 struct ResourceNotFoundException:
     Optional[str] Message
 
-# no @derive(Json): member(s) RuleTags: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RuleTags: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RuleMetadata:
     Optional[str] RuleId
     Optional[str] RuleName
@@ -582,23 +599,98 @@ def codeguru_reviewer_error_from_code(str code) -> CodeGuru_ReviewerError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AssociateRepository (document member `Tags: dict[str, str]` is not serializable by derive)
-#   CreateCodeReview (document member `Type: CodeReviewType` is not serializable by derive)
 #   ListCodeReviews (httpQuery `ProviderTypes` has unsupported type list[ProviderType])
 #   ListRecommendationFeedback (httpQuery `UserIds` has unsupported type list[str])
 #   ListRepositoryAssociations (httpQuery `ProviderTypes` has unsupported type list[ProviderType])
-#   PutRecommendationFeedback (document member `Reactions: list[Reaction]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
 #   ListRepositoryAssociations (operation not generated)
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def codeguru_reviewer_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def codeguru_reviewer_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def codeguru_reviewer_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CodeReviewType to a compact JSON object (declaration order).
+def code_review_type_to_json(CodeReviewType v) -> str:
+    list[str] parts = []
+    parts.append("\"RepositoryAnalysis\":" + v.RepositoryAnalysis.to_json())
+    if v.AnalysisTypes.is_some():
+        auto u0 = v.AnalysisTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AnalysisTypes\":" + codeguru_reviewer_json_arr(e1))
+    return codeguru_reviewer_json_obj(parts)
+
 # A bound CodeGuru_Reviewer client: credentials + region, threaded into every operation.
 struct CodeGuru_ReviewerClient:
     core.Credentials creds
     str region
+
+    # AssociateRepository  POST /associations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def associate_repository(self, AssociateRepositoryRequest input) -> str:
+        auto host = endpoints.regional_host(codeguru_reviewer_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/associations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Repository\":" + input.Repository.to_json())
+        if input.ClientRequestToken.is_some():
+            auto u0 = input.ClientRequestToken.unwrap()
+            parts.append("\"ClientRequestToken\":" + codeguru_reviewer_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(codeguru_reviewer_json_str(k2) + ":" + codeguru_reviewer_json_str(u1[k2]))
+            parts.append("\"Tags\":" + codeguru_reviewer_json_obj(m2))
+        if input.KMSKeyDetails.is_some():
+            auto u3 = input.KMSKeyDetails.unwrap()
+            parts.append("\"KMSKeyDetails\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, codeguru_reviewer_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codeguru_reviewer_service(), self.region, host)
+
+    # CreateCodeReview  POST /codereviews
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def create_code_review(self, CreateCodeReviewRequest input) -> str:
+        auto host = endpoints.regional_host(codeguru_reviewer_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/codereviews", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + codeguru_reviewer_json_str(input.Name))
+        parts.append("\"RepositoryAssociationArn\":" + codeguru_reviewer_json_str(input.RepositoryAssociationArn))
+        parts.append("\"Type\":" + code_review_type_to_json(input.Type))
+        if input.ClientRequestToken.is_some():
+            auto u0 = input.ClientRequestToken.unwrap()
+            parts.append("\"ClientRequestToken\":" + codeguru_reviewer_json_str(u0))
+        auto bp = restjson.rest_json_document(b, codeguru_reviewer_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codeguru_reviewer_service(), self.region, host)
 
     # DescribeCodeReview  GET /codereviews/{CodeReviewArn}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -662,6 +754,36 @@ struct CodeGuru_ReviewerClient:
         labels["resourceArn"] = input.resourceArn
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeguru_reviewer_service(), self.region, host)
+
+    # PutRecommendationFeedback  PUT /feedback
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def put_recommendation_feedback(self, PutRecommendationFeedbackRequest input) -> str:
+        auto host = endpoints.regional_host(codeguru_reviewer_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/feedback", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"CodeReviewArn\":" + codeguru_reviewer_json_str(input.CodeReviewArn))
+        parts.append("\"RecommendationId\":" + codeguru_reviewer_json_str(input.RecommendationId))
+        list[str] e0 = []
+        for x0 in input.Reactions:
+            e0.append(x0.to_json())
+        parts.append("\"Reactions\":" + codeguru_reviewer_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, codeguru_reviewer_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codeguru_reviewer_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(codeguru_reviewer_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(codeguru_reviewer_json_str(k0) + ":" + codeguru_reviewer_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + codeguru_reviewer_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, codeguru_reviewer_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codeguru_reviewer_service(), self.region, host)
 
 # Construct a CodeGuru_ReviewerClient bound to credentials + region.
 def codeguru_reviewer_client(core.Credentials creds, str region) -> CodeGuru_ReviewerClient:

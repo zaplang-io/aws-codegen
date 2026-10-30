@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 18 operations — 11 with a generated method,
-#   7 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 18 operations — 14 with a generated method,
+#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   70 structs (54 @derive(Json)), 9 enums, 9 error variants.
 #   3 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -201,8 +201,9 @@ struct CreateDatastoreResponse:
     str datastoreId
     DatastoreStatus datastoreStatus
 
-# no @derive(Json): member(s) importConfiguration: ImportConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) importConfiguration: ImportConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DICOMImportJobProperties:
     str jobId
     str jobName
@@ -300,8 +301,9 @@ struct DeleteImageSetResponse:
     ImageSetState imageSetState
     ImageSetWorkflowStatus imageSetWorkflowStatus
 
-# no @derive(Json): member(s) dicomMetadataMappings: list[DicomMetadataMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dicomMetadataMappings: list[DicomMetadataMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DicomJsonMetadataImportConfiguration:
     list[DicomMetadataMapping] dicomMetadataMappings
 
@@ -317,8 +319,9 @@ struct GetDICOMImportJobRequest:
     str datastoreId
     str jobId
 
-# no @derive(Json): member(s) jobProperties: DICOMImportJobProperties not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobProperties: DICOMImportJobProperties not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDICOMImportJobResponse:
     DICOMImportJobProperties jobProperties
 
@@ -408,8 +411,9 @@ struct ImageSetsMetadataSummary:
     Optional[DICOMTags] DICOMTags
     Optional[bool] isPrimary
 
-# no @derive(Json): member(s) dicomJsonMetadataImportConfiguration: DicomJsonMetadataImportConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dicomJsonMetadataImportConfiguration: DicomJsonMetadataImportConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ImportConfiguration:
     Optional[DicomJsonMetadataImportConfiguration] dicomJsonMetadataImportConfiguration
 
@@ -426,8 +430,9 @@ struct ListDICOMImportJobsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) jobSummaries: list[DICOMImportJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobSummaries: list[DICOMImportJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDICOMImportJobsResponse:
     list[DICOMImportJobSummary] jobSummaries
     Optional[str] nextToken
@@ -440,8 +445,9 @@ struct ListDatastoresRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) datastoreSummaries: list[DatastoreSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) datastoreSummaries: list[DatastoreSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatastoresResponse:
     Optional[list[DatastoreSummary]] datastoreSummaries
     Optional[str] nextToken
@@ -454,8 +460,9 @@ struct ListImageSetVersionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) imageSetPropertiesList: list[ImageSetProperties] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imageSetPropertiesList: list[ImageSetProperties] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListImageSetVersionsResponse:
     list[ImageSetProperties] imageSetPropertiesList
     Optional[str] nextToken
@@ -465,8 +472,9 @@ struct ListImageSetVersionsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     dict[str, str] tags
 
@@ -503,14 +511,16 @@ struct SearchByAttributeValue:
     Optional[DICOMStudyDateAndTime] DICOMStudyDateAndTime
     Optional[bool] isPrimary
 
-# no @derive(Json): member(s) filters: list[SearchFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[SearchFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchCriteria:
     Optional[list[SearchFilter]] filters
     Optional[Sort] sort
 
-# no @derive(Json): member(s) values: list[SearchByAttributeValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[SearchByAttributeValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchFilter:
     list[SearchByAttributeValue] values
     Operator operator
@@ -523,8 +533,9 @@ struct SearchImageSetsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) imageSetsMetadataSummaries: list[ImageSetsMetadataSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) imageSetsMetadataSummaries: list[ImageSetsMetadataSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchImageSetsResponse:
     list[ImageSetsMetadataSummary] imageSetsMetadataSummaries
     Optional[Sort] sort
@@ -654,10 +665,7 @@ def medical_imaging_error_from_code(str code) -> Medical_ImagingError:
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   CopyImageSet (httpQuery `force` has unsupported type bool)
-#   CreateDatastore (document member `tags: dict[str, str]` is not serializable by derive)
 #   SearchImageSets (httpPayload member `searchCriteria` is a non-derivable structure)
-#   StartDICOMImportJob (document member `importConfiguration: ImportConfiguration` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 #   UpdateImageSetMetadata (httpQuery `force` has unsupported type bool)
 
@@ -665,10 +673,85 @@ def medical_imaging_error_from_code(str code) -> Medical_ImagingError:
 # skipped above, or the continuation token is not a simple string field:
 #   SearchImageSets (operation not generated)
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def medical_imaging_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def medical_imaging_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def medical_imaging_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize DicomJsonMetadataImportConfiguration to a compact JSON object (declaration order).
+def dicom_json_metadata_import_configuration_to_json(DicomJsonMetadataImportConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.dicomMetadataMappings:
+        e0.append(x0.to_json())
+    parts.append("\"dicomMetadataMappings\":" + medical_imaging_json_arr(e0))
+    return medical_imaging_json_obj(parts)
+
+# Serialize ImportConfiguration to a compact JSON object (declaration order).
+def import_configuration_to_json(ImportConfiguration v) -> str:
+    list[str] parts = []
+    if v.dicomJsonMetadataImportConfiguration.is_some():
+        auto u0 = v.dicomJsonMetadataImportConfiguration.unwrap()
+        parts.append("\"dicomJsonMetadataImportConfiguration\":" + dicom_json_metadata_import_configuration_to_json(u0))
+    return medical_imaging_json_obj(parts)
+
 # A bound Medical_Imaging client: credentials + region, threaded into every operation.
 struct Medical_ImagingClient:
     core.Credentials creds
     str region
+
+    # CreateDatastore  POST /datastore
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_datastore(self, CreateDatastoreRequest input) -> str:
+        auto host = endpoints.regional_host(medical_imaging_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/datastore", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.datastoreName.is_some():
+            auto u0 = input.datastoreName.unwrap()
+            parts.append("\"datastoreName\":" + medical_imaging_json_str(u0))
+        parts.append("\"clientToken\":" + medical_imaging_json_str(input.clientToken))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(medical_imaging_json_str(k2) + ":" + medical_imaging_json_str(u1[k2]))
+            parts.append("\"tags\":" + medical_imaging_json_obj(m2))
+        if input.kmsKeyArn.is_some():
+            auto u3 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + medical_imaging_json_str(u3))
+        if input.lambdaAuthorizerArn.is_some():
+            auto u4 = input.lambdaAuthorizerArn.unwrap()
+            parts.append("\"lambdaAuthorizerArn\":" + medical_imaging_json_str(u4))
+        if input.losslessStorageFormat.is_some():
+            auto u5 = input.losslessStorageFormat.unwrap()
+            parts.append("\"losslessStorageFormat\":" + u5.to_json())
+        auto bp = restjson.rest_json_document(b, medical_imaging_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medical_imaging_service(), self.region, host)
 
     # DeleteDatastore  DELETE /datastore/{datastoreId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -798,6 +881,45 @@ struct Medical_ImagingClient:
         labels["resourceArn"] = input.resourceArn
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medical_imaging_service(), self.region, host)
+
+    # StartDICOMImportJob  POST /startDICOMImportJob/datastore/{datastoreId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_dicom_import_job(self, StartDICOMImportJobRequest input) -> str:
+        auto host = endpoints.regional_host(medical_imaging_service(), self.region)
+        dict[str, str] labels = {}
+        labels["datastoreId"] = input.datastoreId
+        auto b = binding.HttpBinding(method="POST", path_template="/startDICOMImportJob/datastore/{datastoreId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.jobName.is_some():
+            auto u0 = input.jobName.unwrap()
+            parts.append("\"jobName\":" + medical_imaging_json_str(u0))
+        parts.append("\"dataAccessRoleArn\":" + medical_imaging_json_str(input.dataAccessRoleArn))
+        parts.append("\"clientToken\":" + medical_imaging_json_str(input.clientToken))
+        parts.append("\"inputS3Uri\":" + medical_imaging_json_str(input.inputS3Uri))
+        parts.append("\"outputS3Uri\":" + medical_imaging_json_str(input.outputS3Uri))
+        if input.inputOwnerAccountId.is_some():
+            auto u1 = input.inputOwnerAccountId.unwrap()
+            parts.append("\"inputOwnerAccountId\":" + medical_imaging_json_str(u1))
+        if input.importConfiguration.is_some():
+            auto u2 = input.importConfiguration.unwrap()
+            parts.append("\"importConfiguration\":" + import_configuration_to_json(u2))
+        auto bp = restjson.rest_json_document(b, medical_imaging_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medical_imaging_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(medical_imaging_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(medical_imaging_json_str(k0) + ":" + medical_imaging_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + medical_imaging_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, medical_imaging_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medical_imaging_service(), self.region, host)
 
     # Paginator for ListDICOMImportJobs — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: jobSummaries).

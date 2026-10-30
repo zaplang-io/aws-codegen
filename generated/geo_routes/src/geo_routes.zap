@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 5 operations — 0 with a generated method,
-#   5 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 5 operations — 5 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   253 structs (123 @derive(Json)), 84 enums, 4 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -974,8 +974,9 @@ struct CalculateIsolinesRequest:
     Optional[IsolineTravelMode] TravelMode
     Optional[IsolineTravelModeOptions] TravelModeOptions
 
-# no @derive(Json): member(s) Isolines: list[Isoline], SnappedDestination: list[float64], SnappedOrigin: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Isolines: list[Isoline], SnappedDestination: list[float64], SnappedOrigin: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CalculateIsolinesResponse:
     Optional[str] ArrivalTime
     Optional[str] DepartureTime
@@ -1002,8 +1003,9 @@ struct CalculateRouteMatrixRequest:
     Optional[RouteMatrixTravelMode] TravelMode
     Optional[RouteMatrixTravelModeOptions] TravelModeOptions
 
-# no @derive(Json): member(s) RouteMatrix: list[list[RouteMatrixEntry]], RoutingBoundary: RouteMatrixBoundary not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RouteMatrix: list[list[RouteMatrixEntry]], RoutingBoundary: RouteMatrixBoundary not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CalculateRouteMatrixResponse:
     int64 ErrorCount
     str PricingBucket
@@ -1039,22 +1041,25 @@ struct CalculateRoutesRequest:
     Optional[RouteTravelStepType] TravelStepType
     Optional[list[RouteWaypoint]] Waypoints
 
-# no @derive(Json): member(s) Notices: list[RouteResponseNotice], Routes: list[Route] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Notices: list[RouteResponseNotice], Routes: list[Route] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CalculateRoutesResponse:
     GeometryFormat LegGeometryFormat
     list[RouteResponseNotice] Notices
     str PricingBucket
     list[Route] Routes
 
-# no @derive(Json): member(s) Center: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Center: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Circle:
     list[float64] Center
     float64 Radius
 
-# no @derive(Json): member(s) LineString: list[list[float64]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LineString: list[list[float64]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Corridor:
     list[list[float64]] LineString
     int64 Radius
@@ -1063,8 +1068,9 @@ struct Corridor:
 struct InternalServerException:
     str Message
 
-# no @derive(Json): member(s) Connections: list[IsolineConnection], Geometries: list[IsolineShapeGeometry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Connections: list[IsolineConnection], Geometries: list[IsolineShapeGeometry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Isoline:
     list[IsolineConnection] Connections
     Optional[int64] DistanceThreshold
@@ -1076,14 +1082,16 @@ struct IsolineAllowOptions:
     Optional[bool] Hot
     Optional[bool] Hov
 
-# no @derive(Json): member(s) Except: list[IsolineAvoidanceAreaGeometry], Geometry: IsolineAvoidanceAreaGeometry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Except: list[IsolineAvoidanceAreaGeometry], Geometry: IsolineAvoidanceAreaGeometry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IsolineAvoidanceArea:
     Optional[list[IsolineAvoidanceAreaGeometry]] Except
     IsolineAvoidanceAreaGeometry Geometry
 
-# no @derive(Json): member(s) BoundingBox: list[float64], Corridor: Corridor, Polygon: list[list[list[float64]]], PolylinePolygon: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BoundingBox: list[float64], Corridor: Corridor, Polygon: list[list[list[float64]]], PolylinePolygon: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IsolineAvoidanceAreaGeometry:
     Optional[list[float64]] BoundingBox
     Optional[Corridor] Corridor
@@ -1091,8 +1099,9 @@ struct IsolineAvoidanceAreaGeometry:
     Optional[PolylineCorridor] PolylineCorridor
     Optional[list[str]] PolylinePolygon
 
-# no @derive(Json): member(s) Areas: list[IsolineAvoidanceArea], TruckRoadTypes: list[str], ZoneCategories: list[IsolineAvoidanceZoneCategory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Areas: list[IsolineAvoidanceArea], TruckRoadTypes: list[str], ZoneCategories: list[IsolineAvoidanceZoneCategory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IsolineAvoidanceOptions:
     Optional[list[IsolineAvoidanceArea]] Areas
     Optional[bool] CarShuttleTrains
@@ -1118,21 +1127,24 @@ struct IsolineCarOptions:
     Optional[float64] MaxSpeed
     Optional[int64] Occupancy
 
-# no @derive(Json): member(s) Geometry: IsolineConnectionGeometry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Geometry: IsolineConnectionGeometry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IsolineConnection:
     int64 FromPolygonIndex
     IsolineConnectionGeometry Geometry
     int64 ToPolygonIndex
 
-# no @derive(Json): member(s) LineString: list[list[float64]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LineString: list[list[float64]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IsolineConnectionGeometry:
     Optional[list[list[float64]]] LineString
     Optional[str] Polyline
 
-# no @derive(Json): member(s) SideOfStreet: IsolineSideOfStreetOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SideOfStreet: IsolineSideOfStreetOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IsolineDestinationOptions:
     Optional[int64] AvoidActionsForDistance
     Optional[float64] Heading
@@ -1151,8 +1163,9 @@ struct IsolineMatchingOptions:
     Optional[int64] Radius
     Optional[MatchingStrategy] Strategy
 
-# no @derive(Json): member(s) SideOfStreet: IsolineSideOfStreetOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SideOfStreet: IsolineSideOfStreetOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IsolineOriginOptions:
     Optional[int64] AvoidActionsForDistance
     Optional[float64] Heading
@@ -1166,20 +1179,23 @@ struct IsolineScooterOptions:
     Optional[float64] MaxSpeed
     Optional[int64] Occupancy
 
-# no @derive(Json): member(s) Polygon: list[list[list[float64]]], PolylinePolygon: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Polygon: list[list[list[float64]]], PolylinePolygon: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IsolineShapeGeometry:
     Optional[list[list[list[float64]]]] Polygon
     Optional[list[str]] PolylinePolygon
 
-# no @derive(Json): member(s) Position: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Position: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IsolineSideOfStreetOptions:
     list[float64] Position
     Optional[SideOfStreetMatchingStrategy] UseWith
 
-# no @derive(Json): member(s) Distance: list[int64], Time: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Distance: list[int64], Time: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IsolineThresholds:
     Optional[list[int64]] Distance
     Optional[list[int64]] Time
@@ -1194,15 +1210,17 @@ struct IsolineTrailerOptions:
     Optional[int64] AxleCount
     Optional[int64] TrailerCount
 
-# no @derive(Json): member(s) Truck: IsolineTruckOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Truck: IsolineTruckOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IsolineTravelModeOptions:
     Optional[IsolineCarOptions] Car
     Optional[IsolineScooterOptions] Scooter
     Optional[IsolineTruckOptions] Truck
 
-# no @derive(Json): member(s) HazardousCargos: list[IsolineHazardousCargoType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HazardousCargos: list[IsolineHazardousCargoType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IsolineTruckOptions:
     Optional[int64] AxleCount
     Optional[IsolineEngineType] EngineType
@@ -1252,8 +1270,9 @@ struct OptimizeWaypointsRequest:
     Optional[WaypointOptimizationTravelModeOptions] TravelModeOptions
     Optional[list[WaypointOptimizationWaypoint]] Waypoints
 
-# no @derive(Json): member(s) Connections: list[WaypointOptimizationConnection], ImpedingWaypoints: list[WaypointOptimizationImpedingWaypoint], OptimizedWaypoints: list[WaypointOptimizationOptimizedWaypoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Connections: list[WaypointOptimizationConnection], ImpedingWaypoints: list[WaypointOptimizationImpedingWaypoint], OptimizedWaypoints: list[WaypointOptimizationOptimizedWaypoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OptimizeWaypointsResponse:
     list[WaypointOptimizationConnection] Connections
     int64 Distance
@@ -1268,28 +1287,32 @@ struct PolylineCorridor:
     str Polyline
     int64 Radius
 
-# no @derive(Json): member(s) TracePointIndexes: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TracePointIndexes: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoadSnapNotice:
     RoadSnapNoticeCode Code
     str Title
     list[int64] TracePointIndexes
 
-# no @derive(Json): member(s) LineString: list[list[float64]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LineString: list[list[float64]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoadSnapSnappedGeometry:
     Optional[list[list[float64]]] LineString
     Optional[str] Polyline
 
-# no @derive(Json): member(s) OriginalPosition: list[float64], SnappedPosition: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OriginalPosition: list[float64], SnappedPosition: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoadSnapSnappedTracePoint:
     float64 Confidence
     list[float64] OriginalPosition
     list[float64] SnappedPosition
 
-# no @derive(Json): member(s) Position: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Position: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoadSnapTracePoint:
     Optional[float64] Heading
     list[float64] Position
@@ -1300,13 +1323,15 @@ struct RoadSnapTracePoint:
 struct RoadSnapTrailerOptions:
     Optional[int64] TrailerCount
 
-# no @derive(Json): member(s) Truck: RoadSnapTruckOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Truck: RoadSnapTruckOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoadSnapTravelModeOptions:
     Optional[RoadSnapTruckOptions] Truck
 
-# no @derive(Json): member(s) HazardousCargos: list[RoadSnapHazardousCargoType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HazardousCargos: list[RoadSnapHazardousCargoType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoadSnapTruckOptions:
     Optional[int64] GrossWeight
     Optional[list[RoadSnapHazardousCargoType]] HazardousCargos
@@ -1316,8 +1341,9 @@ struct RoadSnapTruckOptions:
     Optional[str] TunnelRestrictionCode
     Optional[int64] Width
 
-# no @derive(Json): member(s) Legs: list[RouteLeg], MajorRoadLabels: list[RouteMajorRoadLabel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Legs: list[RouteLeg], MajorRoadLabels: list[RouteMajorRoadLabel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Route:
     list[RouteLeg] Legs
     list[RouteMajorRoadLabel] MajorRoadLabels
@@ -1341,14 +1367,16 @@ struct RouteAttribution:
     Optional[RouteAttributionType] AttributionType
     RouteWebLink WebLink
 
-# no @derive(Json): member(s) Except: list[RouteAvoidanceAreaGeometry], Geometry: RouteAvoidanceAreaGeometry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Except: list[RouteAvoidanceAreaGeometry], Geometry: RouteAvoidanceAreaGeometry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteAvoidanceArea:
     Optional[list[RouteAvoidanceAreaGeometry]] Except
     RouteAvoidanceAreaGeometry Geometry
 
-# no @derive(Json): member(s) Corridor: Corridor, BoundingBox: list[float64], Polygon: list[list[list[float64]]], PolylinePolygon: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Corridor: Corridor, BoundingBox: list[float64], Polygon: list[list[list[float64]]], PolylinePolygon: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteAvoidanceAreaGeometry:
     Optional[Corridor] Corridor
     Optional[list[float64]] BoundingBox
@@ -1356,8 +1384,9 @@ struct RouteAvoidanceAreaGeometry:
     Optional[PolylineCorridor] PolylineCorridor
     Optional[list[str]] PolylinePolygon
 
-# no @derive(Json): member(s) Areas: list[RouteAvoidanceArea], TruckRoadTypes: list[str], ZoneCategories: list[RouteAvoidanceZoneCategory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Areas: list[RouteAvoidanceArea], TruckRoadTypes: list[str], ZoneCategories: list[RouteAvoidanceZoneCategory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteAvoidanceOptions:
     Optional[list[RouteAvoidanceArea]] Areas
     Optional[bool] CarShuttleTrains
@@ -1389,21 +1418,24 @@ struct RouteChargeStepDetails:
     Optional[float64] ConsumablePower
     Optional[float64] DesiredCharge
 
-# no @derive(Json): member(s) Intersection: list[LocalizedString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Intersection: list[LocalizedString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteContinueHighwayStepDetails:
     list[LocalizedString] Intersection
     Optional[RouteSteeringDirection] SteeringDirection
     Optional[float64] TurnAngle
     Optional[RouteTurnIntensity] TurnIntensity
 
-# no @derive(Json): member(s) Intersection: list[LocalizedString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Intersection: list[LocalizedString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteContinueStepDetails:
     list[LocalizedString] Intersection
 
-# no @derive(Json): member(s) SideOfStreet: RouteSideOfStreetOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SideOfStreet: RouteSideOfStreetOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteDestinationOptions:
     Optional[int64] AvoidActionsForDistance
     Optional[bool] AvoidUTurns
@@ -1412,8 +1444,9 @@ struct RouteDestinationOptions:
     Optional[RouteSideOfStreetOptions] SideOfStreet
     Optional[int64] StopDuration
 
-# no @derive(Json): member(s) Schedule: list[RouteDriverScheduleInterval] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Schedule: list[RouteDriverScheduleInterval] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteDriverOptions:
     Optional[list[RouteDriverScheduleInterval]] Schedule
 
@@ -1427,21 +1460,24 @@ struct RouteEmissionType:
     Optional[str] Co2EmissionClass
     str Type
 
-# no @derive(Json): member(s) Intersection: list[LocalizedString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Intersection: list[LocalizedString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteEnterHighwayStepDetails:
     list[LocalizedString] Intersection
     Optional[RouteSteeringDirection] SteeringDirection
     Optional[float64] TurnAngle
     Optional[RouteTurnIntensity] TurnIntensity
 
-# no @derive(Json): member(s) Countries: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Countries: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteExclusionOptions:
     list[str] Countries
 
-# no @derive(Json): member(s) Intersection: list[LocalizedString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Intersection: list[LocalizedString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteExitStepDetails:
     list[LocalizedString] Intersection
     Optional[int64] RelativeExit
@@ -1455,8 +1491,9 @@ struct RouteFerryAfterTravelStep:
     Optional[str] Instruction
     str Type
 
-# no @derive(Json): member(s) Place: RouteFerryPlace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Place: RouteFerryPlace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteFerryArrival:
     RouteFerryPlace Place
     Optional[str] Time
@@ -1467,14 +1504,16 @@ struct RouteFerryBeforeTravelStep:
     Optional[str] Instruction
     str Type
 
-# no @derive(Json): member(s) Place: RouteFerryPlace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Place: RouteFerryPlace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteFerryDeparture:
     RouteFerryPlace Place
     Optional[str] Time
 
-# no @derive(Json): member(s) AfterTravelSteps: list[RouteFerryAfterTravelStep], Arrival: RouteFerryArrival, BeforeTravelSteps: list[RouteFerryBeforeTravelStep], Departure: RouteFerryDeparture, Notices: list[RouteFerryNotice], PassThroughWaypoints: list[RoutePassThroughWaypoint], Spans: list[RouteFerrySpan], TravelSteps: list[RouteFerryTravelStep] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AfterTravelSteps: list[RouteFerryAfterTravelStep], Arrival: RouteFerryArrival, BeforeTravelSteps: list[RouteFerryBeforeTravelStep], Departure: RouteFerryDeparture, Notices: list[RouteFerryNotice], PassThroughWaypoints: list[RoutePassThroughWaypoint], Spans: list[RouteFerrySpan], TravelSteps: list[RouteFerryTravelStep] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteFerryLegDetails:
     list[RouteFerryAfterTravelStep] AfterTravelSteps
     RouteFerryArrival Arrival
@@ -1497,16 +1536,18 @@ struct RouteFerryOverviewSummary:
     int64 Distance
     int64 Duration
 
-# no @derive(Json): member(s) OriginalPosition: list[float64], Position: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OriginalPosition: list[float64], Position: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteFerryPlace:
     Optional[str] Name
     Optional[list[float64]] OriginalPosition
     list[float64] Position
     Optional[int64] WaypointIndex
 
-# no @derive(Json): member(s) Names: list[LocalizedString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Names: list[LocalizedString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteFerrySpan:
     Optional[str] Country
     Optional[int64] Distance
@@ -1532,8 +1573,9 @@ struct RouteFerryTravelStep:
     Optional[str] Instruction
     RouteFerryTravelStepType Type
 
-# no @derive(Json): member(s) AccessibilityAttributes: list[str], Rental: RouteIntermodalRentalOptions, Taxi: RouteIntermodalTaxiOptions, Transit: RouteIntermodalTransitOptions, Vehicle: RouteIntermodalVehicleOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccessibilityAttributes: list[str], Rental: RouteIntermodalRentalOptions, Taxi: RouteIntermodalTaxiOptions, Transit: RouteIntermodalTransitOptions, Vehicle: RouteIntermodalVehicleOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteIntermodalOptions:
     Optional[list[str]] AccessibilityAttributes
     Optional[int64] MaxTransfers
@@ -1548,44 +1590,50 @@ struct RouteIntermodalPedestrianOptions:
     Optional[int64] MaxDistance
     Optional[float64] Speed
 
-# no @derive(Json): member(s) AllowedModes: list[RouteRentalMode], EnabledFor: list[RouteIntermodalEnabledLegs], ExcludedModes: list[RouteRentalMode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowedModes: list[RouteRentalMode], EnabledFor: list[RouteIntermodalEnabledLegs], ExcludedModes: list[RouteRentalMode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteIntermodalRentalOptions:
     Optional[list[RouteRentalMode]] AllowedModes
     Optional[list[RouteIntermodalEnabledLegs]] EnabledFor
     Optional[list[RouteRentalMode]] ExcludedModes
 
-# no @derive(Json): member(s) AllowedModes: list[RouteTaxiMode], EnabledFor: list[RouteIntermodalEnabledLegs], ExcludedModes: list[RouteTaxiMode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowedModes: list[RouteTaxiMode], EnabledFor: list[RouteIntermodalEnabledLegs], ExcludedModes: list[RouteTaxiMode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteIntermodalTaxiOptions:
     Optional[list[RouteTaxiMode]] AllowedModes
     Optional[list[RouteIntermodalEnabledLegs]] EnabledFor
     Optional[list[RouteTaxiMode]] ExcludedModes
 
-# no @derive(Json): member(s) AllowedModes: list[RouteTransitMode], EnabledFor: list[RouteIntermodalEnabledLegs], ExcludedModes: list[RouteTransitMode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowedModes: list[RouteTransitMode], EnabledFor: list[RouteIntermodalEnabledLegs], ExcludedModes: list[RouteTransitMode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteIntermodalTransitOptions:
     Optional[list[RouteTransitMode]] AllowedModes
     Optional[list[RouteIntermodalEnabledLegs]] EnabledFor
     Optional[list[RouteTransitMode]] ExcludedModes
 
-# no @derive(Json): member(s) AllowedModes: list[RouteVehicleMode], EnabledFor: list[RouteIntermodalEnabledLegs], ExcludedModes: list[RouteVehicleMode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AllowedModes: list[RouteVehicleMode], EnabledFor: list[RouteIntermodalEnabledLegs], ExcludedModes: list[RouteVehicleMode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteIntermodalVehicleOptions:
     Optional[list[RouteVehicleMode]] AllowedModes
     Optional[list[RouteIntermodalEnabledLegs]] EnabledFor
     Optional[list[RouteVehicleMode]] ExcludedModes
 
-# no @derive(Json): member(s) Intersection: list[LocalizedString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Intersection: list[LocalizedString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteKeepStepDetails:
     list[LocalizedString] Intersection
     Optional[RouteSteeringDirection] SteeringDirection
     Optional[float64] TurnAngle
     Optional[RouteTurnIntensity] TurnIntensity
 
-# no @derive(Json): member(s) FerryLegDetails: RouteFerryLegDetails, Geometry: RouteLegGeometry, PedestrianLegDetails: RoutePedestrianLegDetails, VehicleLegDetails: RouteVehicleLegDetails, RentalLegDetails: RouteRentalLegDetails, TaxiLegDetails: RouteTaxiLegDetails, TransitLegDetails: RouteTransitLegDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FerryLegDetails: RouteFerryLegDetails, Geometry: RouteLegGeometry, PedestrianLegDetails: RoutePedestrianLegDetails, VehicleLegDetails: RouteVehicleLegDetails, RentalLegDetails: RouteRentalLegDetails, TaxiLegDetails: RouteTaxiLegDetails, TransitLegDetails: RouteTransitLegDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteLeg:
     Optional[RouteFerryLegDetails] FerryLegDetails
     RouteLegGeometry Geometry
@@ -1598,8 +1646,9 @@ struct RouteLeg:
     Optional[RouteTaxiLegDetails] TaxiLegDetails
     Optional[RouteTransitLegDetails] TransitLegDetails
 
-# no @derive(Json): member(s) LineString: list[list[float64]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) LineString: list[list[float64]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteLegGeometry:
     Optional[list[list[float64]]] LineString
     Optional[str] Polyline
@@ -1626,20 +1675,23 @@ struct RouteMatrixAutoCircle:
     Optional[int64] Margin
     Optional[int64] MaxRadius
 
-# no @derive(Json): member(s) Geometry: RouteMatrixAvoidanceAreaGeometry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Geometry: RouteMatrixAvoidanceAreaGeometry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteMatrixAvoidanceArea:
     RouteMatrixAvoidanceAreaGeometry Geometry
 
-# no @derive(Json): member(s) BoundingBox: list[float64], Polygon: list[list[list[float64]]], PolylinePolygon: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BoundingBox: list[float64], Polygon: list[list[list[float64]]], PolylinePolygon: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteMatrixAvoidanceAreaGeometry:
     Optional[list[float64]] BoundingBox
     Optional[list[list[list[float64]]]] Polygon
     Optional[list[str]] PolylinePolygon
 
-# no @derive(Json): member(s) Areas: list[RouteMatrixAvoidanceArea], TruckRoadTypes: list[str], ZoneCategories: list[RouteMatrixAvoidanceZoneCategory] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Areas: list[RouteMatrixAvoidanceArea], TruckRoadTypes: list[str], ZoneCategories: list[RouteMatrixAvoidanceZoneCategory] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteMatrixAvoidanceOptions:
     Optional[list[RouteMatrixAvoidanceArea]] Areas
     Optional[bool] CarShuttleTrains
@@ -1657,14 +1709,16 @@ struct RouteMatrixAvoidanceOptions:
 struct RouteMatrixAvoidanceZoneCategory:
     Optional[RouteMatrixZoneCategory] Category
 
-# no @derive(Json): member(s) Geometry: RouteMatrixBoundaryGeometry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Geometry: RouteMatrixBoundaryGeometry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteMatrixBoundary:
     Optional[RouteMatrixBoundaryGeometry] Geometry
     Optional[bool] Unbounded
 
-# no @derive(Json): member(s) Circle: Circle, BoundingBox: list[float64], Polygon: list[list[list[float64]]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Circle: Circle, BoundingBox: list[float64], Polygon: list[list[list[float64]]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteMatrixBoundaryGeometry:
     Optional[RouteMatrixAutoCircle] AutoCircle
     Optional[Circle] Circle
@@ -1677,14 +1731,16 @@ struct RouteMatrixCarOptions:
     Optional[float64] MaxSpeed
     Optional[int64] Occupancy
 
-# no @derive(Json): member(s) Options: RouteMatrixDestinationOptions, Position: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Options: RouteMatrixDestinationOptions, Position: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteMatrixDestination:
     Optional[RouteMatrixDestinationOptions] Options
     list[float64] Position
 
-# no @derive(Json): member(s) SideOfStreet: RouteMatrixSideOfStreetOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SideOfStreet: RouteMatrixSideOfStreetOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteMatrixDestinationOptions:
     Optional[int64] AvoidActionsForDistance
     Optional[float64] Heading
@@ -1697,8 +1753,9 @@ struct RouteMatrixEntry:
     int64 Duration
     Optional[RouteMatrixErrorCode] Error
 
-# no @derive(Json): member(s) Countries: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Countries: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteMatrixExclusionOptions:
     list[str] Countries
 
@@ -1709,14 +1766,16 @@ struct RouteMatrixMatchingOptions:
     Optional[int64] Radius
     Optional[MatchingStrategy] Strategy
 
-# no @derive(Json): member(s) Options: RouteMatrixOriginOptions, Position: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Options: RouteMatrixOriginOptions, Position: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteMatrixOrigin:
     Optional[RouteMatrixOriginOptions] Options
     list[float64] Position
 
-# no @derive(Json): member(s) SideOfStreet: RouteMatrixSideOfStreetOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SideOfStreet: RouteMatrixSideOfStreetOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteMatrixOriginOptions:
     Optional[int64] AvoidActionsForDistance
     Optional[float64] Heading
@@ -1729,8 +1788,9 @@ struct RouteMatrixScooterOptions:
     Optional[float64] MaxSpeed
     Optional[int64] Occupancy
 
-# no @derive(Json): member(s) Position: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Position: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteMatrixSideOfStreetOptions:
     list[float64] Position
     Optional[SideOfStreetMatchingStrategy] UseWith
@@ -1744,15 +1804,17 @@ struct RouteMatrixTrafficOptions:
 struct RouteMatrixTrailerOptions:
     Optional[int64] TrailerCount
 
-# no @derive(Json): member(s) Truck: RouteMatrixTruckOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Truck: RouteMatrixTruckOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteMatrixTravelModeOptions:
     Optional[RouteMatrixCarOptions] Car
     Optional[RouteMatrixScooterOptions] Scooter
     Optional[RouteMatrixTruckOptions] Truck
 
-# no @derive(Json): member(s) HazardousCargos: list[RouteMatrixHazardousCargoType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HazardousCargos: list[RouteMatrixHazardousCargoType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteMatrixTruckOptions:
     Optional[int64] AxleCount
     Optional[int64] GrossWeight
@@ -1786,8 +1848,9 @@ struct RouteNumber:
     Optional[str] Language
     str Value
 
-# no @derive(Json): member(s) SideOfStreet: RouteSideOfStreetOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SideOfStreet: RouteSideOfStreetOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteOriginOptions:
     Optional[int64] AvoidActionsForDistance
     Optional[bool] AvoidUTurns
@@ -1795,15 +1858,17 @@ struct RouteOriginOptions:
     Optional[RouteMatchingOptions] Matching
     Optional[RouteSideOfStreetOptions] SideOfStreet
 
-# no @derive(Json): member(s) OriginalPosition: list[float64], Position: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OriginalPosition: list[float64], Position: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoutePassThroughPlace:
     Optional[list[float64]] OriginalPosition
     list[float64] Position
     Optional[int64] WaypointIndex
 
-# no @derive(Json): member(s) Place: RoutePassThroughPlace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Place: RoutePassThroughPlace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoutePassThroughWaypoint:
     Optional[int64] GeometryOffset
     RoutePassThroughPlace Place
@@ -1814,20 +1879,23 @@ struct RoutePedestrianAfterTravelStep:
     Optional[str] Instruction
     str Type
 
-# no @derive(Json): member(s) Place: RoutePedestrianPlace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Place: RoutePedestrianPlace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoutePedestrianArrival:
     RoutePedestrianPlace Place
     Optional[str] Time
 
-# no @derive(Json): member(s) Place: RoutePedestrianPlace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Place: RoutePedestrianPlace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoutePedestrianDeparture:
     RoutePedestrianPlace Place
     Optional[str] Time
 
-# no @derive(Json): member(s) AfterTravelSteps: list[RoutePedestrianAfterTravelStep], Arrival: RoutePedestrianArrival, Departure: RoutePedestrianDeparture, Notices: list[RoutePedestrianNotice], PassThroughWaypoints: list[RoutePassThroughWaypoint], Spans: list[RoutePedestrianSpan], TravelSteps: list[RoutePedestrianTravelStep] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AfterTravelSteps: list[RoutePedestrianAfterTravelStep], Arrival: RoutePedestrianArrival, Departure: RoutePedestrianDeparture, Notices: list[RoutePedestrianNotice], PassThroughWaypoints: list[RoutePassThroughWaypoint], Spans: list[RoutePedestrianSpan], TravelSteps: list[RoutePedestrianTravelStep] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoutePedestrianLegDetails:
     list[RoutePedestrianAfterTravelStep] AfterTravelSteps
     RoutePedestrianArrival Arrival
@@ -1852,8 +1920,9 @@ struct RoutePedestrianOverviewSummary:
     int64 Distance
     int64 Duration
 
-# no @derive(Json): member(s) OriginalPosition: list[float64], Position: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OriginalPosition: list[float64], Position: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoutePedestrianPlace:
     Optional[RouteAccessPointDetails] AccessPointDetails
     Optional[str] Name
@@ -1864,8 +1933,9 @@ struct RoutePedestrianPlace:
     Optional[RoutePedestrianPlaceType] Type
     Optional[int64] WaypointIndex
 
-# no @derive(Json): member(s) Incidents: list[int64], Names: list[LocalizedString], PedestrianAccess: list[RouteSpanPedestrianAccessAttribute], RoadAttributes: list[RouteSpanRoadAttribute], RouteNumbers: list[RouteNumber] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Incidents: list[int64], Names: list[LocalizedString], PedestrianAccess: list[RouteSpanPedestrianAccessAttribute], RoadAttributes: list[RouteSpanRoadAttribute], RouteNumbers: list[RouteNumber] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoutePedestrianSpan:
     Optional[int64] BestCaseDuration
     Optional[str] Country
@@ -1892,8 +1962,9 @@ struct RoutePedestrianSummary:
 struct RoutePedestrianTravelOnlySummary:
     int64 Duration
 
-# no @derive(Json): member(s) ContinueStepDetails: RouteContinueStepDetails, CurrentRoad: RouteRoad, ExitNumber: list[LocalizedString], KeepStepDetails: RouteKeepStepDetails, NextRoad: RouteRoad, RoundaboutEnterStepDetails: RouteRoundaboutEnterStepDetails, RoundaboutExitStepDetails: RouteRoundaboutExitStepDetails, RoundaboutPassStepDetails: RouteRoundaboutPassStepDetails, Signpost: RouteSignpost, TurnStepDetails: RouteTurnStepDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContinueStepDetails: RouteContinueStepDetails, CurrentRoad: RouteRoad, ExitNumber: list[LocalizedString], KeepStepDetails: RouteKeepStepDetails, NextRoad: RouteRoad, RoundaboutEnterStepDetails: RouteRoundaboutEnterStepDetails, RoundaboutExitStepDetails: RouteRoundaboutExitStepDetails, RoundaboutPassStepDetails: RouteRoundaboutPassStepDetails, Signpost: RouteSignpost, TurnStepDetails: RouteTurnStepDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RoutePedestrianTravelStep:
     Optional[RouteContinueStepDetails] ContinueStepDetails
     Optional[RouteRoad] CurrentRoad
@@ -1911,8 +1982,9 @@ struct RoutePedestrianTravelStep:
     Optional[RouteTurnStepDetails] TurnStepDetails
     RoutePedestrianTravelStepType Type
 
-# no @derive(Json): member(s) Intersection: list[LocalizedString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Intersection: list[LocalizedString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteRampStepDetails:
     list[LocalizedString] Intersection
     Optional[RouteSteeringDirection] SteeringDirection
@@ -1930,8 +2002,9 @@ struct RouteRentalAgency:
     str Name
     Optional[str] Url
 
-# no @derive(Json): member(s) Place: RouteRentalPlace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Place: RouteRentalPlace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteRentalArrival:
     RouteRentalPlace Place
     Optional[str] Time
@@ -1942,14 +2015,16 @@ struct RouteRentalBeforeTravelStep:
     Optional[str] Instruction
     str Type
 
-# no @derive(Json): member(s) Place: RouteRentalPlace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Place: RouteRentalPlace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteRentalDeparture:
     RouteRentalPlace Place
     Optional[str] Time
 
-# no @derive(Json): member(s) AfterTravelSteps: list[RouteRentalAfterTravelStep], Arrival: RouteRentalArrival, Attributions: list[RouteAttribution], BeforeTravelSteps: list[RouteRentalBeforeTravelStep], BookingWebLinks: list[RouteWebLink], Departure: RouteRentalDeparture, TravelSteps: list[RouteRentalTravelStep] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AfterTravelSteps: list[RouteRentalAfterTravelStep], Arrival: RouteRentalArrival, Attributions: list[RouteAttribution], BeforeTravelSteps: list[RouteRentalBeforeTravelStep], BookingWebLinks: list[RouteWebLink], Departure: RouteRentalDeparture, TravelSteps: list[RouteRentalTravelStep] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteRentalLegDetails:
     list[RouteRentalAfterTravelStep] AfterTravelSteps
     RouteRentalAgency Agency
@@ -1967,8 +2042,9 @@ struct RouteRentalOverviewSummary:
     int64 Duration
     int64 Distance
 
-# no @derive(Json): member(s) OriginalPosition: list[float64], Position: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OriginalPosition: list[float64], Position: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteRentalPlace:
     Optional[RouteAccessPointDetails] AccessPointDetails
     Optional[str] Name
@@ -1999,8 +2075,9 @@ struct RouteRentalTransportModeDetails:
 struct RouteRentalTravelOnlySummary:
     int64 Duration
 
-# no @derive(Json): member(s) ContinueStepDetails: RouteContinueStepDetails, ExitStepDetails: RouteExitStepDetails, KeepStepDetails: RouteKeepStepDetails, RampStepDetails: RouteRampStepDetails, RoundaboutEnterStepDetails: RouteRoundaboutEnterStepDetails, RoundaboutExitStepDetails: RouteRoundaboutExitStepDetails, RoundaboutPassStepDetails: RouteRoundaboutPassStepDetails, TurnStepDetails: RouteTurnStepDetails, UTurnStepDetails: RouteUTurnStepDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContinueStepDetails: RouteContinueStepDetails, ExitStepDetails: RouteExitStepDetails, KeepStepDetails: RouteKeepStepDetails, RampStepDetails: RouteRampStepDetails, RoundaboutEnterStepDetails: RouteRoundaboutEnterStepDetails, RoundaboutExitStepDetails: RouteRoundaboutExitStepDetails, RoundaboutPassStepDetails: RouteRoundaboutPassStepDetails, TurnStepDetails: RouteTurnStepDetails, UTurnStepDetails: RouteUTurnStepDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteRentalTravelStep:
     Optional[RouteContinueStepDetails] ContinueStepDetails
     Optional[int64] Distance
@@ -2022,32 +2099,36 @@ struct RouteResponseNotice:
     RouteResponseNoticeCode Code
     Optional[RouteNoticeImpact] Impact
 
-# no @derive(Json): member(s) RoadName: list[LocalizedString], RouteNumber: list[RouteNumber], Towards: list[LocalizedString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RoadName: list[LocalizedString], RouteNumber: list[RouteNumber], Towards: list[LocalizedString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteRoad:
     list[LocalizedString] RoadName
     list[RouteNumber] RouteNumber
     list[LocalizedString] Towards
     Optional[RouteRoadType] Type
 
-# no @derive(Json): member(s) Intersection: list[LocalizedString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Intersection: list[LocalizedString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteRoundaboutEnterStepDetails:
     list[LocalizedString] Intersection
     Optional[RouteSteeringDirection] SteeringDirection
     Optional[float64] TurnAngle
     Optional[RouteTurnIntensity] TurnIntensity
 
-# no @derive(Json): member(s) Intersection: list[LocalizedString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Intersection: list[LocalizedString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteRoundaboutExitStepDetails:
     list[LocalizedString] Intersection
     Optional[int64] RelativeExit
     Optional[float64] RoundaboutAngle
     Optional[RouteSteeringDirection] SteeringDirection
 
-# no @derive(Json): member(s) Intersection: list[LocalizedString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Intersection: list[LocalizedString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteRoundaboutPassStepDetails:
     list[LocalizedString] Intersection
     Optional[RouteSteeringDirection] SteeringDirection
@@ -2061,14 +2142,16 @@ struct RouteScooterOptions:
     Optional[float64] MaxSpeed
     Optional[int64] Occupancy
 
-# no @derive(Json): member(s) Position: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Position: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteSideOfStreetOptions:
     list[float64] Position
     Optional[SideOfStreetMatchingStrategy] UseWith
 
-# no @derive(Json): member(s) Labels: list[RouteSignpostLabel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Labels: list[RouteSignpostLabel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteSignpost:
     list[RouteSignpostLabel] Labels
 
@@ -2111,8 +2194,9 @@ struct RouteTaxiAgency:
     str Name
     Optional[str] Url
 
-# no @derive(Json): member(s) Place: RouteTaxiPlace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Place: RouteTaxiPlace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteTaxiArrival:
     RouteTaxiPlace Place
     Optional[str] Time
@@ -2123,14 +2207,16 @@ struct RouteTaxiBeforeTravelStep:
     Optional[str] Instruction
     str Type
 
-# no @derive(Json): member(s) Place: RouteTaxiPlace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Place: RouteTaxiPlace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteTaxiDeparture:
     RouteTaxiPlace Place
     Optional[str] Time
 
-# no @derive(Json): member(s) AfterTravelSteps: list[RouteTaxiAfterTravelStep], Arrival: RouteTaxiArrival, Attributions: list[RouteAttribution], BeforeTravelSteps: list[RouteTaxiBeforeTravelStep], BookingWebLinks: list[RouteWebLink], Departure: RouteTaxiDeparture, Notices: list[RouteTaxiNotice], TravelSteps: list[RouteTaxiTravelStep] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AfterTravelSteps: list[RouteTaxiAfterTravelStep], Arrival: RouteTaxiArrival, Attributions: list[RouteAttribution], BeforeTravelSteps: list[RouteTaxiBeforeTravelStep], BookingWebLinks: list[RouteWebLink], Departure: RouteTaxiDeparture, Notices: list[RouteTaxiNotice], TravelSteps: list[RouteTaxiTravelStep] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteTaxiLegDetails:
     list[RouteTaxiAfterTravelStep] AfterTravelSteps
     RouteTaxiAgency Agency
@@ -2154,8 +2240,9 @@ struct RouteTaxiOverviewSummary:
     int64 Duration
     int64 Distance
 
-# no @derive(Json): member(s) OriginalPosition: list[float64], Position: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OriginalPosition: list[float64], Position: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteTaxiPlace:
     Optional[RouteAccessPointDetails] AccessPointDetails
     Optional[str] Name
@@ -2186,8 +2273,9 @@ struct RouteTaxiTransportModeDetails:
 struct RouteTaxiTravelOnlySummary:
     int64 Duration
 
-# no @derive(Json): member(s) ContinueStepDetails: RouteContinueStepDetails, ExitStepDetails: RouteExitStepDetails, KeepStepDetails: RouteKeepStepDetails, RampStepDetails: RouteRampStepDetails, RoundaboutEnterStepDetails: RouteRoundaboutEnterStepDetails, RoundaboutExitStepDetails: RouteRoundaboutExitStepDetails, RoundaboutPassStepDetails: RouteRoundaboutPassStepDetails, TurnStepDetails: RouteTurnStepDetails, UTurnStepDetails: RouteUTurnStepDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContinueStepDetails: RouteContinueStepDetails, ExitStepDetails: RouteExitStepDetails, KeepStepDetails: RouteKeepStepDetails, RampStepDetails: RouteRampStepDetails, RoundaboutEnterStepDetails: RouteRoundaboutEnterStepDetails, RoundaboutExitStepDetails: RouteRoundaboutExitStepDetails, RoundaboutPassStepDetails: RouteRoundaboutPassStepDetails, TurnStepDetails: RouteTurnStepDetails, UTurnStepDetails: RouteUTurnStepDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteTaxiTravelStep:
     Optional[RouteContinueStepDetails] ContinueStepDetails
     Optional[int64] Distance
@@ -2204,8 +2292,9 @@ struct RouteTaxiTravelStep:
     RouteTaxiTravelStepType Type
     Optional[RouteUTurnStepDetails] UTurnStepDetails
 
-# no @derive(Json): member(s) PaymentSites: list[RouteTollPaymentSite], Rates: list[RouteTollRate], Systems: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PaymentSites: list[RouteTollPaymentSite], Rates: list[RouteTollRate], Systems: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteToll:
     Optional[str] Country
     list[RouteTollPaymentSite] PaymentSites
@@ -2233,8 +2322,9 @@ struct RouteTollPassValidityPeriod:
     RouteTollPassValidityPeriodType Period
     Optional[int64] PeriodCount
 
-# no @derive(Json): member(s) Position: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Position: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteTollPaymentSite:
     Optional[str] Name
     list[float64] Position
@@ -2261,8 +2351,9 @@ struct RouteTollPriceValueRange:
     float64 Min
     float64 Max
 
-# no @derive(Json): member(s) PaymentMethods: list[RouteTollPaymentMethod], Transponders: list[RouteTransponder] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) PaymentMethods: list[RouteTollPaymentMethod], Transponders: list[RouteTransponder] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteTollRate:
     Optional[str] ApplicableTimes
     Optional[RouteTollPrice] ConvertedPrice
@@ -2302,8 +2393,9 @@ struct RouteTransitAgency:
     str Name
     Optional[str] Url
 
-# no @derive(Json): member(s) Place: RouteTransitPlace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Place: RouteTransitPlace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteTransitArrival:
     Optional[int64] Delay
     RouteTransitPlace Place
@@ -2316,8 +2408,9 @@ struct RouteTransitBeforeTravelStep:
     Optional[str] Instruction
     str Type
 
-# no @derive(Json): member(s) Place: RouteTransitPlace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Place: RouteTransitPlace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteTransitDeparture:
     Optional[int64] Delay
     RouteTransitPlace Place
@@ -2333,8 +2426,9 @@ struct RouteTransitIncident:
     RouteTransitIncidentType Type
     Optional[str] Url
 
-# no @derive(Json): member(s) Attributes: list[RouteTransitIntermediateStopAttribute], Departure: RouteTransitDeparture not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attributes: list[RouteTransitIntermediateStopAttribute], Departure: RouteTransitDeparture not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteTransitIntermediateStop:
     Optional[list[RouteTransitIntermediateStopAttribute]] Attributes
     RouteTransitDeparture Departure
@@ -2342,8 +2436,9 @@ struct RouteTransitIntermediateStop:
     Optional[int64] GeometryOffset
     Optional[RouteTransitTransportModeDetails] Transport
 
-# no @derive(Json): member(s) AfterTravelSteps: list[RouteTransitAfterTravelStep], Arrival: RouteTransitArrival, Attributions: list[RouteAttribution], BeforeTravelSteps: list[RouteTransitBeforeTravelStep], BookingWebLinks: list[RouteWebLink], Departure: RouteTransitDeparture, Incidents: list[RouteTransitIncident], IntermediateStops: list[RouteTransitIntermediateStop], NextDepartures: list[RouteTransitNextDeparture], Notices: list[RouteTransitNotice], PassThroughWaypoints: list[RoutePassThroughWaypoint], Spans: list[RouteTransitSpan], TravelSteps: list[RouteTransitTravelStep] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AfterTravelSteps: list[RouteTransitAfterTravelStep], Arrival: RouteTransitArrival, Attributions: list[RouteAttribution], BeforeTravelSteps: list[RouteTransitBeforeTravelStep], BookingWebLinks: list[RouteWebLink], Departure: RouteTransitDeparture, Incidents: list[RouteTransitIncident], IntermediateStops: list[RouteTransitIntermediateStop], NextDepartures: list[RouteTransitNextDeparture], Notices: list[RouteTransitNotice], PassThroughWaypoints: list[RoutePassThroughWaypoint], Spans: list[RouteTransitSpan], TravelSteps: list[RouteTransitTravelStep] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteTransitLegDetails:
     list[RouteTransitAfterTravelStep] AfterTravelSteps
     Optional[RouteTransitAgency] Agency
@@ -2375,8 +2470,9 @@ struct RouteTransitNotice:
     RouteTransitNoticeCode Code
     Optional[RouteNoticeImpact] Impact
 
-# no @derive(Json): member(s) AccessibilityAttributes: list[str], AllowedModes: list[RouteTransitMode], ExcludedModes: list[RouteTransitMode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AccessibilityAttributes: list[str], AllowedModes: list[RouteTransitMode], ExcludedModes: list[RouteTransitMode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteTransitOptions:
     Optional[list[str]] AccessibilityAttributes
     Optional[list[RouteTransitMode]] AllowedModes
@@ -2394,8 +2490,9 @@ struct RouteTransitPedestrianOptions:
     Optional[int64] MaxDistance
     Optional[float64] Speed
 
-# no @derive(Json): member(s) OriginalPosition: list[float64], Position: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OriginalPosition: list[float64], Position: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteTransitPlace:
     Optional[str] Name
     Optional[list[float64]] OriginalPosition
@@ -2404,8 +2501,9 @@ struct RouteTransitPlace:
     Optional[str] Type
     Optional[int64] WaypointIndex
 
-# no @derive(Json): member(s) Names: list[LocalizedString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Names: list[LocalizedString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteTransitSpan:
     Optional[str] Country
     Optional[int64] Distance
@@ -2446,8 +2544,9 @@ struct RouteTransitTravelStep:
 struct RouteTransponder:
     Optional[str] SystemName
 
-# no @derive(Json): member(s) Truck: RouteTruckOptions, Intermodal: RouteIntermodalOptions, Transit: RouteTransitOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Truck: RouteTruckOptions, Intermodal: RouteIntermodalOptions, Transit: RouteTransitOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteTravelModeOptions:
     Optional[RouteCarOptions] Car
     Optional[RoutePedestrianOptions] Pedestrian
@@ -2456,8 +2555,9 @@ struct RouteTravelModeOptions:
     Optional[RouteIntermodalOptions] Intermodal
     Optional[RouteTransitOptions] Transit
 
-# no @derive(Json): member(s) HazardousCargos: list[RouteHazardousCargoType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HazardousCargos: list[RouteHazardousCargoType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteTruckOptions:
     Optional[int64] AxleCount
     Optional[RouteEngineType] EngineType
@@ -2479,16 +2579,18 @@ struct RouteTruckOptions:
     Optional[WeightPerAxleGroup] WeightPerAxleGroup
     Optional[int64] Width
 
-# no @derive(Json): member(s) Intersection: list[LocalizedString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Intersection: list[LocalizedString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteTurnStepDetails:
     list[LocalizedString] Intersection
     Optional[RouteSteeringDirection] SteeringDirection
     Optional[float64] TurnAngle
     Optional[RouteTurnIntensity] TurnIntensity
 
-# no @derive(Json): member(s) Intersection: list[LocalizedString] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Intersection: list[LocalizedString] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteUTurnStepDetails:
     list[LocalizedString] Intersection
     Optional[RouteSteeringDirection] SteeringDirection
@@ -2502,14 +2604,16 @@ struct RouteVehicleAfterTravelStep:
     Optional[str] Instruction
     str Type
 
-# no @derive(Json): member(s) Place: RouteVehiclePlace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Place: RouteVehiclePlace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteVehicleArrival:
     RouteVehiclePlace Place
     Optional[str] Time
 
-# no @derive(Json): member(s) Place: RouteVehiclePlace not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Place: RouteVehiclePlace not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteVehicleDeparture:
     RouteVehiclePlace Place
     Optional[str] Time
@@ -2522,8 +2626,9 @@ struct RouteVehicleIncident:
     Optional[str] StartTime
     Optional[RouteVehicleIncidentType] Type
 
-# no @derive(Json): member(s) AfterTravelSteps: list[RouteVehicleAfterTravelStep], Arrival: RouteVehicleArrival, Departure: RouteVehicleDeparture, Incidents: list[RouteVehicleIncident], Notices: list[RouteVehicleNotice], PassThroughWaypoints: list[RoutePassThroughWaypoint], Spans: list[RouteVehicleSpan], Tolls: list[RouteToll], TollSystems: list[RouteTollSystem], TravelSteps: list[RouteVehicleTravelStep], TruckRoadTypes: list[str], Zones: list[RouteZone] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AfterTravelSteps: list[RouteVehicleAfterTravelStep], Arrival: RouteVehicleArrival, Departure: RouteVehicleDeparture, Incidents: list[RouteVehicleIncident], Notices: list[RouteVehicleNotice], PassThroughWaypoints: list[RoutePassThroughWaypoint], Spans: list[RouteVehicleSpan], Tolls: list[RouteToll], TollSystems: list[RouteTollSystem], TravelSteps: list[RouteVehicleTravelStep], TruckRoadTypes: list[str], Zones: list[RouteZone] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteVehicleLegDetails:
     list[RouteVehicleAfterTravelStep] AfterTravelSteps
     RouteVehicleArrival Arrival
@@ -2543,15 +2648,17 @@ struct RouteVehicleLegDetails:
 struct RouteVehicleLicensePlate:
     Optional[str] LastCharacter
 
-# no @derive(Json): member(s) Details: list[RouteVehicleNoticeDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Details: list[RouteVehicleNoticeDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteVehicleNotice:
     RouteVehicleNoticeCode Code
     list[RouteVehicleNoticeDetail] Details
     Optional[RouteNoticeImpact] Impact
 
-# no @derive(Json): member(s) ViolatedConstraints: RouteViolatedConstraints not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ViolatedConstraints: RouteViolatedConstraints not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteVehicleNoticeDetail:
     Optional[str] Title
     Optional[RouteViolatedConstraints] ViolatedConstraints
@@ -2563,8 +2670,9 @@ struct RouteVehicleOverviewSummary:
     int64 Duration
     Optional[int64] TypicalDuration
 
-# no @derive(Json): member(s) OriginalPosition: list[float64], Position: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) OriginalPosition: list[float64], Position: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteVehiclePlace:
     Optional[str] Name
     Optional[list[float64]] OriginalPosition
@@ -2575,8 +2683,9 @@ struct RouteVehiclePlace:
     Optional[RouteStationDetails] StationDetails
     Optional[RouteVehiclePlaceType] Type
 
-# no @derive(Json): member(s) CarAccess: list[RouteSpanCarAccessAttribute], Incidents: list[int64], Names: list[LocalizedString], Notices: list[int64], RoadAttributes: list[RouteSpanRoadAttribute], RouteNumbers: list[RouteNumber], ScooterAccess: list[RouteSpanScooterAccessAttribute], TollSystems: list[int64], TruckAccess: list[RouteSpanTruckAccessAttribute], TruckRoadTypes: list[int64], Zones: list[int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CarAccess: list[RouteSpanCarAccessAttribute], Incidents: list[int64], Names: list[LocalizedString], Notices: list[int64], RoadAttributes: list[RouteSpanRoadAttribute], RouteNumbers: list[RouteNumber], ScooterAccess: list[RouteSpanScooterAccessAttribute], TollSystems: list[int64], TruckAccess: list[RouteSpanTruckAccessAttribute], TruckRoadTypes: list[int64], Zones: list[int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteVehicleSpan:
     Optional[int64] BestCaseDuration
     Optional[list[RouteSpanCarAccessAttribute]] CarAccess
@@ -2613,8 +2722,9 @@ struct RouteVehicleTravelOnlySummary:
     int64 Duration
     Optional[int64] TypicalDuration
 
-# no @derive(Json): member(s) ContinueHighwayStepDetails: RouteContinueHighwayStepDetails, ContinueStepDetails: RouteContinueStepDetails, CurrentRoad: RouteRoad, EnterHighwayStepDetails: RouteEnterHighwayStepDetails, ExitNumber: list[LocalizedString], ExitStepDetails: RouteExitStepDetails, KeepStepDetails: RouteKeepStepDetails, NextRoad: RouteRoad, RampStepDetails: RouteRampStepDetails, RoundaboutEnterStepDetails: RouteRoundaboutEnterStepDetails, RoundaboutExitStepDetails: RouteRoundaboutExitStepDetails, RoundaboutPassStepDetails: RouteRoundaboutPassStepDetails, Signpost: RouteSignpost, TurnStepDetails: RouteTurnStepDetails, UTurnStepDetails: RouteUTurnStepDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ContinueHighwayStepDetails: RouteContinueHighwayStepDetails, ContinueStepDetails: RouteContinueStepDetails, CurrentRoad: RouteRoad, EnterHighwayStepDetails: RouteEnterHighwayStepDetails, ExitNumber: list[LocalizedString], ExitStepDetails: RouteExitStepDetails, KeepStepDetails: RouteKeepStepDetails, NextRoad: RouteRoad, RampStepDetails: RouteRampStepDetails, RoundaboutEnterStepDetails: RouteRoundaboutEnterStepDetails, RoundaboutExitStepDetails: RouteRoundaboutExitStepDetails, RoundaboutPassStepDetails: RouteRoundaboutPassStepDetails, Signpost: RouteSignpost, TurnStepDetails: RouteTurnStepDetails, UTurnStepDetails: RouteUTurnStepDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteVehicleTravelStep:
     Optional[RouteContinueHighwayStepDetails] ContinueHighwayStepDetails
     Optional[RouteContinueStepDetails] ContinueStepDetails
@@ -2637,8 +2747,9 @@ struct RouteVehicleTravelStep:
     RouteVehicleTravelStepType Type
     Optional[RouteUTurnStepDetails] UTurnStepDetails
 
-# no @derive(Json): member(s) HazardousCargos: list[RouteHazardousCargoType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HazardousCargos: list[RouteHazardousCargoType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteViolatedConstraints:
     Optional[bool] AllHazardsRestricted
     Optional[RouteNoticeDetailRange] AxleCount
@@ -2660,8 +2771,9 @@ struct RouteViolatedConstraints:
     Optional[RouteTruckType] TruckType
     Optional[str] TunnelRestrictionCode
 
-# no @derive(Json): member(s) Position: list[float64], SideOfStreet: RouteSideOfStreetOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Position: list[float64], SideOfStreet: RouteSideOfStreetOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteWaypoint:
     Optional[int64] AvoidActionsForDistance
     Optional[bool] AvoidUTurns
@@ -2699,8 +2811,9 @@ struct SnapToRoadsRequest:
     Optional[RoadSnapTravelMode] TravelMode
     Optional[RoadSnapTravelModeOptions] TravelModeOptions
 
-# no @derive(Json): member(s) Notices: list[RoadSnapNotice], SnappedGeometry: RoadSnapSnappedGeometry, SnappedTracePoints: list[RoadSnapSnappedTracePoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Notices: list[RoadSnapNotice], SnappedGeometry: RoadSnapSnappedGeometry, SnappedTracePoints: list[RoadSnapSnappedTracePoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SnapToRoadsResponse:
     list[RoadSnapNotice] Notices
     str PricingBucket
@@ -2712,8 +2825,9 @@ struct SnapToRoadsResponse:
 struct ThrottlingException:
     str Message
 
-# no @derive(Json): member(s) FieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str Message
     ValidationExceptionReason Reason
@@ -2734,18 +2848,21 @@ struct WaypointOptimizationAccessHoursEntry:
     DayOfWeek DayOfWeek
     str TimeOfDay
 
-# no @derive(Json): member(s) Geometry: WaypointOptimizationAvoidanceAreaGeometry not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Geometry: WaypointOptimizationAvoidanceAreaGeometry not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WaypointOptimizationAvoidanceArea:
     WaypointOptimizationAvoidanceAreaGeometry Geometry
 
-# no @derive(Json): member(s) BoundingBox: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BoundingBox: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WaypointOptimizationAvoidanceAreaGeometry:
     Optional[list[float64]] BoundingBox
 
-# no @derive(Json): member(s) Areas: list[WaypointOptimizationAvoidanceArea] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Areas: list[WaypointOptimizationAvoidanceArea] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WaypointOptimizationAvoidanceOptions:
     Optional[list[WaypointOptimizationAvoidanceArea]] Areas
     Optional[bool] CarShuttleTrains
@@ -2770,8 +2887,9 @@ struct WaypointOptimizationConnection:
     int64 TravelDuration
     int64 WaitDuration
 
-# no @derive(Json): member(s) SideOfStreet: WaypointOptimizationSideOfStreetOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SideOfStreet: WaypointOptimizationSideOfStreetOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WaypointOptimizationDestinationOptions:
     Optional[WaypointOptimizationAccessHours] AccessHours
     Optional[str] AppointmentTime
@@ -2790,8 +2908,9 @@ struct WaypointOptimizationDriverOptions:
 struct WaypointOptimizationDrivingDistanceOptions:
     int64 DrivingDistance
 
-# no @derive(Json): member(s) Countries: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Countries: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WaypointOptimizationExclusionOptions:
     list[str] Countries
 
@@ -2800,15 +2919,17 @@ struct WaypointOptimizationFailedConstraint:
     Optional[WaypointOptimizationConstraint] Constraint
     Optional[str] Reason
 
-# no @derive(Json): member(s) FailedConstraints: list[WaypointOptimizationFailedConstraint], Position: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FailedConstraints: list[WaypointOptimizationFailedConstraint], Position: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WaypointOptimizationImpedingWaypoint:
     list[WaypointOptimizationFailedConstraint] FailedConstraints
     str Id
     list[float64] Position
 
-# no @derive(Json): member(s) Position: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Position: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WaypointOptimizationOptimizedWaypoint:
     Optional[str] ArrivalTime
     Optional[int64] ClusterIndex
@@ -2838,8 +2959,9 @@ struct WaypointOptimizationRestCycles:
 struct WaypointOptimizationRestProfile:
     str Profile
 
-# no @derive(Json): member(s) Position: list[float64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Position: list[float64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WaypointOptimizationSideOfStreetOptions:
     list[float64] Position
     Optional[SideOfStreetMatchingStrategy] UseWith
@@ -2859,14 +2981,16 @@ struct WaypointOptimizationTrafficOptions:
 struct WaypointOptimizationTrailerOptions:
     Optional[int64] TrailerCount
 
-# no @derive(Json): member(s) Truck: WaypointOptimizationTruckOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Truck: WaypointOptimizationTruckOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WaypointOptimizationTravelModeOptions:
     Optional[WaypointOptimizationPedestrianOptions] Pedestrian
     Optional[WaypointOptimizationTruckOptions] Truck
 
-# no @derive(Json): member(s) HazardousCargos: list[WaypointOptimizationHazardousCargoType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HazardousCargos: list[WaypointOptimizationHazardousCargoType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WaypointOptimizationTruckOptions:
     Optional[int64] GrossWeight
     Optional[list[WaypointOptimizationHazardousCargoType]] HazardousCargos
@@ -2878,8 +3002,9 @@ struct WaypointOptimizationTruckOptions:
     Optional[int64] WeightPerAxle
     Optional[int64] Width
 
-# no @derive(Json): member(s) Before: list[int64], Position: list[float64], SideOfStreet: WaypointOptimizationSideOfStreetOptions not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Before: list[int64], Position: list[float64], SideOfStreet: WaypointOptimizationSideOfStreetOptions not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WaypointOptimizationWaypoint:
     Optional[WaypointOptimizationAccessHours] AccessHours
     Optional[str] AppointmentTime
@@ -2924,21 +3049,1545 @@ def geo_routes_error_from_code(str code) -> Geo_RoutesError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CalculateIsolines (document member `Avoid: IsolineAvoidanceOptions` is not serializable by derive)
-#   CalculateRouteMatrix (document member `Avoid: RouteMatrixAvoidanceOptions` is not serializable by derive)
-#   CalculateRoutes (document member `Avoid: RouteAvoidanceOptions` is not serializable by derive)
-#   OptimizeWaypoints (document member `Avoid: WaypointOptimizationAvoidanceOptions` is not serializable by derive)
-#   SnapToRoads (document member `TracePoints: list[RoadSnapTracePoint]` is not serializable by derive)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def geo_routes_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def geo_routes_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def geo_routes_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize Circle to a compact JSON object (declaration order).
+def circle_to_json(Circle v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Center:
+        e0.append(str(x0))
+    parts.append("\"Center\":" + geo_routes_json_arr(e0))
+    parts.append("\"Radius\":" + str(v.Radius))
+    return geo_routes_json_obj(parts)
+
+# Serialize Corridor to a compact JSON object (declaration order).
+def corridor_to_json(Corridor v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.LineString:
+        list[str] e1 = []
+        for x1 in x0:
+            e1.append(str(x1))
+        e0.append(geo_routes_json_arr(e1))
+    parts.append("\"LineString\":" + geo_routes_json_arr(e0))
+    parts.append("\"Radius\":" + str(v.Radius))
+    return geo_routes_json_obj(parts)
+
+# Serialize IsolineAvoidanceArea to a compact JSON object (declaration order).
+def isoline_avoidance_area_to_json(IsolineAvoidanceArea v) -> str:
+    list[str] parts = []
+    if v.Except.is_some():
+        auto u0 = v.Except.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(isoline_avoidance_area_geometry_to_json(x1))
+        parts.append("\"Except\":" + geo_routes_json_arr(e1))
+    parts.append("\"Geometry\":" + isoline_avoidance_area_geometry_to_json(v.Geometry))
+    return geo_routes_json_obj(parts)
+
+# Serialize IsolineAvoidanceAreaGeometry to a compact JSON object (declaration order).
+def isoline_avoidance_area_geometry_to_json(IsolineAvoidanceAreaGeometry v) -> str:
+    list[str] parts = []
+    if v.BoundingBox.is_some():
+        auto u0 = v.BoundingBox.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"BoundingBox\":" + geo_routes_json_arr(e1))
+    if v.Corridor.is_some():
+        auto u2 = v.Corridor.unwrap()
+        parts.append("\"Corridor\":" + corridor_to_json(u2))
+    if v.Polygon.is_some():
+        auto u3 = v.Polygon.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            list[str] e5 = []
+            for x5 in x4:
+                list[str] e6 = []
+                for x6 in x5:
+                    e6.append(str(x6))
+                e5.append(geo_routes_json_arr(e6))
+            e4.append(geo_routes_json_arr(e5))
+        parts.append("\"Polygon\":" + geo_routes_json_arr(e4))
+    if v.PolylineCorridor.is_some():
+        auto u7 = v.PolylineCorridor.unwrap()
+        parts.append("\"PolylineCorridor\":" + u7.to_json())
+    if v.PolylinePolygon.is_some():
+        auto u8 = v.PolylinePolygon.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(geo_routes_json_str(x9))
+        parts.append("\"PolylinePolygon\":" + geo_routes_json_arr(e9))
+    return geo_routes_json_obj(parts)
+
+# Serialize IsolineAvoidanceOptions to a compact JSON object (declaration order).
+def isoline_avoidance_options_to_json(IsolineAvoidanceOptions v) -> str:
+    list[str] parts = []
+    if v.Areas.is_some():
+        auto u0 = v.Areas.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(isoline_avoidance_area_to_json(x1))
+        parts.append("\"Areas\":" + geo_routes_json_arr(e1))
+    if v.CarShuttleTrains.is_some():
+        auto u2 = v.CarShuttleTrains.unwrap()
+        parts.append("\"CarShuttleTrains\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.ControlledAccessHighways.is_some():
+        auto u3 = v.ControlledAccessHighways.unwrap()
+        parts.append("\"ControlledAccessHighways\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.DirtRoads.is_some():
+        auto u4 = v.DirtRoads.unwrap()
+        parts.append("\"DirtRoads\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.Ferries.is_some():
+        auto u5 = v.Ferries.unwrap()
+        parts.append("\"Ferries\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.SeasonalClosure.is_some():
+        auto u6 = v.SeasonalClosure.unwrap()
+        parts.append("\"SeasonalClosure\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.TollRoads.is_some():
+        auto u7 = v.TollRoads.unwrap()
+        parts.append("\"TollRoads\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.TollTransponders.is_some():
+        auto u8 = v.TollTransponders.unwrap()
+        parts.append("\"TollTransponders\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.TruckRoadTypes.is_some():
+        auto u9 = v.TruckRoadTypes.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(geo_routes_json_str(x10))
+        parts.append("\"TruckRoadTypes\":" + geo_routes_json_arr(e10))
+    if v.Tunnels.is_some():
+        auto u11 = v.Tunnels.unwrap()
+        parts.append("\"Tunnels\":" + json.dumps(JsonValue.Bool(u11)))
+    if v.UTurns.is_some():
+        auto u12 = v.UTurns.unwrap()
+        parts.append("\"UTurns\":" + json.dumps(JsonValue.Bool(u12)))
+    if v.ZoneCategories.is_some():
+        auto u13 = v.ZoneCategories.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(x14.to_json())
+        parts.append("\"ZoneCategories\":" + geo_routes_json_arr(e14))
+    return geo_routes_json_obj(parts)
+
+# Serialize IsolineDestinationOptions to a compact JSON object (declaration order).
+def isoline_destination_options_to_json(IsolineDestinationOptions v) -> str:
+    list[str] parts = []
+    if v.AvoidActionsForDistance.is_some():
+        auto u0 = v.AvoidActionsForDistance.unwrap()
+        parts.append("\"AvoidActionsForDistance\":" + str(u0))
+    if v.Heading.is_some():
+        auto u1 = v.Heading.unwrap()
+        parts.append("\"Heading\":" + str(u1))
+    if v.Matching.is_some():
+        auto u2 = v.Matching.unwrap()
+        parts.append("\"Matching\":" + u2.to_json())
+    if v.SideOfStreet.is_some():
+        auto u3 = v.SideOfStreet.unwrap()
+        parts.append("\"SideOfStreet\":" + isoline_side_of_street_options_to_json(u3))
+    return geo_routes_json_obj(parts)
+
+# Serialize IsolineOriginOptions to a compact JSON object (declaration order).
+def isoline_origin_options_to_json(IsolineOriginOptions v) -> str:
+    list[str] parts = []
+    if v.AvoidActionsForDistance.is_some():
+        auto u0 = v.AvoidActionsForDistance.unwrap()
+        parts.append("\"AvoidActionsForDistance\":" + str(u0))
+    if v.Heading.is_some():
+        auto u1 = v.Heading.unwrap()
+        parts.append("\"Heading\":" + str(u1))
+    if v.Matching.is_some():
+        auto u2 = v.Matching.unwrap()
+        parts.append("\"Matching\":" + u2.to_json())
+    if v.SideOfStreet.is_some():
+        auto u3 = v.SideOfStreet.unwrap()
+        parts.append("\"SideOfStreet\":" + isoline_side_of_street_options_to_json(u3))
+    return geo_routes_json_obj(parts)
+
+# Serialize IsolineSideOfStreetOptions to a compact JSON object (declaration order).
+def isoline_side_of_street_options_to_json(IsolineSideOfStreetOptions v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Position:
+        e0.append(str(x0))
+    parts.append("\"Position\":" + geo_routes_json_arr(e0))
+    if v.UseWith.is_some():
+        auto u1 = v.UseWith.unwrap()
+        parts.append("\"UseWith\":" + u1.to_json())
+    return geo_routes_json_obj(parts)
+
+# Serialize IsolineThresholds to a compact JSON object (declaration order).
+def isoline_thresholds_to_json(IsolineThresholds v) -> str:
+    list[str] parts = []
+    if v.Distance.is_some():
+        auto u0 = v.Distance.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"Distance\":" + geo_routes_json_arr(e1))
+    if v.Time.is_some():
+        auto u2 = v.Time.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(str(x3))
+        parts.append("\"Time\":" + geo_routes_json_arr(e3))
+    return geo_routes_json_obj(parts)
+
+# Serialize IsolineTravelModeOptions to a compact JSON object (declaration order).
+def isoline_travel_mode_options_to_json(IsolineTravelModeOptions v) -> str:
+    list[str] parts = []
+    if v.Car.is_some():
+        auto u0 = v.Car.unwrap()
+        parts.append("\"Car\":" + u0.to_json())
+    if v.Scooter.is_some():
+        auto u1 = v.Scooter.unwrap()
+        parts.append("\"Scooter\":" + u1.to_json())
+    if v.Truck.is_some():
+        auto u2 = v.Truck.unwrap()
+        parts.append("\"Truck\":" + isoline_truck_options_to_json(u2))
+    return geo_routes_json_obj(parts)
+
+# Serialize IsolineTruckOptions to a compact JSON object (declaration order).
+def isoline_truck_options_to_json(IsolineTruckOptions v) -> str:
+    list[str] parts = []
+    if v.AxleCount.is_some():
+        auto u0 = v.AxleCount.unwrap()
+        parts.append("\"AxleCount\":" + str(u0))
+    if v.EngineType.is_some():
+        auto u1 = v.EngineType.unwrap()
+        parts.append("\"EngineType\":" + u1.to_json())
+    if v.GrossWeight.is_some():
+        auto u2 = v.GrossWeight.unwrap()
+        parts.append("\"GrossWeight\":" + str(u2))
+    if v.HazardousCargos.is_some():
+        auto u3 = v.HazardousCargos.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"HazardousCargos\":" + geo_routes_json_arr(e4))
+    if v.Height.is_some():
+        auto u5 = v.Height.unwrap()
+        parts.append("\"Height\":" + str(u5))
+    if v.HeightAboveFirstAxle.is_some():
+        auto u6 = v.HeightAboveFirstAxle.unwrap()
+        parts.append("\"HeightAboveFirstAxle\":" + str(u6))
+    if v.KpraLength.is_some():
+        auto u7 = v.KpraLength.unwrap()
+        parts.append("\"KpraLength\":" + str(u7))
+    if v.Length.is_some():
+        auto u8 = v.Length.unwrap()
+        parts.append("\"Length\":" + str(u8))
+    if v.LicensePlate.is_some():
+        auto u9 = v.LicensePlate.unwrap()
+        parts.append("\"LicensePlate\":" + u9.to_json())
+    if v.MaxSpeed.is_some():
+        auto u10 = v.MaxSpeed.unwrap()
+        parts.append("\"MaxSpeed\":" + str(u10))
+    if v.Occupancy.is_some():
+        auto u11 = v.Occupancy.unwrap()
+        parts.append("\"Occupancy\":" + str(u11))
+    if v.PayloadCapacity.is_some():
+        auto u12 = v.PayloadCapacity.unwrap()
+        parts.append("\"PayloadCapacity\":" + str(u12))
+    if v.TireCount.is_some():
+        auto u13 = v.TireCount.unwrap()
+        parts.append("\"TireCount\":" + str(u13))
+    if v.Trailer.is_some():
+        auto u14 = v.Trailer.unwrap()
+        parts.append("\"Trailer\":" + u14.to_json())
+    if v.TruckType.is_some():
+        auto u15 = v.TruckType.unwrap()
+        parts.append("\"TruckType\":" + u15.to_json())
+    if v.TunnelRestrictionCode.is_some():
+        auto u16 = v.TunnelRestrictionCode.unwrap()
+        parts.append("\"TunnelRestrictionCode\":" + geo_routes_json_str(u16))
+    if v.WeightPerAxle.is_some():
+        auto u17 = v.WeightPerAxle.unwrap()
+        parts.append("\"WeightPerAxle\":" + str(u17))
+    if v.WeightPerAxleGroup.is_some():
+        auto u18 = v.WeightPerAxleGroup.unwrap()
+        parts.append("\"WeightPerAxleGroup\":" + u18.to_json())
+    if v.Width.is_some():
+        auto u19 = v.Width.unwrap()
+        parts.append("\"Width\":" + str(u19))
+    return geo_routes_json_obj(parts)
+
+# Serialize RoadSnapTracePoint to a compact JSON object (declaration order).
+def road_snap_trace_point_to_json(RoadSnapTracePoint v) -> str:
+    list[str] parts = []
+    if v.Heading.is_some():
+        auto u0 = v.Heading.unwrap()
+        parts.append("\"Heading\":" + str(u0))
+    list[str] e1 = []
+    for x1 in v.Position:
+        e1.append(str(x1))
+    parts.append("\"Position\":" + geo_routes_json_arr(e1))
+    if v.Speed.is_some():
+        auto u2 = v.Speed.unwrap()
+        parts.append("\"Speed\":" + str(u2))
+    if v.Timestamp.is_some():
+        auto u3 = v.Timestamp.unwrap()
+        parts.append("\"Timestamp\":" + geo_routes_json_str(u3))
+    return geo_routes_json_obj(parts)
+
+# Serialize RoadSnapTravelModeOptions to a compact JSON object (declaration order).
+def road_snap_travel_mode_options_to_json(RoadSnapTravelModeOptions v) -> str:
+    list[str] parts = []
+    if v.Truck.is_some():
+        auto u0 = v.Truck.unwrap()
+        parts.append("\"Truck\":" + road_snap_truck_options_to_json(u0))
+    return geo_routes_json_obj(parts)
+
+# Serialize RoadSnapTruckOptions to a compact JSON object (declaration order).
+def road_snap_truck_options_to_json(RoadSnapTruckOptions v) -> str:
+    list[str] parts = []
+    if v.GrossWeight.is_some():
+        auto u0 = v.GrossWeight.unwrap()
+        parts.append("\"GrossWeight\":" + str(u0))
+    if v.HazardousCargos.is_some():
+        auto u1 = v.HazardousCargos.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"HazardousCargos\":" + geo_routes_json_arr(e2))
+    if v.Height.is_some():
+        auto u3 = v.Height.unwrap()
+        parts.append("\"Height\":" + str(u3))
+    if v.Length.is_some():
+        auto u4 = v.Length.unwrap()
+        parts.append("\"Length\":" + str(u4))
+    if v.Trailer.is_some():
+        auto u5 = v.Trailer.unwrap()
+        parts.append("\"Trailer\":" + u5.to_json())
+    if v.TunnelRestrictionCode.is_some():
+        auto u6 = v.TunnelRestrictionCode.unwrap()
+        parts.append("\"TunnelRestrictionCode\":" + geo_routes_json_str(u6))
+    if v.Width.is_some():
+        auto u7 = v.Width.unwrap()
+        parts.append("\"Width\":" + str(u7))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteAvoidanceArea to a compact JSON object (declaration order).
+def route_avoidance_area_to_json(RouteAvoidanceArea v) -> str:
+    list[str] parts = []
+    if v.Except.is_some():
+        auto u0 = v.Except.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(route_avoidance_area_geometry_to_json(x1))
+        parts.append("\"Except\":" + geo_routes_json_arr(e1))
+    parts.append("\"Geometry\":" + route_avoidance_area_geometry_to_json(v.Geometry))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteAvoidanceAreaGeometry to a compact JSON object (declaration order).
+def route_avoidance_area_geometry_to_json(RouteAvoidanceAreaGeometry v) -> str:
+    list[str] parts = []
+    if v.Corridor.is_some():
+        auto u0 = v.Corridor.unwrap()
+        parts.append("\"Corridor\":" + corridor_to_json(u0))
+    if v.BoundingBox.is_some():
+        auto u1 = v.BoundingBox.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(str(x2))
+        parts.append("\"BoundingBox\":" + geo_routes_json_arr(e2))
+    if v.Polygon.is_some():
+        auto u3 = v.Polygon.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            list[str] e5 = []
+            for x5 in x4:
+                list[str] e6 = []
+                for x6 in x5:
+                    e6.append(str(x6))
+                e5.append(geo_routes_json_arr(e6))
+            e4.append(geo_routes_json_arr(e5))
+        parts.append("\"Polygon\":" + geo_routes_json_arr(e4))
+    if v.PolylineCorridor.is_some():
+        auto u7 = v.PolylineCorridor.unwrap()
+        parts.append("\"PolylineCorridor\":" + u7.to_json())
+    if v.PolylinePolygon.is_some():
+        auto u8 = v.PolylinePolygon.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(geo_routes_json_str(x9))
+        parts.append("\"PolylinePolygon\":" + geo_routes_json_arr(e9))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteAvoidanceOptions to a compact JSON object (declaration order).
+def route_avoidance_options_to_json(RouteAvoidanceOptions v) -> str:
+    list[str] parts = []
+    if v.Areas.is_some():
+        auto u0 = v.Areas.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(route_avoidance_area_to_json(x1))
+        parts.append("\"Areas\":" + geo_routes_json_arr(e1))
+    if v.CarShuttleTrains.is_some():
+        auto u2 = v.CarShuttleTrains.unwrap()
+        parts.append("\"CarShuttleTrains\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.ControlledAccessHighways.is_some():
+        auto u3 = v.ControlledAccessHighways.unwrap()
+        parts.append("\"ControlledAccessHighways\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.DirtRoads.is_some():
+        auto u4 = v.DirtRoads.unwrap()
+        parts.append("\"DirtRoads\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.Ferries.is_some():
+        auto u5 = v.Ferries.unwrap()
+        parts.append("\"Ferries\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.SeasonalClosure.is_some():
+        auto u6 = v.SeasonalClosure.unwrap()
+        parts.append("\"SeasonalClosure\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.TollRoads.is_some():
+        auto u7 = v.TollRoads.unwrap()
+        parts.append("\"TollRoads\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.TollTransponders.is_some():
+        auto u8 = v.TollTransponders.unwrap()
+        parts.append("\"TollTransponders\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.TruckRoadTypes.is_some():
+        auto u9 = v.TruckRoadTypes.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(geo_routes_json_str(x10))
+        parts.append("\"TruckRoadTypes\":" + geo_routes_json_arr(e10))
+    if v.Tunnels.is_some():
+        auto u11 = v.Tunnels.unwrap()
+        parts.append("\"Tunnels\":" + json.dumps(JsonValue.Bool(u11)))
+    if v.UTurns.is_some():
+        auto u12 = v.UTurns.unwrap()
+        parts.append("\"UTurns\":" + json.dumps(JsonValue.Bool(u12)))
+    if v.ZoneCategories.is_some():
+        auto u13 = v.ZoneCategories.unwrap()
+        list[str] e14 = []
+        for x14 in u13:
+            e14.append(x14.to_json())
+        parts.append("\"ZoneCategories\":" + geo_routes_json_arr(e14))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteDestinationOptions to a compact JSON object (declaration order).
+def route_destination_options_to_json(RouteDestinationOptions v) -> str:
+    list[str] parts = []
+    if v.AvoidActionsForDistance.is_some():
+        auto u0 = v.AvoidActionsForDistance.unwrap()
+        parts.append("\"AvoidActionsForDistance\":" + str(u0))
+    if v.AvoidUTurns.is_some():
+        auto u1 = v.AvoidUTurns.unwrap()
+        parts.append("\"AvoidUTurns\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.Heading.is_some():
+        auto u2 = v.Heading.unwrap()
+        parts.append("\"Heading\":" + str(u2))
+    if v.Matching.is_some():
+        auto u3 = v.Matching.unwrap()
+        parts.append("\"Matching\":" + u3.to_json())
+    if v.SideOfStreet.is_some():
+        auto u4 = v.SideOfStreet.unwrap()
+        parts.append("\"SideOfStreet\":" + route_side_of_street_options_to_json(u4))
+    if v.StopDuration.is_some():
+        auto u5 = v.StopDuration.unwrap()
+        parts.append("\"StopDuration\":" + str(u5))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteDriverOptions to a compact JSON object (declaration order).
+def route_driver_options_to_json(RouteDriverOptions v) -> str:
+    list[str] parts = []
+    if v.Schedule.is_some():
+        auto u0 = v.Schedule.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Schedule\":" + geo_routes_json_arr(e1))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteExclusionOptions to a compact JSON object (declaration order).
+def route_exclusion_options_to_json(RouteExclusionOptions v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Countries:
+        e0.append(geo_routes_json_str(x0))
+    parts.append("\"Countries\":" + geo_routes_json_arr(e0))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteIntermodalOptions to a compact JSON object (declaration order).
+def route_intermodal_options_to_json(RouteIntermodalOptions v) -> str:
+    list[str] parts = []
+    if v.AccessibilityAttributes.is_some():
+        auto u0 = v.AccessibilityAttributes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(geo_routes_json_str(x1))
+        parts.append("\"AccessibilityAttributes\":" + geo_routes_json_arr(e1))
+    if v.MaxTransfers.is_some():
+        auto u2 = v.MaxTransfers.unwrap()
+        parts.append("\"MaxTransfers\":" + str(u2))
+    if v.Pedestrian.is_some():
+        auto u3 = v.Pedestrian.unwrap()
+        parts.append("\"Pedestrian\":" + u3.to_json())
+    if v.Rental.is_some():
+        auto u4 = v.Rental.unwrap()
+        parts.append("\"Rental\":" + route_intermodal_rental_options_to_json(u4))
+    if v.Taxi.is_some():
+        auto u5 = v.Taxi.unwrap()
+        parts.append("\"Taxi\":" + route_intermodal_taxi_options_to_json(u5))
+    if v.Transit.is_some():
+        auto u6 = v.Transit.unwrap()
+        parts.append("\"Transit\":" + route_intermodal_transit_options_to_json(u6))
+    if v.Vehicle.is_some():
+        auto u7 = v.Vehicle.unwrap()
+        parts.append("\"Vehicle\":" + route_intermodal_vehicle_options_to_json(u7))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteIntermodalRentalOptions to a compact JSON object (declaration order).
+def route_intermodal_rental_options_to_json(RouteIntermodalRentalOptions v) -> str:
+    list[str] parts = []
+    if v.AllowedModes.is_some():
+        auto u0 = v.AllowedModes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AllowedModes\":" + geo_routes_json_arr(e1))
+    if v.EnabledFor.is_some():
+        auto u2 = v.EnabledFor.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"EnabledFor\":" + geo_routes_json_arr(e3))
+    if v.ExcludedModes.is_some():
+        auto u4 = v.ExcludedModes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"ExcludedModes\":" + geo_routes_json_arr(e5))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteIntermodalTaxiOptions to a compact JSON object (declaration order).
+def route_intermodal_taxi_options_to_json(RouteIntermodalTaxiOptions v) -> str:
+    list[str] parts = []
+    if v.AllowedModes.is_some():
+        auto u0 = v.AllowedModes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AllowedModes\":" + geo_routes_json_arr(e1))
+    if v.EnabledFor.is_some():
+        auto u2 = v.EnabledFor.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"EnabledFor\":" + geo_routes_json_arr(e3))
+    if v.ExcludedModes.is_some():
+        auto u4 = v.ExcludedModes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"ExcludedModes\":" + geo_routes_json_arr(e5))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteIntermodalTransitOptions to a compact JSON object (declaration order).
+def route_intermodal_transit_options_to_json(RouteIntermodalTransitOptions v) -> str:
+    list[str] parts = []
+    if v.AllowedModes.is_some():
+        auto u0 = v.AllowedModes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AllowedModes\":" + geo_routes_json_arr(e1))
+    if v.EnabledFor.is_some():
+        auto u2 = v.EnabledFor.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"EnabledFor\":" + geo_routes_json_arr(e3))
+    if v.ExcludedModes.is_some():
+        auto u4 = v.ExcludedModes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"ExcludedModes\":" + geo_routes_json_arr(e5))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteIntermodalVehicleOptions to a compact JSON object (declaration order).
+def route_intermodal_vehicle_options_to_json(RouteIntermodalVehicleOptions v) -> str:
+    list[str] parts = []
+    if v.AllowedModes.is_some():
+        auto u0 = v.AllowedModes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"AllowedModes\":" + geo_routes_json_arr(e1))
+    if v.EnabledFor.is_some():
+        auto u2 = v.EnabledFor.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"EnabledFor\":" + geo_routes_json_arr(e3))
+    if v.ExcludedModes.is_some():
+        auto u4 = v.ExcludedModes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"ExcludedModes\":" + geo_routes_json_arr(e5))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteMatrixAvoidanceArea to a compact JSON object (declaration order).
+def route_matrix_avoidance_area_to_json(RouteMatrixAvoidanceArea v) -> str:
+    list[str] parts = []
+    parts.append("\"Geometry\":" + route_matrix_avoidance_area_geometry_to_json(v.Geometry))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteMatrixAvoidanceAreaGeometry to a compact JSON object (declaration order).
+def route_matrix_avoidance_area_geometry_to_json(RouteMatrixAvoidanceAreaGeometry v) -> str:
+    list[str] parts = []
+    if v.BoundingBox.is_some():
+        auto u0 = v.BoundingBox.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"BoundingBox\":" + geo_routes_json_arr(e1))
+    if v.Polygon.is_some():
+        auto u2 = v.Polygon.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            list[str] e4 = []
+            for x4 in x3:
+                list[str] e5 = []
+                for x5 in x4:
+                    e5.append(str(x5))
+                e4.append(geo_routes_json_arr(e5))
+            e3.append(geo_routes_json_arr(e4))
+        parts.append("\"Polygon\":" + geo_routes_json_arr(e3))
+    if v.PolylinePolygon.is_some():
+        auto u6 = v.PolylinePolygon.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(geo_routes_json_str(x7))
+        parts.append("\"PolylinePolygon\":" + geo_routes_json_arr(e7))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteMatrixAvoidanceOptions to a compact JSON object (declaration order).
+def route_matrix_avoidance_options_to_json(RouteMatrixAvoidanceOptions v) -> str:
+    list[str] parts = []
+    if v.Areas.is_some():
+        auto u0 = v.Areas.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(route_matrix_avoidance_area_to_json(x1))
+        parts.append("\"Areas\":" + geo_routes_json_arr(e1))
+    if v.CarShuttleTrains.is_some():
+        auto u2 = v.CarShuttleTrains.unwrap()
+        parts.append("\"CarShuttleTrains\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.ControlledAccessHighways.is_some():
+        auto u3 = v.ControlledAccessHighways.unwrap()
+        parts.append("\"ControlledAccessHighways\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.DirtRoads.is_some():
+        auto u4 = v.DirtRoads.unwrap()
+        parts.append("\"DirtRoads\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.Ferries.is_some():
+        auto u5 = v.Ferries.unwrap()
+        parts.append("\"Ferries\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.TollRoads.is_some():
+        auto u6 = v.TollRoads.unwrap()
+        parts.append("\"TollRoads\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.TollTransponders.is_some():
+        auto u7 = v.TollTransponders.unwrap()
+        parts.append("\"TollTransponders\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.TruckRoadTypes.is_some():
+        auto u8 = v.TruckRoadTypes.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(geo_routes_json_str(x9))
+        parts.append("\"TruckRoadTypes\":" + geo_routes_json_arr(e9))
+    if v.Tunnels.is_some():
+        auto u10 = v.Tunnels.unwrap()
+        parts.append("\"Tunnels\":" + json.dumps(JsonValue.Bool(u10)))
+    if v.UTurns.is_some():
+        auto u11 = v.UTurns.unwrap()
+        parts.append("\"UTurns\":" + json.dumps(JsonValue.Bool(u11)))
+    if v.ZoneCategories.is_some():
+        auto u12 = v.ZoneCategories.unwrap()
+        list[str] e13 = []
+        for x13 in u12:
+            e13.append(x13.to_json())
+        parts.append("\"ZoneCategories\":" + geo_routes_json_arr(e13))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteMatrixBoundary to a compact JSON object (declaration order).
+def route_matrix_boundary_to_json(RouteMatrixBoundary v) -> str:
+    list[str] parts = []
+    if v.Geometry.is_some():
+        auto u0 = v.Geometry.unwrap()
+        parts.append("\"Geometry\":" + route_matrix_boundary_geometry_to_json(u0))
+    if v.Unbounded.is_some():
+        auto u1 = v.Unbounded.unwrap()
+        parts.append("\"Unbounded\":" + json.dumps(JsonValue.Bool(u1)))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteMatrixBoundaryGeometry to a compact JSON object (declaration order).
+def route_matrix_boundary_geometry_to_json(RouteMatrixBoundaryGeometry v) -> str:
+    list[str] parts = []
+    if v.AutoCircle.is_some():
+        auto u0 = v.AutoCircle.unwrap()
+        parts.append("\"AutoCircle\":" + u0.to_json())
+    if v.Circle.is_some():
+        auto u1 = v.Circle.unwrap()
+        parts.append("\"Circle\":" + circle_to_json(u1))
+    if v.BoundingBox.is_some():
+        auto u2 = v.BoundingBox.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(str(x3))
+        parts.append("\"BoundingBox\":" + geo_routes_json_arr(e3))
+    if v.Polygon.is_some():
+        auto u4 = v.Polygon.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            list[str] e6 = []
+            for x6 in x5:
+                list[str] e7 = []
+                for x7 in x6:
+                    e7.append(str(x7))
+                e6.append(geo_routes_json_arr(e7))
+            e5.append(geo_routes_json_arr(e6))
+        parts.append("\"Polygon\":" + geo_routes_json_arr(e5))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteMatrixDestination to a compact JSON object (declaration order).
+def route_matrix_destination_to_json(RouteMatrixDestination v) -> str:
+    list[str] parts = []
+    if v.Options.is_some():
+        auto u0 = v.Options.unwrap()
+        parts.append("\"Options\":" + route_matrix_destination_options_to_json(u0))
+    list[str] e1 = []
+    for x1 in v.Position:
+        e1.append(str(x1))
+    parts.append("\"Position\":" + geo_routes_json_arr(e1))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteMatrixDestinationOptions to a compact JSON object (declaration order).
+def route_matrix_destination_options_to_json(RouteMatrixDestinationOptions v) -> str:
+    list[str] parts = []
+    if v.AvoidActionsForDistance.is_some():
+        auto u0 = v.AvoidActionsForDistance.unwrap()
+        parts.append("\"AvoidActionsForDistance\":" + str(u0))
+    if v.Heading.is_some():
+        auto u1 = v.Heading.unwrap()
+        parts.append("\"Heading\":" + str(u1))
+    if v.Matching.is_some():
+        auto u2 = v.Matching.unwrap()
+        parts.append("\"Matching\":" + u2.to_json())
+    if v.SideOfStreet.is_some():
+        auto u3 = v.SideOfStreet.unwrap()
+        parts.append("\"SideOfStreet\":" + route_matrix_side_of_street_options_to_json(u3))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteMatrixExclusionOptions to a compact JSON object (declaration order).
+def route_matrix_exclusion_options_to_json(RouteMatrixExclusionOptions v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Countries:
+        e0.append(geo_routes_json_str(x0))
+    parts.append("\"Countries\":" + geo_routes_json_arr(e0))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteMatrixOrigin to a compact JSON object (declaration order).
+def route_matrix_origin_to_json(RouteMatrixOrigin v) -> str:
+    list[str] parts = []
+    if v.Options.is_some():
+        auto u0 = v.Options.unwrap()
+        parts.append("\"Options\":" + route_matrix_origin_options_to_json(u0))
+    list[str] e1 = []
+    for x1 in v.Position:
+        e1.append(str(x1))
+    parts.append("\"Position\":" + geo_routes_json_arr(e1))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteMatrixOriginOptions to a compact JSON object (declaration order).
+def route_matrix_origin_options_to_json(RouteMatrixOriginOptions v) -> str:
+    list[str] parts = []
+    if v.AvoidActionsForDistance.is_some():
+        auto u0 = v.AvoidActionsForDistance.unwrap()
+        parts.append("\"AvoidActionsForDistance\":" + str(u0))
+    if v.Heading.is_some():
+        auto u1 = v.Heading.unwrap()
+        parts.append("\"Heading\":" + str(u1))
+    if v.Matching.is_some():
+        auto u2 = v.Matching.unwrap()
+        parts.append("\"Matching\":" + u2.to_json())
+    if v.SideOfStreet.is_some():
+        auto u3 = v.SideOfStreet.unwrap()
+        parts.append("\"SideOfStreet\":" + route_matrix_side_of_street_options_to_json(u3))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteMatrixSideOfStreetOptions to a compact JSON object (declaration order).
+def route_matrix_side_of_street_options_to_json(RouteMatrixSideOfStreetOptions v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Position:
+        e0.append(str(x0))
+    parts.append("\"Position\":" + geo_routes_json_arr(e0))
+    if v.UseWith.is_some():
+        auto u1 = v.UseWith.unwrap()
+        parts.append("\"UseWith\":" + u1.to_json())
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteMatrixTravelModeOptions to a compact JSON object (declaration order).
+def route_matrix_travel_mode_options_to_json(RouteMatrixTravelModeOptions v) -> str:
+    list[str] parts = []
+    if v.Car.is_some():
+        auto u0 = v.Car.unwrap()
+        parts.append("\"Car\":" + u0.to_json())
+    if v.Scooter.is_some():
+        auto u1 = v.Scooter.unwrap()
+        parts.append("\"Scooter\":" + u1.to_json())
+    if v.Truck.is_some():
+        auto u2 = v.Truck.unwrap()
+        parts.append("\"Truck\":" + route_matrix_truck_options_to_json(u2))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteMatrixTruckOptions to a compact JSON object (declaration order).
+def route_matrix_truck_options_to_json(RouteMatrixTruckOptions v) -> str:
+    list[str] parts = []
+    if v.AxleCount.is_some():
+        auto u0 = v.AxleCount.unwrap()
+        parts.append("\"AxleCount\":" + str(u0))
+    if v.GrossWeight.is_some():
+        auto u1 = v.GrossWeight.unwrap()
+        parts.append("\"GrossWeight\":" + str(u1))
+    if v.HazardousCargos.is_some():
+        auto u2 = v.HazardousCargos.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"HazardousCargos\":" + geo_routes_json_arr(e3))
+    if v.Height.is_some():
+        auto u4 = v.Height.unwrap()
+        parts.append("\"Height\":" + str(u4))
+    if v.KpraLength.is_some():
+        auto u5 = v.KpraLength.unwrap()
+        parts.append("\"KpraLength\":" + str(u5))
+    if v.Length.is_some():
+        auto u6 = v.Length.unwrap()
+        parts.append("\"Length\":" + str(u6))
+    if v.LicensePlate.is_some():
+        auto u7 = v.LicensePlate.unwrap()
+        parts.append("\"LicensePlate\":" + u7.to_json())
+    if v.MaxSpeed.is_some():
+        auto u8 = v.MaxSpeed.unwrap()
+        parts.append("\"MaxSpeed\":" + str(u8))
+    if v.Occupancy.is_some():
+        auto u9 = v.Occupancy.unwrap()
+        parts.append("\"Occupancy\":" + str(u9))
+    if v.PayloadCapacity.is_some():
+        auto u10 = v.PayloadCapacity.unwrap()
+        parts.append("\"PayloadCapacity\":" + str(u10))
+    if v.Trailer.is_some():
+        auto u11 = v.Trailer.unwrap()
+        parts.append("\"Trailer\":" + u11.to_json())
+    if v.TruckType.is_some():
+        auto u12 = v.TruckType.unwrap()
+        parts.append("\"TruckType\":" + u12.to_json())
+    if v.TunnelRestrictionCode.is_some():
+        auto u13 = v.TunnelRestrictionCode.unwrap()
+        parts.append("\"TunnelRestrictionCode\":" + geo_routes_json_str(u13))
+    if v.WeightPerAxle.is_some():
+        auto u14 = v.WeightPerAxle.unwrap()
+        parts.append("\"WeightPerAxle\":" + str(u14))
+    if v.WeightPerAxleGroup.is_some():
+        auto u15 = v.WeightPerAxleGroup.unwrap()
+        parts.append("\"WeightPerAxleGroup\":" + u15.to_json())
+    if v.Width.is_some():
+        auto u16 = v.Width.unwrap()
+        parts.append("\"Width\":" + str(u16))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteOriginOptions to a compact JSON object (declaration order).
+def route_origin_options_to_json(RouteOriginOptions v) -> str:
+    list[str] parts = []
+    if v.AvoidActionsForDistance.is_some():
+        auto u0 = v.AvoidActionsForDistance.unwrap()
+        parts.append("\"AvoidActionsForDistance\":" + str(u0))
+    if v.AvoidUTurns.is_some():
+        auto u1 = v.AvoidUTurns.unwrap()
+        parts.append("\"AvoidUTurns\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.Heading.is_some():
+        auto u2 = v.Heading.unwrap()
+        parts.append("\"Heading\":" + str(u2))
+    if v.Matching.is_some():
+        auto u3 = v.Matching.unwrap()
+        parts.append("\"Matching\":" + u3.to_json())
+    if v.SideOfStreet.is_some():
+        auto u4 = v.SideOfStreet.unwrap()
+        parts.append("\"SideOfStreet\":" + route_side_of_street_options_to_json(u4))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteSideOfStreetOptions to a compact JSON object (declaration order).
+def route_side_of_street_options_to_json(RouteSideOfStreetOptions v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Position:
+        e0.append(str(x0))
+    parts.append("\"Position\":" + geo_routes_json_arr(e0))
+    if v.UseWith.is_some():
+        auto u1 = v.UseWith.unwrap()
+        parts.append("\"UseWith\":" + u1.to_json())
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteTransitOptions to a compact JSON object (declaration order).
+def route_transit_options_to_json(RouteTransitOptions v) -> str:
+    list[str] parts = []
+    if v.AccessibilityAttributes.is_some():
+        auto u0 = v.AccessibilityAttributes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(geo_routes_json_str(x1))
+        parts.append("\"AccessibilityAttributes\":" + geo_routes_json_arr(e1))
+    if v.AllowedModes.is_some():
+        auto u2 = v.AllowedModes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"AllowedModes\":" + geo_routes_json_arr(e3))
+    if v.ExcludedModes.is_some():
+        auto u4 = v.ExcludedModes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"ExcludedModes\":" + geo_routes_json_arr(e5))
+    if v.MaxTransfers.is_some():
+        auto u6 = v.MaxTransfers.unwrap()
+        parts.append("\"MaxTransfers\":" + str(u6))
+    if v.Pedestrian.is_some():
+        auto u7 = v.Pedestrian.unwrap()
+        parts.append("\"Pedestrian\":" + u7.to_json())
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteTravelModeOptions to a compact JSON object (declaration order).
+def route_travel_mode_options_to_json(RouteTravelModeOptions v) -> str:
+    list[str] parts = []
+    if v.Car.is_some():
+        auto u0 = v.Car.unwrap()
+        parts.append("\"Car\":" + u0.to_json())
+    if v.Pedestrian.is_some():
+        auto u1 = v.Pedestrian.unwrap()
+        parts.append("\"Pedestrian\":" + u1.to_json())
+    if v.Scooter.is_some():
+        auto u2 = v.Scooter.unwrap()
+        parts.append("\"Scooter\":" + u2.to_json())
+    if v.Truck.is_some():
+        auto u3 = v.Truck.unwrap()
+        parts.append("\"Truck\":" + route_truck_options_to_json(u3))
+    if v.Intermodal.is_some():
+        auto u4 = v.Intermodal.unwrap()
+        parts.append("\"Intermodal\":" + route_intermodal_options_to_json(u4))
+    if v.Transit.is_some():
+        auto u5 = v.Transit.unwrap()
+        parts.append("\"Transit\":" + route_transit_options_to_json(u5))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteTruckOptions to a compact JSON object (declaration order).
+def route_truck_options_to_json(RouteTruckOptions v) -> str:
+    list[str] parts = []
+    if v.AxleCount.is_some():
+        auto u0 = v.AxleCount.unwrap()
+        parts.append("\"AxleCount\":" + str(u0))
+    if v.EngineType.is_some():
+        auto u1 = v.EngineType.unwrap()
+        parts.append("\"EngineType\":" + u1.to_json())
+    if v.GrossWeight.is_some():
+        auto u2 = v.GrossWeight.unwrap()
+        parts.append("\"GrossWeight\":" + str(u2))
+    if v.HazardousCargos.is_some():
+        auto u3 = v.HazardousCargos.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"HazardousCargos\":" + geo_routes_json_arr(e4))
+    if v.Height.is_some():
+        auto u5 = v.Height.unwrap()
+        parts.append("\"Height\":" + str(u5))
+    if v.HeightAboveFirstAxle.is_some():
+        auto u6 = v.HeightAboveFirstAxle.unwrap()
+        parts.append("\"HeightAboveFirstAxle\":" + str(u6))
+    if v.KpraLength.is_some():
+        auto u7 = v.KpraLength.unwrap()
+        parts.append("\"KpraLength\":" + str(u7))
+    if v.Length.is_some():
+        auto u8 = v.Length.unwrap()
+        parts.append("\"Length\":" + str(u8))
+    if v.LicensePlate.is_some():
+        auto u9 = v.LicensePlate.unwrap()
+        parts.append("\"LicensePlate\":" + u9.to_json())
+    if v.MaxSpeed.is_some():
+        auto u10 = v.MaxSpeed.unwrap()
+        parts.append("\"MaxSpeed\":" + str(u10))
+    if v.Occupancy.is_some():
+        auto u11 = v.Occupancy.unwrap()
+        parts.append("\"Occupancy\":" + str(u11))
+    if v.PayloadCapacity.is_some():
+        auto u12 = v.PayloadCapacity.unwrap()
+        parts.append("\"PayloadCapacity\":" + str(u12))
+    if v.TireCount.is_some():
+        auto u13 = v.TireCount.unwrap()
+        parts.append("\"TireCount\":" + str(u13))
+    if v.Trailer.is_some():
+        auto u14 = v.Trailer.unwrap()
+        parts.append("\"Trailer\":" + u14.to_json())
+    if v.TruckType.is_some():
+        auto u15 = v.TruckType.unwrap()
+        parts.append("\"TruckType\":" + u15.to_json())
+    if v.TunnelRestrictionCode.is_some():
+        auto u16 = v.TunnelRestrictionCode.unwrap()
+        parts.append("\"TunnelRestrictionCode\":" + geo_routes_json_str(u16))
+    if v.WeightPerAxle.is_some():
+        auto u17 = v.WeightPerAxle.unwrap()
+        parts.append("\"WeightPerAxle\":" + str(u17))
+    if v.WeightPerAxleGroup.is_some():
+        auto u18 = v.WeightPerAxleGroup.unwrap()
+        parts.append("\"WeightPerAxleGroup\":" + u18.to_json())
+    if v.Width.is_some():
+        auto u19 = v.Width.unwrap()
+        parts.append("\"Width\":" + str(u19))
+    return geo_routes_json_obj(parts)
+
+# Serialize RouteWaypoint to a compact JSON object (declaration order).
+def route_waypoint_to_json(RouteWaypoint v) -> str:
+    list[str] parts = []
+    if v.AvoidActionsForDistance.is_some():
+        auto u0 = v.AvoidActionsForDistance.unwrap()
+        parts.append("\"AvoidActionsForDistance\":" + str(u0))
+    if v.AvoidUTurns.is_some():
+        auto u1 = v.AvoidUTurns.unwrap()
+        parts.append("\"AvoidUTurns\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.Heading.is_some():
+        auto u2 = v.Heading.unwrap()
+        parts.append("\"Heading\":" + str(u2))
+    if v.Matching.is_some():
+        auto u3 = v.Matching.unwrap()
+        parts.append("\"Matching\":" + u3.to_json())
+    if v.PassThrough.is_some():
+        auto u4 = v.PassThrough.unwrap()
+        parts.append("\"PassThrough\":" + json.dumps(JsonValue.Bool(u4)))
+    list[str] e5 = []
+    for x5 in v.Position:
+        e5.append(str(x5))
+    parts.append("\"Position\":" + geo_routes_json_arr(e5))
+    if v.SideOfStreet.is_some():
+        auto u6 = v.SideOfStreet.unwrap()
+        parts.append("\"SideOfStreet\":" + route_side_of_street_options_to_json(u6))
+    if v.StopDuration.is_some():
+        auto u7 = v.StopDuration.unwrap()
+        parts.append("\"StopDuration\":" + str(u7))
+    return geo_routes_json_obj(parts)
+
+# Serialize WaypointOptimizationAvoidanceArea to a compact JSON object (declaration order).
+def waypoint_optimization_avoidance_area_to_json(WaypointOptimizationAvoidanceArea v) -> str:
+    list[str] parts = []
+    parts.append("\"Geometry\":" + waypoint_optimization_avoidance_area_geometry_to_json(v.Geometry))
+    return geo_routes_json_obj(parts)
+
+# Serialize WaypointOptimizationAvoidanceAreaGeometry to a compact JSON object (declaration order).
+def waypoint_optimization_avoidance_area_geometry_to_json(WaypointOptimizationAvoidanceAreaGeometry v) -> str:
+    list[str] parts = []
+    if v.BoundingBox.is_some():
+        auto u0 = v.BoundingBox.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(str(x1))
+        parts.append("\"BoundingBox\":" + geo_routes_json_arr(e1))
+    return geo_routes_json_obj(parts)
+
+# Serialize WaypointOptimizationAvoidanceOptions to a compact JSON object (declaration order).
+def waypoint_optimization_avoidance_options_to_json(WaypointOptimizationAvoidanceOptions v) -> str:
+    list[str] parts = []
+    if v.Areas.is_some():
+        auto u0 = v.Areas.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(waypoint_optimization_avoidance_area_to_json(x1))
+        parts.append("\"Areas\":" + geo_routes_json_arr(e1))
+    if v.CarShuttleTrains.is_some():
+        auto u2 = v.CarShuttleTrains.unwrap()
+        parts.append("\"CarShuttleTrains\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.ControlledAccessHighways.is_some():
+        auto u3 = v.ControlledAccessHighways.unwrap()
+        parts.append("\"ControlledAccessHighways\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.DirtRoads.is_some():
+        auto u4 = v.DirtRoads.unwrap()
+        parts.append("\"DirtRoads\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.Ferries.is_some():
+        auto u5 = v.Ferries.unwrap()
+        parts.append("\"Ferries\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.TollRoads.is_some():
+        auto u6 = v.TollRoads.unwrap()
+        parts.append("\"TollRoads\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.Tunnels.is_some():
+        auto u7 = v.Tunnels.unwrap()
+        parts.append("\"Tunnels\":" + json.dumps(JsonValue.Bool(u7)))
+    if v.UTurns.is_some():
+        auto u8 = v.UTurns.unwrap()
+        parts.append("\"UTurns\":" + json.dumps(JsonValue.Bool(u8)))
+    return geo_routes_json_obj(parts)
+
+# Serialize WaypointOptimizationDestinationOptions to a compact JSON object (declaration order).
+def waypoint_optimization_destination_options_to_json(WaypointOptimizationDestinationOptions v) -> str:
+    list[str] parts = []
+    if v.AccessHours.is_some():
+        auto u0 = v.AccessHours.unwrap()
+        parts.append("\"AccessHours\":" + u0.to_json())
+    if v.AppointmentTime.is_some():
+        auto u1 = v.AppointmentTime.unwrap()
+        parts.append("\"AppointmentTime\":" + geo_routes_json_str(u1))
+    if v.Heading.is_some():
+        auto u2 = v.Heading.unwrap()
+        parts.append("\"Heading\":" + str(u2))
+    if v.Id.is_some():
+        auto u3 = v.Id.unwrap()
+        parts.append("\"Id\":" + geo_routes_json_str(u3))
+    if v.ServiceDuration.is_some():
+        auto u4 = v.ServiceDuration.unwrap()
+        parts.append("\"ServiceDuration\":" + str(u4))
+    if v.SideOfStreet.is_some():
+        auto u5 = v.SideOfStreet.unwrap()
+        parts.append("\"SideOfStreet\":" + waypoint_optimization_side_of_street_options_to_json(u5))
+    return geo_routes_json_obj(parts)
+
+# Serialize WaypointOptimizationExclusionOptions to a compact JSON object (declaration order).
+def waypoint_optimization_exclusion_options_to_json(WaypointOptimizationExclusionOptions v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Countries:
+        e0.append(geo_routes_json_str(x0))
+    parts.append("\"Countries\":" + geo_routes_json_arr(e0))
+    return geo_routes_json_obj(parts)
+
+# Serialize WaypointOptimizationSideOfStreetOptions to a compact JSON object (declaration order).
+def waypoint_optimization_side_of_street_options_to_json(WaypointOptimizationSideOfStreetOptions v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Position:
+        e0.append(str(x0))
+    parts.append("\"Position\":" + geo_routes_json_arr(e0))
+    if v.UseWith.is_some():
+        auto u1 = v.UseWith.unwrap()
+        parts.append("\"UseWith\":" + u1.to_json())
+    return geo_routes_json_obj(parts)
+
+# Serialize WaypointOptimizationTravelModeOptions to a compact JSON object (declaration order).
+def waypoint_optimization_travel_mode_options_to_json(WaypointOptimizationTravelModeOptions v) -> str:
+    list[str] parts = []
+    if v.Pedestrian.is_some():
+        auto u0 = v.Pedestrian.unwrap()
+        parts.append("\"Pedestrian\":" + u0.to_json())
+    if v.Truck.is_some():
+        auto u1 = v.Truck.unwrap()
+        parts.append("\"Truck\":" + waypoint_optimization_truck_options_to_json(u1))
+    return geo_routes_json_obj(parts)
+
+# Serialize WaypointOptimizationTruckOptions to a compact JSON object (declaration order).
+def waypoint_optimization_truck_options_to_json(WaypointOptimizationTruckOptions v) -> str:
+    list[str] parts = []
+    if v.GrossWeight.is_some():
+        auto u0 = v.GrossWeight.unwrap()
+        parts.append("\"GrossWeight\":" + str(u0))
+    if v.HazardousCargos.is_some():
+        auto u1 = v.HazardousCargos.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"HazardousCargos\":" + geo_routes_json_arr(e2))
+    if v.Height.is_some():
+        auto u3 = v.Height.unwrap()
+        parts.append("\"Height\":" + str(u3))
+    if v.Length.is_some():
+        auto u4 = v.Length.unwrap()
+        parts.append("\"Length\":" + str(u4))
+    if v.Trailer.is_some():
+        auto u5 = v.Trailer.unwrap()
+        parts.append("\"Trailer\":" + u5.to_json())
+    if v.TruckType.is_some():
+        auto u6 = v.TruckType.unwrap()
+        parts.append("\"TruckType\":" + u6.to_json())
+    if v.TunnelRestrictionCode.is_some():
+        auto u7 = v.TunnelRestrictionCode.unwrap()
+        parts.append("\"TunnelRestrictionCode\":" + geo_routes_json_str(u7))
+    if v.WeightPerAxle.is_some():
+        auto u8 = v.WeightPerAxle.unwrap()
+        parts.append("\"WeightPerAxle\":" + str(u8))
+    if v.Width.is_some():
+        auto u9 = v.Width.unwrap()
+        parts.append("\"Width\":" + str(u9))
+    return geo_routes_json_obj(parts)
+
+# Serialize WaypointOptimizationWaypoint to a compact JSON object (declaration order).
+def waypoint_optimization_waypoint_to_json(WaypointOptimizationWaypoint v) -> str:
+    list[str] parts = []
+    if v.AccessHours.is_some():
+        auto u0 = v.AccessHours.unwrap()
+        parts.append("\"AccessHours\":" + u0.to_json())
+    if v.AppointmentTime.is_some():
+        auto u1 = v.AppointmentTime.unwrap()
+        parts.append("\"AppointmentTime\":" + geo_routes_json_str(u1))
+    if v.Before.is_some():
+        auto u2 = v.Before.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(str(x3))
+        parts.append("\"Before\":" + geo_routes_json_arr(e3))
+    if v.Heading.is_some():
+        auto u4 = v.Heading.unwrap()
+        parts.append("\"Heading\":" + str(u4))
+    if v.Id.is_some():
+        auto u5 = v.Id.unwrap()
+        parts.append("\"Id\":" + geo_routes_json_str(u5))
+    list[str] e6 = []
+    for x6 in v.Position:
+        e6.append(str(x6))
+    parts.append("\"Position\":" + geo_routes_json_arr(e6))
+    if v.ServiceDuration.is_some():
+        auto u7 = v.ServiceDuration.unwrap()
+        parts.append("\"ServiceDuration\":" + str(u7))
+    if v.SideOfStreet.is_some():
+        auto u8 = v.SideOfStreet.unwrap()
+        parts.append("\"SideOfStreet\":" + waypoint_optimization_side_of_street_options_to_json(u8))
+    return geo_routes_json_obj(parts)
 
 # A bound Geo_Routes client: credentials + region, threaded into every operation.
 struct Geo_RoutesClient:
     core.Credentials creds
     str region
 
-    # no bindable operations were generated for this service in v0
+    # CalculateIsolines  POST /v2/isolines
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def calculate_isolines(self, CalculateIsolinesRequest input) -> str:
+        auto host = endpoints.regional_host(geo_routes_service(), self.region)
+        dict[str, str] query = {}
+        if input.Key.is_some():
+            query["key"] = input.Key.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/isolines", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Allow.is_some():
+            auto u0 = input.Allow.unwrap()
+            parts.append("\"Allow\":" + u0.to_json())
+        if input.ArrivalTime.is_some():
+            auto u1 = input.ArrivalTime.unwrap()
+            parts.append("\"ArrivalTime\":" + geo_routes_json_str(u1))
+        if input.Avoid.is_some():
+            auto u2 = input.Avoid.unwrap()
+            parts.append("\"Avoid\":" + isoline_avoidance_options_to_json(u2))
+        if input.DepartNow.is_some():
+            auto u3 = input.DepartNow.unwrap()
+            parts.append("\"DepartNow\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.DepartureTime.is_some():
+            auto u4 = input.DepartureTime.unwrap()
+            parts.append("\"DepartureTime\":" + geo_routes_json_str(u4))
+        if input.Destination.is_some():
+            auto u5 = input.Destination.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(str(x6))
+            parts.append("\"Destination\":" + geo_routes_json_arr(e6))
+        if input.DestinationOptions.is_some():
+            auto u7 = input.DestinationOptions.unwrap()
+            parts.append("\"DestinationOptions\":" + isoline_destination_options_to_json(u7))
+        if input.IsolineGeometryFormat.is_some():
+            auto u8 = input.IsolineGeometryFormat.unwrap()
+            parts.append("\"IsolineGeometryFormat\":" + u8.to_json())
+        if input.IsolineGranularity.is_some():
+            auto u9 = input.IsolineGranularity.unwrap()
+            parts.append("\"IsolineGranularity\":" + u9.to_json())
+        if input.OptimizeIsolineFor.is_some():
+            auto u10 = input.OptimizeIsolineFor.unwrap()
+            parts.append("\"OptimizeIsolineFor\":" + u10.to_json())
+        if input.OptimizeRoutingFor.is_some():
+            auto u11 = input.OptimizeRoutingFor.unwrap()
+            parts.append("\"OptimizeRoutingFor\":" + u11.to_json())
+        if input.Origin.is_some():
+            auto u12 = input.Origin.unwrap()
+            list[str] e13 = []
+            for x13 in u12:
+                e13.append(str(x13))
+            parts.append("\"Origin\":" + geo_routes_json_arr(e13))
+        if input.OriginOptions.is_some():
+            auto u14 = input.OriginOptions.unwrap()
+            parts.append("\"OriginOptions\":" + isoline_origin_options_to_json(u14))
+        parts.append("\"Thresholds\":" + isoline_thresholds_to_json(input.Thresholds))
+        if input.Traffic.is_some():
+            auto u15 = input.Traffic.unwrap()
+            parts.append("\"Traffic\":" + u15.to_json())
+        if input.TravelMode.is_some():
+            auto u16 = input.TravelMode.unwrap()
+            parts.append("\"TravelMode\":" + u16.to_json())
+        if input.TravelModeOptions.is_some():
+            auto u17 = input.TravelModeOptions.unwrap()
+            parts.append("\"TravelModeOptions\":" + isoline_travel_mode_options_to_json(u17))
+        auto bp = restjson.rest_json_document(b, geo_routes_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_routes_service(), self.region, host)
+
+    # CalculateRouteMatrix  POST /v2/route-matrix
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def calculate_route_matrix(self, CalculateRouteMatrixRequest input) -> str:
+        auto host = endpoints.regional_host(geo_routes_service(), self.region)
+        dict[str, str] query = {}
+        if input.Key.is_some():
+            query["key"] = input.Key.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/route-matrix", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Allow.is_some():
+            auto u0 = input.Allow.unwrap()
+            parts.append("\"Allow\":" + u0.to_json())
+        if input.Avoid.is_some():
+            auto u1 = input.Avoid.unwrap()
+            parts.append("\"Avoid\":" + route_matrix_avoidance_options_to_json(u1))
+        if input.DepartNow.is_some():
+            auto u2 = input.DepartNow.unwrap()
+            parts.append("\"DepartNow\":" + json.dumps(JsonValue.Bool(u2)))
+        if input.DepartureTime.is_some():
+            auto u3 = input.DepartureTime.unwrap()
+            parts.append("\"DepartureTime\":" + geo_routes_json_str(u3))
+        list[str] e4 = []
+        for x4 in input.Destinations:
+            e4.append(route_matrix_destination_to_json(x4))
+        parts.append("\"Destinations\":" + geo_routes_json_arr(e4))
+        if input.Exclude.is_some():
+            auto u5 = input.Exclude.unwrap()
+            parts.append("\"Exclude\":" + route_matrix_exclusion_options_to_json(u5))
+        if input.OptimizeRoutingFor.is_some():
+            auto u6 = input.OptimizeRoutingFor.unwrap()
+            parts.append("\"OptimizeRoutingFor\":" + u6.to_json())
+        list[str] e7 = []
+        for x7 in input.Origins:
+            e7.append(route_matrix_origin_to_json(x7))
+        parts.append("\"Origins\":" + geo_routes_json_arr(e7))
+        if input.RoutingBoundary.is_some():
+            auto u8 = input.RoutingBoundary.unwrap()
+            parts.append("\"RoutingBoundary\":" + route_matrix_boundary_to_json(u8))
+        if input.Traffic.is_some():
+            auto u9 = input.Traffic.unwrap()
+            parts.append("\"Traffic\":" + u9.to_json())
+        if input.TravelMode.is_some():
+            auto u10 = input.TravelMode.unwrap()
+            parts.append("\"TravelMode\":" + u10.to_json())
+        if input.TravelModeOptions.is_some():
+            auto u11 = input.TravelModeOptions.unwrap()
+            parts.append("\"TravelModeOptions\":" + route_matrix_travel_mode_options_to_json(u11))
+        auto bp = restjson.rest_json_document(b, geo_routes_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_routes_service(), self.region, host)
+
+    # CalculateRoutes  POST /v2/routes
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def calculate_routes(self, CalculateRoutesRequest input) -> str:
+        auto host = endpoints.regional_host(geo_routes_service(), self.region)
+        dict[str, str] query = {}
+        if input.Key.is_some():
+            query["key"] = input.Key.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/routes", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Allow.is_some():
+            auto u0 = input.Allow.unwrap()
+            parts.append("\"Allow\":" + u0.to_json())
+        if input.ArrivalTime.is_some():
+            auto u1 = input.ArrivalTime.unwrap()
+            parts.append("\"ArrivalTime\":" + geo_routes_json_str(u1))
+        if input.Avoid.is_some():
+            auto u2 = input.Avoid.unwrap()
+            parts.append("\"Avoid\":" + route_avoidance_options_to_json(u2))
+        if input.DepartNow.is_some():
+            auto u3 = input.DepartNow.unwrap()
+            parts.append("\"DepartNow\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.DepartureTime.is_some():
+            auto u4 = input.DepartureTime.unwrap()
+            parts.append("\"DepartureTime\":" + geo_routes_json_str(u4))
+        list[str] e5 = []
+        for x5 in input.Destination:
+            e5.append(str(x5))
+        parts.append("\"Destination\":" + geo_routes_json_arr(e5))
+        if input.DestinationOptions.is_some():
+            auto u6 = input.DestinationOptions.unwrap()
+            parts.append("\"DestinationOptions\":" + route_destination_options_to_json(u6))
+        if input.Driver.is_some():
+            auto u7 = input.Driver.unwrap()
+            parts.append("\"Driver\":" + route_driver_options_to_json(u7))
+        if input.Exclude.is_some():
+            auto u8 = input.Exclude.unwrap()
+            parts.append("\"Exclude\":" + route_exclusion_options_to_json(u8))
+        if input.InstructionsMeasurementSystem.is_some():
+            auto u9 = input.InstructionsMeasurementSystem.unwrap()
+            parts.append("\"InstructionsMeasurementSystem\":" + u9.to_json())
+        if input.Languages.is_some():
+            auto u10 = input.Languages.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(geo_routes_json_str(x11))
+            parts.append("\"Languages\":" + geo_routes_json_arr(e11))
+        if input.LegAdditionalFeatures.is_some():
+            auto u12 = input.LegAdditionalFeatures.unwrap()
+            list[str] e13 = []
+            for x13 in u12:
+                e13.append(x13.to_json())
+            parts.append("\"LegAdditionalFeatures\":" + geo_routes_json_arr(e13))
+        if input.LegGeometryFormat.is_some():
+            auto u14 = input.LegGeometryFormat.unwrap()
+            parts.append("\"LegGeometryFormat\":" + u14.to_json())
+        if input.MaxAlternatives.is_some():
+            auto u15 = input.MaxAlternatives.unwrap()
+            parts.append("\"MaxAlternatives\":" + str(u15))
+        if input.OptimizeRoutingFor.is_some():
+            auto u16 = input.OptimizeRoutingFor.unwrap()
+            parts.append("\"OptimizeRoutingFor\":" + u16.to_json())
+        list[str] e17 = []
+        for x17 in input.Origin:
+            e17.append(str(x17))
+        parts.append("\"Origin\":" + geo_routes_json_arr(e17))
+        if input.OriginOptions.is_some():
+            auto u18 = input.OriginOptions.unwrap()
+            parts.append("\"OriginOptions\":" + route_origin_options_to_json(u18))
+        if input.SpanAdditionalFeatures.is_some():
+            auto u19 = input.SpanAdditionalFeatures.unwrap()
+            list[str] e20 = []
+            for x20 in u19:
+                e20.append(x20.to_json())
+            parts.append("\"SpanAdditionalFeatures\":" + geo_routes_json_arr(e20))
+        if input.Tolls.is_some():
+            auto u21 = input.Tolls.unwrap()
+            parts.append("\"Tolls\":" + u21.to_json())
+        if input.Traffic.is_some():
+            auto u22 = input.Traffic.unwrap()
+            parts.append("\"Traffic\":" + u22.to_json())
+        if input.TravelMode.is_some():
+            auto u23 = input.TravelMode.unwrap()
+            parts.append("\"TravelMode\":" + u23.to_json())
+        if input.TravelModeOptions.is_some():
+            auto u24 = input.TravelModeOptions.unwrap()
+            parts.append("\"TravelModeOptions\":" + route_travel_mode_options_to_json(u24))
+        if input.TravelStepType.is_some():
+            auto u25 = input.TravelStepType.unwrap()
+            parts.append("\"TravelStepType\":" + u25.to_json())
+        if input.Waypoints.is_some():
+            auto u26 = input.Waypoints.unwrap()
+            list[str] e27 = []
+            for x27 in u26:
+                e27.append(route_waypoint_to_json(x27))
+            parts.append("\"Waypoints\":" + geo_routes_json_arr(e27))
+        auto bp = restjson.rest_json_document(b, geo_routes_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_routes_service(), self.region, host)
+
+    # OptimizeWaypoints  POST /v2/optimize-waypoints
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def optimize_waypoints(self, OptimizeWaypointsRequest input) -> str:
+        auto host = endpoints.regional_host(geo_routes_service(), self.region)
+        dict[str, str] query = {}
+        if input.Key.is_some():
+            query["key"] = input.Key.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/optimize-waypoints", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Avoid.is_some():
+            auto u0 = input.Avoid.unwrap()
+            parts.append("\"Avoid\":" + waypoint_optimization_avoidance_options_to_json(u0))
+        if input.Clustering.is_some():
+            auto u1 = input.Clustering.unwrap()
+            parts.append("\"Clustering\":" + u1.to_json())
+        if input.DepartureTime.is_some():
+            auto u2 = input.DepartureTime.unwrap()
+            parts.append("\"DepartureTime\":" + geo_routes_json_str(u2))
+        if input.Destination.is_some():
+            auto u3 = input.Destination.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(str(x4))
+            parts.append("\"Destination\":" + geo_routes_json_arr(e4))
+        if input.DestinationOptions.is_some():
+            auto u5 = input.DestinationOptions.unwrap()
+            parts.append("\"DestinationOptions\":" + waypoint_optimization_destination_options_to_json(u5))
+        if input.Driver.is_some():
+            auto u6 = input.Driver.unwrap()
+            parts.append("\"Driver\":" + u6.to_json())
+        if input.Exclude.is_some():
+            auto u7 = input.Exclude.unwrap()
+            parts.append("\"Exclude\":" + waypoint_optimization_exclusion_options_to_json(u7))
+        if input.OptimizeSequencingFor.is_some():
+            auto u8 = input.OptimizeSequencingFor.unwrap()
+            parts.append("\"OptimizeSequencingFor\":" + u8.to_json())
+        list[str] e9 = []
+        for x9 in input.Origin:
+            e9.append(str(x9))
+        parts.append("\"Origin\":" + geo_routes_json_arr(e9))
+        if input.OriginOptions.is_some():
+            auto u10 = input.OriginOptions.unwrap()
+            parts.append("\"OriginOptions\":" + u10.to_json())
+        if input.Traffic.is_some():
+            auto u11 = input.Traffic.unwrap()
+            parts.append("\"Traffic\":" + u11.to_json())
+        if input.TravelMode.is_some():
+            auto u12 = input.TravelMode.unwrap()
+            parts.append("\"TravelMode\":" + u12.to_json())
+        if input.TravelModeOptions.is_some():
+            auto u13 = input.TravelModeOptions.unwrap()
+            parts.append("\"TravelModeOptions\":" + waypoint_optimization_travel_mode_options_to_json(u13))
+        if input.Waypoints.is_some():
+            auto u14 = input.Waypoints.unwrap()
+            list[str] e15 = []
+            for x15 in u14:
+                e15.append(waypoint_optimization_waypoint_to_json(x15))
+            parts.append("\"Waypoints\":" + geo_routes_json_arr(e15))
+        auto bp = restjson.rest_json_document(b, geo_routes_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_routes_service(), self.region, host)
+
+    # SnapToRoads  POST /v2/snap-to-roads
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def snap_to_roads(self, SnapToRoadsRequest input) -> str:
+        auto host = endpoints.regional_host(geo_routes_service(), self.region)
+        dict[str, str] query = {}
+        if input.Key.is_some():
+            query["key"] = input.Key.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/snap-to-roads", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.SnappedGeometryFormat.is_some():
+            auto u0 = input.SnappedGeometryFormat.unwrap()
+            parts.append("\"SnappedGeometryFormat\":" + u0.to_json())
+        if input.SnapRadius.is_some():
+            auto u1 = input.SnapRadius.unwrap()
+            parts.append("\"SnapRadius\":" + str(u1))
+        list[str] e2 = []
+        for x2 in input.TracePoints:
+            e2.append(road_snap_trace_point_to_json(x2))
+        parts.append("\"TracePoints\":" + geo_routes_json_arr(e2))
+        if input.TravelMode.is_some():
+            auto u3 = input.TravelMode.unwrap()
+            parts.append("\"TravelMode\":" + u3.to_json())
+        if input.TravelModeOptions.is_some():
+            auto u4 = input.TravelModeOptions.unwrap()
+            parts.append("\"TravelModeOptions\":" + road_snap_travel_mode_options_to_json(u4))
+        auto bp = restjson.rest_json_document(b, geo_routes_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, geo_routes_service(), self.region, host)
+
 # Construct a Geo_RoutesClient bound to credentials + region.
 def geo_routes_client(core.Credentials creds, str region) -> Geo_RoutesClient:
     return Geo_RoutesClient(creds=creds, region=region)

@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 11 operations — 9 with a generated method,
-#   2 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 11 operations — 11 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   46 structs (36 @derive(Json)), 10 enums, 7 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -205,8 +205,9 @@ struct DescribeViewRequest:
     str ViewToken
     str ConnectionToken
 
-# no @derive(Json): member(s) View: View not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) View: View not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeViewResponse:
     Optional[View] View
 
@@ -257,8 +258,9 @@ struct GetTranscriptRequest:
     Optional[StartPosition] StartPosition
     str ConnectionToken
 
-# no @derive(Json): member(s) Transcript: list[Item] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Transcript: list[Item] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetTranscriptResponse:
     Optional[str] InitialContactId
     Optional[list[Item]] Transcript
@@ -268,8 +270,9 @@ struct GetTranscriptResponse:
 struct InternalServerException:
     str Message
 
-# no @derive(Json): member(s) Attachments: list[AttachmentItem], MessageMetadata: MessageMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Attachments: list[AttachmentItem], MessageMetadata: MessageMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Item:
     Optional[str] AbsoluteTime
     Optional[str] Content
@@ -288,8 +291,9 @@ struct Item:
 struct MeetingFeaturesConfiguration:
     Optional[AudioFeatures] Audio
 
-# no @derive(Json): member(s) Receipts: list[Receipt] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Receipts: list[Receipt] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MessageMetadata:
     Optional[str] MessageId
     Optional[list[Receipt]] Receipts
@@ -351,8 +355,9 @@ struct StartAttachmentUploadRequest:
     str ClientToken
     str ConnectionToken
 
-# no @derive(Json): member(s) UploadMetadata: UploadMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) UploadMetadata: UploadMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartAttachmentUploadResponse:
     Optional[str] AttachmentId
     Optional[UploadMetadata] UploadMetadata
@@ -367,8 +372,9 @@ struct StartPosition:
 struct ThrottlingException:
     str Message
 
-# no @derive(Json): member(s) HeadersToInclude: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) HeadersToInclude: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UploadMetadata:
     Optional[str] Url
     Optional[str] UrlExpiry
@@ -378,8 +384,9 @@ struct UploadMetadata:
 struct ValidationException:
     str Message
 
-# no @derive(Json): member(s) Content: ViewContent not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Content: ViewContent not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct View:
     Optional[str] Id
     Optional[str] Arn
@@ -387,8 +394,9 @@ struct View:
     Optional[int64] Version
     Optional[ViewContent] Content
 
-# no @derive(Json): member(s) Actions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Actions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ViewContent:
     Optional[str] InputSchema
     Optional[str] Template
@@ -451,12 +459,6 @@ def participant_connect_error_from_code(str code) -> ConnectParticipantError:
     return ConnectParticipantError.Unknown(code=code)
 
 # --- client ----------------------------------------------------------------
-
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CompleteAttachmentUpload (document member `AttachmentIds: list[str]` is not serializable by derive)
-#   CreateParticipantConnection (document member `Type: list[ConnectionType]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -530,6 +532,42 @@ struct ConnectParticipantClient:
         auto b = binding.HttpBinding(method="POST", path_template="/participant/cancel-authentication", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelParticipantAuthenticationDocument(SessionId=input.SessionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, participant_connect_service(), self.region, host)
+
+    # CompleteAttachmentUpload  POST /participant/complete-attachment-upload
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def complete_attachment_upload(self, CompleteAttachmentUploadRequest input) -> str:
+        auto host = endpoints.regional_host(participant_connect_service(), self.region)
+        dict[str, str] headers = {}
+        headers["X-Amz-Bearer"] = input.ConnectionToken
+        auto b = binding.HttpBinding(method="POST", path_template="/participant/complete-attachment-upload", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.AttachmentIds:
+            e0.append(participant_connect_json_str(x0))
+        parts.append("\"AttachmentIds\":" + participant_connect_json_arr(e0))
+        parts.append("\"ClientToken\":" + participant_connect_json_str(input.ClientToken))
+        auto bp = restjson.rest_json_document(b, participant_connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, participant_connect_service(), self.region, host)
+
+    # CreateParticipantConnection  POST /participant/connection
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def create_participant_connection(self, CreateParticipantConnectionRequest input) -> str:
+        auto host = endpoints.regional_host(participant_connect_service(), self.region)
+        dict[str, str] headers = {}
+        headers["X-Amz-Bearer"] = input.ParticipantToken
+        auto b = binding.HttpBinding(method="POST", path_template="/participant/connection", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Type.is_some():
+            auto u0 = input.Type.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"Type\":" + participant_connect_json_arr(e1))
+        if input.ConnectParticipant.is_some():
+            auto u2 = input.ConnectParticipant.unwrap()
+            parts.append("\"ConnectParticipant\":" + json.dumps(JsonValue.Bool(u2)))
+        auto bp = restjson.rest_json_document(b, participant_connect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, participant_connect_service(), self.region, host)
 
     # DescribeView  GET /participant/views/{ViewToken}

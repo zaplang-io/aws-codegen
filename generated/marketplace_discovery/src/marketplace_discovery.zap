@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 9 operations — 6 with a generated method,
-#   3 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 9 operations — 9 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   105 structs (62 @derive(Json)), 21 enums, 5 error variants.
-#   2 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -249,14 +249,16 @@ enum ValidationExceptionReason:
 struct AccessDeniedException:
     Optional[str] message
 
-# no @derive(Json): member(s) volumeTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) volumeTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmazonMachineImageEbsVolume:
     list[str] volumeTypes
     Optional[int64] iops
 
-# no @derive(Json): member(s) operatingSystems: list[AmazonMachineImageOperatingSystem], recommendation: AmazonMachineImageRecommendation, ebsVolume: AmazonMachineImageEbsVolume not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operatingSystems: list[AmazonMachineImageOperatingSystem], recommendation: AmazonMachineImageRecommendation, ebsVolume: AmazonMachineImageEbsVolume not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmazonMachineImageFulfillmentOption:
     str fulfillmentOptionId
     str fulfillmentOptionName
@@ -280,22 +282,25 @@ struct AmazonMachineImageOperatingSystem:
     str operatingSystemName
     Optional[str] operatingSystemVersion
 
-# no @derive(Json): member(s) securityGroups: list[AmazonMachineImageSecurityGroup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroups: list[AmazonMachineImageSecurityGroup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmazonMachineImageRecommendation:
     str instanceType
     Optional[list[AmazonMachineImageSecurityGroup]] securityGroups
 
-# no @derive(Json): member(s) cidrIpAddresses: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cidrIpAddresses: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmazonMachineImageSecurityGroup:
     str protocol
     int64 fromPort
     int64 toPort
     list[str] cidrIpAddresses
 
-# no @derive(Json): member(s) awsSupportedServices: list[AwsSupportedService] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) awsSupportedServices: list[AwsSupportedService] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApiFulfillmentOption:
     str fulfillmentOptionId
     FulfillmentOptionType fulfillmentOptionType
@@ -332,16 +337,18 @@ struct CloudFormationFulfillmentOption:
     Optional[str] shortDescription
     Optional[str] longDescription
 
-# no @derive(Json): member(s) rateCards: list[ConfigurableUpfrontRateCardItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rateCards: list[ConfigurableUpfrontRateCardItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurableUpfrontPricingTerm:
     str id
     TermType type
     str currencyCode
     Optional[list[ConfigurableUpfrontRateCardItem]] rateCards
 
-# no @derive(Json): member(s) rateCard: list[RateCardItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rateCard: list[RateCardItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurableUpfrontRateCardItem:
     Selector selector
     Constraints constraints
@@ -352,8 +359,9 @@ struct Constraints:
     RateCardConstraintType multipleDimensionSelection
     RateCardConstraintType quantityConfiguration
 
-# no @derive(Json): member(s) operatingSystems: list[ContainerOperatingSystem], awsSupportedServices: list[AwsSupportedService] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operatingSystems: list[ContainerOperatingSystem], awsSupportedServices: list[AwsSupportedService] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerFulfillmentOption:
     str fulfillmentOptionId
     str fulfillmentOptionName
@@ -377,8 +385,9 @@ struct DataArtifact:
     str resourceType
     str dataClassification
 
-# no @derive(Json): member(s) dataArtifacts: list[DataArtifact] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataArtifacts: list[DataArtifact] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataExchangeFulfillmentOption:
     str fulfillmentOptionId
     FulfillmentOptionType fulfillmentOptionType
@@ -397,8 +406,9 @@ struct DocumentItem:
     str url
     Optional[str] version
 
-# no @derive(Json): member(s) operatingSystems: list[ContainerOperatingSystem], awsSupportedServices: list[AwsSupportedService] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operatingSystems: list[ContainerOperatingSystem], awsSupportedServices: list[AwsSupportedService] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Ec2ImageBuilderComponentFulfillmentOption:
     str fulfillmentOptionId
     str fulfillmentOptionName
@@ -410,8 +420,9 @@ struct Ec2ImageBuilderComponentFulfillmentOption:
     Optional[str] releaseNotes
     Optional[str] usageInstructions
 
-# no @derive(Json): member(s) operatingSystems: list[EksAddOnOperatingSystem], awsSupportedServices: list[AwsSupportedService] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operatingSystems: list[EksAddOnOperatingSystem], awsSupportedServices: list[AwsSupportedService] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EksAddOnFulfillmentOption:
     str fulfillmentOptionId
     str fulfillmentOptionName
@@ -432,8 +443,9 @@ struct EksAddOnOperatingSystem:
 struct FixedPercentage:
     str percentageValue
 
-# no @derive(Json): member(s) grants: list[GrantItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) grants: list[GrantItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FixedUpfrontPricingTerm:
     str id
     TermType type
@@ -442,16 +454,18 @@ struct FixedUpfrontPricingTerm:
     str price
     list[GrantItem] grants
 
-# no @derive(Json): member(s) grants: list[GrantItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) grants: list[GrantItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FreeTrialPricingTerm:
     str id
     TermType type
     Optional[str] duration
     list[GrantItem] grants
 
-# no @derive(Json): member(s) amazonMachineImageFulfillmentOption: AmazonMachineImageFulfillmentOption, apiFulfillmentOption: ApiFulfillmentOption, containerFulfillmentOption: ContainerFulfillmentOption, helmFulfillmentOption: HelmFulfillmentOption, eksAddOnFulfillmentOption: EksAddOnFulfillmentOption, ec2ImageBuilderComponentFulfillmentOption: Ec2ImageBuilderComponentFulfillmentOption, dataExchangeFulfillmentOption: DataExchangeFulfillmentOption, sageMakerModelFulfillmentOption: SageMakerModelFulfillmentOption not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) amazonMachineImageFulfillmentOption: AmazonMachineImageFulfillmentOption, apiFulfillmentOption: ApiFulfillmentOption, containerFulfillmentOption: ContainerFulfillmentOption, helmFulfillmentOption: HelmFulfillmentOption, eksAddOnFulfillmentOption: EksAddOnFulfillmentOption, ec2ImageBuilderComponentFulfillmentOption: Ec2ImageBuilderComponentFulfillmentOption, dataExchangeFulfillmentOption: DataExchangeFulfillmentOption, sageMakerModelFulfillmentOption: SageMakerModelFulfillmentOption not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FulfillmentOption:
     Optional[AmazonMachineImageFulfillmentOption] amazonMachineImageFulfillmentOption
     Optional[ApiFulfillmentOption] apiFulfillmentOption
@@ -477,8 +491,9 @@ struct GetListingInput:
     Optional[str] locale
     str listingId
 
-# no @derive(Json): member(s) associatedEntities: list[ListingAssociatedEntity], badges: list[ListingBadge], categories: list[Category], fulfillmentOptionSummaries: list[FulfillmentOptionSummary], highlights: list[str], pricingModels: list[PricingModel], pricingUnits: list[PricingUnit], promotionalMedia: list[PromotionalMedia], resources: list[Resource], reviewSummary: ReviewSummary, sellerEngagements: list[SellerEngagement], useCases: list[UseCaseEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedEntities: list[ListingAssociatedEntity], badges: list[ListingBadge], categories: list[Category], fulfillmentOptionSummaries: list[FulfillmentOptionSummary], highlights: list[str], pricingModels: list[PricingModel], pricingUnits: list[PricingUnit], promotionalMedia: list[PromotionalMedia], resources: list[Resource], reviewSummary: ReviewSummary, sellerEngagements: list[SellerEngagement], useCases: list[UseCaseEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetListingOutput:
     Optional[str] locale
     list[ListingAssociatedEntity] associatedEntities
@@ -508,8 +523,9 @@ struct GetOfferInput:
     Optional[str] locale
     str offerId
 
-# no @derive(Json): member(s) associatedEntities: list[OfferAssociatedEntity], badges: list[PurchaseOptionBadge] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedEntities: list[OfferAssociatedEntity], badges: list[PurchaseOptionBadge] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOfferOutput:
     Optional[str] locale
     str offerId
@@ -530,8 +546,9 @@ struct GetOfferSetInput:
     Optional[str] locale
     str offerSetId
 
-# no @derive(Json): member(s) badges: list[PurchaseOptionBadge], associatedEntities: list[OfferSetAssociatedEntity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) badges: list[PurchaseOptionBadge], associatedEntities: list[OfferSetAssociatedEntity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOfferSetOutput:
     Optional[str] locale
     str offerSetId
@@ -552,8 +569,9 @@ struct GetOfferTermsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) offerTerms: list[OfferTerm] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) offerTerms: list[OfferTerm] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOfferTermsOutput:
     Optional[str] locale
     list[OfferTerm] offerTerms
@@ -565,8 +583,9 @@ struct GetProductInput:
     Optional[str] locale
     str productId
 
-# no @derive(Json): member(s) fulfillmentOptionSummaries: list[FulfillmentOptionSummary], categories: list[Category], highlights: list[str], promotionalMedia: list[PromotionalMedia], resources: list[Resource], sellerEngagements: list[SellerEngagement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fulfillmentOptionSummaries: list[FulfillmentOptionSummary], categories: list[Category], highlights: list[str], promotionalMedia: list[PromotionalMedia], resources: list[Resource], sellerEngagements: list[SellerEngagement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetProductOutput:
     Optional[str] locale
     str productId
@@ -585,8 +604,9 @@ struct GetProductOutput:
     list[SellerEngagement] sellerEngagements
     str listingId
 
-# no @derive(Json): member(s) dimensionLabels: list[DimensionLabel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dimensionLabels: list[DimensionLabel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GrantItem:
     str dimensionKey
     str displayName
@@ -595,8 +615,9 @@ struct GrantItem:
     str unit
     Optional[int64] maxQuantity
 
-# no @derive(Json): member(s) operatingSystems: list[HelmOperatingSystem], awsSupportedServices: list[AwsSupportedService] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operatingSystems: list[HelmOperatingSystem], awsSupportedServices: list[AwsSupportedService] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HelmFulfillmentOption:
     str fulfillmentOptionId
     str fulfillmentOptionName
@@ -617,8 +638,9 @@ struct HelmOperatingSystem:
 struct InternalServerException:
     Optional[str] message
 
-# no @derive(Json): member(s) documents: list[DocumentItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) documents: list[DocumentItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LegalTerm:
     str id
     TermType type
@@ -632,8 +654,9 @@ struct ListFulfillmentOptionsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) fulfillmentOptions: list[FulfillmentOption] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fulfillmentOptions: list[FulfillmentOption] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFulfillmentOptionsOutput:
     Optional[str] locale
     list[FulfillmentOption] fulfillmentOptions
@@ -647,8 +670,9 @@ struct ListPurchaseOptionsInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) purchaseOptions: list[PurchaseOptionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) purchaseOptions: list[PurchaseOptionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPurchaseOptionsOutput:
     Optional[list[PurchaseOptionSummary]] purchaseOptions
     Optional[str] nextToken
@@ -670,8 +694,9 @@ struct ListingFacet:
     Optional[str] parent
     int64 count
 
-# no @derive(Json): member(s) fulfillmentOptionSummaries: list[FulfillmentOptionSummary], categories: list[Category], badges: list[ListingBadge], reviewSummary: ReviewSummary, pricingModels: list[PricingModel], pricingUnits: list[PricingUnit], associatedEntities: list[ListingSummaryAssociatedEntity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fulfillmentOptionSummaries: list[FulfillmentOptionSummary], categories: list[Category], badges: list[ListingBadge], reviewSummary: ReviewSummary, pricingModels: list[PricingModel], pricingUnits: list[PricingUnit], associatedEntities: list[ListingSummaryAssociatedEntity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListingSummary:
     str listingId
     str listingName
@@ -718,8 +743,9 @@ struct OfferSetInformation:
     str offerSetId
     SellerInformation sellerOfRecord
 
-# no @derive(Json): member(s) configurableUpfrontPricingTerm: ConfigurableUpfrontPricingTerm, fixedUpfrontPricingTerm: FixedUpfrontPricingTerm, freeTrialPricingTerm: FreeTrialPricingTerm, legalTerm: LegalTerm, paymentScheduleTerm: PaymentScheduleTerm, renewalTerm: RenewalTerm, usageBasedPricingTerm: UsageBasedPricingTerm not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurableUpfrontPricingTerm: ConfigurableUpfrontPricingTerm, fixedUpfrontPricingTerm: FixedUpfrontPricingTerm, freeTrialPricingTerm: FreeTrialPricingTerm, legalTerm: LegalTerm, paymentScheduleTerm: PaymentScheduleTerm, renewalTerm: RenewalTerm, usageBasedPricingTerm: UsageBasedPricingTerm not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OfferTerm:
     Optional[ByolPricingTerm] byolPricingTerm
     Optional[ConfigurableUpfrontPricingTerm] configurableUpfrontPricingTerm
@@ -741,16 +767,18 @@ struct PaymentScheduleEntry:
     str chargePercentage
     Optional[int64] dayOfMonth
 
-# no @derive(Json): member(s) schedule: list[ScheduleItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) schedule: list[ScheduleItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PaymentScheduleTerm:
     str id
     TermType type
     str currencyCode
     list[ScheduleItem] schedule
 
-# no @derive(Json): member(s) schedule: list[PaymentScheduleEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) schedule: list[PaymentScheduleEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PaymentScheduleTermTemplate:
     list[PaymentScheduleEntry] schedule
 
@@ -817,14 +845,16 @@ struct PurchaseOptionBadge:
     str displayName
     PurchaseOptionBadgeType badgeType
 
-# no @derive(Json): member(s) filterValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filterValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PurchaseOptionFilter:
     PurchaseOptionFilterType filterType
     list[str] filterValues
 
-# no @derive(Json): member(s) badges: list[PurchaseOptionBadge], associatedEntities: list[PurchaseOptionAssociatedEntity] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) badges: list[PurchaseOptionBadge], associatedEntities: list[PurchaseOptionAssociatedEntity] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PurchaseOptionSummary:
     str purchaseOptionId
     str catalog
@@ -836,8 +866,9 @@ struct PurchaseOptionSummary:
     Optional[list[PurchaseOptionBadge]] badges
     list[PurchaseOptionAssociatedEntity] associatedEntities
 
-# no @derive(Json): member(s) dimensionLabels: list[DimensionLabel] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dimensionLabels: list[DimensionLabel] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RateCardItem:
     str dimensionKey
     str displayName
@@ -854,8 +885,9 @@ struct RecurringPaymentTerm:
     str billingPeriod
     str price
 
-# no @derive(Json): member(s) termTemplates: list[TermTemplate] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) termTemplates: list[TermTemplate] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RenewalTerm:
     str id
     TermType type
@@ -884,8 +916,9 @@ struct ReviewSourceSummary:
     str averageRating
     int64 totalReviews
 
-# no @derive(Json): member(s) reviewSourceSummaries: list[ReviewSourceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reviewSourceSummaries: list[ReviewSourceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReviewSummary:
     list[ReviewSourceSummary] reviewSourceSummaries
 
@@ -916,8 +949,9 @@ struct SageMakerAlgorithmRecommendation:
     Optional[str] recommendedRealtimeInferenceInstanceType
     str recommendedTrainingInstanceType
 
-# no @derive(Json): member(s) supportedContentTypes: list[str], supportedResponseMimeTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) supportedContentTypes: list[str], supportedResponseMimeTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SageMakerModelFulfillmentOption:
     str fulfillmentOptionId
     FulfillmentOptionType fulfillmentOptionType
@@ -948,15 +982,17 @@ struct SearchFacetsInput:
     Optional[list[SearchFacetType]] facetTypes
     Optional[str] nextToken
 
-# no @derive(Json): member(s) listingFacets: dict[SearchFacetType, list[ListingFacet]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) listingFacets: dict[SearchFacetType, list[ListingFacet]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchFacetsOutput:
     int64 totalResults
     dict[SearchFacetType, list[ListingFacet]] listingFacets
     Optional[str] nextToken
 
-# no @derive(Json): member(s) filterValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filterValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchFilter:
     SearchFilterType filterType
     list[str] filterValues
@@ -972,8 +1008,9 @@ struct SearchListingsInput:
     Optional[SearchListingsSortOrder] sortOrder
     Optional[str] nextToken
 
-# no @derive(Json): member(s) listingSummaries: list[ListingSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) listingSummaries: list[ListingSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchListingsOutput:
     int64 totalResults
     list[ListingSummary] listingSummaries
@@ -1001,8 +1038,9 @@ struct SupportTerm:
     TermType type
     str refundPolicy
 
-# no @derive(Json): member(s) paymentScheduleTermTemplate: PaymentScheduleTermTemplate not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) paymentScheduleTermTemplate: PaymentScheduleTermTemplate not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TermTemplate:
     Optional[PaymentScheduleTermTemplate] paymentScheduleTermTemplate
 
@@ -1010,16 +1048,18 @@ struct TermTemplate:
 struct ThrottlingException:
     Optional[str] message
 
-# no @derive(Json): member(s) rateCards: list[UsageBasedRateCardItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rateCards: list[UsageBasedRateCardItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UsageBasedPricingTerm:
     str id
     TermType type
     str currencyCode
     list[UsageBasedRateCardItem] rateCards
 
-# no @derive(Json): member(s) rateCard: list[RateCardItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rateCard: list[RateCardItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UsageBasedRateCardItem:
     list[RateCardItem] rateCard
 
@@ -1082,19 +1122,6 @@ def discovery_marketplace_error_from_code(str code) -> Marketplace_DiscoveryErro
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   ListPurchaseOptions (document member `filters: list[PurchaseOptionFilter]` is not serializable by derive)
-#   SearchFacets (document member `filters: list[SearchFilter]` is not serializable by derive)
-#   SearchListings (document member `filters: list[SearchFilter]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListPurchaseOptions (operation not generated)
-#   SearchFacets (operation not generated)
-#   SearchListings (operation not generated)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1137,6 +1164,56 @@ struct ListFulfillmentOptionsDocument:
     str productId
     Optional[int64] maxResults
     Optional[str] nextToken
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def discovery_marketplace_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def discovery_marketplace_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def discovery_marketplace_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize PurchaseOptionFilter to a compact JSON object (declaration order).
+def purchase_option_filter_to_json(PurchaseOptionFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"filterType\":" + v.filterType.to_json())
+    list[str] e0 = []
+    for x0 in v.filterValues:
+        e0.append(discovery_marketplace_json_str(x0))
+    parts.append("\"filterValues\":" + discovery_marketplace_json_arr(e0))
+    return discovery_marketplace_json_obj(parts)
+
+# Serialize SearchFilter to a compact JSON object (declaration order).
+def search_filter_to_json(SearchFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"filterType\":" + v.filterType.to_json())
+    list[str] e0 = []
+    for x0 in v.filterValues:
+        e0.append(discovery_marketplace_json_str(x0))
+    parts.append("\"filterValues\":" + discovery_marketplace_json_arr(e0))
+    return discovery_marketplace_json_obj(parts)
 
 # A bound Marketplace_Discovery client: credentials + region, threaded into every operation.
 struct Marketplace_DiscoveryClient:
@@ -1197,6 +1274,93 @@ struct Marketplace_DiscoveryClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, discovery_marketplace_service(), self.region, host)
 
+    # ListPurchaseOptions  POST /2026-02-05/listPurchaseOptions
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_purchase_options(self, ListPurchaseOptionsInput input) -> str:
+        auto host = endpoints.regional_host(discovery_marketplace_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2026-02-05/listPurchaseOptions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.locale.is_some():
+            auto u0 = input.locale.unwrap()
+            parts.append("\"locale\":" + discovery_marketplace_json_str(u0))
+        if input.filters.is_some():
+            auto u1 = input.filters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(purchase_option_filter_to_json(x2))
+            parts.append("\"filters\":" + discovery_marketplace_json_arr(e2))
+        if input.maxResults.is_some():
+            auto u3 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u3))
+        if input.nextToken.is_some():
+            auto u4 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + discovery_marketplace_json_str(u4))
+        auto bp = restjson.rest_json_document(b, discovery_marketplace_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, discovery_marketplace_service(), self.region, host)
+
+    # SearchFacets  POST /2026-02-05/searchFacets
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def search_facets(self, SearchFacetsInput input) -> str:
+        auto host = endpoints.regional_host(discovery_marketplace_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2026-02-05/searchFacets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.locale.is_some():
+            auto u0 = input.locale.unwrap()
+            parts.append("\"locale\":" + discovery_marketplace_json_str(u0))
+        if input.searchText.is_some():
+            auto u1 = input.searchText.unwrap()
+            parts.append("\"searchText\":" + discovery_marketplace_json_str(u1))
+        if input.filters.is_some():
+            auto u2 = input.filters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(search_filter_to_json(x3))
+            parts.append("\"filters\":" + discovery_marketplace_json_arr(e3))
+        if input.facetTypes.is_some():
+            auto u4 = input.facetTypes.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"facetTypes\":" + discovery_marketplace_json_arr(e5))
+        if input.nextToken.is_some():
+            auto u6 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + discovery_marketplace_json_str(u6))
+        auto bp = restjson.rest_json_document(b, discovery_marketplace_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, discovery_marketplace_service(), self.region, host)
+
+    # SearchListings  POST /2026-02-05/searchListings
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def search_listings(self, SearchListingsInput input) -> str:
+        auto host = endpoints.regional_host(discovery_marketplace_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2026-02-05/searchListings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.locale.is_some():
+            auto u0 = input.locale.unwrap()
+            parts.append("\"locale\":" + discovery_marketplace_json_str(u0))
+        if input.searchText.is_some():
+            auto u1 = input.searchText.unwrap()
+            parts.append("\"searchText\":" + discovery_marketplace_json_str(u1))
+        if input.filters.is_some():
+            auto u2 = input.filters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(search_filter_to_json(x3))
+            parts.append("\"filters\":" + discovery_marketplace_json_arr(e3))
+        if input.maxResults.is_some():
+            auto u4 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u4))
+        if input.sortBy.is_some():
+            auto u5 = input.sortBy.unwrap()
+            parts.append("\"sortBy\":" + u5.to_json())
+        if input.sortOrder.is_some():
+            auto u6 = input.sortOrder.unwrap()
+            parts.append("\"sortOrder\":" + u6.to_json())
+        if input.nextToken.is_some():
+            auto u7 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + discovery_marketplace_json_str(u7))
+        auto bp = restjson.rest_json_document(b, discovery_marketplace_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, discovery_marketplace_service(), self.region, host)
+
     # Paginator for GetOfferTerms — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: offerTerms).
     def paginate_get_offer_terms(self, GetOfferTermsInput input):
@@ -1216,6 +1380,45 @@ struct Marketplace_DiscoveryClient:
         auto host = endpoints.regional_host(discovery_marketplace_service(), self.region)
         while True:
             auto raw = self.list_fulfillment_options(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListPurchaseOptions — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: purchaseOptions).
+    def paginate_list_purchase_options(self, ListPurchaseOptionsInput input):
+        auto host = endpoints.regional_host(discovery_marketplace_service(), self.region)
+        while True:
+            auto raw = self.list_purchase_options(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for SearchFacets — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: listingFacets).
+    def paginate_search_facets(self, SearchFacetsInput input):
+        auto host = endpoints.regional_host(discovery_marketplace_service(), self.region)
+        while True:
+            auto raw = self.search_facets(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for SearchListings — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: listingSummaries).
+    def paginate_search_listings(self, SearchListingsInput input):
+        auto host = endpoints.regional_host(discovery_marketplace_service(), self.region)
+        while True:
+            auto raw = self.search_listings(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

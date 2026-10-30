@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 31 operations — 21 with a generated method,
-#   10 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 31 operations — 31 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   142 structs (96 @derive(Json)), 32 enums, 9 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -325,8 +325,9 @@ enum VoiceAnalyticsConfigurationStatus:
 struct ActiveSpeakerOnlyConfiguration:
     Optional[ActiveSpeakerPosition] ActiveSpeakerPosition
 
-# no @derive(Json): member(s) CallAnalyticsStreamCategories: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CallAnalyticsStreamCategories: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AmazonTranscribeCallAnalyticsProcessorConfiguration:
     CallAnalyticsLanguageCode LanguageCode
     Optional[str] VocabularyName
@@ -403,14 +404,16 @@ struct ChannelDefinition:
 struct ChimeSdkMeetingConcatenationConfiguration:
     ArtifactsConcatenationConfiguration ArtifactsConfiguration
 
-# no @derive(Json): member(s) SourceConfiguration: SourceConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceConfiguration: SourceConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChimeSdkMeetingConfiguration:
     Optional[SourceConfiguration] SourceConfiguration
     Optional[ArtifactsConfiguration] ArtifactsConfiguration
 
-# no @derive(Json): member(s) SourceConfiguration: SourceConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SourceConfiguration: SourceConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ChimeSdkMeetingLiveConnectorConfiguration:
     str Arn
     LiveConnectorMuxType MuxType
@@ -465,8 +468,9 @@ struct CreateMediaCapturePipelineRequest:
     Optional[str] SinkIamRoleArn
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) MediaCapturePipeline: MediaCapturePipeline not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaCapturePipeline: MediaCapturePipeline not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMediaCapturePipelineResponse:
     Optional[MediaCapturePipeline] MediaCapturePipeline
 
@@ -478,8 +482,9 @@ struct CreateMediaConcatenationPipelineRequest:
     Optional[str] ClientRequestToken
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) MediaConcatenationPipeline: MediaConcatenationPipeline not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaConcatenationPipeline: MediaConcatenationPipeline not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMediaConcatenationPipelineResponse:
     Optional[MediaConcatenationPipeline] MediaConcatenationPipeline
 
@@ -493,8 +498,9 @@ struct CreateMediaInsightsPipelineConfigurationRequest:
     Optional[list[Tag]] Tags
     Optional[str] ClientRequestToken
 
-# no @derive(Json): member(s) MediaInsightsPipelineConfiguration: MediaInsightsPipelineConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaInsightsPipelineConfiguration: MediaInsightsPipelineConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMediaInsightsPipelineConfigurationResponse:
     Optional[MediaInsightsPipelineConfiguration] MediaInsightsPipelineConfiguration
 
@@ -509,8 +515,9 @@ struct CreateMediaInsightsPipelineRequest:
     Optional[list[Tag]] Tags
     Optional[str] ClientRequestToken
 
-# no @derive(Json): member(s) MediaInsightsPipeline: MediaInsightsPipeline not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaInsightsPipeline: MediaInsightsPipeline not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMediaInsightsPipelineResponse:
     MediaInsightsPipeline MediaInsightsPipeline
 
@@ -522,8 +529,9 @@ struct CreateMediaLiveConnectorPipelineRequest:
     Optional[str] ClientRequestToken
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) MediaLiveConnectorPipeline: MediaLiveConnectorPipeline not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaLiveConnectorPipeline: MediaLiveConnectorPipeline not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMediaLiveConnectorPipelineResponse:
     Optional[MediaLiveConnectorPipeline] MediaLiveConnectorPipeline
 
@@ -547,8 +555,9 @@ struct CreateMediaStreamPipelineRequest:
     Optional[str] ClientRequestToken
     Optional[list[Tag]] Tags
 
-# no @derive(Json): member(s) MediaStreamPipeline: MediaStreamPipeline not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaStreamPipeline: MediaStreamPipeline not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMediaStreamPipelineResponse:
     Optional[MediaStreamPipeline] MediaStreamPipeline
 
@@ -592,8 +601,9 @@ struct FragmentSelector:
 struct GetMediaCapturePipelineRequest:
     str MediaPipelineId
 
-# no @derive(Json): member(s) MediaCapturePipeline: MediaCapturePipeline not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaCapturePipeline: MediaCapturePipeline not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMediaCapturePipelineResponse:
     Optional[MediaCapturePipeline] MediaCapturePipeline
 
@@ -602,8 +612,9 @@ struct GetMediaCapturePipelineResponse:
 struct GetMediaInsightsPipelineConfigurationRequest:
     str Identifier
 
-# no @derive(Json): member(s) MediaInsightsPipelineConfiguration: MediaInsightsPipelineConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaInsightsPipelineConfiguration: MediaInsightsPipelineConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMediaInsightsPipelineConfigurationResponse:
     Optional[MediaInsightsPipelineConfiguration] MediaInsightsPipelineConfiguration
 
@@ -621,8 +632,9 @@ struct GetMediaPipelineKinesisVideoStreamPoolResponse:
 struct GetMediaPipelineRequest:
     str MediaPipelineId
 
-# no @derive(Json): member(s) MediaPipeline: MediaPipeline not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaPipeline: MediaPipeline not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMediaPipelineResponse:
     Optional[MediaPipeline] MediaPipeline
 
@@ -667,8 +679,9 @@ struct HorizontalLayoutConfiguration:
 struct IssueDetectionConfiguration:
     str RuleName
 
-# no @derive(Json): member(s) Keywords: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Keywords: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KeywordMatchConfiguration:
     str RuleName
     list[str] Keywords
@@ -706,14 +719,16 @@ struct KinesisVideoStreamPoolSummary:
     Optional[str] PoolId
     Optional[str] PoolArn
 
-# no @derive(Json): member(s) Streams: list[RecordingStreamConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Streams: list[RecordingStreamConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KinesisVideoStreamRecordingSourceRuntimeConfiguration:
     list[RecordingStreamConfiguration] Streams
     FragmentSelector FragmentSelector
 
-# no @derive(Json): member(s) Streams: list[StreamConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Streams: list[StreamConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KinesisVideoStreamSourceRuntimeConfiguration:
     list[StreamConfiguration] Streams
     str MediaEncoding
@@ -735,8 +750,9 @@ struct ListMediaCapturePipelinesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) MediaCapturePipelines: list[MediaCapturePipelineSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaCapturePipelines: list[MediaCapturePipelineSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMediaCapturePipelinesResponse:
     Optional[list[MediaCapturePipelineSummary]] MediaCapturePipelines
     Optional[str] NextToken
@@ -747,8 +763,9 @@ struct ListMediaInsightsPipelineConfigurationsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) MediaInsightsPipelineConfigurations: list[MediaInsightsPipelineConfigurationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaInsightsPipelineConfigurations: list[MediaInsightsPipelineConfigurationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMediaInsightsPipelineConfigurationsResponse:
     Optional[list[MediaInsightsPipelineConfigurationSummary]] MediaInsightsPipelineConfigurations
     Optional[str] NextToken
@@ -759,8 +776,9 @@ struct ListMediaPipelineKinesisVideoStreamPoolsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) KinesisVideoStreamPools: list[KinesisVideoStreamPoolSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KinesisVideoStreamPools: list[KinesisVideoStreamPoolSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMediaPipelineKinesisVideoStreamPoolsResponse:
     Optional[list[KinesisVideoStreamPoolSummary]] KinesisVideoStreamPools
     Optional[str] NextToken
@@ -771,8 +789,9 @@ struct ListMediaPipelinesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) MediaPipelines: list[MediaPipelineSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaPipelines: list[MediaPipelineSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMediaPipelinesResponse:
     Optional[list[MediaPipelineSummary]] MediaPipelines
     Optional[str] NextToken
@@ -782,8 +801,9 @@ struct ListMediaPipelinesResponse:
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -798,14 +818,16 @@ struct LiveConnectorSinkConfiguration:
     str SinkType
     LiveConnectorRTMPConfiguration RTMPConfiguration
 
-# no @derive(Json): member(s) ChimeSdkMeetingLiveConnectorConfiguration: ChimeSdkMeetingLiveConnectorConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChimeSdkMeetingLiveConnectorConfiguration: ChimeSdkMeetingLiveConnectorConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LiveConnectorSourceConfiguration:
     str SourceType
     ChimeSdkMeetingLiveConnectorConfiguration ChimeSdkMeetingLiveConnectorConfiguration
 
-# no @derive(Json): member(s) ChimeSdkMeetingConfiguration: ChimeSdkMeetingConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChimeSdkMeetingConfiguration: ChimeSdkMeetingConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MediaCapturePipeline:
     Optional[str] MediaPipelineId
     Optional[str] MediaPipelineArn
@@ -830,8 +852,9 @@ struct MediaCapturePipelineSummary:
     Optional[str] MediaPipelineId
     Optional[str] MediaPipelineArn
 
-# no @derive(Json): member(s) Sources: list[ConcatenationSource], Sinks: list[ConcatenationSink] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sources: list[ConcatenationSource], Sinks: list[ConcatenationSink] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MediaConcatenationPipeline:
     Optional[str] MediaPipelineId
     Optional[str] MediaPipelineArn
@@ -841,8 +864,9 @@ struct MediaConcatenationPipeline:
     Optional[DateTime] CreatedTimestamp
     Optional[DateTime] UpdatedTimestamp
 
-# no @derive(Json): member(s) KinesisVideoStreamSourceRuntimeConfiguration: KinesisVideoStreamSourceRuntimeConfiguration, MediaInsightsRuntimeMetadata: dict[str, str], KinesisVideoStreamRecordingSourceRuntimeConfiguration: KinesisVideoStreamRecordingSourceRuntimeConfiguration, ElementStatuses: list[MediaInsightsPipelineElementStatus] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KinesisVideoStreamSourceRuntimeConfiguration: KinesisVideoStreamSourceRuntimeConfiguration, MediaInsightsRuntimeMetadata: dict[str, str], KinesisVideoStreamRecordingSourceRuntimeConfiguration: KinesisVideoStreamRecordingSourceRuntimeConfiguration, ElementStatuses: list[MediaInsightsPipelineElementStatus] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MediaInsightsPipeline:
     Optional[str] MediaPipelineId
     Optional[str] MediaPipelineArn
@@ -855,8 +879,9 @@ struct MediaInsightsPipeline:
     Optional[DateTime] CreatedTimestamp
     Optional[list[MediaInsightsPipelineElementStatus]] ElementStatuses
 
-# no @derive(Json): member(s) RealTimeAlertConfiguration: RealTimeAlertConfiguration, Elements: list[MediaInsightsPipelineConfigurationElement] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RealTimeAlertConfiguration: RealTimeAlertConfiguration, Elements: list[MediaInsightsPipelineConfigurationElement] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MediaInsightsPipelineConfiguration:
     Optional[str] MediaInsightsPipelineConfigurationName
     Optional[str] MediaInsightsPipelineConfigurationArn
@@ -867,8 +892,9 @@ struct MediaInsightsPipelineConfiguration:
     Optional[DateTime] CreatedTimestamp
     Optional[DateTime] UpdatedTimestamp
 
-# no @derive(Json): member(s) AmazonTranscribeCallAnalyticsProcessorConfiguration: AmazonTranscribeCallAnalyticsProcessorConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AmazonTranscribeCallAnalyticsProcessorConfiguration: AmazonTranscribeCallAnalyticsProcessorConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MediaInsightsPipelineConfigurationElement:
     MediaInsightsPipelineConfigurationElementType Type
     Optional[AmazonTranscribeCallAnalyticsProcessorConfiguration] AmazonTranscribeCallAnalyticsProcessorConfiguration
@@ -892,8 +918,9 @@ struct MediaInsightsPipelineElementStatus:
     Optional[MediaInsightsPipelineConfigurationElementType] Type
     Optional[MediaPipelineElementStatus] Status
 
-# no @derive(Json): member(s) Sources: list[LiveConnectorSourceConfiguration], Sinks: list[LiveConnectorSinkConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sources: list[LiveConnectorSourceConfiguration], Sinks: list[LiveConnectorSinkConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MediaLiveConnectorPipeline:
     Optional[list[LiveConnectorSourceConfiguration]] Sources
     Optional[list[LiveConnectorSinkConfiguration]] Sinks
@@ -903,8 +930,9 @@ struct MediaLiveConnectorPipeline:
     Optional[DateTime] CreatedTimestamp
     Optional[DateTime] UpdatedTimestamp
 
-# no @derive(Json): member(s) MediaCapturePipeline: MediaCapturePipeline, MediaLiveConnectorPipeline: MediaLiveConnectorPipeline, MediaConcatenationPipeline: MediaConcatenationPipeline, MediaInsightsPipeline: MediaInsightsPipeline, MediaStreamPipeline: MediaStreamPipeline not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaCapturePipeline: MediaCapturePipeline, MediaLiveConnectorPipeline: MediaLiveConnectorPipeline, MediaConcatenationPipeline: MediaConcatenationPipeline, MediaInsightsPipeline: MediaInsightsPipeline, MediaStreamPipeline: MediaStreamPipeline not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MediaPipeline:
     Optional[MediaCapturePipeline] MediaCapturePipeline
     Optional[MediaLiveConnectorPipeline] MediaLiveConnectorPipeline
@@ -917,8 +945,9 @@ struct MediaPipelineSummary:
     Optional[str] MediaPipelineId
     Optional[str] MediaPipelineArn
 
-# no @derive(Json): member(s) Sources: list[MediaStreamSource], Sinks: list[MediaStreamSink] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Sources: list[MediaStreamSource], Sinks: list[MediaStreamSink] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MediaStreamPipeline:
     Optional[str] MediaPipelineId
     Optional[str] MediaPipelineArn
@@ -961,14 +990,16 @@ struct PostCallAnalyticsSettings:
 struct PresenterOnlyConfiguration:
     Optional[PresenterPosition] PresenterPosition
 
-# no @derive(Json): member(s) Rules: list[RealTimeAlertRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Rules: list[RealTimeAlertRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RealTimeAlertConfiguration:
     Optional[bool] Disabled
     Optional[list[RealTimeAlertRule]] Rules
 
-# no @derive(Json): member(s) KeywordMatchConfiguration: KeywordMatchConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) KeywordMatchConfiguration: KeywordMatchConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RealTimeAlertRule:
     RealTimeAlertRuleType Type
     Optional[KeywordMatchConfiguration] KeywordMatchConfiguration
@@ -999,8 +1030,9 @@ struct S3RecordingSinkRuntimeConfiguration:
     str Destination
     RecordingFileFormat RecordingFileFormat
 
-# no @derive(Json): member(s) AttendeeIds: list[str], ExternalUserIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) AttendeeIds: list[str], ExternalUserIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SelectedVideoStreams:
     Optional[list[str]] AttendeeIds
     Optional[list[str]] ExternalUserIds
@@ -1027,8 +1059,9 @@ struct ServiceUnavailableException:
 struct SnsTopicSinkConfiguration:
     Optional[str] InsightsTarget
 
-# no @derive(Json): member(s) SelectedVideoStreams: SelectedVideoStreams not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SelectedVideoStreams: SelectedVideoStreams not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SourceConfiguration:
     Optional[SelectedVideoStreams] SelectedVideoStreams
 
@@ -1086,14 +1119,16 @@ struct StopVoiceToneAnalysisTaskRequest:
     str Identifier
     str VoiceToneAnalysisTaskId
 
-# no @derive(Json): member(s) ChannelDefinitions: list[ChannelDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ChannelDefinitions: list[ChannelDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StreamChannelDefinition:
     int64 NumberOfChannels
     Optional[list[ChannelDefinition]] ChannelDefinitions
 
-# no @derive(Json): member(s) StreamChannelDefinition: StreamChannelDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) StreamChannelDefinition: StreamChannelDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StreamConfiguration:
     str StreamArn
     Optional[str] FragmentNumber
@@ -1155,8 +1190,9 @@ struct UpdateMediaInsightsPipelineConfigurationRequest:
     Optional[RealTimeAlertConfiguration] RealTimeAlertConfiguration
     list[MediaInsightsPipelineConfigurationElement] Elements
 
-# no @derive(Json): member(s) MediaInsightsPipelineConfiguration: MediaInsightsPipelineConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MediaInsightsPipelineConfiguration: MediaInsightsPipelineConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMediaInsightsPipelineConfigurationResponse:
     Optional[MediaInsightsPipelineConfiguration] MediaInsightsPipelineConfiguration
 
@@ -1258,20 +1294,6 @@ def media_pipelines_chime_error_from_code(str code) -> Chime_SDK_Media_Pipelines
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CreateMediaCapturePipeline (document member `ChimeSdkMeetingConfiguration: ChimeSdkMeetingConfiguration` is not serializable by derive)
-#   CreateMediaConcatenationPipeline (document member `Sources: list[ConcatenationSource]` is not serializable by derive)
-#   CreateMediaInsightsPipeline (document member `KinesisVideoStreamSourceRuntimeConfiguration: KinesisVideoStreamSourceRuntimeConfiguration` is not serializable by derive)
-#   CreateMediaInsightsPipelineConfiguration (document member `RealTimeAlertConfiguration: RealTimeAlertConfiguration` is not serializable by derive)
-#   CreateMediaLiveConnectorPipeline (document member `Sources: list[LiveConnectorSourceConfiguration]` is not serializable by derive)
-#   CreateMediaPipelineKinesisVideoStreamPool (document member `Tags: list[Tag]` is not serializable by derive)
-#   CreateMediaStreamPipeline (document member `Sources: list[MediaStreamSource]` is not serializable by derive)
-#   TagResource (document member `Tags: list[Tag]` is not serializable by derive)
-#   UntagResource (document member `TagKeys: list[str]` is not serializable by derive)
-#   UpdateMediaInsightsPipelineConfiguration (document member `RealTimeAlertConfiguration: RealTimeAlertConfiguration` is not serializable by derive)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1299,10 +1321,449 @@ struct UpdateMediaPipelineKinesisVideoStreamPoolDocument:
     # document members of UpdateMediaPipelineKinesisVideoStreamPool
     Optional[KinesisVideoStreamConfigurationUpdate] StreamConfiguration
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def media_pipelines_chime_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def media_pipelines_chime_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def media_pipelines_chime_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AmazonTranscribeCallAnalyticsProcessorConfiguration to a compact JSON object (declaration order).
+def amazon_transcribe_call_analytics_processor_configuration_to_json(AmazonTranscribeCallAnalyticsProcessorConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"LanguageCode\":" + v.LanguageCode.to_json())
+    if v.VocabularyName.is_some():
+        auto u0 = v.VocabularyName.unwrap()
+        parts.append("\"VocabularyName\":" + media_pipelines_chime_json_str(u0))
+    if v.VocabularyFilterName.is_some():
+        auto u1 = v.VocabularyFilterName.unwrap()
+        parts.append("\"VocabularyFilterName\":" + media_pipelines_chime_json_str(u1))
+    if v.VocabularyFilterMethod.is_some():
+        auto u2 = v.VocabularyFilterMethod.unwrap()
+        parts.append("\"VocabularyFilterMethod\":" + u2.to_json())
+    if v.LanguageModelName.is_some():
+        auto u3 = v.LanguageModelName.unwrap()
+        parts.append("\"LanguageModelName\":" + media_pipelines_chime_json_str(u3))
+    if v.EnablePartialResultsStabilization.is_some():
+        auto u4 = v.EnablePartialResultsStabilization.unwrap()
+        parts.append("\"EnablePartialResultsStabilization\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.PartialResultsStability.is_some():
+        auto u5 = v.PartialResultsStability.unwrap()
+        parts.append("\"PartialResultsStability\":" + u5.to_json())
+    if v.ContentIdentificationType.is_some():
+        auto u6 = v.ContentIdentificationType.unwrap()
+        parts.append("\"ContentIdentificationType\":" + media_pipelines_chime_json_str(u6))
+    if v.ContentRedactionType.is_some():
+        auto u7 = v.ContentRedactionType.unwrap()
+        parts.append("\"ContentRedactionType\":" + media_pipelines_chime_json_str(u7))
+    if v.PiiEntityTypes.is_some():
+        auto u8 = v.PiiEntityTypes.unwrap()
+        parts.append("\"PiiEntityTypes\":" + media_pipelines_chime_json_str(u8))
+    if v.FilterPartialResults.is_some():
+        auto u9 = v.FilterPartialResults.unwrap()
+        parts.append("\"FilterPartialResults\":" + json.dumps(JsonValue.Bool(u9)))
+    if v.PostCallAnalyticsSettings.is_some():
+        auto u10 = v.PostCallAnalyticsSettings.unwrap()
+        parts.append("\"PostCallAnalyticsSettings\":" + u10.to_json())
+    if v.CallAnalyticsStreamCategories.is_some():
+        auto u11 = v.CallAnalyticsStreamCategories.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(media_pipelines_chime_json_str(x12))
+        parts.append("\"CallAnalyticsStreamCategories\":" + media_pipelines_chime_json_arr(e12))
+    return media_pipelines_chime_json_obj(parts)
+
+# Serialize ChimeSdkMeetingConfiguration to a compact JSON object (declaration order).
+def chime_sdk_meeting_configuration_to_json(ChimeSdkMeetingConfiguration v) -> str:
+    list[str] parts = []
+    if v.SourceConfiguration.is_some():
+        auto u0 = v.SourceConfiguration.unwrap()
+        parts.append("\"SourceConfiguration\":" + source_configuration_to_json(u0))
+    if v.ArtifactsConfiguration.is_some():
+        auto u1 = v.ArtifactsConfiguration.unwrap()
+        parts.append("\"ArtifactsConfiguration\":" + u1.to_json())
+    return media_pipelines_chime_json_obj(parts)
+
+# Serialize ChimeSdkMeetingLiveConnectorConfiguration to a compact JSON object (declaration order).
+def chime_sdk_meeting_live_connector_configuration_to_json(ChimeSdkMeetingLiveConnectorConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"Arn\":" + media_pipelines_chime_json_str(v.Arn))
+    parts.append("\"MuxType\":" + v.MuxType.to_json())
+    if v.CompositedVideo.is_some():
+        auto u0 = v.CompositedVideo.unwrap()
+        parts.append("\"CompositedVideo\":" + u0.to_json())
+    if v.SourceConfiguration.is_some():
+        auto u1 = v.SourceConfiguration.unwrap()
+        parts.append("\"SourceConfiguration\":" + source_configuration_to_json(u1))
+    return media_pipelines_chime_json_obj(parts)
+
+# Serialize KeywordMatchConfiguration to a compact JSON object (declaration order).
+def keyword_match_configuration_to_json(KeywordMatchConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"RuleName\":" + media_pipelines_chime_json_str(v.RuleName))
+    list[str] e0 = []
+    for x0 in v.Keywords:
+        e0.append(media_pipelines_chime_json_str(x0))
+    parts.append("\"Keywords\":" + media_pipelines_chime_json_arr(e0))
+    if v.Negate.is_some():
+        auto u1 = v.Negate.unwrap()
+        parts.append("\"Negate\":" + json.dumps(JsonValue.Bool(u1)))
+    return media_pipelines_chime_json_obj(parts)
+
+# Serialize KinesisVideoStreamRecordingSourceRuntimeConfiguration to a compact JSON object (declaration order).
+def kinesis_video_stream_recording_source_runtime_configuration_to_json(KinesisVideoStreamRecordingSourceRuntimeConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Streams:
+        e0.append(x0.to_json())
+    parts.append("\"Streams\":" + media_pipelines_chime_json_arr(e0))
+    parts.append("\"FragmentSelector\":" + v.FragmentSelector.to_json())
+    return media_pipelines_chime_json_obj(parts)
+
+# Serialize KinesisVideoStreamSourceRuntimeConfiguration to a compact JSON object (declaration order).
+def kinesis_video_stream_source_runtime_configuration_to_json(KinesisVideoStreamSourceRuntimeConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Streams:
+        e0.append(stream_configuration_to_json(x0))
+    parts.append("\"Streams\":" + media_pipelines_chime_json_arr(e0))
+    parts.append("\"MediaEncoding\":" + media_pipelines_chime_json_str(v.MediaEncoding))
+    parts.append("\"MediaSampleRate\":" + str(v.MediaSampleRate))
+    return media_pipelines_chime_json_obj(parts)
+
+# Serialize LiveConnectorSourceConfiguration to a compact JSON object (declaration order).
+def live_connector_source_configuration_to_json(LiveConnectorSourceConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"SourceType\":" + media_pipelines_chime_json_str(v.SourceType))
+    parts.append("\"ChimeSdkMeetingLiveConnectorConfiguration\":" + chime_sdk_meeting_live_connector_configuration_to_json(v.ChimeSdkMeetingLiveConnectorConfiguration))
+    return media_pipelines_chime_json_obj(parts)
+
+# Serialize MediaInsightsPipelineConfigurationElement to a compact JSON object (declaration order).
+def media_insights_pipeline_configuration_element_to_json(MediaInsightsPipelineConfigurationElement v) -> str:
+    list[str] parts = []
+    parts.append("\"Type\":" + v.Type.to_json())
+    if v.AmazonTranscribeCallAnalyticsProcessorConfiguration.is_some():
+        auto u0 = v.AmazonTranscribeCallAnalyticsProcessorConfiguration.unwrap()
+        parts.append("\"AmazonTranscribeCallAnalyticsProcessorConfiguration\":" + amazon_transcribe_call_analytics_processor_configuration_to_json(u0))
+    if v.AmazonTranscribeProcessorConfiguration.is_some():
+        auto u1 = v.AmazonTranscribeProcessorConfiguration.unwrap()
+        parts.append("\"AmazonTranscribeProcessorConfiguration\":" + u1.to_json())
+    if v.KinesisDataStreamSinkConfiguration.is_some():
+        auto u2 = v.KinesisDataStreamSinkConfiguration.unwrap()
+        parts.append("\"KinesisDataStreamSinkConfiguration\":" + u2.to_json())
+    if v.S3RecordingSinkConfiguration.is_some():
+        auto u3 = v.S3RecordingSinkConfiguration.unwrap()
+        parts.append("\"S3RecordingSinkConfiguration\":" + u3.to_json())
+    if v.VoiceAnalyticsProcessorConfiguration.is_some():
+        auto u4 = v.VoiceAnalyticsProcessorConfiguration.unwrap()
+        parts.append("\"VoiceAnalyticsProcessorConfiguration\":" + u4.to_json())
+    if v.LambdaFunctionSinkConfiguration.is_some():
+        auto u5 = v.LambdaFunctionSinkConfiguration.unwrap()
+        parts.append("\"LambdaFunctionSinkConfiguration\":" + u5.to_json())
+    if v.SqsQueueSinkConfiguration.is_some():
+        auto u6 = v.SqsQueueSinkConfiguration.unwrap()
+        parts.append("\"SqsQueueSinkConfiguration\":" + u6.to_json())
+    if v.SnsTopicSinkConfiguration.is_some():
+        auto u7 = v.SnsTopicSinkConfiguration.unwrap()
+        parts.append("\"SnsTopicSinkConfiguration\":" + u7.to_json())
+    if v.VoiceEnhancementSinkConfiguration.is_some():
+        auto u8 = v.VoiceEnhancementSinkConfiguration.unwrap()
+        parts.append("\"VoiceEnhancementSinkConfiguration\":" + u8.to_json())
+    return media_pipelines_chime_json_obj(parts)
+
+# Serialize RealTimeAlertConfiguration to a compact JSON object (declaration order).
+def real_time_alert_configuration_to_json(RealTimeAlertConfiguration v) -> str:
+    list[str] parts = []
+    if v.Disabled.is_some():
+        auto u0 = v.Disabled.unwrap()
+        parts.append("\"Disabled\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.Rules.is_some():
+        auto u1 = v.Rules.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(real_time_alert_rule_to_json(x2))
+        parts.append("\"Rules\":" + media_pipelines_chime_json_arr(e2))
+    return media_pipelines_chime_json_obj(parts)
+
+# Serialize RealTimeAlertRule to a compact JSON object (declaration order).
+def real_time_alert_rule_to_json(RealTimeAlertRule v) -> str:
+    list[str] parts = []
+    parts.append("\"Type\":" + v.Type.to_json())
+    if v.KeywordMatchConfiguration.is_some():
+        auto u0 = v.KeywordMatchConfiguration.unwrap()
+        parts.append("\"KeywordMatchConfiguration\":" + keyword_match_configuration_to_json(u0))
+    if v.SentimentConfiguration.is_some():
+        auto u1 = v.SentimentConfiguration.unwrap()
+        parts.append("\"SentimentConfiguration\":" + u1.to_json())
+    if v.IssueDetectionConfiguration.is_some():
+        auto u2 = v.IssueDetectionConfiguration.unwrap()
+        parts.append("\"IssueDetectionConfiguration\":" + u2.to_json())
+    return media_pipelines_chime_json_obj(parts)
+
+# Serialize SelectedVideoStreams to a compact JSON object (declaration order).
+def selected_video_streams_to_json(SelectedVideoStreams v) -> str:
+    list[str] parts = []
+    if v.AttendeeIds.is_some():
+        auto u0 = v.AttendeeIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(media_pipelines_chime_json_str(x1))
+        parts.append("\"AttendeeIds\":" + media_pipelines_chime_json_arr(e1))
+    if v.ExternalUserIds.is_some():
+        auto u2 = v.ExternalUserIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(media_pipelines_chime_json_str(x3))
+        parts.append("\"ExternalUserIds\":" + media_pipelines_chime_json_arr(e3))
+    return media_pipelines_chime_json_obj(parts)
+
+# Serialize SourceConfiguration to a compact JSON object (declaration order).
+def source_configuration_to_json(SourceConfiguration v) -> str:
+    list[str] parts = []
+    if v.SelectedVideoStreams.is_some():
+        auto u0 = v.SelectedVideoStreams.unwrap()
+        parts.append("\"SelectedVideoStreams\":" + selected_video_streams_to_json(u0))
+    return media_pipelines_chime_json_obj(parts)
+
+# Serialize StreamChannelDefinition to a compact JSON object (declaration order).
+def stream_channel_definition_to_json(StreamChannelDefinition v) -> str:
+    list[str] parts = []
+    parts.append("\"NumberOfChannels\":" + str(v.NumberOfChannels))
+    if v.ChannelDefinitions.is_some():
+        auto u0 = v.ChannelDefinitions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ChannelDefinitions\":" + media_pipelines_chime_json_arr(e1))
+    return media_pipelines_chime_json_obj(parts)
+
+# Serialize StreamConfiguration to a compact JSON object (declaration order).
+def stream_configuration_to_json(StreamConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"StreamArn\":" + media_pipelines_chime_json_str(v.StreamArn))
+    if v.FragmentNumber.is_some():
+        auto u0 = v.FragmentNumber.unwrap()
+        parts.append("\"FragmentNumber\":" + media_pipelines_chime_json_str(u0))
+    parts.append("\"StreamChannelDefinition\":" + stream_channel_definition_to_json(v.StreamChannelDefinition))
+    return media_pipelines_chime_json_obj(parts)
+
 # A bound Chime_SDK_Media_Pipelines client: credentials + region, threaded into every operation.
 struct Chime_SDK_Media_PipelinesClient:
     core.Credentials creds
     str region
+
+    # CreateMediaCapturePipeline  POST /sdk-media-capture-pipelines
+    # errors: BadRequestException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def create_media_capture_pipeline(self, CreateMediaCapturePipelineRequest input) -> str:
+        auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/sdk-media-capture-pipelines", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"SourceType\":" + media_pipelines_chime_json_str(input.SourceType))
+        parts.append("\"SourceArn\":" + media_pipelines_chime_json_str(input.SourceArn))
+        parts.append("\"SinkType\":" + media_pipelines_chime_json_str(input.SinkType))
+        parts.append("\"SinkArn\":" + media_pipelines_chime_json_str(input.SinkArn))
+        if input.ClientRequestToken.is_some():
+            auto u0 = input.ClientRequestToken.unwrap()
+            parts.append("\"ClientRequestToken\":" + media_pipelines_chime_json_str(u0))
+        if input.ChimeSdkMeetingConfiguration.is_some():
+            auto u1 = input.ChimeSdkMeetingConfiguration.unwrap()
+            parts.append("\"ChimeSdkMeetingConfiguration\":" + chime_sdk_meeting_configuration_to_json(u1))
+        if input.SseAwsKeyManagementParams.is_some():
+            auto u2 = input.SseAwsKeyManagementParams.unwrap()
+            parts.append("\"SseAwsKeyManagementParams\":" + u2.to_json())
+        if input.SinkIamRoleArn.is_some():
+            auto u3 = input.SinkIamRoleArn.unwrap()
+            parts.append("\"SinkIamRoleArn\":" + media_pipelines_chime_json_str(u3))
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"Tags\":" + media_pipelines_chime_json_arr(e5))
+        auto bp = restjson.rest_json_document(b, media_pipelines_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, media_pipelines_chime_service(), self.region, host)
+
+    # CreateMediaConcatenationPipeline  POST /sdk-media-concatenation-pipelines
+    # errors: BadRequestException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def create_media_concatenation_pipeline(self, CreateMediaConcatenationPipelineRequest input) -> str:
+        auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/sdk-media-concatenation-pipelines", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Sources:
+            e0.append(x0.to_json())
+        parts.append("\"Sources\":" + media_pipelines_chime_json_arr(e0))
+        list[str] e1 = []
+        for x1 in input.Sinks:
+            e1.append(x1.to_json())
+        parts.append("\"Sinks\":" + media_pipelines_chime_json_arr(e1))
+        if input.ClientRequestToken.is_some():
+            auto u2 = input.ClientRequestToken.unwrap()
+            parts.append("\"ClientRequestToken\":" + media_pipelines_chime_json_str(u2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"Tags\":" + media_pipelines_chime_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, media_pipelines_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, media_pipelines_chime_service(), self.region, host)
+
+    # CreateMediaInsightsPipeline  POST /media-insights-pipelines
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def create_media_insights_pipeline(self, CreateMediaInsightsPipelineRequest input) -> str:
+        auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/media-insights-pipelines", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"MediaInsightsPipelineConfigurationArn\":" + media_pipelines_chime_json_str(input.MediaInsightsPipelineConfigurationArn))
+        if input.KinesisVideoStreamSourceRuntimeConfiguration.is_some():
+            auto u0 = input.KinesisVideoStreamSourceRuntimeConfiguration.unwrap()
+            parts.append("\"KinesisVideoStreamSourceRuntimeConfiguration\":" + kinesis_video_stream_source_runtime_configuration_to_json(u0))
+        if input.MediaInsightsRuntimeMetadata.is_some():
+            auto u1 = input.MediaInsightsRuntimeMetadata.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(media_pipelines_chime_json_str(k2) + ":" + media_pipelines_chime_json_str(u1[k2]))
+            parts.append("\"MediaInsightsRuntimeMetadata\":" + media_pipelines_chime_json_obj(m2))
+        if input.KinesisVideoStreamRecordingSourceRuntimeConfiguration.is_some():
+            auto u3 = input.KinesisVideoStreamRecordingSourceRuntimeConfiguration.unwrap()
+            parts.append("\"KinesisVideoStreamRecordingSourceRuntimeConfiguration\":" + kinesis_video_stream_recording_source_runtime_configuration_to_json(u3))
+        if input.S3RecordingSinkRuntimeConfiguration.is_some():
+            auto u4 = input.S3RecordingSinkRuntimeConfiguration.unwrap()
+            parts.append("\"S3RecordingSinkRuntimeConfiguration\":" + u4.to_json())
+        if input.Tags.is_some():
+            auto u5 = input.Tags.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"Tags\":" + media_pipelines_chime_json_arr(e6))
+        if input.ClientRequestToken.is_some():
+            auto u7 = input.ClientRequestToken.unwrap()
+            parts.append("\"ClientRequestToken\":" + media_pipelines_chime_json_str(u7))
+        auto bp = restjson.rest_json_document(b, media_pipelines_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, media_pipelines_chime_service(), self.region, host)
+
+    # CreateMediaInsightsPipelineConfiguration  POST /media-insights-pipeline-configurations
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def create_media_insights_pipeline_configuration(self, CreateMediaInsightsPipelineConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/media-insights-pipeline-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"MediaInsightsPipelineConfigurationName\":" + media_pipelines_chime_json_str(input.MediaInsightsPipelineConfigurationName))
+        parts.append("\"ResourceAccessRoleArn\":" + media_pipelines_chime_json_str(input.ResourceAccessRoleArn))
+        if input.RealTimeAlertConfiguration.is_some():
+            auto u0 = input.RealTimeAlertConfiguration.unwrap()
+            parts.append("\"RealTimeAlertConfiguration\":" + real_time_alert_configuration_to_json(u0))
+        list[str] e1 = []
+        for x1 in input.Elements:
+            e1.append(media_insights_pipeline_configuration_element_to_json(x1))
+        parts.append("\"Elements\":" + media_pipelines_chime_json_arr(e1))
+        if input.Tags.is_some():
+            auto u2 = input.Tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"Tags\":" + media_pipelines_chime_json_arr(e3))
+        if input.ClientRequestToken.is_some():
+            auto u4 = input.ClientRequestToken.unwrap()
+            parts.append("\"ClientRequestToken\":" + media_pipelines_chime_json_str(u4))
+        auto bp = restjson.rest_json_document(b, media_pipelines_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, media_pipelines_chime_service(), self.region, host)
+
+    # CreateMediaLiveConnectorPipeline  POST /sdk-media-live-connector-pipelines
+    # errors: BadRequestException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def create_media_live_connector_pipeline(self, CreateMediaLiveConnectorPipelineRequest input) -> str:
+        auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/sdk-media-live-connector-pipelines", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Sources:
+            e0.append(live_connector_source_configuration_to_json(x0))
+        parts.append("\"Sources\":" + media_pipelines_chime_json_arr(e0))
+        list[str] e1 = []
+        for x1 in input.Sinks:
+            e1.append(x1.to_json())
+        parts.append("\"Sinks\":" + media_pipelines_chime_json_arr(e1))
+        if input.ClientRequestToken.is_some():
+            auto u2 = input.ClientRequestToken.unwrap()
+            parts.append("\"ClientRequestToken\":" + media_pipelines_chime_json_str(u2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"Tags\":" + media_pipelines_chime_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, media_pipelines_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, media_pipelines_chime_service(), self.region, host)
+
+    # CreateMediaPipelineKinesisVideoStreamPool  POST /media-pipeline-kinesis-video-stream-pools
+    # errors: BadRequestException, ConflictException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def create_media_pipeline_kinesis_video_stream_pool(self, CreateMediaPipelineKinesisVideoStreamPoolRequest input) -> str:
+        auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/media-pipeline-kinesis-video-stream-pools", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"StreamConfiguration\":" + input.StreamConfiguration.to_json())
+        parts.append("\"PoolName\":" + media_pipelines_chime_json_str(input.PoolName))
+        if input.ClientRequestToken.is_some():
+            auto u0 = input.ClientRequestToken.unwrap()
+            parts.append("\"ClientRequestToken\":" + media_pipelines_chime_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"Tags\":" + media_pipelines_chime_json_arr(e2))
+        auto bp = restjson.rest_json_document(b, media_pipelines_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, media_pipelines_chime_service(), self.region, host)
+
+    # CreateMediaStreamPipeline  POST /sdk-media-stream-pipelines
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def create_media_stream_pipeline(self, CreateMediaStreamPipelineRequest input) -> str:
+        auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/sdk-media-stream-pipelines", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.Sources:
+            e0.append(x0.to_json())
+        parts.append("\"Sources\":" + media_pipelines_chime_json_arr(e0))
+        list[str] e1 = []
+        for x1 in input.Sinks:
+            e1.append(x1.to_json())
+        parts.append("\"Sinks\":" + media_pipelines_chime_json_arr(e1))
+        if input.ClientRequestToken.is_some():
+            auto u2 = input.ClientRequestToken.unwrap()
+            parts.append("\"ClientRequestToken\":" + media_pipelines_chime_json_str(u2))
+        if input.Tags.is_some():
+            auto u3 = input.Tags.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"Tags\":" + media_pipelines_chime_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, media_pipelines_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, media_pipelines_chime_service(), self.region, host)
 
     # DeleteMediaCapturePipeline  DELETE /sdk-media-capture-pipelines/{mediaPipelineId}
     # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
@@ -1494,6 +1955,53 @@ struct Chime_SDK_Media_PipelinesClient:
         labels["voiceToneAnalysisTaskId"] = input.VoiceToneAnalysisTaskId
         auto b = binding.HttpBinding(method="POST", path_template="/media-insights-pipelines/{identifier}/voice-tone-analysis-tasks/{voiceToneAnalysisTaskId}?operation=stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, media_pipelines_chime_service(), self.region, host)
+
+    # TagResource  POST /tags?operation=tag-resource
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=tag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceARN\":" + media_pipelines_chime_json_str(input.ResourceARN))
+        list[str] e0 = []
+        for x0 in input.Tags:
+            e0.append(x0.to_json())
+        parts.append("\"Tags\":" + media_pipelines_chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, media_pipelines_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, media_pipelines_chime_service(), self.region, host)
+
+    # UntagResource  POST /tags?operation=untag-resource
+    # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=untag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceARN\":" + media_pipelines_chime_json_str(input.ResourceARN))
+        list[str] e0 = []
+        for x0 in input.TagKeys:
+            e0.append(media_pipelines_chime_json_str(x0))
+        parts.append("\"TagKeys\":" + media_pipelines_chime_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, media_pipelines_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, media_pipelines_chime_service(), self.region, host)
+
+    # UpdateMediaInsightsPipelineConfiguration  PUT /media-insights-pipeline-configurations/{identifier}
+    # errors: BadRequestException, ConflictException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def update_media_insights_pipeline_configuration(self, UpdateMediaInsightsPipelineConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["identifier"] = input.Identifier
+        auto b = binding.HttpBinding(method="PUT", path_template="/media-insights-pipeline-configurations/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"ResourceAccessRoleArn\":" + media_pipelines_chime_json_str(input.ResourceAccessRoleArn))
+        if input.RealTimeAlertConfiguration.is_some():
+            auto u0 = input.RealTimeAlertConfiguration.unwrap()
+            parts.append("\"RealTimeAlertConfiguration\":" + real_time_alert_configuration_to_json(u0))
+        list[str] e1 = []
+        for x1 in input.Elements:
+            e1.append(media_insights_pipeline_configuration_element_to_json(x1))
+        parts.append("\"Elements\":" + media_pipelines_chime_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, media_pipelines_chime_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, media_pipelines_chime_service(), self.region, host)
 
     # UpdateMediaInsightsPipelineStatus  PUT /media-insights-pipeline-status/{identifier}
     # errors: BadRequestException, ConflictException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException

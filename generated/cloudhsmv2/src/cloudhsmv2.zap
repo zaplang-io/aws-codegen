@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 18 operations — 12 with a generated method,
-#   6 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 18 operations — 18 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   50 structs (33 @derive(Json)), 5 enums, 7 error variants.
-#   1 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -86,8 +86,9 @@ enum NetworkType:
 
 # --- shapes ----------------------------------------------------------------
 
-# no @derive(Json): member(s) TagList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Backup:
     str BackupId
     Optional[str] BackupArn
@@ -145,8 +146,9 @@ struct CloudHsmServiceException:
 struct CloudHsmTagException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Hsms: list[Hsm], SubnetMapping: dict[str, str], TagList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Hsms: list[Hsm], SubnetMapping: dict[str, str], TagList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Cluster:
     Optional[str] BackupPolicy
     Optional[BackupRetentionPolicy] BackupRetentionPolicy
@@ -167,8 +169,9 @@ struct Cluster:
     Optional[list[Tag]] TagList
     Optional[ClusterMode] Mode
 
-# no @derive(Json): member(s) TagList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CopyBackupToRegionRequest:
     str DestinationRegion
     str BackupId
@@ -178,8 +181,9 @@ struct CopyBackupToRegionRequest:
 struct CopyBackupToRegionResponse:
     Optional[DestinationBackup] DestinationBackup
 
-# no @derive(Json): member(s) SubnetIds: list[str], TagList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SubnetIds: list[str], TagList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateClusterRequest:
     Optional[BackupRetentionPolicy] BackupRetentionPolicy
     str HsmType
@@ -189,8 +193,9 @@ struct CreateClusterRequest:
     Optional[list[Tag]] TagList
     Optional[ClusterMode] Mode
 
-# no @derive(Json): member(s) Cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateClusterResponse:
     Optional[Cluster] Cluster
 
@@ -208,8 +213,9 @@ struct CreateHsmResponse:
 struct DeleteBackupRequest:
     str BackupId
 
-# no @derive(Json): member(s) Backup: Backup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Backup: Backup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteBackupResponse:
     Optional[Backup] Backup
 
@@ -217,8 +223,9 @@ struct DeleteBackupResponse:
 struct DeleteClusterRequest:
     str ClusterId
 
-# no @derive(Json): member(s) Cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteClusterResponse:
     Optional[Cluster] Cluster
 
@@ -242,8 +249,9 @@ struct DeleteResourcePolicyResponse:
     Optional[str] ResourceArn
     Optional[str] Policy
 
-# no @derive(Json): member(s) Filters: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBackupsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
@@ -251,21 +259,24 @@ struct DescribeBackupsRequest:
     Optional[bool] Shared
     Optional[bool] SortAscending
 
-# no @derive(Json): member(s) Backups: list[Backup] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Backups: list[Backup] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBackupsResponse:
     Optional[list[Backup]] Backups
     Optional[str] NextToken
 
-# no @derive(Json): member(s) Filters: dict[str, list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Filters: dict[str, list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClustersRequest:
     Optional[dict[str, list[str]]] Filters
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Clusters: list[Cluster] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Clusters: list[Cluster] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeClustersResponse:
     Optional[list[Cluster]] Clusters
     Optional[str] NextToken
@@ -315,8 +326,9 @@ struct ListTagsRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) TagList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsResponse:
     list[Tag] TagList
     Optional[str] NextToken
@@ -326,8 +338,9 @@ struct ModifyBackupAttributesRequest:
     str BackupId
     bool NeverExpires
 
-# no @derive(Json): member(s) Backup: Backup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Backup: Backup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyBackupAttributesResponse:
     Optional[Backup] Backup
 
@@ -337,8 +350,9 @@ struct ModifyClusterRequest:
     Optional[BackupRetentionPolicy] BackupRetentionPolicy
     str ClusterId
 
-# no @derive(Json): member(s) Cluster: Cluster not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Cluster: Cluster not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyClusterResponse:
     Optional[Cluster] Cluster
 
@@ -356,8 +370,9 @@ struct PutResourcePolicyResponse:
 struct RestoreBackupRequest:
     str BackupId
 
-# no @derive(Json): member(s) Backup: Backup not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Backup: Backup not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RestoreBackupResponse:
     Optional[Backup] Backup
 
@@ -366,8 +381,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) TagList: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagList: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceId
     list[Tag] TagList
@@ -377,8 +393,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) TagKeyList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeyList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceId
     list[str] TagKeyList
@@ -422,24 +439,159 @@ def cloudhsmv2_error_from_code(str code) -> CloudHSM_V2Error:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CopyBackupToRegion (input CopyBackupToRegionRequest)
-#   CreateCluster (input CreateClusterRequest)
-#   DescribeBackups (input DescribeBackupsRequest)
-#   DescribeClusters (input DescribeClustersRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def cloudhsmv2_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
 
-# Paginated operations (paginators-1.json) not surfaced in v0 — their input
-# is skipped above, or the continuation token is not a simple string field:
-#   DescribeBackups (input not derivable (no generated method))
-#   DescribeClusters (input not derivable (no generated method))
+def cloudhsmv2_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def cloudhsmv2_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CopyBackupToRegionRequest to a compact JSON object (declaration order).
+def copy_backup_to_region_request_to_json(CopyBackupToRegionRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DestinationRegion\":" + cloudhsmv2_json_str(v.DestinationRegion))
+    parts.append("\"BackupId\":" + cloudhsmv2_json_str(v.BackupId))
+    if v.TagList.is_some():
+        auto u0 = v.TagList.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"TagList\":" + cloudhsmv2_json_arr(e1))
+    return cloudhsmv2_json_obj(parts)
+
+# Serialize CreateClusterRequest to a compact JSON object (declaration order).
+def create_cluster_request_to_json(CreateClusterRequest v) -> str:
+    list[str] parts = []
+    if v.BackupRetentionPolicy.is_some():
+        auto u0 = v.BackupRetentionPolicy.unwrap()
+        parts.append("\"BackupRetentionPolicy\":" + u0.to_json())
+    parts.append("\"HsmType\":" + cloudhsmv2_json_str(v.HsmType))
+    if v.SourceBackupId.is_some():
+        auto u1 = v.SourceBackupId.unwrap()
+        parts.append("\"SourceBackupId\":" + cloudhsmv2_json_str(u1))
+    list[str] e2 = []
+    for x2 in v.SubnetIds:
+        e2.append(cloudhsmv2_json_str(x2))
+    parts.append("\"SubnetIds\":" + cloudhsmv2_json_arr(e2))
+    if v.NetworkType.is_some():
+        auto u3 = v.NetworkType.unwrap()
+        parts.append("\"NetworkType\":" + u3.to_json())
+    if v.TagList.is_some():
+        auto u4 = v.TagList.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"TagList\":" + cloudhsmv2_json_arr(e5))
+    if v.Mode.is_some():
+        auto u6 = v.Mode.unwrap()
+        parts.append("\"Mode\":" + u6.to_json())
+    return cloudhsmv2_json_obj(parts)
+
+# Serialize DescribeBackupsRequest to a compact JSON object (declaration order).
+def describe_backups_request_to_json(DescribeBackupsRequest v) -> str:
+    list[str] parts = []
+    if v.NextToken.is_some():
+        auto u0 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + cloudhsmv2_json_str(u0))
+    if v.MaxResults.is_some():
+        auto u1 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u1))
+    if v.Filters.is_some():
+        auto u2 = v.Filters.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            list[str] e4 = []
+            for x4 in u2[k3]:
+                e4.append(cloudhsmv2_json_str(x4))
+            m3.append(cloudhsmv2_json_str(k3) + ":" + cloudhsmv2_json_arr(e4))
+        parts.append("\"Filters\":" + cloudhsmv2_json_obj(m3))
+    if v.Shared.is_some():
+        auto u5 = v.Shared.unwrap()
+        parts.append("\"Shared\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.SortAscending.is_some():
+        auto u6 = v.SortAscending.unwrap()
+        parts.append("\"SortAscending\":" + json.dumps(JsonValue.Bool(u6)))
+    return cloudhsmv2_json_obj(parts)
+
+# Serialize DescribeClustersRequest to a compact JSON object (declaration order).
+def describe_clusters_request_to_json(DescribeClustersRequest v) -> str:
+    list[str] parts = []
+    if v.Filters.is_some():
+        auto u0 = v.Filters.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            list[str] e2 = []
+            for x2 in u0[k1]:
+                e2.append(cloudhsmv2_json_str(x2))
+            m1.append(cloudhsmv2_json_str(k1) + ":" + cloudhsmv2_json_arr(e2))
+        parts.append("\"Filters\":" + cloudhsmv2_json_obj(m1))
+    if v.NextToken.is_some():
+        auto u3 = v.NextToken.unwrap()
+        parts.append("\"NextToken\":" + cloudhsmv2_json_str(u3))
+    if v.MaxResults.is_some():
+        auto u4 = v.MaxResults.unwrap()
+        parts.append("\"MaxResults\":" + str(u4))
+    return cloudhsmv2_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceId\":" + cloudhsmv2_json_str(v.ResourceId))
+    list[str] e0 = []
+    for x0 in v.TagList:
+        e0.append(x0.to_json())
+    parts.append("\"TagList\":" + cloudhsmv2_json_arr(e0))
+    return cloudhsmv2_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceId\":" + cloudhsmv2_json_str(v.ResourceId))
+    list[str] e0 = []
+    for x0 in v.TagKeyList:
+        e0.append(cloudhsmv2_json_str(x0))
+    parts.append("\"TagKeyList\":" + cloudhsmv2_json_arr(e0))
+    return cloudhsmv2_json_obj(parts)
 
 # A bound CloudHSM_V2 client: credentials + region, threaded into every operation.
 struct CloudHSM_V2Client:
     core.Credentials creds
     str region
+
+    # CopyBackupToRegion
+    # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmResourceNotFoundException, CloudHsmServiceException, CloudHsmTagException
+    def copy_backup_to_region(self, CopyBackupToRegionRequest input) -> str:
+        auto body = copy_backup_to_region_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "CopyBackupToRegion", body)
+
+    # CreateCluster
+    # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmResourceNotFoundException, CloudHsmServiceException, CloudHsmTagException
+    def create_cluster(self, CreateClusterRequest input) -> str:
+        auto body = create_cluster_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "CreateCluster", body)
 
     # CreateHsm
     # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmResourceNotFoundException, CloudHsmServiceException
@@ -470,6 +622,18 @@ struct CloudHSM_V2Client:
     def delete_resource_policy(self, DeleteResourcePolicyRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "DeleteResourcePolicy", body)
+
+    # DescribeBackups
+    # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmResourceNotFoundException, CloudHsmServiceException, CloudHsmTagException
+    def describe_backups(self, DescribeBackupsRequest input) -> str:
+        auto body = describe_backups_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "DescribeBackups", body)
+
+    # DescribeClusters
+    # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmServiceException, CloudHsmTagException
+    def describe_clusters(self, DescribeClustersRequest input) -> str:
+        auto body = describe_clusters_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "DescribeClusters", body)
 
     # GetResourcePolicy
     # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmResourceNotFoundException, CloudHsmServiceException
@@ -512,6 +676,46 @@ struct CloudHSM_V2Client:
     def restore_backup(self, RestoreBackupRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "RestoreBackup", body)
+
+    # TagResource
+    # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmResourceLimitExceededException, CloudHsmResourceNotFoundException, CloudHsmServiceException, CloudHsmTagException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: CloudHsmAccessDeniedException, CloudHsmInternalFailureException, CloudHsmInvalidRequestException, CloudHsmResourceNotFoundException, CloudHsmServiceException, CloudHsmTagException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "UntagResource", body)
+
+    # Paginator for DescribeBackups — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Backups).
+    def paginate_describe_backups(self, DescribeBackupsRequest input):
+        auto host = endpoints.regional_host(cloudhsmv2_protocol().service, self.region)
+        while True:
+            auto body = describe_backups_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "DescribeBackups", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeClusters — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Clusters).
+    def paginate_describe_clusters(self, DescribeClustersRequest input):
+        auto host = endpoints.regional_host(cloudhsmv2_protocol().service, self.region)
+        while True:
+            auto body = describe_clusters_request_to_json(input)
+            auto raw = awsjson.awsjson_request_now(cloudhsmv2_protocol(), self.creds, self.region, "DescribeClusters", body)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
     # Paginator for ListTags — yields each Response page, threading the
     # NextToken -> NextToken continuation token until the output token is absent (result key: TagList).

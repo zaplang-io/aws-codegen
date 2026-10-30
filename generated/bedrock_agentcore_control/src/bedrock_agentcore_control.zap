@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 172 operations — 119 with a generated method,
-#   53 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 172 operations — 170 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   786 structs (459 @derive(Json)), 102 enums, 16 error variants.
 #   39 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -995,8 +995,9 @@ struct A2aDescriptor:
 struct AccessDeniedException:
     Optional[str] message
 
-# no @derive(Json): member(s) configurationBundle: ConfigurationBundleAction, routeToTarget: RouteToTargetAction not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configurationBundle: ConfigurationBundleAction, routeToTarget: RouteToTargetAction not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Action:
     Optional[ConfigurationBundleAction] configurationBundle
     Optional[RouteToTargetAction] routeToTarget
@@ -1008,8 +1009,9 @@ struct AddDatasetExamplesRequest:
     Optional[str] clientToken
     DataSourceType source
 
-# no @derive(Json): member(s) exampleIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exampleIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AddDatasetExamplesResponse:
     str datasetArn
     str datasetId
@@ -1039,8 +1041,9 @@ struct AgentRuntime:
     DateTime lastUpdatedAt
     AgentRuntimeStatus status
 
-# no @derive(Json): member(s) codeConfiguration: CodeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) codeConfiguration: CodeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AgentRuntimeArtifact:
     Optional[ContainerConfiguration] containerConfiguration
     Optional[CodeConfiguration] codeConfiguration
@@ -1071,27 +1074,31 @@ struct AgentSkillsDescriptor:
     Optional[SkillMdDefinition] skillMd
     Optional[SkillDefinition] skillDefinition
 
-# no @derive(Json): member(s) hostingEnvironments: list[HostingEnvironment], workloadIdentities: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) hostingEnvironments: list[HostingEnvironment], workloadIdentities: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AllowedWorkloadConfiguration:
     Optional[list[HostingEnvironment]] hostingEnvironments
     Optional[list[str]] workloadIdentities
 
-# no @derive(Json): member(s) apiGatewayToolConfiguration: ApiGatewayToolConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) apiGatewayToolConfiguration: ApiGatewayToolConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApiGatewayTargetConfiguration:
     str restApiId
     str stage
     ApiGatewayToolConfiguration apiGatewayToolConfiguration
 
-# no @derive(Json): member(s) toolOverrides: list[ApiGatewayToolOverride], toolFilters: list[ApiGatewayToolFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) toolOverrides: list[ApiGatewayToolOverride], toolFilters: list[ApiGatewayToolFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApiGatewayToolConfiguration:
     Optional[list[ApiGatewayToolOverride]] toolOverrides
     list[ApiGatewayToolFilter] toolFilters
 
-# no @derive(Json): member(s) methods: list[RestApiMethod] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) methods: list[RestApiMethod] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ApiGatewayToolFilter:
     str filterPath
     list[RestApiMethod] methods
@@ -1133,8 +1140,9 @@ struct AtlassianOauth2ProviderConfigInput:
     Optional[SecretReference] clientSecretConfig
     Optional[SecretSourceType] clientSecretSource
 
-# no @derive(Json): member(s) oauthDiscovery: Oauth2Discovery not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oauthDiscovery: Oauth2Discovery not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AtlassianOauth2ProviderConfigOutput:
     Oauth2Discovery oauthDiscovery
     Optional[str] clientId
@@ -1143,13 +1151,15 @@ struct AtlassianOauth2ProviderConfigOutput:
 struct AuthorizationData:
     Optional[OAuth2AuthorizationData] oauth2
 
-# no @derive(Json): member(s) customJWTAuthorizer: CustomJWTAuthorizerConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customJWTAuthorizer: CustomJWTAuthorizerConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthorizerConfiguration:
     Optional[CustomJWTAuthorizerConfiguration] customJWTAuthorizer
 
-# no @derive(Json): member(s) claimMatchValue: ClaimMatchValueType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) claimMatchValue: ClaimMatchValueType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AuthorizingClaimMatchValueType:
     ClaimMatchValueType claimMatchValue
     ClaimMatchOperatorType claimMatchOperator
@@ -1161,21 +1171,24 @@ struct BatchPutGatewayRateLimitsRequest:
     Optional[str] clientToken
     list[BatchPutLimitEntry] rateLimits
 
-# no @derive(Json): member(s) rateLimits: list[GatewayRateLimitDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rateLimits: list[GatewayRateLimitDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchPutGatewayRateLimitsResponse:
     list[GatewayRateLimitDetail] rateLimits
 
-# no @derive(Json): member(s) dimensionKeys: list[str], entries: list[LimitEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dimensionKeys: list[str], entries: list[LimitEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchPutLimitEntry:
     Optional[str] rateLimitId
     Optional[str] description
     list[str] dimensionKeys
     list[LimitEntry] entries
 
-# no @derive(Json): member(s) inferenceConfig: InferenceConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inferenceConfig: InferenceConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BedrockEvaluatorModelConfig:
     str modelId
     Optional[InferenceConfiguration] inferenceConfig
@@ -1186,8 +1199,9 @@ struct BrowserEnterprisePolicy:
     ResourceLocation location
     Optional[BrowserEnterprisePolicyType] type
 
-# no @derive(Json): member(s) vpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BrowserNetworkConfiguration:
     BrowserNetworkMode networkMode
     Optional[VpcConfig] vpcConfig
@@ -1281,14 +1295,16 @@ struct CertificateLocation:
 struct CircuitBreakerConfiguration:
     Optional[CircuitBreakerMode] mode
 
-# no @derive(Json): member(s) matchValueStringList: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) matchValueStringList: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClaimMatchValueType:
     Optional[str] matchValueString
     Optional[list[str]] matchValueStringList
 
-# no @derive(Json): member(s) logGroupNames: list[str], logGroupNamePrefixes: list[str], serviceNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) logGroupNames: list[str], logGroupNamePrefixes: list[str], serviceNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CloudWatchLogsInputConfig:
     Optional[list[str]] logGroupNames
     Optional[list[str]] logGroupNamePrefixes
@@ -1300,8 +1316,9 @@ struct CloudWatchOutputConfig:
     Optional[str] metricsNamespace
     Optional[ResultDestination] resultDestination
 
-# no @derive(Json): member(s) frequencies: list[ClusteringFrequency] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) frequencies: list[ClusteringFrequency] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ClusteringConfig:
     list[ClusteringFrequency] frequencies
 
@@ -1313,15 +1330,17 @@ struct Code:
 struct CodeBasedEvaluatorConfig:
     Optional[LambdaEvaluatorConfig] lambdaConfig
 
-# no @derive(Json): member(s) entryPoint: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) entryPoint: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeConfiguration:
     Code code
     AgentManagedRuntimeType runtime
     list[str] entryPoint
 
-# no @derive(Json): member(s) vpcConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) vpcConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CodeInterpreterNetworkConfiguration:
     CodeInterpreterNetworkMode networkMode
     Optional[VpcConfig] vpcConfig
@@ -1358,8 +1377,9 @@ struct CoinbaseCdpConfigurationOutput:
     Optional[str] walletSecretJsonKey
     Optional[SecretSourceType] walletSecretSource
 
-# no @derive(Json): member(s) secrets: list[CoinbaseCdpSecret] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) secrets: list[CoinbaseCdpSecret] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CoinbaseCdpRotationTargets:
     list[CoinbaseCdpSecret] secrets
 
@@ -1367,8 +1387,9 @@ struct CoinbaseCdpRotationTargets:
 struct ComponentConfiguration:
     Document configuration
 
-# no @derive(Json): member(s) ec2Configuration: Ec2Configuration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ec2Configuration: Ec2Configuration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputeConfiguration:
     Optional[Ec2Configuration] ec2Configuration
 
@@ -1376,15 +1397,17 @@ struct ComputeConfiguration:
 struct ConcurrentModificationException:
     str message
 
-# no @derive(Json): member(s) matchPrincipals: MatchPrincipals, matchPaths: MatchPaths, matchModels: MatchModels not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) matchPrincipals: MatchPrincipals, matchPaths: MatchPaths, matchModels: MatchModels not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Condition:
     Optional[MatchPrincipals] matchPrincipals
     Optional[MatchPaths] matchPaths
     Optional[MatchModels] matchModels
 
-# no @derive(Json): member(s) weightedOverride: WeightedOverride not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) weightedOverride: WeightedOverride not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationBundleAction:
     Optional[StaticOverride] staticOverride
     Optional[WeightedOverride] weightedOverride
@@ -1402,8 +1425,9 @@ struct ConfigurationBundleSummary:
     Optional[str] description
     Optional[DateTime] createdAt
 
-# no @derive(Json): member(s) lineageMetadata: VersionLineageMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lineageMetadata: VersionLineageMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConfigurationBundleVersionSummary:
     str bundleArn
     str bundleId
@@ -1415,8 +1439,9 @@ struct ConfigurationBundleVersionSummary:
 struct ConflictException:
     Optional[str] message
 
-# no @derive(Json): member(s) parameterOverrides: list[ConnectorParameterOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameterOverrides: list[ConnectorParameterOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectorConfiguration:
     str name
     Optional[str] description
@@ -1434,15 +1459,17 @@ struct ConnectorSource:
     str connectorId
     Optional[str] version
 
-# no @derive(Json): member(s) enabled: list[str], configurations: list[ConnectorConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) enabled: list[str], configurations: list[ConnectorConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectorTargetConfiguration:
     ConnectorSource source
     Optional[list[str]] enabled
     Optional[list[ConnectorConfiguration]] configurations
 
-# no @derive(Json): member(s) scopes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scopes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConsentPortalIdpConfig:
     str credentialProviderArn
     list[str] scopes
@@ -1453,8 +1480,9 @@ struct ConsentPortalSource:
     str identifier
     str type
 
-# no @derive(Json): member(s) sources: list[ConsentPortalSource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sources: list[ConsentPortalSource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConsentPortalSummary:
     list[ConsentPortalSource] sources
     str consentPortalArn
@@ -1656,8 +1684,9 @@ struct CreateConsentPortalRequest:
     Optional[str] description
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) sources: list[ConsentPortalSource], idpConfig: ConsentPortalIdpConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sources: list[ConsentPortalSource], idpConfig: ConsentPortalIdpConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateConsentPortalResponse:
     list[ConsentPortalSource] sources
     str consentPortalArn
@@ -1732,8 +1761,9 @@ struct CreateGatewayRateLimitRequest:
     list[str] dimensionKeys
     list[LimitEntry] entries
 
-# no @derive(Json): member(s) dimensionKeys: list[str], entries: list[LimitEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dimensionKeys: list[str], entries: list[LimitEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateGatewayRateLimitResponse:
     str rateLimitId
     str gatewayIdentifier
@@ -1761,8 +1791,9 @@ struct CreateGatewayRequest:
     Optional[str] exceptionLevel
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) statusReasons: list[str], protocolConfiguration: GatewayProtocolConfiguration, authorizerConfiguration: AuthorizerConfiguration, interceptorConfigurations: list[GatewayInterceptorConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[str], protocolConfiguration: GatewayProtocolConfiguration, authorizerConfiguration: AuthorizerConfiguration, interceptorConfigurations: list[GatewayInterceptorConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateGatewayResponse:
     str gatewayArn
     str gatewayId
@@ -1797,8 +1828,9 @@ struct CreateGatewayRuleRequest:
     list[Action] actions
     Optional[str] description
 
-# no @derive(Json): member(s) conditions: list[Condition], actions: list[Action] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) conditions: list[Condition], actions: list[Action] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateGatewayRuleResponse:
     str ruleId
     str gatewayArn
@@ -1823,8 +1855,9 @@ struct CreateGatewayTargetRequest:
     Optional[PrivateEndpoint] privateEndpoint
     Optional[list[CertificateConfiguration]] certificateConfigurations
 
-# no @derive(Json): member(s) statusReasons: list[str], targetConfiguration: TargetConfiguration, credentialProviderConfigurations: list[CredentialProviderConfiguration], metadataConfiguration: MetadataConfiguration, privateEndpoint: PrivateEndpoint, privateEndpointManagedResources: list[ManagedResourceDetails], certificateConfigurations: list[CertificateConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[str], targetConfiguration: TargetConfiguration, credentialProviderConfigurations: list[CredentialProviderConfiguration], metadataConfiguration: MetadataConfiguration, privateEndpoint: PrivateEndpoint, privateEndpointManagedResources: list[ManagedResourceDetails], certificateConfigurations: list[CertificateConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateGatewayTargetResponse:
     str gatewayArn
     str targetId
@@ -1881,8 +1914,9 @@ struct CreateHarnessRequest:
     Optional[int64] timeoutSeconds
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) harness: Harness not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) harness: Harness not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateHarnessResponse:
     Harness harness
 
@@ -1901,8 +1935,9 @@ struct CreateMemoryInput:
     Optional[StreamDeliveryResources] streamDeliveryResources
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) memory: Memory not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) memory: Memory not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateMemoryOutput:
     Optional[Memory] memory
 
@@ -1914,8 +1949,9 @@ struct CreateOauth2CredentialProviderRequest:
     Oauth2ProviderConfigInput oauth2ProviderConfigInput
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) oauth2ProviderConfigOutput: Oauth2ProviderConfigOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oauth2ProviderConfigOutput: Oauth2ProviderConfigOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateOauth2CredentialProviderResponse:
     Secret clientSecretArn
     Optional[str] clientSecretJsonKey
@@ -1963,8 +1999,9 @@ struct CreatePaymentConnectorRequest:
     Optional[PaymentConnectorProvisionMode] provisionMode
     Optional[str] clientToken
 
-# no @derive(Json): member(s) credentialProviderConfigurations: list[CredentialsProviderConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) credentialProviderConfigurations: list[CredentialsProviderConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePaymentConnectorResponse:
     str paymentConnectorId
     str paymentManagerId
@@ -2002,8 +2039,9 @@ struct CreatePaymentManagerRequest:
     Optional[dict[str, str]] tags
     Optional[str] kmsKeyArn
 
-# no @derive(Json): member(s) authorizerConfiguration: AuthorizerConfiguration, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizerConfiguration: AuthorizerConfiguration, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePaymentManagerResponse:
     str paymentManagerArn
     str paymentManagerId
@@ -2026,8 +2064,9 @@ struct CreatePolicyEngineRequest:
     Optional[str] encryptionKeyArn
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) statusReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePolicyEngineResponse:
     str policyEngineId
     str name
@@ -2050,8 +2089,9 @@ struct CreatePolicyRequest:
     str policyEngineId
     Optional[str] clientToken
 
-# no @derive(Json): member(s) statusReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePolicyResponse:
     str policyId
     str name
@@ -2104,28 +2144,32 @@ struct CreateWorkloadIdentityRequest:
     Optional[list[str]] allowedResourceOauth2ReturnUrls
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) allowedResourceOauth2ReturnUrls: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedResourceOauth2ReturnUrls: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateWorkloadIdentityResponse:
     str name
     str workloadIdentityArn
     Optional[list[str]] allowedResourceOauth2ReturnUrls
 
-# no @derive(Json): member(s) oauthCredentialProvider: OAuthCredentialProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oauthCredentialProvider: OAuthCredentialProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CredentialProvider:
     Optional[OAuthCredentialProvider] oauthCredentialProvider
     Optional[ApiKeyCredentialProvider] apiKeyCredentialProvider
     Optional[IamCredentialProvider] iamCredentialProvider
 
-# no @derive(Json): member(s) credentialProvider: CredentialProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) credentialProvider: CredentialProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CredentialProviderConfiguration:
     CredentialProviderType credentialProviderType
     Optional[CredentialProvider] credentialProvider
 
-# no @derive(Json): member(s) coinbaseCDP: CoinbaseCdpRotationTargets not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) coinbaseCDP: CoinbaseCdpRotationTargets not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CredentialRotationConfig:
     Optional[CoinbaseCdpRotationTargets] coinbaseCDP
 
@@ -2134,15 +2178,17 @@ struct CredentialsProviderConfiguration:
     Optional[PaymentCredentialProviderConfiguration] coinbaseCDP
     Optional[PaymentCredentialProviderConfiguration] stripePrivy
 
-# no @derive(Json): member(s) authorizingClaimMatchValue: AuthorizingClaimMatchValueType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizingClaimMatchValue: AuthorizingClaimMatchValueType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomClaimValidationType:
     str inboundTokenClaimName
     InboundTokenClaimValueType inboundTokenClaimValueType
     AuthorizingClaimMatchValueType authorizingClaimMatchValue
 
-# no @derive(Json): member(s) episodicOverride: EpisodicOverrideConfigurationInput, selfManagedConfiguration: SelfManagedConfigurationInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) episodicOverride: EpisodicOverrideConfigurationInput, selfManagedConfiguration: SelfManagedConfigurationInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomConfigurationInput:
     Optional[SemanticOverrideConfigurationInput] semanticOverride
     Optional[SummaryOverrideConfigurationInput] summaryOverride
@@ -2180,8 +2226,9 @@ struct CustomExtractionConfigurationInput:
     Optional[UserPreferenceOverrideExtractionConfigurationInput] userPreferenceExtractionOverride
     Optional[EpisodicOverrideExtractionConfigurationInput] episodicExtractionOverride
 
-# no @derive(Json): member(s) allowedAudience: list[str], allowedClients: list[str], allowedScopes: list[str], advertisedScopeMapping: dict[str, str], customClaims: list[CustomClaimValidationType], privateEndpoint: PrivateEndpoint, privateEndpointOverrides: list[PrivateEndpointOverride], allowedWorkloadConfiguration: AllowedWorkloadConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedAudience: list[str], allowedClients: list[str], allowedScopes: list[str], advertisedScopeMapping: dict[str, str], customClaims: list[CustomClaimValidationType], privateEndpoint: PrivateEndpoint, privateEndpointOverrides: list[PrivateEndpointOverride], allowedWorkloadConfiguration: AllowedWorkloadConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomJWTAuthorizerConfiguration:
     str discoveryUrl
     Optional[list[str]] allowedAudience
@@ -2193,8 +2240,9 @@ struct CustomJWTAuthorizerConfiguration:
     Optional[list[PrivateEndpointOverride]] privateEndpointOverrides
     Optional[AllowedWorkloadConfiguration] allowedWorkloadConfiguration
 
-# no @derive(Json): member(s) namespaces: list[str], namespaceTemplates: list[str], configuration: CustomConfigurationInput, memoryRecordSchema: MemoryRecordSchema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespaces: list[str], namespaceTemplates: list[str], configuration: CustomConfigurationInput, memoryRecordSchema: MemoryRecordSchema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomMemoryStrategyInput:
     str name
     Optional[str] description
@@ -2204,8 +2252,9 @@ struct CustomMemoryStrategyInput:
     Optional[MemoryRecordSchema] memoryRecordSchema
     Optional[RecordExpirySpecification] recordExpirySpecification
 
-# no @derive(Json): member(s) oauthDiscovery: Oauth2Discovery, onBehalfOfTokenExchangeConfig: OnBehalfOfTokenExchangeConfigType, privateKeyJwtConfig: PrivateKeyJwtConfig, privateEndpoint: PrivateEndpoint, privateEndpointOverrides: list[PrivateEndpointOverride] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oauthDiscovery: Oauth2Discovery, onBehalfOfTokenExchangeConfig: OnBehalfOfTokenExchangeConfigType, privateKeyJwtConfig: PrivateKeyJwtConfig, privateEndpoint: PrivateEndpoint, privateEndpointOverrides: list[PrivateEndpointOverride] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomOauth2ProviderConfigInput:
     Oauth2Discovery oauthDiscovery
     Optional[str] clientId
@@ -2218,8 +2267,9 @@ struct CustomOauth2ProviderConfigInput:
     Optional[PrivateEndpoint] privateEndpoint
     Optional[list[PrivateEndpointOverride]] privateEndpointOverrides
 
-# no @derive(Json): member(s) oauthDiscovery: Oauth2Discovery, onBehalfOfTokenExchangeConfig: OnBehalfOfTokenExchangeConfigType, privateEndpoint: PrivateEndpoint, privateEndpointOverrides: list[PrivateEndpointOverride], privateKeyJwtConfig: PrivateKeyJwtConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oauthDiscovery: Oauth2Discovery, onBehalfOfTokenExchangeConfig: OnBehalfOfTokenExchangeConfigType, privateEndpoint: PrivateEndpoint, privateEndpointOverrides: list[PrivateEndpointOverride], privateKeyJwtConfig: PrivateKeyJwtConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomOauth2ProviderConfigOutput:
     Oauth2Discovery oauthDiscovery
     Optional[str] clientId
@@ -2229,13 +2279,15 @@ struct CustomOauth2ProviderConfigOutput:
     Optional[list[PrivateEndpointOverride]] privateEndpointOverrides
     Optional[PrivateKeyJwtConfig] privateKeyJwtConfig
 
-# no @derive(Json): member(s) episodicReflectionOverride: EpisodicReflectionOverride not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) episodicReflectionOverride: EpisodicReflectionOverride not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomReflectionConfiguration:
     Optional[EpisodicReflectionOverride] episodicReflectionOverride
 
-# no @derive(Json): member(s) episodicReflectionOverride: EpisodicOverrideReflectionConfigurationInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) episodicReflectionOverride: EpisodicOverrideReflectionConfigurationInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CustomReflectionConfigurationInput:
     Optional[EpisodicOverrideReflectionConfigurationInput] episodicReflectionOverride
 
@@ -2244,13 +2296,15 @@ struct CustomTransformConfiguration:
     # wire name "lambda" differs from field; derive rename is a #346 follow-up
     Optional[LambdaTransformConfiguration] lambda_
 
-# no @derive(Json): member(s) cloudWatchLogs: CloudWatchLogsInputConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) cloudWatchLogs: CloudWatchLogsInputConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSourceConfig:
     Optional[CloudWatchLogsInputConfig] cloudWatchLogs
 
-# no @derive(Json): member(s) inlineExamples: InlineExamplesSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inlineExamples: InlineExamplesSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataSourceType:
     Optional[InlineExamplesSource] inlineExamples
     Optional[S3Source] s3Source
@@ -2444,8 +2498,9 @@ struct DeleteGatewayRateLimitResponse:
 struct DeleteGatewayRequest:
     str gatewayIdentifier
 
-# no @derive(Json): member(s) statusReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteGatewayResponse:
     str gatewayId
     GatewayStatus status
@@ -2468,8 +2523,9 @@ struct DeleteGatewayTargetRequest:
     str gatewayIdentifier
     str targetId
 
-# no @derive(Json): member(s) statusReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteGatewayTargetResponse:
     str gatewayArn
     str targetId
@@ -2494,8 +2550,9 @@ struct DeleteHarnessRequest:
     Optional[str] clientToken
     Optional[bool] deleteManagedMemory
 
-# no @derive(Json): member(s) harness: Harness not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) harness: Harness not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteHarnessResponse:
     Optional[Harness] harness
 
@@ -2573,8 +2630,9 @@ struct DeletePaymentManagerResponse:
 struct DeletePolicyEngineRequest:
     str policyEngineId
 
-# no @derive(Json): member(s) statusReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeletePolicyEngineResponse:
     str policyEngineId
     str name
@@ -2592,8 +2650,9 @@ struct DeletePolicyRequest:
     str policyEngineId
     str policyId
 
-# no @derive(Json): member(s) statusReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeletePolicyResponse:
     str policyId
     str name
@@ -2647,8 +2706,9 @@ struct DeleteWorkloadIdentityResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) modelConfig: EvaluatorModelConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) modelConfig: EvaluatorModelConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DerivedEvaluatorConfig:
     str baseEvaluatorId
     EvaluatorModelConfig modelConfig
@@ -2660,8 +2720,9 @@ struct Descriptors:
     Optional[CustomDescriptor] custom
     Optional[AgentSkillsDescriptor] agentSkills
 
-# no @derive(Json): member(s) numerical: list[NumericalScaleDefinition], categorical: list[CategoricalScaleDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) numerical: list[NumericalScaleDefinition], categorical: list[CategoricalScaleDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DimensionRatingScale:
     Optional[list[NumericalScaleDefinition]] numerical
     Optional[list[CategoricalScaleDefinition]] categorical
@@ -2682,8 +2743,9 @@ struct EbsVolumeConfiguration:
     Optional[str] kmsKeyId
     Optional[str] snapshotId
 
-# no @derive(Json): member(s) launchTemplateSource: LaunchTemplateSource, vpcConfiguration: VpcConfiguration, volumes: list[VolumeConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) launchTemplateSource: LaunchTemplateSource, vpcConfiguration: VpcConfiguration, volumes: list[VolumeConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Ec2Configuration:
     LaunchTemplateSource launchTemplateSource
     VpcConfiguration vpcConfiguration
@@ -2734,8 +2796,9 @@ struct EpisodicExtractionOverride:
     str appendToPrompt
     str modelId
 
-# no @derive(Json): member(s) namespaces: list[str], namespaceTemplates: list[str], reflectionConfiguration: EpisodicReflectionConfigurationInput, memoryRecordSchema: MemoryRecordSchema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespaces: list[str], namespaceTemplates: list[str], reflectionConfiguration: EpisodicReflectionConfigurationInput, memoryRecordSchema: MemoryRecordSchema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EpisodicMemoryStrategyInput:
     str name
     Optional[str] description
@@ -2745,8 +2808,9 @@ struct EpisodicMemoryStrategyInput:
     Optional[MemoryRecordSchema] memoryRecordSchema
     Optional[RecordExpirySpecification] recordExpirySpecification
 
-# no @derive(Json): member(s) reflection: EpisodicOverrideReflectionConfigurationInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reflection: EpisodicOverrideReflectionConfigurationInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EpisodicOverrideConfigurationInput:
     Optional[EpisodicOverrideExtractionConfigurationInput] extraction
     Optional[EpisodicOverrideConsolidationConfigurationInput] consolidation
@@ -2762,8 +2826,9 @@ struct EpisodicOverrideExtractionConfigurationInput:
     str appendToPrompt
     str modelId
 
-# no @derive(Json): member(s) namespaces: list[str], namespaceTemplates: list[str], memoryRecordSchema: MemoryRecordSchema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespaces: list[str], namespaceTemplates: list[str], memoryRecordSchema: MemoryRecordSchema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EpisodicOverrideReflectionConfigurationInput:
     str appendToPrompt
     str modelId
@@ -2771,22 +2836,25 @@ struct EpisodicOverrideReflectionConfigurationInput:
     Optional[list[str]] namespaceTemplates
     Optional[MemoryRecordSchema] memoryRecordSchema
 
-# no @derive(Json): member(s) namespaces: list[str], namespaceTemplates: list[str], memoryRecordSchema: MemoryRecordSchema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespaces: list[str], namespaceTemplates: list[str], memoryRecordSchema: MemoryRecordSchema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EpisodicReflectionConfiguration:
     Optional[list[str]] namespaces
     Optional[list[str]] namespaceTemplates
     Optional[MemoryRecordSchema] memoryRecordSchema
 
-# no @derive(Json): member(s) namespaces: list[str], namespaceTemplates: list[str], memoryRecordSchema: MemoryRecordSchema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespaces: list[str], namespaceTemplates: list[str], memoryRecordSchema: MemoryRecordSchema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EpisodicReflectionConfigurationInput:
     Optional[list[str]] namespaces
     Optional[list[str]] namespaceTemplates
     Optional[MemoryRecordSchema] memoryRecordSchema
 
-# no @derive(Json): member(s) namespaces: list[str], namespaceTemplates: list[str], memoryRecordSchema: MemoryRecordSchema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespaces: list[str], namespaceTemplates: list[str], memoryRecordSchema: MemoryRecordSchema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EpisodicReflectionOverride:
     str appendToPrompt
     str modelId
@@ -2794,22 +2862,25 @@ struct EpisodicReflectionOverride:
     Optional[list[str]] namespaceTemplates
     Optional[MemoryRecordSchema] memoryRecordSchema
 
-# no @derive(Json): member(s) dimensionRatingScale: DimensionRatingScale not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dimensionRatingScale: DimensionRatingScale not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluationDimension:
     str dimensionName
     str dimensionInstruction
     DimensionRatingScale dimensionRatingScale
 
-# no @derive(Json): member(s) llmAsAJudge: LlmAsAJudgeEvaluatorConfig, derived: DerivedEvaluatorConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) llmAsAJudge: LlmAsAJudgeEvaluatorConfig, derived: DerivedEvaluatorConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluatorConfig:
     Optional[LlmAsAJudgeEvaluatorConfig] llmAsAJudge
     Optional[CodeBasedEvaluatorConfig] codeBased
     Optional[DerivedEvaluatorConfig] derived
 
-# no @derive(Json): member(s) bedrockEvaluatorModelConfig: BedrockEvaluatorModelConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bedrockEvaluatorModelConfig: BedrockEvaluatorModelConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluatorModelConfig:
     Optional[BedrockEvaluatorModelConfig] bedrockEvaluatorModelConfig
     Optional[OpenResponsesEvaluatorModelConfig] responsesEvaluatorModelConfig
@@ -2833,8 +2904,9 @@ struct EvaluatorSummary:
     Optional[bool] lockedForModification
     Optional[str] kmsKeyArn
 
-# no @derive(Json): member(s) llmExtractionConfig: LlmExtractionConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) llmExtractionConfig: LlmExtractionConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExtractionConfig:
     Optional[LlmExtractionConfig] llmExtractionConfig
 
@@ -2842,24 +2914,27 @@ struct ExtractionConfig:
 struct ExtractionConfiguration:
     Optional[CustomExtractionConfiguration] customExtractionConfiguration
 
-# no @derive(Json): member(s) triggerOn: FallbackTriggers, targetFallback: list[FallbackTarget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) triggerOn: FallbackTriggers, targetFallback: list[FallbackTarget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Fallback:
     Optional[FallbackTriggers] triggerOn
     Optional[int64] firstByteTimeoutMilliseconds
     Optional[CircuitBreakerConfiguration] circuitBreaker
     list[FallbackTarget] targetFallback
 
-# no @derive(Json): member(s) triggerOn: FallbackTriggers not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) triggerOn: FallbackTriggers not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FallbackTarget:
     str targetName
     Optional[str] model
     Optional[FallbackTriggers] triggerOn
     Optional[int64] firstByteTimeoutMilliseconds
 
-# no @derive(Json): member(s) statusCodes: list[str], errors: list[FallbackError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusCodes: list[str], errors: list[FallbackError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FallbackTriggers:
     Optional[list[str]] statusCodes
     Optional[list[FallbackError]] errors
@@ -2888,14 +2963,16 @@ struct Finding:
     Optional[FindingType] type
     Optional[str] description
 
-# no @derive(Json): member(s) credentialProviderConfigurations: list[RegistryRecordCredentialProviderConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) credentialProviderConfigurations: list[RegistryRecordCredentialProviderConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FromUrlSynchronizationConfiguration:
     str url
     Optional[list[RegistryRecordCredentialProviderConfiguration]] credentialProviderConfigurations
 
-# no @derive(Json): member(s) interceptionPoints: list[GatewayInterceptionPoint], inputConfiguration: InterceptorInputConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) interceptionPoints: list[GatewayInterceptionPoint], inputConfiguration: InterceptorInputConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayInterceptorConfiguration:
     InterceptorConfiguration interceptor
     list[GatewayInterceptionPoint] interceptionPoints
@@ -2906,13 +2983,15 @@ struct GatewayPolicyEngineConfiguration:
     str arn
     GatewayPolicyEngineMode mode
 
-# no @derive(Json): member(s) mcp: MCPGatewayConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mcp: MCPGatewayConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayProtocolConfiguration:
     Optional[MCPGatewayConfiguration] mcp
 
-# no @derive(Json): member(s) dimensionKeys: list[str], entries: list[LimitEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dimensionKeys: list[str], entries: list[LimitEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayRateLimitDetail:
     str rateLimitId
     str gatewayIdentifier
@@ -2923,8 +3002,9 @@ struct GatewayRateLimitDetail:
     DateTime createdAt
     DateTime updatedAt
 
-# no @derive(Json): member(s) conditions: list[Condition], actions: list[Action] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) conditions: list[Condition], actions: list[Action] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayRuleDetail:
     str ruleId
     str gatewayArn
@@ -2950,8 +3030,9 @@ struct GatewaySummary:
     AuthorizerType authorizerType
     Optional[str] protocolType
 
-# no @derive(Json): member(s) statusReasons: list[str], targetConfiguration: TargetConfiguration, credentialProviderConfigurations: list[CredentialProviderConfiguration], metadataConfiguration: MetadataConfiguration, privateEndpoint: PrivateEndpoint, privateEndpointManagedResources: list[ManagedResourceDetails], certificateConfigurations: list[CertificateConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[str], targetConfiguration: TargetConfiguration, credentialProviderConfigurations: list[CredentialProviderConfiguration], metadataConfiguration: MetadataConfiguration, privateEndpoint: PrivateEndpoint, privateEndpointManagedResources: list[ManagedResourceDetails], certificateConfigurations: list[CertificateConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewayTarget:
     str gatewayArn
     str targetId
@@ -2999,8 +3080,9 @@ struct GetAgentRuntimeRequest:
     str agentRuntimeId
     Optional[str] agentRuntimeVersion
 
-# no @derive(Json): member(s) networkConfiguration: NetworkConfiguration, agentRuntimeArtifact: AgentRuntimeArtifact, environmentVariables: dict[str, str], authorizerConfiguration: AuthorizerConfiguration, requestHeaderConfiguration: RequestHeaderConfiguration, filesystemConfigurations: list[FilesystemConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkConfiguration: NetworkConfiguration, agentRuntimeArtifact: AgentRuntimeArtifact, environmentVariables: dict[str, str], authorizerConfiguration: AuthorizerConfiguration, requestHeaderConfiguration: RequestHeaderConfiguration, filesystemConfigurations: list[FilesystemConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAgentRuntimeResponse:
     str agentRuntimeArn
     str agentRuntimeName
@@ -3066,8 +3148,9 @@ struct GetBrowserProfileResponse:
 struct GetBrowserRequest:
     str browserId
 
-# no @derive(Json): member(s) networkConfiguration: BrowserNetworkConfiguration, enterprisePolicies: list[BrowserEnterprisePolicy], certificates: list[Certificate], filesystemConfigurations: list[ToolsFileSystemConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkConfiguration: BrowserNetworkConfiguration, enterprisePolicies: list[BrowserEnterprisePolicy], certificates: list[Certificate], filesystemConfigurations: list[ToolsFileSystemConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBrowserResponse:
     str browserId
     str browserArn
@@ -3090,8 +3173,9 @@ struct GetBrowserResponse:
 struct GetCapacityProviderInput:
     str capacityProviderId
 
-# no @derive(Json): member(s) computeConfiguration: ComputeConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) computeConfiguration: ComputeConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCapacityProviderOutput:
     str capacityProviderId
     str capacityProviderArn
@@ -3110,8 +3194,9 @@ struct GetCapacityProviderOutput:
 struct GetCodeInterpreterRequest:
     str codeInterpreterId
 
-# no @derive(Json): member(s) networkConfiguration: CodeInterpreterNetworkConfiguration, certificates: list[Certificate], filesystemConfigurations: list[ToolsFileSystemConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkConfiguration: CodeInterpreterNetworkConfiguration, certificates: list[Certificate], filesystemConfigurations: list[ToolsFileSystemConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCodeInterpreterResponse:
     str codeInterpreterId
     str codeInterpreterArn
@@ -3132,8 +3217,9 @@ struct GetConfigurationBundleRequest:
     str bundleId
     Optional[str] branchName
 
-# no @derive(Json): member(s) components: dict[str, ComponentConfiguration], lineageMetadata: VersionLineageMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) components: dict[str, ComponentConfiguration], lineageMetadata: VersionLineageMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConfigurationBundleResponse:
     str bundleArn
     str bundleId
@@ -3152,8 +3238,9 @@ struct GetConfigurationBundleVersionRequest:
     str bundleId
     str versionId
 
-# no @derive(Json): member(s) components: dict[str, ComponentConfiguration], lineageMetadata: VersionLineageMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) components: dict[str, ComponentConfiguration], lineageMetadata: VersionLineageMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConfigurationBundleVersionResponse:
     str bundleArn
     str bundleId
@@ -3171,8 +3258,9 @@ struct GetConfigurationBundleVersionResponse:
 struct GetConsentPortalRequest:
     str consentPortalIdentifier
 
-# no @derive(Json): member(s) sources: list[ConsentPortalSource], idpConfig: ConsentPortalIdpConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sources: list[ConsentPortalSource], idpConfig: ConsentPortalIdpConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConsentPortalResponse:
     list[ConsentPortalSource] sources
     str consentPortalArn
@@ -3193,8 +3281,9 @@ struct GetDatasetRequest:
     str datasetId
     Optional[str] datasetVersion
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDatasetResponse:
     str datasetArn
     str datasetId
@@ -3220,8 +3309,9 @@ struct GetEvaluatorRequest:
     # wire string of the IncludedData enum (querystring binding)
     Optional[str] includedData
 
-# no @derive(Json): member(s) evaluatorConfig: EvaluatorConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) evaluatorConfig: EvaluatorConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetEvaluatorResponse:
     str evaluatorArn
     str evaluatorId
@@ -3243,8 +3333,9 @@ struct GetGatewayRateLimitRequest:
     str gatewayIdentifier
     str rateLimitId
 
-# no @derive(Json): member(s) dimensionKeys: list[str], entries: list[LimitEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dimensionKeys: list[str], entries: list[LimitEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetGatewayRateLimitResponse:
     str rateLimitId
     str gatewayIdentifier
@@ -3260,8 +3351,9 @@ struct GetGatewayRateLimitResponse:
 struct GetGatewayRequest:
     str gatewayIdentifier
 
-# no @derive(Json): member(s) statusReasons: list[str], protocolConfiguration: GatewayProtocolConfiguration, authorizerConfiguration: AuthorizerConfiguration, interceptorConfigurations: list[GatewayInterceptorConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[str], protocolConfiguration: GatewayProtocolConfiguration, authorizerConfiguration: AuthorizerConfiguration, interceptorConfigurations: list[GatewayInterceptorConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetGatewayResponse:
     str gatewayArn
     str gatewayId
@@ -3292,8 +3384,9 @@ struct GetGatewayRuleRequest:
     str gatewayIdentifier
     str ruleId
 
-# no @derive(Json): member(s) conditions: list[Condition], actions: list[Action] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) conditions: list[Condition], actions: list[Action] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetGatewayRuleResponse:
     str ruleId
     str gatewayArn
@@ -3312,8 +3405,9 @@ struct GetGatewayTargetRequest:
     str gatewayIdentifier
     str targetId
 
-# no @derive(Json): member(s) statusReasons: list[str], targetConfiguration: TargetConfiguration, credentialProviderConfigurations: list[CredentialProviderConfiguration], metadataConfiguration: MetadataConfiguration, privateEndpoint: PrivateEndpoint, privateEndpointManagedResources: list[ManagedResourceDetails], certificateConfigurations: list[CertificateConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[str], targetConfiguration: TargetConfiguration, credentialProviderConfigurations: list[CredentialProviderConfiguration], metadataConfiguration: MetadataConfiguration, privateEndpoint: PrivateEndpoint, privateEndpointManagedResources: list[ManagedResourceDetails], certificateConfigurations: list[CertificateConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetGatewayTargetResponse:
     str gatewayArn
     str targetId
@@ -3349,8 +3443,9 @@ struct GetHarnessRequest:
     str harnessId
     Optional[str] harnessVersion
 
-# no @derive(Json): member(s) harness: Harness not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) harness: Harness not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetHarnessResponse:
     Harness harness
 
@@ -3361,8 +3456,9 @@ struct GetMemoryInput:
     # wire string of the MemoryView enum (querystring binding)
     Optional[str] view
 
-# no @derive(Json): member(s) memory: Memory not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) memory: Memory not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMemoryOutput:
     Memory memory
 
@@ -3371,8 +3467,9 @@ struct GetMemoryOutput:
 struct GetOauth2CredentialProviderRequest:
     str name
 
-# no @derive(Json): member(s) oauth2ProviderConfigOutput: Oauth2ProviderConfigOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oauth2ProviderConfigOutput: Oauth2ProviderConfigOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOauth2CredentialProviderResponse:
     Secret clientSecretArn
     Optional[str] clientSecretJsonKey
@@ -3392,8 +3489,9 @@ struct GetOauth2CredentialProviderResponse:
 struct GetOnlineEvaluationConfigRequest:
     str onlineEvaluationConfigId
 
-# no @derive(Json): member(s) rule: Rule, dataSourceConfig: DataSourceConfig, evaluators: list[EvaluatorReference], insights: list[Insight], clusteringConfig: ClusteringConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rule: Rule, dataSourceConfig: DataSourceConfig, evaluators: list[EvaluatorReference], insights: list[Insight], clusteringConfig: ClusteringConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOnlineEvaluationConfigResponse:
     str onlineEvaluationConfigArn
     str onlineEvaluationConfigId
@@ -3418,8 +3516,9 @@ struct GetPaymentConnectorRequest:
     str paymentManagerId
     str paymentConnectorId
 
-# no @derive(Json): member(s) credentialProviderConfigurations: list[CredentialsProviderConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) credentialProviderConfigurations: list[CredentialsProviderConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPaymentConnectorResponse:
     str paymentConnectorId
     str name
@@ -3438,8 +3537,9 @@ struct GetPaymentConnectorResponse:
 struct GetPaymentCredentialProviderRequest:
     str name
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPaymentCredentialProviderResponse:
     str name
     str credentialProviderArn
@@ -3454,8 +3554,9 @@ struct GetPaymentCredentialProviderResponse:
 struct GetPaymentManagerRequest:
     str paymentManagerId
 
-# no @derive(Json): member(s) authorizerConfiguration: AuthorizerConfiguration, tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizerConfiguration: AuthorizerConfiguration, tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPaymentManagerResponse:
     str paymentManagerArn
     str paymentManagerId
@@ -3476,8 +3577,9 @@ struct GetPaymentManagerResponse:
 struct GetPolicyEngineRequest:
     str policyEngineId
 
-# no @derive(Json): member(s) statusReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPolicyEngineResponse:
     str policyEngineId
     str name
@@ -3512,8 +3614,9 @@ struct GetPolicyGenerationRequest:
     str policyGenerationId
     str policyEngineId
 
-# no @derive(Json): member(s) statusReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPolicyGenerationResponse:
     str policyEngineId
     str policyGenerationId
@@ -3552,8 +3655,9 @@ struct GetPolicyRequest:
     str policyEngineId
     str policyId
 
-# no @derive(Json): member(s) statusReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPolicyResponse:
     str policyId
     str name
@@ -3592,8 +3696,9 @@ struct GetRegistryRecordRequest:
     str registryId
     str recordId
 
-# no @derive(Json): member(s) synchronizationConfiguration: SynchronizationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) synchronizationConfiguration: SynchronizationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRegistryRecordResponse:
     str registryArn
     str recordArn
@@ -3615,8 +3720,9 @@ struct GetRegistryRecordResponse:
 struct GetRegistryRequest:
     str registryId
 
-# no @derive(Json): member(s) authorizerConfiguration: AuthorizerConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizerConfiguration: AuthorizerConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRegistryResponse:
     str name
     Optional[str] description
@@ -3655,8 +3761,9 @@ struct GetTokenVaultResponse:
 struct GetWorkloadIdentityRequest:
     str name
 
-# no @derive(Json): member(s) allowedResourceOauth2ReturnUrls: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedResourceOauth2ReturnUrls: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWorkloadIdentityResponse:
     str name
     str workloadIdentityArn
@@ -3671,8 +3778,9 @@ struct GithubOauth2ProviderConfigInput:
     Optional[SecretReference] clientSecretConfig
     Optional[SecretSourceType] clientSecretSource
 
-# no @derive(Json): member(s) oauthDiscovery: Oauth2Discovery not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oauthDiscovery: Oauth2Discovery not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GithubOauth2ProviderConfigOutput:
     Oauth2Discovery oauthDiscovery
     Optional[str] clientId
@@ -3684,14 +3792,16 @@ struct GoogleOauth2ProviderConfigInput:
     Optional[SecretReference] clientSecretConfig
     Optional[SecretSourceType] clientSecretSource
 
-# no @derive(Json): member(s) oauthDiscovery: Oauth2Discovery not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oauthDiscovery: Oauth2Discovery not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GoogleOauth2ProviderConfigOutput:
     Oauth2Discovery oauthDiscovery
     Optional[str] clientId
 
-# no @derive(Json): member(s) systemPrompt: list[HarnessSystemContentBlock], tools: list[HarnessTool], skills: list[HarnessSkill], allowedTools: list[str], environment: HarnessEnvironmentProvider, environmentVariables: dict[str, str], authorizerConfiguration: AuthorizerConfiguration, memory: HarnessMemoryConfiguration, hooks: list[HarnessHook] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) systemPrompt: list[HarnessSystemContentBlock], tools: list[HarnessTool], skills: list[HarnessSkill], allowedTools: list[str], environment: HarnessEnvironmentProvider, environmentVariables: dict[str, str], authorizerConfiguration: AuthorizerConfiguration, memory: HarnessMemoryConfiguration, hooks: list[HarnessHook] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Harness:
     str harnessId
     str harnessName
@@ -3736,14 +3846,16 @@ struct HarnessAgentCoreBrowserConfig:
 struct HarnessAgentCoreCodeInterpreterConfig:
     Optional[str] codeInterpreterArn
 
-# no @derive(Json): member(s) outboundAuth: HarnessGatewayOutboundAuth not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) outboundAuth: HarnessGatewayOutboundAuth not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessAgentCoreGatewayConfig:
     str gatewayArn
     Optional[HarnessGatewayOutboundAuth] outboundAuth
 
-# no @derive(Json): member(s) retrievalConfig: dict[str, HarnessAgentCoreMemoryRetrievalConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) retrievalConfig: dict[str, HarnessAgentCoreMemoryRetrievalConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessAgentCoreMemoryConfiguration:
     str arn
     Optional[str] actorId
@@ -3756,8 +3868,9 @@ struct HarnessAgentCoreMemoryRetrievalConfig:
     Optional[float64] relevanceScore
     Optional[str] strategyId
 
-# no @derive(Json): member(s) networkConfiguration: NetworkConfiguration, filesystemConfigurations: list[FilesystemConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkConfiguration: NetworkConfiguration, filesystemConfigurations: list[FilesystemConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessAgentCoreRuntimeEnvironment:
     str agentRuntimeArn
     str agentRuntimeName
@@ -3766,8 +3879,9 @@ struct HarnessAgentCoreRuntimeEnvironment:
     NetworkConfiguration networkConfiguration
     Optional[list[FilesystemConfiguration]] filesystemConfigurations
 
-# no @derive(Json): member(s) networkConfiguration: NetworkConfiguration, filesystemConfigurations: list[FilesystemConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkConfiguration: NetworkConfiguration, filesystemConfigurations: list[FilesystemConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessAgentCoreRuntimeEnvironmentRequest:
     Optional[LifecycleConfiguration] lifecycleConfiguration
     Optional[NetworkConfiguration] networkConfiguration
@@ -3817,18 +3931,21 @@ struct HarnessEndpoint:
 struct HarnessEnvironmentArtifact:
     Optional[ContainerConfiguration] containerConfiguration
 
-# no @derive(Json): member(s) agentCoreRuntimeEnvironment: HarnessAgentCoreRuntimeEnvironment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentCoreRuntimeEnvironment: HarnessAgentCoreRuntimeEnvironment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessEnvironmentProvider:
     Optional[HarnessAgentCoreRuntimeEnvironment] agentCoreRuntimeEnvironment
 
-# no @derive(Json): member(s) agentCoreRuntimeEnvironment: HarnessAgentCoreRuntimeEnvironmentRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentCoreRuntimeEnvironment: HarnessAgentCoreRuntimeEnvironmentRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessEnvironmentProviderRequest:
     Optional[HarnessAgentCoreRuntimeEnvironmentRequest] agentCoreRuntimeEnvironment
 
-# no @derive(Json): member(s) oauth: OAuthCredentialProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oauth: OAuthCredentialProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessGatewayOutboundAuth:
     Optional[Unit] awsIam
     Optional[Unit] none
@@ -3887,16 +4004,18 @@ struct HarnessLiteLlmModelConfig:
     Optional[float64] topP
     Optional[Document] additionalParams
 
-# no @derive(Json): member(s) strategies: list[HarnessManagedMemoryStrategyType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) strategies: list[HarnessManagedMemoryStrategyType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessManagedMemoryConfiguration:
     Optional[str] arn
     Optional[list[HarnessManagedMemoryStrategyType]] strategies
     Optional[int64] eventExpiryDuration
     Optional[str] encryptionKeyArn
 
-# no @derive(Json): member(s) agentCoreMemoryConfiguration: HarnessAgentCoreMemoryConfiguration, managedMemoryConfiguration: HarnessManagedMemoryConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentCoreMemoryConfiguration: HarnessAgentCoreMemoryConfiguration, managedMemoryConfiguration: HarnessManagedMemoryConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessMemoryConfiguration:
     Optional[HarnessAgentCoreMemoryConfiguration] agentCoreMemoryConfiguration
     Optional[HarnessManagedMemoryConfiguration] managedMemoryConfiguration
@@ -3920,22 +4039,25 @@ struct HarnessOpenAiModelConfig:
     Optional[HarnessOpenAiApiFormat] apiFormat
     Optional[Document] additionalParams
 
-# no @derive(Json): member(s) headers: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) headers: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessRemoteMcpConfig:
     str url
     Optional[dict[str, str]] headers
 
-# no @derive(Json): member(s) awsSkills: HarnessSkillAwsSkillsSource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) awsSkills: HarnessSkillAwsSkillsSource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessSkill:
     Optional[str] path
     Optional[HarnessSkillS3Source] s3
     Optional[HarnessSkillGitSource] git
     Optional[HarnessSkillAwsSkillsSource] awsSkills
 
-# no @derive(Json): member(s) paths: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) paths: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessSkillAwsSkillsSource:
     Optional[list[str]] paths
 
@@ -3980,15 +4102,17 @@ struct HarnessSummary:
 struct HarnessSystemContentBlock:
     Optional[str] text
 
-# no @derive(Json): member(s) config: HarnessToolConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) config: HarnessToolConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessTool:
     HarnessToolType type
     Optional[str] name
     Optional[HarnessToolConfiguration] config
 
-# no @derive(Json): member(s) remoteMcp: HarnessRemoteMcpConfig, agentCoreGateway: HarnessAgentCoreGatewayConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) remoteMcp: HarnessRemoteMcpConfig, agentCoreGateway: HarnessAgentCoreGatewayConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HarnessToolConfiguration:
     Optional[HarnessRemoteMcpConfig] remoteMcp
     Optional[HarnessAgentCoreBrowserConfig] agentCoreBrowser
@@ -4031,14 +4155,16 @@ struct HttpApiSchemaConfiguration:
 struct HttpConnectorSource:
     str connectorId
 
-# no @derive(Json): member(s) parameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HttpConnectorTargetConfiguration:
     HttpConnectorSource source
     Optional[dict[str, str]] parameters
 
-# no @derive(Json): member(s) passthrough: PassthroughTargetConfiguration, connector: HttpConnectorTargetConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) passthrough: PassthroughTargetConfiguration, connector: HttpConnectorTargetConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct HttpTargetConfiguration:
     Optional[RuntimeTargetConfiguration] agentcoreRuntime
     Optional[PassthroughTargetConfiguration] passthrough
@@ -4064,8 +4190,9 @@ struct IncludedOauth2ProviderConfigInput:
     Optional[str] authorizationEndpoint
     Optional[str] tokenEndpoint
 
-# no @derive(Json): member(s) oauthDiscovery: Oauth2Discovery not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oauthDiscovery: Oauth2Discovery not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct IncludedOauth2ProviderConfigOutput:
     Oauth2Discovery oauthDiscovery
     Optional[str] clientId
@@ -4075,8 +4202,9 @@ struct IndexedKey:
     str key
     MetadataValueType type
 
-# no @derive(Json): member(s) stopSequences: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stopSequences: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InferenceConfiguration:
     Optional[int64] maxTokens
     Optional[float64] temperature
@@ -4091,28 +4219,32 @@ struct InferenceConnectorSource:
 struct InferenceConnectorTargetConfiguration:
     InferenceConnectorSource source
 
-# no @derive(Json): member(s) models: list[ModelEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) models: list[ModelEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InferenceOperationConfiguration:
     str path
     Optional[str] providerPath
     Optional[list[ModelEntry]] models
 
-# no @derive(Json): member(s) operations: list[InferenceOperationConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) operations: list[InferenceOperationConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InferenceProviderTargetConfiguration:
     str endpoint
     Optional[ModelMapping] modelMapping
     Optional[list[InferenceOperationConfiguration]] operations
 
-# no @derive(Json): member(s) provider: InferenceProviderTargetConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) provider: InferenceProviderTargetConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InferenceTargetConfiguration:
     Optional[InferenceConnectorTargetConfiguration] connector
     Optional[InferenceProviderTargetConfiguration] provider
 
-# no @derive(Json): member(s) examples: list[SensitiveJson] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) examples: list[SensitiveJson] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InlineExamplesSource:
     list[SensitiveJson] examples
 
@@ -4125,8 +4257,9 @@ struct InstanceLifecycleConfiguration:
     Optional[int64] idleInstanceTimeout
     Optional[int64] maxLifetime
 
-# no @derive(Json): member(s) allowedInstanceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedInstanceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InstanceRequirements:
     list[str] allowedInstanceTypes
 
@@ -4135,8 +4268,9 @@ struct InterceptorConfiguration:
     # wire name "lambda" differs from field; derive rename is a #346 follow-up
     Optional[LambdaInterceptorConfiguration] lambda_
 
-# no @derive(Json): member(s) payloadFilter: InterceptorPayloadFilter not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) payloadFilter: InterceptorPayloadFilter not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InterceptorInputConfiguration:
     bool passRequestHeaders
     Optional[InterceptorPayloadFilter] payloadFilter
@@ -4145,8 +4279,9 @@ struct InterceptorInputConfiguration:
 struct InterceptorPayloadExclusionSelector:
     Optional[str] field
 
-# no @derive(Json): member(s) exclude: list[InterceptorPayloadExclusionSelector] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exclude: list[InterceptorPayloadExclusionSelector] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InterceptorPayloadFilter:
     list[InterceptorPayloadExclusionSelector] exclude
 
@@ -4164,8 +4299,9 @@ struct InvocationConfigurationInput:
     str topicArn
     str payloadDeliveryBucketName
 
-# no @derive(Json): member(s) contentConfigurations: list[ContentConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) contentConfigurations: list[ContentConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct KinesisResource:
     str dataStreamArn
     list[ContentConfiguration] contentConfigurations
@@ -4192,8 +4328,9 @@ struct LambdaInterceptorConfiguration:
 struct LambdaTransformConfiguration:
     Optional[str] arn
 
-# no @derive(Json): member(s) instanceRequirements: InstanceRequirements, ephemeralVolumes: list[EphemeralBlockDeviceMapping], licenseSpecifications: list[LicenseSpecification], propagatedTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) instanceRequirements: InstanceRequirements, ephemeralVolumes: list[EphemeralBlockDeviceMapping], licenseSpecifications: list[LicenseSpecification], propagatedTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LaunchParameters:
     OperatingSystem operatingSystem
     InstanceRequirements instanceRequirements
@@ -4205,8 +4342,9 @@ struct LaunchParameters:
     Optional[str] instanceProfileArn
     Optional[dict[str, str]] propagatedTags
 
-# no @derive(Json): member(s) launchParameters: LaunchParameters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) launchParameters: LaunchParameters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LaunchTemplateSource:
     Optional[LaunchParameters] launchParameters
 
@@ -4219,8 +4357,9 @@ struct LifecycleConfiguration:
     Optional[int64] idleRuntimeSessionTimeout
     Optional[int64] maxLifetime
 
-# no @derive(Json): member(s) dimensions: dict[str, str], requests: list[RateConfig], tokens: list[RateConfig], connections: list[RateConfig] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dimensions: dict[str, str], requests: list[RateConfig], tokens: list[RateConfig], connections: list[RateConfig] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LimitEntry:
     dict[str, str] dimensions
     Optional[list[RateConfig]] requests
@@ -4234,8 +4373,9 @@ struct LinkedinOauth2ProviderConfigInput:
     Optional[SecretReference] clientSecretConfig
     Optional[SecretSourceType] clientSecretSource
 
-# no @derive(Json): member(s) oauthDiscovery: Oauth2Discovery not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oauthDiscovery: Oauth2Discovery not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LinkedinOauth2ProviderConfigOutput:
     Oauth2Discovery oauthDiscovery
     Optional[str] clientId
@@ -4247,8 +4387,9 @@ struct ListAgentRuntimeEndpointsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) runtimeEndpoints: list[AgentRuntimeEndpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) runtimeEndpoints: list[AgentRuntimeEndpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAgentRuntimeEndpointsResponse:
     list[AgentRuntimeEndpoint] runtimeEndpoints
     Optional[str] nextToken
@@ -4260,8 +4401,9 @@ struct ListAgentRuntimeVersionsByCapacityProviderInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) agentRuntimes: list[AgentRuntimeVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentRuntimes: list[AgentRuntimeVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAgentRuntimeVersionsByCapacityProviderOutput:
     list[AgentRuntimeVersionSummary] agentRuntimes
     Optional[str] nextToken
@@ -4273,8 +4415,9 @@ struct ListAgentRuntimeVersionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) agentRuntimes: list[AgentRuntime] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentRuntimes: list[AgentRuntime] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAgentRuntimeVersionsResponse:
     list[AgentRuntime] agentRuntimes
     Optional[str] nextToken
@@ -4285,8 +4428,9 @@ struct ListAgentRuntimesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) agentRuntimes: list[AgentRuntime] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) agentRuntimes: list[AgentRuntime] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAgentRuntimesResponse:
     list[AgentRuntime] agentRuntimes
     Optional[str] nextToken
@@ -4297,8 +4441,9 @@ struct ListApiKeyCredentialProvidersRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) credentialProviders: list[ApiKeyCredentialProviderItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) credentialProviders: list[ApiKeyCredentialProviderItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApiKeyCredentialProvidersResponse:
     list[ApiKeyCredentialProviderItem] credentialProviders
     Optional[str] nextToken
@@ -4310,8 +4455,9 @@ struct ListBrowserProfilesRequest:
     Optional[str] nextToken
     Optional[str] name
 
-# no @derive(Json): member(s) profileSummaries: list[BrowserProfileSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) profileSummaries: list[BrowserProfileSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBrowserProfilesResponse:
     list[BrowserProfileSummary] profileSummaries
     Optional[str] nextToken
@@ -4324,8 +4470,9 @@ struct ListBrowsersRequest:
     # wire string of the ResourceType enum (querystring binding)
     Optional[str] type
 
-# no @derive(Json): member(s) browserSummaries: list[BrowserSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) browserSummaries: list[BrowserSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBrowsersResponse:
     list[BrowserSummary] browserSummaries
     Optional[str] nextToken
@@ -4336,8 +4483,9 @@ struct ListCapacityProvidersInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) capacityProviders: list[CapacityProviderSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) capacityProviders: list[CapacityProviderSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCapacityProvidersOutput:
     list[CapacityProviderSummary] capacityProviders
     Optional[str] nextToken
@@ -4350,8 +4498,9 @@ struct ListCodeInterpretersRequest:
     # wire string of the ResourceType enum (querystring binding)
     Optional[str] type
 
-# no @derive(Json): member(s) codeInterpreterSummaries: list[CodeInterpreterSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) codeInterpreterSummaries: list[CodeInterpreterSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCodeInterpretersResponse:
     list[CodeInterpreterSummary] codeInterpreterSummaries
     Optional[str] nextToken
@@ -4364,8 +4513,9 @@ struct ListConfigurationBundleVersionsRequest:
     Optional[int64] maxResults
     Optional[VersionFilter] filter
 
-# no @derive(Json): member(s) versions: list[ConfigurationBundleVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) versions: list[ConfigurationBundleVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfigurationBundleVersionsResponse:
     list[ConfigurationBundleVersionSummary] versions
     Optional[str] nextToken
@@ -4376,8 +4526,9 @@ struct ListConfigurationBundlesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) bundles: list[ConfigurationBundleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) bundles: list[ConfigurationBundleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConfigurationBundlesResponse:
     list[ConfigurationBundleSummary] bundles
     Optional[str] nextToken
@@ -4388,8 +4539,9 @@ struct ListConsentPortalsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) consentPortals: list[ConsentPortalSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) consentPortals: list[ConsentPortalSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListConsentPortalsResponse:
     list[ConsentPortalSummary] consentPortals
     Optional[str] nextToken
@@ -4402,8 +4554,9 @@ struct ListDatasetExamplesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) examples: list[SensitiveJson] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) examples: list[SensitiveJson] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatasetExamplesResponse:
     str datasetArn
     str datasetId
@@ -4418,8 +4571,9 @@ struct ListDatasetVersionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) versions: list[DatasetVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) versions: list[DatasetVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatasetVersionsResponse:
     list[DatasetVersionSummary] versions
     Optional[str] nextToken
@@ -4430,8 +4584,9 @@ struct ListDatasetsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) datasets: list[DatasetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) datasets: list[DatasetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatasetsResponse:
     list[DatasetSummary] datasets
     Optional[str] nextToken
@@ -4442,8 +4597,9 @@ struct ListEvaluatorsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) evaluators: list[EvaluatorSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) evaluators: list[EvaluatorSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEvaluatorsResponse:
     list[EvaluatorSummary] evaluators
     Optional[str] nextToken
@@ -4455,8 +4611,9 @@ struct ListGatewayRateLimitsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) rateLimits: list[GatewayRateLimitDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) rateLimits: list[GatewayRateLimitDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGatewayRateLimitsResponse:
     list[GatewayRateLimitDetail] rateLimits
     Optional[str] nextToken
@@ -4468,8 +4625,9 @@ struct ListGatewayRulesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) gatewayRules: list[GatewayRuleDetail] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) gatewayRules: list[GatewayRuleDetail] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGatewayRulesResponse:
     list[GatewayRuleDetail] gatewayRules
     Optional[str] nextToken
@@ -4481,8 +4639,9 @@ struct ListGatewayTargetsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[TargetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[TargetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGatewayTargetsResponse:
     list[TargetSummary] items
     Optional[str] nextToken
@@ -4493,8 +4652,9 @@ struct ListGatewaysRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[GatewaySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[GatewaySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGatewaysResponse:
     list[GatewaySummary] items
     Optional[str] nextToken
@@ -4506,8 +4666,9 @@ struct ListHarnessEndpointsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) endpoints: list[HarnessEndpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) endpoints: list[HarnessEndpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListHarnessEndpointsResponse:
     list[HarnessEndpoint] endpoints
     Optional[str] nextToken
@@ -4519,8 +4680,9 @@ struct ListHarnessVersionsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) harnessVersions: list[HarnessVersionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) harnessVersions: list[HarnessVersionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListHarnessVersionsResponse:
     list[HarnessVersionSummary] harnessVersions
     Optional[str] nextToken
@@ -4531,8 +4693,9 @@ struct ListHarnessesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) harnesses: list[HarnessSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) harnesses: list[HarnessSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListHarnessesResponse:
     list[HarnessSummary] harnesses
     Optional[str] nextToken
@@ -4543,8 +4706,9 @@ struct ListMemoriesInput:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) memories: list[MemorySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) memories: list[MemorySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListMemoriesOutput:
     list[MemorySummary] memories
     Optional[str] nextToken
@@ -4555,8 +4719,9 @@ struct ListOauth2CredentialProvidersRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) credentialProviders: list[Oauth2CredentialProviderItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) credentialProviders: list[Oauth2CredentialProviderItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOauth2CredentialProvidersResponse:
     list[Oauth2CredentialProviderItem] credentialProviders
     Optional[str] nextToken
@@ -4567,8 +4732,9 @@ struct ListOnlineEvaluationConfigsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) onlineEvaluationConfigs: list[OnlineEvaluationConfigSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) onlineEvaluationConfigs: list[OnlineEvaluationConfigSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOnlineEvaluationConfigsResponse:
     list[OnlineEvaluationConfigSummary] onlineEvaluationConfigs
     Optional[str] nextToken
@@ -4580,8 +4746,9 @@ struct ListPaymentConnectorsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) paymentConnectors: list[PaymentConnectorSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) paymentConnectors: list[PaymentConnectorSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPaymentConnectorsResponse:
     list[PaymentConnectorSummary] paymentConnectors
     Optional[str] nextToken
@@ -4592,8 +4759,9 @@ struct ListPaymentCredentialProvidersRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) credentialProviders: list[PaymentCredentialProviderItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) credentialProviders: list[PaymentCredentialProviderItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPaymentCredentialProvidersResponse:
     list[PaymentCredentialProviderItem] credentialProviders
     Optional[str] nextToken
@@ -4604,8 +4772,9 @@ struct ListPaymentManagersRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) paymentManagers: list[PaymentManagerSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) paymentManagers: list[PaymentManagerSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPaymentManagersResponse:
     list[PaymentManagerSummary] paymentManagers
     Optional[str] nextToken
@@ -4618,8 +4787,9 @@ struct ListPoliciesRequest:
     str policyEngineId
     Optional[str] targetResourceScope
 
-# no @derive(Json): member(s) policies: list[Policy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policies: list[Policy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPoliciesResponse:
     list[Policy] policies
     Optional[str] nextToken
@@ -4630,8 +4800,9 @@ struct ListPolicyEngineSummariesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) policyEngines: list[PolicyEngineSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policyEngines: list[PolicyEngineSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPolicyEngineSummariesResponse:
     list[PolicyEngineSummary] policyEngines
     Optional[str] nextToken
@@ -4642,8 +4813,9 @@ struct ListPolicyEnginesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) policyEngines: list[PolicyEngine] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policyEngines: list[PolicyEngine] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPolicyEnginesResponse:
     list[PolicyEngine] policyEngines
     Optional[str] nextToken
@@ -4656,8 +4828,9 @@ struct ListPolicyGenerationAssetsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) policyGenerationAssets: list[PolicyGenerationAsset] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policyGenerationAssets: list[PolicyGenerationAsset] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPolicyGenerationAssetsResponse:
     Optional[list[PolicyGenerationAsset]] policyGenerationAssets
     Optional[str] nextToken
@@ -4669,8 +4842,9 @@ struct ListPolicyGenerationSummariesRequest:
     Optional[int64] maxResults
     str policyEngineId
 
-# no @derive(Json): member(s) policyGenerations: list[PolicyGenerationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policyGenerations: list[PolicyGenerationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPolicyGenerationSummariesResponse:
     list[PolicyGenerationSummary] policyGenerations
     Optional[str] nextToken
@@ -4682,8 +4856,9 @@ struct ListPolicyGenerationsRequest:
     Optional[int64] maxResults
     str policyEngineId
 
-# no @derive(Json): member(s) policyGenerations: list[PolicyGeneration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policyGenerations: list[PolicyGeneration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPolicyGenerationsResponse:
     list[PolicyGeneration] policyGenerations
     Optional[str] nextToken
@@ -4696,8 +4871,9 @@ struct ListPolicySummariesRequest:
     str policyEngineId
     Optional[str] targetResourceScope
 
-# no @derive(Json): member(s) policies: list[PolicySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) policies: list[PolicySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPolicySummariesResponse:
     list[PolicySummary] policies
     Optional[str] nextToken
@@ -4712,8 +4888,9 @@ struct ListRegistriesRequest:
     # wire string of the RegistryAuthorizerType enum (querystring binding)
     Optional[str] authorizerType
 
-# no @derive(Json): member(s) registries: list[RegistrySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) registries: list[RegistrySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRegistriesResponse:
     list[RegistrySummary] registries
     Optional[str] nextToken
@@ -4730,8 +4907,9 @@ struct ListRegistryRecordsRequest:
     # wire string of the DescriptorType enum (querystring binding)
     Optional[str] descriptorType
 
-# no @derive(Json): member(s) registryRecords: list[RegistryRecordSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) registryRecords: list[RegistryRecordSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRegistryRecordsResponse:
     list[RegistryRecordSummary] registryRecords
     Optional[str] nextToken
@@ -4741,8 +4919,9 @@ struct ListRegistryRecordsResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -4752,28 +4931,32 @@ struct ListWorkloadIdentitiesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) workloadIdentities: list[WorkloadIdentityType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workloadIdentities: list[WorkloadIdentityType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkloadIdentitiesResponse:
     list[WorkloadIdentityType] workloadIdentities
     Optional[str] nextToken
 
-# no @derive(Json): member(s) ratingScale: RatingScale, modelConfig: EvaluatorModelConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ratingScale: RatingScale, modelConfig: EvaluatorModelConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LlmAsAJudgeEvaluatorConfig:
     str instructions
     RatingScale ratingScale
     EvaluatorModelConfig modelConfig
 
-# no @derive(Json): member(s) validation: Validation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) validation: Validation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct LlmExtractionConfig:
     Optional[str] llmExtractionInstruction
     str definition
     Optional[Validation] validation
 
-# no @derive(Json): member(s) supportedVersions: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) supportedVersions: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MCPGatewayConfiguration:
     Optional[list[str]] supportedVersions
     Optional[str] instructions
@@ -4788,8 +4971,9 @@ struct ManagedResourceDetails:
     Optional[str] resourceGatewayArn
     Optional[str] resourceAssociationArn
 
-# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str], tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnetIds: list[str], securityGroupIds: list[str], tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ManagedVpcResource:
     str vpcIdentifier
     list[str] subnetIds
@@ -4803,13 +4987,15 @@ struct MatchModelEntry:
     str value
     Optional[MatchOperator] operator
 
-# no @derive(Json): member(s) anyOf: list[MatchModelEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) anyOf: list[MatchModelEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MatchModels:
     list[MatchModelEntry] anyOf
 
-# no @derive(Json): member(s) anyOf: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) anyOf: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MatchPaths:
     list[str] anyOf
 
@@ -4817,8 +5003,9 @@ struct MatchPaths:
 struct MatchPrincipalEntry:
     Optional[IamPrincipal] iamPrincipal
 
-# no @derive(Json): member(s) anyOf: list[MatchPrincipalEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) anyOf: list[MatchPrincipalEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MatchPrincipals:
     list[MatchPrincipalEntry] anyOf
 
@@ -4827,8 +5014,9 @@ struct McpDescriptor:
     Optional[ServerDefinition] server
     Optional[ToolsDefinition] tools
 
-# no @derive(Json): member(s) toolSchema: ToolSchema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) toolSchema: ToolSchema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct McpLambdaTargetConfiguration:
     str lambdaArn
     ToolSchema toolSchema
@@ -4840,8 +5028,9 @@ struct McpServerTargetConfiguration:
     Optional[ListingMode] listingMode
     Optional[int64] resourcePriority
 
-# no @derive(Json): member(s) lambda: McpLambdaTargetConfiguration, apiGateway: ApiGatewayTargetConfiguration, connector: ConnectorTargetConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) lambda: McpLambdaTargetConfiguration, apiGateway: ApiGatewayTargetConfiguration, connector: ConnectorTargetConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct McpTargetConfiguration:
     Optional[ApiSchemaConfiguration] openApiSchema
     Optional[ApiSchemaConfiguration] smithyModel
@@ -4856,8 +5045,9 @@ struct McpToolSchemaConfiguration:
     Optional[S3Configuration] s3
     Optional[str] inlinePayload
 
-# no @derive(Json): member(s) strategies: list[MemoryStrategy], indexedKeys: list[IndexedKey], namespaceKeys: list[NamespaceKeyEntry], streamDeliveryResources: StreamDeliveryResources not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) strategies: list[MemoryStrategy], indexedKeys: list[IndexedKey], namespaceKeys: list[NamespaceKeyEntry], streamDeliveryResources: StreamDeliveryResources not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Memory:
     str arn
     str id
@@ -4876,13 +5066,15 @@ struct Memory:
     Optional[StreamDeliveryResources] streamDeliveryResources
     Optional[str] managedByResourceArn
 
-# no @derive(Json): member(s) metadataSchema: list[MetadataSchemaEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadataSchema: list[MetadataSchemaEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MemoryRecordSchema:
     Optional[list[MetadataSchemaEntry]] metadataSchema
 
-# no @derive(Json): member(s) configuration: StrategyConfiguration, namespaces: list[str], namespaceTemplates: list[str], memoryRecordSchema: MemoryRecordSchema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) configuration: StrategyConfiguration, namespaces: list[str], namespaceTemplates: list[str], memoryRecordSchema: MemoryRecordSchema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MemoryStrategy:
     str strategyId
     str name
@@ -4897,8 +5089,9 @@ struct MemoryStrategy:
     Optional[MemoryRecordSchema] memoryRecordSchema
     Optional[int64] recordExpiryDurationDays
 
-# no @derive(Json): member(s) semanticMemoryStrategy: SemanticMemoryStrategyInput, summaryMemoryStrategy: SummaryMemoryStrategyInput, userPreferenceMemoryStrategy: UserPreferenceMemoryStrategyInput, customMemoryStrategy: CustomMemoryStrategyInput, episodicMemoryStrategy: EpisodicMemoryStrategyInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) semanticMemoryStrategy: SemanticMemoryStrategyInput, summaryMemoryStrategy: SummaryMemoryStrategyInput, userPreferenceMemoryStrategy: UserPreferenceMemoryStrategyInput, customMemoryStrategy: CustomMemoryStrategyInput, episodicMemoryStrategy: EpisodicMemoryStrategyInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MemoryStrategyInput:
     Optional[SemanticMemoryStrategyInput] semanticMemoryStrategy
     Optional[SummaryMemoryStrategyInput] summaryMemoryStrategy
@@ -4923,15 +5116,17 @@ struct MessageBasedTrigger:
 struct MessageBasedTriggerInput:
     Optional[int64] messageCount
 
-# no @derive(Json): member(s) allowedRequestHeaders: list[str], allowedQueryParameters: list[str], allowedResponseHeaders: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedRequestHeaders: list[str], allowedQueryParameters: list[str], allowedResponseHeaders: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetadataConfiguration:
     Optional[list[str]] allowedRequestHeaders
     Optional[list[str]] allowedQueryParameters
     Optional[list[str]] allowedResponseHeaders
 
-# no @derive(Json): member(s) extractionConfig: ExtractionConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) extractionConfig: ExtractionConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MetadataSchemaEntry:
     str key
     Optional[MetadataValueType] type
@@ -4946,8 +5141,9 @@ struct MicrosoftOauth2ProviderConfigInput:
     Optional[SecretSourceType] clientSecretSource
     Optional[str] tenantId
 
-# no @derive(Json): member(s) oauthDiscovery: Oauth2Discovery not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oauthDiscovery: Oauth2Discovery not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MicrosoftOauth2ProviderConfigOutput:
     Oauth2Discovery oauthDiscovery
     Optional[str] clientId
@@ -4973,15 +5169,17 @@ struct ModifyInvocationConfigurationInput:
     Optional[str] topicArn
     Optional[str] payloadDeliveryBucketName
 
-# no @derive(Json): member(s) addMemoryStrategies: list[MemoryStrategyInput], modifyMemoryStrategies: list[ModifyMemoryStrategyInput], deleteMemoryStrategies: list[DeleteMemoryStrategyInput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) addMemoryStrategies: list[MemoryStrategyInput], modifyMemoryStrategies: list[ModifyMemoryStrategyInput], deleteMemoryStrategies: list[DeleteMemoryStrategyInput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyMemoryStrategies:
     Optional[list[MemoryStrategyInput]] addMemoryStrategies
     Optional[list[ModifyMemoryStrategyInput]] modifyMemoryStrategies
     Optional[list[DeleteMemoryStrategyInput]] deleteMemoryStrategies
 
-# no @derive(Json): member(s) namespaces: list[str], namespaceTemplates: list[str], configuration: ModifyStrategyConfiguration, memoryRecordSchema: MemoryRecordSchema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespaces: list[str], namespaceTemplates: list[str], configuration: ModifyStrategyConfiguration, memoryRecordSchema: MemoryRecordSchema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyMemoryStrategyInput:
     str memoryStrategyId
     Optional[str] description
@@ -4991,41 +5189,47 @@ struct ModifyMemoryStrategyInput:
     Optional[MemoryRecordSchema] memoryRecordSchema
     Optional[RecordExpirySpecification] recordExpirySpecification
 
-# no @derive(Json): member(s) episodicReflectionConfiguration: EpisodicReflectionConfigurationInput, customReflectionConfiguration: CustomReflectionConfigurationInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) episodicReflectionConfiguration: EpisodicReflectionConfigurationInput, customReflectionConfiguration: CustomReflectionConfigurationInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyReflectionConfiguration:
     Optional[EpisodicReflectionConfigurationInput] episodicReflectionConfiguration
     Optional[CustomReflectionConfigurationInput] customReflectionConfiguration
 
-# no @derive(Json): member(s) triggerConditions: list[TriggerConditionInput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) triggerConditions: list[TriggerConditionInput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifySelfManagedConfiguration:
     Optional[list[TriggerConditionInput]] triggerConditions
     Optional[ModifyInvocationConfigurationInput] invocationConfiguration
     Optional[int64] historicalContextWindowSize
 
-# no @derive(Json): member(s) reflection: ModifyReflectionConfiguration, selfManagedConfiguration: ModifySelfManagedConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reflection: ModifyReflectionConfiguration, selfManagedConfiguration: ModifySelfManagedConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ModifyStrategyConfiguration:
     Optional[ModifyExtractionConfiguration] extraction
     Optional[ModifyConsolidationConfiguration] consolidation
     Optional[ModifyReflectionConfiguration] reflection
     Optional[ModifySelfManagedConfiguration] selfManagedConfiguration
 
-# no @derive(Json): member(s) validation: NamespaceKeyValidation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) validation: NamespaceKeyValidation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NamespaceKeyEntry:
     str key
     Optional[NamespaceKeyValidation] validation
 
-# no @derive(Json): member(s) allowedValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NamespaceKeyValidation:
     Optional[list[str]] allowedValues
     Optional[str] regexPattern
 
-# no @derive(Json): member(s) networkModeConfig: VpcConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) networkModeConfig: VpcConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct NetworkConfiguration:
     NetworkMode networkMode
     Optional[VpcConfig] networkModeConfig
@@ -5046,8 +5250,9 @@ struct OAuth2AuthorizationData:
     str authorizationUrl
     Optional[str] userId
 
-# no @derive(Json): member(s) scopes: list[str], customParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scopes: list[str], customParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OAuthCredentialProvider:
     str providerArn
     list[str] scopes
@@ -5055,8 +5260,9 @@ struct OAuthCredentialProvider:
     Optional[OAuthGrantType] grantType
     Optional[str] defaultReturnUrl
 
-# no @derive(Json): member(s) responseTypes: list[str], tokenEndpointAuthMethods: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) responseTypes: list[str], tokenEndpointAuthMethods: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Oauth2AuthorizationServerMetadata:
     str issuer
     str authorizationEndpoint
@@ -5072,14 +5278,16 @@ struct Oauth2CredentialProviderItem:
     DateTime createdTime
     DateTime lastUpdatedTime
 
-# no @derive(Json): member(s) authorizationServerMetadata: Oauth2AuthorizationServerMetadata not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizationServerMetadata: Oauth2AuthorizationServerMetadata not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Oauth2Discovery:
     Optional[str] discoveryUrl
     Optional[Oauth2AuthorizationServerMetadata] authorizationServerMetadata
 
-# no @derive(Json): member(s) customOauth2ProviderConfig: CustomOauth2ProviderConfigInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customOauth2ProviderConfig: CustomOauth2ProviderConfigInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Oauth2ProviderConfigInput:
     Optional[CustomOauth2ProviderConfigInput] customOauth2ProviderConfig
     Optional[GoogleOauth2ProviderConfigInput] googleOauth2ProviderConfig
@@ -5091,8 +5299,9 @@ struct Oauth2ProviderConfigInput:
     Optional[LinkedinOauth2ProviderConfigInput] linkedinOauth2ProviderConfig
     Optional[IncludedOauth2ProviderConfigInput] includedOauth2ProviderConfig
 
-# no @derive(Json): member(s) customOauth2ProviderConfig: CustomOauth2ProviderConfigOutput, googleOauth2ProviderConfig: GoogleOauth2ProviderConfigOutput, githubOauth2ProviderConfig: GithubOauth2ProviderConfigOutput, slackOauth2ProviderConfig: SlackOauth2ProviderConfigOutput, salesforceOauth2ProviderConfig: SalesforceOauth2ProviderConfigOutput, microsoftOauth2ProviderConfig: MicrosoftOauth2ProviderConfigOutput, atlassianOauth2ProviderConfig: AtlassianOauth2ProviderConfigOutput, linkedinOauth2ProviderConfig: LinkedinOauth2ProviderConfigOutput, includedOauth2ProviderConfig: IncludedOauth2ProviderConfigOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customOauth2ProviderConfig: CustomOauth2ProviderConfigOutput, googleOauth2ProviderConfig: GoogleOauth2ProviderConfigOutput, githubOauth2ProviderConfig: GithubOauth2ProviderConfigOutput, slackOauth2ProviderConfig: SlackOauth2ProviderConfigOutput, salesforceOauth2ProviderConfig: SalesforceOauth2ProviderConfigOutput, microsoftOauth2ProviderConfig: MicrosoftOauth2ProviderConfigOutput, atlassianOauth2ProviderConfig: AtlassianOauth2ProviderConfigOutput, linkedinOauth2ProviderConfig: LinkedinOauth2ProviderConfigOutput, includedOauth2ProviderConfig: IncludedOauth2ProviderConfigOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Oauth2ProviderConfigOutput:
     Optional[CustomOauth2ProviderConfigOutput] customOauth2ProviderConfig
     Optional[GoogleOauth2ProviderConfigOutput] googleOauth2ProviderConfig
@@ -5108,15 +5317,17 @@ struct Oauth2ProviderConfigOutput:
 struct OnBehalfOfAuthenticationConfig:
     str clientAuthenticationMethod
 
-# no @derive(Json): member(s) tokenExchangeGrantTypeConfig: TokenExchangeGrantTypeConfigType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tokenExchangeGrantTypeConfig: TokenExchangeGrantTypeConfigType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OnBehalfOfTokenExchangeConfigType:
     OnBehalfOfTokenExchangeGrantTypeType grantType
     Optional[TokenExchangeGrantTypeConfigType] tokenExchangeGrantTypeConfig
     Optional[OnBehalfOfAuthenticationConfig] onBehalfOfAuthenticationConfig
 
-# no @derive(Json): member(s) insights: list[Insight], clusteringConfig: ClusteringConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) insights: list[Insight], clusteringConfig: ClusteringConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OnlineEvaluationConfigSummary:
     str onlineEvaluationConfigArn
     str onlineEvaluationConfigId
@@ -5142,8 +5353,9 @@ struct OpenResponsesEvaluatorModelConfig:
 struct OutputConfig:
     CloudWatchOutputConfig cloudWatchConfig
 
-# no @derive(Json): member(s) stickinessConfiguration: StickinessConfiguration, staticQueryParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stickinessConfiguration: StickinessConfiguration, staticQueryParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PassthroughTargetConfiguration:
     str endpoint
     PassthroughProtocolType protocolType
@@ -5203,8 +5415,9 @@ struct PaymentProviderConfigurationOutput:
 struct PermissionsConfiguration:
     str capacityProviderOperatorRoleArn
 
-# no @derive(Json): member(s) statusReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Policy:
     str policyId
     str name
@@ -5224,8 +5437,9 @@ struct PolicyDefinition:
     Optional[PolicyGenerationDetails] policyGeneration
     Optional[PolicyStatement] policy
 
-# no @derive(Json): member(s) statusReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PolicyEngine:
     str policyEngineId
     str name
@@ -5249,8 +5463,9 @@ struct PolicyEngineSummary:
     PolicyEngineStatus status
     Optional[str] encryptionKeyArn
 
-# no @derive(Json): member(s) statusReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PolicyGeneration:
     str policyEngineId
     str policyGenerationId
@@ -5263,8 +5478,9 @@ struct PolicyGeneration:
     Optional[str] findings
     list[str] statusReasons
 
-# no @derive(Json): member(s) findings: list[Finding] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) findings: list[Finding] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PolicyGenerationAsset:
     str policyGenerationAssetId
     Optional[PolicyDefinition] definition
@@ -5307,20 +5523,23 @@ struct PolicySummary:
     PolicyStatus status
     Optional[EnforcementMode] enforcementMode
 
-# no @derive(Json): member(s) managedVpcResource: ManagedVpcResource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) managedVpcResource: ManagedVpcResource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivateEndpoint:
     Optional[SelfManagedLatticeResource] selfManagedLatticeResource
     Optional[ManagedVpcResource] managedVpcResource
 
-# no @derive(Json): member(s) privateEndpoint: PrivateEndpoint not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) privateEndpoint: PrivateEndpoint not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivateEndpointOverride:
     str domain
     PrivateEndpoint privateEndpoint
 
-# no @derive(Json): member(s) additionalHeaderClaims: dict[str, str], additionalPayloadClaims: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) additionalHeaderClaims: dict[str, str], additionalPayloadClaims: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PrivateKeyJwtConfig:
     Optional[PrivateKeySource] privateKeySource
     Optional[SigningAlgorithm] signingAlgorithm
@@ -5355,8 +5574,9 @@ struct RateConfig:
     float64 rate
     Period period
 
-# no @derive(Json): member(s) numerical: list[NumericalScaleDefinition], categorical: list[CategoricalScaleDefinition], multiDimensional: list[EvaluationDimension] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) numerical: list[NumericalScaleDefinition], categorical: list[CategoricalScaleDefinition], multiDimensional: list[EvaluationDimension] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RatingScale:
     Optional[list[NumericalScaleDefinition]] numerical
     Optional[list[CategoricalScaleDefinition]] categorical
@@ -5376,20 +5596,23 @@ struct RecordingConfig:
     Optional[bool] enabled
     Optional[S3Location] s3Location
 
-# no @derive(Json): member(s) customReflectionConfiguration: CustomReflectionConfiguration, episodicReflectionConfiguration: EpisodicReflectionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) customReflectionConfiguration: CustomReflectionConfiguration, episodicReflectionConfiguration: EpisodicReflectionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReflectionConfiguration:
     Optional[CustomReflectionConfiguration] customReflectionConfiguration
     Optional[EpisodicReflectionConfiguration] episodicReflectionConfiguration
 
-# no @derive(Json): member(s) credentialProvider: RegistryRecordCredentialProviderUnion not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) credentialProvider: RegistryRecordCredentialProviderUnion not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistryRecordCredentialProviderConfiguration:
     RegistryRecordCredentialProviderType credentialProviderType
     RegistryRecordCredentialProviderUnion credentialProvider
 
-# no @derive(Json): member(s) oauthCredentialProvider: RegistryRecordOAuthCredentialProvider not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oauthCredentialProvider: RegistryRecordOAuthCredentialProvider not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistryRecordCredentialProviderUnion:
     Optional[RegistryRecordOAuthCredentialProvider] oauthCredentialProvider
     Optional[RegistryRecordIamCredentialProvider] iamCredentialProvider
@@ -5400,8 +5623,9 @@ struct RegistryRecordIamCredentialProvider:
     Optional[str] service
     Optional[str] region
 
-# no @derive(Json): member(s) scopes: list[str], customParameters: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) scopes: list[str], customParameters: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RegistryRecordOAuthCredentialProvider:
     str providerArn
     Optional[str] grantType
@@ -5437,8 +5661,9 @@ struct RegistrySummary:
     @json(timestamp="iso8601")
     DateTime updatedAt
 
-# no @derive(Json): member(s) requestHeaderAllowlist: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) requestHeaderAllowlist: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RequestHeaderConfiguration:
     Optional[list[str]] requestHeaderAllowlist
 
@@ -5498,14 +5723,16 @@ struct RotatePaymentConnectorCredentialsResponse:
     DateTime lastUpdatedAt
     PaymentConnectorStatus status
 
-# no @derive(Json): member(s) staticRoute: StaticRoute, weightedRoute: WeightedRoute not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) staticRoute: StaticRoute, weightedRoute: WeightedRoute not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RouteToTargetAction:
     Optional[StaticRoute] staticRoute
     Optional[WeightedRoute] weightedRoute
 
-# no @derive(Json): member(s) filters: list[Filter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filters: list[Filter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Rule:
     SamplingConfig samplingConfig
     Optional[list[Filter]] filters
@@ -5559,8 +5786,9 @@ struct SalesforceOauth2ProviderConfigInput:
     Optional[SecretReference] clientSecretConfig
     Optional[SecretSourceType] clientSecretSource
 
-# no @derive(Json): member(s) oauthDiscovery: Oauth2Discovery not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oauthDiscovery: Oauth2Discovery not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SalesforceOauth2ProviderConfigOutput:
     Oauth2Discovery oauthDiscovery
     Optional[str] clientId
@@ -5569,8 +5797,9 @@ struct SalesforceOauth2ProviderConfigOutput:
 struct SamplingConfig:
     float64 samplingPercentage
 
-# no @derive(Json): member(s) properties: dict[str, SchemaDefinition], required: list[str], items: SchemaDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: dict[str, SchemaDefinition], required: list[str], items: SchemaDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SchemaDefinition:
     SchemaType type
     Optional[dict[str, SchemaDefinition]] properties
@@ -5595,15 +5824,17 @@ struct SecretsManagerCertificateConfiguration:
 struct SecretsManagerLocation:
     str secretArn
 
-# no @derive(Json): member(s) triggerConditions: list[TriggerCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) triggerConditions: list[TriggerCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SelfManagedConfiguration:
     list[TriggerCondition] triggerConditions
     InvocationConfiguration invocationConfiguration
     int64 historicalContextWindowSize
 
-# no @derive(Json): member(s) triggerConditions: list[TriggerConditionInput] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) triggerConditions: list[TriggerConditionInput] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SelfManagedConfigurationInput:
     Optional[list[TriggerConditionInput]] triggerConditions
     InvocationConfigurationInput invocationConfiguration
@@ -5623,8 +5854,9 @@ struct SemanticExtractionOverride:
     str appendToPrompt
     str modelId
 
-# no @derive(Json): member(s) namespaces: list[str], namespaceTemplates: list[str], memoryRecordSchema: MemoryRecordSchema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespaces: list[str], namespaceTemplates: list[str], memoryRecordSchema: MemoryRecordSchema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SemanticMemoryStrategyInput:
     str name
     Optional[str] description
@@ -5706,8 +5938,9 @@ struct SlackOauth2ProviderConfigInput:
     Optional[SecretReference] clientSecretConfig
     Optional[SecretSourceType] clientSecretSource
 
-# no @derive(Json): member(s) oauthDiscovery: Oauth2Discovery not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oauthDiscovery: Oauth2Discovery not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SlackOauth2ProviderConfigOutput:
     Oauth2Discovery oauthDiscovery
     Optional[str] clientId
@@ -5721,8 +5954,9 @@ struct StartPolicyGenerationRequest:
     str name
     Optional[str] clientToken
 
-# no @derive(Json): member(s) statusReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StartPolicyGenerationResponse:
     str policyEngineId
     str policyGenerationId
@@ -5740,22 +5974,25 @@ struct StaticOverride:
     str bundleArn
     str bundleVersion
 
-# no @derive(Json): member(s) fallback: Fallback not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fallback: Fallback not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StaticRoute:
     str targetName
     Optional[str] model
     Optional[Fallback] fallback
 
-# no @derive(Json): member(s) compositeIdentifier: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) compositeIdentifier: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StickinessConfiguration:
     str identifier
     Optional[int64] timeout
     Optional[list[str]] compositeIdentifier
 
-# no @derive(Json): member(s) reflection: ReflectionConfiguration, selfManagedConfiguration: SelfManagedConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reflection: ReflectionConfiguration, selfManagedConfiguration: SelfManagedConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StrategyConfiguration:
     Optional[OverrideType] type
     Optional[ExtractionConfiguration] extraction
@@ -5763,13 +6000,15 @@ struct StrategyConfiguration:
     Optional[ReflectionConfiguration] reflection
     Optional[SelfManagedConfiguration] selfManagedConfiguration
 
-# no @derive(Json): member(s) kinesis: KinesisResource not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) kinesis: KinesisResource not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StreamDeliveryResource:
     Optional[KinesisResource] kinesis
 
-# no @derive(Json): member(s) resources: list[StreamDeliveryResource] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) resources: list[StreamDeliveryResource] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StreamDeliveryResources:
     list[StreamDeliveryResource] resources
 
@@ -5777,14 +6016,16 @@ struct StreamDeliveryResources:
 struct StreamingConfiguration:
     Optional[bool] enableResponseStreaming
 
-# no @derive(Json): member(s) allowedValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StringListValidation:
     Optional[list[str]] allowedValues
     Optional[int64] maxItems
 
-# no @derive(Json): member(s) allowedValues: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedValues: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct StringValidation:
     list[str] allowedValues
 
@@ -5836,8 +6077,9 @@ struct SummaryConsolidationOverride:
     str appendToPrompt
     str modelId
 
-# no @derive(Json): member(s) namespaces: list[str], namespaceTemplates: list[str], memoryRecordSchema: MemoryRecordSchema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespaces: list[str], namespaceTemplates: list[str], memoryRecordSchema: MemoryRecordSchema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SummaryMemoryStrategyInput:
     str name
     Optional[str] description
@@ -5855,8 +6097,9 @@ struct SummaryOverrideConsolidationConfigurationInput:
     str appendToPrompt
     str modelId
 
-# no @derive(Json): member(s) fromUrl: FromUrlSynchronizationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fromUrl: FromUrlSynchronizationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SynchronizationConfiguration:
     Optional[FromUrlSynchronizationConfiguration] fromUrl
 
@@ -5866,8 +6109,9 @@ struct SynchronizeGatewayTargetsRequest:
     str gatewayIdentifier
     list[str] targetIdList
 
-# no @derive(Json): member(s) targets: list[GatewayTarget] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targets: list[GatewayTarget] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SynchronizeGatewayTargetsResponse:
     Optional[list[GatewayTarget]] targets
 
@@ -5886,8 +6130,9 @@ struct TagResourceResponse:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) mcp: McpTargetConfiguration, http: HttpTargetConfiguration, inference: InferenceTargetConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mcp: McpTargetConfiguration, http: HttpTargetConfiguration, inference: InferenceTargetConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TargetConfiguration:
     Optional[McpTargetConfiguration] mcp
     Optional[HttpTargetConfiguration] http
@@ -5910,8 +6155,9 @@ struct TargetSummary:
     Optional[TargetType] targetType
     Optional[ListingMode] listingMode
 
-# no @derive(Json): member(s) fallback: Fallback, metadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fallback: Fallback, metadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TargetTrafficSplitEntry:
     str targetName
     Optional[str] model
@@ -5945,22 +6191,25 @@ struct TokenBasedTrigger:
 struct TokenBasedTriggerInput:
     Optional[int64] tokenCount
 
-# no @derive(Json): member(s) actorTokenScopes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actorTokenScopes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TokenExchangeGrantTypeConfigType:
     ActorTokenContentType actorTokenContent
     Optional[list[str]] actorTokenScopes
 
-# no @derive(Json): member(s) inputSchema: SchemaDefinition, outputSchema: SchemaDefinition not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inputSchema: SchemaDefinition, outputSchema: SchemaDefinition not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ToolDefinition:
     str name
     str description
     SchemaDefinition inputSchema
     Optional[SchemaDefinition] outputSchema
 
-# no @derive(Json): member(s) inlinePayload: list[ToolDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) inlinePayload: list[ToolDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ToolSchema:
     Optional[S3Configuration] s3
     Optional[list[ToolDefinition]] inlinePayload
@@ -5975,8 +6224,9 @@ struct ToolsFileSystemConfiguration:
     Optional[S3FilesConfiguration] s3FilesConfiguration
     Optional[EfsConfiguration] efsConfiguration
 
-# no @derive(Json): member(s) metadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TrafficSplitEntry:
     str name
     int64 weight
@@ -6133,8 +6383,9 @@ struct UpdateConsentPortalRequest:
     Optional[ConsentPortalIdpConfig] idpConfig
     Optional[str] description
 
-# no @derive(Json): member(s) sources: list[ConsentPortalSource], idpConfig: ConsentPortalIdpConfig not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) sources: list[ConsentPortalSource], idpConfig: ConsentPortalIdpConfig not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateConsentPortalResponse:
     list[ConsentPortalSource] sources
     str consentPortalArn
@@ -6202,8 +6453,9 @@ struct UpdateGatewayRateLimitRequest:
     Optional[str] description
     list[LimitEntry] entries
 
-# no @derive(Json): member(s) dimensionKeys: list[str], entries: list[LimitEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dimensionKeys: list[str], entries: list[LimitEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateGatewayRateLimitResponse:
     str rateLimitId
     str gatewayIdentifier
@@ -6232,8 +6484,9 @@ struct UpdateGatewayRequest:
     Optional[str] exceptionLevel
     Optional[WafConfiguration] wafConfiguration
 
-# no @derive(Json): member(s) statusReasons: list[str], protocolConfiguration: GatewayProtocolConfiguration, authorizerConfiguration: AuthorizerConfiguration, interceptorConfigurations: list[GatewayInterceptorConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[str], protocolConfiguration: GatewayProtocolConfiguration, authorizerConfiguration: AuthorizerConfiguration, interceptorConfigurations: list[GatewayInterceptorConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateGatewayResponse:
     str gatewayArn
     str gatewayId
@@ -6268,8 +6521,9 @@ struct UpdateGatewayRuleRequest:
     Optional[list[Action]] actions
     Optional[str] description
 
-# no @derive(Json): member(s) conditions: list[Condition], actions: list[Action] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) conditions: list[Condition], actions: list[Action] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateGatewayRuleResponse:
     str ruleId
     str gatewayArn
@@ -6295,8 +6549,9 @@ struct UpdateGatewayTargetRequest:
     Optional[PrivateEndpoint] privateEndpoint
     Optional[list[CertificateConfiguration]] certificateConfigurations
 
-# no @derive(Json): member(s) statusReasons: list[str], targetConfiguration: TargetConfiguration, credentialProviderConfigurations: list[CredentialProviderConfiguration], metadataConfiguration: MetadataConfiguration, privateEndpoint: PrivateEndpoint, privateEndpointManagedResources: list[ManagedResourceDetails], certificateConfigurations: list[CertificateConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[str], targetConfiguration: TargetConfiguration, credentialProviderConfigurations: list[CredentialProviderConfiguration], metadataConfiguration: MetadataConfiguration, privateEndpoint: PrivateEndpoint, privateEndpointManagedResources: list[ManagedResourceDetails], certificateConfigurations: list[CertificateConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateGatewayTargetResponse:
     str gatewayArn
     str targetId
@@ -6351,8 +6606,9 @@ struct UpdateHarnessRequest:
     Optional[int64] maxTokens
     Optional[int64] timeoutSeconds
 
-# no @derive(Json): member(s) harness: Harness not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) harness: Harness not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateHarnessResponse:
     Harness harness
 
@@ -6369,8 +6625,9 @@ struct UpdateMemoryInput:
     Optional[list[NamespaceKeyEntry]] namespaceKeys
     Optional[StreamDeliveryResources] streamDeliveryResources
 
-# no @derive(Json): member(s) memory: Memory not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) memory: Memory not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateMemoryOutput:
     Optional[Memory] memory
 
@@ -6381,8 +6638,9 @@ struct UpdateOauth2CredentialProviderRequest:
     CredentialProviderVendorType credentialProviderVendor
     Oauth2ProviderConfigInput oauth2ProviderConfigInput
 
-# no @derive(Json): member(s) oauth2ProviderConfigOutput: Oauth2ProviderConfigOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) oauth2ProviderConfigOutput: Oauth2ProviderConfigOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateOauth2CredentialProviderResponse:
     Secret clientSecretArn
     Optional[str] clientSecretJsonKey
@@ -6430,8 +6688,9 @@ struct UpdatePaymentConnectorRequest:
     Optional[list[CredentialsProviderConfiguration]] credentialProviderConfigurations
     Optional[str] clientToken
 
-# no @derive(Json): member(s) credentialProviderConfigurations: list[CredentialsProviderConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) credentialProviderConfigurations: list[CredentialsProviderConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePaymentConnectorResponse:
     str paymentConnectorId
     str paymentManagerId
@@ -6488,8 +6747,9 @@ struct UpdatePolicyEngineRequest:
     str policyEngineId
     Optional[UpdatedDescription] description
 
-# no @derive(Json): member(s) statusReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePolicyEngineResponse:
     str policyEngineId
     str name
@@ -6511,8 +6771,9 @@ struct UpdatePolicyRequest:
     Optional[PolicyValidationMode] validationMode
     Optional[EnforcementMode] enforcementMode
 
-# no @derive(Json): member(s) statusReasons: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePolicyResponse:
     str policyId
     str name
@@ -6540,8 +6801,9 @@ struct UpdateRegistryRecordRequest:
     Optional[UpdatedSynchronizationConfiguration] synchronizationConfiguration
     Optional[bool] triggerSynchronization
 
-# no @derive(Json): member(s) synchronizationConfiguration: SynchronizationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) synchronizationConfiguration: SynchronizationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRegistryRecordResponse:
     str registryArn
     str recordArn
@@ -6585,8 +6847,9 @@ struct UpdateRegistryRequest:
     Optional[UpdatedAuthorizerConfiguration] authorizerConfiguration
     Optional[UpdatedApprovalConfiguration] approvalConfiguration
 
-# no @derive(Json): member(s) authorizerConfiguration: AuthorizerConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) authorizerConfiguration: AuthorizerConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateRegistryResponse:
     str name
     Optional[str] description
@@ -6606,8 +6869,9 @@ struct UpdateWorkloadIdentityRequest:
     str name
     Optional[list[str]] allowedResourceOauth2ReturnUrls
 
-# no @derive(Json): member(s) allowedResourceOauth2ReturnUrls: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) allowedResourceOauth2ReturnUrls: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateWorkloadIdentityResponse:
     str name
     str workloadIdentityArn
@@ -6632,8 +6896,9 @@ struct UpdatedAgentSkillsDescriptorFields:
 struct UpdatedApprovalConfiguration:
     Optional[ApprovalConfiguration] optionalValue
 
-# no @derive(Json): member(s) optionalValue: AuthorizerConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) optionalValue: AuthorizerConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedAuthorizerConfiguration:
     Optional[AuthorizerConfiguration] optionalValue
 
@@ -6660,8 +6925,9 @@ struct UpdatedDescriptorsUnion:
 struct UpdatedHarnessEnvironmentArtifact:
     Optional[HarnessEnvironmentArtifact] optionalValue
 
-# no @derive(Json): member(s) optionalValue: HarnessMemoryConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) optionalValue: HarnessMemoryConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedHarnessMemoryConfiguration:
     Optional[HarnessMemoryConfiguration] optionalValue
 
@@ -6686,8 +6952,9 @@ struct UpdatedSkillDefinition:
 struct UpdatedSkillMdDefinition:
     Optional[SkillMdDefinition] optionalValue
 
-# no @derive(Json): member(s) optionalValue: SynchronizationConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) optionalValue: SynchronizationConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatedSynchronizationConfiguration:
     Optional[SynchronizationConfiguration] optionalValue
 
@@ -6709,8 +6976,9 @@ struct UserPreferenceExtractionOverride:
     str appendToPrompt
     str modelId
 
-# no @derive(Json): member(s) namespaces: list[str], namespaceTemplates: list[str], memoryRecordSchema: MemoryRecordSchema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) namespaces: list[str], namespaceTemplates: list[str], memoryRecordSchema: MemoryRecordSchema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UserPreferenceMemoryStrategyInput:
     str name
     Optional[str] description
@@ -6734,15 +7002,17 @@ struct UserPreferenceOverrideExtractionConfigurationInput:
     str appendToPrompt
     str modelId
 
-# no @derive(Json): member(s) stringValidation: StringValidation, stringListValidation: StringListValidation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stringValidation: StringValidation, stringListValidation: StringListValidation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Validation:
     Optional[StringValidation] stringValidation
     Optional[StringListValidation] stringListValidation
     Optional[NumberValidation] numberValidation
 
-# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fieldList: list[ValidationExceptionField] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ValidationException:
     str message
     ValidationExceptionReason reason
@@ -6764,8 +7034,9 @@ struct VersionFilter:
     Optional[str] createdByName
     Optional[bool] latestPerBranch
 
-# no @derive(Json): member(s) parentVersionIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parentVersionIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VersionLineageMetadata:
     Optional[list[str]] parentVersionIds
     Optional[str] branchName
@@ -6776,15 +7047,17 @@ struct VersionLineageMetadata:
 struct VolumeConfiguration:
     Optional[EbsVolumeConfiguration] ebsConfiguration
 
-# no @derive(Json): member(s) securityGroups: list[str], subnets: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) securityGroups: list[str], subnets: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfig:
     list[str] securityGroups
     list[str] subnets
     Optional[bool] requireServiceS3Endpoint
 
-# no @derive(Json): member(s) subnets: list[str], securityGroups: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subnets: list[str], securityGroups: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VpcConfiguration:
     list[str] subnets
     list[str] securityGroups
@@ -6793,13 +7066,15 @@ struct VpcConfiguration:
 struct WafConfiguration:
     Optional[WafFailureMode] failureMode
 
-# no @derive(Json): member(s) trafficSplit: list[TrafficSplitEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) trafficSplit: list[TrafficSplitEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WeightedOverride:
     list[TrafficSplitEntry] trafficSplit
 
-# no @derive(Json): member(s) trafficSplit: list[TargetTrafficSplitEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) trafficSplit: list[TargetTrafficSplitEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WeightedRoute:
     list[TargetTrafficSplitEntry] trafficSplit
 
@@ -6877,59 +7152,8 @@ def bedrock_agentcore_control_error_from_code(str code) -> Bedrock_AgentCore_Con
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AddDatasetExamples (document member `source: DataSourceType` is not serializable by derive)
-#   BatchPutGatewayRateLimits (document member `rateLimits: list[BatchPutLimitEntry]` is not serializable by derive)
-#   CreateAgentRuntime (document member `agentRuntimeArtifact: AgentRuntimeArtifact` is not serializable by derive)
-#   CreateAgentRuntimeEndpoint (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateApiKeyCredentialProvider (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateBrowser (document member `networkConfiguration: BrowserNetworkConfiguration` is not serializable by derive)
-#   CreateBrowserProfile (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateCapacityProvider (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateCodeInterpreter (document member `networkConfiguration: CodeInterpreterNetworkConfiguration` is not serializable by derive)
-#   CreateConfigurationBundle (document member `components: dict[str, ComponentConfiguration]` is not serializable by derive)
-#   CreateConsentPortal (document member `idpConfig: ConsentPortalIdpConfig` is not serializable by derive)
-#   CreateDataset (document member `source: DataSourceType` is not serializable by derive)
-#   CreateEvaluator (document member `evaluatorConfig: EvaluatorConfig` is not serializable by derive)
-#   CreateGateway (document member `protocolConfiguration: GatewayProtocolConfiguration` is not serializable by derive)
-#   CreateGatewayRateLimit (document member `dimensionKeys: list[str]` is not serializable by derive)
-#   CreateGatewayRule (document member `conditions: list[Condition]` is not serializable by derive)
-#   CreateGatewayTarget (document member `targetConfiguration: TargetConfiguration` is not serializable by derive)
-#   CreateHarness (document member `environment: HarnessEnvironmentProviderRequest` is not serializable by derive)
-#   CreateHarnessEndpoint (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateMemory (document member `memoryStrategies: list[MemoryStrategyInput]` is not serializable by derive)
-#   CreateOauth2CredentialProvider (document member `oauth2ProviderConfigInput: Oauth2ProviderConfigInput` is not serializable by derive)
-#   CreateOnlineEvaluationConfig (document member `rule: Rule` is not serializable by derive)
-#   CreatePaymentConnector (document member `credentialProviderConfigurations: list[CredentialsProviderConfiguration]` is not serializable by derive)
-#   CreatePaymentCredentialProvider (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreatePaymentManager (document member `authorizerConfiguration: AuthorizerConfiguration` is not serializable by derive)
-#   CreatePolicyEngine (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateRegistry (document member `authorizerConfiguration: AuthorizerConfiguration` is not serializable by derive)
-#   CreateRegistryRecord (document member `synchronizationConfiguration: SynchronizationConfiguration` is not serializable by derive)
-#   CreateWorkloadIdentity (document member `allowedResourceOauth2ReturnUrls: list[str]` is not serializable by derive)
-#   DeleteDatasetExamples (document member `exampleIds: list[str]` is not serializable by derive)
 #   DeleteHarness (httpQuery `deleteManagedMemory` has unsupported type bool)
-#   RotatePaymentConnectorCredentials (document member `credentialsToRotate: CredentialRotationConfig` is not serializable by derive)
-#   SynchronizeGatewayTargets (document member `targetIdList: list[str]` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateAgentRuntime (document member `agentRuntimeArtifact: AgentRuntimeArtifact` is not serializable by derive)
-#   UpdateConfigurationBundle (document member `components: dict[str, ComponentConfiguration]` is not serializable by derive)
-#   UpdateConsentPortal (document member `idpConfig: ConsentPortalIdpConfig` is not serializable by derive)
-#   UpdateDatasetExamples (document member `examples: list[SensitiveJson]` is not serializable by derive)
-#   UpdateEvaluator (document member `evaluatorConfig: EvaluatorConfig` is not serializable by derive)
-#   UpdateGateway (document member `protocolConfiguration: GatewayProtocolConfiguration` is not serializable by derive)
-#   UpdateGatewayRateLimit (document member `entries: list[LimitEntry]` is not serializable by derive)
-#   UpdateGatewayRule (document member `conditions: list[Condition]` is not serializable by derive)
-#   UpdateGatewayTarget (document member `targetConfiguration: TargetConfiguration` is not serializable by derive)
-#   UpdateHarness (document member `environment: HarnessEnvironmentProviderRequest` is not serializable by derive)
-#   UpdateMemory (document member `memoryStrategies: ModifyMemoryStrategies` is not serializable by derive)
-#   UpdateOauth2CredentialProvider (document member `oauth2ProviderConfigInput: Oauth2ProviderConfigInput` is not serializable by derive)
-#   UpdateOnlineEvaluationConfig (document member `rule: Rule` is not serializable by derive)
-#   UpdatePaymentConnector (document member `credentialProviderConfigurations: list[CredentialsProviderConfiguration]` is not serializable by derive)
-#   UpdatePaymentManager (document member `authorizerConfiguration: AuthorizerConfiguration` is not serializable by derive)
-#   UpdateRegistry (document member `authorizerConfiguration: UpdatedAuthorizerConfiguration` is not serializable by derive)
-#   UpdateRegistryRecord (document member `synchronizationConfiguration: UpdatedSynchronizationConfiguration` is not serializable by derive)
-#   UpdateWorkloadIdentity (document member `allowedResourceOauth2ReturnUrls: list[str]` is not serializable by derive)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -7134,10 +7358,2476 @@ struct UpdateRegistryRecordStatusDocument:
     RegistryRecordStatus status
     str statusReason
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def bedrock_agentcore_control_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def bedrock_agentcore_control_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def bedrock_agentcore_control_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize Action to a compact JSON object (declaration order).
+def action_to_json(Action v) -> str:
+    list[str] parts = []
+    if v.configurationBundle.is_some():
+        auto u0 = v.configurationBundle.unwrap()
+        parts.append("\"configurationBundle\":" + configuration_bundle_action_to_json(u0))
+    if v.routeToTarget.is_some():
+        auto u1 = v.routeToTarget.unwrap()
+        parts.append("\"routeToTarget\":" + route_to_target_action_to_json(u1))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize AgentRuntimeArtifact to a compact JSON object (declaration order).
+def agent_runtime_artifact_to_json(AgentRuntimeArtifact v) -> str:
+    list[str] parts = []
+    if v.containerConfiguration.is_some():
+        auto u0 = v.containerConfiguration.unwrap()
+        parts.append("\"containerConfiguration\":" + u0.to_json())
+    if v.codeConfiguration.is_some():
+        auto u1 = v.codeConfiguration.unwrap()
+        parts.append("\"codeConfiguration\":" + code_configuration_to_json(u1))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize AllowedWorkloadConfiguration to a compact JSON object (declaration order).
+def allowed_workload_configuration_to_json(AllowedWorkloadConfiguration v) -> str:
+    list[str] parts = []
+    if v.hostingEnvironments.is_some():
+        auto u0 = v.hostingEnvironments.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"hostingEnvironments\":" + bedrock_agentcore_control_json_arr(e1))
+    if v.workloadIdentities.is_some():
+        auto u2 = v.workloadIdentities.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(bedrock_agentcore_control_json_str(x3))
+        parts.append("\"workloadIdentities\":" + bedrock_agentcore_control_json_arr(e3))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize ApiGatewayTargetConfiguration to a compact JSON object (declaration order).
+def api_gateway_target_configuration_to_json(ApiGatewayTargetConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"restApiId\":" + bedrock_agentcore_control_json_str(v.restApiId))
+    parts.append("\"stage\":" + bedrock_agentcore_control_json_str(v.stage))
+    parts.append("\"apiGatewayToolConfiguration\":" + api_gateway_tool_configuration_to_json(v.apiGatewayToolConfiguration))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize ApiGatewayToolConfiguration to a compact JSON object (declaration order).
+def api_gateway_tool_configuration_to_json(ApiGatewayToolConfiguration v) -> str:
+    list[str] parts = []
+    if v.toolOverrides.is_some():
+        auto u0 = v.toolOverrides.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"toolOverrides\":" + bedrock_agentcore_control_json_arr(e1))
+    list[str] e2 = []
+    for x2 in v.toolFilters:
+        e2.append(api_gateway_tool_filter_to_json(x2))
+    parts.append("\"toolFilters\":" + bedrock_agentcore_control_json_arr(e2))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize ApiGatewayToolFilter to a compact JSON object (declaration order).
+def api_gateway_tool_filter_to_json(ApiGatewayToolFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"filterPath\":" + bedrock_agentcore_control_json_str(v.filterPath))
+    list[str] e0 = []
+    for x0 in v.methods:
+        e0.append(x0.to_json())
+    parts.append("\"methods\":" + bedrock_agentcore_control_json_arr(e0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize AuthorizerConfiguration to a compact JSON object (declaration order).
+def authorizer_configuration_to_json(AuthorizerConfiguration v) -> str:
+    list[str] parts = []
+    if v.customJWTAuthorizer.is_some():
+        auto u0 = v.customJWTAuthorizer.unwrap()
+        parts.append("\"customJWTAuthorizer\":" + custom_jwt_authorizer_configuration_to_json(u0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize AuthorizingClaimMatchValueType to a compact JSON object (declaration order).
+def authorizing_claim_match_value_type_to_json(AuthorizingClaimMatchValueType v) -> str:
+    list[str] parts = []
+    parts.append("\"claimMatchValue\":" + claim_match_value_type_to_json(v.claimMatchValue))
+    parts.append("\"claimMatchOperator\":" + v.claimMatchOperator.to_json())
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize BatchPutLimitEntry to a compact JSON object (declaration order).
+def batch_put_limit_entry_to_json(BatchPutLimitEntry v) -> str:
+    list[str] parts = []
+    if v.rateLimitId.is_some():
+        auto u0 = v.rateLimitId.unwrap()
+        parts.append("\"rateLimitId\":" + bedrock_agentcore_control_json_str(u0))
+    if v.description.is_some():
+        auto u1 = v.description.unwrap()
+        parts.append("\"description\":" + bedrock_agentcore_control_json_str(u1))
+    list[str] e2 = []
+    for x2 in v.dimensionKeys:
+        e2.append(bedrock_agentcore_control_json_str(x2))
+    parts.append("\"dimensionKeys\":" + bedrock_agentcore_control_json_arr(e2))
+    list[str] e3 = []
+    for x3 in v.entries:
+        e3.append(limit_entry_to_json(x3))
+    parts.append("\"entries\":" + bedrock_agentcore_control_json_arr(e3))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize BedrockEvaluatorModelConfig to a compact JSON object (declaration order).
+def bedrock_evaluator_model_config_to_json(BedrockEvaluatorModelConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"modelId\":" + bedrock_agentcore_control_json_str(v.modelId))
+    if v.inferenceConfig.is_some():
+        auto u0 = v.inferenceConfig.unwrap()
+        parts.append("\"inferenceConfig\":" + inference_configuration_to_json(u0))
+    if v.additionalModelRequestFields.is_some():
+        auto u1 = v.additionalModelRequestFields.unwrap()
+        parts.append("\"additionalModelRequestFields\":" + u1.to_json())
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize BrowserNetworkConfiguration to a compact JSON object (declaration order).
+def browser_network_configuration_to_json(BrowserNetworkConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"networkMode\":" + v.networkMode.to_json())
+    if v.vpcConfig.is_some():
+        auto u0 = v.vpcConfig.unwrap()
+        parts.append("\"vpcConfig\":" + vpc_config_to_json(u0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize ClaimMatchValueType to a compact JSON object (declaration order).
+def claim_match_value_type_to_json(ClaimMatchValueType v) -> str:
+    list[str] parts = []
+    if v.matchValueString.is_some():
+        auto u0 = v.matchValueString.unwrap()
+        parts.append("\"matchValueString\":" + bedrock_agentcore_control_json_str(u0))
+    if v.matchValueStringList.is_some():
+        auto u1 = v.matchValueStringList.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(bedrock_agentcore_control_json_str(x2))
+        parts.append("\"matchValueStringList\":" + bedrock_agentcore_control_json_arr(e2))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize CloudWatchLogsInputConfig to a compact JSON object (declaration order).
+def cloud_watch_logs_input_config_to_json(CloudWatchLogsInputConfig v) -> str:
+    list[str] parts = []
+    if v.logGroupNames.is_some():
+        auto u0 = v.logGroupNames.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_agentcore_control_json_str(x1))
+        parts.append("\"logGroupNames\":" + bedrock_agentcore_control_json_arr(e1))
+    if v.logGroupNamePrefixes.is_some():
+        auto u2 = v.logGroupNamePrefixes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(bedrock_agentcore_control_json_str(x3))
+        parts.append("\"logGroupNamePrefixes\":" + bedrock_agentcore_control_json_arr(e3))
+    list[str] e4 = []
+    for x4 in v.serviceNames:
+        e4.append(bedrock_agentcore_control_json_str(x4))
+    parts.append("\"serviceNames\":" + bedrock_agentcore_control_json_arr(e4))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize ClusteringConfig to a compact JSON object (declaration order).
+def clustering_config_to_json(ClusteringConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.frequencies:
+        e0.append(x0.to_json())
+    parts.append("\"frequencies\":" + bedrock_agentcore_control_json_arr(e0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize CodeConfiguration to a compact JSON object (declaration order).
+def code_configuration_to_json(CodeConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"code\":" + v.code.to_json())
+    parts.append("\"runtime\":" + v.runtime.to_json())
+    list[str] e0 = []
+    for x0 in v.entryPoint:
+        e0.append(bedrock_agentcore_control_json_str(x0))
+    parts.append("\"entryPoint\":" + bedrock_agentcore_control_json_arr(e0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize CodeInterpreterNetworkConfiguration to a compact JSON object (declaration order).
+def code_interpreter_network_configuration_to_json(CodeInterpreterNetworkConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"networkMode\":" + v.networkMode.to_json())
+    if v.vpcConfig.is_some():
+        auto u0 = v.vpcConfig.unwrap()
+        parts.append("\"vpcConfig\":" + vpc_config_to_json(u0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize CoinbaseCdpRotationTargets to a compact JSON object (declaration order).
+def coinbase_cdp_rotation_targets_to_json(CoinbaseCdpRotationTargets v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.secrets:
+        e0.append(x0.to_json())
+    parts.append("\"secrets\":" + bedrock_agentcore_control_json_arr(e0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize ComputeConfiguration to a compact JSON object (declaration order).
+def compute_configuration_to_json(ComputeConfiguration v) -> str:
+    list[str] parts = []
+    if v.ec2Configuration.is_some():
+        auto u0 = v.ec2Configuration.unwrap()
+        parts.append("\"ec2Configuration\":" + ec2_configuration_to_json(u0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize Condition to a compact JSON object (declaration order).
+def condition_to_json(Condition v) -> str:
+    list[str] parts = []
+    if v.matchPrincipals.is_some():
+        auto u0 = v.matchPrincipals.unwrap()
+        parts.append("\"matchPrincipals\":" + match_principals_to_json(u0))
+    if v.matchPaths.is_some():
+        auto u1 = v.matchPaths.unwrap()
+        parts.append("\"matchPaths\":" + match_paths_to_json(u1))
+    if v.matchModels.is_some():
+        auto u2 = v.matchModels.unwrap()
+        parts.append("\"matchModels\":" + match_models_to_json(u2))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize ConfigurationBundleAction to a compact JSON object (declaration order).
+def configuration_bundle_action_to_json(ConfigurationBundleAction v) -> str:
+    list[str] parts = []
+    if v.staticOverride.is_some():
+        auto u0 = v.staticOverride.unwrap()
+        parts.append("\"staticOverride\":" + u0.to_json())
+    if v.weightedOverride.is_some():
+        auto u1 = v.weightedOverride.unwrap()
+        parts.append("\"weightedOverride\":" + weighted_override_to_json(u1))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize ConnectorConfiguration to a compact JSON object (declaration order).
+def connector_configuration_to_json(ConnectorConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + bedrock_agentcore_control_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + bedrock_agentcore_control_json_str(u0))
+    if v.parameterValues.is_some():
+        auto u1 = v.parameterValues.unwrap()
+        parts.append("\"parameterValues\":" + u1.to_json())
+    if v.parameterOverrides.is_some():
+        auto u2 = v.parameterOverrides.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"parameterOverrides\":" + bedrock_agentcore_control_json_arr(e3))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize ConnectorTargetConfiguration to a compact JSON object (declaration order).
+def connector_target_configuration_to_json(ConnectorTargetConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"source\":" + v.source.to_json())
+    if v.enabled.is_some():
+        auto u0 = v.enabled.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_agentcore_control_json_str(x1))
+        parts.append("\"enabled\":" + bedrock_agentcore_control_json_arr(e1))
+    if v.configurations.is_some():
+        auto u2 = v.configurations.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(connector_configuration_to_json(x3))
+        parts.append("\"configurations\":" + bedrock_agentcore_control_json_arr(e3))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize ConsentPortalIdpConfig to a compact JSON object (declaration order).
+def consent_portal_idp_config_to_json(ConsentPortalIdpConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"credentialProviderArn\":" + bedrock_agentcore_control_json_str(v.credentialProviderArn))
+    list[str] e0 = []
+    for x0 in v.scopes:
+        e0.append(bedrock_agentcore_control_json_str(x0))
+    parts.append("\"scopes\":" + bedrock_agentcore_control_json_arr(e0))
+    if v.audience.is_some():
+        auto u1 = v.audience.unwrap()
+        parts.append("\"audience\":" + bedrock_agentcore_control_json_str(u1))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize CredentialProvider to a compact JSON object (declaration order).
+def credential_provider_to_json(CredentialProvider v) -> str:
+    list[str] parts = []
+    if v.oauthCredentialProvider.is_some():
+        auto u0 = v.oauthCredentialProvider.unwrap()
+        parts.append("\"oauthCredentialProvider\":" + o_auth_credential_provider_to_json(u0))
+    if v.apiKeyCredentialProvider.is_some():
+        auto u1 = v.apiKeyCredentialProvider.unwrap()
+        parts.append("\"apiKeyCredentialProvider\":" + u1.to_json())
+    if v.iamCredentialProvider.is_some():
+        auto u2 = v.iamCredentialProvider.unwrap()
+        parts.append("\"iamCredentialProvider\":" + u2.to_json())
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize CredentialProviderConfiguration to a compact JSON object (declaration order).
+def credential_provider_configuration_to_json(CredentialProviderConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"credentialProviderType\":" + v.credentialProviderType.to_json())
+    if v.credentialProvider.is_some():
+        auto u0 = v.credentialProvider.unwrap()
+        parts.append("\"credentialProvider\":" + credential_provider_to_json(u0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize CredentialRotationConfig to a compact JSON object (declaration order).
+def credential_rotation_config_to_json(CredentialRotationConfig v) -> str:
+    list[str] parts = []
+    if v.coinbaseCDP.is_some():
+        auto u0 = v.coinbaseCDP.unwrap()
+        parts.append("\"coinbaseCDP\":" + coinbase_cdp_rotation_targets_to_json(u0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize CustomClaimValidationType to a compact JSON object (declaration order).
+def custom_claim_validation_type_to_json(CustomClaimValidationType v) -> str:
+    list[str] parts = []
+    parts.append("\"inboundTokenClaimName\":" + bedrock_agentcore_control_json_str(v.inboundTokenClaimName))
+    parts.append("\"inboundTokenClaimValueType\":" + v.inboundTokenClaimValueType.to_json())
+    parts.append("\"authorizingClaimMatchValue\":" + authorizing_claim_match_value_type_to_json(v.authorizingClaimMatchValue))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize CustomConfigurationInput to a compact JSON object (declaration order).
+def custom_configuration_input_to_json(CustomConfigurationInput v) -> str:
+    list[str] parts = []
+    if v.semanticOverride.is_some():
+        auto u0 = v.semanticOverride.unwrap()
+        parts.append("\"semanticOverride\":" + u0.to_json())
+    if v.summaryOverride.is_some():
+        auto u1 = v.summaryOverride.unwrap()
+        parts.append("\"summaryOverride\":" + u1.to_json())
+    if v.userPreferenceOverride.is_some():
+        auto u2 = v.userPreferenceOverride.unwrap()
+        parts.append("\"userPreferenceOverride\":" + u2.to_json())
+    if v.episodicOverride.is_some():
+        auto u3 = v.episodicOverride.unwrap()
+        parts.append("\"episodicOverride\":" + episodic_override_configuration_input_to_json(u3))
+    if v.selfManagedConfiguration.is_some():
+        auto u4 = v.selfManagedConfiguration.unwrap()
+        parts.append("\"selfManagedConfiguration\":" + self_managed_configuration_input_to_json(u4))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize CustomJWTAuthorizerConfiguration to a compact JSON object (declaration order).
+def custom_jwt_authorizer_configuration_to_json(CustomJWTAuthorizerConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"discoveryUrl\":" + bedrock_agentcore_control_json_str(v.discoveryUrl))
+    if v.allowedAudience.is_some():
+        auto u0 = v.allowedAudience.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_agentcore_control_json_str(x1))
+        parts.append("\"allowedAudience\":" + bedrock_agentcore_control_json_arr(e1))
+    if v.allowedClients.is_some():
+        auto u2 = v.allowedClients.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(bedrock_agentcore_control_json_str(x3))
+        parts.append("\"allowedClients\":" + bedrock_agentcore_control_json_arr(e3))
+    if v.allowedScopes.is_some():
+        auto u4 = v.allowedScopes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(bedrock_agentcore_control_json_str(x5))
+        parts.append("\"allowedScopes\":" + bedrock_agentcore_control_json_arr(e5))
+    if v.advertisedScopeMapping.is_some():
+        auto u6 = v.advertisedScopeMapping.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(bedrock_agentcore_control_json_str(k7) + ":" + bedrock_agentcore_control_json_str(u6[k7]))
+        parts.append("\"advertisedScopeMapping\":" + bedrock_agentcore_control_json_obj(m7))
+    if v.customClaims.is_some():
+        auto u8 = v.customClaims.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(custom_claim_validation_type_to_json(x9))
+        parts.append("\"customClaims\":" + bedrock_agentcore_control_json_arr(e9))
+    if v.privateEndpoint.is_some():
+        auto u10 = v.privateEndpoint.unwrap()
+        parts.append("\"privateEndpoint\":" + private_endpoint_to_json(u10))
+    if v.privateEndpointOverrides.is_some():
+        auto u11 = v.privateEndpointOverrides.unwrap()
+        list[str] e12 = []
+        for x12 in u11:
+            e12.append(private_endpoint_override_to_json(x12))
+        parts.append("\"privateEndpointOverrides\":" + bedrock_agentcore_control_json_arr(e12))
+    if v.allowedWorkloadConfiguration.is_some():
+        auto u13 = v.allowedWorkloadConfiguration.unwrap()
+        parts.append("\"allowedWorkloadConfiguration\":" + allowed_workload_configuration_to_json(u13))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize CustomMemoryStrategyInput to a compact JSON object (declaration order).
+def custom_memory_strategy_input_to_json(CustomMemoryStrategyInput v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + bedrock_agentcore_control_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + bedrock_agentcore_control_json_str(u0))
+    if v.namespaces.is_some():
+        auto u1 = v.namespaces.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(bedrock_agentcore_control_json_str(x2))
+        parts.append("\"namespaces\":" + bedrock_agentcore_control_json_arr(e2))
+    if v.namespaceTemplates.is_some():
+        auto u3 = v.namespaceTemplates.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(bedrock_agentcore_control_json_str(x4))
+        parts.append("\"namespaceTemplates\":" + bedrock_agentcore_control_json_arr(e4))
+    if v.configuration.is_some():
+        auto u5 = v.configuration.unwrap()
+        parts.append("\"configuration\":" + custom_configuration_input_to_json(u5))
+    if v.memoryRecordSchema.is_some():
+        auto u6 = v.memoryRecordSchema.unwrap()
+        parts.append("\"memoryRecordSchema\":" + memory_record_schema_to_json(u6))
+    if v.recordExpirySpecification.is_some():
+        auto u7 = v.recordExpirySpecification.unwrap()
+        parts.append("\"recordExpirySpecification\":" + u7.to_json())
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize CustomOauth2ProviderConfigInput to a compact JSON object (declaration order).
+def custom_oauth2_provider_config_input_to_json(CustomOauth2ProviderConfigInput v) -> str:
+    list[str] parts = []
+    parts.append("\"oauthDiscovery\":" + oauth2_discovery_to_json(v.oauthDiscovery))
+    if v.clientId.is_some():
+        auto u0 = v.clientId.unwrap()
+        parts.append("\"clientId\":" + bedrock_agentcore_control_json_str(u0))
+    if v.clientSecret.is_some():
+        auto u1 = v.clientSecret.unwrap()
+        parts.append("\"clientSecret\":" + bedrock_agentcore_control_json_str(u1))
+    if v.clientSecretConfig.is_some():
+        auto u2 = v.clientSecretConfig.unwrap()
+        parts.append("\"clientSecretConfig\":" + u2.to_json())
+    if v.clientSecretSource.is_some():
+        auto u3 = v.clientSecretSource.unwrap()
+        parts.append("\"clientSecretSource\":" + u3.to_json())
+    if v.onBehalfOfTokenExchangeConfig.is_some():
+        auto u4 = v.onBehalfOfTokenExchangeConfig.unwrap()
+        parts.append("\"onBehalfOfTokenExchangeConfig\":" + on_behalf_of_token_exchange_config_type_to_json(u4))
+    if v.clientAuthenticationMethod.is_some():
+        auto u5 = v.clientAuthenticationMethod.unwrap()
+        parts.append("\"clientAuthenticationMethod\":" + u5.to_json())
+    if v.privateKeyJwtConfig.is_some():
+        auto u6 = v.privateKeyJwtConfig.unwrap()
+        parts.append("\"privateKeyJwtConfig\":" + private_key_jwt_config_to_json(u6))
+    if v.privateEndpoint.is_some():
+        auto u7 = v.privateEndpoint.unwrap()
+        parts.append("\"privateEndpoint\":" + private_endpoint_to_json(u7))
+    if v.privateEndpointOverrides.is_some():
+        auto u8 = v.privateEndpointOverrides.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(private_endpoint_override_to_json(x9))
+        parts.append("\"privateEndpointOverrides\":" + bedrock_agentcore_control_json_arr(e9))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize CustomReflectionConfigurationInput to a compact JSON object (declaration order).
+def custom_reflection_configuration_input_to_json(CustomReflectionConfigurationInput v) -> str:
+    list[str] parts = []
+    if v.episodicReflectionOverride.is_some():
+        auto u0 = v.episodicReflectionOverride.unwrap()
+        parts.append("\"episodicReflectionOverride\":" + episodic_override_reflection_configuration_input_to_json(u0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize DataSourceConfig to a compact JSON object (declaration order).
+def data_source_config_to_json(DataSourceConfig v) -> str:
+    list[str] parts = []
+    if v.cloudWatchLogs.is_some():
+        auto u0 = v.cloudWatchLogs.unwrap()
+        parts.append("\"cloudWatchLogs\":" + cloud_watch_logs_input_config_to_json(u0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize DataSourceType to a compact JSON object (declaration order).
+def data_source_type_to_json(DataSourceType v) -> str:
+    list[str] parts = []
+    if v.inlineExamples.is_some():
+        auto u0 = v.inlineExamples.unwrap()
+        parts.append("\"inlineExamples\":" + inline_examples_source_to_json(u0))
+    if v.s3Source.is_some():
+        auto u1 = v.s3Source.unwrap()
+        parts.append("\"s3Source\":" + u1.to_json())
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize DerivedEvaluatorConfig to a compact JSON object (declaration order).
+def derived_evaluator_config_to_json(DerivedEvaluatorConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"baseEvaluatorId\":" + bedrock_agentcore_control_json_str(v.baseEvaluatorId))
+    parts.append("\"modelConfig\":" + evaluator_model_config_to_json(v.modelConfig))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize DimensionRatingScale to a compact JSON object (declaration order).
+def dimension_rating_scale_to_json(DimensionRatingScale v) -> str:
+    list[str] parts = []
+    if v.numerical.is_some():
+        auto u0 = v.numerical.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"numerical\":" + bedrock_agentcore_control_json_arr(e1))
+    if v.categorical.is_some():
+        auto u2 = v.categorical.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"categorical\":" + bedrock_agentcore_control_json_arr(e3))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize Ec2Configuration to a compact JSON object (declaration order).
+def ec2_configuration_to_json(Ec2Configuration v) -> str:
+    list[str] parts = []
+    parts.append("\"launchTemplateSource\":" + launch_template_source_to_json(v.launchTemplateSource))
+    parts.append("\"vpcConfiguration\":" + vpc_configuration_to_json(v.vpcConfiguration))
+    if v.volumes.is_some():
+        auto u0 = v.volumes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"volumes\":" + bedrock_agentcore_control_json_arr(e1))
+    if v.lifecycleConfiguration.is_some():
+        auto u2 = v.lifecycleConfiguration.unwrap()
+        parts.append("\"lifecycleConfiguration\":" + u2.to_json())
+    if v.rootVolume.is_some():
+        auto u3 = v.rootVolume.unwrap()
+        parts.append("\"rootVolume\":" + u3.to_json())
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize EpisodicMemoryStrategyInput to a compact JSON object (declaration order).
+def episodic_memory_strategy_input_to_json(EpisodicMemoryStrategyInput v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + bedrock_agentcore_control_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + bedrock_agentcore_control_json_str(u0))
+    if v.namespaces.is_some():
+        auto u1 = v.namespaces.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(bedrock_agentcore_control_json_str(x2))
+        parts.append("\"namespaces\":" + bedrock_agentcore_control_json_arr(e2))
+    if v.namespaceTemplates.is_some():
+        auto u3 = v.namespaceTemplates.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(bedrock_agentcore_control_json_str(x4))
+        parts.append("\"namespaceTemplates\":" + bedrock_agentcore_control_json_arr(e4))
+    if v.reflectionConfiguration.is_some():
+        auto u5 = v.reflectionConfiguration.unwrap()
+        parts.append("\"reflectionConfiguration\":" + episodic_reflection_configuration_input_to_json(u5))
+    if v.memoryRecordSchema.is_some():
+        auto u6 = v.memoryRecordSchema.unwrap()
+        parts.append("\"memoryRecordSchema\":" + memory_record_schema_to_json(u6))
+    if v.recordExpirySpecification.is_some():
+        auto u7 = v.recordExpirySpecification.unwrap()
+        parts.append("\"recordExpirySpecification\":" + u7.to_json())
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize EpisodicOverrideConfigurationInput to a compact JSON object (declaration order).
+def episodic_override_configuration_input_to_json(EpisodicOverrideConfigurationInput v) -> str:
+    list[str] parts = []
+    if v.extraction.is_some():
+        auto u0 = v.extraction.unwrap()
+        parts.append("\"extraction\":" + u0.to_json())
+    if v.consolidation.is_some():
+        auto u1 = v.consolidation.unwrap()
+        parts.append("\"consolidation\":" + u1.to_json())
+    if v.reflection.is_some():
+        auto u2 = v.reflection.unwrap()
+        parts.append("\"reflection\":" + episodic_override_reflection_configuration_input_to_json(u2))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize EpisodicOverrideReflectionConfigurationInput to a compact JSON object (declaration order).
+def episodic_override_reflection_configuration_input_to_json(EpisodicOverrideReflectionConfigurationInput v) -> str:
+    list[str] parts = []
+    parts.append("\"appendToPrompt\":" + bedrock_agentcore_control_json_str(v.appendToPrompt))
+    parts.append("\"modelId\":" + bedrock_agentcore_control_json_str(v.modelId))
+    if v.namespaces.is_some():
+        auto u0 = v.namespaces.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_agentcore_control_json_str(x1))
+        parts.append("\"namespaces\":" + bedrock_agentcore_control_json_arr(e1))
+    if v.namespaceTemplates.is_some():
+        auto u2 = v.namespaceTemplates.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(bedrock_agentcore_control_json_str(x3))
+        parts.append("\"namespaceTemplates\":" + bedrock_agentcore_control_json_arr(e3))
+    if v.memoryRecordSchema.is_some():
+        auto u4 = v.memoryRecordSchema.unwrap()
+        parts.append("\"memoryRecordSchema\":" + memory_record_schema_to_json(u4))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize EpisodicReflectionConfigurationInput to a compact JSON object (declaration order).
+def episodic_reflection_configuration_input_to_json(EpisodicReflectionConfigurationInput v) -> str:
+    list[str] parts = []
+    if v.namespaces.is_some():
+        auto u0 = v.namespaces.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_agentcore_control_json_str(x1))
+        parts.append("\"namespaces\":" + bedrock_agentcore_control_json_arr(e1))
+    if v.namespaceTemplates.is_some():
+        auto u2 = v.namespaceTemplates.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(bedrock_agentcore_control_json_str(x3))
+        parts.append("\"namespaceTemplates\":" + bedrock_agentcore_control_json_arr(e3))
+    if v.memoryRecordSchema.is_some():
+        auto u4 = v.memoryRecordSchema.unwrap()
+        parts.append("\"memoryRecordSchema\":" + memory_record_schema_to_json(u4))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize EvaluationDimension to a compact JSON object (declaration order).
+def evaluation_dimension_to_json(EvaluationDimension v) -> str:
+    list[str] parts = []
+    parts.append("\"dimensionName\":" + bedrock_agentcore_control_json_str(v.dimensionName))
+    parts.append("\"dimensionInstruction\":" + bedrock_agentcore_control_json_str(v.dimensionInstruction))
+    parts.append("\"dimensionRatingScale\":" + dimension_rating_scale_to_json(v.dimensionRatingScale))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize EvaluatorConfig to a compact JSON object (declaration order).
+def evaluator_config_to_json(EvaluatorConfig v) -> str:
+    list[str] parts = []
+    if v.llmAsAJudge.is_some():
+        auto u0 = v.llmAsAJudge.unwrap()
+        parts.append("\"llmAsAJudge\":" + llm_as_a_judge_evaluator_config_to_json(u0))
+    if v.codeBased.is_some():
+        auto u1 = v.codeBased.unwrap()
+        parts.append("\"codeBased\":" + u1.to_json())
+    if v.derived.is_some():
+        auto u2 = v.derived.unwrap()
+        parts.append("\"derived\":" + derived_evaluator_config_to_json(u2))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize EvaluatorModelConfig to a compact JSON object (declaration order).
+def evaluator_model_config_to_json(EvaluatorModelConfig v) -> str:
+    list[str] parts = []
+    if v.bedrockEvaluatorModelConfig.is_some():
+        auto u0 = v.bedrockEvaluatorModelConfig.unwrap()
+        parts.append("\"bedrockEvaluatorModelConfig\":" + bedrock_evaluator_model_config_to_json(u0))
+    if v.responsesEvaluatorModelConfig.is_some():
+        auto u1 = v.responsesEvaluatorModelConfig.unwrap()
+        parts.append("\"responsesEvaluatorModelConfig\":" + u1.to_json())
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize ExtractionConfig to a compact JSON object (declaration order).
+def extraction_config_to_json(ExtractionConfig v) -> str:
+    list[str] parts = []
+    if v.llmExtractionConfig.is_some():
+        auto u0 = v.llmExtractionConfig.unwrap()
+        parts.append("\"llmExtractionConfig\":" + llm_extraction_config_to_json(u0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize Fallback to a compact JSON object (declaration order).
+def fallback_to_json(Fallback v) -> str:
+    list[str] parts = []
+    if v.triggerOn.is_some():
+        auto u0 = v.triggerOn.unwrap()
+        parts.append("\"triggerOn\":" + fallback_triggers_to_json(u0))
+    if v.firstByteTimeoutMilliseconds.is_some():
+        auto u1 = v.firstByteTimeoutMilliseconds.unwrap()
+        parts.append("\"firstByteTimeoutMilliseconds\":" + str(u1))
+    if v.circuitBreaker.is_some():
+        auto u2 = v.circuitBreaker.unwrap()
+        parts.append("\"circuitBreaker\":" + u2.to_json())
+    list[str] e3 = []
+    for x3 in v.targetFallback:
+        e3.append(fallback_target_to_json(x3))
+    parts.append("\"targetFallback\":" + bedrock_agentcore_control_json_arr(e3))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize FallbackTarget to a compact JSON object (declaration order).
+def fallback_target_to_json(FallbackTarget v) -> str:
+    list[str] parts = []
+    parts.append("\"targetName\":" + bedrock_agentcore_control_json_str(v.targetName))
+    if v.model.is_some():
+        auto u0 = v.model.unwrap()
+        parts.append("\"model\":" + bedrock_agentcore_control_json_str(u0))
+    if v.triggerOn.is_some():
+        auto u1 = v.triggerOn.unwrap()
+        parts.append("\"triggerOn\":" + fallback_triggers_to_json(u1))
+    if v.firstByteTimeoutMilliseconds.is_some():
+        auto u2 = v.firstByteTimeoutMilliseconds.unwrap()
+        parts.append("\"firstByteTimeoutMilliseconds\":" + str(u2))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize FallbackTriggers to a compact JSON object (declaration order).
+def fallback_triggers_to_json(FallbackTriggers v) -> str:
+    list[str] parts = []
+    if v.statusCodes.is_some():
+        auto u0 = v.statusCodes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_agentcore_control_json_str(x1))
+        parts.append("\"statusCodes\":" + bedrock_agentcore_control_json_arr(e1))
+    if v.errors.is_some():
+        auto u2 = v.errors.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"errors\":" + bedrock_agentcore_control_json_arr(e3))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize FromUrlSynchronizationConfiguration to a compact JSON object (declaration order).
+def from_url_synchronization_configuration_to_json(FromUrlSynchronizationConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"url\":" + bedrock_agentcore_control_json_str(v.url))
+    if v.credentialProviderConfigurations.is_some():
+        auto u0 = v.credentialProviderConfigurations.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(registry_record_credential_provider_configuration_to_json(x1))
+        parts.append("\"credentialProviderConfigurations\":" + bedrock_agentcore_control_json_arr(e1))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize GatewayInterceptorConfiguration to a compact JSON object (declaration order).
+def gateway_interceptor_configuration_to_json(GatewayInterceptorConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"interceptor\":" + v.interceptor.to_json())
+    list[str] e0 = []
+    for x0 in v.interceptionPoints:
+        e0.append(x0.to_json())
+    parts.append("\"interceptionPoints\":" + bedrock_agentcore_control_json_arr(e0))
+    if v.inputConfiguration.is_some():
+        auto u1 = v.inputConfiguration.unwrap()
+        parts.append("\"inputConfiguration\":" + interceptor_input_configuration_to_json(u1))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize GatewayProtocolConfiguration to a compact JSON object (declaration order).
+def gateway_protocol_configuration_to_json(GatewayProtocolConfiguration v) -> str:
+    list[str] parts = []
+    if v.mcp.is_some():
+        auto u0 = v.mcp.unwrap()
+        parts.append("\"mcp\":" + mcp_gateway_configuration_to_json(u0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize HarnessAgentCoreGatewayConfig to a compact JSON object (declaration order).
+def harness_agent_core_gateway_config_to_json(HarnessAgentCoreGatewayConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"gatewayArn\":" + bedrock_agentcore_control_json_str(v.gatewayArn))
+    if v.outboundAuth.is_some():
+        auto u0 = v.outboundAuth.unwrap()
+        parts.append("\"outboundAuth\":" + harness_gateway_outbound_auth_to_json(u0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize HarnessAgentCoreMemoryConfiguration to a compact JSON object (declaration order).
+def harness_agent_core_memory_configuration_to_json(HarnessAgentCoreMemoryConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"arn\":" + bedrock_agentcore_control_json_str(v.arn))
+    if v.actorId.is_some():
+        auto u0 = v.actorId.unwrap()
+        parts.append("\"actorId\":" + bedrock_agentcore_control_json_str(u0))
+    if v.messagesCount.is_some():
+        auto u1 = v.messagesCount.unwrap()
+        parts.append("\"messagesCount\":" + str(u1))
+    if v.retrievalConfig.is_some():
+        auto u2 = v.retrievalConfig.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(bedrock_agentcore_control_json_str(k3) + ":" + u2[k3].to_json())
+        parts.append("\"retrievalConfig\":" + bedrock_agentcore_control_json_obj(m3))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize HarnessAgentCoreRuntimeEnvironmentRequest to a compact JSON object (declaration order).
+def harness_agent_core_runtime_environment_request_to_json(HarnessAgentCoreRuntimeEnvironmentRequest v) -> str:
+    list[str] parts = []
+    if v.lifecycleConfiguration.is_some():
+        auto u0 = v.lifecycleConfiguration.unwrap()
+        parts.append("\"lifecycleConfiguration\":" + u0.to_json())
+    if v.networkConfiguration.is_some():
+        auto u1 = v.networkConfiguration.unwrap()
+        parts.append("\"networkConfiguration\":" + network_configuration_to_json(u1))
+    if v.filesystemConfigurations.is_some():
+        auto u2 = v.filesystemConfigurations.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"filesystemConfigurations\":" + bedrock_agentcore_control_json_arr(e3))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize HarnessEnvironmentProviderRequest to a compact JSON object (declaration order).
+def harness_environment_provider_request_to_json(HarnessEnvironmentProviderRequest v) -> str:
+    list[str] parts = []
+    if v.agentCoreRuntimeEnvironment.is_some():
+        auto u0 = v.agentCoreRuntimeEnvironment.unwrap()
+        parts.append("\"agentCoreRuntimeEnvironment\":" + harness_agent_core_runtime_environment_request_to_json(u0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize HarnessGatewayOutboundAuth to a compact JSON object (declaration order).
+def harness_gateway_outbound_auth_to_json(HarnessGatewayOutboundAuth v) -> str:
+    list[str] parts = []
+    if v.awsIam.is_some():
+        auto u0 = v.awsIam.unwrap()
+        parts.append("\"awsIam\":" + u0.to_json())
+    if v.none.is_some():
+        auto u1 = v.none.unwrap()
+        parts.append("\"none\":" + u1.to_json())
+    if v.oauth.is_some():
+        auto u2 = v.oauth.unwrap()
+        parts.append("\"oauth\":" + o_auth_credential_provider_to_json(u2))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize HarnessManagedMemoryConfiguration to a compact JSON object (declaration order).
+def harness_managed_memory_configuration_to_json(HarnessManagedMemoryConfiguration v) -> str:
+    list[str] parts = []
+    if v.arn.is_some():
+        auto u0 = v.arn.unwrap()
+        parts.append("\"arn\":" + bedrock_agentcore_control_json_str(u0))
+    if v.strategies.is_some():
+        auto u1 = v.strategies.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"strategies\":" + bedrock_agentcore_control_json_arr(e2))
+    if v.eventExpiryDuration.is_some():
+        auto u3 = v.eventExpiryDuration.unwrap()
+        parts.append("\"eventExpiryDuration\":" + str(u3))
+    if v.encryptionKeyArn.is_some():
+        auto u4 = v.encryptionKeyArn.unwrap()
+        parts.append("\"encryptionKeyArn\":" + bedrock_agentcore_control_json_str(u4))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize HarnessMemoryConfiguration to a compact JSON object (declaration order).
+def harness_memory_configuration_to_json(HarnessMemoryConfiguration v) -> str:
+    list[str] parts = []
+    if v.agentCoreMemoryConfiguration.is_some():
+        auto u0 = v.agentCoreMemoryConfiguration.unwrap()
+        parts.append("\"agentCoreMemoryConfiguration\":" + harness_agent_core_memory_configuration_to_json(u0))
+    if v.managedMemoryConfiguration.is_some():
+        auto u1 = v.managedMemoryConfiguration.unwrap()
+        parts.append("\"managedMemoryConfiguration\":" + harness_managed_memory_configuration_to_json(u1))
+    if v.disabled.is_some():
+        auto u2 = v.disabled.unwrap()
+        parts.append("\"disabled\":" + u2.to_json())
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize HarnessRemoteMcpConfig to a compact JSON object (declaration order).
+def harness_remote_mcp_config_to_json(HarnessRemoteMcpConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"url\":" + bedrock_agentcore_control_json_str(v.url))
+    if v.headers.is_some():
+        auto u0 = v.headers.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(bedrock_agentcore_control_json_str(k1) + ":" + bedrock_agentcore_control_json_str(u0[k1]))
+        parts.append("\"headers\":" + bedrock_agentcore_control_json_obj(m1))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize HarnessSkill to a compact JSON object (declaration order).
+def harness_skill_to_json(HarnessSkill v) -> str:
+    list[str] parts = []
+    if v.path.is_some():
+        auto u0 = v.path.unwrap()
+        parts.append("\"path\":" + bedrock_agentcore_control_json_str(u0))
+    if v.s3.is_some():
+        auto u1 = v.s3.unwrap()
+        parts.append("\"s3\":" + u1.to_json())
+    if v.git.is_some():
+        auto u2 = v.git.unwrap()
+        parts.append("\"git\":" + u2.to_json())
+    if v.awsSkills.is_some():
+        auto u3 = v.awsSkills.unwrap()
+        parts.append("\"awsSkills\":" + harness_skill_aws_skills_source_to_json(u3))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize HarnessSkillAwsSkillsSource to a compact JSON object (declaration order).
+def harness_skill_aws_skills_source_to_json(HarnessSkillAwsSkillsSource v) -> str:
+    list[str] parts = []
+    if v.paths.is_some():
+        auto u0 = v.paths.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_agentcore_control_json_str(x1))
+        parts.append("\"paths\":" + bedrock_agentcore_control_json_arr(e1))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize HarnessTool to a compact JSON object (declaration order).
+def harness_tool_to_json(HarnessTool v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + v.type.to_json())
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + bedrock_agentcore_control_json_str(u0))
+    if v.config.is_some():
+        auto u1 = v.config.unwrap()
+        parts.append("\"config\":" + harness_tool_configuration_to_json(u1))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize HarnessToolConfiguration to a compact JSON object (declaration order).
+def harness_tool_configuration_to_json(HarnessToolConfiguration v) -> str:
+    list[str] parts = []
+    if v.remoteMcp.is_some():
+        auto u0 = v.remoteMcp.unwrap()
+        parts.append("\"remoteMcp\":" + harness_remote_mcp_config_to_json(u0))
+    if v.agentCoreBrowser.is_some():
+        auto u1 = v.agentCoreBrowser.unwrap()
+        parts.append("\"agentCoreBrowser\":" + u1.to_json())
+    if v.agentCoreGateway.is_some():
+        auto u2 = v.agentCoreGateway.unwrap()
+        parts.append("\"agentCoreGateway\":" + harness_agent_core_gateway_config_to_json(u2))
+    if v.inlineFunction.is_some():
+        auto u3 = v.inlineFunction.unwrap()
+        parts.append("\"inlineFunction\":" + u3.to_json())
+    if v.agentCoreCodeInterpreter.is_some():
+        auto u4 = v.agentCoreCodeInterpreter.unwrap()
+        parts.append("\"agentCoreCodeInterpreter\":" + u4.to_json())
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize HttpConnectorTargetConfiguration to a compact JSON object (declaration order).
+def http_connector_target_configuration_to_json(HttpConnectorTargetConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"source\":" + v.source.to_json())
+    if v.parameters.is_some():
+        auto u0 = v.parameters.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(bedrock_agentcore_control_json_str(k1) + ":" + bedrock_agentcore_control_json_str(u0[k1]))
+        parts.append("\"parameters\":" + bedrock_agentcore_control_json_obj(m1))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize HttpTargetConfiguration to a compact JSON object (declaration order).
+def http_target_configuration_to_json(HttpTargetConfiguration v) -> str:
+    list[str] parts = []
+    if v.agentcoreRuntime.is_some():
+        auto u0 = v.agentcoreRuntime.unwrap()
+        parts.append("\"agentcoreRuntime\":" + u0.to_json())
+    if v.passthrough.is_some():
+        auto u1 = v.passthrough.unwrap()
+        parts.append("\"passthrough\":" + passthrough_target_configuration_to_json(u1))
+    if v.connector.is_some():
+        auto u2 = v.connector.unwrap()
+        parts.append("\"connector\":" + http_connector_target_configuration_to_json(u2))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize InferenceConfiguration to a compact JSON object (declaration order).
+def inference_configuration_to_json(InferenceConfiguration v) -> str:
+    list[str] parts = []
+    if v.maxTokens.is_some():
+        auto u0 = v.maxTokens.unwrap()
+        parts.append("\"maxTokens\":" + str(u0))
+    if v.temperature.is_some():
+        auto u1 = v.temperature.unwrap()
+        parts.append("\"temperature\":" + str(u1))
+    if v.topP.is_some():
+        auto u2 = v.topP.unwrap()
+        parts.append("\"topP\":" + str(u2))
+    if v.stopSequences.is_some():
+        auto u3 = v.stopSequences.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(bedrock_agentcore_control_json_str(x4))
+        parts.append("\"stopSequences\":" + bedrock_agentcore_control_json_arr(e4))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize InferenceOperationConfiguration to a compact JSON object (declaration order).
+def inference_operation_configuration_to_json(InferenceOperationConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"path\":" + bedrock_agentcore_control_json_str(v.path))
+    if v.providerPath.is_some():
+        auto u0 = v.providerPath.unwrap()
+        parts.append("\"providerPath\":" + bedrock_agentcore_control_json_str(u0))
+    if v.models.is_some():
+        auto u1 = v.models.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"models\":" + bedrock_agentcore_control_json_arr(e2))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize InferenceProviderTargetConfiguration to a compact JSON object (declaration order).
+def inference_provider_target_configuration_to_json(InferenceProviderTargetConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"endpoint\":" + bedrock_agentcore_control_json_str(v.endpoint))
+    if v.modelMapping.is_some():
+        auto u0 = v.modelMapping.unwrap()
+        parts.append("\"modelMapping\":" + u0.to_json())
+    if v.operations.is_some():
+        auto u1 = v.operations.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(inference_operation_configuration_to_json(x2))
+        parts.append("\"operations\":" + bedrock_agentcore_control_json_arr(e2))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize InferenceTargetConfiguration to a compact JSON object (declaration order).
+def inference_target_configuration_to_json(InferenceTargetConfiguration v) -> str:
+    list[str] parts = []
+    if v.connector.is_some():
+        auto u0 = v.connector.unwrap()
+        parts.append("\"connector\":" + u0.to_json())
+    if v.provider.is_some():
+        auto u1 = v.provider.unwrap()
+        parts.append("\"provider\":" + inference_provider_target_configuration_to_json(u1))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize InlineExamplesSource to a compact JSON object (declaration order).
+def inline_examples_source_to_json(InlineExamplesSource v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.examples:
+        e0.append(x0.to_json())
+    parts.append("\"examples\":" + bedrock_agentcore_control_json_arr(e0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize InstanceRequirements to a compact JSON object (declaration order).
+def instance_requirements_to_json(InstanceRequirements v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.allowedInstanceTypes:
+        e0.append(bedrock_agentcore_control_json_str(x0))
+    parts.append("\"allowedInstanceTypes\":" + bedrock_agentcore_control_json_arr(e0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize InterceptorInputConfiguration to a compact JSON object (declaration order).
+def interceptor_input_configuration_to_json(InterceptorInputConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"passRequestHeaders\":" + json.dumps(JsonValue.Bool(v.passRequestHeaders)))
+    if v.payloadFilter.is_some():
+        auto u0 = v.payloadFilter.unwrap()
+        parts.append("\"payloadFilter\":" + interceptor_payload_filter_to_json(u0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize InterceptorPayloadFilter to a compact JSON object (declaration order).
+def interceptor_payload_filter_to_json(InterceptorPayloadFilter v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.exclude:
+        e0.append(x0.to_json())
+    parts.append("\"exclude\":" + bedrock_agentcore_control_json_arr(e0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize KinesisResource to a compact JSON object (declaration order).
+def kinesis_resource_to_json(KinesisResource v) -> str:
+    list[str] parts = []
+    parts.append("\"dataStreamArn\":" + bedrock_agentcore_control_json_str(v.dataStreamArn))
+    list[str] e0 = []
+    for x0 in v.contentConfigurations:
+        e0.append(x0.to_json())
+    parts.append("\"contentConfigurations\":" + bedrock_agentcore_control_json_arr(e0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize LaunchParameters to a compact JSON object (declaration order).
+def launch_parameters_to_json(LaunchParameters v) -> str:
+    list[str] parts = []
+    parts.append("\"operatingSystem\":" + v.operatingSystem.to_json())
+    parts.append("\"instanceRequirements\":" + instance_requirements_to_json(v.instanceRequirements))
+    if v.ephemeralVolumes.is_some():
+        auto u0 = v.ephemeralVolumes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ephemeralVolumes\":" + bedrock_agentcore_control_json_arr(e1))
+    if v.monitoring.is_some():
+        auto u2 = v.monitoring.unwrap()
+        parts.append("\"monitoring\":" + u2.to_json())
+    if v.licenseSpecifications.is_some():
+        auto u3 = v.licenseSpecifications.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"licenseSpecifications\":" + bedrock_agentcore_control_json_arr(e4))
+    if v.capacityReservationSpecification.is_some():
+        auto u5 = v.capacityReservationSpecification.unwrap()
+        parts.append("\"capacityReservationSpecification\":" + u5.to_json())
+    if v.sshKeyName.is_some():
+        auto u6 = v.sshKeyName.unwrap()
+        parts.append("\"sshKeyName\":" + bedrock_agentcore_control_json_str(u6))
+    if v.instanceProfileArn.is_some():
+        auto u7 = v.instanceProfileArn.unwrap()
+        parts.append("\"instanceProfileArn\":" + bedrock_agentcore_control_json_str(u7))
+    if v.propagatedTags.is_some():
+        auto u8 = v.propagatedTags.unwrap()
+        list[str] m9 = []
+        for k9 in sorted(u8.keys()):
+            m9.append(bedrock_agentcore_control_json_str(k9) + ":" + bedrock_agentcore_control_json_str(u8[k9]))
+        parts.append("\"propagatedTags\":" + bedrock_agentcore_control_json_obj(m9))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize LaunchTemplateSource to a compact JSON object (declaration order).
+def launch_template_source_to_json(LaunchTemplateSource v) -> str:
+    list[str] parts = []
+    if v.launchParameters.is_some():
+        auto u0 = v.launchParameters.unwrap()
+        parts.append("\"launchParameters\":" + launch_parameters_to_json(u0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize LimitEntry to a compact JSON object (declaration order).
+def limit_entry_to_json(LimitEntry v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.dimensions.keys()):
+        m0.append(bedrock_agentcore_control_json_str(k0) + ":" + bedrock_agentcore_control_json_str(v.dimensions[k0]))
+    parts.append("\"dimensions\":" + bedrock_agentcore_control_json_obj(m0))
+    if v.requests.is_some():
+        auto u1 = v.requests.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"requests\":" + bedrock_agentcore_control_json_arr(e2))
+    if v.tokens.is_some():
+        auto u3 = v.tokens.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"tokens\":" + bedrock_agentcore_control_json_arr(e4))
+    if v.connections.is_some():
+        auto u5 = v.connections.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"connections\":" + bedrock_agentcore_control_json_arr(e6))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize LlmAsAJudgeEvaluatorConfig to a compact JSON object (declaration order).
+def llm_as_a_judge_evaluator_config_to_json(LlmAsAJudgeEvaluatorConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"instructions\":" + bedrock_agentcore_control_json_str(v.instructions))
+    parts.append("\"ratingScale\":" + rating_scale_to_json(v.ratingScale))
+    parts.append("\"modelConfig\":" + evaluator_model_config_to_json(v.modelConfig))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize LlmExtractionConfig to a compact JSON object (declaration order).
+def llm_extraction_config_to_json(LlmExtractionConfig v) -> str:
+    list[str] parts = []
+    if v.llmExtractionInstruction.is_some():
+        auto u0 = v.llmExtractionInstruction.unwrap()
+        parts.append("\"llmExtractionInstruction\":" + bedrock_agentcore_control_json_str(u0))
+    parts.append("\"definition\":" + bedrock_agentcore_control_json_str(v.definition))
+    if v.validation.is_some():
+        auto u1 = v.validation.unwrap()
+        parts.append("\"validation\":" + validation_to_json(u1))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize MCPGatewayConfiguration to a compact JSON object (declaration order).
+def mcp_gateway_configuration_to_json(MCPGatewayConfiguration v) -> str:
+    list[str] parts = []
+    if v.supportedVersions.is_some():
+        auto u0 = v.supportedVersions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_agentcore_control_json_str(x1))
+        parts.append("\"supportedVersions\":" + bedrock_agentcore_control_json_arr(e1))
+    if v.instructions.is_some():
+        auto u2 = v.instructions.unwrap()
+        parts.append("\"instructions\":" + bedrock_agentcore_control_json_str(u2))
+    if v.searchType.is_some():
+        auto u3 = v.searchType.unwrap()
+        parts.append("\"searchType\":" + bedrock_agentcore_control_json_str(u3))
+    if v.sessionConfiguration.is_some():
+        auto u4 = v.sessionConfiguration.unwrap()
+        parts.append("\"sessionConfiguration\":" + u4.to_json())
+    if v.streamingConfiguration.is_some():
+        auto u5 = v.streamingConfiguration.unwrap()
+        parts.append("\"streamingConfiguration\":" + u5.to_json())
+    if v.disableMcpListToolsPagination.is_some():
+        auto u6 = v.disableMcpListToolsPagination.unwrap()
+        parts.append("\"disableMcpListToolsPagination\":" + json.dumps(JsonValue.Bool(u6)))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize ManagedVpcResource to a compact JSON object (declaration order).
+def managed_vpc_resource_to_json(ManagedVpcResource v) -> str:
+    list[str] parts = []
+    parts.append("\"vpcIdentifier\":" + bedrock_agentcore_control_json_str(v.vpcIdentifier))
+    list[str] e0 = []
+    for x0 in v.subnetIds:
+        e0.append(bedrock_agentcore_control_json_str(x0))
+    parts.append("\"subnetIds\":" + bedrock_agentcore_control_json_arr(e0))
+    parts.append("\"endpointIpAddressType\":" + v.endpointIpAddressType.to_json())
+    if v.securityGroupIds.is_some():
+        auto u1 = v.securityGroupIds.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(bedrock_agentcore_control_json_str(x2))
+        parts.append("\"securityGroupIds\":" + bedrock_agentcore_control_json_arr(e2))
+    if v.tags.is_some():
+        auto u3 = v.tags.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(bedrock_agentcore_control_json_str(k4) + ":" + bedrock_agentcore_control_json_str(u3[k4]))
+        parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m4))
+    if v.routingDomain.is_some():
+        auto u5 = v.routingDomain.unwrap()
+        parts.append("\"routingDomain\":" + bedrock_agentcore_control_json_str(u5))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize MatchModels to a compact JSON object (declaration order).
+def match_models_to_json(MatchModels v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.anyOf:
+        e0.append(x0.to_json())
+    parts.append("\"anyOf\":" + bedrock_agentcore_control_json_arr(e0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize MatchPaths to a compact JSON object (declaration order).
+def match_paths_to_json(MatchPaths v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.anyOf:
+        e0.append(bedrock_agentcore_control_json_str(x0))
+    parts.append("\"anyOf\":" + bedrock_agentcore_control_json_arr(e0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize MatchPrincipals to a compact JSON object (declaration order).
+def match_principals_to_json(MatchPrincipals v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.anyOf:
+        e0.append(x0.to_json())
+    parts.append("\"anyOf\":" + bedrock_agentcore_control_json_arr(e0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize McpLambdaTargetConfiguration to a compact JSON object (declaration order).
+def mcp_lambda_target_configuration_to_json(McpLambdaTargetConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"lambdaArn\":" + bedrock_agentcore_control_json_str(v.lambdaArn))
+    parts.append("\"toolSchema\":" + tool_schema_to_json(v.toolSchema))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize McpTargetConfiguration to a compact JSON object (declaration order).
+def mcp_target_configuration_to_json(McpTargetConfiguration v) -> str:
+    list[str] parts = []
+    if v.openApiSchema.is_some():
+        auto u0 = v.openApiSchema.unwrap()
+        parts.append("\"openApiSchema\":" + u0.to_json())
+    if v.smithyModel.is_some():
+        auto u1 = v.smithyModel.unwrap()
+        parts.append("\"smithyModel\":" + u1.to_json())
+    if v.lambda_.is_some():
+        auto u2 = v.lambda_.unwrap()
+        parts.append("\"lambda\":" + mcp_lambda_target_configuration_to_json(u2))
+    if v.mcpServer.is_some():
+        auto u3 = v.mcpServer.unwrap()
+        parts.append("\"mcpServer\":" + u3.to_json())
+    if v.apiGateway.is_some():
+        auto u4 = v.apiGateway.unwrap()
+        parts.append("\"apiGateway\":" + api_gateway_target_configuration_to_json(u4))
+    if v.connector.is_some():
+        auto u5 = v.connector.unwrap()
+        parts.append("\"connector\":" + connector_target_configuration_to_json(u5))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize MemoryRecordSchema to a compact JSON object (declaration order).
+def memory_record_schema_to_json(MemoryRecordSchema v) -> str:
+    list[str] parts = []
+    if v.metadataSchema.is_some():
+        auto u0 = v.metadataSchema.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(metadata_schema_entry_to_json(x1))
+        parts.append("\"metadataSchema\":" + bedrock_agentcore_control_json_arr(e1))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize MemoryStrategyInput to a compact JSON object (declaration order).
+def memory_strategy_input_to_json(MemoryStrategyInput v) -> str:
+    list[str] parts = []
+    if v.semanticMemoryStrategy.is_some():
+        auto u0 = v.semanticMemoryStrategy.unwrap()
+        parts.append("\"semanticMemoryStrategy\":" + semantic_memory_strategy_input_to_json(u0))
+    if v.summaryMemoryStrategy.is_some():
+        auto u1 = v.summaryMemoryStrategy.unwrap()
+        parts.append("\"summaryMemoryStrategy\":" + summary_memory_strategy_input_to_json(u1))
+    if v.userPreferenceMemoryStrategy.is_some():
+        auto u2 = v.userPreferenceMemoryStrategy.unwrap()
+        parts.append("\"userPreferenceMemoryStrategy\":" + user_preference_memory_strategy_input_to_json(u2))
+    if v.customMemoryStrategy.is_some():
+        auto u3 = v.customMemoryStrategy.unwrap()
+        parts.append("\"customMemoryStrategy\":" + custom_memory_strategy_input_to_json(u3))
+    if v.episodicMemoryStrategy.is_some():
+        auto u4 = v.episodicMemoryStrategy.unwrap()
+        parts.append("\"episodicMemoryStrategy\":" + episodic_memory_strategy_input_to_json(u4))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize MetadataConfiguration to a compact JSON object (declaration order).
+def metadata_configuration_to_json(MetadataConfiguration v) -> str:
+    list[str] parts = []
+    if v.allowedRequestHeaders.is_some():
+        auto u0 = v.allowedRequestHeaders.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_agentcore_control_json_str(x1))
+        parts.append("\"allowedRequestHeaders\":" + bedrock_agentcore_control_json_arr(e1))
+    if v.allowedQueryParameters.is_some():
+        auto u2 = v.allowedQueryParameters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(bedrock_agentcore_control_json_str(x3))
+        parts.append("\"allowedQueryParameters\":" + bedrock_agentcore_control_json_arr(e3))
+    if v.allowedResponseHeaders.is_some():
+        auto u4 = v.allowedResponseHeaders.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(bedrock_agentcore_control_json_str(x5))
+        parts.append("\"allowedResponseHeaders\":" + bedrock_agentcore_control_json_arr(e5))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize MetadataSchemaEntry to a compact JSON object (declaration order).
+def metadata_schema_entry_to_json(MetadataSchemaEntry v) -> str:
+    list[str] parts = []
+    parts.append("\"key\":" + bedrock_agentcore_control_json_str(v.key))
+    if v.type.is_some():
+        auto u0 = v.type.unwrap()
+        parts.append("\"type\":" + u0.to_json())
+    if v.extractionType.is_some():
+        auto u1 = v.extractionType.unwrap()
+        parts.append("\"extractionType\":" + u1.to_json())
+    if v.extractionConfig.is_some():
+        auto u2 = v.extractionConfig.unwrap()
+        parts.append("\"extractionConfig\":" + extraction_config_to_json(u2))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize ModifyMemoryStrategies to a compact JSON object (declaration order).
+def modify_memory_strategies_to_json(ModifyMemoryStrategies v) -> str:
+    list[str] parts = []
+    if v.addMemoryStrategies.is_some():
+        auto u0 = v.addMemoryStrategies.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(memory_strategy_input_to_json(x1))
+        parts.append("\"addMemoryStrategies\":" + bedrock_agentcore_control_json_arr(e1))
+    if v.modifyMemoryStrategies.is_some():
+        auto u2 = v.modifyMemoryStrategies.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(modify_memory_strategy_input_to_json(x3))
+        parts.append("\"modifyMemoryStrategies\":" + bedrock_agentcore_control_json_arr(e3))
+    if v.deleteMemoryStrategies.is_some():
+        auto u4 = v.deleteMemoryStrategies.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"deleteMemoryStrategies\":" + bedrock_agentcore_control_json_arr(e5))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize ModifyMemoryStrategyInput to a compact JSON object (declaration order).
+def modify_memory_strategy_input_to_json(ModifyMemoryStrategyInput v) -> str:
+    list[str] parts = []
+    parts.append("\"memoryStrategyId\":" + bedrock_agentcore_control_json_str(v.memoryStrategyId))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + bedrock_agentcore_control_json_str(u0))
+    if v.namespaces.is_some():
+        auto u1 = v.namespaces.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(bedrock_agentcore_control_json_str(x2))
+        parts.append("\"namespaces\":" + bedrock_agentcore_control_json_arr(e2))
+    if v.namespaceTemplates.is_some():
+        auto u3 = v.namespaceTemplates.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(bedrock_agentcore_control_json_str(x4))
+        parts.append("\"namespaceTemplates\":" + bedrock_agentcore_control_json_arr(e4))
+    if v.configuration.is_some():
+        auto u5 = v.configuration.unwrap()
+        parts.append("\"configuration\":" + modify_strategy_configuration_to_json(u5))
+    if v.memoryRecordSchema.is_some():
+        auto u6 = v.memoryRecordSchema.unwrap()
+        parts.append("\"memoryRecordSchema\":" + memory_record_schema_to_json(u6))
+    if v.recordExpirySpecification.is_some():
+        auto u7 = v.recordExpirySpecification.unwrap()
+        parts.append("\"recordExpirySpecification\":" + u7.to_json())
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize ModifyReflectionConfiguration to a compact JSON object (declaration order).
+def modify_reflection_configuration_to_json(ModifyReflectionConfiguration v) -> str:
+    list[str] parts = []
+    if v.episodicReflectionConfiguration.is_some():
+        auto u0 = v.episodicReflectionConfiguration.unwrap()
+        parts.append("\"episodicReflectionConfiguration\":" + episodic_reflection_configuration_input_to_json(u0))
+    if v.customReflectionConfiguration.is_some():
+        auto u1 = v.customReflectionConfiguration.unwrap()
+        parts.append("\"customReflectionConfiguration\":" + custom_reflection_configuration_input_to_json(u1))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize ModifySelfManagedConfiguration to a compact JSON object (declaration order).
+def modify_self_managed_configuration_to_json(ModifySelfManagedConfiguration v) -> str:
+    list[str] parts = []
+    if v.triggerConditions.is_some():
+        auto u0 = v.triggerConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"triggerConditions\":" + bedrock_agentcore_control_json_arr(e1))
+    if v.invocationConfiguration.is_some():
+        auto u2 = v.invocationConfiguration.unwrap()
+        parts.append("\"invocationConfiguration\":" + u2.to_json())
+    if v.historicalContextWindowSize.is_some():
+        auto u3 = v.historicalContextWindowSize.unwrap()
+        parts.append("\"historicalContextWindowSize\":" + str(u3))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize ModifyStrategyConfiguration to a compact JSON object (declaration order).
+def modify_strategy_configuration_to_json(ModifyStrategyConfiguration v) -> str:
+    list[str] parts = []
+    if v.extraction.is_some():
+        auto u0 = v.extraction.unwrap()
+        parts.append("\"extraction\":" + u0.to_json())
+    if v.consolidation.is_some():
+        auto u1 = v.consolidation.unwrap()
+        parts.append("\"consolidation\":" + u1.to_json())
+    if v.reflection.is_some():
+        auto u2 = v.reflection.unwrap()
+        parts.append("\"reflection\":" + modify_reflection_configuration_to_json(u2))
+    if v.selfManagedConfiguration.is_some():
+        auto u3 = v.selfManagedConfiguration.unwrap()
+        parts.append("\"selfManagedConfiguration\":" + modify_self_managed_configuration_to_json(u3))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize NamespaceKeyEntry to a compact JSON object (declaration order).
+def namespace_key_entry_to_json(NamespaceKeyEntry v) -> str:
+    list[str] parts = []
+    parts.append("\"key\":" + bedrock_agentcore_control_json_str(v.key))
+    if v.validation.is_some():
+        auto u0 = v.validation.unwrap()
+        parts.append("\"validation\":" + namespace_key_validation_to_json(u0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize NamespaceKeyValidation to a compact JSON object (declaration order).
+def namespace_key_validation_to_json(NamespaceKeyValidation v) -> str:
+    list[str] parts = []
+    if v.allowedValues.is_some():
+        auto u0 = v.allowedValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_agentcore_control_json_str(x1))
+        parts.append("\"allowedValues\":" + bedrock_agentcore_control_json_arr(e1))
+    if v.regexPattern.is_some():
+        auto u2 = v.regexPattern.unwrap()
+        parts.append("\"regexPattern\":" + bedrock_agentcore_control_json_str(u2))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize NetworkConfiguration to a compact JSON object (declaration order).
+def network_configuration_to_json(NetworkConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"networkMode\":" + v.networkMode.to_json())
+    if v.networkModeConfig.is_some():
+        auto u0 = v.networkModeConfig.unwrap()
+        parts.append("\"networkModeConfig\":" + vpc_config_to_json(u0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize OAuthCredentialProvider to a compact JSON object (declaration order).
+def o_auth_credential_provider_to_json(OAuthCredentialProvider v) -> str:
+    list[str] parts = []
+    parts.append("\"providerArn\":" + bedrock_agentcore_control_json_str(v.providerArn))
+    list[str] e0 = []
+    for x0 in v.scopes:
+        e0.append(bedrock_agentcore_control_json_str(x0))
+    parts.append("\"scopes\":" + bedrock_agentcore_control_json_arr(e0))
+    if v.customParameters.is_some():
+        auto u1 = v.customParameters.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(bedrock_agentcore_control_json_str(k2) + ":" + bedrock_agentcore_control_json_str(u1[k2]))
+        parts.append("\"customParameters\":" + bedrock_agentcore_control_json_obj(m2))
+    if v.grantType.is_some():
+        auto u3 = v.grantType.unwrap()
+        parts.append("\"grantType\":" + u3.to_json())
+    if v.defaultReturnUrl.is_some():
+        auto u4 = v.defaultReturnUrl.unwrap()
+        parts.append("\"defaultReturnUrl\":" + bedrock_agentcore_control_json_str(u4))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize Oauth2AuthorizationServerMetadata to a compact JSON object (declaration order).
+def oauth2_authorization_server_metadata_to_json(Oauth2AuthorizationServerMetadata v) -> str:
+    list[str] parts = []
+    parts.append("\"issuer\":" + bedrock_agentcore_control_json_str(v.issuer))
+    parts.append("\"authorizationEndpoint\":" + bedrock_agentcore_control_json_str(v.authorizationEndpoint))
+    parts.append("\"tokenEndpoint\":" + bedrock_agentcore_control_json_str(v.tokenEndpoint))
+    if v.responseTypes.is_some():
+        auto u0 = v.responseTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_agentcore_control_json_str(x1))
+        parts.append("\"responseTypes\":" + bedrock_agentcore_control_json_arr(e1))
+    if v.tokenEndpointAuthMethods.is_some():
+        auto u2 = v.tokenEndpointAuthMethods.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(bedrock_agentcore_control_json_str(x3))
+        parts.append("\"tokenEndpointAuthMethods\":" + bedrock_agentcore_control_json_arr(e3))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize Oauth2Discovery to a compact JSON object (declaration order).
+def oauth2_discovery_to_json(Oauth2Discovery v) -> str:
+    list[str] parts = []
+    if v.discoveryUrl.is_some():
+        auto u0 = v.discoveryUrl.unwrap()
+        parts.append("\"discoveryUrl\":" + bedrock_agentcore_control_json_str(u0))
+    if v.authorizationServerMetadata.is_some():
+        auto u1 = v.authorizationServerMetadata.unwrap()
+        parts.append("\"authorizationServerMetadata\":" + oauth2_authorization_server_metadata_to_json(u1))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize Oauth2ProviderConfigInput to a compact JSON object (declaration order).
+def oauth2_provider_config_input_to_json(Oauth2ProviderConfigInput v) -> str:
+    list[str] parts = []
+    if v.customOauth2ProviderConfig.is_some():
+        auto u0 = v.customOauth2ProviderConfig.unwrap()
+        parts.append("\"customOauth2ProviderConfig\":" + custom_oauth2_provider_config_input_to_json(u0))
+    if v.googleOauth2ProviderConfig.is_some():
+        auto u1 = v.googleOauth2ProviderConfig.unwrap()
+        parts.append("\"googleOauth2ProviderConfig\":" + u1.to_json())
+    if v.githubOauth2ProviderConfig.is_some():
+        auto u2 = v.githubOauth2ProviderConfig.unwrap()
+        parts.append("\"githubOauth2ProviderConfig\":" + u2.to_json())
+    if v.slackOauth2ProviderConfig.is_some():
+        auto u3 = v.slackOauth2ProviderConfig.unwrap()
+        parts.append("\"slackOauth2ProviderConfig\":" + u3.to_json())
+    if v.salesforceOauth2ProviderConfig.is_some():
+        auto u4 = v.salesforceOauth2ProviderConfig.unwrap()
+        parts.append("\"salesforceOauth2ProviderConfig\":" + u4.to_json())
+    if v.microsoftOauth2ProviderConfig.is_some():
+        auto u5 = v.microsoftOauth2ProviderConfig.unwrap()
+        parts.append("\"microsoftOauth2ProviderConfig\":" + u5.to_json())
+    if v.atlassianOauth2ProviderConfig.is_some():
+        auto u6 = v.atlassianOauth2ProviderConfig.unwrap()
+        parts.append("\"atlassianOauth2ProviderConfig\":" + u6.to_json())
+    if v.linkedinOauth2ProviderConfig.is_some():
+        auto u7 = v.linkedinOauth2ProviderConfig.unwrap()
+        parts.append("\"linkedinOauth2ProviderConfig\":" + u7.to_json())
+    if v.includedOauth2ProviderConfig.is_some():
+        auto u8 = v.includedOauth2ProviderConfig.unwrap()
+        parts.append("\"includedOauth2ProviderConfig\":" + u8.to_json())
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize OnBehalfOfTokenExchangeConfigType to a compact JSON object (declaration order).
+def on_behalf_of_token_exchange_config_type_to_json(OnBehalfOfTokenExchangeConfigType v) -> str:
+    list[str] parts = []
+    parts.append("\"grantType\":" + v.grantType.to_json())
+    if v.tokenExchangeGrantTypeConfig.is_some():
+        auto u0 = v.tokenExchangeGrantTypeConfig.unwrap()
+        parts.append("\"tokenExchangeGrantTypeConfig\":" + token_exchange_grant_type_config_type_to_json(u0))
+    if v.onBehalfOfAuthenticationConfig.is_some():
+        auto u1 = v.onBehalfOfAuthenticationConfig.unwrap()
+        parts.append("\"onBehalfOfAuthenticationConfig\":" + u1.to_json())
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize PassthroughTargetConfiguration to a compact JSON object (declaration order).
+def passthrough_target_configuration_to_json(PassthroughTargetConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"endpoint\":" + bedrock_agentcore_control_json_str(v.endpoint))
+    parts.append("\"protocolType\":" + v.protocolType.to_json())
+    if v.schema.is_some():
+        auto u0 = v.schema.unwrap()
+        parts.append("\"schema\":" + u0.to_json())
+    if v.stickinessConfiguration.is_some():
+        auto u1 = v.stickinessConfiguration.unwrap()
+        parts.append("\"stickinessConfiguration\":" + stickiness_configuration_to_json(u1))
+    if v.staticQueryParameters.is_some():
+        auto u2 = v.staticQueryParameters.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(bedrock_agentcore_control_json_str(k3) + ":" + bedrock_agentcore_control_json_str(u2[k3]))
+        parts.append("\"staticQueryParameters\":" + bedrock_agentcore_control_json_obj(m3))
+    if v.staticQueryParameterConflictResolution.is_some():
+        auto u4 = v.staticQueryParameterConflictResolution.unwrap()
+        parts.append("\"staticQueryParameterConflictResolution\":" + u4.to_json())
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize PrivateEndpoint to a compact JSON object (declaration order).
+def private_endpoint_to_json(PrivateEndpoint v) -> str:
+    list[str] parts = []
+    if v.selfManagedLatticeResource.is_some():
+        auto u0 = v.selfManagedLatticeResource.unwrap()
+        parts.append("\"selfManagedLatticeResource\":" + u0.to_json())
+    if v.managedVpcResource.is_some():
+        auto u1 = v.managedVpcResource.unwrap()
+        parts.append("\"managedVpcResource\":" + managed_vpc_resource_to_json(u1))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize PrivateEndpointOverride to a compact JSON object (declaration order).
+def private_endpoint_override_to_json(PrivateEndpointOverride v) -> str:
+    list[str] parts = []
+    parts.append("\"domain\":" + bedrock_agentcore_control_json_str(v.domain))
+    parts.append("\"privateEndpoint\":" + private_endpoint_to_json(v.privateEndpoint))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize PrivateKeyJwtConfig to a compact JSON object (declaration order).
+def private_key_jwt_config_to_json(PrivateKeyJwtConfig v) -> str:
+    list[str] parts = []
+    if v.privateKeySource.is_some():
+        auto u0 = v.privateKeySource.unwrap()
+        parts.append("\"privateKeySource\":" + u0.to_json())
+    if v.signingAlgorithm.is_some():
+        auto u1 = v.signingAlgorithm.unwrap()
+        parts.append("\"signingAlgorithm\":" + u1.to_json())
+    if v.additionalHeaderClaims.is_some():
+        auto u2 = v.additionalHeaderClaims.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(bedrock_agentcore_control_json_str(k3) + ":" + bedrock_agentcore_control_json_str(u2[k3]))
+        parts.append("\"additionalHeaderClaims\":" + bedrock_agentcore_control_json_obj(m3))
+    if v.additionalPayloadClaims.is_some():
+        auto u4 = v.additionalPayloadClaims.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(bedrock_agentcore_control_json_str(k5) + ":" + bedrock_agentcore_control_json_str(u4[k5]))
+        parts.append("\"additionalPayloadClaims\":" + bedrock_agentcore_control_json_obj(m5))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize RatingScale to a compact JSON object (declaration order).
+def rating_scale_to_json(RatingScale v) -> str:
+    list[str] parts = []
+    if v.numerical.is_some():
+        auto u0 = v.numerical.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"numerical\":" + bedrock_agentcore_control_json_arr(e1))
+    if v.categorical.is_some():
+        auto u2 = v.categorical.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"categorical\":" + bedrock_agentcore_control_json_arr(e3))
+    if v.multiDimensional.is_some():
+        auto u4 = v.multiDimensional.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(evaluation_dimension_to_json(x5))
+        parts.append("\"multiDimensional\":" + bedrock_agentcore_control_json_arr(e5))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize RegistryRecordCredentialProviderConfiguration to a compact JSON object (declaration order).
+def registry_record_credential_provider_configuration_to_json(RegistryRecordCredentialProviderConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"credentialProviderType\":" + v.credentialProviderType.to_json())
+    parts.append("\"credentialProvider\":" + registry_record_credential_provider_union_to_json(v.credentialProvider))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize RegistryRecordCredentialProviderUnion to a compact JSON object (declaration order).
+def registry_record_credential_provider_union_to_json(RegistryRecordCredentialProviderUnion v) -> str:
+    list[str] parts = []
+    if v.oauthCredentialProvider.is_some():
+        auto u0 = v.oauthCredentialProvider.unwrap()
+        parts.append("\"oauthCredentialProvider\":" + registry_record_o_auth_credential_provider_to_json(u0))
+    if v.iamCredentialProvider.is_some():
+        auto u1 = v.iamCredentialProvider.unwrap()
+        parts.append("\"iamCredentialProvider\":" + u1.to_json())
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize RegistryRecordOAuthCredentialProvider to a compact JSON object (declaration order).
+def registry_record_o_auth_credential_provider_to_json(RegistryRecordOAuthCredentialProvider v) -> str:
+    list[str] parts = []
+    parts.append("\"providerArn\":" + bedrock_agentcore_control_json_str(v.providerArn))
+    if v.grantType.is_some():
+        auto u0 = v.grantType.unwrap()
+        parts.append("\"grantType\":" + bedrock_agentcore_control_json_str(u0))
+    if v.scopes.is_some():
+        auto u1 = v.scopes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(bedrock_agentcore_control_json_str(x2))
+        parts.append("\"scopes\":" + bedrock_agentcore_control_json_arr(e2))
+    if v.customParameters.is_some():
+        auto u3 = v.customParameters.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(bedrock_agentcore_control_json_str(k4) + ":" + bedrock_agentcore_control_json_str(u3[k4]))
+        parts.append("\"customParameters\":" + bedrock_agentcore_control_json_obj(m4))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize RequestHeaderConfiguration to a compact JSON object (declaration order).
+def request_header_configuration_to_json(RequestHeaderConfiguration v) -> str:
+    list[str] parts = []
+    if v.requestHeaderAllowlist.is_some():
+        auto u0 = v.requestHeaderAllowlist.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_agentcore_control_json_str(x1))
+        parts.append("\"requestHeaderAllowlist\":" + bedrock_agentcore_control_json_arr(e1))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize RouteToTargetAction to a compact JSON object (declaration order).
+def route_to_target_action_to_json(RouteToTargetAction v) -> str:
+    list[str] parts = []
+    if v.staticRoute.is_some():
+        auto u0 = v.staticRoute.unwrap()
+        parts.append("\"staticRoute\":" + static_route_to_json(u0))
+    if v.weightedRoute.is_some():
+        auto u1 = v.weightedRoute.unwrap()
+        parts.append("\"weightedRoute\":" + weighted_route_to_json(u1))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize Rule to a compact JSON object (declaration order).
+def rule_to_json(Rule v) -> str:
+    list[str] parts = []
+    parts.append("\"samplingConfig\":" + v.samplingConfig.to_json())
+    if v.filters.is_some():
+        auto u0 = v.filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"filters\":" + bedrock_agentcore_control_json_arr(e1))
+    if v.sessionConfig.is_some():
+        auto u2 = v.sessionConfig.unwrap()
+        parts.append("\"sessionConfig\":" + u2.to_json())
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize SchemaDefinition to a compact JSON object (declaration order).
+def schema_definition_to_json(SchemaDefinition v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + v.type.to_json())
+    if v.properties.is_some():
+        auto u0 = v.properties.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(bedrock_agentcore_control_json_str(k1) + ":" + schema_definition_to_json(u0[k1]))
+        parts.append("\"properties\":" + bedrock_agentcore_control_json_obj(m1))
+    if v.required.is_some():
+        auto u2 = v.required.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(bedrock_agentcore_control_json_str(x3))
+        parts.append("\"required\":" + bedrock_agentcore_control_json_arr(e3))
+    if v.items.is_some():
+        auto u4 = v.items.unwrap()
+        parts.append("\"items\":" + schema_definition_to_json(u4))
+    if v.description.is_some():
+        auto u5 = v.description.unwrap()
+        parts.append("\"description\":" + bedrock_agentcore_control_json_str(u5))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize SelfManagedConfigurationInput to a compact JSON object (declaration order).
+def self_managed_configuration_input_to_json(SelfManagedConfigurationInput v) -> str:
+    list[str] parts = []
+    if v.triggerConditions.is_some():
+        auto u0 = v.triggerConditions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"triggerConditions\":" + bedrock_agentcore_control_json_arr(e1))
+    parts.append("\"invocationConfiguration\":" + v.invocationConfiguration.to_json())
+    if v.historicalContextWindowSize.is_some():
+        auto u2 = v.historicalContextWindowSize.unwrap()
+        parts.append("\"historicalContextWindowSize\":" + str(u2))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize SemanticMemoryStrategyInput to a compact JSON object (declaration order).
+def semantic_memory_strategy_input_to_json(SemanticMemoryStrategyInput v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + bedrock_agentcore_control_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + bedrock_agentcore_control_json_str(u0))
+    if v.namespaces.is_some():
+        auto u1 = v.namespaces.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(bedrock_agentcore_control_json_str(x2))
+        parts.append("\"namespaces\":" + bedrock_agentcore_control_json_arr(e2))
+    if v.namespaceTemplates.is_some():
+        auto u3 = v.namespaceTemplates.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(bedrock_agentcore_control_json_str(x4))
+        parts.append("\"namespaceTemplates\":" + bedrock_agentcore_control_json_arr(e4))
+    if v.memoryRecordSchema.is_some():
+        auto u5 = v.memoryRecordSchema.unwrap()
+        parts.append("\"memoryRecordSchema\":" + memory_record_schema_to_json(u5))
+    if v.recordExpirySpecification.is_some():
+        auto u6 = v.recordExpirySpecification.unwrap()
+        parts.append("\"recordExpirySpecification\":" + u6.to_json())
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize StaticRoute to a compact JSON object (declaration order).
+def static_route_to_json(StaticRoute v) -> str:
+    list[str] parts = []
+    parts.append("\"targetName\":" + bedrock_agentcore_control_json_str(v.targetName))
+    if v.model.is_some():
+        auto u0 = v.model.unwrap()
+        parts.append("\"model\":" + bedrock_agentcore_control_json_str(u0))
+    if v.fallback.is_some():
+        auto u1 = v.fallback.unwrap()
+        parts.append("\"fallback\":" + fallback_to_json(u1))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize StickinessConfiguration to a compact JSON object (declaration order).
+def stickiness_configuration_to_json(StickinessConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"identifier\":" + bedrock_agentcore_control_json_str(v.identifier))
+    if v.timeout.is_some():
+        auto u0 = v.timeout.unwrap()
+        parts.append("\"timeout\":" + str(u0))
+    if v.compositeIdentifier.is_some():
+        auto u1 = v.compositeIdentifier.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(bedrock_agentcore_control_json_str(x2))
+        parts.append("\"compositeIdentifier\":" + bedrock_agentcore_control_json_arr(e2))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize StreamDeliveryResource to a compact JSON object (declaration order).
+def stream_delivery_resource_to_json(StreamDeliveryResource v) -> str:
+    list[str] parts = []
+    if v.kinesis.is_some():
+        auto u0 = v.kinesis.unwrap()
+        parts.append("\"kinesis\":" + kinesis_resource_to_json(u0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize StreamDeliveryResources to a compact JSON object (declaration order).
+def stream_delivery_resources_to_json(StreamDeliveryResources v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.resources:
+        e0.append(stream_delivery_resource_to_json(x0))
+    parts.append("\"resources\":" + bedrock_agentcore_control_json_arr(e0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize StringListValidation to a compact JSON object (declaration order).
+def string_list_validation_to_json(StringListValidation v) -> str:
+    list[str] parts = []
+    if v.allowedValues.is_some():
+        auto u0 = v.allowedValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_agentcore_control_json_str(x1))
+        parts.append("\"allowedValues\":" + bedrock_agentcore_control_json_arr(e1))
+    if v.maxItems.is_some():
+        auto u2 = v.maxItems.unwrap()
+        parts.append("\"maxItems\":" + str(u2))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize StringValidation to a compact JSON object (declaration order).
+def string_validation_to_json(StringValidation v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.allowedValues:
+        e0.append(bedrock_agentcore_control_json_str(x0))
+    parts.append("\"allowedValues\":" + bedrock_agentcore_control_json_arr(e0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize SummaryMemoryStrategyInput to a compact JSON object (declaration order).
+def summary_memory_strategy_input_to_json(SummaryMemoryStrategyInput v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + bedrock_agentcore_control_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + bedrock_agentcore_control_json_str(u0))
+    if v.namespaces.is_some():
+        auto u1 = v.namespaces.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(bedrock_agentcore_control_json_str(x2))
+        parts.append("\"namespaces\":" + bedrock_agentcore_control_json_arr(e2))
+    if v.namespaceTemplates.is_some():
+        auto u3 = v.namespaceTemplates.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(bedrock_agentcore_control_json_str(x4))
+        parts.append("\"namespaceTemplates\":" + bedrock_agentcore_control_json_arr(e4))
+    if v.memoryRecordSchema.is_some():
+        auto u5 = v.memoryRecordSchema.unwrap()
+        parts.append("\"memoryRecordSchema\":" + memory_record_schema_to_json(u5))
+    if v.recordExpirySpecification.is_some():
+        auto u6 = v.recordExpirySpecification.unwrap()
+        parts.append("\"recordExpirySpecification\":" + u6.to_json())
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize SynchronizationConfiguration to a compact JSON object (declaration order).
+def synchronization_configuration_to_json(SynchronizationConfiguration v) -> str:
+    list[str] parts = []
+    if v.fromUrl.is_some():
+        auto u0 = v.fromUrl.unwrap()
+        parts.append("\"fromUrl\":" + from_url_synchronization_configuration_to_json(u0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize TargetConfiguration to a compact JSON object (declaration order).
+def target_configuration_to_json(TargetConfiguration v) -> str:
+    list[str] parts = []
+    if v.mcp.is_some():
+        auto u0 = v.mcp.unwrap()
+        parts.append("\"mcp\":" + mcp_target_configuration_to_json(u0))
+    if v.http.is_some():
+        auto u1 = v.http.unwrap()
+        parts.append("\"http\":" + http_target_configuration_to_json(u1))
+    if v.inference.is_some():
+        auto u2 = v.inference.unwrap()
+        parts.append("\"inference\":" + inference_target_configuration_to_json(u2))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize TargetTrafficSplitEntry to a compact JSON object (declaration order).
+def target_traffic_split_entry_to_json(TargetTrafficSplitEntry v) -> str:
+    list[str] parts = []
+    parts.append("\"targetName\":" + bedrock_agentcore_control_json_str(v.targetName))
+    if v.model.is_some():
+        auto u0 = v.model.unwrap()
+        parts.append("\"model\":" + bedrock_agentcore_control_json_str(u0))
+    if v.fallback.is_some():
+        auto u1 = v.fallback.unwrap()
+        parts.append("\"fallback\":" + fallback_to_json(u1))
+    parts.append("\"name\":" + bedrock_agentcore_control_json_str(v.name))
+    parts.append("\"weight\":" + str(v.weight))
+    if v.description.is_some():
+        auto u2 = v.description.unwrap()
+        parts.append("\"description\":" + bedrock_agentcore_control_json_str(u2))
+    if v.metadata.is_some():
+        auto u3 = v.metadata.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(bedrock_agentcore_control_json_str(k4) + ":" + bedrock_agentcore_control_json_str(u3[k4]))
+        parts.append("\"metadata\":" + bedrock_agentcore_control_json_obj(m4))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize TokenExchangeGrantTypeConfigType to a compact JSON object (declaration order).
+def token_exchange_grant_type_config_type_to_json(TokenExchangeGrantTypeConfigType v) -> str:
+    list[str] parts = []
+    parts.append("\"actorTokenContent\":" + v.actorTokenContent.to_json())
+    if v.actorTokenScopes.is_some():
+        auto u0 = v.actorTokenScopes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(bedrock_agentcore_control_json_str(x1))
+        parts.append("\"actorTokenScopes\":" + bedrock_agentcore_control_json_arr(e1))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize ToolDefinition to a compact JSON object (declaration order).
+def tool_definition_to_json(ToolDefinition v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + bedrock_agentcore_control_json_str(v.name))
+    parts.append("\"description\":" + bedrock_agentcore_control_json_str(v.description))
+    parts.append("\"inputSchema\":" + schema_definition_to_json(v.inputSchema))
+    if v.outputSchema.is_some():
+        auto u0 = v.outputSchema.unwrap()
+        parts.append("\"outputSchema\":" + schema_definition_to_json(u0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize ToolSchema to a compact JSON object (declaration order).
+def tool_schema_to_json(ToolSchema v) -> str:
+    list[str] parts = []
+    if v.s3.is_some():
+        auto u0 = v.s3.unwrap()
+        parts.append("\"s3\":" + u0.to_json())
+    if v.inlinePayload.is_some():
+        auto u1 = v.inlinePayload.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(tool_definition_to_json(x2))
+        parts.append("\"inlinePayload\":" + bedrock_agentcore_control_json_arr(e2))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize TrafficSplitEntry to a compact JSON object (declaration order).
+def traffic_split_entry_to_json(TrafficSplitEntry v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + bedrock_agentcore_control_json_str(v.name))
+    parts.append("\"weight\":" + str(v.weight))
+    parts.append("\"configurationBundle\":" + v.configurationBundle.to_json())
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + bedrock_agentcore_control_json_str(u0))
+    if v.metadata.is_some():
+        auto u1 = v.metadata.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(bedrock_agentcore_control_json_str(k2) + ":" + bedrock_agentcore_control_json_str(u1[k2]))
+        parts.append("\"metadata\":" + bedrock_agentcore_control_json_obj(m2))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize UpdatedAuthorizerConfiguration to a compact JSON object (declaration order).
+def updated_authorizer_configuration_to_json(UpdatedAuthorizerConfiguration v) -> str:
+    list[str] parts = []
+    if v.optionalValue.is_some():
+        auto u0 = v.optionalValue.unwrap()
+        parts.append("\"optionalValue\":" + authorizer_configuration_to_json(u0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize UpdatedHarnessMemoryConfiguration to a compact JSON object (declaration order).
+def updated_harness_memory_configuration_to_json(UpdatedHarnessMemoryConfiguration v) -> str:
+    list[str] parts = []
+    if v.optionalValue.is_some():
+        auto u0 = v.optionalValue.unwrap()
+        parts.append("\"optionalValue\":" + harness_memory_configuration_to_json(u0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize UpdatedSynchronizationConfiguration to a compact JSON object (declaration order).
+def updated_synchronization_configuration_to_json(UpdatedSynchronizationConfiguration v) -> str:
+    list[str] parts = []
+    if v.optionalValue.is_some():
+        auto u0 = v.optionalValue.unwrap()
+        parts.append("\"optionalValue\":" + synchronization_configuration_to_json(u0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize UserPreferenceMemoryStrategyInput to a compact JSON object (declaration order).
+def user_preference_memory_strategy_input_to_json(UserPreferenceMemoryStrategyInput v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + bedrock_agentcore_control_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + bedrock_agentcore_control_json_str(u0))
+    if v.namespaces.is_some():
+        auto u1 = v.namespaces.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(bedrock_agentcore_control_json_str(x2))
+        parts.append("\"namespaces\":" + bedrock_agentcore_control_json_arr(e2))
+    if v.namespaceTemplates.is_some():
+        auto u3 = v.namespaceTemplates.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(bedrock_agentcore_control_json_str(x4))
+        parts.append("\"namespaceTemplates\":" + bedrock_agentcore_control_json_arr(e4))
+    if v.memoryRecordSchema.is_some():
+        auto u5 = v.memoryRecordSchema.unwrap()
+        parts.append("\"memoryRecordSchema\":" + memory_record_schema_to_json(u5))
+    if v.recordExpirySpecification.is_some():
+        auto u6 = v.recordExpirySpecification.unwrap()
+        parts.append("\"recordExpirySpecification\":" + u6.to_json())
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize Validation to a compact JSON object (declaration order).
+def validation_to_json(Validation v) -> str:
+    list[str] parts = []
+    if v.stringValidation.is_some():
+        auto u0 = v.stringValidation.unwrap()
+        parts.append("\"stringValidation\":" + string_validation_to_json(u0))
+    if v.stringListValidation.is_some():
+        auto u1 = v.stringListValidation.unwrap()
+        parts.append("\"stringListValidation\":" + string_list_validation_to_json(u1))
+    if v.numberValidation.is_some():
+        auto u2 = v.numberValidation.unwrap()
+        parts.append("\"numberValidation\":" + u2.to_json())
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize VpcConfig to a compact JSON object (declaration order).
+def vpc_config_to_json(VpcConfig v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.securityGroups:
+        e0.append(bedrock_agentcore_control_json_str(x0))
+    parts.append("\"securityGroups\":" + bedrock_agentcore_control_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.subnets:
+        e1.append(bedrock_agentcore_control_json_str(x1))
+    parts.append("\"subnets\":" + bedrock_agentcore_control_json_arr(e1))
+    if v.requireServiceS3Endpoint.is_some():
+        auto u2 = v.requireServiceS3Endpoint.unwrap()
+        parts.append("\"requireServiceS3Endpoint\":" + json.dumps(JsonValue.Bool(u2)))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize VpcConfiguration to a compact JSON object (declaration order).
+def vpc_configuration_to_json(VpcConfiguration v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.subnets:
+        e0.append(bedrock_agentcore_control_json_str(x0))
+    parts.append("\"subnets\":" + bedrock_agentcore_control_json_arr(e0))
+    list[str] e1 = []
+    for x1 in v.securityGroups:
+        e1.append(bedrock_agentcore_control_json_str(x1))
+    parts.append("\"securityGroups\":" + bedrock_agentcore_control_json_arr(e1))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize WeightedOverride to a compact JSON object (declaration order).
+def weighted_override_to_json(WeightedOverride v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.trafficSplit:
+        e0.append(traffic_split_entry_to_json(x0))
+    parts.append("\"trafficSplit\":" + bedrock_agentcore_control_json_arr(e0))
+    return bedrock_agentcore_control_json_obj(parts)
+
+# Serialize WeightedRoute to a compact JSON object (declaration order).
+def weighted_route_to_json(WeightedRoute v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.trafficSplit:
+        e0.append(target_traffic_split_entry_to_json(x0))
+    parts.append("\"trafficSplit\":" + bedrock_agentcore_control_json_arr(e0))
+    return bedrock_agentcore_control_json_obj(parts)
+
 # A bound Bedrock_AgentCore_Control client: credentials + region, threaded into every operation.
 struct Bedrock_AgentCore_ControlClient:
     core.Credentials creds
     str region
+
+    # AddDatasetExamples  POST /datasets/{datasetId}/examples/add
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def add_dataset_examples(self, AddDatasetExamplesRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["datasetId"] = input.datasetId
+        auto b = binding.HttpBinding(method="POST", path_template="/datasets/{datasetId}/examples/add", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u0))
+        parts.append("\"source\":" + data_source_type_to_json(input.source))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # BatchPutGatewayRateLimits  PUT /gateways/{gatewayIdentifier}/rate-limits/batch
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def batch_put_gateway_rate_limits(self, BatchPutGatewayRateLimitsRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["gatewayIdentifier"] = input.gatewayIdentifier
+        auto b = binding.HttpBinding(method="PUT", path_template="/gateways/{gatewayIdentifier}/rate-limits/batch", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.rateLimits:
+            e1.append(batch_put_limit_entry_to_json(x1))
+        parts.append("\"rateLimits\":" + bedrock_agentcore_control_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreateAgentRuntime  PUT /runtimes/
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_agent_runtime(self, CreateAgentRuntimeRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/runtimes/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"agentRuntimeName\":" + bedrock_agentcore_control_json_str(input.agentRuntimeName))
+        parts.append("\"agentRuntimeArtifact\":" + agent_runtime_artifact_to_json(input.agentRuntimeArtifact))
+        parts.append("\"roleArn\":" + bedrock_agentcore_control_json_str(input.roleArn))
+        if input.networkConfiguration.is_some():
+            auto u0 = input.networkConfiguration.unwrap()
+            parts.append("\"networkConfiguration\":" + network_configuration_to_json(u0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u1))
+        if input.description.is_some():
+            auto u2 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u2))
+        if input.authorizerConfiguration.is_some():
+            auto u3 = input.authorizerConfiguration.unwrap()
+            parts.append("\"authorizerConfiguration\":" + authorizer_configuration_to_json(u3))
+        if input.requestHeaderConfiguration.is_some():
+            auto u4 = input.requestHeaderConfiguration.unwrap()
+            parts.append("\"requestHeaderConfiguration\":" + request_header_configuration_to_json(u4))
+        if input.protocolConfiguration.is_some():
+            auto u5 = input.protocolConfiguration.unwrap()
+            parts.append("\"protocolConfiguration\":" + u5.to_json())
+        if input.lifecycleConfiguration.is_some():
+            auto u6 = input.lifecycleConfiguration.unwrap()
+            parts.append("\"lifecycleConfiguration\":" + u6.to_json())
+        if input.environmentVariables.is_some():
+            auto u7 = input.environmentVariables.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(bedrock_agentcore_control_json_str(k8) + ":" + bedrock_agentcore_control_json_str(u7[k8]))
+            parts.append("\"environmentVariables\":" + bedrock_agentcore_control_json_obj(m8))
+        if input.filesystemConfigurations.is_some():
+            auto u9 = input.filesystemConfigurations.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(x10.to_json())
+            parts.append("\"filesystemConfigurations\":" + bedrock_agentcore_control_json_arr(e10))
+        if input.capacityProviderConfiguration.is_some():
+            auto u11 = input.capacityProviderConfiguration.unwrap()
+            parts.append("\"capacityProviderConfiguration\":" + u11.to_json())
+        if input.tags.is_some():
+            auto u12 = input.tags.unwrap()
+            list[str] m13 = []
+            for k13 in sorted(u12.keys()):
+                m13.append(bedrock_agentcore_control_json_str(k13) + ":" + bedrock_agentcore_control_json_str(u12[k13]))
+            parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m13))
+        if input.platformVersion.is_some():
+            auto u14 = input.platformVersion.unwrap()
+            parts.append("\"platformVersion\":" + bedrock_agentcore_control_json_str(u14))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreateAgentRuntimeEndpoint  PUT /runtimes/{agentRuntimeId}/runtime-endpoints/
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_agent_runtime_endpoint(self, CreateAgentRuntimeEndpointRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["agentRuntimeId"] = input.agentRuntimeId
+        auto b = binding.HttpBinding(method="PUT", path_template="/runtimes/{agentRuntimeId}/runtime-endpoints/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
+        if input.agentRuntimeVersion.is_some():
+            auto u0 = input.agentRuntimeVersion.unwrap()
+            parts.append("\"agentRuntimeVersion\":" + bedrock_agentcore_control_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u1))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(bedrock_agentcore_control_json_str(k4) + ":" + bedrock_agentcore_control_json_str(u3[k4]))
+            parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreateApiKeyCredentialProvider  POST /identities/CreateApiKeyCredentialProvider
+    # errors: AccessDeniedException, ConflictException, DecryptionFailure, EncryptionFailure, InternalServerException, ResourceLimitExceededException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_api_key_credential_provider(self, CreateApiKeyCredentialProviderRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/CreateApiKeyCredentialProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
+        if input.apiKey.is_some():
+            auto u0 = input.apiKey.unwrap()
+            parts.append("\"apiKey\":" + bedrock_agentcore_control_json_str(u0))
+        if input.apiKeySecretConfig.is_some():
+            auto u1 = input.apiKeySecretConfig.unwrap()
+            parts.append("\"apiKeySecretConfig\":" + u1.to_json())
+        if input.apiKeySecretSource.is_some():
+            auto u2 = input.apiKeySecretSource.unwrap()
+            parts.append("\"apiKeySecretSource\":" + u2.to_json())
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(bedrock_agentcore_control_json_str(k4) + ":" + bedrock_agentcore_control_json_str(u3[k4]))
+            parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreateBrowser  PUT /browsers
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_browser(self, CreateBrowserRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/browsers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u0))
+        if input.executionRoleArn.is_some():
+            auto u1 = input.executionRoleArn.unwrap()
+            parts.append("\"executionRoleArn\":" + bedrock_agentcore_control_json_str(u1))
+        parts.append("\"networkConfiguration\":" + browser_network_configuration_to_json(input.networkConfiguration))
+        if input.recording.is_some():
+            auto u2 = input.recording.unwrap()
+            parts.append("\"recording\":" + u2.to_json())
+        if input.browserSigning.is_some():
+            auto u3 = input.browserSigning.unwrap()
+            parts.append("\"browserSigning\":" + u3.to_json())
+        if input.enterprisePolicies.is_some():
+            auto u4 = input.enterprisePolicies.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"enterprisePolicies\":" + bedrock_agentcore_control_json_arr(e5))
+        if input.certificates.is_some():
+            auto u6 = input.certificates.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"certificates\":" + bedrock_agentcore_control_json_arr(e7))
+        if input.filesystemConfigurations.is_some():
+            auto u8 = input.filesystemConfigurations.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"filesystemConfigurations\":" + bedrock_agentcore_control_json_arr(e9))
+        if input.clientToken.is_some():
+            auto u10 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u10))
+        if input.tags.is_some():
+            auto u11 = input.tags.unwrap()
+            list[str] m12 = []
+            for k12 in sorted(u11.keys()):
+                m12.append(bedrock_agentcore_control_json_str(k12) + ":" + bedrock_agentcore_control_json_str(u11[k12]))
+            parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m12))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreateBrowserProfile  PUT /browser-profiles
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_browser_profile(self, CreateBrowserProfileRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/browser-profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(bedrock_agentcore_control_json_str(k3) + ":" + bedrock_agentcore_control_json_str(u2[k3]))
+            parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreateCapacityProvider  PUT /capacity-providers
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, RetryableConflictException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_capacity_provider(self, CreateCapacityProviderInput input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/capacity-providers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u0))
+        parts.append("\"permissionsConfiguration\":" + input.permissionsConfiguration.to_json())
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(bedrock_agentcore_control_json_str(k3) + ":" + bedrock_agentcore_control_json_str(u2[k3]))
+            parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m3))
+        parts.append("\"computeConfiguration\":" + compute_configuration_to_json(input.computeConfiguration))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreateCodeInterpreter  PUT /code-interpreters
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_code_interpreter(self, CreateCodeInterpreterRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/code-interpreters", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u0))
+        if input.executionRoleArn.is_some():
+            auto u1 = input.executionRoleArn.unwrap()
+            parts.append("\"executionRoleArn\":" + bedrock_agentcore_control_json_str(u1))
+        parts.append("\"networkConfiguration\":" + code_interpreter_network_configuration_to_json(input.networkConfiguration))
+        if input.certificates.is_some():
+            auto u2 = input.certificates.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"certificates\":" + bedrock_agentcore_control_json_arr(e3))
+        if input.filesystemConfigurations.is_some():
+            auto u4 = input.filesystemConfigurations.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"filesystemConfigurations\":" + bedrock_agentcore_control_json_arr(e5))
+        if input.clientToken.is_some():
+            auto u6 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u6))
+        if input.tags.is_some():
+            auto u7 = input.tags.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(bedrock_agentcore_control_json_str(k8) + ":" + bedrock_agentcore_control_json_str(u7[k8]))
+            parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m8))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreateConfigurationBundle  POST /configuration-bundles/create
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_configuration_bundle(self, CreateConfigurationBundleRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/configuration-bundles/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u0))
+        parts.append("\"bundleName\":" + bedrock_agentcore_control_json_str(input.bundleName))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u1))
+        list[str] m2 = []
+        for k2 in sorted(input.components.keys()):
+            m2.append(bedrock_agentcore_control_json_str(k2) + ":" + input.components[k2].to_json())
+        parts.append("\"components\":" + bedrock_agentcore_control_json_obj(m2))
+        if input.branchName.is_some():
+            auto u3 = input.branchName.unwrap()
+            parts.append("\"branchName\":" + bedrock_agentcore_control_json_str(u3))
+        if input.commitMessage.is_some():
+            auto u4 = input.commitMessage.unwrap()
+            parts.append("\"commitMessage\":" + bedrock_agentcore_control_json_str(u4))
+        if input.createdBy.is_some():
+            auto u5 = input.createdBy.unwrap()
+            parts.append("\"createdBy\":" + u5.to_json())
+        if input.kmsKeyArn.is_some():
+            auto u6 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + bedrock_agentcore_control_json_str(u6))
+        if input.tags.is_some():
+            auto u7 = input.tags.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(bedrock_agentcore_control_json_str(k8) + ":" + bedrock_agentcore_control_json_str(u7[k8]))
+            parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m8))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreateConsentPortal  POST /identities/CreateConsentPortal
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_consent_portal(self, CreateConsentPortalRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/CreateConsentPortal", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"executionRoleArn\":" + bedrock_agentcore_control_json_str(input.executionRoleArn))
+        parts.append("\"idpConfig\":" + consent_portal_idp_config_to_json(input.idpConfig))
+        parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
+        list[str] e0 = []
+        for x0 in input.sources:
+            e0.append(x0.to_json())
+        parts.append("\"sources\":" + bedrock_agentcore_control_json_arr(e0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(bedrock_agentcore_control_json_str(k3) + ":" + bedrock_agentcore_control_json_str(u2[k3]))
+            parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreateDataset  POST /datasets
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_dataset(self, CreateDatasetRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/datasets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u0))
+        parts.append("\"datasetName\":" + bedrock_agentcore_control_json_str(input.datasetName))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u1))
+        parts.append("\"source\":" + data_source_type_to_json(input.source))
+        parts.append("\"schemaType\":" + input.schemaType.to_json())
+        if input.kmsKeyArn.is_some():
+            auto u2 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + bedrock_agentcore_control_json_str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(bedrock_agentcore_control_json_str(k4) + ":" + bedrock_agentcore_control_json_str(u3[k4]))
+            parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
 
     # CreateDatasetVersion  POST /datasets/{datasetId}/versions
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -7150,6 +9840,472 @@ struct Bedrock_AgentCore_ControlClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
 
+    # CreateEvaluator  POST /evaluators/create
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_evaluator(self, CreateEvaluatorRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/evaluators/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u0))
+        parts.append("\"evaluatorName\":" + bedrock_agentcore_control_json_str(input.evaluatorName))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u1))
+        parts.append("\"evaluatorConfig\":" + evaluator_config_to_json(input.evaluatorConfig))
+        parts.append("\"level\":" + input.level.to_json())
+        if input.kmsKeyArn.is_some():
+            auto u2 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + bedrock_agentcore_control_json_str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(bedrock_agentcore_control_json_str(k4) + ":" + bedrock_agentcore_control_json_str(u3[k4]))
+            parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreateGateway  POST /gateways/
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_gateway(self, CreateGatewayRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/gateways/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u1))
+        parts.append("\"roleArn\":" + bedrock_agentcore_control_json_str(input.roleArn))
+        if input.protocolType.is_some():
+            auto u2 = input.protocolType.unwrap()
+            parts.append("\"protocolType\":" + bedrock_agentcore_control_json_str(u2))
+        if input.protocolConfiguration.is_some():
+            auto u3 = input.protocolConfiguration.unwrap()
+            parts.append("\"protocolConfiguration\":" + gateway_protocol_configuration_to_json(u3))
+        parts.append("\"authorizerType\":" + input.authorizerType.to_json())
+        if input.authorizerConfiguration.is_some():
+            auto u4 = input.authorizerConfiguration.unwrap()
+            parts.append("\"authorizerConfiguration\":" + authorizer_configuration_to_json(u4))
+        if input.kmsKeyArn.is_some():
+            auto u5 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + bedrock_agentcore_control_json_str(u5))
+        if input.interceptorConfigurations.is_some():
+            auto u6 = input.interceptorConfigurations.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(gateway_interceptor_configuration_to_json(x7))
+            parts.append("\"interceptorConfigurations\":" + bedrock_agentcore_control_json_arr(e7))
+        if input.policyEngineConfiguration.is_some():
+            auto u8 = input.policyEngineConfiguration.unwrap()
+            parts.append("\"policyEngineConfiguration\":" + u8.to_json())
+        if input.exceptionLevel.is_some():
+            auto u9 = input.exceptionLevel.unwrap()
+            parts.append("\"exceptionLevel\":" + bedrock_agentcore_control_json_str(u9))
+        if input.tags.is_some():
+            auto u10 = input.tags.unwrap()
+            list[str] m11 = []
+            for k11 in sorted(u10.keys()):
+                m11.append(bedrock_agentcore_control_json_str(k11) + ":" + bedrock_agentcore_control_json_str(u10[k11]))
+            parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m11))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreateGatewayRateLimit  POST /gateways/{gatewayIdentifier}/rate-limits
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_gateway_rate_limit(self, CreateGatewayRateLimitRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["gatewayIdentifier"] = input.gatewayIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/gateways/{gatewayIdentifier}/rate-limits", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u0))
+        if input.rateLimitId.is_some():
+            auto u1 = input.rateLimitId.unwrap()
+            parts.append("\"rateLimitId\":" + bedrock_agentcore_control_json_str(u1))
+        if input.description.is_some():
+            auto u2 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u2))
+        list[str] e3 = []
+        for x3 in input.dimensionKeys:
+            e3.append(bedrock_agentcore_control_json_str(x3))
+        parts.append("\"dimensionKeys\":" + bedrock_agentcore_control_json_arr(e3))
+        list[str] e4 = []
+        for x4 in input.entries:
+            e4.append(limit_entry_to_json(x4))
+        parts.append("\"entries\":" + bedrock_agentcore_control_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreateGatewayRule  POST /gateways/{gatewayIdentifier}/rules
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_gateway_rule(self, CreateGatewayRuleRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["gatewayIdentifier"] = input.gatewayIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/gateways/{gatewayIdentifier}/rules", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u0))
+        parts.append("\"priority\":" + str(input.priority))
+        if input.conditions.is_some():
+            auto u1 = input.conditions.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(condition_to_json(x2))
+            parts.append("\"conditions\":" + bedrock_agentcore_control_json_arr(e2))
+        list[str] e3 = []
+        for x3 in input.actions:
+            e3.append(action_to_json(x3))
+        parts.append("\"actions\":" + bedrock_agentcore_control_json_arr(e3))
+        if input.description.is_some():
+            auto u4 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u4))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreateGatewayTarget  POST /gateways/{gatewayIdentifier}/targets/
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_gateway_target(self, CreateGatewayTargetRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["gatewayIdentifier"] = input.gatewayIdentifier
+        auto b = binding.HttpBinding(method="POST", path_template="/gateways/{gatewayIdentifier}/targets/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + bedrock_agentcore_control_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u1))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u2))
+        parts.append("\"targetConfiguration\":" + target_configuration_to_json(input.targetConfiguration))
+        if input.credentialProviderConfigurations.is_some():
+            auto u3 = input.credentialProviderConfigurations.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(credential_provider_configuration_to_json(x4))
+            parts.append("\"credentialProviderConfigurations\":" + bedrock_agentcore_control_json_arr(e4))
+        if input.metadataConfiguration.is_some():
+            auto u5 = input.metadataConfiguration.unwrap()
+            parts.append("\"metadataConfiguration\":" + metadata_configuration_to_json(u5))
+        if input.privateEndpoint.is_some():
+            auto u6 = input.privateEndpoint.unwrap()
+            parts.append("\"privateEndpoint\":" + private_endpoint_to_json(u6))
+        if input.certificateConfigurations.is_some():
+            auto u7 = input.certificateConfigurations.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"certificateConfigurations\":" + bedrock_agentcore_control_json_arr(e8))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreateHarness  POST /harnesses
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_harness(self, CreateHarnessRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/harnesses", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"harnessName\":" + bedrock_agentcore_control_json_str(input.harnessName))
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u0))
+        parts.append("\"executionRoleArn\":" + bedrock_agentcore_control_json_str(input.executionRoleArn))
+        if input.environment.is_some():
+            auto u1 = input.environment.unwrap()
+            parts.append("\"environment\":" + harness_environment_provider_request_to_json(u1))
+        if input.environmentArtifact.is_some():
+            auto u2 = input.environmentArtifact.unwrap()
+            parts.append("\"environmentArtifact\":" + u2.to_json())
+        if input.environmentVariables.is_some():
+            auto u3 = input.environmentVariables.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(bedrock_agentcore_control_json_str(k4) + ":" + bedrock_agentcore_control_json_str(u3[k4]))
+            parts.append("\"environmentVariables\":" + bedrock_agentcore_control_json_obj(m4))
+        if input.authorizerConfiguration.is_some():
+            auto u5 = input.authorizerConfiguration.unwrap()
+            parts.append("\"authorizerConfiguration\":" + authorizer_configuration_to_json(u5))
+        if input.model.is_some():
+            auto u6 = input.model.unwrap()
+            parts.append("\"model\":" + u6.to_json())
+        if input.systemPrompt.is_some():
+            auto u7 = input.systemPrompt.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(x8.to_json())
+            parts.append("\"systemPrompt\":" + bedrock_agentcore_control_json_arr(e8))
+        if input.tools.is_some():
+            auto u9 = input.tools.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(harness_tool_to_json(x10))
+            parts.append("\"tools\":" + bedrock_agentcore_control_json_arr(e10))
+        if input.skills.is_some():
+            auto u11 = input.skills.unwrap()
+            list[str] e12 = []
+            for x12 in u11:
+                e12.append(harness_skill_to_json(x12))
+            parts.append("\"skills\":" + bedrock_agentcore_control_json_arr(e12))
+        if input.allowedTools.is_some():
+            auto u13 = input.allowedTools.unwrap()
+            list[str] e14 = []
+            for x14 in u13:
+                e14.append(bedrock_agentcore_control_json_str(x14))
+            parts.append("\"allowedTools\":" + bedrock_agentcore_control_json_arr(e14))
+        if input.memory.is_some():
+            auto u15 = input.memory.unwrap()
+            parts.append("\"memory\":" + harness_memory_configuration_to_json(u15))
+        if input.truncation.is_some():
+            auto u16 = input.truncation.unwrap()
+            parts.append("\"truncation\":" + u16.to_json())
+        if input.hooks.is_some():
+            auto u17 = input.hooks.unwrap()
+            list[str] e18 = []
+            for x18 in u17:
+                e18.append(x18.to_json())
+            parts.append("\"hooks\":" + bedrock_agentcore_control_json_arr(e18))
+        if input.maxIterations.is_some():
+            auto u19 = input.maxIterations.unwrap()
+            parts.append("\"maxIterations\":" + str(u19))
+        if input.maxTokens.is_some():
+            auto u20 = input.maxTokens.unwrap()
+            parts.append("\"maxTokens\":" + str(u20))
+        if input.timeoutSeconds.is_some():
+            auto u21 = input.timeoutSeconds.unwrap()
+            parts.append("\"timeoutSeconds\":" + str(u21))
+        if input.tags.is_some():
+            auto u22 = input.tags.unwrap()
+            list[str] m23 = []
+            for k23 in sorted(u22.keys()):
+                m23.append(bedrock_agentcore_control_json_str(k23) + ":" + bedrock_agentcore_control_json_str(u22[k23]))
+            parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m23))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreateHarnessEndpoint  POST /harnesses/{harnessId}/endpoints
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_harness_endpoint(self, CreateHarnessEndpointRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["harnessId"] = input.harnessId
+        auto b = binding.HttpBinding(method="POST", path_template="/harnesses/{harnessId}/endpoints", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"endpointName\":" + bedrock_agentcore_control_json_str(input.endpointName))
+        if input.targetVersion.is_some():
+            auto u0 = input.targetVersion.unwrap()
+            parts.append("\"targetVersion\":" + bedrock_agentcore_control_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u1))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(bedrock_agentcore_control_json_str(k4) + ":" + bedrock_agentcore_control_json_str(u3[k4]))
+            parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreateMemory  POST /memories/create
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceException, ServiceQuotaExceededException, ThrottledException, ValidationException
+    def create_memory(self, CreateMemoryInput input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/memories/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u0))
+        parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u1))
+        if input.encryptionKeyArn.is_some():
+            auto u2 = input.encryptionKeyArn.unwrap()
+            parts.append("\"encryptionKeyArn\":" + bedrock_agentcore_control_json_str(u2))
+        if input.memoryExecutionRoleArn.is_some():
+            auto u3 = input.memoryExecutionRoleArn.unwrap()
+            parts.append("\"memoryExecutionRoleArn\":" + bedrock_agentcore_control_json_str(u3))
+        parts.append("\"eventExpiryDuration\":" + str(input.eventExpiryDuration))
+        if input.memoryStrategies.is_some():
+            auto u4 = input.memoryStrategies.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(memory_strategy_input_to_json(x5))
+            parts.append("\"memoryStrategies\":" + bedrock_agentcore_control_json_arr(e5))
+        if input.indexedKeys.is_some():
+            auto u6 = input.indexedKeys.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"indexedKeys\":" + bedrock_agentcore_control_json_arr(e7))
+        if input.namespaceKeys.is_some():
+            auto u8 = input.namespaceKeys.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(namespace_key_entry_to_json(x9))
+            parts.append("\"namespaceKeys\":" + bedrock_agentcore_control_json_arr(e9))
+        if input.streamDeliveryResources.is_some():
+            auto u10 = input.streamDeliveryResources.unwrap()
+            parts.append("\"streamDeliveryResources\":" + stream_delivery_resources_to_json(u10))
+        if input.tags.is_some():
+            auto u11 = input.tags.unwrap()
+            list[str] m12 = []
+            for k12 in sorted(u11.keys()):
+                m12.append(bedrock_agentcore_control_json_str(k12) + ":" + bedrock_agentcore_control_json_str(u11[k12]))
+            parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m12))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreateOauth2CredentialProvider  POST /identities/CreateOauth2CredentialProvider
+    # errors: AccessDeniedException, ConflictException, DecryptionFailure, EncryptionFailure, InternalServerException, ResourceLimitExceededException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_oauth2_credential_provider(self, CreateOauth2CredentialProviderRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/CreateOauth2CredentialProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
+        parts.append("\"credentialProviderVendor\":" + input.credentialProviderVendor.to_json())
+        parts.append("\"oauth2ProviderConfigInput\":" + oauth2_provider_config_input_to_json(input.oauth2ProviderConfigInput))
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(bedrock_agentcore_control_json_str(k1) + ":" + bedrock_agentcore_control_json_str(u0[k1]))
+            parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreateOnlineEvaluationConfig  POST /online-evaluation-configs/create
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_online_evaluation_config(self, CreateOnlineEvaluationConfigRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/online-evaluation-configs/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u0))
+        parts.append("\"onlineEvaluationConfigName\":" + bedrock_agentcore_control_json_str(input.onlineEvaluationConfigName))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u1))
+        parts.append("\"rule\":" + rule_to_json(input.rule))
+        parts.append("\"dataSourceConfig\":" + data_source_config_to_json(input.dataSourceConfig))
+        if input.evaluators.is_some():
+            auto u2 = input.evaluators.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"evaluators\":" + bedrock_agentcore_control_json_arr(e3))
+        if input.insights.is_some():
+            auto u4 = input.insights.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"insights\":" + bedrock_agentcore_control_json_arr(e5))
+        if input.clusteringConfig.is_some():
+            auto u6 = input.clusteringConfig.unwrap()
+            parts.append("\"clusteringConfig\":" + clustering_config_to_json(u6))
+        if input.outputConfig.is_some():
+            auto u7 = input.outputConfig.unwrap()
+            parts.append("\"outputConfig\":" + u7.to_json())
+        parts.append("\"evaluationExecutionRoleArn\":" + bedrock_agentcore_control_json_str(input.evaluationExecutionRoleArn))
+        parts.append("\"enableOnCreate\":" + json.dumps(JsonValue.Bool(input.enableOnCreate)))
+        if input.tags.is_some():
+            auto u8 = input.tags.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(bedrock_agentcore_control_json_str(k9) + ":" + bedrock_agentcore_control_json_str(u8[k9]))
+            parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m9))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreatePaymentConnector  POST /payments/managers/{paymentManagerId}/connectors
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, SubscriptionRequiredException, ThrottlingException, ValidationException
+    def create_payment_connector(self, CreatePaymentConnectorRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["paymentManagerId"] = input.paymentManagerId
+        auto b = binding.HttpBinding(method="POST", path_template="/payments/managers/{paymentManagerId}/connectors", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u0))
+        parts.append("\"type\":" + input.type.to_json())
+        list[str] e1 = []
+        for x1 in input.credentialProviderConfigurations:
+            e1.append(x1.to_json())
+        parts.append("\"credentialProviderConfigurations\":" + bedrock_agentcore_control_json_arr(e1))
+        if input.provisionMode.is_some():
+            auto u2 = input.provisionMode.unwrap()
+            parts.append("\"provisionMode\":" + u2.to_json())
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u3))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreatePaymentCredentialProvider  POST /identities/CreatePaymentCredentialProvider
+    # errors: AccessDeniedException, ConflictException, DecryptionFailure, EncryptionFailure, InternalServerException, ResourceLimitExceededException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_payment_credential_provider(self, CreatePaymentCredentialProviderRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/CreatePaymentCredentialProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
+        parts.append("\"credentialProviderVendor\":" + input.credentialProviderVendor.to_json())
+        parts.append("\"providerConfigurationInput\":" + input.providerConfigurationInput.to_json())
+        if input.tags.is_some():
+            auto u0 = input.tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(bedrock_agentcore_control_json_str(k1) + ":" + bedrock_agentcore_control_json_str(u0[k1]))
+            parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m1))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreatePaymentManager  POST /payments/managers
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_payment_manager(self, CreatePaymentManagerRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/payments/managers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u0))
+        parts.append("\"authorizerType\":" + input.authorizerType.to_json())
+        if input.authorizerConfiguration.is_some():
+            auto u1 = input.authorizerConfiguration.unwrap()
+            parts.append("\"authorizerConfiguration\":" + authorizer_configuration_to_json(u1))
+        parts.append("\"roleArn\":" + bedrock_agentcore_control_json_str(input.roleArn))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(bedrock_agentcore_control_json_str(k4) + ":" + bedrock_agentcore_control_json_str(u3[k4]))
+            parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m4))
+        if input.kmsKeyArn.is_some():
+            auto u5 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + bedrock_agentcore_control_json_str(u5))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
     # CreatePolicy  POST /policy-engines/{policyEngineId}/policies
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_policy(self, CreatePolicyRequest input) -> str:
@@ -7159,6 +10315,109 @@ struct Bedrock_AgentCore_ControlClient:
         auto b = binding.HttpBinding(method="POST", path_template="/policy-engines/{policyEngineId}/policies", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreatePolicyDocument(name=input.name, definition=input.definition, description=input.description, validationMode=input.validationMode, enforcementMode=input.enforcementMode, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreatePolicyEngine  POST /policy-engines
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_policy_engine(self, CreatePolicyEngineRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/policy-engines", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u1))
+        if input.encryptionKeyArn.is_some():
+            auto u2 = input.encryptionKeyArn.unwrap()
+            parts.append("\"encryptionKeyArn\":" + bedrock_agentcore_control_json_str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(bedrock_agentcore_control_json_str(k4) + ":" + bedrock_agentcore_control_json_str(u3[k4]))
+            parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreateRegistry  POST /registries
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_registry(self, CreateRegistryRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/registries", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u0))
+        if input.authorizerType.is_some():
+            auto u1 = input.authorizerType.unwrap()
+            parts.append("\"authorizerType\":" + u1.to_json())
+        if input.authorizerConfiguration.is_some():
+            auto u2 = input.authorizerConfiguration.unwrap()
+            parts.append("\"authorizerConfiguration\":" + authorizer_configuration_to_json(u2))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u3))
+        if input.approvalConfiguration.is_some():
+            auto u4 = input.approvalConfiguration.unwrap()
+            parts.append("\"approvalConfiguration\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreateRegistryRecord  POST /registries/{registryId}/records
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_registry_record(self, CreateRegistryRecordRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["registryId"] = input.registryId
+        auto b = binding.HttpBinding(method="POST", path_template="/registries/{registryId}/records", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u0))
+        parts.append("\"descriptorType\":" + input.descriptorType.to_json())
+        if input.descriptors.is_some():
+            auto u1 = input.descriptors.unwrap()
+            parts.append("\"descriptors\":" + u1.to_json())
+        if input.recordVersion.is_some():
+            auto u2 = input.recordVersion.unwrap()
+            parts.append("\"recordVersion\":" + bedrock_agentcore_control_json_str(u2))
+        if input.synchronizationType.is_some():
+            auto u3 = input.synchronizationType.unwrap()
+            parts.append("\"synchronizationType\":" + bedrock_agentcore_control_json_str(u3))
+        if input.synchronizationConfiguration.is_some():
+            auto u4 = input.synchronizationConfiguration.unwrap()
+            parts.append("\"synchronizationConfiguration\":" + synchronization_configuration_to_json(u4))
+        if input.clientToken.is_some():
+            auto u5 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u5))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # CreateWorkloadIdentity  POST /identities/CreateWorkloadIdentity
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def create_workload_identity(self, CreateWorkloadIdentityRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/CreateWorkloadIdentity", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
+        if input.allowedResourceOauth2ReturnUrls.is_some():
+            auto u0 = input.allowedResourceOauth2ReturnUrls.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(bedrock_agentcore_control_json_str(x1))
+            parts.append("\"allowedResourceOauth2ReturnUrls\":" + bedrock_agentcore_control_json_arr(e1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(bedrock_agentcore_control_json_str(k3) + ":" + bedrock_agentcore_control_json_str(u2[k3]))
+            parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
 
     # DeleteAgentRuntime  DELETE /runtimes/{agentRuntimeId}/
@@ -7274,6 +10533,24 @@ struct Bedrock_AgentCore_ControlClient:
             query["datasetVersion"] = input.datasetVersion.unwrap_or("")
         auto b = binding.HttpBinding(method="DELETE", path_template="/datasets/{datasetId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
+
+    # DeleteDatasetExamples  POST /datasets/{datasetId}/examples/delete
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def delete_dataset_examples(self, DeleteDatasetExamplesRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["datasetId"] = input.datasetId
+        auto b = binding.HttpBinding(method="POST", path_template="/datasets/{datasetId}/examples/delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.exampleIds:
+            e1.append(bedrock_agentcore_control_json_str(x1))
+        parts.append("\"exampleIds\":" + bedrock_agentcore_control_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
 
     # DeleteEvaluator  DELETE /evaluators/{evaluatorId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -8341,6 +11618,22 @@ struct Bedrock_AgentCore_ControlClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
 
+    # RotatePaymentConnectorCredentials  POST /payments/managers/{paymentManagerId}/connectors/{paymentConnectorId}/rotate-credentials
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def rotate_payment_connector_credentials(self, RotatePaymentConnectorCredentialsRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["paymentManagerId"] = input.paymentManagerId
+        labels["paymentConnectorId"] = input.paymentConnectorId
+        auto b = binding.HttpBinding(method="POST", path_template="/payments/managers/{paymentManagerId}/connectors/{paymentConnectorId}/rotate-credentials", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"credentialsToRotate\":" + credential_rotation_config_to_json(input.credentialsToRotate))
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u0))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
     # SetTokenVaultCMK  POST /identities/set-token-vault-cmk
     # errors: AccessDeniedException, ConcurrentModificationException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def set_token_vault_cmk(self, SetTokenVaultCMKRequest input) -> str:
@@ -8370,6 +11663,91 @@ struct Bedrock_AgentCore_ControlClient:
         labels["recordId"] = input.recordId
         auto b = binding.HttpBinding(method="POST", path_template="/registries/{registryId}/records/{recordId}/submit-for-approval", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
+
+    # SynchronizeGatewayTargets  PUT /gateways/{gatewayIdentifier}/synchronizeTargets
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def synchronize_gateway_targets(self, SynchronizeGatewayTargetsRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["gatewayIdentifier"] = input.gatewayIdentifier
+        auto b = binding.HttpBinding(method="PUT", path_template="/gateways/{gatewayIdentifier}/synchronizeTargets", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.targetIdList:
+            e0.append(bedrock_agentcore_control_json_str(x0))
+        parts.append("\"targetIdList\":" + bedrock_agentcore_control_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # TagResource  POST /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(bedrock_agentcore_control_json_str(k0) + ":" + bedrock_agentcore_control_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + bedrock_agentcore_control_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # UpdateAgentRuntime  PUT /runtimes/{agentRuntimeId}/
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_agent_runtime(self, UpdateAgentRuntimeRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["agentRuntimeId"] = input.agentRuntimeId
+        auto b = binding.HttpBinding(method="PUT", path_template="/runtimes/{agentRuntimeId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"agentRuntimeArtifact\":" + agent_runtime_artifact_to_json(input.agentRuntimeArtifact))
+        parts.append("\"roleArn\":" + bedrock_agentcore_control_json_str(input.roleArn))
+        if input.networkConfiguration.is_some():
+            auto u0 = input.networkConfiguration.unwrap()
+            parts.append("\"networkConfiguration\":" + network_configuration_to_json(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u1))
+        if input.authorizerConfiguration.is_some():
+            auto u2 = input.authorizerConfiguration.unwrap()
+            parts.append("\"authorizerConfiguration\":" + authorizer_configuration_to_json(u2))
+        if input.requestHeaderConfiguration.is_some():
+            auto u3 = input.requestHeaderConfiguration.unwrap()
+            parts.append("\"requestHeaderConfiguration\":" + request_header_configuration_to_json(u3))
+        if input.protocolConfiguration.is_some():
+            auto u4 = input.protocolConfiguration.unwrap()
+            parts.append("\"protocolConfiguration\":" + u4.to_json())
+        if input.lifecycleConfiguration.is_some():
+            auto u5 = input.lifecycleConfiguration.unwrap()
+            parts.append("\"lifecycleConfiguration\":" + u5.to_json())
+        if input.metadataConfiguration.is_some():
+            auto u6 = input.metadataConfiguration.unwrap()
+            parts.append("\"metadataConfiguration\":" + u6.to_json())
+        if input.environmentVariables.is_some():
+            auto u7 = input.environmentVariables.unwrap()
+            list[str] m8 = []
+            for k8 in sorted(u7.keys()):
+                m8.append(bedrock_agentcore_control_json_str(k8) + ":" + bedrock_agentcore_control_json_str(u7[k8]))
+            parts.append("\"environmentVariables\":" + bedrock_agentcore_control_json_obj(m8))
+        if input.filesystemConfigurations.is_some():
+            auto u9 = input.filesystemConfigurations.unwrap()
+            list[str] e10 = []
+            for x10 in u9:
+                e10.append(x10.to_json())
+            parts.append("\"filesystemConfigurations\":" + bedrock_agentcore_control_json_arr(e10))
+        if input.capacityProviderConfiguration.is_some():
+            auto u11 = input.capacityProviderConfiguration.unwrap()
+            parts.append("\"capacityProviderConfiguration\":" + u11.to_json())
+        if input.platformVersion.is_some():
+            auto u12 = input.platformVersion.unwrap()
+            parts.append("\"platformVersion\":" + bedrock_agentcore_control_json_str(u12))
+        if input.clientToken.is_some():
+            auto u13 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u13))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
 
     # UpdateAgentRuntimeEndpoint  PUT /runtimes/{agentRuntimeId}/runtime-endpoints/{endpointName}/
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -8403,6 +11781,65 @@ struct Bedrock_AgentCore_ControlClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
 
+    # UpdateConfigurationBundle  PUT /configuration-bundles/{bundleId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_configuration_bundle(self, UpdateConfigurationBundleRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["bundleId"] = input.bundleId
+        auto b = binding.HttpBinding(method="PUT", path_template="/configuration-bundles/{bundleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u0))
+        if input.bundleName.is_some():
+            auto u1 = input.bundleName.unwrap()
+            parts.append("\"bundleName\":" + bedrock_agentcore_control_json_str(u1))
+        if input.description.is_some():
+            auto u2 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u2))
+        if input.components.is_some():
+            auto u3 = input.components.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(bedrock_agentcore_control_json_str(k4) + ":" + u3[k4].to_json())
+            parts.append("\"components\":" + bedrock_agentcore_control_json_obj(m4))
+        list[str] e5 = []
+        for x5 in input.parentVersionIds:
+            e5.append(bedrock_agentcore_control_json_str(x5))
+        parts.append("\"parentVersionIds\":" + bedrock_agentcore_control_json_arr(e5))
+        if input.branchName.is_some():
+            auto u6 = input.branchName.unwrap()
+            parts.append("\"branchName\":" + bedrock_agentcore_control_json_str(u6))
+        parts.append("\"commitMessage\":" + bedrock_agentcore_control_json_str(input.commitMessage))
+        if input.createdBy.is_some():
+            auto u7 = input.createdBy.unwrap()
+            parts.append("\"createdBy\":" + u7.to_json())
+        if input.kmsKeyArn.is_some():
+            auto u8 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + bedrock_agentcore_control_json_str(u8))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # UpdateConsentPortal  POST /identities/UpdateConsentPortal
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def update_consent_portal(self, UpdateConsentPortalRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/UpdateConsentPortal", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"consentPortalIdentifier\":" + bedrock_agentcore_control_json_str(input.consentPortalIdentifier))
+        if input.executionRoleArn.is_some():
+            auto u0 = input.executionRoleArn.unwrap()
+            parts.append("\"executionRoleArn\":" + bedrock_agentcore_control_json_str(u0))
+        if input.idpConfig.is_some():
+            auto u1 = input.idpConfig.unwrap()
+            parts.append("\"idpConfig\":" + consent_portal_idp_config_to_json(u1))
+        if input.description.is_some():
+            auto u2 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u2))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
     # UpdateDataset  PUT /datasets/{datasetId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_dataset(self, UpdateDatasetRequest input) -> str:
@@ -8412,6 +11849,263 @@ struct Bedrock_AgentCore_ControlClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/datasets/{datasetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDatasetDocument(clientToken=input.clientToken, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # UpdateDatasetExamples  POST /datasets/{datasetId}/examples/update
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_dataset_examples(self, UpdateDatasetExamplesRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["datasetId"] = input.datasetId
+        auto b = binding.HttpBinding(method="POST", path_template="/datasets/{datasetId}/examples/update", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.examples:
+            e1.append(x1.to_json())
+        parts.append("\"examples\":" + bedrock_agentcore_control_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # UpdateEvaluator  PUT /evaluators/{evaluatorId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_evaluator(self, UpdateEvaluatorRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["evaluatorId"] = input.evaluatorId
+        auto b = binding.HttpBinding(method="PUT", path_template="/evaluators/{evaluatorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u1))
+        if input.evaluatorConfig.is_some():
+            auto u2 = input.evaluatorConfig.unwrap()
+            parts.append("\"evaluatorConfig\":" + evaluator_config_to_json(u2))
+        if input.level.is_some():
+            auto u3 = input.level.unwrap()
+            parts.append("\"level\":" + u3.to_json())
+        if input.kmsKeyArn.is_some():
+            auto u4 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + bedrock_agentcore_control_json_str(u4))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # UpdateGateway  PUT /gateways/{gatewayIdentifier}/
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_gateway(self, UpdateGatewayRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["gatewayIdentifier"] = input.gatewayIdentifier
+        auto b = binding.HttpBinding(method="PUT", path_template="/gateways/{gatewayIdentifier}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u0))
+        parts.append("\"roleArn\":" + bedrock_agentcore_control_json_str(input.roleArn))
+        if input.protocolType.is_some():
+            auto u1 = input.protocolType.unwrap()
+            parts.append("\"protocolType\":" + bedrock_agentcore_control_json_str(u1))
+        if input.protocolConfiguration.is_some():
+            auto u2 = input.protocolConfiguration.unwrap()
+            parts.append("\"protocolConfiguration\":" + gateway_protocol_configuration_to_json(u2))
+        parts.append("\"authorizerType\":" + input.authorizerType.to_json())
+        if input.authorizerConfiguration.is_some():
+            auto u3 = input.authorizerConfiguration.unwrap()
+            parts.append("\"authorizerConfiguration\":" + authorizer_configuration_to_json(u3))
+        if input.kmsKeyArn.is_some():
+            auto u4 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + bedrock_agentcore_control_json_str(u4))
+        if input.customTransformConfiguration.is_some():
+            auto u5 = input.customTransformConfiguration.unwrap()
+            parts.append("\"customTransformConfiguration\":" + u5.to_json())
+        if input.interceptorConfigurations.is_some():
+            auto u6 = input.interceptorConfigurations.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(gateway_interceptor_configuration_to_json(x7))
+            parts.append("\"interceptorConfigurations\":" + bedrock_agentcore_control_json_arr(e7))
+        if input.policyEngineConfiguration.is_some():
+            auto u8 = input.policyEngineConfiguration.unwrap()
+            parts.append("\"policyEngineConfiguration\":" + u8.to_json())
+        if input.exceptionLevel.is_some():
+            auto u9 = input.exceptionLevel.unwrap()
+            parts.append("\"exceptionLevel\":" + bedrock_agentcore_control_json_str(u9))
+        if input.wafConfiguration.is_some():
+            auto u10 = input.wafConfiguration.unwrap()
+            parts.append("\"wafConfiguration\":" + u10.to_json())
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # UpdateGatewayRateLimit  PATCH /gateways/{gatewayIdentifier}/rate-limits/{rateLimitId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_gateway_rate_limit(self, UpdateGatewayRateLimitRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["gatewayIdentifier"] = input.gatewayIdentifier
+        labels["rateLimitId"] = input.rateLimitId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/gateways/{gatewayIdentifier}/rate-limits/{rateLimitId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u0))
+        list[str] e1 = []
+        for x1 in input.entries:
+            e1.append(limit_entry_to_json(x1))
+        parts.append("\"entries\":" + bedrock_agentcore_control_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # UpdateGatewayRule  PATCH /gateways/{gatewayIdentifier}/rules/{ruleId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_gateway_rule(self, UpdateGatewayRuleRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["gatewayIdentifier"] = input.gatewayIdentifier
+        labels["ruleId"] = input.ruleId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/gateways/{gatewayIdentifier}/rules/{ruleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.priority.is_some():
+            auto u0 = input.priority.unwrap()
+            parts.append("\"priority\":" + str(u0))
+        if input.conditions.is_some():
+            auto u1 = input.conditions.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(condition_to_json(x2))
+            parts.append("\"conditions\":" + bedrock_agentcore_control_json_arr(e2))
+        if input.actions.is_some():
+            auto u3 = input.actions.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(action_to_json(x4))
+            parts.append("\"actions\":" + bedrock_agentcore_control_json_arr(e4))
+        if input.description.is_some():
+            auto u5 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u5))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # UpdateGatewayTarget  PUT /gateways/{gatewayIdentifier}/targets/{targetId}/
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_gateway_target(self, UpdateGatewayTargetRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["gatewayIdentifier"] = input.gatewayIdentifier
+        labels["targetId"] = input.targetId
+        auto b = binding.HttpBinding(method="PUT", path_template="/gateways/{gatewayIdentifier}/targets/{targetId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + bedrock_agentcore_control_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u1))
+        parts.append("\"targetConfiguration\":" + target_configuration_to_json(input.targetConfiguration))
+        if input.credentialProviderConfigurations.is_some():
+            auto u2 = input.credentialProviderConfigurations.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(credential_provider_configuration_to_json(x3))
+            parts.append("\"credentialProviderConfigurations\":" + bedrock_agentcore_control_json_arr(e3))
+        if input.metadataConfiguration.is_some():
+            auto u4 = input.metadataConfiguration.unwrap()
+            parts.append("\"metadataConfiguration\":" + metadata_configuration_to_json(u4))
+        if input.privateEndpoint.is_some():
+            auto u5 = input.privateEndpoint.unwrap()
+            parts.append("\"privateEndpoint\":" + private_endpoint_to_json(u5))
+        if input.certificateConfigurations.is_some():
+            auto u6 = input.certificateConfigurations.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"certificateConfigurations\":" + bedrock_agentcore_control_json_arr(e7))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # UpdateHarness  PATCH /harnesses/{harnessId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_harness(self, UpdateHarnessRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["harnessId"] = input.harnessId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/harnesses/{harnessId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u0))
+        if input.executionRoleArn.is_some():
+            auto u1 = input.executionRoleArn.unwrap()
+            parts.append("\"executionRoleArn\":" + bedrock_agentcore_control_json_str(u1))
+        if input.environment.is_some():
+            auto u2 = input.environment.unwrap()
+            parts.append("\"environment\":" + harness_environment_provider_request_to_json(u2))
+        if input.environmentArtifact.is_some():
+            auto u3 = input.environmentArtifact.unwrap()
+            parts.append("\"environmentArtifact\":" + u3.to_json())
+        if input.environmentVariables.is_some():
+            auto u4 = input.environmentVariables.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(bedrock_agentcore_control_json_str(k5) + ":" + bedrock_agentcore_control_json_str(u4[k5]))
+            parts.append("\"environmentVariables\":" + bedrock_agentcore_control_json_obj(m5))
+        if input.authorizerConfiguration.is_some():
+            auto u6 = input.authorizerConfiguration.unwrap()
+            parts.append("\"authorizerConfiguration\":" + updated_authorizer_configuration_to_json(u6))
+        if input.model.is_some():
+            auto u7 = input.model.unwrap()
+            parts.append("\"model\":" + u7.to_json())
+        if input.systemPrompt.is_some():
+            auto u8 = input.systemPrompt.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(x9.to_json())
+            parts.append("\"systemPrompt\":" + bedrock_agentcore_control_json_arr(e9))
+        if input.tools.is_some():
+            auto u10 = input.tools.unwrap()
+            list[str] e11 = []
+            for x11 in u10:
+                e11.append(harness_tool_to_json(x11))
+            parts.append("\"tools\":" + bedrock_agentcore_control_json_arr(e11))
+        if input.skills.is_some():
+            auto u12 = input.skills.unwrap()
+            list[str] e13 = []
+            for x13 in u12:
+                e13.append(harness_skill_to_json(x13))
+            parts.append("\"skills\":" + bedrock_agentcore_control_json_arr(e13))
+        if input.allowedTools.is_some():
+            auto u14 = input.allowedTools.unwrap()
+            list[str] e15 = []
+            for x15 in u14:
+                e15.append(bedrock_agentcore_control_json_str(x15))
+            parts.append("\"allowedTools\":" + bedrock_agentcore_control_json_arr(e15))
+        if input.memory.is_some():
+            auto u16 = input.memory.unwrap()
+            parts.append("\"memory\":" + updated_harness_memory_configuration_to_json(u16))
+        if input.truncation.is_some():
+            auto u17 = input.truncation.unwrap()
+            parts.append("\"truncation\":" + u17.to_json())
+        if input.hooks.is_some():
+            auto u18 = input.hooks.unwrap()
+            list[str] e19 = []
+            for x19 in u18:
+                e19.append(x19.to_json())
+            parts.append("\"hooks\":" + bedrock_agentcore_control_json_arr(e19))
+        if input.maxIterations.is_some():
+            auto u20 = input.maxIterations.unwrap()
+            parts.append("\"maxIterations\":" + str(u20))
+        if input.maxTokens.is_some():
+            auto u21 = input.maxTokens.unwrap()
+            parts.append("\"maxTokens\":" + str(u21))
+        if input.timeoutSeconds.is_some():
+            auto u22 = input.timeoutSeconds.unwrap()
+            parts.append("\"timeoutSeconds\":" + str(u22))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
 
     # UpdateHarnessEndpoint  PATCH /harnesses/{harnessId}/endpoints/{endpointName}
@@ -8426,6 +12120,133 @@ struct Bedrock_AgentCore_ControlClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
 
+    # UpdateMemory  PUT /memories/{memoryId}/update
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceException, ServiceQuotaExceededException, ThrottledException, ValidationException
+    def update_memory(self, UpdateMemoryInput input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["memoryId"] = input.memoryId
+        auto b = binding.HttpBinding(method="PUT", path_template="/memories/{memoryId}/update", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u1))
+        if input.eventExpiryDuration.is_some():
+            auto u2 = input.eventExpiryDuration.unwrap()
+            parts.append("\"eventExpiryDuration\":" + str(u2))
+        if input.memoryExecutionRoleArn.is_some():
+            auto u3 = input.memoryExecutionRoleArn.unwrap()
+            parts.append("\"memoryExecutionRoleArn\":" + bedrock_agentcore_control_json_str(u3))
+        if input.memoryStrategies.is_some():
+            auto u4 = input.memoryStrategies.unwrap()
+            parts.append("\"memoryStrategies\":" + modify_memory_strategies_to_json(u4))
+        if input.addIndexedKeys.is_some():
+            auto u5 = input.addIndexedKeys.unwrap()
+            list[str] e6 = []
+            for x6 in u5:
+                e6.append(x6.to_json())
+            parts.append("\"addIndexedKeys\":" + bedrock_agentcore_control_json_arr(e6))
+        if input.namespaceKeys.is_some():
+            auto u7 = input.namespaceKeys.unwrap()
+            list[str] e8 = []
+            for x8 in u7:
+                e8.append(namespace_key_entry_to_json(x8))
+            parts.append("\"namespaceKeys\":" + bedrock_agentcore_control_json_arr(e8))
+        if input.streamDeliveryResources.is_some():
+            auto u9 = input.streamDeliveryResources.unwrap()
+            parts.append("\"streamDeliveryResources\":" + stream_delivery_resources_to_json(u9))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # UpdateOauth2CredentialProvider  POST /identities/UpdateOauth2CredentialProvider
+    # errors: AccessDeniedException, ConflictException, DecryptionFailure, EncryptionFailure, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def update_oauth2_credential_provider(self, UpdateOauth2CredentialProviderRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/UpdateOauth2CredentialProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
+        parts.append("\"credentialProviderVendor\":" + input.credentialProviderVendor.to_json())
+        parts.append("\"oauth2ProviderConfigInput\":" + oauth2_provider_config_input_to_json(input.oauth2ProviderConfigInput))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # UpdateOnlineEvaluationConfig  PUT /online-evaluation-configs/{onlineEvaluationConfigId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_online_evaluation_config(self, UpdateOnlineEvaluationConfigRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["onlineEvaluationConfigId"] = input.onlineEvaluationConfigId
+        auto b = binding.HttpBinding(method="PUT", path_template="/online-evaluation-configs/{onlineEvaluationConfigId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u1))
+        if input.rule.is_some():
+            auto u2 = input.rule.unwrap()
+            parts.append("\"rule\":" + rule_to_json(u2))
+        if input.dataSourceConfig.is_some():
+            auto u3 = input.dataSourceConfig.unwrap()
+            parts.append("\"dataSourceConfig\":" + data_source_config_to_json(u3))
+        if input.evaluators.is_some():
+            auto u4 = input.evaluators.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"evaluators\":" + bedrock_agentcore_control_json_arr(e5))
+        if input.insights.is_some():
+            auto u6 = input.insights.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"insights\":" + bedrock_agentcore_control_json_arr(e7))
+        if input.clusteringConfig.is_some():
+            auto u8 = input.clusteringConfig.unwrap()
+            parts.append("\"clusteringConfig\":" + clustering_config_to_json(u8))
+        if input.outputConfig.is_some():
+            auto u9 = input.outputConfig.unwrap()
+            parts.append("\"outputConfig\":" + u9.to_json())
+        if input.evaluationExecutionRoleArn.is_some():
+            auto u10 = input.evaluationExecutionRoleArn.unwrap()
+            parts.append("\"evaluationExecutionRoleArn\":" + bedrock_agentcore_control_json_str(u10))
+        if input.executionStatus.is_some():
+            auto u11 = input.executionStatus.unwrap()
+            parts.append("\"executionStatus\":" + u11.to_json())
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # UpdatePaymentConnector  PATCH /payments/managers/{paymentManagerId}/connectors/{paymentConnectorId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, SubscriptionRequiredException, ThrottlingException, ValidationException
+    def update_payment_connector(self, UpdatePaymentConnectorRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["paymentManagerId"] = input.paymentManagerId
+        labels["paymentConnectorId"] = input.paymentConnectorId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/payments/managers/{paymentManagerId}/connectors/{paymentConnectorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u0))
+        if input.type.is_some():
+            auto u1 = input.type.unwrap()
+            parts.append("\"type\":" + u1.to_json())
+        if input.credentialProviderConfigurations.is_some():
+            auto u2 = input.credentialProviderConfigurations.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"credentialProviderConfigurations\":" + bedrock_agentcore_control_json_arr(e3))
+        if input.clientToken.is_some():
+            auto u4 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u4))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
     # UpdatePaymentCredentialProvider  POST /identities/UpdatePaymentCredentialProvider
     # errors: AccessDeniedException, ConflictException, DecryptionFailure, EncryptionFailure, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
     def update_payment_credential_provider(self, UpdatePaymentCredentialProviderRequest input) -> str:
@@ -8433,6 +12254,35 @@ struct Bedrock_AgentCore_ControlClient:
         auto b = binding.HttpBinding(method="POST", path_template="/identities/UpdatePaymentCredentialProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePaymentCredentialProviderDocument(name=input.name, credentialProviderVendor=input.credentialProviderVendor, providerConfigurationInput=input.providerConfigurationInput)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # UpdatePaymentManager  PATCH /payments/managers/{paymentManagerId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_payment_manager(self, UpdatePaymentManagerRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["paymentManagerId"] = input.paymentManagerId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/payments/managers/{paymentManagerId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + bedrock_agentcore_control_json_str(u0))
+        if input.authorizerType.is_some():
+            auto u1 = input.authorizerType.unwrap()
+            parts.append("\"authorizerType\":" + u1.to_json())
+        if input.authorizerConfiguration.is_some():
+            auto u2 = input.authorizerConfiguration.unwrap()
+            parts.append("\"authorizerConfiguration\":" + authorizer_configuration_to_json(u2))
+        if input.roleArn.is_some():
+            auto u3 = input.roleArn.unwrap()
+            parts.append("\"roleArn\":" + bedrock_agentcore_control_json_str(u3))
+        if input.clientToken.is_some():
+            auto u4 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + bedrock_agentcore_control_json_str(u4))
+        if input.kmsKeyArn.is_some():
+            auto u5 = input.kmsKeyArn.unwrap()
+            parts.append("\"kmsKeyArn\":" + bedrock_agentcore_control_json_str(u5))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
 
     # UpdatePolicy  PATCH /policy-engines/{policyEngineId}/policies/{policyId}
@@ -8458,6 +12308,65 @@ struct Bedrock_AgentCore_ControlClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
 
+    # UpdateRegistry  PATCH /registries/{registryId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_registry(self, UpdateRegistryRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["registryId"] = input.registryId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/registries/{registryId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + bedrock_agentcore_control_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + u1.to_json())
+        if input.authorizerConfiguration.is_some():
+            auto u2 = input.authorizerConfiguration.unwrap()
+            parts.append("\"authorizerConfiguration\":" + updated_authorizer_configuration_to_json(u2))
+        if input.approvalConfiguration.is_some():
+            auto u3 = input.approvalConfiguration.unwrap()
+            parts.append("\"approvalConfiguration\":" + u3.to_json())
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # UpdateRegistryRecord  PATCH /registries/{registryId}/records/{recordId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_registry_record(self, UpdateRegistryRecordRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["registryId"] = input.registryId
+        labels["recordId"] = input.recordId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/registries/{registryId}/records/{recordId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.name.is_some():
+            auto u0 = input.name.unwrap()
+            parts.append("\"name\":" + bedrock_agentcore_control_json_str(u0))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + u1.to_json())
+        if input.descriptorType.is_some():
+            auto u2 = input.descriptorType.unwrap()
+            parts.append("\"descriptorType\":" + u2.to_json())
+        if input.descriptors.is_some():
+            auto u3 = input.descriptors.unwrap()
+            parts.append("\"descriptors\":" + u3.to_json())
+        if input.recordVersion.is_some():
+            auto u4 = input.recordVersion.unwrap()
+            parts.append("\"recordVersion\":" + bedrock_agentcore_control_json_str(u4))
+        if input.synchronizationType.is_some():
+            auto u5 = input.synchronizationType.unwrap()
+            parts.append("\"synchronizationType\":" + u5.to_json())
+        if input.synchronizationConfiguration.is_some():
+            auto u6 = input.synchronizationConfiguration.unwrap()
+            parts.append("\"synchronizationConfiguration\":" + updated_synchronization_configuration_to_json(u6))
+        if input.triggerSynchronization.is_some():
+            auto u7 = input.triggerSynchronization.unwrap()
+            parts.append("\"triggerSynchronization\":" + json.dumps(JsonValue.Bool(u7)))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
     # UpdateRegistryRecordStatus  PATCH /registries/{registryId}/records/{recordId}/status
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_registry_record_status(self, UpdateRegistryRecordStatusRequest input) -> str:
@@ -8468,6 +12377,22 @@ struct Bedrock_AgentCore_ControlClient:
         auto b = binding.HttpBinding(method="PATCH", path_template="/registries/{registryId}/records/{recordId}/status", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRegistryRecordStatusDocument(status=input.status, statusReason=input.statusReason)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
+
+    # UpdateWorkloadIdentity  POST /identities/UpdateWorkloadIdentity
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def update_workload_identity(self, UpdateWorkloadIdentityRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/UpdateWorkloadIdentity", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
+        if input.allowedResourceOauth2ReturnUrls.is_some():
+            auto u0 = input.allowedResourceOauth2ReturnUrls.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(bedrock_agentcore_control_json_str(x1))
+            parts.append("\"allowedResourceOauth2ReturnUrls\":" + bedrock_agentcore_control_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
 
     # Paginator for ListAgentRuntimeEndpoints — yields each Response page, threading the

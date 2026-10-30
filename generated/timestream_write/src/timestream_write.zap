@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 19 operations — 12 with a generated method,
-#   7 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 19 operations — 19 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   75 structs (50 @derive(Json)), 8 enums, 9 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -129,8 +129,9 @@ struct BatchLoadTask:
     Optional[DateTime] LastUpdatedTime
     Optional[DateTime] ResumableUntil
 
-# no @derive(Json): member(s) DataModelConfiguration: DataModelConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataModelConfiguration: DataModelConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchLoadTaskDescription:
     Optional[str] TaskId
     Optional[str] ErrorMessage
@@ -150,8 +151,9 @@ struct BatchLoadTaskDescription:
 struct ConflictException:
     str Message
 
-# no @derive(Json): member(s) DataModelConfiguration: DataModelConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataModelConfiguration: DataModelConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateBatchLoadTaskRequest:
     Optional[str] ClientToken
     Optional[DataModelConfiguration] DataModelConfiguration
@@ -165,8 +167,9 @@ struct CreateBatchLoadTaskRequest:
 struct CreateBatchLoadTaskResponse:
     str TaskId
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDatabaseRequest:
     str DatabaseName
     Optional[str] KmsKeyId
@@ -176,8 +179,9 @@ struct CreateDatabaseRequest:
 struct CreateDatabaseResponse:
     Optional[Database] Database
 
-# no @derive(Json): member(s) Tags: list[Tag], Schema: Schema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag], Schema: Schema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTableRequest:
     str DatabaseName
     str TableName
@@ -186,8 +190,9 @@ struct CreateTableRequest:
     Optional[MagneticStoreWriteProperties] MagneticStoreWriteProperties
     Optional[Schema] Schema
 
-# no @derive(Json): member(s) Table: Table not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Table: Table not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateTableResponse:
     Optional[Table] Table
 
@@ -199,8 +204,9 @@ struct CsvConfiguration:
     Optional[str] NullValue
     Optional[bool] TrimWhiteSpace
 
-# no @derive(Json): member(s) DimensionMappings: list[DimensionMapping], MultiMeasureMappings: MultiMeasureMappings, MixedMeasureMappings: list[MixedMeasureMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DimensionMappings: list[DimensionMapping], MultiMeasureMappings: MultiMeasureMappings, MixedMeasureMappings: list[MixedMeasureMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataModel:
     Optional[str] TimeColumn
     Optional[TimeUnit] TimeUnit
@@ -209,8 +215,9 @@ struct DataModel:
     Optional[list[MixedMeasureMapping]] MixedMeasureMappings
     Optional[str] MeasureNameColumn
 
-# no @derive(Json): member(s) DataModel: DataModel not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) DataModel: DataModel not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DataModelConfiguration:
     Optional[DataModel] DataModel
     Optional[DataModelS3Configuration] DataModelS3Configuration
@@ -253,8 +260,9 @@ struct DeleteTableRequest:
 struct DescribeBatchLoadTaskRequest:
     str TaskId
 
-# no @derive(Json): member(s) BatchLoadTaskDescription: BatchLoadTaskDescription not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BatchLoadTaskDescription: BatchLoadTaskDescription not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBatchLoadTaskResponse:
     BatchLoadTaskDescription BatchLoadTaskDescription
 
@@ -271,8 +279,9 @@ struct DescribeEndpointsRequest:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) Endpoints: list[Endpoint] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Endpoints: list[Endpoint] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeEndpointsResponse:
     list[Endpoint] Endpoints
 
@@ -281,8 +290,9 @@ struct DescribeTableRequest:
     str DatabaseName
     str TableName
 
-# no @derive(Json): member(s) Table: Table not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Table: Table not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTableResponse:
     Optional[Table] Table
 
@@ -316,8 +326,9 @@ struct ListBatchLoadTasksRequest:
     Optional[int64] MaxResults
     Optional[BatchLoadStatus] TaskStatus
 
-# no @derive(Json): member(s) BatchLoadTasks: list[BatchLoadTask] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BatchLoadTasks: list[BatchLoadTask] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBatchLoadTasksResponse:
     Optional[str] NextToken
     Optional[list[BatchLoadTask]] BatchLoadTasks
@@ -327,8 +338,9 @@ struct ListDatabasesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Databases: list[Database] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Databases: list[Database] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatabasesResponse:
     Optional[list[Database]] Databases
     Optional[str] NextToken
@@ -339,8 +351,9 @@ struct ListTablesRequest:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Tables: list[Table] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tables: list[Table] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTablesResponse:
     Optional[list[Table]] Tables
     Optional[str] NextToken
@@ -349,8 +362,9 @@ struct ListTablesResponse:
 struct ListTagsForResourceRequest:
     str ResourceARN
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[list[Tag]] Tags
 
@@ -369,8 +383,9 @@ struct MeasureValue:
     str Value
     MeasureValueType Type
 
-# no @derive(Json): member(s) MultiMeasureAttributeMappings: list[MultiMeasureAttributeMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MultiMeasureAttributeMappings: list[MultiMeasureAttributeMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MixedMeasureMapping:
     Optional[str] MeasureName
     Optional[str] SourceColumn
@@ -384,8 +399,9 @@ struct MultiMeasureAttributeMapping:
     Optional[str] TargetMultiMeasureAttributeName
     Optional[ScalarMeasureValueType] MeasureValueType
 
-# no @derive(Json): member(s) MultiMeasureAttributeMappings: list[MultiMeasureAttributeMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) MultiMeasureAttributeMappings: list[MultiMeasureAttributeMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MultiMeasureMappings:
     Optional[str] TargetMultiMeasureName
     list[MultiMeasureAttributeMapping] MultiMeasureAttributeMappings
@@ -396,8 +412,9 @@ struct PartitionKey:
     Optional[str] Name
     Optional[PartitionKeyEnforcementLevel] EnforcementInRecord
 
-# no @derive(Json): member(s) Dimensions: list[Dimension], MeasureValues: list[MeasureValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Dimensions: list[Dimension], MeasureValues: list[MeasureValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Record:
     Optional[list[Dimension]] Dimensions
     Optional[str] MeasureName
@@ -420,8 +437,9 @@ struct RejectedRecord:
     Optional[str] Reason
     Optional[int64] ExistingVersion
 
-# no @derive(Json): member(s) RejectedRecords: list[RejectedRecord] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RejectedRecords: list[RejectedRecord] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RejectedRecordsException:
     Optional[str] Message
     Optional[list[RejectedRecord]] RejectedRecords
@@ -462,8 +480,9 @@ struct S3Configuration:
     Optional[S3EncryptionOption] EncryptionOption
     Optional[str] KmsKeyId
 
-# no @derive(Json): member(s) CompositePartitionKey: list[PartitionKey] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CompositePartitionKey: list[PartitionKey] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Schema:
     Optional[list[PartitionKey]] CompositePartitionKey
 
@@ -471,8 +490,9 @@ struct Schema:
 struct ServiceQuotaExceededException:
     Optional[str] Message
 
-# no @derive(Json): member(s) Schema: Schema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Schema: Schema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Table:
     Optional[str] Arn
     Optional[str] TableName
@@ -489,8 +509,9 @@ struct Tag:
     str Key
     str Value
 
-# no @derive(Json): member(s) Tags: list[Tag] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: list[Tag] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceRequest:
     str ResourceARN
     list[Tag] Tags
@@ -504,8 +525,9 @@ struct TagResourceResponse:
 struct ThrottlingException:
     str Message
 
-# no @derive(Json): member(s) TagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceRequest:
     str ResourceARN
     list[str] TagKeys
@@ -524,8 +546,9 @@ struct UpdateDatabaseRequest:
 struct UpdateDatabaseResponse:
     Optional[Database] Database
 
-# no @derive(Json): member(s) Schema: Schema not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Schema: Schema not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTableRequest:
     str DatabaseName
     str TableName
@@ -533,8 +556,9 @@ struct UpdateTableRequest:
     Optional[MagneticStoreWriteProperties] MagneticStoreWriteProperties
     Optional[Schema] Schema
 
-# no @derive(Json): member(s) Table: Table not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Table: Table not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateTableResponse:
     Optional[Table] Table
 
@@ -542,8 +566,9 @@ struct UpdateTableResponse:
 struct ValidationException:
     str Message
 
-# no @derive(Json): member(s) CommonAttributes: Record, Records: list[Record] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) CommonAttributes: Record, Records: list[Record] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WriteRecordsRequest:
     str DatabaseName
     str TableName
@@ -594,20 +619,280 @@ def ingest_timestream_error_from_code(str code) -> Timestream_WriteError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   CreateBatchLoadTask (input CreateBatchLoadTaskRequest)
-#   CreateDatabase (input CreateDatabaseRequest)
-#   CreateTable (input CreateTableRequest)
-#   TagResource (input TagResourceRequest)
-#   UntagResource (input UntagResourceRequest)
-#   UpdateTable (input UpdateTableRequest)
-#   WriteRecords (input WriteRecordsRequest)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def ingest_timestream_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def ingest_timestream_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def ingest_timestream_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize CreateBatchLoadTaskRequest to a compact JSON object (declaration order).
+def create_batch_load_task_request_to_json(CreateBatchLoadTaskRequest v) -> str:
+    list[str] parts = []
+    if v.ClientToken.is_some():
+        auto u0 = v.ClientToken.unwrap()
+        parts.append("\"ClientToken\":" + ingest_timestream_json_str(u0))
+    if v.DataModelConfiguration.is_some():
+        auto u1 = v.DataModelConfiguration.unwrap()
+        parts.append("\"DataModelConfiguration\":" + data_model_configuration_to_json(u1))
+    parts.append("\"DataSourceConfiguration\":" + v.DataSourceConfiguration.to_json())
+    parts.append("\"ReportConfiguration\":" + v.ReportConfiguration.to_json())
+    parts.append("\"TargetDatabaseName\":" + ingest_timestream_json_str(v.TargetDatabaseName))
+    parts.append("\"TargetTableName\":" + ingest_timestream_json_str(v.TargetTableName))
+    if v.RecordVersion.is_some():
+        auto u2 = v.RecordVersion.unwrap()
+        parts.append("\"RecordVersion\":" + str(u2))
+    return ingest_timestream_json_obj(parts)
+
+# Serialize CreateDatabaseRequest to a compact JSON object (declaration order).
+def create_database_request_to_json(CreateDatabaseRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DatabaseName\":" + ingest_timestream_json_str(v.DatabaseName))
+    if v.KmsKeyId.is_some():
+        auto u0 = v.KmsKeyId.unwrap()
+        parts.append("\"KmsKeyId\":" + ingest_timestream_json_str(u0))
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + ingest_timestream_json_arr(e2))
+    return ingest_timestream_json_obj(parts)
+
+# Serialize CreateTableRequest to a compact JSON object (declaration order).
+def create_table_request_to_json(CreateTableRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DatabaseName\":" + ingest_timestream_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + ingest_timestream_json_str(v.TableName))
+    if v.RetentionProperties.is_some():
+        auto u0 = v.RetentionProperties.unwrap()
+        parts.append("\"RetentionProperties\":" + u0.to_json())
+    if v.Tags.is_some():
+        auto u1 = v.Tags.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Tags\":" + ingest_timestream_json_arr(e2))
+    if v.MagneticStoreWriteProperties.is_some():
+        auto u3 = v.MagneticStoreWriteProperties.unwrap()
+        parts.append("\"MagneticStoreWriteProperties\":" + u3.to_json())
+    if v.Schema.is_some():
+        auto u4 = v.Schema.unwrap()
+        parts.append("\"Schema\":" + schema_to_json(u4))
+    return ingest_timestream_json_obj(parts)
+
+# Serialize DataModel to a compact JSON object (declaration order).
+def data_model_to_json(DataModel v) -> str:
+    list[str] parts = []
+    if v.TimeColumn.is_some():
+        auto u0 = v.TimeColumn.unwrap()
+        parts.append("\"TimeColumn\":" + ingest_timestream_json_str(u0))
+    if v.TimeUnit.is_some():
+        auto u1 = v.TimeUnit.unwrap()
+        parts.append("\"TimeUnit\":" + u1.to_json())
+    list[str] e2 = []
+    for x2 in v.DimensionMappings:
+        e2.append(x2.to_json())
+    parts.append("\"DimensionMappings\":" + ingest_timestream_json_arr(e2))
+    if v.MultiMeasureMappings.is_some():
+        auto u3 = v.MultiMeasureMappings.unwrap()
+        parts.append("\"MultiMeasureMappings\":" + multi_measure_mappings_to_json(u3))
+    if v.MixedMeasureMappings.is_some():
+        auto u4 = v.MixedMeasureMappings.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(mixed_measure_mapping_to_json(x5))
+        parts.append("\"MixedMeasureMappings\":" + ingest_timestream_json_arr(e5))
+    if v.MeasureNameColumn.is_some():
+        auto u6 = v.MeasureNameColumn.unwrap()
+        parts.append("\"MeasureNameColumn\":" + ingest_timestream_json_str(u6))
+    return ingest_timestream_json_obj(parts)
+
+# Serialize DataModelConfiguration to a compact JSON object (declaration order).
+def data_model_configuration_to_json(DataModelConfiguration v) -> str:
+    list[str] parts = []
+    if v.DataModel.is_some():
+        auto u0 = v.DataModel.unwrap()
+        parts.append("\"DataModel\":" + data_model_to_json(u0))
+    if v.DataModelS3Configuration.is_some():
+        auto u1 = v.DataModelS3Configuration.unwrap()
+        parts.append("\"DataModelS3Configuration\":" + u1.to_json())
+    return ingest_timestream_json_obj(parts)
+
+# Serialize MixedMeasureMapping to a compact JSON object (declaration order).
+def mixed_measure_mapping_to_json(MixedMeasureMapping v) -> str:
+    list[str] parts = []
+    if v.MeasureName.is_some():
+        auto u0 = v.MeasureName.unwrap()
+        parts.append("\"MeasureName\":" + ingest_timestream_json_str(u0))
+    if v.SourceColumn.is_some():
+        auto u1 = v.SourceColumn.unwrap()
+        parts.append("\"SourceColumn\":" + ingest_timestream_json_str(u1))
+    if v.TargetMeasureName.is_some():
+        auto u2 = v.TargetMeasureName.unwrap()
+        parts.append("\"TargetMeasureName\":" + ingest_timestream_json_str(u2))
+    parts.append("\"MeasureValueType\":" + v.MeasureValueType.to_json())
+    if v.MultiMeasureAttributeMappings.is_some():
+        auto u3 = v.MultiMeasureAttributeMappings.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"MultiMeasureAttributeMappings\":" + ingest_timestream_json_arr(e4))
+    return ingest_timestream_json_obj(parts)
+
+# Serialize MultiMeasureMappings to a compact JSON object (declaration order).
+def multi_measure_mappings_to_json(MultiMeasureMappings v) -> str:
+    list[str] parts = []
+    if v.TargetMultiMeasureName.is_some():
+        auto u0 = v.TargetMultiMeasureName.unwrap()
+        parts.append("\"TargetMultiMeasureName\":" + ingest_timestream_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.MultiMeasureAttributeMappings:
+        e1.append(x1.to_json())
+    parts.append("\"MultiMeasureAttributeMappings\":" + ingest_timestream_json_arr(e1))
+    return ingest_timestream_json_obj(parts)
+
+# Serialize Record to a compact JSON object (declaration order).
+def record_to_json(Record v) -> str:
+    list[str] parts = []
+    if v.Dimensions.is_some():
+        auto u0 = v.Dimensions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Dimensions\":" + ingest_timestream_json_arr(e1))
+    if v.MeasureName.is_some():
+        auto u2 = v.MeasureName.unwrap()
+        parts.append("\"MeasureName\":" + ingest_timestream_json_str(u2))
+    if v.MeasureValue.is_some():
+        auto u3 = v.MeasureValue.unwrap()
+        parts.append("\"MeasureValue\":" + ingest_timestream_json_str(u3))
+    if v.MeasureValueType.is_some():
+        auto u4 = v.MeasureValueType.unwrap()
+        parts.append("\"MeasureValueType\":" + u4.to_json())
+    if v.Time.is_some():
+        auto u5 = v.Time.unwrap()
+        parts.append("\"Time\":" + ingest_timestream_json_str(u5))
+    if v.TimeUnit.is_some():
+        auto u6 = v.TimeUnit.unwrap()
+        parts.append("\"TimeUnit\":" + u6.to_json())
+    if v.Version.is_some():
+        auto u7 = v.Version.unwrap()
+        parts.append("\"Version\":" + str(u7))
+    if v.MeasureValues.is_some():
+        auto u8 = v.MeasureValues.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"MeasureValues\":" + ingest_timestream_json_arr(e9))
+    return ingest_timestream_json_obj(parts)
+
+# Serialize Schema to a compact JSON object (declaration order).
+def schema_to_json(Schema v) -> str:
+    list[str] parts = []
+    if v.CompositePartitionKey.is_some():
+        auto u0 = v.CompositePartitionKey.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"CompositePartitionKey\":" + ingest_timestream_json_arr(e1))
+    return ingest_timestream_json_obj(parts)
+
+# Serialize TagResourceRequest to a compact JSON object (declaration order).
+def tag_resource_request_to_json(TagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + ingest_timestream_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.Tags:
+        e0.append(x0.to_json())
+    parts.append("\"Tags\":" + ingest_timestream_json_arr(e0))
+    return ingest_timestream_json_obj(parts)
+
+# Serialize UntagResourceRequest to a compact JSON object (declaration order).
+def untag_resource_request_to_json(UntagResourceRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"ResourceARN\":" + ingest_timestream_json_str(v.ResourceARN))
+    list[str] e0 = []
+    for x0 in v.TagKeys:
+        e0.append(ingest_timestream_json_str(x0))
+    parts.append("\"TagKeys\":" + ingest_timestream_json_arr(e0))
+    return ingest_timestream_json_obj(parts)
+
+# Serialize UpdateTableRequest to a compact JSON object (declaration order).
+def update_table_request_to_json(UpdateTableRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DatabaseName\":" + ingest_timestream_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + ingest_timestream_json_str(v.TableName))
+    if v.RetentionProperties.is_some():
+        auto u0 = v.RetentionProperties.unwrap()
+        parts.append("\"RetentionProperties\":" + u0.to_json())
+    if v.MagneticStoreWriteProperties.is_some():
+        auto u1 = v.MagneticStoreWriteProperties.unwrap()
+        parts.append("\"MagneticStoreWriteProperties\":" + u1.to_json())
+    if v.Schema.is_some():
+        auto u2 = v.Schema.unwrap()
+        parts.append("\"Schema\":" + schema_to_json(u2))
+    return ingest_timestream_json_obj(parts)
+
+# Serialize WriteRecordsRequest to a compact JSON object (declaration order).
+def write_records_request_to_json(WriteRecordsRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"DatabaseName\":" + ingest_timestream_json_str(v.DatabaseName))
+    parts.append("\"TableName\":" + ingest_timestream_json_str(v.TableName))
+    if v.CommonAttributes.is_some():
+        auto u0 = v.CommonAttributes.unwrap()
+        parts.append("\"CommonAttributes\":" + record_to_json(u0))
+    list[str] e1 = []
+    for x1 in v.Records:
+        e1.append(record_to_json(x1))
+    parts.append("\"Records\":" + ingest_timestream_json_arr(e1))
+    return ingest_timestream_json_obj(parts)
 
 # A bound Timestream_Write client: credentials + region, threaded into every operation.
 struct Timestream_WriteClient:
     core.Credentials creds
     str region
+
+    # CreateBatchLoadTask
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidEndpointException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_batch_load_task(self, CreateBatchLoadTaskRequest input) -> str:
+        auto body = create_batch_load_task_request_to_json(input)
+        return awsjson.awsjson_request_now(ingest_timestream_protocol(), self.creds, self.region, "CreateBatchLoadTask", body)
+
+    # CreateDatabase
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidEndpointException, InvalidEndpointException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_database(self, CreateDatabaseRequest input) -> str:
+        auto body = create_database_request_to_json(input)
+        return awsjson.awsjson_request_now(ingest_timestream_protocol(), self.creds, self.region, "CreateDatabase", body)
+
+    # CreateTable
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidEndpointException, InvalidEndpointException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_table(self, CreateTableRequest input) -> str:
+        auto body = create_table_request_to_json(input)
+        return awsjson.awsjson_request_now(ingest_timestream_protocol(), self.creds, self.region, "CreateTable", body)
 
     # DeleteDatabase
     # errors: AccessDeniedException, InternalServerException, InvalidEndpointException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -675,11 +960,35 @@ struct Timestream_WriteClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ingest_timestream_protocol(), self.creds, self.region, "ResumeBatchLoadTask", body)
 
+    # TagResource
+    # errors: InvalidEndpointException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto body = tag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(ingest_timestream_protocol(), self.creds, self.region, "TagResource", body)
+
+    # UntagResource
+    # errors: InvalidEndpointException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto body = untag_resource_request_to_json(input)
+        return awsjson.awsjson_request_now(ingest_timestream_protocol(), self.creds, self.region, "UntagResource", body)
+
     # UpdateDatabase
     # errors: AccessDeniedException, InternalServerException, InvalidEndpointException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_database(self, UpdateDatabaseRequest input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(ingest_timestream_protocol(), self.creds, self.region, "UpdateDatabase", body)
+
+    # UpdateTable
+    # errors: AccessDeniedException, InternalServerException, InvalidEndpointException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def update_table(self, UpdateTableRequest input) -> str:
+        auto body = update_table_request_to_json(input)
+        return awsjson.awsjson_request_now(ingest_timestream_protocol(), self.creds, self.region, "UpdateTable", body)
+
+    # WriteRecords
+    # errors: AccessDeniedException, InternalServerException, InvalidEndpointException, RejectedRecordsException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def write_records(self, WriteRecordsRequest input) -> str:
+        auto body = write_records_request_to_json(input)
+        return awsjson.awsjson_request_now(ingest_timestream_protocol(), self.creds, self.region, "WriteRecords", body)
 
 # Construct a Timestream_WriteClient bound to credentials + region.
 def ingest_timestream_client(core.Credentials creds, str region) -> Timestream_WriteClient:

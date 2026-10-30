@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 3 operations — 2 with a generated method,
-#   1 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 3 operations — 3 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   15 structs (10 @derive(Json)), 0 enums, 7 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -48,8 +48,9 @@ struct AccessDeniedException:
 struct ConflictException:
     str message
 
-# no @derive(Json): member(s) RecordingDestinations: RecordingDestinations not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) RecordingDestinations: RecordingDestinations not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConnectionRecordingPreferences:
     str KMSKeyArn
     RecordingDestinations RecordingDestinations
@@ -63,8 +64,9 @@ struct DeleteConnectionRecordingPreferencesRequest:
 struct DeleteConnectionRecordingPreferencesResponse:
     Optional[str] ClientToken
 
-# no @derive(Json): member(s) ConnectionRecordingPreferences: ConnectionRecordingPreferences not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectionRecordingPreferences: ConnectionRecordingPreferences not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetConnectionRecordingPreferencesResponse:
     Optional[str] ClientToken
     Optional[ConnectionRecordingPreferences] ConnectionRecordingPreferences
@@ -73,8 +75,9 @@ struct GetConnectionRecordingPreferencesResponse:
 struct InternalServerException:
     str message
 
-# no @derive(Json): member(s) S3Buckets: list[S3Bucket] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3Buckets: list[S3Bucket] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecordingDestinations:
     list[S3Bucket] S3Buckets
 
@@ -101,8 +104,9 @@ struct UpdateConnectionRecordingPreferencesRequest:
     Optional[str] ClientToken
     ConnectionRecordingPreferences ConnectionRecordingPreferences
 
-# no @derive(Json): member(s) ConnectionRecordingPreferences: ConnectionRecordingPreferences not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ConnectionRecordingPreferences: ConnectionRecordingPreferences not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateConnectionRecordingPreferencesResponse:
     Optional[str] ClientToken
     Optional[ConnectionRecordingPreferences] ConnectionRecordingPreferences
@@ -146,11 +150,6 @@ def ssm_guiconnect_error_from_code(str code) -> SSM_GuiConnectError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UpdateConnectionRecordingPreferences (document member `ConnectionRecordingPreferences: ConnectionRecordingPreferences` is not serializable by derive)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -158,6 +157,52 @@ def ssm_guiconnect_error_from_code(str code) -> SSM_GuiConnectError:
 struct DeleteConnectionRecordingPreferencesDocument:
     # document members of DeleteConnectionRecordingPreferences
     Optional[str] ClientToken
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def ssm_guiconnect_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def ssm_guiconnect_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def ssm_guiconnect_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ConnectionRecordingPreferences to a compact JSON object (declaration order).
+def connection_recording_preferences_to_json(ConnectionRecordingPreferences v) -> str:
+    list[str] parts = []
+    parts.append("\"KMSKeyArn\":" + ssm_guiconnect_json_str(v.KMSKeyArn))
+    parts.append("\"RecordingDestinations\":" + recording_destinations_to_json(v.RecordingDestinations))
+    return ssm_guiconnect_json_obj(parts)
+
+# Serialize RecordingDestinations to a compact JSON object (declaration order).
+def recording_destinations_to_json(RecordingDestinations v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.S3Buckets:
+        e0.append(x0.to_json())
+    parts.append("\"S3Buckets\":" + ssm_guiconnect_json_arr(e0))
+    return ssm_guiconnect_json_obj(parts)
 
 # A bound SSM_GuiConnect client: credentials + region, threaded into every operation.
 struct SSM_GuiConnectClient:
@@ -179,6 +224,19 @@ struct SSM_GuiConnectClient:
         auto host = endpoints.regional_host(ssm_guiconnect_service(), self.region)
         auto b = binding.HttpBinding(method="POST", path_template="/GetConnectionRecordingPreferences", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ssm_guiconnect_service(), self.region, host)
+
+    # UpdateConnectionRecordingPreferences  POST /UpdateConnectionRecordingPreferences
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_connection_recording_preferences(self, UpdateConnectionRecordingPreferencesRequest input) -> str:
+        auto host = endpoints.regional_host(ssm_guiconnect_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateConnectionRecordingPreferences", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + ssm_guiconnect_json_str(u0))
+        parts.append("\"ConnectionRecordingPreferences\":" + connection_recording_preferences_to_json(input.ConnectionRecordingPreferences))
+        auto bp = restjson.rest_json_document(b, ssm_guiconnect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, ssm_guiconnect_service(), self.region, host)
 
 # Construct a SSM_GuiConnectClient bound to credentials + region.
 def ssm_guiconnect_client(core.Credentials creds, str region) -> SSM_GuiConnectClient:

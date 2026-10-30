@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 38 operations — 30 with a generated method,
-#   8 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 38 operations — 38 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   111 structs (84 @derive(Json)), 10 enums, 6 error variants.
-#   6 paginators generated (4 paginated ops skipped) from paginators-1.json.
+#   10 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -299,8 +299,9 @@ struct DevEnvironmentRepositorySummary:
     str repositoryName
     Optional[str] branchName
 
-# no @derive(Json): member(s) executeCommandSessionConfiguration: ExecuteCommandSessionConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) executeCommandSessionConfiguration: ExecuteCommandSessionConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DevEnvironmentSessionConfiguration:
     DevEnvironmentSessionType sessionType
     Optional[ExecuteCommandSessionConfiguration] executeCommandSessionConfiguration
@@ -314,8 +315,9 @@ struct DevEnvironmentSessionSummary:
     DateTime startedTime
     str id
 
-# no @derive(Json): member(s) repositories: list[DevEnvironmentRepositorySummary], ides: list[Ide] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) repositories: list[DevEnvironmentRepositorySummary], ides: list[Ide] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DevEnvironmentSummary:
     Optional[str] spaceName
     Optional[str] projectName
@@ -361,14 +363,16 @@ struct EventPayload:
     Optional[str] contentType
     Optional[str] data
 
-# no @derive(Json): member(s) arguments: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) arguments: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecuteCommandSessionConfiguration:
     str command
     Optional[list[str]] arguments
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Filter:
     str key
     list[str] values
@@ -381,8 +385,9 @@ struct GetDevEnvironmentRequest:
     str projectName
     str id
 
-# no @derive(Json): member(s) repositories: list[DevEnvironmentRepositorySummary], ides: list[Ide] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) repositories: list[DevEnvironmentRepositorySummary], ides: list[Ide] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDevEnvironmentResponse:
     str spaceName
     str projectName
@@ -510,8 +515,9 @@ struct GetWorkflowRunRequest:
     str id
     str projectName
 
-# no @derive(Json): member(s) statusReasons: list[WorkflowRunStatusReason] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[WorkflowRunStatusReason] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetWorkflowRunResponse:
     str spaceName
     str projectName
@@ -539,8 +545,9 @@ struct ListAccessTokensRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[AccessTokenSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[AccessTokenSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccessTokensResponse:
     list[AccessTokenSummary] items
     Optional[str] nextToken
@@ -554,8 +561,9 @@ struct ListDevEnvironmentSessionsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[DevEnvironmentSessionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[DevEnvironmentSessionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDevEnvironmentSessionsResponse:
     list[DevEnvironmentSessionSummary] items
     Optional[str] nextToken
@@ -569,8 +577,9 @@ struct ListDevEnvironmentsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[DevEnvironmentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[DevEnvironmentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDevEnvironmentsResponse:
     list[DevEnvironmentSummary] items
     Optional[str] nextToken
@@ -585,8 +594,9 @@ struct ListEventLogsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[EventLogEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[EventLogEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEventLogsResponse:
     Optional[str] nextToken
     list[EventLogEntry] items
@@ -599,8 +609,9 @@ struct ListProjectsRequest:
     Optional[int64] maxResults
     Optional[list[ProjectListFilter]] filters
 
-# no @derive(Json): member(s) items: list[ProjectSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ProjectSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProjectsResponse:
     Optional[str] nextToken
     Optional[list[ProjectSummary]] items
@@ -623,8 +634,9 @@ struct ListSourceRepositoriesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[ListSourceRepositoriesItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ListSourceRepositoriesItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSourceRepositoriesResponse:
     Optional[list[ListSourceRepositoriesItem]] items
     Optional[str] nextToken
@@ -646,8 +658,9 @@ struct ListSourceRepositoryBranchesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) items: list[ListSourceRepositoryBranchesItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[ListSourceRepositoryBranchesItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSourceRepositoryBranchesResponse:
     Optional[str] nextToken
     list[ListSourceRepositoryBranchesItem] items
@@ -657,8 +670,9 @@ struct ListSourceRepositoryBranchesResponse:
 struct ListSpacesRequest:
     Optional[str] nextToken
 
-# no @derive(Json): member(s) items: list[SpaceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[SpaceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSpacesResponse:
     Optional[str] nextToken
     Optional[list[SpaceSummary]] items
@@ -673,8 +687,9 @@ struct ListWorkflowRunsRequest:
     Optional[int64] maxResults
     Optional[list[WorkflowRunSortCriteria]] sortBy
 
-# no @derive(Json): member(s) items: list[WorkflowRunSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[WorkflowRunSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkflowRunsResponse:
     Optional[str] nextToken
     Optional[list[WorkflowRunSummary]] items
@@ -688,8 +703,9 @@ struct ListWorkflowsRequest:
     Optional[int64] maxResults
     Optional[list[WorkflowSortCriteria]] sortBy
 
-# no @derive(Json): member(s) items: list[WorkflowSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) items: list[WorkflowSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkflowsResponse:
     Optional[str] nextToken
     Optional[list[WorkflowSummary]] items
@@ -707,8 +723,9 @@ struct ProjectInformation:
     Optional[str] name
     Optional[str] projectId
 
-# no @derive(Json): member(s) values: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) values: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProjectListFilter:
     FilterKey key
     list[str] values
@@ -833,8 +850,9 @@ struct UpdateDevEnvironmentRequest:
     Optional[int64] inactivityTimeoutMinutes
     Optional[str] clientToken
 
-# no @derive(Json): member(s) ides: list[IdeConfiguration] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ides: list[IdeConfiguration] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDevEnvironmentResponse:
     str id
     str spaceName
@@ -904,8 +922,9 @@ struct WorkflowRunStatusReason:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) statusReasons: list[WorkflowRunStatusReason] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusReasons: list[WorkflowRunStatusReason] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct WorkflowRunSummary:
     str id
     str workflowId
@@ -966,25 +985,6 @@ def codecatalyst_error_from_code(str code) -> CodeCatalystError:
     return CodeCatalystError.Unknown(code=code)
 
 # --- client ----------------------------------------------------------------
-
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CreateDevEnvironment (document member `repositories: list[RepositoryInput]` is not serializable by derive)
-#   ListDevEnvironments (document member `filters: list[Filter]` is not serializable by derive)
-#   ListProjects (document member `filters: list[ProjectListFilter]` is not serializable by derive)
-#   ListWorkflowRuns (document member `sortBy: list[WorkflowRunSortCriteria]` is not serializable by derive)
-#   ListWorkflows (document member `sortBy: list[WorkflowSortCriteria]` is not serializable by derive)
-#   StartDevEnvironment (document member `ides: list[IdeConfiguration]` is not serializable by derive)
-#   StartDevEnvironmentSession (document member `sessionConfiguration: DevEnvironmentSessionConfiguration` is not serializable by derive)
-#   UpdateDevEnvironment (document member `ides: list[IdeConfiguration]` is not serializable by derive)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListDevEnvironments (operation not generated)
-#   ListProjects (operation not generated)
-#   ListWorkflowRuns (operation not generated)
-#   ListWorkflows (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1064,6 +1064,83 @@ struct UpdateSpaceDocument:
     # document members of UpdateSpace
     Optional[str] description
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def codecatalyst_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def codecatalyst_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def codecatalyst_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize DevEnvironmentSessionConfiguration to a compact JSON object (declaration order).
+def dev_environment_session_configuration_to_json(DevEnvironmentSessionConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"sessionType\":" + v.sessionType.to_json())
+    if v.executeCommandSessionConfiguration.is_some():
+        auto u0 = v.executeCommandSessionConfiguration.unwrap()
+        parts.append("\"executeCommandSessionConfiguration\":" + execute_command_session_configuration_to_json(u0))
+    return codecatalyst_json_obj(parts)
+
+# Serialize ExecuteCommandSessionConfiguration to a compact JSON object (declaration order).
+def execute_command_session_configuration_to_json(ExecuteCommandSessionConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"command\":" + codecatalyst_json_str(v.command))
+    if v.arguments.is_some():
+        auto u0 = v.arguments.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(codecatalyst_json_str(x1))
+        parts.append("\"arguments\":" + codecatalyst_json_arr(e1))
+    return codecatalyst_json_obj(parts)
+
+# Serialize Filter to a compact JSON object (declaration order).
+def filter_to_json(Filter v) -> str:
+    list[str] parts = []
+    parts.append("\"key\":" + codecatalyst_json_str(v.key))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(codecatalyst_json_str(x0))
+    parts.append("\"values\":" + codecatalyst_json_arr(e0))
+    if v.comparisonOperator.is_some():
+        auto u1 = v.comparisonOperator.unwrap()
+        parts.append("\"comparisonOperator\":" + codecatalyst_json_str(u1))
+    return codecatalyst_json_obj(parts)
+
+# Serialize ProjectListFilter to a compact JSON object (declaration order).
+def project_list_filter_to_json(ProjectListFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"key\":" + v.key.to_json())
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(codecatalyst_json_str(x0))
+    parts.append("\"values\":" + codecatalyst_json_arr(e0))
+    if v.comparisonOperator.is_some():
+        auto u1 = v.comparisonOperator.unwrap()
+        parts.append("\"comparisonOperator\":" + u1.to_json())
+    return codecatalyst_json_obj(parts)
+
 # A bound CodeCatalyst client: credentials + region, threaded into every operation.
 struct CodeCatalystClient:
     core.Credentials creds
@@ -1076,6 +1153,44 @@ struct CodeCatalystClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/v1/accessTokens", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateAccessTokenDocument(name=input.name, expiresTime=input.expiresTime)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
+
+    # CreateDevEnvironment  PUT /v1/spaces/{spaceName}/projects/{projectName}/devEnvironments
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def create_dev_environment(self, CreateDevEnvironmentRequest input) -> str:
+        auto host = endpoints.regional_host(codecatalyst_service(), self.region)
+        dict[str, str] labels = {}
+        labels["spaceName"] = input.spaceName
+        labels["projectName"] = input.projectName
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/spaces/{spaceName}/projects/{projectName}/devEnvironments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.repositories.is_some():
+            auto u0 = input.repositories.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"repositories\":" + codecatalyst_json_arr(e1))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + codecatalyst_json_str(u2))
+        if input.alias.is_some():
+            auto u3 = input.alias.unwrap()
+            parts.append("\"alias\":" + codecatalyst_json_str(u3))
+        if input.ides.is_some():
+            auto u4 = input.ides.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"ides\":" + codecatalyst_json_arr(e5))
+        parts.append("\"instanceType\":" + input.instanceType.to_json())
+        if input.inactivityTimeoutMinutes.is_some():
+            auto u6 = input.inactivityTimeoutMinutes.unwrap()
+            parts.append("\"inactivityTimeoutMinutes\":" + str(u6))
+        parts.append("\"persistentStorage\":" + input.persistentStorage.to_json())
+        if input.vpcConnectionName.is_some():
+            auto u7 = input.vpcConnectionName.unwrap()
+            parts.append("\"vpcConnectionName\":" + codecatalyst_json_str(u7))
+        auto bp = restjson.rest_json_document(b, codecatalyst_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
 
     # CreateProject  PUT /v1/spaces/{spaceName}/projects
@@ -1283,6 +1398,32 @@ struct CodeCatalystClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
 
+    # ListDevEnvironments  POST /v1/spaces/{spaceName}/devEnvironments
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_dev_environments(self, ListDevEnvironmentsRequest input) -> str:
+        auto host = endpoints.regional_host(codecatalyst_service(), self.region)
+        dict[str, str] labels = {}
+        labels["spaceName"] = input.spaceName
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/spaces/{spaceName}/devEnvironments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.projectName.is_some():
+            auto u0 = input.projectName.unwrap()
+            parts.append("\"projectName\":" + codecatalyst_json_str(u0))
+        if input.filters.is_some():
+            auto u1 = input.filters.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(filter_to_json(x2))
+            parts.append("\"filters\":" + codecatalyst_json_arr(e2))
+        if input.nextToken.is_some():
+            auto u3 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + codecatalyst_json_str(u3))
+        if input.maxResults.is_some():
+            auto u4 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u4))
+        auto bp = restjson.rest_json_document(b, codecatalyst_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
+
     # ListEventLogs  POST /v1/spaces/{spaceName}/eventLogs
     # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_event_logs(self, ListEventLogsRequest input) -> str:
@@ -1292,6 +1433,29 @@ struct CodeCatalystClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/spaces/{spaceName}/eventLogs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListEventLogsDocument(startTime=input.startTime, endTime=input.endTime, eventName=input.eventName, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
+
+    # ListProjects  POST /v1/spaces/{spaceName}/projects
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_projects(self, ListProjectsRequest input) -> str:
+        auto host = endpoints.regional_host(codecatalyst_service(), self.region)
+        dict[str, str] labels = {}
+        labels["spaceName"] = input.spaceName
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/spaces/{spaceName}/projects", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.nextToken.is_some():
+            auto u0 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + codecatalyst_json_str(u0))
+        if input.maxResults.is_some():
+            auto u1 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u1))
+        if input.filters.is_some():
+            auto u2 = input.filters.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(project_list_filter_to_json(x3))
+            parts.append("\"filters\":" + codecatalyst_json_arr(e3))
+        auto bp = restjson.rest_json_document(b, codecatalyst_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
 
     # ListSourceRepositories  POST /v1/spaces/{spaceName}/projects/{projectName}/sourceRepositories
@@ -1326,6 +1490,93 @@ struct CodeCatalystClient:
         auto b = binding.HttpBinding(method="POST", path_template="/v1/spaces", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListSpacesDocument(nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
+
+    # ListWorkflowRuns  POST /v1/spaces/{spaceName}/projects/{projectName}/workflowRuns
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_workflow_runs(self, ListWorkflowRunsRequest input) -> str:
+        auto host = endpoints.regional_host(codecatalyst_service(), self.region)
+        dict[str, str] labels = {}
+        labels["spaceName"] = input.spaceName
+        labels["projectName"] = input.projectName
+        dict[str, str] query = {}
+        if input.workflowId.is_some():
+            query["workflowId"] = input.workflowId.unwrap_or("")
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/spaces/{spaceName}/projects/{projectName}/workflowRuns", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.sortBy.is_some():
+            auto u0 = input.sortBy.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"sortBy\":" + codecatalyst_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, codecatalyst_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
+
+    # ListWorkflows  POST /v1/spaces/{spaceName}/projects/{projectName}/workflows
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_workflows(self, ListWorkflowsRequest input) -> str:
+        auto host = endpoints.regional_host(codecatalyst_service(), self.region)
+        dict[str, str] labels = {}
+        labels["spaceName"] = input.spaceName
+        labels["projectName"] = input.projectName
+        dict[str, str] query = {}
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/spaces/{spaceName}/projects/{projectName}/workflows", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.sortBy.is_some():
+            auto u0 = input.sortBy.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"sortBy\":" + codecatalyst_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, codecatalyst_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
+
+    # StartDevEnvironment  PUT /v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}/start
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_dev_environment(self, StartDevEnvironmentRequest input) -> str:
+        auto host = endpoints.regional_host(codecatalyst_service(), self.region)
+        dict[str, str] labels = {}
+        labels["spaceName"] = input.spaceName
+        labels["projectName"] = input.projectName
+        labels["id"] = input.id
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.ides.is_some():
+            auto u0 = input.ides.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(x1.to_json())
+            parts.append("\"ides\":" + codecatalyst_json_arr(e1))
+        if input.instanceType.is_some():
+            auto u2 = input.instanceType.unwrap()
+            parts.append("\"instanceType\":" + u2.to_json())
+        if input.inactivityTimeoutMinutes.is_some():
+            auto u3 = input.inactivityTimeoutMinutes.unwrap()
+            parts.append("\"inactivityTimeoutMinutes\":" + str(u3))
+        auto bp = restjson.rest_json_document(b, codecatalyst_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
+
+    # StartDevEnvironmentSession  PUT /v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}/session
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_dev_environment_session(self, StartDevEnvironmentSessionRequest input) -> str:
+        auto host = endpoints.regional_host(codecatalyst_service(), self.region)
+        dict[str, str] labels = {}
+        labels["spaceName"] = input.spaceName
+        labels["projectName"] = input.projectName
+        labels["id"] = input.id
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}/session", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"sessionConfiguration\":" + dev_environment_session_configuration_to_json(input.sessionConfiguration))
+        auto bp = restjson.rest_json_document(b, codecatalyst_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
 
     # StartWorkflowRun  PUT /v1/spaces/{spaceName}/projects/{projectName}/workflowRuns
@@ -1364,6 +1615,37 @@ struct CodeCatalystClient:
         labels["sessionId"] = input.sessionId
         auto b = binding.HttpBinding(method="DELETE", path_template="/v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}/session/{sessionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codecatalyst_service(), self.region, host)
+
+    # UpdateDevEnvironment  PATCH /v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_dev_environment(self, UpdateDevEnvironmentRequest input) -> str:
+        auto host = endpoints.regional_host(codecatalyst_service(), self.region)
+        dict[str, str] labels = {}
+        labels["spaceName"] = input.spaceName
+        labels["projectName"] = input.projectName
+        labels["id"] = input.id
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.alias.is_some():
+            auto u0 = input.alias.unwrap()
+            parts.append("\"alias\":" + codecatalyst_json_str(u0))
+        if input.ides.is_some():
+            auto u1 = input.ides.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"ides\":" + codecatalyst_json_arr(e2))
+        if input.instanceType.is_some():
+            auto u3 = input.instanceType.unwrap()
+            parts.append("\"instanceType\":" + u3.to_json())
+        if input.inactivityTimeoutMinutes.is_some():
+            auto u4 = input.inactivityTimeoutMinutes.unwrap()
+            parts.append("\"inactivityTimeoutMinutes\":" + str(u4))
+        if input.clientToken.is_some():
+            auto u5 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + codecatalyst_json_str(u5))
+        auto bp = restjson.rest_json_document(b, codecatalyst_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
 
     # UpdateProject  PATCH /v1/spaces/{spaceName}/projects/{name}
     # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -1421,12 +1703,38 @@ struct CodeCatalystClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListDevEnvironments — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_dev_environments(self, ListDevEnvironmentsRequest input):
+        auto host = endpoints.regional_host(codecatalyst_service(), self.region)
+        while True:
+            auto raw = self.list_dev_environments(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListEventLogs — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: items).
     def paginate_list_event_logs(self, ListEventLogsRequest input):
         auto host = endpoints.regional_host(codecatalyst_service(), self.region)
         while True:
             auto raw = self.list_event_logs(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListProjects — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_projects(self, ListProjectsRequest input):
+        auto host = endpoints.regional_host(codecatalyst_service(), self.region)
+        while True:
+            auto raw = self.list_projects(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -1466,6 +1774,32 @@ struct CodeCatalystClient:
         auto host = endpoints.regional_host(codecatalyst_service(), self.region)
         while True:
             auto raw = self.list_spaces(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListWorkflowRuns — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_workflow_runs(self, ListWorkflowRunsRequest input):
+        auto host = endpoints.regional_host(codecatalyst_service(), self.region)
+        while True:
+            auto raw = self.list_workflow_runs(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListWorkflows — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_workflows(self, ListWorkflowsRequest input):
+        auto host = endpoints.regional_host(codecatalyst_service(), self.region)
+        while True:
+            auto raw = self.list_workflows(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

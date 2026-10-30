@@ -13,13 +13,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (v0, awsJson only): 80 operations — 63 with a generated method,
-#   17 skipped (input uses collections not yet serializable by derive).
+# Coverage (v0, awsJson only): 80 operations — 80 with a generated method,
+#   0 skipped (input has a non-string-keyed map or free-form document member).
 #   399 structs (327 @derive(Json)), 17 enums, 190 error variants.
 #   8 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -293,14 +293,16 @@ struct BatchAssociateApprovalRuleTemplateWithRepositoriesError:
     Optional[str] errorCode
     Optional[str] errorMessage
 
-# no @derive(Json): member(s) repositoryNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) repositoryNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchAssociateApprovalRuleTemplateWithRepositoriesInput:
     str approvalRuleTemplateName
     list[str] repositoryNames
 
-# no @derive(Json): member(s) associatedRepositoryNames: list[str], errors: list[BatchAssociateApprovalRuleTemplateWithRepositoriesError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) associatedRepositoryNames: list[str], errors: list[BatchAssociateApprovalRuleTemplateWithRepositoriesError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchAssociateApprovalRuleTemplateWithRepositoriesOutput:
     list[str] associatedRepositoryNames
     list[BatchAssociateApprovalRuleTemplateWithRepositoriesError] errors
@@ -311,8 +313,9 @@ struct BatchDescribeMergeConflictsError:
     str exceptionName
     str message
 
-# no @derive(Json): member(s) filePaths: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filePaths: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDescribeMergeConflictsInput:
     str repositoryName
     str destinationCommitSpecifier
@@ -325,8 +328,9 @@ struct BatchDescribeMergeConflictsInput:
     Optional[ConflictResolutionStrategyTypeEnum] conflictResolutionStrategy
     Optional[str] nextToken
 
-# no @derive(Json): member(s) conflicts: list[Conflict], errors: list[BatchDescribeMergeConflictsError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) conflicts: list[Conflict], errors: list[BatchDescribeMergeConflictsError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDescribeMergeConflictsOutput:
     list[Conflict] conflicts
     Optional[str] nextToken
@@ -341,14 +345,16 @@ struct BatchDisassociateApprovalRuleTemplateFromRepositoriesError:
     Optional[str] errorCode
     Optional[str] errorMessage
 
-# no @derive(Json): member(s) repositoryNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) repositoryNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDisassociateApprovalRuleTemplateFromRepositoriesInput:
     str approvalRuleTemplateName
     list[str] repositoryNames
 
-# no @derive(Json): member(s) disassociatedRepositoryNames: list[str], errors: list[BatchDisassociateApprovalRuleTemplateFromRepositoriesError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) disassociatedRepositoryNames: list[str], errors: list[BatchDisassociateApprovalRuleTemplateFromRepositoriesError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDisassociateApprovalRuleTemplateFromRepositoriesOutput:
     list[str] disassociatedRepositoryNames
     list[BatchDisassociateApprovalRuleTemplateFromRepositoriesError] errors
@@ -359,14 +365,16 @@ struct BatchGetCommitsError:
     Optional[str] errorCode
     Optional[str] errorMessage
 
-# no @derive(Json): member(s) commitIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) commitIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetCommitsInput:
     list[str] commitIds
     str repositoryName
 
-# no @derive(Json): member(s) commits: list[Commit], errors: list[BatchGetCommitsError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) commits: list[Commit], errors: list[BatchGetCommitsError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetCommitsOutput:
     Optional[list[Commit]] commits
     Optional[list[BatchGetCommitsError]] errors
@@ -378,13 +386,15 @@ struct BatchGetRepositoriesError:
     Optional[BatchGetRepositoriesErrorCodeEnum] errorCode
     Optional[str] errorMessage
 
-# no @derive(Json): member(s) repositoryNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) repositoryNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetRepositoriesInput:
     list[str] repositoryNames
 
-# no @derive(Json): member(s) repositories: list[RepositoryMetadata], repositoriesNotFound: list[str], errors: list[BatchGetRepositoriesError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) repositories: list[RepositoryMetadata], repositoriesNotFound: list[str], errors: list[BatchGetRepositoriesError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetRepositoriesOutput:
     Optional[list[RepositoryMetadata]] repositories
     Optional[list[str]] repositoriesNotFound
@@ -451,8 +461,9 @@ struct ClientRequestTokenRequiredException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) callerReactions: list[str], reactionCounts: dict[str, int64] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) callerReactions: list[str], reactionCounts: dict[str, int64] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Comment:
     Optional[str] commentId
     Optional[str] content
@@ -495,8 +506,9 @@ struct CommentNotCreatedByCallerException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) comments: list[Comment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) comments: list[Comment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CommentsForComparedCommit:
     Optional[str] repositoryName
     Optional[str] beforeCommitId
@@ -506,8 +518,9 @@ struct CommentsForComparedCommit:
     Optional[Location] location
     Optional[list[Comment]] comments
 
-# no @derive(Json): member(s) comments: list[Comment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) comments: list[Comment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CommentsForPullRequest:
     Optional[str] pullRequestId
     Optional[str] repositoryName
@@ -518,8 +531,9 @@ struct CommentsForPullRequest:
     Optional[Location] location
     Optional[list[Comment]] comments
 
-# no @derive(Json): member(s) parents: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) parents: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Commit:
     Optional[str] commitId
     Optional[str] treeId
@@ -569,8 +583,9 @@ struct ConcurrentReferenceUpdateException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) mergeHunks: list[MergeHunk] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mergeHunks: list[MergeHunk] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Conflict:
     Optional[ConflictMetadata] conflictMetadata
     Optional[list[MergeHunk]] mergeHunks
@@ -588,8 +603,9 @@ struct ConflictMetadata:
     Optional[bool] objectTypeConflict
     Optional[MergeOperations] mergeOperations
 
-# no @derive(Json): member(s) replaceContents: list[ReplaceContentEntry], deleteFiles: list[DeleteFileEntry], setFileModes: list[SetFileModeEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) replaceContents: list[ReplaceContentEntry], deleteFiles: list[DeleteFileEntry], setFileModes: list[SetFileModeEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ConflictResolution:
     Optional[list[ReplaceContentEntry]] replaceContents
     Optional[list[DeleteFileEntry]] deleteFiles
@@ -611,8 +627,9 @@ struct CreateBranchInput:
     str branchName
     str commitId
 
-# no @derive(Json): member(s) putFiles: list[PutFileEntry], deleteFiles: list[DeleteFileEntry], setFileModes: list[SetFileModeEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) putFiles: list[PutFileEntry], deleteFiles: list[DeleteFileEntry], setFileModes: list[SetFileModeEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCommitInput:
     str repositoryName
     str branchName
@@ -625,8 +642,9 @@ struct CreateCommitInput:
     Optional[list[DeleteFileEntry]] deleteFiles
     Optional[list[SetFileModeEntry]] setFileModes
 
-# no @derive(Json): member(s) filesAdded: list[FileMetadata], filesUpdated: list[FileMetadata], filesDeleted: list[FileMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) filesAdded: list[FileMetadata], filesUpdated: list[FileMetadata], filesDeleted: list[FileMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateCommitOutput:
     Optional[str] commitId
     Optional[str] treeId
@@ -644,21 +662,24 @@ struct CreatePullRequestApprovalRuleInput:
 struct CreatePullRequestApprovalRuleOutput:
     ApprovalRule approvalRule
 
-# no @derive(Json): member(s) targets: list[Target] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) targets: list[Target] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePullRequestInput:
     str title
     Optional[str] description
     list[Target] targets
     Optional[str] clientRequestToken
 
-# no @derive(Json): member(s) pullRequest: PullRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pullRequest: PullRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreatePullRequestOutput:
     PullRequest pullRequest
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateRepositoryInput:
     str repositoryName
     Optional[str] repositoryDescription
@@ -669,8 +690,9 @@ struct CreateRepositoryInput:
 struct CreateRepositoryOutput:
     Optional[RepositoryMetadata] repositoryMetadata
 
-# no @derive(Json): member(s) conflictResolution: ConflictResolution not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) conflictResolution: ConflictResolution not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateUnreferencedMergeCommitInput:
     str repositoryName
     str sourceCommitSpecifier
@@ -715,8 +737,9 @@ struct DeleteBranchOutput:
 struct DeleteCommentContentInput:
     str commentId
 
-# no @derive(Json): member(s) comment: Comment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) comment: Comment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteCommentContentOutput:
     Optional[Comment] comment
 
@@ -771,8 +794,9 @@ struct DescribeMergeConflictsInput:
     Optional[ConflictResolutionStrategyTypeEnum] conflictResolutionStrategy
     Optional[str] nextToken
 
-# no @derive(Json): member(s) mergeHunks: list[MergeHunk] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mergeHunks: list[MergeHunk] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeMergeConflictsOutput:
     ConflictMetadata conflictMetadata
     list[MergeHunk] mergeHunks
@@ -789,8 +813,9 @@ struct DescribePullRequestEventsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) pullRequestEvents: list[PullRequestEvent] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pullRequestEvents: list[PullRequestEvent] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePullRequestEventsOutput:
     list[PullRequestEvent] pullRequestEvents
     Optional[str] nextToken
@@ -802,8 +827,9 @@ struct DiffChange:
     Optional[int64] afterLineNumber
     Optional[str] content
 
-# no @derive(Json): member(s) changes: list[DiffChange] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) changes: list[DiffChange] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DiffHunk:
     Optional[int64] beforeStartLine
     Optional[int64] beforeLineCount
@@ -872,13 +898,15 @@ struct EvaluatePullRequestApprovalRulesInput:
     str pullRequestId
     str revisionId
 
-# no @derive(Json): member(s) evaluation: Evaluation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) evaluation: Evaluation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EvaluatePullRequestApprovalRulesOutput:
     Evaluation evaluation
 
-# no @derive(Json): member(s) approvalRulesSatisfied: list[str], approvalRulesNotSatisfied: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) approvalRulesSatisfied: list[str], approvalRulesNotSatisfied: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Evaluation:
     Optional[bool] approved
     Optional[bool] overridden
@@ -955,8 +983,9 @@ struct FileTooLargeException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) commit: Commit, revisionChildren: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) commit: Commit, revisionChildren: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FileVersion:
     Optional[Commit] commit
     Optional[str] blobId
@@ -997,8 +1026,9 @@ struct GetBlobDifferencesInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) hunks: list[DiffHunk] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) hunks: list[DiffHunk] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetBlobDifferencesOutput:
     list[DiffHunk] hunks
     bool isBinary
@@ -1028,8 +1058,9 @@ struct GetBranchOutput:
 struct GetCommentInput:
     str commentId
 
-# no @derive(Json): member(s) comment: Comment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) comment: Comment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCommentOutput:
     Optional[Comment] comment
 
@@ -1040,8 +1071,9 @@ struct GetCommentReactionsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) reactionsForComment: list[ReactionForComment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reactionsForComment: list[ReactionForComment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCommentReactionsOutput:
     list[ReactionForComment] reactionsForComment
     Optional[str] nextToken
@@ -1054,8 +1086,9 @@ struct GetCommentsForComparedCommitInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) commentsForComparedCommitData: list[CommentsForComparedCommit] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) commentsForComparedCommitData: list[CommentsForComparedCommit] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCommentsForComparedCommitOutput:
     Optional[list[CommentsForComparedCommit]] commentsForComparedCommitData
     Optional[str] nextToken
@@ -1069,8 +1102,9 @@ struct GetCommentsForPullRequestInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) commentsForPullRequestData: list[CommentsForPullRequest] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) commentsForPullRequestData: list[CommentsForPullRequest] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCommentsForPullRequestOutput:
     Optional[list[CommentsForPullRequest]] commentsForPullRequestData
     Optional[str] nextToken
@@ -1080,8 +1114,9 @@ struct GetCommitInput:
     str repositoryName
     str commitId
 
-# no @derive(Json): member(s) commit: Commit not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) commit: Commit not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetCommitOutput:
     Commit commit
 
@@ -1095,8 +1130,9 @@ struct GetDifferencesInput:
     Optional[int64] MaxResults
     Optional[str] NextToken
 
-# no @derive(Json): member(s) differences: list[Difference] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) differences: list[Difference] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetDifferencesOutput:
     Optional[list[Difference]] differences
     Optional[str] NextToken
@@ -1122,8 +1158,9 @@ struct GetFolderInput:
     Optional[str] commitSpecifier
     str folderPath
 
-# no @derive(Json): member(s) subFolders: list[Folder], files: list[File], symbolicLinks: list[SymbolicLink], subModules: list[SubModule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) subFolders: list[Folder], files: list[File], symbolicLinks: list[SymbolicLink], subModules: list[SubModule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetFolderOutput:
     str commitId
     str folderPath
@@ -1159,8 +1196,9 @@ struct GetMergeConflictsInput:
     Optional[ConflictResolutionStrategyTypeEnum] conflictResolutionStrategy
     Optional[str] nextToken
 
-# no @derive(Json): member(s) conflictMetadataList: list[ConflictMetadata] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) conflictMetadataList: list[ConflictMetadata] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMergeConflictsOutput:
     bool mergeable
     str destinationCommitId
@@ -1177,8 +1215,9 @@ struct GetMergeOptionsInput:
     Optional[ConflictDetailLevelTypeEnum] conflictDetailLevel
     Optional[ConflictResolutionStrategyTypeEnum] conflictResolutionStrategy
 
-# no @derive(Json): member(s) mergeOptions: list[MergeOptionTypeEnum] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) mergeOptions: list[MergeOptionTypeEnum] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetMergeOptionsOutput:
     list[MergeOptionTypeEnum] mergeOptions
     str sourceCommitId
@@ -1190,8 +1229,9 @@ struct GetPullRequestApprovalStatesInput:
     str pullRequestId
     str revisionId
 
-# no @derive(Json): member(s) approvals: list[Approval] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) approvals: list[Approval] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPullRequestApprovalStatesOutput:
     Optional[list[Approval]] approvals
 
@@ -1199,8 +1239,9 @@ struct GetPullRequestApprovalStatesOutput:
 struct GetPullRequestInput:
     str pullRequestId
 
-# no @derive(Json): member(s) pullRequest: PullRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pullRequest: PullRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetPullRequestOutput:
     PullRequest pullRequest
 
@@ -1226,8 +1267,9 @@ struct GetRepositoryOutput:
 struct GetRepositoryTriggersInput:
     str repositoryName
 
-# no @derive(Json): member(s) triggers: list[RepositoryTrigger] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) triggers: list[RepositoryTrigger] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRepositoryTriggersOutput:
     Optional[str] configurationId
     Optional[list[RepositoryTrigger]] triggers
@@ -1563,8 +1605,9 @@ struct ListApprovalRuleTemplatesInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) approvalRuleTemplateNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) approvalRuleTemplateNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApprovalRuleTemplatesOutput:
     Optional[list[str]] approvalRuleTemplateNames
     Optional[str] nextToken
@@ -1575,8 +1618,9 @@ struct ListAssociatedApprovalRuleTemplatesForRepositoryInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) approvalRuleTemplateNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) approvalRuleTemplateNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssociatedApprovalRuleTemplatesForRepositoryOutput:
     Optional[list[str]] approvalRuleTemplateNames
     Optional[str] nextToken
@@ -1586,8 +1630,9 @@ struct ListBranchesInput:
     str repositoryName
     Optional[str] nextToken
 
-# no @derive(Json): member(s) branches: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) branches: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBranchesOutput:
     Optional[list[str]] branches
     Optional[str] nextToken
@@ -1600,8 +1645,9 @@ struct ListFileCommitHistoryRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) revisionDag: list[FileVersion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) revisionDag: list[FileVersion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListFileCommitHistoryResponse:
     list[FileVersion] revisionDag
     Optional[str] nextToken
@@ -1614,8 +1660,9 @@ struct ListPullRequestsInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) pullRequestIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pullRequestIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPullRequestsOutput:
     list[str] pullRequestIds
     Optional[str] nextToken
@@ -1626,8 +1673,9 @@ struct ListRepositoriesForApprovalRuleTemplateInput:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) repositoryNames: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) repositoryNames: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRepositoriesForApprovalRuleTemplateOutput:
     Optional[list[str]] repositoryNames
     Optional[str] nextToken
@@ -1638,8 +1686,9 @@ struct ListRepositoriesInput:
     Optional[SortByEnum] sortBy
     Optional[OrderEnum] order
 
-# no @derive(Json): member(s) repositories: list[RepositoryNameIdPair] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) repositories: list[RepositoryNameIdPair] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRepositoriesOutput:
     Optional[list[RepositoryNameIdPair]] repositories
     Optional[str] nextToken
@@ -1649,8 +1698,9 @@ struct ListTagsForResourceInput:
     str resourceArn
     Optional[str] nextToken
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceOutput:
     Optional[dict[str, str]] tags
     Optional[str] nextToken
@@ -1728,8 +1778,9 @@ struct MergeBranchesByFastForwardOutput:
     Optional[str] commitId
     Optional[str] treeId
 
-# no @derive(Json): member(s) conflictResolution: ConflictResolution not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) conflictResolution: ConflictResolution not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MergeBranchesBySquashInput:
     str repositoryName
     str sourceCommitSpecifier
@@ -1748,8 +1799,9 @@ struct MergeBranchesBySquashOutput:
     Optional[str] commitId
     Optional[str] treeId
 
-# no @derive(Json): member(s) conflictResolution: ConflictResolution not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) conflictResolution: ConflictResolution not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MergeBranchesByThreeWayInput:
     str repositoryName
     str sourceCommitSpecifier
@@ -1804,13 +1856,15 @@ struct MergePullRequestByFastForwardInput:
     str repositoryName
     Optional[str] sourceCommitId
 
-# no @derive(Json): member(s) pullRequest: PullRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pullRequest: PullRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MergePullRequestByFastForwardOutput:
     Optional[PullRequest] pullRequest
 
-# no @derive(Json): member(s) conflictResolution: ConflictResolution not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) conflictResolution: ConflictResolution not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MergePullRequestBySquashInput:
     str pullRequestId
     str repositoryName
@@ -1823,13 +1877,15 @@ struct MergePullRequestBySquashInput:
     Optional[bool] keepEmptyFolders
     Optional[ConflictResolution] conflictResolution
 
-# no @derive(Json): member(s) pullRequest: PullRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pullRequest: PullRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MergePullRequestBySquashOutput:
     Optional[PullRequest] pullRequest
 
-# no @derive(Json): member(s) conflictResolution: ConflictResolution not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) conflictResolution: ConflictResolution not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MergePullRequestByThreeWayInput:
     str pullRequestId
     str repositoryName
@@ -1842,8 +1898,9 @@ struct MergePullRequestByThreeWayInput:
     Optional[bool] keepEmptyFolders
     Optional[ConflictResolution] conflictResolution
 
-# no @derive(Json): member(s) pullRequest: PullRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pullRequest: PullRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MergePullRequestByThreeWayOutput:
     Optional[PullRequest] pullRequest
 
@@ -1943,8 +2000,9 @@ struct PostCommentForComparedCommitInput:
     str content
     Optional[str] clientRequestToken
 
-# no @derive(Json): member(s) comment: Comment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) comment: Comment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PostCommentForComparedCommitOutput:
     Optional[str] repositoryName
     Optional[str] beforeCommitId
@@ -1964,8 +2022,9 @@ struct PostCommentForPullRequestInput:
     str content
     Optional[str] clientRequestToken
 
-# no @derive(Json): member(s) comment: Comment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) comment: Comment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PostCommentForPullRequestOutput:
     Optional[str] repositoryName
     Optional[str] pullRequestId
@@ -1982,13 +2041,15 @@ struct PostCommentReplyInput:
     Optional[str] clientRequestToken
     str content
 
-# no @derive(Json): member(s) comment: Comment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) comment: Comment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PostCommentReplyOutput:
     Optional[Comment] comment
 
-# no @derive(Json): member(s) pullRequestTargets: list[PullRequestTarget], approvalRules: list[ApprovalRule] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pullRequestTargets: list[PullRequestTarget], approvalRules: list[ApprovalRule] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PullRequest:
     Optional[str] pullRequestId
     Optional[str] title
@@ -2115,8 +2176,9 @@ struct PutFileOutput:
     str blobId
     str treeId
 
-# no @derive(Json): member(s) triggers: list[RepositoryTrigger] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) triggers: list[RepositoryTrigger] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutRepositoryTriggersInput:
     str repositoryName
     list[RepositoryTrigger] triggers
@@ -2125,8 +2187,9 @@ struct PutRepositoryTriggersInput:
 struct PutRepositoryTriggersOutput:
     Optional[str] configurationId
 
-# no @derive(Json): member(s) reactionUsers: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) reactionUsers: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ReactionForComment:
     Optional[ReactionValueFormats] reaction
     Optional[list[str]] reactionUsers
@@ -2229,8 +2292,9 @@ struct RepositoryNotAssociatedWithPullRequestException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) branches: list[str], events: list[RepositoryTriggerEventEnum] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) branches: list[str], events: list[RepositoryTriggerEventEnum] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RepositoryTrigger:
     str name
     str destinationArn
@@ -2341,8 +2405,9 @@ struct TagPolicyException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TagResourceInput:
     str resourceArn
     dict[str, str] tags
@@ -2368,14 +2433,16 @@ struct TargetsRequiredException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) triggers: list[RepositoryTrigger] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) triggers: list[RepositoryTrigger] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestRepositoryTriggersInput:
     str repositoryName
     list[RepositoryTrigger] triggers
 
-# no @derive(Json): member(s) successfulExecutions: list[str], failedExecutions: list[RepositoryTriggerExecutionFailure] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) successfulExecutions: list[str], failedExecutions: list[RepositoryTriggerExecutionFailure] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TestRepositoryTriggersOutput:
     Optional[list[str]] successfulExecutions
     Optional[list[RepositoryTriggerExecutionFailure]] failedExecutions
@@ -2400,8 +2467,9 @@ struct TooManyTagsException:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) tagKeys: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tagKeys: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UntagResourceInput:
     str resourceArn
     list[str] tagKeys
@@ -2439,8 +2507,9 @@ struct UpdateCommentInput:
     str commentId
     str content
 
-# no @derive(Json): member(s) comment: Comment not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) comment: Comment not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateCommentOutput:
     Optional[Comment] comment
 
@@ -2471,8 +2540,9 @@ struct UpdatePullRequestDescriptionInput:
     str pullRequestId
     str description
 
-# no @derive(Json): member(s) pullRequest: PullRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pullRequest: PullRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePullRequestDescriptionOutput:
     PullRequest pullRequest
 
@@ -2481,8 +2551,9 @@ struct UpdatePullRequestStatusInput:
     str pullRequestId
     PullRequestStatusEnum pullRequestStatus
 
-# no @derive(Json): member(s) pullRequest: PullRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pullRequest: PullRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePullRequestStatusOutput:
     PullRequest pullRequest
 
@@ -2491,8 +2562,9 @@ struct UpdatePullRequestTitleInput:
     str pullRequestId
     str title
 
-# no @derive(Json): member(s) pullRequest: PullRequest not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pullRequest: PullRequest not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdatePullRequestTitleOutput:
     PullRequest pullRequest
 
@@ -3111,25 +3183,417 @@ def codecommit_error_from_code(str code) -> CodeCommitError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (input shape has collection members not yet
-# serializable by @derive(Json); pending zaplang-io/zap#346 follow-up):
-#   BatchAssociateApprovalRuleTemplateWithRepositories (input BatchAssociateApprovalRuleTemplateWithRepositoriesInput)
-#   BatchDescribeMergeConflicts (input BatchDescribeMergeConflictsInput)
-#   BatchDisassociateApprovalRuleTemplateFromRepositories (input BatchDisassociateApprovalRuleTemplateFromRepositoriesInput)
-#   BatchGetCommits (input BatchGetCommitsInput)
-#   BatchGetRepositories (input BatchGetRepositoriesInput)
-#   CreateCommit (input CreateCommitInput)
-#   CreatePullRequest (input CreatePullRequestInput)
-#   CreateRepository (input CreateRepositoryInput)
-#   CreateUnreferencedMergeCommit (input CreateUnreferencedMergeCommitInput)
-#   MergeBranchesBySquash (input MergeBranchesBySquashInput)
-#   MergeBranchesByThreeWay (input MergeBranchesByThreeWayInput)
-#   MergePullRequestBySquash (input MergePullRequestBySquashInput)
-#   MergePullRequestByThreeWay (input MergePullRequestByThreeWayInput)
-#   PutRepositoryTriggers (input PutRepositoryTriggersInput)
-#   TagResource (input TagResourceInput)
-#   TestRepositoryTriggers (input TestRepositoryTriggersInput)
-#   UntagResource (input UntagResourceInput)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def codecommit_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def codecommit_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def codecommit_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for input shapes with collection/nested members
+# (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize BatchAssociateApprovalRuleTemplateWithRepositoriesInput to a compact JSON object (declaration order).
+def batch_associate_approval_rule_template_with_repositories_input_to_json(BatchAssociateApprovalRuleTemplateWithRepositoriesInput v) -> str:
+    list[str] parts = []
+    parts.append("\"approvalRuleTemplateName\":" + codecommit_json_str(v.approvalRuleTemplateName))
+    list[str] e0 = []
+    for x0 in v.repositoryNames:
+        e0.append(codecommit_json_str(x0))
+    parts.append("\"repositoryNames\":" + codecommit_json_arr(e0))
+    return codecommit_json_obj(parts)
+
+# Serialize BatchDescribeMergeConflictsInput to a compact JSON object (declaration order).
+def batch_describe_merge_conflicts_input_to_json(BatchDescribeMergeConflictsInput v) -> str:
+    list[str] parts = []
+    parts.append("\"repositoryName\":" + codecommit_json_str(v.repositoryName))
+    parts.append("\"destinationCommitSpecifier\":" + codecommit_json_str(v.destinationCommitSpecifier))
+    parts.append("\"sourceCommitSpecifier\":" + codecommit_json_str(v.sourceCommitSpecifier))
+    parts.append("\"mergeOption\":" + v.mergeOption.to_json())
+    if v.maxMergeHunks.is_some():
+        auto u0 = v.maxMergeHunks.unwrap()
+        parts.append("\"maxMergeHunks\":" + str(u0))
+    if v.maxConflictFiles.is_some():
+        auto u1 = v.maxConflictFiles.unwrap()
+        parts.append("\"maxConflictFiles\":" + str(u1))
+    if v.filePaths.is_some():
+        auto u2 = v.filePaths.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(codecommit_json_str(x3))
+        parts.append("\"filePaths\":" + codecommit_json_arr(e3))
+    if v.conflictDetailLevel.is_some():
+        auto u4 = v.conflictDetailLevel.unwrap()
+        parts.append("\"conflictDetailLevel\":" + u4.to_json())
+    if v.conflictResolutionStrategy.is_some():
+        auto u5 = v.conflictResolutionStrategy.unwrap()
+        parts.append("\"conflictResolutionStrategy\":" + u5.to_json())
+    if v.nextToken.is_some():
+        auto u6 = v.nextToken.unwrap()
+        parts.append("\"nextToken\":" + codecommit_json_str(u6))
+    return codecommit_json_obj(parts)
+
+# Serialize BatchDisassociateApprovalRuleTemplateFromRepositoriesInput to a compact JSON object (declaration order).
+def batch_disassociate_approval_rule_template_from_repositories_input_to_json(BatchDisassociateApprovalRuleTemplateFromRepositoriesInput v) -> str:
+    list[str] parts = []
+    parts.append("\"approvalRuleTemplateName\":" + codecommit_json_str(v.approvalRuleTemplateName))
+    list[str] e0 = []
+    for x0 in v.repositoryNames:
+        e0.append(codecommit_json_str(x0))
+    parts.append("\"repositoryNames\":" + codecommit_json_arr(e0))
+    return codecommit_json_obj(parts)
+
+# Serialize BatchGetCommitsInput to a compact JSON object (declaration order).
+def batch_get_commits_input_to_json(BatchGetCommitsInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.commitIds:
+        e0.append(codecommit_json_str(x0))
+    parts.append("\"commitIds\":" + codecommit_json_arr(e0))
+    parts.append("\"repositoryName\":" + codecommit_json_str(v.repositoryName))
+    return codecommit_json_obj(parts)
+
+# Serialize BatchGetRepositoriesInput to a compact JSON object (declaration order).
+def batch_get_repositories_input_to_json(BatchGetRepositoriesInput v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.repositoryNames:
+        e0.append(codecommit_json_str(x0))
+    parts.append("\"repositoryNames\":" + codecommit_json_arr(e0))
+    return codecommit_json_obj(parts)
+
+# Serialize ConflictResolution to a compact JSON object (declaration order).
+def conflict_resolution_to_json(ConflictResolution v) -> str:
+    list[str] parts = []
+    if v.replaceContents.is_some():
+        auto u0 = v.replaceContents.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"replaceContents\":" + codecommit_json_arr(e1))
+    if v.deleteFiles.is_some():
+        auto u2 = v.deleteFiles.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"deleteFiles\":" + codecommit_json_arr(e3))
+    if v.setFileModes.is_some():
+        auto u4 = v.setFileModes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"setFileModes\":" + codecommit_json_arr(e5))
+    return codecommit_json_obj(parts)
+
+# Serialize CreateCommitInput to a compact JSON object (declaration order).
+def create_commit_input_to_json(CreateCommitInput v) -> str:
+    list[str] parts = []
+    parts.append("\"repositoryName\":" + codecommit_json_str(v.repositoryName))
+    parts.append("\"branchName\":" + codecommit_json_str(v.branchName))
+    if v.parentCommitId.is_some():
+        auto u0 = v.parentCommitId.unwrap()
+        parts.append("\"parentCommitId\":" + codecommit_json_str(u0))
+    if v.authorName.is_some():
+        auto u1 = v.authorName.unwrap()
+        parts.append("\"authorName\":" + codecommit_json_str(u1))
+    if v.email.is_some():
+        auto u2 = v.email.unwrap()
+        parts.append("\"email\":" + codecommit_json_str(u2))
+    if v.commitMessage.is_some():
+        auto u3 = v.commitMessage.unwrap()
+        parts.append("\"commitMessage\":" + codecommit_json_str(u3))
+    if v.keepEmptyFolders.is_some():
+        auto u4 = v.keepEmptyFolders.unwrap()
+        parts.append("\"keepEmptyFolders\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.putFiles.is_some():
+        auto u5 = v.putFiles.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"putFiles\":" + codecommit_json_arr(e6))
+    if v.deleteFiles.is_some():
+        auto u7 = v.deleteFiles.unwrap()
+        list[str] e8 = []
+        for x8 in u7:
+            e8.append(x8.to_json())
+        parts.append("\"deleteFiles\":" + codecommit_json_arr(e8))
+    if v.setFileModes.is_some():
+        auto u9 = v.setFileModes.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(x10.to_json())
+        parts.append("\"setFileModes\":" + codecommit_json_arr(e10))
+    return codecommit_json_obj(parts)
+
+# Serialize CreatePullRequestInput to a compact JSON object (declaration order).
+def create_pull_request_input_to_json(CreatePullRequestInput v) -> str:
+    list[str] parts = []
+    parts.append("\"title\":" + codecommit_json_str(v.title))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + codecommit_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.targets:
+        e1.append(x1.to_json())
+    parts.append("\"targets\":" + codecommit_json_arr(e1))
+    if v.clientRequestToken.is_some():
+        auto u2 = v.clientRequestToken.unwrap()
+        parts.append("\"clientRequestToken\":" + codecommit_json_str(u2))
+    return codecommit_json_obj(parts)
+
+# Serialize CreateRepositoryInput to a compact JSON object (declaration order).
+def create_repository_input_to_json(CreateRepositoryInput v) -> str:
+    list[str] parts = []
+    parts.append("\"repositoryName\":" + codecommit_json_str(v.repositoryName))
+    if v.repositoryDescription.is_some():
+        auto u0 = v.repositoryDescription.unwrap()
+        parts.append("\"repositoryDescription\":" + codecommit_json_str(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(codecommit_json_str(k2) + ":" + codecommit_json_str(u1[k2]))
+        parts.append("\"tags\":" + codecommit_json_obj(m2))
+    if v.kmsKeyId.is_some():
+        auto u3 = v.kmsKeyId.unwrap()
+        parts.append("\"kmsKeyId\":" + codecommit_json_str(u3))
+    return codecommit_json_obj(parts)
+
+# Serialize CreateUnreferencedMergeCommitInput to a compact JSON object (declaration order).
+def create_unreferenced_merge_commit_input_to_json(CreateUnreferencedMergeCommitInput v) -> str:
+    list[str] parts = []
+    parts.append("\"repositoryName\":" + codecommit_json_str(v.repositoryName))
+    parts.append("\"sourceCommitSpecifier\":" + codecommit_json_str(v.sourceCommitSpecifier))
+    parts.append("\"destinationCommitSpecifier\":" + codecommit_json_str(v.destinationCommitSpecifier))
+    parts.append("\"mergeOption\":" + v.mergeOption.to_json())
+    if v.conflictDetailLevel.is_some():
+        auto u0 = v.conflictDetailLevel.unwrap()
+        parts.append("\"conflictDetailLevel\":" + u0.to_json())
+    if v.conflictResolutionStrategy.is_some():
+        auto u1 = v.conflictResolutionStrategy.unwrap()
+        parts.append("\"conflictResolutionStrategy\":" + u1.to_json())
+    if v.authorName.is_some():
+        auto u2 = v.authorName.unwrap()
+        parts.append("\"authorName\":" + codecommit_json_str(u2))
+    if v.email.is_some():
+        auto u3 = v.email.unwrap()
+        parts.append("\"email\":" + codecommit_json_str(u3))
+    if v.commitMessage.is_some():
+        auto u4 = v.commitMessage.unwrap()
+        parts.append("\"commitMessage\":" + codecommit_json_str(u4))
+    if v.keepEmptyFolders.is_some():
+        auto u5 = v.keepEmptyFolders.unwrap()
+        parts.append("\"keepEmptyFolders\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.conflictResolution.is_some():
+        auto u6 = v.conflictResolution.unwrap()
+        parts.append("\"conflictResolution\":" + conflict_resolution_to_json(u6))
+    return codecommit_json_obj(parts)
+
+# Serialize MergeBranchesBySquashInput to a compact JSON object (declaration order).
+def merge_branches_by_squash_input_to_json(MergeBranchesBySquashInput v) -> str:
+    list[str] parts = []
+    parts.append("\"repositoryName\":" + codecommit_json_str(v.repositoryName))
+    parts.append("\"sourceCommitSpecifier\":" + codecommit_json_str(v.sourceCommitSpecifier))
+    parts.append("\"destinationCommitSpecifier\":" + codecommit_json_str(v.destinationCommitSpecifier))
+    if v.targetBranch.is_some():
+        auto u0 = v.targetBranch.unwrap()
+        parts.append("\"targetBranch\":" + codecommit_json_str(u0))
+    if v.conflictDetailLevel.is_some():
+        auto u1 = v.conflictDetailLevel.unwrap()
+        parts.append("\"conflictDetailLevel\":" + u1.to_json())
+    if v.conflictResolutionStrategy.is_some():
+        auto u2 = v.conflictResolutionStrategy.unwrap()
+        parts.append("\"conflictResolutionStrategy\":" + u2.to_json())
+    if v.authorName.is_some():
+        auto u3 = v.authorName.unwrap()
+        parts.append("\"authorName\":" + codecommit_json_str(u3))
+    if v.email.is_some():
+        auto u4 = v.email.unwrap()
+        parts.append("\"email\":" + codecommit_json_str(u4))
+    if v.commitMessage.is_some():
+        auto u5 = v.commitMessage.unwrap()
+        parts.append("\"commitMessage\":" + codecommit_json_str(u5))
+    if v.keepEmptyFolders.is_some():
+        auto u6 = v.keepEmptyFolders.unwrap()
+        parts.append("\"keepEmptyFolders\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.conflictResolution.is_some():
+        auto u7 = v.conflictResolution.unwrap()
+        parts.append("\"conflictResolution\":" + conflict_resolution_to_json(u7))
+    return codecommit_json_obj(parts)
+
+# Serialize MergeBranchesByThreeWayInput to a compact JSON object (declaration order).
+def merge_branches_by_three_way_input_to_json(MergeBranchesByThreeWayInput v) -> str:
+    list[str] parts = []
+    parts.append("\"repositoryName\":" + codecommit_json_str(v.repositoryName))
+    parts.append("\"sourceCommitSpecifier\":" + codecommit_json_str(v.sourceCommitSpecifier))
+    parts.append("\"destinationCommitSpecifier\":" + codecommit_json_str(v.destinationCommitSpecifier))
+    if v.targetBranch.is_some():
+        auto u0 = v.targetBranch.unwrap()
+        parts.append("\"targetBranch\":" + codecommit_json_str(u0))
+    if v.conflictDetailLevel.is_some():
+        auto u1 = v.conflictDetailLevel.unwrap()
+        parts.append("\"conflictDetailLevel\":" + u1.to_json())
+    if v.conflictResolutionStrategy.is_some():
+        auto u2 = v.conflictResolutionStrategy.unwrap()
+        parts.append("\"conflictResolutionStrategy\":" + u2.to_json())
+    if v.authorName.is_some():
+        auto u3 = v.authorName.unwrap()
+        parts.append("\"authorName\":" + codecommit_json_str(u3))
+    if v.email.is_some():
+        auto u4 = v.email.unwrap()
+        parts.append("\"email\":" + codecommit_json_str(u4))
+    if v.commitMessage.is_some():
+        auto u5 = v.commitMessage.unwrap()
+        parts.append("\"commitMessage\":" + codecommit_json_str(u5))
+    if v.keepEmptyFolders.is_some():
+        auto u6 = v.keepEmptyFolders.unwrap()
+        parts.append("\"keepEmptyFolders\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.conflictResolution.is_some():
+        auto u7 = v.conflictResolution.unwrap()
+        parts.append("\"conflictResolution\":" + conflict_resolution_to_json(u7))
+    return codecommit_json_obj(parts)
+
+# Serialize MergePullRequestBySquashInput to a compact JSON object (declaration order).
+def merge_pull_request_by_squash_input_to_json(MergePullRequestBySquashInput v) -> str:
+    list[str] parts = []
+    parts.append("\"pullRequestId\":" + codecommit_json_str(v.pullRequestId))
+    parts.append("\"repositoryName\":" + codecommit_json_str(v.repositoryName))
+    if v.sourceCommitId.is_some():
+        auto u0 = v.sourceCommitId.unwrap()
+        parts.append("\"sourceCommitId\":" + codecommit_json_str(u0))
+    if v.conflictDetailLevel.is_some():
+        auto u1 = v.conflictDetailLevel.unwrap()
+        parts.append("\"conflictDetailLevel\":" + u1.to_json())
+    if v.conflictResolutionStrategy.is_some():
+        auto u2 = v.conflictResolutionStrategy.unwrap()
+        parts.append("\"conflictResolutionStrategy\":" + u2.to_json())
+    if v.commitMessage.is_some():
+        auto u3 = v.commitMessage.unwrap()
+        parts.append("\"commitMessage\":" + codecommit_json_str(u3))
+    if v.authorName.is_some():
+        auto u4 = v.authorName.unwrap()
+        parts.append("\"authorName\":" + codecommit_json_str(u4))
+    if v.email.is_some():
+        auto u5 = v.email.unwrap()
+        parts.append("\"email\":" + codecommit_json_str(u5))
+    if v.keepEmptyFolders.is_some():
+        auto u6 = v.keepEmptyFolders.unwrap()
+        parts.append("\"keepEmptyFolders\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.conflictResolution.is_some():
+        auto u7 = v.conflictResolution.unwrap()
+        parts.append("\"conflictResolution\":" + conflict_resolution_to_json(u7))
+    return codecommit_json_obj(parts)
+
+# Serialize MergePullRequestByThreeWayInput to a compact JSON object (declaration order).
+def merge_pull_request_by_three_way_input_to_json(MergePullRequestByThreeWayInput v) -> str:
+    list[str] parts = []
+    parts.append("\"pullRequestId\":" + codecommit_json_str(v.pullRequestId))
+    parts.append("\"repositoryName\":" + codecommit_json_str(v.repositoryName))
+    if v.sourceCommitId.is_some():
+        auto u0 = v.sourceCommitId.unwrap()
+        parts.append("\"sourceCommitId\":" + codecommit_json_str(u0))
+    if v.conflictDetailLevel.is_some():
+        auto u1 = v.conflictDetailLevel.unwrap()
+        parts.append("\"conflictDetailLevel\":" + u1.to_json())
+    if v.conflictResolutionStrategy.is_some():
+        auto u2 = v.conflictResolutionStrategy.unwrap()
+        parts.append("\"conflictResolutionStrategy\":" + u2.to_json())
+    if v.commitMessage.is_some():
+        auto u3 = v.commitMessage.unwrap()
+        parts.append("\"commitMessage\":" + codecommit_json_str(u3))
+    if v.authorName.is_some():
+        auto u4 = v.authorName.unwrap()
+        parts.append("\"authorName\":" + codecommit_json_str(u4))
+    if v.email.is_some():
+        auto u5 = v.email.unwrap()
+        parts.append("\"email\":" + codecommit_json_str(u5))
+    if v.keepEmptyFolders.is_some():
+        auto u6 = v.keepEmptyFolders.unwrap()
+        parts.append("\"keepEmptyFolders\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.conflictResolution.is_some():
+        auto u7 = v.conflictResolution.unwrap()
+        parts.append("\"conflictResolution\":" + conflict_resolution_to_json(u7))
+    return codecommit_json_obj(parts)
+
+# Serialize PutRepositoryTriggersInput to a compact JSON object (declaration order).
+def put_repository_triggers_input_to_json(PutRepositoryTriggersInput v) -> str:
+    list[str] parts = []
+    parts.append("\"repositoryName\":" + codecommit_json_str(v.repositoryName))
+    list[str] e0 = []
+    for x0 in v.triggers:
+        e0.append(repository_trigger_to_json(x0))
+    parts.append("\"triggers\":" + codecommit_json_arr(e0))
+    return codecommit_json_obj(parts)
+
+# Serialize RepositoryTrigger to a compact JSON object (declaration order).
+def repository_trigger_to_json(RepositoryTrigger v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + codecommit_json_str(v.name))
+    parts.append("\"destinationArn\":" + codecommit_json_str(v.destinationArn))
+    if v.customData.is_some():
+        auto u0 = v.customData.unwrap()
+        parts.append("\"customData\":" + codecommit_json_str(u0))
+    if v.branches.is_some():
+        auto u1 = v.branches.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(codecommit_json_str(x2))
+        parts.append("\"branches\":" + codecommit_json_arr(e2))
+    list[str] e3 = []
+    for x3 in v.events:
+        e3.append(x3.to_json())
+    parts.append("\"events\":" + codecommit_json_arr(e3))
+    return codecommit_json_obj(parts)
+
+# Serialize TagResourceInput to a compact JSON object (declaration order).
+def tag_resource_input_to_json(TagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + codecommit_json_str(v.resourceArn))
+    list[str] m0 = []
+    for k0 in sorted(v.tags.keys()):
+        m0.append(codecommit_json_str(k0) + ":" + codecommit_json_str(v.tags[k0]))
+    parts.append("\"tags\":" + codecommit_json_obj(m0))
+    return codecommit_json_obj(parts)
+
+# Serialize TestRepositoryTriggersInput to a compact JSON object (declaration order).
+def test_repository_triggers_input_to_json(TestRepositoryTriggersInput v) -> str:
+    list[str] parts = []
+    parts.append("\"repositoryName\":" + codecommit_json_str(v.repositoryName))
+    list[str] e0 = []
+    for x0 in v.triggers:
+        e0.append(repository_trigger_to_json(x0))
+    parts.append("\"triggers\":" + codecommit_json_arr(e0))
+    return codecommit_json_obj(parts)
+
+# Serialize UntagResourceInput to a compact JSON object (declaration order).
+def untag_resource_input_to_json(UntagResourceInput v) -> str:
+    list[str] parts = []
+    parts.append("\"resourceArn\":" + codecommit_json_str(v.resourceArn))
+    list[str] e0 = []
+    for x0 in v.tagKeys:
+        e0.append(codecommit_json_str(x0))
+    parts.append("\"tagKeys\":" + codecommit_json_arr(e0))
+    return codecommit_json_obj(parts)
 
 # A bound CodeCommit client: credentials + region, threaded into every operation.
 struct CodeCommitClient:
@@ -3141,6 +3605,36 @@ struct CodeCommitClient:
     def associate_approval_rule_template_with_repository(self, AssociateApprovalRuleTemplateWithRepositoryInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(codecommit_protocol(), self.creds, self.region, "AssociateApprovalRuleTemplateWithRepository", body)
+
+    # BatchAssociateApprovalRuleTemplateWithRepositories
+    # errors: ApprovalRuleTemplateDoesNotExistException, ApprovalRuleTemplateNameRequiredException, EncryptionIntegrityChecksFailedException, EncryptionKeyAccessDeniedException, EncryptionKeyDisabledException, EncryptionKeyNotFoundException, EncryptionKeyUnavailableException, InvalidApprovalRuleTemplateNameException, MaximumRepositoryNamesExceededException, RepositoryNamesRequiredException
+    def batch_associate_approval_rule_template_with_repositories(self, BatchAssociateApprovalRuleTemplateWithRepositoriesInput input) -> str:
+        auto body = batch_associate_approval_rule_template_with_repositories_input_to_json(input)
+        return awsjson.awsjson_request_now(codecommit_protocol(), self.creds, self.region, "BatchAssociateApprovalRuleTemplateWithRepositories", body)
+
+    # BatchDescribeMergeConflicts
+    # errors: CommitDoesNotExistException, CommitRequiredException, EncryptionIntegrityChecksFailedException, EncryptionKeyAccessDeniedException, EncryptionKeyDisabledException, EncryptionKeyNotFoundException, EncryptionKeyUnavailableException, InvalidCommitException, InvalidConflictDetailLevelException, InvalidConflictResolutionStrategyException, InvalidContinuationTokenException, InvalidMaxConflictFilesException, InvalidMaxMergeHunksException, InvalidMergeOptionException, InvalidRepositoryNameException, MaximumFileContentToLoadExceededException, MaximumItemsToCompareExceededException, MergeOptionRequiredException, RepositoryDoesNotExistException, RepositoryNameRequiredException, TipsDivergenceExceededException
+    def batch_describe_merge_conflicts(self, BatchDescribeMergeConflictsInput input) -> str:
+        auto body = batch_describe_merge_conflicts_input_to_json(input)
+        return awsjson.awsjson_request_now(codecommit_protocol(), self.creds, self.region, "BatchDescribeMergeConflicts", body)
+
+    # BatchDisassociateApprovalRuleTemplateFromRepositories
+    # errors: ApprovalRuleTemplateDoesNotExistException, ApprovalRuleTemplateNameRequiredException, EncryptionIntegrityChecksFailedException, EncryptionKeyAccessDeniedException, EncryptionKeyDisabledException, EncryptionKeyNotFoundException, EncryptionKeyUnavailableException, InvalidApprovalRuleTemplateNameException, MaximumRepositoryNamesExceededException, RepositoryNamesRequiredException
+    def batch_disassociate_approval_rule_template_from_repositories(self, BatchDisassociateApprovalRuleTemplateFromRepositoriesInput input) -> str:
+        auto body = batch_disassociate_approval_rule_template_from_repositories_input_to_json(input)
+        return awsjson.awsjson_request_now(codecommit_protocol(), self.creds, self.region, "BatchDisassociateApprovalRuleTemplateFromRepositories", body)
+
+    # BatchGetCommits
+    # errors: CommitIdsLimitExceededException, CommitIdsListRequiredException, EncryptionIntegrityChecksFailedException, EncryptionKeyAccessDeniedException, EncryptionKeyDisabledException, EncryptionKeyNotFoundException, EncryptionKeyUnavailableException, InvalidRepositoryNameException, RepositoryDoesNotExistException, RepositoryNameRequiredException
+    def batch_get_commits(self, BatchGetCommitsInput input) -> str:
+        auto body = batch_get_commits_input_to_json(input)
+        return awsjson.awsjson_request_now(codecommit_protocol(), self.creds, self.region, "BatchGetCommits", body)
+
+    # BatchGetRepositories
+    # errors: EncryptionIntegrityChecksFailedException, EncryptionKeyAccessDeniedException, EncryptionKeyDisabledException, EncryptionKeyNotFoundException, EncryptionKeyUnavailableException, InvalidRepositoryNameException, MaximumRepositoryNamesExceededException, RepositoryNamesRequiredException
+    def batch_get_repositories(self, BatchGetRepositoriesInput input) -> str:
+        auto body = batch_get_repositories_input_to_json(input)
+        return awsjson.awsjson_request_now(codecommit_protocol(), self.creds, self.region, "BatchGetRepositories", body)
 
     # CreateApprovalRuleTemplate
     # errors: ApprovalRuleTemplateContentRequiredException, ApprovalRuleTemplateNameAlreadyExistsException, ApprovalRuleTemplateNameRequiredException, InvalidApprovalRuleTemplateContentException, InvalidApprovalRuleTemplateDescriptionException, InvalidApprovalRuleTemplateNameException, NumberOfRuleTemplatesExceededException
@@ -3154,11 +3648,35 @@ struct CodeCommitClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(codecommit_protocol(), self.creds, self.region, "CreateBranch", body)
 
+    # CreateCommit
+    # errors: BranchDoesNotExistException, BranchNameIsTagNameException, BranchNameRequiredException, CommitMessageLengthExceededException, DirectoryNameConflictsWithFileNameException, EncryptionIntegrityChecksFailedException, EncryptionKeyAccessDeniedException, EncryptionKeyDisabledException, EncryptionKeyNotFoundException, EncryptionKeyUnavailableException, FileContentAndSourceFileSpecifiedException, FileContentSizeLimitExceededException, FileDoesNotExistException, FileEntryRequiredException, FileModeRequiredException, FileNameConflictsWithDirectoryNameException, FilePathConflictsWithSubmodulePathException, FolderContentSizeLimitExceededException, InvalidBranchNameException, InvalidDeletionParameterException, InvalidEmailException, InvalidFileModeException, InvalidParentCommitIdException, InvalidPathException, InvalidRepositoryNameException, MaximumFileEntriesExceededException, NameLengthExceededException, NoChangeException, ParentCommitDoesNotExistException, ParentCommitIdOutdatedException, ParentCommitIdRequiredException, PathRequiredException, PutFileEntryConflictException, RepositoryDoesNotExistException, RepositoryNameRequiredException, RestrictedSourceFileException, SamePathRequestException, SourceFileOrContentRequiredException
+    def create_commit(self, CreateCommitInput input) -> str:
+        auto body = create_commit_input_to_json(input)
+        return awsjson.awsjson_request_now(codecommit_protocol(), self.creds, self.region, "CreateCommit", body)
+
+    # CreatePullRequest
+    # errors: ClientRequestTokenRequiredException, EncryptionIntegrityChecksFailedException, EncryptionKeyAccessDeniedException, EncryptionKeyDisabledException, EncryptionKeyNotFoundException, EncryptionKeyUnavailableException, IdempotencyParameterMismatchException, InvalidClientRequestTokenException, InvalidDescriptionException, InvalidReferenceNameException, InvalidRepositoryNameException, InvalidTargetException, InvalidTargetsException, InvalidTitleException, MaximumOpenPullRequestsExceededException, MultipleRepositoriesInPullRequestException, ReferenceDoesNotExistException, ReferenceNameRequiredException, ReferenceTypeNotSupportedException, RepositoryDoesNotExistException, RepositoryNameRequiredException, SourceAndDestinationAreSameException, TargetRequiredException, TargetsRequiredException, TitleRequiredException
+    def create_pull_request(self, CreatePullRequestInput input) -> str:
+        auto body = create_pull_request_input_to_json(input)
+        return awsjson.awsjson_request_now(codecommit_protocol(), self.creds, self.region, "CreatePullRequest", body)
+
     # CreatePullRequestApprovalRule
     # errors: ApprovalRuleContentRequiredException, ApprovalRuleNameAlreadyExistsException, ApprovalRuleNameRequiredException, EncryptionIntegrityChecksFailedException, EncryptionKeyAccessDeniedException, EncryptionKeyDisabledException, EncryptionKeyNotFoundException, EncryptionKeyUnavailableException, InvalidApprovalRuleContentException, InvalidApprovalRuleNameException, InvalidPullRequestIdException, NumberOfRulesExceededException, PullRequestAlreadyClosedException, PullRequestDoesNotExistException, PullRequestIdRequiredException
     def create_pull_request_approval_rule(self, CreatePullRequestApprovalRuleInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(codecommit_protocol(), self.creds, self.region, "CreatePullRequestApprovalRule", body)
+
+    # CreateRepository
+    # errors: EncryptionIntegrityChecksFailedException, EncryptionKeyAccessDeniedException, EncryptionKeyDisabledException, EncryptionKeyInvalidIdException, EncryptionKeyInvalidUsageException, EncryptionKeyNotFoundException, EncryptionKeyUnavailableException, InvalidRepositoryDescriptionException, InvalidRepositoryNameException, InvalidSystemTagUsageException, InvalidTagsMapException, OperationNotAllowedException, RepositoryLimitExceededException, RepositoryNameExistsException, RepositoryNameRequiredException, TagPolicyException, TooManyTagsException
+    def create_repository(self, CreateRepositoryInput input) -> str:
+        auto body = create_repository_input_to_json(input)
+        return awsjson.awsjson_request_now(codecommit_protocol(), self.creds, self.region, "CreateRepository", body)
+
+    # CreateUnreferencedMergeCommit
+    # errors: CommitDoesNotExistException, CommitMessageLengthExceededException, CommitRequiredException, ConcurrentReferenceUpdateException, EncryptionIntegrityChecksFailedException, EncryptionKeyAccessDeniedException, EncryptionKeyDisabledException, EncryptionKeyNotFoundException, EncryptionKeyUnavailableException, FileContentSizeLimitExceededException, FileModeRequiredException, FolderContentSizeLimitExceededException, InvalidCommitException, InvalidConflictDetailLevelException, InvalidConflictResolutionException, InvalidConflictResolutionStrategyException, InvalidEmailException, InvalidFileModeException, InvalidMergeOptionException, InvalidPathException, InvalidReplacementContentException, InvalidReplacementTypeException, InvalidRepositoryNameException, ManualMergeRequiredException, MaximumConflictResolutionEntriesExceededException, MaximumFileContentToLoadExceededException, MaximumItemsToCompareExceededException, MergeOptionRequiredException, MultipleConflictResolutionEntriesException, NameLengthExceededException, PathRequiredException, ReplacementContentRequiredException, ReplacementTypeRequiredException, RepositoryDoesNotExistException, RepositoryNameRequiredException, TipsDivergenceExceededException
+    def create_unreferenced_merge_commit(self, CreateUnreferencedMergeCommitInput input) -> str:
+        auto body = create_unreferenced_merge_commit_input_to_json(input)
+        return awsjson.awsjson_request_now(codecommit_protocol(), self.creds, self.region, "CreateUnreferencedMergeCommit", body)
 
     # DeleteApprovalRuleTemplate
     # errors: ApprovalRuleTemplateInUseException, ApprovalRuleTemplateNameRequiredException, InvalidApprovalRuleTemplateNameException
@@ -3394,11 +3912,35 @@ struct CodeCommitClient:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(codecommit_protocol(), self.creds, self.region, "MergeBranchesByFastForward", body)
 
+    # MergeBranchesBySquash
+    # errors: BranchDoesNotExistException, BranchNameIsTagNameException, BranchNameRequiredException, CommitDoesNotExistException, CommitMessageLengthExceededException, CommitRequiredException, ConcurrentReferenceUpdateException, EncryptionIntegrityChecksFailedException, EncryptionKeyAccessDeniedException, EncryptionKeyDisabledException, EncryptionKeyNotFoundException, EncryptionKeyUnavailableException, FileContentSizeLimitExceededException, FileModeRequiredException, FolderContentSizeLimitExceededException, InvalidBranchNameException, InvalidCommitException, InvalidConflictDetailLevelException, InvalidConflictResolutionException, InvalidConflictResolutionStrategyException, InvalidEmailException, InvalidFileModeException, InvalidPathException, InvalidReplacementContentException, InvalidReplacementTypeException, InvalidRepositoryNameException, InvalidTargetBranchException, ManualMergeRequiredException, MaximumConflictResolutionEntriesExceededException, MaximumFileContentToLoadExceededException, MaximumItemsToCompareExceededException, MultipleConflictResolutionEntriesException, NameLengthExceededException, PathRequiredException, ReplacementContentRequiredException, ReplacementTypeRequiredException, RepositoryDoesNotExistException, RepositoryNameRequiredException, TipsDivergenceExceededException
+    def merge_branches_by_squash(self, MergeBranchesBySquashInput input) -> str:
+        auto body = merge_branches_by_squash_input_to_json(input)
+        return awsjson.awsjson_request_now(codecommit_protocol(), self.creds, self.region, "MergeBranchesBySquash", body)
+
+    # MergeBranchesByThreeWay
+    # errors: BranchDoesNotExistException, BranchNameIsTagNameException, BranchNameRequiredException, CommitDoesNotExistException, CommitMessageLengthExceededException, CommitRequiredException, ConcurrentReferenceUpdateException, EncryptionIntegrityChecksFailedException, EncryptionKeyAccessDeniedException, EncryptionKeyDisabledException, EncryptionKeyNotFoundException, EncryptionKeyUnavailableException, FileContentSizeLimitExceededException, FileModeRequiredException, FolderContentSizeLimitExceededException, InvalidBranchNameException, InvalidCommitException, InvalidConflictDetailLevelException, InvalidConflictResolutionException, InvalidConflictResolutionStrategyException, InvalidEmailException, InvalidFileModeException, InvalidPathException, InvalidReplacementContentException, InvalidReplacementTypeException, InvalidRepositoryNameException, InvalidTargetBranchException, ManualMergeRequiredException, MaximumConflictResolutionEntriesExceededException, MaximumFileContentToLoadExceededException, MaximumItemsToCompareExceededException, MultipleConflictResolutionEntriesException, NameLengthExceededException, PathRequiredException, ReplacementContentRequiredException, ReplacementTypeRequiredException, RepositoryDoesNotExistException, RepositoryNameRequiredException, TipsDivergenceExceededException
+    def merge_branches_by_three_way(self, MergeBranchesByThreeWayInput input) -> str:
+        auto body = merge_branches_by_three_way_input_to_json(input)
+        return awsjson.awsjson_request_now(codecommit_protocol(), self.creds, self.region, "MergeBranchesByThreeWay", body)
+
     # MergePullRequestByFastForward
     # errors: ConcurrentReferenceUpdateException, EncryptionIntegrityChecksFailedException, EncryptionKeyAccessDeniedException, EncryptionKeyDisabledException, EncryptionKeyNotFoundException, EncryptionKeyUnavailableException, InvalidCommitIdException, InvalidPullRequestIdException, InvalidRepositoryNameException, ManualMergeRequiredException, PullRequestAlreadyClosedException, PullRequestApprovalRulesNotSatisfiedException, PullRequestDoesNotExistException, PullRequestIdRequiredException, ReferenceDoesNotExistException, RepositoryDoesNotExistException, RepositoryNameRequiredException, RepositoryNotAssociatedWithPullRequestException, TipOfSourceReferenceIsDifferentException
     def merge_pull_request_by_fast_forward(self, MergePullRequestByFastForwardInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(codecommit_protocol(), self.creds, self.region, "MergePullRequestByFastForward", body)
+
+    # MergePullRequestBySquash
+    # errors: CommitMessageLengthExceededException, ConcurrentReferenceUpdateException, EncryptionIntegrityChecksFailedException, EncryptionKeyAccessDeniedException, EncryptionKeyDisabledException, EncryptionKeyNotFoundException, EncryptionKeyUnavailableException, FileContentSizeLimitExceededException, FolderContentSizeLimitExceededException, InvalidCommitIdException, InvalidConflictDetailLevelException, InvalidConflictResolutionException, InvalidConflictResolutionStrategyException, InvalidEmailException, InvalidFileModeException, InvalidPathException, InvalidPullRequestIdException, InvalidReplacementContentException, InvalidReplacementTypeException, InvalidRepositoryNameException, ManualMergeRequiredException, MaximumConflictResolutionEntriesExceededException, MaximumFileContentToLoadExceededException, MaximumItemsToCompareExceededException, MultipleConflictResolutionEntriesException, NameLengthExceededException, PathRequiredException, PullRequestAlreadyClosedException, PullRequestApprovalRulesNotSatisfiedException, PullRequestDoesNotExistException, PullRequestIdRequiredException, ReplacementContentRequiredException, ReplacementTypeRequiredException, RepositoryDoesNotExistException, RepositoryNameRequiredException, RepositoryNotAssociatedWithPullRequestException, TipOfSourceReferenceIsDifferentException, TipsDivergenceExceededException
+    def merge_pull_request_by_squash(self, MergePullRequestBySquashInput input) -> str:
+        auto body = merge_pull_request_by_squash_input_to_json(input)
+        return awsjson.awsjson_request_now(codecommit_protocol(), self.creds, self.region, "MergePullRequestBySquash", body)
+
+    # MergePullRequestByThreeWay
+    # errors: CommitMessageLengthExceededException, ConcurrentReferenceUpdateException, EncryptionIntegrityChecksFailedException, EncryptionKeyAccessDeniedException, EncryptionKeyDisabledException, EncryptionKeyNotFoundException, EncryptionKeyUnavailableException, FileContentSizeLimitExceededException, FolderContentSizeLimitExceededException, InvalidCommitIdException, InvalidConflictDetailLevelException, InvalidConflictResolutionException, InvalidConflictResolutionStrategyException, InvalidEmailException, InvalidFileModeException, InvalidPathException, InvalidPullRequestIdException, InvalidReplacementContentException, InvalidReplacementTypeException, InvalidRepositoryNameException, ManualMergeRequiredException, MaximumConflictResolutionEntriesExceededException, MaximumFileContentToLoadExceededException, MaximumItemsToCompareExceededException, MultipleConflictResolutionEntriesException, NameLengthExceededException, PathRequiredException, PullRequestAlreadyClosedException, PullRequestApprovalRulesNotSatisfiedException, PullRequestDoesNotExistException, PullRequestIdRequiredException, ReplacementContentRequiredException, ReplacementTypeRequiredException, RepositoryDoesNotExistException, RepositoryNameRequiredException, RepositoryNotAssociatedWithPullRequestException, TipOfSourceReferenceIsDifferentException, TipsDivergenceExceededException
+    def merge_pull_request_by_three_way(self, MergePullRequestByThreeWayInput input) -> str:
+        auto body = merge_pull_request_by_three_way_input_to_json(input)
+        return awsjson.awsjson_request_now(codecommit_protocol(), self.creds, self.region, "MergePullRequestByThreeWay", body)
 
     # OverridePullRequestApprovalRules
     # errors: EncryptionIntegrityChecksFailedException, EncryptionKeyAccessDeniedException, EncryptionKeyDisabledException, EncryptionKeyNotFoundException, EncryptionKeyUnavailableException, InvalidOverrideStatusException, InvalidPullRequestIdException, InvalidRevisionIdException, OverrideAlreadySetException, OverrideStatusRequiredException, PullRequestAlreadyClosedException, PullRequestDoesNotExistException, PullRequestIdRequiredException, RevisionIdRequiredException, RevisionNotCurrentException
@@ -3435,6 +3977,30 @@ struct CodeCommitClient:
     def put_file(self, PutFileInput input) -> str:
         auto body = input.to_json()
         return awsjson.awsjson_request_now(codecommit_protocol(), self.creds, self.region, "PutFile", body)
+
+    # PutRepositoryTriggers
+    # errors: EncryptionIntegrityChecksFailedException, EncryptionKeyAccessDeniedException, EncryptionKeyDisabledException, EncryptionKeyNotFoundException, EncryptionKeyUnavailableException, InvalidRepositoryNameException, InvalidRepositoryTriggerBranchNameException, InvalidRepositoryTriggerCustomDataException, InvalidRepositoryTriggerDestinationArnException, InvalidRepositoryTriggerEventsException, InvalidRepositoryTriggerNameException, InvalidRepositoryTriggerRegionException, MaximumBranchesExceededException, MaximumRepositoryTriggersExceededException, RepositoryDoesNotExistException, RepositoryNameRequiredException, RepositoryTriggerBranchNameListRequiredException, RepositoryTriggerDestinationArnRequiredException, RepositoryTriggerEventsListRequiredException, RepositoryTriggerNameRequiredException, RepositoryTriggersListRequiredException
+    def put_repository_triggers(self, PutRepositoryTriggersInput input) -> str:
+        auto body = put_repository_triggers_input_to_json(input)
+        return awsjson.awsjson_request_now(codecommit_protocol(), self.creds, self.region, "PutRepositoryTriggers", body)
+
+    # TagResource
+    # errors: InvalidRepositoryNameException, InvalidResourceArnException, InvalidSystemTagUsageException, InvalidTagsMapException, RepositoryDoesNotExistException, ResourceArnRequiredException, TagPolicyException, TagsMapRequiredException, TooManyTagsException
+    def tag_resource(self, TagResourceInput input) -> str:
+        auto body = tag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(codecommit_protocol(), self.creds, self.region, "TagResource", body)
+
+    # TestRepositoryTriggers
+    # errors: EncryptionIntegrityChecksFailedException, EncryptionKeyAccessDeniedException, EncryptionKeyDisabledException, EncryptionKeyNotFoundException, EncryptionKeyUnavailableException, InvalidRepositoryNameException, InvalidRepositoryTriggerBranchNameException, InvalidRepositoryTriggerCustomDataException, InvalidRepositoryTriggerDestinationArnException, InvalidRepositoryTriggerEventsException, InvalidRepositoryTriggerNameException, InvalidRepositoryTriggerRegionException, MaximumBranchesExceededException, MaximumRepositoryTriggersExceededException, RepositoryDoesNotExistException, RepositoryNameRequiredException, RepositoryTriggerBranchNameListRequiredException, RepositoryTriggerDestinationArnRequiredException, RepositoryTriggerEventsListRequiredException, RepositoryTriggerNameRequiredException, RepositoryTriggersListRequiredException
+    def test_repository_triggers(self, TestRepositoryTriggersInput input) -> str:
+        auto body = test_repository_triggers_input_to_json(input)
+        return awsjson.awsjson_request_now(codecommit_protocol(), self.creds, self.region, "TestRepositoryTriggers", body)
+
+    # UntagResource
+    # errors: InvalidRepositoryNameException, InvalidResourceArnException, InvalidSystemTagUsageException, InvalidTagKeysListException, RepositoryDoesNotExistException, ResourceArnRequiredException, TagKeysListRequiredException, TagPolicyException, TooManyTagsException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto body = untag_resource_input_to_json(input)
+        return awsjson.awsjson_request_now(codecommit_protocol(), self.creds, self.region, "UntagResource", body)
 
     # UpdateApprovalRuleTemplateContent
     # errors: ApprovalRuleTemplateContentRequiredException, ApprovalRuleTemplateDoesNotExistException, ApprovalRuleTemplateNameRequiredException, InvalidApprovalRuleTemplateContentException, InvalidApprovalRuleTemplateNameException, InvalidRuleContentSha256Exception

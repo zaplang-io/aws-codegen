@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 12 operations — 8 with a generated method,
-#   4 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 12 operations — 11 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   49 structs (35 @derive(Json)), 6 enums, 7 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -119,8 +119,9 @@ struct CurrentSearchProgress:
     Optional[int64] ItemsScannedCount
     Optional[int64] ItemsMatchedCount
 
-# no @derive(Json): member(s) FilePaths: list[StringCondition], Sizes: list[LongCondition], CreationTimes: list[TimeCondition], LastModificationTimes: list[TimeCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) FilePaths: list[StringCondition], Sizes: list[LongCondition], CreationTimes: list[TimeCondition], LastModificationTimes: list[TimeCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct EBSItemFilter:
     Optional[list[StringCondition]] FilePaths
     Optional[list[LongCondition]] Sizes
@@ -157,8 +158,9 @@ struct ExportSpecification:
 struct GetSearchJobInput:
     str SearchJobIdentifier
 
-# no @derive(Json): member(s) SearchScope: SearchScope, ItemFilters: ItemFilters not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SearchScope: SearchScope, ItemFilters: ItemFilters not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSearchJobOutput:
     Optional[str] Name
     Optional[SearchScopeSummary] SearchScopeSummary
@@ -194,8 +196,9 @@ struct InternalServerException:
     str message
     Optional[int64] retryAfterSeconds
 
-# no @derive(Json): member(s) S3ItemFilters: list[S3ItemFilter], EBSItemFilters: list[EBSItemFilter] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) S3ItemFilters: list[S3ItemFilter], EBSItemFilters: list[EBSItemFilter] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ItemFilters:
     Optional[list[S3ItemFilter]] S3ItemFilters
     Optional[list[EBSItemFilter]] EBSItemFilters
@@ -207,8 +210,9 @@ struct ListSearchJobBackupsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Results: list[SearchJobBackupsResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[SearchJobBackupsResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSearchJobBackupsOutput:
     list[SearchJobBackupsResult] Results
     Optional[str] NextToken
@@ -220,8 +224,9 @@ struct ListSearchJobResultsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) Results: list[ResultItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Results: list[ResultItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSearchJobResultsOutput:
     list[ResultItem] Results
     Optional[str] NextToken
@@ -234,8 +239,9 @@ struct ListSearchJobsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) SearchJobs: list[SearchJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) SearchJobs: list[SearchJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSearchJobsOutput:
     list[SearchJobSummary] SearchJobs
     Optional[str] NextToken
@@ -249,8 +255,9 @@ struct ListSearchResultExportJobsInput:
     Optional[str] NextToken
     Optional[int64] MaxResults
 
-# no @derive(Json): member(s) ExportJobs: list[ExportJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ExportJobs: list[ExportJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSearchResultExportJobsOutput:
     list[ExportJobSummary] ExportJobs
     Optional[str] NextToken
@@ -260,8 +267,9 @@ struct ListSearchResultExportJobsOutput:
 struct ListTagsForResourceRequest:
     str ResourceArn
 
-# no @derive(Json): member(s) Tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) Tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] Tags
 
@@ -286,8 +294,9 @@ struct S3ExportSpecification:
     str DestinationBucket
     Optional[str] DestinationPrefix
 
-# no @derive(Json): member(s) ObjectKeys: list[StringCondition], Sizes: list[LongCondition], CreationTimes: list[TimeCondition], VersionIds: list[StringCondition], ETags: list[StringCondition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) ObjectKeys: list[StringCondition], Sizes: list[LongCondition], CreationTimes: list[TimeCondition], VersionIds: list[StringCondition], ETags: list[StringCondition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct S3ItemFilter:
     Optional[list[StringCondition]] ObjectKeys
     Optional[list[LongCondition]] Sizes
@@ -327,8 +336,9 @@ struct SearchJobSummary:
     Optional[SearchScopeSummary] SearchScopeSummary
     Optional[str] StatusMessage
 
-# no @derive(Json): member(s) BackupResourceTypes: list[ResourceType], SourceResourceArns: list[str], BackupResourceArns: list[str], BackupResourceTags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) BackupResourceTypes: list[ResourceType], SourceResourceArns: list[str], BackupResourceArns: list[str], BackupResourceTags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchScope:
     list[ResourceType] BackupResourceTypes
     Optional[BackupCreationTimeFilter] BackupResourceCreationTime
@@ -470,10 +480,148 @@ def backup_search_error_from_code(str code) -> BackupSearchError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   StartSearchJob (document member `Tags: dict[str, str]` is not serializable by derive)
-#   StartSearchResultExportJob (document member `Tags: dict[str, str]` is not serializable by derive)
-#   TagResource (document member `Tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def backup_search_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def backup_search_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def backup_search_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize EBSItemFilter to a compact JSON object (declaration order).
+def ebs_item_filter_to_json(EBSItemFilter v) -> str:
+    list[str] parts = []
+    if v.FilePaths.is_some():
+        auto u0 = v.FilePaths.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"FilePaths\":" + backup_search_json_arr(e1))
+    if v.Sizes.is_some():
+        auto u2 = v.Sizes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Sizes\":" + backup_search_json_arr(e3))
+    if v.CreationTimes.is_some():
+        auto u4 = v.CreationTimes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"CreationTimes\":" + backup_search_json_arr(e5))
+    if v.LastModificationTimes.is_some():
+        auto u6 = v.LastModificationTimes.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"LastModificationTimes\":" + backup_search_json_arr(e7))
+    return backup_search_json_obj(parts)
+
+# Serialize ItemFilters to a compact JSON object (declaration order).
+def item_filters_to_json(ItemFilters v) -> str:
+    list[str] parts = []
+    if v.S3ItemFilters.is_some():
+        auto u0 = v.S3ItemFilters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(s3_item_filter_to_json(x1))
+        parts.append("\"S3ItemFilters\":" + backup_search_json_arr(e1))
+    if v.EBSItemFilters.is_some():
+        auto u2 = v.EBSItemFilters.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(ebs_item_filter_to_json(x3))
+        parts.append("\"EBSItemFilters\":" + backup_search_json_arr(e3))
+    return backup_search_json_obj(parts)
+
+# Serialize S3ItemFilter to a compact JSON object (declaration order).
+def s3_item_filter_to_json(S3ItemFilter v) -> str:
+    list[str] parts = []
+    if v.ObjectKeys.is_some():
+        auto u0 = v.ObjectKeys.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"ObjectKeys\":" + backup_search_json_arr(e1))
+    if v.Sizes.is_some():
+        auto u2 = v.Sizes.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Sizes\":" + backup_search_json_arr(e3))
+    if v.CreationTimes.is_some():
+        auto u4 = v.CreationTimes.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"CreationTimes\":" + backup_search_json_arr(e5))
+    if v.VersionIds.is_some():
+        auto u6 = v.VersionIds.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"VersionIds\":" + backup_search_json_arr(e7))
+    if v.ETags.is_some():
+        auto u8 = v.ETags.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(x9.to_json())
+        parts.append("\"ETags\":" + backup_search_json_arr(e9))
+    return backup_search_json_obj(parts)
+
+# Serialize SearchScope to a compact JSON object (declaration order).
+def search_scope_to_json(SearchScope v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.BackupResourceTypes:
+        e0.append(x0.to_json())
+    parts.append("\"BackupResourceTypes\":" + backup_search_json_arr(e0))
+    if v.BackupResourceCreationTime.is_some():
+        auto u1 = v.BackupResourceCreationTime.unwrap()
+        parts.append("\"BackupResourceCreationTime\":" + u1.to_json())
+    if v.SourceResourceArns.is_some():
+        auto u2 = v.SourceResourceArns.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(backup_search_json_str(x3))
+        parts.append("\"SourceResourceArns\":" + backup_search_json_arr(e3))
+    if v.BackupResourceArns.is_some():
+        auto u4 = v.BackupResourceArns.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(backup_search_json_str(x5))
+        parts.append("\"BackupResourceArns\":" + backup_search_json_arr(e5))
+    if v.BackupResourceTags.is_some():
+        auto u6 = v.BackupResourceTags.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(backup_search_json_str(k7) + ":" + backup_search_json_str(u6[k7]))
+        parts.append("\"BackupResourceTags\":" + backup_search_json_obj(m7))
+    return backup_search_json_obj(parts)
 
 # A bound BackupSearch client: credentials + region, threaded into every operation.
 struct BackupSearchClient:
@@ -565,6 +713,57 @@ struct BackupSearchClient:
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_search_service(), self.region, host)
 
+    # StartSearchJob  PUT /search-jobs
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_search_job(self, StartSearchJobInput input) -> str:
+        auto host = endpoints.regional_host(backup_search_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/search-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Tags.is_some():
+            auto u0 = input.Tags.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(backup_search_json_str(k1) + ":" + backup_search_json_str(u0[k1]))
+            parts.append("\"Tags\":" + backup_search_json_obj(m1))
+        if input.Name.is_some():
+            auto u2 = input.Name.unwrap()
+            parts.append("\"Name\":" + backup_search_json_str(u2))
+        if input.EncryptionKeyArn.is_some():
+            auto u3 = input.EncryptionKeyArn.unwrap()
+            parts.append("\"EncryptionKeyArn\":" + backup_search_json_str(u3))
+        if input.ClientToken.is_some():
+            auto u4 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + backup_search_json_str(u4))
+        parts.append("\"SearchScope\":" + search_scope_to_json(input.SearchScope))
+        if input.ItemFilters.is_some():
+            auto u5 = input.ItemFilters.unwrap()
+            parts.append("\"ItemFilters\":" + item_filters_to_json(u5))
+        auto bp = restjson.rest_json_document(b, backup_search_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_search_service(), self.region, host)
+
+    # StartSearchResultExportJob  PUT /export-search-jobs
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_search_result_export_job(self, StartSearchResultExportJobInput input) -> str:
+        auto host = endpoints.regional_host(backup_search_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/export-search-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"SearchJobIdentifier\":" + backup_search_json_str(input.SearchJobIdentifier))
+        parts.append("\"ExportSpecification\":" + input.ExportSpecification.to_json())
+        if input.ClientToken.is_some():
+            auto u0 = input.ClientToken.unwrap()
+            parts.append("\"ClientToken\":" + backup_search_json_str(u0))
+        if input.Tags.is_some():
+            auto u1 = input.Tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(backup_search_json_str(k2) + ":" + backup_search_json_str(u1[k2]))
+            parts.append("\"Tags\":" + backup_search_json_obj(m2))
+        if input.RoleArn.is_some():
+            auto u3 = input.RoleArn.unwrap()
+            parts.append("\"RoleArn\":" + backup_search_json_str(u3))
+        auto bp = restjson.rest_json_document(b, backup_search_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_search_service(), self.region, host)
+
     # StopSearchJob  PUT /search-jobs/{SearchJobIdentifier}/actions/cancel
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def stop_search_job(self, StopSearchJobInput input) -> str:
@@ -573,6 +772,21 @@ struct BackupSearchClient:
         labels["SearchJobIdentifier"] = input.SearchJobIdentifier
         auto b = binding.HttpBinding(method="PUT", path_template="/search-jobs/{SearchJobIdentifier}/actions/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_search_service(), self.region, host)
+
+    # TagResource  POST /tags/{ResourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(backup_search_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.Tags.keys()):
+            m0.append(backup_search_json_str(k0) + ":" + backup_search_json_str(input.Tags[k0]))
+        parts.append("\"Tags\":" + backup_search_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, backup_search_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, backup_search_service(), self.region, host)
 
     # Paginator for ListSearchJobBackups — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: Results).

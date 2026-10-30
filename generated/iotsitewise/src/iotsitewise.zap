@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 149 operations — 104 with a generated method,
-#   45 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 149 operations — 141 with a generated method,
+#   8 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   522 structs (333 @derive(Json)), 72 enums, 14 error variants.
-#   35 paginators generated (6 paginated ops skipped) from paginators-1.json.
+#   36 paginators generated (5 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The IoTSiteWise rest-json protocol: SigV4 service "iotsitewise" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -740,8 +741,9 @@ struct ApplicationSummary:
 struct AssetBindingValueFilter:
     str assetId
 
-# no @derive(Json): member(s) properties: list[AssetProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: list[AssetProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetCompositeModel:
     str name
     Optional[str] description
@@ -755,8 +757,9 @@ struct AssetCompositeModelPathSegment:
     Optional[str] id
     Optional[str] name
 
-# no @derive(Json): member(s) path: list[AssetCompositeModelPathSegment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) path: list[AssetCompositeModelPathSegment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetCompositeModelSummary:
     str id
     Optional[str] externalId
@@ -786,8 +789,9 @@ struct AssetHierarchyInfo:
 struct AssetModelBindingValueFilter:
     str assetModelId
 
-# no @derive(Json): member(s) properties: list[AssetModelProperty] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: list[AssetModelProperty] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetModelCompositeModel:
     str name
     Optional[str] description
@@ -796,8 +800,9 @@ struct AssetModelCompositeModel:
     Optional[str] id
     Optional[str] externalId
 
-# no @derive(Json): member(s) properties: list[AssetModelPropertyDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) properties: list[AssetModelPropertyDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetModelCompositeModelDefinition:
     Optional[str] id
     Optional[str] externalId
@@ -811,8 +816,9 @@ struct AssetModelCompositeModelPathSegment:
     Optional[str] id
     Optional[str] name
 
-# no @derive(Json): member(s) path: list[AssetModelCompositeModelPathSegment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) path: list[AssetModelCompositeModelPathSegment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetModelCompositeModelSummary:
     str id
     Optional[str] externalId
@@ -835,8 +841,9 @@ struct AssetModelHierarchyDefinition:
     str name
     str childAssetModelId
 
-# no @derive(Json): member(s) type: PropertyType, path: list[AssetModelPropertyPathSegment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) type: PropertyType, path: list[AssetModelPropertyPathSegment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetModelProperty:
     Optional[str] id
     Optional[str] externalId
@@ -857,8 +864,9 @@ struct AssetModelPropertyBindingValueFilter:
     str assetModelId
     str propertyId
 
-# no @derive(Json): member(s) type: PropertyType not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) type: PropertyType not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetModelPropertyDefinition:
     Optional[str] id
     Optional[str] externalId
@@ -873,8 +881,9 @@ struct AssetModelPropertyPathSegment:
     Optional[str] id
     Optional[str] name
 
-# no @derive(Json): member(s) type: PropertyType, path: list[AssetModelPropertyPathSegment], interfaceSummaries: list[InterfaceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) type: PropertyType, path: list[AssetModelPropertyPathSegment], interfaceSummaries: list[InterfaceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetModelPropertySummary:
     Optional[str] id
     Optional[str] externalId
@@ -887,14 +896,16 @@ struct AssetModelPropertySummary:
     Optional[list[AssetModelPropertyPathSegment]] path
     Optional[list[InterfaceSummary]] interfaceSummaries
 
-# no @derive(Json): member(s) error: ErrorDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) error: ErrorDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetModelStatus:
     AssetModelState state
     Optional[ErrorDetails] error
 
-# no @derive(Json): member(s) status: AssetModelStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) status: AssetModelStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetModelSummary:
     str id
     Optional[str] externalId
@@ -907,8 +918,9 @@ struct AssetModelSummary:
     AssetModelStatus status
     Optional[str] version
 
-# no @derive(Json): member(s) path: list[AssetPropertyPathSegment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) path: list[AssetPropertyPathSegment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetProperty:
     str id
     Optional[str] externalId
@@ -935,8 +947,9 @@ struct AssetPropertyPathSegment:
     Optional[str] id
     Optional[str] name
 
-# no @derive(Json): member(s) path: list[AssetPropertyPathSegment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) path: list[AssetPropertyPathSegment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetPropertySummary:
     str id
     Optional[str] externalId
@@ -957,14 +970,16 @@ struct AssetRelationshipSummary:
     Optional[AssetHierarchyInfo] hierarchyInfo
     str relationshipType
 
-# no @derive(Json): member(s) error: ErrorDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) error: ErrorDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetStatus:
     AssetState state
     Optional[ErrorDetails] error
 
-# no @derive(Json): member(s) status: AssetStatus, hierarchies: list[AssetHierarchy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) status: AssetStatus, hierarchies: list[AssetHierarchy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssetSummary:
     str id
     Optional[str] externalId
@@ -1000,8 +1015,9 @@ struct AssociateTimeSeriesToAssetPropertyRequest:
     str propertyId
     Optional[str] clientToken
 
-# no @derive(Json): member(s) status: AssetStatus, hierarchies: list[AssetHierarchy] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) status: AssetStatus, hierarchies: list[AssetHierarchy] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct AssociatedAssetsSummary:
     str id
     Optional[str] externalId
@@ -1026,8 +1042,9 @@ struct BatchAssociateDataSegmentsToDatasetRequest:
     list[AssociateDataSegmentEntry] associateDataSegmentEntries
     Optional[str] clientToken
 
-# no @derive(Json): member(s) failedAssociations: list[FailedDataSegmentAssociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failedAssociations: list[FailedDataSegmentAssociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchAssociateDataSegmentsToDatasetResponse:
     str datasetId
     str datasetVersion
@@ -1040,8 +1057,9 @@ struct BatchAssociateProjectAssetsRequest:
     list[str] assetIds
     Optional[str] clientToken
 
-# no @derive(Json): member(s) errors: list[AssetErrorDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[AssetErrorDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchAssociateProjectAssetsResponse:
     Optional[list[AssetErrorDetails]] errors
 
@@ -1053,8 +1071,9 @@ struct BatchDeleteDatasetDataSegmentsRequest:
     list[DeleteDataSegmentEntry] deleteDataSegmentEntries
     Optional[str] clientToken
 
-# no @derive(Json): member(s) errors: list[FailedDataSegmentDeletion] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[FailedDataSegmentDeletion] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDeleteDatasetDataSegmentsResponse:
     str datasetId
     str datasetVersion
@@ -1068,8 +1087,9 @@ struct BatchDisassociateDataSegmentsFromDatasetRequest:
     list[DisassociateDataSegmentEntry] disassociateDataSegmentEntries
     Optional[str] clientToken
 
-# no @derive(Json): member(s) failedDisassociations: list[FailedDataSegmentDisassociation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) failedDisassociations: list[FailedDataSegmentDisassociation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDisassociateDataSegmentsFromDatasetResponse:
     str datasetId
     str datasetVersion
@@ -1082,13 +1102,15 @@ struct BatchDisassociateProjectAssetsRequest:
     list[str] assetIds
     Optional[str] clientToken
 
-# no @derive(Json): member(s) errors: list[AssetErrorDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[AssetErrorDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchDisassociateProjectAssetsResponse:
     Optional[list[AssetErrorDetails]] errors
 
-# no @derive(Json): member(s) aggregateTypes: list[AggregateType], qualities: list[Quality] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) aggregateTypes: list[AggregateType], qualities: list[Quality] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetAssetPropertyAggregatesEntry:
     str entryId
     Optional[str] assetId
@@ -1119,8 +1141,9 @@ struct BatchGetAssetPropertyAggregatesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) errorEntries: list[BatchGetAssetPropertyAggregatesErrorEntry], successEntries: list[BatchGetAssetPropertyAggregatesSuccessEntry], skippedEntries: list[BatchGetAssetPropertyAggregatesSkippedEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errorEntries: list[BatchGetAssetPropertyAggregatesErrorEntry], successEntries: list[BatchGetAssetPropertyAggregatesSuccessEntry], skippedEntries: list[BatchGetAssetPropertyAggregatesSkippedEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetAssetPropertyAggregatesResponse:
     list[BatchGetAssetPropertyAggregatesErrorEntry] errorEntries
     list[BatchGetAssetPropertyAggregatesSuccessEntry] successEntries
@@ -1133,8 +1156,9 @@ struct BatchGetAssetPropertyAggregatesSkippedEntry:
     BatchEntryCompletionStatus completionStatus
     Optional[BatchGetAssetPropertyAggregatesErrorInfo] errorInfo
 
-# no @derive(Json): member(s) aggregatedValues: list[AggregatedValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) aggregatedValues: list[AggregatedValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetAssetPropertyAggregatesSuccessEntry:
     str entryId
     list[AggregatedValue] aggregatedValues
@@ -1157,8 +1181,9 @@ struct BatchGetAssetPropertyValueErrorInfo:
     BatchGetAssetPropertyValueErrorCode errorCode
     DateTime errorTimestamp
 
-# no @derive(Json): member(s) qualities: list[Quality] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) qualities: list[Quality] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetAssetPropertyValueHistoryEntry:
     str entryId
     Optional[str] assetId
@@ -1187,8 +1212,9 @@ struct BatchGetAssetPropertyValueHistoryRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) errorEntries: list[BatchGetAssetPropertyValueHistoryErrorEntry], successEntries: list[BatchGetAssetPropertyValueHistorySuccessEntry], skippedEntries: list[BatchGetAssetPropertyValueHistorySkippedEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errorEntries: list[BatchGetAssetPropertyValueHistoryErrorEntry], successEntries: list[BatchGetAssetPropertyValueHistorySuccessEntry], skippedEntries: list[BatchGetAssetPropertyValueHistorySkippedEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetAssetPropertyValueHistoryResponse:
     list[BatchGetAssetPropertyValueHistoryErrorEntry] errorEntries
     list[BatchGetAssetPropertyValueHistorySuccessEntry] successEntries
@@ -1201,8 +1227,9 @@ struct BatchGetAssetPropertyValueHistorySkippedEntry:
     BatchEntryCompletionStatus completionStatus
     Optional[BatchGetAssetPropertyValueHistoryErrorInfo] errorInfo
 
-# no @derive(Json): member(s) assetPropertyValueHistory: list[AssetPropertyValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetPropertyValueHistory: list[AssetPropertyValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetAssetPropertyValueHistorySuccessEntry:
     str entryId
     list[AssetPropertyValue] assetPropertyValueHistory
@@ -1213,8 +1240,9 @@ struct BatchGetAssetPropertyValueRequest:
     list[BatchGetAssetPropertyValueEntry] entries
     Optional[str] nextToken
 
-# no @derive(Json): member(s) errorEntries: list[BatchGetAssetPropertyValueErrorEntry], successEntries: list[BatchGetAssetPropertyValueSuccessEntry], skippedEntries: list[BatchGetAssetPropertyValueSkippedEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errorEntries: list[BatchGetAssetPropertyValueErrorEntry], successEntries: list[BatchGetAssetPropertyValueSuccessEntry], skippedEntries: list[BatchGetAssetPropertyValueSkippedEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchGetAssetPropertyValueResponse:
     list[BatchGetAssetPropertyValueErrorEntry] errorEntries
     list[BatchGetAssetPropertyValueSuccessEntry] successEntries
@@ -1232,15 +1260,17 @@ struct BatchGetAssetPropertyValueSuccessEntry:
     str entryId
     Optional[AssetPropertyValue] assetPropertyValue
 
-# no @derive(Json): member(s) timestamps: list[TimeInNanos] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) timestamps: list[TimeInNanos] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchPutAssetPropertyError:
     BatchPutAssetPropertyValueErrorCode errorCode
     str errorMessage
     list[TimeInNanos] timestamps
 
-# no @derive(Json): member(s) errors: list[BatchPutAssetPropertyError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errors: list[BatchPutAssetPropertyError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchPutAssetPropertyErrorEntry:
     str entryId
     list[BatchPutAssetPropertyError] errors
@@ -1251,8 +1281,9 @@ struct BatchPutAssetPropertyValueRequest:
     Optional[bool] enablePartialEntryProcessing
     list[PutAssetPropertyValueEntry] entries
 
-# no @derive(Json): member(s) errorEntries: list[BatchPutAssetPropertyErrorEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) errorEntries: list[BatchPutAssetPropertyErrorEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchPutAssetPropertyValueResponse:
     list[BatchPutAssetPropertyErrorEntry] errorEntries
 
@@ -1309,8 +1340,9 @@ struct ColumnInformation:
 struct ColumnType:
     Optional[ScalarType] scalarType
 
-# no @derive(Json): member(s) assetProperty: Property not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetProperty: Property not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CompositeModelProperty:
     str name
     str type
@@ -1318,8 +1350,9 @@ struct CompositeModelProperty:
     Optional[str] id
     Optional[str] externalId
 
-# no @derive(Json): member(s) compositionRelationship: list[CompositionRelationshipItem] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) compositionRelationship: list[CompositionRelationshipItem] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CompositionDetails:
     Optional[list[CompositionRelationshipItem]] compositionRelationship
 
@@ -1342,14 +1375,16 @@ struct ComputationModelAnomalyDetectionConfiguration:
 struct ComputationModelConfiguration:
     Optional[ComputationModelAnomalyDetectionConfiguration] anomalyDetection
 
-# no @derive(Json): member(s) computationModelIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) computationModelIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputationModelDataBindingUsageSummary:
     list[str] computationModelIds
     MatchedDataBinding matchedDataBinding
 
-# no @derive(Json): member(s) list: list[ComputationModelDataBindingValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) list: list[ComputationModelDataBindingValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputationModelDataBindingValue:
     Optional[AssetModelPropertyBindingValue] assetModelProperty
     Optional[AssetPropertyBindingValue] assetProperty
@@ -1360,14 +1395,16 @@ struct ComputationModelDataBindingValue:
 struct ComputationModelResolveToResourceSummary:
     Optional[ResolveTo] resolveTo
 
-# no @derive(Json): member(s) error: ErrorDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) error: ErrorDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputationModelStatus:
     ComputationModelState state
     Optional[ErrorDetails] error
 
-# no @derive(Json): member(s) status: ComputationModelStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) status: ComputationModelStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputationModelSummary:
     str id
     str arn
@@ -1379,16 +1416,18 @@ struct ComputationModelSummary:
     ComputationModelStatus status
     str version
 
-# no @derive(Json): member(s) environmentVariables: dict[str, str], dependsOn: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environmentVariables: dict[str, str], dependsOn: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputeNode:
     str computeNodeName
     str taskName
     Optional[dict[str, str]] environmentVariables
     Optional[list[str]] dependsOn
 
-# no @derive(Json): member(s) dependsOn: list[str], status: ComputeNodeExecutionStatus, executionEnvironmentVariables: dict[str, str], executionMounts: list[Mount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dependsOn: list[str], status: ComputeNodeExecutionStatus, executionEnvironmentVariables: dict[str, str], executionMounts: list[Mount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputeNodeExecutionDetails:
     str computeNodeName
     str taskName
@@ -1401,15 +1440,17 @@ struct ComputeNodeExecutionDetails:
     Optional[dict[str, str]] executionEnvironmentVariables
     Optional[list[Mount]] executionMounts
 
-# no @derive(Json): member(s) details: list[DetailedPipelineError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) details: list[DetailedPipelineError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputeNodeExecutionStateDetails:
     ComputeNodeErrorCode code
     str message
     Optional[list[DetailedPipelineError]] details
 
-# no @derive(Json): member(s) stateDetails: ComputeNodeExecutionStateDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stateDetails: ComputeNodeExecutionStateDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ComputeNodeExecutionStatus:
     ComputeNodeExecutionState state
     Optional[ComputeNodeExecutionStateDetails] stateDetails
@@ -1430,8 +1471,9 @@ struct ConflictingOperationException:
     str resourceId
     str resourceArn
 
-# no @derive(Json): member(s) command: list[str], environmentVariables: dict[str, str], mounts: list[Mount] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) command: list[str], environmentVariables: dict[str, str], mounts: list[Mount] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ContainerTaskConfiguration:
     str ecrUri
     str taskExecutionRole
@@ -1497,8 +1539,9 @@ struct CreateAssetModelCompositeModelRequest:
     # wire string of the AssetModelVersionType enum (header binding)
     Optional[str] matchForVersionType
 
-# no @derive(Json): member(s) assetModelCompositeModelPath: list[AssetModelCompositeModelPathSegment], assetModelStatus: AssetModelStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetModelCompositeModelPath: list[AssetModelCompositeModelPathSegment], assetModelStatus: AssetModelStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAssetModelCompositeModelResponse:
     str assetModelCompositeModelId
     list[AssetModelCompositeModelPathSegment] assetModelCompositeModelPath
@@ -1519,8 +1562,9 @@ struct CreateAssetModelRequest:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) assetModelStatus: AssetModelStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetModelStatus: AssetModelStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAssetModelResponse:
     str assetModelId
     str assetModelArn
@@ -1537,8 +1581,9 @@ struct CreateAssetRequest:
     Optional[dict[str, str]] tags
     Optional[str] assetDescription
 
-# no @derive(Json): member(s) assetStatus: AssetStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetStatus: AssetStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateAssetResponse:
     str assetId
     str assetArn
@@ -1573,8 +1618,9 @@ struct CreateComputationModelRequest:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) computationModelStatus: ComputationModelStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) computationModelStatus: ComputationModelStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateComputationModelResponse:
     str computationModelId
     str computationModelArn
@@ -1623,8 +1669,9 @@ struct CreateDatasetRequest:
     Optional[str] clientToken
     Optional[dict[str, str]] tags
 
-# no @derive(Json): member(s) datasetStatus: DatasetStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) datasetStatus: DatasetStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CreateDatasetResponse:
     str datasetId
     str datasetArn
@@ -1744,8 +1791,9 @@ struct CreateWorkspaceResponse:
     str workspaceArn
     WorkspaceStatus workspaceStatus
 
-# no @derive(Json): member(s) columnNames: list[ColumnName] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) columnNames: list[ColumnName] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Csv:
     list[ColumnName] columnNames
 
@@ -1815,8 +1863,9 @@ struct DatasetEnrichmentEntry:
     DatasetEnrichmentStatus status
     Optional[DateTime] lastEnrichedAt
 
-# no @derive(Json): member(s) exportDataTypes: list[ExportDataType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) exportDataTypes: list[ExportDataType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatasetItem:
     str datasetId
     Optional[TrimSettings] trimSettings
@@ -1828,14 +1877,16 @@ struct DatasetSource:
     DatasetSourceFormat sourceFormat
     Optional[SourceDetail] sourceDetail
 
-# no @derive(Json): member(s) error: ErrorDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) error: ErrorDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatasetStatus:
     DatasetState state
     Optional[ErrorDetails] error
 
-# no @derive(Json): member(s) status: DatasetStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) status: DatasetStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DatasetSummary:
     str id
     str arn
@@ -1848,8 +1899,9 @@ struct DatasetSummary:
     DatasetStatus status
     Optional[DatasetEnrichment] enrichmentStatus
 
-# no @derive(Json): member(s) arrayValue: list[Datum], rowValue: Row not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) arrayValue: list[Datum], rowValue: Row not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Datum:
     Optional[str] scalarValue
     Optional[list[Datum]] arrayValue
@@ -1889,8 +1941,9 @@ struct DeleteAssetModelCompositeModelRequest:
     # wire string of the AssetModelVersionType enum (header binding)
     Optional[str] matchForVersionType
 
-# no @derive(Json): member(s) assetModelStatus: AssetModelStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetModelStatus: AssetModelStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteAssetModelCompositeModelResponse:
     AssetModelStatus assetModelStatus
     Optional[str] assetModelId
@@ -1902,8 +1955,9 @@ struct DeleteAssetModelInterfaceRelationshipRequest:
     str interfaceAssetModelId
     Optional[str] clientToken
 
-# no @derive(Json): member(s) assetModelStatus: AssetModelStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetModelStatus: AssetModelStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteAssetModelInterfaceRelationshipResponse:
     str assetModelId
     str interfaceAssetModelId
@@ -1920,8 +1974,9 @@ struct DeleteAssetModelRequest:
     # wire string of the AssetModelVersionType enum (header binding)
     Optional[str] matchForVersionType
 
-# no @derive(Json): member(s) assetModelStatus: AssetModelStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetModelStatus: AssetModelStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteAssetModelResponse:
     Optional[str] assetModelId
     AssetModelStatus assetModelStatus
@@ -1932,8 +1987,9 @@ struct DeleteAssetRequest:
     str assetId
     Optional[str] clientToken
 
-# no @derive(Json): member(s) assetStatus: AssetStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetStatus: AssetStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteAssetResponse:
     Optional[str] assetId
     AssetStatus assetStatus
@@ -1944,8 +2000,9 @@ struct DeleteComputationModelRequest:
     str computationModelId
     Optional[str] clientToken
 
-# no @derive(Json): member(s) computationModelStatus: ComputationModelStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) computationModelStatus: ComputationModelStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteComputationModelResponse:
     ComputationModelStatus computationModelStatus
 
@@ -1973,8 +2030,9 @@ struct DeleteDatasetRequest:
     Optional[str] workspaceName
     Optional[str] clientToken
 
-# no @derive(Json): member(s) datasetStatus: DatasetStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) datasetStatus: DatasetStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DeleteDatasetResponse:
     DatasetStatus datasetStatus
 
@@ -2097,8 +2155,9 @@ struct DescribeAssetCompositeModelRequest:
     str assetId
     str assetCompositeModelId
 
-# no @derive(Json): member(s) assetCompositeModelPath: list[AssetCompositeModelPathSegment], assetCompositeModelProperties: list[AssetProperty], assetCompositeModelSummaries: list[AssetCompositeModelSummary], actionDefinitions: list[ActionDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetCompositeModelPath: list[AssetCompositeModelPathSegment], assetCompositeModelProperties: list[AssetProperty], assetCompositeModelSummaries: list[AssetCompositeModelSummary], actionDefinitions: list[ActionDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAssetCompositeModelResponse:
     str assetId
     str assetCompositeModelId
@@ -2118,8 +2177,9 @@ struct DescribeAssetModelCompositeModelRequest:
     str assetModelCompositeModelId
     Optional[str] assetModelVersion
 
-# no @derive(Json): member(s) assetModelCompositeModelPath: list[AssetModelCompositeModelPathSegment], assetModelCompositeModelProperties: list[AssetModelProperty], compositionDetails: CompositionDetails, assetModelCompositeModelSummaries: list[AssetModelCompositeModelSummary], actionDefinitions: list[ActionDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetModelCompositeModelPath: list[AssetModelCompositeModelPathSegment], assetModelCompositeModelProperties: list[AssetModelProperty], compositionDetails: CompositionDetails, assetModelCompositeModelSummaries: list[AssetModelCompositeModelSummary], actionDefinitions: list[ActionDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAssetModelCompositeModelResponse:
     str assetModelId
     str assetModelCompositeModelId
@@ -2139,8 +2199,9 @@ struct DescribeAssetModelInterfaceRelationshipRequest:
     str assetModelId
     str interfaceAssetModelId
 
-# no @derive(Json): member(s) propertyMappings: list[PropertyMapping], hierarchyMappings: list[HierarchyMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) propertyMappings: list[PropertyMapping], hierarchyMappings: list[HierarchyMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAssetModelInterfaceRelationshipResponse:
     str assetModelId
     str interfaceAssetModelId
@@ -2154,8 +2215,9 @@ struct DescribeAssetModelRequest:
     Optional[bool] excludeProperties
     Optional[str] assetModelVersion
 
-# no @derive(Json): member(s) assetModelProperties: list[AssetModelProperty], assetModelHierarchies: list[AssetModelHierarchy], assetModelCompositeModels: list[AssetModelCompositeModel], assetModelCompositeModelSummaries: list[AssetModelCompositeModelSummary], assetModelStatus: AssetModelStatus, interfaceDetails: list[InterfaceRelationship] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetModelProperties: list[AssetModelProperty], assetModelHierarchies: list[AssetModelHierarchy], assetModelCompositeModels: list[AssetModelCompositeModel], assetModelCompositeModelSummaries: list[AssetModelCompositeModelSummary], assetModelStatus: AssetModelStatus, interfaceDetails: list[InterfaceRelationship] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAssetModelResponse:
     str assetModelId
     Optional[str] assetModelExternalId
@@ -2180,8 +2242,9 @@ struct DescribeAssetPropertyRequest:
     str assetId
     str propertyId
 
-# no @derive(Json): member(s) assetProperty: Property, compositeModel: CompositeModelProperty not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetProperty: Property, compositeModel: CompositeModelProperty not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAssetPropertyResponse:
     str assetId
     Optional[str] assetExternalId
@@ -2196,8 +2259,9 @@ struct DescribeAssetRequest:
     str assetId
     Optional[bool] excludeProperties
 
-# no @derive(Json): member(s) assetProperties: list[AssetProperty], assetHierarchies: list[AssetHierarchy], assetCompositeModels: list[AssetCompositeModel], assetStatus: AssetStatus, assetCompositeModelSummaries: list[AssetCompositeModelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetProperties: list[AssetProperty], assetHierarchies: list[AssetHierarchy], assetCompositeModels: list[AssetCompositeModel], assetStatus: AssetStatus, assetCompositeModelSummaries: list[AssetCompositeModelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeAssetResponse:
     str assetId
     Optional[str] assetExternalId
@@ -2219,8 +2283,9 @@ struct DescribeBulkImportJobRequest:
     str jobId
     Optional[str] workspaceName
 
-# no @derive(Json): member(s) files: list[File], jobConfiguration: JobConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) files: list[File], jobConfiguration: JobConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeBulkImportJobResponse:
     str jobId
     str jobName
@@ -2243,8 +2308,9 @@ struct DescribeComputationModelExecutionSummaryRequest:
     Optional[str] resolveToResourceType
     Optional[str] resolveToResourceId
 
-# no @derive(Json): member(s) computationModelExecutionSummary: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) computationModelExecutionSummary: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeComputationModelExecutionSummaryResponse:
     str computationModelId
     Optional[ResolveTo] resolveTo
@@ -2256,8 +2322,9 @@ struct DescribeComputationModelRequest:
     str computationModelId
     Optional[str] computationModelVersion
 
-# no @derive(Json): member(s) computationModelDataBinding: dict[str, ComputationModelDataBindingValue], computationModelStatus: ComputationModelStatus, actionDefinitions: list[ActionDefinition] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) computationModelDataBinding: dict[str, ComputationModelDataBindingValue], computationModelStatus: ComputationModelStatus, actionDefinitions: list[ActionDefinition] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeComputationModelResponse:
     str computationModelId
     str computationModelArn
@@ -2293,8 +2360,9 @@ struct DescribeDatasetExportJobRequest:
     str workspaceName
     str jobId
 
-# no @derive(Json): member(s) input: ProcessingInput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) input: ProcessingInput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDatasetExportJobResponse:
     str jobId
     str workspaceName
@@ -2312,8 +2380,9 @@ struct DescribeDatasetRequest:
     Optional[str] workspaceName
     Optional[str] datasetVersion
 
-# no @derive(Json): member(s) metadata: dict[str, str], datasetStatus: DatasetStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadata: dict[str, str], datasetStatus: DatasetStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeDatasetResponse:
     str datasetId
     str datasetArn
@@ -2366,8 +2435,9 @@ struct DescribeEnrichmentJobResponse:
 struct DescribeExecutionRequest:
     str executionId
 
-# no @derive(Json): member(s) executionResult: dict[str, str], executionDetails: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) executionResult: dict[str, str], executionDetails: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeExecutionResponse:
     str executionId
     Optional[str] actionType
@@ -2399,8 +2469,9 @@ struct DescribeGatewayCapabilityConfigurationResponse:
 struct DescribeGatewayRequest:
     str gatewayId
 
-# no @derive(Json): member(s) gatewayCapabilitySummaries: list[GatewayCapabilitySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) gatewayCapabilitySummaries: list[GatewayCapabilitySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeGatewayResponse:
     str gatewayId
     str gatewayName
@@ -2429,8 +2500,9 @@ struct DescribePipelineExecutionRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) status: PipelineExecutionStatus, requestEnvironmentVariables: ExecutionEnvironmentVariables, requestMountOverrides: MountOverrides, computeNodeExecutionDetails: list[ComputeNodeExecutionDetails] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) status: PipelineExecutionStatus, requestEnvironmentVariables: ExecutionEnvironmentVariables, requestMountOverrides: MountOverrides, computeNodeExecutionDetails: list[ComputeNodeExecutionDetails] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePipelineExecutionResponse:
     str pipelineExecutionId
     str pipelineName
@@ -2452,8 +2524,9 @@ struct DescribePipelineRequest:
     str pipelineName
     Optional[str] pipelineVersion
 
-# no @derive(Json): member(s) environmentVariables: dict[str, str], computations: list[ComputeNode] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) environmentVariables: dict[str, str], computations: list[ComputeNode] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePipelineResponse:
     str pipelineName
     str workspaceName
@@ -2471,8 +2544,9 @@ struct DescribePipelineResponse:
 struct DescribePortalRequest:
     str portalId
 
-# no @derive(Json): member(s) portalTypeConfiguration: dict[str, PortalTypeEntry] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) portalTypeConfiguration: dict[str, PortalTypeEntry] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribePortalResponse:
     str portalId
     str portalArn
@@ -2564,8 +2638,9 @@ struct DescribeTaskRequest:
     str taskName
     Optional[str] taskVersion
 
-# no @derive(Json): member(s) taskConfiguration: TaskConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskConfiguration: TaskConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct DescribeTaskResponse:
     str workspaceName
     str taskName
@@ -2672,8 +2747,9 @@ struct EphemeralStorageConfiguration:
     StorageClass storageClass
     int64 storageSizeInGiB
 
-# no @derive(Json): member(s) details: list[DetailedError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) details: list[DetailedError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ErrorDetails:
     ErrorCode code
     str message
@@ -2712,15 +2788,17 @@ struct ExecuteQueryRequest:
     Optional[int64] maxResults
     Optional[str] clientToken
 
-# no @derive(Json): member(s) columns: list[ColumnInfo], rows: list[Row] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) columns: list[ColumnInfo], rows: list[Row] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecuteQueryResponse:
     Optional[list[ColumnInfo]] columns
     Optional[list[Row]] rows
     Optional[str] nextToken
 
-# no @derive(Json): member(s) global: dict[str, str], computeNodes: dict[str, dict[str, str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) global: dict[str, str], computeNodes: dict[str, dict[str, str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExecutionEnvironmentVariables:
     Optional[dict[str, str]] global
     Optional[dict[str, dict[str, str]]] computeNodes
@@ -2753,8 +2831,9 @@ struct ExportJobSummary:
     Optional[DateTime] completedAt
     str destinationS3Uri
 
-# no @derive(Json): member(s) value: VariableValue not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) value: VariableValue not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ExpressionVariable:
     str name
     VariableValue value
@@ -2785,8 +2864,9 @@ struct FailedDataSegmentDisassociation:
     DataSegmentErrorCode errorCode
     str errorMessage
 
-# no @derive(Json): member(s) fileFormat: FileFormat not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fileFormat: FileFormat not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct File:
     str bucket
     str key
@@ -2795,8 +2875,9 @@ struct File:
     Optional[TimeInNanos] startTime
     Optional[FileFormat] fileFormat
 
-# no @derive(Json): member(s) csv: Csv not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) csv: Csv not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct FileFormat:
     Optional[Csv] csv
     Optional[Parquet] parquet
@@ -2825,8 +2906,9 @@ struct GatewayPlatform:
     Optional[GreengrassV2] greengrassV2
     Optional[SiemensIE] siemensIE
 
-# no @derive(Json): member(s) gatewayCapabilitySummaries: list[GatewayCapabilitySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) gatewayCapabilitySummaries: list[GatewayCapabilitySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GatewaySummary:
     str gatewayId
     str gatewayName
@@ -2852,8 +2934,9 @@ struct GetAssetPropertyAggregatesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) aggregatedValues: list[AggregatedValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) aggregatedValues: list[AggregatedValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAssetPropertyAggregatesResponse:
     list[AggregatedValue] aggregatedValues
     Optional[str] nextToken
@@ -2872,8 +2955,9 @@ struct GetAssetPropertyValueHistoryRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) assetPropertyValueHistory: list[AssetPropertyValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetPropertyValueHistory: list[AssetPropertyValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetAssetPropertyValueHistoryResponse:
     list[AssetPropertyValue] assetPropertyValueHistory
     Optional[str] nextToken
@@ -2926,8 +3010,9 @@ struct GetInterpolatedAssetPropertyValuesRequest:
     str type
     Optional[int64] intervalWindowInSeconds
 
-# no @derive(Json): member(s) interpolatedAssetPropertyValues: list[InterpolatedAssetPropertyValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) interpolatedAssetPropertyValues: list[InterpolatedAssetPropertyValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetInterpolatedAssetPropertyValuesResponse:
     list[InterpolatedAssetPropertyValue] interpolatedAssetPropertyValues
     Optional[str] nextToken
@@ -2940,8 +3025,9 @@ struct GetQueryResultsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) columnInfo: list[ColumnInformation], rows: list[list[str]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) columnInfo: list[ColumnInformation], rows: list[list[str]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetQueryResultsResponse:
     Optional[list[ColumnInformation]] columnInfo
     Optional[list[list[str]]] rows
@@ -2955,8 +3041,9 @@ struct GetSearchResultsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) searchResults: list[SearchResult] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) searchResults: list[SearchResult] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetSearchResultsResponse:
     list[SearchResult] searchResults
     Optional[str] nextToken
@@ -3035,8 +3122,9 @@ struct InterpolatedAssetPropertyValue:
 struct InvalidRequestException:
     str message
 
-# no @derive(Json): member(s) citations: list[Citation] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) citations: list[Citation] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvocationOutput:
     Optional[str] message
     Optional[list[Citation]] citations
@@ -3048,14 +3136,16 @@ struct InvokeAssistantRequest:
     str message
     Optional[bool] enableTrace
 
-# no @derive(Json): member(s) body: ResponseStream not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) body: ResponseStream not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct InvokeAssistantResponse:
     ResponseStream body
     str conversationId
 
-# no @derive(Json): member(s) fileFormat: FileFormat not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) fileFormat: FileFormat not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct JobConfiguration:
     Optional[FileFormat] fileFormat
 
@@ -3087,8 +3177,9 @@ struct ListAccessPoliciesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) accessPolicySummaries: list[AccessPolicySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accessPolicySummaries: list[AccessPolicySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAccessPoliciesResponse:
     list[AccessPolicySummary] accessPolicySummaries
     Optional[str] nextToken
@@ -3104,8 +3195,9 @@ struct ListActionsRequest:
     Optional[str] resolveToResourceType
     Optional[str] resolveToResourceId
 
-# no @derive(Json): member(s) actionSummaries: list[ActionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) actionSummaries: list[ActionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListActionsResponse:
     list[ActionSummary] actionSummaries
     str nextToken
@@ -3116,8 +3208,9 @@ struct ListApplicationsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) applications: list[ApplicationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) applications: list[ApplicationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListApplicationsResponse:
     Optional[str] nextToken
     list[ApplicationSummary] applications
@@ -3130,8 +3223,9 @@ struct ListAssetModelCompositeModelsRequest:
     Optional[int64] maxResults
     Optional[str] assetModelVersion
 
-# no @derive(Json): member(s) assetModelCompositeModelSummaries: list[AssetModelCompositeModelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetModelCompositeModelSummaries: list[AssetModelCompositeModelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssetModelCompositeModelsResponse:
     list[AssetModelCompositeModelSummary] assetModelCompositeModelSummaries
     Optional[str] nextToken
@@ -3146,8 +3240,9 @@ struct ListAssetModelPropertiesRequest:
     Optional[str] filter
     Optional[str] assetModelVersion
 
-# no @derive(Json): member(s) assetModelPropertySummaries: list[AssetModelPropertySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetModelPropertySummaries: list[AssetModelPropertySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssetModelPropertiesResponse:
     list[AssetModelPropertySummary] assetModelPropertySummaries
     Optional[str] nextToken
@@ -3160,8 +3255,9 @@ struct ListAssetModelsRequest:
     Optional[int64] maxResults
     Optional[str] assetModelVersion
 
-# no @derive(Json): member(s) assetModelSummaries: list[AssetModelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetModelSummaries: list[AssetModelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssetModelsResponse:
     list[AssetModelSummary] assetModelSummaries
     Optional[str] nextToken
@@ -3175,8 +3271,9 @@ struct ListAssetPropertiesRequest:
     # wire string of the ListAssetPropertiesFilter enum (querystring binding)
     Optional[str] filter
 
-# no @derive(Json): member(s) assetPropertySummaries: list[AssetPropertySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetPropertySummaries: list[AssetPropertySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssetPropertiesResponse:
     list[AssetPropertySummary] assetPropertySummaries
     Optional[str] nextToken
@@ -3189,8 +3286,9 @@ struct ListAssetRelationshipsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) assetRelationshipSummaries: list[AssetRelationshipSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetRelationshipSummaries: list[AssetRelationshipSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssetRelationshipsResponse:
     list[AssetRelationshipSummary] assetRelationshipSummaries
     Optional[str] nextToken
@@ -3204,8 +3302,9 @@ struct ListAssetsRequest:
     # wire string of the ListAssetsFilter enum (querystring binding)
     Optional[str] filter
 
-# no @derive(Json): member(s) assetSummaries: list[AssetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetSummaries: list[AssetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssetsResponse:
     list[AssetSummary] assetSummaries
     Optional[str] nextToken
@@ -3220,8 +3319,9 @@ struct ListAssociatedAssetsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) assetSummaries: list[AssociatedAssetsSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetSummaries: list[AssociatedAssetsSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListAssociatedAssetsResponse:
     list[AssociatedAssetsSummary] assetSummaries
     Optional[str] nextToken
@@ -3235,8 +3335,9 @@ struct ListBulkImportJobsRequest:
     Optional[str] filter
     Optional[str] workspaceName
 
-# no @derive(Json): member(s) jobSummaries: list[JobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobSummaries: list[JobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListBulkImportJobsResponse:
     list[JobSummary] jobSummaries
     Optional[str] nextToken
@@ -3248,8 +3349,9 @@ struct ListCompositionRelationshipsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) compositionRelationshipSummaries: list[CompositionRelationshipSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) compositionRelationshipSummaries: list[CompositionRelationshipSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListCompositionRelationshipsResponse:
     list[CompositionRelationshipSummary] compositionRelationshipSummaries
     Optional[str] nextToken
@@ -3261,8 +3363,9 @@ struct ListComputationModelDataBindingUsagesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) dataBindingUsageSummaries: list[ComputationModelDataBindingUsageSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataBindingUsageSummaries: list[ComputationModelDataBindingUsageSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListComputationModelDataBindingUsagesResponse:
     list[ComputationModelDataBindingUsageSummary] dataBindingUsageSummaries
     Optional[str] nextToken
@@ -3274,8 +3377,9 @@ struct ListComputationModelResolveToResourcesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) computationModelResolveToResourceSummaries: list[ComputationModelResolveToResourceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) computationModelResolveToResourceSummaries: list[ComputationModelResolveToResourceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListComputationModelResolveToResourcesResponse:
     list[ComputationModelResolveToResourceSummary] computationModelResolveToResourceSummaries
     Optional[str] nextToken
@@ -3287,8 +3391,9 @@ struct ListComputationModelsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) computationModelSummaries: list[ComputationModelSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) computationModelSummaries: list[ComputationModelSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListComputationModelsResponse:
     list[ComputationModelSummary] computationModelSummaries
     Optional[str] nextToken
@@ -3300,8 +3405,9 @@ struct ListDashboardsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) dashboardSummaries: list[DashboardSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dashboardSummaries: list[DashboardSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDashboardsResponse:
     list[DashboardSummary] dashboardSummaries
     Optional[str] nextToken
@@ -3314,8 +3420,9 @@ struct ListDatasetDataSegmentRelationshipsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) dataSegmentRelationshipSummaries: list[DataSegmentRelationshipSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataSegmentRelationshipSummaries: list[DataSegmentRelationshipSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatasetDataSegmentRelationshipsResponse:
     list[DataSegmentRelationshipSummary] dataSegmentRelationshipSummaries
     Optional[str] nextToken
@@ -3329,8 +3436,9 @@ struct ListDatasetDataSegmentsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) dataSegments: list[DataSegmentSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) dataSegments: list[DataSegmentSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatasetDataSegmentsResponse:
     list[DataSegmentSummary] dataSegments
     Optional[str] nextToken
@@ -3344,8 +3452,9 @@ struct ListDatasetExportJobsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) jobs: list[ExportJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobs: list[ExportJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatasetExportJobsResponse:
     list[ExportJobSummary] jobs
     Optional[str] nextToken
@@ -3361,8 +3470,9 @@ struct ListDatasetsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) datasetSummaries: list[DatasetSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) datasetSummaries: list[DatasetSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListDatasetsResponse:
     list[DatasetSummary] datasetSummaries
     Optional[str] nextToken
@@ -3383,8 +3493,9 @@ struct ListEnrichmentJobsRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) jobs: list[EnrichmentJobSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) jobs: list[EnrichmentJobSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListEnrichmentJobsResponse:
     list[EnrichmentJobSummary] jobs
     Optional[str] nextToken
@@ -3401,8 +3512,9 @@ struct ListExecutionsRequest:
     Optional[int64] maxResults
     Optional[str] actionType
 
-# no @derive(Json): member(s) executionSummaries: list[ExecutionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) executionSummaries: list[ExecutionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListExecutionsResponse:
     list[ExecutionSummary] executionSummaries
     Optional[str] nextToken
@@ -3413,8 +3525,9 @@ struct ListGatewaysRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) gatewaySummaries: list[GatewaySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) gatewaySummaries: list[GatewaySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListGatewaysResponse:
     list[GatewaySummary] gatewaySummaries
     Optional[str] nextToken
@@ -3426,8 +3539,9 @@ struct ListInterfaceRelationshipsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) interfaceRelationshipSummaries: list[InterfaceRelationshipSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) interfaceRelationshipSummaries: list[InterfaceRelationshipSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListInterfaceRelationshipsResponse:
     list[InterfaceRelationshipSummary] interfaceRelationshipSummaries
     Optional[str] nextToken
@@ -3446,8 +3560,9 @@ struct ListPipelineExecutionsRequest:
     Optional[DateTime] endTimeAfter
     Optional[DateTime] endTimeBefore
 
-# no @derive(Json): member(s) pipelineExecutionSummaries: list[PipelineExecutionSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pipelineExecutionSummaries: list[PipelineExecutionSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPipelineExecutionsResponse:
     list[PipelineExecutionSummary] pipelineExecutionSummaries
     Optional[str] nextToken
@@ -3459,8 +3574,9 @@ struct ListPipelinesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) pipelineSummaries: list[PipelineSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pipelineSummaries: list[PipelineSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPipelinesResponse:
     list[PipelineSummary] pipelineSummaries
     Optional[str] nextToken
@@ -3471,8 +3587,9 @@ struct ListPortalsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) portalSummaries: list[PortalSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) portalSummaries: list[PortalSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListPortalsResponse:
     Optional[list[PortalSummary]] portalSummaries
     Optional[str] nextToken
@@ -3484,8 +3601,9 @@ struct ListProjectAssetsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) assetIds: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetIds: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProjectAssetsResponse:
     list[str] assetIds
     Optional[str] nextToken
@@ -3497,8 +3615,9 @@ struct ListProjectsRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) projectSummaries: list[ProjectSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) projectSummaries: list[ProjectSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListProjectsResponse:
     list[ProjectSummary] projectSummaries
     Optional[str] nextToken
@@ -3511,14 +3630,16 @@ struct ListQueriesRequest:
     Optional[int64] maxResults
     Optional[str] nextToken
 
-# no @derive(Json): member(s) queries: list[QuerySummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) queries: list[QuerySummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListQueriesResponse:
     list[QuerySummary] queries
     Optional[str] nextToken
 
-# no @derive(Json): member(s) statusFilter: list[SearchStatus], groupIdFilter: list[str], searchTypeFilter: list[SearchType] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) statusFilter: list[SearchStatus], groupIdFilter: list[str], searchTypeFilter: list[SearchType] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSearchesFilters:
     Optional[list[SearchStatus]] statusFilter
     Optional[DateTime] startedAfter
@@ -3534,8 +3655,9 @@ struct ListSearchesRequest:
     Optional[str] nextToken
     Optional[ListSearchesFilters] listSearchesFilters
 
-# no @derive(Json): member(s) searchSummaries: list[SearchSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) searchSummaries: list[SearchSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListSearchesResponse:
     list[SearchSummary] searchSummaries
     Optional[str] nextToken
@@ -3545,8 +3667,9 @@ struct ListSearchesResponse:
 struct ListTagsForResourceRequest:
     str resourceArn
 
-# no @derive(Json): member(s) tags: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) tags: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTagsForResourceResponse:
     Optional[dict[str, str]] tags
 
@@ -3557,8 +3680,9 @@ struct ListTasksRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) taskSummaries: list[TaskSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) taskSummaries: list[TaskSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTasksResponse:
     list[TaskSummary] taskSummaries
     Optional[str] nextToken
@@ -3574,8 +3698,9 @@ struct ListTimeSeriesRequest:
     Optional[str] timeSeriesType
     Optional[str] workspaceName
 
-# no @derive(Json): member(s) TimeSeriesSummaries: list[TimeSeriesSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) TimeSeriesSummaries: list[TimeSeriesSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListTimeSeriesResponse:
     list[TimeSeriesSummary] TimeSeriesSummaries
     Optional[str] nextToken
@@ -3587,8 +3712,9 @@ struct ListWorkspacesRequest:
     Optional[str] nextToken
     Optional[int64] maxResults
 
-# no @derive(Json): member(s) workspaceSummaries: list[WorkspaceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) workspaceSummaries: list[WorkspaceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListWorkspacesResponse:
     list[WorkspaceSummary] workspaceSummaries
     Optional[str] nextToken
@@ -3613,8 +3739,9 @@ struct Measurement:
 struct MeasurementProcessingConfig:
     ForwardingConfig forwardingConfig
 
-# no @derive(Json): member(s) variables: list[ExpressionVariable] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) variables: list[ExpressionVariable] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Metric:
     Optional[str] expression
     Optional[list[ExpressionVariable]] variables
@@ -3641,8 +3768,9 @@ struct Mount:
     MountSource source
     str storageType
 
-# no @derive(Json): member(s) computeNodes: dict[str, list[Mount]] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) computeNodes: dict[str, list[Mount]] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct MountOverrides:
     dict[str, list[Mount]] computeNodes
 
@@ -3664,21 +3792,24 @@ struct Parquet:
     # empty shape in the model; reserved field keeps it valid (sends nothing)
     Optional[str] reserved
 
-# no @derive(Json): member(s) details: list[DetailedPipelineError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) details: list[DetailedPipelineError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipelineExecutionStateDetails:
     Optional[PipelineErrorCode] code
     str message
     Optional[list[DetailedPipelineError]] details
 
-# no @derive(Json): member(s) stateDetails: PipelineExecutionStateDetails not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) stateDetails: PipelineExecutionStateDetails not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipelineExecutionStatus:
     PipelineExecutionState state
     Optional[PipelineExecutionStateDetails] stateDetails
 
-# no @derive(Json): member(s) status: PipelineExecutionStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) status: PipelineExecutionStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PipelineExecutionSummary:
     str pipelineExecutionId
     str pipelineVersion
@@ -3718,8 +3849,9 @@ struct PortalSummary:
     PortalStatus status
     Optional[PortalType] portalType
 
-# no @derive(Json): member(s) portalTools: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) portalTools: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PortalTypeEntry:
     Optional[list[str]] portalTools
 
@@ -3729,8 +3861,9 @@ struct PreconditionFailedException:
     str resourceId
     str resourceArn
 
-# no @derive(Json): member(s) timeseries: list[TimeseriesItem], dataset: DatasetItem not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) timeseries: list[TimeseriesItem], dataset: DatasetItem not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ProcessingInput:
     Optional[list[TimeseriesItem]] timeseries
     Optional[DatasetItem] dataset
@@ -3747,8 +3880,9 @@ struct ProjectSummary:
     Optional[DateTime] creationDate
     Optional[DateTime] lastUpdateDate
 
-# no @derive(Json): member(s) type: PropertyType, path: list[AssetPropertyPathSegment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) type: PropertyType, path: list[AssetPropertyPathSegment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Property:
     str id
     Optional[str] externalId
@@ -3765,8 +3899,9 @@ struct PropertyMapping:
     str assetModelPropertyId
     str interfaceAssetModelPropertyId
 
-# no @derive(Json): member(s) overrides: list[PropertyMapping] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) overrides: list[PropertyMapping] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PropertyMappingConfiguration:
     Optional[bool] matchByPropertyName
     Optional[bool] createMissingProperty
@@ -3777,8 +3912,9 @@ struct PropertyNotification:
     str topic
     PropertyNotificationState state
 
-# no @derive(Json): member(s) transform: Transform, metric: Metric not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) transform: Transform, metric: Metric not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PropertyType:
     Optional[Attribute] attribute
     Optional[Measurement] measurement
@@ -3797,16 +3933,18 @@ struct PutAssetModelInterfaceRelationshipRequest:
     PropertyMappingConfiguration propertyMappingConfiguration
     Optional[str] clientToken
 
-# no @derive(Json): member(s) assetModelStatus: AssetModelStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetModelStatus: AssetModelStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutAssetModelInterfaceRelationshipResponse:
     str assetModelId
     str interfaceAssetModelId
     str assetModelArn
     AssetModelStatus assetModelStatus
 
-# no @derive(Json): member(s) propertyValues: list[AssetPropertyValue] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) propertyValues: list[AssetPropertyValue] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct PutAssetPropertyValueEntry:
     str entryId
     Optional[str] assetId
@@ -3909,8 +4047,9 @@ struct ResourceStatus:
     Optional[ResourceError] error
     Optional[ResourceState] state
 
-# no @derive(Json): member(s) output: InvocationOutput not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) output: InvocationOutput not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ResponseStream:
     Optional[Trace] trace
     Optional[InvocationOutput] output
@@ -3927,8 +4066,9 @@ struct RetentionPeriod:
     Optional[int64] numberOfDays
     Optional[bool] unlimited
 
-# no @derive(Json): member(s) data: list[Datum] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) data: list[Datum] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Row:
     list[Datum] data
 
@@ -3937,8 +4077,9 @@ struct S3AccessPointSource:
     str accessPointArn
     Optional[str] prefix
 
-# no @derive(Json): member(s) timeSeriesIds: list[str], datasetIds: list[str], timeIntervals: list[TimeInterval] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) timeSeriesIds: list[str], datasetIds: list[str], timeIntervals: list[TimeInterval] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct SearchFilters:
     Optional[list[str]] timeSeriesIds
     Optional[list[str]] datasetIds
@@ -4047,8 +4188,9 @@ struct TargetResource:
     Optional[str] assetId
     Optional[str] computationModelId
 
-# no @derive(Json): member(s) containerTaskConfiguration: ContainerTaskConfiguration not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) containerTaskConfiguration: ContainerTaskConfiguration not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct TaskConfiguration:
     Optional[ContainerTaskConfiguration] containerTaskConfiguration
 
@@ -4104,8 +4246,9 @@ struct TooManyTagsException:
 struct Trace:
     Optional[str] text
 
-# no @derive(Json): member(s) variables: list[ExpressionVariable] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) variables: list[ExpressionVariable] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Transform:
     str expression
     list[ExpressionVariable] variables
@@ -4170,8 +4313,9 @@ struct UpdateAssetModelCompositeModelRequest:
     # wire string of the AssetModelVersionType enum (header binding)
     Optional[str] matchForVersionType
 
-# no @derive(Json): member(s) assetModelCompositeModelPath: list[AssetModelCompositeModelPathSegment], assetModelStatus: AssetModelStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetModelCompositeModelPath: list[AssetModelCompositeModelPathSegment], assetModelStatus: AssetModelStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAssetModelCompositeModelResponse:
     list[AssetModelCompositeModelPathSegment] assetModelCompositeModelPath
     AssetModelStatus assetModelStatus
@@ -4193,8 +4337,9 @@ struct UpdateAssetModelRequest:
     # wire string of the AssetModelVersionType enum (header binding)
     Optional[str] matchForVersionType
 
-# no @derive(Json): member(s) assetModelStatus: AssetModelStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetModelStatus: AssetModelStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAssetModelResponse:
     Optional[str] assetModelId
     AssetModelStatus assetModelStatus
@@ -4218,8 +4363,9 @@ struct UpdateAssetRequest:
     Optional[str] clientToken
     Optional[str] assetDescription
 
-# no @derive(Json): member(s) assetStatus: AssetStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) assetStatus: AssetStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateAssetResponse:
     Optional[str] assetId
     AssetStatus assetStatus
@@ -4234,8 +4380,9 @@ struct UpdateComputationModelRequest:
     dict[str, ComputationModelDataBindingValue] computationModelDataBinding
     Optional[str] clientToken
 
-# no @derive(Json): member(s) computationModelStatus: ComputationModelStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) computationModelStatus: ComputationModelStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateComputationModelResponse:
     ComputationModelStatus computationModelStatus
 
@@ -4265,8 +4412,9 @@ struct UpdateDatasetRequest:
     DatasetSource datasetSource
     Optional[str] clientToken
 
-# no @derive(Json): member(s) datasetStatus: DatasetStatus not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) datasetStatus: DatasetStatus not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct UpdateDatasetResponse:
     Optional[str] datasetId
     Optional[str] datasetArn
@@ -4369,8 +4517,9 @@ struct UserIdentity:
 struct ValidationException:
     Optional[str] message
 
-# no @derive(Json): member(s) propertyPath: list[AssetModelPropertyPathSegment] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) propertyPath: list[AssetModelPropertyPathSegment] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct VariableValue:
     Optional[str] propertyId
     Optional[str] hierarchyId
@@ -4476,31 +4625,6 @@ def iotsitewise_error_from_code(str code) -> IoTSiteWiseError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchAssociateDataSegmentsToDataset (document member `associateDataSegmentEntries: list[AssociateDataSegmentEntry]` is not serializable by derive)
-#   BatchAssociateProjectAssets (document member `assetIds: list[str]` is not serializable by derive)
-#   BatchDeleteDatasetDataSegments (document member `deleteDataSegmentEntries: list[DeleteDataSegmentEntry]` is not serializable by derive)
-#   BatchDisassociateDataSegmentsFromDataset (document member `disassociateDataSegmentEntries: list[DisassociateDataSegmentEntry]` is not serializable by derive)
-#   BatchDisassociateProjectAssets (document member `assetIds: list[str]` is not serializable by derive)
-#   BatchGetAssetPropertyAggregates (document member `entries: list[BatchGetAssetPropertyAggregatesEntry]` is not serializable by derive)
-#   BatchGetAssetPropertyValue (document member `entries: list[BatchGetAssetPropertyValueEntry]` is not serializable by derive)
-#   BatchGetAssetPropertyValueHistory (document member `entries: list[BatchGetAssetPropertyValueHistoryEntry]` is not serializable by derive)
-#   BatchPutAssetPropertyValue (document member `entries: list[PutAssetPropertyValueEntry]` is not serializable by derive)
-#   CreateAccessPolicy (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateApplication (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateAsset (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateAssetModel (document member `assetModelProperties: list[AssetModelPropertyDefinition]` is not serializable by derive)
-#   CreateAssetModelCompositeModel (document member `assetModelCompositeModelProperties: list[AssetModelPropertyDefinition]` is not serializable by derive)
-#   CreateBulkImportJob (document member `files: list[File]` is not serializable by derive)
-#   CreateComputationModel (document member `computationModelDataBinding: dict[str, ComputationModelDataBindingValue]` is not serializable by derive)
-#   CreateDashboard (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateDataset (document member `metadata: dict[str, str]` is not serializable by derive)
-#   CreateDatasetExportJob (document member `input: ProcessingInput` is not serializable by derive)
-#   CreateGateway (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreatePipeline (document member `environmentVariables: dict[str, str]` is not serializable by derive)
-#   CreatePortal (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateProject (document member `tags: dict[str, str]` is not serializable by derive)
-#   CreateTask (document member `taskConfiguration: TaskConfiguration` is not serializable by derive)
-#   CreateWorkspace (document member `tags: dict[str, str]` is not serializable by derive)
 #   DescribeAsset (httpQuery `excludeProperties` has unsupported type bool)
 #   DescribeAssetModel (httpQuery `excludeProperties` has unsupported type bool)
 #   GetAssetPropertyAggregates (httpQuery `aggregateTypes` has unsupported type list[AggregateType])
@@ -4508,19 +4632,7 @@ def iotsitewise_error_from_code(str code) -> IoTSiteWiseError:
 #   ListAssetModels (httpQuery `assetModelTypes` has unsupported type list[AssetModelType])
 #   ListEnrichmentJobs (httpQuery `startDate` has unsupported type DateTime)
 #   ListPipelineExecutions (httpQuery `startTimeAfter` has unsupported type DateTime)
-#   ListSearches (document member `listSearchesFilters: ListSearchesFilters` is not serializable by derive)
-#   PutAssetModelInterfaceRelationship (document member `propertyMappingConfiguration: PropertyMappingConfiguration` is not serializable by derive)
-#   StartPipelineExecution (document member `executionEnvironmentVariableOverrides: ExecutionEnvironmentVariables` is not serializable by derive)
-#   StartSearch (document member `searchFilters: SearchFilters` is not serializable by derive)
-#   TagResource (document member `tags: dict[str, str]` is not serializable by derive)
 #   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateAssetModel (document member `assetModelProperties: list[AssetModelProperty]` is not serializable by derive)
-#   UpdateAssetModelCompositeModel (document member `assetModelCompositeModelProperties: list[AssetModelProperty]` is not serializable by derive)
-#   UpdateComputationModel (document member `computationModelDataBinding: dict[str, ComputationModelDataBindingValue]` is not serializable by derive)
-#   UpdateDataset (document member `metadata: dict[str, str]` is not serializable by derive)
-#   UpdatePipeline (document member `environmentVariables: dict[str, str]` is not serializable by derive)
-#   UpdatePortal (document member `portalTypeConfiguration: dict[str, PortalTypeEntry]` is not serializable by derive)
-#   UpdateTask (document member `taskConfiguration: TaskConfiguration` is not serializable by derive)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -4529,7 +4641,6 @@ def iotsitewise_error_from_code(str code) -> IoTSiteWiseError:
 #   ListAssetModels (operation not generated)
 #   ListEnrichmentJobs (operation not generated)
 #   ListPipelineExecutions (operation not generated)
-#   ListSearches (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -4701,6 +4812,549 @@ struct UpdateWorkspaceDocument:
     Optional[WorkspaceEncryptionConfiguration] encryptionConfiguration
     Optional[str] clientToken
 
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def iotsitewise_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def iotsitewise_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def iotsitewise_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize AssetModelCompositeModel to a compact JSON object (declaration order).
+def asset_model_composite_model_to_json(AssetModelCompositeModel v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + iotsitewise_json_str(v.name))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + iotsitewise_json_str(u0))
+    parts.append("\"type\":" + iotsitewise_json_str(v.type))
+    if v.properties.is_some():
+        auto u1 = v.properties.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(asset_model_property_to_json(x2))
+        parts.append("\"properties\":" + iotsitewise_json_arr(e2))
+    if v.id.is_some():
+        auto u3 = v.id.unwrap()
+        parts.append("\"id\":" + iotsitewise_json_str(u3))
+    if v.externalId.is_some():
+        auto u4 = v.externalId.unwrap()
+        parts.append("\"externalId\":" + iotsitewise_json_str(u4))
+    return iotsitewise_json_obj(parts)
+
+# Serialize AssetModelCompositeModelDefinition to a compact JSON object (declaration order).
+def asset_model_composite_model_definition_to_json(AssetModelCompositeModelDefinition v) -> str:
+    list[str] parts = []
+    if v.id.is_some():
+        auto u0 = v.id.unwrap()
+        parts.append("\"id\":" + iotsitewise_json_str(u0))
+    if v.externalId.is_some():
+        auto u1 = v.externalId.unwrap()
+        parts.append("\"externalId\":" + iotsitewise_json_str(u1))
+    parts.append("\"name\":" + iotsitewise_json_str(v.name))
+    if v.description.is_some():
+        auto u2 = v.description.unwrap()
+        parts.append("\"description\":" + iotsitewise_json_str(u2))
+    parts.append("\"type\":" + iotsitewise_json_str(v.type))
+    if v.properties.is_some():
+        auto u3 = v.properties.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(asset_model_property_definition_to_json(x4))
+        parts.append("\"properties\":" + iotsitewise_json_arr(e4))
+    return iotsitewise_json_obj(parts)
+
+# Serialize AssetModelProperty to a compact JSON object (declaration order).
+def asset_model_property_to_json(AssetModelProperty v) -> str:
+    list[str] parts = []
+    if v.id.is_some():
+        auto u0 = v.id.unwrap()
+        parts.append("\"id\":" + iotsitewise_json_str(u0))
+    if v.externalId.is_some():
+        auto u1 = v.externalId.unwrap()
+        parts.append("\"externalId\":" + iotsitewise_json_str(u1))
+    parts.append("\"name\":" + iotsitewise_json_str(v.name))
+    parts.append("\"dataType\":" + v.dataType.to_json())
+    if v.dataTypeSpec.is_some():
+        auto u2 = v.dataTypeSpec.unwrap()
+        parts.append("\"dataTypeSpec\":" + iotsitewise_json_str(u2))
+    if v.unit.is_some():
+        auto u3 = v.unit.unwrap()
+        parts.append("\"unit\":" + iotsitewise_json_str(u3))
+    parts.append("\"type\":" + property_type_to_json(v.type))
+    if v.path.is_some():
+        auto u4 = v.path.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"path\":" + iotsitewise_json_arr(e5))
+    return iotsitewise_json_obj(parts)
+
+# Serialize AssetModelPropertyDefinition to a compact JSON object (declaration order).
+def asset_model_property_definition_to_json(AssetModelPropertyDefinition v) -> str:
+    list[str] parts = []
+    if v.id.is_some():
+        auto u0 = v.id.unwrap()
+        parts.append("\"id\":" + iotsitewise_json_str(u0))
+    if v.externalId.is_some():
+        auto u1 = v.externalId.unwrap()
+        parts.append("\"externalId\":" + iotsitewise_json_str(u1))
+    parts.append("\"name\":" + iotsitewise_json_str(v.name))
+    parts.append("\"dataType\":" + v.dataType.to_json())
+    if v.dataTypeSpec.is_some():
+        auto u2 = v.dataTypeSpec.unwrap()
+        parts.append("\"dataTypeSpec\":" + iotsitewise_json_str(u2))
+    if v.unit.is_some():
+        auto u3 = v.unit.unwrap()
+        parts.append("\"unit\":" + iotsitewise_json_str(u3))
+    parts.append("\"type\":" + property_type_to_json(v.type))
+    return iotsitewise_json_obj(parts)
+
+# Serialize BatchGetAssetPropertyAggregatesEntry to a compact JSON object (declaration order).
+def batch_get_asset_property_aggregates_entry_to_json(BatchGetAssetPropertyAggregatesEntry v) -> str:
+    list[str] parts = []
+    parts.append("\"entryId\":" + iotsitewise_json_str(v.entryId))
+    if v.assetId.is_some():
+        auto u0 = v.assetId.unwrap()
+        parts.append("\"assetId\":" + iotsitewise_json_str(u0))
+    if v.propertyId.is_some():
+        auto u1 = v.propertyId.unwrap()
+        parts.append("\"propertyId\":" + iotsitewise_json_str(u1))
+    if v.propertyAlias.is_some():
+        auto u2 = v.propertyAlias.unwrap()
+        parts.append("\"propertyAlias\":" + iotsitewise_json_str(u2))
+    list[str] e3 = []
+    for x3 in v.aggregateTypes:
+        e3.append(x3.to_json())
+    parts.append("\"aggregateTypes\":" + iotsitewise_json_arr(e3))
+    parts.append("\"resolution\":" + iotsitewise_json_str(v.resolution))
+    parts.append("\"startDate\":" + str(datetime.to_timestamp(v.startDate)))
+    parts.append("\"endDate\":" + str(datetime.to_timestamp(v.endDate)))
+    if v.qualities.is_some():
+        auto u4 = v.qualities.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"qualities\":" + iotsitewise_json_arr(e5))
+    if v.timeOrdering.is_some():
+        auto u6 = v.timeOrdering.unwrap()
+        parts.append("\"timeOrdering\":" + u6.to_json())
+    return iotsitewise_json_obj(parts)
+
+# Serialize BatchGetAssetPropertyValueHistoryEntry to a compact JSON object (declaration order).
+def batch_get_asset_property_value_history_entry_to_json(BatchGetAssetPropertyValueHistoryEntry v) -> str:
+    list[str] parts = []
+    parts.append("\"entryId\":" + iotsitewise_json_str(v.entryId))
+    if v.assetId.is_some():
+        auto u0 = v.assetId.unwrap()
+        parts.append("\"assetId\":" + iotsitewise_json_str(u0))
+    if v.propertyId.is_some():
+        auto u1 = v.propertyId.unwrap()
+        parts.append("\"propertyId\":" + iotsitewise_json_str(u1))
+    if v.propertyAlias.is_some():
+        auto u2 = v.propertyAlias.unwrap()
+        parts.append("\"propertyAlias\":" + iotsitewise_json_str(u2))
+    if v.startDate.is_some():
+        auto u3 = v.startDate.unwrap()
+        parts.append("\"startDate\":" + str(datetime.to_timestamp(u3)))
+    if v.endDate.is_some():
+        auto u4 = v.endDate.unwrap()
+        parts.append("\"endDate\":" + str(datetime.to_timestamp(u4)))
+    if v.qualities.is_some():
+        auto u5 = v.qualities.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"qualities\":" + iotsitewise_json_arr(e6))
+    if v.timeOrdering.is_some():
+        auto u7 = v.timeOrdering.unwrap()
+        parts.append("\"timeOrdering\":" + u7.to_json())
+    return iotsitewise_json_obj(parts)
+
+# Serialize ComputationModelDataBindingValue to a compact JSON object (declaration order).
+def computation_model_data_binding_value_to_json(ComputationModelDataBindingValue v) -> str:
+    list[str] parts = []
+    if v.assetModelProperty.is_some():
+        auto u0 = v.assetModelProperty.unwrap()
+        parts.append("\"assetModelProperty\":" + u0.to_json())
+    if v.assetProperty.is_some():
+        auto u1 = v.assetProperty.unwrap()
+        parts.append("\"assetProperty\":" + u1.to_json())
+    if v.list_.is_some():
+        auto u2 = v.list_.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(computation_model_data_binding_value_to_json(x3))
+        parts.append("\"list\":" + iotsitewise_json_arr(e3))
+    return iotsitewise_json_obj(parts)
+
+# Serialize ComputeNode to a compact JSON object (declaration order).
+def compute_node_to_json(ComputeNode v) -> str:
+    list[str] parts = []
+    parts.append("\"computeNodeName\":" + iotsitewise_json_str(v.computeNodeName))
+    parts.append("\"taskName\":" + iotsitewise_json_str(v.taskName))
+    if v.environmentVariables.is_some():
+        auto u0 = v.environmentVariables.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(iotsitewise_json_str(k1) + ":" + iotsitewise_json_str(u0[k1]))
+        parts.append("\"environmentVariables\":" + iotsitewise_json_obj(m1))
+    if v.dependsOn.is_some():
+        auto u2 = v.dependsOn.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(iotsitewise_json_str(x3))
+        parts.append("\"dependsOn\":" + iotsitewise_json_arr(e3))
+    return iotsitewise_json_obj(parts)
+
+# Serialize ContainerTaskConfiguration to a compact JSON object (declaration order).
+def container_task_configuration_to_json(ContainerTaskConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"ecrUri\":" + iotsitewise_json_str(v.ecrUri))
+    parts.append("\"taskExecutionRole\":" + iotsitewise_json_str(v.taskExecutionRole))
+    parts.append("\"processingType\":" + v.processingType.to_json())
+    parts.append("\"processingUnit\":" + v.processingUnit.to_json())
+    if v.ephemeralStorageConfiguration.is_some():
+        auto u0 = v.ephemeralStorageConfiguration.unwrap()
+        parts.append("\"ephemeralStorageConfiguration\":" + u0.to_json())
+    if v.command.is_some():
+        auto u1 = v.command.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(iotsitewise_json_str(x2))
+        parts.append("\"command\":" + iotsitewise_json_arr(e2))
+    if v.timeoutSeconds.is_some():
+        auto u3 = v.timeoutSeconds.unwrap()
+        parts.append("\"timeoutSeconds\":" + str(u3))
+    if v.environmentVariables.is_some():
+        auto u4 = v.environmentVariables.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(iotsitewise_json_str(k5) + ":" + iotsitewise_json_str(u4[k5]))
+        parts.append("\"environmentVariables\":" + iotsitewise_json_obj(m5))
+    if v.mounts.is_some():
+        auto u6 = v.mounts.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"mounts\":" + iotsitewise_json_arr(e7))
+    return iotsitewise_json_obj(parts)
+
+# Serialize Csv to a compact JSON object (declaration order).
+def csv_to_json(Csv v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.columnNames:
+        e0.append(x0.to_json())
+    parts.append("\"columnNames\":" + iotsitewise_json_arr(e0))
+    return iotsitewise_json_obj(parts)
+
+# Serialize DatasetItem to a compact JSON object (declaration order).
+def dataset_item_to_json(DatasetItem v) -> str:
+    list[str] parts = []
+    parts.append("\"datasetId\":" + iotsitewise_json_str(v.datasetId))
+    if v.trimSettings.is_some():
+        auto u0 = v.trimSettings.unwrap()
+        parts.append("\"trimSettings\":" + u0.to_json())
+    if v.exportDataTypes.is_some():
+        auto u1 = v.exportDataTypes.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"exportDataTypes\":" + iotsitewise_json_arr(e2))
+    return iotsitewise_json_obj(parts)
+
+# Serialize ExecutionEnvironmentVariables to a compact JSON object (declaration order).
+def execution_environment_variables_to_json(ExecutionEnvironmentVariables v) -> str:
+    list[str] parts = []
+    if v.global.is_some():
+        auto u0 = v.global.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(iotsitewise_json_str(k1) + ":" + iotsitewise_json_str(u0[k1]))
+        parts.append("\"global\":" + iotsitewise_json_obj(m1))
+    if v.computeNodes.is_some():
+        auto u2 = v.computeNodes.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            list[str] m4 = []
+            for k4 in sorted(u2[k3].keys()):
+                m4.append(iotsitewise_json_str(k4) + ":" + iotsitewise_json_str(u2[k3][k4]))
+            m3.append(iotsitewise_json_str(k3) + ":" + iotsitewise_json_obj(m4))
+        parts.append("\"computeNodes\":" + iotsitewise_json_obj(m3))
+    return iotsitewise_json_obj(parts)
+
+# Serialize ExpressionVariable to a compact JSON object (declaration order).
+def expression_variable_to_json(ExpressionVariable v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + iotsitewise_json_str(v.name))
+    parts.append("\"value\":" + variable_value_to_json(v.value))
+    return iotsitewise_json_obj(parts)
+
+# Serialize File to a compact JSON object (declaration order).
+def file_to_json(File v) -> str:
+    list[str] parts = []
+    parts.append("\"bucket\":" + iotsitewise_json_str(v.bucket))
+    parts.append("\"key\":" + iotsitewise_json_str(v.key))
+    if v.versionId.is_some():
+        auto u0 = v.versionId.unwrap()
+        parts.append("\"versionId\":" + iotsitewise_json_str(u0))
+    if v.alias.is_some():
+        auto u1 = v.alias.unwrap()
+        parts.append("\"alias\":" + iotsitewise_json_str(u1))
+    if v.startTime.is_some():
+        auto u2 = v.startTime.unwrap()
+        parts.append("\"startTime\":" + u2.to_json())
+    if v.fileFormat.is_some():
+        auto u3 = v.fileFormat.unwrap()
+        parts.append("\"fileFormat\":" + file_format_to_json(u3))
+    return iotsitewise_json_obj(parts)
+
+# Serialize FileFormat to a compact JSON object (declaration order).
+def file_format_to_json(FileFormat v) -> str:
+    list[str] parts = []
+    if v.csv.is_some():
+        auto u0 = v.csv.unwrap()
+        parts.append("\"csv\":" + csv_to_json(u0))
+    if v.parquet.is_some():
+        auto u1 = v.parquet.unwrap()
+        parts.append("\"parquet\":" + u1.to_json())
+    if v.mp4.is_some():
+        auto u2 = v.mp4.unwrap()
+        parts.append("\"mp4\":" + u2.to_json())
+    if v.annotation_.is_some():
+        auto u3 = v.annotation_.unwrap()
+        parts.append("\"annotation\":" + u3.to_json())
+    return iotsitewise_json_obj(parts)
+
+# Serialize JobConfiguration to a compact JSON object (declaration order).
+def job_configuration_to_json(JobConfiguration v) -> str:
+    list[str] parts = []
+    if v.fileFormat.is_some():
+        auto u0 = v.fileFormat.unwrap()
+        parts.append("\"fileFormat\":" + file_format_to_json(u0))
+    return iotsitewise_json_obj(parts)
+
+# Serialize ListSearchesFilters to a compact JSON object (declaration order).
+def list_searches_filters_to_json(ListSearchesFilters v) -> str:
+    list[str] parts = []
+    if v.statusFilter.is_some():
+        auto u0 = v.statusFilter.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"statusFilter\":" + iotsitewise_json_arr(e1))
+    if v.startedAfter.is_some():
+        auto u2 = v.startedAfter.unwrap()
+        parts.append("\"startedAfter\":" + str(datetime.to_timestamp(u2)))
+    if v.startedBefore.is_some():
+        auto u3 = v.startedBefore.unwrap()
+        parts.append("\"startedBefore\":" + str(datetime.to_timestamp(u3)))
+    if v.groupIdFilter.is_some():
+        auto u4 = v.groupIdFilter.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(iotsitewise_json_str(x5))
+        parts.append("\"groupIdFilter\":" + iotsitewise_json_arr(e5))
+    if v.searchTypeFilter.is_some():
+        auto u6 = v.searchTypeFilter.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(x7.to_json())
+        parts.append("\"searchTypeFilter\":" + iotsitewise_json_arr(e7))
+    return iotsitewise_json_obj(parts)
+
+# Serialize Metric to a compact JSON object (declaration order).
+def metric_to_json(Metric v) -> str:
+    list[str] parts = []
+    if v.expression.is_some():
+        auto u0 = v.expression.unwrap()
+        parts.append("\"expression\":" + iotsitewise_json_str(u0))
+    if v.variables.is_some():
+        auto u1 = v.variables.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(expression_variable_to_json(x2))
+        parts.append("\"variables\":" + iotsitewise_json_arr(e2))
+    parts.append("\"window\":" + v.window.to_json())
+    if v.processingConfig.is_some():
+        auto u3 = v.processingConfig.unwrap()
+        parts.append("\"processingConfig\":" + u3.to_json())
+    return iotsitewise_json_obj(parts)
+
+# Serialize MountOverrides to a compact JSON object (declaration order).
+def mount_overrides_to_json(MountOverrides v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.computeNodes.keys()):
+        list[str] e1 = []
+        for x1 in v.computeNodes[k0]:
+            e1.append(x1.to_json())
+        m0.append(iotsitewise_json_str(k0) + ":" + iotsitewise_json_arr(e1))
+    parts.append("\"computeNodes\":" + iotsitewise_json_obj(m0))
+    return iotsitewise_json_obj(parts)
+
+# Serialize PortalTypeEntry to a compact JSON object (declaration order).
+def portal_type_entry_to_json(PortalTypeEntry v) -> str:
+    list[str] parts = []
+    if v.portalTools.is_some():
+        auto u0 = v.portalTools.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(iotsitewise_json_str(x1))
+        parts.append("\"portalTools\":" + iotsitewise_json_arr(e1))
+    return iotsitewise_json_obj(parts)
+
+# Serialize ProcessingInput to a compact JSON object (declaration order).
+def processing_input_to_json(ProcessingInput v) -> str:
+    list[str] parts = []
+    if v.timeseries.is_some():
+        auto u0 = v.timeseries.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"timeseries\":" + iotsitewise_json_arr(e1))
+    if v.dataset.is_some():
+        auto u2 = v.dataset.unwrap()
+        parts.append("\"dataset\":" + dataset_item_to_json(u2))
+    return iotsitewise_json_obj(parts)
+
+# Serialize PropertyMappingConfiguration to a compact JSON object (declaration order).
+def property_mapping_configuration_to_json(PropertyMappingConfiguration v) -> str:
+    list[str] parts = []
+    if v.matchByPropertyName.is_some():
+        auto u0 = v.matchByPropertyName.unwrap()
+        parts.append("\"matchByPropertyName\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.createMissingProperty.is_some():
+        auto u1 = v.createMissingProperty.unwrap()
+        parts.append("\"createMissingProperty\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.overrides.is_some():
+        auto u2 = v.overrides.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"overrides\":" + iotsitewise_json_arr(e3))
+    return iotsitewise_json_obj(parts)
+
+# Serialize PropertyType to a compact JSON object (declaration order).
+def property_type_to_json(PropertyType v) -> str:
+    list[str] parts = []
+    if v.attribute.is_some():
+        auto u0 = v.attribute.unwrap()
+        parts.append("\"attribute\":" + u0.to_json())
+    if v.measurement.is_some():
+        auto u1 = v.measurement.unwrap()
+        parts.append("\"measurement\":" + u1.to_json())
+    if v.transform.is_some():
+        auto u2 = v.transform.unwrap()
+        parts.append("\"transform\":" + transform_to_json(u2))
+    if v.metric.is_some():
+        auto u3 = v.metric.unwrap()
+        parts.append("\"metric\":" + metric_to_json(u3))
+    return iotsitewise_json_obj(parts)
+
+# Serialize PutAssetPropertyValueEntry to a compact JSON object (declaration order).
+def put_asset_property_value_entry_to_json(PutAssetPropertyValueEntry v) -> str:
+    list[str] parts = []
+    parts.append("\"entryId\":" + iotsitewise_json_str(v.entryId))
+    if v.assetId.is_some():
+        auto u0 = v.assetId.unwrap()
+        parts.append("\"assetId\":" + iotsitewise_json_str(u0))
+    if v.propertyId.is_some():
+        auto u1 = v.propertyId.unwrap()
+        parts.append("\"propertyId\":" + iotsitewise_json_str(u1))
+    if v.propertyAlias.is_some():
+        auto u2 = v.propertyAlias.unwrap()
+        parts.append("\"propertyAlias\":" + iotsitewise_json_str(u2))
+    list[str] e3 = []
+    for x3 in v.propertyValues:
+        e3.append(x3.to_json())
+    parts.append("\"propertyValues\":" + iotsitewise_json_arr(e3))
+    return iotsitewise_json_obj(parts)
+
+# Serialize SearchFilters to a compact JSON object (declaration order).
+def search_filters_to_json(SearchFilters v) -> str:
+    list[str] parts = []
+    if v.timeSeriesIds.is_some():
+        auto u0 = v.timeSeriesIds.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(iotsitewise_json_str(x1))
+        parts.append("\"timeSeriesIds\":" + iotsitewise_json_arr(e1))
+    if v.datasetIds.is_some():
+        auto u2 = v.datasetIds.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(iotsitewise_json_str(x3))
+        parts.append("\"datasetIds\":" + iotsitewise_json_arr(e3))
+    if v.timeIntervals.is_some():
+        auto u4 = v.timeIntervals.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"timeIntervals\":" + iotsitewise_json_arr(e5))
+    return iotsitewise_json_obj(parts)
+
+# Serialize TaskConfiguration to a compact JSON object (declaration order).
+def task_configuration_to_json(TaskConfiguration v) -> str:
+    list[str] parts = []
+    if v.containerTaskConfiguration.is_some():
+        auto u0 = v.containerTaskConfiguration.unwrap()
+        parts.append("\"containerTaskConfiguration\":" + container_task_configuration_to_json(u0))
+    return iotsitewise_json_obj(parts)
+
+# Serialize Transform to a compact JSON object (declaration order).
+def transform_to_json(Transform v) -> str:
+    list[str] parts = []
+    parts.append("\"expression\":" + iotsitewise_json_str(v.expression))
+    list[str] e0 = []
+    for x0 in v.variables:
+        e0.append(expression_variable_to_json(x0))
+    parts.append("\"variables\":" + iotsitewise_json_arr(e0))
+    if v.processingConfig.is_some():
+        auto u1 = v.processingConfig.unwrap()
+        parts.append("\"processingConfig\":" + u1.to_json())
+    return iotsitewise_json_obj(parts)
+
+# Serialize VariableValue to a compact JSON object (declaration order).
+def variable_value_to_json(VariableValue v) -> str:
+    list[str] parts = []
+    if v.propertyId.is_some():
+        auto u0 = v.propertyId.unwrap()
+        parts.append("\"propertyId\":" + iotsitewise_json_str(u0))
+    if v.hierarchyId.is_some():
+        auto u1 = v.hierarchyId.unwrap()
+        parts.append("\"hierarchyId\":" + iotsitewise_json_str(u1))
+    if v.propertyPath.is_some():
+        auto u2 = v.propertyPath.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"propertyPath\":" + iotsitewise_json_arr(e3))
+    return iotsitewise_json_obj(parts)
+
 # A bound IoTSiteWise client: credentials + region, threaded into every operation.
 struct IoTSiteWiseClient:
     core.Credentials creds
@@ -4728,6 +5382,169 @@ struct IoTSiteWiseClient:
         auto b = binding.HttpBinding(method="POST", path_template="/timeseries/associate/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateTimeSeriesToAssetPropertyDocument(clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # BatchAssociateDataSegmentsToDataset  POST /datasets/{datasetId}/data-segments/associate
+    # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def batch_associate_data_segments_to_dataset(self, BatchAssociateDataSegmentsToDatasetRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] labels = {}
+        labels["datasetId"] = input.datasetId
+        auto b = binding.HttpBinding(method="POST", path_template="/datasets/{datasetId}/data-segments/associate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"workspaceName\":" + iotsitewise_json_str(input.workspaceName))
+        list[str] e0 = []
+        for x0 in input.associateDataSegmentEntries:
+            e0.append(x0.to_json())
+        parts.append("\"associateDataSegmentEntries\":" + iotsitewise_json_arr(e0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u1))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # BatchAssociateProjectAssets  POST /projects/{projectId}/assets/associate
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def batch_associate_project_assets(self, BatchAssociateProjectAssetsRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] labels = {}
+        labels["projectId"] = input.projectId
+        auto b = binding.HttpBinding(method="POST", path_template="/projects/{projectId}/assets/associate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.assetIds:
+            e0.append(iotsitewise_json_str(x0))
+        parts.append("\"assetIds\":" + iotsitewise_json_arr(e0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u1))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # BatchDeleteDatasetDataSegments  POST /datasets/{datasetId}/data-segments/batch-delete
+    # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def batch_delete_dataset_data_segments(self, BatchDeleteDatasetDataSegmentsRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] labels = {}
+        labels["datasetId"] = input.datasetId
+        auto b = binding.HttpBinding(method="POST", path_template="/datasets/{datasetId}/data-segments/batch-delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"workspaceName\":" + iotsitewise_json_str(input.workspaceName))
+        list[str] e0 = []
+        for x0 in input.deleteDataSegmentEntries:
+            e0.append(x0.to_json())
+        parts.append("\"deleteDataSegmentEntries\":" + iotsitewise_json_arr(e0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u1))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # BatchDisassociateDataSegmentsFromDataset  POST /datasets/{datasetId}/data-segments/disassociate
+    # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def batch_disassociate_data_segments_from_dataset(self, BatchDisassociateDataSegmentsFromDatasetRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] labels = {}
+        labels["datasetId"] = input.datasetId
+        auto b = binding.HttpBinding(method="POST", path_template="/datasets/{datasetId}/data-segments/disassociate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"workspaceName\":" + iotsitewise_json_str(input.workspaceName))
+        list[str] e0 = []
+        for x0 in input.disassociateDataSegmentEntries:
+            e0.append(x0.to_json())
+        parts.append("\"disassociateDataSegmentEntries\":" + iotsitewise_json_arr(e0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u1))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # BatchDisassociateProjectAssets  POST /projects/{projectId}/assets/disassociate
+    # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def batch_disassociate_project_assets(self, BatchDisassociateProjectAssetsRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] labels = {}
+        labels["projectId"] = input.projectId
+        auto b = binding.HttpBinding(method="POST", path_template="/projects/{projectId}/assets/disassociate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.assetIds:
+            e0.append(iotsitewise_json_str(x0))
+        parts.append("\"assetIds\":" + iotsitewise_json_arr(e0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u1))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # BatchGetAssetPropertyAggregates  POST /properties/batch/aggregates
+    # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException
+    def batch_get_asset_property_aggregates(self, BatchGetAssetPropertyAggregatesRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/properties/batch/aggregates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.entries:
+            e0.append(batch_get_asset_property_aggregates_entry_to_json(x0))
+        parts.append("\"entries\":" + iotsitewise_json_arr(e0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + iotsitewise_json_str(u1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # BatchGetAssetPropertyValue  POST /properties/batch/latest
+    # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException
+    def batch_get_asset_property_value(self, BatchGetAssetPropertyValueRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/properties/batch/latest", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.entries:
+            e0.append(x0.to_json())
+        parts.append("\"entries\":" + iotsitewise_json_arr(e0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + iotsitewise_json_str(u1))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # BatchGetAssetPropertyValueHistory  POST /properties/batch/history
+    # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException
+    def batch_get_asset_property_value_history(self, BatchGetAssetPropertyValueHistoryRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/properties/batch/history", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.entries:
+            e0.append(batch_get_asset_property_value_history_entry_to_json(x0))
+        parts.append("\"entries\":" + iotsitewise_json_arr(e0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + iotsitewise_json_str(u1))
+        if input.maxResults.is_some():
+            auto u2 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u2))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # BatchPutAssetPropertyValue  POST /properties
+    # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
+    def batch_put_asset_property_value(self, BatchPutAssetPropertyValueRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/properties", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.enablePartialEntryProcessing.is_some():
+            auto u0 = input.enablePartialEntryProcessing.unwrap()
+            parts.append("\"enablePartialEntryProcessing\":" + json.dumps(JsonValue.Bool(u0)))
+        list[str] e1 = []
+        for x1 in input.entries:
+            e1.append(put_asset_property_value_entry_to_json(x1))
+        parts.append("\"entries\":" + iotsitewise_json_arr(e1))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
 
     # CancelEnrichmentJob  POST /workspaces/{workspaceName}/enrichment-jobs/{jobId}/cancel
@@ -4763,6 +5580,313 @@ struct IoTSiteWiseClient:
         auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/queries/{queryId}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
+    # CreateAccessPolicy  POST /access-policies
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def create_access_policy(self, CreateAccessPolicyRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/access-policies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"accessPolicyIdentity\":" + input.accessPolicyIdentity.to_json())
+        parts.append("\"accessPolicyResource\":" + input.accessPolicyResource.to_json())
+        parts.append("\"accessPolicyPermission\":" + input.accessPolicyPermission.to_json())
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(iotsitewise_json_str(k2) + ":" + iotsitewise_json_str(u1[k2]))
+            parts.append("\"tags\":" + iotsitewise_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # CreateApplication  POST /applications
+    # errors: AccessDeniedException, ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def create_application(self, CreateApplicationRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u0))
+        parts.append("\"idcInstanceArn\":" + iotsitewise_json_str(input.idcInstanceArn))
+        parts.append("\"workspaceName\":" + iotsitewise_json_str(input.workspaceName))
+        parts.append("\"name\":" + iotsitewise_json_str(input.name))
+        if input.description.is_some():
+            auto u1 = input.description.unwrap()
+            parts.append("\"description\":" + iotsitewise_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(iotsitewise_json_str(k3) + ":" + iotsitewise_json_str(u2[k3]))
+            parts.append("\"tags\":" + iotsitewise_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # CreateAsset  POST /assets
+    # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, ThrottlingException
+    def create_asset(self, CreateAssetRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/assets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"assetName\":" + iotsitewise_json_str(input.assetName))
+        parts.append("\"assetModelId\":" + iotsitewise_json_str(input.assetModelId))
+        if input.assetId.is_some():
+            auto u0 = input.assetId.unwrap()
+            parts.append("\"assetId\":" + iotsitewise_json_str(u0))
+        if input.assetExternalId.is_some():
+            auto u1 = input.assetExternalId.unwrap()
+            parts.append("\"assetExternalId\":" + iotsitewise_json_str(u1))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(iotsitewise_json_str(k4) + ":" + iotsitewise_json_str(u3[k4]))
+            parts.append("\"tags\":" + iotsitewise_json_obj(m4))
+        if input.assetDescription.is_some():
+            auto u5 = input.assetDescription.unwrap()
+            parts.append("\"assetDescription\":" + iotsitewise_json_str(u5))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # CreateAssetModel  POST /asset-models
+    # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, ThrottlingException
+    def create_asset_model(self, CreateAssetModelRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/asset-models", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"assetModelName\":" + iotsitewise_json_str(input.assetModelName))
+        if input.assetModelType.is_some():
+            auto u0 = input.assetModelType.unwrap()
+            parts.append("\"assetModelType\":" + u0.to_json())
+        if input.assetModelId.is_some():
+            auto u1 = input.assetModelId.unwrap()
+            parts.append("\"assetModelId\":" + iotsitewise_json_str(u1))
+        if input.assetModelExternalId.is_some():
+            auto u2 = input.assetModelExternalId.unwrap()
+            parts.append("\"assetModelExternalId\":" + iotsitewise_json_str(u2))
+        if input.assetModelDescription.is_some():
+            auto u3 = input.assetModelDescription.unwrap()
+            parts.append("\"assetModelDescription\":" + iotsitewise_json_str(u3))
+        if input.assetModelProperties.is_some():
+            auto u4 = input.assetModelProperties.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(asset_model_property_definition_to_json(x5))
+            parts.append("\"assetModelProperties\":" + iotsitewise_json_arr(e5))
+        if input.assetModelHierarchies.is_some():
+            auto u6 = input.assetModelHierarchies.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(x7.to_json())
+            parts.append("\"assetModelHierarchies\":" + iotsitewise_json_arr(e7))
+        if input.assetModelCompositeModels.is_some():
+            auto u8 = input.assetModelCompositeModels.unwrap()
+            list[str] e9 = []
+            for x9 in u8:
+                e9.append(asset_model_composite_model_definition_to_json(x9))
+            parts.append("\"assetModelCompositeModels\":" + iotsitewise_json_arr(e9))
+        if input.clientToken.is_some():
+            auto u10 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u10))
+        if input.tags.is_some():
+            auto u11 = input.tags.unwrap()
+            list[str] m12 = []
+            for k12 in sorted(u11.keys()):
+                m12.append(iotsitewise_json_str(k12) + ":" + iotsitewise_json_str(u11[k12]))
+            parts.append("\"tags\":" + iotsitewise_json_obj(m12))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # CreateAssetModelCompositeModel  POST /asset-models/{assetModelId}/composite-models
+    # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, PreconditionFailedException, ResourceAlreadyExistsException, ResourceNotFoundException, ThrottlingException
+    def create_asset_model_composite_model(self, CreateAssetModelCompositeModelRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] labels = {}
+        labels["assetModelId"] = input.assetModelId
+        dict[str, str] headers = {}
+        if input.ifMatch.is_some():
+            headers["If-Match"] = input.ifMatch.unwrap_or("")
+        if input.ifNoneMatch.is_some():
+            headers["If-None-Match"] = input.ifNoneMatch.unwrap_or("")
+        if input.matchForVersionType.is_some():
+            headers["Match-For-Version-Type"] = input.matchForVersionType.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/asset-models/{assetModelId}/composite-models", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.assetModelCompositeModelExternalId.is_some():
+            auto u0 = input.assetModelCompositeModelExternalId.unwrap()
+            parts.append("\"assetModelCompositeModelExternalId\":" + iotsitewise_json_str(u0))
+        if input.parentAssetModelCompositeModelId.is_some():
+            auto u1 = input.parentAssetModelCompositeModelId.unwrap()
+            parts.append("\"parentAssetModelCompositeModelId\":" + iotsitewise_json_str(u1))
+        if input.assetModelCompositeModelId.is_some():
+            auto u2 = input.assetModelCompositeModelId.unwrap()
+            parts.append("\"assetModelCompositeModelId\":" + iotsitewise_json_str(u2))
+        if input.assetModelCompositeModelDescription.is_some():
+            auto u3 = input.assetModelCompositeModelDescription.unwrap()
+            parts.append("\"assetModelCompositeModelDescription\":" + iotsitewise_json_str(u3))
+        parts.append("\"assetModelCompositeModelName\":" + iotsitewise_json_str(input.assetModelCompositeModelName))
+        parts.append("\"assetModelCompositeModelType\":" + iotsitewise_json_str(input.assetModelCompositeModelType))
+        if input.clientToken.is_some():
+            auto u4 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u4))
+        if input.composedAssetModelId.is_some():
+            auto u5 = input.composedAssetModelId.unwrap()
+            parts.append("\"composedAssetModelId\":" + iotsitewise_json_str(u5))
+        if input.assetModelCompositeModelProperties.is_some():
+            auto u6 = input.assetModelCompositeModelProperties.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(asset_model_property_definition_to_json(x7))
+            parts.append("\"assetModelCompositeModelProperties\":" + iotsitewise_json_arr(e7))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # CreateBulkImportJob  POST /jobs
+    # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, ThrottlingException
+    def create_bulk_import_job(self, CreateBulkImportJobRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"jobName\":" + iotsitewise_json_str(input.jobName))
+        parts.append("\"jobRoleArn\":" + iotsitewise_json_str(input.jobRoleArn))
+        list[str] e0 = []
+        for x0 in input.files:
+            e0.append(file_to_json(x0))
+        parts.append("\"files\":" + iotsitewise_json_arr(e0))
+        parts.append("\"errorReportLocation\":" + input.errorReportLocation.to_json())
+        if input.jobConfiguration.is_some():
+            auto u1 = input.jobConfiguration.unwrap()
+            parts.append("\"jobConfiguration\":" + job_configuration_to_json(u1))
+        if input.adaptiveIngestion.is_some():
+            auto u2 = input.adaptiveIngestion.unwrap()
+            parts.append("\"adaptiveIngestion\":" + json.dumps(JsonValue.Bool(u2)))
+        if input.deleteFilesAfterImport.is_some():
+            auto u3 = input.deleteFilesAfterImport.unwrap()
+            parts.append("\"deleteFilesAfterImport\":" + json.dumps(JsonValue.Bool(u3)))
+        if input.datasetId.is_some():
+            auto u4 = input.datasetId.unwrap()
+            parts.append("\"datasetId\":" + iotsitewise_json_str(u4))
+        if input.workspaceName.is_some():
+            auto u5 = input.workspaceName.unwrap()
+            parts.append("\"workspaceName\":" + iotsitewise_json_str(u5))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # CreateComputationModel  POST /computation-models
+    # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, ThrottlingException
+    def create_computation_model(self, CreateComputationModelRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/computation-models", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"computationModelName\":" + iotsitewise_json_str(input.computationModelName))
+        if input.computationModelDescription.is_some():
+            auto u0 = input.computationModelDescription.unwrap()
+            parts.append("\"computationModelDescription\":" + iotsitewise_json_str(u0))
+        parts.append("\"computationModelConfiguration\":" + input.computationModelConfiguration.to_json())
+        list[str] m1 = []
+        for k1 in sorted(input.computationModelDataBinding.keys()):
+            m1.append(iotsitewise_json_str(k1) + ":" + computation_model_data_binding_value_to_json(input.computationModelDataBinding[k1]))
+        parts.append("\"computationModelDataBinding\":" + iotsitewise_json_obj(m1))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u2))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(iotsitewise_json_str(k4) + ":" + iotsitewise_json_str(u3[k4]))
+            parts.append("\"tags\":" + iotsitewise_json_obj(m4))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # CreateDashboard  POST /dashboards
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def create_dashboard(self, CreateDashboardRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/dashboards", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"projectId\":" + iotsitewise_json_str(input.projectId))
+        parts.append("\"dashboardName\":" + iotsitewise_json_str(input.dashboardName))
+        if input.dashboardDescription.is_some():
+            auto u0 = input.dashboardDescription.unwrap()
+            parts.append("\"dashboardDescription\":" + iotsitewise_json_str(u0))
+        parts.append("\"dashboardDefinition\":" + iotsitewise_json_str(input.dashboardDefinition))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(iotsitewise_json_str(k3) + ":" + iotsitewise_json_str(u2[k3]))
+            parts.append("\"tags\":" + iotsitewise_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # CreateDataset  POST /datasets
+    # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, ThrottlingException
+    def create_dataset(self, CreateDatasetRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/datasets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.datasetId.is_some():
+            auto u0 = input.datasetId.unwrap()
+            parts.append("\"datasetId\":" + iotsitewise_json_str(u0))
+        parts.append("\"datasetName\":" + iotsitewise_json_str(input.datasetName))
+        if input.datasetDescription.is_some():
+            auto u1 = input.datasetDescription.unwrap()
+            parts.append("\"datasetDescription\":" + iotsitewise_json_str(u1))
+        if input.datasetType.is_some():
+            auto u2 = input.datasetType.unwrap()
+            parts.append("\"datasetType\":" + u2.to_json())
+        if input.datasetConfig.is_some():
+            auto u3 = input.datasetConfig.unwrap()
+            parts.append("\"datasetConfig\":" + u3.to_json())
+        if input.workspaceName.is_some():
+            auto u4 = input.workspaceName.unwrap()
+            parts.append("\"workspaceName\":" + iotsitewise_json_str(u4))
+        if input.metadata.is_some():
+            auto u5 = input.metadata.unwrap()
+            list[str] m6 = []
+            for k6 in sorted(u5.keys()):
+                m6.append(iotsitewise_json_str(k6) + ":" + iotsitewise_json_str(u5[k6]))
+            parts.append("\"metadata\":" + iotsitewise_json_obj(m6))
+        parts.append("\"datasetSource\":" + input.datasetSource.to_json())
+        if input.clientToken.is_some():
+            auto u7 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u7))
+        if input.tags.is_some():
+            auto u8 = input.tags.unwrap()
+            list[str] m9 = []
+            for k9 in sorted(u8.keys()):
+                m9.append(iotsitewise_json_str(k9) + ":" + iotsitewise_json_str(u8[k9]))
+            parts.append("\"tags\":" + iotsitewise_json_obj(m9))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # CreateDatasetExportJob  POST /workspaces/{workspaceName}/dataset-export-jobs
+    # errors: AccessDeniedException, ConflictingOperationException, InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def create_dataset_export_job(self, CreateDatasetExportJobRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceName"] = input.workspaceName
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/dataset-export-jobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u0))
+        parts.append("\"destinationS3Uri\":" + iotsitewise_json_str(input.destinationS3Uri))
+        parts.append("\"input\":" + processing_input_to_json(input.input))
+        parts.append("\"errorReportLocation\":" + input.errorReportLocation.to_json())
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
     # CreateEnrichmentJob  POST /workspaces/{workspaceName}/enrichment-jobs
     # errors: AccessDeniedException, ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
     def create_enrichment_job(self, CreateEnrichmentJobRequest input) -> str:
@@ -4772,6 +5896,176 @@ struct IoTSiteWiseClient:
         auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/enrichment-jobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateEnrichmentJobDocument(jobConfiguration=input.jobConfiguration, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # CreateGateway  POST /20200301/gateways
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ThrottlingException
+    def create_gateway(self, CreateGatewayRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/20200301/gateways", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"gatewayName\":" + iotsitewise_json_str(input.gatewayName))
+        parts.append("\"gatewayPlatform\":" + input.gatewayPlatform.to_json())
+        if input.gatewayVersion.is_some():
+            auto u0 = input.gatewayVersion.unwrap()
+            parts.append("\"gatewayVersion\":" + iotsitewise_json_str(u0))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(iotsitewise_json_str(k2) + ":" + iotsitewise_json_str(u1[k2]))
+            parts.append("\"tags\":" + iotsitewise_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # CreatePipeline  POST /workspaces/{workspaceName}/pipelines
+    # errors: AccessDeniedException, ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def create_pipeline(self, CreatePipelineRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceName"] = input.workspaceName
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/pipelines", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"pipelineName\":" + iotsitewise_json_str(input.pipelineName))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + iotsitewise_json_str(u0))
+        if input.environmentVariables.is_some():
+            auto u1 = input.environmentVariables.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(iotsitewise_json_str(k2) + ":" + iotsitewise_json_str(u1[k2]))
+            parts.append("\"environmentVariables\":" + iotsitewise_json_obj(m2))
+        list[str] e3 = []
+        for x3 in input.computations:
+            e3.append(compute_node_to_json(x3))
+        parts.append("\"computations\":" + iotsitewise_json_arr(e3))
+        if input.tags.is_some():
+            auto u4 = input.tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(iotsitewise_json_str(k5) + ":" + iotsitewise_json_str(u4[k5]))
+            parts.append("\"tags\":" + iotsitewise_json_obj(m5))
+        if input.clientToken.is_some():
+            auto u6 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u6))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # CreatePortal  POST /portals
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def create_portal(self, CreatePortalRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/portals", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"portalName\":" + iotsitewise_json_str(input.portalName))
+        if input.portalDescription.is_some():
+            auto u0 = input.portalDescription.unwrap()
+            parts.append("\"portalDescription\":" + iotsitewise_json_str(u0))
+        parts.append("\"portalContactEmail\":" + iotsitewise_json_str(input.portalContactEmail))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u1))
+        if input.portalLogoImageFile.is_some():
+            auto u2 = input.portalLogoImageFile.unwrap()
+            parts.append("\"portalLogoImageFile\":" + u2.to_json())
+        parts.append("\"roleArn\":" + iotsitewise_json_str(input.roleArn))
+        if input.tags.is_some():
+            auto u3 = input.tags.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(iotsitewise_json_str(k4) + ":" + iotsitewise_json_str(u3[k4]))
+            parts.append("\"tags\":" + iotsitewise_json_obj(m4))
+        if input.portalAuthMode.is_some():
+            auto u5 = input.portalAuthMode.unwrap()
+            parts.append("\"portalAuthMode\":" + u5.to_json())
+        if input.notificationSenderEmail.is_some():
+            auto u6 = input.notificationSenderEmail.unwrap()
+            parts.append("\"notificationSenderEmail\":" + iotsitewise_json_str(u6))
+        if input.alarms.is_some():
+            auto u7 = input.alarms.unwrap()
+            parts.append("\"alarms\":" + u7.to_json())
+        if input.portalType.is_some():
+            auto u8 = input.portalType.unwrap()
+            parts.append("\"portalType\":" + u8.to_json())
+        if input.portalTypeConfiguration.is_some():
+            auto u9 = input.portalTypeConfiguration.unwrap()
+            list[str] m10 = []
+            for k10 in sorted(u9.keys()):
+                m10.append(iotsitewise_json_str(k10) + ":" + portal_type_entry_to_json(u9[k10]))
+            parts.append("\"portalTypeConfiguration\":" + iotsitewise_json_obj(m10))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # CreateProject  POST /projects
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def create_project(self, CreateProjectRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/projects", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"portalId\":" + iotsitewise_json_str(input.portalId))
+        parts.append("\"projectName\":" + iotsitewise_json_str(input.projectName))
+        if input.projectDescription.is_some():
+            auto u0 = input.projectDescription.unwrap()
+            parts.append("\"projectDescription\":" + iotsitewise_json_str(u0))
+        if input.clientToken.is_some():
+            auto u1 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u1))
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] m3 = []
+            for k3 in sorted(u2.keys()):
+                m3.append(iotsitewise_json_str(k3) + ":" + iotsitewise_json_str(u2[k3]))
+            parts.append("\"tags\":" + iotsitewise_json_obj(m3))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # CreateTask  POST /workspaces/{workspaceName}/tasks
+    # errors: AccessDeniedException, ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def create_task(self, CreateTaskRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceName"] = input.workspaceName
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/tasks", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"taskName\":" + iotsitewise_json_str(input.taskName))
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + iotsitewise_json_str(u0))
+        parts.append("\"taskConfiguration\":" + task_configuration_to_json(input.taskConfiguration))
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(iotsitewise_json_str(k2) + ":" + iotsitewise_json_str(u1[k2]))
+            parts.append("\"tags\":" + iotsitewise_json_obj(m2))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u3))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # CreateWorkspace  POST /workspaces
+    # errors: AccessDeniedException, ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ThrottlingException
+    def create_workspace(self, CreateWorkspaceRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"workspaceName\":" + iotsitewise_json_str(input.workspaceName))
+        if input.workspaceDescription.is_some():
+            auto u0 = input.workspaceDescription.unwrap()
+            parts.append("\"workspaceDescription\":" + iotsitewise_json_str(u0))
+        parts.append("\"encryptionConfiguration\":" + input.encryptionConfiguration.to_json())
+        if input.tags.is_some():
+            auto u1 = input.tags.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(iotsitewise_json_str(k2) + ":" + iotsitewise_json_str(u1[k2]))
+            parts.append("\"tags\":" + iotsitewise_json_obj(m2))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u3))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
 
     # DeleteAccessPolicy  DELETE /access-policies/{accessPolicyId}
@@ -5836,6 +7130,26 @@ struct IoTSiteWiseClient:
         auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/queries", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
+    # ListSearches  POST /workspaces/{workspaceName}/searches/list
+    # errors: AccessDeniedException, InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def list_searches(self, ListSearchesRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceName"] = input.workspaceName
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/searches/list", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.maxResults.is_some():
+            auto u0 = input.maxResults.unwrap()
+            parts.append("\"maxResults\":" + str(u0))
+        if input.nextToken.is_some():
+            auto u1 = input.nextToken.unwrap()
+            parts.append("\"nextToken\":" + iotsitewise_json_str(u1))
+        if input.listSearchesFilters.is_some():
+            auto u2 = input.listSearchesFilters.unwrap()
+            parts.append("\"listSearchesFilters\":" + list_searches_filters_to_json(u2))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
     # ListTagsForResource  GET /tags
     # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException, UnauthorizedException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
@@ -5891,6 +7205,22 @@ struct IoTSiteWiseClient:
         auto b = binding.HttpBinding(method="GET", path_template="/workspaces", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
+    # PutAssetModelInterfaceRelationship  PUT /asset-models/{assetModelId}/interface/{interfaceAssetModelId}/asset-model-interface-relationship
+    # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def put_asset_model_interface_relationship(self, PutAssetModelInterfaceRelationshipRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] labels = {}
+        labels["assetModelId"] = input.assetModelId
+        labels["interfaceAssetModelId"] = input.interfaceAssetModelId
+        auto b = binding.HttpBinding(method="PUT", path_template="/asset-models/{assetModelId}/interface/{interfaceAssetModelId}/asset-model-interface-relationship", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"propertyMappingConfiguration\":" + property_mapping_configuration_to_json(input.propertyMappingConfiguration))
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u0))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
     # PutDefaultEncryptionConfiguration  POST /configuration/account/encryption
     # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
     def put_default_encryption_configuration(self, PutDefaultEncryptionConfigurationRequest input) -> str:
@@ -5918,6 +7248,30 @@ struct IoTSiteWiseClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
 
+    # StartPipelineExecution  POST /workspaces/{workspaceName}/pipelines/{pipelineName}/executions
+    # errors: AccessDeniedException, ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def start_pipeline_execution(self, StartPipelineExecutionRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceName"] = input.workspaceName
+        labels["pipelineName"] = input.pipelineName
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/pipelines/{pipelineName}/executions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.executionEnvironmentVariableOverrides.is_some():
+            auto u0 = input.executionEnvironmentVariableOverrides.unwrap()
+            parts.append("\"executionEnvironmentVariableOverrides\":" + execution_environment_variables_to_json(u0))
+        if input.executionMountOverrides.is_some():
+            auto u1 = input.executionMountOverrides.unwrap()
+            parts.append("\"executionMountOverrides\":" + mount_overrides_to_json(u1))
+        if input.executionPriority.is_some():
+            auto u2 = input.executionPriority.unwrap()
+            parts.append("\"executionPriority\":" + str(u2))
+        if input.clientToken.is_some():
+            auto u3 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u3))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
     # StartQuery  POST /workspaces/{workspaceName}/queries
     # errors: AccessDeniedException, ConflictingOperationException, InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def start_query(self, StartQueryRequest input) -> str:
@@ -5927,6 +7281,45 @@ struct IoTSiteWiseClient:
         auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/queries", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartQueryDocument(clientToken=input.clientToken, queryStatement=input.queryStatement)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # StartSearch  POST /workspaces/{workspaceName}/searches
+    # errors: AccessDeniedException, ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def start_search(self, StartSearchRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceName"] = input.workspaceName
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/searches", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"queryStatement\":" + iotsitewise_json_str(input.queryStatement))
+        if input.clientToken.is_some():
+            auto u0 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u0))
+        if input.searchType.is_some():
+            auto u1 = input.searchType.unwrap()
+            parts.append("\"searchType\":" + u1.to_json())
+        if input.searchFilters.is_some():
+            auto u2 = input.searchFilters.unwrap()
+            parts.append("\"searchFilters\":" + search_filters_to_json(u2))
+        if input.groupId.is_some():
+            auto u3 = input.groupId.unwrap()
+            parts.append("\"groupId\":" + iotsitewise_json_str(u3))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # TagResource  POST /tags
+    # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException, TooManyTagsException, UnauthorizedException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] query = {}
+        query["resourceArn"] = input.resourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/tags", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.tags.keys()):
+            m0.append(iotsitewise_json_str(k0) + ":" + iotsitewise_json_str(input.tags[k0]))
+        parts.append("\"tags\":" + iotsitewise_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
 
     # UpdateAccessPolicy  PUT /access-policies/{accessPolicyId}
@@ -5951,6 +7344,87 @@ struct IoTSiteWiseClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
 
+    # UpdateAssetModel  PUT /asset-models/{assetModelId}
+    # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, PreconditionFailedException, ResourceAlreadyExistsException, ResourceNotFoundException, ThrottlingException
+    def update_asset_model(self, UpdateAssetModelRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] labels = {}
+        labels["assetModelId"] = input.assetModelId
+        dict[str, str] headers = {}
+        if input.ifMatch.is_some():
+            headers["If-Match"] = input.ifMatch.unwrap_or("")
+        if input.ifNoneMatch.is_some():
+            headers["If-None-Match"] = input.ifNoneMatch.unwrap_or("")
+        if input.matchForVersionType.is_some():
+            headers["Match-For-Version-Type"] = input.matchForVersionType.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/asset-models/{assetModelId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.assetModelExternalId.is_some():
+            auto u0 = input.assetModelExternalId.unwrap()
+            parts.append("\"assetModelExternalId\":" + iotsitewise_json_str(u0))
+        parts.append("\"assetModelName\":" + iotsitewise_json_str(input.assetModelName))
+        if input.assetModelDescription.is_some():
+            auto u1 = input.assetModelDescription.unwrap()
+            parts.append("\"assetModelDescription\":" + iotsitewise_json_str(u1))
+        if input.assetModelProperties.is_some():
+            auto u2 = input.assetModelProperties.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(asset_model_property_to_json(x3))
+            parts.append("\"assetModelProperties\":" + iotsitewise_json_arr(e3))
+        if input.assetModelHierarchies.is_some():
+            auto u4 = input.assetModelHierarchies.unwrap()
+            list[str] e5 = []
+            for x5 in u4:
+                e5.append(x5.to_json())
+            parts.append("\"assetModelHierarchies\":" + iotsitewise_json_arr(e5))
+        if input.assetModelCompositeModels.is_some():
+            auto u6 = input.assetModelCompositeModels.unwrap()
+            list[str] e7 = []
+            for x7 in u6:
+                e7.append(asset_model_composite_model_to_json(x7))
+            parts.append("\"assetModelCompositeModels\":" + iotsitewise_json_arr(e7))
+        if input.clientToken.is_some():
+            auto u8 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u8))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # UpdateAssetModelCompositeModel  PUT /asset-models/{assetModelId}/composite-models/{assetModelCompositeModelId}
+    # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, PreconditionFailedException, ResourceAlreadyExistsException, ResourceNotFoundException, ThrottlingException
+    def update_asset_model_composite_model(self, UpdateAssetModelCompositeModelRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] labels = {}
+        labels["assetModelId"] = input.assetModelId
+        labels["assetModelCompositeModelId"] = input.assetModelCompositeModelId
+        dict[str, str] headers = {}
+        if input.ifMatch.is_some():
+            headers["If-Match"] = input.ifMatch.unwrap_or("")
+        if input.ifNoneMatch.is_some():
+            headers["If-None-Match"] = input.ifNoneMatch.unwrap_or("")
+        if input.matchForVersionType.is_some():
+            headers["Match-For-Version-Type"] = input.matchForVersionType.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/asset-models/{assetModelId}/composite-models/{assetModelCompositeModelId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.assetModelCompositeModelExternalId.is_some():
+            auto u0 = input.assetModelCompositeModelExternalId.unwrap()
+            parts.append("\"assetModelCompositeModelExternalId\":" + iotsitewise_json_str(u0))
+        if input.assetModelCompositeModelDescription.is_some():
+            auto u1 = input.assetModelCompositeModelDescription.unwrap()
+            parts.append("\"assetModelCompositeModelDescription\":" + iotsitewise_json_str(u1))
+        parts.append("\"assetModelCompositeModelName\":" + iotsitewise_json_str(input.assetModelCompositeModelName))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u2))
+        if input.assetModelCompositeModelProperties.is_some():
+            auto u3 = input.assetModelCompositeModelProperties.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(asset_model_property_to_json(x4))
+            parts.append("\"assetModelCompositeModelProperties\":" + iotsitewise_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
     # UpdateAssetProperty  PUT /assets/{assetId}/properties/{propertyId}
     # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def update_asset_property(self, UpdateAssetPropertyRequest input) -> str:
@@ -5963,6 +7437,29 @@ struct IoTSiteWiseClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
 
+    # UpdateComputationModel  POST /computation-models/{computationModelId}
+    # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, ThrottlingException
+    def update_computation_model(self, UpdateComputationModelRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] labels = {}
+        labels["computationModelId"] = input.computationModelId
+        auto b = binding.HttpBinding(method="POST", path_template="/computation-models/{computationModelId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"computationModelName\":" + iotsitewise_json_str(input.computationModelName))
+        if input.computationModelDescription.is_some():
+            auto u0 = input.computationModelDescription.unwrap()
+            parts.append("\"computationModelDescription\":" + iotsitewise_json_str(u0))
+        parts.append("\"computationModelConfiguration\":" + input.computationModelConfiguration.to_json())
+        list[str] m1 = []
+        for k1 in sorted(input.computationModelDataBinding.keys()):
+            m1.append(iotsitewise_json_str(k1) + ":" + computation_model_data_binding_value_to_json(input.computationModelDataBinding[k1]))
+        parts.append("\"computationModelDataBinding\":" + iotsitewise_json_obj(m1))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u2))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
     # UpdateDashboard  PUT /dashboards/{dashboardId}
     # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def update_dashboard(self, UpdateDashboardRequest input) -> str:
@@ -5972,6 +7469,37 @@ struct IoTSiteWiseClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/dashboards/{dashboardId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDashboardDocument(dashboardName=input.dashboardName, dashboardDescription=input.dashboardDescription, dashboardDefinition=input.dashboardDefinition, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # UpdateDataset  PUT /datasets/{datasetId}
+    # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, ThrottlingException
+    def update_dataset(self, UpdateDatasetRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] labels = {}
+        labels["datasetId"] = input.datasetId
+        auto b = binding.HttpBinding(method="PUT", path_template="/datasets/{datasetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.workspaceName.is_some():
+            auto u0 = input.workspaceName.unwrap()
+            parts.append("\"workspaceName\":" + iotsitewise_json_str(u0))
+        parts.append("\"datasetName\":" + iotsitewise_json_str(input.datasetName))
+        if input.datasetDescription.is_some():
+            auto u1 = input.datasetDescription.unwrap()
+            parts.append("\"datasetDescription\":" + iotsitewise_json_str(u1))
+        if input.datasetConfig.is_some():
+            auto u2 = input.datasetConfig.unwrap()
+            parts.append("\"datasetConfig\":" + u2.to_json())
+        if input.metadata.is_some():
+            auto u3 = input.metadata.unwrap()
+            list[str] m4 = []
+            for k4 in sorted(u3.keys()):
+                m4.append(iotsitewise_json_str(k4) + ":" + iotsitewise_json_str(u3[k4]))
+            parts.append("\"metadata\":" + iotsitewise_json_obj(m4))
+        parts.append("\"datasetSource\":" + input.datasetSource.to_json())
+        if input.clientToken.is_some():
+            auto u5 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u5))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
 
     # UpdateGateway  PUT /20200301/gateways/{gatewayId}
@@ -5996,6 +7524,71 @@ struct IoTSiteWiseClient:
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
 
+    # UpdatePipeline  PUT /workspaces/{workspaceName}/pipelines/{pipelineName}
+    # errors: AccessDeniedException, ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def update_pipeline(self, UpdatePipelineRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceName"] = input.workspaceName
+        labels["pipelineName"] = input.pipelineName
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceName}/pipelines/{pipelineName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + iotsitewise_json_str(u0))
+        if input.environmentVariables.is_some():
+            auto u1 = input.environmentVariables.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(iotsitewise_json_str(k2) + ":" + iotsitewise_json_str(u1[k2]))
+            parts.append("\"environmentVariables\":" + iotsitewise_json_obj(m2))
+        if input.computations.is_some():
+            auto u3 = input.computations.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(compute_node_to_json(x4))
+            parts.append("\"computations\":" + iotsitewise_json_arr(e4))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # UpdatePortal  PUT /portals/{portalId}
+    # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_portal(self, UpdatePortalRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] labels = {}
+        labels["portalId"] = input.portalId
+        auto b = binding.HttpBinding(method="PUT", path_template="/portals/{portalId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"portalName\":" + iotsitewise_json_str(input.portalName))
+        if input.portalDescription.is_some():
+            auto u0 = input.portalDescription.unwrap()
+            parts.append("\"portalDescription\":" + iotsitewise_json_str(u0))
+        parts.append("\"portalContactEmail\":" + iotsitewise_json_str(input.portalContactEmail))
+        if input.portalLogoImage.is_some():
+            auto u1 = input.portalLogoImage.unwrap()
+            parts.append("\"portalLogoImage\":" + u1.to_json())
+        parts.append("\"roleArn\":" + iotsitewise_json_str(input.roleArn))
+        if input.clientToken.is_some():
+            auto u2 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + iotsitewise_json_str(u2))
+        if input.notificationSenderEmail.is_some():
+            auto u3 = input.notificationSenderEmail.unwrap()
+            parts.append("\"notificationSenderEmail\":" + iotsitewise_json_str(u3))
+        if input.alarms.is_some():
+            auto u4 = input.alarms.unwrap()
+            parts.append("\"alarms\":" + u4.to_json())
+        if input.portalType.is_some():
+            auto u5 = input.portalType.unwrap()
+            parts.append("\"portalType\":" + u5.to_json())
+        if input.portalTypeConfiguration.is_some():
+            auto u6 = input.portalTypeConfiguration.unwrap()
+            list[str] m7 = []
+            for k7 in sorted(u6.keys()):
+                m7.append(iotsitewise_json_str(k7) + ":" + portal_type_entry_to_json(u6[k7]))
+            parts.append("\"portalTypeConfiguration\":" + iotsitewise_json_obj(m7))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
     # UpdateProject  PUT /projects/{projectId}
     # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def update_project(self, UpdateProjectRequest input) -> str:
@@ -6005,6 +7598,24 @@ struct IoTSiteWiseClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/projects/{projectId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateProjectDocument(projectName=input.projectName, projectDescription=input.projectDescription, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
+
+    # UpdateTask  PUT /workspaces/{workspaceName}/tasks/{taskName}
+    # errors: AccessDeniedException, ConflictingOperationException, InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_task(self, UpdateTaskRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceName"] = input.workspaceName
+        labels["taskName"] = input.taskName
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceName}/tasks/{taskName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.description.is_some():
+            auto u0 = input.description.unwrap()
+            parts.append("\"description\":" + iotsitewise_json_str(u0))
+        if input.taskConfiguration.is_some():
+            auto u1 = input.taskConfiguration.unwrap()
+            parts.append("\"taskConfiguration\":" + task_configuration_to_json(u1))
+        auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
 
     # UpdateWorkspace  PUT /workspaces/{workspaceName}
@@ -6427,6 +8038,19 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         while True:
             auto raw = self.list_queries(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListSearches — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: searchSummaries).
+    def paginate_list_searches(self, ListSearchesRequest input):
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        while True:
+            auto raw = self.list_searches(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

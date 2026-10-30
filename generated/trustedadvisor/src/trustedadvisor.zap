@@ -15,13 +15,13 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 12 operations — 9 with a generated method,
-#   3 skipped (a member type is not yet bindable/serializable by derive).
+# Coverage (rest-json): 12 operations — 10 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   42 structs (23 @derive(Json)), 10 enums, 6 error variants.
 #   5 paginators generated (2 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
-# serializable; structs containing list/map members are emitted plain,
-# pending derive collection support (zaplang-io/zap#346 follow-up).
+# serializable; structs with list/map members stay plain and are
+# serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
 # ===========================================================================
 
 # Runtime + codec dependencies, from the aws_core zenv package (zaplang-io/
@@ -169,13 +169,15 @@ struct AccountRecommendationLifecycleSummary:
 struct BatchUpdateRecommendationResourceExclusionRequest:
     list[RecommendationResourceExclusion] recommendationResourceExclusions
 
-# no @derive(Json): member(s) batchUpdateRecommendationResourceExclusionErrors: list[UpdateRecommendationResourceExclusionError] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) batchUpdateRecommendationResourceExclusionErrors: list[UpdateRecommendationResourceExclusionError] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct BatchUpdateRecommendationResourceExclusionResponse:
     list[UpdateRecommendationResourceExclusionError] batchUpdateRecommendationResourceExclusionErrors
 
-# no @derive(Json): member(s) pillars: list[RecommendationPillar], awsServices: list[str], metadata: dict[str, str], awsResourceTypes: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pillars: list[RecommendationPillar], awsServices: list[str], metadata: dict[str, str], awsResourceTypes: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct CheckSummary:
     str id
     str arn
@@ -199,8 +201,9 @@ struct ConflictException:
 struct GetOrganizationRecommendationRequest:
     str organizationRecommendationIdentifier
 
-# no @derive(Json): member(s) organizationRecommendation: OrganizationRecommendation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) organizationRecommendation: OrganizationRecommendation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetOrganizationRecommendationResponse:
     Optional[OrganizationRecommendation] organizationRecommendation
 
@@ -211,8 +214,9 @@ struct GetRecommendationRequest:
     # wire string of the RecommendationLanguage enum (querystring binding)
     Optional[str] language
 
-# no @derive(Json): member(s) recommendation: Recommendation not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommendation: Recommendation not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct GetRecommendationResponse:
     Optional[Recommendation] recommendation
 
@@ -233,8 +237,9 @@ struct ListChecksRequest:
     # wire string of the RecommendationLanguage enum (querystring binding)
     Optional[str] language
 
-# no @derive(Json): member(s) checkSummaries: list[CheckSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) checkSummaries: list[CheckSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListChecksResponse:
     Optional[str] nextToken
     list[CheckSummary] checkSummaries
@@ -247,8 +252,9 @@ struct ListOrganizationRecommendationAccountsRequest:
     str organizationRecommendationIdentifier
     Optional[str] affectedAccountId
 
-# no @derive(Json): member(s) accountRecommendationLifecycleSummaries: list[AccountRecommendationLifecycleSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) accountRecommendationLifecycleSummaries: list[AccountRecommendationLifecycleSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOrganizationRecommendationAccountsResponse:
     Optional[str] nextToken
     list[AccountRecommendationLifecycleSummary] accountRecommendationLifecycleSummaries
@@ -266,8 +272,9 @@ struct ListOrganizationRecommendationResourcesRequest:
     str organizationRecommendationIdentifier
     Optional[str] affectedAccountId
 
-# no @derive(Json): member(s) organizationRecommendationResourceSummaries: list[OrganizationRecommendationResourceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) organizationRecommendationResourceSummaries: list[OrganizationRecommendationResourceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOrganizationRecommendationResourcesResponse:
     Optional[str] nextToken
     list[OrganizationRecommendationResourceSummary] organizationRecommendationResourceSummaries
@@ -290,8 +297,9 @@ struct ListOrganizationRecommendationsRequest:
     Optional[DateTime] afterLastUpdatedAt
     Optional[DateTime] beforeLastUpdatedAt
 
-# no @derive(Json): member(s) organizationRecommendationSummaries: list[OrganizationRecommendationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) organizationRecommendationSummaries: list[OrganizationRecommendationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListOrganizationRecommendationsResponse:
     Optional[str] nextToken
     list[OrganizationRecommendationSummary] organizationRecommendationSummaries
@@ -310,8 +318,9 @@ struct ListRecommendationResourcesRequest:
     # wire string of the RecommendationLanguage enum (querystring binding)
     Optional[str] language
 
-# no @derive(Json): member(s) recommendationResourceSummaries: list[RecommendationResourceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommendationResourceSummaries: list[RecommendationResourceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecommendationResourcesResponse:
     Optional[str] nextToken
     list[RecommendationResourceSummary] recommendationResourceSummaries
@@ -330,8 +339,9 @@ struct ListRecommendationsForResourceRequest:
     # wire string of the RecommendationLanguage enum (querystring binding)
     Optional[str] language
 
-# no @derive(Json): member(s) recommendationForResourceSummaries: list[RecommendationForResourceSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommendationForResourceSummaries: list[RecommendationForResourceSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecommendationsForResourceResponse:
     Optional[str] nextToken
     list[RecommendationForResourceSummary] recommendationForResourceSummaries
@@ -356,14 +366,16 @@ struct ListRecommendationsRequest:
     # wire string of the RecommendationLanguage enum (querystring binding)
     Optional[str] language
 
-# no @derive(Json): member(s) recommendationSummaries: list[RecommendationSummary] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) recommendationSummaries: list[RecommendationSummary] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct ListRecommendationsResponse:
     Optional[str] nextToken
     list[RecommendationSummary] recommendationSummaries
 
-# no @derive(Json): member(s) pillars: list[RecommendationPillar], awsServices: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pillars: list[RecommendationPillar], awsServices: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OrganizationRecommendation:
     str id
     RecommendationType type
@@ -387,8 +399,9 @@ struct OrganizationRecommendation:
     Optional[UpdateRecommendationLifecycleStageReasonCode] updateReasonCode
     Optional[DateTime] resolvedAt
 
-# no @derive(Json): member(s) metadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OrganizationRecommendationResourceSummary:
     str id
     str arn
@@ -401,8 +414,9 @@ struct OrganizationRecommendationResourceSummary:
     Optional[str] accountId
     str recommendationArn
 
-# no @derive(Json): member(s) pillars: list[RecommendationPillar], awsServices: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pillars: list[RecommendationPillar], awsServices: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct OrganizationRecommendationSummary:
     str id
     RecommendationType type
@@ -419,8 +433,9 @@ struct OrganizationRecommendationSummary:
     Optional[DateTime] lastUpdatedAt
     str arn
 
-# no @derive(Json): member(s) pillars: list[RecommendationPillar], awsServices: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pillars: list[RecommendationPillar], awsServices: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct Recommendation:
     str id
     RecommendationType type
@@ -450,8 +465,9 @@ struct RecommendationCostOptimizingAggregates:
     float64 estimatedMonthlySavings
     float64 estimatedPercentMonthlySavings
 
-# no @derive(Json): member(s) metadata: dict[str, str], pillars: list[RecommendationPillar] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadata: dict[str, str], pillars: list[RecommendationPillar] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationForResourceSummary:
     str checkArn
     str recommendationArn
@@ -471,8 +487,9 @@ struct RecommendationResourceExclusion:
     str arn
     bool isExcluded
 
-# no @derive(Json): member(s) metadata: dict[str, str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) metadata: dict[str, str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationResourceSummary:
     str id
     str arn
@@ -491,8 +508,9 @@ struct RecommendationResourcesAggregates:
     int64 errorCount
     Optional[int64] excludedCount
 
-# no @derive(Json): member(s) pillars: list[RecommendationPillar], awsServices: list[str] not yet serializable by derive
-# (list/map collections — zaplang-io/zap#346 follow-up).
+# no @derive(Json): member(s) pillars: list[RecommendationPillar], awsServices: list[str] not derivable (list/map collections);
+# serialized (when used in a request) by an explicit `<shape>_to_json`
+# (zaplang-io/zap#424).
 struct RecommendationSummary:
     str id
     RecommendationType type
@@ -579,7 +597,6 @@ def trustedadvisor_error_from_code(str code) -> TrustedAdvisorError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchUpdateRecommendationResourceExclusion (document member `recommendationResourceExclusions: list[RecommendationResourceExclusion]` is not serializable by derive)
 #   ListOrganizationRecommendations (httpQuery `afterLastUpdatedAt` has unsupported type DateTime)
 #   ListRecommendations (httpQuery `afterLastUpdatedAt` has unsupported type DateTime)
 
@@ -609,6 +626,19 @@ struct UpdateRecommendationLifecycleDocument:
 struct TrustedAdvisorClient:
     core.Credentials creds
     str region
+
+    # BatchUpdateRecommendationResourceExclusion  PUT /v1/batch-update-recommendation-resource-exclusion
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def batch_update_recommendation_resource_exclusion(self, BatchUpdateRecommendationResourceExclusionRequest input) -> str:
+        auto host = endpoints.regional_host(trustedadvisor_service(), self.region)
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/batch-update-recommendation-resource-exclusion", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.recommendationResourceExclusions:
+            e0.append(x0.to_json())
+        parts.append("\"recommendationResourceExclusions\":" + trustedadvisor_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, trustedadvisor_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, trustedadvisor_service(), self.region, host)
 
     # GetOrganizationRecommendation  GET /v1/organization-recommendations/{organizationRecommendationIdentifier}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
